@@ -44,9 +44,11 @@ uses
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
-  NotesWnd in 'NotesWnd.pas' {NotesForm},
   uSystemFuncs in '..\..\..\Common\Units\SystemFuncs\uSystemFuncs.pas',
-  uInterfacedSharpBarModuleBase in '..\..\..\Components\SharpBar\uInterfacedSharpBarModuleBase.pas';
+  uInterfacedSharpBarModuleBase in '..\..\..\Components\SharpBar\uInterfacedSharpBarModuleBase.pas',
+  NotesTabOptionsWnd in 'NotesTabOptionsWnd.pas' {TabOptionsForm},
+  NotesWnd in 'NotesWnd.pas' {NotesForm},
+  uNotesSettings in 'uNotesSettings.pas';
 
 type
   TInterfacedSharpBarModule = class(TInterfacedSharpBarModuleBase)
@@ -74,7 +76,7 @@ begin
   try
     if TMainForm(Form).NotesForm <> nil then
       if TMainForm(Form).Visible then
-        TMainForm(Form).NotesForm.SaveCurrentTab;
+        TMainForm(Form).NotesForm.Close;
 
     Form.Free;
     Form := nil;
@@ -214,11 +216,9 @@ begin
   result := TInterfacedSharpBarModule.Create(ID,BarID,BarWnd);
 end;
 
-
 Exports
   CreateModule,
   GetMetaData;
-
 
 begin
 end.

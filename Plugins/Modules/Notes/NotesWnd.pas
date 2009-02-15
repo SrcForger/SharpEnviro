@@ -29,426 +29,670 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ToolWin, ComCtrls, ImgList,
-  SharpThemeApiEx, Menus, JvComponentBase, JvFindReplace, PngImageList, StdCtrls,
-  JvExStdCtrls, JvMemo, ExtCtrls, SharpEPageControl, SharpETabList, JclStrings,
-  uVistaFuncs, SharpFileUtils;
+  Dialogs, JvRichEdit, StdCtrls, JvExStdCtrls, ExtCtrls, SharpEPageControl,
+  SharpETabList, ImgList, PngImageList, ToolWin, JvExComCtrls, JclStrings,
+  JvToolBar, SharpThemeApiEx, JvEdit, Menus, JvMenus, JvMemo, ComCtrls, StrUtils,
+  uVistaFuncs, SharpFileUtils, uNotesSettings;
 
 type
   TNotesForm = class(TForm)
-    PngImageList1: TPngImageList;
-    ImportDialog: TOpenDialog;
-    ExportDialog: TSaveDialog;
-    FindDialog: TJvFindReplace;
+    reNotes: TJvRichEdit;
     pcNotes: TSharpEPageControl;
-    Notes: TJvMemo;
-    tbNotes: TToolBar;
-    tb_import: TToolButton;
-    tb_export: TToolButton;
-    tb_separator1: TToolButton;
-    tb_copy: TToolButton;
-    tb_paste: TToolButton;
-    tb_cut: TToolButton;
-    btn_selectall: TToolButton;
-    btn_find: TToolButton;
-    tb_separator2: TToolButton;
-    btn_linewrap: TToolButton;
-    btn_monofont: TToolButton;
-    procedure NotesKeyPress(Sender: TObject; var Key: Char);
-    procedure NotesKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure btn_monofontClick(Sender: TObject);
-    procedure btn_linewrapClick(Sender: TObject);
-    procedure btn_findClick(Sender: TObject);
-    procedure tb_cutClick(Sender: TObject);
-    procedure tb_importClick(Sender: TObject);
-    procedure tb_exportClick(Sender: TObject);
-    procedure btn_selectallClick(Sender: TObject);
-    procedure tb_pasteClick(Sender: TObject);
-    procedure tb_copyClick(Sender: TObject);
+    tbNotes: TJvToolBar;
+    btnImport: TToolButton;
+    pilNotes: TPngImageList;
+    OpenDialog: TOpenDialog;
+    SaveDialog: TSaveDialog;
+    btnExport: TToolButton;
+    btnPrint: TToolButton;
+    btnFind: TToolButton;
+    btnReplace: TToolButton;
+    btnCut: TToolButton;
+    btnCopy: TToolButton;
+    btnPaste: TToolButton;
+    btnFont: TToolButton;
+    btnBold: TToolButton;
+    btnItalic: TToolButton;
+    btnUnderline: TToolButton;
+    btnAlignLeft: TToolButton;
+    btnAlignCenter: TToolButton;
+    btnAlignRight: TToolButton;
+    btnAlignJustify: TToolButton;
+    btnListBullet: TToolButton;
+    btnListNumber: TToolButton;
+    btnIndentDecrease: TToolButton;
+    btnIndentIncrease: TToolButton;
+    btnClearFilter: TToolButton;
+    btnSeparator1: TToolButton;
+    btnSeparator2: TToolButton;
+    btnSeparator3: TToolButton;
+    btnSeparator4: TToolButton;
+    btnSeparator5: TToolButton;
+    editFilter: TJvEdit;
+    FontDialog: TFontDialog;
+    PrintDialog: TPrintDialog;
+    pilTabImages: TPngImageList;
+    pmNotes: TPopupMenu;
+    miUndo: TMenuItem;
+    miRedo: TMenuItem;
+    miSeparator1: TMenuItem;
+    miCut: TMenuItem;
+    miCopy: TMenuItem;
+    miPaste: TMenuItem;
+    miDelete: TMenuItem;
+    miSeparator2: TMenuItem;
+    miSelectAll: TMenuItem;
+    miWordWrap: TMenuItem;
+    pmFilter: TPopupMenu;
+    miFilterNames: TMenuItem;
+    miFilterTags: TMenuItem;
+    miFilterText: TMenuItem;
+    miFilterNamesAndTags: TMenuItem;
+    miFilterNamesAndText: TMenuItem;
+    miFilterTagsAndText: TMenuItem;
     procedure FormShow(Sender: TObject);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure tb_closeClick(Sender: TObject);
+    procedure pcNotesTabChange(ASender: TObject;
+      const ATabIndex: Integer; var AChange: Boolean);
+    procedure btnImportClick(Sender: TObject);
+    procedure btnExportClick(Sender: TObject);
+    procedure btnCutClick(Sender: TObject);
+    procedure btnCopyClick(Sender: TObject);
+    procedure btnPasteClick(Sender: TObject);
+    procedure btnBoldClick(Sender: TObject);
+    procedure btnItalicClick(Sender: TObject);
+    procedure btnUnderlineClick(Sender: TObject);
+    procedure btnClearFilterClick(Sender: TObject);
     procedure pcNotesBtnClick(ASender: TObject;
       const ABtnIndex: Integer);
-    procedure pcNotesTabClick(ASender: TObject; const ATabIndex: Integer);
-    procedure NotesChange(Sender: TObject);
+    procedure EditorSelectionChange(Sender: TObject);
+    procedure btnListNumberClick(Sender: TObject);
+    procedure btnListBulletClick(Sender: TObject);
+    procedure btnFindClick(Sender: TObject);
+    procedure EditorCloseFindDialog(Sender: TObject; Dialog: TFindDialog);
+    procedure FilterChange(Sender: TObject);
+    procedure btnIndentDecreaseClick(Sender: TObject);
+    procedure btnIndentIncreaseClick(Sender: TObject);
+    procedure btnFontClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure btnPrintClick(Sender: TObject);
+    procedure btnReplaceClick(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure EditorKeyPress(Sender: TObject; var Key: Char);
+    procedure miWordWrapClick(Sender: TObject);
+    procedure miSelectAllClick(Sender: TObject);
+    procedure miUndoClick(Sender: TObject);
+    procedure miRedoClick(Sender: TObject);
+    procedure miCutClick(Sender: TObject);
+    procedure miCopyClick(Sender: TObject);
+    procedure miPasteClick(Sender: TObject);
+    procedure miDeleteClick(Sender: TObject);
+    procedure pmNotesPopup(Sender: TObject);
+    procedure miFilterNamesClick(Sender: TObject);
+    procedure miFilterTagsClick(Sender: TObject);
+    procedure miFilterTextClick(Sender: TObject);
+    procedure miFilterNamesAndTagsClick(Sender: TObject);
+    procedure miFilterNamesAndTextClick(Sender: TObject);
+    procedure miFilterTagsAndTextClick(Sender: TObject);
+    procedure btnAlignLeftClick(Sender: TObject);
+    procedure btnAlignCenterClick(Sender: TObject);
+    procedure btnAlignRightClick(Sender: TObject);
+    procedure btnAlignJustifyClick(Sender: TObject);
+    procedure FormResize(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
-    FAlwaysOnTop: boolean;
-    function CustomInputQuery(const ACaption, APrompt: string;
-      var Value: string): Boolean;
-    procedure ShowTabDialog(new: Boolean = true; tabName: string = '');
-    function SelectedTab: TTabItem;
-    procedure DeleteNote;
-    procedure NewNote;
-    procedure EditNote;
+    { Private declarations }
+    FIndex: Integer;
+    function NotesDir: string;
+    function OldNotesDir: string;
+    function CurrText: TJvTextAttributes;
+    procedure FocusEditor;
+    procedure ShowTabOptions(New: Boolean; Name: string);
+    function AddTab(Name: string) : Integer;
+    procedure DeleteTab;
+    function TabName(Index: Integer) : string;
+    function TabFilePath(Index: Integer) : string; overload;
+    function TabNameContainsFilterText(Index: Integer) : Boolean;
+    function TabTagsContainsFilterText(Index: Integer) : Boolean;
+    function TabTextContainsFilterText(Index: Integer) : Boolean;
+    function GetSettings: NotesSettings;
+    function GetTabSettings(Name: string) : NotesTabSettings;
+    procedure DeleteTabSettings(Name: string);
+    procedure ConvertTxtFilesToRtfFiles;
   public
-    function GetNotesDir: string;
-    procedure UpdateTabList(FocusTab: string = '');
-    procedure SaveCurrentTab;
-    procedure LoadCurrentTab;
-
-    property AlwaysOnTop: boolean read FAlwaysOnTop write FAlwaysOnTop;
+    { Public declarations }
+    function TabFilePath(Name: string) : string; overload;
+    property Settings: NotesSettings read GetSettings;
   end;
 
-const
-  NOTES_EXTENSION = '.txt';
+var
+  NotesForm: TNotesForm;
+
+  const IndentationSize = 5;
 
 implementation
 
-uses SharpApi,
-  NotesNewTabWnd,
-  MainWnd;
+uses SharpAPI, MainWnd, NotesTabOptionsWnd;
 
 {$R *.dfm}
 
-function TNotesForm.CustomInputQuery(const ACaption, APrompt: string;
-  var Value: string): Boolean;
-const
-  SMsgDlgOK = 'OK';
-  SMsgDlgCancel = 'Cancel';
-var
-  x, y, w, h: Integer;
-  Form: TForm;
-  Prompt: TLabel;
-  Edit: TEdit;
-  DialogUnits: TPoint;
-  ButtonTop, ButtonWidth, ButtonHeight: Integer;
-
-  function GetAveCharSize(Canvas: TCanvas): TPoint;
-  var
-    I: Integer;
-    Buffer: array[0..51] of Char;
-  begin
-    for I := 0 to 25 do
-      Buffer[I] := Chr(I + Ord('A'));
-    for I := 0 to 25 do
-      Buffer[I + 26] := Chr(I + Ord('a'));
-    GetTextExtentPoint(Canvas.Handle, Buffer, 52, TSize(Result));
-    Result.X := Result.X div 52;
-  end;
-
+function TNotesForm.CurrText: TJvTextAttributes;
 begin
-  Result := False;
-  Form := TForm.Create(Self);
-  with Form do
+  with reNotes do
+    if SelLength > 0 then
+      Result := SelAttributes
+    else
+      Result := WordAttributes;
+end;
+
+procedure TNotesForm.FocusEditor;
+begin
+  with reNotes do
+    if CanFocus then
+      SetFocus;
+end;
+
+procedure TNotesForm.ShowTabOptions(New: Boolean; Name: string);
+var
+  tabSettings : NotesTabSettings;
+  frmTabOptions : TTabOptionsForm;
+  oldTabName : string;
+  i : Integer;
+begin
+  if not New and (FIndex = -1) then Exit;
+
+  // Create the tab option form.
+  frmTabOptions := TTabOptionsForm.Create(Self);
   try
-    Canvas.Font := Font;
-    PopupParent := self;
-    DialogUnits := GetAveCharSize(Canvas);
-    FormStyle := fsStayOnTop;
-    BorderStyle := bsToolWindow;
-    Caption := ACaption;
-    ClientWidth := MulDiv(180, DialogUnits.X, 4);
-    ClientHeight := MulDiv(63, DialogUnits.Y, 8);
+    frmTabOptions.ilvIcon.Images := pilTabImages;
+    
+    // Set the default for the fields.
+    frmTabOptions.editName.Text := Name;
+    frmTabOptions.editTags.Text := '';
+    frmTabOptions.ilvIcon.SelectedIndex := DefaultIconIndex;
 
-    // center Horzontally
-    w := (Self.Width - Form.Width) div 2;
-    X := Self.Left + W;
-    if x < 0 then
-      x := 0
-    else if x + w > Screen.Width then
-      x := Screen.Width - Form.Width;
-    Form.Left := X;
-
-    // center vertically
-    h := (Self.Height - Form.Height) div 2;
-    y := Self.Top + h;
-    if y < 0 then
-      y := 0
-    else if y + h > Screen.Height then
-      y := Screen.Height - Form.Height;
-    Form.Left := X;
-    Form.Top := Y;
-
-    Prompt := TLabel.Create(Form);
-    with Prompt do
+    if not New then
     begin
-      Parent := Form;
-      AutoSize := True;
-      Left := MulDiv(8, DialogUnits.X, 4);
-      Top := MulDiv(8, DialogUnits.Y, 8);
-      Caption := APrompt;
-    end;
-    Edit := TEdit.Create(Form);
-    with Edit do
-    begin
-      Parent := Form;
-      Left := Prompt.Left;
-      Top := MulDiv(19, DialogUnits.Y, 8);
-      Width := MulDiv(164, DialogUnits.X, 4);
-      MaxLength := 255;
-      Text := Value;
-      SelectAll;
-    end;
-    ButtonTop := MulDiv(41, DialogUnits.Y, 8);
-    ButtonWidth := MulDiv(50, DialogUnits.X, 4);
-    ButtonHeight := MulDiv(14, DialogUnits.Y, 8);
-    with TButton.Create(Form) do
-    begin
-      Parent := Form;
-      Caption := SMsgDlgOK;
-      ModalResult := mrOk;
-      default := True;
-      SetBounds(MulDiv(38, DialogUnits.X, 4), ButtonTop, ButtonWidth,
-        ButtonHeight);
-    end;
-    with TButton.Create(Form) do
-    begin
-      Parent := Form;
-      Caption := SMsgDlgCancel;
-      ModalResult := mrCancel;
-      Cancel := True;
-      SetBounds(MulDiv(92, DialogUnits.X, 4), ButtonTop, ButtonWidth,
-        ButtonHeight);
+      tabSettings := GetTabSettings(TabName(FIndex));
+      frmTabOptions.editTags.Text := tabSettings.Tags;
+      frmTabOptions.ilvIcon.SelectedIndex := tabSettings.IconIndex;
     end;
 
-    if ShowModal = mrOk then
+    if frmTabOptions.ShowModal = mrOk then
     begin
-      Value := Edit.Text;
-      Result := True;
+      if New then
+      begin
+        // Add a new tab.
+        i := AddTab(frmTabOptions.editName.Text);
+
+        with TJvRichEdit.Create(nil) do
+        try
+          Parent := Self;
+          Visible := False;
+          // Create a file for the new tab.
+          Lines.SaveToFile(TabFilePath(i));
+        finally
+          Free;
+        end;
+
+        tabSettings := GetTabSettings(TabName(i));
+        tabSettings.Tags := frmTabOptions.editTags.Text;
+        tabSettings.IconIndex := frmTabOptions.ilvIcon.SelectedIndex;
+        
+        // Change to the new tab.
+        pcNotes.TabIndex := i;
+      end
+      else
+      begin
+        oldTabName := TabName(FIndex);
+
+        // If we are changing the name of the tab then
+        // delete it from the settings list, rename the file
+        // delete the old file and change the tab caption.
+        if oldTabName <> frmTabOptions.editName.Text then
+        begin
+          DeleteTabSettings(oldTabName);
+
+          if RenameFile(TabFilePath(FIndex), TabFilePath(frmTabOptions.editName.Text)) then
+          begin
+            DeleteFile(TabFilePath(FIndex));
+            pcNotes.TabItems.Item[FIndex].Caption := frmTabOptions.editName.Text;
+          end;
+        end;
+
+        // Get the tab settings for with the new or old tab name.
+        // set the tags and icon index and
+        tabSettings := GetTabSettings(TabName(FIndex));
+        tabSettings.Tags := frmTabOptions.editTags.Text;
+        tabSettings.IconIndex := frmTabOptions.ilvIcon.SelectedIndex;
+
+        // Add the tab settings back to the list if we changed the name.
+        if oldTabName <> frmTabOptions.editName.Text then
+          Settings.Tabs.AddObject(tabSettings.Name, tabSettings);
+      end;
+      // Set the image index for the tab.
+      pcNotes.TabItems.Item[FIndex].ImageIndex := frmTabOptions.ilvIcon.SelectedIndex;
     end;
   finally
-    Form.Free;
+    frmTabOptions.Free;
   end;
 end;
 
-procedure TNotesForm.DeleteNote;
-var
-  Dir: string;
-  fname: string;
-  b: boolean;
+procedure TNotesForm.EditorCloseFindDialog(Sender: TObject;
+  Dialog: TFindDialog);
 begin
-  b := False;
-  if (Notes.Lines.Count = 0) or
-    ((Notes.Lines.Count = 1) and (length(Trim(Notes.Lines[0])) = 0)) then
-    b := True;
+  FocusEditor;
+end;
 
-  if not b then
-    if MessageBox(self.Handle,
-      PChar('The tab you are about to close is not empty!' + #10#13 +
-      'All information will be lost. Close it anyway?'),
-      'Closing Tab...', MB_YESNO) = IDYES then
-      b := True;
-
-  if b then
+procedure TNotesForm.EditorKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  Handled: Boolean;
+begin
+  if ssCtrl in Shift then
   begin
-    Dir := GetNotesDir;
-    fname := SelectedTab.Caption;
-    if FileExists(Dir + fname + NOTES_EXTENSION) then
-      DeleteFile(Dir + fname + NOTES_EXTENSION);
+    Handled := True;
+    
+    case Key of
+      Word('B'):
+      begin
+        // Toggle the button and call its click event.
+        btnBold.Down := not btnBold.Down;
+        btnBold.Click;
+      end;
+      Word('F'): btnFind.OnClick(Sender);
+      Word('H'): btnReplace.OnClick(Sender);
+      Word('I'):
+      begin
+        // Toggle the button and call its click event.
+        btnItalic.Down := not btnItalic.Down;
+        btnItalic.Click;
+      end;
+      Word('O'): btnImport.OnClick(Sender);
+      Word('P'): btnPrint.OnClick(Sender);
+      Word('S'): btnExport.OnClick(Sender);
+      Word('U'):
+      begin
+        // Toggle the button and call its click event.
+        btnUnderline.Down := not btnUnderline.Down;
+        btnUnderline.Click;
+      end;
+    else
+      // Indicate that we do not have a shortcut for this key combination.
+      Handled := False;
+    end;
 
-    pcNotes.TabItems.Delete(SelectedTab.Index);
-    pcNotes.TabIndex := pcNotes.TabIndex - 1;
-    UpdateTabList;
+    // We handled the key combination so set the key
+    // to 0 to prevent further processing.
+    if Handled then
+      Key := 0;
   end;
 end;
 
-procedure TNotesForm.EditNote;
-begin
-  ShowTabDialog(false, SelectedTab.Caption);
-end;
-
-function TNotesForm.GetNotesDir: string;
-begin
-  result := SharpApi.GetSharpeUserSettingsPath + 'Notes\';
-end;
-
-procedure TNotesForm.UpdateTabList(focusTab: string = '');
+procedure TNotesForm.EditorKeyPress(Sender: TObject; var Key: Char);
 var
-  sDir: string;
-  currentTab: string;
+  KS: TKeyboardState;
+  SS: TShiftState;
+begin
+  if reNotes.Focused and (Key = AnsiEscape) then
+    Close;
+
+  GetKeyboardState(KS);
+  SS := KeyboardStateToShiftState(KS);
+
+  if (SS = [ssCtrl]) then
+    case Key of
+      // When using Ctrl+I shortcut to toggle the Italic font style the
+      // JvRichEdit tries to insert a tab so don't allow it here.  However
+      // we do allow Ctrl+Tab to change tabs but that is handled in the
+      // FormKeyDown event.
+      AnsiTab: Key := AnsiNull;
+    end;
+end;
+
+procedure TNotesForm.EditorSelectionChange(Sender: TObject);
+begin
+  btnCut.Enabled := (reNotes.SelText <> '');
+  btnCopy.Enabled := (reNotes.SelText <> '');
+  btnPaste.Enabled := reNotes.CanPaste;
+
+  with reNotes.Paragraph do
+  begin
+    // Enable the buttons based on the current text style.
+    btnBold.Down := fsBold in CurrText.Style;
+    btnItalic.Down := fsItalic in CurrText.Style;
+    btnUnderline.Down := fsUnderline in CurrText.Style;
+
+    {
+    case NumberingStyle of
+      nsParenthesis: ;
+      nsPeriod: ;
+      nsEnclosed: ;
+      nsSimple: ;
+    end;
+    }
+
+    // The List buttons are grouped so only one will be active at a time.
+    case Numbering of
+      JvRichEdit.nsNone:
+      begin
+        // There is no List so turn off both buttons.
+        btnListNumber.Down := False;
+        btnListBullet.Down := False;
+      end;
+      JvRichEdit.nsBullet: btnListBullet.Down := True;
+      JvRichEdit.nsArabicNumbers: btnListNumber.Down := True;
+      JvRichEdit.nsLoCaseLetter: ;
+      JvRichEdit.nsUpCaseLetter: ;
+      JvRichEdit.nsLoCaseRoman: ;
+      JvRichEdit.nsUpCaseRoman: ;
+    end;
+
+    // The buttons are grouped so only 1 will be active at a time.
+    case Alignment of
+      JvRichEdit.paLeftJustify: btnAlignLeft.Down := True;
+      JvRichEdit.paRightJustify: btnAlignRight.Down := True;
+      JvRichEdit.paCenter: btnAlignCenter.Down := True;
+      JvRichEdit.paJustify: btnAlignJustify.Down := True;
+    end;
+  end;
+end;
+
+{$REGION 'Toolbar Events'}
+
+procedure TNotesForm.btnImportClick(Sender: TObject);
+var
+  i: Integer;
+  filePath: string;
   filename: string;
-  tab: TTabItem;
-  files: TStringList;
-  iTabIndex, i: integer;
 begin
-  sDir := GetNotesDir;
-  ForceDirectories(sDir);
+  if OpenDialog.Execute(Self.Handle) then
+  begin
+    for filePath in OpenDialog.Files do
+    begin
+      filename := ExtractFileName(filePath);
+      SetLength(filename, Length(filename) - 4);
 
-  iTabIndex := pcNotes.TabIndex;
+      i := AddTab(filename);
 
-  if ((iTabIndex <> -1) and (iTabIndex < pcNotes.TabItems.Count) and
-    (length(focustab) = 0)) then
-    currentTab := pcNotes.TabItems.Item[iTabIndex].Caption
-  else
-    currentTab := focusTab;
+      if i = -1 then Exit;
 
-  pcNotes.TabItems.Clear;
-  files := TStringList.Create;
+      with TJvRichEdit.Create(nil) do
+      try
+        Parent := Self;
+        Visible := False;
+        // Open the file being imported.
+        Lines.LoadFromFile(filePath);
+        // Save the file being imported to the notes directory.
+        Lines.SaveToFile(TabFilePath(filename));
+      finally
+        Free;
+      end;
+
+      // Change to the new tab.
+      pcNotes.TabIndex := i;
+    end;
+  end;
+end;
+
+procedure TNotesForm.btnExportClick(Sender: TObject);
+begin
+  if FIndex = -1 then
+    Exit;
+    
+  if SaveDialog.Execute(Self.Handle) then
+  begin
+    // Save the current text to the new file.
+    reNotes.Lines.SaveToFile(SaveDialog.FileName);
+    reNotes.Clear;
+    reNotes.ReadOnly := True;
+    // Delete the exported file from disk.
+    DeleteFile(TabFilePath(FIndex));
+    // Delete the tab settings from the list.
+    DeleteTabSettings(TabName(FIndex));
+    // Remove the current tab from the list.
+    pcNotes.TabList.Delete(pcNotes.TabItems.Item[FIndex]);
+    // Set the index to -1 so we don't try and save it
+    // in the tab change event.
+    FIndex := -1;
+    pcNotes.TabIndex := -1;
+  end;
+end;
+
+procedure TNotesForm.btnPrintClick(Sender: TObject);
+begin
+  // From the help: It is not advisable to change FormStyle at runtime.
   try
-    FindFiles(files, sDir, '*' + NOTES_EXTENSION);
-    for i := 0 to Pred(files.Count) do
-    begin
+    if Settings.AlwaysOnTop then
+      Self.FormStyle := fsNormal;
 
-      filename := ExtractFileName(files[i]);
-      setlength(filename, length(filename) - 4);
-
-      if CompareText(filename, CurrentTab) = 0 then
-      begin
-        tab := pcNotes.TabItems.Add;
-        tab.Caption := filename;
-        tab.ImageIndex := 12;
-        iTabIndex := i;
-      end
-      else
-      begin
-        tab := pcNotes.TabItems.Add;
-        tab.ImageIndex := 12;
-        tab.Caption := filename;
-      end;
-    end;
-
+    if PrintDialog.Execute(Self.Handle) then
+      reNotes.Print(TabFilePath(FIndex));
   finally
-    files.Free;
-  end;
-
-  if iTabIndex = -1 then begin
-    if iTabIndex < 0 then iTabIndex := 0;
-
-    if pcNotes.TabItems.Count = 0 then
-      iTabIndex := -1;
-  end;
-
-  pcNotes.TabIndex := iTabIndex;
-
-  if iTabIndex <> -1 then
-    LoadCurrentTab;
-
-  Notes.Visible := pcNotes.TabItems.Count > 0;
-  tbNotes.Visible := Notes.Visible;
-  pcNotes.Buttons.Item[1].Visible := Notes.Visible;
-  pcNotes.Buttons.Item[2].Visible := Notes.Visible;
-
-end;
-
-procedure TNotesForm.SaveCurrentTab;
-var
-  sDir: string;
-  s: string;
-begin
-  if ( (SelectedTab = nil) or (pcNotes.TabIndex = -1) ) then
-    exit;
-
-  sDir := GetNotesDir;
-  ForceDirectories(sDir);
-  s := SelectedTab.Caption;
-  Notes.Lines.SaveToFile(sDir + s + NOTES_EXTENSION);
-end;
-
-function TNotesForm.SelectedTab: TTabItem;
-begin
-  Result := nil;
-  if ( (pcNotes.TabIndex <> -1) and (pcNotes.TabIndex < pcNotes.TabItems.Count)) then
-    Result := pcNotes.TabItems.Item[pcNotes.TabIndex];
-end;
-
-procedure TNotesForm.pcNotesBtnClick(ASender: TObject;
-  const ABtnIndex: Integer);
-begin
-  case ABtnIndex of
-    0: NewNote;
-    1: DeleteNote;
-    2: EditNote;
+    if Settings.AlwaysOnTop then
+      Self.FormStyle := fsStayOnTop;
   end;
 end;
 
-procedure TNotesForm.pcNotesTabClick(ASender: TObject;
-  const ATabIndex: Integer);
+procedure TNotesForm.btnFindClick(Sender: TObject);
 begin
-  LoadCurrentTab;
+  with reNotes do
+    FindDialog(SelText);
 end;
 
-procedure TNotesForm.LoadCurrentTab;
-var
-  Dir: string;
-  fname: string;
+procedure TNotesForm.btnReplaceClick(Sender: TObject);
 begin
-  if SelectedTab = nil then
-    exit;
+  with reNotes do
+    ReplaceDialog(SelText, '');
+end;
 
-  Dir := GetNotesDir;
-  ForceDirectories(Dir);
-  fname := SelectedTab.Caption;
-  Notes.Lines.LoadFromFile(Dir + fname + NOTES_EXTENSION);
-  if Notes.Lines.Count > 0 then
-  begin
-    Notes.CaretPos := Point(length(Notes.Lines[Notes.Lines.Count - 1]), Notes.Lines.Count - 1);
-    SendMessage(Notes.Handle, EM_SCROLLCARET, 0, 0);
+procedure TNotesForm.btnCutClick(Sender: TObject);
+begin
+  reNotes.CutToClipboard;
+end;
+
+procedure TNotesForm.btnCopyClick(Sender: TObject);
+begin
+  reNotes.CopyToClipboard;
+end;
+
+procedure TNotesForm.btnPasteClick(Sender: TObject);
+begin
+  reNotes.PasteFromClipboard;
+end;
+
+procedure TNotesForm.btnFontClick(Sender: TObject);
+begin
+  // From the help: It is not advisable to change FormStyle at runtime.
+  try
+    if Settings.AlwaysOnTop then
+      Self.FormStyle := fsNormal;
+
+    // Set the font for the dialog to that of the current text.
+    FontDialog.Font.Assign(CurrText);
+    if FontDialog.Execute(Self.Handle) then
+      // Set the current text font because the user clicked ok.
+      CurrText.Assign(FontDialog.Font);
+  finally
+    if Settings.AlwaysOnTop then
+      Self.FormStyle := fsStayOnTop;
   end;
-  Notes.Invalidate;
 end;
 
-procedure TNotesForm.ShowTabDialog(new: Boolean = true; tabName: string = '');
-var
-  s: string;
-  sDir: string;
-  bValid: Boolean;
-  fhandle: Integer;
+procedure TNotesForm.btnBoldClick(Sender: TObject);
 begin
-  s := '';
-  if tabName <> '' then
-    s := tabName;
-
-  bValid := True;
-
-  if new then
-    CustomInputQuery('Enter the name for the new note', 'Name:', s)
+  if btnBold.Down then
+    // Add the bold style to the current style.
+    CurrText.Style := CurrText.Style + [fsBold]
   else
-    CustomInputQuery('Enter a new name for the note', 'New Name:', s);
+    // Remove the bold style from the current style.
+    CurrText.Style := CurrText.Style - [fsBold];
+end;
 
-  if ((s <> '') and (s <> tabName)) then
+procedure TNotesForm.btnItalicClick(Sender: TObject);
+begin
+  if btnItalic.Down then
+    // Add the italic style to the current style.
+    CurrText.Style := CurrText.Style + [fsItalic]
+  else
+    // Remove the italic style from the current style.
+    CurrText.Style := CurrText.Style - [fsItalic];
+end;
+
+procedure TNotesForm.btnUnderlineClick(Sender: TObject);
+begin
+  if btnUnderline.Down then
+    // Add the underline style to the current style.
+    CurrText.Style := CurrText.Style + [fsUnderline]
+  else
+    // Remove the underline style from the current style.
+    CurrText.Style := CurrText.Style - [fsUnderline];
+end;
+
+procedure TNotesForm.btnAlignLeftClick(Sender: TObject);
+begin
+  reNotes.Paragraph.Alignment := JvRichEdit.paLeftJustify;
+end;
+
+procedure TNotesForm.btnAlignCenterClick(Sender: TObject);
+begin
+  reNotes.Paragraph.Alignment := JvRichEdit.paCenter;
+end;
+
+procedure TNotesForm.btnAlignRightClick(Sender: TObject);
+begin
+  reNotes.Paragraph.Alignment := JvRichEdit.paRightJustify;
+end;
+
+procedure TNotesForm.btnAlignJustifyClick(Sender: TObject);
+begin
+  reNotes.Paragraph.Alignment := JvRichEdit.paJustify;
+end;
+
+procedure TNotesForm.btnListNumberClick(Sender: TObject);
+begin
+  with reNotes.Paragraph do
+    if btnListNumber.Down then
+    begin
+      // Set the list style to use a period after the numbers.
+      NumberingStyle := JvRichEdit.nsPeriod;
+      // Set the number style list to start at 1.
+      NumberingStart := 1;
+      // Add a numeric style list to the paragraph.
+      Numbering := JvRichEdit.nsArabicNumbers;
+    end
+    else
+      // Remove the numeric style list from the paragraph.
+      Numbering := JvRichEdit.nsNone;
+end;
+
+procedure TNotesForm.btnListBulletClick(Sender: TObject);
+begin
+  with reNotes.Paragraph do
+    if btnListBullet.Down then
+      // Add a bullet style list to the paragraph.
+      Numbering := JvRichEdit.nsBullet
+    else
+      // Remove the bullet style list from the paragraph.
+      Numbering := JvRichEdit.nsNone;
+end;
+
+procedure TNotesForm.btnIndentDecreaseClick(Sender: TObject);
+begin
+  with reNotes.Paragraph do
+    // Only decrement the indentation if it was incremented previously.
+    if FirstIndent > 0 then
+      // Decrement the indentation by 5 every time the user clicks the button.
+      FirstIndent := FirstIndent - IndentationSize;
+end;
+
+procedure TNotesForm.btnIndentIncreaseClick(Sender: TObject);
+begin
+  with reNotes.Paragraph do
+    // Increment the indentation by 5 every time the user clicks the button.
+    FirstIndent := FirstIndent + IndentationSize;
+end;
+
+procedure TNotesForm.btnClearFilterClick(Sender: TObject);
+begin
+  editFilter.Text := '';
+end;
+
+procedure TNotesForm.FilterChange(Sender: TObject);
+var
+  i: Integer;
+begin
+  // If the filter is empty then set all tabs to visible.
+  if editFilter.Text = '' then
   begin
-    // Remove invalid chars
-    s := trim(StrRemoveChars(s, ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']));
-
-    // Check if already exists
-    sDir := GetNotesDir;
-    if FileExists(sDir + s + NOTES_EXTENSION) then
+    for i := 0 to Pred(pcNotes.TabCount) do
     begin
-      MessageBox(Self.Handle, 'Another note with the same name already exists',
-        'Name Invalid', MB_OK);
-      bValid := False;
+      pcNotes.TabItems.Item[i].Visible := True;
     end;
+    Exit;
+  end;
 
-    // All ok?
-    if bValid then
+  // Loop over the popup menu items to see which on
+  // is checked and call the correct click event.
+  for i := 0 to Pred(pmFilter.Items.Count) do
+    if pmFilter.Items[i].Checked then
     begin
-      ForceDirectories(sDir);
-
-      if new then
-      begin
-        fhandle := FileCreate(sDir + s + NOTES_EXTENSION);
-        FileClose(fhandle);
-        SaveCurrentTab;
-        UpdateTabList(s);
-      end
-      else
-      begin
-        RenameFile(sDir + SelectedTab.Caption + NOTES_EXTENSION, sDir + s + NOTES_EXTENSION);
-        DeleteFile(sDir + SelectedTab.Caption + NOTES_EXTENSION);
-        pcNotes.TabItems.Item[pcNotes.TabIndex].Caption := s;
-        UpdateTabList(s);
+      case i of
+        0: miFilterNames.OnClick(Sender);
+        1: miFilterTags.OnClick(Sender);
+        2: miFilterText.OnClick(Sender);
+        3: miFilterNamesAndTags.OnClick(Sender);
+        4: miFilterNamesAndText.OnClick(Sender);
+        5: miFilterTagsAndText.OnClick(Sender);
       end;
+      Break;
     end;
+
+  // Cut out early as there is no selected tab.
+  if FIndex = -1 then
+    Exit;
+    
+  if not pcNotes.TabItems.Item[FIndex].Visible then
+  begin
+    // The tab is not longer visible so set the index to -1.
+    pcNotes.TabIndex := -1;
+    // Clear the notes and don't allow input.
+    reNotes.Clear;
+    reNotes.ReadOnly := True;
   end;
 end;
 
-procedure TNotesForm.tb_closeClick(Sender: TObject);
-begin
-  Close;
-end;
+{$ENDREGION 'Toolbar Events'}
+
+{$REGION 'Form Events'}
 
 procedure TNotesForm.FormClose(Sender: TObject; var Action: TCloseAction);
+var
+  i: Integer;
 begin
-  SaveCurrentTab;
-  TMainForm(Owner).sLineWrap := btn_LineWrap.Down;
-  TMainForm(Owner).sMonoFont := btn_monofont.Down;
-  if SelectedTab <> nil then
-    TMainForm(Owner).sLastTab := SelectedTab.Caption
-  else
-    TMainForm(Owner).sLastTab := '';
-  TMainForm(Owner).sLastTextPos.Y := Notes.CurrentLine;
+  // Only save the tab if there is one.
+  if FIndex > -1 then
+    reNotes.Lines.SaveToFile(TabFilePath(FIndex));
+
+  Settings.Left := Self.Left;
+  Settings.Top := Self.Top;
+  Settings.Width := Self.Width;
+  Settings.Height := Self.Height;
+  Settings.WordWrap := reNotes.WordWrap;
+  Settings.Filter := editFilter.Text;
+
+  for i := 0 to Pred(pmFilter.Items.Count) do
+  begin
+    if pmFilter.Items.Items[i].Checked then
+    begin
+      Settings.FilterIndex := i;
+      Break;
+    end;
+  end;
+
+  if FIndex > -1 then
+    Settings.LastTab := pcNotes.TabItems.Item[FIndex].Caption;
+
   TMainForm(Owner).SaveSettings;
 end;
 
@@ -457,205 +701,504 @@ begin
   SetVistaFonts(Self);
 end;
 
-procedure TNotesForm.FormShow(Sender: TObject);
-begin
-  UpdateTabList(TMainForm(Owner).sLastTab);
-end;
-
-procedure TNotesForm.tb_copyClick(Sender: TObject);
-begin
-  Notes.CopyToClipboard;
-end;
-
-procedure TNotesForm.tb_pasteClick(Sender: TObject);
-begin
-  Notes.PasteFromClipboard;
-end;
-
-procedure TNotesForm.btn_selectallClick(Sender: TObject);
-begin
-  Notes.SelectAll;
-end;
-
-procedure TNotesForm.tb_cutClick(Sender: TObject);
-begin
-  Notes.CutToClipboard;
-end;
-
-procedure TNotesForm.tb_exportClick(Sender: TObject);
-var
-  Ext: string;
-begin
-  Try
-  if FAlwaysOnTop then
-    Self.FormStyle := fsNormal;
-
-  if ExportDialog.Execute then
-  begin
-    case ExportDialog.FilterIndex of
-      1: Ext := '.txt';
-    else
-      Ext := '';
-    end;
-    Notes.Lines.SaveToFile(ExportDialog.FileName + Ext);
-  end;
-  Finally
-    if FAlwaysOnTop then
-      Self.FormStyle := fsStayOnTop;
-  End;
-end;
-
-procedure TNotesForm.tb_importClick(Sender: TObject);
-begin
-  try
-  if FAlwaysOnTop then
-    Self.FormStyle := fsNormal;
-
-  if ImportDialog.Execute then
-  begin
-    Notes.Lines.LoadFromFile(ImportDialog.FileName);
-  end;
-  finally
-    if FAlwaysOnTop then
-    Self.FormStyle := fsStayOnTop;
-
-    SaveCurrentTab;
-  end;
-end;
-
-procedure TNotesForm.btn_findClick(Sender: TObject);
-begin
-  FindDialog.Find;
-end;
-
-procedure TNotesForm.btn_linewrapClick(Sender: TObject);
-begin
-  Notes.WordWrap := btn_linewrap.Down;
-  if not Notes.WordWrap then
-    Notes.ScrollBars := ssBoth
-  else
-    Notes.ScrollBars := ssVertical;
-end;
-
-procedure TNotesForm.btn_monofontClick(Sender: TObject);
-begin
-  if btn_monofont.Down then
-    Notes.Font.Name := 'Courier New'
-  else
-    Notes.Font.Name := 'Tahoma';
-
-  NotesChange(Sender);	
-end;
-
-procedure TNotesForm.NotesKeyUp(Sender: TObject; var Key: Word;
+procedure TNotesForm.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
-begin
-  if (Key = ord('F')) and (Shift = [ssCtrl]) then
-    btn_find.OnClick(btn_find)
-  else if (Key = ord('A')) and (Shift = [ssCtrl]) then
-    btn_selectall.OnClick(btn_selectall)
-  else if (Key = VK_ESCAPE) then
-    Close;     
-
-  SaveCurrentTab;
-end;
-
-procedure TNotesForm.NewNote;
-begin
-  ShowTabDialog;
-end;
-
-procedure TNotesForm.NotesChange(Sender: TObject);
 var
-  i : Integer;
-  scrollStyle : Integer;
-  lineWidth : Integer;
-  linesHeight : Integer;
-  notesHeight : Integer;
-  notesWidth : Integer;
-  vscrollWidth : Integer;
-  hscrollHeight : Integer;
+  Handled: Boolean;
+  changed: Boolean;
+  i: Integer;
 begin
-  font.Name:=Notes.font.name;
-  font.Size:=Notes.font.size;
-  font.Style:=Notes.font.style;
-
-  // Start off by setting the scrollbars to not be visible.
-  scrollStyle := Integer(ssNone);
-
-  hscrollHeight	:= 0;
-  vscrollWidth := 0;
-  lineWidth := 0;
-
-  // Calculate the total height of all lines by multiplying
-  // the line count by the height of
-  linesHeight := Notes.Lines.Count * canvas.TextHeight('Mg');
-
-  notesHeight := Notes.Height;
-  notesWidth := Notes.Width;
-
-  // Check Height
-  if linesHeight > notesHeight then
+  if ssCtrl in Shift then
   begin
-    // If the height of the lines greater than the height of the
-    // notes window set the scroll width for when we calculate things below.
-    vscrollWidth := 20;
+    Handled := False;
+    
+    case Key of
+      VK_TAB:
+      begin
+        Handled := True;
+        changed := False;
+        // Only go to the next tab if there is one
+        if pcNotes.TabCount > 0 then
+        begin
+          if ssShift in Shift then
+          begin
+            // Loop over each item from the before tab index
+            // down to 0 looking for a visible tab.
+            for i := Pred(FIndex) downto 0 do
+              if pcNotes.TabItems.Item[i].Visible then
+              begin
+                pcNotes.TabIndex := i;
+                changed := True;
+                Break;
+              end;
+
+            // If we weren't able to find a visible tab going
+            // from the before tab index down to 0 then start
+            // from the tab list count and go to the after tab index.
+            if not changed then
+              for i := Pred(pcNotes.TabCount) downto Succ(FIndex) do
+                if pcNotes.TabItems.Item[i].Visible then
+                begin
+                  pcNotes.TabIndex := i;
+                  Break;
+                end;
+          end
+          else
+          begin
+            // Loop over each item from the after tab index to
+            // the tab list count looking for a visible tab.
+            for i := Succ(FIndex) to Pred(pcNotes.TabItems.Count) do
+              if pcNotes.TabItems.Item[i].Visible then
+              begin
+                pcNotes.TabIndex := i;
+                changed := True;
+                Break;
+              end;
+
+            // If we weren't able to find a visible tab going
+            // from the after tab index to the tab list count
+            // then start from 0 and go to the before tab index.
+            if not changed then
+              for i := 0 to Pred(FIndex) do
+                if pcNotes.TabItems.Item[i].Visible then
+                begin
+                  pcNotes.TabIndex := i;
+                  Break;
+                end;
+          end;
+        end;
+      end;
+    end;
+
+    // We handled the key combination so set the key
+    // to 0 to prevent further processing.
+    if Handled then
+      Key := 0;
   end;
+end;
+
+procedure TNotesForm.FormResize(Sender: TObject);
+begin
+  reNotes.Refresh;
+end;
+
+procedure TNotesForm.FormShow(Sender: TObject);
+var
+  filePaths: TStringList;
+  filePath: string;
+  fileName: string;
+  i: Integer;
+  tabSettings: NotesTabSettings;
+begin
+  FIndex := -1;
+
+  // Convert the txt files in the old notes dir
+  // to rtf files in the notes dir for this instance.
+  ConvertTxtFilesToRtfFiles;
+
+  pcNotes.TabList.Clear;
+
+  // Make the richedit readonly in case there is no tabs.
+  reNotes.ReadOnly := True;
+
+  filePaths := TStringList.Create;
+  try
+    // Get a list of rtf files from the app folder.
+    FindFiles(filePaths, NotesDir, '*.rtf');
+    
+    for filePath in filePaths do
+    begin
+      // Get the file name from the file path.
+      fileName := ExtractFileName(filePath);
+      // Strip off the extension to get the base file name.
+      SetLength(fileName, Length(fileName) - 4);
+      // Add a tab with the base file name.
+      i := AddTab(fileName);
+
+      tabSettings := GetTabSettings(TabName(i));
+      
+      pcNotes.TabItems.Item[i].ImageIndex := tabSettings.IconIndex;
+
+      // If we come across the last tab then change to it.
+      if TabName(i) = Settings.LastTab then
+      begin
+        pcNotes.TabIndex := i;
+        reNotes.SelStart := tabSettings.SelStart;
+        reNotes.SelLength := tabSettings.SelLength;
+      end;
+    end;
+  finally
+    filePaths.Free;
+  end;
+
+  // If there is a filter then reapply it.
+  if editFilter.Text <> '' then
+    FilterChange(Sender);
+end;
+
+{$ENDREGION 'Form Events'}
+
+{$REGION 'Context Menu Events'}
+
+procedure TNotesForm.pmNotesPopup(Sender: TObject);
+begin
+  // Enable / Disable the context menu items before it is displayed.
+  miUndo.Enabled := reNotes.CanUndo;
+  miRedo.Enabled := reNotes.CanRedo;
+  miCut.Enabled := reNotes.SelText <> '';
+  miCopy.Enabled := reNotes.SelText <> '';
+  miPaste.Enabled := reNotes.CanPaste;
+  miDelete.Enabled := reNotes.SelText <> '';
+  miWordWrap.Checked := reNotes.WordWrap;
+end;
+
+procedure TNotesForm.miUndoClick(Sender: TObject);
+begin
+  reNotes.Undo;
+end;
+
+procedure TNotesForm.miRedoClick(Sender: TObject);
+begin
+  reNotes.Redo;
+end;
+
+procedure TNotesForm.miCutClick(Sender: TObject);
+begin
+  reNotes.CutToClipboard;
+end;
+
+procedure TNotesForm.miCopyClick(Sender: TObject);
+begin
+  reNotes.CopyToClipboard;
+end;
+
+procedure TNotesForm.miPasteClick(Sender: TObject);
+begin
+  reNotes.PasteFromClipboard;
+end;
+
+procedure TNotesForm.miDeleteClick(Sender: TObject);
+begin
+  reNotes.SelText := '';
+end;
+
+procedure TNotesForm.miSelectAllClick(Sender: TObject);
+begin
+  reNotes.SelectAll;
+end;
+
+procedure TNotesForm.miWordWrapClick(Sender: TObject);
+begin
+  reNotes.WordWrap := miWordWrap.Checked;
+end;
+
+{$ENDREGION 'Context Menu Events'}
+
+{$REGION 'Filter Dropdown Menu Events'}
+
+procedure TNotesForm.miFilterNamesClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  if editFilter.Text = '' then Exit;
+
+  // Loop over the tabs and see if it's Name contains the filter.
+  for i := 0 to Pred(pcNotes.TabCount) do
+    pcNotes.TabItems.Item[i].Visible := TabNameContainsFilterText(i);
+end;
+
+procedure TNotesForm.miFilterTagsClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  if editFilter.Text = '' then Exit;
+
+  // Loop over the tabs and see if it's Tags contains the filter.
+  for i := 0 to Pred(pcNotes.TabCount) do
+    pcNotes.TabItems.Item[i].Visible := TabTagsContainsFilterText(i);
+end;
+
+procedure TNotesForm.miFilterTextClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  if editFilter.Text = '' then Exit;
   
-  // Check width
-  for i:=0 to Notes.Lines.Count-1 do
-  begin
-    if canvas.TextWidth(Notes.Lines[i]) > lineWidth then
-    begin
-      // Keep track of only the longest line width as we use it
-      // when we calculate things below.
-      lineWidth := canvas.TextWidth(Notes.Lines[i]);
-    end;
-
-    if lineWidth > notesWidth then
-    begin
-      // If we find a line wider than the width of the window set
-      // the scroll height for when we calculate things below and
-      // break out of the loop.
-      hscrollHeight	:= 20;
-      break;
-    end;
-  end;
-
-  if linesHeight > notesHeight - hscrollHeight then
-  begin
-    // The height of the lines is greater than the notes window height
-    // less the horizontal scrollbar height if visible so indicate
-    // that we want the vertical scrollbar visible.
-    scrollStyle := scrollStyle + Integer(ssVertical);
-  end;
-
-  if lineWidth > notesWidth - vscrollWidth then
-  begin
-    // The max line width is greater than the notes window width
-    // less the vertical scrollbar width if visible so indicate
-    // that we want the horizontal scrollbar visible.
-    scrollStyle	:= scrollStyle + Integer(ssHorizontal);
-  end;
-
-  // ssNone = 0, ssHorizontal = 1, ssVertical = 2, ssBoth = 3
-  Notes.ScrollBars := TScrollStyle(scrollStyle);
+  // Loop over the tabs and see if it's Text contains the filter.
+  for i := 0 to Pred(pcNotes.TabCount) do
+    pcNotes.TabItems.Item[i].Visible := TabTextContainsFilterText(i);
 end;
 
-procedure TNotesForm.NotesKeyPress(Sender: TObject; var Key: Char);
+procedure TNotesForm.miFilterNamesAndTagsClick(Sender: TObject);
 var
-  KS: TKeyboardState;
-  Shift: TShiftState;
+  i: Integer;
 begin
-  if (Key = 'F') or (Key = 'A')
-    or (ord(Key) = 1) or (ord(Key) = 6) then
+  if editFilter.Text = '' then Exit;
+
+  // Loop over the tabs and see if it's Name or Tags contains the filter.
+  for i := 0 to Pred(pcNotes.TabCount) do
+    pcNotes.TabItems.Item[i].Visible := (TabNameContainsFilterText(i) or TabTagsContainsFilterText(i));
+end;
+
+procedure TNotesForm.miFilterNamesAndTextClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  if editFilter.Text = '' then Exit;
+
+  // Loop over the tabs and see if it's Name or Text contains the filter.
+  for i := 0 to Pred(pcNotes.TabCount) do
+    pcNotes.TabItems.Item[i].Visible := (TabNameContainsFilterText(i) or TabTextContainsFilterText(i));
+end;
+
+procedure TNotesForm.miFilterTagsAndTextClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  if editFilter.Text = '' then Exit;
+
+  // Loop over the tabs and see if it's Tags or Text contains the filter.
+  for i := 0 to Pred(pcNotes.TabCount) do
   begin
-    GetKeyboardState(KS);
-    Shift := KeyboardStateToShiftState(KS);
-    if (Shift = [ssCtrl]) then
-      Key := #0;
+    pcNotes.TabItems.Item[i].Visible := (TabTagsContainsFilterText(i) or TabTextContainsFilterText(i));    
   end;
 end;
+
+{$ENDREGION 'Filter Dropdown Menu Events'}
+
+{$REGION 'Page Control Events'}
+
+procedure TNotesForm.pcNotesBtnClick(ASender: TObject;
+  const ABtnIndex: Integer);
+begin
+  case ABtnIndex of
+    0: { Add Tab } ShowTabOptions(True, '');
+    1: { Delete Tab } if FIndex > -1 then DeleteTab;
+    2: { Edit Tab } if FIndex > -1 then ShowTabOptions(False, TabName(FIndex));
+  end;
+end;
+
+procedure TNotesForm.pcNotesTabChange(ASender: TObject;
+  const ATabIndex: Integer; var AChange: Boolean);
+var
+  tabSettings : NotesTabSettings;
+begin
+  if ATabIndex > -1 then
+    // Allow input seeing how we have a tab.
+    reNotes.ReadOnly := False;
+  
+  if FIndex <> ATabIndex then
+  begin
+    if FIndex > -1 then
+    begin
+      // Save the previous tab if there was one.
+      reNotes.Lines.SaveToFile(TabFilePath(FIndex));
+
+      tabSettings := GetTabSettings(TabName(FIndex));
+      tabSettings.SelStart := reNotes.SelStart;
+      tabSettings.SelLength := reNotes.SelLength;
+    end;
+
+    if ATabIndex > -1 then
+    begin
+      // Load the new tab.
+      reNotes.Lines.LoadFromFile(TabFilePath(ATabIndex));
+
+      tabSettings := GetTabSettings(TabName(ATabIndex));
+      reNotes.SelStart := tabSettings.SelStart;
+      reNotes.SelLength := tabSettings.SelLength;
+    end;
+
+    // Store the new tab index.
+    FIndex := ATabIndex;
+  end;
+end;
+
+{$ENDREGION 'Page Control Events'}
+
+{$REGION 'Helper Methods'}
+
+function TNotesForm.NotesDir;
+var
+  dir: string;
+begin
+  dir := SharpApi.GetSharpeUserSettingsPath + 'Notes\' +
+    IntToStr(TMainForm(Owner).mInterface.BarInterface.BarID) + '\' +
+    IntToStr(TMainForm(Owner).mInterface.ID) + '\';
+  ForceDirectories(dir);
+  Result := dir;
+end;
+
+function TNotesForm.OldNotesDir;
+begin
+  Result := SharpApi.GetSharpeUserSettingsPath + 'Notes\';
+end;
+
+function TNotesForm.GetSettings;
+begin
+  Result := TMainForm(Owner).Settings;
+end;
+
+procedure TNotesForm.ConvertTxtFilesToRtfFiles;
+var
+  filePaths: TStringList;
+  filePath: string;
+  fileName: string;
+begin
+  filePaths := TStringList.Create;
+  try
+    // Get a list of txt files from the app folder.
+    FindFiles(filePaths, OldNotesDir, '*.txt', False);
+
+    for filepath in filePaths do
+    begin
+      // Convert any *.txt files to *.rtf
+      with TJvRichEdit.Create(nil) do
+      try
+        Parent := Self;
+        Visible := False;
+        // Load the text file to be converted.
+        Lines.LoadFromFile(filePath);
+        // Get the file name from the file path.
+        filename := ExtractFileName(filePath);
+        // Strip off the extension to get the base file name.
+        SetLength(filename, Length(filename) - 4);
+        // Save the text file as an rtf.
+        Lines.SaveToFile(TabFilePath(filename));
+        // Delete the text file now that it is converted.
+        DeleteFile(filePath);
+      finally
+        Free;
+      end;
+    end;
+  finally
+    filePaths.Free;
+  end;
+end;
+
+function TNotesForm.GetTabSettings(Name: string) : NotesTabSettings;
+begin
+  // If the tab does not exist in the settings then add a new one.
+  if Settings.Tabs.IndexOf(Name) = -1 then
+    Settings.Tabs.AddObject(Name, NotesTabSettings.Create(Name));
+
+  Result := NotesTabSettings(Settings.Tabs.Objects[Settings.Tabs.IndexOf(Name)]);
+end;
+
+procedure TNotesForm.DeleteTabSettings(Name: string);
+begin
+  // Free the tab settings object before we delete the tab from the list.
+  Settings.Tabs.Objects[Settings.Tabs.IndexOf(Name)].Free;
+  Settings.Tabs.Delete(Settings.Tabs.IndexOf(Name));
+end;
+
+function TNotesForm.AddTab(Name: string) : Integer;
+var
+  i: Integer;
+  tab: TTabItem;
+begin
+  Result := -1;
+
+  if Name = '' then Exit;
+
+  // TODO: Add TabExists method to the page control.
+  for i := 0 to Pred(pcNotes.TabCount) do
+  begin
+    if TabName(i) = Name then Exit;
+  end;
+
+  tab := pcNotes.TabList.Add;
+  tab.Caption := Name;
+  tab.ImageIndex := DefaultIconIndex;
+
+  Result := tab.Index;
+end;
+
+procedure TNotesForm.DeleteTab;
+var
+  empty : Boolean;
+begin
+  // If there are no tabs then there is nothing to delete.
+  if pcNotes.TabCount = 0 then Exit;
+
+  empty := False;
+  if (reNotes.Lines.Count = 0) or
+    ((reNotes.Lines.Count = 1) and (length(Trim(reNotes.Lines[0])) = 0)) then
+    empty := True;
+
+  if not empty then
+    if MessageBox(self.Handle,
+      PChar('The tab you are about to close is not empty!' + #10#13 +
+      'All information will be lost. Close it anyway?'),
+      'Closing Tab...', MB_YESNO) = IDYES then
+      empty := True;
+
+  if empty then
+  begin
+    if FileExists(TabFilePath(FIndex)) then
+      DeleteFile(TabFilePath(FIndex));
+
+    // Delete the tab from the settings list.
+    DeleteTabSettings(TabName(FIndex));
+
+    // Remove the current tab from the list.
+    pcNotes.TabList.Delete(pcNotes.TabItems.Item[FIndex]);
+    // Clear the notes as well.
+    reNotes.Lines.Clear;
+     // Only allow input when there is a tab.
+    reNotes.ReadOnly := True;
+
+    // Set the saved index to -1 so that when we change tabs
+    // we won't try and save the tab that was deleted.
+    FIndex := -1;
+    pcNotes.TabIndex := -1;
+  end;
+end;
+
+function TNotesForm.TabName(Index: Integer) : string;
+begin
+  Result := pcNotes.TabItems.Item[Index].Caption;
+end;
+
+function TNotesForm.TabFilePath(Index: Integer) : string;
+begin
+  Result := NotesDir + TabName(Index) + '.rtf';
+end;
+
+function TNotesForm.TabFilePath(Name: string) : string;
+begin
+  Result := NotesDir + Name + '.rtf';
+end;
+
+function TNotesForm.TabNameContainsFilterText(Index: Integer) : Boolean;
+begin
+  // Check if the tab index contains the text in the filter.
+  Result := AnsiContainsText(pcNotes.TabItems.Item[Index].Caption, editFilter.Text);
+end;
+
+function TNotesForm.TabTagsContainsFilterText(Index: Integer) : Boolean;
+var
+  tabSettings: NotesTabSettings;
+begin
+  tabSettings := GetTabSettings(TabName(Index));
+  // Check if the tab tags contains the text in the filter.
+  Result := AnsiContainsText(tabSettings.Tags, editFilter.Text);
+end;
+
+function TNotesForm.TabTextContainsFilterText(Index: Integer) : Boolean;
+begin
+  // Check if the tab text contains the text in the filter.
+  with TJvRichEdit.Create(nil) do
+  try
+    Parent := Self;
+    Visible := False;
+    Lines.LoadFromFile(TabFilePath(Index));
+    Result := AnsiContainsText(Lines.Text, editFilter.Text);
+  finally
+    Free;
+  end;
+end;
+
+{$ENDREGION 'Helper Methods'}
 
 end.
-

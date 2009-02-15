@@ -31,7 +31,7 @@ uses
   Windows, Messages, SysUtils, Classes, Controls, Forms, Types,
   StdCtrls, GR32, GR32_PNG, SharpEButton,
   JclSimpleXML, SharpApi, Menus, Math, NotesWnd,
-  SharpEBaseControls,uISharpBarModule;
+  SharpEBaseControls,uISharpBarModule, uNotesSettings;
 
 
 type
@@ -44,21 +44,12 @@ type
     procedure ButtonDblClick(Sender: TObject);
   protected
   private
-    sCaption     : Boolean;
-    sIcon        : Boolean;
-    sAlwaysOnTop : Boolean;
-    sLeft        : integer;
-    sTop         : integer;
-    sWidth       : integer;
-    sHeight      : integer;
+    FSettings: NotesSettings;
+    FReload: Boolean;
     procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
     procedure LoadIcon;
   public
-    sLineWrap    : Boolean;
-    sMonoFont    : Boolean;
-    sLastTab     : String;
-    sLastTextPos : TPoint;
-    NotesForm    : TNotesForm;
+    NotesForm : TNotesForm;
     mInterface : ISharpBarModule;
     procedure ReAlignComponents;
     procedure UpdateComponentSkins;
@@ -66,8 +57,8 @@ type
     procedure LoadSettings;
     procedure SaveSettings;
     procedure UpdateBangs;
+    property Settings: NotesSettings read FSettings write FSettings;
   end;
-
 
 implementation
 
@@ -121,31 +112,35 @@ end;
 procedure TMainForm.SaveSettings;
 var
   XML : TJclSimpleXML;
+  i: Integer;
 begin
-  if NotesForm <> nil then
-  begin
-    sLeft := NotesForm.Left;
-    sTop  := NotesForm.Top;
-    sWidth := NotesForm.Width;
-    sHeight := NotesForm.Height;
-  end;
-
   XML := TJclSimpleXML.Create;
   XML.Root.Name := 'NotesModuleSettings';
   with xml.Root.Items do
   begin
-    Add('Caption',sCaption);
-    Add('Icon',sIcon);
-    Add('AlwaysOnTop',sAlwaysOnTop);
-    Add('Left',sLeft);
-    Add('Top',sTop);
-    Add('Height',sHeight);
-    Add('Width',sWidth);
-    Add('LineWrap',sLineWrap);
-    Add('MonoFont',sMonoFont);
-    Add('LastTab',sLastTab);
-    Add('LastTextXPos',sLastTextPos.X);
-    Add('LastTextYPos',sLastTextPos.Y);
+    Add('Name', Button.Caption);
+    Add('Caption', Settings.ShowCaption);
+    Add('Icon', Settings.ShowIcon);
+    Add('AlwaysOnTop', Settings.AlwaysOnTop);
+    Add('Left', Settings.Left);
+    Add('Top', Settings.Top);
+    Add('Height', Settings.Height);
+    Add('Width', Settings.Width);
+    Add('LineWrap', Settings.WordWrap);
+    Add('Filter', Settings.Filter);
+    Add('FilterIndex', Settings.FilterIndex);
+    Add('LastTab', Settings.LastTab);
+
+    with Add('Tabs').Items do
+      for i := 0 to Pred(Settings.Tabs.Count) do
+        with Add('Tab').Items do
+        begin
+          Add('Name', NotesTabSettings(Settings.Tabs.Objects[i]).Name);
+          Add('Tags', NotesTabSettings(Settings.Tabs.Objects[i]).Tags);
+          Add('IconIndex', NotesTabSettings(Settings.Tabs.Objects[i]).IconIndex);
+          Add('SelStart', NotesTabSettings(Settings.Tabs.Objects[i]).SelStart);
+          Add('SelLength', NotesTabSettings(Settings.Tabs.Objects[i]).SelLength);
+        end;
   end;
   XML.SaveToFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
   XML.Free;
@@ -156,21 +151,15 @@ var
   XML : TJclSimpleXML;
   fileloaded : boolean;
   Mon : TMonitor;
+  i: Integer;
+  tabSettings: NotesTabSettings;
 begin
   UpdateBangs;
 
-  sCaption     := True;
-  sIcon        := True;
-  sAlwaysOnTop := True;
-  sLineWrap    := True;
-  sMonoFont    := False;
-  sLastTextPos := Point(0,0);
-
   Mon := screen.MonitorFromWindow(Handle);
-  sWidth  := 512;
-  sHeight := 300;
-  sLeft   := Mon.Left + Mon.Width div 2 - sWidth div 2;
-  sTop    := Mon.Top + Mon.Height div 2 - sHeight div 2;
+
+  Settings.Left := Mon.Left + Mon.Width div 2 - Settings.Width div 2;
+  Settings.Top := Mon.Top + Mon.Height div 2 - Settings.Height div 2;
 
   XML := TJclSimpleXML.Create;
   try
@@ -182,22 +171,45 @@ begin
   if fileloaded then
     with xml.Root.Items do
     begin
-      sCaption     := BoolValue('Caption',True);
-      sIcon        := BoolValue('Icon',True);
-      sAlwaysOnTop := BoolValue('AlwaysOnTop',True);
-      sLeft        := IntValue('Left',sLeft);
-      sTop         := IntValue('Top',sTop);
-      sHeight      := Max(64,IntValue('Height',sHeight));
-      sWidth       := Max(64,IntValue('Width',sWidth));
-      sLineWrap    := BoolValue('LineWrap',False);
-      sMonoFont    := BoolValue('MonoFont',False);
-      sLastTab     := Value('LastTab','');
-      sLastTextPos.X := IntValue('LastTextXPos',0);
-      sLastTextPos.Y := IntValue('LastTextYPos',0);
+      Self.Caption := Value('Name', 'Notes');
+      
+      if Self.Caption = '' then
+        Self.Caption := 'Notes';
+
+      NotesForm.Caption := Self.Caption;
+      Settings.ShowCaption := BoolValue('Caption', Settings.ShowCaption);
+      Settings.ShowIcon := BoolValue('Icon', Settings.ShowIcon);
+      Settings.AlwaysOnTop := BoolValue('AlwaysOnTop', Settings.AlwaysOnTop);
+
+      if not FReload then
+      begin
+        // Indicate that we don't want to reload these these.
+        FReload := True;
+
+        Settings.Left := IntValue('Left', Settings.Left);
+        Settings.Top := IntValue('Top', Settings.Top);
+        Settings.Height := Max(64,IntValue('Height', Settings.Height));
+        Settings.Width := Max(64,IntValue('Width', Settings.Width));
+        Settings.WordWrap := BoolValue('LineWrap', Settings.WordWrap);
+        Settings.Filter := Value('Filter', Settings.Filter);
+        Settings.FilterIndex := IntValue('FilterIndex', Settings.FilterIndex);
+        Settings.LastTab := Value('LastTab', Settings.LastTab);
+
+        if ItemNamed['Tabs'] <> nil then
+          with ItemNamed['Tabs'].Items do
+            for i := 0 to Pred(Count) do
+            begin
+              tabSettings := NotesTabSettings.Create(Item[i].Items.Value('Name', 'Unknown' + IntToStr(i)));
+              tabSettings.Tags := Item[i].Items.Value('Tags', '');
+              tabSettings.IconIndex := Item[i].Items.IntValue('IconIndex', DefaultIconIndex);
+              tabSettings.SelStart := Item[i].Items.IntValue('SelStart', 0);
+              tabSettings.SelLength := Item[i].Items.IntValue('SelLength', 0);
+              Settings.Tabs.AddObject(tabSettings.Name, tabSettings);
+            end;
+      end;
     end;
   XML.Free;
 end;
-
 
 procedure TMainForm.UpdateSize;
 begin
@@ -210,15 +222,15 @@ var
 begin
   Button.Left := 2;
   newWidth := 20;
-  if (sIcon) and (Button.Glyph32 <> nil) then
+  if (Settings.ShowIcon) and (Button.Glyph32 <> nil) then
   begin
     LoadIcon;
     newWidth := newWidth + Button.GetIconWidth;
   end else Button.Glyph32.SetSize(0,0);
 
-  if (sCaption) then
+  if (Settings.ShowCaption) then
   begin
-    Button.Caption := 'Notes';
+    Button.Caption := Self.Caption;
     newWidth := newWidth + Button.GetTextWidth;
   end else Button.Caption := '';
 
@@ -228,7 +240,6 @@ begin
     mInterface.BarInterface.UpdateModuleSize
   else UpdateSize;
 end;
-
 
 function PointInRect(P : TPoint; Rect : TRect) : boolean;
 begin
@@ -244,41 +255,41 @@ var
   Mon : TMonitor;
 begin
   if NotesForm = nil then NotesForm := TNotesForm.Create(self);
-  NotesForm.AlwaysOnTop := sAlwaysOnTop;
 
   if NotesForm.Visible then
   begin
     NotesForm.Close;
-    exit;
+    Exit;
   end;
-
+  
   // check if the window is in any visible monitor
   b := False;
   for n := 0 to Screen.MonitorCount-1 do
-      if ((PointInRect(Point(sLeft,sTop),Screen.Monitors[n].BoundsRect))
-         and (PointInRecT(Point(sLeft+sWidth,sTop+sHeight), Screen.Monitors[n].BoundsRect))) then
-             b := True;
+    if ((PointInRect(Point(Settings.Left, Settings.Top), Screen.Monitors[n].BoundsRect)) and
+      (PointInRecT(Point(Settings.Left + Settings.Width, Settings.Top + Settings.Height), Screen.Monitors[n].BoundsRect))) then
+      b := True;
+
   if not b then
   begin
     Mon := screen.MonitorFromWindow(Handle);
-    sLeft   := Mon.Left + Mon.Width div 2 - sWidth div 2;
-    sTop    := Mon.Top + Mon.Height div 2 - sHeight div 2;
+    Settings.Left := Mon.Left + Mon.Width div 2 - Settings.Width div 2;
+    Settings.Top := Mon.Top + Mon.Height div 2 - Settings.Height div 2;
   end;
 
-  NotesForm.Left   := sLeft;
-  NotesForm.Top    := sTop;
-  NotesForm.Width  := sWidth;
-  NotesForm.Height := sHeight;
-  NotesForm.btn_linewrap.Down := sLineWrap;
-  NotesForm.btn_linewrap.OnClick(NotesForm.btn_linewrap);
-  NotesForm.btn_monofont.Down := sMonoFont;
-  NotesForm.btn_monofont.OnClick(NotesForm.btn_monofont);
+  NotesForm.Left := Settings.Left;
+  NotesForm.Top := Settings.Top;
+  NotesForm.Width := Settings.Width;
+  NotesForm.Height := Settings.Height;
+  NotesForm.reNotes.WordWrap := Settings.WordWrap;
+  NotesForm.editFilter.Text := Settings.Filter;
+  NotesForm.pmFilter.Items[Settings.FilterIndex].Checked := True;
+
   NotesForm.Show;
-  SendMessage(NotesForm.Notes.Handle, EM_SCROLLCARET, 0, 0);
-  if sAlwaysOnTop then NotesForm.FormStyle:= fsStayOnTop
-     else NotesForm.FormStyle := fsNormal;
-//  if sAlwaysOnTop then SetWindowPos(NotesForm.handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE)
-   //  else SetWindowPos(NotesForm.handle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
+
+  if Settings.AlwaysOnTop then
+    NotesForm.FormStyle:= fsStayOnTop
+  else
+    NotesForm.FormStyle := fsNormal;
 end;
 
 procedure TMainForm.ButtonDblClick(Sender: TObject);
@@ -288,13 +299,16 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  FReload := False;
   DoubleBuffered := True;
-  NotesForm := nil;
+  NotesForm := TNotesForm.Create(Self);
+  Settings := NotesSettings.Create;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   if NotesForm <> nil then FreeAndNil(NotesForm);
+  if Settings <> nil then Settings.Free;  
 end;
 
 procedure TMainForm.FormPaint(Sender: TObject);
