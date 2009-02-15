@@ -69,7 +69,7 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
 begin
   PluginHost := APluginHost;
-  SharpCenterApi.GetBarModuleIds(PluginHost.PluginId, barID, moduleID);
+  PluginHost.GetBarModuleIdFromPluginId(barID, moduleID);
   PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
 end;
 
@@ -79,15 +79,33 @@ begin
 
   with PluginHost.Xml.XmlRoot.Items, frmNotes do
   begin
-    // Clear the list so we don't get duplicates.
-    Clear;
+    // Don't clear the list because the Notes Module also
+    // saves tab information to this file.
 
-    Add('AlwaysOnTop', cbAlwaysOnTop.Checked);
-    Add('Caption', (rb_text.Checked or rb_icontext.Checked));
-    Add('Icon', (rb_icon.Checked or rb_icontext.Checked));
+    if ItemNamed['Name'] <> nil then
+      ItemNamed['Name'].Value := editName.Text
+    else
+      Add('Name', editName.Text);
+
+    if ItemNamed['AlwaysOnTop'] <> nil then
+      ItemNamed['AlwaysOnTop'].BoolValue := cbAlwaysOnTop.Checked
+    else
+      Add('AlwaysOnTop', cbAlwaysOnTop.Checked);
+
+    if ItemNamed['Caption'] <> nil then
+      ItemNamed['Caption'].BoolValue := (rb_text.Checked or rb_icontext.Checked)
+    else
+      Add('Caption', (rb_text.Checked or rb_icontext.Checked));
+
+    if ItemNamed['Icon'] <> nil then
+      ItemNamed['Icon'].BoolValue := (rb_icon.Checked or rb_icontext.Checked)
+    else
+      Add('Icon', (rb_icon.Checked or rb_icontext.Checked));
   end;
 
   PluginHost.Xml.Save;
+
+  BroadcastGlobalUpdateMessage(suModule, 0, True);
 end;
 
 procedure TSharpCenterPlugin.Load;
@@ -98,6 +116,11 @@ begin
   begin
     with PluginHost.Xml.XmlRoot.Items, frmNotes do
     begin
+      editName.Text := Value('Name', 'Notes');
+      
+      if editName.Text = '' then
+        editName.Text := 'Notes';
+
       cbAlwaysOnTop.Checked := BoolValue('AlwaysOnTop', True);
       ShowIcon := BoolValue('Icon', True);
       ShowCaption := BoolValue('Caption', True);

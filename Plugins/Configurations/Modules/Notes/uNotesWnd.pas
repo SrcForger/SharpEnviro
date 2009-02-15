@@ -52,10 +52,12 @@ type
     schWindowOptions: TSharpECenterHeader;
     schDisplayOptions: TSharpECenterHeader;
     cbAlwaysOnTop: TJvXPCheckbox;
+    editName: TLabeledEdit;
     procedure FormCreate(Sender: TObject);
     procedure cb_alwaysontopClick(Sender: TObject);
     procedure rb_textClick(Sender: TObject);
     procedure cbAlwaysOnTopClick(Sender: TObject);
+    procedure editNameChange(Sender: TObject);
   private
     FPluginHost: TInterfacedSharpCenterHostBase;
     procedure UpdateSettings;
@@ -79,6 +81,11 @@ begin
 end;
 
 procedure TfrmNotes.cb_alwaysontopClick(Sender: TObject);
+begin
+  UpdateSettings;
+end;
+
+procedure TfrmNotes.editNameChange(Sender: TObject);
 begin
   UpdateSettings;
 end;
