@@ -167,17 +167,16 @@ uses
 
 procedure TfrmEdit.btnBrowseClick(Sender: TObject);
 var
-  p : TPoint;
   btn: TButton;
 begin
   btn := TButton(Sender);
-  p := ClientToScreen(Point(btn.Left, btn.Top + btn.Height));
 
   if btn = btnBrowseTop then
-    mnuTags.PopupComponent := edtTopLabel else
+    mnuTags.PopupComponent := edtTopLabel
+  else
     mnuTags.PopupComponent := edtBottomLabel;
 
-  mnuTags.Popup(p.x,p.y);
+  mnuTags.Popup(Mouse.CursorPos.X,Mouse.CursorPos.Y);
 end;
 
 procedure TfrmEdit.PopulateLocations;
