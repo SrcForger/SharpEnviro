@@ -82,8 +82,8 @@ begin
   ScreenSizeAdjust    := True;
   GridX               := 8;
   GridY               := 8;
-  MenuFile            := 'menu.xml';
-  MenuFileShift       := 'quicklaunch.xml';
+  MenuFile            := 'Menu';
+  MenuFileShift       := 'QuickLaunch';
   XML := TJvSimpleXML.Create(nil);
   ReloadSettings;
 end;
@@ -132,7 +132,7 @@ begin
     Add('WallpaperWatch',WallpaperWatch);
     Add('ScreenRotAdjust',ScreenRotAdjust);
     Add('ScreenSizeAdjust',ScreenSizeAdjust);
-    Add('MenuFile',menufile);
+    Add('MenuFile',MenuFile);
     Add('MenuFileShift',MenuFileShift);
   end;
   with XML.Root.Items.ItemNamed['Grid'].Items do
@@ -177,8 +177,8 @@ begin
     WallpaperWatch      := BoolValue('WallpaperWatch',True);
     ScreenRotAdjust     := BoolValue('ScreenRotAdjust',True);
     ScreenSizeAdjust    := BoolValue('ScreenSizeAdjust',True);
-    MenuFile            := Value('MenuFile','menu.xml');
-    MenuFileShift       := Value('MenuFileShift','quicklaunch.xml');
+    MenuFile            := Value('MenuFile','Menu');
+    MenuFileShift       := Value('MenuFileShift','QuickLaunch');
   end;
   with XML.Root.Items.ItemNamed['Grid'].Items do
   begin
