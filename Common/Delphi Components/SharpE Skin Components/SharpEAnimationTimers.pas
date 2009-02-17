@@ -200,13 +200,13 @@ end;
 procedure Script_SetTextShadowColor(SP : TSkinPart; NewColor : String; Scheme : TSharpEScheme);
 begin
   SP.SkinText.ShadowColorString := NewColor;
-  SP.SkinText.ShadowColor := SchemedStringToColor(NewColor,Scheme);
+  SP.SkinText.ShadowColor := ParseColor(NewColor,Scheme);
 end;
 
 procedure Script_setColor(SP : TSkinPart; NewColor : String; Scheme : TSharpEScheme);
 begin
   SP.BlendColorString := NewColor;
-  SP.BlendColor := SchemedStringToColor(NewColor,Scheme);
+  SP.BlendColor := ParseColor(NewColor,Scheme);
 end;
 
 procedure Script_IncreaseTextShadowAlpha(SP : TSkinPart; Amount : integeR);
@@ -276,7 +276,7 @@ end;
 procedure Script_SetTextColor(SP : TSkinPart; NewColor : String; Scheme : TSharpEScheme);
 begin
   SP.SkinText.ColorString := NewColor;
-  SP.SkinText.Color := SchemedStringToColor(NewColor,Scheme);
+  SP.SkinText.Color := ParseColor(NewColor,Scheme);
 end;
 
 function Script_GetGradientFromAlpha(SP : TSkinPart) : integer;
@@ -345,15 +345,15 @@ var
   NewColor : integer;
   CurrentColor, FromColor, ToColor : integer;
 begin
-  FromColor := SchemedStringToColor(pFromColor, Scheme);
-  ToColor := SchemedStringToColor(pToColor, Scheme);
-  CurrentColor := SchemedStringToColor(SP.SkinText.ShadowColorString, Scheme);
+  FromColor := ParseColor(pFromColor, Scheme);
+  ToColor := ParseColor(pToColor, Scheme);
+  CurrentColor := ParseColor(SP.SkinText.ShadowColorString, Scheme);
   NewColor := StepBlendColor(FromColor,ToColor,CurrentColor,Step);
 
   if NewColor = ToColor then
   begin
     SP.SkinText.ShadowColorString := pToColor;
-    SP.SkinText.ShadowColor := SchemedStringToColor(pToColor, Scheme)
+    SP.SkinText.ShadowColor := ParseColor(pToColor, Scheme)
   end
   else
   begin
@@ -367,14 +367,14 @@ var
   NewColor : integer;
   CurrentColor, FromColor, ToColor : integer;
 begin
-  FromColor := SchemedStringToColor(pFromColor, Scheme);
-  ToColor := SchemedStringToColor(pToColor, Scheme);
-  CurrentColor := SchemedStringToColor(SP.SkinText.ColorString, Scheme);
+  FromColor := ParseColor(pFromColor, Scheme);
+  ToColor := ParseColor(pToColor, Scheme);
+  CurrentColor := ParseColor(SP.SkinText.ColorString, Scheme);
   NewColor := StepBlendColor(FromColor,ToColor,CurrentColor,Step);
 
   if NewColor = ToColor then
   begin
-    SP.SkinText.Color := SchemedStringToColor(pToColor,Scheme);
+    SP.SkinText.Color := ParseColor(pToColor,Scheme);
     SP.SkinText.ColorString := pToColor;
   end
   else
@@ -389,14 +389,14 @@ var
   NewColor : integer;
   CurrentColor, FromColor, ToColor : integer;
 begin
-  FromColor := SchemedStringToColor(pFromColor, Scheme);
-  ToColor := SchemedStringToColor(pToColor, Scheme);
-  CurrentColor := SchemedStringToColor(SP.BlendColorString, Scheme);
+  FromColor := ParseColor(pFromColor, Scheme);
+  ToColor := ParseColor(pToColor, Scheme);
+  CurrentColor := ParseColor(SP.BlendColorString, Scheme);
   NewColor := StepBlendColor(FromColor,ToColor,CurrentColor,Step);
 
   if NewColor = ToColor then
   begin
-    SP.BlendColor := SchemedStringToColor(pToColor,Scheme);
+    SP.BlendColor := ParseColor(pToColor,Scheme);
     SP.BlendColorString := pToColor;
   end
   else
@@ -411,14 +411,14 @@ var
   NewColor : integer;
   CurrentColor, FromColor, ToColor : integer;
 begin
-  FromColor := SchemedStringToColor(pFromColor, Scheme);
-  ToColor := SchemedStringToColor(pToColor, Scheme);
-  CurrentColor := SchemedStringToColor(SP.GradientColorS.X, Scheme);
+  FromColor := ParseColor(pFromColor, Scheme);
+  ToColor := ParseColor(pToColor, Scheme);
+  CurrentColor := ParseColor(SP.GradientColorS.X, Scheme);
   NewColor := StepBlendColor(FromColor,ToColor,CurrentColor,Step);
 
   if NewColor = ToColor then
   begin
-    SP.GradientColor.SetPoint(inttostr(SchemedStringToColor(pToColor,Scheme)),SP.GradientColor.Y);
+    SP.GradientColor.SetPoint(inttostr(ParseColor(pToColor,Scheme)),SP.GradientColor.Y);
     SP.GradientColorS.SetPoint(pToColor,SP.GradientColorS.Y);
   end
   else
@@ -433,14 +433,14 @@ var
   NewColor : integer;
   CurrentColor, FromColor, ToColor : integer;
 begin
-  FromColor := SchemedStringToColor(pFromColor, Scheme);
-  ToColor := SchemedStringToColor(pToColor, Scheme);
-  CurrentColor := SchemedStringToColor(SP.GradientColorS.Y, Scheme);
+  FromColor := ParseColor(pFromColor, Scheme);
+  ToColor := ParseColor(pToColor, Scheme);
+  CurrentColor := ParseColor(SP.GradientColorS.Y, Scheme);
   NewColor := StepBlendColor(FromColor,ToColor,CurrentColor,Step);
 
   if NewColor = ToColor then
   begin
-    SP.GradientColor.SetPoint(SP.GradientColor.X,inttostr(SchemedStringToColor(pToColor,Scheme)))
+    SP.GradientColor.SetPoint(SP.GradientColor.X,inttostr(ParseColor(pToColor,Scheme)))
   end
   else
   begin

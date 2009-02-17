@@ -183,9 +183,9 @@ begin
   if newWidth <> Width then
     mInterface.BarInterface.UpdateModuleSize;
 
-  sFGColor     := SharpESkinPart.SchemedStringToColor(sFGColorStr,mInterface.SkinInterface.SkinManager.Scheme);
-  sBGColor     := SharpESkinPart.SchemedStringToColor(sBGColorStr,mInterface.SkinInterface.SkinManager.Scheme);
-  sBorderColor := SharpESkinPart.SchemedStringToColor(sBorderColorStr,mInterface.SkinInterface.SkinManager.Scheme);    
+  sFGColor     := SharpESkinPart.ParseColor(sFGColorStr,mInterface.SkinInterface.SkinManager.Scheme);
+  sBGColor     := SharpESkinPart.ParseColor(sBGColorStr,mInterface.SkinInterface.SkinManager.Scheme);
+  sBorderColor := SharpESkinPart.ParseColor(sBorderColorStr,mInterface.SkinInterface.SkinManager.Scheme);    
   case sDrawMode of
     0,1: begin
            pbar.Visible := False;

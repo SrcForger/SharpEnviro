@@ -245,9 +245,9 @@ begin
   begin
     if FTrayClient <> nil then
     begin
-      sBackGroundColor := SharpESkinPart.SchemedStringToColor(sBackGroundColorStr,mInterface.SkinInterface.SkinManager.Scheme);
-      sBorderColor     := SharpESkinPart.SchemedStringToColor(sBorderColorStr,mInterface.SkinInterface.SkinManager.Scheme);
-      sBlendColor      := SharpESkinPart.SchemedStringToColor(sBlendColorStr,mInterface.SkinInterface.SkinManager.Scheme);
+      sBackGroundColor := SharpESkinPart.ParseColor(sBackGroundColorStr,mInterface.SkinInterface.SkinManager.Scheme);
+      sBorderColor     := SharpESkinPart.ParseColor(sBorderColorStr,mInterface.SkinInterface.SkinManager.Scheme);
+      sBlendColor      := SharpESkinPart.ParseColor(sBlendColorStr,mInterface.SkinInterface.SkinManager.Scheme);
 
       FTrayClient.BackGroundColor := sBackGroundColor;
       FTrayClient.DrawBackground  := sShowBackground;
