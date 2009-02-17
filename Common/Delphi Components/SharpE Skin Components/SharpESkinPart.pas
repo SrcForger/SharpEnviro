@@ -2136,8 +2136,16 @@ end;
 procedure EvaluateColor(src: string; out color : String; out modvalue : integer);
 var
   s : string;
+  i : integer;
   p1,p2,p : integer;
 begin
+  if trystrtoint(src,i) then
+  begin
+    modvalue := 0;
+    color := src;
+    exit;
+  end;
+
   src := StringReplace(src,' ','',[rfReplaceAll]);
   p1 := Pos('+',src);
   p2 := Pos('-',src);
