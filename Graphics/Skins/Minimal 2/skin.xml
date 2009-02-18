@@ -522,11 +522,81 @@
         <icon>
           <lighten>1</lighten>
           <lightenamount>48</lightenamount>
-        </icon>
-        <empty>1</empty> 
+        </icon>     
+        <skinpart>
+          <ID>0</ID>
+          <location>1,0</location>
+          <dimension>w-2,1</dimension>
+          <image>images/Empty.png</image>
+          <color>$Border</color>
+          <alpha>$Alpha+48</alpha>
+        </skinpart>
+        <skinpart>
+          <ID>1</ID>
+          <location>w-1,1</location>
+          <dimension>1,h-2</dimension>
+          <image>images/Empty.png</image>
+          <color>$Border</color>
+          <alpha>$Alpha+48</alpha>
+        </skinpart>
+        <skinpart>
+          <ID>2</ID>
+          <location>1,h-1</location>
+          <dimension>w-2,1</dimension>
+          <image>images/Empty.png</image>
+          <color>$Border</color>
+          <alpha>$Alpha+48</alpha>
+        </skinpart>
+        <skinpart>
+          <ID>3</ID>
+          <location>0,1</location>
+          <dimension>1,h-2</dimension>
+          <image>images/Empty.png</image>
+          <color>$Border</color>
+          <alpha>$Alpha+48</alpha>
+        </skinpart>
       </highlight>
       <highlighthover>
-        <empty>1</empty> 
+        <text>
+          <color>$Text-48</color>
+          <shadowalpha>196</shadowalpha>
+        </text>
+        <icon>
+          <lighten>1</lighten>
+          <lightenamount>24</lightenamount>
+        </icon>
+        <skinpart>
+          <ID>0</ID>
+          <location>1,0</location>
+          <dimension>w-2,1</dimension>
+          <image>images/Empty.png</image>
+          <color>$Border</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <ID>1</ID>
+          <location>w-1,1</location>
+          <dimension>1,h-2</dimension>
+          <image>images/Empty.png</image>
+          <color>$Border</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <ID>2</ID>
+          <location>1,h-1</location>
+          <dimension>w-2,1</dimension>
+          <image>images/Empty.png</image>
+          <color>$Border</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <ID>3</ID>
+          <location>0,1</location>
+          <dimension>1,h-2</dimension>
+          <image>images/Empty.png</image>
+          <color>$Border</color>
+          <alpha>$Alpha</alpha>
+        </skinpart> 
       </highlighthover>
     </full>
     <compact>
@@ -656,11 +726,81 @@
         <icon>
           <lighten>1</lighten>
           <lightenamount>48</lightenamount>
-        </icon>
-        <empty>1</empty> 
+        </icon>     
+        <skinpart>
+          <ID>0</ID>
+          <location>1,0</location>
+          <dimension>w-2,1</dimension>
+          <image>images/Empty.png</image>
+          <color>$Border</color>
+          <alpha>$Alpha+48</alpha>
+        </skinpart>
+        <skinpart>
+          <ID>1</ID>
+          <location>w-1,1</location>
+          <dimension>1,h-2</dimension>
+          <image>images/Empty.png</image>
+          <color>$Border</color>
+          <alpha>$Alpha+48</alpha>
+        </skinpart>
+        <skinpart>
+          <ID>2</ID>
+          <location>1,h-1</location>
+          <dimension>w-2,1</dimension>
+          <image>images/Empty.png</image>
+          <color>$Border</color>
+          <alpha>$Alpha+48</alpha>
+        </skinpart>
+        <skinpart>
+          <ID>3</ID>
+          <location>0,1</location>
+          <dimension>1,h-2</dimension>
+          <image>images/Empty.png</image>
+          <color>$Border</color>
+          <alpha>$Alpha+48</alpha>
+        </skinpart>
       </highlight>
       <highlighthover>
-        <empty>1</empty> 
+        <text>
+          <color>$Text-48</color>
+          <shadowalpha>196</shadowalpha>
+        </text>
+        <icon>
+          <lighten>1</lighten>
+          <lightenamount>24</lightenamount>
+        </icon>
+        <skinpart>
+          <ID>0</ID>
+          <location>1,0</location>
+          <dimension>w-2,1</dimension>
+          <image>images/Empty.png</image>
+          <color>$Border</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <ID>1</ID>
+          <location>w-1,1</location>
+          <dimension>1,h-2</dimension>
+          <image>images/Empty.png</image>
+          <color>$Border</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <ID>2</ID>
+          <location>1,h-1</location>
+          <dimension>w-2,1</dimension>
+          <image>images/Empty.png</image>
+          <color>$Border</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <ID>3</ID>
+          <location>0,1</location>
+          <dimension>1,h-2</dimension>
+          <image>images/Empty.png</image>
+          <color>$Border</color>
+          <alpha>$Alpha</alpha>
+        </skinpart> 
       </highlighthover>
     </compact>
     <mini>
@@ -766,14 +906,88 @@
         </skinpart>
       </downhover>
       <highlight>
+        <text>
+          <color>$Text</color>
+          <shadowalpha>196</shadowalpha>
+        </text>
         <icon>
           <lighten>1</lighten>
           <lightenamount>48</lightenamount>
-        </icon>
-        <empty>1</empty> 
+        </icon>     
+        <skinpart>
+          <ID>0</ID>
+          <location>1,0</location>
+          <dimension>w-2,1</dimension>
+          <image>images/Empty.png</image>
+          <color>$Border</color>
+          <alpha>$Alpha+48</alpha>
+        </skinpart>
+        <skinpart>
+          <ID>1</ID>
+          <location>w-1,1</location>
+          <dimension>1,h-2</dimension>
+          <image>images/Empty.png</image>
+          <color>$Border</color>
+          <alpha>$Alpha+48</alpha>
+        </skinpart>
+        <skinpart>
+          <ID>2</ID>
+          <location>1,h-1</location>
+          <dimension>w-2,1</dimension>
+          <image>images/Empty.png</image>
+          <color>$Border</color>
+          <alpha>$Alpha+48</alpha>
+        </skinpart>
+        <skinpart>
+          <ID>3</ID>
+          <location>0,1</location>
+          <dimension>1,h-2</dimension>
+          <image>images/Empty.png</image>
+          <color>$Border</color>
+          <alpha>$Alpha+48</alpha>
+        </skinpart>
       </highlight>
       <highlighthover>
-        <empty>1</empty> 
+        <text>
+          <color>$Text-48</color>
+          <shadowalpha>196</shadowalpha>
+        </text>
+        <icon>
+          <lighten>1</lighten>
+          <lightenamount>24</lightenamount>
+        </icon>
+        <skinpart>
+          <ID>0</ID>
+          <location>1,0</location>
+          <dimension>w-2,1</dimension>
+          <image>images/Empty.png</image>
+          <color>$Border</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <ID>1</ID>
+          <location>w-1,1</location>
+          <dimension>1,h-2</dimension>
+          <image>images/Empty.png</image>
+          <color>$Border</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <ID>2</ID>
+          <location>1,h-1</location>
+          <dimension>w-2,1</dimension>
+          <image>images/Empty.png</image>
+          <color>$Border</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <ID>3</ID>
+          <location>0,1</location>
+          <dimension>1,h-2</dimension>
+          <image>images/Empty.png</image>
+          <color>$Border</color>
+          <alpha>$Alpha</alpha>
+        </skinpart> 
       </highlighthover>
     </mini>
   </taskitem>
