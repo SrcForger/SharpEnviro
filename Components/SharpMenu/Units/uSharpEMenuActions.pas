@@ -429,13 +429,14 @@ begin
         if not(sname[1] = '2') then
         begin
           s := sfname;
-          setlength(s,length(s) - length(ExtractFileExt(svalue)));
+          if not pMenu.Settings.ShowExtensions then
+            setlength(s,length(s) - length(ExtractFileExt(svalue)));
           found := false;
           for n := 0 to pMenu.Items.Count - 1 do
           begin
               item := TSharpEMenuItem(pMenu.Items.Items[n]);
               if (item.ItemType = mtLink) and (item.isDynamic) then
-                 if (item.Caption = s) then
+                 if (item.PropList.GetString('Action') = svalue) then
                  begin
                    found := true;
                    break;

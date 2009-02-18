@@ -40,6 +40,7 @@ type
     CacheIcons : boolean;
     UseIcons : boolean;
     UseGenericIcons : boolean;
+    ShowExtensions : boolean;
 
     procedure LoadFromXML; overload;
     procedure LoadFromXML(pFileName : String); overload;
@@ -65,6 +66,7 @@ begin
   CacheIcons := True;
   UseIcons := True;
   UseGenericIcons := False;
+  ShowExtensions := False;
 end;
 
 procedure TSharpEMenuSettings.Assign(from : TSharpeMenuSettings);
@@ -75,6 +77,7 @@ begin
   CacheIcons := from.CacheIcons;
   UseIcons := from.UseIcons;
   UseGenericIcons := from.UseGenericIcons;
+  ShowExtensions := from.ShowExtensions;
 end;
 
 procedure TSharpEMenuSettings.LoadFromXML;
@@ -92,6 +95,7 @@ begin
     CacheIcons := BoolValue('CacheIcons',CacheIcons);
     UseIcons := BoolValue('UseIcons',UseIcons);
     UseGenericIcons := BoolValue('UseGenericIcons',UseGenericIcons);
+    ShowExtensions := BoolVAlue('ShowExtensions',ShowExtensions);
   end;
 end;
 
@@ -105,6 +109,7 @@ begin
     Add('CacheIcons',CacheIcons);
     Add('UseIcons',UseIcons);
     Add('UseGenericIcons',UseGenericIcons);
+    Add('ShowExtensions',ShowExtensions);
   end;
 end;
 
