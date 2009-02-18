@@ -648,7 +648,7 @@ object frmSettings: TfrmSettings
             Left = 22
             Top = 5
             Width = 277
-            Height = 15
+            Height = 13
             Margins.Left = 2
             Margins.Top = 5
             Margins.Right = 5
@@ -656,7 +656,6 @@ object frmSettings: TfrmSettings
             Align = alLeft
             Caption = 'The options below will override the default theme settings'
             Layout = tlCenter
-            ExplicitHeight = 13
           end
           object btnRevert: TPngSpeedButton
             Left = 339
