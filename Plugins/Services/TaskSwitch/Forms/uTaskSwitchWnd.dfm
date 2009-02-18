@@ -18,6 +18,8 @@ object TaskSwitchWnd: TTaskSwitchWnd
   OldCreateOrder = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnMouseMove = FormMouseMove
+  OnMouseUp = FormMouseUp
   OnMouseWheelDown = FormMouseWheelDown
   OnMouseWheelUp = FormMouseWheelUp
   PixelsPerInch = 96

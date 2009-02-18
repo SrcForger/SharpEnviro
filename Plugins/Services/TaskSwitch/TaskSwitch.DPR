@@ -256,6 +256,7 @@ var
   n : integer;
   stime : Int64;
   pItem : TTaskItem;
+  deskwnd : hwnd;
   currentvwm,vwm : integer;
 begin
   EnumParam.ac := Actions[ActionIndex];
@@ -325,24 +326,30 @@ begin
     end else
     begin
       // life action
-      if Actions[ActionIndex].CForward then
+      if length(EnumParam.wndlist) > 1 then
       begin
-        if IsIconic(wndlist[1].wnd) then
-          ShowWindow(wndlist[1].wnd,SW_RESTORE)
-          else
-          begin
-            ForceForegroundWindow(wndlist[1].wnd);
-            SetWindowPos(wndlist[0].wnd,wndlist[High(wndlist)].wnd,0,0,0,0,SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOSIZE);
-          end;
-      end else
-      begin
-        if IsIconic(wndlist[1].wnd) then
-          ShowWindow(wndlist[1].wnd,SW_RESTORE)
+        if Actions[ActionIndex].CForward then
+        begin
+          if IsIconic(wndlist[1].wnd) then
+            ShowWindow(wndlist[1].wnd,SW_RESTORE)
+            else
+            begin
+              ForceForegroundWindow(wndlist[1].wnd);
+              SetWindowPos(wndlist[0].wnd,wndlist[High(wndlist)].wnd,0,0,0,0,SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOSIZE);
+              deskwnd := FindWindow('TSharpDeskMainForm',nil);
+              if deskwnd <> 0 then
+                SetWindowPos(deskwnd,HWND_BOTTOM,0,0,0,0,SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOSIZE);
+            end;
+        end else
+        begin
+          if IsIconic(wndlist[1].wnd) then
+            ShowWindow(wndlist[1].wnd,SW_RESTORE)
           else
           begin
             ForceForegroundWindow(wndlist[High(wndlist)].wnd);
           end;
-      end;
+        end;
+    end;
     end;
   end;
 

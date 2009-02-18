@@ -6,7 +6,7 @@ uses
   Windows, Messages, Graphics, SysUtils, Math, Classes, ExtCtrls, Forms,
   SharpThemeApiEx, uISharpETheme, SharpESkin, SharpESkinPart, SharpESkinManager,
   uTaskSwitchWnd, SharpIconUtils, SharpGraphicsUtils, SharpTypes, uISharpESkin,
-   GR32, GR32_PNG, GR32_Resamplers;
+   GR32, GR32_PNG, GR32_Resamplers, Types;
 
 type
   TTSGui = class
@@ -36,6 +36,7 @@ type
     procedure BuildPreviews;
     procedure UpdateHighlight;
     procedure SpecialKeyTest;
+    function GetIndexByCoords(px,py : integer) : integer;
 
     property WndVisible : boolean read GetWndVisible;
     property Index : integer read FIndex write FIndex;
@@ -271,6 +272,60 @@ begin
   FPreviewTimer.Free;
 
   inherited Destroy;
+end;
+
+function PointInRect(P : TPoint; Rect : TRect) : boolean;
+begin
+  if (P.X>=Rect.Left) and (P.X<=Rect.Right)
+     and (P.Y>=Rect.Top) and (P.Y<=Rect.Bottom) then PointInRect:=True
+     else PointInRect:=False;
+end;
+
+function TTSGui.GetIndexByCoords(px, py: integer): integer;
+var
+  WrapCount : integer;
+  Spacing : integer;
+  Count : integer;
+  w : integer;
+  TSS : TSharpETaskSwitchSkin;
+  x,y : integer;
+  n: Integer;
+begin
+  result := -1;
+  TSS := FSkinManager.Skin.TaskSwitchSkin;
+  if  (TSS.Item.Empty) or (TSS.ItemHover.Empty) then
+    exit;
+
+  WrapCount := Max(1,TSS.WrapCount);
+  Spacing := TSS.Spacing;
+
+  w := TSS.LROffset.XAsInt +
+       TSS.LROffset.YAsInt;
+
+  Count := length(wndlist);
+  if Count < WrapCount then
+    w := w + Count * TSS.Item.SkinDim.WidthAsInt
+           + (Count - 1) * Spacing
+    else w := w + WrapCount * TSS.Item.SkinDim.WidthAsInt
+                + (WrapCount - 1) * Spacing;
+
+  x := TSS.LROffset.XAsInt;
+  y := TSS.TBOffset.XAsInt;
+
+  for n := 0 to High(wndlist) do
+  begin
+    if PointInRect(Point(px,py),Rect(x,y,x + TSS.Item.SkinDim.WidthAsInt, y + TSS.Item.SkinDim.HeightAsInt)) then
+    begin
+      result := n;
+      exit;
+    end;
+    x := x + TSS.Item.SkinDim.WidthAsInt + Spacing;
+    if x > w - TSS.LROffset.YAsInt - TSS.Item.SkinDim.WidthAsInt  then
+    begin
+      x := TSS.LROffset.XAsInt;
+      y := y + TSS.Item.SkinDim.HeightAsInt + spacing;
+    end;
+  end;
 end;
 
 function TTSGui.GetWndVisible: boolean;

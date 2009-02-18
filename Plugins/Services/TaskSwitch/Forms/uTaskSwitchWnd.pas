@@ -57,6 +57,9 @@ type
       MousePos: TPoint; var Handled: Boolean);
     procedure FormMouseWheelDown(Sender: TObject; Shift: TShiftState;
       MousePos: TPoint; var Handled: Boolean);
+    procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure FormMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
   private
     FOwner : TObject;
     FPicture : TBitmap32;
@@ -201,6 +204,34 @@ end;
 procedure TTaskSwitchWnd.FormDestroy(Sender: TObject);
 begin
   FPicture.Free;
+end;
+
+procedure TTaskSwitchWnd.FormMouseMove(Sender: TObject; Shift: TShiftState; X,
+  Y: Integer);
+var
+  n : integer;
+begin
+  n := TSGUI.GetIndexByCoords(X,Y);
+  if n <> -1 then
+  begin
+    TSGUI.Index := n;
+    TSGUI.UpdateHighlight;
+  end;
+end;
+
+procedure TTaskSwitchWnd.FormMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  n : integer;
+begin
+  n := TSGUI.GetIndexByCoords(X,Y);
+  if n <> -1 then
+  begin
+    TSGUI.Index := n;
+    TSGUI.UpdateHighlight;
+    TSGUI.CloseWindow;
+    ForceForegroundWindow(TSGUI.wndlist[TSGUI.Index]);    
+  end;
 end;
 
 procedure TTaskSwitchWnd.FormMouseWheelDown(Sender: TObject; Shift: TShiftState;
