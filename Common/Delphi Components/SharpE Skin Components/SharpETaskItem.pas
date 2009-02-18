@@ -595,18 +595,18 @@ begin
     end;
 
     FSkin.Clear(Color32(0, 0, 0, 0));
-    if (FButtonDown or FDown) and (not CurrentState.Down.Empty) then
-    begin
-      if (FButtonOver) and (not FButtonDown) and (not CurrentState.DownHover.Empty) and (not SharpEAnimManager.HasScriptRunning(self)) then
-        DrawPart := CurrentState.DownHover
-      else DrawPart := CurrentState.Down;
-    end else
     if (FFlashing) and (not CurrentState.Highlight.Empty) and (not SharpEAnimManager.HasScriptRunning(self))
        and (not HasHighlightAnimationScript) then
     begin
       if (FButtonOver and (not CurrentState.HighlightHover.Empty)) then
         DrawPart := CurrentState.HighlightHover
       else DrawPart := CurrentState.Highlight;
+    end else
+    if (FButtonDown or FDown) and (not CurrentState.Down.Empty) then
+    begin
+      if (FButtonOver) and (not FButtonDown) and (not CurrentState.DownHover.Empty) and (not SharpEAnimManager.HasScriptRunning(self)) then
+        DrawPart := CurrentState.DownHover
+      else DrawPart := CurrentState.Down;
     end else
     begin
       if FButtonOver then
