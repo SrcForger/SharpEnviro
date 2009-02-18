@@ -3,7 +3,7 @@
   <Sections>
     <AppBarList>
       <Dll>_ModuleDlls\AppBarList.dll</Dll>
-      <Icon>..\buttons.png</Icon>
+      <Icon>_ModuleDlls\ApplicationBar.png</Icon>
     </AppBarList>
     <AppBarOptions>
       <Dll>_ModuleDlls\AppBarOptions.dll</Dll>

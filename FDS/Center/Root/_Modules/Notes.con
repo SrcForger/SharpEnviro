@@ -3,7 +3,7 @@
   <Sections>
     <Notes>
       <Dll>_ModuleDlls\Notes.dll</Dll>
-      <Icon>Icons\Notes.png</Icon>
+      <Icon>_ModuleDlls\Notes.png</Icon>
     </Notes>
   </Sections>
 </SharpCenter>

@@ -6,6 +6,7 @@
     </Options>
     <Filters>
       <Dll>..\_Components\_ComponentDlls\FilterList.dll</Dll>
+	  <Icon>..\_Components\_ComponentDlls\FilterList.png</Icon>
     </Filters>
   </Sections>
 </SharpCenter>

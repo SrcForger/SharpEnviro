@@ -3,6 +3,7 @@
   <Sections>
     <TaskSwitchList>
       <Dll>_ServiceDlls\TaskSwitchList.dll</Dll>
+	  <Icon>..\_Modules\_ModuleDlls\TaskBar.png</Icon>
     </TaskSwitchList>
   </Sections>
 </SharpCenter>

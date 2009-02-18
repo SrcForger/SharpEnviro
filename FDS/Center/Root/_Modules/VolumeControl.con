@@ -3,7 +3,7 @@
   <Sections>
     <VolumeControl>
       <Dll>_ModuleDlls\VolumeControl.dll</Dll>
-      <Icon>Icons\VolumeControl.png</Icon>
+      <Icon>_ModuleDlls\VolumeControl.png</Icon>
     </VolumeControl>
   </Sections>
 </SharpCenter>

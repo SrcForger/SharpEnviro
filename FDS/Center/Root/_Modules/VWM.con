@@ -3,7 +3,7 @@
   <Sections>
     <VWM>
       <Dll>_ModuleDlls\VWM.dll</Dll>
-      <Icon>Icons\VWM.png</Icon>
+      <Icon>_ModuleDlls\VWM.png</Icon>
     </VWM>
   </Sections>
 </SharpCenter>

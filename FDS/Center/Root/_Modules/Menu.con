@@ -3,7 +3,7 @@
   <Sections>
     <MenuModule>
       <Dll>_ModuleDlls\MenuModule.dll</Dll>
-      <Icon>..\menu.png</Icon>
+      <Icon>_ModuleDlls\Menu.png</Icon>
     </MenuModule>
   </Sections>
 </SharpCenter>

@@ -3,7 +3,7 @@
   <Sections>
     <BatteryMonitor>
       <Dll>_ModuleDlls\BatteryMonitor.dll</Dll>
-      <Icon>BatteryMonitor.png</Icon>
+      <Icon>_ModuleDlls\BatteryMonitor.png</Icon>
     </BatteryMonitor>
   </Sections>
 </SharpCenter>

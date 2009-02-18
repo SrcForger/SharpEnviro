@@ -3,7 +3,7 @@
   <Sections>
     <KeyboardLayout>
       <Dll>_ModuleDlls\KeyboardLayout.dll</Dll>
-      <Icon>Icons\KeyboardLayout.png</Icon>
+      <Icon>_ModuleDlls\KeyboardLayout.png</Icon>
     </KeyboardLayout>
   </Sections>
 </SharpCenter>

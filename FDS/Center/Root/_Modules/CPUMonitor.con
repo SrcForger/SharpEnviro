@@ -3,7 +3,7 @@
   <Sections>
     <CPUMonitor>
       <Dll>_ModuleDlls\CPUMonitor.dll</Dll>
-      <Icon>Icons\CPUMonitor.png</Icon>
+      <Icon>_ModuleDlls\CPUMonitor.png</Icon>
     </CPUMonitor>
   </Sections>
 </SharpCenter>

@@ -3,7 +3,7 @@
   <Sections>
     <SystemTray>
       <Dll>_ModuleDlls\SystemTray.dll</Dll>
-      <Icon>Icons\SystemTray.png</Icon>
+      <Icon>_ModuleDlls\SystemTray.png</Icon>
     </SystemTray>
   </Sections>
 </SharpCenter>

@@ -3,7 +3,7 @@
   <Sections>
     <Clock>
       <Dll>_ModuleDlls\Clock.dll</Dll>
-      <Icon>Icons\Clock.png</Icon>
+      <Icon>_ModuleDlls\Clock.png</Icon>
     </Clock>
   </Sections>
 </SharpCenter>

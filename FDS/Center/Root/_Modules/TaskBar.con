@@ -3,10 +3,11 @@
   <Sections>
     <TaskModule>
       <Dll>_ModuleDlls\TaskModule.dll</Dll>
-      <Icon>Icons\TaskModule.png</Icon>
+      <Icon>_ModuleDlls\TaskBar.png</Icon>
     </TaskModule>
 	<FilterList>
       <Dll>..\_Components\_Componentdlls\FilterList.dll</Dll>
+	  <Icon>..\_Components\_Componentdlls\FilterList.png</Icon>
     </FilterList>
   </Sections>
 </SharpCenter>

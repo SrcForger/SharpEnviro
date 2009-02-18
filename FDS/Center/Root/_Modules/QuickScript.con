@@ -3,7 +3,7 @@
   <Sections>
     <QuickScript>
       <Dll>_ModuleDlls\QuickScript.dll</Dll>
-      <Icon>QuickScript.png</Icon>
+      <Icon>_ModuleDlls\QuickScript.png</Icon>
     </QuickScript>
   </Sections>
 </SharpCenter>

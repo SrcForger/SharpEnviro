@@ -3,7 +3,7 @@
   <Sections>
     <ButtonModule>
       <Dll>_ModuleDlls\ButtonModule.dll</Dll>
-      <Icon>..\gear.png</Icon>
+      <Icon>_ModuleDlls\Button.png</Icon>
     </ButtonModule>
   </Sections>
 </SharpCenter>
