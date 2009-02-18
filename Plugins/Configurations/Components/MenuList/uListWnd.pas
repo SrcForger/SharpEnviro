@@ -162,7 +162,7 @@ begin
   try
 
     // build list of bar.xml files
-    SharpFileUtils.FindFiles( slMenus, dir, '*.xml' );
+    SharpFileUtils.FindFiles( slMenus, dir, '*.xml', False);
     for i := 0 to Pred(slMenus.Count) do begin
       xml.LoadFromFile(slMenus[i]);
       if xml.Root.Name = 'SharpEMenuFile' then begin

@@ -39,7 +39,6 @@ object frmEdit: TfrmEdit
       BevelOuter = bvNone
       ParentColor = True
       TabOrder = 0
-      ExplicitTop = 362
       object cbMenu: TComboBox
         Left = 0
         Top = 0
@@ -218,7 +217,6 @@ object frmEdit: TfrmEdit
       DescriptionColor = clRed
       Align = alTop
       Color = clWindow
-      ExplicitTop = 315
     end
   end
 end

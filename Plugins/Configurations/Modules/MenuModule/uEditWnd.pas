@@ -112,7 +112,7 @@ begin
   files := TStringList.Create;
   try
 
-  SharpFileUtils.FindFiles(files, GetSharpeUserSettingsPath + 'SharpMenu\','*.xml');
+  SharpFileUtils.FindFiles(files, GetSharpeUserSettingsPath + 'SharpMenu\','*.xml',False);
 
     for i := 0 to pred(files.Count) do begin
       s := files[i];
