@@ -217,7 +217,7 @@ begin
                        if b then
                        begin
                          MenuItem := TMenuItem.Create(Menu2.Items);
-                         MenuItem.Caption := 'Properties';
+                         MenuItem.Caption := 'File Properties';
                          MenuItem.ImageIndex := Menu2.Images.Count;
                          MenuItem.OnClick := Layer.FolderLayer.OnPropertiesClick;
                          Menu2.Items.Add(MenuItem);
