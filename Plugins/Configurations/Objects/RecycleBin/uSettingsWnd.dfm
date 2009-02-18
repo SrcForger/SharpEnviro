@@ -23,7 +23,7 @@ object frmSettings: TfrmSettings
     Top = 30
     Width = 445
     Height = 628
-    ActivePage = pagLink
+    ActivePage = pagIcon
     PropagateEnable = False
     Align = alClient
     object pagLink: TJvStandardPage
@@ -52,7 +52,6 @@ object frmSettings: TfrmSettings
           ParentColor = True
           ParentCtl3D = False
           TabOrder = 0
-          ExplicitTop = 3
           object SharpECenterHeader1: TSharpECenterHeader
             AlignWithMargins = True
             Left = 5
@@ -100,7 +99,6 @@ object frmSettings: TfrmSettings
           TitleColor = clWindowText
           DescriptionColor = clRed
           Align = alTop
-          ExplicitTop = 276
         end
         object pnlCaption: TPanel
           AlignWithMargins = True
@@ -115,7 +113,6 @@ object frmSettings: TfrmSettings
           Align = alTop
           BevelOuter = bvNone
           TabOrder = 2
-          ExplicitTop = 124
           object Label1: TLabel
             Left = 5
             Top = 116
@@ -265,7 +262,6 @@ object frmSettings: TfrmSettings
           Align = alTop
           BevelOuter = bvNone
           TabOrder = 3
-          ExplicitTop = 402
           object PngSpeedButton1: TPngSpeedButton
             AlignWithMargins = True
             Left = 406
@@ -334,7 +330,6 @@ object frmSettings: TfrmSettings
           TitleColor = clWindowText
           DescriptionColor = clRed
           Align = alTop
-          ExplicitTop = 355
         end
         object Panel4: TPanel
           AlignWithMargins = True
@@ -349,7 +344,6 @@ object frmSettings: TfrmSettings
           Align = alTop
           BevelOuter = bvNone
           TabOrder = 5
-          ExplicitTop = 323
           object PngSpeedButton2: TPngSpeedButton
             AlignWithMargins = True
             Left = 406
@@ -399,7 +393,6 @@ object frmSettings: TfrmSettings
             OEMConvert = True
             TabOrder = 0
             OnChange = edtRecycleBinFullChange
-            ExplicitTop = 4
           end
         end
         object SharpECenterHeader6: TSharpECenterHeader
@@ -419,8 +412,6 @@ object frmSettings: TfrmSettings
           TitleColor = clWindowText
           DescriptionColor = clRed
           Align = alTop
-          ExplicitLeft = 0
-          ExplicitTop = 264
         end
         object chkBinStatus: TJvXPCheckbox
           AlignWithMargins = True
@@ -436,8 +427,6 @@ object frmSettings: TfrmSettings
           TabOrder = 7
           Align = alTop
           OnClick = chkBinStatusClick
-          ExplicitLeft = 13
-          ExplicitTop = 290
         end
       end
     end
@@ -785,6 +774,7 @@ object frmSettings: TfrmSettings
                 Description = 'Adjust to set the icon size'
                 PopPosition = ppBottom
                 PercentDisplay = False
+                OnChangeValue = sgbIconSizeChangeValue
                 BackgroundColor = clWindow
               end
               object rdoIconCustom: TJvXPCheckbox
@@ -1288,6 +1278,7 @@ object frmSettings: TfrmSettings
             TabOrder = 0
             Align = alLeft
             OnClick = chkTextAlphaClick
+            ExplicitTop = 1
           end
         end
         object uicTextAlphaValue: TSharpEUIC

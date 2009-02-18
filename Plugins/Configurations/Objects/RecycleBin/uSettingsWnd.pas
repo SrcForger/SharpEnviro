@@ -380,6 +380,7 @@ begin
   end;
 
   SendUpdate;
+  UpdatePageUI
 end;
 
 procedure TfrmSettings.cboCaptionAlignChange(Sender: TObject);
@@ -730,6 +731,7 @@ end;
 procedure TfrmSettings.uicIconBlendReset(Sender: TObject);
 begin
   SendUpdate;
+  UpdateIconPage;
 end;
 
 procedure TfrmSettings.uicTextColorClick(Sender: TObject);
@@ -751,6 +753,7 @@ end;
 procedure TfrmSettings.uicTextShadowReset(Sender: TObject);
 begin
   SendUpdate;
+  UpdateFontShadowPage;
 end;
 
 procedure TfrmSettings.uicTextShadowTypeReset(Sender: TObject);
@@ -761,6 +764,7 @@ end;
 procedure TfrmSettings.uicTextAlphaReset(Sender: TObject);
 begin
   SendUpdate;
+  UpdateFontPage;
 end;
 
 procedure TfrmSettings.uicIconSizeReset(Sender: TObject);
@@ -768,6 +772,7 @@ begin
   rdoIcon32.Checked := false;
   rdoIcon48.Checked := false;
   rdoIcon64.Checked := false;
+  rdoIconCustom.Checked := False;
 
   if CompareText(uicIconSize.DefaultValue, IntToStr(cIconSize32)) = 0 then
     rdoIcon32.Checked := True

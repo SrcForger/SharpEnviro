@@ -23,7 +23,7 @@ object frmSettings: TfrmSettings
     Top = 30
     Width = 445
     Height = 628
-    ActivePage = pagFont
+    ActivePage = pagIcon
     PropagateEnable = False
     Align = alClient
     object pagLink: TJvStandardPage
@@ -743,6 +743,7 @@ object frmSettings: TfrmSettings
                 Description = 'Adjust to set the icon size'
                 PopPosition = ppBottom
                 PercentDisplay = False
+                OnChangeValue = sgbIconSizeChangeValue
                 BackgroundColor = clWindow
               end
               object rdoIconCustom: TJvXPCheckbox
@@ -1043,7 +1044,6 @@ object frmSettings: TfrmSettings
           AutoReset = False
           MonitorControl = sceIconBlendColor
           OnReset = uicIconBlendReset
-          ExplicitLeft = 6
           object sceIconBlendColor: TSharpEColorEditorEx
             AlignWithMargins = True
             Left = 0
