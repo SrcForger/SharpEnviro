@@ -6,7 +6,7 @@
       <Icon>_ModuleDlls\MiniScmd.png</Icon>
     </MiniScmd>
 	<Aliases>
-      <Dll>..\_Services\_ServiceDlls\Aliases.dll</Dll>
+      <Dll>..\_Services\_ServiceDlls\AliaseList.dll</Dll>
       <Icon>..\_Services\_ServiceDlls\AliasList.png</Icon>
     </Aliases>
   </Sections>
