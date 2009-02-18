@@ -50,6 +50,7 @@ type
                 FVisible  : boolean;
                 FLastVWM  : integer;
                 FPlacement: TWindowPlacement;
+                FUsed     : boolean;
               private
               public
                 constructor Create(pHandle : hwnd; pListMode : Boolean = False); reintroduce;
@@ -75,6 +76,7 @@ type
                 property FileName  : String read FFileName;
                 property FilePath  : String read FFilePath;
                 property LastVWM   : integer read FLastVWM write FLastVWM;
+                property Used      : boolean read FUsed write FUsed;
               end;
 
 function SwitchToThisWindow(Wnd : hwnd; fAltTab : boolean) : boolean; stdcall; external 'user32.dll';
@@ -86,6 +88,7 @@ constructor TTaskItem.Create(pHandle : hwnd; pListMode : Boolean = False);
 begin
   inherited Create;
   FHandle := pHandle;
+  FUsed := True;
   if not pListMode then  
     UpdateFromHwnd
   else UpdateNonCriticalFromHwnd;

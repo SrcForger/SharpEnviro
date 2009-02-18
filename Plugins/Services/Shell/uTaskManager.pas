@@ -451,8 +451,8 @@ end;
 
 procedure TTaskManager.DoSortTasks;
 var
-  pItem1 : TTaskItem;
-  n : integer;
+  pItem1,pItem2 : TTaskItem;
+  n,i,c : integer;
   SList : TStringList;
   fixedcaption : String;
 begin
@@ -467,22 +467,37 @@ begin
         for n := 0 to FItems.Count - 1 do
         begin
           pItem1 := TTaskItem(FItems.Items[n]);
-          if FSortType = stCaption then fixedcaption := StrReplaceChar(pItem1.Caption,'=','-');
-          case FSortType of
-            stCaption:  SList.Add(fixedcaption+'='+inttostr(pItem1.Handle));
-            stWndClass: SList.Add(pItem1.WndClass+'='+inttostr(pItem1.Handle));
-            stTime:     SList.Add(inttostr(pItem1.TimeAdded)+'='+inttostr(pItem1.Handle));
-            stIcon:     SList.AdD(inttostr(pItem1.Icon)+'='+inttostr(pItem1.Handle));
+          if pItem1.Used then
+          begin
+            if FSortType = stCaption then
+              fixedcaption := StrReplaceChar(pItem1.Caption,'=','-');
+            case FSortType of
+              stCaption:  SList.Add(fixedcaption+'='+inttostr(pItem1.Handle));
+              stWndClass: SList.Add(pItem1.WndClass+'='+inttostr(pItem1.Handle));
+              stTime:     SList.Add(inttostr(pItem1.TimeAdded)+'='+inttostr(pItem1.Handle));
+              stIcon:     SList.AdD(inttostr(pItem1.Icon)+'='+inttostr(pItem1.Handle));
+            end;
           end;
         end;
         SList.Sort;
         for n := 0 to SList.Count - 1 do
         begin
           pItem1 := GetItemByHandle(StrToInt64Def(SList.ValueFromIndex[n],-1));
-          if pItem1 <> nil then
+          pItem2 := nil;
+          c := - 1;
+          for i := 0 to FItems.Count - 1 do
           begin
-            ExChangeTasks(TTaskItem(FItems.Items[n]),pItem1);
+            if TTaskItem(FITems.Items[i]).Used then
+              c := c + 1;
+            if c = n then
+            begin
+              pItem2 := TTaskItem(FItems.Items[i]);
+              break;
+            end;
           end;
+
+          if (pItem1 <> nil) and (pItem2 <> nil) then
+            ExChangeTasks(pItem2,pItem1);
         end;
         SList.Free;
       end;

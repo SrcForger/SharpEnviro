@@ -302,7 +302,10 @@ begin
       PostMessage(GetShellTaskMgrWindow,WM_TASKVWMCHANGE,Integer(SysMenuHandle),msg.WParam - 256 + 1);      
 
       if not CheckFilter(taskitem) then
+      begin
+        taskitem.Used := False;
         RemoveTask(taskitem,-1);
+      end else taskitem.Used := True;
     end;
 
   inherited;
@@ -1039,9 +1042,10 @@ begin
             pTaskItem := TSharpETaskItem(IList.Items[n]);
             if not CheckFilter(pItem) then
             begin
+              pItem.Used := False;
               RemoveTask(TM.GetItemByHandle(pTaskItem.Handle),0);
               changed := True;
-            end;
+            end else pItem.Used := True;
             break;
           end;
     end;
@@ -1064,9 +1068,10 @@ begin
       if pTaskItem = nil then
          if CheckFilter(pItem) then
          begin
+           pItem.Used := True;
            NewTask(pItem,i);
            changed := True;
-        end;
+        end else pItem.Used := False;
     end;
   end;
 
@@ -1252,7 +1257,11 @@ begin
     if TSharpETaskItem(IList.Items[n]).tag = integer(pItem) then
       exit;
 
-  if not CheckFilter(pItem) then exit;
+  if not CheckFilter(pItem) then
+  begin
+    pItem.Used := False;
+    exit;
+  end else pItem.Used := True;
   pTaskItem := TSharpETaskItem.Create(self);
   CalculateItemWidth(IList.Count + 1);
 
@@ -1307,6 +1316,8 @@ begin
      or ((index1 = index2)) then exit;
   IList.Exchange(index1,index2);
   AlignTaskComponents;
+  TSharpETaskItem(IList.Items[index1]).Repaint;
+  TSharpETaskItem(IList.Items[index2]).Repaint;  
 end;
 
 procedure TMainForm.Timer1Timer(Sender: TObject);
