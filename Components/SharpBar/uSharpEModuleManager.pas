@@ -599,7 +599,6 @@ begin
     if Index = ri -1 then tm.Position := 1
        else FModules.Exchange(Index, Index +1);
   end;
-
 end;
 
 
@@ -1203,6 +1202,7 @@ var
   MTWidth : integer; // mini Throbbers
   RCount,LCount : integer;
   nw : integer;
+  CList : TObjectList;
 begin
   if FShutdown then exit;
 
@@ -1242,6 +1242,7 @@ begin
   rx := 0;
   RCount := 0;
   LCount := 0;
+  CList := TObjectList.Create(False);
   for n := 0 to FModules.Count -1 do
   begin
     TempModule := TModule(FModules.Items[n]);
@@ -1253,7 +1254,7 @@ begin
       begin
         TempModule.UpdateBackgroundL(i);
         TempModule.mInterface.Left := i;
-        TempModule.mInterface.Form.Repaint;
+        Clist.Add(TempModule);
       end;
       x := x + TempModule.mInterface.Form.Width;
     end else
@@ -1266,11 +1267,12 @@ begin
       begin
         TempModule.UpdateBackgroundL(i);
         TempModule.mInterface.Left := i;
-        TempModule.mInterface.Form.Repaint;
+        CList.Add(TempModule);
       end;
       rx := rx + TempModule.mInterface.Form.Width;
     end;
-    TempModule.mInterface.Form.Top  := FSkinInterface.SkinManager.Skin.BarSkin.PAYoffset.XAsInt;
+    if TempModule.mInterface.Form.Top <> FSkinInterface.SkinManager.Skin.BarSkin.PAYoffset.XAsInt then
+      TempModule.mInterface.Form.Top  := FSkinInterface.SkinManager.Skin.BarSkin.PAYoffset.XAsInt;
     if TempModule.Throbber. Left <> TempModule.mInterface.Form.Left-TempModule.Throbber.Width-FModuleSpacing div 2 then
       TempModule.Throbber.Left := TempModule.mInterface.Form.Left-TempModule.Throbber.Width-FModuleSpacing div 2;
     if TempModule.Throbber.Top <> TempModule.mInterface.Form.Top then
@@ -1283,6 +1285,14 @@ begin
     if (FShowMiniThrobbers) and (not TempModule.Throbber.Visible) then TempModule.Throbber.Visible := True
        else if (not FShowMiniThrobbers) then tempModule.Throbber.Visible := False;
   end;
+
+  for n := 0 to CList.Count -1 do
+  begin
+    TempModule := TModule(CList.Items[n]);
+    TempModule.mInterface.Form.Repaint;
+  end;
+  CList.Clear;
+  CList.Free;
 end;
 
 
