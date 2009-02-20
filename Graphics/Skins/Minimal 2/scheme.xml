@@ -44,4 +44,18 @@
     <Default>196</Default>
     <type>Integer</type>
   </item>
+  <item>
+    <Name>Border Alpha</Name>
+    <Tag>$BAlpha</Tag>
+    <Info>Alpha for Borders</Info>
+    <Default>196</Default>
+    <type>Integer</type>
+  </item>
+  <item>
+    <Name>Special Border Alpha</Name>
+    <Tag>$SAlpha</Tag>
+    <Info>Alpha for special borders (task item, ...)</Info>
+    <Default>196</Default>
+    <type>Integer</type>
+  </item>
 </SharpESkinScheme>
