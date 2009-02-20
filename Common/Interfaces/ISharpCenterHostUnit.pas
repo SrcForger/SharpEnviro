@@ -10,7 +10,7 @@ const
   IID_ISharpCenterHost: TGUID = '{2277C19F-F87B-4CED-9ADA-8C3467426066}';
 
 type
-  TRefreshTypeEnum = ( rtAll, rtSize, rtPreview, rtTabs, rtTheme, rtTitle, rtStatus, rtDescription );
+  TRefreshTypeEnum = ( rtAll, rtSize, rtPreview, rtTabs, rtTheme, rtTitle, rtStatus, rtDescription, rtValidation );
 
 type
   ISharpCenterHost = interface(IInterface)
@@ -96,6 +96,7 @@ type
       FErrorIndicator: TJvErrorIndicator;
       FOnThemePluginForm: TThemeFormEvent;
       FOnThemeEditForm: TThemeFormEvent;
+    FOnRefreshValidation: TNotifyEvent;
 
       function GetEditOwner : TWinControl; stdCall;
       procedure SetEditOwner(Value : TWinControl); stdCall;
@@ -172,6 +173,10 @@ type
 
       property OnRefreshPluginTabs: TNotifyEvent read FOnRefreshPluginTabs write
         FOnRefreshPluginTabs;
+
+       property OnRefreshValidation: TNotifyEvent read FOnRefreshValidation write
+        FOnRefreshValidation;
+
 
       property OnSettingsChanged: TNotifyEvent read FOnSettingsChanged write
         FOnSettingsChanged;
@@ -408,6 +413,10 @@ begin
     rtTitle,rtStatus,rtDescription : begin
       if assigned(FOnRefreshTitle) then
         FOnRefreshTitle(Self);
+    end;
+    rtValidation : begin
+      if assigned(FOnRefreshValidation) then
+        FOnRefreshValidation(Self);
     end;
   end;
 end;
