@@ -1121,7 +1121,7 @@
       <shadowcolor>$TextShadow</shadowcolor>
       <shadowtype>Outline</shadowtype>
       <shadowalpha>255</shadowalpha>
-      <location>0,0</location>
+      <location>0,-1</location>
     </medium>
     <big>
       <name>Verdana</name>
