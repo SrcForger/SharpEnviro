@@ -108,7 +108,7 @@ begin
   begin
     with PluginHost.Xml.XmlRoot.Items, frmSettings do
     begin
-      chkButtonCaption.Checked := BoolValue('ShowCaption', True);
+      chkButtonCaption.Checked := BoolValue('ShowCaption', False);
       chkButtonIcon.Checked := BoolValue('ShowIcon', True);
       sgbWidth.Value := IntValue('Width', 25);
     end;
