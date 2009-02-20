@@ -203,6 +203,7 @@ type
     procedure RefreshPreviewEvent(Sender: TObject);
     procedure RefreshPluginTabsEvent(Sender: TObject);
     procedure RefreshTitleEvent(Sender: TObject);
+    procedure RefreshValidation(sender: TObject);
     procedure RefreshAllEvent(Sender: TObject);
     procedure SaveEvent(Sender: TObject);
 
@@ -597,6 +598,7 @@ begin
   SCM.PluginHost.OnRefreshTheme := RefreshThemeEvent;
   SCM.PluginHost.OnRefreshPluginTabs := RefreshPluginTabsEvent;
   SCM.PluginHost.OnRefreshAll := RefreshAllEvent;
+  SCM.PluginHost.OnRefreshValidation := RefreshValidation;
   SCM.PluginHost.OnSetEditing := SetEditingEvent;
   SCM.PluginHost.OnSetWarning := SetWarningEvent;
   SCM.PluginHost.OnSetButtonVisibility := SetButtonVisibilityEvent;
@@ -1380,6 +1382,12 @@ begin
   end;
 
   UpdateConfigHeader;
+end;
+
+procedure TSharpCenterWnd.RefreshValidation(sender: TObject);
+begin
+  if scm.PluginHasValidationSupport then
+    SCM.RefreshValidation;
 end;
 
 procedure TSharpCenterWnd.AddItemEvent(AItem: TSharpCenterManagerItem;

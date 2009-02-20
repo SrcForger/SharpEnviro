@@ -133,7 +133,7 @@ type
 
 
     function GetSharpCenterPlugin: ISharpCenterPlugin;
-    procedure SetupValidation;
+    
   public
     constructor Create;
     destructor Destroy; override;
@@ -157,6 +157,7 @@ type
 
     procedure UpdateSettingsBroadcast;
     procedure RefreshTheme;
+    procedure RefreshValidation;
 
     function PluginHasEditSupport: Boolean;
     function PluginHasValidationSupport: Boolean;
@@ -763,7 +764,7 @@ begin
   end;
 end;
 
-procedure TSharpCenterManager.SetupValidation;
+procedure TSharpCenterManager.RefreshValidation;
 var
   i: Integer;
 begin
@@ -974,7 +975,7 @@ begin
 
     // Set up validators
     if (PluginHasValidationSupport) then begin
-      SetupValidation;
+      RefreshValidation;
     end;
 
     if assigned(FOnUpdateTheme) then
