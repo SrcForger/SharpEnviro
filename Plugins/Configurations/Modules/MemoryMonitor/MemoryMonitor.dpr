@@ -108,7 +108,7 @@ begin
     with PluginHost.Xml.XmlRoot.Items, frmMM do
     begin
       case IntValue('ITC', 0) of
-        1: cboTextFormat.ItemIndex := 0
+        0: cboTextFormat.ItemIndex := 0
       else cboTextFormat.ItemIndex := 1;
       end;
       cbrambar.Checked := BoolValue('ShowRAMBar', cbrambar.Checked);
