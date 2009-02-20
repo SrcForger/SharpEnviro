@@ -422,8 +422,8 @@ procedure TSharpEEdit.KeyUpEvent(Sender: TObject; var Key: Word; Shift: TShiftSt
 begin
   if Key = VK_RETURN then
   begin
-    if CompareText(Text,FEdit.Text) <> 0 then FEdit.Text := Text;
-  end else if CompareText(Text,FEdit.Text) <> 0 then Text := FEdit.Text;
+    if CompareStr(Text,FEdit.Text) <> 0 then FEdit.Text := Text;
+  end else if CompareStr(Text,FEdit.Text) <> 0 then Text := FEdit.Text;
 
   if Assigned(OnKeyUp) then
     OnKeyUp(Sender,Key,Shift);
