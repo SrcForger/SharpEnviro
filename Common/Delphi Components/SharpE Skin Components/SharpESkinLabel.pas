@@ -170,7 +170,7 @@ end;
 
 procedure TSharpESkinLabel.SetCaption(Value: string);
 begin
-  if CompareText(FCaption,Value) <> 0 then
+  if CompareStr(FCaption,Value) <> 0 then
   begin
     FCaption := Value;
     UpdateSkin;
