@@ -135,7 +135,6 @@ begin
   end
   else if frmEdit.pagSubMenu.Visible then begin
     PluginHost.AddRequiredFieldValidator( frmEdit.edSubmenuCaption,'Please enter a name','Text');
-    PluginHost.AddRequiredFieldValidator( frmEdit.edSubmenuTarget,'Please enter a name','Text');
   end
   else if frmEdit.pagLabel.Visible then begin
     PluginHost.AddRequiredFieldValidator( frmEdit.edLabelCaption,'Please enter a name','Text');
