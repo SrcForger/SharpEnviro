@@ -41,7 +41,7 @@ object MainForm: TMainForm
     Width = 26
     Height = 21
     AutoSize = True
-    Caption = 'swp'
+    Caption = 'SWP'
     AutoPos = apTop
     LabelStyle = lsSmall
   end
@@ -51,7 +51,7 @@ object MainForm: TMainForm
     Width = 26
     Height = 21
     AutoSize = True
-    Caption = 'ram'
+    Caption = 'RAM'
     AutoPos = apTop
     LabelStyle = lsSmall
   end
