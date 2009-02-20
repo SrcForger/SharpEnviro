@@ -75,6 +75,8 @@ type
     ThemeHideTimer: TTimer;
     ShowMiniThrobbers1: TMenuItem;
     AlwaysOnTop1: TMenuItem;
+    LaunchSharpCenter1: TMenuItem;
+    N7: TMenuItem;
     procedure ShowMiniThrobbers1Click(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ThemeHideTimerTimer(Sender: TObject);
@@ -120,6 +122,7 @@ type
     procedure AlwaysOnTop1Click(Sender: TObject);
     procedure BarManagment1Click(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure LaunchSharpCenter1Click(Sender: TObject);
   private
     { Private-Deklarationen }
     FUser32DllHandle: THandle;
@@ -1118,6 +1121,11 @@ begin
   SharpApi.SharpEBroadCast(WM_UPDATEBARWIDTH, 0, 0);
   ModuleManager.FixModulePositions;
   ModuleManager.BroadcastPluginUpdate(suBackground);
+end;
+
+procedure TSharpBarMainForm.LaunchSharpCenter1Click(Sender: TObject);
+begin
+  SharpExecute('SharpCenter.exe');
 end;
 
 procedure TSharpBarMainForm.Left1Click(Sender: TObject);
