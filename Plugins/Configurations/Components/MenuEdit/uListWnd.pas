@@ -109,7 +109,7 @@ type
 
     procedure RenderItemsBuffered(AMenu: TSharpEMenu; AClear: Boolean = True;
       AParent: Boolean = False);
-    procedure LoadMenu;
+
     procedure EditSubFolder(tmp: TItemData; const ACol: Integer);
 
   public
@@ -121,6 +121,7 @@ type
       AParent: Boolean = False);
 
     procedure Save;
+    procedure LoadMenu;
     property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
   end;
 

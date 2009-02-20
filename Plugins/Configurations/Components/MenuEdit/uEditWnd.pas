@@ -84,6 +84,10 @@ type
     chkDriveNames: TJvXPCheckbox;
     Label3: TLabel;
     JvLabel1: TLabel;
+    chkEnableIcons: TJvXPCheckbox;
+    chkEnableGeneric: TJvXPCheckbox;
+    chkOverride: TJvXPCheckbox;
+    chkDisplayExtensions: TJvXPCheckbox;
     procedure FormCreate(Sender: TObject);
     procedure cbMenuItemsSelect(Sender: TObject);
     procedure btnLinkIconBrowseClick(Sender: TObject);
@@ -93,10 +97,11 @@ type
     procedure btnSubmenuTargetBrowseClick(Sender: TObject);
 
     procedure btnDynamicDirBrowseClick(Sender: TObject);
-    procedure GenericUpdateEditState(Sender: TObject);
     procedure sgbDynamicDirMaxItemsChangeValue(Sender: TObject; Value: Integer);
     procedure cbItemPositionChange(Sender: TObject);
     procedure rbMruListMostUsedItemsClick(Sender: TObject);
+    procedure ChkClick(Sender: TObject);
+    procedure edtChange(Sender: TObject);
   private
     { Private declarations }
     FUpdating: Boolean;
@@ -104,6 +109,7 @@ type
     procedure InitWnd;
     procedure SelectMenuItemType(AItemType: TSharpEMenuItemType);
     procedure UpdateEditState;
+    procedure UpdateOverrideState;
   public
     { Public declarations }
     procedure InitUI;
@@ -138,6 +144,7 @@ uses
 procedure TfrmEdit.InitUI;
 var
   tmpItem: TItemData;
+  tmpMenu: TSharpEMenu;
   tmpMenuItemType: TSharpEMenuItemType;
   n: Integer;
 begin
@@ -154,7 +161,7 @@ begin
           case tmpMenuItemType of
             mtLink: begin
                 edLinkName.Text := '';
-                edLinkIcon.Text := '';
+                edLinkIcon.Text := 'shell:icon';
                 edLinkTarget.Text := '';
                 SelectMenuItemType(tmpMenuItemType);
               end;
@@ -177,9 +184,16 @@ begin
               end;
             mtSubMenu: begin
                 edSubmenuCaption.Text := '';
-                edSubmenuIcon.Text := '';
+                edSubmenuIcon.Text := 'shell:icon';
                 edSubmenuTarget.Text := '';
                 SelectMenuItemType(tmpMenuItemType);
+
+                chkOverride.Checked := false;
+                chkEnableIcons.Checked := false;
+                chkEnableGeneric.Checked := false;
+                chkDisplayExtensions.Checked := false;
+
+                UpdateOverrideState;
               end;
             mtDynamicDir: begin
                 edDynamicDirTarget.Text := '';
@@ -244,6 +258,21 @@ begin
                 edSubmenuIcon.Text := tmpItem.MenuItem.PropList.GetString('IconSource');
                 edSubmenuTarget.Text := tmpItem.MenuItem.PropList.GetString('Target');
                 SelectMenuItemType(tmpItem.MenuItem.ItemType);
+
+                tmpMenu := TSharpEMenu(TSharpEMenuItem(tmpItem.MenuItem).SubMenu);
+                chkOverride.Checked := tmpMenu.CustomSettings;
+
+                if tmpMenu.CustomSettings then begin
+                  chkEnableIcons.Checked := tmpMenu.Settings.UseIcons;
+                  chkEnableGeneric.Checked := tmpMenu.Settings.UseGenericIcons;
+                  chkDisplayExtensions.Checked := tmpMenu.Settings.ShowExtensions;
+                end else begin
+                  chkEnableIcons.Checked := false;
+                  chkEnableGeneric.Checked := false;
+                  chkDisplayExtensions.Checked := false;
+                end;
+
+                UpdateOverrideState;
               end;
             mtDynamicDir: begin
                 edDynamicDirTarget.Text := tmpItem.MenuItem.PropList.GetString('Action');
@@ -312,8 +341,12 @@ var
 begin
   s := SharpDialogs.TargetDialog(STI_ALL_TARGETS, Mouse.CursorPos);
 
-  if s <> '' then
+  if s <> '' then begin
     edLinkTarget.Text := s;
+
+    if edLinkName.Text = '' then
+      edLinkName.Text := ExtractFileName(s);
+  end;
 
 end;
 
@@ -333,8 +366,12 @@ var
 begin
   s := SharpDialogs.TargetDialog(STI_ALL_TARGETS, Mouse.CursorPos);
 
-  if s <> '' then
+  if s <> '' then begin
     edSubmenuTarget.Text := s;
+
+    if edSubmenuCaption.Text = '' then
+      edSubmenuCaption.Text := ExtractFileName(s);
+  end;
 end;
 
 procedure TfrmEdit.cbItemPositionChange(Sender: TObject);
@@ -350,7 +387,9 @@ begin
   frmList.lbItems.ControlState := frmList.lbItems.ControlState - [csLButtonDown];
 
   tmp := TPageData(cbMenuItems.Items.Objects[cbMenuItems.ItemIndex]);
-  frmEdit.Height := 160; //tmp.Height;
+  frmEdit.Height := 190;// tmp.Height;
+  FPluginHost.Refresh(rtSize);
+  
   lblDescription.Caption := tmp.Description;
 
   nMenuItemIndex := cbMenuItems.ItemIndex;
@@ -363,9 +402,18 @@ begin
     mtSeparator, mtCPLList, mtDriveList, mtDesktopObjectList, mtulist: if PluginHost.EditMode = sceAdd then
       PluginHost.SetButtonVisibility(scbConfigure,True);
   end;
+
+  FPluginHost.Refresh(rtValidation);
 end;
 
-procedure TfrmEdit.GenericUpdateEditState(Sender: TObject);
+procedure TfrmEdit.ChkClick(Sender: TObject);
+begin
+  UpdateEditState;
+
+  UpdateOverrideState;
+end;
+
+procedure TfrmEdit.edtChange(Sender: TObject);
 begin
   UpdateEditState;
 end;
@@ -377,7 +425,7 @@ begin
     cLinkDescription)));
   cbMenuItems.AddItem('Separator', Pointer(TPageData.Create(pagBlank, mtSeparator, 70,
     cSepDescription)));
-  cbMenuItems.AddItem('Drive List', Pointer(TPageData.Create(pagDriveList, mtDriveList, 90,
+  cbMenuItems.AddItem('Drive List', Pointer(TPageData.Create(pagDriveList, mtDriveList, 120,
     cDriveListDescription)));
   cbMenuItems.AddItem('Control Panel List', Pointer(TPageData.Create(pagBlank, mtCPLList, 70,
     cCplDescription)));
@@ -385,7 +433,7 @@ begin
     cDesktopObjectListDescription)));
   cbMenuItems.AddItem('Label', Pointer(TPageData.Create(pagLabel, mtLabel, 100,
     cLabelDescription)));
-  cbMenuItems.AddItem('Submenu', Pointer(TPageData.Create(pagSubMenu, mtSubMenu, 140,
+  cbMenuItems.AddItem('Submenu', Pointer(TPageData.Create(pagSubMenu, mtSubMenu, 190,
     cSubmenuDescription)));
   cbMenuItems.AddItem('Dynamic Directory', Pointer(TPageData.Create(pagDynamicDir, mtDynamicDir, 140,
     cDynamicDirDescription)));
@@ -439,7 +487,7 @@ procedure TfrmEdit.Save;
 var
   tmpMenuItemType: TSharpEMenuItemType;
   tmpMenuItem: TObject;
-  tmpMenu: TSharpEMenu;
+  tmpMenu, tmp: TSharpEMenu;
   nSort, nInsertPos, n: Integer;
   i: Integer;
   tmpItem: TItemData;
@@ -501,9 +549,19 @@ begin
           mtSubMenu: begin
               tmpMenuItem := tmpMenu.AddSubMenuItem(edSubmenuCaption.Text,
                 edSubmenuIcon.Text, edSubmenuTarget.Text, False, nInsertPos);
+
               TSharpEMenuItem(tmpMenuItem).SubMenu :=
                 TSharpEMenu.Create(TSharpEMenuItem(tmpMenuItem), frmList.smMain,
                 frmList.Menu.Settings);
+
+                tmp := TSharpEMenu(TSharpEMenuItem(tmpMenuItem).SubMenu);
+                tmp.CustomSettings := chkOverride.Checked;
+
+                if tmp.CustomSettings then begin
+                  tmp.Settings.UseIcons := chkEnableIcons.Checked;
+                  tmp.Settings.UseGenericIcons := chkEnableGeneric.Checked;
+                  tmp.Settings.ShowExtensions := chkDisplayExtensions.Checked;
+                end;
             end;
           mtDynamicDir: begin
 
@@ -567,6 +625,15 @@ begin
               tmpItem.MenuItem.Caption := edSubmenuCaption.Text;
               tmpItem.MenuItem.PropList.Add('IconSource', edSubmenuIcon.Text);
               tmpItem.MenuItem.PropList.Add('Target', edSubmenuTarget.Text);
+
+              tmpMenu := TSharpEMenu(TSharpEMenuItem(tmpItem.MenuItem).SubMenu);
+              tmpMenu.CustomSettings := chkOverride.Checked;
+
+                if tmpMenu.CustomSettings then begin
+                  tmpMenu.Settings.UseIcons := chkEnableIcons.Checked;
+                  tmpMenu.Settings.UseGenericIcons := chkEnableGeneric.Checked;
+                  tmpMenu.Settings.ShowExtensions := chkDisplayExtensions.Checked;
+                end;
             end;
           mtDynamicDir: begin
               tmpItem.MenuItem.PropList.Add('Action', edDynamicDirTarget.Text);
@@ -603,6 +670,13 @@ begin
 
       end;
   end;
+end;
+
+procedure TfrmEdit.UpdateOverrideState;
+begin
+  chkEnableGeneric.Visible := chkOverride.Checked;
+  chkEnableIcons.Visible := chkOverride.Checked;
+  chkDisplayExtensions.Visible := chkOverride.Checked;
 end;
 
 procedure TfrmEdit.SelectMenuItemType(AItemType: TSharpEMenuItemType);

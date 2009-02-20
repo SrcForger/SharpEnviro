@@ -80,6 +80,7 @@ object frmList: TfrmList
     SchemeSource = ssDefault
     ComponentSkins = [scBar]
     HandleUpdates = True
+    HandleThemeApiUpdates = True
     Left = 336
     Top = 208
   end

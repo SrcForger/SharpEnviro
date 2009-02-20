@@ -52,7 +52,8 @@ uses
 {$R *.res}
 
 type
-  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin, ISharpCenterPluginEdit )
+  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin, ISharpCenterPluginEdit,
+    ISharpCenterPluginValidation )
   private
   public
     constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
@@ -65,6 +66,7 @@ type
     destructor Destroy; override;
     procedure CloseEdit(AApply: Boolean); stdcall;
     function OpenEdit: Cardinal; stdcall;
+    procedure SetupValidators; stdcall;
   end;
 
 { TSharpCenterPlugin }
@@ -123,6 +125,26 @@ end;
 procedure TSharpCenterPlugin.Refresh;
 begin
   PluginHost.AssignThemeToForms(frmList,frmEdit);
+end;
+
+procedure TSharpCenterPlugin.SetupValidators;
+begin
+  if frmEdit.pagLink.Visible then begin
+    PluginHost.AddRequiredFieldValidator( frmEdit.edLinkName,'Please enter a name','Text');
+    PluginHost.AddRequiredFieldValidator( frmEdit.edLinkTarget,'Please enter a target','Text');
+  end
+  else if frmEdit.pagSubMenu.Visible then begin
+    PluginHost.AddRequiredFieldValidator( frmEdit.edSubmenuCaption,'Please enter a name','Text');
+    PluginHost.AddRequiredFieldValidator( frmEdit.edSubmenuTarget,'Please enter a name','Text');
+  end
+  else if frmEdit.pagLabel.Visible then begin
+    PluginHost.AddRequiredFieldValidator( frmEdit.edLabelCaption,'Please enter a name','Text');
+  end
+  else if frmEdit.pagDynamicDir.Visible then begin
+    PluginHost.AddRequiredFieldValidator( frmEdit.edDynamicDirTarget,'Please enter a target','Text');
+  end;
+
+  
 end;
 
 function GetMetaData(): TMetaData;

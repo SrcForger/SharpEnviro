@@ -3,7 +3,7 @@ object frmEdit: TfrmEdit
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmEdit'
-  ClientHeight = 179
+  ClientHeight = 307
   ClientWidth = 500
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -20,22 +20,22 @@ object frmEdit: TfrmEdit
     Left = 0
     Top = 77
     Width = 500
-    Height = 102
-    ActivePage = pagBlank
+    Height = 230
+    ActivePage = pagLink
     PropagateEnable = False
     Align = alClient
     object pagLink: TJvStandardPage
       Left = 0
       Top = 0
       Width = 500
-      Height = 102
+      Height = 230
       DesignSize = (
         500
-        102)
+        230)
       object edLinkName: TLabeledEdit
         Left = 60
         Top = 0
-        Width = 161
+        Width = 153
         Height = 21
         EditLabel.Width = 41
         EditLabel.Height = 13
@@ -43,7 +43,7 @@ object frmEdit: TfrmEdit
         LabelPosition = lpLeft
         LabelSpacing = 6
         TabOrder = 0
-        OnChange = GenericUpdateEditState
+        OnChange = edtChange
       end
       object edLinkIcon: TLabeledEdit
         Left = 268
@@ -57,7 +57,7 @@ object frmEdit: TfrmEdit
         LabelPosition = lpLeft
         LabelSpacing = 6
         TabOrder = 1
-        OnChange = GenericUpdateEditState
+        OnChange = edtChange
       end
       object btnLinkIconBrowse: TButton
         Left = 443
@@ -70,9 +70,9 @@ object frmEdit: TfrmEdit
         OnClick = btnLinkIconBrowseClick
       end
       object edLinkTarget: TLabeledEdit
-        Left = 52
+        Left = 60
         Top = 29
-        Width = 385
+        Width = 361
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         EditLabel.Width = 36
@@ -81,7 +81,7 @@ object frmEdit: TfrmEdit
         LabelPosition = lpLeft
         LabelSpacing = 6
         TabOrder = 3
-        OnChange = GenericUpdateEditState
+        OnChange = edtChange
       end
       object btnLinkTargetBrowse: TButton
         Left = 443
@@ -98,7 +98,7 @@ object frmEdit: TfrmEdit
       Left = 0
       Top = 0
       Width = 500
-      Height = 102
+      Height = 230
       object chkDriveNames: TJvXPCheckbox
         Left = 10
         Top = 0
@@ -106,22 +106,22 @@ object frmEdit: TfrmEdit
         Height = 17
         Caption = 'Show Drive Names'
         TabOrder = 0
-        OnClick = GenericUpdateEditState
+        OnClick = ChkClick
       end
     end
     object pagLabel: TJvStandardPage
       Left = 0
       Top = 0
       Width = 500
-      Height = 102
+      Height = 230
       Caption = 'pagLabel'
       DesignSize = (
         500
-        102)
+        230)
       object edLabelCaption: TLabeledEdit
         Left = 60
         Top = 0
-        Width = 426
+        Width = 413
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         EditLabel.Width = 41
@@ -130,22 +130,22 @@ object frmEdit: TfrmEdit
         LabelPosition = lpLeft
         LabelSpacing = 6
         TabOrder = 0
-        OnChange = GenericUpdateEditState
+        OnChange = edtChange
       end
     end
     object pagSubMenu: TJvStandardPage
       Left = 0
       Top = 0
       Width = 500
-      Height = 102
+      Height = 230
       Caption = 'pagSubMenu'
       DesignSize = (
         500
-        102)
+        230)
       object edSubmenuCaption: TLabeledEdit
         Left = 60
         Top = 0
-        Width = 161
+        Width = 153
         Height = 21
         EditLabel.Width = 41
         EditLabel.Height = 13
@@ -153,7 +153,7 @@ object frmEdit: TfrmEdit
         LabelPosition = lpLeft
         LabelSpacing = 6
         TabOrder = 0
-        OnChange = GenericUpdateEditState
+        OnChange = edtChange
       end
       object edSubmenuIcon: TLabeledEdit
         Left = 268
@@ -167,7 +167,7 @@ object frmEdit: TfrmEdit
         LabelPosition = lpLeft
         LabelSpacing = 6
         TabOrder = 1
-        OnChange = GenericUpdateEditState
+        OnChange = edtChange
       end
       object btnSubmenuIconBrowse: TButton
         Left = 443
@@ -180,9 +180,9 @@ object frmEdit: TfrmEdit
         OnClick = btnSubmenuIconBrowseClick
       end
       object edSubmenuTarget: TLabeledEdit
-        Left = 52
+        Left = 60
         Top = 29
-        Width = 385
+        Width = 357
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         EditLabel.Width = 36
@@ -191,7 +191,7 @@ object frmEdit: TfrmEdit
         LabelPosition = lpLeft
         LabelSpacing = 6
         TabOrder = 3
-        OnChange = GenericUpdateEditState
+        OnChange = edtChange
       end
       object btnSubmenuTargetBrowse: TButton
         Left = 443
@@ -203,16 +203,52 @@ object frmEdit: TfrmEdit
         TabOrder = 4
         OnClick = btnSubmenuTargetBrowseClick
       end
+      object chkOverride: TJvXPCheckbox
+        Left = 8
+        Top = 65
+        Width = 273
+        Height = 17
+        Caption = 'Override menu options'
+        TabOrder = 5
+        OnClick = ChkClick
+      end
+      object chkEnableIcons: TJvXPCheckbox
+        Left = 8
+        Top = 88
+        Width = 101
+        Height = 17
+        Caption = 'Enable Icons'
+        TabOrder = 6
+        OnClick = ChkClick
+      end
+      object chkEnableGeneric: TJvXPCheckbox
+        Left = 115
+        Top = 88
+        Width = 139
+        Height = 17
+        Caption = 'Enable generic Icons'
+        TabOrder = 7
+        OnClick = ChkClick
+      end
+      object chkDisplayExtensions: TJvXPCheckbox
+        Left = 260
+        Top = 88
+        Width = 161
+        Height = 17
+        Caption = 'Display file extensions'
+        TabOrder = 8
+        OnClick = ChkClick
+      end
     end
     object pagDynamicDir: TJvStandardPage
       Left = 0
       Top = 0
       Width = 500
-      Height = 102
+      Height = 230
       Caption = 'pagDynamicDir'
       DesignSize = (
         500
-        102)
+        230)
       object Label1: TLabel
         Left = 10
         Top = 34
@@ -230,7 +266,7 @@ object frmEdit: TfrmEdit
       object edDynamicDirTarget: TLabeledEdit
         Left = 52
         Top = 0
-        Width = 385
+        Width = 369
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         EditLabel.Width = 36
@@ -239,7 +275,7 @@ object frmEdit: TfrmEdit
         LabelPosition = lpLeft
         LabelSpacing = 6
         TabOrder = 0
-        OnChange = GenericUpdateEditState
+        OnChange = edtChange
       end
       object btnDynamicDirBrowse: TButton
         Left = 443
@@ -274,7 +310,7 @@ object frmEdit: TfrmEdit
         Style = csDropDownList
         ItemHeight = 13
         TabOrder = 3
-        OnChange = GenericUpdateEditState
+        OnChange = edtChange
         Items.Strings = (
           'Directory'
           'Creation Date'
@@ -292,7 +328,7 @@ object frmEdit: TfrmEdit
         LabelPosition = lpLeft
         LabelSpacing = 6
         TabOrder = 4
-        OnChange = GenericUpdateEditState
+        OnChange = edtChange
       end
       object chkRecursive: TJvXPCheckbox
         Left = 10
@@ -301,7 +337,6 @@ object frmEdit: TfrmEdit
         Height = 17
         Caption = 'Include Subdirectories'
         TabOrder = 5
-        OnClick = GenericUpdateEditState
       end
       object chkDescending: TJvXPCheckbox
         Left = 158
@@ -310,14 +345,13 @@ object frmEdit: TfrmEdit
         Height = 17
         Caption = 'Sort Descending'
         TabOrder = 6
-        OnClick = GenericUpdateEditState
       end
     end
     object pagBlank: TJvStandardPage
       Left = 0
       Top = 0
       Width = 500
-      Height = 102
+      Height = 230
       Caption = 'pagBlank'
       object Label4: TLabel
         AlignWithMargins = True
@@ -339,7 +373,7 @@ object frmEdit: TfrmEdit
       Left = 0
       Top = 0
       Width = 500
-      Height = 102
+      Height = 230
       Caption = 'pagMru'
       object Label5: TLabel
         Left = 10
