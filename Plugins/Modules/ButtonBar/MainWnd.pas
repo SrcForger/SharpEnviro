@@ -285,7 +285,7 @@ begin
   with XML.Root.Items do
   begin
     Add('Width',sWidth);
-    Add('ShowLabel',sShowLabel);
+    Add('ShowCaption',sShowLabel);
     Add('ShowIcon',sShowIcon);
     with Add('Buttons').Items do
     begin
@@ -356,7 +356,7 @@ begin
     with xml.Root.Items do
     begin
       sWidth       := IntValue('Width',25);
-      sShowLabel   := BoolValue('ShowLabel',False);
+      sShowLabel   := BoolValue('ShowCaption',False);
       sShowIcon    := BoolValue('ShowIcon',sShowIcon);
       if ItemNamed['Buttons'] <> nil then
       with ItemNamed['Buttons'].Items do
