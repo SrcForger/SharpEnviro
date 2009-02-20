@@ -34,7 +34,7 @@ object frmItemswnd: TfrmItemswnd
         Images = imlWeatherGlyphs
       end
       item
-        Width = 60
+        Width = 150
         HAlign = taCenter
         VAlign = taVerticalCenter
         ColumnAlign = calRight
