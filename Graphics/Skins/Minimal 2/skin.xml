@@ -529,7 +529,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>$SAlpha+48</alpha>
+          <alpha>$SAlpha+128</alpha>
         </skinpart>
         <skinpart>
           <ID>1</ID>
@@ -537,7 +537,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>$SAlpha+48</alpha>
+          <alpha>$SAlpha+128</alpha>
         </skinpart>
         <skinpart>
           <ID>2</ID>
@@ -545,7 +545,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>$SAlpha+48</alpha>
+          <alpha>$SAlpha+128</alpha>
         </skinpart>
         <skinpart>
           <ID>3</ID>
@@ -553,7 +553,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>$SAlpha+48</alpha>
+          <alpha>$SAlpha+128</alpha>
         </skinpart>
       </highlight>
       <highlighthover>
@@ -571,7 +571,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>$SAlpha</alpha>
+          <alpha>$SAlpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>1</ID>
@@ -579,7 +579,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>$SAlpha</alpha>
+          <alpha>$SAlpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>2</ID>
@@ -587,7 +587,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>$SAlpha</alpha>
+          <alpha>$SAlpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>3</ID>
@@ -595,7 +595,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>$SAlpha</alpha>
+          <alpha>$SAlpha+48</alpha>
         </skinpart> 
       </highlighthover>
     </full>
@@ -733,7 +733,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>$SAlpha+48</alpha>
+          <alpha>$SAlpha+128</alpha>
         </skinpart>
         <skinpart>
           <ID>1</ID>
@@ -741,7 +741,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>$SAlpha+48</alpha>
+          <alpha>$SAlpha+128</alpha>
         </skinpart>
         <skinpart>
           <ID>2</ID>
@@ -749,7 +749,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>$SAlpha+48</alpha>
+          <alpha>$SAlpha+128</alpha>
         </skinpart>
         <skinpart>
           <ID>3</ID>
@@ -757,7 +757,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>$SAlpha+48</alpha>
+          <alpha>$SAlpha+128</alpha>
         </skinpart>
       </highlight>
       <highlighthover>
@@ -775,7 +775,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>$SAlpha</alpha>
+          <alpha>$SAlpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>1</ID>
@@ -783,7 +783,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>$SAlpha</alpha>
+          <alpha>$SAlpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>2</ID>
@@ -791,7 +791,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>$SAlpha</alpha>
+          <alpha>$SAlpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>3</ID>
@@ -799,7 +799,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>$SAlpha</alpha>
+          <alpha>$SAlpha+48</alpha>
         </skinpart> 
       </highlighthover>
     </compact>
@@ -920,7 +920,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>$SAlpha+48</alpha>
+          <alpha>$SAlpha+128</alpha>
         </skinpart>
         <skinpart>
           <ID>1</ID>
@@ -928,7 +928,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>$SAlpha+48</alpha>
+          <alpha>$SAlpha+128</alpha>
         </skinpart>
         <skinpart>
           <ID>2</ID>
@@ -936,7 +936,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>$SAlpha+48</alpha>
+          <alpha>$SAlpha+128</alpha>
         </skinpart>
         <skinpart>
           <ID>3</ID>
@@ -944,7 +944,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>$SAlpha+48</alpha>
+          <alpha>$SAlpha+128</alpha>
         </skinpart>
       </highlight>
       <highlighthover>
@@ -962,7 +962,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>$SAlpha</alpha>
+          <alpha>$SAlpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>1</ID>
@@ -970,7 +970,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>$SAlpha</alpha>
+          <alpha>$SAlpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>2</ID>
@@ -978,7 +978,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>$SAlpha</alpha>
+          <alpha>$SAlpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>3</ID>
@@ -986,7 +986,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>$SAlpha</alpha>
+          <alpha>$SAlpha+48</alpha>
         </skinpart> 
       </highlighthover>
     </mini>
