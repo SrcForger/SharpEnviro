@@ -156,12 +156,13 @@ object NotesForm: TNotesForm
       DrawingStyle = dsGradient
       EdgeInner = esNone
       EdgeOuter = esNone
-      GradientEndColor = clWindow
+      GradientEndColor = 16053492
       Images = pilNotes
       ParentShowHint = False
       ShowHint = True
       TabOrder = 3
       Transparent = False
+      ExplicitTop = 26
       object btnImport: TToolButton
         Left = 0
         Top = 0
