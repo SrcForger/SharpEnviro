@@ -46,22 +46,30 @@ uses
   JclStrings,
   JvLabel,
   SharpApi,
-  SharpEListBoxEx;
+  SharpEListBoxEx,
+  JvXPCore,
+  JvXPCheckCtrls;
 
 type
   TfrmEdit = class(TForm)
     edName: TLabeledEdit;
     cbBasedOn: TComboBox;
     JvLabel1: TJvLabel;
+    chkOverride: TJvXPCheckbox;
+    chkEnableIcons: TJvXPCheckbox;
+    chkEnableGeneric: TJvXPCheckbox;
+    chkDisplayExtensions: TJvXPCheckbox;
 
     procedure edHotkeyKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure UpdateEditState(Sender: TObject);
     procedure editStateEvent(Sender: TObject);
+    procedure chkOverrideClick(Sender: TObject);
 
   private
     { Private declarations }
     FUpdating: Boolean;
     FPluginHost: TInterfacedSharpCenterHostBase;
+    procedure UpdateOverrideState;
   public
     { Public declarations }
     SelectedText: string;
@@ -111,6 +119,11 @@ begin
 
           cbBasedOn.Enabled := True;
           edName.SetFocus;
+
+          chkOverride.Checked := False;
+          chkEnableIcons.Checked := False;
+          chkEnableGeneric.Checked := False;
+          chkDisplayExtensions.Checked := False;
         end;
       sceEdit: begin
 
@@ -122,6 +135,16 @@ begin
 
           edName.Text := tmpMenuItem.Name;
           cbBasedOn.Enabled := False;
+
+          chkOverride.Checked := tmpMenuItem.OverrideOptions;
+          if tmpMenuItem.OverrideOptions then begin
+            chkEnableIcons.Checked := tmpMenuItem.EnableIcons;
+            chkEnableGeneric.Checked := tmpMenuItem.EnableGeneric;
+            chkDisplayExtensions.Checked := tmpMenuItem.DisplayExtensions;
+          end;
+
+          UpdateOverrideState;
+
         end;
     end;
 
@@ -130,17 +153,28 @@ begin
   end;
 end;
 
+procedure TfrmEdit.UpdateOverrideState;
+begin
+  chkEnableGeneric.Visible := chkOverride.Checked;
+  chkEnableIcons.Visible := chkOverride.Checked;
+  chkDisplayExtensions.Visible := chkOverride.Checked;
+end;
+
 procedure TfrmEdit.Save;
 var
   tmpItem: TSharpEListItem;
   tmpMenuItem: TMenuDataObject;
-  sNewFile, sOldFile, sMenuDir: string;
+  sNewFile, sOldFile, sMenuDir, sFilename: string;
 begin
   case PluginHost.EditMode of
     sceAdd: begin
-        frmList.Save(edName.Text, cbBasedOn.Text);
-        frmList.EditMenu(edName.Text);
+        sFilename := frmList.Save(edName.Text, cbBasedOn.Text);
         
+        frmList.SaveMenuOptions(sFileName, chkOverride.Checked, chkEnableIcons.Checked,
+          chkEnableGeneric.Checked, chkDisplayExtensions.Checked);
+          
+        frmList.EditMenu(edName.Text);
+
         Exit;
       end;
     sceEdit: begin
@@ -157,8 +191,15 @@ begin
         sNewFile := sMenuDir + trim(StrRemoveChars(edName.Text,
           ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']) + '.xml');
 
-        if CompareText(sOldFile,sNewFile) <> 0 then
-          RenameFile(sOldFile,sNewFile);
+        if CompareText(sOldFile, sNewFile) <> 0 then
+          RenameFile(sOldFile, sNewFile);
+
+        tmpMenuItem.OverrideOptions := chkOverride.Checked;
+        tmpMenuItem.EnableIcons := chkEnableIcons.Checked;
+        tmpMenuItem.EnableGeneric := chkEnableGeneric.Checked;
+        tmpMenuItem.DisplayExtensions := chkDisplayExtensions.Checked;
+
+        frmList.SaveMenuOptions(sNewFile,tmpMenuItem);
       end;
   end;
 
@@ -168,7 +209,14 @@ end;
 
 procedure TfrmEdit.UpdateEditState(Sender: TObject);
 begin
-  PluginHost.SetEditing(True);
+  if not (FUpdating) then
+    PluginHost.SetEditing(True);
+end;
+
+procedure TfrmEdit.chkOverrideClick(Sender: TObject);
+begin
+  UpdateEditState(nil);
+  UpdateOverrideState;
 end;
 
 procedure TfrmEdit.edHotkeyKeyUp(Sender: TObject; var Key: Word;
@@ -179,8 +227,7 @@ end;
 
 procedure TfrmEdit.editStateEvent(Sender: TObject);
 begin
-  if not (FUpdating) then
-    PluginHost.SetEditing(True);
+  UpdateEditState(nil);
 end;
 
 end.

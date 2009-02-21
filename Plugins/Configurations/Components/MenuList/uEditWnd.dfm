@@ -3,7 +3,7 @@ object frmEdit: TfrmEdit
   Top = 363
   BorderStyle = bsNone
   Caption = 'Hotkey Configuration'
-  ClientHeight = 38
+  ClientHeight = 94
   ClientWidth = 499
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
@@ -15,7 +15,7 @@ object frmEdit: TfrmEdit
   OldCreateOrder = False
   DesignSize = (
     499
-    38)
+    94)
   PixelsPerInch = 96
   TextHeight = 14
   object JvLabel1: TJvLabel
@@ -33,9 +33,9 @@ object frmEdit: TfrmEdit
     HotTrackFont.Style = []
   end
   object edName: TLabeledEdit
-    Left = 56
+    Left = 48
     Top = 8
-    Width = 201
+    Width = 209
     Height = 22
     Anchors = [akLeft, akTop, akRight]
     EditLabel.Width = 30
@@ -53,8 +53,44 @@ object frmEdit: TfrmEdit
     Height = 22
     Style = csDropDownList
     Anchors = [akTop, akRight]
-    ItemHeight = 0
+    ItemHeight = 14
     TabOrder = 1
     OnChange = editStateEvent
+  end
+  object chkOverride: TJvXPCheckbox
+    Left = 11
+    Top = 45
+    Width = 273
+    Height = 17
+    Caption = 'Override menu options'
+    TabOrder = 2
+    OnClick = chkOverrideClick
+  end
+  object chkEnableIcons: TJvXPCheckbox
+    Left = 11
+    Top = 68
+    Width = 101
+    Height = 17
+    Caption = 'Enable Icons'
+    TabOrder = 3
+    OnClick = UpdateEditState
+  end
+  object chkEnableGeneric: TJvXPCheckbox
+    Left = 118
+    Top = 68
+    Width = 139
+    Height = 17
+    Caption = 'Enable generic Icons'
+    TabOrder = 4
+    OnClick = UpdateEditState
+  end
+  object chkDisplayExtensions: TJvXPCheckbox
+    Left = 263
+    Top = 68
+    Width = 161
+    Height = 17
+    Caption = 'Display file extensions'
+    TabOrder = 5
+    OnClick = UpdateEditState
   end
 end

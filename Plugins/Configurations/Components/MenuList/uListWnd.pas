@@ -58,9 +58,14 @@ type
   TMenuDataObject = class
   public
     ID: Integer;
-    Name: string;
+      Name: string;
     FileName: string;
     Items: integer;
+
+    OverrideOptions: Boolean;
+    EnableIcons: Boolean;
+    EnableGeneric: Boolean;
+    DisplayExtensions: Boolean;
   end;
 
   TfrmList = class(TForm)
@@ -88,13 +93,17 @@ type
     procedure AddItemsToList(AList: TObjectList);
     procedure SelectMenuItem(AName: string);
   public
-    procedure Save(AName: string; ATemplate: string);
-    procedure CopyMenu(AName: string; var ANew: String);
+    function Save(AName: string; ATemplate: string): string;
+    procedure CopyMenu(AName: string; var ANew: string);
     procedure RenderItems;
 
-    procedure EditMenu( name: string);
+    procedure SaveMenuOptions(fileName: string; menuItem: TMenuDataObject); overload;
+    procedure SaveMenuOptions(fileName: string; OverrideOptions: Boolean;
+      EnableIcons: Boolean; EnableGeneric: Boolean; DisplayExtensions: Boolean); overload;
+
+    procedure EditMenu(name: string);
     property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
-      FPluginHost;  end;
+      FPluginHost; end;
 
 var
   frmList: TfrmList;
@@ -135,6 +144,7 @@ end;
 procedure TfrmList.AddItemsToList(AList: TObjectList);
 var
   xml: TJclSimpleXML;
+  elemSettings: TJclSimpleXMLElem;
   newItem: TMenuDataObject;
   dir: string;
   slMenus: TStringList;
@@ -162,7 +172,7 @@ begin
   try
 
     // build list of bar.xml files
-    SharpFileUtils.FindFiles( slMenus, dir, '*.xml', False);
+    SharpFileUtils.FindFiles(slMenus, dir, '*.xml', False);
     for i := 0 to Pred(slMenus.Count) do begin
       xml.LoadFromFile(slMenus[i]);
       if xml.Root.Name = 'SharpEMenuFile' then begin
@@ -171,6 +181,18 @@ begin
         newItem.Name := PathRemoveExtension(ExtractFileName(slMenus[i]));
         newItem.FileName := slMenus[i];
         newItem.Items := xml.Root.Items.Count;
+
+        // menu options
+        if xml.Root.Items.ItemNamed['settings'] <> nil then begin
+
+          elemSettings := xml.Root.Items.ItemNamed['settings'];
+          newItem.OverrideOptions := true;
+          newItem.EnableIcons := elemSettings.Items.BoolValue('UseIcons', false);
+          newItem.EnableGeneric := elemSettings.Items.BoolValue('UseGenericIcons', false);
+          newItem.DisplayExtensions := elemSettings.Items.BoolValue('ShowExtensions', false);
+          newItem.Items := xml.root.Items.Count - 1;
+        end;
+
         AList.Add(newItem);
       end;
     end;
@@ -181,7 +203,7 @@ begin
   end;
 end;
 
-procedure TfrmList.CopyMenu(AName: string; var ANew: String);
+procedure TfrmList.CopyMenu(AName: string; var ANew: string);
 var
   sCopyName, sDestFile, sSrcFile: string;
   n: integer;
@@ -193,23 +215,23 @@ begin
   sMenuDir := GetSharpeUserSettingsPath + 'SharpMenu\';
 
   // If already copy, remove copy symbol
-  n := pos(')',sCopyName);
+  n := pos(')', sCopyName);
   if n <> 0 then begin
 
     n2 := n;
     repeat
       s := sCopyName[n2];
       n2 := n2 - 1;
-    until ((n2 <= 1) or (s = '(')) ;
+    until ((n2 <= 1) or (s = '('));
 
     if n2 > 1 then
-      sCopyName := System.Copy(sCopyName,1,n2-1);
+      sCopyName := System.Copy(sCopyName, 1, n2 - 1);
   end;
 
   n := 0;
   s := sCopyName;
   repeat
-    s := format('%s (%d)',[sCopyName,n]);
+    s := format('%s (%d)', [sCopyName, n]);
     sFilename := sMenuDir + s + '.xml';
     inc(n);
   until not (fileExists(sFilename));
@@ -218,15 +240,14 @@ begin
   ANew := s;
   sSrcFile := sMenuDir + AName + '.xml';
   sDestFile := sMenuDir + sCopyName + '.xml';
-  FileCopy(sSrcFile,sDestFile,false);
-
+  FileCopy(sSrcFile, sDestFile, false);
 
 end;
 
 procedure TfrmList.EditMenu(name: string);
 begin
   CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
-          + '\_Components\MenuEdit.con'), pchar(name));
+    + '\_Components\MenuEdit.con'), pchar(name));
 end;
 
 procedure TfrmList.FormDestroy(Sender: TObject);
@@ -248,7 +269,7 @@ procedure TfrmList.lbItemsClickItem(Sender: TObject; const ACol: Integer;
 var
   tmpMenu: TMenuDataObject;
   bDelete: Boolean;
-  sNew: String;
+  sNew: string;
 
   function CtrlDown: Boolean;
   var
@@ -282,17 +303,17 @@ begin
 
       end;
     colCopy: begin
-      CopyMenu(tmpMenu.Name, sNew);
-      RenderItems;
-      SelectMenuItem(sNew);
-    end;
+        CopyMenu(tmpMenu.Name, sNew);
+        RenderItems;
+        SelectMenuItem(sNew);
+      end;
   end;
 
   if frmEdit <> nil then
     frmEdit.InitUi;
 
-  PluginHost.SetEditTabsVisibility(lbItems.ItemIndex, lbItems.Count );
-  PluginHost.Refresh( rtAll );
+  PluginHost.SetEditTabsVisibility(lbItems.ItemIndex, lbItems.Count);
+  PluginHost.Refresh(rtAll);
 end;
 
 procedure TfrmList.lbItemsDblClickItem(Sender: TObject; const ACol: Integer;
@@ -345,7 +366,7 @@ procedure TfrmList.lbItemsGetCellText(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AColText: string);
 var
   tmpMenu: TMenuDataObject;
-  s, s2: String;
+  s, s2: string;
 
   colItemTxt: TColor;
   colDescTxt: TColor;
@@ -360,24 +381,23 @@ begin
   case ACol of
     colName: begin
 
-      s := tmpMenu.Name;
-      if s = '' then s := '*Untitled';
+        s := tmpMenu.Name;
+        if s = '' then s := '*Untitled';
 
-      if tmpMenu.Items = 0 then
-        s2 := 'Empty' else
-      if tmpMenu.Items = 1 then
-        s2 := IntToStr(tmpMenu.Items) + ' Menu Item'
-      else
-        s2 := IntToStr(tmpMenu.Items) + ' Menu Items';
+        if tmpMenu.Items = 0 then
+          s2 := 'Empty' else
+          if tmpMenu.Items = 1 then
+            s2 := IntToStr(tmpMenu.Items) + ' Menu Item'
+          else
+            s2 := IntToStr(tmpMenu.Items) + ' Menu Items';
 
-
-      AColText := format('<font color="%s">%s<font color="%s"> - %s',[ColorToString(colItemTxt),s,
-        ColorToString(colDescTxt),s2]);
-    end;
+        AColText := format('<font color="%s">%s<font color="%s"> - %s', [ColorToString(colItemTxt), s,
+          ColorToString(colDescTxt), s2]);
+      end;
 
     colEdit: begin
-      AColText := format('<font color="%s"><u>Edit</u>',[ColorToString(colBtnTxt),s]);
-    end;
+        AColText := format('<font color="%s"><u>Edit</u>', [ColorToString(colBtnTxt), s]);
+      end;
   end;
 end;
 
@@ -426,13 +446,13 @@ begin
     lbItems.ItemIndex := 0;
 
   if PluginHost <> nil then begin
-    PluginHost.SetEditTabsVisibility(lbItems.ItemIndex,lbItems.Count);
-    PluginHost.Refresh( rtAll );
+    PluginHost.SetEditTabsVisibility(lbItems.ItemIndex, lbItems.Count);
+    PluginHost.Refresh(rtAll);
   end;
 
 end;
 
-procedure TfrmList.Save(AName: string; ATemplate: string);
+function TfrmList.Save(AName: string; ATemplate: string): string;
 var
   xml: TJclSimpleXML;
   sFileName: string;
@@ -450,6 +470,7 @@ begin
     sDest := sMenuDir + AName + '.xml';
 
     FileCopy(sSrc, sDest, False);
+    result := sDest;
   end
   else begin
 
@@ -457,13 +478,87 @@ begin
     try
       xml.Root.Name := 'SharpEMenuFile';
     finally
-
       sFileName := sMenuDir + trim(StrRemoveChars(AName,
         ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']) + '.xml');
 
       xml.SaveToFile(sFileName);
       xml.Free;
+
+      result := sFileName;
     end;
+  end;
+end;
+
+procedure TfrmList.SaveMenuOptions(fileName: string; OverrideOptions,
+  EnableIcons, EnableGeneric, DisplayExtensions: Boolean);
+var
+  tmp: TMenuDataObject;
+begin
+  tmp := TMenuDataObject.Create;
+  try
+    tmp.OverrideOptions := OverrideOptions;
+    tmp.EnableIcons := EnableIcons;
+    tmp.EnableGeneric := EnableGeneric;
+    tmp.DisplayExtensions := DisplayExtensions;
+
+    SaveMenuOptions(fileName, tmp);
+  finally
+    tmp.Free;
+  end;
+end;
+
+procedure TfrmList.SaveMenuOptions(fileName: string; menuItem: TMenuDataObject);
+var
+  xml: TJclSimpleXML;
+  elemSettings: TJclSimpleXMLElem;
+  bSave: boolean;
+begin
+  bSave := false;
+  xml := TJclSimpleXML.Create;
+  try
+    xml.LoadFromFile(fileName);
+
+    if xml.Root.Items.ItemNamed['settings'] <> nil then begin
+      elemSettings := xml.Root.Items.ItemNamed['settings'];
+
+      // Delete section if custom settings is false and exit
+      if not (menuItem.OverrideOptions) then begin
+
+        if (xml.Root.Items.IndexOf(elemSettings) <> -1) then
+          xml.Root.Items.Delete(xml.Root.Items.IndexOf(elemSettings));
+        bSave := true;
+      end else begin
+
+        if elemSettings.Items.ItemNamed['UseIcons'] <> nil then
+          elemSettings.Items.ItemNamed['UseIcons'].BoolValue := menuItem.EnableIcons else
+          elemSettings.Items.Add('UseIcons', menuItem.EnableIcons);
+
+        if elemSettings.Items.ItemNamed['UseGenericIcons'] <> nil then
+          elemSettings.Items.ItemNamed['UseGenericIcons'].BoolValue := menuItem.EnableGeneric else
+          elemSettings.Items.Add('UseGenericIcons', menuItem.EnableGeneric);
+
+        if elemSettings.Items.ItemNamed['ShowExtensions'] <> nil then
+          elemSettings.Items.ItemNamed['ShowExtensions'].BoolValue := menuItem.DisplayExtensions else
+          elemSettings.Items.Add('ShowExtensions', menuItem.DisplayExtensions);
+
+        bSave := true;
+      end;
+    end else begin
+      if (menuItem.OverrideOptions) then begin
+        elemSettings := xml.Root.Items.Add('settings');
+        elemSettings.Items.Add('UseIcons', menuItem.EnableIcons);
+        elemSettings.Items.Add('UseGenericIcons', menuItem.EnableGeneric);
+        elemSettings.Items.Add('ShowExtensions', menuItem.DisplayExtensions);
+
+        bSave := true;
+      end;
+
+    end;
+  finally
+    if bSave then
+      xml.SaveToFile(fileName);
+
+    xml.Free;
   end;
 end;
 
