@@ -3,7 +3,7 @@ object NotesForm: TNotesForm
   Top = 0
   Caption = 'Notes'
   ClientHeight = 334
-  ClientWidth = 674
+  ClientWidth = 678
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -60,7 +60,7 @@ object NotesForm: TNotesForm
     AlignWithMargins = True
     Left = 5
     Top = 5
-    Width = 664
+    Width = 668
     Height = 324
     Margins.Left = 5
     Margins.Top = 5
@@ -118,23 +118,19 @@ object NotesForm: TNotesForm
     PageBackgroundColor = clWindow
     OnTabChange = pcNotesTabChange
     OnBtnClick = pcNotesBtnClick
-    ExplicitLeft = 0
-    ExplicitTop = 0
-    ExplicitWidth = 674
-    ExplicitHeight = 334
+    ExplicitWidth = 664
     DesignSize = (
-      664
+      668
       324)
     object reNotes: TJvRichEdit
       AlignWithMargins = True
       Left = 3
       Top = 56
-      Width = 658
+      Width = 662
       Height = 265
       Align = alClient
       AutoSize = False
       BorderStyle = bsNone
-      Flat = True
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -152,18 +148,17 @@ object NotesForm: TNotesForm
       OnSelectionChange = EditorSelectionChange
       OnCloseFindDialog = EditorCloseFindDialog
       ExplicitTop = 58
-      ExplicitWidth = 668
-      ExplicitHeight = 273
+      ExplicitWidth = 658
+      ExplicitHeight = 235
     end
     object tbNotes: TJvToolBar
       AlignWithMargins = True
-      Left = 1
+      Left = 4
       Top = 28
-      Width = 662
+      Width = 661
       Height = 22
-      Margins.Left = 1
+      Margins.Left = 4
       Margins.Top = 28
-      Margins.Right = 1
       AutoSize = True
       Caption = 'tbNotes'
       DrawingStyle = dsGradient
@@ -176,6 +171,8 @@ object NotesForm: TNotesForm
       ShowHint = True
       TabOrder = 3
       Transparent = False
+      ExplicitLeft = 3
+      ExplicitWidth = 663
       object btnImport: TToolButton
         Left = 0
         Top = 0
