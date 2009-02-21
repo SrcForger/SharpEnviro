@@ -113,7 +113,7 @@ begin
       sceAdd: begin
           edName.Text := '';
           edCommand.Text := '';
-          edIcon.Text := '';
+          edIcon.Text := 'shell:icon';
         end;
       sceEdit: begin
           if frmList.lbItems.SelectedItem = nil then

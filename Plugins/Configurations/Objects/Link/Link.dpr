@@ -133,13 +133,12 @@ begin
       // Show caption?
       chkCaption.Checked := ShowCaption;
 
-      // Single-line caption
-      edtSingle.Text := Caption;
-
       // Multi-line caption page index
       if MLineCaption then
         spcCaption.TabIndex := 1
       else spcCaption.TabIndex := 0;
+
+      edtSingle.Text := Caption;
       mmoMulti.Lines.CommaText := Caption;
 
       // Icon and target text
