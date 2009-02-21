@@ -71,7 +71,6 @@ uses
   SharpESwatchManager,
   JvExControls,
   JvPageList,
-  JvSpin,
   JvXPCheckCtrls,
   JvExMask, JvToolEdit;
 
@@ -807,12 +806,6 @@ begin
 
         if c.ClassNameIs('TTabSheet') then begin
           TTabSheet(c).Font.Color := theme.PluginBackgroundText;
-        end;
-
-        if c.ClassNameIs('TJvSpinEdit') then begin
-          TJvSpinEdit(c).Color := theme.PluginControlBackground;
-          TJvSpinEdit(c).Font.Color := theme.PluginControlText;
-          TJvSpinEdit(c).DoubleBuffered := True;
         end;
 
         if c.ClassNameIs('TJvFilenameEdit') then begin

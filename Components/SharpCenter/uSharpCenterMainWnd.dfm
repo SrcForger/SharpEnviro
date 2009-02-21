@@ -5,7 +5,7 @@ object SharpCenterWnd: TSharpCenterWnd
   ClientHeight = 558
   ClientWidth = 720
   Color = clWindow
-  Constraints.MinHeight = 400
+  Constraints.MinHeight = 320
   Constraints.MinWidth = 500
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
@@ -2958,6 +2958,10 @@ object SharpCenterWnd: TSharpCenterWnd
             Caption = 'tabFav'
             ImageIndex = 2
             TabVisible = False
+            ExplicitLeft = 0
+            ExplicitTop = 0
+            ExplicitWidth = 0
+            ExplicitHeight = 0
             object lbHistory: TSharpEListBoxEx
               Left = 0
               Top = 0
