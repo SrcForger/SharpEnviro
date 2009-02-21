@@ -295,7 +295,6 @@ begin
     // Set Scheme
     if AItem <> nil then begin
       tmrSetScheme.Enabled := true;
-      Exit;
     end;
 
   end
