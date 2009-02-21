@@ -4,10 +4,6 @@
     <minallicon>images\Modules\Taskbar\minall.png</minallicon>
     <maxallicon>images\Modules\Taskbar\maxall.png</maxallicon>
   </taskbar>
-  <idrop>
-    <background>images\Modules\iDrop\Background.png</background>
-    <blendcolor>$Border</blendcolor>
-  </idrop>
   <cpumonitor>
     <fgcolor>$Text</fgcolor>
     <bgcolor>$Background</bgcolor>
