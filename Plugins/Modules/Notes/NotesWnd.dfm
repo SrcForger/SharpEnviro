@@ -152,6 +152,8 @@ object NotesForm: TNotesForm
       Margins.Top = 30
       AutoSize = True
       Caption = 'tbNotes'
+      Ctl3D = True
+      DrawingStyle = dsGradient
       EdgeInner = esNone
       EdgeOuter = esNone
       GradientEndColor = clWindow
@@ -159,6 +161,7 @@ object NotesForm: TNotesForm
       ParentShowHint = False
       ShowHint = True
       TabOrder = 3
+      Transparent = False
       object btnImport: TToolButton
         Left = 0
         Top = 0
