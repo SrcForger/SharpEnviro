@@ -177,6 +177,19 @@ begin
   end;
 end;
 
+function ExpandEnvVars(const Str: string): string;
+var
+  BufSize: Integer; // size of expanded string
+begin
+  // Get required buffer size
+  BufSize := ExpandEnvironmentStrings(
+    PChar(Str), nil, 0);
+  // Read expanded string into result string
+  SetLength(Result, BufSize);
+  ExpandEnvironmentStrings(PChar(Str),
+    PChar(Result), BufSize);
+end;
+
 function extrShellIconLarge(Bmp : TBitmap32; FileName : String; Size : Integer) : THandle;
 var
   Icon : HIcon;
@@ -205,6 +218,9 @@ var
   Flag : DWord;
   Attr : integer;
 begin
+  if not FileExists(FileName) then
+    FileName := ExpandEnvVars(FileName);
+
   if Size <= 16 then
     Flag := SHGFI_ICON or SHGFI_SMALLICON
   else if Size <= 32 then
