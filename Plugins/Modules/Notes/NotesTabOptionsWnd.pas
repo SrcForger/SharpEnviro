@@ -30,7 +30,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, JvExControls, JvXPCore, JvXPButtons, ImgList,
-  PngImageList, JvExForms, JvCustomItemViewer, JvImageListViewer;
+  PngImageList, JvExForms, JvCustomItemViewer, JvImageListViewer, ComCtrls,
+  JvOwnerDrawViewer;
 
 type
   TTabOptionsForm = class(TForm)
@@ -44,11 +45,13 @@ type
     procedure btnCancelClick(Sender: TObject);
     procedure editNameKeyPress(Sender: TObject; var Key: Char);
     procedure FormShow(Sender: TObject);
+    procedure ilvIconDrawItem(Sender: TObject; Index: Integer;
+      State: TCustomDrawState; Canvas: TCanvas; ItemRect, TextRect: TRect);
   private
     { Private declarations }
     FOriginalTabName: string;
+    
   public
-    { Public declarations }
   end;
 
 var
@@ -112,6 +115,20 @@ procedure TTabOptionsForm.FormShow(Sender: TObject);
 begin
   // Store the original tab name so we can see if it changed later.
   FOriginalTabName := editName.Text;
+end;
+
+procedure TTabOptionsForm.ilvIconDrawItem(Sender: TObject; Index: Integer;
+  State: TCustomDrawState; Canvas: TCanvas; ItemRect, TextRect: TRect);
+begin
+  if ( NotesForm <> nil ) and (Index < NotesForm.pilTabImages.Count) then begin
+
+    if [cdsSelected, cdsHot] * State <> [] then begin
+      NotesForm.pilTabImages.Draw(Canvas,ItemRect.Left+1,ItemRect.Top+1,Index);
+      Canvas.Rectangle(ItemRect);
+    end else begin
+      NotesForm.pilTabImages.Draw(Canvas,ItemRect.Left+1,ItemRect.Top+1,Index);
+    end;
+  end;
 end;
 
 end.

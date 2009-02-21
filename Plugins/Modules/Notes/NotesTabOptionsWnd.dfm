@@ -3,8 +3,8 @@ object TabOptionsForm: TTabOptionsForm
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Tab Options'
-  ClientHeight = 240
-  ClientWidth = 282
+  ClientHeight = 270
+  ClientWidth = 314
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,8 +18,8 @@ object TabOptionsForm: TTabOptionsForm
   PixelsPerInch = 96
   TextHeight = 13
   object lblIcon: TLabel
-    Left = 20
-    Top = 70
+    Left = 19
+    Top = 81
     Width = 25
     Height = 13
     Caption = 'Icon:'
@@ -27,7 +27,7 @@ object TabOptionsForm: TTabOptionsForm
   object editName: TLabeledEdit
     Left = 48
     Top = 16
-    Width = 217
+    Width = 253
     Height = 21
     EditLabel.Width = 31
     EditLabel.Height = 13
@@ -38,8 +38,8 @@ object TabOptionsForm: TTabOptionsForm
   end
   object editTags: TLabeledEdit
     Left = 48
-    Top = 43
-    Width = 217
+    Top = 47
+    Width = 253
     Height = 21
     EditLabel.Width = 27
     EditLabel.Height = 13
@@ -48,37 +48,46 @@ object TabOptionsForm: TTabOptionsForm
     TabOrder = 1
   end
   object btnOk: TJvXPButton
-    Left = 64
-    Top = 207
+    Left = 145
+    Top = 235
     Caption = 'Ok'
     TabOrder = 2
     OnClick = btnOkClick
   end
   object btnCancel: TJvXPButton
-    Left = 151
-    Top = 207
+    Left = 228
+    Top = 235
     Caption = 'Cancel'
     TabOrder = 3
     OnClick = btnCancelClick
   end
   object ilvIcon: TJvImageListViewer
     Left = 48
-    Top = 70
-    Width = 217
-    Height = 131
-    HorzScrollBar.Range = 200
+    Top = 81
+    Width = 253
+    Height = 144
+    Cursor = crHandPoint
+    HorzScrollBar.Range = 240
     HorzScrollBar.Tracking = True
     HorzScrollBar.Visible = False
-    VertScrollBar.Range = 100
+    VertScrollBar.Range = 132
     VertScrollBar.Tracking = True
+    Images = NotesForm.pilTabImages
     Options.AutoCenter = True
-    Options.SelectedStyle = dsNormal
-    Options.FrameSize = 5
-    Options.Height = 16
+    Options.BrushPattern.EvenColor = 16772829
+    Options.BrushPattern.OddColor = 16772829
+    Options.DragAutoScroll = False
+    Options.DrawingStyle = dsNormal
+    Options.FillCaption = False
+    Options.SelectedStyle = dsFocus
+    Options.FrameSize = 8
+    Options.Height = 18
+    Options.Layout = tlCenter
     Options.ShowCaptions = False
-    Options.Width = 16
-    SelectedIndex = -1
+    Options.Width = 20
+    SelectedIndex = 5
     TabOrder = 4
     TabStop = True
+    OnDrawItem = ilvIconDrawItem
   end
 end
