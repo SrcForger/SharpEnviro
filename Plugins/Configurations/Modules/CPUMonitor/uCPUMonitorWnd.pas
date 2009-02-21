@@ -32,7 +32,7 @@ uses
   Dialogs, StdCtrls, JclSimpleXml, Menus, ComCtrls, SharpAPI, SharpCenterAPI,
   ExtCtrls, SharpEGaugeBoxEdit, SharpECenterHeader,
   Registry, JclStrings, JvPageList, SharpEColorEditorEx, SharpESwatchManager,
-  JvSpin, SharpERoundPanel, adCPUUsage, ISharpCenterHostUnit, Mask, JvExMask,
+  SharpERoundPanel, adCPUUsage, ISharpCenterHostUnit, Mask, JvExMask,
   JvExControls;
 
 type

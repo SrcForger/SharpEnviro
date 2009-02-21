@@ -58,7 +58,6 @@ uses
   ImgList,
   Mask,
   JvExMask,
-  JvSpin,
   SharpEGaugeBoxEdit,
   SharpERoundPanel,
   JvExStdCtrls,

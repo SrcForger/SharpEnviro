@@ -44,7 +44,6 @@ object frmCPUMon: TfrmCPUMon
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 0
-        ExplicitTop = 165
       end
       object Panel6: TPanel
         AlignWithMargins = True
@@ -61,7 +60,6 @@ object frmCPUMon: TfrmCPUMon
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 1
-        ExplicitTop = 132
         object edit_cpu: TSharpeGaugeBox
           Left = 0
           Top = 0
@@ -135,7 +133,6 @@ object frmCPUMon: TfrmCPUMon
         TitleColor = clWindowText
         DescriptionColor = clRed
         Align = alTop
-        ExplicitTop = 85
       end
       object Panel1: TPanel
         AlignWithMargins = True
@@ -188,7 +185,6 @@ object frmCPUMon: TfrmCPUMon
         TitleColor = clWindowText
         DescriptionColor = clRed
         Align = alTop
-        ExplicitTop = 104
       end
       object Panel3: TPanel
         AlignWithMargins = True
@@ -204,7 +200,6 @@ object frmCPUMon: TfrmCPUMon
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 6
-        ExplicitTop = 135
         object sgbWidth: TSharpeGaugeBox
           AlignWithMargins = True
           Left = 0

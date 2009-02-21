@@ -641,7 +641,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         AlignWithMargins = True
         Left = 5
         Top = 47
-        Width = 250
+        Width = 580
         Height = 23
         Margins.Left = 5
         Margins.Top = 10
