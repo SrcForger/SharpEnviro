@@ -72,7 +72,7 @@ object TabOptionsForm: TTabOptionsForm
     HorzScrollBar.Visible = False
     VertScrollBar.Range = 132
     VertScrollBar.Tracking = True
-    Images = NotesForm.pilTabImages
+    Images = SharpENotesForm.pilTabImages
     Options.AutoCenter = True
     Options.BrushPattern.EvenColor = 16772829
     Options.BrushPattern.OddColor = 16772829

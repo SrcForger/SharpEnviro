@@ -30,7 +30,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms, Types,
   StdCtrls, GR32, GR32_PNG, SharpEButton,
-  JclSimpleXML, SharpApi, Menus, Math, NotesWnd,
+  JclSimpleXML, SharpApi, Menus, Math, NotesWnd, SharpTypes,
   SharpEBaseControls,uISharpBarModule, uNotesSettings;
 
 
@@ -49,14 +49,17 @@ type
     procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
     procedure LoadIcon;
   public
-    NotesForm : TNotesForm;
+    NotesForm : TSharpENotesForm;
     mInterface : ISharpBarModule;
     procedure ReAlignComponents;
     procedure UpdateComponentSkins;
     procedure UpdateSize;
     procedure LoadSettings;
+    procedure LoadTabsSettings;
     procedure SaveSettings;
+    procedure SaveTabsSettings;
     procedure UpdateBangs;
+    procedure SendUpdateNotes;
     property Settings: NotesSettings read FSettings write FSettings;
   end;
 
@@ -70,6 +73,31 @@ uses uSystemFuncs;
 procedure TMainForm.UpdateBangs;
 begin
   SharpApi.RegisterActionEx('!ToggleNotes','Modules',self.Handle,1);
+end;
+
+procedure TMainForm.SendUpdateNotes;
+var
+  NotesWndList : THandleArray;
+  wParam : Word;
+  i : integer;
+begin
+  // Get a list of all notes windows.
+  NotesWndList := FindAllWindows('TSharpENotesForm');
+
+  for i := 0 to High(NotesWndList) do
+    // Do not send a message to ourselves.
+    if NotesWndList[i] <> NotesForm.Handle then
+      // Only send the message to visible windows.
+      if IsWindowVisible(NotesWndList[i]) then
+      begin
+        // Pass the notes directory so only those modules that
+        // have the same directory will reload their settings.
+        wParam := GlobalAddAtom(PAnsiChar(Settings.Directory));
+        // Send the message to the window.
+        SendMessage(NotesWndList[i], WM_UPDATENOTES, wParam, 0);
+      end;
+
+  SetLength(NotesWndList, 0);
 end;
 
 procedure TMainForm.UpdateComponentSkins;
@@ -112,13 +140,13 @@ end;
 procedure TMainForm.SaveSettings;
 var
   XML : TJclSimpleXML;
-  i: Integer;
 begin
   XML := TJclSimpleXML.Create;
   XML.Root.Name := 'NotesModuleSettings';
   with xml.Root.Items do
   begin
-    Add('Name', Button.Caption);
+    Add('Directory', Settings.Directory);
+    Add('CaptionText', Settings.Caption);
     Add('Caption', Settings.ShowCaption);
     Add('Icon', Settings.ShowIcon);
     Add('AlwaysOnTop', Settings.AlwaysOnTop);
@@ -130,7 +158,20 @@ begin
     Add('Filter', Settings.Filter);
     Add('FilterIndex', Settings.FilterIndex);
     Add('LastTab', Settings.LastTab);
+  end;
+  XML.SaveToFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
+  XML.Free;
+end;
 
+procedure TMainForm.SaveTabsSettings;
+var
+  XML : TJclSimpleXML;
+  i : Integer;
+begin
+  XML := TJclSimpleXML.Create;
+  XML.Root.Name := 'NotesModuleTabsSettings';
+  with xml.Root.Items do
+  begin
     with Add('Tabs').Items do
       for i := 0 to Pred(Settings.Tabs.Count) do
         with Add('Tab').Items do
@@ -142,7 +183,7 @@ begin
           Add('SelLength', NotesTabSettings(Settings.Tabs.Objects[i]).SelLength);
         end;
   end;
-  XML.SaveToFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
+  XML.SaveToFile(Settings.Directory + '\NotesModuleTabsSettings.xml');
   XML.Free;
 end;
 
@@ -151,8 +192,9 @@ var
   XML : TJclSimpleXML;
   fileloaded : boolean;
   Mon : TMonitor;
-  i: Integer;
-  tabSettings: NotesTabSettings;
+  notesDirectory : string;
+  notesDirectoryChanged : Boolean;
+  notesOpen : Boolean;
 begin
   UpdateBangs;
 
@@ -171,17 +213,40 @@ begin
   if fileloaded then
     with xml.Root.Items do
     begin
-      Self.Caption := Value('Name', 'Notes');
-      
-      if Self.Caption = '' then
-        Self.Caption := 'Notes';
+      // Get the directory the module should use to store and display tabs.
+      notesDirectory := Value('Directory', Settings.Directory);
+      notesDirectoryChanged := (Settings.Directory <> notesDirectory);
+      notesOpen := NotesForm.Visible;
 
-      NotesForm.Caption := Self.Caption;
+      // If the user changed the notes directory then we need to reload the tabs.
+      if (notesDirectoryChanged) then
+      begin
+        if notesOpen then
+          // Close the form so everything gets saved.
+          NotesForm.Close;
+        // Free the old settings and create a new one.
+        Settings.Free;
+        Settings := NotesSettings.Create;
+        Settings.Directory := notesDirectory;
+      end;
+
+      // Get the name the user may have defined and use it for the caption.
+      Settings.Caption := Value('CaptionText', Settings.Caption);
+
+      // Set the caption for the main form and notes form.
+      Self.Caption := Settings.Caption;
+      NotesForm.Caption := Settings.Caption;
+
       Settings.ShowCaption := BoolValue('Caption', Settings.ShowCaption);
       Settings.ShowIcon := BoolValue('Icon', Settings.ShowIcon);
       Settings.AlwaysOnTop := BoolValue('AlwaysOnTop', Settings.AlwaysOnTop);
 
-      if not FReload then
+      if Settings.AlwaysOnTop then
+        NotesForm.FormStyle := fsStayOnTop
+      else
+        NotesForm.FormStyle := fsNormal;
+
+      if (not FReload) or notesDirectoryChanged then
       begin
         // Indicate that we don't want to reload these these.
         FReload := True;
@@ -194,19 +259,50 @@ begin
         Settings.Filter := Value('Filter', Settings.Filter);
         Settings.FilterIndex := IntValue('FilterIndex', Settings.FilterIndex);
         Settings.LastTab := Value('LastTab', Settings.LastTab);
+      end;
 
-        if ItemNamed['Tabs'] <> nil then
-          with ItemNamed['Tabs'].Items do
-            for i := 0 to Pred(Count) do
+      if notesDirectoryChanged and notesOpen then
+        NotesForm.Show;
+    end;
+  XML.Free;
+end;
+
+procedure TMainForm.LoadTabsSettings;
+var
+  XML : TJclSimpleXML;
+  fileloaded : boolean;
+  tabName : string;
+  tabSettings : NotesTabSettings;
+  i : Integer;
+begin
+  // We store the settings for the tabs in the directory the
+  // module uses for storing and displaying tabs.
+  XML := TJclSimpleXML.Create;
+  try
+    XML.LoadFromFile(Settings.Directory + '\NotesModuleTabsSettings.xml');
+    fileloaded := True;
+  except
+    fileloaded := False;
+  end;
+  if fileloaded then
+    with xml.Root.Items do
+    begin
+      if ItemNamed['Tabs'] <> nil then
+        with ItemNamed['Tabs'].Items do
+          for i := 0 to Pred(Count) do
+          begin
+            tabName := Item[i].Items.Value('Name', '');
+            // No point and adding the settings if the file does not exist.
+            if FileExists(Settings.Directory + '\' + tabName + '.rtf') then
             begin
-              tabSettings := NotesTabSettings.Create(Item[i].Items.Value('Name', 'Unknown' + IntToStr(i)));
-              tabSettings.Tags := Item[i].Items.Value('Tags', '');
-              tabSettings.IconIndex := Item[i].Items.IntValue('IconIndex', DefaultIconIndex);
-              tabSettings.SelStart := Item[i].Items.IntValue('SelStart', 0);
-              tabSettings.SelLength := Item[i].Items.IntValue('SelLength', 0);
+              tabSettings := NotesTabSettings.Create(tabName);
+              tabSettings.Tags := Item[i].Items.Value('Tags', tabSettings.Tags);
+              tabSettings.IconIndex := Item[i].Items.IntValue('IconIndex', tabSettings.IconIndex);
+              tabSettings.SelStart := Item[i].Items.IntValue('SelStart', tabSettings.SelStart);
+              tabSettings.SelLength := Item[i].Items.IntValue('SelLength', tabSettings.SelLength);
               Settings.Tabs.AddObject(tabSettings.Name, tabSettings);
             end;
-      end;
+          end;
     end;
   XML.Free;
 end;
@@ -221,7 +317,8 @@ var
   newWidth : integer;
 begin
   Button.Left := 2;
-  newWidth := 20;
+  newWidth := mInterface.SkinInterface.SkinManager.Skin.ButtonSkin.WidthMod;
+
   if (Settings.ShowIcon) and (Button.Glyph32 <> nil) then
   begin
     LoadIcon;
@@ -230,7 +327,7 @@ begin
 
   if (Settings.ShowCaption) then
   begin
-    Button.Caption := Self.Caption;
+    Button.Caption := Settings.Caption;
     newWidth := newWidth + Button.GetTextWidth;
   end else Button.Caption := '';
 
@@ -238,7 +335,6 @@ begin
   mInterface.MaxSize := NewWidth;
   if newWidth <> Width then
     mInterface.BarInterface.UpdateModuleSize
-  else UpdateSize;
 end;
 
 function PointInRect(P : TPoint; Rect : TRect) : boolean;
@@ -254,7 +350,7 @@ var
   b : boolean;
   Mon : TMonitor;
 begin
-  if NotesForm = nil then NotesForm := TNotesForm.Create(self);
+  if NotesForm = nil then NotesForm := TSharpENotesForm.Create(self);
 
   if NotesForm.Visible then
   begin
@@ -301,7 +397,7 @@ procedure TMainForm.FormCreate(Sender: TObject);
 begin
   FReload := False;
   DoubleBuffered := True;
-  NotesForm := TNotesForm.Create(Self);
+  NotesForm := TSharpENotesForm.Create(Self);
   Settings := NotesSettings.Create;
 end;
 

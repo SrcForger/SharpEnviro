@@ -82,10 +82,15 @@ begin
     // Don't clear the list because the Notes Module also
     // saves tab information to this file.
 
-    if ItemNamed['Name'] <> nil then
-      ItemNamed['Name'].Value := editName.Text
+    if ItemNamed['Directory'] <> nil then
+      ItemNamed['Directory'].Value := editDirectory.Text
     else
-      Add('Name', editName.Text);
+      Add('Directory', editDirectory.Text);
+
+    if ItemNamed['CaptionText'] <> nil then
+      ItemNamed['CaptionText'].Value := editCaptionText.Text
+    else
+      Add('CaptionText', editCaptionText.Text);
 
     if ItemNamed['AlwaysOnTop'] <> nil then
       ItemNamed['AlwaysOnTop'].BoolValue := cbAlwaysOnTop.Checked
@@ -116,10 +121,15 @@ begin
   begin
     with PluginHost.Xml.XmlRoot.Items, frmNotes do
     begin
-      editName.Text := Value('Name', 'Notes');
+      editDirectory.Text := Value('Directory', SharpApi.GetSharpeUserSettingsPath + 'Notes');
+
+      if editDirectory.Text = '' then
+        editDirectory.Text := SharpApi.GetSharpeUserSettingsPath + 'Notes';
+
+      editCaptionText.Text := Value('CaptionText', 'Notes');
       
-      if editName.Text = '' then
-        editName.Text := 'Notes';
+      if editCaptionText.Text = '' then
+        editCaptionText.Text := 'Notes';
 
       cbAlwaysOnTop.Checked := BoolValue('AlwaysOnTop', True);
       ShowIcon := BoolValue('Icon', True);

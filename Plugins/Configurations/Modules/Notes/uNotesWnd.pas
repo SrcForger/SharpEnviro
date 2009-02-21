@@ -33,7 +33,8 @@ uses
   ImgList, PngImageList, GR32, GR32_PNG, SharpApi,
   ExtCtrls, Menus, JclStrings, GR32_Image, SharpEGaugeBoxEdit,
   JvPageList, JvExControls, ComCtrls, Mask, SharpCenterAPI, ISharpCenterHostUnit,
-  SharpECenterHeader, JvXPCore, JvXPCheckCtrls;
+  SharpECenterHeader, JvXPCore, JvXPCheckCtrls, JvXPButtons, JvBaseDlg,
+  JvBrowseFolder;
 
 type
   TStringObject = class(TObject)
@@ -51,12 +52,18 @@ type
     schWindowOptions: TSharpECenterHeader;
     schDisplayOptions: TSharpECenterHeader;
     cbAlwaysOnTop: TJvXPCheckbox;
-    editName: TLabeledEdit;
+    editCaptionText: TLabeledEdit;
+    editDirectory: TLabeledEdit;
+    schDirectoryOptions: TSharpECenterHeader;
+    JvBrowseForFolderDialog1: TJvBrowseForFolderDialog;
+    btnBrowse: TJvXPButton;
     procedure FormCreate(Sender: TObject);
     procedure cb_alwaysontopClick(Sender: TObject);
     procedure rb_textClick(Sender: TObject);
     procedure cbAlwaysOnTopClick(Sender: TObject);
-    procedure editNameChange(Sender: TObject);
+    procedure editCaptionTextChange(Sender: TObject);
+    procedure btnBrowseClick(Sender: TObject);
+    procedure editDirectoryChange(Sender: TObject);
   private
     FPluginHost: TInterfacedSharpCenterHostBase;
     procedure UpdateSettings;
@@ -74,6 +81,15 @@ implementation
 
 {$R *.dfm}
 
+procedure TfrmNotes.btnBrowseClick(Sender: TObject);
+var
+  newDirectory : string;
+begin
+  newDirectory := editDirectory.Text;
+  if BrowseForFolder('Browse for Notes folder...', True, newDirectory) then
+    editDirectory.Text := newDirectory;
+end;
+
 procedure TfrmNotes.cbAlwaysOnTopClick(Sender: TObject);
 begin
   UpdateSettings;
@@ -84,7 +100,12 @@ begin
   UpdateSettings;
 end;
 
-procedure TfrmNotes.editNameChange(Sender: TObject);
+procedure TfrmNotes.editDirectoryChange(Sender: TObject);
+begin
+  UpdateSettings;
+end;
+
+procedure TfrmNotes.editCaptionTextChange(Sender: TObject);
 begin
   UpdateSettings;
 end;

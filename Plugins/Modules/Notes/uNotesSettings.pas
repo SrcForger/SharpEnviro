@@ -2,7 +2,7 @@ unit uNotesSettings;
 
 interface
 
-uses Classes, SysUtils;
+uses SharpApi, Classes, SysUtils;
 
 type NotesTabSettings = class
   private
@@ -22,6 +22,8 @@ end;
 
 type NotesSettings = class
   private
+    FDirectory: string;
+    FCaption: string;
     FShowCaption: Boolean;
     FShowIcon: Boolean;
     FAlwaysOnTop: Boolean;
@@ -37,6 +39,8 @@ type NotesSettings = class
   public
     constructor Create;
     destructor Destroy; override;
+    property Directory: string read FDirectory write FDirectory;
+    property Caption: string read FCaption write FCaption;
     property ShowCaption: Boolean read FShowCaption write FShowCaption;
     property ShowIcon: Boolean read FShowIcon write FShowIcon;
     property AlwaysOnTop: Boolean read FAlwaysOnTop write FAlwaysOnTop;
@@ -59,6 +63,8 @@ implementation
 constructor NotesSettings.Create;
 begin
   // Set the default setting
+  FDirectory := SharpApi.GetSharpeUserSettingsPath + 'Notes';
+  FCaption := 'Notes';
   FShowCaption := True;
   FShowIcon := True;
   FAlwaysOnTop := True;
@@ -76,6 +82,7 @@ destructor NotesSettings.Destroy;
 var
   i: Integer;
 begin
+
   // Clean up the objects in the list.
   for i := 0 to Pred(FTabs.Count) do
     FTabs.Objects[i].Free;

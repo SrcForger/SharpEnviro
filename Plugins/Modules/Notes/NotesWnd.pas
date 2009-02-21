@@ -32,10 +32,10 @@ uses
   Dialogs, JvRichEdit, StdCtrls, JvExStdCtrls, ExtCtrls, SharpEPageControl,
   SharpETabList, ImgList, PngImageList, ToolWin, JvExComCtrls, JclStrings,
   JvToolBar, SharpThemeApiEx, JvEdit, Menus, JvMenus, JvMemo, ComCtrls, StrUtils,
-  uVistaFuncs, SharpFileUtils, uNotesSettings;
+  uVistaFuncs, SharpFileUtils, uNotesSettings, SharpAPI;
 
 type
-  TNotesForm = class(TForm)
+  TSharpENotesForm = class(TForm)
     reNotes: TJvRichEdit;
     pcNotes: TSharpEPageControl;
     tbNotes: TJvToolBar;
@@ -141,11 +141,12 @@ type
     procedure btnAlignJustifyClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure EditorChange(Sender: TObject);
   private
     { Private declarations }
     FIndex: Integer;
+    FLoading : Boolean;
     function NotesDir: string;
-    function OldNotesDir: string;
     function CurrText: TJvTextAttributes;
     procedure FocusEditor;
     procedure ShowTabOptions(New: Boolean; Name: string);
@@ -160,6 +161,8 @@ type
     function GetTabSettings(Name: string) : NotesTabSettings;
     procedure DeleteTabSettings(Name: string);
     procedure ConvertTxtFilesToRtfFiles;
+    procedure LoadDefaultTab;
+    procedure WMUpdateNotes(var Msg : TMessage); message WM_UPDATENOTES;
   public
     { Public declarations }
     function TabFilePath(Name: string) : string; overload;
@@ -167,17 +170,34 @@ type
   end;
 
 var
-  NotesForm: TNotesForm;
+  NotesForm: TSharpENotesForm;
 
   const IndentationSize = 5;
 
 implementation
 
-uses SharpAPI, MainWnd, NotesTabOptionsWnd;
+uses MainWnd, NotesTabOptionsWnd;
 
 {$R *.dfm}
 
-function TNotesForm.CurrText: TJvTextAttributes;
+procedure TSharpENotesForm.WMUpdateNotes(var Msg: TMessage);
+var
+  str : PAnsiChar;
+begin
+  GetMem(str, 255);
+  if GlobalGetAtomName(Msg.WParam, str, 255) > 0 then
+    // We only want to reload tab settings that refer to the same directory.
+    if str = Settings.Directory then
+    begin
+      // Call the FormShow event to start fresh with the new settings.
+      FormShow(Self);
+    end;
+
+  GlobalDeleteAtom(Msg.WParam);
+  FreeMem(str);
+end;
+
+function TSharpENotesForm.CurrText: TJvTextAttributes;
 begin
   with reNotes do
     if SelLength > 0 then
@@ -186,19 +206,18 @@ begin
       Result := WordAttributes;
 end;
 
-procedure TNotesForm.FocusEditor;
+procedure TSharpENotesForm.FocusEditor;
 begin
   with reNotes do
     if CanFocus then
       SetFocus;
 end;
 
-procedure TNotesForm.ShowTabOptions(New: Boolean; Name: string);
+procedure TSharpENotesForm.ShowTabOptions(New: Boolean; Name: string);
 var
   tabSettings : NotesTabSettings;
   frmTabOptions : TTabOptionsForm;
   oldTabName : string;
-  i : Integer;
 begin
   if not New and (FIndex = -1) then Exit;
 
@@ -223,25 +242,20 @@ begin
     begin
       if New then
       begin
-        // Add a new tab.
-        i := AddTab(frmTabOptions.editName.Text);
-
-        with TJvRichEdit.Create(nil) do
+        // Create the file.
+        with TJvRichEdit.Create(hiddenPanel) do
         try
-          Parent := Self;
+          Parent := hiddenPanel;
           Visible := False;
           // Create a file for the new tab.
-          Lines.SaveToFile(TabFilePath(i));
+          Lines.SaveToFile(TabFilePath(frmTabOptions.editName.Text));
         finally
           Free;
         end;
 
-        tabSettings := GetTabSettings(TabName(i));
-        tabSettings.Tags := frmTabOptions.editTags.Text;
-        tabSettings.IconIndex := frmTabOptions.ilvIcon.SelectedIndex;
-        
-        // Change to the new tab.
-        pcNotes.TabIndex := i;
+        // Create a tab with the default settings and change to it.
+        pcNotes.TabIndex := AddTab(frmTabOptions.editName.Text);
+
       end
       else
       begin
@@ -260,32 +274,41 @@ begin
             pcNotes.TabItems.Item[FIndex].Caption := frmTabOptions.editName.Text;
           end;
         end;
-
-        // Get the tab settings for with the new or old tab name.
-        // set the tags and icon index and
-        tabSettings := GetTabSettings(TabName(FIndex));
-        tabSettings.Tags := frmTabOptions.editTags.Text;
-        tabSettings.IconIndex := frmTabOptions.ilvIcon.SelectedIndex;
-
-        // Add the tab settings back to the list if we changed the name.
-        if oldTabName <> frmTabOptions.editName.Text then
-          Settings.Tabs.AddObject(tabSettings.Name, tabSettings);
       end;
+      // Get the tab settings for with the new or old tab name.
+      // set the tags and icon index and
+      tabSettings := GetTabSettings(TabName(FIndex));
+      tabSettings.Tags := frmTabOptions.editTags.Text;
+      tabSettings.IconIndex := frmTabOptions.ilvIcon.SelectedIndex;
+
       // Set the image index for the tab.
-      pcNotes.TabItems.Item[FIndex].ImageIndex := frmTabOptions.ilvIcon.SelectedIndex;
+      pcNotes.TabItems.Item[FIndex].ImageIndex := tabSettings.IconIndex;
+
+      // Save the tabs settings and send an update to other notes modules.
+      TMainForm(Owner).SaveTabsSettings;
+      TMainForm(Owner).SendUpdateNotes;
     end;
   finally
     frmTabOptions.Free;
   end;
 end;
 
-procedure TNotesForm.EditorCloseFindDialog(Sender: TObject;
+procedure TSharpENotesForm.EditorChange(Sender: TObject);
+begin
+  if FIndex = -1 then
+    Exit;
+
+  if not FLoading then
+    reNotes.Lines.SaveToFile(TabFilePath(FIndex));
+end;
+
+procedure TSharpENotesForm.EditorCloseFindDialog(Sender: TObject;
   Dialog: TFindDialog);
 begin
   FocusEditor;
 end;
 
-procedure TNotesForm.EditorKeyDown(Sender: TObject; var Key: Word;
+procedure TSharpENotesForm.EditorKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
   Handled: Boolean;
@@ -330,7 +353,7 @@ begin
   end;
 end;
 
-procedure TNotesForm.EditorKeyPress(Sender: TObject; var Key: Char);
+procedure TSharpENotesForm.EditorKeyPress(Sender: TObject; var Key: Char);
 var
   KS: TKeyboardState;
   SS: TShiftState;
@@ -351,7 +374,7 @@ begin
     end;
 end;
 
-procedure TNotesForm.EditorSelectionChange(Sender: TObject);
+procedure TSharpENotesForm.EditorSelectionChange(Sender: TObject);
 begin
   btnCut.Enabled := (reNotes.SelText <> '');
   btnCopy.Enabled := (reNotes.SelText <> '');
@@ -401,7 +424,7 @@ end;
 
 {$REGION 'Toolbar Events'}
 
-procedure TNotesForm.btnImportClick(Sender: TObject);
+procedure TSharpENotesForm.btnImportClick(Sender: TObject);
 var
   i: Integer;
   filePath: string;
@@ -418,9 +441,9 @@ begin
 
       if i = -1 then Exit;
 
-      with TJvRichEdit.Create(nil) do
+      with TJvRichEdit.Create(hiddenPanel) do
       try
-        Parent := Self;
+        Parent := hiddenPanel;
         Visible := False;
         // Open the file being imported.
         Lines.LoadFromFile(filePath);
@@ -432,11 +455,15 @@ begin
 
       // Change to the new tab.
       pcNotes.TabIndex := i;
+
+      // Save the tabs settings and send an update to other notes modules.
+      TMainForm(Owner).SaveTabsSettings;
+      TMainForm(Owner).SendUpdateNotes;
     end;
   end;
 end;
 
-procedure TNotesForm.btnExportClick(Sender: TObject);
+procedure TSharpENotesForm.btnExportClick(Sender: TObject);
 begin
   if FIndex = -1 then
     Exit;
@@ -445,8 +472,7 @@ begin
   begin
     // Save the current text to the new file.
     reNotes.Lines.SaveToFile(SaveDialog.FileName);
-    reNotes.Clear;
-    reNotes.ReadOnly := True;
+
     // Delete the exported file from disk.
     DeleteFile(TabFilePath(FIndex));
     // Delete the tab settings from the list.
@@ -457,10 +483,17 @@ begin
     // in the tab change event.
     FIndex := -1;
     pcNotes.TabIndex := -1;
+
+    reNotes.Clear;
+    reNotes.ReadOnly := True;
+
+    // Save the tabs settings and send an update to other notes modules.
+    TMainForm(Owner).SaveTabsSettings;
+    TMainForm(Owner).SendUpdateNotes;
   end;
 end;
 
-procedure TNotesForm.btnPrintClick(Sender: TObject);
+procedure TSharpENotesForm.btnPrintClick(Sender: TObject);
 begin
   // From the help: It is not advisable to change FormStyle at runtime.
   try
@@ -475,34 +508,34 @@ begin
   end;
 end;
 
-procedure TNotesForm.btnFindClick(Sender: TObject);
+procedure TSharpENotesForm.btnFindClick(Sender: TObject);
 begin
   with reNotes do
     FindDialog(SelText);
 end;
 
-procedure TNotesForm.btnReplaceClick(Sender: TObject);
+procedure TSharpENotesForm.btnReplaceClick(Sender: TObject);
 begin
   with reNotes do
     ReplaceDialog(SelText, '');
 end;
 
-procedure TNotesForm.btnCutClick(Sender: TObject);
+procedure TSharpENotesForm.btnCutClick(Sender: TObject);
 begin
   reNotes.CutToClipboard;
 end;
 
-procedure TNotesForm.btnCopyClick(Sender: TObject);
+procedure TSharpENotesForm.btnCopyClick(Sender: TObject);
 begin
   reNotes.CopyToClipboard;
 end;
 
-procedure TNotesForm.btnPasteClick(Sender: TObject);
+procedure TSharpENotesForm.btnPasteClick(Sender: TObject);
 begin
   reNotes.PasteFromClipboard;
 end;
 
-procedure TNotesForm.btnFontClick(Sender: TObject);
+procedure TSharpENotesForm.btnFontClick(Sender: TObject);
 begin
   // From the help: It is not advisable to change FormStyle at runtime.
   try
@@ -520,7 +553,7 @@ begin
   end;
 end;
 
-procedure TNotesForm.btnBoldClick(Sender: TObject);
+procedure TSharpENotesForm.btnBoldClick(Sender: TObject);
 begin
   if btnBold.Down then
     // Add the bold style to the current style.
@@ -530,7 +563,7 @@ begin
     CurrText.Style := CurrText.Style - [fsBold];
 end;
 
-procedure TNotesForm.btnItalicClick(Sender: TObject);
+procedure TSharpENotesForm.btnItalicClick(Sender: TObject);
 begin
   if btnItalic.Down then
     // Add the italic style to the current style.
@@ -540,7 +573,7 @@ begin
     CurrText.Style := CurrText.Style - [fsItalic];
 end;
 
-procedure TNotesForm.btnUnderlineClick(Sender: TObject);
+procedure TSharpENotesForm.btnUnderlineClick(Sender: TObject);
 begin
   if btnUnderline.Down then
     // Add the underline style to the current style.
@@ -550,27 +583,27 @@ begin
     CurrText.Style := CurrText.Style - [fsUnderline];
 end;
 
-procedure TNotesForm.btnAlignLeftClick(Sender: TObject);
+procedure TSharpENotesForm.btnAlignLeftClick(Sender: TObject);
 begin
   reNotes.Paragraph.Alignment := JvRichEdit.paLeftJustify;
 end;
 
-procedure TNotesForm.btnAlignCenterClick(Sender: TObject);
+procedure TSharpENotesForm.btnAlignCenterClick(Sender: TObject);
 begin
   reNotes.Paragraph.Alignment := JvRichEdit.paCenter;
 end;
 
-procedure TNotesForm.btnAlignRightClick(Sender: TObject);
+procedure TSharpENotesForm.btnAlignRightClick(Sender: TObject);
 begin
   reNotes.Paragraph.Alignment := JvRichEdit.paRightJustify;
 end;
 
-procedure TNotesForm.btnAlignJustifyClick(Sender: TObject);
+procedure TSharpENotesForm.btnAlignJustifyClick(Sender: TObject);
 begin
   reNotes.Paragraph.Alignment := JvRichEdit.paJustify;
 end;
 
-procedure TNotesForm.btnListNumberClick(Sender: TObject);
+procedure TSharpENotesForm.btnListNumberClick(Sender: TObject);
 begin
   with reNotes.Paragraph do
     if btnListNumber.Down then
@@ -587,7 +620,7 @@ begin
       Numbering := JvRichEdit.nsNone;
 end;
 
-procedure TNotesForm.btnListBulletClick(Sender: TObject);
+procedure TSharpENotesForm.btnListBulletClick(Sender: TObject);
 begin
   with reNotes.Paragraph do
     if btnListBullet.Down then
@@ -598,7 +631,7 @@ begin
       Numbering := JvRichEdit.nsNone;
 end;
 
-procedure TNotesForm.btnIndentDecreaseClick(Sender: TObject);
+procedure TSharpENotesForm.btnIndentDecreaseClick(Sender: TObject);
 begin
   with reNotes.Paragraph do
     // Only decrement the indentation if it was incremented previously.
@@ -607,25 +640,26 @@ begin
       FirstIndent := FirstIndent - IndentationSize;
 end;
 
-procedure TNotesForm.btnIndentIncreaseClick(Sender: TObject);
+procedure TSharpENotesForm.btnIndentIncreaseClick(Sender: TObject);
 begin
   with reNotes.Paragraph do
     // Increment the indentation by 5 every time the user clicks the button.
     FirstIndent := FirstIndent + IndentationSize;
 end;
 
-procedure TNotesForm.btnClearFilterClick(Sender: TObject);
+procedure TSharpENotesForm.btnClearFilterClick(Sender: TObject);
 begin
   editFilter.Text := '';
 end;
 
-procedure TNotesForm.FilterChange(Sender: TObject);
+procedure TSharpENotesForm.FilterChange(Sender: TObject);
 var
   i: Integer;
 begin
   // If the filter is empty then set all tabs to visible.
   if editFilter.Text = '' then
   begin
+    btnClearFilter.ImageIndex := 20;
     for i := 0 to Pred(pcNotes.TabCount) do
     begin
       pcNotes.TabItems.Item[i].Visible := True;
@@ -633,6 +667,8 @@ begin
     Exit;
   end;
 
+  btnClearFilter.ImageIndex := 23;
+  
   // Loop over the popup menu items to see which on
   // is checked and call the correct click event.
   for i := 0 to Pred(pmFilter.Items.Count) do
@@ -667,14 +703,10 @@ end;
 
 {$REGION 'Form Events'}
 
-procedure TNotesForm.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TSharpENotesForm.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   i: Integer;
 begin
-  // Only save the tab if there is one.
-  if FIndex > -1 then
-    reNotes.Lines.SaveToFile(TabFilePath(FIndex));
-
   Settings.Left := Self.Left;
   Settings.Top := Self.Top;
   Settings.Width := Self.Width;
@@ -694,15 +726,16 @@ begin
   if FIndex > -1 then
     Settings.LastTab := pcNotes.TabItems.Item[FIndex].Caption;
 
+  TMainForm(Owner).SaveTabsSettings;
   TMainForm(Owner).SaveSettings;
 end;
 
-procedure TNotesForm.FormCreate(Sender: TObject);
+procedure TSharpENotesForm.FormCreate(Sender: TObject);
 begin
   SetVistaFonts(Self);
 end;
 
-procedure TNotesForm.FormKeyDown(Sender: TObject; var Key: Word;
+procedure TSharpENotesForm.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
   Handled: Boolean;
@@ -778,12 +811,12 @@ begin
   end;
 end;
 
-procedure TNotesForm.FormResize(Sender: TObject);
+procedure TSharpENotesForm.FormResize(Sender: TObject);
 begin
   reNotes.Refresh;
 end;
 
-procedure TNotesForm.FormShow(Sender: TObject);
+procedure TSharpENotesForm.FormShow(Sender: TObject);
 var
   filePaths: TStringList;
   filePath: string;
@@ -792,6 +825,14 @@ var
   tabSettings: NotesTabSettings;
 begin
   FIndex := -1;
+  pcNotes.TabIndex := -1;
+
+  // Clear the tab settings if there are any before loading.
+  for i := 0 to Pred(Settings.Tabs.Count) do
+    DeleteTabSettings(TabName(i));
+
+  // Load the tabs settings if there are any before loading the tabs.
+  TMainForm(Owner).LoadTabsSettings;
 
   // Convert the txt files in the old notes dir
   // to rtf files in the notes dir for this instance.
@@ -799,13 +840,14 @@ begin
 
   pcNotes.TabList.Clear;
 
-  // Make the richedit readonly in case there is no tabs.
+  // Make the richedit readonly and clear it in case there is no tabs.
   reNotes.ReadOnly := True;
+  reNotes.Clear;
 
   filePaths := TStringList.Create;
   try
-    // Get a list of rtf files from the app folder.
-    FindFiles(filePaths, NotesDir, '*.rtf');
+    // Get a list of rtf files from the Notes directory.
+    FindFiles(filePaths, NotesDir, '*.rtf', False);
     
     for filePath in filePaths do
     begin
@@ -816,14 +858,11 @@ begin
       // Add a tab with the base file name.
       i := AddTab(fileName);
 
-      tabSettings := GetTabSettings(TabName(i));
-      
-      pcNotes.TabItems.Item[i].ImageIndex := tabSettings.IconIndex;
-
       // If we come across the last tab then change to it.
       if TabName(i) = Settings.LastTab then
       begin
         pcNotes.TabIndex := i;
+        tabSettings := GetTabSettings(TabName(i));
         reNotes.SelStart := tabSettings.SelStart;
         reNotes.SelLength := tabSettings.SelLength;
       end;
@@ -832,6 +871,10 @@ begin
     filePaths.Free;
   end;
 
+  // If there are not tabs then add a default tab and change to it.
+  if pcNotes.TabCount = 0 then
+    LoadDefaultTab;
+    
   // If there is a filter then reapply it.
   if editFilter.Text <> '' then
     FilterChange(Sender);
@@ -841,7 +884,7 @@ end;
 
 {$REGION 'Context Menu Events'}
 
-procedure TNotesForm.pmNotesPopup(Sender: TObject);
+procedure TSharpENotesForm.pmNotesPopup(Sender: TObject);
 begin
   // Enable / Disable the context menu items before it is displayed.
   miUndo.Enabled := reNotes.CanUndo;
@@ -853,42 +896,42 @@ begin
   miWordWrap.Checked := reNotes.WordWrap;
 end;
 
-procedure TNotesForm.miUndoClick(Sender: TObject);
+procedure TSharpENotesForm.miUndoClick(Sender: TObject);
 begin
   reNotes.Undo;
 end;
 
-procedure TNotesForm.miRedoClick(Sender: TObject);
+procedure TSharpENotesForm.miRedoClick(Sender: TObject);
 begin
   reNotes.Redo;
 end;
 
-procedure TNotesForm.miCutClick(Sender: TObject);
+procedure TSharpENotesForm.miCutClick(Sender: TObject);
 begin
   reNotes.CutToClipboard;
 end;
 
-procedure TNotesForm.miCopyClick(Sender: TObject);
+procedure TSharpENotesForm.miCopyClick(Sender: TObject);
 begin
   reNotes.CopyToClipboard;
 end;
 
-procedure TNotesForm.miPasteClick(Sender: TObject);
+procedure TSharpENotesForm.miPasteClick(Sender: TObject);
 begin
   reNotes.PasteFromClipboard;
 end;
 
-procedure TNotesForm.miDeleteClick(Sender: TObject);
+procedure TSharpENotesForm.miDeleteClick(Sender: TObject);
 begin
   reNotes.SelText := '';
 end;
 
-procedure TNotesForm.miSelectAllClick(Sender: TObject);
+procedure TSharpENotesForm.miSelectAllClick(Sender: TObject);
 begin
   reNotes.SelectAll;
 end;
 
-procedure TNotesForm.miWordWrapClick(Sender: TObject);
+procedure TSharpENotesForm.miWordWrapClick(Sender: TObject);
 begin
   reNotes.WordWrap := miWordWrap.Checked;
 end;
@@ -897,7 +940,7 @@ end;
 
 {$REGION 'Filter Dropdown Menu Events'}
 
-procedure TNotesForm.miFilterNamesClick(Sender: TObject);
+procedure TSharpENotesForm.miFilterNamesClick(Sender: TObject);
 var
   i: Integer;
 begin
@@ -908,7 +951,7 @@ begin
     pcNotes.TabItems.Item[i].Visible := TabNameContainsFilterText(i);
 end;
 
-procedure TNotesForm.miFilterTagsClick(Sender: TObject);
+procedure TSharpENotesForm.miFilterTagsClick(Sender: TObject);
 var
   i: Integer;
 begin
@@ -919,7 +962,7 @@ begin
     pcNotes.TabItems.Item[i].Visible := TabTagsContainsFilterText(i);
 end;
 
-procedure TNotesForm.miFilterTextClick(Sender: TObject);
+procedure TSharpENotesForm.miFilterTextClick(Sender: TObject);
 var
   i: Integer;
 begin
@@ -930,7 +973,7 @@ begin
     pcNotes.TabItems.Item[i].Visible := TabTextContainsFilterText(i);
 end;
 
-procedure TNotesForm.miFilterNamesAndTagsClick(Sender: TObject);
+procedure TSharpENotesForm.miFilterNamesAndTagsClick(Sender: TObject);
 var
   i: Integer;
 begin
@@ -941,7 +984,7 @@ begin
     pcNotes.TabItems.Item[i].Visible := (TabNameContainsFilterText(i) or TabTagsContainsFilterText(i));
 end;
 
-procedure TNotesForm.miFilterNamesAndTextClick(Sender: TObject);
+procedure TSharpENotesForm.miFilterNamesAndTextClick(Sender: TObject);
 var
   i: Integer;
 begin
@@ -952,7 +995,7 @@ begin
     pcNotes.TabItems.Item[i].Visible := (TabNameContainsFilterText(i) or TabTextContainsFilterText(i));
 end;
 
-procedure TNotesForm.miFilterTagsAndTextClick(Sender: TObject);
+procedure TSharpENotesForm.miFilterTagsAndTextClick(Sender: TObject);
 var
   i: Integer;
 begin
@@ -969,7 +1012,7 @@ end;
 
 {$REGION 'Page Control Events'}
 
-procedure TNotesForm.pcNotesBtnClick(ASender: TObject;
+procedure TSharpENotesForm.pcNotesBtnClick(ASender: TObject;
   const ABtnIndex: Integer);
 begin
   case ABtnIndex of
@@ -979,7 +1022,7 @@ begin
   end;
 end;
 
-procedure TNotesForm.pcNotesTabChange(ASender: TObject;
+procedure TSharpENotesForm.pcNotesTabChange(ASender: TObject;
   const ATabIndex: Integer; var AChange: Boolean);
 var
   tabSettings : NotesTabSettings;
@@ -990,11 +1033,11 @@ begin
   
   if FIndex <> ATabIndex then
   begin
+    // Indicate that we are loading a new file.
+    FLoading := True;
+
     if FIndex > -1 then
     begin
-      // Save the previous tab if there was one.
-      reNotes.Lines.SaveToFile(TabFilePath(FIndex));
-
       tabSettings := GetTabSettings(TabName(FIndex));
       tabSettings.SelStart := reNotes.SelStart;
       tabSettings.SelLength := reNotes.SelLength;
@@ -1012,6 +1055,9 @@ begin
 
     // Store the new tab index.
     FIndex := ATabIndex;
+    
+    // Indicate that we are no longer loading a new file.
+    FLoading := False;
   end;
 end;
 
@@ -1019,28 +1065,17 @@ end;
 
 {$REGION 'Helper Methods'}
 
-function TNotesForm.NotesDir;
-var
-  dir: string;
+function TSharpENotesForm.NotesDir;
 begin
-  dir := SharpApi.GetSharpeUserSettingsPath + 'Notes\' +
-    IntToStr(TMainForm(Owner).mInterface.BarInterface.BarID) + '\' +
-    IntToStr(TMainForm(Owner).mInterface.ID) + '\';
-  ForceDirectories(dir);
-  Result := dir;
+  Result := Settings.Directory + '\';  
 end;
 
-function TNotesForm.OldNotesDir;
-begin
-  Result := SharpApi.GetSharpeUserSettingsPath + 'Notes\';
-end;
-
-function TNotesForm.GetSettings;
+function TSharpENotesForm.GetSettings;
 begin
   Result := TMainForm(Owner).Settings;
 end;
 
-procedure TNotesForm.ConvertTxtFilesToRtfFiles;
+procedure TSharpENotesForm.ConvertTxtFilesToRtfFiles;
 var
   filePaths: TStringList;
   filePath: string;
@@ -1048,24 +1083,24 @@ var
 begin
   filePaths := TStringList.Create;
   try
-    // Get a list of txt files from the app folder.
-    FindFiles(filePaths, OldNotesDir, '*.txt', False);
+    // Get a list of txt files from the Notes directory.
+    FindFiles(filePaths, NotesDir, '*.txt', False);
 
     for filepath in filePaths do
     begin
       // Convert any *.txt files to *.rtf
-      with TJvRichEdit.Create(nil) do
+      with TJvRichEdit.Create(hiddenPanel) do
       try
-        Parent := Self;
+        Parent := hiddenPanel;
         Visible := False;
         // Load the text file to be converted.
         Lines.LoadFromFile(filePath);
         // Get the file name from the file path.
         filename := ExtractFileName(filePath);
         // Strip off the extension to get the base file name.
-        SetLength(filename, Length(filename) - 4);
+        SetLength(filename, Length(fileName) - 4);
         // Save the text file as an rtf.
-        Lines.SaveToFile(TabFilePath(filename));
+        Lines.SaveToFile(TabFilePath(fileName));
         // Delete the text file now that it is converted.
         DeleteFile(filePath);
       finally
@@ -1077,7 +1112,7 @@ begin
   end;
 end;
 
-function TNotesForm.GetTabSettings(Name: string) : NotesTabSettings;
+function TSharpENotesForm.GetTabSettings(Name: string) : NotesTabSettings;
 begin
   // If the tab does not exist in the settings then add a new one.
   if Settings.Tabs.IndexOf(Name) = -1 then
@@ -1086,17 +1121,34 @@ begin
   Result := NotesTabSettings(Settings.Tabs.Objects[Settings.Tabs.IndexOf(Name)]);
 end;
 
-procedure TNotesForm.DeleteTabSettings(Name: string);
+procedure TSharpENotesForm.DeleteTabSettings(Name: string);
 begin
   // Free the tab settings object before we delete the tab from the list.
   Settings.Tabs.Objects[Settings.Tabs.IndexOf(Name)].Free;
   Settings.Tabs.Delete(Settings.Tabs.IndexOf(Name));
 end;
 
-function TNotesForm.AddTab(Name: string) : Integer;
+procedure TSharpENotesForm.LoadDefaultTab;
+begin
+  // Create the default tab file.
+  with TJvRichEdit.Create(hiddenPanel) do
+  try
+    Parent := hiddenPanel;
+    Visible := False;
+    Lines.SaveToFile(TabFilePath('My Notes'));
+  finally
+    Free;
+  end;
+
+  // Create a tab with the default settings and change to it.
+  pcNotes.TabIndex := AddTab('My Notes');
+end;
+
+function TSharpENotesForm.AddTab(Name: string) : Integer;
 var
   i: Integer;
   tab: TTabItem;
+  tabSettings : NotesTabSettings;
 begin
   Result := -1;
 
@@ -1109,13 +1161,14 @@ begin
   end;
 
   tab := pcNotes.TabList.Add;
-  tab.Caption := Name;
-  tab.ImageIndex := DefaultIconIndex;
+  tabSettings := GetTabSettings(Name);
+  tab.Caption := tabSettings.Name;
+  tab.ImageIndex := tabSettings.IconIndex;
 
   Result := tab.Index;
 end;
 
-procedure TNotesForm.DeleteTab;
+procedure TSharpENotesForm.DeleteTab;
 var
   empty : Boolean;
 begin
@@ -1141,43 +1194,48 @@ begin
 
     // Delete the tab from the settings list.
     DeleteTabSettings(TabName(FIndex));
-
+    
     // Remove the current tab from the list.
     pcNotes.TabList.Delete(pcNotes.TabItems.Item[FIndex]);
-    // Clear the notes as well.
-    reNotes.Lines.Clear;
-     // Only allow input when there is a tab.
-    reNotes.ReadOnly := True;
 
     // Set the saved index to -1 so that when we change tabs
     // we won't try and save the tab that was deleted.
     FIndex := -1;
     pcNotes.TabIndex := -1;
+
+    // Clear the notes as well.
+    reNotes.Lines.Clear;
+    // Only allow input when there is a tab.
+    reNotes.ReadOnly := True;
+
+    // Save the tabs settings and send an update to other notes modules.
+    TMainForm(Owner).SaveTabsSettings;
+    TMainForm(Owner).SendUpdateNotes;
   end;
 end;
 
-function TNotesForm.TabName(Index: Integer) : string;
+function TSharpENotesForm.TabName(Index: Integer) : string;
 begin
   Result := pcNotes.TabItems.Item[Index].Caption;
 end;
 
-function TNotesForm.TabFilePath(Index: Integer) : string;
+function TSharpENotesForm.TabFilePath(Index: Integer) : string;
 begin
   Result := NotesDir + TabName(Index) + '.rtf';
 end;
 
-function TNotesForm.TabFilePath(Name: string) : string;
+function TSharpENotesForm.TabFilePath(Name: string) : string;
 begin
   Result := NotesDir + Name + '.rtf';
 end;
 
-function TNotesForm.TabNameContainsFilterText(Index: Integer) : Boolean;
+function TSharpENotesForm.TabNameContainsFilterText(Index: Integer) : Boolean;
 begin
   // Check if the tab index contains the text in the filter.
   Result := AnsiContainsText(pcNotes.TabItems.Item[Index].Caption, editFilter.Text);
 end;
 
-function TNotesForm.TabTagsContainsFilterText(Index: Integer) : Boolean;
+function TSharpENotesForm.TabTagsContainsFilterText(Index: Integer) : Boolean;
 var
   tabSettings: NotesTabSettings;
 begin
@@ -1186,7 +1244,7 @@ begin
   Result := AnsiContainsText(tabSettings.Tags, editFilter.Text);
 end;
 
-function TNotesForm.TabTextContainsFilterText(Index: Integer) : Boolean;
+function TSharpENotesForm.TabTextContainsFilterText(Index: Integer) : Boolean;
 begin
   // Check if the tab text contains the text in the filter.
   with TJvRichEdit.Create(hiddenPanel) do

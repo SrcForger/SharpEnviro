@@ -1,4 +1,4 @@
-object NotesForm: TNotesForm
+object SharpENotesForm: TSharpENotesForm
   Left = 0
   Top = 0
   Caption = 'Notes'
@@ -118,7 +118,6 @@ object NotesForm: TNotesForm
     PageBackgroundColor = clWindow
     OnTabChange = pcNotesTabChange
     OnBtnClick = pcNotesBtnClick
-    ExplicitWidth = 664
     DesignSize = (
       668
       324)
@@ -143,13 +142,11 @@ object NotesForm: TNotesForm
       PopupMenu = pmNotes
       TabOrder = 2
       WantTabs = True
+      OnChange = EditorChange
       OnKeyDown = EditorKeyDown
       OnKeyPress = EditorKeyPress
       OnSelectionChange = EditorSelectionChange
       OnCloseFindDialog = EditorCloseFindDialog
-      ExplicitTop = 58
-      ExplicitWidth = 658
-      ExplicitHeight = 235
     end
     object tbNotes: TJvToolBar
       AlignWithMargins = True
@@ -171,8 +168,6 @@ object NotesForm: TNotesForm
       ShowHint = True
       TabOrder = 3
       Transparent = False
-      ExplicitLeft = 3
-      ExplicitWidth = 663
       object btnImport: TToolButton
         Left = 0
         Top = 0

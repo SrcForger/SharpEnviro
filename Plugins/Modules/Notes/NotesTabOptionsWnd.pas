@@ -82,7 +82,7 @@ begin
 
   if FOriginalTabName <> editName.Text then
     // If the filename we need to create already exists then we cannont save the tab.
-    if FileExists(TNotesForm(Owner).TabFilePath(editName.Text)) then
+    if FileExists(TSharpENotesForm(Owner).TabFilePath(editName.Text)) then
     begin
       MessageBox(Handle, 'Another Notes tab with the same name already exists.', 'Name Invalid', MB_OK);
       Exit;
