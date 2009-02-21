@@ -45,7 +45,6 @@ type
   TfrmNotes = class(TForm)
     plMain: TJvPageList;
     pagNotes: TJvStandardPage;
-    lblAlwaysOnTop: TLabel;
     rb_icon: TRadioButton;
     rb_text: TRadioButton;
     rb_icontext: TRadioButton;
