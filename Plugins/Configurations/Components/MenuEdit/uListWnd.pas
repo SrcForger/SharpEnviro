@@ -474,23 +474,6 @@ begin
     tmpData.IconIndex := -1;
     tmpData.MenuItem := TSharpEMenuItem(tmpMenu.Items[i]);
 
-    if Assigned(tmpData.MenuItem.Icon) then begin
-      png := pilIcons.PngImages.Add(false);
-      bmp := tmpData.MenuItem.Icon.Icon;
-
-      if ((bmp.width <> 16) or (bmp.height <> 16)) then begin
-        bmpResized := TBitmap32.Create;
-        bmpResized.assign(bmp);
-        bmp.setsize(16, 16);
-        bmp.clear(color32(0, 0, 0, 0));
-        bmpResized.DrawTo(bmp, Rect(0, 0, 16, 16));
-        bmpResized.free;
-      end;
-
-      png.PngImage := SaveBitmap32ToPNG(bmp, False, True, ClWhite);
-      tmpData.IconIndex := png.Index;
-    end;
-
     case tmpData.MenuItem.ItemType of
       mtDynamicDir: begin
           png := pilIcons.PngImages.Add(false);
@@ -523,11 +506,9 @@ begin
           tmpData.IconIndex := png.Index;
         end;
       mtSubMenu: begin
-          if ((tmpData.MenuItem.Icon = nil) or (tmpData.MenuItem.Icon.IconSource = '')) then begin
-            png := pilIcons.PngImages.Add(false);
-            png.PngImage := pilDefault.PngImages[iidxFolder].PngImage;
-            tmpData.IconIndex := png.Index;
-          end;
+          png := pilIcons.PngImages.Add(false);
+          png.PngImage := pilDefault.PngImages[iidxFolder].PngImage;
+          tmpData.IconIndex := png.Index;
         end;
       mtulist: begin
           png := pilIcons.PngImages.Add(false);
