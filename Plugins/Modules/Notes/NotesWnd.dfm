@@ -57,10 +57,15 @@ object NotesForm: TNotesForm
   PixelsPerInch = 96
   TextHeight = 13
   object pcNotes: TSharpEPageControl
-    Left = 0
-    Top = 0
-    Width = 674
-    Height = 334
+    AlignWithMargins = True
+    Left = 5
+    Top = 5
+    Width = 664
+    Height = 324
+    Margins.Left = 5
+    Margins.Top = 5
+    Margins.Right = 5
+    Margins.Bottom = 5
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -113,15 +118,19 @@ object NotesForm: TNotesForm
     PageBackgroundColor = clWindow
     OnTabChange = pcNotesTabChange
     OnBtnClick = pcNotesBtnClick
+    ExplicitLeft = 0
+    ExplicitTop = 0
+    ExplicitWidth = 674
+    ExplicitHeight = 334
     DesignSize = (
-      674
-      334)
+      664
+      324)
     object reNotes: TJvRichEdit
       AlignWithMargins = True
       Left = 3
-      Top = 58
-      Width = 668
-      Height = 273
+      Top = 56
+      Width = 658
+      Height = 265
       Align = alClient
       AutoSize = False
       BorderStyle = bsNone
@@ -142,27 +151,31 @@ object NotesForm: TNotesForm
       OnKeyPress = EditorKeyPress
       OnSelectionChange = EditorSelectionChange
       OnCloseFindDialog = EditorCloseFindDialog
+      ExplicitTop = 58
+      ExplicitWidth = 668
+      ExplicitHeight = 273
     end
     object tbNotes: TJvToolBar
       AlignWithMargins = True
-      Left = 3
-      Top = 30
-      Width = 668
+      Left = 1
+      Top = 28
+      Width = 662
       Height = 22
-      Margins.Top = 30
+      Margins.Left = 1
+      Margins.Top = 28
+      Margins.Right = 1
       AutoSize = True
       Caption = 'tbNotes'
-      Ctl3D = True
       DrawingStyle = dsGradient
       EdgeInner = esNone
       EdgeOuter = esNone
-      GradientEndColor = 16053492
+      GradientEndColor = 16708073
+      HotTrackColor = 16114908
       Images = pilNotes
       ParentShowHint = False
       ShowHint = True
       TabOrder = 3
       Transparent = False
-      ExplicitTop = 26
       object btnImport: TToolButton
         Left = 0
         Top = 0
@@ -400,6 +413,16 @@ object NotesForm: TNotesForm
         Style = tbsDropDown
         OnClick = btnClearFilterClick
       end
+    end
+    object hiddenPanel: TPanel
+      Left = 400
+      Top = 8
+      Width = 1
+      Height = 1
+      Caption = 'hiddenPanel'
+      Color = clWindow
+      ParentBackground = False
+      TabOrder = 4
     end
   end
   object pilNotes: TPngImageList

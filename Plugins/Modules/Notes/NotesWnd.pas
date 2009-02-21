@@ -90,6 +90,7 @@ type
     miFilterNamesAndTags: TMenuItem;
     miFilterNamesAndText: TMenuItem;
     miFilterTagsAndText: TMenuItem;
+    hiddenPanel: TPanel;
     procedure FormShow(Sender: TObject);
     procedure pcNotesTabChange(ASender: TObject;
       const ATabIndex: Integer; var AChange: Boolean);
@@ -1188,9 +1189,9 @@ end;
 function TNotesForm.TabTextContainsFilterText(Index: Integer) : Boolean;
 begin
   // Check if the tab text contains the text in the filter.
-  with TJvRichEdit.Create(nil) do
+  with TJvRichEdit.Create(hiddenPanel) do
   try
-    Parent := Self;
+    Parent := hiddenPanel;
     Visible := False;
     Lines.LoadFromFile(TabFilePath(Index));
     Result := AnsiContainsText(Lines.Text, editFilter.Text);
