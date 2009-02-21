@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <SharpESkinScheme>
   <Info>
-    <Name>Black</Name>
+    <Name>Green</Name>
     <Author>Martin Kr&#xE4;mer</Author>
   </Info>
   <Item>
@@ -10,11 +10,11 @@
   </Item>
   <Item>
     <Tag>$Background</Tag>
-    <Color>0</Color>
+    <Color>1719848</Color>
   </Item>
   <Item>
     <Tag>$Special</Tag>
-    <Color>7333119</Color>
+    <Color>12895428</Color>
   </Item>
   <Item>
     <Tag>$Text</Tag>

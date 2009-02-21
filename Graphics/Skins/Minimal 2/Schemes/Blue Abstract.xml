@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <SharpESkinScheme>
   <Info>
-    <Name>Black</Name>
-    <Author>Martin Kr&#xE4;mer</Author>
+    <Name>Blue Abstract</Name>
+    <Author>Lee Green</Author>
   </Info>
   <Item>
     <Tag>$Border</Tag>
-    <Color>16777215</Color>
+    <Color>13865825</Color>
   </Item>
   <Item>
     <Tag>$Background</Tag>
-    <Color>0</Color>
+    <Color>3350287</Color>
   </Item>
   <Item>
     <Tag>$Special</Tag>
-    <Color>7333119</Color>
+    <Color>13737823</Color>
   </Item>
   <Item>
     <Tag>$Text</Tag>
@@ -22,22 +22,22 @@
   </Item>
   <Item>
     <Tag>$TextShadow</Tag>
-    <Color>0</Color>
+    <Color>3810066</Color>
   </Item>
   <Item>
     <Tag>$Alpha</Tag>
-    <Color>196</Color>
+    <Color>48</Color>
   </Item>
   <Item>
     <Tag>$MAlpha</Tag>
-    <Color>196</Color>
+    <Color>200</Color>
   </Item>
   <Item>
     <Tag>$BAlpha</Tag>
-    <Color>196</Color>
+    <Color>120</Color>
   </Item>
   <Item>
     <Tag>$SAlpha</Tag>
-    <Color>196</Color>
+    <Color>200</Color>
   </Item>
 </SharpESkinScheme>
