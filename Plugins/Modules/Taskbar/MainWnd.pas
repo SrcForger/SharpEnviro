@@ -34,7 +34,7 @@ uses
   SharpEBaseControls, SharpECustomSkinSettings, uTaskManager, uTaskItem,
   DateUtils, GR32, GR32_PNG, SharpIconUtils, SharpEButton, JvComponentBase,
   JvDragDrop, VWMFunctions,Commctrl,TaskFilterList,SWCmdList, SharpTypes,
-  uISharpBarModule;
+  uISharpBarModule, uSystemFuncs;
 
 
 type
@@ -412,49 +412,6 @@ begin
     ToolTipApi.DeleteToolTip(FTipWnd,self,2);
     ses_maxall.Tag := 0;
   end;
-end;
-
-// function based on http://www.delphipraxis.net/post452421.html
-function FindAllWindows(const WindowClass: string): THandleArray;
-type
-  PParam = ^TParam;
-  TParam = record
-    ClassName: string;
-    Res: THandleArray;
-  end;
-var
-  Rec: TParam;
-
-  function GetWndClass(pHandle: hwnd): string;
-  var
-    buf: array[0..254] of Char;
-  begin
-    GetClassName(pHandle, buf, SizeOf(buf));
-    result := buf;
-  end;
-
-  function _EnumProc(_hWnd: HWND; _LParam: LPARAM): LongBool; stdcall;
-  begin
-    with PParam(_LParam)^ do
-    begin
-      if (CompareText(GetWndClass(_hWnd), ClassName) = 0) then
-      begin
-        SetLength(Res, Length(Res) + 1);
-        Res[Length(Res) - 1] := _hWnd;
-      end;
-      Result := True;
-    end;
-  end;
-
-begin
-  try
-    Rec.ClassName := WindowClass;
-    SetLength(Rec.Res, 0);
-    EnumWindows(@_EnumProc, Integer(@Rec));
-  except
-    SetLength(Rec.Res, 0);
-  end;
-  Result := Rec.Res;
 end;
 
 function TMainForm.FindAppBars : THandleArray;
