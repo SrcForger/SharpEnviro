@@ -1000,14 +1000,14 @@
         <dimension>5,5</dimension>
         <image>images/MiniThrobber.png</image>
         <color>$Border</color>
-        <alpha>$BAlpha-64</alpha>
+        <alpha>$BAlpha-32</alpha>
       </skinpart>
       <skinpart>
         <location>1,1</location>
         <dimension>2,2</dimension>
         <image>images/Empty.png</image>
         <color>$Background</color>
-        <alpha>$Alpha-96</alpha>
+        <alpha>$Alpha-64</alpha>
       </skinpart>
     </normal>
     <hover>
@@ -1032,14 +1032,14 @@
         <dimension>5,5</dimension>
         <image>images/MiniThrobber.png</image>
         <color>$Border</color>
-        <alpha>$BAlpha-64</alpha>
+        <alpha>$BAlpha-32</alpha>
       </skinpart>
       <skinpart>
         <location>1,1</location>
         <dimension>2,2</dimension>
         <image>images/Empty.png</image>
         <color>$Background</color>
-        <alpha>$Alpha-80</alpha>
+        <alpha>$Alpha-40</alpha>
       </skinpart>
     </down>
   </minithrobber>
@@ -1105,7 +1105,7 @@
       <size>6</size>
       <name>Small Fonts</name>
       <bold>0</bold>
-      <color>$Text</color>
+      <color>$Text-64</color>
       <shadow>1</shadow>
       <shadowcolor>$TextShadow</shadowcolor>
       <shadowtype>Outline</shadowtype>
@@ -1116,7 +1116,7 @@
       <name>Verdana</name>
       <size>8</size>
       <bold>1</bold>
-      <color>$Text</color>
+      <color>$Text-64</color>
       <shadow>1</shadow>
       <shadowcolor>$TextShadow</shadowcolor>
       <shadowtype>Outline</shadowtype>
@@ -1127,7 +1127,7 @@
       <name>Verdana</name>
       <size>10</size>
       <bold>1</bold>
-      <color>$Text</color>
+      <color>$Text-64</color>
       <shadow>1</shadow>
       <shadowcolor>$TextShadow</shadowcolor>
       <shadowtype>Outline</shadowtype>
