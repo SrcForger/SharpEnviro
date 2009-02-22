@@ -1,11 +1,10 @@
 object frmSettings: TfrmSettings
   Left = 0
   Top = 0
-  AutoSize = True
   BorderStyle = bsNone
   Caption = 'frmSettings'
-  ClientHeight = 369
-  ClientWidth = 766
+  ClientHeight = 376
+  ClientWidth = 528
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,7 +18,7 @@ object frmSettings: TfrmSettings
     AlignWithMargins = True
     Left = 5
     Top = 0
-    Width = 756
+    Width = 518
     Height = 37
     Margins.Left = 5
     Margins.Top = 0
@@ -32,12 +31,13 @@ object frmSettings: TfrmSettings
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
+    ExplicitWidth = 756
   end
   object pnlGrid: TPanel
     AlignWithMargins = True
     Left = 5
     Top = 47
-    Width = 751
+    Width = 513
     Height = 21
     Margins.Left = 5
     Margins.Top = 10
@@ -47,6 +47,7 @@ object frmSettings: TfrmSettings
     BevelOuter = bvNone
     ParentColor = True
     TabOrder = 1
+    ExplicitWidth = 751
     object sgbVwmCount: TSharpeGaugeBox
       Left = 0
       Top = 0
@@ -68,7 +69,7 @@ object frmSettings: TfrmSettings
     AlignWithMargins = True
     Left = 5
     Top = 78
-    Width = 756
+    Width = 518
     Height = 37
     Margins.Left = 5
     Margins.Top = 10
@@ -81,12 +82,13 @@ object frmSettings: TfrmSettings
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
+    ExplicitWidth = 756
   end
   object chkFocusTopMost: TJvXPCheckbox
     AlignWithMargins = True
     Left = 3
     Top = 125
-    Width = 758
+    Width = 520
     Height = 17
     Margins.Top = 0
     Margins.Right = 5
@@ -97,12 +99,13 @@ object frmSettings: TfrmSettings
     State = cbChecked
     Align = alTop
     OnClick = SettingsChanged
+    ExplicitWidth = 758
   end
   object SharpECenterHeader3: TSharpECenterHeader
     AlignWithMargins = True
     Left = 5
     Top = 152
-    Width = 756
+    Width = 518
     Height = 37
     Margins.Left = 5
     Margins.Top = 10
@@ -110,18 +113,18 @@ object frmSettings: TfrmSettings
     Margins.Bottom = 10
     Title = 'Follow window focus'
     Description = 
-      'Enable this option to always switch to the virtual desktop on wh' +
-      'ich an application or window is activated (for example by Alt + ' +
-      'Tab). '
+      'Switch to the virtual desktop on which an application or window ' +
+      'is activated (for example by Alt + Tab). '
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
+    ExplicitWidth = 654
   end
   object chkFollowFocus: TJvXPCheckbox
     AlignWithMargins = True
     Left = 3
     Top = 199
-    Width = 758
+    Width = 520
     Height = 17
     Margins.Top = 0
     Margins.Right = 5
@@ -132,13 +135,13 @@ object frmSettings: TfrmSettings
     State = cbChecked
     Align = alTop
     OnClick = SettingsChanged
-    ExplicitLeft = -2
+    ExplicitWidth = 758
   end
   object SharpECenterHeader4: TSharpECenterHeader
     AlignWithMargins = True
     Left = 5
     Top = 300
-    Width = 756
+    Width = 518
     Height = 37
     Margins.Left = 5
     Margins.Top = 10
@@ -151,13 +154,13 @@ object frmSettings: TfrmSettings
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
-    ExplicitTop = 226
+    ExplicitWidth = 756
   end
   object chkNotifications: TJvXPCheckbox
     AlignWithMargins = True
     Left = 3
     Top = 347
-    Width = 758
+    Width = 520
     Height = 17
     Margins.Top = 0
     Margins.Right = 5
@@ -168,13 +171,13 @@ object frmSettings: TfrmSettings
     State = cbChecked
     Align = alTop
     OnClick = SettingsChanged
-    ExplicitTop = 273
+    ExplicitWidth = 758
   end
   object SharpECenterHeader5: TSharpECenterHeader
     AlignWithMargins = True
     Left = 5
     Top = 226
-    Width = 756
+    Width = 518
     Height = 37
     Margins.Left = 5
     Margins.Top = 10
@@ -187,14 +190,13 @@ object frmSettings: TfrmSettings
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
-    ExplicitLeft = 10
-    ExplicitTop = 160
+    ExplicitWidth = 756
   end
   object chkResetOnDisplayChange: TJvXPCheckbox
     AlignWithMargins = True
     Left = 3
     Top = 273
-    Width = 758
+    Width = 520
     Height = 17
     Margins.Top = 0
     Margins.Right = 5
@@ -205,7 +207,6 @@ object frmSettings: TfrmSettings
     State = cbChecked
     Align = alTop
     OnClick = SettingsChanged
-    ExplicitLeft = 8
-    ExplicitTop = 207
+    ExplicitWidth = 758
   end
 end
