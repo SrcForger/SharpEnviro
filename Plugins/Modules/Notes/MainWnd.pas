@@ -183,6 +183,8 @@ begin
           Add('SelLength', NotesTabSettings(Settings.Tabs.Objects[i]).SelLength);
         end;
   end;
+  if not DirectoryExists(Settings.Directory) then
+    ForceDirectories(Settings.Directory);
   XML.SaveToFile(Settings.Directory + '\NotesModuleTabsSettings.xml');
   XML.Free;
 end;
@@ -265,6 +267,9 @@ begin
         NotesForm.Show;
     end;
   XML.Free;
+
+  if not DirectoryExists(Settings.Directory) then
+    ForceDirectories(Settings.Directory);  
 end;
 
 procedure TMainForm.LoadTabsSettings;
