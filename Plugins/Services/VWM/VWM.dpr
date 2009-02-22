@@ -281,7 +281,9 @@ begin
           CurrentDesktop := 1;
           VWMFunctions.VWMMoveAllToOne(CurrentDesktop, False); // has to be called two times ...
           VWMFunctions.VWMMoveAllToOne(CurrentDesktop, True); // ... reason ... unknown =)
+          UnregisterSharpEActions;
           LoadVWMSettings;
+          RegisterSharpEActions;
           SharpApi.SharpEBroadCast(WM_VWMUPDATESETTINGS, 0, 0);
         end;
       end;
