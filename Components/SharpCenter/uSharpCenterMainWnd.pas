@@ -1224,7 +1224,7 @@ begin
     pnlPluginContainer.Height := pnlPluginContainer.Height + 1;
     pnlPluginContainer.Height := pnlPluginContainer.Height - 1;
     SCM.PluginHost.Refresh( rtAll );
-
+    UpdateSize;
     sbPlugin.SetFocus;
     LockWindowUpdate(0);
   end;
