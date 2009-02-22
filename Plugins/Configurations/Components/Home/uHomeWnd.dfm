@@ -346,7 +346,6 @@ object frmHome: TfrmHome
           'ny others possible... Please email us your love by clicking on a' +
           'ny member below.'
         WordWrap = True
-        ExplicitTop = 62
         ExplicitWidth = 491
       end
       object lbUsers: TSharpEListBoxEx
@@ -386,7 +385,6 @@ object frmHome: TfrmHome
         AutosizeGrid = False
         Borderstyle = bsNone
         Align = alTop
-        ExplicitTop = 96
       end
     end
     object tabUrls: TTabSheet

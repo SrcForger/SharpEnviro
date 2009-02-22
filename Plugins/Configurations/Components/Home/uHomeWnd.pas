@@ -190,7 +190,7 @@ begin
   AddUser('CoCo', 'Silentpyjamas', 'coco@sharpenviro.com', 'PR, Community + Support.');
   AddUser('David', 'Glacialfury', 'nathan@sharpenviro.com', 'Lead Tester + Support.');
   AddUser('Florian', 'Captain Herisson', 'florian@sharpenviro.com', 'Graphics + Design.');
-  AddUser('James', 'brum74', 'james@sharpenviro.com', 'Developer.');
+  AddUser('James', 'brum74', 'james@sharpenviro.com', 'Module Developer.');
   AddUser('Lee', 'Pixol', 'lee@sharpenviro.com', 'Lead Developer of Components, SharpCenter, Configurations.');
   AddUser('Martin', 'Billiberserker', 'martin@sharpenviro.com', 'Lead Developer of SharpBar, SharpDesk, SharpMenu, Modules.');
   AddUser('Nathan', 'Mc', 'nathan@sharpenviro.com', 'Lead Developer of SharpCore, SharpCompile.');
