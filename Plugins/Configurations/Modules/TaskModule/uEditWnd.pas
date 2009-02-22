@@ -107,6 +107,11 @@ var
 const
   colName = 0;
 
+  iidxDefault = 0;
+  iidxCommand = 1;
+  iidxWindows = 2;
+  iidxSystem = 3;
+
 implementation
 
 {$R *.dfm}
@@ -190,15 +195,23 @@ procedure TfrmEdit.lbItemsGetCellImageIndex(Sender: TObject;
   const ACol: Integer; AItem: TSharpEListItem; var AImageIndex: Integer;
   const ASelected: Boolean);
 var
-  tmpItemData: TItemData;
+  tmpItemData: TFilterItem;
 begin
 
-  tmpItemData := TItemData(AItem.Data);
+  tmpItemData := TFilterItem(AItem.Data);
   if tmpItemData = nil then
     exit;
 
   case ACol of
-    colName: AImageIndex := 0 ;
+    colName:
+    begin
+      case tmpItemData.FilterType of
+        fteSWCmd: AImageIndex := iidxCommand;
+        fteWindow,fteProcess : AImageIndex := iidxWindows;
+        else
+          AImageIndex := iidxSystem;
+      end;
+    end;
   end;
 
 end;
