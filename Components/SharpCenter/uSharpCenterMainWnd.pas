@@ -1613,6 +1613,9 @@ begin
   finally
     CanClose := True;
   end;
+
+  Application.Terminate;
+  Halt;  
 end;
 
 procedure TSharpCenterWnd.FormCreate(Sender: TObject);
