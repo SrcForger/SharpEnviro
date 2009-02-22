@@ -16,19 +16,19 @@
     <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
     <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
     <DCC_ExeOutput>..\..\..\..\SharpE\Services</DCC_ExeOutput>
-    <DCC_UnitSearchPath>..\..\..\Common\Libraries\SharpAPI</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\..\Common\Libraries\SharpAPI</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\..\Common\Libraries\SharpAPI</DCC_ObjPath>
-    <DCC_IncludePath>..\..\..\Common\Libraries\SharpAPI</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Interfaces;..\..\..\Common\Units\VistaFuncs</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Interfaces;..\..\..\Common\Units\VistaFuncs</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Interfaces;..\..\..\Common\Units\VistaFuncs</DCC_ObjPath>
+    <DCC_IncludePath>..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Interfaces;..\..\..\Common\Units\VistaFuncs</DCC_IncludePath>
     <DCC_Define>RELEASE</DCC_Define>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
     <DCC_ExeOutput>..\..\..\..\SharpE\Services</DCC_ExeOutput>
-    <DCC_UnitSearchPath>..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Interfaces</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Interfaces</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Interfaces</DCC_ObjPath>
-    <DCC_IncludePath>..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Interfaces</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Interfaces;..\..\..\Common\Units\VistaFuncs</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Interfaces;..\..\..\Common\Units\VistaFuncs</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Interfaces;..\..\..\Common\Units\VistaFuncs</DCC_ObjPath>
+    <DCC_IncludePath>..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Interfaces;..\..\..\Common\Units\VistaFuncs</DCC_IncludePath>
     <DCC_Define>DEBUG</DCC_Define>
   </PropertyGroup>
   <ProjectExtensions>
@@ -36,12 +36,6 @@
     <Borland.ProjectType>VCLApplication</Borland.ProjectType>
     <BorlandProject>
 <BorlandProject><Delphi.Personality><Parameters><Parameters Name="HostApplication">..\..\..\..\SharpE\SharpCore.exe</Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">0</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">2057</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys></VersionInfoKeys><Excluded_Packages>
-      
-      
-      
-      
-      
-      
       
       
       

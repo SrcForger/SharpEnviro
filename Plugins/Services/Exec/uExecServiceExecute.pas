@@ -43,6 +43,7 @@ uses
 
   // Common
   SharpApi,
+  uVistaFuncs,
 
   // JCL
   JclFileUtils,
@@ -471,6 +472,13 @@ begin
           // ** SHELL: PATHS **
           if (Pos('shell:', LowerCase(text)) = 1) then begin
             Debug('Execute: SHELL:', DMT_TRACE);
+            if IsWindowsVista then
+            begin
+              if CompareText(text,'shell:drivefolder') = 0 then
+                text := 'shell:MyComputerFolder';
+            end else
+              if CompareText(text,'shell:MyComputerFolder') = 0 then
+                text := 'shell:drivefolder';
 
             if ShellOpenFile(Handle, GetAltExplorer, text, '', Elevate) = 1 then begin
 
