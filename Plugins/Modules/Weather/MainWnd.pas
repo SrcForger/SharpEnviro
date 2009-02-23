@@ -268,11 +268,15 @@ begin
     // Get the width of the icon and the bottom label and add a spacer
     iBottomWidth := iIconWidth + lb_bottom.Width + 2;
 
-    if Not bTopLabel and not bBottomLabel then
+    if not bBottomLabel then
     begin
-      iTopWidth := 0;
       iBottomWidth := 0;
       lb_bottom.Visible := False;
+    end;
+
+    if not bTopLabel then
+    begin
+      iTopWidth := 0;
       lb_top.Visible := False;
     end;
   end;
