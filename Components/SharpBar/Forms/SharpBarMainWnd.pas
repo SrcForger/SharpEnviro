@@ -435,6 +435,8 @@ procedure TSharpBarMainForm.WMInputChange(var msg: TMessage);
 begin
   if ModuleManager = nil then
     exit;
+
+  DefWindowProc(HAndle,Msg.Msg,Msg.WParam,Msg.LParam);
   ModuleManager.BroadcastPluginMessage('MM_INPUTLANGCHANGE');
 end;
 
