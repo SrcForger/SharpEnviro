@@ -274,11 +274,9 @@ begin
     s := UpperCase(List.ActiveLayout.LocaleInfo.ISOAbbreviatedLangName);
   List.Free;
   btn.Caption := '[' + s + ']';
-  btn.Width := btn.GetTextWidth + 7;
   if sShowIcon then
   begin
     btn.Glyph32.Assign(FButtonIcon);
-    btn.Width := btn.Width + btn.Glyph32.Width + 2;
   end else
   begin
     btn.Glyph32.SetSize(0,0);
