@@ -223,7 +223,7 @@ begin
 
   case ACol of
     colName: AImageIndex := GetWeatherIndex(tmp);
-    colStatus: if ((tmp.FCLastUpdated = '0') or (tmp.FCLastUpdated = '-1')) then
+    colStatus: if ((tmp.FCLastUpdated = 0) or (tmp.FCLastUpdated = -1)) then
         AImageIndex := iidxStatus;
     colDelete: AImageIndex := iidxDelete;
   end;
@@ -262,10 +262,10 @@ begin
         AColText := s;
       end;
     colStatus: begin
-        if ((tmp.FCLastUpdated = '0') or (tmp.FCLastUpdated = '-1')) then
+        if ((tmp.FCLastUpdated = 0) or (tmp.FCLastUpdated = -1)) then
           AColText := format('<font color="%s" />Queued',[colorToString(colBtnTxt)])
         else begin
-          s := FormatDateTime('dd mmm hh:nn', StrToDateTime(tmp.FCLastUpdated));
+          s := FormatDateTime('dd mmm hh:nn', tmp.FCLastUpdated);
           AColText := format('<font color="%s" />Updated: %s',[colorToString(colBtnTxt),s]);
         end;
       end;

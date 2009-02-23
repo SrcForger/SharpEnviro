@@ -42,8 +42,8 @@ type
     FLocation: String;
     FLocationID: String;
     FEnabled: Boolean;
-    FCCLastUpdated: String;
-    FFCLastUpdated: String;
+    FCCLastUpdated: Extended;
+    FFCLastUpdated: Extended;
     FLastIconID: Integer;
     FLastTemp: Integer;
     FMetric: Boolean;
@@ -53,8 +53,8 @@ type
     Property Location: String Read FLocation Write FLocation;
     Property LocationID: String read FLocationID Write FLocationID;
     Property Enabled: Boolean Read FEnabled Write FEnabled;
-    Property FCLastUpdated: String read FFCLastUpdated write FFCLastUpdated;
-    Property CCLastUpdated: String read FCCLastUpdated write FCCLastUpdated;
+    Property FCLastUpdated: Extended read FFCLastUpdated write FFCLastUpdated;
+    Property CCLastUpdated: Extended read FCCLastUpdated write FCCLastUpdated;
     Property LastIconID: Integer read FLastIconID write FLastIconID;
     Property LastTemp: Integer read FLastTemp write FLastTemp;
     property Metric: Boolean read FMetric write FMetric;
@@ -70,8 +70,8 @@ type
 
   public
 
-    function AddItem(Location:String; LocationID:String; FCLastUpdated:String;
-      CCLastUpdated: String; LastIconID:Integer; LastTemp:Integer;
+    function AddItem(Location:String; LocationID:String; FCLastUpdated:Extended;
+      CCLastUpdated: Extended; LastIconID:Integer; LastTemp:Integer;
         Enabled:Boolean; Metric:Boolean): TWeatherItem; overload;
 
     procedure Delete(weatherItem: TWeatherItem); overload;
@@ -93,7 +93,7 @@ uses
   SharpApi;
 
 function TWeatherList.AddItem(Location:String; LocationID:String;
-  FCLastUpdated:String; CCLastUpdated: String; LastIconID:Integer;
+  FCLastUpdated:Extended; CCLastUpdated: Extended; LastIconID:Integer;
     LastTemp:Integer; Enabled:Boolean; Metric:Boolean): TWeatherItem;
 begin
   Result := TWeatherItem.Create;
@@ -123,17 +123,24 @@ procedure TWeatherList.LoadSettings;
 var
   i: Integer;
   props: TJclSimpleXMLProps;
+  fcLast, ccLast:Extended;
 begin
   Xml.XmlFilename := FFileName;
   if Xml.Load then begin
     for i := 0 to Pred(xml.XmlRoot.Items.Count) do begin
       props := Xml.XmlRoot.Items.Item[i].Properties;
 
+      if not(TryStrToFloat(props.Value('FCLastUpdated','-1'),fcLast)) then
+        fcLast := -1;
+
+      if not(TryStrToFloat(props.Value('FCLastUpdated','-1'),ccLast)) then
+        ccLast := -1;
+
       Self.AddItem(
         props.Value('Location'),
         props.Value('LocationId'),
-        props.Value('FCLastUpdated','-1'),
-        props.Value('CCLastUpdated','-1'),
+        fcLast,
+        ccLast,
         props.IntValue('LastIconId',-1),
         props.IntValue('LastTemp',-999),
         props.BoolValue('Enabled',True),
@@ -165,8 +172,8 @@ begin
       with node.Properties do begin
         Add('Location', Self[i].Location);
         Add('LocationID', Self[i].LocationID);
-        Add('FCLastUpdated', Self[i].FCLastUpdated);
-        Add('CCLastUpdated', Self[i].CCLastUpdated);
+        Add('FCLastUpdated', FloatToStr(Self[i].FCLastUpdated));
+        Add('CCLastUpdated', FloatToStr(Self[i].CCLastUpdated));
         Add('LastIconID', Self[i].LastIconID);
         Add('LastTemp', Self[i].LastTemp);
         Add('Enabled', Self[i].Enabled);
@@ -193,8 +200,8 @@ begin
   FLocation := '';
   FLocationID := '';
   FEnabled := False;
-  FCCLastUpdated := '-1';
-  FFCLastUpdated := '-1';
+  FCCLastUpdated := -1;
+  FFCLastUpdated := -1;
   FLastIconID := -1;
   FLastTemp := -999;
 end;

@@ -310,8 +310,7 @@ begin
         Interval := 30;
       end;
 
-      if not (TryStrToDateTime(tmpInfo.CCLastUpdated, tmpd)) then
-        tmpd := 0;
+      tmpd := tmpInfo.CCLastUpdated;
 
       compareddt := tmpd + (interval / MinsPerDay);
       if (currentdt > compareddt) or not (FileExists(locpath + 'cc.xml')) or
@@ -337,7 +336,7 @@ begin
             xml.Free;
           end;
 
-          tmpInfo.CCLastUpdated := DateTimeToStr(now);
+          tmpInfo.CCLastUpdated := now;
           FErrorCount := 0;
 
           WeatherList.SaveSettings;
@@ -364,8 +363,7 @@ begin
         interval := 120;
       end;
 
-      if not (TryStrToDateTime(tmpInfo.FCLastUpdated, tmpd)) then
-        tmpd := 0;
+      tmpd := tmpInfo.FCLastUpdated;
 
       compareddt := tmpd + (interval / MinsPerDay);
       if (currentdt > compareddt) or not (FileExists(locpath + 'forecast.xml'))
@@ -377,7 +375,7 @@ begin
           Debug(Format('%s: FCUpdate', [tmpInfo.LocationID]), DMT_INFO);
           url := Format(fsForecastUrl, [tmpInfo.LocationID, tmps]);
           Download(url, locpath + 'forecast.xml');
-          tmpInfo.FCLastUpdated := DateTimeToStr(now);
+          tmpInfo.FCLastUpdated := now;
           FErrorCount := 0;
 
           WeatherList.SaveSettings;

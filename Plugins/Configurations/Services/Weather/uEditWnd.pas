@@ -244,7 +244,7 @@ begin
   case FPluginHost.EditMode of
     sceAdd: begin
 
-        frmItemswnd.WeatherList.AddItem(edLocation.Text, edWeatherID.Text, '-1', '-1', -1, -1, True, chkMetric.Checked);
+        frmItemswnd.WeatherList.AddItem(edLocation.Text, edWeatherID.Text, -1, -1, -1, -1, True, chkMetric.Checked);
         FPluginHost.Save;
 
         // Force the service to update
