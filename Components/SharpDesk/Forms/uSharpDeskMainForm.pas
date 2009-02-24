@@ -237,6 +237,7 @@ var
   LastX,LastY : integer;
   SPos : TPoint;
   oSelect : boolean = False;
+  SizePosChanging : Boolean = True;
 
   ObjectPopupImageCount : integer;
 
@@ -358,10 +359,12 @@ begin
 
     if (not b) or (wnd = handle) then
     begin
+      SizePosChanging := True;
       SharpDeskMainForm.Left := Screen.DesktopLeft;
       SharpDeskMainForm.Top  := Screen.DesktopTop;
       SharpDeskMainForm.Width := Screen.DesktopWidth;
       SharpDeskMainForm.Height := Screen.DesktopHeight;
+      SizePosChanging := False;
       BackgroundReloadTimer.Enabled := False;
       BackgroundReloadTimer.Enabled := True;
     end;
@@ -486,10 +489,12 @@ begin
 
     SharpApi.SendDebugMessageEx('SharpDesk',PChar('Main Resize : ' +
                                 inttostr(Screen.DesktopLeft)+','+inttostr(Screen.DesktopTop)+','+inttostr(Screen.DesktopWidth)+','+inttostr(Screen.DesktopHeight)),clblue,DMT_INFO);
+    SizePosChanging := True;
     SharpDeskMainForm.Left := Screen.DesktopLeft;
     SharpDeskMainForm.Top  := Screen.DesktopTop;
     SharpDeskMainForm.Width := Screen.DesktopWidth;
     SharpDeskMainForm.Height := Screen.DesktopHeight;
+    SizePosChanging := False;
     if WPChange then
     begin
       SharpDeskMainForm.SendMessageToConsole('loading wallpaper',COLOR_OK,DMT_STATUS);
@@ -523,6 +528,8 @@ begin
   inherited;
   if Created then
      Msg.WindowPos.Flags := Msg.WindowPos.Flags or SWP_NOZORDER;
+  if not SizePosChanging then
+    Msg.WindowPos.Flags := Msg.WindowPos.Flags or SWP_NOMOVE or SWP_NOSIZE;     
 end;
 
 
@@ -618,10 +625,12 @@ begin
 
      SharpDeskMainForm.Show;
 
+     SizePosChanging := True;
      SharpDeskMainForm.Left:=Screen.DesktopLeft;
      SharpDeskMainForm.Top:=Screen.DesktopTop;
      SharpDeskMainForm.Width:=Screen.DesktopWidth;
      SharpDeskMainForm.Height:=Screen.DesktopHeight;
+     SizePosChanging := False;
      LoadTheme(True);
      SharpDesk.LoadObjectSet;
      SharpDeskMainForm.BackgroundImage.RepaintMode := rmOptimizer;
