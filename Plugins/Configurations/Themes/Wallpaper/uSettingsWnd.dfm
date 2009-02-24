@@ -27,7 +27,7 @@ object frmSettingsWnd: TfrmSettingsWnd
     Margins.Top = 0
     Margins.Right = 0
     Margins.Bottom = 0
-    ActivePage = pagGradient
+    ActivePage = pagWallpaper
     PropagateEnable = False
     Align = alClient
     object pagWallpaper: TJvStandardPage
@@ -330,7 +330,9 @@ object frmSettingsWnd: TfrmSettingsWnd
         Margins.Right = 5
         Margins.Bottom = 0
         Title = 'Wallpaper visibility'
-        Description = 'Define how visible the wallpaper is against the wallpaper colour'
+        Description = 
+          'Define how visible the wallpaper is against the background colou' +
+          'r'
         TitleColor = clWindowText
         DescriptionColor = clRed
         Align = alTop
