@@ -148,6 +148,7 @@ var
   Ext : String;
   link: TShellLinkInfo;
 begin
+  {$WARNINGS OFF}
   if isDirectory(ExcludeTrailingBackSlash(pSource)) or isDirectory(IncludeTrailingBackSlash(pSource)) then
     result := 'generic.folder'
   else
@@ -191,6 +192,7 @@ begin
       result := 'generic.movie'
     else result := 'generic.file';
   end
+  {$WARNINGS ON}
 end;
 
 function TSharpEMenuConsts.ParseString(pString : String) : String;
