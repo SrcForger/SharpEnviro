@@ -72,7 +72,7 @@ object frmEditwnd: TfrmEditwnd
     Height = 21
     Style = csDropDownList
     Anchors = [akLeft, akTop, akRight]
-    ItemHeight = 0
+    ItemHeight = 13
     TabOrder = 1
     OnSelect = cbBasedOnSelect
   end
@@ -82,7 +82,7 @@ object frmEditwnd: TfrmEditwnd
     Width = 137
     Height = 21
     Style = csDropDownList
-    ItemHeight = 0
+    ItemHeight = 13
     TabOrder = 2
     OnSelect = cbBasedOnSelect
   end
@@ -133,7 +133,7 @@ object frmEditwnd: TfrmEditwnd
     object Label1: TLabel
       Left = 0
       Top = 13
-      Width = 431
+      Width = 459
       Height = 26
       Align = alTop
       Caption = 
@@ -141,11 +141,12 @@ object frmEditwnd: TfrmEditwnd
         'pBar to free some screen space. There is no space left to create' +
         ' another SharpBar at any possible position.'
       WordWrap = True
+      ExplicitWidth = 431
     end
     object JvLabel4: TLabel
       Left = 0
       Top = 0
-      Width = 31
+      Width = 459
       Height = 13
       Align = alTop
       Caption = 'Error:'
@@ -156,6 +157,7 @@ object frmEditwnd: TfrmEditwnd
       Font.Style = [fsBold]
       ParentFont = False
       Transparent = True
+      ExplicitWidth = 31
     end
   end
   object vals: TJvValidators

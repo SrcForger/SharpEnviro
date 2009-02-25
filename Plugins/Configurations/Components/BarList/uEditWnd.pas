@@ -258,7 +258,7 @@ begin
             Add('ID', newId);
             Add('Name', edName.Text);
             Add('ShowThrobber', True);
-            Add('DisableHideBar', False);
+            Add('DisableHideBar', True);
             Add('AutoStart', True);
             Add('AutoPosition', True);
             Add('PrimaryMonitor', (cobo_monitor.ItemIndex = 0));
@@ -296,7 +296,7 @@ begin
               Add('ID', newId);
               Add('Name', edName.Text);
               Add('ShowThrobber', True);
-              Add('DisableHideBar', False);
+              Add('DisableHideBar', True);
               Add('AutoStart', True);
               Add('AutoPosition', True);
               Add('PrimaryMonitor', (cobo_monitor.ItemIndex = 0));
