@@ -114,11 +114,11 @@ object SharpBarMainForm: TSharpBarMainForm
       Caption = 'Settings'
       ImageIndex = 5
       object AlwaysOnTop1: TMenuItem
-        Caption = 'Always On Top'
+        Caption = 'Always On-Top'
         OnClick = AlwaysOnTop1Click
       end
       object AutoStart1: TMenuItem
-        Caption = 'Auto Start'
+        Caption = 'Launch At Start-Up'
         OnClick = AutoStart1Click
       end
       object DisableBarHiding1: TMenuItem
@@ -126,7 +126,7 @@ object SharpBarMainForm: TSharpBarMainForm
         OnClick = DisableBarHiding1Click
       end
       object ShowMiniThrobbers1: TMenuItem
-        Caption = 'Show Mini Throbbers'
+        Caption = 'Show Module Buttons'
         OnClick = ShowMiniThrobbers1Click
       end
     end
@@ -574,7 +574,7 @@ object SharpBarMainForm: TSharpBarMainForm
     Top = 40
     object Settings: TMenuItem
       Tag = -1
-      Caption = 'Settings'
+      Caption = 'Options'
       ImageIndex = 5
       OnClick = SettingsClick
     end
