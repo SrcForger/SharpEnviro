@@ -5,5 +5,9 @@
       <Dll>_Components\_Componentdlls\DesktopSettings.dll</Dll>
       <Icon>desktopEdit.png</Icon>
     </SharpDesk>
+    <SharpDeskArea>
+      <Dll>_Services\_Servicedlls\DeskArea.dll</Dll>
+      <Icon>_Services\_ServiceDlls\DeskArea.png</Icon>
+    </SharpDeskArea>
   </Sections>
 </SharpCenter>
