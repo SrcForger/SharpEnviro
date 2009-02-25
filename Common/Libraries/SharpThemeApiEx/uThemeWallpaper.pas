@@ -103,6 +103,8 @@ end;
 function TThemeWallpaper.GetMonitorWallpaper(MonitorID: integer): TThemeWallpaperItem;
 var
   n, i: integer;
+  found : boolean;
+  newName : String;
 begin
   for n := 0 to High(FMonitors) do
     if FMonitors[n].ID = MonitorID then
@@ -113,7 +115,27 @@ begin
           exit;
         end;
 
+  NewName := FWallpapers[0].Name;
+  i := 0;
+  repeat
+    found := False;
+    i := i + 1;
+    NewName := NewName + inttostr(i);
+    for n := 0 to High(FWallpapers) do
+      if CompareText(FWallpapers[n].Name,NewName) = 0 then
+    begin
+      found := True;
+      break;
+    end;
+  until not found;
   result := FWallpapers[0];
+  result.Name := NewName;
+  for n := 0 to High(FMonitors) do
+    if FMonitors[n].ID = MonitorID then
+    begin
+      FMonitors[n].Name := NewName;
+      break;
+    end;
 end;
 
 function TThemeWallpaper.GetWallpapers : TThemeWallpaperItems;
@@ -302,7 +324,7 @@ begin
     end;
 
   SetLength(FWallpapers,length(FWallpapers)+1);
-  FWallpapers[0] := pWallpaper;
+  FWallpapers[High(FWallpapers)] := pWallpaper;
 end;
 
 end.
