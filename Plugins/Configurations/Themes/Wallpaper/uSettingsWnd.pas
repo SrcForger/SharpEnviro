@@ -481,7 +481,9 @@ end;
 procedure TfrmSettingsWnd.UpdateGUIFromWPItem(AWPItem: TWPItem);
 var
   i : integer;
+  oldtab : integer;
 begin
+  oldtab := plConfig.ActivePageIndex;
   chkWpMirrorVert.OnClick := nil;
   chkWpMirrorHoriz.OnClick := nil;
   chkApplyColor.OnClick := nil;
@@ -491,6 +493,8 @@ begin
   rdoWpAlignCenter.OnClick := nil;
   rdoWpAlignTile.OnClick := nil;
   edtWpFile.OnChange := nil;
+  secWpColor.OnUiChange := nil;
+  secGradColor.OnUiChange := nil;
   try
 
     FCurrentWP := AWPItem;
@@ -546,7 +550,10 @@ begin
     rdoWpAlignCenter.OnClick := AlignmentChangeEvent;
     rdoWpAlignTile.OnClick := AlignmentChangeEvent;
     edtWpFile.OnChange := edtWallpaperChange;
+    secWpColor.OnUiChange := WallpaperColorUiChangeEvent;
+    secGradColor.OnUiChange := WallpaperColorUiChangeEvent;    
   end;
+  plConfig.ActivePageIndex := oldtab;
 end;
 
 procedure TfrmSettingsWnd.FormCreate(Sender: TObject);
@@ -612,8 +619,9 @@ end;
 
 procedure TfrmSettingsWnd.MonitorChangeEvent(Sender: TObject);
 begin
-  FCurrentWP := TWPItem(cboMonitor.Items.Objects[cboMonitor.ItemIndex]);
   UpdateWPItemFromGuid;
+  FCurrentWP := TWPItem(cboMonitor.Items.Objects[cboMonitor.ItemIndex]);
+  UpdateGUIFromWPItem(FCurrentWP);
 
   RenderPreview;
   FPluginHost.Refresh(rtPreview);
