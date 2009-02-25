@@ -42,14 +42,63 @@ type
     procedure MessageHandler(var msg: TMessage);
   end;
 
+type
+  PParam = ^TParam;
+  TParam = record
+    wndlist: array of hwnd;
+  end;
+
 var
   AE: TActionEvent;
   h: THandle;
   LocalsList: TJclKeyboardLayoutList;
+  WindowToggle: Boolean = false;
+  Param: TParam;
+
+const
+  cRestartIdx = 0;
+  cShutdownIdx = 1;
+  cLogoutIdx = 2;
+  cHibernateIdx = 3;
+  cSwitchUserLock = 4;
+
+  cRestart_NonVerboseIdx = 10;
+  cShutdown_NonVerboseIdx = 11;
+  cLogout_NonVerboseIdx = 12;
+  cHibernate_NonVerboseIdx = 13;
+  cSwitchUser_NonVerboseLock = 14;
+
+  cShutdownStart = 0;
+  cShutdownEnd = 14;
+  cShutdownNonVerbose = 10;
+
+  cMinimiseAllIdx = 20;
+  cRestoreAllIdx = 21;
+  cToggleAllBarsIdx = 22;
+  cToggleAllWindowsIdx = 23;
+
+  cKeyboardLayoutIdx = 99;
 
   {$R *.RES}
 
 function SwitchToThisWindow(Wnd: hwnd; fAltTab: boolean): boolean; stdcall; external 'user32.dll';
+
+procedure MinimiseAll(var EnumParam: TParam);
+var
+  i: Integer;
+begin
+  for i := 0 to High(EnumParam.Wndlist) do
+    CloseWindow(EnumParam.WndList[i]);
+end;
+
+procedure RestoreAll(var EnumParam: TParam);
+var
+  i: Integer;
+begin
+  for i := 0 to High(EnumParam.WndList) do
+    if IsIconic(EnumParam.WndList[i]) then ShowWindow(EnumParam.WndList[i], SW_Restore)
+    else SwitchToThisWindow(EnumParam.WndList[i], True);
+end;
 
 procedure RegisterKeyBoardLocals;
 var
@@ -77,14 +126,24 @@ end;
 
 procedure RegisterActions;
 begin
-  RegisterActionEx('!Restart', 'Shutdown', h, 1);
-  RegisterActionEx('!Shutdown', 'Shutdown', h, 2);
-  RegisterActionEx('!Logout', 'Shutdown', h, 3);
-  RegisterActionEx('!Hibernate', 'Shutdown', h, 4);
-  RegisterActionEx('!SwitchUser/LockStation', 'Shutdown', h, 5);
-  RegisterActionEx('!MinimizeAll', 'Window Management', h, 6);
-  RegisterActionEx('!RestoreAll', 'Window Management', h, 7);
-  RegisterActionEx('!ToggleAllBars', 'SharpBar', h, 8);
+  RegisterActionEx('!Restart', 'Shutdown', h, cRestartIdx);
+  RegisterActionEx('!Shutdown', 'Shutdown', h, cShutdownIdx);
+  RegisterActionEx('!Logout', 'Shutdown', h, cLogoutIdx);
+  RegisterActionEx('!Hibernate', 'Shutdown', h, cHibernateIdx);
+  RegisterActionEx('!SwitchUser/LockStation', 'Shutdown', h, cSwitchUserLock);
+
+  RegisterActionEx('!Restart_NonVerbose', 'Shutdown', h, cRestart_NonVerboseIdx);
+  RegisterActionEx('!Shutdown_NonVerbose', 'Shutdown', h, cShutdown_NonVerboseIdx);
+  RegisterActionEx('!Logout_NonVerbose', 'Shutdown', h, cLogout_NonVerboseIdx);
+  RegisterActionEx('!Hibernate_NonVerbose', 'Shutdown', h, cHibernate_NonVerboseIdx);
+  RegisterActionEx('!SwitchUser/LockStation_NonVerbose', 'Shutdown', h, cSwitchUser_NonVerboseLock);
+
+  RegisterActionEx('!MinimizeAll', 'Window Management', h, cMinimiseAllIdx);
+  RegisterActionEx('!RestoreAll', 'Window Management', h, cRestoreAllIdx);
+  RegisterActionEx('!ToggleAllWindows', 'Window Management', h, cToggleAllWindowsIdx);
+
+  RegisterActionEx('!ToggleAllBars', 'SharpBar', h, cToggleAllBarsIdx);
+
   RegisterKeyBoardLocals;
 end;
 
@@ -117,9 +176,17 @@ begin
   UnRegisterAction('!Logout');
   UnRegisterAction('!Hibernate');
   UnRegisterAction('!SwitchUser/LockStation');
+
+  UnRegisterAction('!Restart_NonVerbose');
+  UnRegisterAction('!Shutdown_NonVerbose');
+  UnRegisterAction('!Logout_NonVerbose');
+  UnRegisterAction('!Hibernate_NonVerbose');
+  UnRegisterAction('!SwitchUser/LockStation_NonVerbose');
+
   UnRegisterAction('!MinimizeAll');
   UnRegisterAction('!RestoreAll');
   UnRegisterAction('!ToggleAllBars');
+  UnRegisterAction('!ToggleAllWindows');
 
   LocalsList.Free;
 end;
@@ -127,11 +194,7 @@ end;
 { TActionEvent }
 
 procedure TActionEvent.MessageHandler(var msg: TMessage);
-type
-  PParam = ^TParam;
-  TParam = record
-    wndlist: array of hwnd;
-  end;
+
 var
   EnumParam: TParam;
 
@@ -152,8 +215,7 @@ var
 
 var
   ShutDown: TSEShutdown;
-  dmsg: string;
-  n, k, j: integer;
+  n, k, j, lParam: integer;
   BarList: THandleArray;
   BarHidden: boolean;
   AL: TJclKeyboardLayout;
@@ -168,49 +230,10 @@ begin
     RegisterActions
   else if msg.Msg = WM_SHARPEACTIONMESSAGE then
   begin
-    // shutdown?
-    if (Msg.LParam >= 1) and (Msg.LParam <= 4) then
-    begin
-      ShutDown := TSEShutDown.Create;
-      try
-        case Msg.LParam of
-          1: begin
-              ShutDown.ActionType := sdReboot;
-              dmsg := 'Reboot';
-            end;
-          2: begin
-              ShutDown.ActionType := sdPowerOff;
-              dmsg := 'Shutdown';
-            end;
-          3: begin
-              ShutDown.ActionType := sdLogOff;
-              dmsg := 'Logout';
-            end;
-          4: begin
-              ShutDown.ActionType := sdHibernate;
-              dmsg := 'Hibernate';
-            end;
-        end;
-        ShutDown.Force := True;
+    lParam := Msg.LParam;
 
-        if windows.MessageBox(FindWindow('TSharpCoreMainWnd', nil), PChar('Do you really want to ' + dmsg + ' your Computer now?'),
-          PChar('Confirm ' + dmsg), MB_YESNO or MB_ICONQUESTION or MB_APPLMODAL or MB_TOPMOST) = IDOK then
-          ShutDown.Execute;
-      finally
-        ShutDown.Free;
-      end;
-
-      exit;
-    end;
-
-    if (Msg.LParam = 6) or (Msg.LParam = 7) then
-    begin
-      setlength(EnumParam.wndlist, 0);
-      EnumWindows(@EnumWindowsProc, Integer(@EnumParam));
-    end;
-
-    // Keyboard Lacout Changed?
-    if (Msg.LParam = 99) then
+    // Keyboard layout
+    if (Msg.LParam = cKeyboardLayoutIdx) then
     begin
       k := 0;
       AL := LocalsList.ActiveLayout;
@@ -226,9 +249,9 @@ begin
         end;
       exit;
     end else
-      if (Msg.LParam >= 100) then
+      if (Msg.LParam > cKeyboardLayoutIdx + 1) then
       begin
-        n := Msg.LParam - 100;
+        n := Msg.LParam - cKeyboardLayoutIdx + 1;
         k := 0;
         if n <= LocalsList.Count - 1 then
         begin
@@ -238,23 +261,52 @@ begin
         exit;
       end;
 
-    case Msg.LParam of
-      5: begin
-          // Lock Work Station / Switch User;
-          LockWorkStation;
+    // The others
+    case lParam of
+      cShutdownStart..cShutdownEnd: begin
+
+          ShutDown := TSEShutDown.Create(FindWindow('TSharpCoreMainWnd', nil));
+          try
+            case lParam of
+              cRestartIdx, cRestart_NonVerboseIdx: begin
+                  ShutDown.ActionType := sdReboot;
+                end;
+              cShutdownIdx, cShutdown_NonVerboseIdx: begin
+                  ShutDown.ActionType := sdPowerOff;
+                end;
+              cLogoutIdx, cLogout_NonVerboseIdx: begin
+                  ShutDown.ActionType := sdLogOff;
+                end;
+              cHibernateIdx, cHibernate_NonVerboseIdx: begin
+                  ShutDown.ActionType := sdHibernate;
+                end;
+              cSwitchUserLock, cSwitchUser_NonVerboseLock: begin
+                  ShutDown.ActionType := sdLock;
+                end;
+            end;
+            ShutDown.Force := True;
+
+            // Set verbosity
+            if (lParam >= cShutdownNonVerbose) then
+              ShutDown.Verbose := false else
+              ShutDown.Verbose := true;
+
+            ShutDown.Execute;
+          finally
+            ShutDown.Free;
+          end;
         end;
-      6: begin
-          // Minimize All Windows
-          for n := 0 to High(EnumParam.Wndlist) do
-            CloseWindow(EnumParam.WndList[n]);
+      cMinimiseAllIdx, cRestoreAllIdx: begin
+          setlength(EnumParam.wndlist, 0);
+          EnumWindows(@EnumWindowsProc, Integer(@EnumParam));
+
+          if lParam = cMinimiseAllIdx then
+            MinimiseAll(EnumParam) else
+            RestoreAll(EnumParam);
+
+          setlength(EnumParam.wndlist, 0);
         end;
-      7: begin
-          // Restore All Windows
-          for n := 0 to High(EnumParam.WndList) do
-            if IsIconic(EnumParam.WndList[n]) then ShowWindow(EnumParam.WndList[n], SW_Restore)
-            else SwitchToThisWindow(EnumParam.WndList[n], True);
-        end;
-      8: begin
+      cToggleAllBarsIdx: begin
           // Toggle (Show/Hide) all bars
           BarList := FindAllWindows('TSharpBarMainForm');
           BarHidden := False;
@@ -270,9 +322,24 @@ begin
           else SharpApi.SharpEBroadCast(WM_HIDEBAR, 0, 0);
           SharpApi.ServiceMsg('DeskArea', 'Update');
         end;
+      cToggleAllWindowsIdx: begin
+
+          setlength(EnumParam.wndlist, 0);
+          EnumWindows(@EnumWindowsProc, Integer(@EnumParam));
+
+          if WindowToggle then
+            RestoreAll(EnumParam) else
+            MinimiseAll(EnumParam);
+
+          setlength(EnumParam.wndlist, 0);
+
+          // Toggle (Show/Hide) all windows
+          WindowToggle := not (WindowToggle);
+        end;
     end;
-    setlength(EnumParam.wndlist, 0);
-  end else msg.Result := DefWindowProc(h, msg.Msg, Msg.WParam, msg.LParam);
+
+  end
+  else msg.Result := DefWindowProc(h, msg.Msg, Msg.WParam, msg.LParam);
 end;
 
 function GetMetaData(): TMetaData;
