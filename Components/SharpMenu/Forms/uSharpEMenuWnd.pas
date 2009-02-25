@@ -609,6 +609,7 @@ end;
 
 procedure TSharpEMenuWnd.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
+  FIsClosing := True;
   if FMenu = nil then exit;
   if not FMenu.isWrapMenu then
      FMenu.UnWrapMenu(FMenu);
@@ -620,6 +621,7 @@ var
   o : integer;
 begin
   if FParentMenu = nil then exit;
+  if FMenu = nil then exit;
   if (FPicture.Height <= Height) and (FParentMenu.Picture.Height <= FParentMenu.Height) then exit;
 
   if ((Mouse.CursorPos.x < Left) or (Mouse.CursorPos.x > Left + Width))
@@ -646,6 +648,7 @@ procedure TSharpEMenuWnd.FormMouseWheelUp(Sender: TObject; Shift: TShiftState;
   o : integer;
 begin
   if FParentMenu = nil then exit;
+  if FMenu = nil then exit;
   if (FPicture.Height <= Height) and (FParentMenu.Picture.Height <= FParentMenu.Height) then exit;
 
   if ((Mouse.CursorPos.x < Left) or (Mouse.CursorPos.x > Left + Width))
@@ -668,6 +671,8 @@ end;
 
 procedure TSharpEMenuWnd.FormShow(Sender: TObject);
 begin
+  if FMenu = nil then
+    exit;
   FMenu.RenderTo(FPicture,Left,Top);
   PreMul(FPicture);
 end;

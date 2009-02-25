@@ -47,6 +47,7 @@ uses
   SharpThemeApiEx,
   uThemeConsts,
   SharpESkinManager,
+  uSystemFuncs,
   SharpTypes,
   uSharpEMenuWnd in 'Forms\uSharpEMenuWnd.pas' {SharpEMenuWnd},
   uSharpEMenuLoader in 'Units\uSharpEMenuLoader.pas',
@@ -101,6 +102,9 @@ begin
 end;
 
 begin
+  SharpEMenuPopups := nil;
+  SharpEMenuIcons := nil;
+
   Application.Initialize;
   Application.ShowMainForm := False;
   {$IFDEF VER185} Application.MainFormOnTaskBar := True; {$ENDIF}
@@ -141,6 +145,9 @@ begin
      mfile := SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\Menu.xml';
   if not FileExists(mfile) then halt;
 
+  Application.Title := 'SharpMenu';
+  Application.CreateForm(TSharpEMenuwnd, wnd);    
+
   GetCurrentTheme.LoadTheme([tpSkinScheme,tpIconSet,tpSkinFont]);
 
   iconcachefile := ExtractFileName(mfile);
@@ -157,8 +164,6 @@ begin
   SkinManager := TSharpESkinManager.Create(nil,[scBar,scMenu,scMenuItem]);
   SystemSkinLoadThread := TSystemSkinLoadThread.Create(SkinManager);
   mn := uSharpEMenuLoader.LoadMenu(mfile,SkinManager,False);
-  Application.Title := 'SharpMenu';
-  Application.CreateForm(TSharpEMenuwnd, wnd);
   SystemSkinLoadThread.WaitFor;
   SystemSkinLoadThread.Free;
 
@@ -184,11 +189,12 @@ begin
     i := Mon.Top;
   end;
   wnd.top := i;
-
-  wnd.Show;
-
+  
   // Register Shell Hook
   SharpApi.RegisterShellHookReceiver(wnd.Handle);
+
+  wnd.Show;
+  ForceForeGroundWindow(wnd.handle);
 
   Application.Run;
 
@@ -196,8 +202,8 @@ begin
      SharpEMenuIcons.SaveIconCache(iconcachefile);  
 
   // Free Classes
-  if SharpEMenuPopups <> nil then
-     SharpEMenuPopups.Free;
+  //if SharpEMenuPopups <> nil then
+  //   SharpEMenuPopups.Free;
   SharpEMenuIcons.Free;     
 
   SkinManager.Free;
