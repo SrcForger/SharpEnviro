@@ -34,44 +34,45 @@ uses
   uShutdown,
   SharpTypes,
   uSystemFuncs,
+  dialogs,
   JCLLocales;
 
 type
-  TActionEvent = Class(Tobject)
-  Procedure MessageHandler(var msg: TMessage);
+  TActionEvent = class(Tobject)
+    procedure MessageHandler(var msg: TMessage);
   end;
 
 var
-  AE:TActionEvent;
-  h:THandle;
-  LocalsList : TJclKeyboardLayoutList;
+  AE: TActionEvent;
+  h: THandle;
+  LocalsList: TJclKeyboardLayoutList;
 
-{$R *.RES}
+  {$R *.RES}
 
-function SwitchToThisWindow(Wnd : hwnd; fAltTab : boolean) : boolean; stdcall; external 'user32.dll';
+function SwitchToThisWindow(Wnd: hwnd; fAltTab: boolean): boolean; stdcall; external 'user32.dll';
 
 procedure RegisterKeyBoardLocals;
 var
-  n : integer;
+  n: integer;
 begin
   if LocalsList.Count <= 1 then
     exit;
 
-  RegisterActionEx(PChar('!KLCycle'),'Keyboard Layouts',h,99);
+  RegisterActionEx(PChar('!KLCycle'), 'Keyboard Layouts', h, 99);
   for n := 0 to LocalsList.Count - 1 do
-    RegisterActionEx(PChar('!KL'+LocalsList[n].DisplayName),'Keyboard Layouts',h,100+n);
+    RegisterActionEx(PChar('!KL' + LocalsList[n].DisplayName), 'Keyboard Layouts', h, 100 + n);
 end;
 
 procedure UnRegisterKeyBoardLocals;
 var
-  n : integer;
+  n: integer;
 begin
   if LocalsList.Count <= 1 then
     exit;
 
   UnRegisterAction(PChar('!KLCycle'));
   for n := 0 to LocalsList.Count - 1 do
-    UnRegisterAction(PChar('!KL'+LocalsList[n].DisplayName));
+    UnRegisterAction(PChar('!KL' + LocalsList[n].DisplayName));
 end;
 
 procedure RegisterActions;
@@ -88,6 +89,7 @@ begin
 end;
 
 // Service is started
+
 function Start(owner: hwnd): hwnd;
 begin
   Result := owner;
@@ -103,6 +105,7 @@ begin
 end;
 
 // Service is stopped
+
 procedure Stop;
 begin
   DeallocateHWnd(h);
@@ -118,7 +121,7 @@ begin
   UnRegisterAction('!RestoreAll');
   UnRegisterAction('!ToggleAllBars');
 
-  LocalsList.Free;  
+  LocalsList.Free;
 end;
 
 { TActionEvent }
@@ -130,30 +133,30 @@ type
     wndlist: array of hwnd;
   end;
 var
-  EnumParam : TParam;
+  EnumParam: TParam;
 
   function EnumWindowsProc(Wnd: HWND; LParam: LPARAM): BOOL; stdcall;
   begin
     if (GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) and
-       ((IsWindowVisible(Wnd) or IsIconic(wnd)) and
-       ((GetWindowLong(Wnd, GWL_HWNDPARENT) = 0) or
-       (GetWindowLong(Wnd, GWL_HWNDPARENT) = Integer(GetDesktopWindow))) and
-       (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0))  then
-       with PParam(LParam)^ do
-       begin
-        setlength(wndlist,length(wndlist)+1);
+      ((IsWindowVisible(Wnd) or IsIconic(wnd)) and
+      ((GetWindowLong(Wnd, GWL_HWNDPARENT) = 0) or
+      (GetWindowLong(Wnd, GWL_HWNDPARENT) = Integer(GetDesktopWindow))) and
+      (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0)) then
+      with PParam(LParam)^ do
+      begin
+        setlength(wndlist, length(wndlist) + 1);
         wndlist[high(wndlist)] := wnd;
-       end;
+      end;
     result := True;
   end;
 
 var
-  ShutDown : TSEShutdown;
-  dmsg : String;
-  n,k,j : integer;
-  BarList : THandleArray;
-  BarHidden : boolean;
-  AL : TJclKeyboardLayout;
+  ShutDown: TSEShutdown;
+  dmsg: string;
+  n, k, j: integer;
+  BarList: THandleArray;
+  BarHidden: boolean;
+  AL: TJclKeyboardLayout;
 begin
   if msg.Msg = WM_INPUTLANGCHANGE then
   begin
@@ -166,49 +169,50 @@ begin
   else if msg.Msg = WM_SHARPEACTIONMESSAGE then
   begin
     // shutdown?
-    if (Msg.LParam >= 1) and (Msg.LParam <=4) then
+    if (Msg.LParam >= 1) and (Msg.LParam <= 4) then
     begin
       ShutDown := TSEShutDown.Create;
       try
         case Msg.LParam of
           1: begin
-               ShutDown.ActionType := sdReboot;
-               dmsg := 'Reboot';
-             end;
+              ShutDown.ActionType := sdReboot;
+              dmsg := 'Reboot';
+            end;
           2: begin
-               ShutDown.ActionType := sdPowerOff;
-               dmsg := 'Shutdown';
-             end;
+              ShutDown.ActionType := sdPowerOff;
+              dmsg := 'Shutdown';
+            end;
           3: begin
-               ShutDown.ActionType := sdLogOff;
-               dmsg := 'Logout';
-             end;
+              ShutDown.ActionType := sdLogOff;
+              dmsg := 'Logout';
+            end;
           4: begin
-               ShutDown.ActionType := sdHibernate;
-               dmsg := 'Hibernate';
-             end;
+              ShutDown.ActionType := sdHibernate;
+              dmsg := 'Hibernate';
+            end;
         end;
-        ShutDown.Force := True;       
-        if MessageBox(FindWindow('TSharpCoreMainWnd',nil),
-                      PChar('Do you really want to ' + dmsg + ' your Computer now?'),
-                      PChar('Confirm ' + dmsg),MB_YESNO) = ID_YES then
-           ShutDown.Execute;
+        ShutDown.Force := True;
+
+        if windows.MessageBox(FindWindow('TSharpCoreMainWnd', nil), PChar('Do you really want to ' + dmsg + ' your Computer now?'),
+          PChar('Confirm ' + dmsg), MB_YESNO or MB_ICONQUESTION or MB_APPLMODAL or MB_TOPMOST) = IDOK then
+          ShutDown.Execute;
       finally
         ShutDown.Free;
       end;
+
       exit;
     end;
 
     if (Msg.LParam = 6) or (Msg.LParam = 7) then
     begin
-      setlength(EnumParam.wndlist,0);
+      setlength(EnumParam.wndlist, 0);
       EnumWindows(@EnumWindowsProc, Integer(@EnumParam));
     end;
 
     // Keyboard Lacout Changed?
     if (Msg.LParam = 99) then
     begin
-      k := 0;    
+      k := 0;
       AL := LocalsList.ActiveLayout;
       for n := 0 to LocalsList.Count - 1 do
         if AL = LocalsList.Items[n] then
@@ -217,58 +221,58 @@ begin
           if j > LocalsList.Count - 1 then
             j := 0;
           SystemParametersInfo(SPI_SETDEFAULTINPUTLANG, k, @LocalsList.Items[j].Layout, SPIF_SENDCHANGE or SPIF_UPDATEINIFILE);
-          PostMessage(HWND_BROADCAST,WM_INPUTLANGCHANGEREQUEST,0,LocalsList.Items[j].Layout);
+          PostMessage(HWND_BROADCAST, WM_INPUTLANGCHANGEREQUEST, 0, LocalsList.Items[j].Layout);
           break;
         end;
       exit;
     end else
-    if (Msg.LParam >= 100) then
-    begin
-      n := Msg.LParam - 100;
-      k := 0;
-      if n <= LocalsList.Count - 1 then
+      if (Msg.LParam >= 100) then
       begin
-        SystemParametersInfo(SPI_SETDEFAULTINPUTLANG, k, @LocalsList.Items[n].Layout, SPIF_SENDCHANGE or SPIF_UPDATEINIFILE);
-        PostMessage(HWND_BROADCAST,WM_INPUTLANGCHANGEREQUEST,0,LocalsList.Items[n].Layout);
+        n := Msg.LParam - 100;
+        k := 0;
+        if n <= LocalsList.Count - 1 then
+        begin
+          SystemParametersInfo(SPI_SETDEFAULTINPUTLANG, k, @LocalsList.Items[n].Layout, SPIF_SENDCHANGE or SPIF_UPDATEINIFILE);
+          PostMessage(HWND_BROADCAST, WM_INPUTLANGCHANGEREQUEST, 0, LocalsList.Items[n].Layout);
+        end;
+        exit;
       end;
-      exit;
-    end;
 
-  case Msg.LParam of
+    case Msg.LParam of
       5: begin
-           // Lock Work Station / Switch User;
-           LockWorkStation;
-         end;
+          // Lock Work Station / Switch User;
+          LockWorkStation;
+        end;
       6: begin
-           // Minimize All Windows
-           for n := 0 to High(EnumParam.Wndlist) do
-               CloseWindow(EnumParam.WndList[n]);
-         end;
+          // Minimize All Windows
+          for n := 0 to High(EnumParam.Wndlist) do
+            CloseWindow(EnumParam.WndList[n]);
+        end;
       7: begin
-           // Restore All Windows
-           for n := 0 to High(EnumParam.WndList) do
-               if IsIconic(EnumParam.WndList[n]) then ShowWindow(EnumParam.WndList[n], SW_Restore)
-                  else SwitchToThisWindow(EnumParam.WndList[n],True);
-         end;
+          // Restore All Windows
+          for n := 0 to High(EnumParam.WndList) do
+            if IsIconic(EnumParam.WndList[n]) then ShowWindow(EnumParam.WndList[n], SW_Restore)
+            else SwitchToThisWindow(EnumParam.WndList[n], True);
+        end;
       8: begin
-           // Toggle (Show/Hide) all bars
-           BarList := FindAllWindows('TSharpBarMainForm');
-           BarHidden := False;
-           for n  := 0 to High(BarList) do
-               if not IsWindowVisible(BarList[n]) then
-               begin
-                 BarHidden := True;
-                 break;
-               end;
-           setlength(BarList,0);
-           if BarHidden then
-              SharpApi.SharpEBroadCast(WM_SHOWBAR,0,0)
-              else SharpApi.SharpEBroadCast(WM_HIDEBAR,0,0);
-           SharpApi.ServiceMsg('DeskArea','Update');
-         end;
+          // Toggle (Show/Hide) all bars
+          BarList := FindAllWindows('TSharpBarMainForm');
+          BarHidden := False;
+          for n := 0 to High(BarList) do
+            if not IsWindowVisible(BarList[n]) then
+            begin
+              BarHidden := True;
+              break;
+            end;
+          setlength(BarList, 0);
+          if BarHidden then
+            SharpApi.SharpEBroadCast(WM_SHOWBAR, 0, 0)
+          else SharpApi.SharpEBroadCast(WM_HIDEBAR, 0, 0);
+          SharpApi.ServiceMsg('DeskArea', 'Update');
+        end;
     end;
-    setlength(EnumParam.wndlist,0);
-  end else msg.Result := DefWindowProc(h,msg.Msg,Msg.WParam,msg.LParam);
+    setlength(EnumParam.wndlist, 0);
+  end else msg.Result := DefWindowProc(h, msg.Msg, Msg.WParam, msg.LParam);
 end;
 
 function GetMetaData(): TMetaData;
@@ -292,5 +296,4 @@ exports
 
 begin
 end.
-
 
