@@ -62,11 +62,11 @@ const
   cHibernateIdx = 3;
   cSwitchUserLock = 4;
 
-  cRestart_NonVerboseIdx = 10;
-  cShutdown_NonVerboseIdx = 11;
-  cLogout_NonVerboseIdx = 12;
-  cHibernate_NonVerboseIdx = 13;
-  cSwitchUser_NonVerboseLock = 14;
+  cRestart_QuietIdx = 10;
+  cShutdown_QuietIdx = 11;
+  cLogout_QuietIdx = 12;
+  cHibernate_QuietIdx = 13;
+  cSwitchUser_QuietLock = 14;
 
   cShutdownStart = 0;
   cShutdownEnd = 14;
@@ -132,11 +132,10 @@ begin
   RegisterActionEx('!Hibernate', 'Shutdown', h, cHibernateIdx);
   RegisterActionEx('!SwitchUser/LockStation', 'Shutdown', h, cSwitchUserLock);
 
-  RegisterActionEx('!Restart_NonVerbose', 'Shutdown', h, cRestart_NonVerboseIdx);
-  RegisterActionEx('!Shutdown_NonVerbose', 'Shutdown', h, cShutdown_NonVerboseIdx);
-  RegisterActionEx('!Logout_NonVerbose', 'Shutdown', h, cLogout_NonVerboseIdx);
-  RegisterActionEx('!Hibernate_NonVerbose', 'Shutdown', h, cHibernate_NonVerboseIdx);
-  RegisterActionEx('!SwitchUser/LockStation_NonVerbose', 'Shutdown', h, cSwitchUser_NonVerboseLock);
+  RegisterActionEx('!Restart_Quiet', 'Shutdown', h, cRestart_QuietIdx);
+  RegisterActionEx('!Shutdown_Quiet', 'Shutdown', h, cShutdown_QuietIdx);
+  RegisterActionEx('!Logout_Quiet', 'Shutdown', h, cLogout_QuietIdx);
+  RegisterActionEx('!Hibernate_Quiet', 'Shutdown', h, cHibernate_QuietIdx);
 
   RegisterActionEx('!MinimizeAll', 'Window Management', h, cMinimiseAllIdx);
   RegisterActionEx('!RestoreAll', 'Window Management', h, cRestoreAllIdx);
@@ -177,11 +176,10 @@ begin
   UnRegisterAction('!Hibernate');
   UnRegisterAction('!SwitchUser/LockStation');
 
-  UnRegisterAction('!Restart_NonVerbose');
-  UnRegisterAction('!Shutdown_NonVerbose');
-  UnRegisterAction('!Logout_NonVerbose');
-  UnRegisterAction('!Hibernate_NonVerbose');
-  UnRegisterAction('!SwitchUser/LockStation_NonVerbose');
+  UnRegisterAction('!Restart_Quiet');
+  UnRegisterAction('!Shutdown_Quiet');
+  UnRegisterAction('!Logout_Quiet');
+  UnRegisterAction('!Hibernate_Quiet');
 
   UnRegisterAction('!MinimizeAll');
   UnRegisterAction('!RestoreAll');
@@ -268,19 +266,19 @@ begin
           ShutDown := TSEShutDown.Create(FindWindow('TSharpCoreMainWnd', nil));
           try
             case lParam of
-              cRestartIdx, cRestart_NonVerboseIdx: begin
+              cRestartIdx, cRestart_QuietIdx: begin
                   ShutDown.ActionType := sdReboot;
                 end;
-              cShutdownIdx, cShutdown_NonVerboseIdx: begin
+              cShutdownIdx, cShutdown_QuietIdx: begin
                   ShutDown.ActionType := sdPowerOff;
                 end;
-              cLogoutIdx, cLogout_NonVerboseIdx: begin
+              cLogoutIdx, cLogout_QuietIdx: begin
                   ShutDown.ActionType := sdLogOff;
                 end;
-              cHibernateIdx, cHibernate_NonVerboseIdx: begin
+              cHibernateIdx, cHibernate_QuietIdx: begin
                   ShutDown.ActionType := sdHibernate;
                 end;
-              cSwitchUserLock, cSwitchUser_NonVerboseLock: begin
+              cSwitchUserLock, cSwitchUser_QuietLock: begin
                   ShutDown.ActionType := sdLock;
                 end;
             end;
