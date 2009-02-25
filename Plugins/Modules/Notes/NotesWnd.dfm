@@ -3,7 +3,7 @@ object SharpENotesForm: TSharpENotesForm
   Top = 0
   Caption = 'Notes'
   ClientHeight = 334
-  ClientWidth = 678
+  ClientWidth = 679
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -60,7 +60,7 @@ object SharpENotesForm: TSharpENotesForm
     AlignWithMargins = True
     Left = 5
     Top = 5
-    Width = 668
+    Width = 669
     Height = 324
     Margins.Left = 5
     Margins.Top = 5
@@ -118,14 +118,15 @@ object SharpENotesForm: TSharpENotesForm
     PageBackgroundColor = clWindow
     OnTabChange = pcNotesTabChange
     OnBtnClick = pcNotesBtnClick
+    ExplicitWidth = 668
     DesignSize = (
-      668
+      669
       324)
     object reNotes: TJvRichEdit
       AlignWithMargins = True
       Left = 3
       Top = 56
-      Width = 662
+      Width = 663
       Height = 265
       Align = alClient
       AutoSize = False
@@ -147,12 +148,13 @@ object SharpENotesForm: TSharpENotesForm
       OnKeyPress = EditorKeyPress
       OnSelectionChange = EditorSelectionChange
       OnCloseFindDialog = EditorCloseFindDialog
+      ExplicitWidth = 662
     end
     object tbNotes: TJvToolBar
       AlignWithMargins = True
       Left = 4
       Top = 28
-      Width = 661
+      Width = 662
       Height = 22
       Margins.Left = 4
       Margins.Top = 28
@@ -168,6 +170,7 @@ object SharpENotesForm: TSharpENotesForm
       ShowHint = True
       TabOrder = 3
       Transparent = False
+      ExplicitWidth = 661
       object btnImport: TToolButton
         Left = 0
         Top = 0
@@ -2713,6 +2716,13 @@ object SharpENotesForm: TSharpENotesForm
       Caption = 'Word Wrap'
       OnClick = miWordWrapClick
     end
+    object miFormat: TMenuItem
+      Caption = 'Format'
+      object miTextBackColor: TMenuItem
+        Caption = 'Text Back Color'
+        OnClick = miTextBackColorClick
+      end
+    end
   end
   object pmFilter: TPopupMenu
     Left = 208
@@ -2760,5 +2770,10 @@ object SharpENotesForm: TSharpENotesForm
       RadioItem = True
       OnClick = miFilterTagsAndTextClick
     end
+  end
+  object ColorDialog: TColorDialog
+    Color = clWindow
+    Left = 144
+    Top = 136
   end
 end

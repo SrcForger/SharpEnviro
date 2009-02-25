@@ -91,6 +91,9 @@ type
     miFilterNamesAndText: TMenuItem;
     miFilterTagsAndText: TMenuItem;
     hiddenPanel: TPanel;
+    miFormat: TMenuItem;
+    ColorDialog: TColorDialog;
+    miTextBackColor: TMenuItem;
     procedure FormShow(Sender: TObject);
     procedure pcNotesTabChange(ASender: TObject;
       const ATabIndex: Integer; var AChange: Boolean);
@@ -142,6 +145,7 @@ type
     procedure FormResize(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure EditorChange(Sender: TObject);
+    procedure miTextBackColorClick(Sender: TObject);
   private
     { Private declarations }
     FIndex: Integer;
@@ -375,6 +379,8 @@ begin
 end;
 
 procedure TSharpENotesForm.EditorSelectionChange(Sender: TObject);
+var
+  tabSettings : NotesTabSettings;
 begin
   btnCut.Enabled := (reNotes.SelText <> '');
   btnCopy.Enabled := (reNotes.SelText <> '');
@@ -419,6 +425,16 @@ begin
       JvRichEdit.paCenter: btnAlignCenter.Down := True;
       JvRichEdit.paJustify: btnAlignJustify.Down := True;
     end;
+  end;
+
+  if (FIndex > -1) and not FLoading then
+  begin
+    // Update the select start and length when the selection changes.
+    tabSettings := GetTabSettings(TabName(FIndex));
+    tabSettings.SelStart := reNotes.SelStart;
+    tabSettings.SelLength := reNotes.SelLength;
+
+    TMainForm(Owner).SaveTabsSettings;
   end;
 end;
 
@@ -691,7 +707,7 @@ begin
     
   if not pcNotes.TabItems.Item[FIndex].Visible then
   begin
-    // The tab is not longer visible so set the index to -1.
+    // The tab is no longer visible so set the index to -1.
     pcNotes.TabIndex := -1;
     // Clear the notes and don't allow input.
     reNotes.Clear;
@@ -824,6 +840,11 @@ var
   i: Integer;
   tabSettings: NotesTabSettings;
 begin
+  if Self.WindowState = wsMinimized then
+    Self.WindowState := wsNormal;
+
+  FLoading := True;
+
   FIndex := -1;
   pcNotes.TabIndex := -1;
 
@@ -861,10 +882,10 @@ begin
       // If we come across the last tab then change to it.
       if TabName(i) = Settings.LastTab then
       begin
-        pcNotes.TabIndex := i;
         tabSettings := GetTabSettings(TabName(i));
         reNotes.SelStart := tabSettings.SelStart;
         reNotes.SelLength := tabSettings.SelLength;
+        pcNotes.TabIndex := i;
       end;
     end;
   finally
@@ -878,6 +899,8 @@ begin
   // If there is a filter then reapply it.
   if editFilter.Text <> '' then
     FilterChange(Sender);
+
+  FLoading := False;
 end;
 
 {$ENDREGION 'Form Events'}
@@ -934,6 +957,13 @@ end;
 procedure TSharpENotesForm.miWordWrapClick(Sender: TObject);
 begin
   reNotes.WordWrap := miWordWrap.Checked;
+end;
+
+procedure TSharpENotesForm.miTextBackColorClick(Sender: TObject);
+begin
+  ColorDialog.Color := CurrText.BackColor;
+  if ColorDialog.Execute(Self.Handle) then
+    CurrText.BackColor := ColorDialog.Color;
 end;
 
 {$ENDREGION 'Context Menu Events'}
