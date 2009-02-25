@@ -73,18 +73,44 @@ begin
 end;
 
 procedure TSharpCenterPlugin.Load;
+var
+  xml:TJclSimpleXML;
+  n: Integer;
+  WeatherFile : String;
+  s : String;
 begin
   if PluginHost.Xml.Load then
   begin
     with PluginHost.Xml.XmlRoot.Items, frmEdit do
     begin
-        cbLocation.ItemIndex := cbLocation.Items.IndexOf(Value('Location', ''));
-        if cbLocation.ItemIndex = -1 then cbLocation.ItemIndex := 0;
+      WeatherFile := GetSharpEUserSettingsPath+'SharpCore\Services\Weather\WeatherList.xml';
 
-        chkDisplayIcon.Checked := BoolValue('ShowIcon', True);
-        chkDisplayLabels.Checked := BoolValue('ShowLabels', True);
-        edtTopLabel.Text := Value('TopLabel', 'Temperature: {#TEMPERATURE#}°{#UNITTEMP#}');
-        edtBottomLabel.Text := Value('BottomLabel', 'Condition: {#CONDITION#}');
+      s := Value('Location', '');
+      if FileExists(WeatherFile) then
+      begin
+        xml := TJclSimpleXML.Create;
+
+        try
+          xml.LoadFromFile(WeatherFile);
+
+          for n := 0 to XML.Root.Items.Count - 1 do
+            if CompareText(XML.Root.Items.Item[n].Properties.Value('LocationID'),s) = 0 then
+            begin
+              s := XML.Root.Items.Item[n].Properties.Value('Location',s);
+              break;
+            end;
+        finally
+          xml.Free;
+       end;
+      end;
+
+      cbLocation.ItemIndex := cbLocation.Items.IndexOf(s);
+      if cbLocation.ItemIndex = -1 then cbLocation.ItemIndex := 0;
+
+      chkDisplayIcon.Checked := BoolValue('ShowIcon', True);
+      chkDisplayLabels.Checked := BoolValue('ShowLabels', True);
+      edtTopLabel.Text := Value('TopLabel', 'Temperature: {#TEMPERATURE#}°{#UNITTEMP#}');
+      edtBottomLabel.Text := Value('BottomLabel', 'Condition: {#CONDITION#}');
     end;
   end;
 end;
@@ -105,15 +131,42 @@ begin
 end;
 
 procedure TSharpCenterPlugin.Save;
+var
+  xml:TJclSimpleXML;
+  n: Integer;
+  WeatherFile : String;
+  s : String;
 begin
   PluginHost.Xml.XmlRoot.Name := 'WeatherModuleSettings';
+
+  WeatherFile := GetSharpEUserSettingsPath+'SharpCore\Services\Weather\WeatherList.xml';
+
+  s := frmEdit.cbLocation.Text;
+  if FileExists(WeatherFile) then
+  begin
+    xml := TJclSimpleXML.Create;
+
+    try
+      xml.LoadFromFile(WeatherFile);
+
+      for n := 0 to XML.Root.Items.Count - 1 do
+        if CompareText(XML.Root.Items.Item[n].Properties.Value('Location'),s) = 0 then
+        begin
+          s := XML.Root.Items.Item[n].Properties.Value('LocationID',s);
+          break;
+        end;
+
+    finally
+      xml.Free;
+    end;
+  end;
 
   with PluginHost.Xml.XmlRoot.Items, frmEdit do
   begin
     // Clear the list so we don't get duplicates.
     Clear;
 
-    Add('Location', cbLocation.Text);
+    Add('Location', s);
     Add('ShowIcon', chkDisplayIcon.Checked);
     Add('ShowLabels', chkDisplayLabels.Checked);
     Add('TopLabel', edtTopLabel.Text);
