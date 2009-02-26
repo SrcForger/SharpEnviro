@@ -3,7 +3,7 @@ object frmSettings: TfrmSettings
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmSettings'
-  ClientHeight = 150
+  ClientHeight = 273
   ClientWidth = 443
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -103,7 +103,7 @@ object frmSettings: TfrmSettings
     Margins.Left = 5
     Margins.Top = 0
     Margins.Right = 5
-    Margins.Bottom = 0
+    Margins.Bottom = 10
     Align = alTop
     BevelOuter = bvNone
     Color = clWindow
@@ -122,6 +122,85 @@ object frmSettings: TfrmSettings
       TabOrder = 0
       Checked = True
       State = cbChecked
+      Align = alLeft
+      OnClick = CheckClick
+    end
+  end
+  object Panel2: TPanel
+    AlignWithMargins = True
+    Left = 5
+    Top = 203
+    Width = 433
+    Height = 21
+    Margins.Left = 5
+    Margins.Top = 0
+    Margins.Right = 5
+    Margins.Bottom = 10
+    Align = alTop
+    BevelOuter = bvNone
+    Color = clWindow
+    ParentBackground = False
+    TabOrder = 4
+    object chkVWM: TJvXPCheckbox
+      Left = 0
+      Top = 0
+      Width = 417
+      Height = 21
+      Margins.Left = 2
+      Margins.Top = 0
+      Margins.Right = 5
+      Margins.Bottom = 10
+      Caption = 'Enable VWM Filter (show only windows from the current VWM)'
+      TabOrder = 0
+      Align = alLeft
+      OnClick = CheckClick
+    end
+  end
+  object SharpECenterHeader2: TSharpECenterHeader
+    AlignWithMargins = True
+    Left = 5
+    Top = 156
+    Width = 433
+    Height = 37
+    Margins.Left = 5
+    Margins.Top = 0
+    Margins.Right = 5
+    Margins.Bottom = 10
+    Title = 'VWM and Monitor Options'
+    Description = 'Define if you want to filter any windows'
+    TitleColor = clWindowText
+    DescriptionColor = clRed
+    Align = alTop
+    Color = clWindow
+  end
+  object Panel3: TPanel
+    AlignWithMargins = True
+    Left = 5
+    Top = 234
+    Width = 433
+    Height = 21
+    Margins.Left = 5
+    Margins.Top = 0
+    Margins.Right = 5
+    Margins.Bottom = 0
+    Align = alTop
+    BevelOuter = bvNone
+    Color = clWindow
+    ParentBackground = False
+    TabOrder = 6
+    object chkMonitor: TJvXPCheckbox
+      Left = 0
+      Top = 0
+      Width = 417
+      Height = 21
+      Margins.Left = 2
+      Margins.Top = 0
+      Margins.Right = 5
+      Margins.Bottom = 10
+      Caption = 
+        'Enable Monitor Filter (show only windows visible on the current ' +
+        'Monitor)'
+      TabOrder = 0
       Align = alLeft
       OnClick = CheckClick
     end

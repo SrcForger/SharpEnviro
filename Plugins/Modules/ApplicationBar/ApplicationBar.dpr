@@ -44,6 +44,7 @@ uses
   uISharpESkin,
   uISharpBar,
   uInterfacedSharpBarModuleBase,
+  MonitorList,
   MainWnd in 'MainWnd.pas' {MainForm},
   ToolTipApi in '..\..\..\Common\Units\ToolTipApi\ToolTipApi.pas',
   SharpFileUtils in '..\..\..\Common\Units\SharpFileUtils\SharpFileUtils.pas';
@@ -58,6 +59,7 @@ type
       function SetTopHeight(Top,Height : integer) : HRESULT; override;
       function UpdateMessage(part : TSU_UPDATE_ENUM; param : integer) : HRESULT; override;
       function InitModule : HRESULT; override;
+      function ModuleMessage(msg : String) : HRESULT; override;
 
       procedure SetSkinInterface(Value : ISharpESkin); override;
       procedure SetSize(Value : integer); override;
@@ -137,6 +139,29 @@ begin
     TMainForm(Form).CheckList;
     TMainForm(Form).TaskManager.Enabled := True;
     SharpApi.RequestWindowList(TMainForm(Form).Handle);
+  end;
+end;
+
+function TInterfacedSharpBarModule.ModuleMessage(msg: String): HRESULT;
+begin
+  result := Inherited ModuleMessage(msg);
+
+  if not (Initialized) then
+    exit;
+
+  if CompareText(msg,'MM_DISPLAYCHANGE') = 0 then
+    MonList.GetMonitors
+  else if CompareText(msg,'MM_SHELLHOOKWINDOWCREATED') = 0 then
+    SharpApi.RegisterShellHookReceiver(Form.Handle)
+  else if CompareText(msg,'MM_VWMUPDATESETTINGS') = 0 then
+  begin
+    TMainForm(Form).CurrentVWM := 1;
+    TMainForm(Form).CheckList;
+  end
+  else if CompareText(msg,'MM_VWMDESKTOPCHANGED') = 0 then
+  begin
+    TMainForm(Form).CurrentVWM := SharpApi.GetCurrentVWM;
+    TMainForm(Form).CheckList
   end;
 end;
 

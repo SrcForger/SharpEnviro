@@ -44,6 +44,11 @@ type
     cbStyle: TComboBox;
     schTaskOptions: TSharpECenterHeader;
     SharpECenterHeader1: TSharpECenterHeader;
+    Panel2: TPanel;
+    chkVWM: TJvXPCheckbox;
+    SharpECenterHeader2: TSharpECenterHeader;
+    Panel3: TPanel;
+    chkMonitor: TJvXPCheckbox;
     procedure CheckClick(Sender: TObject);
     procedure cbStyleClick(Sender: TObject);
   private

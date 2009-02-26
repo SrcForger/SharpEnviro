@@ -46,6 +46,8 @@ uses
   uSharpEMenuItem,
   uTaskManager,
   uTaskItem,
+  VWMFunctions,
+  MonitorList,
   SharpIconUtils, ImgList, PngImageList, ExtCtrls;
 
 
@@ -83,6 +85,8 @@ type
     sState       : TSharpETaskItemStates;
     sAutoWidth   : integer;
     sAutoHeight  : integer;
+    sMonitorOnly : boolean;
+    sVWMOnly     : boolean;
     FButtonSpacing : integer;
     sCountOverlay : boolean;
     FButtonList  : array of TButtonRecord;
@@ -92,6 +96,7 @@ type
     FLastMenu    : TSharpEMenuWnd;
     FLastButton  : TButtonRecord;
     FTM : TTaskManager;
+    function CheckWindow(wnd : hwnd) : boolean;
     procedure OnNewTask(pItem : TTaskItem; Index : integer);
     procedure OnRemoveTask(pItem : TTaskItem; Index : integer);
     procedure OnUpdateTask(pItem : TTaskItem; Index : integer);
@@ -111,6 +116,7 @@ type
     procedure mnMouseUp(pItem : TSharpEMenuItem; Button: TMouseButton; Shift: TShiftState);
   public
     mInterface : ISharpBarModule;
+    CurrentVWM   : integer;    
     procedure BuildAndShowMenu(btn : TButtonRecord);
     procedure LoadSettings;
     procedure ReAlignComponents(Broadcast : Boolean = True);
@@ -300,8 +306,11 @@ begin
       if Item <> nil then
         if CompareText(FButtonList[n].exename,Item.FileName) = 0 then
         begin
-          count := count + 1;
-          FButtonList[n].wnd := Item.Handle;
+          if CheckWindow(Item.Handle) then
+          begin
+            count := count + 1;
+            FButtonList[n].wnd := Item.Handle;
+          end;
         end;
     end;
     FButtonList[n].btn.Down := (count > 0);
@@ -407,6 +416,8 @@ begin
   begin
     Add('State',Integer(sState));
     Add('CountOverlay',sCountOverlay);
+    Add('VWMOnly',sVWMOnly);
+    Add('MonitorOnly',sMonitorOnly);
     with Add('Apps').Items do
     begin
       for n := 0 to High(FButtonList) do
@@ -509,6 +520,8 @@ begin
   FButtonSpacing := 2;
   sState       := tisCompact;
   sCountOverlay := True;
+  sVWMOnly     := False;
+  sMonitorOnly := False;
 
   XML := TJclSimpleXML.Create;
   try
@@ -522,6 +535,8 @@ begin
     begin
       sState := TSharpETaskItemStates(IntValue('State',2));
       sCountOverlay := BoolValue('CountOverlay',True);
+      sVWMOnly := BoolValue('VWMOnly',sVWMOnly);
+      sMonitorOnly := BoolValue('MonitorOnly',sMonitorOnly);
       if ItemNamed['Apps'] <> nil then
       with ItemNamed['Apps'].Items do
            for n := 0 to Count - 1 do
@@ -619,18 +634,21 @@ begin
   begin
     if CompareText(pItem.FileName, FButtonList[n].exename) = 0 then
     begin
-      FButtonList[n].btn.Tag := FButtonList[n].btn.Tag + 1;
-      if FButtonList[n].btn.Tag >= 1 then
-        FButtonList[n].btn.Down := True;
-      if FButtonList[n].btn.Tag > 1 then
-        UpdateButtonIcon(FButtonList[n]);
-
-      if FButtonList[n].btn.Tag > 1 then
+      if CheckWindow(pItem.Handle) then
       begin
-        s := FButtonList[n].exename;
-        setlength(s,length(s) - length(ExtractFileExt(s)));
-        FButtonList[n].btn.Caption := s;
-      end else FButtonList[n].btn.Caption := pItem.Caption;        
+        FButtonList[n].btn.Tag := FButtonList[n].btn.Tag + 1;
+        if FButtonList[n].btn.Tag >= 1 then
+          FButtonList[n].btn.Down := True;
+        if FButtonList[n].btn.Tag > 1 then
+          UpdateButtonIcon(FButtonList[n]);
+
+        if FButtonList[n].btn.Tag > 1 then
+        begin
+          s := FButtonList[n].exename;
+          setlength(s,length(s) - length(ExtractFileExt(s)));
+          FButtonList[n].btn.Caption := s;
+        end else FButtonList[n].btn.Caption := pItem.Caption;
+      end;
     end;
   end;
 end;
@@ -644,19 +662,22 @@ begin
   begin
     if CompareText(pItem.FileName, FButtonList[n].exename) = 0 then
     begin
-      FButtonList[n].btn.Tag := FButtonList[n].btn.Tag - 1;
-      if FButtonList[n].btn.Tag <= 0 then
+      if CheckWindow(pItem.Handle) then
       begin
-        FButtonList[n].btn.Tag := 0;
-        FButtonList[n].btn.Down := False;
-      end else UpdateButtonIcon(FButtonList[n]);
+        FButtonList[n].btn.Tag := FButtonList[n].btn.Tag - 1;
+        if FButtonList[n].btn.Tag <= 0 then
+        begin
+          FButtonList[n].btn.Tag := 0;
+          FButtonList[n].btn.Down := False;
+        end else UpdateButtonIcon(FButtonList[n]);
 
-      if FButtonList[n].btn.Tag > 1 then
-      begin
-        s := FButtonList[n].exename;
-        setlength(s,length(s) - length(ExtractFileExt(s)));
-        FButtonList[n].btn.Caption := s;
-      end else FButtonList[n].btn.Caption := pItem.Caption;      
+        if FButtonList[n].btn.Tag > 1 then
+        begin
+          s := FButtonList[n].exename;
+          setlength(s,length(s) - length(ExtractFileExt(s)));
+          FButtonList[n].btn.Caption := s;
+        end else FButtonList[n].btn.Caption := pItem.Caption;
+      end;
     end;
   end;
 end;
@@ -670,12 +691,15 @@ begin
   begin
     if CompareText(pItem.FileName, FButtonList[n].exename) = 0 then
     begin
-      if FButtonList[n].btn.Tag > 1 then
+      if CheckWindow(pItem.Handle) then
       begin
-        s := FButtonList[n].exename;
-        setlength(s,length(s) - length(ExtractFileExt(s)));
-        FButtonList[n].btn.Caption := s;
-      end else FButtonList[n].btn.Caption := pItem.Caption;   
+        if FButtonList[n].btn.Tag > 1 then
+        begin
+          s := FButtonList[n].exename;
+          setlength(s,length(s) - length(ExtractFileExt(s)));
+          FButtonList[n].btn.Caption := s;
+        end else FButtonList[n].btn.Caption := pItem.Caption;
+      end;
     end;
   end;
 end;
@@ -946,6 +970,8 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  CurrentVWM := SharpApi.GetCurrentVWM;
+
   FTM := TTaskManager.Create;
   FTM.OnNewTask := OnNewTask;
   FTM.OnRemoveTask := OnRemoveTask;
@@ -989,6 +1015,42 @@ end;
 procedure TMainForm.CheckTimerTimer(Sender: TObject);
 begin
   CheckList;
+end;
+
+function PointInRect(P : TPoint; Rect : TRect) : boolean;
+begin
+  if (P.X>=Rect.Left) and (P.X<=Rect.Right)
+     and (P.Y>=Rect.Top) and (P.Y<=Rect.Bottom) then PointInRect:=True
+     else PointInRect:=False;
+end;
+
+function TMainForm.CheckWindow(wnd: hwnd): boolean;
+var
+  pItem : TTaskItem;
+  Mon : TMonitorItem;
+  R : TRect;
+begin
+  result := True;
+  if (not sVWMOnly) and (not sMonitorOnly) then
+    exit;
+
+  pItem := FTM.GetItemByHandle(wnd);
+  if pItem <> nil then
+  begin
+    if sVWMOnly then
+      result := (CurrentVWM = pItem.LastVWM);
+    if sMonitorOnly then
+    begin
+      Mon := MonList.MonitorFromWindow(mInterface.BarInterface.BarWnd);
+      GetWindowRect(pItem.Handle,R);
+      if not (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect)
+        or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)
+        or PointInRect(Point(R.Left, R.Bottom), Mon.BoundsRect)
+        or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
+        or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then
+          result := False;
+      end;
+    end;
 end;
 
 end.

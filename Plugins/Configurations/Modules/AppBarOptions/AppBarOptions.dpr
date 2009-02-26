@@ -92,6 +92,16 @@ begin
       ItemNamed['CountOverlay'].BoolValue := chkOverlay.Checked
     else
       Add('CountOverlay', chkOverlay.Checked);
+
+    if ItemNamed['VWMOnly'] <> nil then
+      ItemNamed['VWMOnly'].BoolValue := chkVWM.Checked
+    else
+      Add('VWMOnly', chkVWM.Checked);
+
+    if ItemNamed['MonitorOnly'] <> nil then
+      ItemNamed['MonitorOnly'].BoolValue := chkMonitor.Checked
+    else
+      Add('MonitorOnly', chkMonitor.Checked);
   end;
 
   PluginHost.Xml.Save;
@@ -105,6 +115,8 @@ begin
     begin
       chkOverlay.Checked := BoolValue('CountOverlay', True);
       cbStyle.ItemIndex := IntValue('State', 2);
+      chkVWM.Checked := BoolValue('VWMOnly', False);
+      chkMonitor.Checked := BoolValue('MonitorOnly',False);
     end;
   end;
 end;
