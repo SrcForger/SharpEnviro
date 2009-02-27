@@ -31,7 +31,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, JvExControls, JvXPCore, JvXPButtons, ImgList,
   PngImageList, JvExForms, JvCustomItemViewer, JvImageListViewer, ComCtrls,
-  JvOwnerDrawViewer;
+  JvOwnerDrawViewer, JvXPCheckCtrls;
 
 type
   TTabOptionsForm = class(TForm)
@@ -41,6 +41,7 @@ type
     btnCancel: TJvXPButton;
     ilvIcon: TJvImageListViewer;
     lblIcon: TLabel;
+    chkReadOnly: TJvXPCheckbox;
     procedure btnOkClick(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
     procedure editNameKeyPress(Sender: TObject; var Key: Char);

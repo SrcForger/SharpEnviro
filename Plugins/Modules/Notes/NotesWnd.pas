@@ -32,7 +32,7 @@ uses
   Dialogs, JvRichEdit, StdCtrls, JvExStdCtrls, ExtCtrls, SharpEPageControl,
   SharpETabList, ImgList, PngImageList, ToolWin, JvExComCtrls, JclStrings,
   JvToolBar, SharpThemeApiEx, JvEdit, Menus, JvMenus, JvMemo, ComCtrls, StrUtils,
-  uVistaFuncs, SharpFileUtils, uNotesSettings, SharpAPI;
+  uVistaFuncs, SharpFileUtils, uNotesSettings, SharpAPI, JclFileUtils;
 
 type
   TSharpENotesForm = class(TForm)
@@ -167,6 +167,7 @@ type
     procedure ConvertTxtFilesToRtfFiles;
     procedure LoadDefaultTab;
     procedure WMUpdateNotes(var Msg : TMessage); message WM_UPDATENOTES;
+    function IsReadOnly(FilePath : string) : Boolean;
   public
     { Public declarations }
     function TabFilePath(Name: string) : string; overload;
@@ -234,12 +235,14 @@ begin
     frmTabOptions.editName.Text := Name;
     frmTabOptions.editTags.Text := '';
     frmTabOptions.ilvIcon.SelectedIndex := DefaultIconIndex;
+    frmTabOptions.chkReadOnly.Checked := False; 
 
     if not New then
     begin
       tabSettings := GetTabSettings(TabName(FIndex));
       frmTabOptions.editTags.Text := tabSettings.Tags;
       frmTabOptions.ilvIcon.SelectedIndex := tabSettings.IconIndex;
+      frmTabOptions.chkReadOnly.Checked := IsReadOnly(TabFilePath(FIndex));
     end;
 
     if frmTabOptions.ShowModal = mrOk then
@@ -256,6 +259,10 @@ begin
         finally
           Free;
         end;
+
+        // Set the file to be read only if the checkbox is checked.
+        if frmTabOptions.chkReadOnly.Checked then
+          FileSetAttr(TabFilePath(frmTabOptions.editName.Text), faReadOnly);
 
         // Create a tab with the default settings and change to it.
         pcNotes.TabIndex := AddTab(frmTabOptions.editName.Text);
@@ -278,9 +285,16 @@ begin
             pcNotes.TabItems.Item[FIndex].Caption := frmTabOptions.editName.Text;
           end;
         end;
+
+        // if read only is checked then set the file to be as such
+        // otherwise set the file to have normal access.
+        if frmTabOptions.chkReadOnly.Checked then
+          FileSetAttr(TabFilePath(FIndex), faReadOnly)
+        else
+          FileSetAttr(TabFilePath(FIndex), faNormalFile);
       end;
       // Get the tab settings for with the new or old tab name.
-      // set the tags and icon index and
+      // set the tags and icon index.
       tabSettings := GetTabSettings(TabName(FIndex));
       tabSettings.Tags := frmTabOptions.editTags.Text;
       tabSettings.IconIndex := frmTabOptions.ilvIcon.SelectedIndex;
@@ -302,7 +316,9 @@ begin
   if FIndex = -1 then
     Exit;
 
-  if not FLoading then
+  // Only save the tab if we are not loading a tab
+  // and the file is not read only.
+  if not (FLoading or IsReadOnly(TabFilePath(FIndex))) then
     reNotes.Lines.SaveToFile(TabFilePath(FIndex));
 end;
 
@@ -339,6 +355,7 @@ begin
       Word('O'): btnImport.OnClick(Sender);
       Word('P'): btnPrint.OnClick(Sender);
       Word('S'): btnExport.OnClick(Sender);
+      Word('T'): ShowTabOptions(True, '');
       Word('U'):
       begin
         // Toggle the button and call its click event.
@@ -444,16 +461,12 @@ procedure TSharpENotesForm.btnImportClick(Sender: TObject);
 var
   i: Integer;
   filePath: string;
-  filename: string;
 begin
   if OpenDialog.Execute(Self.Handle) then
   begin
     for filePath in OpenDialog.Files do
     begin
-      filename := ExtractFileName(filePath);
-      SetLength(filename, Length(filename) - 4);
-
-      i := AddTab(filename);
+      i := AddTab(PathExtractFileNameNoExt(filePath));
 
       if i = -1 then Exit;
 
@@ -464,7 +477,7 @@ begin
         // Open the file being imported.
         Lines.LoadFromFile(filePath);
         // Save the file being imported to the notes directory.
-        Lines.SaveToFile(TabFilePath(filename));
+        Lines.SaveToFile(TabFilePath(PathExtractFileNameNoExt(filePath)));
       finally
         Free;
       end;
@@ -836,7 +849,6 @@ procedure TSharpENotesForm.FormShow(Sender: TObject);
 var
   filePaths: TStringList;
   filePath: string;
-  fileName: string;
   i: Integer;
   tabSettings: NotesTabSettings;
 begin
@@ -872,12 +884,8 @@ begin
     
     for filePath in filePaths do
     begin
-      // Get the file name from the file path.
-      fileName := ExtractFileName(filePath);
-      // Strip off the extension to get the base file name.
-      SetLength(fileName, Length(fileName) - 4);
       // Add a tab with the base file name.
-      i := AddTab(fileName);
+      i := AddTab(PathExtractFileNameNoExt(filePath));
 
       // If we come across the last tab then change to it.
       if TabName(i) = Settings.LastTab then
@@ -1109,7 +1117,6 @@ procedure TSharpENotesForm.ConvertTxtFilesToRtfFiles;
 var
   filePaths: TStringList;
   filePath: string;
-  fileName: string;
 begin
   filePaths := TStringList.Create;
   try
@@ -1125,12 +1132,8 @@ begin
         Visible := False;
         // Load the text file to be converted.
         Lines.LoadFromFile(filePath);
-        // Get the file name from the file path.
-        filename := ExtractFileName(filePath);
-        // Strip off the extension to get the base file name.
-        SetLength(filename, Length(fileName) - 4);
         // Save the text file as an rtf.
-        Lines.SaveToFile(TabFilePath(fileName));
+        Lines.SaveToFile(TabFilePath(PathExtractFileNameNoExt(filePath)));
         // Delete the text file now that it is converted.
         DeleteFile(filePath);
       finally
@@ -1213,14 +1216,15 @@ begin
   if not empty then
     if MessageBox(self.Handle,
       PChar('The tab you are about to close is not empty!' + #10#13 +
-      'All information will be lost. Close it anyway?'),
+      '(It will be recoverable from the recycle bin.)' + #10#13 +
+      'Close it anyway?'),
       'Closing Tab...', MB_YESNO) = IDYES then
       empty := True;
 
   if empty then
   begin
     if FileExists(TabFilePath(FIndex)) then
-      DeleteFile(TabFilePath(FIndex));
+      FileDelete(TabFilePath(FIndex), True);
 
     // Delete the tab from the settings list.
     DeleteTabSettings(TabName(FIndex));
@@ -1286,6 +1290,14 @@ begin
   finally
     Free;
   end;
+end;
+
+function TSharpENotesForm.IsReadOnly(FilePath: string) : Boolean;
+var
+  Attributes : Integer;
+begin
+  Attributes := FileGetAttr(FilePath);
+  Result := (Attributes and faReadOnly > 0);
 end;
 
 {$ENDREGION 'Helper Methods'}

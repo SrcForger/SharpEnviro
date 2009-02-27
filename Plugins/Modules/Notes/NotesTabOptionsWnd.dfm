@@ -3,7 +3,7 @@ object TabOptionsForm: TTabOptionsForm
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Tab Options'
-  ClientHeight = 270
+  ClientHeight = 297
   ClientWidth = 314
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -29,10 +29,13 @@ object TabOptionsForm: TTabOptionsForm
     Top = 16
     Width = 253
     Height = 21
+    Hint = 'The name for the tab.'
     EditLabel.Width = 31
     EditLabel.Height = 13
     EditLabel.Caption = 'Name:'
     LabelPosition = lpLeft
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 0
     OnKeyPress = editNameKeyPress
   end
@@ -41,22 +44,25 @@ object TabOptionsForm: TTabOptionsForm
     Top = 47
     Width = 253
     Height = 21
+    Hint = 'The tag(s) associated with the tab.'
     EditLabel.Width = 27
     EditLabel.Height = 13
     EditLabel.Caption = 'Tags:'
     LabelPosition = lpLeft
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 1
   end
   object btnOk: TJvXPButton
-    Left = 145
-    Top = 235
+    Left = 149
+    Top = 263
     Caption = 'Ok'
     TabOrder = 2
     OnClick = btnOkClick
   end
   object btnCancel: TJvXPButton
     Left = 228
-    Top = 235
+    Top = 263
     Caption = 'Cancel'
     TabOrder = 3
     OnClick = btnCancelClick
@@ -67,6 +73,7 @@ object TabOptionsForm: TTabOptionsForm
     Width = 253
     Height = 144
     Cursor = crHandPoint
+    Hint = 'The icon to display next to the tab name.'
     HorzScrollBar.Range = 240
     HorzScrollBar.Tracking = True
     HorzScrollBar.Visible = False
@@ -86,8 +93,21 @@ object TabOptionsForm: TTabOptionsForm
     Options.ShowCaptions = False
     Options.Width = 20
     SelectedIndex = 5
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 4
     TabStop = True
     OnDrawItem = ilvIconDrawItem
+  end
+  object chkReadOnly: TJvXPCheckbox
+    Left = 48
+    Top = 231
+    Width = 81
+    Height = 17
+    Hint = 'When enabled you may make changes but they will not be saved.'
+    Caption = 'Read-Only'
+    TabOrder = 5
+    ParentShowHint = False
+    ShowHint = True
   end
 end
