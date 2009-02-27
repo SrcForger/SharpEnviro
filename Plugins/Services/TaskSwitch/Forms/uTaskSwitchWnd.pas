@@ -211,6 +211,9 @@ procedure TTaskSwitchWnd.FormMouseMove(Sender: TObject; Shift: TShiftState; X,
 var
   n : integer;
 begin
+  if not TSGUI.TA.MouseAction then
+    exit;
+
   n := TSGUI.GetIndexByCoords(X,Y);
   if n <> -1 then
   begin
@@ -224,6 +227,9 @@ procedure TTaskSwitchWnd.FormMouseUp(Sender: TObject; Button: TMouseButton;
 var
   n : integer;
 begin
+  if not TSGUI.TA.MouseAction then
+    exit;
+
   n := TSGUI.GetIndexByCoords(X,Y);
   if n <> -1 then
   begin

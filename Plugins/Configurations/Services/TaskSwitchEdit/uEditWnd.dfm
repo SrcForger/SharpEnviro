@@ -19,7 +19,7 @@ object frmEdit: TfrmEdit
   object lbItems: TSharpEListBoxEx
     AlignWithMargins = True
     Left = 0
-    Top = 236
+    Top = 263
     Width = 498
     Height = 148
     Margins.Left = 0
@@ -73,6 +73,7 @@ object frmEdit: TfrmEdit
     Borderstyle = bsNone
     Ctl3d = False
     Align = alTop
+    ExplicitTop = 236
   end
   object SharpECenterHeader1: TSharpECenterHeader
     AlignWithMargins = True
@@ -163,9 +164,10 @@ object frmEdit: TfrmEdit
     BevelOuter = bvNone
     ParentBackground = False
     TabOrder = 4
-    object chkPreview: TJvXPCheckbox
+    ExplicitLeft = 0
+    object chkMouse: TJvXPCheckbox
       AlignWithMargins = True
-      Left = 165
+      Left = 333
       Top = 0
       Width = 168
       Height = 22
@@ -173,10 +175,11 @@ object frmEdit: TfrmEdit
       Margins.Top = 0
       Margins.Right = 0
       Margins.Bottom = 0
-      Caption = 'Render preview for tasks'
+      Caption = 'Mouse Selection'
       TabOrder = 0
       Align = alLeft
       OnClick = SettingsChange
+      ExplicitLeft = 165
     end
     object chkGui: TJvXPCheckbox
       AlignWithMargins = True
@@ -190,6 +193,21 @@ object frmEdit: TfrmEdit
       Margins.Bottom = 0
       Caption = 'Use task switcher window'
       TabOrder = 1
+      Align = alLeft
+      OnClick = SettingsChange
+    end
+    object chkPreview: TJvXPCheckbox
+      AlignWithMargins = True
+      Left = 165
+      Top = 0
+      Width = 168
+      Height = 22
+      Margins.Left = 0
+      Margins.Top = 0
+      Margins.Right = 0
+      Margins.Bottom = 0
+      Caption = 'Render preview for tasks'
+      TabOrder = 2
       Align = alLeft
       OnClick = SettingsChange
     end
@@ -213,7 +231,7 @@ object frmEdit: TfrmEdit
   object chkFilter: TCheckBox
     AlignWithMargins = True
     Left = 5
-    Top = 209
+    Top = 236
     Width = 493
     Height = 17
     Margins.Left = 5
@@ -224,6 +242,25 @@ object frmEdit: TfrmEdit
     Caption = 'Filter Tasks (When enabled only checked tasks will apply)'
     TabOrder = 6
     OnClick = chkFilterClick
+    ExplicitTop = 209
+  end
+  object chkAppBars: TCheckBox
+    AlignWithMargins = True
+    Left = 5
+    Top = 209
+    Width = 493
+    Height = 17
+    Margins.Left = 5
+    Margins.Top = 10
+    Margins.Right = 5
+    Margins.Bottom = 0
+    Align = alTop
+    Caption = 'Show Application Bar Windows'
+    Checked = True
+    State = cbChecked
+    TabOrder = 7
+    OnClick = SettingsChange
+    ExplicitLeft = 10
   end
   object pilListBox: TPngImageList
     PngImages = <

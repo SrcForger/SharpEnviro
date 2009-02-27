@@ -32,9 +32,10 @@ uses
   Classes,
   Forms,
   SharpApi,
-  JvSimpleXML,
+  JclSimpleXML,
   JclSysUtils,
   JclSysInfo,
+  IXMLBaseUnit,
   uISharpESkin,
   Dialogs,
   uTaskSwitchGUI in 'uTaskSwitchGUI.pas',
@@ -48,16 +49,6 @@ type
   TActionEvent = Class(Tobject)
   Procedure MessageHandler(var Message: TMessage);
   end;
-
-  TTaskAction = record
-                  Name : String;
-                  Action : String;
-                  CForward : Boolean;
-                  UseGUI   : Boolean;
-                  Preview : Boolean;
-                  IFilters : array of String;
-                  EFilters : array of String;
-                end;
 
   TWindowItem = record
                   wnd : hwnd;
@@ -73,10 +64,32 @@ var
   Actions : array of TTaskAction;
   TaskManager : TTaskManager;
   MessageReceived : boolean;
+  sIGlobalFilters : array of String; // app bar filters
 
 
 {$R *.RES}
 
+
+procedure LoadGlobalFilters;
+var
+  n,i : integer;
+  XML : TInterfacedXmlBase;
+begin
+  setlength(sIGlobalFilters,0);
+
+  XML := TInterfacedXMLBase.Create;
+  XML.XmlFilename := SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\ApplicationBar\Apps.xml';
+
+  if XML.Load then
+    for n := 0 to XML.XmlRoot.Items.Count - 1 do
+      for i := 0 to XML.XmlRoot.Items.Item[n].Items.Count - 1 do
+      begin
+        setlength(sIGlobalFilters,length(sIGlobalFilters) + 1);
+        sIGlobalFilters[High(sIGlobalFilters)] := ExtractFileName(XML.XmlRoot.Items.Item[n].Items.Item[i].Value);
+      end;
+
+  XML.Free;
+end;
 
 function PointInRect(P : TPoint; Rect : TRect) : boolean;
 begin
@@ -178,6 +191,17 @@ begin
 
   result := true;
   nm := False;
+
+  if not TA.ShowAppBar then
+    for n := 0 to High(sIGlobalFilters) do
+    begin
+      if CompareText(sIGlobalFilters[n],WndFileName) = 0 then
+      begin
+        result := False;
+        exit;
+      end;
+    end;
+
   if length(TA.IFilters) > 0 then
   begin
     for n:=0 to High(TA.IFilters) do
@@ -321,6 +345,7 @@ begin
           TSGUI.wndlist[n] := wndlist[n].wnd;
         TSGUI.ShowPreview := ac.Preview;
         TSGUI.Index := 1;
+        TSGUI.TA := ac;
         TSGUI.ShowWindow;
       end;
     end else
@@ -358,7 +383,7 @@ end;
 
 procedure LoadActionsFromXML;
 var
-  XML : TJvSimpleXML;
+  XML : TJclSimpleXML;
   n : integer;
   fn : String;
   i : integer;
@@ -369,7 +394,7 @@ begin
   if not FileExists(fn) then
     exit;
 
-  XML := TJvSimpleXMl.Create(nil);
+  XML := TJclSimpleXMl.Create;
   try
     XML.LoadFromFile(fn);
     for n := 0 to XML.Root.Items.Count - 1 do
@@ -380,6 +405,8 @@ begin
         begin
           Name := Value('Name','');
           Action := Value('Action','');
+          MouseAction := BoolValue('MouseAction',True);
+          ShowAppBar := BoolValue('ShowAppBar',True);
           UseGUI := BoolValue('UseGui',False);
           CForward := BoolValue('CForward',True);
           Preview := BoolValue('Preview',True);
@@ -415,6 +442,8 @@ begin
   ClearActions;
 
   Filters.Free;
+
+  SetLength(sIGlobalFilters,0);
 end;
 
 function StartEx(owner: hwnd; pSkinInterface : ISharpESkin): hwnd;
@@ -432,6 +461,7 @@ begin
   ae := TActionEvent.Create;
   h := Classes.Allocatehwnd(Ae.MessageHandler);
 
+  LoadGlobalFilters;
   LoadActionsFromXML;
   RegisterActions;
   ServiceDone('Task Switch');
@@ -469,6 +499,9 @@ begin
     begin
       LoadActionsFromXML;
       RegisterActions;
+    end else if Message.WParam = Integer(suTaskAppBarFilters) then
+    begin
+      LoadGlobalFilters;
     end;
   end else
   if Message.Msg = WM_SHARPEUPDATEACTIONS then

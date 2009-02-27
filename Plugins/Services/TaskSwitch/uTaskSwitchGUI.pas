@@ -9,6 +9,19 @@ uses
    GR32, GR32_PNG, GR32_Resamplers, Types;
 
 type
+
+  TTaskAction = record
+                  Name : String;
+                  Action : String;
+                  ShowAppBar : Boolean;
+                  MouseAction : Boolean;
+                  CForward : Boolean;
+                  UseGUI   : Boolean;
+                  Preview : Boolean;
+                  IFilters : array of String;
+                  EFilters : array of String;
+                end;
+
   TTSGui = class
   private
     FSkinManager : TSharpESkinManager;
@@ -29,6 +42,7 @@ type
     wndlist : array of hwnd;
     previews : array of TBitmap32;
     StartState: TKeyboardState;
+    TA : TTaskAction;
     constructor Create(pSkinInterface : ISharpESkin); reintroduce;
     destructor Destroy; override;
     procedure ShowWindow;

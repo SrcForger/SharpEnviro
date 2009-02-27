@@ -74,11 +74,13 @@ type
     Label6: TLabel;
     cbCycle: TComboBox;
     Panel3: TPanel;
-    chkPreview: TJvXPCheckbox;
+    chkMouse: TJvXPCheckbox;
     chkGui: TJvXPCheckbox;
     SharpECenterHeader3: TSharpECenterHeader;
     chkFilter: TCheckBox;
     pilDefault: TPngImageList;
+    chkAppBars: TCheckBox;
+    chkPreview: TJvXPCheckbox;
     procedure lbItemsResize(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure lbItemsGetCellImageIndex(Sender: TObject; const ACol: Integer;

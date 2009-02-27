@@ -27,6 +27,8 @@ type
     FCycleForward: boolean;
     FIncludeFilters: string;
     FAction: string;
+    FMouseAction : Boolean;
+    FShowAppBar : Boolean;
 
   public
     property Name: string read FName write FName;
@@ -34,6 +36,8 @@ type
     property CycleForward: boolean read FCycleForward write FCycleForward;
     property Gui: boolean read FGui write FGui;
     property Preview: boolean read FPreview write FPreview;
+    property MouseAction: boolean read FMouseAction write FMouseAction;
+    property ShowAppBar: boolean read FShowAppBar write FShowAppBar;
     property IncludeFilters: string read FIncludeFilters write FIncludeFilters;
     property ExcludeFilters: string read FExcludeFilters write FExcludeFilters;
 
@@ -130,6 +134,8 @@ begin
           tmp.Gui := BoolValue('UseGui', False);
           tmp.CycleForward := BoolValue('CForward', True);
           tmp.Preview := BoolValue('Preview', True);
+          tmp.MouseAction := BoolValue('MouseAction',True);
+          tmp.ShowAppBar := BoolValue('ShowAppBar',True);
 
           sl := TStringList.Create;
           try
@@ -193,6 +199,8 @@ begin
         Add('UseGui',tmp.Gui);
         Add('CForward',tmp.CycleForward);
         Add('Preview',tmp.Preview);
+        Add('MouseAction',tmp.MouseAction);
+        Add('ShowAppBar',tmp.ShowAppBar);
 
         with taskSwitchElem.Items.Add('IFilters') do begin
           Items.Add('Filter',StrRemoveChars(tmp.FIncludeFilters,['"']));

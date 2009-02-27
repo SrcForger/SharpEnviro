@@ -104,6 +104,8 @@ begin
       if n = -1 then exit;
 
       tmp := TaskSwitchList.Items[n];
+      chkMouse.Checked := tmp.MouseAction;
+      chkAppBars.Checked := tmp.ShowAppBar;
       chkPreview.Checked := tmp.Preview;
       chkGui.Checked := tmp.Gui;
       chkFilter.Checked := ((tmp.IncludeFilters <> '') or (tmp.ExcludeFilters <> ''));
@@ -163,7 +165,7 @@ end;
 procedure TSharpCenterPlugin.Save;
 var
   tmp: TTaskSwitchItem;
-  n, i, index: Integer;
+  n, i : Integer;
   includeList, excludeList: TStringList;
 begin
   inherited;
@@ -179,6 +181,8 @@ begin
 
     tmp.Gui := chkGui.Checked;
     tmp.Preview := chkPreview.Checked;
+    tmp.MouseAction := chkMouse.Checked;
+    tmp.ShowAppBar := chkAppBars.Checked;
 
     includeList := TStringList.Create;
     excludeList := TStringList.Create;
@@ -216,7 +220,7 @@ begin
     DataType := tteConfig;
 
     ExtraData := format('configmode: %d| configtype: %d', [Integer(scmApply),
-      Integer(suTaskFilter)]);
+      Integer(suTaskFilterActions)]);
   end;
 end;
 
