@@ -1034,7 +1034,11 @@ begin
 
   FLocked := False;
 
-  if changed then RealignComponents(True);
+  if changed then
+  begin
+    RealignComponents(True);
+    AlignTaskComponents;
+  end;
 end;
 
 function TMainForm.CheckFilter(pItem : TTaskItem) : boolean;
@@ -1457,6 +1461,7 @@ begin
   sIFilters.Free;
   sEFilters.Free;
   sFilters.Free;
+  setlength(sIGlobalFilters,0);
 end;
 
 procedure TMainForm.ses_minallClick(Sender: TObject);
