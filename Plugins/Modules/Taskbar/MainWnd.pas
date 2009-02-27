@@ -1476,10 +1476,17 @@ begin
   begin
     pTaskItem := TSharpETaskItem(IList.Items[n]);
     pTaskItem.Down := False;
-    pItem := TTaskItem(TM.GetItemByHandle(pTaskItem.Handle));
-    if pItem <> nil then
-       pItem.Minimize;
+//    pItem := TTaskItem(TM.GetItemByHandle(pTaskItem.Handle));
+//    if pItem <> nil then
+//       pItem.Minimize;
   end;
+  for n := 0 to TM.ItemCount - 1 do
+  begin
+    pItem := TM.GetItemByIndex(n);
+    if pItem <> nil then
+      pItem.Minimize;
+  end;
+
   FLocked := False;
   RealignComponents(True);
 end;
@@ -1487,19 +1494,26 @@ end;
 procedure TMainForm.ses_maxallClick(Sender: TObject);
 var
   n : integer;
-  pTaskItem : TSharpETaskItem;
+ // pTaskItem : TSharpETaskItem;
   pItem : TTaskItem;
 begin
   DebugOutPutInfo('TMainForm.ses_maxallClick (Procedure)');
   FLocked := True;
 
-  for n := IList.Count -1 downto 0 do
+  {for n := IList.Count -1 downto 0 do
   begin
     pTaskItem := TSharpETaskItem(IList.Items[n]);
     pItem := TTaskItem(TM.GetItemByHandle(pTaskItem.Handle));
     if pItem <> nil then
        pItem.Restore;
+  end;  }
+  for n := 0 to TM.ItemCount - 1 do
+  begin
+    pItem := TM.GetItemByIndex(n);
+    if pItem <> nil then
+      pItem.Restore;
   end;
+  
   FLocked := False;
   RealignComponents(True);
 end;
