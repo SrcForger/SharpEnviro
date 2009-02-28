@@ -1487,19 +1487,31 @@ begin
 end;
 
 procedure TSkinPart.CustomDraw(Src, Dst : TBitmap32; SrcRect, DstRect : TRect);
+var
+  Temp : TBitmap32;
 begin
   Src.DrawMode := dmCustom;
   Src.OnPixelCombine := DoCombine;
  
   Case FLayerMode of 
-    lmBlend: begin 
-              Src.OnPixelCombine := nil; 
+    lmBlend,lmAdd: begin
+              Src.OnPixelCombine := nil;
               Src.DrawMode := dmBlend;
-             end; 
-    lmAdd: Src.OnPixelCombine := nil;
+             end;
   end;
 
-  Dst.Draw(DstRect,SrcRect,Src);
+  if FLayerMode = lmAdd then
+  begin
+    Temp := TBitmap32.Create;
+    try
+      Temp.SetSize(Dst.Width,Dst.Height);
+      Temp.Clear(color32(0,0,0,0));
+      Temp.Draw(DstRect,SrcRect,Src);
+      LightenBitmap(Dst,Temp,0,0);
+    finally
+      Temp.Free;
+    end;
+  end else Dst.Draw(DstRect,SrcRect,Src);
 end;
 
 procedure TSkinPart.draw(bmp: TBitmap32; cs: TSharpEScheme);
@@ -1508,7 +1520,6 @@ var temp: Tbitmap32;
   i: integer;
   r: Trect;
   isEmpty: boolean;
-
 begin
   if not FEnabled then exit;
   if FIsEmpty then exit;
