@@ -38,7 +38,8 @@ type
   end;
 
   procedure FastBlur(aBitmap32: TBitmap32; aRadius: Integer; aPasses: Integer = 2);
-  procedure lightenBitmap(bmp : Tbitmap32; amount :integer); overload;
+  procedure LightenBitmap(Bmp : TBitmap32; Amount :integer); overload;
+  procedure LightenBitmap(Bmp, Src : TBitmap32; Left,Top : integer); overload;
   procedure LightenBitmap(Bmp : TBitmap32; Amount :integer; Rect : TRect); overload;
 
   procedure ReplaceColor32(bmp : Tbitmap32; Source, New : TColor32);
@@ -155,6 +156,29 @@ begin
   end;
 end;
 
+procedure LightenBitmap(Bmp, Src : TBitmap32; Left,Top : integer);
+var
+  P: PColor32;
+  PSrc : PColor32;
+  h,s,l : byte;
+  X,Y : integer;
+begin
+  PSrc := Src.PixelPtr[0, 0];
+  P := Bmp.PixelPtr[0, 0];
+  inc(P,(Top)*Bmp.Width+Left);
+  for Y := 0 to Src.Height - 1 do
+  begin
+    for X := 0 to Src.Width - 1 do
+    begin
+      RGBtoHSL(PSrc^,h,s,l);
+      P^ := lighten(P^,l-128);
+      inc(P);
+      inc(PSrc);
+    end;
+    inc(P,(Bmp.Width-Src.Width));
+  end
+end;
+
 procedure lightenBitmap(bmp : Tbitmap32; amount :integer);
 var
   P: PColor32;
@@ -175,23 +199,21 @@ procedure LightenBitmap(Bmp : TBitmap32; Amount :integer; Rect : TRect);
 var
   P: PColor32;
   X,Y : integer;
-  pass : Array of Array of integer;
 begin
-     with Bmp do
-     begin
-          setlength(pass,width,height);
-          P := PixelPtr[0, 0];
-          inc(P,(Rect.Top-1)*width+Rect.Left);
-          for Y := Rect.Top to Rect.Bottom - 1 do
-          begin
-               for X := Rect.Left to Rect.Right- 1 do
-               begin
-                    P^ := lighten(P^,amount);
-                    inc(P);
-               end;
-               inc(P,Rect.Left+(width-Rect.Right));
-          end;
-      end
+  with Bmp do
+  begin
+    P := PixelPtr[0, 0];
+    inc(P,(Rect.Top-1)*width+Rect.Left);
+    for Y := Rect.Top to Rect.Bottom - 1 do
+    begin
+      for X := Rect.Left to Rect.Right- 1 do
+      begin
+        P^ := lighten(P^,amount);
+        inc(P);
+      end;
+      inc(P,Rect.Left+(width-Rect.Right));
+    end;
+  end
 end;
 
 procedure ReplaceTransparentAreas(Dst,AlphaSource : TBitmap32; ReplaceColor : TColor32);
