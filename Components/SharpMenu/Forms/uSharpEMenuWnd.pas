@@ -289,7 +289,7 @@ begin
     FParentMenu.SubMenuCloseTimer.Enabled := False;
     FParentMenu.SubMenuTimer.Enabled := False;
     FParentMenu.SharpEMenu.SelectItemByMenu(FMenu);
-    FParentMenu.SharpEMenu.RenderTo(FParentMenu.Picture,FOffset);
+    FParentMenu.SharpEMenu.RenderTo(FParentMenu.Picture, FParentMenu.FOffset);
     PreMul(FParentMenu.Picture);
     FParentMenu.DrawWindow;
   end;
@@ -590,7 +590,7 @@ begin
     if FSubMenu <> nil then
     begin
       FSubMenu.SharpEMenu.ItemIndex := FSubMenu.SharpEMenu.NextVisibleIndex;
-      FSubMenu.SharpEMenu.RenderTo(FSubMenu.Picture);
+      FSubMenu.SharpEMenu.RenderTo(FSubMenu.Picture,FSubMenu.FOffset);
       FSubMenu.PreMul(FSubMenu.Picture);
       FSubMenu.DrawWindow;
     end;
