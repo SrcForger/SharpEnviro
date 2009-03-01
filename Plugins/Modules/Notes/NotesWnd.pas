@@ -362,6 +362,7 @@ begin
         btnUnderline.Down := not btnUnderline.Down;
         btnUnderline.Click;
       end;
+      Word('Y'): if reNotes.CanRedo then reNotes.Redo;                 
     else
       // Indicate that we do not have a shortcut for this key combination.
       Handled := False;

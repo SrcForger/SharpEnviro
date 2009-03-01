@@ -118,7 +118,6 @@ object SharpENotesForm: TSharpENotesForm
     PageBackgroundColor = clWindow
     OnTabChange = pcNotesTabChange
     OnBtnClick = pcNotesBtnClick
-    ExplicitWidth = 668
     DesignSize = (
       669
       324)
@@ -148,7 +147,6 @@ object SharpENotesForm: TSharpENotesForm
       OnKeyPress = EditorKeyPress
       OnSelectionChange = EditorSelectionChange
       OnCloseFindDialog = EditorCloseFindDialog
-      ExplicitWidth = 662
     end
     object tbNotes: TJvToolBar
       AlignWithMargins = True
@@ -170,7 +168,6 @@ object SharpENotesForm: TSharpENotesForm
       ShowHint = True
       TabOrder = 3
       Transparent = False
-      ExplicitWidth = 661
       object btnImport: TToolButton
         Left = 0
         Top = 0
@@ -2673,7 +2670,7 @@ object SharpENotesForm: TSharpENotesForm
     object miRedo: TMenuItem
       Caption = 'Redo'
       ImageIndex = 22
-      ShortCut = 16466
+      ShortCut = 16473
       OnClick = miRedoClick
     end
     object miSeparator1: TMenuItem
