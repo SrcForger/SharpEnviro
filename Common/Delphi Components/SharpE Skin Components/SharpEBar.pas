@@ -147,7 +147,6 @@ type
   private
     fproc: TFarProc;
     FBmp: TBitmap32;
-    st: string;
     owner: TComponent;
     Blend: TBlendFunction;
     WindowHandle: hWnd;
@@ -243,9 +242,21 @@ begin
 end;
 
 procedure TSharpEBarBackground.WndProc(var msg: TMessage);
+var
+  wpos : PWindowPos;
 begin
   inherited;
 
+  if msg.Msg = WM_WINDOWPOSCHANGING then
+  begin
+    wpos := PWINDOWPOS(msg.LParam);
+    if ((wpos.flags and SWP_NOZORDER) = 0) and (wpos.x <> -1) and (wpos.y <> -2)
+      and (wpos.cx <> -3) and (wpos.cy <> -4) then
+      wpos.flags := wpos.flags or SWP_NOZORDER;
+    // I know the -1, -2, -3, -4 stuff is Evil, just necessary to tell if a Z-Order
+    // Change is send by bar or any third party app/event! Get over it :P
+    msg.result := DefWindowProc(windowHandle, msg.Msg, msg.wParam, msg.lParam);
+  end else
   if (msg.Msg = WM_ACTIVATE) or (msg.Msg = WM_ACTIVATEAPP) then
   begin
    // if msg.WParam <> 0 then
@@ -254,7 +265,6 @@ begin
       SetZOrder;
     end// else msg.Result := DefWindowProc(windowHandle, msg.Msg, msg.wParam, msg.lParam);
   end else msg.Result := DefWindowProc(windowHandle, msg.Msg, msg.wParam, msg.lParam);
-  st := inttostr(msg.result);
 end;
 
 constructor TSharpEBarBackground.Create(AOwner: TComponent);
@@ -363,7 +373,7 @@ procedure TSharpEBarBackground.SetZOrder;
 begin
   if Owner <> nil then
     SetWindowPos(WindowHandle, (Owner as TSharpEBar).aform.handle,
-      0, 0, 0, 0,
+      -1, -2, -3, -4,
       SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
 end;
 
@@ -467,17 +477,17 @@ procedure TSharpEBar.UpdateAlwaysOnTop;
 begin
   if FAlwaysOnTop then
   begin
-    SetWindowPos(abackground.handle, HWND_TOPMOST, 0, 0, 0, 0,
+    SetWindowPos(abackground.handle, HWND_TOPMOST, -1, -2, -3, -4,
                  SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
-    SetWindowPos(aform.handle, HWND_TOPMOST, 0, 0, 0, 0,
+    SetWindowPos(aform.handle, HWND_TOPMOST, -1, -2, -3, -4,
                  SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
   end else
   begin
-    SetWindowPos(aform.handle, HWND_NOTOPMOST, 0, 0, 0, 0,
+    SetWindowPos(aform.handle, HWND_NOTOPMOST, -1, -2, -3, -4,
                  SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
-    SetWindowPos(abackground.handle, HWND_NOTOPMOST, 0, 0, 0, 0,
+    SetWindowPos(abackground.handle, HWND_NOTOPMOST, -1, -2, -3, -4,
                  SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
-    SetWindowPos(abackground.handle, aform.handle, 0, 0, 0, 0,
+    SetWindowPos(abackground.handle, aform.handle, -1, -2, -3, -4,
                  SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);                                    
   end;
 end;
