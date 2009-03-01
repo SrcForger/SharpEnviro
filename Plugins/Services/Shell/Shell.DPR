@@ -279,6 +279,8 @@ var
   statemask : integer;
   pItem : TTrayIcon;
   e : boolean;
+  wpos: PWindowPos;
+  sstruct : PStyleStruct;
 begin
   if TrayManager = nil then
   begin
@@ -287,6 +289,28 @@ begin
   end;
 
   case msg of
+    WM_SHOWWINDOW: begin
+      result := 0;
+      ShowWindow(wnd, SW_HIDE);
+    end;
+    WM_STYLECHANGING: begin
+      sstruct := PStyleStruct(lParam);
+      if (sstruct.styleNew and WS_VISIBLE) = WS_VISIBLE then
+      begin
+        sstruct.styleNew := sstruct.styleNew and not WS_VISIBLE;
+        result := 0;
+      end else result := DefWindowProc(wnd, Msg, wParam, lParam);
+    end;
+    WM_WINDOWPOSCHANGING: begin
+      wpos := PWINDOWPOS(lParam);
+      if (wpos.flags and SWP_SHOWWINDOW) = SWP_SHOWWINDOW then
+      begin
+        wpos.flags := wpos.flags and not SWP_SHOWWINDOW;
+        wpos.flags := wpos.flags or SWP_HIDEWINDOW;
+        wpos.flags := wpos.flags or SWP_NOACTIVATE;
+        result := 0;
+      end else result := DefWindowProc(wnd, Msg, wParam, lParam);
+    end;
     WM_COPYDATA: begin
 
       Data := pCopyDataStruct(LParam);
