@@ -90,10 +90,11 @@ begin
                 PChar('It is necessary to reboot the computer for the changes to take effect' + #10 + #13 +
                 'Reboot now?'),'Confirm Reboot', MB_YESNO or MB_ICONQUESTION) = IDYES then
   begin
-    Shutdown := TSEShutDown.Create;
+    ShutDown := TSEShutDown.Create(Self.Handle);
     try
       ShutDown.ActionType := sdReboot;
       ShutDown.Force := True;
+      Shutdown.Verbose := False;
       ShutDown.Execute;
     finally
       ShutDown.Free;
