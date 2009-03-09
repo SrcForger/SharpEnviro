@@ -174,7 +174,7 @@ begin
   sDescription := format('Confirm %s',[shutdownType]);
 
   if windows.MessageBox(FParentHandle, PChar(sTitle),
-          PChar(sDescription), MB_YESNO or MB_ICONQUESTION or MB_APPLMODAL or MB_TOPMOST) = IDOK then
+          PChar(sDescription), MB_YESNO or MB_ICONQUESTION or MB_APPLMODAL or MB_TOPMOST) = IDYES then
             result := true;
 end;
 
