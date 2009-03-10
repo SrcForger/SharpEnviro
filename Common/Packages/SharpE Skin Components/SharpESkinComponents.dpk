@@ -66,7 +66,7 @@ contains
   TranComp in '..\..\3rd party\TransparentEdit\TranComp.pas',
   SharpGraphicsUtils in '..\..\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas',
   SharpAPI in '..\..\Libraries\SharpAPI\SharpAPI.pas',
-  SharpThemeApiEx in '..\..\Libraries\SharpThemeApi\SharpThemeApiEx.pas',
+  SharpThemeApiEx in '..\..\Libraries\SharpThemeApiEx\SharpThemeApiEx.pas',
   GR32_PNG in '..\..\3rd party\GR32 Addons\GR32_PNG.pas';
 
 end.

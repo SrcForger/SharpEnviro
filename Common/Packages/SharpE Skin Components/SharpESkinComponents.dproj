@@ -64,10 +64,7 @@
     <DCCReference Include="..\..\Delphi Components\SharpE Skin Components\StrConst.pas" />
     <DCCReference Include="..\..\Delphi Components\SharpE Skin Components\StrTools.pas" />
     <DCCReference Include="..\..\Libraries\SharpAPI\SharpAPI.pas" />
-    <DCCReference Include="..\..\Libraries\SharpThemeApi\SharpThemeApi.pas" />
-    <DCCReference Include="..\..\Libraries\SharpThemeApi\SharpThemeApiE.pas">
-      <ModuleName>SharpThemeApiEx</ModuleName>
-    </DCCReference>
+    <DCCReference Include="..\..\Libraries\SharpThemeApiEx\SharpThemeApiEx.pas" />
     <DCCReference Include="..\..\Units\SharpFX\PNG_D10.dcp" />
     <DCCReference Include="..\..\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas" />
     <DCCReference Include="C:\Program Files\CodeGear\RAD Studio\5.0\bin\designide.dcp" />
