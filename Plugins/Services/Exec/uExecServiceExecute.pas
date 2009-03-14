@@ -583,7 +583,7 @@ begin
     end;
 
   finally
-    ForceForegroundWindow(oldhandle, oldhandle);
+    //ForceForegroundWindow(oldhandle, oldhandle);
 
   end;
 end;
