@@ -237,12 +237,12 @@ begin
   VWM.SetSize((VWMWidth + 2) * VWMCount + Max(0,(VWMCount - 1)) * sVWMSpacing, VWMHeight + 2);
   VWM.Clear(color32(0,0,0,0));
 
-  scale := VWMHeight / MonList.DesktopHeight;
+  scale := VWMHeight / MonList.DesktopHeight;             
 
   wndbmp := TBitmap32.Create;
   wndbmp.DrawMode := dmBlend;
   wndbmp.CombineMode := cmMerge;
-  wndbmp.SetSize(VWMCount * VWMWidth + VWMSpacing * Max(0,VWMCount - 1),VWMHeight);
+  wndbmp.SetSize((VWMCount + 1) * VWMWidth + VWMSpacing * Max(0,VWMCount - 1),VWMHeight);
   wndbmp.Clear(color32(0,0,0,0));
 
   setlength(dlist,0);
