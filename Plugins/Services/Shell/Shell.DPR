@@ -1328,7 +1328,7 @@ begin
           begin
             if ((ABItem.Data.abd.uEdge = ABE_RIGHT) and (Area.Right > ABItem.Data.abd.rc.Left)) then
               Area.Right := ABItem.Data.abd.rc.Left
-            else if ((ABItem.Data.abd.uEdge = ABE_LEFT) and (Area.Left < ABItem.Data.abd.rc.Right)) then
+            else if ((ABItem.Data.abd.uEdge = ABE_LEFT) and (Area.Left < ABItem.Data.abd.rc.Right) and (Area.Right > ABItem.Data.abd.rc.Left)) then
               Area.Left := ABItem.Data.abd.rc.Right
           end;
       end;
