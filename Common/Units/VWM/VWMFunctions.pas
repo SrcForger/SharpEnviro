@@ -114,6 +114,7 @@ begin
     GetWindowRect(pHandle,wndpos);
     SetWindowPos(pHandle,0,wndpos.Left + distance,wndpos.Top,0,0,SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_NOSIZE);
   end;
+  PostMessage(GetShellTaskMgrWindow,WM_TASKVWMCHANGE,pHandle,pTargetVWM);
 end;
 
 function VWMGetWindowVWM(pCurrentVWM,pVWMCount : integer; pHandle : hwnd) : integer;
