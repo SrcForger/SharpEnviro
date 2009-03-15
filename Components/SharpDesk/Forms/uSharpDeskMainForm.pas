@@ -837,7 +837,7 @@ begin
     for n := 0 to High(HA) do
     begin
       GetWindowRect(HA[n],R);
-      if PointInRect(CursorPos,R) then
+      if PointInRect(CPos,R) then
          exit;
     end;
     SendMessage(HA[0],WM_SHARPTERMINATE,0,0);
@@ -905,7 +905,7 @@ begin
     end else
     if DesktopObject.Selected and (SharpDesk.SelectionCount<>0) then
     begin
-      SharpDesk.LayerMousePos := SharpDesk.GetNextGridPoint(CursorPos);
+      SharpDesk.LayerMousePos := SharpDesk.GetNextGridPoint(CPos);
       case Button of
         mbLeft   : SharpDesk.MouseDown:=True;
         mbRight  : SharpDesk.MouseDown:=False;
