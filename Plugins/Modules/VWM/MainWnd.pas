@@ -159,7 +159,8 @@ begin
   VWMCount := GetVWMCount;
   VWMIndex := GetCurrentVWM;
   VWMHeight := Height - 2;
-  VWMWidth := round(VWMHeight / MonList.PrimaryMonitor.Height * MonList.PrimaryMonitor.Width);
+//  VWMWidth := round(VWMHeight / MonList.PrimaryMonitor.Height * MonList.PrimaryMonitor.Width);
+  VWMWidth := round(VWMHeight / MonList.DesktopHeight * MonList.DesktopWidth);
 end;
 
 procedure TMainForm.WMShellMessage(var msg: TMessage);
