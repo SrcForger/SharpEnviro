@@ -66,6 +66,7 @@ var
 const
 
   VWMStartMessage = 5;
+  VWMMoveMessage = 50;
 
 var
   SkinInterface : ISharpESkin;
@@ -178,10 +179,17 @@ begin
   SharpApi.RegisterActionEx('!NextVWM', 'VWM', handle, 1);
   SharpApi.RegisterActionEx('!PreviousVWM', 'VWM', handle, 2);
   for n := 0 to VWMCount - 1 do
+  begin
     SharpApi.RegisterActionEx(PChar('!SwitchToVWM(' + inttostr(n + 1) + ')'),
       'VWM',
       handle,
       VWMStartMessage + n);
+
+    SharpApi.RegisterActionEx(PChar('!MoveWindowToVWM(' + inttostr(n + 1) + ')'),
+      'VWM',
+      handle,
+      VWMMoveMessage + n);
+  end;
 end;
 
 procedure UnregisterSharpEActions;
@@ -193,13 +201,25 @@ begin
   SharpApi.UnRegisterAction('!NextVWM');
   SharpApi.UnRegisterAction('!PreviousVWM');
   for n := 0 to VWMCount - 1 do
+  begin
     SharpApi.UnRegisterAction(PCHar('!SwitchToVWM(' + inttostr(n + 1) + ')'));
+    SharpApi.UnRegisterAction(PChar('!MoveWindowToVWM(' + inttostr(n + 1) + ')'));
+  end;
+end;
+
+function GetWndClass(pHandle: hwnd): string;
+var
+  buf: array[0..254] of Char;
+begin
+  GetClassName(pHandle, buf, SizeOf(buf));
+  result := buf;
 end;
 
 procedure TActionEvent.MessageHandler(var Message: TMessage);
 var
   newdesk: integer;
   changed: boolean;
+  cname : String;
   wnd: hwnd;
 begin
   changed := False;
@@ -239,6 +259,23 @@ begin
             end;
         else
           begin
+            if (Message.lparam >= VWMMoveMessage)
+              and (Message.lparam < VWMMoveMessage + VWMCount) then
+            begin
+              wnd := GetForegroundWindow;
+              if wnd <> 0 then
+              begin
+                cname := GetWndClass(wnd);
+                if IsWindowVisible(wnd)
+                  and (CompareText(cname,'TSharpBarMainForm') <> 0)
+                  and (CompareText(cname,'TSharpDeskMainForm') <> 0)
+                  and (CompareText(cname,'TSharpEMenuWnd') <> 0)
+                  and (CompareText(cname,'TSharpCoreMainWnd') <> 0) then
+                begin
+                  VWMFunctions.VWMMoveWindotToVWM(Message.lparam - VWMMoveMessage + 1,CurrentDesktop,VWMCount,wnd);
+                end;
+              end;
+            end else
             if (Message.lparam >= VWMStartMessage)
               and (Message.lparam < VWMStartMessage + VWMCount) then
             begin
