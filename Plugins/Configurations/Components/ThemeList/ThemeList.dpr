@@ -179,7 +179,9 @@ end;
 procedure TSharpCenterPlugin.ValidateTheme(Sender: TObject;
   ValueToValidate: Variant; var Valid: Boolean);
 var
+  bExists : Boolean;
   sValidName, sThemeDir: string;
+  tmpThemeItem: TThemeListItemClass;
 begin
   Valid := True;
 
@@ -187,9 +189,19 @@ begin
     ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']));
 
   sThemeDir := GetSharpeUserSettingsPath + 'Themes\';
-  if DirectoryExists(sThemeDir + sValidName) then
-    Valid := False;
+  bExists := DirectoryExists(sThemeDir + sValidName);
 
+  tmpThemeItem := TThemeListItemClass(frmList.lbThemeList.SelectedItem.Data);
+
+  if PluginHost.EditMode = sceEdit then
+    if (CompareText(ValueToValidate, tmpThemeItem.Name) = 0) then
+      // We are in edit mode and the name has not changed.
+      bExists := False
+    else if not bExists then
+      // We are in edit mode and the name has changed and the file does not exist.
+      bExists := False;
+
+  Valid := not bExists;
 end;
 
 function GetMetaData(): TMetaData;

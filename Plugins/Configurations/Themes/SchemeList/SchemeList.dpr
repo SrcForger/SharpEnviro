@@ -192,8 +192,14 @@ begin
   sSchemeDir := Theme.Scheme.Directory;
 
   bExistsName := FileExists(sSchemeDir + sName + '.xml');
-  if ((CompareText(frmEditWnd.edName.Text, frmEditWnd.SchemeItem.Name) = 0) and (PluginHost.EditMode = sceEdit)) then
-    bExistsName := False;
+
+  if PluginHost.EditMode = sceEdit then
+    if ((CompareText(frmEditWnd.edName.Text, frmEditWnd.SchemeItem.Name) = 0)) then
+      // We are in edit mode and the name has not changed.
+      bExistsName := False
+    else if not bExistsName then
+      // We are in edit mode and the name has changed and the file does not exist.
+      bExistsName := False;
 
   Valid := not (bExistsName);
 end;
