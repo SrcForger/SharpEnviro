@@ -199,7 +199,7 @@ begin
     FXml.LoadFromFile(fileName);
 
     // Check for empty file, as sometimes the file can get wiped.
-    if Length(FXml.Root.SaveToString()) = 0 then
+    if Length(FXml.XMLData) = 0 then
       result := false;
   Except
     on E: Exception do begin
