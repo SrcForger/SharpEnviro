@@ -1110,7 +1110,7 @@
       <shadowcolor>$TextShadow</shadowcolor>
       <shadowtype>Outline</shadowtype>
       <shadowalpha>196</shadowalpha>
-      <location>0,2</location>
+      <location>0,0</location>
     </small>
     <medium>
       <name>Verdana</name>
@@ -1132,7 +1132,7 @@
       <shadowcolor>$TextShadow</shadowcolor>
       <shadowtype>Outline</shadowtype>
       <shadowalpha>196</shadowalpha>
-      <location>0,-2</location>
+      <location>0,-1</location>
     </big>
   </font>
   <progressbar>

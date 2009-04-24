@@ -1525,7 +1525,7 @@
       <name>Small Fonts</name>
       <bold>0</bold>
       <color>$tasktext</color>
-      <location>0,2</location>
+      <location>0,-1</location>
     </small>
     <medium>
       <name>Trebuchet MS</name>
@@ -1537,7 +1537,7 @@
       <name>Trebuchet MS</name>
       <size>11</size>
       <color>$tasktext</color>
-      <location>0,-4</location>
+      <location>0,-1</location>
     </big>
   </font>
   <notify>

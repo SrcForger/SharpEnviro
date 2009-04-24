@@ -2152,7 +2152,7 @@
       <shadowcolor>$TextShadow</shadowcolor>
       <shadowtype>Outline</shadowtype>
       <shadowalpha>196</shadowalpha>
-      <location>0,-1</location>
+      <location>0,0</location>
     </small>
     <medium>
       <name>Tahoma</name>
@@ -2167,14 +2167,14 @@
     </medium>
     <big>
       <name>Tahoma</name>
-      <size>8</size>
+      <size>9</size>
       <bold>1</bold>
       <color>$Text</color>
       <shadow>1</shadow>
       <shadowcolor>$TextShadow</shadowcolor>
       <shadowtype>Outline</shadowtype>
       <shadowalpha>196</shadowalpha>
-      <location>0,-3</location>
+      <location>0,0</location>
     </big>
   </font>
   <progressbar>

@@ -1643,8 +1643,8 @@
     </disabled>
   </button>
   <font>
-    <locationTL>0,-5</locationTL>
-    <locationBL>0,5</locationBL>
+    <locationTL>0,-6</locationTL>
+    <locationBL>0,4</locationBL>
     <small>
       <size>6</size>
       <name>Small Fonts</name>
@@ -1665,18 +1665,18 @@
       <shadowcolor>$TextShadow</shadowcolor>
       <shadowtype>Outline</shadowtype>
       <shadowalpha>255</shadowalpha>
-      <location>0,-2</location>
+      <location>0,-1</location>
     </medium>
     <big>
       <name>Verdana</name>
-      <size>8</size>
+      <size>9</size>
       <bold>1</bold>
       <color>$Text</color>
       <shadow>1</shadow>
       <shadowcolor>$TextShadow</shadowcolor>
       <shadowtype>Outline</shadowtype>
       <shadowalpha>196</shadowalpha>
-      <location>0,-2</location>
+      <location>0,-1</location>
     </big>
   </font>
   <progressbar>
