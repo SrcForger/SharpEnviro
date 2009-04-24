@@ -142,17 +142,17 @@ begin
   TextRect := Rect(0, 0, bmp.TextWidth(Caption), bmp.TextHeight(Caption));
   TextPos := SkinText.GetXY(TextRect, CompRect, Rect(0,0,0,0));
 
+  FTWidth := Bmp.TextWidth(Caption);
+  FTHeight := Bmp.TextHeight(Caption);
+
   case FAutoPos of
     apTop: if Top <> FManager.Skin.TextPosTL.YAsInt then
              Top := FManager.Skin.TextPosTL.YAsInt;
-    apCenter: if Top <> TextPos.Y then
-                Top := TextPos.Y;
+    apCenter: if Top <> parent.Height div 2 - (FTHeight + 10) div 2 + TextPos.Y div 2 then
+                Top := parent.Height div 2 - (FTHeight + 10) div 2 + TextPos.Y div 2;
     apBottom: if Top <> FManager.Skin.TextPosBL.YAsInt then
              Top := FManager.Skin.TextPosBL.YAsInt;
   end;
-
-  FTWidth := Bmp.TextWidth(Caption);
-  FTHeight := Bmp.TextHeight(Caption);
 
   if (FAutoSize) then
   begin
