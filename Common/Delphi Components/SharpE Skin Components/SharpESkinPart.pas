@@ -192,6 +192,7 @@ type
                        var pPrecacheText : TSkinText; var pPrecacheBmp : TBitmap32; var pPrecacheCaption : String); overload;
     procedure RenderTo(Bmp : TBitmap32; X,Y : integer; Caption : String;  cs : TSharpEScheme); overload;
 
+    property Name : String read FName write FName;
     property Color : integer read FColor write FColor;
     property ColorString : String read FColorString write FColorString;
     property Alpha : byte read FAlpha write FAlpha;

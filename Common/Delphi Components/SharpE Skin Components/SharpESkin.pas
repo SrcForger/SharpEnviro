@@ -60,7 +60,7 @@ type
   TSkinEvent = procedure of object;
 
   TSkinName = string;
-  TXmlFileName = string;
+  TXmlFileName = string;    
   TSkinFileName = string;
 
   TSharpESkin = class(TComponent)
@@ -985,6 +985,7 @@ begin
   FTextPosTL.Clear;
   FTextPosBL.Clear;
 
+  FOCDText.Name := 'Verdana';
   FOCDText.ColorString := 'clwhite';
   FOCDText.Color := 16777215;
   FOCDText.ShadowColorString := '0';
