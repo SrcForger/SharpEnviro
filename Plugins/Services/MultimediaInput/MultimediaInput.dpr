@@ -34,6 +34,8 @@ uses
   SharpThemeApiEx,
   Registry,
   uISharpESkin,
+  JclSimpleXML,
+  IXmlBaseUnit,
   MMSystem,
   Math,
   SharpTypes,
@@ -49,12 +51,18 @@ type
   Procedure MessageHandler(var msg: TMessage);
   end;
 
+type
+  TVerticalPos = (vpTop,vpCenter,vpBottom);
+  THorizontalPos = (hpLeft,hpCenter,hpRight);
+
 var
   SkinInterface: ISharpESkin;
   AE:TActionEvent;
   h:THandle;
   SkinManager : TSharpESkinManager;
   sShowOSD : boolean;
+  sOSDVertPos : TVerticalPos;
+  sOSDHorizPos : THorizontalPos;
   MPlayers : TMediaPlayerList;
 
 {$R *.RES}
@@ -65,6 +73,7 @@ var
   mon : HMonitor;
   moninfo : TMonitorInfo;
   p : TPoint;
+  edge: TSharpNotifyEdge;
 begin
   if not sShowOSD then
     exit;
@@ -73,10 +82,55 @@ var
   mon := MonitorFromPoint(p, MONITOR_DEFAULTTOPRIMARY);
   moninfo.cbSize := SizeOf(moninfo);
   GetMonitorInfo(mon, @moninfo);
-  x := moninfo.rcMonitor.Left + (moninfo.rcMonitor.Right - moninfo.rcMonitor.Left) div 2;
-  y := moninfo.rcMonitor.Bottom - 32;
+  case sOSDVertPos of
+    vpTop:    y := moninfo.rcMonitor.Top + 32;
+    vpCenter: y := moninfo.rcMonitor.Top + (moninfo.rcmonitor.Bottom - moninfo.rcmonitor.Top ) div 2;
+    else y := moninfo.rcMonitor.Bottom - 32;
+  end;
+  case sOSDHorizPos of
+    hpLeft:   x := moninfo.rcMonitor.Left + 32;
+    hpCenter: x := moninfo.rcMonitor.Left + (moninfo.rcMonitor.Right - moninfo.rcMonitor.Left) div 2;
+    else x := moninfo.rcMonitor.Right - 32;
+  end;
+  if (sOSDVertPos = vpTop) and (sOSDHorizPos = hpLeft) then
+    edge := neTopLeft
+  else if (sOSDVertPos = vpTop) and (sOSDHorizPos = hpCenter) then
+    edge := neTopCenter
+  else if (sOSDVertPos = vpTop) and (sOSDHorizPos = hpRight) then
+    edge := neTopRight
+  else if (sOSDVertPos = vpCenter) and (sOSDHorizPos = hpLeft) then
+    edge := neCenterLeft
+  else if (sOSDVertPos = vpCenter) and (sOSDHorizPos = hpCenter) then
+    edge := neCenterCenter
+  else if (sOSDVertPos = vpCenter) and (sOSDHorizPos = hpRight) then
+    edge := neCenterRight
+  else if (sOSDVertPos = vpBottom) and (sOSDHorizPos = hpLeft) then
+    edge := neBottomLeft
+  else if (sOSDVertPos = vpBottom) and (sOSDHorizPos = hpCenter) then
+    edge := neBottomCenter
+  else edge := neBottomRight;
 
-  SharpNotify.CraeteNotifyText(0,nil,x,y,pCaption,neBottomCenter,SkinManager,2000,moninfo.rcMonitor,True);
+  SharpNotify.CraeteNotifyText(0,nil,x,y,pCaption,edge,SkinManager,2000,moninfo.rcMonitor,True);
+end;
+
+procedure LoadSettings;
+var
+  XML : TInterfacedXmlBase;
+begin
+  sShowOSD := True;
+  sOSDVertPos := vpBottom;
+  sOSDHorizPos := hpCenter;
+
+  XML := TInterfacedXMLBase.Create;
+  XML.XmlFilename := SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\MultimediaInput\MultimediaInput.xml';
+  if XML.Load then
+    with XML.XmlRoot.Items do
+    begin
+      sShowOSD := BoolValue('ShowOSD',True);
+      sOSDVertPos := TVerticalPos(IntValue('OSDVertPos',Integer(sOSDVertPos)));
+      sOSDHorizPos := THorizontalPos(IntValue('OSDHorizPos',Integer(sOSDHorizPos)));
+    end;
+  XML.Free;
 end;
 
 function GetWndClass(wnd : hwnd) : String;
@@ -171,7 +225,7 @@ begin
   SkinManager := SkinInterface.SkinManager;
 
   Result := owner;
-  sShowOSD := True;
+  LoadSettings;
 
   MPlayers := TMediaPlayerList.Create;
 
@@ -266,7 +320,7 @@ begin
   end;
   if Mute then
     ShowOSD(TypeString + ' Mute')
-  else ShowOSD(TypeString + ' Enabled');    
+  else ShowOSD(TypeString + ' Enabled');
 end;
 
 procedure TActionEvent.MessageHandler(var msg: TMessage);
@@ -303,6 +357,11 @@ begin
       2: VolumeDown(MIXERLINE_COMPONENTTYPE_DST_SPEAKERS);
       3: VolumeMute(MIXERLINE_COMPONENTTYPE_DST_SPEAKERS);
     end;
+  end
+  else if msg.Msg = WM_SHARPEUPDATESETTINGS then
+  begin
+    if msg.WParam = Integer(suMMInput) then
+      LoadSettings;
   end else msg.Result := DefWindowProc(h,msg.Msg,Msg.WParam,msg.LParam);
 end;
 

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpCenter>
+  <Sections>
+    <MultimediaInput>
+      <Dll>_ServiceDlls\MultimediaInput.dll</Dll>
+      <Icon>_ServiceDlls\MultimediaInput.png</Icon>
+    </MultimediaInput>
+  </Sections>
+</SharpCenter>

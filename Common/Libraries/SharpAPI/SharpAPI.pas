@@ -212,7 +212,7 @@ type
     suBackground, suService, suDesktopIcon, suSharpDesk, suSharpMenu,
     suSharpBar, suCursor, suWallpaper, suDeskArea, suSkinFont, suDesktopObject,
     suModule, suVWM, suCenter, suTaskFilter, suHotkey, suDesktopBackgroundChanged,
-    suWeather, suTaskAppBarFilters, suTaskFilterActions);
+    suWeather, suTaskAppBarFilters, suTaskFilterActions, suMMInput);
   TSCE_EDITMODE_ENUM = (sceAdd, sceEdit, sceDelete);
   TSC_MODE_ENUM = (scmLive, scmApply);
 
