@@ -93,7 +93,8 @@ implementation
 
 uses
   ClipBrd, Math,
-  JclBase, JclFileUtils, JclHookExcept, JclPeImage, JclStrings, JclSysInfo, JclWin32;
+  JclBase, JclFileUtils, JclHookExcept, JclPeImage, JclStrings, JclSysInfo,
+  JclWin32, JclAnsiStrings;
 
 resourcestring
   RsAppError = '%s - application error';

@@ -31,8 +31,9 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, JvRichEdit, StdCtrls, JvExStdCtrls, ExtCtrls, SharpEPageControl,
   SharpETabList, ImgList, PngImageList, ToolWin, JvExComCtrls, JclStrings,
-  JvToolBar, SharpThemeApiEx, JvEdit, Menus, JvMenus, JvMemo, ComCtrls, StrUtils,
-  uVistaFuncs, SharpFileUtils, uNotesSettings, SharpAPI, JclFileUtils;
+  JclAnsiStrings, JvToolBar, SharpThemeApiEx, JvEdit, Menus, JvMenus,
+  JvMemo, ComCtrls, StrUtils, uVistaFuncs, SharpFileUtils, uNotesSettings,
+  SharpAPI, JclFileUtils;
 
 type
   TSharpENotesForm = class(TForm)
