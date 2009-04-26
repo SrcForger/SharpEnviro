@@ -53,7 +53,7 @@ type
   TSharpNotifyClickEventProc = procedure(wnd : hwnd; ID : Cardinal; Data : TObject; Msg : integer) of object;
   TSharpNotifyShowEventProc = procedure(wnd : hwnd; ID : Cardinal; Data : TObject) of object;
   TSharpNotifyIcon = (niError,niWarning,niInfo);
-  TSharpNotifyEdge = (neTopLeft,neTopCenter,neBottomLeft,neBottomCenter);
+  TSharpNotifyEdge = (neTopLeft,neTopCenter,neTopRight,neBottomLeft,neBottomCenter,neBottomRight,neCenterLeft,neCenterCenter,neCenterRight);
   TSharpNotifyEvent = object
     OnClick : TSharpNotifyClickEventProc;
     OnShow : TSharpNotifyShowEventProc;
@@ -352,15 +352,34 @@ begin
   end;
 
   case FEdge of
-    neTopLeft:    FY := FY + FYMod;
+    neTopLeft: FY := FY + FYMod;
     neTopCenter: begin
       FX := FX - FBitmap.Width div 2;
+      FY := FY + FYMod;
+    end;
+    neTopRight: begin
+      FX := FX - FBitmap.Width;
       FY := FY + FYMod;
     end;
     neBottomLeft: FY := FY - FBitmap.Height - FYMod;
     neBottomCenter: begin
       FX := FX - FBitmap.Width div 2;
       FY := FY - FBitmap.Height - FYMod;
+    end;
+    neBottomRight: begin
+      FX := FX - FBitmap.Width;
+      FY := FY - FBitmap.Height - FYMod;
+    end;
+    neCenterLeft: begin
+      FY := FY - FBitmap.Height div 2;  
+    end;
+    neCenterCenter: begin
+      FX := FX - FBitmap.Width div 2;
+      FY := FY - FBitmap.Height div 2;
+    end;
+    neCenterRight: begin
+      FX := FX - FBitmap.Width;
+      FY := FY - FBitmap.Height div 2;
     end;
   end;
 
