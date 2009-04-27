@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpCenter>
+  <Sections>
+    <Hotkeys>
+      <Dll>_Services\_ServiceDlls\HotkeyList.dll</Dll>
+      <Icon>_Services\_ServiceDlls\HotkeyList.png</Icon>
+    </Hotkeys>
+  </Sections>
+</SharpCenter>
