@@ -8,13 +8,13 @@ object frmSettings: TfrmSettings
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -14
+  Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
   OnShow = FormShow
-  PixelsPerInch = 120
-  TextHeight = 17
+  PixelsPerInch = 96
+  TextHeight = 13
   object SharpECenterHeader2: TSharpECenterHeader
     AlignWithMargins = True
     Left = 5
@@ -82,7 +82,7 @@ object frmSettings: TfrmSettings
       WordWrap = True
     end
     object cboVertPos: TComboBox
-      Left = 409
+      Left = 389
       Top = 11
       Width = 111
       Height = 25
@@ -100,7 +100,7 @@ object frmSettings: TfrmSettings
         'Bottom')
     end
     object cboHorizPos: TComboBox
-      Left = 142
+      Left = 122
       Top = 11
       Width = 111
       Height = 25
