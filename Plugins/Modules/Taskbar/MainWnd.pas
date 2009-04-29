@@ -507,6 +507,7 @@ var
   VWMIndex : integer;
   VWMCount : integer;
   AppBars : THandleArray;
+  pItem : TTaskItem;
 begin
   DebugOutPutInfo('TMainForm.DisplaySystemMenu (Procedure)');
   if not (isWindow(pHandle)) then
@@ -609,6 +610,7 @@ begin
  //  MenuItemInfo.hbmpItem := FMoveToVWMIcon.Handle;
    InsertMenuItem(AppMenu, DWORD(0), True, MenuItemInfo);
 
+   pItem := TM.GetItemByHandle(pHandle);
    VWMIndex := SharpApi.GetCurrentVWM;
    for n := VWMCount - 1 downto 0 do
    begin
@@ -619,8 +621,10 @@ begin
      MenuItemInfo.fType := MFT_STRING;
      MenuItemInfo.dwTypeData := PChar(inttostr(n + 1));
      MenuItemInfo.wID := 256 + n;
-     if VWMGetWindowVWM(VWMIndex,VWMCount,pHandle) = n + 1 then
-      MenuItemInfo.fState := 1;
+     if pItem <> nil then
+       if pItem.LastVWM = n + 1 then
+         MenuItemInfo.fState := 1;
+    //  if VWMGetWindowVWM(VWMIndex,VWMCount,pHandle) = n + 1 then
      InsertMenuItem(VWMMenu, DWORD(0), True, MenuItemInfo);
    end;
   end;
