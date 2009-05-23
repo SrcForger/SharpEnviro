@@ -101,7 +101,10 @@ begin
   //reg := TRegIniFile.Create;
   try
     wChar := Allocmem(100);
-    list.add('{730F6CDC-2C86-11D2-8773-92E220524153}');
+    //list.add('{730F6CDC-2C86-11D2-8773-92E220524153}');
+    //list.Add('{68ddbb56-9d1d-4fd9-89c5-c0da2a625392}');
+    list.Add('{35CEC8A3-2BE6-11D2-8773-92E220524153}');
+
 {    reg.RootKey := HKEY_LOCAL_MACHINE;
     reg.OpenKeyReadOnly('\Software\Microsoft\Windows\CurrentVersion\explorer\ShellServiceObjects');
     reg.GetKeyNames(list);}
