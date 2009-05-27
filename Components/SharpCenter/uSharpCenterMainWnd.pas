@@ -50,7 +50,6 @@ uses
   JclStrings,
   jvSimpleXml,
   Tabs,
-  //SharpESkinManager,
   uSharpCenterDllMethods,
   uSharpCenterManager,
   SharpERoundPanel,
@@ -229,7 +228,6 @@ implementation
 
 uses
   uSystemFuncs,
-  SharpEScheme,
   uSharpCenterHelperMethods,
   uSharpCenterHistoryList,
   ISharpCenterHostUnit;
@@ -1614,8 +1612,8 @@ begin
     CanClose := True;
   end;
 
-  Application.Terminate;
-  Halt;  
+//  Application.Terminate;
+//  Halt;  
 end;
 
 procedure TSharpCenterWnd.FormCreate(Sender: TObject);
