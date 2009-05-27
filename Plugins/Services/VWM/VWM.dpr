@@ -37,7 +37,7 @@ uses
   Dialogs,
   SysUtils,
   JclSimpleXML,
-  SharpESkinManager,
+  ISharpESkinComponents,
   SharpTypes,
   VWMFunctions in '..\..\..\Common\Units\VWM\VWMFunctions.pas',
   uSystemFuncs in '..\..\..\Common\Units\SystemFuncs\uSystemFuncs.pas',
@@ -69,7 +69,7 @@ const
   VWMMoveMessage = 50;
 
 var
-  SkinInterface : ISharpESkin;
+  SkinInterface : ISharpESkinInterface;
   ActionEvent: TActionEvent;
   Handle: THandle;
   CurrentDesktop: integer;
@@ -79,7 +79,7 @@ var
   sResetOnResChange: boolean;
   sShowOCD: boolean;
   LastDShellMessageTime: Int64;
-  SkinManager: TSharpESkinManager;
+  SkinManager: ISharpESkinManager;
   LastActiveWnd: hwnd;
 
 procedure AllocateMsgWnd;
@@ -380,7 +380,7 @@ begin
 end;
 
 // Service is started
-function StartEx(owner: hwnd; pSkinInterface : ISharpESkin): hwnd;
+function StartEx(owner: hwnd; pSkinInterface : ISharpESkinInterface): hwnd;
 begin
   SkinInterface := pSkinInterface;
   SkinManager := SkinInterface.SkinManager;

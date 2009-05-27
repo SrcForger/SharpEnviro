@@ -35,11 +35,11 @@ uses
   Registry,
   uISharpESkin,
   JclSimpleXML,
+  ISharpESkinComponents,
   IXmlBaseUnit,
   MMSystem,
   Math,
   SharpTypes,
-  SharpESkinManager,
   SharpNotify in '..\..\..\Common\Units\SharpNotify\SharpNotify.pas',
   SoundControls in '..\..\Modules\VolumeControl\SoundControls.pas',
   MediaPlayerList in '..\..\Modules\MediaController\MediaPlayerList.pas',
@@ -56,10 +56,10 @@ type
   THorizontalPos = (hpLeft,hpCenter,hpRight);
 
 var
-  SkinInterface: ISharpESkin;
+  SkinInterface: ISharpESkinInterface;
   AE:TActionEvent;
   h:THandle;
-  SkinManager : TSharpESkinManager;
+  SkinManager : ISharpESkinManager;
   sShowOSD : boolean;
   sOSDVertPos : TVerticalPos;
   sOSDHorizPos : THorizontalPos;
@@ -218,7 +218,7 @@ begin
 end;
 
 // Service is started
-function StartEx(owner: hwnd; pSkinInterface : ISharpESkin): hwnd;
+function StartEx(owner: hwnd; pSkinInterface : ISharpESkinInterface): hwnd;
 begin
   SkinInterface := pSkinInterface;
 

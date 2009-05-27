@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, Graphics, SysUtils, Math, Classes, ExtCtrls, Forms,
-  SharpThemeApiEx, uISharpETheme, SharpESkin, SharpESkinPart, SharpESkinManager,
+  SharpThemeApiEx, uISharpETheme, ISharpESkinComponents,
   uTaskSwitchWnd, SharpIconUtils, SharpGraphicsUtils, SharpTypes, uISharpESkin,
    GR32, GR32_PNG, GR32_Resamplers, Types;
 
@@ -24,7 +24,7 @@ type
 
   TTSGui = class
   private
-    FSkinManager : TSharpESkinManager;
+    FSkinManager : ISharpESkinManager;
     FWnd : TTaskSwitchWnd;
     FIndex : integer;
     FBackground : TBitmap32;
@@ -43,7 +43,7 @@ type
     previews : array of TBitmap32;
     StartState: TKeyboardState;
     TA : TTaskAction;
-    constructor Create(pSkinInterface : ISharpESkin); reintroduce;
+    constructor Create(pSkinInterface : ISharpESkinInterface); reintroduce;
     destructor Destroy; override;
     procedure ShowWindow;
     procedure CloseWindow;
@@ -162,10 +162,10 @@ begin
     Previews[n].Free;
   setlength(Previews,length(wndlist));
 
-  w := Max(FSkinManager.Skin.TaskSwitchSkin.ItemPreview.WidthAsInt,
-           FSkinManager.Skin.TaskSwitchSkin.ItemHoverPreview.WidthAsInt);
-  h := Max(FSkinManager.Skin.TaskSwitchSkin.ItemPreview.HeightAsInt,
-           FSkinManager.Skin.TaskSwitchSkin.ItemHoverPreview.HeightAsInt);
+  w := Max(FSkinManager.Skin.TaskSwitch.ItemPreviewDimension.X,
+           FSkinManager.Skin.TaskSwitch.ItemHoverPreviewDimension.X);
+  h := Max(FSkinManager.Skin.TaskSwitch.ItemPreviewDimension.Y,
+           FSkinManager.Skin.TaskSwitch.ItemHoverPreviewDimension.Y);
 
   Icon := TBitmap32.Create;
   Icon.DrawMode := dmBlend;
@@ -208,7 +208,7 @@ begin
   end;
 end;
 
-constructor TTSGui.Create(pSkinInterface : ISharpESkin);
+constructor TTSGui.Create(pSkinInterface : ISharpESkinInterface);
 var
   ResStream : TResourceStream;
   TempBmp : TBitmap32;
@@ -301,43 +301,43 @@ var
   Spacing : integer;
   Count : integer;
   w : integer;
-  TSS : TSharpETaskSwitchSkin;
+  TSS : ISharpETaskSwitchSkin;
   x,y : integer;
   n: Integer;
 begin
   result := -1;
-  TSS := FSkinManager.Skin.TaskSwitchSkin;
+  TSS := FSkinManager.Skin.TaskSwitch;
   if  (TSS.Item.Empty) or (TSS.ItemHover.Empty) then
     exit;
 
   WrapCount := Max(1,TSS.WrapCount);
   Spacing := TSS.Spacing;
 
-  w := TSS.LROffset.XAsInt +
-       TSS.LROffset.YAsInt;
+  w := TSS.LROffset.X +
+       TSS.LROffset.Y;
 
   Count := length(wndlist);
   if Count < WrapCount then
-    w := w + Count * TSS.Item.SkinDim.WidthAsInt
+    w := w + Count * TSS.ItemDimension.X
            + (Count - 1) * Spacing
-    else w := w + WrapCount * TSS.Item.SkinDim.WidthAsInt
+    else w := w + WrapCount * TSS.ItemDimension.X
                 + (WrapCount - 1) * Spacing;
 
-  x := TSS.LROffset.XAsInt;
-  y := TSS.TBOffset.XAsInt;
+  x := TSS.LROffset.X;
+  y := TSS.TBOffset.X;
 
   for n := 0 to High(wndlist) do
   begin
-    if PointInRect(Point(px,py),Rect(x,y,x + TSS.Item.SkinDim.WidthAsInt, y + TSS.Item.SkinDim.HeightAsInt)) then
+    if PointInRect(Point(px,py),Rect(x,y,x + TSS.ItemDimension.X, y + TSS.ItemDimension.Y)) then
     begin
       result := n;
       exit;
     end;
-    x := x + TSS.Item.SkinDim.WidthAsInt + Spacing;
-    if x > w - TSS.LROffset.YAsInt - TSS.Item.SkinDim.WidthAsInt  then
+    x := x + TSS.ItemDimension.X + Spacing;
+    if x > w - TSS.LROffset.Y - TSS.ItemDimension.X  then
     begin
-      x := TSS.LROffset.XAsInt;
-      y := y + TSS.Item.SkinDim.HeightAsInt + spacing;
+      x := TSS.LROffset.X;
+      y := y + TSS.ItemDimension.Y + spacing;
     end;
   end;
 end;
@@ -377,14 +377,14 @@ var
   Bmp : TBitmap32;
   pwsucc : boolean;
   w,h : integer;
-  TSS : TSharpETaskSwitchSkin;
+  TSS : ISharpETaskSwitchSkin;
   x,y : integer;
   n : integer;
   Spacing : integer;
 begin
   FInTimer := True;
 
-  TSS := FSkinManager.Skin.TaskSwitchSkin;
+  TSS := FSkinManager.Skin.TaskSwitch;
   if  (TSS.Item.Empty) or (TSS.ItemHover.Empty) then
   begin
     CloseWindow;
@@ -393,10 +393,10 @@ begin
     
   if not IsIconic(wndlist[FPreviewIndex]) then
   begin
-    w := Max(FSkinManager.Skin.TaskSwitchSkin.ItemPreview.WidthAsInt,
-             FSkinManager.Skin.TaskSwitchSkin.ItemHoverPreview.WidthAsInt);
-    h := Max(FSkinManager.Skin.TaskSwitchSkin.ItemPreview.HeightAsInt,
-             FSkinManager.Skin.TaskSwitchSkin.ItemHoverPreview.HeightAsInt);
+    w := Max(FSkinManager.Skin.TaskSwitch.ItemPreviewDimension.X,
+             FSkinManager.Skin.TaskSwitch.ItemHoverPreviewDimension.Y);
+    h := Max(FSkinManager.Skin.TaskSwitch.ItemPreviewDimension.X,
+             FSkinManager.Skin.TaskSwitch.ItemHoverPreviewDimension.Y);
 
     WndBmp := TBitmap32.Create;
     WndBmp.DrawMode := dmBlend;
@@ -440,32 +440,32 @@ begin
         Previews[FPreviewIndex].Assign(Bmp);
 
         Spacing := TSS.Spacing;
-        x := TSS.LROffset.XAsInt;
-        y := TSS.TBOffset.XAsInt;
+        x := TSS.LROffset.X;
+        y := TSS.TBOffset.X;
 
         for n := 0 to FPreviewIndex - 1 do
         begin
-          x := x + TSS.Item.SkinDim.WidthAsInt + Spacing;
-          if x > FBackground.Width - TSS.LROffset.YAsInt - TSS.Item.SkinDim.WidthAsInt  then
+          x := x + TSS.ItemDimension.X + Spacing;
+          if x > FBackground.Width - TSS.LROffset.Y - TSS.ItemDimension.X  then
           begin
-            x := TSS.LROffset.XAsInt;
-            y := y + TSS.Item.SkinDim.HeightAsInt + spacing;
+            x := TSS.LROffset.X;
+            y := y + TSS.ItemDimension.Y + spacing;
           end;
         end;
 
-        w := TSS.Item.SkinDim.WidthAsInt;
-        h := TSS.Item.SkinDim.HeightAsInt;
+        w := TSS.ItemDimension.X;
+        h := TSS.ItemDimension.Y;
 
         FNormal.DrawMode := dmOpaque;
         FNormal.FillRect(x,y,x+w,y+h,color32(0,0,0,0));
         FNormal.DrawMode := dmBlend;
 
-        Bmp.SetSize(TSS.ItemHover.SkinDim.WidthAsInt,TSS.ItemHover.SkinDim.HeightAsInt);
+        Bmp.SetSize(TSS.ItemHoverDimension.X,TSS.ItemHoverDimension.Y);
         Bmp.Clear(color32(0,0,0,0));
         Bmp.DrawMode := dmBlend;
         Bmp.CombineMode := cmMerge;
-        TSS.Item.draw(Bmp,FSkinManager.Scheme);
-        previews[FPreviewIndex].DrawTo(Bmp,TSS.ItemPreview.XAsInt,TSS.ItemPreview.YAsInt);
+        TSS.Item.DrawTo(Bmp,FSkinManager.Scheme);
+        previews[FPreviewIndex].DrawTo(Bmp,TSS.ItemPreviewLocation.X,TSS.ItemPreviewLocation.Y);
         Bmp.DrawTo(FNormal,x,y);
         UpdateHighlight;
       end;
@@ -518,7 +518,7 @@ var
   Spacing : integer;
   Count : integer;
   w,h : integer;
-  TSS : TSharpETaskSwitchSkin;
+  TSS : ISharpETaskSwitchSkin;
   x,y : integer;
   n: Integer;
   temp : TBitmap32;
@@ -528,7 +528,7 @@ begin
   if FPreviewTimer.Enabled then
     FPreviewTimer.Enabled := False;
 
-  TSS := FSkinManager.Skin.TaskSwitchSkin;
+  TSS := FSkinManager.Skin.TaskSwitch;
   if  (TSS.Item.Empty) or (TSS.ItemHover.Empty) then
   begin
     CloseWindow;
@@ -540,24 +540,24 @@ begin
   WrapCount := Max(1,TSS.WrapCount);
   Spacing := TSS.Spacing;
 
-  w := TSS.LROffset.XAsInt +
-       TSS.LROffset.YAsInt;
-  h := TSS.TBOffset.XAsInt +
-       TSS.TBOffset.YAsInt;
+  w := TSS.LROffset.X +
+       TSS.LROffset.Y;
+  h := TSS.TBOffset.X +
+       TSS.TBOffset.Y;
 
   Count := length(wndlist);
   if Count < WrapCount then
-    w := w + Count * TSS.Item.SkinDim.WidthAsInt
+    w := w + Count * TSS.ItemDimension.X
            + (Count - 1) * Spacing
-    else w := w + WrapCount * TSS.Item.SkinDim.WidthAsInt
+    else w := w + WrapCount * TSS.ItemDimension.X
                 + (WrapCount - 1) * Spacing;
   if Count mod WrapCount = 0 then
   h := h + round((Int(Count / WrapCount))
-           * Max(TSS.Item.SkinDim.HeightAsInt,
-                 TSS.ItemHover.SkinDim.HeightAsInt))
+           * Max(TSS.ItemDimension.Y,
+                 TSS.ItemHoverDimension.Y))
   else h := h + round((Int(Count / WrapCount) + 1)
-                * Max(TSS.Item.SkinDim.HeightAsInt,
-                      TSS.ItemHover.SkinDim.HeightAsInt));
+                * Max(TSS.ItemDimension.Y,
+                      TSS.ItemHoverDimension.Y));
 
   if FWnd <> nil then
      FWnd.Free;
@@ -567,7 +567,7 @@ begin
   FBackground.SetSize(w,h);
   FBackground.Clear(color32(0,0,0,0));
 
-  if FSkinManager.Skin.BarSkin.GlassEffect then
+  if FSkinManager.Skin.Bar.GlassEffect then
   begin
     dc := GetWindowDC(GetDesktopWindow);
     Temp := TBitmap32.Create;
@@ -590,7 +590,7 @@ begin
       FBackground.ResetAlpha(255);
       Temp.SetSize(w,h);
       Temp.Clear(color32(0,0,0,0));
-      TSS.Background.draw(Temp,FSkinManager.Scheme);
+      TSS.Background.DrawTo(Temp,FSkinManager.Scheme);
       ReplaceTransparentAreas(FBackground,Temp,Color32(0,0,0,0));      
       Temp.DrawMode := dmBlend;
       Temp.CombineMode := cmMerge;
@@ -599,29 +599,29 @@ begin
       ReleaseDC(GetDesktopWindow, dc);
       Temp.Free;
     end;
-  end else TSS.Background.draw(FBackground,FSkinManager.Scheme);
+  end else TSS.Background.DrawTo(FBackground,FSkinManager.Scheme);
 
   // Draw Normal Items
   FNormal.SetSize(w,h);
   FNormal.Clear(color32(0,0,0,0));
-  x := TSS.LROffset.XAsInt;
-  y := TSS.TBOffset.XAsInt;
+  x := TSS.LROffset.X;
+  y := TSS.TBOffset.X;
 
   Temp := TBitmap32.Create;
   Temp.DrawMode := dmBlend;
   Temp.CombineMode := cmMerge;
   for n := 0 to High(wndlist) do
   begin
-    Temp.SetSize(TSS.Item.SkinDim.WidthAsInt,TSS.Item.SkinDim.HeightAsInt);
+    Temp.SetSize(TSS.ItemDimension.X,TSS.ItemDimension.Y);
     Temp.Clear(color32(0,0,0,0));
-    TSS.Item.draw(Temp,FSkinManager.Scheme);
-    previews[n].DrawTo(Temp,TSS.ItemPreview.XAsInt,TSS.ItemPreview.YAsInt);
+    TSS.Item.DrawTo(Temp,FSkinManager.Scheme);
+    previews[n].DrawTo(Temp,TSS.ItemPreviewLocation.X,TSS.ItemPreviewLocation.Y);
     Temp.DrawTo(FNormal,x,y);
-    x := x + TSS.Item.SkinDim.WidthAsInt + Spacing;
-    if x > w - TSS.LROffset.YAsInt - TSS.Item.SkinDim.WidthAsInt  then
+    x := x + TSS.ItemDimension.X + Spacing;
+    if x > w - TSS.LROffset.Y - TSS.ItemDimension.X  then
     begin
-      x := TSS.LROffset.XAsInt;
-      y := y + TSS.Item.SkinDim.HeightAsInt + spacing;
+      x := TSS.LROffset.X;
+      y := y + TSS.ItemDimension.Y + spacing;
     end;
   end;
   temp.Free;
@@ -672,10 +672,10 @@ var
   x,y : integer;
   w,h : integer;
   n : integer;
-  TSS : TSharpETaskSwitchSkin;
+  TSS : ISharpETaskSwitchSkin;
   temp : TBitmap32;
   NTemp : TBitmap32;
-  ST : TSkinText;
+  ST : ISharpESkinText;
   TextPos : TPoint;
   FontBmp : TBitmap32;
   Caption : String;
@@ -686,31 +686,31 @@ begin
   if FIndex < Low(wndlist) then
     FIndex := High(wndlist);
 
-  TSS := FSkinManager.Skin.TaskSwitchSkin;
+  TSS := FSkinManager.Skin.TaskSwitch;
   if  (TSS.Item.Empty) or (TSS.ItemHover.Empty) then
   begin
     CloseWindow;
     exit;
   end;
-  ST := CreateThemedSkinText(FSkinManager.Skin.TaskSwitchSkin.Background.SkinText);
+  ST := FSkinManager.Skin.TaskSwitch.Background.CreateThemedSkinText;
 
   Spacing := TSS.Spacing;
 
-  x := TSS.LROffset.XAsInt;
-  y := TSS.TBOffset.XAsInt;  
+  x := TSS.LROffset.X;
+  y := TSS.TBOffset.X;
 
   for n := 0 to FIndex - 1 do
   begin
-    x := x + TSS.Item.SkinDim.WidthAsInt + Spacing;
-    if x > FBackground.Width - TSS.LROffset.YAsInt - TSS.Item.SkinDim.WidthAsInt  then
+    x := x + TSS.ItemDimension.X + Spacing;
+    if x > FBackground.Width - TSS.LROffset.Y - TSS.ItemDimension.X  then
     begin
-      x := TSS.LROffset.XAsInt;
-      y := y + TSS.Item.SkinDim.HeightAsInt + spacing;
+      x := TSS.LROffset.X;
+      y := y + TSS.ItemDimension.Y + spacing;
     end;
   end;
 
-  w := TSS.Item.SkinDim.WidthAsInt;
-  h := TSS.Item.SkinDim.HeightAsInt;
+  w := TSS.ItemDimension.X;
+  h := TSS.ItemDimension.Y;
 
   FWnd.Picture.Assign(FBackground);
   NTemp := TBitmap32.Create;
@@ -722,17 +722,17 @@ begin
 
   temp := TBitmap32.Create;
   temp.Clear(color32(0,0,0,0));
-  temp.SetSize(TSS.ItemHover.SkinDim.WidthAsInt,TSS.ItemHover.SkinDim.HeightAsInt);
+  temp.SetSize(TSS.ItemHoverDimension.X,TSS.ItemHoverDimension.Y);
   temp.DrawMode := dmBlend;
   temp.CombineMode := cmMerge;
-  TSS.ItemHover.draw(temp,FSkinManager.Scheme);
-  if (TSS.ItemPreview.WidthAsInt <> TSS.ItemHoverPreview.WidthAsInt) or
-     (TSS.ItemPreview.Height <> TSS.ItemHoverPreview.Height) then
-     previews[FIndex].DrawTo(temp,Rect(TSS.ItemHoverPreview.XAsInt,
-                                       TSS.ItemHoverPreview.YAsInt,
-                                       TSS.ItemHoverPreview.XAsInt + TSS.ItemHoverPreview.WidthAsInt,
-                                       TSS.ItemHoverPreview.YAsInt + TSS.ItemHoverPreview.HeightAsInt))
-  else previews[FIndex].DrawTo(temp,TSS.ItemHoverPreview.XAsInt,TSS.ItemHoverPreview.YAsInt);
+  TSS.ItemHover.DrawTo(temp,FSkinManager.Scheme);
+  if (TSS.ItemPreviewDimension.X <> TSS.ItemHoverPreviewDimension.X) or
+     (TSS.ItemPreviewDimension.Y <> TSS.ItemHoverPreviewDimension.Y) then
+     previews[FIndex].DrawTo(temp,Rect(TSS.ItemHoverPreviewLocation.X,
+                                       TSS.ItemHoverPreviewLocation.Y,
+                                       TSS.ItemHoverPreviewLocation.X + TSS.ItemHoverPreviewDimension.X,
+                                       TSS.ItemHoverPreviewLocation.Y + TSS.ItemHoverPreviewDimension.Y))
+  else previews[FIndex].DrawTo(temp,TSS.ItemHoverPreviewLocation.X,TSS.ItemHoverPreviewLocation.Y);
   temp.DrawTo(NTemp,x,y);
   temp.Free;
 
@@ -747,11 +747,11 @@ begin
   FontBmp.SetSize(FBackground.Width,FBackground.Height);
   FontBmp.Clear(color32(0,0,0,0));
   ST.AssignFontTo(FontBmp.Font,FSkinManager.Scheme);
-  if FontBmp.TextWidth(Caption) > FBackground.Width - TSS.LROffset.XAsInt - TSS.LROffset.YAsInt - 4 then
+  if FontBmp.TextWidth(Caption) > FBackground.Width - TSS.LROffset.X - TSS.LROffset.Y - 4 then
   begin
     repeat
       setlength(Caption,length(Caption)-1);
-    until (FontBmp.TextWidth(Caption) < FBackground.Width - TSS.LROffset.XAsInt - TSS.LROffset.YAsInt - 4)
+    until (FontBmp.TextWidth(Caption) < FBackground.Width - TSS.LROffset.X - TSS.LROffset.Y - 4)
           or (length(Caption) = 0);
     setlength(Caption,Max(0,length(Caption)-1));
     Caption := Caption + '...';
@@ -760,7 +760,7 @@ begin
                                  Rect(0, 0, FBackground.Width, FBackground.Height),
                                  Rect(0, 0, 0, 0));
   ST.RenderTo(FontBmp,TextPos.x,TextPos.y,Caption,FSkinManager.Scheme);
-  ST.Free;
+  ST := nil;
   FontBmp.DrawTo(FWnd.Picture,0,0);
   FontBmp.Free;
 

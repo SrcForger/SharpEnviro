@@ -62,7 +62,7 @@ implementation
 
 procedure TSkinServer.FormCreate(Sender: TObject);
 begin
-  FSkin := TSharpESkin.Create(self,ALL_SHARPE_SKINS);
+  FSkin := TSharpESkin.Create(ALL_SHARPE_SKINS);
   UpdateStreamFile(True);
   SharpApi.BroadcastGlobalUpdateMessage(suSkinFileChanged,-1,True);
 end;
@@ -71,7 +71,6 @@ procedure TSkinServer.FormDestroy(Sender: TObject);
 begin
   if FStream <> nil then FreeAndNil(FStream);
 end;
-
 
 procedure TSkinServer.UpdateStreamFile(ByUpdateMessage : Boolean = False);
 var

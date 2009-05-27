@@ -59,7 +59,7 @@ type
 var
   AE:TActionEvent;
   h:THandle;
-  SkinInterface : ISharpESkin;
+  SkinInterface : ISharpESkininterface;
   Filters : TFilterItemList;
   Actions : array of TTaskAction;
   TaskManager : TTaskManager;
@@ -446,7 +446,7 @@ begin
   SetLength(sIGlobalFilters,0);
 end;
 
-function StartEx(owner: hwnd; pSkinInterface : ISharpESkin): hwnd;
+function StartEx(owner: hwnd; pSkinInterface : ISharpESkinInterface): hwnd;
 begin
   Result := owner;
 
