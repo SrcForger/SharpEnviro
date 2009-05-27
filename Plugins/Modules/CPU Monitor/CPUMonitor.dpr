@@ -44,7 +44,6 @@ uses
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
-  MouseTimer in '..\..\..\Common\Units\MouseTimer\MouseTimer.pas',
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
   uSharpDeskFunctions in '..\..\..\Components\SharpDesk\Units\uSharpDeskFunctions.pas',
   adCpuUsage in '..\..\..\Common\3rd party\adCpuUsage\adCpuUsage.pas',
@@ -63,7 +62,7 @@ type
       function UpdateMessage(part : TSU_UPDATE_ENUM; param : integer) : HRESULT; override;
       function InitModule : HRESULT; override;
 
-      procedure SetSkinInterface(Value : ISharpESkin); override;      
+      procedure SetSkinInterface(Value : ISharpESkinInterface); override;
       procedure SetSize(Value : integer); override;
       procedure SetLeft(Value : integer); override;
   end;
@@ -120,12 +119,13 @@ begin
   begin
     TMainForm(Form).cpuusage := cpuusage;
     TMainForm(Form).LoadSettings;
-    cpuusage.Forms.Add(Form);    
+    cpuusage.Forms.Add(Form);
     TMainForm(Form).RealignComponents;
+    cpuusage.UpdateTimer.Enabled := True;    
   end;
 end;
 
-procedure TInterfacedSharpBarModule.SetSkinInterface(Value: ISharpESkin);
+procedure TInterfacedSharpBarModule.SetSkinInterface(Value: ISharpESkinInterface);
 begin
   inherited SetSkinInterface(Value);
 

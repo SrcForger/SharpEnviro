@@ -322,7 +322,7 @@ var
   newWidth : integer;
 begin
   Button.Left := 2;
-  newWidth := mInterface.SkinInterface.SkinManager.Skin.ButtonSkin.WidthMod;
+  newWidth := mInterface.SkinInterface.SkinManager.Skin.Button.WidthMod;
 
   if (Settings.ShowIcon) and (Button.Glyph32 <> nil) then
   begin

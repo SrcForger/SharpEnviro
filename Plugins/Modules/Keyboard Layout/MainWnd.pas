@@ -102,7 +102,7 @@ var
 begin
   self.Caption := 'Keyboard Layout' ;
 
-  newWidth := mInterface.SkinInterface.SkinManager.Skin.ButtonSkin.WidthMod;
+  newWidth := mInterface.SkinInterface.SkinManager.Skin.Button.WidthMod;
   
   if (sShowIcon) and (btn.Glyph32 <> nil) then
     newWidth := newWidth + btn.GetIconWidth;
@@ -180,15 +180,15 @@ begin
     wnd.FreeMenu := True; // menu will free itself when closed
 
     p := ClientToScreen(Point(self.btn.Left + self.btn.Width div 2, self.Height + self.Top));
-    p.x := p.x + mInterface.SkinInterface.SkinManager.Skin.MenuSkin.SkinDim.XAsInt - mn.Background.Width div 2;
+    p.x := p.x + mInterface.SkinInterface.SkinManager.Skin.Menu.LocationOffset.X - mn.Background.Width div 2;
     if p.x < Monitor.Left then
        p.x := Monitor.Left;
     if p.x + mn.Background.Width  > Monitor.Left + Monitor.Width then
        p.x := Monitor.Left + Monitor.Width - mn.Background.Width;
     wnd.Left := p.x;
     if p.Y < Monitor.Top + Monitor.Height div 2 then
-       wnd.Top := p.y + mInterface.SkinInterface.SkinManager.Skin.MenuSkin.SkinDim.YAsInt
-       else wnd.Top := p.y - Top - Height - mn.Background.Height - mInterface.SkinInterface.SkinManager.Skin.MenuSkin.SkinDim.YAsInt;
+       wnd.Top := p.y + mInterface.SkinInterface.SkinManager.Skin.Menu.LocationOffset.Y
+       else wnd.Top := p.y - Top - Height - mn.Background.Height - mInterface.SkinInterface.SkinManager.Skin.Menu.LocationOffset.Y;
     wnd.Show;
   end;
 end;

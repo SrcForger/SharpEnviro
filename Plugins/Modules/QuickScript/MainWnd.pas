@@ -113,7 +113,7 @@ var
   newWidth : integer;
 begin
   Button.Left := 2;
-  newWidth := mInterface.SkinInterface.SkinManager.Skin.ButtonSkin.WidthMod;
+  newWidth := mInterface.SkinInterface.SkinManager.Skin.Button.WidthMod;
   if (sIcon) and (Button.Glyph32 <> nil) then
   begin
     Button.Glyph32.Assign(FIcon);
@@ -189,16 +189,16 @@ begin
     GetWindowRect(mInterface.BarInterface.BarWnd,R);
     p := ClientToScreen(Point(self.Button.Left + self.Button.Width div 2, self.Height + self.Top));
     p.y := R.Top;
-    p.x := p.x + mInterface.SkinInterface.SkinManager.Skin.MenuSkin.SkinDim.XAsInt - mn.Background.Width div 2;
+    p.x := p.x + mInterface.SkinInterface.SkinManager.Skin.Menu.LocationOffset.X - mn.Background.Width div 2;
     if p.x < Monitor.Left then
       p.x := Monitor.Left;
     if p.x + mn.Background.Width  > Monitor.Left + Monitor.Width then
       p.x := Monitor.Left + Monitor.Width - mn.Background.Width;
     wnd.Left := p.x;
     if p.Y < Monitor.Top + Monitor.Height div 2 then
-      wnd.Top := R.Bottom + mInterface.SkinInterface.SkinManager.Skin.MenuSkin.SkinDim.YAsInt
+      wnd.Top := R.Bottom + mInterface.SkinInterface.SkinManager.Skin.Menu.LocationOffset.Y
     else begin
-      wnd.Top := R.Top - wnd.Picture.Height - mInterface.SkinInterface.SkinManager.Skin.MenuSkin.SkinDim.YAsInt;
+      wnd.Top := R.Top - wnd.Picture.Height - mInterface.SkinInterface.SkinManager.Skin.Menu.LocationOffset.Y;
     end;
     wnd.show;
   end;
@@ -213,7 +213,9 @@ begin
   DoubleBuffered := True;
 
   FIcon := TBitmap32.Create;
-  FIcon.Assign(Button.Glyph32);
+  FIcon.SetSize(Button.Glyph32.Width,Button.Glyph32.Height);
+  FIcon.Clear(color32(0,0,0,0));
+  FIcon.Draw(0,0,Button.Glyph32);
   FMenuIcon1 := TBitmap32.Create;
   FMenuIcon2 := TBitmap32.Create;
 

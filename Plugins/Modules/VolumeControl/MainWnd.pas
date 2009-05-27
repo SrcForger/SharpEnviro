@@ -163,7 +163,7 @@ end;
 
 procedure TMainForm.UpdateSize;
 begin
-  mute.Width := mInterface.SkinInterface.SkinManager.Skin.ButtonSkin.WidthMod;
+  mute.Width := mInterface.SkinInterface.SkinManager.Skin.Button.WidthMod;
   if mute.Glyph32 <> nil then
     mute.Width := mute.Width + mute.GetIconWidth;
   mute.Width := mute.Width - 4;

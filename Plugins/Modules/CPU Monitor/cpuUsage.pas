@@ -54,6 +54,7 @@ begin
   UpdateTimer := TTimer.Create(nil);
   UpdateTimer.Interval := 1001;
   UpdateTimer.OnTimer := OnUpdateTimer;
+  UpdateTimer.Enabled := False;
 end;
 
 destructor TCPUUsage.Destroy;

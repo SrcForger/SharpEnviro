@@ -717,14 +717,14 @@ begin
   self.Caption := 'ApplicationBar';
 
   case sState of
-    tisCompact: sAutoHeight := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Compact.SkinDim.HeightAsInt;
-    tisMini   : sAutoHeight := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Mini.SkinDim.HeightAsInt;
-    else sAutoHeight := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Full.SkinDim.HeightAsInt;
+    tisCompact: sAutoHeight := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Compact.Dimension.Y;
+    tisMini   : sAutoHeight := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Mini.Dimension.Y;
+    else sAutoHeight := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Full.Dimension.Y;
   end;
   case sState of
-    tisCompact: sAutoWidth := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Compact.SkinDim.WidthAsInt;
-    tisMini   : sAutoWidth := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Mini.SkinDim.WidthAsInt;
-    else sAutoWidth := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Full.SkinDim.WidthAsInt;
+    tisCompact: sAutoWidth := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Compact.Dimension.X;
+    tisMini   : sAutoWidth := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Mini.Dimension.X;
+    else sAutoWidth := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Full.Dimension.X;
   end;
 
   sb_config.Visible := (length(FButtonList) = 0);
@@ -758,15 +758,15 @@ begin
     FButtonList[n].btn.SkinManager := mInterface.SkinInterface.SkinManager;
 
   case sState of
-    tisCompact: sAutoHeight := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Compact.SkinDim.HeightAsInt;
-    tisMini   : sAutoHeight := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Mini.SkinDim.HeightAsInt;
-    else sAutoHeight := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Full.SkinDim.HeightAsInt;
+    tisCompact: sAutoHeight := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Compact.Dimension.Y;
+    tisMini   : sAutoHeight := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Mini.Dimension.Y;
+    else sAutoHeight := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Full.Dimension.Y;
   end;
   case sState of
-    tisCompact: sAutoWidth := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Compact.SkinDim.WidthAsInt;
-    tisMini   : sAutoWidth := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Mini.SkinDim.WidthAsInt;
-    else sAutoWidth := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Full.SkinDim.WidthAsInt;
-  end;    
+    tisCompact: sAutoWidth := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Compact.Dimension.X;
+    tisMini   : sAutoWidth := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Mini.Dimension.X;
+    else sAutoWidth := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Full.Dimension.X;
+  end;   
 end;
 
 
@@ -954,16 +954,16 @@ begin
   GetWindowRect(mInterface.BarInterface.BarWnd,R);
   p := ClientToScreen(Point(Btn.Btn.Left + Btn.Btn.Width div 2, self.Height + self.Top));
   p.y := R.Top;
-  p.x := p.x + mInterface.SkinInterface.SkinManager.Skin.MenuSkin.SkinDim.XAsInt - mn.Background.Width div 2;
+  p.x := p.x + mInterface.SkinInterface.SkinManager.Skin.Menu.LocationOffset.X - mn.Background.Width div 2;
   if p.x < Monitor.Left then
     p.x := Monitor.Left;
   if p.x + mn.Background.Width  > Monitor.Left + Monitor.Width then
     p.x := Monitor.Left + Monitor.Width - mn.Background.Width;
   wnd.Left := p.x;
   if p.Y < Monitor.Top + Monitor.Height div 2 then
-    wnd.Top := R.Bottom + mInterface.SkinInterface.SkinManager.Skin.MenuSkin.SkinDim.YAsInt
+    wnd.Top := R.Bottom + mInterface.SkinInterface.SkinManager.Skin.Menu.LocationOffset.Y
   else begin
-    wnd.Top := R.Top - wnd.Picture.Height - mInterface.SkinInterface.SkinManager.Skin.MenuSkin.SkinDim.YAsInt;
+    wnd.Top := R.Top - wnd.Picture.Height - mInterface.SkinInterface.SkinManager.Skin.Menu.LocationOffset.Y;
   end;
   wnd.Show;
 end;

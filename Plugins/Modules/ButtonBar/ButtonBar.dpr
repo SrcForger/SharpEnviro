@@ -57,7 +57,7 @@ type
       function UpdateMessage(part : TSU_UPDATE_ENUM; param : integer) : HRESULT; override;
       function InitModule : HRESULT; override;
 
-      procedure SetSkinInterface(Value : ISharpESkin); override;
+      procedure SetSkinInterface(Value : ISharpESkinInterface); override;
       procedure SetSize(Value : integer); override;
   end;
 
@@ -120,7 +120,7 @@ begin
   TMainForm(Form).UpdateSize;
 end;
 
-procedure TInterfacedSharpBarModule.SetSkinInterface(Value: ISharpESkin);
+procedure TInterfacedSharpBarModule.SetSkinInterface(Value: ISharpESkinInterface);
 begin
   inherited SetSkinInterface(Value);
 

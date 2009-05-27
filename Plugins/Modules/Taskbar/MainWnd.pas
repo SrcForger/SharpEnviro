@@ -30,7 +30,7 @@ interface
 uses
   Types, Windows, Messages, SysUtils, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls, JclSimpleXML, SharpApi, Menus,
-  Math, Contnrs, SharpETaskItem, SharpESkin, MonitorList,
+  Math, Contnrs, SharpETaskItem, MonitorList,
   SharpEBaseControls, SharpECustomSkinSettings, uTaskManager, uTaskItem,
   DateUtils, GR32, GR32_PNG, SharpIconUtils, SharpEButton, JvComponentBase,
   JvDragDrop, VWMFunctions,Commctrl,TaskFilterList,SWCmdList, SharpTypes,
@@ -142,7 +142,7 @@ type
 implementation
 
 uses
-  ToolTipApi,IXMLBaseUnit;
+  ToolTipApi,IXMLBaseUnit,GR32Utils;
 
 var
   SysMenuHandle : hwnd;
@@ -314,12 +314,12 @@ end;
 procedure TMainForm.GetSpacing;
 begin
   DebugOutPutInfo('TMainForm.GetSpacing (Procedure)');
-  if mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin = nil then exit;
+  if mInterface.SkinInterface.SkinManager.Skin.TaskItem = nil then exit;
   try
     case sState of
-      tisCompact: sSpacing := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Compact.Spacing;
-      tisMini: sSpacing := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Mini.Spacing;
-    else sSpacing := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Full.Spacing;
+      tisCompact: sSpacing := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Compact.Spacing;
+      tisMini: sSpacing := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Mini.Spacing;
+    else sSpacing := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Full.Spacing;
     end;
   except
     sSpacing := 2;
@@ -327,9 +327,9 @@ begin
 
   try
     case sState of
-      tisCompact: sMaxWidth := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Compact.SkinDim.WidthAsInt;
-      tisMini: sMaxWidth := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Mini.SkinDim.WidthAsInt;
-      else sMaxWidth := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Full.SkinDim.WidthAsInt;
+      tisCompact: sMaxWidth := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Compact.Dimension.X;
+      tisMini: sMaxWidth := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Mini.Dimension.X;
+      else sMaxWidth := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Full.Dimension.X;
     end;
   except
     sMaxWidth := 128;
@@ -337,9 +337,9 @@ begin
 
   try
     case sState of
-      tisCompact: sAutoHeight := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Compact.SkinDim.HeightAsInt;
-      tisMini   : sAutoHeight := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Mini.SkinDim.HeightAsInt;
-      else sAutoHeight := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Full.SkinDim.HeightAsInt;
+      tisCompact: sAutoHeight := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Compact.Dimension.Y;
+      tisMini   : sAutoHeight := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Mini.Dimension.Y;
+      else sAutoHeight := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Full.Dimension.Y;
     end;
   except
     sAutoHeight := Height - 2;
@@ -370,7 +370,7 @@ begin
     ses_minall.visible := True;
     ses_minall.Left := n;
     ses_minall.UpdateSkin;
-    ses_minall.Width := mInterface.SkinInterface.SkinManager.Skin.ButtonSkin.WidthMod;
+    ses_minall.Width := mInterface.SkinInterface.SkinManager.Skin.Button.WidthMod;
     if ses_minall.Glyph32 <> nil then
       ses_minall.Width := ses_minall.Width + ses_minall.GetIconWidth;
     ses_minall.Width := ses_minall.Width - 4;
@@ -381,7 +381,7 @@ begin
     ses_maxall.Visible := True;
     ses_maxall.Left := n;
     ses_minall.UpdateSkin;    
-    ses_maxall.Width := mInterface.SkinInterface.SkinManager.Skin.ButtonSkin.WidthMod;
+    ses_maxall.Width := mInterface.SkinInterface.SkinManager.Skin.Button.WidthMod;
     if ses_maxall.Glyph32 <> nil then
       ses_maxall.Width := ses_maxall.Width + ses_maxall.GetIconWidth;
     n := n + ses_maxall.Width + 2;
@@ -1422,8 +1422,8 @@ begin
   FDminA := TBitmap32.Create;
   FDmaxA := TBitmap32.Create;
 
-  FDminA.Assign(ses_minall.Glyph32);
-  FDmaxA.Assign(ses_maxall.Glyph32);
+  SaveAssign(ses_minall.Glyph32,FDminA);
+  SaveAssign(ses_maxall.Glyph32,FDmaxA);
 
   FRefreshOnNextMouseMove := False;
 

@@ -60,6 +60,7 @@ type
     sBorderAlpha    : integer;
     oldvalue        : integer;
     FCustomSkinSettings: TSharpECustomSkinSettings;
+    graphinit       : boolean;
   public
     cpuusage : TCPUUsage;
     cpugraph : TBitmap32;
@@ -74,7 +75,6 @@ type
 implementation
 
 uses
-  SharpESkinPart,
   uISharpETheme,
   SharpThemeApiEx;
 
@@ -177,15 +177,15 @@ begin
 
   if Width < 10 then exit;
   newWidth := sWidth + 4;
-  
+
   mInterface.MinSize := NewWidth;
   mInterface.MaxSize := NewWidth;
   if newWidth <> Width then
     mInterface.BarInterface.UpdateModuleSize;
 
-  sFGColor     := SharpESkinPart.ParseColor(sFGColorStr,mInterface.SkinInterface.SkinManager.Scheme);
-  sBGColor     := SharpESkinPart.ParseColor(sBGColorStr,mInterface.SkinInterface.SkinManager.Scheme);
-  sBorderColor := SharpESkinPart.ParseColor(sBorderColorStr,mInterface.SkinInterface.SkinManager.Scheme);    
+  sFGColor     := mInterface.SkinInterface.SkinManager.ParseColor(sFGColorStr);
+  sBGColor     := mInterface.SkinInterface.SkinManager.ParseColor(sBGColorStr);
+  sBorderColor := mInterface.SkinInterface.SkinManager.ParseColor(sBorderColorStr);
   case sDrawMode of
     0,1: begin
            pbar.Visible := False;
@@ -217,6 +217,7 @@ begin
       pbar.Height := Height - 8;
     end;
   end;
+  graphinit := True;
 end;
 
 procedure TMainForm.UpdateComponentSkins;
@@ -231,6 +232,9 @@ var
   c1,c2 : TColor32;
   bmp : TBitmap32;
 begin
+  if not graphinit then
+    exit;
+    
   bmp := TBitmap32.create;
   t := 0;
   try
@@ -292,6 +296,7 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  graphinit := False;
   DoubleBuffered := True;
   cpugraph := TBitmap32.Create;
   cpugraph.DrawMode := dmBlend;

@@ -60,7 +60,7 @@ type
       function InitModule : HRESULT; override;
       function ModuleMessage(msg : String) : HRESULT; override;
 
-      procedure SetSkinInterface(Value : ISharpESkin); override;
+      procedure SetSkinInterface(Value : ISharpESkinInterface); override;
   end;
 
 {$R *.res}
@@ -126,7 +126,7 @@ begin
   TMainForm(Form).UpdateSharpEActions;
 end;
 
-procedure TInterfacedSharpBarModule.SetSkinInterface(Value: ISharpESkin);
+procedure TInterfacedSharpBarModule.SetSkinInterface(Value: ISharpESkinInterface);
 begin
   inherited SetSkinInterface(Value);
 

@@ -54,7 +54,8 @@ uses
   uTaskManager in '..\..\Services\Shell\uTaskManager.pas',
   SWCmdList in '..\..\..\Common\Units\TaskFilterList\SWCmdList.pas',
   TaskFilterList in '..\..\..\Common\Units\TaskFilterList\TaskFilterList.pas',
-  uInterfacedSharpBarModuleBase in '..\..\..\Components\SharpBar\uInterfacedSharpBarModuleBase.pas';
+  uInterfacedSharpBarModuleBase in '..\..\..\Components\SharpBar\uInterfacedSharpBarModuleBase.pas',
+  GR32Utils in '..\..\..\Common\Units\GR32Utils\GR32Utils.pas';
 
 type
   TInterfacedSharpBarModule = class(TInterfacedSharpBarModuleBase)
@@ -68,7 +69,7 @@ type
       function InitModule : HRESULT; override;
       function ModuleMessage(msg : String) : HRESULT; override;
 
-      procedure SetSkinInterface(Value : ISharpESkin); override;
+      procedure SetSkinInterface(Value : ISharpESkinInterface); override;
       procedure SetSize(Value : integer); override;
       procedure SetLeft(Value : integer); override;
   end;
@@ -166,7 +167,7 @@ begin
   TMainForm(Form).UpdateSize;
 end;
 
-procedure TInterfacedSharpBarModule.SetSkinInterface(Value: ISharpESkin);
+procedure TInterfacedSharpBarModule.SetSkinInterface(Value: ISharpESkinInterface);
 begin
   inherited SetSkinInterface(Value);
 

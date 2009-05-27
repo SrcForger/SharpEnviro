@@ -268,7 +268,7 @@ var
   i : integer;
   buttonwidth : integer;
 begin
-  buttonwidth := mInterface.SkinInterface.SkinManager.Skin.ButtonSkin.WidthMod;
+  buttonwidth := mInterface.SkinInterface.SkinManager.Skin.Button.WidthMod;
   buttonwidth := buttonwidth + btn_play.GetIconWidth;
   buttonwidth := buttonwidth - 4;
   btn_play.Width    := buttonwidth;
@@ -414,16 +414,16 @@ begin
     GetWindowRect(mInterface.BarInterface.BarWnd,R);
     p := ClientToScreen(Point(btn_pselect.Left + btn_pselect.Width div 2, self.Height + self.Top));
     p.y := R.Top;
-    p.x := p.x + mInterface.SkinInterface.SkinManager.Skin.MenuSkin.SkinDim.XAsInt - mn.Background.Width div 2;
+    p.x := p.x + mInterface.SkinInterface.SkinManager.Skin.Menu.LocationOffset.X - mn.Background.Width div 2;
     if p.x < Monitor.Left then
       p.x := Monitor.Left;
     if p.x + mn.Background.Width  > Monitor.Left + Monitor.Width then
       p.x := Monitor.Left + Monitor.Width - mn.Background.Width;
     wnd.Left := p.x;
     if p.Y < Monitor.Top + Monitor.Height div 2 then
-      wnd.Top := R.Bottom + mInterface.SkinInterface.SkinManager.Skin.MenuSkin.SkinDim.YAsInt
+      wnd.Top := R.Bottom + mInterface.SkinInterface.SkinManager.Skin.Menu.LocationOffset.Y
     else begin
-      wnd.Top := R.Top - wnd.Picture.Height - mInterface.SkinInterface.SkinManager.Skin.MenuSkin.SkinDim.YAsInt;
+      wnd.Top := R.Top - wnd.Picture.Height - mInterface.SkinInterface.SkinManager.Skin.Menu.GetLocationOffset.Y;
     end;
     wnd.show;
   end;
