@@ -54,7 +54,7 @@ const
 
 var
   SkinInterface: TSharpESkinInterface;
-  ISkinInterface: ISharpESkin;
+  ISkinInterface: ISharpESkinInterface;
   wclClass: TWndClass;
   wndMsg: TMsg;
   nidTray: TNotifyIconData;
@@ -135,7 +135,7 @@ end;
 function StartService(var modData: TComponentData): Integer;
 type
   TStartFunc   = function(owner: hwnd): hwnd;
-  TStartFuncEx = function(owner: hwnd; pSkinInterface : ISharpESkin): hwnd;
+  TStartFuncEx = function(owner: hwnd; pSkinInterface : ISharpESkinInterface): hwnd;
 const
   StartFunc:   TStartFunc = nil;
   StartFuncEx: TStartFuncEx = nil;
