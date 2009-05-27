@@ -40,8 +40,7 @@ uses
   SharpEBase,
   SharpEBaseControls,
   SharpEDefault,
-  SharpEScheme,
-  SharpESkinManager,
+  ISharpESkinComponents,
   ExtCtrls,
   math,
   StrTools,
@@ -118,8 +117,8 @@ type
   protected
     FAutoSize: boolean;
     procedure Paint; override;
-    procedure DrawDefaultSkin(Scheme: TSharpEScheme);
-    procedure DrawManagedSkin(Scheme: TSharpEScheme);
+    procedure DrawDefaultSkin(Scheme: ISharpEScheme);
+    procedure DrawManagedSkin(Scheme: ISharpEScheme);
     procedure SetEnabled(Value: Boolean); override;
     procedure DoExit; override;
     procedure DoEnter; override;
@@ -151,11 +150,9 @@ type
     property OnKeyDown;
   end;
 
-  procedure CopyParentImage(Control: TControl; Dest: TCanvas);
+procedure CopyParentImage(Control: TControl; Dest: TCanvas);
 
 implementation
-
-uses SharpESkinPart, SharpESkin;
 
 procedure TSharpEEditText.WMSetFocus(var Message: TWMSetFocus);
 begin
@@ -192,8 +189,6 @@ begin
   CoInitialize(nil);
   FAutoComplete := CreateComObject(CLSID_AutoComplete) as IAutoComplete2;
   Try
-
-
     // creates a "multi-list" that combines several lists
     CoCreateInstance(CLSID_ACLMulti, nil, CLSCTX_INPROC_SERVER, IID_IObjMgr, om);
     FStrings := TEnumString.Create(FStringList) as IUnknown;
@@ -550,7 +545,7 @@ begin
   inherited;
 end;
 
-procedure TSharpEEdit.DrawDefaultSkin(Scheme: TSharpEScheme);
+procedure TSharpEEdit.DrawDefaultSkin(Scheme: ISharpEScheme);
 var
   CompRect: TRect;
 begin
@@ -564,7 +559,7 @@ begin
     Frame3D(Canvas, CompRect, Scheme.GetColorByName('WorkAreadark'), Scheme.GetColorByName('WorkArealight'), 1);
 
 
-    DefaultSharpESkinText.AssignFontTo(FEdit.Font,Scheme);
+    SharpEDefault.AssignDefaultFontTo(FEdit.Font);
     //FEdit.Font.Assign(bmp.Font);
     FEdit.Left := 2;
     FEdit.Top := 2;
@@ -574,23 +569,24 @@ begin
   end;
 end;
 
-procedure TSharpEEdit.DrawManagedSkin( Scheme: TSharpEScheme);
+procedure TSharpEEdit.DrawManagedSkin(Scheme: ISharpEScheme);
 var
   CompRect,r : TRect;
   EditRect : TRect;
   bmp : TBitmap32;
+  SkinText : ISharpESkinText;
 begin
   if (not Assigned(FManager)) or (Width = 0) or (Height = 0) then exit;
 
   CompRect := Rect(0, 0, width, height);
 
   if FAutoPosition then
-     if Top <> FManager.Skin.EditSkin.SkinDim.YAsInt then
-        Top := FManager.Skin.EditSkin.SkinDim.YAsInt;
+     if Top <> FManager.Skin.Edit.Dimension.Y then
+        Top := FManager.Skin.Edit.Dimension.Y;
 
   if FAutoSize then
     begin
-      r := FManager.Skin.EditSkin.GetAutoDim(CompRect);
+      r := FManager.Skin.Edit.GetAutoDim(CompRect);
       if (r.Right <> width) or (r.Bottom <> height) then
       begin
         width := r.Right;
@@ -599,7 +595,7 @@ begin
       end;
     end;
 
-  if FManager.Skin.EditSkin.Valid then
+  if FManager.Skin.Edit.Valid then
   begin
     try
       bmp := TBitmap32.Create;
@@ -611,35 +607,32 @@ begin
       CopyParentImage(self,bmp.Canvas);
       bmp.ResetAlpha(255);
 
-      if Not(Enabled) and not (FManager.Skin.EditSkin.Disabled.Empty) then
+      if FEdit.Focused and not (FManager.Skin.Edit.Focus.Empty) then
       begin
-        FManager.Skin.Editskin.Disabled.Draw(bmp,Scheme);
-        FManager.Skin.EditSkin.Disabled.SkinText.AssignFontTo(bmp.Font,Scheme);
+        FManager.Skin.Edit.Focus.DrawTo(bmp, Scheme);
+        SkinText := FManager.Skin.Edit.Focus.CreateThemedSkinText;
+        SkinText.AssignFontTo(bmp.Font,Scheme);
       end
-      else
-      if FEdit.Focused and not (FManager.Skin.EditSkin.Focus.Empty) then
+      else if FMouseOver and not (FManager.Skin.Edit.Hover.Empty) then
       begin
-        FManager.Skin.EditSkin.Focus.Draw(bmp, Scheme);
-        FManager.Skin.EditSkin.Focus.SkinText.AssignFontTo(bmp.Font,Scheme);
-      end
-      else if FMouseOver and not (FManager.Skin.EditSkin.Hover.Empty) then
-      begin
-        FManager.Skin.EditSkin.Hover.Draw(bmp, Scheme);
-        FManager.Skin.EditSkin.Hover.SkinText.AssignFontTo(bmp.Font,Scheme);
+        FManager.Skin.Edit.Hover.DrawTo(bmp, Scheme);
+        SkinText := FManager.Skin.Edit.Hover.CreateThemedSkinText;
+        SkinText.AssignFontTo(bmp.Font,Scheme);        
       end
       else
         begin
-          FManager.Skin.Editskin.Normal.Draw(bmp, Scheme);
-          FManager.Skin.EditSkin.Normal.SkinText.AssignFontTo(bmp.Font,Scheme);
+          FManager.Skin.Edit.Normal.DrawTo(bmp, Scheme);
+          SkinText := FManager.Skin.Edit.Normal.CreateThemedSkinText;
+          SkinText.AssignFontTo(bmp.Font,Scheme);
         end;
      bmp.DrawTo(Canvas.Handle, bmp.BoundsRect, bmp.BoundsRect);
 
      FEdit.Font.Assign(bmp.Font);
      try
-       EditRect.Left := FManager.Skin.EditSkin.EditXOffsets.XAsInt;
-       EditRect.Top  := FManager.Skin.EditSkin.EditYOffsets.XAsInt;
-       EditRect.Right := Width - EditRect.Left - FManager.Skin.EditSkin.EditXOffsets.YAsInt;
-       EditRect.Bottom := Height - EditRect.Top - FManager.Skin.EditSkin.EditYOffsets.YAsInt;
+       EditRect.Left := FManager.Skin.Edit.EditXOffsets.X;
+       EditRect.Top  := FManager.Skin.Edit.EditYOffsets.X;
+       EditRect.Right := Width - EditRect.Left - FManager.Skin.Edit.EditXOffsets.Y;
+       EditRect.Bottom := Height - EditRect.Top - FManager.Skin.Edit.EditYOffsets.Y;
        FEdit.Left := EditRect.Left;
        FEdit.Top  := EditRect.Top;
        FEdit.Width := EditRect.Right;
@@ -652,6 +645,7 @@ begin
        FEdit.Height := Height - 2;
      end;
     finally
+      SkinText := nil;
       FreeAndNil(bmp);
     end;
   end

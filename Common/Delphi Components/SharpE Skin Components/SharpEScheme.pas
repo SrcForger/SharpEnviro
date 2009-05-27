@@ -37,45 +37,55 @@ uses
   Controls,
   StdCtrls,
   gr32,
-  SharpEBase,
+  ISharpESkinComponents,
   SharpThemeApiEx,
   uThemeConsts;
 
 type
-  TSchemeEvent = procedure of object;
-
-  TSharpEScheme = class(TComponent)
+  TSharpEScheme = class(TInterfacedObject, ISharpEScheme)
   private
     FColors  : TSharpEColorSet;
-    FOnNotify: TSchemeEvent;
-
-    //procedure NotifyManager;
+    FInterface : ISharpEScheme;
   protected
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(OwnsInterface : boolean = False); reintroduce;
     destructor Destroy; override;
-    procedure Assign(Source: TPersistent); override;
+    procedure Assign(Source: TSharpEScheme);
     procedure AddColor(Name,Tag,Info : String; Color : integer; sType : TSharpESchemeType); overload;
     procedure AddColor(Color : TSharpESkinColor); overload;
-    function GetColorByName(Name : String) : integer;
-    function GetColorByTag(Tag  : String) : integer;
-    function GetColorIndexByTag(Tag : String) : integer;
     procedure ClearColors;
-    property OnNotify: TSchemeEvent read FOnNotify write FOnNotify;
-  published
-    property Colors : TSharpEColorSet read FColors write FColors;
+
+    // ISharpEScheme Interface
+    function GetColorByName(Name : String) : integer; stdcall;
+    function GetColorByTag(Tag  : String) : integer; stdcall;
+    function GetColorIndexByTag(Tag : String) : integer; stdcall;
+
+    function GetColors : TSharpEColorSet; stdcall;
+    procedure SetColors(value : TSharpEColorSet); stdcall;
+    property Colors : TSharpEColorSet read GetColors write SetColors;
+
+    property SelfInterface : ISharpEScheme read FInterface write FInterface;
   end;
 
 implementation
-uses SharpESkinManager,
-  SharpEDefault;
 
-constructor TSharpEScheme.Create(AOwner: TComponent);
+
+constructor TSharpEScheme.Create(OwnsInterface : boolean = False);
 begin
-  inherited;
+  inherited Create;
+  
   ClearColors;
-  Assign(DefaultSharpEScheme);
+  AddColor('Throbberback','$Throbberback','Throbberback',$B68972,stColor);
+  AddColor('Throbberdark','$Throbberdark','Throbberdark',$5B4439,stColor);
+  AddColor('Throbberlight','$Throbberlight','Throbberlight',$C5958D,stColor);
+  AddColor('ThrobberText','$ThrobberText','ThrobberText',$000000,stColor);
+  AddColor('WorkAreaback','$WorkAreaback','WorkAreaback',$CACACA,stColor);
+  AddColor('WorkAreadark','$WorkAreadark','WorkAreadark',$757575,stColor);
+  AddColor('WorkArealight','$WorkArealight','WorkArealight',$F5F5F5,stColor);
+  AddColor('WorkAreaText','$WorkAreaText','WorkAreaText',$000000,stColor);
+
+  if OwnsInterface then
+    FInterface := self;
 end;
 
 destructor TSharpEScheme.Destroy;
@@ -84,25 +94,7 @@ begin
   inherited Destroy;
 end;
 
-{procedure TSharpEScheme.NotifyManager;
-begin
-  if Assigned(OnNotify) then OnNotify;
-end;    }
-
-procedure TSharpEScheme.Notification(AComponent: TComponent; Operation:
-  TOperation);
-begin
-  inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) then
-  begin
-    if (AComponent is TSharpESkinManager) then
-    begin
-      if (AComponent as TSharpESkinManager).CompScheme = self then FOnNotify := nil;
-    end;
-  end
-end;
-
-procedure TSharpEScheme.Assign(Source: TPersistent);
+procedure TSharpEScheme.Assign(Source: TSharpEScheme);
 var
   ss: TSharpEScheme;
   n : integer;
@@ -176,6 +168,16 @@ begin
         result := n;
         exit;
       end;
+end;
+
+function TSharpEScheme.GetColors: TSharpEColorSet;
+begin
+  result := FColors;
+end;
+
+procedure TSharpEScheme.SetColors(value: TSharpEColorSet);
+begin
+  Colors := Value;
 end;
 
 procedure TSharpEScheme.ClearColors;

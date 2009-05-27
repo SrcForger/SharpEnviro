@@ -120,7 +120,6 @@ type
 
     property Activated : Boolean read FActivated write SetActive;
     property OnSkinChanged: TNotifyEvent read FOnSkinChanged write FOnSkinChanged;
-   published
   end;
 
 implementation
@@ -129,7 +128,7 @@ constructor TSystemSharpESkin.Create(Skins: TSharpESkinItems = ALL_SHARPE_SKINS)
 begin
 //  FSharedBmpList := TSharedBitmapList.Create('',0);
 //  inherited CreateBmp(nil, FSharedBmpList as TSkinBitmapList);
-  inherited Create(nil, Skins);
+  inherited Create( Skins);
   FActivated := false;
 
   //Hook MainWindow to recieve system messages
@@ -152,28 +151,11 @@ end;
 
 procedure TSystemSharpESkin.SetActive(b : boolean);
 begin
-  if (csDesigning in ComponentState) then exit;
-
   if b then
     LoadSkinFromStream
   else
     FActivated := false;
 end;
-
-{procedure TSystemSharpESkin.RegisterForSystemSkin;
-var
-  hTargetWnd: HWND;
-begin
-  if not(FActivated) then
-  begin
-    hTargetWnd := FindWindowEx(0, 0, PChar('SharpESkinServer'), nil);
-    if hTargetWnd <> 0 then
-    begin
-      Postmessage(hTargetWnd,WM_ASKFORSYSTEMSKIN,FMsgWnd,0);
-    end;
-  end;
-  FActivated := true;
-end;        }
 
 procedure TSystemSharpESkin.LoadSkinFromStream;
 var
@@ -195,16 +177,8 @@ begin
   if Assigned(FOnSkinChanged) then FOnSkinChanged(self);
 end;
 
-{procedure TSystemSharpESkin.NotifyManager;
-begin
-  if Assigned(OnNotify) then
-    OnNotify;
-end;}
 
 function TSystemSharpESkin.MessageHook(var Msg: TMessage): Boolean;
-//var
-//  m : TWMCopyData;
-//  ssi : TSharedSkinInfo;
 begin
   result := false;
   if FActivated then begin

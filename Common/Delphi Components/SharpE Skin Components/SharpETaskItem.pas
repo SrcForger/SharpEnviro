@@ -40,11 +40,7 @@ uses
   SharpEBase,
   SharpEBaseControls,
   SharpEDefault,
-  SharpEScheme,
-  SharpESkin,
-  SharpESkinManager,
-  SharpEAnimationTimers,
-  SharpESkinPart,
+  ISharpESkinComponents,
   SharpTypes,
   math,
   Types,
@@ -52,9 +48,19 @@ uses
 
 type
   TGlyph32FileName = string;
+  TSharpETaskItemAnimCallback = class(TInterfacedObject, ISharpESkinAnimTimerCallback)
+  private
+    FOwner : TObject;
+  public
+    constructor Create(pOwner : TObject); reintroduce;
+    procedure TimerFinished; stdcall;
+  end;
+
   TSharpETaskItem = class(TCustomSharpEGraphicControl)
   private
     //FCancel: Boolean;
+    FTimerCallback : TSharpETaskItemAnimCallback;
+    FTimerCallbackInterface : ISharpESkinAnimTimerCallback;
     FFlashing : boolean;
     FFlashState : boolean;
     FState : TSharpETaskItemStates;
@@ -68,7 +74,7 @@ type
     FDefault: Boolean;
     FAutoPosition: Boolean;
     FDown: Boolean;
-    FPrecacheText : TSkinText;
+    FPrecacheText : ISharpESkinText;
     FPrecacheBmp  : TBitmap32;
     FPrecacheCaption : WideString;
     FHandle : Cardinal;
@@ -92,13 +98,12 @@ type
     procedure SetFlashing(Value : Boolean);
     procedure SetFlashState(Value : Boolean);
   protected
-    procedure DrawDefaultSkin(bmp: TBitmap32; Scheme: TSharpEScheme); override;
-    procedure DrawManagedSkin(bmp: TBitmap32; Scheme: TSharpEScheme); override;
+    procedure DrawDefaultSkin(bmp: TBitmap32; Scheme: ISharpEScheme); override;
+    procedure DrawManagedSkin(bmp: TBitmap32; Scheme: ISharpEScheme); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure SMouseEnter; override;
     procedure SMouseLeave; override;
-    procedure OnAnimFinished(Sender : TObject; SkinPart : TSkinPart);
   public
     constructor Create(AOwner: TComponent); override;
     procedure Resize; override;
@@ -107,7 +112,7 @@ type
     function HasNormalHoverScript : boolean;
     function HasHighlightAnimationScript : boolean;
 //    function HasHighlightHoverScript : boolean;
-    function GetCurrentStateItem : TSharpETaskItemState;
+    function GetCurrentStateItem : ISharpETaskItemStateSkin;
   published
     //property Align;
     property Anchors;
@@ -159,6 +164,8 @@ begin
   Width := 75;
   Height := 25;
 
+  FTimerCallback := TSharpETaskItemAnimCallback.Create(self);
+  FTimerCallbackInterface := FTimerCallback;
   FGlyph32 := TBitmap32.Create;
   FOverlay := TBitmap32.Create;
   FOverlay.DrawMode := dmBlend;
@@ -181,16 +188,19 @@ begin
     Click;
 end;
 
-procedure TSharpETaskItem. SetFlashState(Value : Boolean);
+procedure TSharpETaskItem.SetFlashState(Value : Boolean);
 begin
+
   if Value <> FFlashState then
   begin
     FFlashState := Value;
-    if not SharpEAnimManager.HasScriptRunning(self) then UpdateSkin;
+    if FManager = nil then
+      exit;    
+    if not FManager.AnimationHasScriptRunning(self) then UpdateSkin;
   end;
 end;
 
-function TSharpETaskItem.GetCurrentStateItem : TSharpETaskItemState;
+function TSharpETaskItem.GetCurrentStateItem : ISharpETaskItemStateSkin;
 begin
   if not assigned(FManager) then
   begin
@@ -199,33 +209,13 @@ begin
   end;
 
   case FState of
-    tisCompact : result := FManager.Skin.TaskItemSkin.Compact;
-    tisMini    : result := FManager.Skin.TaskItemSkin.Mini;
-    else result := FManager.Skin.TaskItemSkin.Full;
+    tisCompact : result := FManager.Skin.TaskItem.Compact;
+    tisMini    : result := FManager.Skin.TaskItem.Mini;
+    else result := FManager.Skin.TaskItem.Full;
   end;
 end;
 
 
-procedure TSharpETaskItem.OnAnimFinished(Sender : TObject; SkinPart : TSkinPart);
-var
-  CurrentState : TSharpETaskItemState;
-begin
-  CurrentState := GetCurrentStateItem;
-  //if not (CurrentState.Highlight = SkinPart) then exit;
-
-  FFlashState := not FFlashState;
-  if (FFlashState) then
-  begin
-    if FFlashing then
-       SharpEAnimManager.ExecuteScript(self,
-                                       CurrentState.OnHighlightStepStartScript,
-                                       CurrentState.Normal,
-                                       FManager.Scheme).OnTimerFinished := OnAnimFinished
-  end else SharpEAnimManager.ExecuteScript(self,
-                                           CurrentState.OnHighlightStepEndScript,
-                                           CurrentState.Normal,
-                                           FManager.Scheme).OnTimerFinished := OnAnimFinished;
-end;
 
 {function TSharpETaskItem.HasHighlightHoverScript : boolean;
 var
@@ -243,7 +233,7 @@ end;   }
 
 function TSharpETaskItem.HasHighlightAnimationScript : boolean;
 var
-  CurrentState : TSharpETaskItemState;
+  CurrentState : ISharpETaskItemStateSkin;
 begin
   result := False;
   if not assigned(FManager) then exit;
@@ -257,7 +247,7 @@ end;
 
 function TSharpETaskItem.HasDownHoverScript : boolean;
 var
-  CurrentState : TSharpETaskItemState;
+  CurrentState : ISharpETaskItemStateSkin;
 begin
   result := False;
   if not assigned(FManager) then exit;
@@ -271,7 +261,7 @@ end;
 
 function TSharpETaskItem.HasNormalHoverScript : boolean;
 var
-  CurrentState : TSharpETaskItemState;
+  CurrentState : ISharpETaskItemStateSkin;
 begin
   result := False;
   if not assigned(FManager) then exit;
@@ -285,20 +275,21 @@ end;
 
 procedure TSharpETaskItem.SetFlashing(Value : Boolean);
 var
-  CurrentState : TSharpETaskItemState;
+  CurrentState : ISharpETaskItemStateSkin;
 begin
   if Value <> FFlashing then
   begin
     FFlashing := Value;
+    if not assigned(FManager) then exit;
     if (HasHighlightAnimationScript) then
     begin
       CurrentState := GetCurrentStateItem;
       FFlashState := FFlashing;
       if (FFlashing) then
-         SharpEAnimManager.ExecuteScript(self,
-                                         CurrentState.OnHighlightStepStartScript,
-                                         CurrentState.Normal,
-                                         FManager.Scheme).OnTimerFinished := OnAnimFinished;
+         CurrentState.Normal.ExecuteScript(self,
+                                           CurrentState.OnHighlightStepStartScript,
+                                           FManager.Scheme,
+                                           FTimerCallbackInterface);
     end else UpdateSkin;
   end;
 end;
@@ -333,7 +324,8 @@ begin
       Form.Perform(CM_FOCUSCHANGED, 0, Longint(Form.ActiveControl));
   {end;}
 
-  if not SharpEAnimManager.HasScriptRunning(self) then UpdateSkin;
+  if not Assigned(FManager) then exit;
+  if not FManager.AnimationHasScriptRunning(self) then UpdateSkin;
 end;
 
 procedure TSharpETaskItem.CMDialogKey(var Message: TCMDialogKey);
@@ -369,7 +361,7 @@ end;
 
 procedure TSharpETaskItem.SMouseEnter;
 var
-  CurrentState : TSharpETaskItemState;
+  CurrentState : ISharpETaskItemStateSkin;
 begin
   if not assigned(FManager) then
   begin
@@ -381,23 +373,23 @@ begin
   if CurrentState <> nil then
   begin
     if ((FButtonDown) or (FDown)) and (HasDownHoverScript) and (not FFLashing) then
-       SharpEAnimManager.ExecuteScript(self,
+       CurrentState.Down.ExecuteScript(self,
                                        CurrentState.OnDownMouseEnterScript,
-                                       CurrentState.Down,
-                                       FManager.Scheme).OnTimerFinished := nil
+                                       FManager.Scheme,
+                                       nil)
 {    else if (FFlashing and HasHighlightHoverScript) then
             SharpEAnimManager.ExecuteScript(self,
                                             CurrentState.OnHighlightMouseEnterScript,
                                             CurrentState.Normal,
                                             FManager.Scheme).OnTimerFinished := nil   }
     else if (not FFlashing) and (HasNormalHoverScript) and (not (FButtonDown or FDown))  then
-            SharpEAnimManager.ExecuteScript(self,
-                                            CurrentState.OnNormalMouseEnterScript,
-                                            CurrentState.Normal,
-                                            FManager.Scheme).OnTimerFinished := nil
+            CurrentState.Normal.ExecuteScript(self,
+                                              CurrentState.OnNormalMouseEnterScript,
+                                              FManager.Scheme,
+                                              nil)
     else if FFlashing then
     begin
-      SharpEAnimManager.StopScript(self);
+      FManager.AnimationStopScript(self);
       UpdateSkin;
     end 
     else UpdateSkin;
@@ -406,7 +398,7 @@ end;
 
 procedure TSharpETaskItem.SMouseLeave;
 var
-  CurrentState : TSharpETaskItemState;
+  CurrentState : ISharpETaskItemStateSkin;
 begin
   if not assigned(FManager) then
   begin
@@ -418,10 +410,10 @@ begin
   if CurrentState <> nil then
   begin
     if ((FButtonDown) or (FDown)) and (HasDownHoverScript) and (not FFLashing) then
-       SharpEAnimManager.ExecuteScript(self,
+       CurrentState.Down.ExecuteScript(self,
                                        CurrentState.OnDownMouseLeaveScript,
-                                       CurrentState.Down,
-                                       FManager.Scheme).OnTimerFinished := nil
+                                       FManager.Scheme,
+                                       nil)
    { else if (FFlashing and HasHighlightHoverScript) then
     begin
       FFlashState := False;
@@ -433,16 +425,16 @@ begin
     else if (FFlashing and HasHighlightAnimationScript) and (not (FButtonDown or FDown))then
     begin
       FFlashState := False;
-      SharpEAnimManager.ExecuteScript(self,
+      CurrentState.Normal.ExecuteScript(self,
                                       CurrentState.OnHighlightStepEndScript,
-                                      CurrentState.Normal,
-                                      FManager.Scheme).OnTimerFinished := OnAnimFinished
+                                      FManager.Scheme,
+                                      nil);
     end
     else if (HasNormalHoverScript) and (not (FButtonDown or FDown)) then
-            SharpEAnimManager.ExecuteScript(self,
+            CurrentState.Normal.ExecuteScript(self,
                                             CurrentState.OnNormalMouseLeaveScript,
-                                            CurrentState.Normal,
-                                            FManager.Scheme).OnTimerFinished := nil
+                                            FManager.Scheme,
+                                            nil)
     else UpdateSkin;
   end else UpdateSkin;
 end;
@@ -472,7 +464,7 @@ begin
   end;
 end;
 
-procedure TSharpETaskItem.DrawDefaultSkin(bmp: TBitmap32; Scheme: TSharpEScheme);
+procedure TSharpETaskItem.DrawDefaultSkin(bmp: TBitmap32; Scheme: ISharpEScheme);
 var
   r: TRect;
   TextSize : TPoint;
@@ -483,7 +475,7 @@ begin
   with bmp do
   begin
     Clear(color32(0, 0, 0, 0));
-    DefaultSharpESkinText.AssignFontTo(bmp.Font,Scheme);
+    SharpEDefault.AssignDefaultFontTo(bmp.Font);
     DrawMode := dmBlend;
     r := Rect(0, 0, Width, Height);
     if true then
@@ -543,17 +535,17 @@ begin
   end;
 end;
 
-procedure TSharpETaskItem.DrawManagedSkin(bmp: TBitmap32; Scheme: TSharpEScheme);
+procedure TSharpETaskItem.DrawManagedSkin(bmp: TBitmap32; Scheme: ISharpEScheme);
 var
   r, TextRect, CompRect, IconRect: TRect;
   TextSize : TPoint;
   GlyphPos, TextPos: TPoint;
   mw : integer;
   DrawCaption : WideString;
-  CurrentState : TSharpeTaskItemState;
-  SkinText : TSkinText;
-  SkinIcon : TSkinIcon;
-  DrawPart : TSkinPartEx;
+  CurrentState : ISharpETaskItemStateSkin;
+  SkinText : ISharpESkinText;
+  SkinIcon : ISharpESkinIcon;
+  DrawPart : ISharpESkinPartEx;
 begin
   CompRect := Rect(0, 0, width, height);
 
@@ -563,23 +555,23 @@ begin
     exit;
   end;
 
-  if (SharpEAnimManager.HasScriptRunning(self)) and (not SharpEAnimManager.TimerActive) then exit;
+  if (FManager.AnimationHasScriptRunning(self)) and (not FManager.AnimationIsTimerActive) then exit;
 
   case FState of
-    tisCompact : CurrentState := FManager.Skin.TaskItemSkin.Compact;
-    tisMini    : CurrentState := FManager.Skin.TaskItemSkin.Mini;
-    else CurrentState := FManager.Skin.TaskItemSkin.Full;
+    tisCompact : CurrentState := FManager.Skin.TaskItem.Compact;
+    tisMini    : CurrentState := FManager.Skin.TaskItem.Mini;
+    else CurrentState := FManager.Skin.TaskItem.Full;
   end;
 
   if (FAutoPosition) then
-     if Top <> CurrentState.SkinDim.YAsInt then
-        Top := CurrentState.SkinDim.YAsInt;
+     if Top <> CurrentState.Location.Y then
+        Top := CurrentState.Location.Y;
 
-  if FManager.Skin.TaskItemSkin.Valid(FState) then
+  if FManager.Skin.TaskItem.IsValid(FState) then
   begin
     if FAutoSize then
     begin
-      r := FManager.Skin.TaskItemSkin.GetAutoDim(FState,CompRect);
+      r := FManager.Skin.TaskItem.GetAutoDim(FState,CompRect);
       if (r.Right <> width) or (r.Bottom <> height) then
       begin
         width := r.Right;
@@ -595,7 +587,7 @@ begin
     end;
 
     FSkin.Clear(Color32(0, 0, 0, 0));
-    if (FFlashing) and (not CurrentState.Highlight.Empty) and (not SharpEAnimManager.HasScriptRunning(self))
+    if (FFlashing) and (not CurrentState.Highlight.Empty) and (not FManager.AnimationHasScriptRunning(self))
        and (not HasHighlightAnimationScript) then
     begin
       if (FButtonOver and (not CurrentState.HighlightHover.Empty)) then
@@ -604,7 +596,7 @@ begin
     end else
     if (FButtonDown or FDown) and (not CurrentState.Down.Empty) then
     begin
-      if (FButtonOver) and (not FButtonDown) and (not CurrentState.DownHover.Empty) and (not SharpEAnimManager.HasScriptRunning(self)) then
+      if (FButtonOver) and (not FButtonDown) and (not CurrentState.DownHover.Empty) and (not FManager.AnimationHasScriptRunning(self)) then
         DrawPart := CurrentState.DownHover
       else DrawPart := CurrentState.Down;
     end else
@@ -613,7 +605,7 @@ begin
       begin
         if (FFlashing) then
         begin
-          if (not SharpEAnimManager.HasScriptRunning(self)) then
+          if (not FManager.AnimationHasScriptRunning(self)) then
             DrawPart := CurrentState.HighlightHover
            else DrawPart := CurrentState.Normal;
         end else
@@ -623,14 +615,15 @@ begin
       end else DrawPart := CurrentState.Normal;
     end;
 
-    SkinIcon := DrawPart.SkinIcon;
-    SkinText := CreateThemedSkinText(DrawPart.SkinText);
+    SkinIcon := DrawPart.Icon;
+    SkinText := DrawPart.CreateThemedSkinText;
+
     if (FGlyph32 <> nil) and (SkinIcon.DrawIcon) and (FGlyph32.Width>0) and (FGlyph32.Height>0) then
-      IconRect := Rect(0,0,SkinIcon.Size.XAsInt,SkinIcon.Size.YAsInt)
+      IconRect := Rect(0,0,SkinIcon.Dimension.X,SkinIcon.Dimension.Y)
     else IconRect := Rect(0,0,0,0);
 
     SkinText.AssignFontTo(bmp.Font,Scheme);
-    DrawPart.Draw(bmp, Scheme);
+    DrawPart.DrawTo(bmp, Scheme);
     if (SkinText.DrawText) and (length(Caption) > 0) then
     begin
       mw := SkinText.GetDim(CompRect).x;
@@ -645,7 +638,7 @@ begin
       TextSize.Y := bmp.TextHeightW(caption);
 
       GlyphPos := SkinIcon.GetXY(TextRect,CompRect);
-      SkinIcon.RenderTo(bmp,FGlyph32,GlyphPos.X,GlyphPos.Y);
+      SkinIcon.DrawTo(bmp,FGlyph32,GlyphPos.X,GlyphPos.Y);
     end;
 
     if ((SkinText <> nil) and (SkinText.DrawText)) then
@@ -653,8 +646,10 @@ begin
       if length(trim(Caption))>0 then
          SkinText.RenderToW(bmp,TextPos.X,TextPos.Y,DrawCaption,Scheme,
                            FPrecacheText,FPrecacheBmp,FPrecacheCaption);
-      SkinText.Free;
     end;
+
+    SkinText := nil;
+    SkinIcon := nil;
 
     if (FOverlay <> nil) and (FOverlay.Width > 0) and (FOverlay.Height > 0) then
       FOverlay.DrawTo(bmp,FOverlayPos.X,FOverlayPos.Y);
@@ -666,13 +661,19 @@ end;
 procedure TSharpETaskItem.SetCaption(Value: WideString);
 begin
   FCaption := Value;
-  if not SharpEAnimManager.HasScriptRunning(self) then UpdateSkin;
+  if FManager = nil then
+    exit;
+
+  if not FManager.AnimationHasScriptRunning(self) then UpdateSkin;
 end;
 
 procedure TSharpETaskItem.Resize;
 begin
   inherited;
-  if not SharpEAnimManager.HasScriptRunning(self) then UpdateSkin;
+  if FManager = nil then
+    exit;
+    
+  if not FManager.AnimationHasScriptRunning(self) then UpdateSkin;
 end;
 
 procedure TSharpETaskItem.SetAutoPosition(const Value: boolean);
@@ -688,7 +689,8 @@ end;
 procedure TSharpETaskItem.SetLayout(const Value: TButtonLayout);
 begin
   FLayout := Value;
-  if not SharpEAnimManager.HasScriptRunning(self) then UpdateSkin;
+  if not assigned(FManager) then exit;
+  if not FManager.AnimationHasScriptRunning(self) then UpdateSkin;
 end;
 
 procedure TSharpETaskItem.SetDisabledAlpha(const Value: Integer);
@@ -709,8 +711,9 @@ destructor TSharpETaskItem.Destroy;
 begin
   inherited;
   FDestroying := True;
+  FTimerCallbackInterface := nil;
   if FPrecacheBmp <> nil then FreeAndNil(FPrecacheBmp);
-  if FPrecacheText <> nil then FreeAndNil(FPrecacheText);
+  if FPrecacheText <> nil then FPrecacheText := nil;
   FGlyph32.Free;
   FOverlay.Free;
 end;
@@ -737,7 +740,8 @@ begin
     FGlyph32FileName := ExtractFileName(Value);
   end;
 
-  if not SharpEAnimManager.HasScriptRunning(self) then UpdateSkin;
+  if not assigned(FManager) then exit;  
+  if not FManager.AnimationHasScriptRunning(self) then UpdateSkin;
 end;
 
 procedure TSharpETaskItem.SetGlyph32(const Value: TBitmap32);
@@ -748,8 +752,43 @@ begin
     FGlyph32FileName := '';
   FGlyph32.Assign(Value);
 
-  if not SharpEAnimManager.HasScriptRunning(self) then UpdateSkin;
+  if not Assigned(FManager) then exit;
+  if not FManager.AnimationHasScriptRunning(self) then UpdateSkin;
 end;
 
+
+{ TSharpETaskItemAnimCallback }
+
+constructor TSharpETaskItemAnimCallback.Create(pOwner: TObject);
+begin
+  FOwner := pOwner;
+end;
+
+procedure TSharpETaskItemAnimCallback.TimerFinished;
+var
+  CurrentState : ISharpETaskItemStateSkin;
+begin
+  if not (FOwner is TSharpETaskItem) then
+    exit;
+
+  with FOwner as TSharpETaskItem do
+  begin
+    CurrentState := GetCurrentStateItem;
+    //if not (CurrentState.Highlight = SkinPart) then exit;
+
+    FFlashState := not FFlashState;
+    if (FFlashState) then
+    begin
+      if FFlashing then
+         CurrentState.Normal.ExecuteScript(self,
+                                           CurrentState.OnHighlightStepStartScript,
+                                           FManager.Scheme,
+                                           FTimerCallbackInterface);
+    end else CurrentState.Normal.ExecuteScript(self,
+                                               CurrentState.OnHighlightStepEndScript,
+                                               FManager.Scheme,
+                                               FTimerCallbackInterface);
+  end;
+end;
 
 end.

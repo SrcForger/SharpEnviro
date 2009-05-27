@@ -43,13 +43,10 @@ uses
   Math,
   MonitorList,
   SharpeDefault,
+  ISharpESkinComponents,
   SharpGraphicsUtils,
   SharpEBase,
-  SharpEBaseControls,
-  SharpESkinManager,
-  SharpEScheme,
-  SharpESkin,
-  SharpESkinPart;
+  SharpEBaseControls;
 
 type
   TSharpEThrobber = class;
@@ -107,12 +104,12 @@ type
     procedure SetAlwaysOnTop(Value: boolean);
     function GetSpecialHideForm : boolean;
   protected
-    procedure DrawDefaultSkin(Scheme: TSharpEScheme); virtual;
-    procedure DrawManagedSkin(Scheme: TSharpEScheme; NewWidth : integer = -1; NewLeft : integer = -1); virtual;
+    procedure DrawDefaultSkin(Scheme: ISharpEScheme); virtual;
+    procedure DrawManagedSkin(Scheme: ISharpEScheme; NewWidth : integer = -1; NewLeft : integer = -1); virtual;
     procedure WndProc(var msg: TMessage);
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateRuntime(AOwner: TComponent; SkinManager : TSharpESkinManager);
+    constructor CreateRuntime(AOwner: TComponent; SkinManager : ISharpESkinManager);
     destructor Destroy; override;
     procedure UpdateSkin(NewWidth : integer = -1); reintroduce;
     procedure UpdatePosition(NewWidth : integer = -1);
@@ -170,7 +167,7 @@ type
   private
     FPar: TSharpEBar;
   protected
-    procedure DrawDefaultSkin(bmp: TBitmap32; Scheme: TSharpEScheme); override;
+    procedure DrawDefaultSkin(bmp: TBitmap32; Scheme: ISharpEScheme); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -178,7 +175,7 @@ type
     procedure SMouseLeave; override;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure DrawManagedSkin(bmp: TBitmap32; Scheme: TSharpEScheme); override;
+    procedure DrawManagedSkin(bmp: TBitmap32; Scheme: ISharpEScheme); override;
   published
     property Skin : TBitmap32 read FSkin;
   end;
@@ -400,7 +397,7 @@ begin
   end;
 end;
 
-constructor TSharpEBar.CreateRuntime(AOwner: TComponent; SkinManager : TSharpESkinManager);
+constructor TSharpEBar.CreateRuntime(AOwner: TComponent; SkinManager : ISharpESkinManager);
 begin
   FManager := SkinManager;
   Create(AOwner);
@@ -464,8 +461,8 @@ begin
   //Do not free FThrobber, form owns it and is responsible for that
   if (csDesigning in ComponentState) and (Owner is TForm) then
     (Owner as TForm).Color := clBtnFace;
-  if not Application.Terminated then
-     SetWindowlong(form.handle, GWL_WNDPROC, longword(hproc));
+  //if not Application.Terminated then
+  SetWindowlong(form.handle, GWL_WNDPROC, longword(hproc));
   FSkin.Free;
   FBuffer.Free;
   FBackGround.Free;
@@ -561,11 +558,11 @@ begin
     end;
   end;
 
-  u := SharpESkinTextBarBottom;
+  u := FManager.BarBottom;
   if y > Mon.Top + Mon.Height div 2 then
-    SharpESkinTextBarBottom := True
-  else SharpESkinTextBarBottom := False;
-  if SharpESkinTextBarBottom <> u then
+    FManager.BarBottom := True
+  else FManager.BarBottom := False;
+  if FManager.BarBottom <> u then
     SkinManager.Skin.UpdateDynamicProperties(SkinManager.Scheme);
 
   if Assigned(FOnPositionUpdate) then
@@ -594,7 +591,7 @@ function TSharpEBar.GetSpecialHideForm : Boolean;
 begin
   if not Assigned(FManager) then
      result := False
-  else result := FManager.Skin.BarSkin.SpecialHideForm;
+  else result := FManager.Skin.Bar.SpecialHideForm;
 end;
 
 procedure TSharpEBar.SetShowThrobber(Value: boolean);
@@ -679,16 +676,14 @@ begin
     FVertPos := Value;
     if assigned(FManager) then
     begin
-      if (FManager.Skin.BarSkin.Valid)
-          and ((not FManager.Skin.BarSkin.BarBottom.Empty) or (FManager.Skin.BarSkin.EnableVFlip))
+      if (FManager.Skin.Bar.Valid)
+          and ((not FManager.Skin.Bar.BarBottom.Empty) or (FManager.Skin.Bar.EnableVFlip))
           and (Value = vpBottom) then
       begin
-        FManager.Skin.BarSkin.PAXoffset := FManager.Skin.BarSkin.PBXoffset;
-        FManager.Skin.BarSkin.PAYoffset := FManager.Skin.BarSkin.PBYoffset;
+        FManager.Skin.Bar.SetBarBottom;
       end else
       begin
-        FManager.Skin.BarSkin.PAXoffset := FManager.Skin.BarSkin.PTXoffset;
-        FManager.Skin.BarSkin.PAYoffset := FManager.Skin.BarSkin.PTYoffset;
+        FManager.Skin.Bar.SetBarTop;
       end;
     end;
     UpdatePosition;
@@ -711,7 +706,7 @@ begin
   end;
 end;
 
-procedure TSharpEBar.DrawDefaultSkin(Scheme: TSharpEScheme);
+procedure TSharpEBar.DrawDefaultSkin(Scheme: ISharpEScheme);
 var
   r: TRect;
 begin
@@ -722,7 +717,7 @@ begin
     Throbber.Width := 10;
     Throbber.Height := 13;
     Clear(color32(0, 0, 0, 0));
-    DefaultSharpESkinText.AssignFontTo(FSkin.Font,Scheme);
+    SharpEDefault.AssignDefaultFontTo(FSkin.Font);
     DrawMode := dmBlend;
     r := Rect(0, 0, Width, Height);
     if true then
@@ -743,7 +738,7 @@ begin
   FBackGround.UpdateSkin(FBuffer);
 end;
 
-procedure TSharpEBar.DrawManagedSkin(Scheme: TSharpEScheme; NewWidth : integer = -1; NewLeft : integer = - 1);
+procedure TSharpEBar.DrawManagedSkin(Scheme: ISharpEScheme; NewWidth : integer = -1; NewLeft : integer = - 1);
 var
   r, CompRect: TRect;
   fsmod: TPoint; // used for left/right cut off - offsets defined by skin
@@ -756,30 +751,28 @@ begin
     exit;
   end;
 
-  FManager.Skin.BarSkin.CheckValid;
+  FManager.Skin.Bar.CheckValid;
 
-  if (FManager.Skin.BarSkin.Valid) then
+  if (FManager.Skin.Bar.Valid) then
   begin
-    if ((not FManager.Skin.BarSkin.BarBottom.Empty) or (FManager.Skin.BarSkin.EnableVFlip))
+    if ((not FManager.Skin.Bar.BarBottom.Empty) or (FManager.Skin.Bar.EnableVFlip))
       and (FVertPos = vpBottom) then
     begin
-      FManager.Skin.BarSkin.PAXoffset := FManager.Skin.BarSkin.PBXoffset;
-      FManager.Skin.BarSkin.PAYoffset := FManager.Skin.BarSkin.PBYoffset;
+      FManager.Skin.Bar.SetBarBottom;
     end else
     begin
-      FManager.Skin.BarSkin.PAXoffset := FManager.Skin.BarSkin.PTXoffset;
-      FManager.Skin.BarSkin.PAYoffset := FManager.Skin.BarSkin.PTYoffset;
+      FManager.Skin.Bar.SetBarTop;
     end;
 
     try
-      fsmod.X := FManager.Skin.BarSkin.FSMod.XAsInt;
-      fsmod.Y := FManager.Skin.BarSkin.FSMod.YAsInt;
+      fsmod.X := FManager.Skin.Bar.FSMod.X;
+      fsmod.Y := FManager.Skin.Bar.FSMod.Y;
     except
       fsmod := Point(0, 0);
     end;
     try
-      sbmod.X := FManager.Skin.BarSkin.SBMod.XAsInt;
-      sbmod.Y := FManager.Skin.BarSkin.SBMod.YAsInt;
+      sbmod.X := FManager.Skin.Bar.SBMod.X;
+      sbmod.Y := FManager.Skin.Bar.SBMod.Y;
     except
       fsmod := Point(0, 0);
     end;
@@ -799,7 +792,7 @@ begin
     NewWidth := Max(NewWidth,form.Width);
     if NewLeft = -1 then
        NewLeft := Form.Left;
-    r := FManager.Skin.BarSkin.GetAutoDim(Rect(0, 0, NewWidth + fsmod.X +
+    r := FManager.Skin.Bar.GetAutoDim(Rect(0, 0, NewWidth + fsmod.X +
       fsmod.Y, form.height - sbmod.Y));
     if ((r.Right <> NewWidth + fsmod.X + fsmod.Y) or (r.Bottom <> form.height + SBMod.Y))
        and ((NewWidth < 0) or (NewWidth = form.Width))  then
@@ -809,14 +802,14 @@ begin
       Exit;
     end;
 
-    if (FManager.Skin.BarSkin.DefaultSkin) then
+    if (FManager.Skin.Bar.DefaultSkin) then
     begin
       DrawDefaultSkin(DefaultSharpEScheme);
       exit;
     end;
 
     CompRect := Rect(0, 0, NewWidth + fsmod.X + fsmod.Y, form.height);
-    if FManager.Skin.BarSkin.Valid then
+    if FManager.Skin.Bar.Valid then
     begin
       FSkin.Clear(Color32(0, 0, 0, 0));
 
@@ -829,14 +822,14 @@ begin
       Bmp.Clear(color32(0, 0, 0, 0));
       Bmp.SetSize(FSkin.Width + fsmod.X + fsmod.Y, FSkin.Height);
       Bmp2.SetSize(FSkin.Width + fsmod.X + fsmod.Y, FSkin.Height);
-      if (not FManager.Skin.BarSkin.BarBottomBorder.Empty) and
-         (FVertPos = vpBottom) then FManager.Skin.BarSkin.BarBottomBorder.draw(Bmp, FManager.Scheme)
+      if (not FManager.Skin.Bar.BarBottomBorder.Empty) and
+         (FVertPos = vpBottom) then FManager.Skin.Bar.BarBottomBorder.DrawTo(Bmp, FManager.Scheme)
          else
          begin
-           if (not FManager.Skin.BarSkin.BarBorder.Empty) then
+           if (not FManager.Skin.Bar.BarBorder.Empty) then
            begin
-             FManager.Skin.BarSkin.BarBorder.Draw(Bmp, FManager.Scheme);
-             if (FManager.Skin.BarSkin.EnableVFlip) and (FVertPos = vpBottom) then
+             FManager.Skin.Bar.BarBorder.DrawTo(Bmp, FManager.Scheme);
+             if (FManager.Skin.Bar.EnableVFlip) and (FVertPos = vpBottom) then
                 Bmp.FlipVert();
            end else Bmp.Clear(color32(255,255,255,255));
          end;
@@ -851,12 +844,12 @@ begin
       Bmp.DrawMode := dmBlend;
       Bmp.Clear(color32(0, 0, 0, 0));
       Bmp.SetSize(FSkin.Width + fsmod.X + fsmod.Y, FSkin.Height);
-      if (not FManager.Skin.BarSkin.BarBottom.Empty) and
-         (FVertPos = vpBottom) then FManager.Skin.BarSkin.BarBottom.draw(Bmp, FManager.Scheme)
+      if (not FManager.Skin.Bar.BarBottom.Empty) and
+         (FVertPos = vpBottom) then FManager.Skin.Bar.BarBottom.DrawTo(Bmp, FManager.Scheme)
          else
          begin
-           FManager.Skin.BarSkin.Bar.Draw(Bmp, FManager.Scheme);
-           if (FManager.Skin.BarSkin.EnableVFlip) and (FVertPos = vpBottom) then
+           FManager.Skin.Bar.Bar.DrawTo(Bmp, FManager.Scheme);
+           if (FManager.Skin.Bar.EnableVFlip) and (FVertPos = vpBottom) then
               Bmp.FlipVert();
          end;
       Bmp.DrawTo(FSkin, 0, 0, Rect(fsmod.X, 0, bmp.width - fsmod.y, bmp.height));
@@ -961,8 +954,8 @@ begin
     end;
     if Assigned(FManager) then
     begin
-      if FSkinSeed <> FManager.Skin.BarSkin.Seed then
-         FSkinSeed := FManager.Skin.BarSkin.Seed;
+      if FSkinSeed <> FManager.Skin.Bar.Seed then
+         FSkinSeed := FManager.Skin.Bar.Seed;
     end;
     SetBitmapSizes(NewWidth);
     FBuffer.Clear(Color32(255, 0, 254, 0));
@@ -1040,15 +1033,14 @@ begin
   UpdateSkin;
 end;
 
-procedure TSharpEThrobber.DrawDefaultSkin(bmp: TBitmap32; Scheme:
-  TSharpEScheme);
+procedure TSharpEThrobber.DrawDefaultSkin(bmp: TBitmap32; Scheme: ISharpEScheme);
 var
   r: TRect;
 begin
   with bmp do
   begin
     Clear(color32(0, 0, 0, 0));
-    DefaultSharpESkinText.AssignFontTo(Font,Scheme);
+    SharpEDefault.AssignDefaultFontTo(Font);
     DrawMode := dmBlend;
     r := Rect(0, 0, Width, Height);
     if true then
@@ -1075,8 +1067,7 @@ begin
   end;
 end;
 
-procedure TSharpEThrobber.DrawManagedSkin(bmp: TBitmap32; Scheme:
-  TSharpEScheme);
+procedure TSharpEThrobber.DrawManagedSkin(bmp: TBitmap32; Scheme: ISharpEScheme);
 var
   r, CompRect: TRect;
   e : boolean;
@@ -1091,15 +1082,15 @@ begin
     exit;
 
   CompRect := Rect(0, 0, Parent.Width, Parent.Height);
-  if (FManager.Skin.BarSkin.Valid) then
+  if (FManager.Skin.Bar.Valid) then
   begin
     if FAutoSize then
     begin
       e := False;
-      if ((not FManager.Skin.BarSkin.BarBottom.Empty) or (FManager.Skin.BarSkin.EnableVFlip))
+      if ((not FManager.Skin.Bar.BarBottom.Empty) or (FManager.Skin.Bar.EnableVFlip))
         and (FPar.VertPos = vpBottom) then
-        r := FManager.Skin.BarSkin.GetThrobberBottomDim(CompRect)
-      else r := FManager.Skin.BarSkin.GetThrobberDim(CompRect);
+        r := FManager.Skin.Bar.GetThrobberBottomDim(CompRect)
+      else r := FManager.Skin.Bar.GetThrobberDim(CompRect);
 
       if ((r.Right - r.Left) <> width) or ((r.Bottom - r.Top) <> height) then
       begin
@@ -1119,20 +1110,20 @@ begin
     FSkin.Clear(Color32(0, 0, 0, 0));
     if FButtonDown then
     begin
-      if not (FManager.Skin.BarSkin.ThDown.Empty) then
-        FManager.Skin.BarSkin.ThDown.Draw(bmp, Scheme)
+      if not (FManager.Skin.Bar.ThDown.Empty) then
+        FManager.Skin.Bar.ThDown.DrawTo(bmp, Scheme)
       else DrawDefaultSkin(bmp, DefaultSharpEScheme);
     end
     else
       if FButtonOver then
       begin
-        if not (FManager.Skin.BarSkin.ThHover.Empty) then
-          FManager.Skin.BarSkin.ThHover.Draw(bmp, Scheme)
+        if not (FManager.Skin.Bar.ThHover.Empty) then
+          FManager.Skin.Bar.ThHover.DrawTo(bmp, Scheme)
         else DrawDefaultSkin(bmp, DefaultSharpEScheme);
       end else
-        if not (FManager.Skin.BarSkin.ThNormal.Empty) then
+        if not (FManager.Skin.Bar.ThNormal.Empty) then
         begin
-          FManager.Skin.BarSkin.ThNormal.Draw(bmp, Scheme);
+          FManager.Skin.Bar.ThNormal.DrawTo(bmp, Scheme);
         end else DrawDefaultSkin(bmp, DefaultSharpEScheme);
       Bmp.DrawTo(FSkin);
   end

@@ -37,15 +37,10 @@ uses
   Forms,
   StdCtrls,
   gr32,
-  gr32_resamplers,
+  ISharpESkinComponents,
   SharpEBase,
   SharpEBaseControls,
   SharpEDefault,
-  SharpEScheme,
-  SharpESkinManager,
-  SharpESkin,
-  SharpEAnimationTimers,
-  SharpESkinPart,
   math,
   Types,
   Buttons;
@@ -64,8 +59,7 @@ type
     FModalResult: TModalResult;
     FDefault: Boolean;
     FAutoPosition: Boolean;
-    FCustomSkin : TSharpEButtonSkin;
-    FPrecacheText : TSkinText;
+    FPrecacheText : ISharpESkinText;
     FPrecacheBmp  : TBitmap32;
     FPrecacheCaption : String;
     procedure CMDialogKey(var Message: TCMDialogKey); message CM_DIALOGKEY;
@@ -79,8 +73,8 @@ type
     procedure SetCaption(Value: string);
     procedure SetDefault(Value: Boolean);
   protected
-    procedure DrawDefaultSkin(bmp: TBitmap32; Scheme: TSharpEScheme); override;
-    procedure DrawManagedSkin(bmp: TBitmap32; Scheme: TSharpEScheme); override;
+    procedure DrawDefaultSkin(bmp: TBitmap32; Scheme: ISharpEScheme); override;
+    procedure DrawManagedSkin(bmp: TBitmap32; Scheme: ISharpEScheme); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure SMouseEnter; override;
@@ -117,7 +111,6 @@ type
     property OnMouseLeave;
 
     property Skin : TBitmap32 read FSkin;
-    property CustomSkin : TSharpEButtonSkin read FCustomSkin write FCustomSkin;
     property Glyph32FileName: TGlyph32FileName read FGlyph32FileName write  SetGlyph32FileName;
     property Glyph32: Tbitmap32 read FGlyph32 write SetGlyph32 stored True;
     property Layout: TButtonLayout read FLayout write SetLayout;
@@ -131,7 +124,7 @@ type
 implementation
 
 uses
-   gr32_png;
+  gr32_png;
 
 constructor TSharpEButton.Create;
 begin
@@ -226,8 +219,6 @@ end;
 
 procedure TSharpEButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
-var
-  tempSkin : TSharpEButtonSkin;
 begin
   inherited;
 
@@ -237,21 +228,15 @@ begin
     exit;
   end;
 
-  if CustomSkin <> nil then
-     tempSkin := CustomSkin
-     else tempSkin := FManager.Skin.ButtonSkin;
-
   if HasNormalHoverScript then
-     SharpEAnimManager.ExecuteScript(self,
-                                     tempSkin.OnNormalMouseEnterScript,
-                                     tempSkin.Normal,
-                                     FManager.Scheme)
+     FManager.Skin.Button.Normal.ExecuteScript(self,
+                                               FManager.Skin.Button.OnNormalMouseEnterScript,
+                                               FManager.Scheme,
+                                               nil)
      else UpdateSkin;
 end;
 
 procedure TSharpEButton.SMouseEnter;
-var
-  tempSkin : TSharpEButtonSkin;
 begin
   if not assigned(FManager) then
   begin
@@ -259,21 +244,15 @@ begin
     exit;
   end;
 
-  if CustomSkin <> nil then
-     tempSkin := CustomSkin
-     else tempSkin := FManager.Skin.ButtonSkin;
-
   if HasNormalHoverScript then
-     SharpEAnimManager.ExecuteScript(self,
-                                     tempSkin.OnNormalMouseEnterScript,
-                                     tempSkin.Normal,
-                                     FManager.Scheme)
+     FManager.Skin.Button.Normal.ExecuteScript(self,
+                                               FManager.Skin.Button.OnNormalMouseEnterScript,
+                                               FManager.Scheme,
+                                               nil)
      else UpdateSkin;
 end;
 
 procedure TSharpEButton.SMouseLeave;
-var
-  tempSkin : TSharpEButtonSkin;
 begin
   if not assigned(FManager) then
   begin
@@ -281,36 +260,25 @@ begin
     exit;
   end;
 
-  if CustomSkin <> nil then
-     tempSkin := CustomSkin
-     else tempSkin := FManager.Skin.ButtonSkin;
-
   if HasNormalHoverScript then
-     SharpEAnimManager.ExecuteScript(self,
-                                     tempSkin.OnNormalMouseLeaveScript,
-                                     tempSkin.Normal,
-                                     FManager.Scheme)
+     FManager.Skin.Button.Normal.ExecuteScript(self,
+                                               FManager.Skin.Button.OnNormalMouseLeaveScript,
+                                               FManager.Scheme,
+                                               nil)
      else UpdateSkin;
 end;
 
 function TSharpEButton.HasNormalHoverScript : boolean;
-var
-  tempSkin : TSharpEButtonSkin;
 begin
   result := False;
   if not assigned(FManager) then exit;
 
-
-  if CustomSkin <> nil then
-     tempSkin := CustomSkin
-     else tempSkin := FManager.Skin.ButtonSkin;
-
-  if (length(Trim(tempSkin.OnNormalMouseEnterScript)) > 0)
-     and (length(Trim(tempSkin.OnNormalMouseLeaveScript)) > 0) then result := True
+  if (length(Trim(FManager.Skin.Button.OnNormalMouseEnterScript)) > 0)
+     and (length(Trim(FManager.Skin.Button.OnNormalMouseLeaveScript)) > 0) then result := True
      else result := False;
 end;
 
-procedure TSharpEButton.DrawDefaultSkin(bmp: TBitmap32; Scheme: TSharpEScheme);
+procedure TSharpEButton.DrawDefaultSkin(bmp: TBitmap32; Scheme: ISharpEScheme);
 var
   r: TRect;
   TextSize : TPoint;
@@ -325,7 +293,7 @@ begin
   with bmp do
   begin
     Clear(color32(0, 0, 0, 0));
-    DefaultSharpESkinText.AssignFontTo(bmp.Font,Scheme);
+    SharpEDefault.AssignDefaultFontTo(bmp.Font);
     DrawMode := dmBlend;
     r := Rect(0, 0, Width, Height);
     if true then
@@ -401,24 +369,20 @@ end;
 function TSharpEButton.GetTextWidth : integer;
 var
   bmp : TBitmap32;
-  ButtonSkin : TSharpEButtonSkin;
-  SkinText : TSkinText;
+  SkinText : ISharpESkinText;
 begin
   bmp := TBitmap32.Create;
   try
     if not Assigned(FManager) then
     begin
-      DefaultSharpESkinText.AssignFontTo(bmp.Font,DefaultSharpEScheme);
+      AssignDefaultFontTo(bmp.Font);
     end else
     begin
-      if FCustomSkin <> nil then ButtonSkin := FCustomSkin
-         else ButtonSkin := FManager.Skin.ButtonSkin;
-
-      if ButtonSkin.Valid then
+      if FManager.Skin.Button.Valid then
       begin
-        SkinText := CreateThemedSkinText(ButtonSkin.Normal.SkinText);
+        SkinText := FManager.Skin.Button.Normal.CreateThemedSkinText;
         SkinText.AssignFontTo(bmp.Font,DefaultSharpEScheme);
-        SkinText.Free;
+        SkinText := nil;
       end;
     end;
     result := bmp.TextWidth(FCaption);
@@ -430,8 +394,6 @@ begin
 end;
 
 function TSharpEButton.GetIconWidth : integer;
-var
-  ButtonSkin : TSharpEButtonSkin;
 begin
   if FGlyph32 = nil then result := 0
   else
@@ -441,26 +403,22 @@ begin
       result := 16;
       exit;
     end;
-    ButtonSkin := FManager.Skin.ButtonSkin;
-    if not (Enabled) and not (ButtonSkin.Disabled.Empty) then
-      result := ButtonSkin.Disabled.SkinIcon.Size.XAsInt
-    else if FButtonDown and not (ButtonSkin.Down.Empty) then
-      result := ButtonSkin.Down.SkinIcon.Size.XAsInt
-    else if ((FButtonOver) and not (ButtonSkin.Hover.Empty) and not (HasNormalHoverScript)) then
-      result := ButtonSkin.Hover.SkinIcon.Size.XAsInt
+    if FButtonDown and not (FManager.Skin.Button.Down.Empty) then
+      result := FManager.Skin.Button.Down.Icon.Dimension.X
+    else if ((FButtonOver) and not (FManager.Skin.Button.Hover.Empty) and not (HasNormalHoverScript)) then
+      result := FManager.Skin.Button.Hover.Icon.Dimension.X
     else
-      result := ButtonSkin.Normal.SkinIcon.Size.XAsInt;
+      result := FManager.Skin.Button.Normal.Icon.Dimension.X;
   end;
 end;
 
-procedure TSharpEButton.DrawManagedSkin(bmp: TBitmap32; Scheme: TSharpEScheme);
+procedure TSharpEButton.DrawManagedSkin(bmp: TBitmap32; Scheme: ISharpEScheme);
 var
   r, TextRect, CompRect, IconRect: TRect;
   TextSize : TPoint;
   GlyphPos, TextPos: TPoint;
-  ButtonSkin : TSharpEButtonSkin;
-  SkinText : TSkinText;
-  SkinIcon : TSkinIcon;
+  SkinText : ISharpESkinText;
+  SkinIcon : ISharpESkinIcon;
 begin
   CompRect := Rect(0, 0, width, height);
 
@@ -470,16 +428,13 @@ begin
     exit;
   end;
 
-  if FCustomSkin <> nil then ButtonSkin := FCustomSkin
-     else Buttonskin := FManager.Skin.ButtonSkin;
-
   UpdateAutoPosition;
 
-  if ButtonSkin.Valid then
+  if FManager.Skin.Button.Valid then
   begin
     if FAutoSize then
     begin
-      r := ButtonSkin.GetAutoDim(CompRect);
+      r := FManager.Skin.Button.GetAutoDim(CompRect);
       if (r.Right <> width) or (r.Bottom <> height) then
       begin
         width := r.Right;
@@ -496,54 +451,50 @@ begin
 
     FSkin.SetSize(Width,Height);
     FSkin.Clear(Color32(0, 0, 0, 0));
-    if not (Enabled) and not (ButtonSkin.Disabled.Empty) then
+
+    if FButtonDown and not (FManager.Skin.Button.Down.Empty) then
     begin
-      ButtonSkin.Disabled.Draw(bmp, Scheme);
-      SkinText := CreateThemedSkinText(ButtonSkin.Disabled.SkinText);
-      SkinIcon := ButtonSkin.Disabled.SkinIcon;
+      FManager.Skin.Button.Down.DrawTo(bmp, Scheme);
+      SkinText := FManager.Skin.Button.Down.CreateThemedSkinText;
+      SkinIcon := FManager.Skin.Button.Down.Icon;
     end
-    else if FButtonDown and not (ButtonSkin.Down.Empty) then
+    else if ((FButtonOver) and not (FManager.Skin.Button.Hover.Empty) and not (HasNormalHoverScript)) then
     begin
-      ButtonSkin.Down.Draw(bmp, Scheme);
-      SkinText := CreateThemedSkinText(ButtonSkin.Down.SkinText);
-      SkinIcon := ButtonSkin.Down.SkinIcon;
-    end
-    else if ((FButtonOver) and not (ButtonSkin.Hover.Empty) and not (HasNormalHoverScript)) then
-    begin
-      ButtonSkin.Hover.Draw(bmp, Scheme);
-      SkinText := CreateThemedSkinText(ButtonSkin.Hover.SkinText);
-      SkinIcon := ButtonSkin.Hover.SkinIcon;
+      FManager.Skin.Button.Hover.DrawTo(bmp, Scheme);
+      SkinText := FManager.Skin.Button.Hover.CreateThemedSkinText;
+      SkinIcon := FManager.Skin.Button.Hover.Icon;
     end
     else
     begin
-      ButtonSkin.Normal.Draw(bmp, Scheme);
-      SkinText := CreateThemedSkinText(ButtonSkin.Normal.SkinText);
-      SkinIcon := ButtonSkin.Normal.SkinIcon;
+      FManager.Skin.Button.Normal.DrawTo(bmp, Scheme);
+      SkinText := FManager.Skin.Button.Normal.CreateThemedSkinText;
+      SkinIcon := FManager.Skin.Button.Normal.Icon;
     end;
 
-    if (FGlyph32 <> nil) and (Buttonskin <> FCustomSkin) and (SkinIcon.DrawIcon)
+    if (FGlyph32 <> nil) and (SkinIcon.DrawIcon)
        and (FGlyph32.Width>0) and (FGlyph32.Height>0) then
-      IconRect := Rect(0,0,SkinIcon.Size.XAsInt,SkinIcon.Size.YAsInt)
+      IconRect := Rect(0,0,SkinIcon.Dimension.X,SkinIcon.Dimension.Y)
     else IconRect := Rect(0,0,0,0);
     SkinText.AssignFontTo(bmp.Font,Scheme);
     TextRect := Rect(0, 0, bmp.TextWidth(Caption), bmp.TextHeight(Caption));
     TextPos := SkinText.GetXY(TextRect, CompRect, IconRect);
 
-    if (FGlyph32 <> nil) and (Buttonskin <> FCustomSkin) and (SkinIcon.DrawIcon)
+    if (FGlyph32 <> nil) and (SkinIcon.DrawIcon)
        and (FGlyph32.Width>0) and (FGlyph32.Height>0) then
     begin
       TextSize.X := bmp.TextWidth(caption);
       TextSize.Y := bmp.TextHeight(caption);
 
       GlyphPos := SkinIcon.GetXY(TextRect,CompRect);
-      SkinIcon.RenderTo(bmp,FGlyph32,GlyphPos.X,GlyphPos.Y);
+      SkinIcon.DrawTo(bmp,FGlyph32,GlyphPos.X,GlyphPos.Y);
     end;
 
     if length(trim(Caption))>0 then
        SkinText.RenderTo(bmp,TextPos.X,TextPos.Y,Caption,Scheme,
                          FPrecacheText,FPrecacheBmp,FPrecacheCaption);
-                         
-    SkinText.Free;
+
+    SkinText := nil;
+    SkinIcon := nil;
     
     Bmp.DrawTo(FSkin);
   end
@@ -577,14 +528,10 @@ procedure TSharpEButton.UpdateAutoPosition;
 begin
   if (FAutoPosition) then
   begin
-    if FCustomSkin <> nil then
+    if (Assigned(FManager)) then
     begin
-      if Top <> FCustomSkin.SkinDim.YAsInt then
-         Top := FCustomSkin.SkinDim.YAsInt;
-    end else if (Assigned(FManager)) then
-    begin
-      if Top <> FManager.Skin.ButtonSkin.SkinDim.YAsInt then
-         Top := FManager.Skin.ButtonSkin.SkinDim.YAsInt;
+      if Top <> FManager.Skin.Button.Location.Y then
+         Top := FManager.Skin.Button.Location.Y;
     end;
   end;
 end;
@@ -606,8 +553,10 @@ end;
 
 destructor TSharpEButton.Destroy;
 begin
-  if FPrecacheBmp <> nil then FreeAndNil(FPrecacheBmp);
-  if FPrecacheText <> nil then FreeAndNil(FPrecacheText);
+  if FPrecacheBmp <> nil then
+    FreeAndNil(FPrecacheBmp);
+  if FPrecacheText <> nil then
+    FPrecacheText := nil;
 
   FGlyph32.Free;
   inherited;

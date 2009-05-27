@@ -38,6 +38,8 @@ uses
   StdCtrls,
   Forms,
   gr32,
+  ISharpESkinComponents,
+  SharpEAnimationTimers,
   SharpEBase,
   SharpEDefault,
   SharpESkin,
@@ -51,58 +53,62 @@ type
   TSchemeSource = TSkinSource;
 
 
-  TSharpESkinManager = class(TComponent)
+  TSharpESkinManager = class(TInterfacedObject,ISharpESkinManager)
   private
+    FRootInterface: ISharpESkinManager;
     FNoSystemSchemeInit: boolean;
     FOnSkinChanged: TNotifyEvent;
-    FSkinSource: TSkinSource;
-    FSchemeSource: TSkinSource;
-    FSystemScheme: TSharpEScheme;
-    FComponentScheme: TSharpEScheme;
-    FSystemSkin: TSystemSharpESkin;
-    FComponentSkin: TSharpESkin;
     FUsingMainWnd : boolean;
     FHandleUpdates : boolean;
     FHandleThemeApiUpdates : boolean;
     FSkinItems : TSharpESkinItems;
     FMsgWnd : Hwnd;
-    procedure SystemSkinChanged(sender : TObject);
-    procedure SetSkinSource(value: TSkinSource);
-    procedure SetSchemeSource(value: TSchemeSource);
-    procedure SetComponentScheme(value: TSharpEScheme);
-    procedure SetComponentSkin(value: TSharpESkin);
-    function GetScheme: TSharpEScheme;
-    function GetSkin: TSharpESkin;
-    procedure ComponentSchemeUpdated;
+    FMainForm : TForm;
+    FScheme : TSharpEScheme;
+    FSchemeInterface : ISharpEScheme;
+    FSkin : TSharpESkin;
+    FSkinInterface : ISharpESkin;
     procedure ComponentSkinUpdated;
     function MessageHook(var Msg: TMessage): Boolean;
     procedure MessageHook2(var Msg: TMessage);
-    procedure SetComponentSkins(Value : TSharpESkinItems);
+    procedure SetSkinItems(Value : TSharpESkinItems);
+    function GetSkinItems : TSharpESkinItems; stdcall;
   protected
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
-    procedure Loaded; override;
   public
-    constructor Create(AOwner: TComponent); overload; override;
-    constructor Create(AOwner: TComponent; Skins : TSharpESkinItems = ALL_SHARPE_SKINS); reintroduce; overload;
-    constructor CreateRuntime(AOwner: TComponent; Skin : TSharpESkin; Scheme : TSharpEScheme; Skins : TSharpESkinItems = ALL_SHARPE_SKINS); overload;
-    constructor CreateRuntime(AOwner: TComponent; Skin : TSharpESkin; Scheme : TSharpEScheme; NoSystemScheme : boolean; Skins : TSharpESkinItems = ALL_SHARPE_SKINS); overload;
+    constructor Create(MainForm: TComponent); reintroduce; overload; 
+    constructor Create(MainForm: TComponent; Skins : TSharpESkinItems); reintroduce; overload;
+    constructor CreateRuntime(MainForm: TComponent; Skin : TSharpESkin; Scheme : TSharpEScheme; Skins : TSharpESkinItems = ALL_SHARPE_SKINS); overload;
+    constructor CreateRuntime(MainForm: TComponent; Skin : TSharpESkin; Scheme : TSharpEScheme; NoSystemScheme : boolean; Skins : TSharpESkinItems = ALL_SHARPE_SKINS); overload;
     destructor Destroy; override;
-    property Scheme: TSharpEScheme read GetScheme;
-    property Skin: TSharpESkin read GetSkin;
-    property SystemSkin: TSystemSharpESkin read FSystemSkin;
-    procedure RefreshControls;
-    procedure UpdateSkin;
-    procedure UpdateScheme;
-  published
-    property SkinSource: TSkinSource read FSkinSource write SetSkinSource;
-    property SchemeSource: TSchemeSource read FSchemeSource write SetSchemeSource;
-    property CompScheme: TSharpEScheme read FComponentScheme write SetComponentScheme;
-    property CompSkin: TSharpESkin read FComponentSkin write SetComponentSkin;
-    property ComponentSkins: TSharpESkinItems read FSkinItems write SetComponentSkins default ALL_SHARPE_SKINS;
+    procedure LoadSkinFromStream;
+    property RootInterface: ISharpESkinManager read FRootInterface write FRootInterface;
+    property MainForm: TForm read FMainForm write FMainForm;
     property HandleUpdates : boolean read FHandleUpdates write FHandleUpdates;
     property HandleThemeApiUpdates : boolean read FHandleThemeApiUpdates write FHandleThemeApiUpdates;
     property onSkinChanged: TNotifyEvent read FOnSkinChanged write FOnSkinChanged;
+    property SkinItems : TSharpESkinItems read GetSkinItems write SetSkinItems;
+
+    // ISharpESkinManager Interface
+    function AnimationHasScriptRunning(pComponent : TObject) : boolean; stdcall;
+    procedure AnimationStopScript(pComponent : TObject); stdcall;
+    function AnimationIsTimerActive : boolean; stdcall;
+
+    function ParseColor(src : String) : integer; stdcall;
+
+    procedure RefreshControls; stdcall;
+    procedure UpdateSkin; stdcall;
+    procedure UpdateScheme; stdcall;    
+
+    function GetScheme : ISharpEScheme; stdcall;
+    function GetSkin : ISharpESkin; stdcall;
+
+    function GetBarBottom : boolean; stdcall;
+    procedure SetBarBottom(Value : boolean); stdcall;
+
+    property Scheme : ISharpEScheme read GetScheme;
+    property Skin : ISharpESkin read GetSkin;
+
+    property BarBottom : boolean read GetBarBottom write SetBarBottom;
   end;
 
 procedure LoadSharpEScheme(Scheme: TSharpEScheme);
@@ -115,71 +121,66 @@ uses
   uISharpETheme,
   SharpESkinPart;
 
-constructor TSharpESkinManager.CreateRuntime(AOwner: TComponent;
+constructor TSharpESkinManager.CreateRuntime(MainForm: TComponent;
                                              Skin : TSharpESkin; Scheme : TSharpEScheme;
                                              NoSystemScheme : boolean;
                                              Skins : TSharpESkinItems = ALL_SHARPE_SKINS);
 begin
   FNoSystemSchemeInit := NoSystemScheme;
-  CreateRuntime(AOwner, Skin, Scheme, Skins);
+  CreateRuntime(MainForm, Skin, Scheme, Skins);
 end;
 
-constructor TSharpESkinManager.CreateRuntime(AOwner: TComponent;
+constructor TSharpESkinManager.CreateRuntime(MainForm: TComponent;
                                              Skin : TSharpESkin; Scheme : TSharpEScheme;
                                              Skins : TSharpESkinItems = ALL_SHARPE_SKINS);
 begin
-  FComponentScheme := Scheme;
-  FComponentSkin := Skin;
-  Create(AOwner,Skins);
+  FScheme := Scheme;
+  FSkin := Skin;
+  Create(MainForm,Skins);
 end;
 
-procedure TSharpESkinManager.SetComponentSkins(Value : TSharpESkinItems);
+procedure TSharpESkinManager.SetBarBottom(Value: boolean);
+begin
+  SharpESkinPart.SharpESkinTextBarBottom := Value;
+end;
+
+procedure TSharpESkinManager.SetSkinItems(Value : TSharpESkinItems);
 begin
   if Value <> FSkinItems then
   begin
     FSkinItems := Value;
-    FreeAndNil(FSystemSkin);
-    FSystemSkin := TSystemSharpESkin.create(FSkinItems);
-    FSystemSkin.OnSkinChanged := SystemSkinChanged;
-    FSystemSkin.OnNotify := ComponentSkinUpdated;
+    FreeAndNil(FSkin);
+    FSkin := TSharpESkin.Create(FSkinItems);
+    FSkin.OnNotify := ComponentSkinUpdated;
     UpdateSkin;
   end;
 end;
 
-constructor TSharpESkinManager.Create(AOwner: TComponent);
+constructor TSharpESkinManager.Create(MainForm: TComponent);
 begin
-  Create(AOwner, [scBar]);
+  Create(MainForm, ALL_SHARPE_SKINS);
 end;
 
-constructor TSharpESkinManager.Create(AOwner: TComponent; Skins : TSharpESkinItems = ALL_SHARPE_SKINS);
+constructor TSharpESkinManager.Create(MainForm: TComponent; Skins : TSharpESkinItems);
 begin
+  FRootInterface := nil;
   FSkinItems := Skins;
 
-  FSystemScheme := TSharpEScheme.create(nil);
-  if FSkinItems <> [] then
+  if FScheme = nil then
+    FScheme := TSharpEScheme.Create;
+  FSchemeInterface := FScheme;
+      
+  if (FSkinItems <> []) and (FSkin = nil) then
   begin
-    FSystemSkin := TSystemSharpESkin.create(FSkinItems);
-    FSystemSkin.OnSkinChanged := SystemSkinChanged;
-    FSystemSkin.OnNotify := ComponentSkinUpdated;
+    FSkin := TSharpESkin.Create(FSkinItems);
+    FSkin.OnNotify := ComponentSkinUpdated;
   end;
+  FSkinInterface := FSkin;
 
   FHandleUpdates := True;
   FHandleThemeApiUpdates := True;
 
-  if not FNoSystemSchemeInit then
-  begin
-    if not (csDesigning in ComponentState) then
-    begin
-      LoadSharpEScheme(FSystemScheme);
-    end;
-  end;
-
-  inherited Create(AOwner);
-
- //Default values
-  FSchemeSource := ssDefault;
-  FSkinSource := ssDefault;
-
+  inherited Create;
 
   //Hook a message wnd....
   FUsingMainWnd := Application.Handle <> 0;
@@ -191,8 +192,7 @@ begin
     FMsgWnd := classes.AllocateHwnd(MessageHook2);
   end;
 
-  if (FSkinSource = ssSystem) and not (csDesigning in ComponentState) then
-     FSystemSkin.Activated := true
+  UpdateSkin;
  end;
 
 destructor TSharpESkinManager.Destroy;
@@ -200,47 +200,28 @@ begin
   if FUsingMainWnd then Application.UnHookMainWindow(MessageHook)
   else Classes.DeAllocateHwnd(FMsgWnd) ;
 
-  FSystemScheme.Free;
-  FSystemSkin.Free;
+  FSchemeInterface := nil;
+  FSkinInterface := nil;
+  FScheme := nil;
+  FSkin := nil;
   inherited;
-end;
-
-procedure TSharpESkinManager.Loaded;
-begin
-  inherited;
-  RefreshControls;
-end;
-
-procedure TSharpESkinManager.SystemSkinChanged(sender : TObject);
-begin
-  Skin.UpdateDynamicProperties(Scheme);
-  if Assigned(FOnSkinChanged) then
-     FOnSkinChanged(self);
 end;
 
 procedure TSharpESkinManager.UpdateSkin;
 begin
-  if (csDesigning in ComponentState) then
-    exit;
-
-  if SkinSource = ssSystem then
-  begin
-    SystemSkin.LoadSkinFromStream;
-    LoadSharpEScheme(FSystemScheme);
-  end;
-  Skin.UpdateDynamicProperties(Scheme);
+  LoadSkinFromStream;
+  if not FNoSystemSchemeInit then
+    LoadSharpEScheme(FScheme);
+  FSkin.UpdateDynamicProperties(FSchemeInterface);
   RefreshControls;
   if Assigned(FOnSkinChanged) then FOnSkinChanged(self);
 end;
 
 procedure TSharpESkinManager.UpdateScheme;
 begin
-  if (csDesigning in ComponentState) then
-    exit;
-
-  if SkinSource = ssSystem then
-     LoadSharpEScheme(FSystemScheme);
-  Skin.UpdateDynamicProperties(Scheme);
+  if not FNoSystemSchemeInit then
+    LoadSharpEScheme(FScheme);
+  FSkin.UpdateDynamicProperties(FSchemeInterface);
   RefreshControls;
 end;
 
@@ -268,32 +249,23 @@ begin
     end else
     if (Msg.WParam = Integer(suSkinFont)) then
     begin
-      if not (csDesigning in ComponentState) then
-      begin
-        if FHandleThemeApiUpdates then
-          Theme.LoadTheme([tpSkinFont]);
-        RefreshControls;
-      end;
+      if FHandleThemeApiUpdates then
+        Theme.LoadTheme([tpSkinFont]);
+      RefreshControls;
     end
     else if (Msg.WParam = Integer(suSkinFileChanged)) then
     begin
-      if not (csDesigning in ComponentState) then
-      begin
-        if FHandleThemeApiUpdates then
-         Theme.LoadTheme([tpSkinScheme]);
-        UpdateSkin;
-      end;
+      if FHandleThemeApiUpdates then
+        Theme.LoadTheme([tpSkinScheme]);
+      UpdateSkin;
     end
     else if (Msg.WParam = Integer(suScheme)) then
     begin
-      if not (csDesigning in ComponentState) then
-      begin
-        if FHandleThemeApiUpdates then
-          Theme.LoadTheme([tpSkinScheme]);
-        UpdateScheme;
-        if Assigned(FOnSkinChanged) then FOnSkinChanged(self);
-          RefreshControls;
-      end;
+      if FHandleThemeApiUpdates then
+        Theme.LoadTheme([tpSkinScheme]);
+      UpdateScheme;
+      if Assigned(FOnSkinChanged) then FOnSkinChanged(self);
+        RefreshControls;
     end;
   end else Msg.Result := DefWindowProc(FMsgWnd,Msg.Msg,Msg.WParam,Msg.LParam);
 end;
@@ -303,181 +275,101 @@ begin
   MessageHook(Msg);
 end;
 
+function TSharpESkinManager.ParseColor(src: String): integer;
+begin
+  result := SharpESkinPart.ParseColor(src,FSchemeInterface);
+end;
+
 procedure TSharpESkinManager.RefreshControls;
 var
   i: Integer;
   u : boolean;
   p : TPoint;
 begin
-  if Owner = nil then exit;
+  if MainForm = nil then exit;
 
-  if Owner is TForm then
+  if MainForm is TForm then
   begin
-    p := TForm(Owner).ClientToScreen(point(0,0));
+    p := TForm(MainForm).ClientToScreen(point(0,0));
     u := SharpESkinTextBarBottom;
-    if p.y > TForm(Owner).Monitor.Top + TForm(Owner).Monitor.Height div 2 then
+    if p.y > TForm(MainForm).Monitor.Top + TForm(MainForm).Monitor.Height div 2 then
       SharpESkinTextBarBottom := True
     else SharpESkinTextBarBottom := False;
     if SharpESkinTextBarBottom <> u then
-      Skin.UpdateDynamicProperties(Scheme);
+      Skin.UpdateDynamicProperties(FSchemeInterface);
   end;
 
-  for i := Owner.ComponentCount - 1 downto 0 do
+  for i := MainForm.ComponentCount - 1 downto 0 do
   begin
-    if (Owner.Components[i] is TCustomSharpEGraphicControl) then
-       (Owner.Components[i] as TCustomSharpEGraphicControl).UpdateSkin(self)
+    if (MainForm.Components[i] is TCustomSharpEGraphicControl) then
+       (MainForm.Components[i] as TCustomSharpEGraphicControl).UpdateSkin(self)
     else
-      if (Owner.Components[i] is TCustomSharpEComponent) then
-         (Owner.Components[i] as TCustomSharpEComponent).UpdateSkin(self)
+      if (MainForm.Components[i] is TCustomSharpEComponent) then
+         (MainForm.Components[i] as TCustomSharpEComponent).UpdateSkin(self)
       else
-       if (Owner.Components[i] is TCustomSharpEControl) then
-         (Owner.Components[i] as TCustomSharpEControl).UpdateSkin(self);
- {   if (Owner.Components[i] is TSharpEButton) then
-      (Owner.Components[i] as TSharpEButton).UpdateSkin(self)
-    else
-      if (Owner.Components[i] is TSharpEForm) then
-        (Owner.Components[i] as TSharpEForm).UpdateSkin(self)
-      else
-        if (Owner.Components[i] is TSharpEBar) then
-          (Owner.Components[i] as TSharpEBar).UpdateSkin(self)
-        else
-          if (Owner.Components[i] is TSharpEPanel) then
-            (Owner.Components[i] as TSharpEPanel).UpdateSkin(self)
-          else
-            if (Owner.Components[i] is TSharpECheckBox) then
-              (Owner.Components[i] as TSharpECheckBox).UpdateSkin(self)
-            else
-              if (Owner.Components[i] is TSharpEProgressBar) then
-                (Owner.Components[i] as TSharpEProgressBar).UpdateSkin(self)
-              else
-                  if (Owner.Components[i] is TSharpEThrobber) then
-                    (Owner.Components[i] as TSharpEThrobber).UpdateSkin(self)
-                  else
-                    if (Owner.Components[i] is TSharpELabel) then
-                      (Owner.Components[i] as TSharpELabel).UpdateSkin(self)
-                    else
-                      if (Owner.Components[i] is TSharpERadioBox) then
-                        (Owner.Components[i] as TSharpERadioBox).UpdateSkin(self)
-                      else
-                        if (Owner.Components[i] is TSharpEEdit) then
-                          (Owner.Components[i] as TSharpEEdit).UpdateSkin(self)
-                        else
-                          if (Owner.Components[i] is TSharpEMiniThrobber) then
-                            (Owner.Components[i] as TSharpEMiniThrobber).UpdateSkin(self)
-                          else if (Owner.Components[i] is TSharpETaskItem) then
-                             (Owner.Components[i] as TSharpETaskItem).UpdateSkin(self);}
+       if (MainForm.Components[i] is TCustomSharpEControl) then
+         (MainForm.Components[i] as TCustomSharpEControl).UpdateSkin(self);
   end;
 end;
 
-procedure TSharpESkinManager.Notification(AComponent: TComponent; Operation:
-  TOperation);
+function TSharpESkinManager.AnimationHasScriptRunning(pComponent: TObject): boolean;
 begin
-  inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) then
-  begin
-    if (AComponent = FComponentScheme) then
-    begin
-      FComponentScheme := nil;
-      if FSchemeSource = ssComponent then
-        RefreshControls;
-    end;
-    if (AComponent = FComponentSkin) then
-    begin
-      FComponentSkin := nil;
-      if FSkinSource = ssComponent then
-        RefreshControls;
-    end;
-  end
+  result := SharpEAnimManager.HasScriptRunning(pComponent);
 end;
 
-procedure TSharpESkinManager.ComponentSchemeUpdated;
+function TSharpESkinManager.AnimationIsTimerActive: boolean;
 begin
-  if FSchemeSource = ssComponent then
-    RefreshControls;
+  result := SharpEAnimManager.TimerActive;
+end;
+
+procedure TSharpESkinManager.AnimationStopScript(pComponent: TObject);
+begin
+  SharpEAnimManager.StopScript(pComponent);
 end;
 
 procedure TSharpESkinManager.ComponentSkinUpdated;
 begin
-  if (FSkinSource = ssComponent) or (FSkinSource = ssSystem) then
-    RefreshControls;
+  RefreshControls;
 end;
 
-procedure TSharpESkinManager.SetComponentScheme(value: TSharpEScheme);
+function TSharpESkinManager.GetBarBottom: boolean;
 begin
-  if (FComponentScheme <> value) then
+  result := SharpESkinPart.SharpESkinTextBarBottom;
+end;
+
+function TSharpESkinManager.GetScheme: ISharpEScheme;
+begin
+  result := FSchemeInterface;
+end;
+
+function TSharpESkinManager.GetSkin: ISharpESkin;
+begin
+  result := FSkinInterface;
+end;
+
+function TSharpESkinManager.GetSkinItems: TSharpESkinItems;
+begin
+  result := FSkinItems;
+end;
+
+procedure TSharpESkinManager.LoadSkinFromStream;
+var
+  loadfile : String;
+  Stream : TMemoryStream;
+begin
+  FSkin.Clear;
+
+  loadfile := SharpApi.GetSharpeUserSettingsPath + 'SharpE.skin';
+  if FileExists(loadfile) then
   begin
-    if Assigned(FComponentScheme) then
-      FComponentScheme.OnNotify := nil;
-    FComponentScheme := value;
-    if Assigned(FComponentScheme) then
-    begin
-      FComponentScheme.FreeNotification(self);
-      FComponentScheme.OnNotify := ComponentSchemeUpdated;
-      if FSchemeSource = ssComponent then
-        RefreshControls;
+    Stream := TMemoryStream.Create;
+    Stream.LoadFromFile(loadfile);
+    try
+      FSkin.LoadFromStream(Stream);
+    finally
+      Stream.Free;
     end;
   end;
-end;
-
-procedure TSharpESkinManager.SetComponentSkin(value: TSharpESkin);
-begin
-  if (FComponentSkin <> value) then
-  begin
-    if Assigned(FComponentSkin) then
-      FComponentSkin.OnNotify := nil;
-    FComponentSkin := value;
-    if Assigned(FComponentSkin) then
-    begin
-      FComponentSkin.FreeNotification(self);
-      FComponentSkin.OnNotify := ComponentSkinUpdated;
-      if FSkinSource = ssComponent then
-        RefreshControls;
-    end;
-  end;
-end;
-
-procedure TSharpESkinManager.SetSkinSource(value: TSkinSource);
-begin
-  if FSkinSource <> value then
-  begin
-    FSkinSource := value;
-    if FSkinSource = ssSystem then
-      FSystemSkin.Activated := true
-    else
-      FSystemSkin.Activated := false;
-    RefreshControls;
-  end;
-end;
-
-procedure TSharpESkinManager.SetSchemeSource(value: TSchemeSource);
-begin
-  if FSchemeSource <> value then
-  begin
-    FSchemeSource := value;
-    RefreshControls;
-  end;
-end;
-
-function TSharpESkinManager.GetScheme: TSharpEScheme;
-begin
-  if FSchemeSource = ssSystem then
-    result := FSystemScheme
-  else
-    if (FSchemeSource = ssComponent) and Assigned(FComponentScheme) then
-      result := FComponentScheme
-    else
-      result := DefaultSharpEScheme;
-end;
-
-function TSharpESkinManager.GetSkin: TSharpESkin;
-begin
-  if FSkinSource = ssSystem then
-    result := FSystemSkin
-  else
-    if (FSkinSource = ssComponent) and Assigned(FComponentSkin) then
-      result := FComponentSkin
-    else
-      result := DefaultSharpESkin;
 end;
 
 //***********************************

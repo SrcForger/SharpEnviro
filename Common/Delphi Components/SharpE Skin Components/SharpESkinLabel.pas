@@ -35,13 +35,11 @@ uses
   StdCtrls,
   gr32,
   gr32_resamplers,
+  ISharpESkinComponents,
   SharpEBase,
   SharpEBaseControls,
   SharpEDefault,
-  SharpEScheme,
-  SharpESkinManager,
-  SharpESkinPart,
-  SharpTypes,  
+  SharpTypes,
   math,
   Types,
   Buttons;
@@ -53,7 +51,7 @@ type
     FCaption: string;
     FAutoPos: TSharpEBarAutoPos;
     FLabelStyle: TSharpELabelStyle;
-    FPrecacheText : TSkinText;
+    FPrecacheText : ISharpESkinText;
     FPrecacheBmp  : TBitmap32;
     FPrecacheCaption : String;
     FTHeight : integer;  // Text Height without shadows!
@@ -62,8 +60,8 @@ type
     procedure SetCaption(Value: string);
     procedure SetLabelStyle(const Value : TSharpELabelStyle);
   protected
-    procedure DrawDefaultSkin(bmp: TBitmap32; Scheme: TSharpEScheme); override;
-    procedure DrawManagedSkin(bmp: TBitmap32; Scheme: TSharpEScheme); override;
+    procedure DrawDefaultSkin(bmp: TBitmap32; Scheme: ISharpEScheme); override;
+    procedure DrawManagedSkin(bmp: TBitmap32; Scheme: ISharpEScheme); override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Resize; override;
@@ -100,7 +98,7 @@ begin
   Height := 25;
 end;
 
-procedure TSharpESkinLabel.DrawDefaultSkin(bmp: TBitmap32; Scheme: TSharpEScheme);
+procedure TSharpESkinLabel.DrawDefaultSkin(bmp: TBitmap32; Scheme: ISharpEScheme);
 var
   TextSize : TPoint;
   TextPos: TPoint;
@@ -108,7 +106,7 @@ begin
   with bmp do
   begin
     Clear(color32(0, 0, 0, 0));
-    DefaultSharpESkinText.AssignFontTo(bmp.Font,Scheme);
+    AssignDefaultFontTo(bmp.Font);
     DrawMode := dmBlend;
     TextSize.X := bmp.TextWidth(caption);
     TextSize.Y := bmp.TextHeight(caption);
@@ -119,11 +117,11 @@ begin
 end;
 
 
-procedure TSharpESkinLabel.DrawManagedSkin(bmp: TBitmap32; Scheme: TSharpEScheme);
+procedure TSharpESkinLabel.DrawManagedSkin(bmp: TBitmap32; Scheme: ISharpEScheme);
 var
   TextRect, CompRect: TRect;
   TextPos: TPoint;
-  SkinText : TSkinText;
+  SkinText : ISharpESkinText;
 begin
   if not Assigned(FManager) then
   begin
@@ -132,9 +130,9 @@ begin
   end;
 
   case FLabelStyle of
-    lsSmall: SkinText := CreateThemedSkinText(FManager.Skin.SmallText);
-    lsBig: SkinText := CreateThemedSkinText(FManager.Skin.BigText);
-    else SkinText := CreateThemedSkinText(FManager.Skin.MediumText);
+    lsSmall: SkinText := FManager.Skin.SmallText.CreateThemedSkinText;
+    lsBig: SkinText := FManager.Skin.LargeText.CreateThemedSkinText;
+    else SkinText := FManager.Skin.MediumText.CreateThemedSkinText;
   end;
 
   CompRect := Rect(0, 0, width, height);
@@ -146,12 +144,12 @@ begin
   FTHeight := Bmp.TextHeight(Caption);
 
   case FAutoPos of
-    apTop: if Top <> FManager.Skin.TextPosTL.YAsInt then
-             Top := FManager.Skin.TextPosTL.YAsInt;
+    apTop: if Top <> FManager.Skin.TextPosTL.Y then
+             Top := FManager.Skin.TextPosTL.Y;
     apCenter: if Top <> parent.Height div 2 - (FTHeight + 10) div 2 + TextPos.Y div 2 then
                 Top := parent.Height div 2 - (FTHeight + 10) div 2 + TextPos.Y div 2;
-    apBottom: if Top <> FManager.Skin.TextPosBL.YAsInt then
-             Top := FManager.Skin.TextPosBL.YAsInt;
+    apBottom: if Top <> FManager.Skin.TextPosBL.Y then
+             Top := FManager.Skin.TextPosBL.Y;
   end;
 
   if (FAutoSize) then
@@ -165,7 +163,7 @@ begin
   if length(trim(Caption))>0 then
      SkinText.RenderTo(bmp,5,5,Caption,Scheme,
                        FPrecacheText,FPrecacheBmp,FPrecacheCaption);
-  SkinText.Free;                       
+  SkinText := nil;                       
 end;
 
 procedure TSharpESkinLabel.SetCaption(Value: string);
@@ -215,7 +213,8 @@ end;
 destructor TSharpESkinLabel.Destroy;
 begin
   if FPrecacheBmp <> nil then FreeAndNil(FPrecacheBmp);
-  if FPrecacheText <> nil then FreeAndNil(FPrecacheText);
+  if FPrecacheText <> nil then
+    FPrecacheText := nil;
 
   inherited;
 end;

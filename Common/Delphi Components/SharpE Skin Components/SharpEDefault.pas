@@ -25,52 +25,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 unit SharpEDefault;
+
 interface
-uses Graphics,
-  SharpEBase,
-  SharpEScheme,
-  SharpESkin,
-  Messages,
-  SharpESkinPart,
-  SharpApi,
-  SharpThemeApiEx,
-  uThemeConsts,
-  SharpTypes;
+
+uses
+  Graphics,
+  SharpEScheme;
 
 var
-  DefaultSharpESkinTextRecord: TSkinTextRecord;
   DefaultSharpEScheme: TSharpEScheme;
-  DefaultSharpESkin: TSharpESkin;
-  DefaultSharpESkinText: TSkinText;
+
+procedure AssignDefaultFontTo(pFont : TFont);
 
 implementation
 
+procedure AssignDefaultFontTo(pFont : TFont);
+begin
+  pFont.Name  := 'Small Fonts';
+  pFont.Size  := 7;
+  pFont.Color := 0;
+end;
+
 initialization
-  DefaultSharpESkinTextRecord.FName := 'Small Fonts';
-  DefaultSharpESkinTextRecord.FSize := 7;
-  DefaultSharpESkinTextRecord.FColor := '0';
-
-//SharpEScheme
-  DefaultSharpEScheme := TSharpEScheme.Create(nil);
-  DefaultSharpEScheme.AddColor('Throbberback','$Throbberback','Throbberback',$B68972,stColor);
-  DefaultSharpEScheme.AddColor('Throbberdark','$Throbberdark','Throbberdark',$5B4439,stColor);
-  DefaultSharpEScheme.AddColor('Throbberlight','$Throbberlight','Throbberlight',$C5958D,stColor);
-  DefaultSharpEScheme.AddColor('ThrobberText','$ThrobberText','ThrobberText',$000000,stColor);
-  DefaultSharpEScheme.AddColor('WorkAreaback','$WorkAreaback','WorkAreaback',$CACACA,stColor);
-  DefaultSharpEScheme.AddColor('WorkAreadark','$WorkAreadark','WorkAreadark',$757575,stColor);
-  DefaultSharpEScheme.AddColor('WorkArealight','$WorkArealight','WorkArealight',$F5F5F5,stColor);
-  DefaultSharpEScheme.AddColor('WorkAreaText','$WorkAreaText','WorkAreaText',$000000,stColor);
-
 //SharpESkin
-  DefaultSharpESkin := TSharpESkin.Create(nil,ALL_SHARPE_SKINS);
-
-//SharpESkinText
-  DefaultSharpESkinText := TSkinText.Create;
-  DefaultSharpESkinText.Assign(DefaultSharpESkinTextRecord);
+  DefaultSharpEScheme := TSharpEScheme.Create(True);
 
 finalization
-  DefaultSharpESkinText.Free;
-  DefaultSharpESkin.Free;
-  DefaultSharpEScheme.Free;
+  DefaultSharpEScheme.SelfInterface := nil;
 
 end.

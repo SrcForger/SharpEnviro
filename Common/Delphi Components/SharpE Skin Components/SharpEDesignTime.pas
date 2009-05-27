@@ -206,9 +206,6 @@ end;
 
 procedure Register;
 begin
-  RegisterComponents('SharpE_Skin', [TSharpESkinManager]);
-  RegisterComponents('SharpE_Skin', [TSharpEScheme]);
-  RegisterComponents('SharpE_Skin', [TSharpESkin]);
   RegisterComponents('SharpE_Skin', [TSharpEBar]);
   RegisterComponents('SharpE_Skin', [TSharpEButton]);
   RegisterComponents('SharpE_Skin', [TSharpEProgressBar]);

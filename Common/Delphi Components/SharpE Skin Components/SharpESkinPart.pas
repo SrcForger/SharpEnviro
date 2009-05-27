@@ -41,8 +41,11 @@ uses
   Math,
   GR32_Resamplers,
   GR32_Blend,
+  GR32_LowLevel,
+  SharpTypes,
   Sharpapi,
-  SharpGraphicsUtils;
+  SharpGraphicsUtils,
+  ISharpESkinComponents;
 
 type
   TSkinPart = class;
@@ -108,8 +111,17 @@ type
     property HeightAsInt : integer read GetHeightInteger;
   end;
 
-  TSkinIcon = class
+  // Never directly free a TSkinIcon class directly if OwnsInterface is set to true,
+  // it's creating an interface to itself to fool the garbage collector.
+  // In order to release it set the SelfInterface property to nil
+  // Example:
+  //   Text := TSkinIcon.Create;
+  //   [...]
+  //   Text.SelfInterface := nil;
+  //   Text := nil;  
+  TSkinIcon = class(TInterfacedObject, ISharpESkinIcon)
   private
+    FInterface : ISharpESkinIcon;
     FDrawIcon : boolean;
     FSize : TSkinPoint;
     FPosition : TSkinPoint;
@@ -119,8 +131,11 @@ type
     FBlendColor : integer;
     FBlendColorStr : String;
     FBlendAlpha : Byte;
+    procedure SetDrawIcon(Value : Boolean); stdcall;    
+    function GetDrawIcon : Boolean; stdcall;
+    function GetDimension : TPoint; stdcall;
   public
-    constructor Create; reintroduce;
+    constructor Create(OwnsInterface : Boolean); reintroduce;
     destructor Destroy; override;
     procedure Clear;
     procedure Assign(Value: TSkinIcon);
@@ -128,9 +143,8 @@ type
     procedure LoadFromStream(Stream: TStream);
     procedure LoadFromXML(xml: TJvSimpleXMLElem);
     procedure RenderTo(Dst,Src : TBitmap32; x,y : integer);
-    function GetXY(TextRect: TRect; CompRect: TRect): TPoint;
-    procedure UpdateDynamicProperties(cs: TSharpEScheme);    
-    property DrawIcon : boolean read FDrawIcon write FDrawIcon;
+    function GetXY(TextRect: TRect; CompRect: TRect): TPoint; stdcall;
+    procedure UpdateDynamicProperties(cs: ISharpEScheme);
     property Size : TSkinPoint read FSize;
     property Lighten : Boolean read FLighten write FLighten;
     property LightenAmount : integer read FLightenAmount write FLightenAmount;
@@ -138,12 +152,24 @@ type
     property BlendColor : integer read FBlendColor write FBlendColor;
     property BlendColorStr : String read FBlendColorStr write FBlendColorStr;
     property BlendAlpha : Byte read FBlendAlpha write FBlendAlpha;
+    property SelfInterface : ISharpESkinIcon read FInterface write FInterface;
+
+    procedure DrawTo(Dst,Src : TBitmap32; x,y : integer); stdcall;
+    property DrawIcon : Boolean read GetDrawIcon write SetDrawIcon;
+    property Dimension : TPoint read GetDimension;
   end;
 
-  TShadowType = (stLeft,stRight,stOutline);
-
-  TSkinText = class
+  // Never directly free a TSkinText class directly if OwnsInterface is set to true,
+  // it's creating an interface to itself to fool the garbage collector.
+  // In order to release it set the SelfInterface property to nil
+  // Example:
+  //   Text := TSkinText.Create;
+  //   [...]
+  //   Text.SelfInterface := nil;
+  //   Text := nil;
+  TSkinText = class(TInterfacedObject, ISharpESkinText)
   private
+    FInterface : ISharpESkinText;
     FX: string;
     FY: string;
     FWidth: string;
@@ -160,15 +186,57 @@ type
     FShadow : boolean;
     FShadowColor : integer;
     FShadowColorString : String;
-    FShadowType : TShadowType;
+    FShadowType : TSharpESkinShadowType;
     FShadowAlpha : byte;
     FDrawText : boolean;
     FClearType : boolean;
+
+    function GetX : String; stdcall;
+    function GetY : String; stdcall;
+    function GetWidth : String; stdcall;
+    function GetHeight : String; stdcall;
+    function GetName : String; stdcall;
+    function GetColor : integer; stdcall;
+    function GetColorString : String; stdcall;
+    function GetAlpha : byte; stdcall;
+    function GetAlphaString : String; stdcall;
+    function GetShadow : boolean; stdcall;
+    function GetSize : integer; stdcall;
+    function GetShadowColor : integer; stdcall;
+    function GetShadowColorString : String; stdcall;
+    function GetShadowAlpha : byte; stdcall;
+    function GetShadowType : TSharpESkinShadowType; stdcall;
+    function GetDrawText : boolean; stdcall;
+    function GetClearType : boolean; stdcall;
+    function GetStyleBold : Boolean; stdcall;
+    function GetStyleUnderline : Boolean; stdcall;
+    function GetStyleItalic : Boolean; stdcall;    
+
+    procedure SetX(Value : String); stdcall;
+    procedure SetY(Value : String); stdcall;
+    procedure SetWidth(Value : String); stdcall;
+    procedure SetHeight(Value : String); stdcall;
+    procedure SetName(Value : String); stdcall;
+    procedure SetColor(Value : integer); stdcall;
+    procedure SetColorString(Value : String); stdcall;
+    procedure SetAlpha(Value : byte); stdcall;
+    procedure SetAlphaString(Value : String); stdcall;
+    procedure SetShadow(Value : boolean); stdcall;
+    procedure SetSize(Value : integer); stdcall;
+    procedure SetShadowColor(Value : integer); stdcall;
+    procedure SetShadowColorString(Value : String); stdcall;
+    procedure SetShadowAlpha(Value : byte); stdcall;
+    procedure SetShadowType(Value : TSharpESkinShadowType); stdcall;
+    procedure SetDrawText(Value : boolean); stdcall;
+    procedure SetClearType(Value : boolean); stdcall;
+    procedure SetStyleBold(Value : Boolean); stdcall;
+    procedure SetStyleUnderline(Value : Boolean); stdcall;
+    procedure SetStyleItalic(Value : Boolean); stdcall;       
   public
-    constructor Create;
+    constructor Create(OwnsInterface : boolean); reintroduce;
     destructor Destroy; override;
     procedure Clear;
-    procedure Assign(Value: TSkinText); overload;
+    procedure Assign(Value: ISharpESkinText); overload; stdcall;
     procedure Assign(Value: TSkinTextRecord); overload;
     procedure SetLocation(x, y: string); overload;
     procedure SetLocation(str: string); overload;
@@ -178,33 +246,43 @@ type
     procedure SaveToStream(Stream: TStream);
     procedure LoadFromStream(Stream: TStream);
 
-    procedure UpdateDynamicProperties(cs: TSharpEScheme);
+    function CreateThemedSkinText : ISharpESkinText; stdcall;
+
+    procedure UpdateDynamicProperties(cs: ISharpEScheme); stdcall;
 
     procedure LoadFromXML(xml: TJvSimpleXMLElem);
-    function GetXY(TextRect,CompRect,IconRect: TRect): TPoint;
-    function GetDim(CompRect: TRect): TPoint;
-    function GetFont(cs: TSharpEScheme): TFont;
-    procedure AssignFontTo(pFont : TFont; cs: TSharpEScheme);
-    procedure RenderToW(Bmp : TBitmap32; X,Y : integer; Caption : WideString; cs : TSharpEScheme;
-                        var pPrecacheText : TSkinText; var pPrecacheBmp : TBitmap32; var pPrecacheCaption : WideString); overload;
-    procedure RenderToW(Bmp : TBitmap32; X,Y : integer; Caption : String;  cs : TSharpEScheme); overload;
-    procedure RenderTo(Bmp : TBitmap32; X,Y : integer; Caption : String;  cs : TSharpEScheme;
-                       var pPrecacheText : TSkinText; var pPrecacheBmp : TBitmap32; var pPrecacheCaption : String); overload;
-    procedure RenderTo(Bmp : TBitmap32; X,Y : integer; Caption : String;  cs : TSharpEScheme); overload;
+    function GetXY(TextRect,CompRect,IconRect: TRect): TPoint; stdcall;
+    function GetDim(CompRect: TRect): TPoint; stdcall;
+    function GetFont(cs: ISharpEScheme): TFont;
+    procedure AssignFontTo(pFont : TFont; cs: ISharpEScheme); stdcall;
+    procedure RenderToW(Bmp : TBitmap32; X,Y : integer; Caption : WideString; cs : ISharpEScheme;
+                        var pPrecacheText : ISharpESkinText; var pPrecacheBmp : TBitmap32; var pPrecacheCaption : WideString); overload; stdcall;
+    procedure RenderToW(Bmp : TBitmap32; X,Y : integer; Caption : String;  cs : ISharpEScheme); overload; stdcall;
+    procedure RenderTo(Bmp : TBitmap32; X,Y : integer; Caption : String;  cs : ISharpEScheme;
+                       var pPrecacheText : ISharpESkinText; var pPrecacheBmp : TBitmap32; var pPrecacheCaption : String); overload; stdcall;
+    procedure RenderTo(Bmp : TBitmap32; X,Y : integer; Caption : String;  cs : ISharpEScheme); overload; stdcall;
 
-    property Name : String read FName write FName;
-    property Color : integer read FColor write FColor;
-    property ColorString : String read FColorString write FColorString;
-    property Alpha : byte read FAlpha write FAlpha;
-    property AlphaString : string read FAlphaString write FAlphaString;
-    property Shadow : boolean read FShadow write FShadow;
-    property Size : integer read FSize write FSize;
-    property ShadowColor : integer read FShadowColor write FShadowColor;
-    property ShadowColorString : String read FShadowColorString write FShadowColorString;
-    property ShadowAlpha : byte read FShadowAlpha write FShadowAlpha;
-    property ShadowType : TShadowType read FShadowType write FShadowType;
-    property DrawText : boolean read FDrawText write FDrawText;
-    property ClearType : boolean read FClearType write FClearType;
+    property X : String read GetX write SetX;
+    property Y : String read GetY write SetY;
+    property Width : String read GetWidth write SetWidth;
+    property Height : String read GetHeight write SetHeight;
+    property Name : String read GetName write SetName;
+    property Color : integer read GetColor write SetColor;
+    property ColorString : String read GetColorString write SetColorString;
+    property Alpha : byte read GetAlpha write SetAlpha;
+    property AlphaString : string read GetAlphaString write SetAlphaString;
+    property Shadow : boolean read GetShadow write SetShadow;
+    property Size : integer read GetSize write SetSize;
+    property ShadowColor : integer read GetShadowColor write SetShadowColor;
+    property ShadowColorString : String read GetShadowColorString write SetShadowColorString;
+    property ShadowAlpha : byte read GetShadowAlpha write SetShadowAlpha;
+    property ShadowType : TSharpESkinShadowType read GetShadowType write SetShadowType;
+    property DrawText : boolean read GetDrawText write SetDrawText;
+    property ClearType : boolean read GetClearType write SetClearType;
+    property StyleBold : boolean read GetStyleBold write SetStyleBold;
+    property StyleUnderline : boolean read GetStyleUnderline write SetStyleUnderline;
+    property StyleItalic : boolean read GetStyleItalic write SetStyleItalic;
+    property SelfInterface : ISharpESkinText read FInterface write FInterface;
   end;
 
   TSkinPartList = class(TObject)
@@ -230,7 +308,7 @@ type
     property Count: integer read getsize;
   end;
 
-  TSkinPart = class(TObject)
+  TSkinPart = class(TInterfacedObject, ISharpESkinPart)
   private //for linked list
     next, prev: TSkinPart;
     parentlist: TSkinPartList;
@@ -260,6 +338,10 @@ type
     Procedure DoCombine(F: TColor32; var B: TColor32; M: TColor32);
     procedure TileDraw(Src,Dest : TBitmap32; DestRect : TRect);
     procedure CustomDraw(Src, Dst : TBitmap32; SrcRect, DstRect : TRect);
+    function GetDimRect(ps: TRect): TRect; stdcall;
+    function GetEmpty : Boolean; stdcall;
+    function GetDimension : TPoint; stdcall;
+    function GetDrawText : Boolean; stdcall;
   public
     constructor Create(BmpList: TSkinBitmapList); virtual;
     destructor Destroy; override;
@@ -269,11 +351,11 @@ type
     procedure SaveToStream(Stream: TStream);  virtual;
     procedure LoadFromStream(Stream: TStream); virtual;
 
-    procedure UpdateDynamicProperties(cs: TSharpEScheme); virtual;
+    function CreateThemedSkinText : ISharpESkinText; stdcall;    
+    procedure UpdateDynamicProperties(cs: ISharpEScheme); virtual;
 
     function LoadFromXML(xml: TJvSimpleXMLElem; path: string; Text: TSkinText): boolean; virtual;
-    procedure draw(bmp: TBitmap32; cs: TSharpEScheme);
-    function Empty: Boolean;
+    procedure draw(bmp: TBitmap32; cs: ISharpEScheme);
     function GetBitmap: TBitmap32;
 
     property IsEmpty: Boolean read FIsEmpty write FIsEmpty;
@@ -296,18 +378,30 @@ type
     property MasterAlphaString : String read FMasterAlphaString write FMasterAlphaString;
     property Enabled : boolean read FEnabled write FEnabled;
     property EnabledString : String read FEnabledString write FEnabledString;
+
+    // ISharpESkinPart Interface
+    procedure DrawTo(Bmp: TBitmap32; Scheme: ISharpEScheme); stdcall;
+    procedure ExecuteScript(pComponent : TObject;
+                           pScript : String;
+                           pScheme : ISharpEScheme;
+                           pAnimTimerCallback : ISharpESkinAnimTimerCallback); stdcall;
+    property Empty : Boolean read GetEmpty;
+    property Dimension : TPoint read GetDimension;
+    property DrawText : Boolean read GetDrawText;
   end;
 
   // TSkinPart with Icon!
-  TSkinPartEx = class(TSkinPart)
+  TSkinPartEx = class(TSkinPart, ISharpESkinPartEx)
   private
     FSkinIcon : TSkinIcon;
     FWidthMod : integer;
+    function GetIcon : ISharpESkinIcon; stdcall;
+    function GetWidthMod : integer; stdcall;
   public
     constructor Create(BmpList: TSkinBitmapList); override;
     destructor Destroy; override;
     procedure Clear; override;
-    procedure UpdateDynamicProperties(cs: TSharpEScheme); override;
+    procedure UpdateDynamicProperties(cs: ISharpEScheme); override;
     procedure Assign(Value: TSkinPartEx); reintroduce;
     procedure SaveToStream(Stream: TStream); override;
     procedure LoadFromStream(Stream: TStream); override;
@@ -315,18 +409,19 @@ type
                          Text: TSkinText; Icon : TSkinIcon): boolean; reintroduce;
 
     property SkinIcon : TSkinIcon read FSkinIcon;
-    property WidthMod : integer read FWidthMod;                         
+
+    property WidthMod : integer read GetWidthMod;
+    property Icon : ISharpESkinIcon read GetIcon;
   end;
 
 function get_location(str: string): TRect;
-function ParseColor(src : String; cs : TSharpEScheme) : integer;
-function EvaluateValue(str: string; cs: TSharpEScheme) : integer;
+function ParseColor(src : String; cs : ISharpEScheme) : integer;
+function EvaluateValue(str: string; cs: ISharpEScheme) : integer;
 procedure EvaluateColor(src: string; out color : String; out modvalue : integer);
-function SchemedStringToColor(str: string; cs: TSharpEScheme): TColor;
+function SchemedStringToColor(str: string; cs: ISharpEScheme): TColor;
 procedure doBlend(Dest: TBitmap32; source: TBitmap32; color: TColor);
 procedure VGradient(Bmp : TBitmap32; color1,color2 : TColor; st,et : byte; Rect : TRect);
 procedure HGradient(Bmp : TBitmap32; color1,color2 : TColor; st,et : byte; Rect : TRect);
-function CreateThemedSkinText(Base : TSkinText) : TSkinText;
 function ParseCoordinate(s: string; tw, th, cw, ch, iw, ih: integer): integer;
 function LightenRGB(src : integer; amount : integer) : integer;
 
@@ -338,6 +433,7 @@ implementation
 uses Sysutils,
      SharpEDefault,
      gr32_png,
+     SharpEAnimationTimers,
      SharpThemeApiEx,
      uThemeConsts,
      uISharpETheme;
@@ -593,11 +689,49 @@ end;
 //* TSkinText
 //***************************************
 
-constructor TSkinText.Create;
+constructor TSkinText.Create(OwnsInterface : boolean);
 begin
   inherited Create;
 
+  if OwnsInterface then 
+    FInterface := self
+  else FInterface := nil;
+  
   Clear;
+end;
+
+function TSkinText.CreateThemedSkinText : ISharpESkinText;
+var
+  Theme : ISharpETheme;
+begin
+  result := TSkinText.Create(False);
+  result.Assign(self);
+
+  Theme := GetCurrentTheme;
+  with Theme.Skin.SkinFont do
+  begin
+    if ModSize then
+      result.Size := result.Size + ValueSize;
+    if ModName then
+      result.Name := ValueName;
+    if ModAlpha then
+      result.Alpha := Max(0,Min(255,result.Alpha + ValueAlpha));
+    if ModUseShadow then
+      result.Shadow := ValueUseShadow;
+    if ModShadowType then
+      result.ShadowType := TSharpESkinShadowType(ValueShadowType);
+    if ModShadowAlpha then
+      result.ShadowAlpha := Max(0,Min(255,result.ShadowAlpha + ValueShadowAlpha));
+    if ModBold then
+      result.StyleBold := ValueBold;
+    if ModItalic then
+      result.StyleItalic := ValueItalic;
+    if ModUnderline then
+      result.StyleUnderline := ValueUnderline;
+    if ModClearType then
+      result.ClearType := ValueClearType;
+  end;
+
 end;
 
 destructor TSkinText.Destroy;
@@ -623,7 +757,10 @@ begin
   FShadowAlpha := 255;
   FAlpha := 255;
   FAlphaString := '255';
-  Assign(DefaultSharpESkinTextRecord);
+  FName := 'Small Fonts';
+  FSize := 7;
+  FColorString := '0';
+  FColor := 0;
 end;
 
 procedure TSkinText.SaveToStream(Stream: TStream);
@@ -679,28 +816,28 @@ begin
   FClearType := StrToBool(StringLoadFromStream(Stream));
 end;
 
-procedure TSkinText.Assign(Value: TSkinText);
+procedure TSkinText.Assign(Value: ISharpESkinText);
 begin
-  FX := Value.FX;
-  FY := Value.FY;
-  FWidth := Value.FWidth;
-  FHeight := Value.FHeight;
-  FName := Value.FName;
-  FColor := Value.FColor;
-  FColorString := Value.FColorString;
-  FSize := Value.FSize;
-  FStyleBold := Value.FStyleBold;
-  FStyleItalic := Value.FStyleItalic;
-  FStyleUnderline := Value.FStyleUnderline;
-  FShadow := Value.FShadow;
-  FShadowColor := Value.FShadowColor;
-  FShadowColorString := Value.FShadowColorString;
-  FShadowAlpha := Value.FShadowAlpha;
-  FShadowType := Value.FShadowType;
-  FAlpha := Value.FAlpha;
-  FAlphaString := Value.FAlphaString;
-  FDrawText := Value.DrawText;
-  FClearType := Value.ClearType;
+  X := Value.X;
+  Y := Value.Y;
+  Width := Value.Width;
+  Height := Value.Height;
+  Name := Value.Name;
+  Color := Value.Color;
+  ColorString := Value.ColorString;
+  Size := Value.Size;
+  StyleBold := Value.StyleBold;
+  StyleItalic := Value.StyleItalic;
+  StyleUnderline := Value.StyleUnderline;
+  Shadow := Value.Shadow;
+  ShadowColor := Value.ShadowColor;
+  ShadowColorString := Value.ShadowColorString;
+  ShadowAlpha := Value.ShadowAlpha;
+  ShadowType := Value.ShadowType;
+  Alpha := Value.Alpha;
+  AlphaString := Value.AlphaString;
+  DrawText := Value.DrawText;
+  ClearType := Value.ClearType;
 end;
 
 procedure TSkinText.Assign(Value: TSkinTextRecord);
@@ -716,6 +853,31 @@ begin
   FHeight := height;
 end;
 
+procedure TSkinText.SetAlpha(Value: byte);
+begin
+  FAlpha := Value;
+end;
+
+procedure TSkinText.SetAlphaString(Value: String);
+begin
+  FAlphaString := Value;
+end;
+
+procedure TSkinText.SetClearType(Value: boolean);
+begin
+  FClearType := Value;
+end;
+
+procedure TSkinText.SetColor(Value: integer);
+begin
+  FColor := Value;
+end;
+
+procedure TSkinText.SetColorString(Value: String);
+begin
+  FColorString := Value;
+end;
+
 procedure TSkinText.SetDimension(str: string);
 var position: integer;
 begin
@@ -729,13 +891,23 @@ begin
     SetDimension('', '');
 end;
 
+procedure TSkinText.SetDrawText(Value: boolean);
+begin
+  FDrawText := Value;
+end;
+
+procedure TSkinText.SetHeight(Value: String);
+begin
+  FHeight := Value;
+end;
+
 procedure TSkinText.SetLocation(x, y: string);
 begin
   FX := x;
   FY := y;
 end;
 
-procedure TSkinText.AssignFontTo(pFont : TFont; cs: TSharpEScheme);
+procedure TSkinText.AssignFontTo(pFont : TFont; cs: ISharpEScheme);
 var
  f : TFont;
 begin
@@ -747,7 +919,7 @@ begin
   f.free;
 end;
 
-function TSkinText.GetFont(cs: TSharpEScheme): TFont;
+function TSkinText.GetFont(cs: ISharpEScheme): TFont;
 begin
   result := TFont.Create;
   result.Name := FName;
@@ -757,6 +929,66 @@ begin
   if FStyleItalic then result.Style := result.Style + [fsItalic];
   if FStyleUnderline then result.Style := result.Style + [fsUnderline];
   result.Color := FColor;
+end;
+
+function TSkinText.GetHeight: String;
+begin
+  result := FHeight;
+end;
+
+function TSkinText.GetName: String;
+begin
+  result := FName;
+end;
+
+function TSkinText.GetShadow: boolean;
+begin
+  result := FShadow;
+end;
+
+function TSkinText.GetShadowAlpha: byte;
+begin
+  result := FShadowAlpha;
+end;
+
+function TSkinText.GetShadowColor: integer;
+begin
+  result := FShadowColor;
+end;
+
+function TSkinText.GetShadowColorString: String;
+begin
+  result := FShadowColorString;
+end;
+
+function TSkinText.GetShadowType: TSharpESkinShadowType;
+begin
+  result := FShadowType;
+end;
+
+function TSkinText.GetSize: integer;
+begin
+  result := FSize;
+end;
+
+function TSkinText.GetStyleBold: Boolean;
+begin
+  result := FStyleBold;
+end;
+
+function TSkinText.GetStyleItalic: Boolean;
+begin
+  result := FStyleItalic;
+end;
+
+function TSkinText.GetStyleUnderline: Boolean;
+begin
+  result := FStyleUnderline;
+end;
+
+function TSkinText.GetWidth: String;
+begin
+  result := FWidth;
 end;
 
 procedure TSkinText.SetLocation(str: string);
@@ -772,7 +1004,72 @@ begin
     SetLocation('', '');
 end;
 
-procedure TSkinText.UpdateDynamicProperties(cs: TSharpEScheme);
+procedure TSkinText.SetName(Value: String);
+begin
+  FName := Value;
+end;
+
+procedure TSkinText.SetShadow(Value: boolean);
+begin
+  FShadow := Value;
+end;
+
+procedure TSkinText.SetShadowAlpha(Value: byte);
+begin
+  FShadowAlpha := Value;
+end;
+
+procedure TSkinText.SetShadowColor(Value: integer);
+begin
+  FShadowColor := Value;
+end;
+
+procedure TSkinText.SetShadowColorString(Value: String);
+begin
+  FShadowColorString := Value;
+end;
+
+procedure TSkinText.SetShadowType(Value: TSharpESkinShadowType);
+begin
+  FShadowType := Value;
+end;
+
+procedure TSkinText.SetSize(Value: integer);
+begin
+  FSize := Value;
+end;
+
+procedure TSkinText.SetStyleBold(Value: Boolean);
+begin
+  FStyleBold := Value;
+end;
+
+procedure TSkinText.SetStyleItalic(Value: Boolean);
+begin
+  FStyleItalic := Value;
+end;
+
+procedure TSkinText.SetStyleUnderline(Value: Boolean);
+begin
+  FStyleUnderline := Value;
+end;
+
+procedure TSkinText.SetWidth(Value: String);
+begin
+  FWidth := Value;
+end;
+
+procedure TSkinText.SetX(Value: String);
+begin
+  FX := Value;
+end;
+
+procedure TSkinText.SetY(Value: String);
+begin
+  FY := Value;
+end;
+
+procedure TSkinText.UpdateDynamicProperties(cs: ISharpEScheme);
 begin
   FAlpha := Min(255,Max(0,EvaluateValue(FAlphaString,cs)));
   FShadowColor := ParseColor(FShadowColorString,cs);
@@ -828,6 +1125,31 @@ begin
   end;
 end;
 
+function TSkinText.GetAlpha: byte;
+begin
+  result := FAlpha;
+end;
+
+function TSkinText.GetAlphaString: String;
+begin
+  result := FAlphaString;
+end;
+
+function TSkinText.GetClearType: boolean;
+begin
+  result := FClearType;
+end;
+
+function TSkinText.GetColor: integer;
+begin
+  result := FColor;
+end;
+
+function TSkinText.GetColorString: String;
+begin
+  result := FColorString;
+end;
+
 function TSkinText.GetDim(CompRect: TRect) : TPoint;
 var
   cw, ch : integer;
@@ -836,6 +1158,16 @@ begin
   ch := CompRect.Bottom - CompRect.Top;
   result.x := ParseCoordinate(FWidth,cw,ch,cw,ch,0,0);
   result.y := ParseCoordinate(FHeight,cw,ch,cw,ch,0,0);
+end;
+
+function TSkinText.GetDrawText: boolean;
+begin
+  result := FDrawText;
+end;
+
+function TSkinText.GetX: String;
+begin
+  result := FX;
 end;
 
 function TSkinText.GetXY(TextRect,CompRect,IconRect: Trect): TPoint;
@@ -856,7 +1188,12 @@ begin
 end;
 
 
-procedure TSkinText.RenderTo(Bmp : TBitmap32; X,Y : integer; Caption : String;  cs : TSharpEScheme);
+function TSkinText.GetY: String;
+begin
+  result := FY;
+end;
+
+procedure TSkinText.RenderTo(Bmp : TBitmap32; X,Y : integer; Caption : String;  cs : ISharpEScheme);
 var
   c : TColor;
   R,G,B : byte;
@@ -930,7 +1267,7 @@ begin
 end;
 
 procedure TSkinText.RenderToW(Bmp: TBitmap32; X, Y: integer; Caption: String;
-  cs: TSharpEScheme);
+  cs: ISharpEScheme);
 var
   c : TColor;
   R,G,B : byte;
@@ -1005,7 +1342,7 @@ begin
 end;
 
 procedure TSkinText.RenderToW(Bmp: TBitmap32; X, Y: integer;
-  Caption: WideString; cs: TSharpEScheme; var pPrecacheText: TSkinText;
+  Caption: WideString; cs: ISharpEScheme; var pPrecacheText: ISharpESkinText;
   var pPrecacheBmp: TBitmap32; var pPrecacheCaption: WideString);
 var
   R,G,B : byte;
@@ -1026,29 +1363,28 @@ begin
     end;
     if pPrecacheText = nil then
     begin
-      pPrecacheText := TSkinText.Create;
-      pPrecacheText.Clear;
-      pPrecacheText.FColorString := '-1';
+      pPrecacheText := TSkinText.Create(False);
+      pPrecacheText.ColorString := '-1';
       pPrecacheText.UpdateDynamicProperties(cs);
     end;
   end else new := False;
 
 
   // Check if something changed since cache bmp has been created.
-  if ((CompareText(pPrecacheText.FName,FName) <> 0) or
+  if ((CompareText(pPrecacheText.Name,FName) <> 0) or
 //     (CompareText(pPrecacheText.FColor,FColor) <> 0) or
-     (pPrecacheText.FColor <> FColor) or
-     (CompareText(pPrecacheText.FWidth,FWidth) <> 0) or
-     (CompareText(pPrecacheText.FHeight,FHeight) <> 0) or     
-     (pPrecacheText.FShadowColor <> FShadowColor) or
-     (pPrecacheText.FSize <> FSize) or
-     (pPrecacheText.FStyleBold <> FStyleBold) or
-     (pPrecacheText.FStyleItalic <> FStyleItalic) or
-     (pPrecacheText.FStyleUnderline <> FStyleUnderline) or
-     (pPrecacheText.FShadow <> FShadow) or
-     (pPrecacheText.FShadowType <> FShadowType) or
-     (pPrecacheText.FShadowAlpha <> FShadowAlpha) or
-     (pPrecacheText.FClearType <> FClearType) or
+     (pPrecacheText.Color <> FColor) or
+     (CompareText(pPrecacheText.Width,FWidth) <> 0) or
+     (CompareText(pPrecacheText.Height,FHeight) <> 0) or
+     (pPrecacheText.ShadowColor <> FShadowColor) or
+     (pPrecacheText.Size <> FSize) or
+     (pPrecacheText.StyleBold <> FStyleBold) or
+     (pPrecacheText.StyleItalic <> FStyleItalic) or
+     (pPrecacheText.StyleUnderline <> FStyleUnderline) or
+     (pPrecacheText.Shadow <> FShadow) or
+     (pPrecacheText.ShadowType <> FShadowType) or
+     (pPrecacheText.ShadowAlpha <> FShadowAlpha) or
+     (pPrecacheText.ClearType <> FClearType) or
      (CompareText(pPrecacheCaption,Caption) <> 0)) or (new) then
   begin
     // text settings or caption changed! redraw caption
@@ -1112,8 +1448,8 @@ begin
 end;
 
 
-procedure TSkinText.RenderTo(Bmp : TBitmap32; X,Y : integer; Caption : String; cs : TSharpEScheme;
-                             var pPrecacheText : TSkinText; var pPrecacheBmp : TBitmap32; var pPrecacheCaption : String);
+procedure TSkinText.RenderTo(Bmp : TBitmap32; X,Y : integer; Caption : String; cs : ISharpEScheme;
+                             var pPrecacheText : ISharpESkinText; var pPrecacheBmp : TBitmap32; var pPrecacheCaption : String);
 var
   R,G,B : byte;
   c2 : TColor32;
@@ -1133,29 +1469,28 @@ begin
     end;
     if pPrecacheText = nil then
     begin
-      pPrecacheText := TSkinText.Create;
-      pPrecacheText.Clear;
-      pPrecacheText.FColorString := '-1';
+      pPrecacheText := TSkinText.Create(False);
+      pPrecacheText.ColorString := '-1';
       pPrecacheText.UpdateDynamicProperties(cs);
     end;
   end else new := False;
 
 
   // Check if something changed since cache bmp has been created.
-  if ((CompareText(pPrecacheText.FName,FName) <> 0) or
+  if ((CompareText(pPrecacheText.Name,FName) <> 0) or
 //     (CompareText(pPrecacheText.FColor,FColor) <> 0) or
-     (pPrecacheText.FColor <> FColor) or
-     (CompareText(pPrecacheText.FWidth,FWidth) <> 0) or
-     (CompareText(pPrecacheText.FHeight,FHeight) <> 0) or     
-     (pPrecacheText.FShadowColor <> FShadowColor) or
-     (pPrecacheText.FSize <> FSize) or
-     (pPrecacheText.FStyleBold <> FStyleBold) or
-     (pPrecacheText.FStyleItalic <> FStyleItalic) or
-     (pPrecacheText.FStyleUnderline <> FStyleUnderline) or
-     (pPrecacheText.FShadow <> FShadow) or
-     (pPrecacheText.FShadowType <> FShadowType) or
-     (pPrecacheText.FShadowAlpha <> FShadowAlpha) or
-     (pPrecacheText.FClearType <> FClearType) or
+     (pPrecacheText.Color <> FColor) or
+     (CompareText(pPrecacheText.Width,FWidth) <> 0) or
+     (CompareText(pPrecacheText.Height,FHeight) <> 0) or
+     (pPrecacheText.ShadowColor <> FShadowColor) or
+     (pPrecacheText.Size <> FSize) or
+     (pPrecacheText.StyleBold <> FStyleBold) or
+     (pPrecacheText.StyleItalic <> FStyleItalic) or
+     (pPrecacheText.StyleUnderline <> FStyleUnderline) or
+     (pPrecacheText.Shadow <> FShadow) or
+     (pPrecacheText.ShadowType <> FShadowType) or
+     (pPrecacheText.ShadowAlpha <> FShadowAlpha) or
+     (pPrecacheText.ClearType <> FClearType) or
      (CompareText(pPrecacheCaption,Caption) <> 0)) or (new) then
   begin
     // text settings or caption changed! redraw caption
@@ -1217,6 +1552,7 @@ begin
   pPrecacheBmp.MasterAlpha := FAlpha;
   pPrecacheBmp.DrawTo(Bmp,X-10,Y-10);
 end;
+
 
 //***************************************
 //*  TSkinPartList
@@ -1390,7 +1726,7 @@ end;
 //*  TSkinPart
 //***************************************
 
-function TSkinPart.Empty: boolean;
+function TSkinPart.GetEmpty: boolean;
 var test: boolean;
 begin
   if (Bitmap <> nil) then
@@ -1400,7 +1736,12 @@ begin
   result := (test and (FItems.Count = 0)) and (not IsEmpty);
 end;
 
-procedure TSkinPart.UpdateDynamicProperties(cs: TSharpEScheme);
+function TSkinPart.CreateThemedSkinText : ISharpESkinText;
+begin
+  result := FSkinText.CreateThemedSkinText;
+end;
+
+procedure TSkinPart.UpdateDynamicProperties(cs: ISharpEScheme);
 var
   n : integer;
 begin
@@ -1515,7 +1856,7 @@ begin
   end else Dst.Draw(DstRect,SrcRect,Src);
 end;
 
-procedure TSkinPart.draw(bmp: TBitmap32; cs: TSharpEScheme);
+procedure TSkinPart.draw(bmp: TBitmap32; cs: ISharpEScheme);
 var temp: Tbitmap32;
   FBitmap: Tbitmap32;
   i: integer;
@@ -1579,7 +1920,11 @@ begin
   begin
     r := FSkinDim.GetRect(rect(0, 0, bmp.Width, bmp.Height));
     temp := TBitmap32.Create;
-    temp.assign(Bmp);
+//    temp.assign(TBitmap32(Bmp));
+    temp.SetSize(Bmp.Width, Bmp.Height);
+    if not Bmp.Empty then
+      MoveLongword(Bmp.Bits[0], temp.Bits[0], Bmp.Width * Bmp.Height);
+
     temp.Clear(color32(0,0,0,0));
     temp.DrawMode := dmBlend;
     temp.CombineMode := cmMerge;
@@ -1608,6 +1953,17 @@ begin
   begin
     Items[i].draw(bmp, cs);
   end;
+end;
+
+procedure TSkinPart.DrawTo(Bmp: TBitmap32; Scheme : ISharpEScheme);
+begin
+  Draw(Bmp, Scheme);
+end;
+
+procedure TSkinPart.ExecuteScript(pComponent: TObject; pScript: String;
+  pScheme: ISharpEScheme; pAnimTimerCallback : ISharpESkinAnimTimerCallback);
+begin
+  SharpEAnimManager.ExecuteScript(pComponent,pScript,self,pScheme,pAnimTimerCallback);
 end;
 
 function TSkinPart.LoadFromXML(xml: TJvSimpleXMLElem; path: string; Text: TSkinText): boolean;
@@ -1766,7 +2122,7 @@ begin
   FIsEmpty := False;
   FItems := TSkinPartList.create(BmpList);
   FSkinDim := TSkinDim.create;
-  FSkinText := TSkinText.create;
+  FSkinText := TSkinText.create(True);
   FGradientColor := TSkinPoint.Create;
   FGradientColorS := TSkinPoint.Create;
   FGradientAlpha := TSkinPoint.Create;
@@ -1796,7 +2152,7 @@ begin
   FDrawMode := sdmTile;
   FItems.Free;
   FSkinDim.Free;
-  FSkinText.Free;
+  FSkinText.SelfInterface := nil;
   FGradientColor.Free;
   FGradientColorS.Free;
   FGradientAlpha.Free;
@@ -1811,6 +2167,21 @@ begin
   end
   else
     result := nil;
+end;
+
+function TSkinPart.GetDimension: TPoint;
+begin
+  result := Point(FSkinDim.WidthAsInt,FSkinDim.HeightAsInt);
+end;
+
+function TSkinPart.GetDimRect(ps: TRect): TRect;
+begin
+  result := FSkinDim.GetRect(ps);
+end;
+
+function TSkinPart.GetDrawText: Boolean;
+begin
+  result := FSkinText.DrawText;
 end;
 
 //**********************************
@@ -1830,9 +2201,13 @@ begin
   FLightenAmount := 48;
 end;
 
-constructor TSkinIcon.Create;
+constructor TSkinIcon.Create(OwnsInterface : Boolean);
 begin
   Inherited Create;
+
+  if OwnsInterface then
+    FInterface := self
+  else FInterface := nil;
 
   FSize := TSkinPoint.Create;
   FPosition := TSkinPoint.Create;
@@ -1845,6 +2220,21 @@ begin
   FPosition.Free;
 
   inherited Destroy;
+end;
+
+procedure TSkinIcon.DrawTo(Dst, Src: TBitmap32; x, y: integer);
+begin
+  RenderTo(Dst,Src,x,y);
+end;
+
+function TSkinIcon.GetDrawIcon: Boolean;
+begin
+  result := FDrawIcon;
+end;
+
+function TSkinIcon.GetDimension: TPoint;
+begin
+ result := Point(Size.XAsInt,Size.YAsInt);
 end;
 
 function TSkinIcon.GetXY(TextRect, CompRect: TRect): TPoint;
@@ -1886,6 +2276,11 @@ begin
   Stream.WriteBuffer(FBlendAlpha, SizeOf(FBlendAlpha));
 end;
 
+procedure TSkinIcon.SetDrawIcon(Value: Boolean);
+begin
+  FDrawIcon := Value;
+end;
+
 procedure TSkinIcon.LoadFromStream(Stream: TStream);
 begin
   FDrawIcon := StrToBool(StringLoadFromStream(Stream));
@@ -1921,7 +2316,7 @@ begin
   end;
 end;
 
-procedure TSkinIcon.UpdateDynamicProperties(cs: TSharpEScheme);
+procedure TSkinIcon.UpdateDynamicProperties(cs: ISharpEScheme);
 begin
   FBlendColor := ParseColor(FBlendColorStr,cs);
 end;
@@ -1981,14 +2376,24 @@ end;
 constructor TSkinPartEx.Create(BmpList: TSkinBitmapList);
 begin
   inherited Create(BmpList);
-  FSkinIcon := TSkinIcon.Create;
+  FSkinIcon := TSkinIcon.Create(True);
   FWidthMod := 0;
 end;
 
 destructor TSkinPartEx.Destroy;
 begin
-  FSkinIcon.Free;
+  FSkinIcon.SelfInterface := nil;
   inherited Destroy;
+end;
+
+function TSkinPartEx.GetIcon: ISharpESkinIcon;
+begin
+  result := FSkinIcon.SelfInterface;
+end;
+
+function TSkinPartEx.GetWidthMod: integer;
+begin
+  result := FWidthMod;
 end;
 
 procedure TSkinPartEx.Assign(Value : TSkinPartEx);
@@ -1998,7 +2403,7 @@ begin
   FWidthMod := Value.WidthMod;
 end;
 
-procedure TSkinPartEx.UpdateDynamicProperties(cs: TSharpEScheme);
+procedure TSkinPartEx.UpdateDynamicProperties(cs: ISharpEScheme);
 begin
   Inherited UpdateDynamicProperties(cs);
   
@@ -2087,7 +2492,7 @@ begin
 end;
 
 
-function EvaluateValue(str: string; cs: TSharpEScheme) : integer;
+function EvaluateValue(str: string; cs: ISharpEScheme) : integer;
 var
   n : integer;
   tmp: string;
@@ -2180,7 +2585,7 @@ begin
   modvalue := EvaluateValue(s,nil);
 end;
 
-function ParseColor(src : String; cs : TSharpEScheme) : integer;
+function ParseColor(src : String; cs : ISharpEScheme) : integer;
 var
   Color : String;
   ModValue : integer;
@@ -2192,7 +2597,7 @@ begin
   result := LightenRGB(result,ModValue);
 end;
 
-function SchemedStringToColor(str: string; cs: TSharpEScheme): TColor;
+function SchemedStringToColor(str: string; cs: ISharpEScheme): TColor;
 var
   n : integer;
 begin
@@ -2446,39 +2851,6 @@ begin
     lmDifference: B := ColorDifference(F, B);
     lmExclusion:  B := ColorExclusion(F, B);
   End;
-end;
-
-function CreateThemedSkinText(Base : TSkinText) : TSkinText;
-var
-  Theme : ISharpETheme;
-begin
-  result := TSkinText.Create;
-  result.Assign(Base);
-
-  Theme := GetCurrentTheme;
-  with Theme.Skin.SkinFont do
-  begin
-    if ModSize then
-      result.FSize := result.FSize + ValueSize;
-    if ModName then
-      result.FName := ValueName;
-    if ModAlpha then
-      result.FAlpha := Max(0,Min(255,result.FAlpha + ValueAlpha));
-    if ModUseShadow then
-      result.FShadow := ValueUseShadow;
-    if ModShadowType then
-      result.FShadowType := TShadowType(ValueShadowType);
-    if ModShadowAlpha then
-      result.FShadowAlpha := Max(0,Min(255,result.FShadowAlpha + ValueShadowAlpha));
-    if ModBold then
-      result.FStyleBold := ValueBold;
-    if ModItalic then
-      result.FStyleItalic := ValueItalic;
-    if ModUnderline then
-      result.FStyleUnderline := ValueUnderline;
-    if ModClearType then
-      result.FClearType := ValueClearType;
-  end;
 end;
 
 function ParseCoordinate(s: string; tw, th, cw, ch, iw, ih: integer): integer;

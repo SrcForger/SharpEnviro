@@ -37,14 +37,11 @@ uses
   StdCtrls,
   gr32,
   Graphics,
-  SharpEBase,
+  ISharpESkinComponents,
   SharpEBaseControls,
   SharpEDefault,
-  SharpEScheme,
-  SharpESkinManager,
   SharpTypes,
-  math,
-  SharpESkinPart;
+  math;
 
 type
   TSharpEProgressBar = class(TCustomSharpEGraphicControl)
@@ -59,8 +56,8 @@ type
     procedure SetValue(Value: integer);
     procedure SetAutoPos(Value: TSharpEBarAutoPos);
   protected
-    procedure DrawDefaultSkin(bmp: TBitmap32; Scheme: TSharpEScheme); override;
-    procedure DrawManagedSkin(bmp: TBitmap32; Scheme: TSharpEScheme); override;
+    procedure DrawDefaultSkin(bmp: TBitmap32; Scheme: ISharpEScheme); override;
+    procedure DrawManagedSkin(bmp: TBitmap32; Scheme: ISharpEScheme); override;
   public
     constructor Create(AOwner: TComponent); override;
 
@@ -131,8 +128,7 @@ begin
   end;
 end;
 
-procedure TSharpEProgressBar.DrawDefaultSkin(bmp: TBitmap32; Scheme:
-  TSharpEScheme);
+procedure TSharpEProgressBar.DrawDefaultSkin(bmp: TBitmap32; Scheme: ISharpEScheme);
 var
   r: TRect;
 begin
@@ -154,10 +150,9 @@ begin
   end;
 end;
 
-procedure TSharpEProgressBar.DrawManagedSkin(bmp: TBitmap32; Scheme:
-  TSharpEScheme);
-var r, CompRect: TRect;
-  skindim: TSkinDim;
+procedure TSharpEProgressBar.DrawManagedSkin(bmp: TBitmap32; Scheme: ISharpEScheme);
+var
+  r, CompRect: TRect;
   temp: TBitmap32;
 begin
   if (Width = 0) or (Height = 0)  then
@@ -169,15 +164,14 @@ begin
     exit;
   end;
 
-  skindim := TSkinDim.create;
   temp := TBitmap32.create;
   try
     CompRect := Rect(0, 0, width, height);
-    if FManager.Skin.ProgressBarSkin.Valid then
+    if FManager.Skin.ProgressBar.Valid then
     begin
       if FAutoSize or (FAutoPos <> apNone) then
       begin
-        r := FManager.Skin.ProgressBarSkin.GetAutoDim(CompRect,FAutoPos);
+        r := FManager.Skin.ProgressBar.GetAutoDim(CompRect,FAutoPos);
         if (r.Right <> width) or (r.Bottom - r.Top <> height) or (r.Top <> top) then
         begin
           top := r.Top;
@@ -187,20 +181,20 @@ begin
         end;
       end;
       bmp.Clear(Color32(0, 0, 0, 0));
-      if not (FManager.Skin.ProgressBarSkin.BackGround.Empty) then
+      if not (FManager.Skin.ProgressBar.BackGround.Empty) then
       begin
-        if (not FManager.Skin.ProgressBarSkin.SmallBackground.Empty) and
-           (Bmp.Height <= FManager.Skin.ProgressBarSkin.SmallModeOffset.YAsInt) then
-           FManager.Skin.ProgressBarSkin.SmallBackground.draw(bmp, Scheme)
+        if (not FManager.Skin.ProgressBar.BackgroundSmall.Empty) and
+           (Bmp.Height <= FManager.Skin.ProgressBar.SmallModeOffset.Y) then
+           FManager.Skin.ProgressBar.BackgroundSmall.DrawTo(bmp, Scheme)
         else
-          FManager.Skin.ProgressBarSkin.BackGround.Draw(bmp, Scheme);
+          FManager.Skin.ProgressBar.BackGround.DrawTo(bmp, Scheme);
       end;
-      if not (FManager.Skin.ProgressBarSkin.Progress.Empty) then
+      if not (FManager.Skin.ProgressBar.Progress.Empty) then
       begin
-        if (not FManager.Skin.ProgressBarSkin.SmallProgress.Empty) and
-           (Bmp.Height <= FManager.Skin.ProgressBarSkin.SmallModeOffset.YAsInt) then
-           r := FManager.Skin.ProgressBarskin.SmallProgress.SkinDim.GetRect(rect(0, 0, bmp.Width, bmp.Height))
-        else r := FManager.Skin.ProgressBarSkin.Progress.SkinDim.GetRect(rect(0, 0, bmp.width, bmp.height));
+        if (not FManager.Skin.ProgressBar.ProgressSmall.Empty) and
+           (Bmp.Height <= FManager.Skin.ProgressBar.SmallModeOffset.Y) then
+           r := FManager.Skin.ProgressBar.ProgressSmall.GetDimRect(rect(0, 0, bmp.Width, bmp.Height))
+        else r := FManager.Skin.ProgressBar.Progress.GetDimRect(rect(0, 0, bmp.width, bmp.height));
         if r.Right = 0 then
            r.right := bmp.Width - r.Left;
         if r.Bottom = 0 then
@@ -212,17 +206,16 @@ begin
         temp.Clear(Color32(0, 0, 0, 0));
         temp.DrawMode := dmBlend;
         temp.CombineMode := cmMerge;
-        if (not FManager.Skin.ProgressBarSkin.SmallProgress.Empty) and
-           (Bmp.Height <= FManager.Skin.ProgressBarSkin.SmallModeOffset.YAsInt) then
-           FManager.Skin.ProgressBarSkin.SmallProgress.Draw(temp, Scheme)
-        else FManager.Skin.ProgressBarSkin.Progress.Draw(temp, Scheme);
+        if (not FManager.Skin.ProgressBar.ProgressSmall.Empty) and
+           (Bmp.Height <= FManager.Skin.ProgressBar.SmallModeOffset.Y) then
+           FManager.Skin.ProgressBar.ProgressSmall.DrawTo(temp, Scheme)
+        else FManager.Skin.ProgressBar.Progress.DrawTo(temp, Scheme);
         bmp.Draw(r.Left, r.Top, rect(0, 0, temp.Width, temp.Height), temp);
       end;
     end
     else
       DrawDefaultSkin(bmp, DefaultSharpEScheme);
   finally
-    skindim.free;
     temp.free;
   end;
 end;

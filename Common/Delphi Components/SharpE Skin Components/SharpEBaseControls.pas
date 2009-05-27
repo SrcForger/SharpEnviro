@@ -33,12 +33,10 @@ uses Windows,
   Forms,
   Classes,
   GR32,
-  GR32_Image,
-  SharpEScheme,
   Controls,
-  SharpESkinManager,
   SharpEDefault,
-  STdCtrls,
+  ISharpESkinComponents,
+  StdCtrls,
   SysUtils;
 
 type
@@ -59,7 +57,7 @@ type
   protected
     FButtonDown: boolean;
     FButtonOver: boolean;
-    FManager: TSharpESkinManager;
+    FManager: ISharpESkinManager;
     FSkin: TBitmap32;
     FBuffer: TBitmap32;
     FBackground: TBitmap32;
@@ -68,8 +66,8 @@ type
 
     procedure Paint; override;
     procedure Loaded; override;
-    procedure DrawDefaultSkin(bmp: TBitmap32; Scheme: TSharpEScheme); virtual;
-    procedure DrawManagedSkin(bmp: TBitmap32; Scheme: TSharpEScheme); virtual;
+    procedure DrawDefaultSkin(bmp: TBitmap32; Scheme: ISharpEScheme); virtual;
+    procedure DrawManagedSkin(bmp: TBitmap32; Scheme: ISharpEScheme); virtual;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
       override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -78,18 +76,16 @@ type
     procedure DrawSkin;
     procedure SMouseEnter; virtual;
     procedure SMouseLeave; virtual;
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
     procedure DrawToCanvas;
     procedure SetBitmapSizes;
-    procedure SetManager(value: TSharpESkinManager); virtual;
+    procedure SetManager(value: ISharpESkinManager); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure SetAutoSize(value: Boolean); override;
     procedure UpdateSkin; overload; virtual;
-    procedure UpdateSkin(sender: TComponent); overload;
-    property SkinManager: TSharpESkinManager read FManager write SetManager;
+    procedure UpdateSkin(pManager: ISharpESkinManager); overload;
+    property SkinManager: ISharpESkinManager read FManager write SetManager;
     property AutoSize: Boolean read FAutoSize write SetAutoSize;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -99,38 +95,31 @@ type
 
   TCustomSharpEComponent = class(TComponent)
   protected
-    FManager: TSharpESkinManager;
+    FManager: ISharpESkinManager;
 
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
     procedure Loaded; override;
-    procedure SetManager(value: TSharpESkinManager); virtual;
+    procedure SetManager(value: ISharpESkinManager); virtual;
   public
     procedure UpdateSkin; overload; virtual;
-    procedure UpdateSkin(sender: TComponent); overload;
-    property SkinManager: TSharpESkinManager read FManager write SetManager;
+    procedure UpdateSkin(pManager: ISharpESkinManager); overload;
+    property SkinManager: ISharpESkinManager read FManager write SetManager;
   end;
   
   TCustomSharpEControl = class(TCustomControl)
   protected
-    FManager: TSharpESkinManager;
+    FManager: ISharpESkinManager;
     FSpecialBackground: TBitmap32;
 
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
     procedure Loaded; override;
-    procedure SetManager(value: TSharpESkinManager); virtual;
+    procedure SetManager(value: ISharpESkinManager); virtual;
   public
     procedure UpdateSkin; overload; virtual;
-    procedure UpdateSkin(sender: TComponent); overload;
-    property SkinManager: TSharpESkinManager read FManager write SetManager;
+    procedure UpdateSkin(pManager: ISharpESkinManager); overload;
+    property SkinManager: ISharpESkinManager read FManager write SetManager;
     property SpecialBackground : TBitmap32 read FSpecialBackground write FSpecialBackground;
   end;
 
 implementation
-uses Consts,
-  RTLConsts,
-  ActnList;
 
 procedure TCustomSharpEComponent.Loaded;
 begin
@@ -138,40 +127,13 @@ begin
   UpdateSkin;
 end;
 
-procedure TCustomSharpEComponent.UpdateSkin(sender: TComponent);
+procedure TCustomSharpEComponent.UpdateSkin(pManager: ISharpESkinManager);
 begin
-  if FManager = sender then
+  if FManager = pManager then
     UpdateSkin;
 end;
 
-procedure TCustomSharpEComponent.Notification(AComponent: TComponent; Operation:
-  TOperation);
-begin
-  inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) then
-  begin
-    if (AComponent = FManager) then
-    begin
-      FManager := nil;
-      UpdateSkin;
-    end;
-  end
-  else
-    if (Operation = opInsert) then
-    begin
-      if (AComponent is TSharpESkinManager) and (csDesigning in ComponentState)
-        then
-      begin
-        if FManager = nil then
-        begin
-          FManager := AComponent as TSharpESkinManager;
-          UpdateSkin;
-        end;
-      end;
-    end;
-end;
-
-procedure TCustomSharpEComponent.SetManager(value: TSharpESkinManager);
+procedure TCustomSharpEComponent.SetManager(value: ISharpESkinManager);
 begin
   if FManager <> value then
   begin
@@ -190,40 +152,13 @@ begin
   UpdateSkin;
 end;
 
-procedure TCustomSharpEControl.UpdateSkin(sender: TComponent);
+procedure TCustomSharpEControl.UpdateSkin(pManager: ISharpESkinManager);
 begin
-  if FManager = sender then
+  if FManager = pManager then
     UpdateSkin;
 end;
 
-procedure TCustomSharpEControl.Notification(AComponent: TComponent; Operation:
-  TOperation);
-begin
-  inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) then
-  begin
-    if (AComponent = FManager) then
-    begin
-      FManager := nil;
-      UpdateSkin;
-    end;
-  end
-  else
-    if (Operation = opInsert) then
-    begin
-      if (AComponent is TSharpESkinManager) and (csDesigning in ComponentState)
-        then
-      begin
-        if FManager = nil then
-        begin
-          FManager := AComponent as TSharpESkinManager;
-          UpdateSkin;
-        end;
-      end;
-    end;
-end;
-
-procedure TCustomSharpEControl.SetManager(value: TSharpESkinManager);
+procedure TCustomSharpEControl.SetManager(value: ISharpESkinManager);
 begin
   if FManager <> value then
   begin
@@ -258,64 +193,33 @@ begin
   FBuffer.Free;
 end;
 
-procedure TCustomSharpEGraphicControl.Notification(AComponent: TComponent;
-  Operation: TOperation);
-begin
-  inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) then
-  begin
-    if (AComponent = FManager) then
-    begin
-      FManager := nil;
-      UpdateSkin;
-      Invalidate;
-    end;
-  end
-  else
-    if (Operation = opInsert) then
-    begin
-      if (AComponent is TSharpESkinManager) and (csDesigning in ComponentState)
-        then
-      begin
-        if FManager = nil then
-        begin
-          FManager := AComponent as TSharpESkinManager;
-          UpdateSkin;
-          Invalidate;
-        end;
-      end;
-    end;
-end;
-
-procedure TCustomSharpEGraphicControl.DrawDefaultSkin(bmp: TBitmap32; Scheme: TSharpEScheme);
+procedure TCustomSharpEGraphicControl.DrawDefaultSkin(bmp: TBitmap32; Scheme: ISharpEScheme);
 begin
   with bmp do
   begin
     Clear(color32(0, 0, 0, 0));
     FrameRectS(0, 0, Width, Height, setalpha(color32(clblack), 200));
-    FrameRectS(1, 1, Width - 1, Height - 1, setalpha(color32(Scheme.GetColorByName('WorkAreadark')), 200));
-    FrameRectS(1, 1, Width - 2, Height - 2, setalpha(color32(Scheme.GetColorByName('WorkAreaLight')), 200));
-    FillRect(2, 2, Width - 2, Height - 2, setalpha(color32(Scheme.GetColorByName('WorkAreaBack')), 200));
+    FrameRectS(1, 1, Width - 1, Height - 1, setalpha(color32(clblack), 200));
+    FrameRectS(1, 1, Width - 2, Height - 2, setalpha(color32(clwhite), 200));
+    FillRect(2, 2, Width - 2, Height - 2, setalpha(color32(clsilver), 200));
   end;
 end;
 
-procedure TCustomSharpEGraphicControl.DrawManagedSkin(bmp: TBitmap32; Scheme: TSharpEScheme);
+procedure TCustomSharpEGraphicControl.DrawManagedSkin(bmp: TBitmap32; Scheme: ISharpEScheme);
 begin
   DrawDefaultSkin(bmp, Scheme);
 end;
 
-procedure TCustomSharpEGraphicControl.SetManager(value: TSharpESkinManager);
+procedure TCustomSharpEGraphicControl.SetManager(value: ISharpESkinManager);
 begin
   FManager := value;
-  if Assigned(FManager) then
-    FManager.FreeNotification(self);
 
   UpdateSkin;
 end;
 
-procedure TCustomSharpEGraphicControl.UpdateSkin(sender: TComponent);
+procedure TCustomSharpEGraphicControl.UpdateSkin(pManager: ISharpESkinManager);
 begin
-  if FManager = sender then
+  if FManager = pManager then
     UpdateSkin;
 end;
 

@@ -34,6 +34,7 @@ uses
   SysUtils,
   Math,
   Graphics,
+  ISharpEskinComponents,
   SharpESkinPart,
   SharpEScheme,
   SharpEBaseControls,
@@ -68,27 +69,39 @@ type
 
   TSkinPartArray = array of TSkinPartInfo;
 
+  // Never directly free a TSharpEAnimTimer class directly,
+  // it's creating an interface to itself to fool the garbage collector.
+  // In order to release it set the SelfInterface property to nil
+  // Example:
+  //   Text := TSharpEAnimTimer.Create;
+  //   [...]
+  //   Text.SelfInterface := nil;
+  //   Text := nil;   
   TSharpEAnimTimer = class
                      private
+                       FCallBackInterface : ISharpESkinAnimTimerCallback;
                        FInterpreter : TJvInterpreterProgram;
                        FTimer       : TTimer;
-                       FScheme      : TSharpEScheme;
+                       FScheme      : ISharpEScheme;
                        FComponent   : TObject;
                        FSkinPart    : TSkinPart;
                        ETime        : Int64;
                        FModList     : TSkinPartArray;
                        FLMList      : TSkinPartArray;
-                       FOnTimerFinished : TOnTimerFinishedEvent;
+                       FManager     : TObject;
                      public
-                       constructor Create(pComponent : TObject;
+                       constructor Create(pManager: TObject;
+                                          pComponent : TObject;
                                           pScript : String;
                                           pSkinPart : TSkinPart;
-                                          pScheme : TSharpEScheme); reintroduce;
+                                          pScheme : ISharpEScheme;
+                                          pAnimTimerCallback : ISharpESkinAnimTimerCallback); reintroduce;
                        destructor Destroy; override;
                        procedure Update(pComponent : TObject;
                                         pScript : String;
                                         pSkinPart : TSkinPart;
-                                        pScheme : TSharpEScheme);
+                                        pScheme : ISharpEScheme;
+                                        pAnimTimerCallback : ISharpESkinAnimTimerCallback);
                        procedure OnAnimTimer(Sender : TObject);
                        procedure OnInterpreterGetValue(Sender: TObject; Identifier: string; var Value: Variant; Args: TjvInterpreterArgs; var Done: Boolean);
                        function FindSkinPart(ID : String; BasePart : TSkinPart) : TSkinPart;
@@ -99,7 +112,6 @@ type
 
                        property Component : TObject read FComponent;
                        property Timer     : TTimer  read FTimer;
-                       property OnTimerFinished : TOnTimerFinishedEvent read FOnTimerFinished write FOnTimerFinished;
                      end;
 
   TSharpETimerManager = class
@@ -110,10 +122,11 @@ type
                         public
                           constructor Create; reintroduce;
                           destructor Destroy; override;
-                          function ExecuteScript(pComponent : TObject;
+                          procedure ExecuteScript(pComponent : TObject;
                                                  pScript : String;
                                                  pSkinPart : TSkinPart;
-                                                 pScheme : TSharpEScheme) : TSharpEAnimTimer;
+                                                 pScheme : ISharpEScheme;
+                                                 pAnimTimerCallback : ISharpESkinAnimTimerCallback);
                           procedure OnCheckTimer(Sender : TObject);
                           function HasScriptRunning(pComponent : TObject) : boolean;
                           procedure StopScript(pComponent : TObject);
@@ -124,8 +137,8 @@ type
 var
   SharpEAnimManager : TSharpETimerManager;
 
-
 implementation
+
 
 function Script_IntToStr(Int : integer) : String;
 begin
@@ -197,13 +210,13 @@ begin
   SP.SkinText.ShadowAlpha := Max(0,Min(255,NewAlpha));
 end;
 
-procedure Script_SetTextShadowColor(SP : TSkinPart; NewColor : String; Scheme : TSharpEScheme);
+procedure Script_SetTextShadowColor(SP : TSkinPart; NewColor : String; Scheme : ISharpEScheme);
 begin
   SP.SkinText.ShadowColorString := NewColor;
   SP.SkinText.ShadowColor := ParseColor(NewColor,Scheme);
 end;
 
-procedure Script_setColor(SP : TSkinPart; NewColor : String; Scheme : TSharpEScheme);
+procedure Script_setColor(SP : TSkinPart; NewColor : String; Scheme : ISharpEScheme);
 begin
   SP.BlendColorString := NewColor;
   SP.BlendColor := ParseColor(NewColor,Scheme);
@@ -273,7 +286,7 @@ begin
   SP.GradientAlpha.SetPoint(SP.GradientAlpha.X,inttostr(n));
 end;
 
-procedure Script_SetTextColor(SP : TSkinPart; NewColor : String; Scheme : TSharpEScheme);
+procedure Script_SetTextColor(SP : TSkinPart; NewColor : String; Scheme : ISharpEScheme);
 begin
   SP.SkinText.ColorString := NewColor;
   SP.SkinText.Color := ParseColor(NewColor,Scheme);
@@ -340,7 +353,7 @@ begin
   SP.MasterAlpha := Max(0,SP.MasterAlpha - Amount);
 end;
 
-procedure Script_BlendTextShadowColor(SP : TSkinPart; pFromColor, pToColor : String; Step : integer; Scheme : TSharpEScheme);
+procedure Script_BlendTextShadowColor(SP : TSkinPart; pFromColor, pToColor : String; Step : integer; Scheme : ISharpEScheme);
 var
   NewColor : integer;
   CurrentColor, FromColor, ToColor : integer;
@@ -362,7 +375,7 @@ begin
   end;
 end;
 
-procedure Script_BlendTextColor(SP : TSkinPart; pFromColor, pToColor : String; Step : integer; Scheme : TSharpEScheme);
+procedure Script_BlendTextColor(SP : TSkinPart; pFromColor, pToColor : String; Step : integer; Scheme : ISharpEScheme);
 var
   NewColor : integer;
   CurrentColor, FromColor, ToColor : integer;
@@ -384,7 +397,7 @@ begin
   end;
 end;
 
-procedure Script_BlendColor(SP : TSkinPart; pFromColor, pToColor : String; Step : integer; Scheme : TSharpEScheme);
+procedure Script_BlendColor(SP : TSkinPart; pFromColor, pToColor : String; Step : integer; Scheme : ISharpEScheme);
 var
   NewColor : integer;
   CurrentColor, FromColor, ToColor : integer;
@@ -406,7 +419,7 @@ begin
   end;
 end;
 
-procedure Script_BlendGradientFrom(SP : TSkinPart; pFromColor, pToColor : String; Step : integer; Scheme : TSharpEScheme);
+procedure Script_BlendGradientFrom(SP : TSkinPart; pFromColor, pToColor : String; Step : integer; Scheme : ISharpEScheme);
 var
   NewColor : integer;
   CurrentColor, FromColor, ToColor : integer;
@@ -428,7 +441,7 @@ begin
   end;
 end;
 
-procedure Script_BlendGradientTo(SP : TSkinPart; pFromColor, pToColor : String; Step : integer; Scheme : TSharpEScheme);
+procedure Script_BlendGradientTo(SP : TSkinPart; pFromColor, pToColor : String; Step : integer; Scheme : ISharpEScheme);
 var
   NewColor : integer;
   CurrentColor, FromColor, ToColor : integer;
@@ -449,19 +462,24 @@ begin
   end;
 end;
 
-constructor TSharpEAnimTimer.Create(pComponent : TObject;
+constructor TSharpEAnimTimer.Create(pManager: TObject;
+                                    pComponent : TObject;
                                     pScript : String;
                                     pSkinPart : TSkinPart;
-                                    pScheme : TSharpEScheme);
+                                    pScheme : ISharpEScheme;
+                                    pAnimTimerCallBack : ISharpESkinAnimTimerCallback);
 begin
   Inherited Create;
+  FManager := pManager;
+  FCallBackInterface := pAnimTimerCallBack;
   FTimer := TTimer.Create(nil);
+  FTimer.Enabled := False;
   FTimer.OnTimer := OnAnimTimer;
   FInterpreter := TJvInterpreterProgram.Create(nil);
   FInterpreter.OnGetValue := OnInterpreterGetValue;
   Setlength(FLMList,0);
 
-  Update(pComponent,pScript,pSkinPart,pScheme);
+  Update(pComponent,pScript,pSkinPart,pScheme,pAnimTimerCallBack);
 end;
 
 destructor TSharpEAnimTimer.Destroy;
@@ -579,11 +597,13 @@ end;
 procedure TSharpEAnimTimer.Update(pComponent : TObject;
                                   pScript : String;
                                   pSkinPart : TSkinPart;
-                                  pScheme : TSharpEScheme);
+                                  pScheme : ISharpEScheme;
+                                  pAnimTimerCallback : ISharpESkinAnimTimerCallback);
 begin
   FComponent := pComponent;
   FSkinPart  := pSkinPart;
   FScheme    := pScheme;
+  FCallBackInterface := pAnimTimerCallback;
 
   try
     FInterpreter.Pas.CommaText := pScript;
@@ -618,18 +638,19 @@ begin
     continue := False;
   end;
 
-  SharpEAnimManager.TimerActive := True;
+  TSharpETimerManager(FManager).TimerActive := True;
   try
-    if FComponent is TCustomSharpEGraphicControl then
+    TCustomSharpEGraphicControl(FComponent).UpdateSkin;
+{    if FComponent is TCustomSharpEGraphicControl then
        TCustomSharpEGraphicControl(FComponent).UpdateSkin
     else if FComponent is TCustomSharpEComponent then
             TCustomSharpEComponent(FComponent).UpdateSkin
     else if FComponent is TCustomSharpEControl then
-            TCustomSharpEControl(FComponent).UpdateSkin;
+            TCustomSharpEControl(FComponent).UpdateSkin;}
   except
     continue := False;
   end;
-  SharpEAnimManager.TimerActive := False;
+  TSharpETimerManager(FManager).TimerActive := False;
   FTimer.Enabled := continue;
 
   try
@@ -641,8 +662,8 @@ begin
   if DateTimeToUnix(now) - ETime > 10 then FTimer.Enabled := False;
 
   try
-    if (FTimer.Enabled = False) and (Assigned(FOnTimerFinished)) then
-       FOnTimerFinished(Self,FSkinPart);
+    if (FTimer.Enabled = False) and (Assigned(FCallBackInterface)) then
+      FCallBackInterface.TimerFinished;
   except
   end;
 end;
@@ -860,16 +881,30 @@ begin
 end;
 
 destructor TSharpETimerManager.Destroy;
+var
+  n : integer;
+  temp : TSharpEAnimTimer;
 begin
+  if FCheckTimer.Enabled then
+  begin
+    for n := FTimers.Count - 1 downto 0 do
+    begin
+      temp := TSharpEAnimTimer(FTimers.Items[n]);
+      FTimers.Extract(temp);
+      temp.Free;
+    end;
+  end;
+
   FTimers.Free;
   FCheckTimer.Free;
   Inherited Destroy;
 end;
 
-function TSharpETimerManager.ExecuteScript(pComponent : TObject;
+procedure TSharpETimerManager.ExecuteScript(pComponent : TObject;
                                            pScript : String;
                                            pSkinPart : TSkinPart;
-                                           pScheme : TSharpEScheme) : TSharpEAnimTimer;
+                                           pScheme : ISharpEScheme;
+                                           pAnimTimerCallback : ISharpESkinAnimTimerCallback);
 var
   n : integer;
   temp : TSharpEAnimTimer;
@@ -879,14 +914,12 @@ begin
     temp := TSharpEAnimTimer(FTimers.Items[n]);
     if temp.Component = pComponent then
     begin
-      temp.Update(pComponent,pScript,pSkinPart,pScheme);
-      result := temp;
+      temp.Update(pComponent,pScript,pSkinPart,pScheme,pAnimTimerCallback);
       exit;
     end;
   end;
-  temp := TSharpEAnimTimer.Create(pComponent,pScript,pSkinPart,pScheme);
+  temp := TSharpEAnimTimer.Create(self,pComponent,pScript,pSkinPart,pScheme,pAnimTimerCallback);
   FTimers.Add(temp);
-  result := temp;
   FCheckTimer.Enabled := True;
 end;
 
@@ -941,11 +974,11 @@ begin
   end;
 end;
 
-
 initialization
   SharpEAnimManager := TSharpETimerManager.Create;
-  
+
 finalization
   SharpEAnimManager.Free;
+
 
 end.

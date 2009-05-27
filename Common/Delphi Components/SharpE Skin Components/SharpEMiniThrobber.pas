@@ -38,11 +38,10 @@ uses
   Dialogs,
   StdCtrls,
   gr32,
+  ISharpEskinComponents,
   SharpEBase,
   SharpEBaseControls,
   SharpEDefault,
-  SharpEScheme,
-  SharpESkinManager,
   math;
 
 type
@@ -58,7 +57,7 @@ type
     procedure SetAutoPosition(const Value: boolean);
     procedure SetBottom(const Value: boolean);
   protected
-    procedure DrawDefaultSkin(bmp: TBitmap32; Scheme: TSharpEScheme); override;
+    procedure DrawDefaultSkin(bmp: TBitmap32; Scheme: ISharpEScheme); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: integer); override;
@@ -66,7 +65,7 @@ type
     procedure SMouseLeave; override;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure DrawManagedSkin(bmp: TBitmap32; Scheme: TSharpEScheme); override;
+    procedure DrawManagedSkin(bmp: TBitmap32; Scheme: ISharpEScheme); override;
   published
     property Anchors;
     property Cancel: Boolean read FCancel write FCancel default False;
@@ -164,7 +163,7 @@ begin
   end;
 end;
 
-procedure TSharpEMiniThrobber.DrawDefaultSkin(bmp: TBitmap32; Scheme: TSharpEScheme);
+procedure TSharpEMiniThrobber.DrawDefaultSkin(bmp: TBitmap32; Scheme: ISharpEScheme);
 var
   r: TRect;
 begin
@@ -183,7 +182,7 @@ begin
   with bmp do
   begin
     Clear(color32(0, 0, 0, 0));
-    DefaultSharpESkinText.AssignFontTo(Font,Scheme);
+    AssignDefaultFontTo(Font);
     DrawMode := dmBlend;
     r := Rect(0, 0, Width, Height);
     if true then
@@ -210,7 +209,7 @@ begin
   end;
 end;
 
-procedure TSharpEMiniThrobber.DrawManagedSkin(bmp: TBitmap32; Scheme: TSharpEScheme);
+procedure TSharpEMiniThrobber.DrawManagedSkin(bmp: TBitmap32; Scheme: ISharpEScheme);
 var
   r, CompRect: TRect;
 begin
@@ -223,7 +222,7 @@ begin
   CompRect := Rect(0, 0, width, height);
   if FAutoSize then
   begin
-    r := FManager.Skin.MiniThrobberSkin.GetAutoDim(CompRect);
+    r := FManager.Skin.MiniThrobber.GetAutoDim(CompRect);
     if (r.Right <> width) or (r.Bottom <> height) then
     begin
       width := r.Right;
@@ -235,29 +234,26 @@ begin
   if FAutoPosition then
      if FBottom then
      begin
-       if top <> FManager.Skin.MiniThrobberSkin.BottomSkinDim.YAsInt then
-          top := FManager.Skin.MiniThrobberSkin.BottomSkinDim.YAsInt
-     end else if top <> FManager.Skin.MiniThrobberSkin.SkinDim.YAsInt then
-        else top := FManager.Skin.MiniThrobberSkin.SkinDim.YAsInt;
+       if top <> FManager.Skin.MiniThrobber.BottomLocation.Y then
+          top := FManager.Skin.MiniThrobber.BottomLocation.Y
+     end else if top <> FManager.Skin.MiniThrobber.Location.Y then
+        else top := FManager.Skin.MiniThrobber.Location.Y;
 
-  if FManager.Skin.MiniThrobberSkin.Valid then
+  if FManager.Skin.MiniThrobber.Valid then
   begin
     FSkin.Clear(Color32(0, 0, 0, 0));
-    if FButtonDown and not (FManager.Skin.MiniThrobberSkin.Down.Empty) then
+    if FButtonDown and not (FManager.Skin.MiniThrobber.Down.Empty) then
     begin
-      FManager.Skin.MiniThrobberSkin.Down.Draw(bmp, Scheme);
-      FManager.Skin.MiniThrobberSkin.Down.SkinText.AssignFontTo(bmp.Font, Scheme);
+      FManager.Skin.MiniThrobber.Down.DrawTo(bmp, Scheme);
     end
     else
-      if FButtonOver and not (FManager.Skin.MiniThrobberSkin.Hover.Empty) then
+      if FButtonOver and not (FManager.Skin.MiniThrobber.Hover.Empty) then
       begin
-        FManager.Skin.MiniThrobberSkin.Hover.Draw(bmp, Scheme);
-        FManager.Skin.MiniThrobberSkin.Hover.SkinText.AssignFontTo(bmp.Font, Scheme);
+        FManager.Skin.MiniThrobber.Hover.DrawTo(bmp, Scheme);
       end
       else
       begin
-        FManager.Skin.MiniThrobberSkin.Normal.Draw(bmp, Scheme);
-        FManager.Skin.MiniThrobberSkin.Normal.SkinText.AssignFontTo(bmp.Font, Scheme);
+        FManager.Skin.MiniThrobber.Normal.DrawTo(bmp, Scheme);
       end;
   end
   else
