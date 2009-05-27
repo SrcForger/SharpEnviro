@@ -59,8 +59,6 @@ end;
 
 procedure TSystemSkinLoadThread.DoUpdate;
 begin
-  FManager.SkinSource := ssSystem;
-  FManager.SchemeSource := ssSystem;
   FManager.Skin.UpdateDynamicProperties(FManager.Scheme);
 end;
 
