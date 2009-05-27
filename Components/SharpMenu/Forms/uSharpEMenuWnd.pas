@@ -440,9 +440,9 @@ begin
       SubMenuCloseTimer.Enabled := False;
       FSubMenu := TSharpEMenuWnd.Create(self,TSharpEMenu(item.submenu));
       FSubMenu.ParentMenu := self;
-      t := Left + Width + FMenu.SkinManager.Skin.MenuSkin.SkinDim.XAsInt;
+      t := Left + Width + FMenu.SkinManager.Skin.Menu.LocationOffset.X;
       if (t + FSubMenu.Width > Monitor.Left + Monitor.Width) then
-         t := Left - FSubMenu.Width - FMenu.SkinManager.Skin.MenuSkin.SkinDim.XAsInt;
+         t := Left - FSubMenu.Width - FMenu.SkinManager.Skin.Menu.LocationOffset.Y;
       if (t < Monitor.Left) then t := 0;
       FSubMenu.Left := t;
 

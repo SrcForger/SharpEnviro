@@ -29,7 +29,7 @@ interface
 
 uses SysUtils, Windows, Forms, Contnrs, Menus, Controls, GR32,Classes,Dialogs,
      SharpGraphicsUtils,
-     SharpESkinManager,
+     ISharpESkinComponents,
      uSharpEMenuPopups,
      uSharpEMenuIcons,
      uSharpEMenuItem,
@@ -43,7 +43,7 @@ type
   TSharpEMenu = class
   private
     FParentMenuItem : TSharpEMenuItem;
-    FSkinManager  : TSharpESkinManager;
+    FSkinManager  : ISharpESkinManager;
     FMenuActions  : TSharpEMenuActions;
     FMenuConsts   : TSharpEMenuConsts;
     FSettings     : TSharpEMenuSettings;
@@ -66,8 +66,8 @@ type
     function GetCurrentItem : TSharpEMenuItem;
   public
     // Create/Destroy
-    constructor Create(pParentMenuItem : TSharpEMenuItem; pManager  : TSharpESkinManager; pSettings : TSharpEMenuSettings); reintroduce; overload;
-    constructor Create(pManager  : TSharpESkinManager; pSettings : TSharpEMenuSettings); reintroduce; overload;
+    constructor Create(pParentMenuItem : TSharpEMenuItem; pManager  : ISharpESkinManager; pSettings : TSharpEMenuSettings); reintroduce; overload;
+    constructor Create(pManager  : ISharpESkinManager; pSettings : TSharpEMenuSettings); reintroduce; overload;
 
     destructor Destroy; override;
 
@@ -118,7 +118,7 @@ type
     property CurrentItem : TSharpEMenuItem read GetCurrentItem;
     property Background : TBitmap32 read FBackground;
     property NormalMenu : TBitmap32 read FNormalMenu;
-    property SkinManager : TSharpESkinManager read FSkinManager;
+    property SkinManager : ISharpESkinManager read FSkinManager;
     property Items : TObjectList read FItems;
     property ItemsHeight : TIntArray read FItemsHeight;
     property isWrapMenu : boolean read FWrapMenu write FWrapMenu;
@@ -136,8 +136,6 @@ implementation
 
 uses Math,
      JclFileUtils,
-     SharpESkin,
-     SharpESkinPart,
      uSharpEMenuWnd,
      SharpThemeApiEx,
      uISharpETheme;
@@ -149,7 +147,7 @@ begin
      else PointInRect:=False;
 end;     
 
-constructor TSharpEMenu.Create(pParentMenuItem : TSharpEMenuItem; pManager  : TSharpESkinManager; pSettings : TSharpEMenuSettings);
+constructor TSharpEMenu.Create(pParentMenuItem : TSharpEMenuItem; pManager  : ISharpESkinManager; pSettings : TSharpEMenuSettings);
 begin
   inherited Create;
 
@@ -491,8 +489,7 @@ begin
   FItems.Insert(pInsertPos,item);
 end;
 
-constructor TSharpEMenu.Create(pManager: TSharpESkinManager;
-  pSettings: TSharpEMenuSettings);
+constructor TSharpEMenu.Create(pManager: ISharpESkinManager; pSettings: TSharpEMenuSettings);
 begin
   Create(nil, pManager, pSettings);
 end;
@@ -569,14 +566,14 @@ end;
 
 function TSharpEMenu.GetItemUndercursor(px, py: integer): TSharpEMenuItem;
 var
-  menuskin : TSharpEMenuSkin;
+  menuskin : ISharpEMenuSkin;
   item : TSharpEMenuItem;
   tl : TPoint;
   n : integer;
 begin
-  menuskin := FSkinManager.Skin.MenuSkin;
-  tl.x := menuskin.LROffset.XAsInt;
-  tl.y := menuskin.TBOffset.XAsInt;
+  menuskin := FSkinManager.Skin.Menu;
+  tl.x := menuskin.LROffset.X;
+  tl.y := menuskin.TBOffset.X;
 
   for n := 0 to High(FItemsHeight) do
   begin
@@ -596,7 +593,7 @@ end;
 procedure TSharpEMenu.UpdateItemsHeight;
 var
   n,i : integer;
-  menuitemskin : TSharpEMenuItemSkin;
+  menuitemskin : ISharpEMenuItemSkin;
   item : TSharpEMenuItem;
 begin
   if (FSkinManager = nil) or (FItems.Count = 0) then
@@ -605,7 +602,7 @@ begin
     exit;
   end;
 
-  menuitemskin := FSkinManager.Skin.MenuItemSkin;
+  menuitemskin := FSkinManager.Skin.MenuItem;
   setlength(FItemsHeight,0);
   for n:= 0 to FItems.Count -1 do
   begin
@@ -614,10 +611,10 @@ begin
     if item.isVisible then
     begin
       case item.ItemType of
-        mtLabel    : i := menuitemskin.LabelItem.SkinDim.HeightAsInt;
-        mtSeparator: i := menuitemskin.Separator.SkinDim.HeightAsInt;
-        mtSubMenu  : i := menuitemskin.NormalSubItem.SkinDim.HeightAsInt;
-        else         i := menuitemskin.NormalItem.SkinDim.HeightAsInt;
+        mtLabel    : i := menuitemskin.LabelItem.Dimension.Y;
+        mtSeparator: i := menuitemskin.Separator.Dimension.Y;
+        mtSubMenu  : i := menuitemskin.NormalSubItem.Dimension.Y;
+        else         i := menuitemskin.NormalItem.Dimension.Y;
       end;
     end else i := 0;
     FItemsHeight[High(FItemsHeight)] := i;
@@ -633,9 +630,9 @@ var
   maxitemtext : integer;
   maxsize : integer;
   temp : TBitmap32;
-  menuskin : TSharpEMenuSkin;
-  menuitemskin : TSharpEMenuItemSkin;
-  SkinText : TSkinText;
+  menuskin : ISharpEMenuSkin;
+  menuitemskin : ISharpEMenuItemSkin;
+  SkinText : ISharpESkinText;
 begin
   size := 255;
 
@@ -645,14 +642,14 @@ begin
     exit;
   end;
   
-  menuitemskin := FSkinManager.Skin.MenuItemSkin;
-  menuskin := FSkinManager.Skin.MenuSkin;
-  SkinText := CreateThemedSkinText(menuitemskin.NormalItem.SkinText);
+  menuitemskin := FSkinManager.Skin.MenuItem;
+  menuskin := FSkinManager.Skin.Menu;
+  SkinText := menuitemskin.NormalItem.CreateThemedSkinText;
   temp := TBitmap32.Create;
   try
     SkinText.AssignFontTo(temp.font,FSkinManager.Scheme);
-    size := menuskin.WidthLimit.XAsInt;
-    maxsize := menuskin.WidthLimit.YAsInt;
+    size := menuskin.WidthLimit.X;
+    maxsize := menuskin.WidthLimit.Y;
     maxitemtext := SkinText.GetDim(Rect(0,0,maxsize,64)).X;
     for n:= 0 to FItems.Count -1 do
     begin
@@ -672,7 +669,7 @@ begin
   finally
     temp.free;
   end;
-  SkinText.Free;
+  SkinText := nil;
   FItemWidth := size;
 end;
 
@@ -810,7 +807,7 @@ const
   CAPTUREBLT = $40000000;
 var
   w,h : integer;
-  menuskin : TSharpEMenuSkin;
+  menuskin : ISharpEMenuSkin;
   dc : hdc;
   Theme : ISharpETheme;
 begin
@@ -820,14 +817,14 @@ begin
   UpdateItemWidth;
   UpdateItemsHeight;
 
-  menuskin := FSkinManager.Skin.MenuSkin;
+  menuskin := FSkinManager.Skin.Menu;
 
   w := Max(8,FItemWidth);
   h := Max(8,GetItemsHeight(-1));
 
   // add Left/Right and Top/Bottom offsets to menu size;
-  w := w + menuskin.LROffset.XAsInt + menuskin.LROffset.YAsInt;
-  h := h + menuskin.TBOffset.XAsInt + menuskin.TBOffset.YAsInt;
+  w := w + menuskin.LROffset.X + menuskin.LROffset.Y;
+  h := h + menuskin.TBOffset.X + menuskin.TBOffset.Y;
 
   // fail safe check
   if (w<=0) or (h<=0) then
@@ -836,7 +833,7 @@ begin
   FBackground.SetSize(w,h);
   FBackground.Clear(color32(0,0,0,0));
 
-  if FSkinManager.Skin.BarSkin.GlassEffect then
+  if FSkinManager.Skin.Bar.GlassEffect then
   begin
     ImageCheck(FSpecialBackground,Point(w,h));
     FSpecialBackground.SetSize(w,h);
@@ -864,14 +861,14 @@ begin
       FSpecialBackground.ResetAlpha(255);
       FBackground.SetSize(w,h);
       FBackground.Clear(color32(0,0,0,0));
-      menuskin.Background.draw(FBackground,FSkinManager.Scheme);
+      menuskin.Background.DrawTo(FBackground,FSkinManager.Scheme);
       ReplaceTransparentAreas(FSpecialBackground,FBackground,Color32(0,0,0,0));
     finally
       ReleaseDC(GetDesktopWindow, dc);
     end;
   end else
   begin
-    menuskin.Background.draw(FBackground,FSkinManager.Scheme);
+    menuskin.Background.drawto(FBackground,FSkinManager.Scheme);
     if FSpecialBackground <> nil then
       FreeAndNil(FSpecialBackground);
   end;
@@ -906,7 +903,7 @@ procedure TSharpEMenu.RenderMenuItem(Dst : TBitmap32; px,py : integer;
                              pitem : TObject; state : TSharpEMenuItemState);
 var
   temp : TBitmap32;
-  icon : TBitmap32;
+  iconbmp : TBitmap32;
   text : TBitmap32;
   item : TSharpEMenuItem;
   Ipos : TPoint;
@@ -914,21 +911,21 @@ var
   DIcon : boolean;
   Tpos : TPoint;
   DText : boolean;
-  drawpart : TSkinPart;
-  drawpartEx : TSkinPartEx;
-  menuitemskin : TSharpEMenuItemSkin;
+  drawpart : ISharpESkinPart;
+  drawpartEx : ISharpESkinPartEx;
+  menuitemskin : ISharpEMenuItemSkin;
   w,h : integer;
-  ST : TSkinText;
+  ST : ISharpESkinText;
   textrect,iconrect : TRect;
   fixedCaption : String;
 
-procedure AssignDrawPart(part : TSkinPartEx); overload;
+procedure AssignDrawPart(part : ISharpESkinPartEx); overload;
 begin
   drawpart := nil;
   drawpartEx := part;
 end;
 
-procedure AssignDrawPart(part : TSkinPart); overload;
+procedure AssignDrawPart(part : ISharpESkinPart); overload;
 begin
   drawpartEx := nil;
   drawpart := part;
@@ -946,17 +943,17 @@ begin
     exit;
   end;
 
-  menuitemskin := FSkinManager.Skin.MenuItemSkin;
+  menuitemskin := FSkinManager.Skin.MenuItem;
   w := FItemWidth;
 
   temp := TBitmap32.Create;
-  icon := TBitmap32.Create;
+  iconbmp := TBitmap32.Create;
   text := TBitmap32.Create;
   temp.DrawMode := dmBlend;
-  icon.DrawMode := dmBlend;
+  iconbmp.DrawMode := dmBlend;
   text.DrawMode := dmBlend;
   temp.CombineMode := cmMerge;
-  icon.CombineMode := cmMerge;
+  iconbmp.CombineMode := cmMerge;
   text.CombineMode := cmMerge;
   try
     h := 8;
@@ -977,7 +974,7 @@ begin
                       end;
                     end;
     end;
-    icon.Clear(color32(0,0,0,0));
+    iconbmp.Clear(color32(0,0,0,0));
     text.Clear(color32(0,0,0,0));
     dicon := False;
     dtext := False;
@@ -985,12 +982,12 @@ begin
     if drawpartEx <> nil then
     with drawpartEx do
     begin
-      ST := CreateThemedSkinText(drawpartEx.SkinText);
-      h := SkinDim.HeightAsInt;
-      if (item.Icon <> nil) and (SkinIcon.DrawIcon) and (FSettings.UseIcons) then
-        iconrect := Rect(0,0,SkinIcon.Size.XAsInt,SkinIcon.Size.YAsInt)
+      ST := CreateThemedSkinText;
+      h := Dimension.Y;
+      if (item.Icon <> nil) and (Icon.DrawIcon) and (FSettings.UseIcons) then
+        iconrect := Rect(0,0,Icon.Dimension.X,Icon.Dimension.Y)
       else iconrect := Rect(0,0,0,0);
-      if (length(item.Caption)>0) and (SkinText.DrawText) and
+      if (length(item.Caption)>0) and (DrawText) and
         (w>0) and (h>0) then
       begin
         text.SetSize(w,h);
@@ -1003,40 +1000,40 @@ begin
         textrect := rect(TPos.X,TPos.Y,TPos.X + text.TextWidth(FixedCaption),TPos.Y + text.TextHeight(FixedCaption));
         dtext := true;
       end;
-      if (item.Icon <> nil) and (SkinIcon.DrawIcon) and (FSettings.UseIcons) then
+      if (item.Icon <> nil) and (Icon.DrawIcon) and (FSettings.UseIcons) then
       begin
-        IWidth := SkinIcon.Size.XAsInt;
-        IHeight := SkinIcon.Size.YAsInt;
+        IWidth := Icon.Dimension.X;
+        IHeight := Icon.Dimension.Y;
         if (IWidth > 0) and (IHeight > 0) then
         begin
-          icon.setsize(IWidth,IHeight);
-          icon.Clear(color32(0,0,0,0));
-          SkinIcon.RenderTo(icon,item.Icon.Icon,0,0);
+          iconbmp.setsize(IWidth,IHeight);
+          iconbmp.Clear(color32(0,0,0,0));
+          icon.DrawTo(iconbmp,item.Icon.Icon,0,0);
           dicon := true;
-          Ipos := SkinIcon.GetXY(textrect,Rect(0,0,w,h));
+          Ipos := Icon.GetXY(textrect,Rect(0,0,w,h));
         end;
       end;
-      ST.Free;
+      ST := nil;
     end
     else if (drawpart <> nil) then
-      h := drawpart.SkinDim.HeightAsInt;
+      h := drawpart.Dimension.Y;
     if (w > 0) and (h > 0) then
     begin
       temp.SetSize(w,h);
       temp.Clear(color32(0,0,0,0));
       if drawpartex <> nil then
-        drawpartex.draw(temp,FSkinManager.Scheme)
+        drawpartex.DrawTo(temp,FSkinManager.Scheme)
       else if drawpart <> nil then
-        drawpart.draw(temp,FSkinManager.Scheme);
+        drawpart.DrawTo(temp,FSkinManager.Scheme);
       temp.DrawTo(dst,px,py);
       if dicon then
-         icon.DrawTo(dst,px+IPos.x,py+IPos.y);
+         iconbmp.DrawTo(dst,px+IPos.x,py+IPos.y);
       if dtext then
          text.DrawTo(dst,px,py);
     end;
   finally
     FreeAndNil(temp);
-    FreeAndNil(icon);
+    FreeAndNil(iconbmp);
     FreeAndNil(text);
   end;
 end;
@@ -1072,7 +1069,7 @@ end;
 
 procedure TSharpEMenu.RenderTo(Dst: TBitmap32; Offset: integer);
 var
-  menuskin : TSharpEMenuSkin;
+  menuskin : ISharpEMenuSkin;
   temp : TBitmap32;
   n : integer;
   y : integer;
@@ -1081,7 +1078,7 @@ begin
   if (FBackground = nil) then RenderBackground(0,0);
   if (FNormalMenu = nil) then RenderNormalMenu;
 
-  menuskin := FSkinManager.Skin.MenuSkin;
+  menuskin := FSkinManager.Skin.Menu;
 
   if (FBackground.Width <= 0) or (FBackground.Height <= 0) then
     exit;
@@ -1110,7 +1107,7 @@ begin
       end;
       y := y + FItemsHeight[n];
     end;
-    temp.DrawTo(Dst,menuskin.LROffset.XAsInt,menuskin.TBOffset.XAsInt);
+    temp.DrawTo(Dst,menuskin.LROffset.X,menuskin.TBOffset.X);
   finally
     temp.Free;
   end;
@@ -1222,14 +1219,14 @@ end;
 
 function TSharpEMenu.PerformMouseMove(px,py : integer; var submenu : boolean) : boolean;
 var
-  menuskin : TSharpEMenuSkin;
+  menuskin : ISharpEMenuSkin;
   item : TSharpEMenuItem;
   tl : TPoint;
   n : integer;
 begin
-  menuskin := FSkinManager.Skin.MenuSkin;
-  tl.x := menuskin.LROffset.XAsInt;
-  tl.y := menuskin.TBOffset.XAsInt;
+  menuskin := FSkinManager.Skin.Menu;
+  tl.x := menuskin.LROffset.X;
+  tl.y := menuskin.TBOffset.X;
 
   for n := 0 to High(FItemsHeight) do
   begin

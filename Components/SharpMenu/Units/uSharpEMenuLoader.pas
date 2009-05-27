@@ -30,15 +30,15 @@ interface
 uses JvSimpleXML,SysUtils,
      uSharpEMenu,
      uSharpEMenuSettings,
-     SharpESkinManager;
+     ISharpESkinComponents;
 
-function LoadMenu(pFileName : String; pManager: TSharpESkinManager; pDesignMode : boolean) : TSharpEMenu;
+function LoadMenu(pFileName : String; pManager: ISharpESkinManager; pDesignMode : boolean) : TSharpEMenu;
 
 implementation
 
 uses uSharpEMenuItem;
 
-function LoadMenuFromXML(pParemtItem : TSharpEMenuItem; pXML : TJvSimpleXMLElems; pManager: TSharpESkinManager; pSettings : TSharpEMenuSettings; pDesignMode : boolean) : TSharpEMenu;
+function LoadMenuFromXML(pParemtItem : TSharpEMenuItem; pXML : TJvSimpleXMLElems; pManager: ISharpESkinManager; pSettings : TSharpEMenuSettings; pDesignMode : boolean) : TSharpEMenu;
 var
   n : integer;
   menu : TSharpEMenu;
@@ -97,7 +97,7 @@ begin
       end;
 end;
 
-function LoadMenu(pFileName : String; pManager: TSharpESkinManager; pDesignMode : boolean) : TSharpEMenu;
+function LoadMenu(pFileName : String; pManager: ISharpESkinManager; pDesignMode : boolean) : TSharpEMenu;
 var
   XML : TJvSimpleXML;
   RootMenu : TSharpEMenu;

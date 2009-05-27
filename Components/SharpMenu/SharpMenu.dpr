@@ -47,6 +47,7 @@ uses
   SharpThemeApiEx,
   uThemeConsts,
   SharpESkinManager,
+  ISharpESkinComponents,
   uSystemFuncs,
   SharpTypes,
   uSharpEMenuWnd in 'Forms\uSharpEMenuWnd.pas' {SharpEMenuWnd},
@@ -57,7 +58,6 @@ uses
   uSharpEMenuIcons in 'Units\uSharpEMenuIcons.pas',
   uSharpEMenuItem in 'Units\uSharpEMenuItem.pas',
   uSharpEMenuConsts in 'Units\uSharpEMenuConsts.pas',
-  uSkinManagerThreads in '..\..\Common\Units\Threads\uSkinManagerThreads.pas',
   uPropertyList in '..\..\Common\Units\PropertyList\uPropertyList.pas',
   uSharpEMenuPopups in 'Units\uSharpEMenuPopups.pas',
   uSharpEMenuSettings in 'Units\uSharpEMenuSettings.pas',
@@ -70,6 +70,7 @@ uses
 
 var
   SkinManager : TSharpESkinManager;
+  SkinManagerInterface : ISharpESkinManager;
   mn : TSharpEMenu;
   wnd : TSharpEMenuWnd;
   iconcachefile : String;
@@ -79,9 +80,9 @@ var
   popupdir : integer;
   st : Int64;
   MutexHandle : THandle;
-  SystemSkinLoadThread : TSystemSkinLoadThread;
   menusettings : TSharpEMenuSettings;
   Mon : TMonitor;
+  TimeList : TStringList;
 
 function GetCurrentTime : Int64;
 var
@@ -97,14 +98,19 @@ var
 begin
   i := GetCurrentTime;
   i2 := i-st;
-  SharpApi.SendDebugMessage('SharpMenu',inttostr(i2) + ' ('+msg + ')',0);
+  TimeList.Add(inttostr(i2) + ' ('+msg + ')');
+//  SharpApi.SendDebugMessage('SharpMenu',inttostr(i2) + ' ('+msg + ')',0);
   st := i;
 end;
 
 begin
+  st := GetCurrentTime;  
+  TimeList := TStringList.Create;
+  TimeList.Clear;
   SharpEMenuPopups := nil;
   SharpEMenuIcons := nil;
 
+  DebugTime('Init');
   Application.Initialize;
   Application.ShowMainForm := False;
   {$IFDEF VER185} Application.MainFormOnTaskBar := True; {$ENDIF}
@@ -123,6 +129,7 @@ begin
     end;
   end;
 
+  DebugTime('menusettings');
   menusettings := TSharpEMenuSettings.Create;
   menusettings.LoadFromXML;
 
@@ -145,11 +152,13 @@ begin
      mfile := SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\Menu.xml';
   if not FileExists(mfile) then halt;
 
+  DebugTime('CreateForm');
   Application.Title := 'SharpMenu';
-  Application.CreateForm(TSharpEMenuwnd, wnd);    
-
+  Application.CreateForm(TSharpEMenuWnd, wnd);
+  DebugTime('LoadTheme');
   GetCurrentTheme.LoadTheme([tpSkinScheme,tpIconSet,tpSkinFont]);
 
+  DebugTime('IconStuff');
   iconcachefile := ExtractFileName(mfile);
   setlength(iconcachefile,length(iconcachefile) - length(ExtractFileExt(iconcachefile)));
   iconcachefile := iconcachefile + '.iconcache';
@@ -161,24 +170,25 @@ begin
 
   // init Classes
 
+  DebugTime('SkinManager and Menu XML');
   SkinManager := TSharpESkinManager.Create(nil,[scBar,scMenu,scMenuItem]);
-  SystemSkinLoadThread := TSystemSkinLoadThread.Create(SkinManager);
-  mn := uSharpEMenuLoader.LoadMenu(mfile,SkinManager,False);
-  SystemSkinLoadThread.WaitFor;
-  SystemSkinLoadThread.Free;
+  SkinManagerInterface := SkinManager;
+  mn := uSharpEMenuLoader.LoadMenu(mfile,SkinManagerInterface,False);
 
+  DebugTime('InitMenu');
   wnd.InitMenu(mn,true);
+  DebugTime('ScreenPos');
   Mon := Screen.MonitorFromPoint(Pos);
   if Mon = nil then
     Mon := wnd.Monitor;
 
   // Check position
-  i := Pos.X + SkinManager.Skin.MenuSkin.SkinDim.XAsInt;
+  i := Pos.X + SkinManagerInterface.Skin.Menu.LocationOffset.X;
   if (i + wnd.Width > (Mon.Left + Mon.Width)) then
      i := (Mon.Left + Mon.Width) - wnd.Width;
   wnd.Left := i;
 
-  i := Pos.Y + SkinManager.Skin.MenuSkin.SkinDim.YAsInt;
+  i := Pos.Y + SkinManagerInterface.Skin.Menu.LocationOffset.Y;
   if popupdir < 0 then
      i := i - wnd.Picture.Height;
   if (i + wnd.Picture.Height) > (Mon.Top + Mon.Height) then
@@ -193,10 +203,16 @@ begin
   // Register Shell Hook
   SharpApi.RegisterShellHookReceiver(wnd.Handle);
 
+  DebugTime('wnd show');
   wnd.Show;
+  DebugTime('ForceForegroundWindow');
   ForceForeGroundWindow(wnd.handle);
 
   Application.Run;
+
+  for i := 0 to TimeList.Count - 1 do
+    SharpApi.SendDebugMessage('SharpMenu',TimeList[i],0);
+  TimeList.Free;
 
   if (menusettings.CacheIcons) and (menuSettings.UseIcons) then
      SharpEMenuIcons.SaveIconCache(iconcachefile);  
@@ -206,7 +222,7 @@ begin
   //   SharpEMenuPopups.Free;
   SharpEMenuIcons.Free;     
 
-  SkinManager.Free;
+  SkinManagerInterface := nil;
 
   CloseHandle(MuteXHandle);
 end.

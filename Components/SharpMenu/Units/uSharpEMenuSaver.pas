@@ -29,8 +29,7 @@ interface
 uses JclSimpleXML,SysUtils,
      uSharpEMenu,
      uSharpEMenuItem,
-     uSharpEMenuSettings,
-     SharpESkinManager;
+     uSharpEMenuSettings;
 
 function SaveMenu(pMenu : TSharpEMenu; pFileName : String) : boolean;
 
