@@ -19,7 +19,7 @@ type
   private
     FInitialized : Boolean;
     FModuleName : String;
-    FSkinInterface : ISharpESkin;
+    FSkinInterface : ISharpESkinInterface;
     FBarInterface : ISharpBar;
     FID : integer;
     FForm : TForm;
@@ -44,9 +44,9 @@ type
     function InitModule : HRESULT; virtual; stdcall;
     function ModuleMessage(msg: string) : HRESULT; virtual; stdcall;
 
-    function GetSkinInterface : ISharpESkin; stdcall;
-    procedure SetSkinInterface(Value : ISharpESkin); virtual; stdcall;
-    property SkinInterface : ISharpESkin read GetSkinInterface write SetSkinInterface;
+    function GetSkinInterface : ISharpESkinInterface; stdcall;
+    procedure SetSkinInterface(Value : ISharpESkinInterface); virtual; stdcall;
+    property SkinInterface : ISharpESkinInterface read GetSkinInterface write SetSkinInterface;
 
     function GetBarInterface : ISharpBar; stdcall;
     procedure SetBarInterface(Value : ISharpBar); virtual; stdcall;
@@ -164,7 +164,7 @@ begin
   else result := 0;
 end;
 
-function TInterfacedSharpBarModuleBase.GetSkinInterface: ISharpESkin;
+function TInterfacedSharpBarModuleBase.GetSkinInterface: ISharpESkinInterface;
 begin
   result := FSkinInterface;
 end;
@@ -223,7 +223,7 @@ begin
   end;
 end;
 
-procedure TInterfacedSharpBarModuleBase.SetSkinInterface(Value: ISharpESkin);
+procedure TInterfacedSharpBarModuleBase.SetSkinInterface(Value: ISharpESkinInterface);
 begin
   FSkinInterface := Value;
 end;

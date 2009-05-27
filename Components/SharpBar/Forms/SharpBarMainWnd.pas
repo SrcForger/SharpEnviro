@@ -87,7 +87,6 @@ type
     procedure DelayTimer1Timer(Sender: TObject);
     procedure FormHide(Sender: TObject);
     procedure FormResize(Sender: TObject);
-    procedure SkinManager1SkinChanged(Sender: TObject);
     procedure DisableBarHiding1Click(Sender: TObject);
     procedure miRightModuleClick(Sender: TObject);
     procedure miLeftModuleClick(Sender: TObject);
@@ -671,7 +670,7 @@ begin
     FBGImage.Draw(0, 0, FBottomZone);
 
   // Apply Glass Effects
-  if SkinInterface.SkinManager.Skin.BarSkin.GlassEffect then
+  if SkinInterface.SkinManager.Skin.Bar.GlassEffect then
   begin
     Theme := GetCurrentTheme;
     if Theme.Skin.GlassEffect.Blend then
@@ -1028,8 +1027,6 @@ begin
   SharpEBar.onPositionUpdate := OnBarPositionUpdate;
 
   BarHideForm := TBarHideForm.Create(self);
-
-  SkinInterface.SkinManager.onSkinChanged := SkinManager1SkinChanged;
 
   //DelayTimer2.Enabled := True;
 
@@ -1774,30 +1771,6 @@ begin
   DisableBarHiding1.Checked := not DisableBarHiding1.Checked;
   SharpEBar.DisableHideBar := DisableBarHiding1.Checked;
   SaveBarSettings;
-end;
-
-procedure TSharpBarMainForm.SkinManager1SkinChanged(Sender: TObject);
-begin
-  exit;
-  //  if FThemeUpdating then exit;
-  if FSuspended then
-    exit;
-  if ModuleManager = nil then
-    exit;
-
-  SharpEBar.UpdateSkin;
-  if SharpEBar.Throbber.Visible then begin
-    SharpEBar.Throbber.UpdateSkin;
-    SharpEbar.Throbber.Repaint;
-  end;
-  UpdateBGImage;
-
-  //ModuleManager.UpdateModuleSkins;
-  ModuleManager.FixModulePositions;
-  ModuleManager.BroadcastPluginUpdate(suBackground);
-
-  RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
-  ModuleManager.RefreshMiniThrobbers;
 end;
 
 procedure TSharpBarMainForm.FormResize(Sender: TObject);

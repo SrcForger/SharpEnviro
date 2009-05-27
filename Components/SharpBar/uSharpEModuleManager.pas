@@ -138,7 +138,7 @@ type
                      FModuleFiles       : TObjectList;
                      FModules           : TObjectList;
                      FParent            : hwnd;
-                     FSkinInterface     : ISharpESkin;
+                     FSkinInterface     : ISharpESkinInterface;
                      FBarInterface      : ISharpBar;
                      FBar               : TSharpEBar;
                      FThrobberMenu      : TPopupMenu;
@@ -153,7 +153,7 @@ type
                      procedure SetShowMiniThrobbers(Value : Boolean);
                    public
                      constructor Create(pParent : hwnd;
-                                        pSkinInterface : ISharpESkin;
+                                        pSkinInterface : ISharpESkinInterface;
                                         pBarInterface : ISharpBar;
                                         pBar         : TSharpEBar); reintroduce;
                      destructor Destroy; override;
@@ -205,7 +205,7 @@ type
                      property ShowMiniThrobbers : Boolean    read FShowMiniThrobbers write SetShowMiniThrobbers;
                      property BarID           : integer      read FBarID write FBarID;
                      property BarName         : string        read FBarName write FBarName;
-                     property SkinInterface   : ISharpESkin read FSkinInterface;
+                     property SkinInterface   : ISharpESkinInterface read FSkinInterface;
                      property BarInterface    : ISharpBar read FBarInterface;
                    end;
 
@@ -234,7 +234,7 @@ end;
 // ############## TModuleManager #################
 
 constructor TModuleManager.Create(pParent : hwnd;
-                                  pSkinInterface : ISharpESkin;
+                                  pSkinInterface : ISharpESkinInterface;
                                   pBarInterface : ISharpBar;
                                   pBar         : TSharpEBar);
 begin
@@ -752,9 +752,9 @@ end;
 
 function TModuleManager.GetModuleHeight: integer;
 begin
-  result := FSkinInterface.SkinManager.Skin.BarSkin.SkinDim.HeightAsInt -
-            FSkinInterface.SkinManager.Skin.BarSkin.PAYoffset.XAsInt -
-            FSkinInterface.SkinManager.Skin.BarSkin.PAYoffset.YAsInt;
+  result := FSkinInterface.SkinManager.Skin.Bar.BarHeight -
+            FSkinInterface.SkinManager.Skin.Bar.PAYoffset.X -
+            FSkinInterface.SkinManager.Skin.Bar.PAYoffset.Y;
 end;
 
 // Load all module dll files from a directory
@@ -866,9 +866,9 @@ begin
 
   // get left/right offets for plugin area
   if FBar.ShowThrobber then
-    lo := FSkinInterface.SkinManager.Skin.BarSkin.PAXoffset.XAsInt
+    lo := FSkinInterface.SkinManager.Skin.Bar.PAXoffset.X
   else lo := FBar.Throbber.Left;
-  ro := FSkinInterface.SkinManager.Skin.BarSkin.PAXoffset.YAsInt;
+  ro := FSkinInterface.SkinManager.Skin.Bar.PAXoffset.Y;
 
   result := maxsize - ro - lo - FModules.Count * MTWidth;
 end;
@@ -888,7 +888,7 @@ end;
 
 function TModuleManager.GetModuleTop: integer;
 begin
-  result := FSkinInterface.SkinManager.Skin.BarSkin.PAYoffset.XAsInt;
+  result := FSkinInterface.SkinManager.Skin.Bar.PAYoffset.X;
 end;
 
 function TModuleManager.GetModule(ID : integer) : TModule;
@@ -1164,9 +1164,9 @@ begin
   if FShutdown then exit;
 
   if FBar.ShowThrobber then
-    lo := FSkinInterface.SkinManager.Skin.BarSkin.PAXoffset.XAsInt
+    lo := FSkinInterface.SkinManager.Skin.Bar.PAXoffset.X
   else lo := FBar.Throbber.Left;
-  ro := FSkinInterface.SkinManager.Skin.BarSkin.PAXoffset.YAsInt;
+  ro := FSkinInterface.SkinManager.Skin.Bar.PAXoffset.Y;
 
   ParentControl := GetControlByHandle(FParent);
 
@@ -1187,7 +1187,7 @@ begin
   if not (FBar.HorizPos = hpFull) then
      if lo + ro + LeftSize + RightSize <> ParentControl.Width then
   begin
-    nw := Max(lo + ro + FSkinInterface.SkinManager.Skin.BarSkin.ThDim.XAsInt+5,lo + ro + LeftSize + RightSize);
+    nw := Max(lo + ro + FSkinInterface.SkinManager.Skin.Bar.ThrobberWidth+5,lo + ro + LeftSize + RightSize);
     FBar.UpdateSkin(nw);
     ParentControl.Width := nw;
   end;
@@ -1228,8 +1228,8 @@ begin
       end;
       rx := rx + TempModule.mInterface.Form.Width;
     end;
-    if TempModule.mInterface.Form.Top <> FSkinInterface.SkinManager.Skin.BarSkin.PAYoffset.XAsInt then
-      TempModule.mInterface.Form.Top  := FSkinInterface.SkinManager.Skin.BarSkin.PAYoffset.XAsInt;
+    if TempModule.mInterface.Form.Top <> FSkinInterface.SkinManager.Skin.Bar.PAYoffset.X then
+      TempModule.mInterface.Form.Top  := FSkinInterface.SkinManager.Skin.Bar.PAYoffset.X;
     if TempModule.Throbber. Left <> TempModule.mInterface.Form.Left-TempModule.Throbber.Width-FModuleSpacing div 2 then
       TempModule.Throbber.Left := TempModule.mInterface.Form.Left-TempModule.Throbber.Width-FModuleSpacing div 2;
     if TempModule.Throbber.Top <> TempModule.mInterface.Form.Top then
@@ -1279,9 +1279,9 @@ var
   nw : integer;
 begin
   if FBar.ShowThrobber then
-    lo := FSkinInterface.SkinManager.Skin.BarSkin.PAXoffset.XAsInt
+    lo := FSkinInterface.SkinManager.Skin.Bar.PAXoffset.X
   else lo := FBar.Throbber.Left;
-  ro := FSkinInterface.SkinManager.Skin.BarSkin.PAXoffset.YAsInt;
+  ro := FSkinInterface.SkinManager.Skin.Bar.PAXoffset.Y;
   
   ParentControl := GetControlByHandle(FParent);
 
@@ -1293,7 +1293,7 @@ begin
 
   if ((ForceUpdate) or ((not (FBar.HorizPos = hpFull)) and (lo + ro + PluginWidth <> ParentControl.Width))) then
   begin
-    nw := Max(lo + ro + FSkinInterface.SkinManager.Skin.BarSkin.ThDim.XAsInt+5,lo + ro + PluginWidth);
+    nw := Max(lo + ro + FSkinInterface.SkinManager.Skin.Bar.ThrobberWidth + 5,lo + ro + PluginWidth);
     FBar.UpdatePosition(nw);
 //    FBar.UpdateSkin(nw);
     ParentControl.Width := nw;
