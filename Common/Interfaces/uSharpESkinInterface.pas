@@ -32,18 +32,20 @@ uses
   SharpESkin,
   SharpTypes,
   Classes,
-  SharpESkinManager;
+  SharpESkinManager,
+  ISharpESkinComponents;
 
 type
-  TSharpESkinInterface = class(TInterfacedObject, ISharpESkin)
+  TSharpESkinInterface = class(TInterfacedObject, ISharpESkinInterface)
     private
       FSkinManager : TSharpESkinManager;
+      FSkinManagerInterface : ISharpESkinManager;
     public
       constructor Create(AOwner: TComponent; Skins : TSharpESkinItems = ALL_SHARPE_SKINS); reintroduce;
       destructor Destroy; override;
 
-      function GetSkinManager : TSharpESkinManager;
-      property SkinManager : TSharpESkinManager read GetSkinManager;
+      function GetSkinManager : ISharpESkinManager; stdcall;
+      property SkinManager : ISharpESkinManager read GetSkinManager;
   end;
 
 implementation
@@ -54,21 +56,20 @@ constructor TSharpESkinInterface.Create(AOwner: TComponent; Skins : TSharpESkinI
 begin
   FSkinManager := TSharpESkinManager.Create(AOwner, Skins);
   FSkinManager.HandleUpdates := False;
-  FSkinManager.SkinSource := ssSystem;
-  FSkinManager.SchemeSource := ssSystem;
   FSkinManager.Skin.UpdateDynamicProperties(FSkinManager.Scheme);
+  FSkinManagerInterface := FSkinManager;
 end;
 
 destructor TSharpESkinInterface.Destroy;
 begin
-  FSkinManager.Free;
+  FSkinManagerInterface := nil; 
   
   inherited;
 end;
 
-function TSharpESkinInterface.GetSkinManager: TSharpESkinManager;
+function TSharpESkinInterface.GetSkinManager: ISharpESkinManager;
 begin
-  result := FSkinManager;
+  result := FSkinManagerInterface;
 end;
 
 end.

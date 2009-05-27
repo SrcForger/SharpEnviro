@@ -21,9 +21,9 @@ type
     function InitModule : HRESULT; stdcall;
     function ModuleMessage(msg: string) : HRESULT; stdcall;    
 
-    function GetSkinInterface : ISharpESkin; stdcall;
-    procedure SetSkinInterface(Value : ISharpESkin); stdcall;
-    property SkinInterface : ISharpESkin read GetSkinInterface write SetSkinInterface;
+    function GetSkinInterface : ISharpESkinInterface; stdcall;
+    procedure SetSkinInterface(Value : ISharpESkinInterface); stdcall;
+    property SkinInterface : ISharpESkinInterface read GetSkinInterface write SetSkinInterface;
 
     function GetBarInterface : ISharpBar; stdcall;
     procedure SetBarInterface(Value : ISharpBar); stdcall;
