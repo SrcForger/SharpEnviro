@@ -4,6 +4,7 @@
   </PropertyGroup>
   <ItemGroup />
   <ItemGroup>
+    <Projects Include="..\Plugins\Modules\ApplicationBar\ApplicationBar.dproj" />
     <Projects Include="..\Plugins\Modules\Battery Monitor\BatteryMonitor.dproj" />
     <Projects Include="..\Plugins\Modules\ButtonBar\ButtonBar.dproj" />
     <Projects Include="..\Plugins\Modules\Button\Button.dproj" />
@@ -181,14 +182,23 @@
   <Target Name="VWM:Make">
     <MSBuild Projects="..\Plugins\Modules\VWM\VWM.dproj" Targets="Make" />
   </Target>
+  <Target Name="ApplicationBar">
+    <MSBuild Projects="..\Plugins\Modules\ApplicationBar\ApplicationBar.dproj" Targets="" />
+  </Target>
+  <Target Name="ApplicationBar:Clean">
+    <MSBuild Projects="..\Plugins\Modules\ApplicationBar\ApplicationBar.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="ApplicationBar:Make">
+    <MSBuild Projects="..\Plugins\Modules\ApplicationBar\ApplicationBar.dproj" Targets="Make" />
+  </Target>
   <Target Name="Build">
-    <CallTarget Targets="Button;Clock;MemoryMonitor;MiniScmd;SystemTray;TaskBar;VolumeControl;CPUMonitor;MediaController;Notes;QuickScript;BatteryMonitor;Weather;Menu;ButtonBar;KeyboardLayout;VWM" />
+    <CallTarget Targets="Button;Clock;MemoryMonitor;MiniScmd;SystemTray;TaskBar;VolumeControl;CPUMonitor;MediaController;Notes;QuickScript;BatteryMonitor;Weather;Menu;ButtonBar;KeyboardLayout;VWM;ApplicationBar" />
   </Target>
   <Target Name="Clean">
-    <CallTarget Targets="Button:Clean;Clock:Clean;MemoryMonitor:Clean;MiniScmd:Clean;SystemTray:Clean;TaskBar:Clean;VolumeControl:Clean;CPUMonitor:Clean;MediaController:Clean;Notes:Clean;QuickScript:Clean;BatteryMonitor:Clean;Weather:Clean;Menu:Clean;ButtonBar:Clean;KeyboardLayout:Clean;VWM:Clean" />
+    <CallTarget Targets="Button:Clean;Clock:Clean;MemoryMonitor:Clean;MiniScmd:Clean;SystemTray:Clean;TaskBar:Clean;VolumeControl:Clean;CPUMonitor:Clean;MediaController:Clean;Notes:Clean;QuickScript:Clean;BatteryMonitor:Clean;Weather:Clean;Menu:Clean;ButtonBar:Clean;KeyboardLayout:Clean;VWM:Clean;ApplicationBar:Clean" />
   </Target>
   <Target Name="Make">
-    <CallTarget Targets="Button:Make;Clock:Make;MemoryMonitor:Make;MiniScmd:Make;SystemTray:Make;TaskBar:Make;VolumeControl:Make;CPUMonitor:Make;MediaController:Make;Notes:Make;QuickScript:Make;BatteryMonitor:Make;Weather:Make;Menu:Make;ButtonBar:Make;KeyboardLayout:Make;VWM:Make" />
+    <CallTarget Targets="Button:Make;Clock:Make;MemoryMonitor:Make;MiniScmd:Make;SystemTray:Make;TaskBar:Make;VolumeControl:Make;CPUMonitor:Make;MediaController:Make;Notes:Make;QuickScript:Make;BatteryMonitor:Make;Weather:Make;Menu:Make;ButtonBar:Make;KeyboardLayout:Make;VWM:Make;ApplicationBar:Make" />
   </Target>
   <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
 </Project>
