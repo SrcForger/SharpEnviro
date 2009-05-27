@@ -44,6 +44,8 @@ type
   TSharpESkinItem = (scBasic,scButton,scBar,scProgressBar,scMiniThrobber,scEdit,
                      scTaskItem,scMenu,scMenuItem,scTaskSwitch,scNotify);
   TSharpESkinItems = set of TSharpESkinItem;
+  TSharpESkinShadowType = (stLeft,stRight,stOutline);
+  
 const
  ALL_SHARPE_SKINS = [scBasic,scButton,scBar,scProgressBar,scMiniThrobber,scEdit,
                      scTaskItem,scMenu,scMenuItem,scTaskSwitch,scNotify];
