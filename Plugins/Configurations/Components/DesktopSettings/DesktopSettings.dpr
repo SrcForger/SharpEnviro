@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 library DesktopSettings;
+
 uses
   Controls,
   Classes,
@@ -35,7 +36,6 @@ uses
   PngSpeedButton,
   uVistaFuncs,
   SysUtils,
-  JvPageList,
   Graphics,
   SharpETabList,
   ISharpCenterHostUnit,
@@ -43,7 +43,8 @@ uses
   uSharpDeskTDeskSettings,
   uSettingsWnd,
   SharpCenterApi,
-  SharpApi;
+  SharpApi,
+  uSharpCenterPluginScheme in '..\..\..\..\Components\SharpCenter\uSharpCenterPluginScheme.pas';
 
 {$E .dll}
 
@@ -55,7 +56,7 @@ type
     FXmlDeskSettings: TDeskSettings;
     procedure LoadSettings;
   public
-    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
+    constructor Create( APluginHost: ISharpCenterHost );
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
@@ -65,7 +66,7 @@ type
     procedure ClickPluginTab(ATab: TStringItem); stdCall;
     procedure AddPluginTabs(ATabItems: TStringList); stdCall;
     function GetPluginDescriptionText: String; override; stdCall;
-    procedure Refresh; override; stdcall;
+    procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
     destructor Destroy; override;
 
     property XmlDeskSettings: TDeskSettings read FXmlDeskSettings write
@@ -91,7 +92,7 @@ begin
   FreeAndNil(frmSettings);
 end;
 
-constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
+constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
   FXmlDeskSettings := TDeskSettings.Create(nil);
@@ -135,9 +136,10 @@ begin
   LoadSettings;
 end;
 
-procedure TSharpCenterPlugin.Refresh;
+procedure TSharpCenterPlugin.Refresh(Theme : TCenterThemeInfo; AEditing: Boolean);
 begin
-  PluginHost.AssignThemeToPluginForm(frmSettings);
+ // PluginHost.AssignThemeToPluginForm(frmSettings);
+ AssignThemeToPluginForm(frmSettings,AEditing,Theme);
 end;
 
 procedure TSharpCenterPlugin.Save;
@@ -172,7 +174,7 @@ begin
   end;
 end;
 
-function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+function InitPluginInterface(APluginHost: ISharpCenterHost) : ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
 end;

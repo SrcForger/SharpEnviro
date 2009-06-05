@@ -5,10 +5,9 @@
     <MainSource>DesktopSettings.dpr</MainSource>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <DCC_UsePackage>rtl;vcl</DCC_UsePackage>
+    <DCC_UsePackage>vcl;rtl</DCC_UsePackage>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
     <DCC_DependencyCheckOutputName>..\..\..\..\..\SharpE\Center\Root\_Components\_Componentdlls\DesktopSettings.dll</DCC_DependencyCheckOutputName>
-    <DCC_EnabledPackages>true</DCC_EnabledPackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Version>7.0</Version>
@@ -29,24 +28,77 @@
     <DCC_ResourcePath>..\..\..\..\Common\Libraries\SharpAPI;..\..\..\..\Common\Libraries\SharpCenterAPI;..\..\..\..\Common\Units\VistaFuncs\;..\..\..\..\Common\Units\VistaFuncs;..\..\..\..\Common\Delphi Components\SharpEListBoxEx;..\..\..\..\Common\Libraries\SharpThemeAPIEx;..\..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\..\Common\Units\SharpFileUtils;..\..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\..\Components\SharpBar;..\..\..\..\Common\Libraries\SharpDialogs;..\..\..\..\Common\Delphi Components\SharpeGaugeBox;..\..\..\..\Common\Delphi Components\SharpeColorEditorEx;..\..\..\..\Common\Delphi Components\SharpeColorEditor;..\..\..\..\Common\Delphi Components\SharpeSwatchManager;..\..\..\..\Common\Delphi Components\SharpePageControl;..\..\..\..\Common\Delphi Components\SharpeTabList;..\..\..\..\Common\Delphi Components\SharpeSwatchCollection;..\..\..\..\Common\Delphi Components\SharpeRoundPanel;..\..\..\..\Common\Delphi Components\SharpeColorPicker;..\..\..\..\Common\Units\SharpFx;..\..\..\..\Common\Interfaces;..\..\..\..\Common\Delphi Components\SharpeCenterHeader;..\..\..\..\Components\SharpMenu\Units;..\..\..\..\Common\3rd Party\GR32 Addons\;..\..\..\..\Common\3rd Party\GR32\;..\..\..\..\Common\Units\SharpTypes;..\..\..\..\Common\Units\SharpIconUtils;..\..\..\..\Common\Units\PropertyList;..\..\..\..\Common\Libraries\SharpAPIEx;..\..\..\..\Components\SharpMenu\Forms;..\..\..\..\Common\Units\ControlPanelItems;..\..\..\..\Components\SharpMenu\;..\..\..\..\Components\SharpDesk\Units;..\..\..\..\Common\Delphi Components\SharpeHotkeyEdit;..\..\..\..\Common\Units\SCHotkeyManager;..\..\..\..\Common\3rd Party\Jedi\;..\..\..\..\Common\Units\DebugDialog</DCC_ResourcePath>
     <DCC_ObjPath>..\..\..\..\Common\Libraries\SharpAPI;..\..\..\..\Common\Libraries\SharpCenterAPI;..\..\..\..\Common\Units\VistaFuncs\;..\..\..\..\Common\Units\VistaFuncs;..\..\..\..\Common\Delphi Components\SharpEListBoxEx;..\..\..\..\Common\Libraries\SharpThemeAPIEx;..\..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\..\Common\Units\SharpFileUtils;..\..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\..\Components\SharpBar;..\..\..\..\Common\Libraries\SharpDialogs;..\..\..\..\Common\Delphi Components\SharpeGaugeBox;..\..\..\..\Common\Delphi Components\SharpeColorEditorEx;..\..\..\..\Common\Delphi Components\SharpeColorEditor;..\..\..\..\Common\Delphi Components\SharpeSwatchManager;..\..\..\..\Common\Delphi Components\SharpePageControl;..\..\..\..\Common\Delphi Components\SharpeTabList;..\..\..\..\Common\Delphi Components\SharpeSwatchCollection;..\..\..\..\Common\Delphi Components\SharpeRoundPanel;..\..\..\..\Common\Delphi Components\SharpeColorPicker;..\..\..\..\Common\Units\SharpFx;..\..\..\..\Common\Interfaces;..\..\..\..\Common\Delphi Components\SharpeCenterHeader;..\..\..\..\Components\SharpMenu\Units;..\..\..\..\Common\3rd Party\GR32 Addons\;..\..\..\..\Common\3rd Party\GR32\;..\..\..\..\Common\Units\SharpTypes;..\..\..\..\Common\Units\SharpIconUtils;..\..\..\..\Common\Units\PropertyList;..\..\..\..\Common\Libraries\SharpAPIEx;..\..\..\..\Components\SharpMenu\Forms;..\..\..\..\Common\Units\ControlPanelItems;..\..\..\..\Components\SharpMenu\;..\..\..\..\Components\SharpDesk\Units;..\..\..\..\Common\Delphi Components\SharpeHotkeyEdit;..\..\..\..\Common\Units\SCHotkeyManager;..\..\..\..\Common\3rd Party\Jedi\;..\..\..\..\Common\Units\DebugDialog</DCC_ObjPath>
     <DCC_IncludePath>..\..\..\..\Common\Libraries\SharpAPI;..\..\..\..\Common\Libraries\SharpCenterAPI;..\..\..\..\Common\Units\VistaFuncs\;..\..\..\..\Common\Units\VistaFuncs;..\..\..\..\Common\Delphi Components\SharpEListBoxEx;..\..\..\..\Common\Libraries\SharpThemeAPIEx;..\..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\..\Common\Units\SharpFileUtils;..\..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\..\Components\SharpBar;..\..\..\..\Common\Libraries\SharpDialogs;..\..\..\..\Common\Delphi Components\SharpeGaugeBox;..\..\..\..\Common\Delphi Components\SharpeColorEditorEx;..\..\..\..\Common\Delphi Components\SharpeColorEditor;..\..\..\..\Common\Delphi Components\SharpeSwatchManager;..\..\..\..\Common\Delphi Components\SharpePageControl;..\..\..\..\Common\Delphi Components\SharpeTabList;..\..\..\..\Common\Delphi Components\SharpeSwatchCollection;..\..\..\..\Common\Delphi Components\SharpeRoundPanel;..\..\..\..\Common\Delphi Components\SharpeColorPicker;..\..\..\..\Common\Units\SharpFx;..\..\..\..\Common\Interfaces;..\..\..\..\Common\Delphi Components\SharpeCenterHeader;..\..\..\..\Components\SharpMenu\Units;..\..\..\..\Common\3rd Party\GR32 Addons\;..\..\..\..\Common\3rd Party\GR32\;..\..\..\..\Common\Units\SharpTypes;..\..\..\..\Common\Units\SharpIconUtils;..\..\..\..\Common\Units\PropertyList;..\..\..\..\Common\Libraries\SharpAPIEx;..\..\..\..\Components\SharpMenu\Forms;..\..\..\..\Common\Units\ControlPanelItems;..\..\..\..\Components\SharpMenu\;..\..\..\..\Components\SharpDesk\Units;..\..\..\..\Common\Delphi Components\SharpeHotkeyEdit;..\..\..\..\Common\Units\SCHotkeyManager;..\..\..\..\Common\3rd Party\Jedi\;..\..\..\..\Common\Units\DebugDialog</DCC_IncludePath>
-    <DCC_Define>DEBUG</DCC_Define>
+    <DCC_Define>DEBUG;CENTER_SCHEME_SHARPEHEADER</DCC_Define>
   </PropertyGroup>
   <ProjectExtensions>
     <Borland.Personality>Delphi.Personality</Borland.Personality>
     <Borland.ProjectType />
     <BorlandProject>
 <BorlandProject><Delphi.Personality><Parameters><Parameters Name="HostApplication">..\..\..\..\..\SharpE\SharpCenter.exe</Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">0</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">2057</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys></VersionInfoKeys><Excluded_Packages>
-      <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
-      <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
-    </Excluded_Packages><Source><Source Name="MainSource">DesktopSettings.dpr</Source></Source></Delphi.Personality></BorlandProject></BorlandProject>
+      
+      <Excluded_Packages Name="C:\Users\Public\Documents\RAD Studio\5.0\Bpl\Graphics32.bpl">Datei C:\Users\Public\Documents\RAD Studio\5.0\Bpl\Graphics32.bpl nicht gefunden</Excluded_Packages>
+    </Excluded_Packages><Source><Source Name="MainSource">DesktopSettings.dpr</Source></Source>  
+    <DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="ALLUSERSPROFILE">'C:\ProgramData'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="APPDATA">'C:\Users\user\AppData\Roaming'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="BDS">'c:\program files (x86)\codegear\rad studio\5.0'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="BDSCOMMONDIR">'C:\Users\Public\Documents\RAD Studio\5.0'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="BDSPROJECTSDIR">'C:\Users\user\Documents\RAD Studio\Projekte'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="BDSUSERDIR">'C:\Users\user\Documents\RAD Studio\5.0'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="CLASSPATH">'.;C:\Program Files (x86)\Java\jre1.6.0_07\lib\ext\QTJava.zip'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="CommonProgramFiles(x86)">'C:\Program Files (x86)\Common Files'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="CommonProgramFiles">'C:\Program Files (x86)\Common Files'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="CommonProgramW6432">'C:\Program Files\Common Files'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="COMPUTERNAME">'MARTIN-DESKTOP'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="ComSpec">'C:\Windows\system32\cmd.exe'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="DELPHI">'c:\program files (x86)\codegear\rad studio\5.0'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="DFSTRACINGON">'FALSE'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="FP_NO_HOST_CHECK">'NO'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="HOMEDRIVE">'C:'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="HOMEPATH">'\Users\user'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="LOCALAPPDATA">'C:\Users\user\AppData\Local'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="LOGONSERVER">'\\MARTIN-DESKTOP'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="MSWorksProductCode">'{39D0E034-1042-4905-BECB-5502909FCB7C}'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="NUMBER_OF_PROCESSORS">'4'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="OnlineServices">'Online Services'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="OS">'Windows_NT'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="Path">'C:\Program Files (x86)\CodeGear\RAD Studio\5.0\bin;C:\Users\Public\Documents\RAD Studio\5.0\Bpl;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\hp\bin\Python;C:\Program Files (x86)\QuickTime\QTSystem\;C:\Program Files (x86)\jZip;C:\Program Files\TortoiseSVN\bin'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="PATHEXT">'.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="PCBRAND">'Pavilion'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="Platform">'HPD'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="PROCESSOR_ARCHITECTURE">'x86'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="PROCESSOR_ARCHITEW6432">'AMD64'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="PROCESSOR_IDENTIFIER">'Intel64 Family 6 Model 23 Stepping 7, GenuineIntel'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="PROCESSOR_LEVEL">'6'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="PROCESSOR_REVISION">'1707'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="ProgramData">'C:\ProgramData'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="ProgramFiles(x86)">'C:\Program Files (x86)'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="ProgramFiles">'C:\Program Files (x86)'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="ProgramW6432">'C:\Program Files'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="PUBLIC">'C:\Users\Public'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="QTJAVA">'C:\Program Files (x86)\Java\jre1.6.0_07\lib\ext\QTJava.zip'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="SESSIONNAME">'Console'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="SystemDrive">'C:'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="SystemRoot">'C:\Windows'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="TEMP">'C:\Users\user\AppData\Local\Temp'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="TMP">'C:\Users\user\AppData\Local\Temp'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="TRACE_FORMAT_SEARCH_PATH">'\\NTREL202.ntdev.corp.microsoft.com\34FB5F65-FFEB-4B61-BF0E-A6A76C450FAA\TraceFormat'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="USERDOMAIN">'MARTIN-DESKTOP'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="USERNAME">'user'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="USERPROFILE">'C:\Users\user'</DebugSysEnvironmentVariables>
+      <DebugSysEnvironmentVariables Name="windir">'C:\Windows'</DebugSysEnvironmentVariables>
+    </DebugSysEnvironmentVariables>
+  </Delphi.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
   <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
   <ItemGroup>
     <DelphiCompile Include="DesktopSettings.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
+    <DCCReference Include="..\..\..\..\Components\SharpCenter\uSharpCenterPluginScheme.pas" />
     <DCCReference Include="uSettingsWnd.pas">
       <Form>frmSettings</Form>
     </DCCReference>
+    <None Include="centerscheme.inc" />
   </ItemGroup>
 </Project>
