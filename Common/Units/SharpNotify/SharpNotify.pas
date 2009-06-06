@@ -37,6 +37,7 @@ uses
   Graphics,
   GR32,
   GR32_PNG,
+  GR32Utils,
   StrUtils,
   ExtCtrls,
   SysUtils,
@@ -608,7 +609,7 @@ begin
     if FSkinManager.Skin.Bar.GlassEffect then
   begin
     temp := TBitmap32.Create;
-    temp.Assign(FBitmap);
+    SaveAssign(FBitmap, temp);
     temp.DrawMode := dmBlend;
     temp.CombineMode := cmMerge;
     FBitmap.Clear(color32(0,0,0,0));
