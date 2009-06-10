@@ -343,12 +343,19 @@ end;
 
 class procedure TJvBaseValidator.RegisterBaseValidator(const DisplayName: string; AValidatorClass:
   TJvBaseValidatorClass);
+var
+  b : boolean;
 begin
   if ValidatorsList.IndexOfObject(Pointer(AValidatorClass)) < 0 then
   begin
-      if ( Classes.FindClass(AValidatorClass.ClassName) = nil ) then
-	  Classes.RegisterClass(TPersistentClass(AValidatorClass));
-      ValidatorsList.AddObject(DisplayName, Pointer(AValidatorClass));
+    try
+      b := Classes.FindClass(AValidatorClass.ClassName) = nil;
+    except
+      b := True;
+    end;
+    if b then
+  	  Classes.RegisterClass(TPersistentClass(AValidatorClass));
+    ValidatorsList.AddObject(DisplayName, Pointer(AValidatorClass));
   end;
 end;
 
