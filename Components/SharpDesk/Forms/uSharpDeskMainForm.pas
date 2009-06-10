@@ -791,7 +791,7 @@ begin
       if (Shift = [ssShift]) then
         ActionStr := ActionStr + SharpDesk.DeskSettings.MenuFileShift + '.xml"'
       else ActionStr := ActionStr + SharpDesk.DeskSettings.MenuFile + '.xml"';
-      ShellApi.ShellExecute(Handle,'open',PChar(GetSharpEDirectory + 'SharpMenu.exe'),PChar(ActionStr),GetSharpEDirectory,SW_SHOWNORMAL);
+      ShellApi.ShellExecute(Handle,'open',PChar(GetSharpEDirectory + 'SharpMenu.exe'),PChar(ActionStr),PChar(GetSharpEDirectory),SW_SHOWNORMAL);
       //sleep(1000);
       SharpApi.SendDebugMessageEx('SharpDesk',PChar('Menu popup at : ' + inttostr(CPos.X) + '|' + inttostr(CPos.Y)),clblue,DMT_Trace);
     end;
