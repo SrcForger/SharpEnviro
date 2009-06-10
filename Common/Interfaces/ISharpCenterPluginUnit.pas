@@ -43,14 +43,14 @@ type
   ISharpCenterPlugin = interface(IInterface)
   ['{F9E1BB12-4885-43FF-B4CB-56517F6F486D}']
 
-  function GetPluginHost : TInterfacedSharpCenterHostBase; stdcall;
-  procedure SetPluginHost(Value : TInterfacedSharpCenterHostBase); stdcall;
-  property PluginHost: TInterfacedSharpCenterHostBase read GetPluginHost write SetPluginHost;
+  function GetPluginHost : ISharpCenterHost; stdcall;
+  procedure SetPluginHost(Value : ISharpCenterHost); stdcall;
+  property PluginHost: ISharpCenterHost read GetPluginHost write SetPluginHost;
 
   function Open : THandle; stdcall;
   procedure Close; stdcall;
   procedure Save; stdcall;
-  procedure Refresh; stdCall;
+  procedure Refresh(Theme : TCenterThemeInfo; AEditing : Boolean); stdCall;
 
   function GetPluginName : string; stdcall;
   function GetPluginStatusText : string; stdcall;
@@ -60,17 +60,16 @@ type
   TInterfacedSharpCenterPlugin = class(TInterfacedObject, ISharpCenterPlugin)
 
   private
-    FPluginHost: TInterfacedSharpCenterHostBase;
-    function GetPluginHost : TInterfacedSharpCenterHostBase; stdcall;
-    procedure SetPluginHost(Value : TInterfacedSharpCenterHostBase); stdcall;
-
+    FPluginHost: ISharpCenterHost;
+    function GetPluginHost : ISharpCenterHost; stdcall;
+    procedure SetPluginHost(Value : ISharpCenterHost); stdcall;
   public
-    property PluginHost: TInterfacedSharpCenterHostBase read GetPluginHost write SetPluginHost;
+    property PluginHost: ISharpCenterHost read GetPluginHost write SetPluginHost;
 
     function Open : THandle; virtual; stdcall;
     procedure Close; virtual; stdcall;
     procedure Save; virtual; stdcall;
-    procedure Refresh; virtual; stdCall;
+    procedure Refresh(Theme : TCenterThemeInfo; AEditing : Boolean); virtual; stdCall;
 
     function GetPluginName : string; virtual; stdcall;
     function GetPluginStatusText : string; virtual; stdcall;
@@ -94,7 +93,7 @@ begin
 
 end;
 
-function TInterfacedSharpCenterPlugin.GetPluginHost: TInterfacedSharpCenterHostBase;
+function TInterfacedSharpCenterPlugin.GetPluginHost: ISharpCenterHost;
 begin
   Result := FPluginHost;
 end;
@@ -114,7 +113,7 @@ begin
   Result := 0;
 end;
 
-procedure TInterfacedSharpCenterPlugin.Refresh;
+procedure TInterfacedSharpCenterPlugin.Refresh(Theme : TCenterThemeInfo; AEditing : Boolean);
 begin
 
 end;
@@ -124,8 +123,7 @@ begin
 
 end;
 
-procedure TInterfacedSharpCenterPlugin.SetPluginHost(
-  Value: TInterfacedSharpCenterHostBase);
+procedure TInterfacedSharpCenterPlugin.SetPluginHost(Value: ISharpCenterHost);
 begin
   FPluginHost := Value;
 end;

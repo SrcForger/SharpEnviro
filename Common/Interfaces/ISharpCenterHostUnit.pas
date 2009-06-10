@@ -57,6 +57,18 @@ type
   procedure SetEditTabVisibility(  ATab: TSCB_BUTTON_ENUM; Visible: Boolean); stdCall;
   procedure SetEditTabsVisibility( AItemIndex: Integer; AItemCount: Integer); stdCall;
   procedure SetButtonVisibility( AButton: TSCB_BUTTON_ENUM; Visible: Boolean); stdCall;
+
+  function AddRequiredFieldValidator( controlToValidate: TControl;
+    errorMessage: string; propertyToValidate: string ): TJvRequiredFieldValidator; stdCall;
+
+  function AddCustomValidator( controlToValidate: TControl;
+    errorMessage: string; propertyToValidate: string ): TJvCustomValidator; stdCall;
+
+  procedure GetBarModuleIdFromPluginId(var barId, moduleId: string); stdcall;    
+  function GetModuleXmlFilename: string; stdcall;
+
+  function GetXml : TInterfacedXmlBase; stdcall;
+  property Xml: TInterfacedXmlBase read GetXml;    
 end;
 
 type
@@ -69,6 +81,8 @@ type
   TInterfacedSharpCenterHostBase = class(TInterfacedObject,ISharpCenterHost)
 
     private
+      FSelfInterface: ISharpCenterHost;
+
       FEditOwner: TWinControl;
       FPluginOwner: TWinControl;
       FPluginId: string;
@@ -130,8 +144,8 @@ type
       function OpenEdit(AForm: TForm):THandle; stdCall;
       procedure Save; stdCall;
 
-      procedure GetBarModuleIdFromPluginId(var barId, moduleId: string);
-      function GetModuleXmlFilename: string;
+      procedure GetBarModuleIdFromPluginId(var barId, moduleId: string); stdcall;
+      function GetModuleXmlFilename: string; stdcall;
 
       procedure SetEditTab( ATab: TSCB_BUTTON_ENUM ); stdCall;
       procedure SetEditTabVisibility( ATab: TSCB_BUTTON_ENUM; AVisible: Boolean); stdCall;
@@ -139,19 +153,22 @@ type
       procedure SetButtonVisibility( AButton: TSCB_BUTTON_ENUM; Visible: Boolean); stdCall;
       procedure SetSettingsChanged; stdCall;
 
-      procedure AssignThemeToPluginForm( APluginForm: TForm );
-      procedure AssignThemeToEditForm( AEditForm: TForm );
-      procedure AssignThemeToForms( AForm, AEditForm: TForm );
+      procedure AssignThemeToPluginForm(APluginForm: TForm);
+      procedure AssignThemeToEditForm(AEditForm: TForm);
+      procedure AssignThemeToForms(AForm, AEditForm: TForm);  
 
-      property Xml: TInterfacedXmlBase read FXml;
+      function GetXml : TInterfacedXmlBase; stdcall;
+      property Xml: TInterfacedXmlBase read GetXml;
       property Validator: TJvValidators read FValidator;
       property ErrorIndicator: TJvErrorIndicator read FErrorIndicator;
 
+      property SelfInterface : ISharpCenterHost read FSelfInterface write FSelfInterface;
+
       function AddRequiredFieldValidator( controlToValidate: TControl;
-        errorMessage: string; propertyToValidate: string ): TJvRequiredFieldValidator;
+        errorMessage: string; propertyToValidate: string ): TJvRequiredFieldValidator; stdCall;
 
       function AddCustomValidator( controlToValidate: TControl;
-        errorMessage: string; propertyToValidate: string ): TJvCustomValidator;
+        errorMessage: string; propertyToValidate: string ): TJvCustomValidator; stdCall;
 
       property OnSave: TNotifyEvent read FOnSave write
         FOnSave;
@@ -268,6 +285,7 @@ end;
 constructor TInterfacedSharpCenterHostBase.Create;
 begin
   FXml := TInterfacedXmlBase.Create;
+  FSelfInterface := self;
 
   FErrorIndicator := TJvErrorIndicator.Create(nil);
   FValidator := TJvValidators.Create(nil);
@@ -324,6 +342,11 @@ end;
 function TInterfacedSharpCenterHostBase.GetWarning: Boolean;
 begin
   result := FWarning;
+end;
+
+function TInterfacedSharpCenterHostBase.GetXml: TInterfacedXmlBase;
+begin
+  result := FXml;
 end;
 
 function TInterfacedSharpCenterHostBase.Open(AForm: TForm): THandle;
