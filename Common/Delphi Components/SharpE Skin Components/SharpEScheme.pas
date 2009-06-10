@@ -177,7 +177,7 @@ end;
 
 procedure TSharpEScheme.SetColors(value: TSharpEColorSet);
 begin
-  Colors := Value;
+  FColors := Value;
 end;
 
 procedure TSharpEScheme.ClearColors;
