@@ -190,7 +190,7 @@ begin
     ActionStr := inttostr(p.x) + ' ' + inttostr(p.y) + ' ' + pdir;
     ActionStr := ActionStr + ' "' + SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\';
     ActionStr := ActionStr + sMenu + '.xml"';
-    ShellApi.ShellExecute(Handle,'open',PChar(GetSharpEDirectory + 'SharpMenu.exe'),PChar(ActionStr),GetSharpEDirectory,SW_SHOWNORMAL);
+    ShellApi.ShellExecute(Handle,'open',PChar(GetSharpEDirectory + 'SharpMenu.exe'),PChar(ActionStr),PChar(GetSharpEDirectory),SW_SHOWNORMAL);
     //SharpApi.SharpExecute(ActionStr);
   end;
 end;
