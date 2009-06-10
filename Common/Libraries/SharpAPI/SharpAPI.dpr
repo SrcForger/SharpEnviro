@@ -282,7 +282,7 @@ var
   stemp: string;
   bsm: boolean;
 
-function GetSharpeDirectory: PChar; forward;
+function GetSharpeDirectory: String; forward;
 function SharpEBroadCast(msg: integer; wpar: wparam; lpar: lparam; pSendMessage: boolean = False): integer; forward;
 
 { HELPER FUNCTIONS }
@@ -377,17 +377,17 @@ begin
   else result := False;
 end;
 
-function GetCenterDirectory: PChar;
+function GetCenterDirectory: String;
 var
   SharpEDir: string;
 begin
   SharpEDir := GetSharpEDirectory;
   stemp := IncludeTrailingBackslash(SharpEDir) +
     IncludeTrailingBackslash(CenterDir);
-  result := PChar(stemp);
+  result := stemp;
 end;
 
-function ServiceStart(ServiceName: pChar): hresult;
+function ServiceStart(ServiceName: String): hresult;
 var
   cds: TCopyDataStruct;
   wnd: hWnd;
@@ -417,7 +417,7 @@ begin
   end;
 end;
 
-function ServiceStop(ServiceName: pChar): hresult;
+function ServiceStop(ServiceName: String): hresult;
 var
   cds: TCopyDataStruct;
   wnd: hWnd;
@@ -447,7 +447,7 @@ begin
   end;
 end;
 
-function ServiceMsg(ServiceName, Command: pChar): hresult;
+function ServiceMsg(ServiceName, Command: String): hresult;
 var
   cds: TCopyDataStruct;
   wnd: hWnd;
@@ -476,7 +476,7 @@ begin
   end;
 end;
 
-function ServiceDone(ServiceName: pChar): hresult;
+function ServiceDone(ServiceName: String): hresult;
 var
   mhnd: THandle;
 begin
@@ -491,7 +491,7 @@ begin
   end;
 end;
 
-function BarMsg(PluginName, Command: pChar): hresult;
+function BarMsg(PluginName, Command: String): hresult;
 var
   cds: TCopyDataStruct;
   wnd: hWnd;
@@ -520,7 +520,7 @@ begin
   end;
 end;
 
-function IsServiceStarted(ServiceName: pchar): hresult;
+function IsServiceStarted(ServiceName: String): hresult;
 var
   cds: TCopyDataStruct;
   wnd: hWnd;
@@ -558,7 +558,7 @@ end;
 // Sends a message to SharpConsole
 //////////////////////////////////////////////////
 
-function SendConsoleMessage(msg: pChar): hresult;
+function SendConsoleMessage(msg: String): hresult;
 var
   wnd: hwnd;
   cds: TCopyDataStruct;
@@ -590,7 +590,7 @@ end;
 // Sends a message to SharpConsole  (With colors)
 //////////////////////////////////////////////////
 
-function SendDebugMessage(module: pChar; msg: pChar; color: integer): hresult;
+function SendDebugMessage(module: String; msg: String; color: integer): hresult;
 var
   wnd: hwnd;
   cds: TCopyDataStruct;
@@ -598,12 +598,11 @@ var
 begin
   try
     if module <> '' then
-      module := pchar(module + ': ')
+      module := module + ': '
     else
       module := ':';
 
-    msg := pChar('<B><FONT COLOR=$B06C48>' + string(module) + '</FONT></B>' +
-      string(msg));
+    msg := '<B><FONT COLOR=$B06C48>' + module + '</FONT></B>' + msg;
 
     cmsg.module := module;
     cmsg.msg := msg;
@@ -628,7 +627,7 @@ begin
   end;
 end;
 
-function SendDebugMessageEx(module: pChar; msg: pChar; Color: TColor;
+function SendDebugMessageEx(module: String; msg: String; Color: TColor;
   MessageType: integer): hresult;
 var
   wnd: hwnd;
@@ -637,12 +636,11 @@ var
 begin
   try
     if module <> '' then
-      module := pchar(module + ': ')
+      module := module + ': '
     else
       module := ':';
 
-    msg := pChar('' + string(module) + '</FONT></B>' +
-      string(msg));
+    msg := '' + module + '</FONT></B>' + msg;
 
     cmsg.module := module;
     cmsg.msg := msg;
@@ -667,7 +665,7 @@ begin
   end;
 end;
 
-function SharpExecute(data: pChar): hresult;
+function SharpExecute(data: String): hresult;
 var
   iElevate: Integer;
   iHistory: Integer;
@@ -677,7 +675,7 @@ begin
 
   try
     if IsServiceStarted('exec') = MR_STARTED then
-      result := ServiceMsg('exec', pchar(data))
+      result := ServiceMsg('exec', data)
     else
     begin
       sTemp := data;
@@ -694,8 +692,7 @@ begin
 
 end;
 
-function RegisterAction(ActionName: Pchar; WindowHandle: hwnd; LParamID:
-  Cardinal): hresult;
+function RegisterAction(ActionName: String; WindowHandle: hwnd; LParamID: Cardinal): hresult;
 begin
   try
 
@@ -708,14 +705,14 @@ begin
 
     // Send the message to register the Action
     Result := ServiceMsg(AC_SERVICE_NAME,
-      pchar(Format('%s,%s,Undefined,%d,%d',
-      [AC_REGISTER_ACTION, ActionName, WindowHandle, LParamID])));
+      Format('%s,%s,Undefined,%d,%d',
+      [AC_REGISTER_ACTION, ActionName, WindowHandle, LParamID]));
   except
     result := HR_UNKNOWNERROR;
   end;
 end;
 
-function RegisterActionEx(ActionName: Pchar; GroupName: Pchar; WindowHandle:
+function RegisterActionEx(ActionName: String; GroupName: String; WindowHandle:
   hwnd; LParamID:
   Cardinal): hresult;
 begin
@@ -729,14 +726,14 @@ begin
     end;
 
     // Send the message to register the Action
-    Result := ServiceMsg(AC_SERVICE_NAME, pchar(Format('%s,%s,%s,%d,%d',
-      [AC_REGISTER_ACTION, ActionName, GroupName, WindowHandle, LParamID])));
+    Result := ServiceMsg(AC_SERVICE_NAME, Format('%s,%s,%s,%d,%d',
+      [AC_REGISTER_ACTION, ActionName, GroupName, WindowHandle, LParamID]));
   except
     result := HR_UNKNOWNERROR;
   end;
 end;
 
-function UnRegisterAction(ActionName: Pchar): hresult;
+function UnRegisterAction(ActionName: String): hresult;
 begin
   try
 
@@ -748,14 +745,14 @@ begin
     end;
 
     // Send the message to unregister the Action
-    Result := ServiceMsg(AC_SERVICE_NAME, pchar(Format('%s,%s',
-      [AC_UNREGISTER_ACTION, ActionName])));
+    Result := ServiceMsg(AC_SERVICE_NAME, Format('%s,%s',
+      [AC_UNREGISTER_ACTION, ActionName]));
   except
     result := HR_UNKNOWNERROR;
   end;
 end;
 
-function UpdateAction(ActionName: Pchar; WindowHandle: hwnd; LParamID:
+function UpdateAction(ActionName: String; WindowHandle: hwnd; LParamID:
   Cardinal): hresult;
 begin
   try
@@ -769,14 +766,14 @@ begin
 
     // Send the message to update the Action
     Result := ServiceMsg(AC_SERVICE_NAME,
-      pchar(Format('%s,%s,Undefined,%d,%d',
-      [AC_UPDATE_ACTION, ActionName, WindowHandle, LParamID])));
+      Format('%s,%s,Undefined,%d,%d',
+      [AC_UPDATE_ACTION, ActionName, WindowHandle, LParamID]));
   except
     result := HR_UNKNOWNERROR;
   end;
 end;
 
-function UpdateActionEx(ActionName, GroupName: Pchar; WindowHandle: hwnd;
+function UpdateActionEx(ActionName, GroupName: String; WindowHandle: hwnd;
   LParamID:
   Cardinal): hresult;
 begin
@@ -790,8 +787,8 @@ begin
     end;
 
     // Send the message to update the Action
-    Result := ServiceMsg(AC_SERVICE_NAME, pchar(Format('%s,%s,%s,%d,%d',
-      [AC_UPDATE_ACTION, ActionName, GroupName, WindowHandle, LParamID])));
+    Result := ServiceMsg(AC_SERVICE_NAME, Format('%s,%s,%s,%d,%d',
+      [AC_UPDATE_ACTION, ActionName, GroupName, WindowHandle, LParamID]));
   except
     result := HR_UNKNOWNERROR;
   end;
@@ -910,7 +907,7 @@ begin
 
 end;
 
-function GetSharpeDirectory: PChar;
+function GetSharpeDirectory: String;
 
 var
   Path: string;
@@ -925,7 +922,7 @@ begin
   begin
     tmp := ExtractFilePath(sCheckResult);
     stemp := tmp;
-    Result := pchar(stemp);
+    Result := stemp;
     exit;
   end;
 
@@ -935,15 +932,15 @@ begin
   begin
     tmp := ExtractFilePath(sCheckResult);
     stemp := tmp;
-    Result := pchar(stemp);
+    Result := stemp;
     exit;
   end;
 end;
 
-function GetSharpeUserSettingsPath: PChar;
+function GetSharpeUserSettingsPath: String;
 var
   Path: string;
-  Fn: pchar;
+  Fn: String;
   user: string;
   sRes: String;
 begin
@@ -972,14 +969,14 @@ begin
   end;
 
   stemp := IncludeTrailingBackslash(Path);
-  Result := pchar(stemp);
+  Result := stemp;
   //SendDebugMessage('SharpApi', Result, clblack);
 end;
 
-function GetSharpeGlobalSettingsPath: PChar;
+function GetSharpeGlobalSettingsPath: String;
 var
   Path: string;
-  Fn: pchar;
+  Fn: String;
   sRes: String;
 begin
   // Check current directory
@@ -999,11 +996,11 @@ begin
   stemp := IncludeTrailingBackslash(Path);
   //SendDebugMessage('SharpApi stemp',pchar(stemp),clblack);
 
-  Result := pchar(stemp);
+  Result := stemp;
   //SendDebugMessage('SharpApi Result',Result,clblack);
 end;
 
-function FindAllComponents(Component: PChar): THandleArray;
+function FindAllComponents(Component: String): THandleArray;
 var
   sname: string;
 begin
@@ -1019,10 +1016,10 @@ begin
   else if CompareText(sname, 'sharpmenu') = 0 then
     result := FindAllWindows('TSharpEMenuWnd')
   else
-    result := FindAllWindows(PChar(sname));
+    result := FindAllWindows(sname);
 end;
 
-function FindComponent(Component: PChar): hwnd;
+function FindComponent(Component: String): hwnd;
 var
   sname: string;
 begin
@@ -1041,7 +1038,7 @@ begin
     result := FindWindow(PChar(sname), nil);
 end;
 
-function IsComponentRunning(Component: PChar): boolean;
+function IsComponentRunning(Component: String): boolean;
 begin
   if FindComponent(Component) <> 0 then
     result := true
@@ -1049,7 +1046,7 @@ begin
     result := false;
 end;
 
-function CloseComponent(Component: PChar): boolean;
+function CloseComponent(Component: String): boolean;
 var
   wndlist: THandleArray;
   n: integer;
@@ -1068,7 +1065,7 @@ begin
   result := not IsComponentRunning(Component);
 end;
 
-procedure TerminateComponent(Component: PChar);
+procedure TerminateComponent(Component: String);
 var
   PID: DWord;
 begin
@@ -1076,12 +1073,12 @@ begin
   TerminateApp(PID, 250);
 end;
 
-procedure StartComponent(Component: PChar);
+procedure StartComponent(Component: String);
 begin
   if ExtractFileExt(Component) = '.exe' then
     SharpExecute(Component)
   else
-    SharpExecute(PChar(Component + '.exe'));
+    SharpExecute(Component + '.exe');
 end;
 
 function GetSharpBarCount : integer;

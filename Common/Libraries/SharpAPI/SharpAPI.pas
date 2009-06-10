@@ -225,29 +225,29 @@ type
 
 function BroadcastGlobalUpdateMessage(AUpdateType: TSU_UPDATE_ENUM; APluginID: Integer = -1; ASendMessage: boolean = False): boolean; external 'SharpAPI.dll' name 'BroadcastGlobalUpdateMessage';
 
-function RegisterAction(ActionName: Pchar; WindowHandle: hwnd; LParamID: Cardinal) : hresult; external 'SharpAPI.dll' name 'RegisterAction';
-function RegisterActionEx(ActionName: Pchar; GroupName:PChar; WindowHandle: hwnd; LParamID: Cardinal) : hresult; external 'SharpAPI.dll' name 'RegisterActionEx';
+function RegisterAction(ActionName: String; WindowHandle: hwnd; LParamID: Cardinal) : hresult; external 'SharpAPI.dll' name 'RegisterAction';
+function RegisterActionEx(ActionName: String; GroupName:String; WindowHandle: hwnd; LParamID: Cardinal) : hresult; external 'SharpAPI.dll' name 'RegisterActionEx';
 
-function UpdateAction(ActionName: Pchar; WindowHandle: hwnd; LParamID: Cardinal): hresult; external 'SharpAPI.dll';
-function UpdateActionEx(ActionName, GroupName: Pchar; WindowHandle: hwnd; LParamID: Cardinal): hresult; external 'SharpAPI.dll';
+function UpdateAction(ActionName: String; WindowHandle: hwnd; LParamID: Cardinal): hresult; external 'SharpAPI.dll';
+function UpdateActionEx(ActionName, GroupName: String; WindowHandle: hwnd; LParamID: Cardinal): hresult; external 'SharpAPI.dll';
 
-function UnRegisterAction(ActionName: Pchar) : hresult; external 'SharpAPI.dll' name 'UnRegisterAction';
+function UnRegisterAction(ActionName: String) : hresult; external 'SharpAPI.dll' name 'UnRegisterAction';
 
 function GetSharpBarArea(Index : integer) : TBarRect; external 'SharpApi.dll' name 'GetSharpBarArea';
 function GetSharpBarCount : integer; external 'SharpApi.dll' name 'GetSharpBarCount';
 
-function GetSharpeDirectory: PChar; external 'SharpAPI.dll' name 'GetSharpeDirectory';
-function GetSharpeUserSettingsPath: PChar; external 'SharpAPI.dll' name 'GetSharpeUserSettingsPath';
-function GetSharpeGlobalSettingsPath: PChar; external 'SharpAPI.dll' name 'GetSharpeGlobalSettingsPath';
-function GetCenterDirectory: PChar; external 'SharpAPI.dll' name 'GetCenterDirectory';
+function GetSharpeDirectory: String; external 'SharpAPI.dll' name 'GetSharpeDirectory';
+function GetSharpeUserSettingsPath: String; external 'SharpAPI.dll' name 'GetSharpeUserSettingsPath';
+function GetSharpeGlobalSettingsPath: String; external 'SharpAPI.dll' name 'GetSharpeGlobalSettingsPath';
+function GetCenterDirectory: String; external 'SharpAPI.dll' name 'GetCenterDirectory';
 
-function ServiceMsg(ServiceName, Command: pChar): hresult; external 'SharpAPI.dll' name 'ServiceMsg';
-function ServiceStart(ServiceName: pChar): hresult; external 'SharpAPI.dll' name 'ServiceStart';
-function ServiceStop(ServiceName: pChar): hresult; external 'SharpAPI.dll' name 'ServiceStop';
-function IsServiceStarted(ServiceName: pchar): hresult; external 'SharpAPI.dll' name 'IsServiceStarted';
-function ServiceDone(ServiceName: pChar): hresult; external 'SharpAPI.dll' name 'ServiceDone';
+function ServiceMsg(ServiceName, Command: String): hresult; external 'SharpAPI.dll' name 'ServiceMsg';
+function ServiceStart(ServiceName: String): hresult; external 'SharpAPI.dll' name 'ServiceStart';
+function ServiceStop(ServiceName: String): hresult; external 'SharpAPI.dll' name 'ServiceStop';
+function IsServiceStarted(ServiceName: String): hresult; external 'SharpAPI.dll' name 'IsServiceStarted';
+function ServiceDone(ServiceName: String): hresult; external 'SharpAPI.dll' name 'ServiceDone';
 function SendDebugMessage(app: string; msg: string; color: integer): hresult; external 'SharpAPI.dll';
-function SendDebugMessageEx(module: pChar; msg: pChar; color: integer; MessageType: Integer): hresult; external 'SharpApi.dll';
+function SendDebugMessageEx(module: String; msg: String; color: integer; MessageType: Integer): hresult; external 'SharpApi.dll';
 
 function SendConsoleMessage(msg: string): hresult; external 'SharpAPI.dll';
 function SharpExecute(data: string): hresult; external 'SharpAPI.dll';
@@ -255,15 +255,15 @@ function SharpEBroadCast(msg: integer; wpar: wparam; lpar: lparam; pSendMessage:
 
 function SendMessageTo(WndName: string; msg: integer; wpar: wparam; lpar: lparam): boolean; external 'SharpAPI.dll';
 
-function BarMsg(PluginName, Command: pChar): hresult; external 'SharpApi.dll';
+function BarMsg(PluginName, Command: String): hresult; external 'SharpApi.dll';
 // new for skin stuff
-function SendPluginMessage(BarID, PluginID : integer; Command : pChar): hresult; external 'SharpApi.dll';
+function SendPluginMessage(BarID, PluginID : integer; Command : String): hresult; external 'SharpApi.dll';
 
-function FindComponent(Component : PChar) : hwnd; external 'SharpApi.dll' name 'FindComponent';
-function IsComponentRunning(Component : PChar) : boolean; external 'SharpApi.dll' name 'IsComponentRunning';
-function CloseComponent(Component : PChar) : boolean; external 'SharpApi.dll' name 'CloseComponent';
-procedure TerminateComponent(Component : PChar); external 'SharpApi.dll' name 'TerminateComponent';
-procedure StartComponent(Component : PChar); external 'SharpApi.dll' name 'StartComponent';
+function FindComponent(Component : String) : hwnd; external 'SharpApi.dll' name 'FindComponent';
+function IsComponentRunning(Component : String) : boolean; external 'SharpApi.dll' name 'IsComponentRunning';
+function CloseComponent(Component : String) : boolean; external 'SharpApi.dll' name 'CloseComponent';
+procedure TerminateComponent(Component : String); external 'SharpApi.dll' name 'TerminateComponent';
+procedure StartComponent(Component : String); external 'SharpApi.dll' name 'StartComponent';
 
 function GetShellTaskMgrWindow : hwnd; external 'SharpApi.dll' name 'GetShellTaskMgrWindow';
 function RequestWindowList(Wnd : hwnd) : boolean; external 'SharpApi.dll' name 'RequestWindowList';
