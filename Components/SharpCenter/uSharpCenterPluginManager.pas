@@ -30,7 +30,7 @@ type
     PreviewInterface: ISharpCenterPluginPreview;
     TabInterface: ISharpCenterPluginTabs;
 
-    InitPluginInterface: function ( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+    InitPluginInterface: function (APluginHost: ISharpCenterHost) : ISharpCenterPlugin;
   end;
   PPlugin = ^TPlugin;
 

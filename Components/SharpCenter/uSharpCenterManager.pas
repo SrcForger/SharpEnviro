@@ -231,12 +231,12 @@ begin
 
       FPlugin := LoadPluginInterface(PChar(AFile));
 
-      if ( (FPlugin.Dllhandle <> 0) and (@FPlugin.InitPluginInterface <> nil ) ) then begin
-
-      FPluginHost.PluginId := APluginID;
-      FPlugin.PluginInterface := FPlugin.InitPluginInterface( FPluginHost );
-      FPluginHandle := Plugin.PluginInterface.Open();
-      FPluginHost.PluginOwner.ParentWindow := FPluginHandle;
+      if ( (FPlugin.Dllhandle <> 0) and (@FPlugin.InitPluginInterface <> nil ) ) then
+      begin
+        FPluginHost.PluginId := APluginID;
+        FPlugin.PluginInterface := FPlugin.InitPluginInterface( FPluginHost );
+        FPluginHandle := Plugin.PluginInterface.Open();
+        FPluginHost.PluginOwner.ParentWindow := FPluginHandle;
 
         // load plugin tabs
         LoadPluginTabs;
@@ -338,7 +338,7 @@ begin
   FThemeManager.Refresh;
 
   if Plugin.Dllhandle <> 0 then
-    Plugin.PluginInterface.Refresh;
+    Plugin.PluginInterface.Refresh(SCM.Theme,FPluginHost.Editing);
 
   if assigned(FOnRefreshTheme) then
     FOnRefreshTheme(Self);
@@ -719,7 +719,7 @@ begin
 
   // Don't free the interface, set the interface to nil
   FThemeManager.Free;
-  FPluginHost := nil;
+  FPluginHost.SelfInterface := nil;
 
   inherited;
 end;
@@ -926,8 +926,8 @@ begin
   begin
     tmpPlugin := LoadPluginInterface(PChar(Afile));
 
-    if ( (tmpPlugin.Dllhandle <> 0) and (@tmpPlugin.InitPluginInterface <> nil ) ) then begin
-
+    if ( (tmpPlugin.Dllhandle <> 0) and (@tmpPlugin.InitPluginInterface <> nil ) ) then
+    begin
       tmpPlugin.PluginInterface := tmpPlugin.InitPluginInterface( FPluginHost );
 
     try
