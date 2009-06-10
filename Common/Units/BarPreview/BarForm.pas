@@ -31,11 +31,10 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, SharpEBaseControls, SharpEBar, SharpESkinManager, SharpEScheme,
-  SharpTypes, SharpESkin, SharpEButton, GR32, SharpGraphicsUtils;
+  SharpTypes, SharpESkin, SharpEButton, GR32, SharpGraphicsUtils, ISharpESkinComponents;
 
 type
   TBarWnd = class(TForm)
-    ssMain: TSharpEScheme;
     Button: TSharpEButton;
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -44,8 +43,10 @@ type
     procedure OnBackgroundPaint(Sender : TObject; Target : TBitmap32; x : integer);
   public
     Bar: TSharpEBar;
-    SkinManager : TSharpESkinManager;
+//    SkinManagerClass : TSharpESkinManager;
+    SkinManager : ISharpESkinManager;
     SkinComp : TSharpESkin;
+    Scheme : TSharpEScheme;
     Background : TBitmap32;
     procedure ApplyGlassEffect(GEBlurRadius,GEBlurIterations : integer; GEBlend : boolean;
                                GEBlendColor,GEBlendAlpha : integer; GELighten : boolean;
@@ -66,12 +67,12 @@ begin
   Background.Clear(color32(0,0,0,0));
 
   if BarWndUseMenu then
-     SkinComp := TSharpESkin.Create(self,[scBar,scButton,scMenu,scMenuItem])
-     else SkinComp := TSharpESkin.Create(self,[scBar,scButton]);
+     SkinComp := TSharpESkin.Create([scBar,scButton,scMenu,scMenuItem])
+     else SkinComp := TSharpESkin.Create([scBar,scButton]);
 
-  SkinManager := TSharpESkinManager.CreateRuntime(self,SkinComp,ssMain,True,[scBar,scButton]);
-  SkinManager.SkinSource := ssComponent;
-  SkinManager.SchemeSource := ssComponent;
+  Scheme := TSharpEScheme.Create;
+
+  SkinManager := TSharpESkinManager.CreateRuntime(self,SkinComp,Scheme,True,[scBar,scButton]);
 
   Bar := TSharpEBar.CreateRuntime(self,SkinManager);
   Button.SkinManager := SkinManager;
@@ -81,8 +82,7 @@ end;
 procedure TBarWnd.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(Bar);
-  FreeAndNil(SkinManager);
-  FreeAndNil(SkinComp);
+  SkinManager := nil;
   FreeAndNil(Background);
 end;
 
@@ -96,7 +96,7 @@ procedure TBarWnd.ApplyGlassEffect(GEBlurRadius,GEBlurIterations : integer; GEBl
                                    GEBlendColor,GEBlendAlpha : integer; GELighten : boolean;
                                    GELightenAmount : integer);
 begin
-  if SkinManager.Skin.BarSkin.GlassEffect then
+  if SkinManager.Skin.Bar.GlassEffect then
   begin
     if GEBlend then
        BlendImageC(Background,GEBlendColor,GEBlendAlpha);

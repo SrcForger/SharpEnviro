@@ -31,8 +31,4 @@ object BarWnd: TBarWnd
     Caption = 'SharpE'
     AutoPosition = False
   end
-  object ssMain: TSharpEScheme
-    Left = 280
-    Top = 8
-  end
 end

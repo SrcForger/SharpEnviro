@@ -137,7 +137,6 @@ const
   csize = 12;
 var
   BarWnd: TBarWnd;
-  Dir: string;
   skinfile: string;
   schemefile: string;
   themeskinfile: string;
@@ -145,98 +144,86 @@ var
   throbberpos: TPoint;
   buttonpos: TPoint;
   x, y: integer;
+  r : TRect;
 begin
   xml := TJclSimpleXML.Create;
   try
 
-    with BarWnd do begin
+    // Get the files
+    skinfile := GetSharpeDirectory + 'Skins\' + skin + '\skin.xml';
+    themeskinfile := GetSharpeUserSettingsPath + 'Themes\' + Theme + '\' + 'skin.xml';
+    schemefile := GetSharpeDirectory + 'Skins\' + skin + '\scheme.xml';
 
-      // Get the files
-      skinfile := GetSharpeDirectory + 'Skins\' + skin + '\skin.xml';
-      themeskinfile := GetSharpeUserSettingsPath + 'Themes\' + Theme + '\' + 'skin.xml';
-      schemefile := Dir + 'Skins\' + skin + '\scheme.xml';
+    // Precheck
+    if not (fileExists(skinfile)) then exit;
 
-      // Precheck
-      if not (fileExists(skinfile)) then exit;
+    // Create the bar and load the skin
+    BarWnd := TBarWnd.Create(nil);
+    BarWnd.Visible := false;
+    BarWnd.Width := barWidth;
+    BarWnd.SkinComp.LoadFromXmlFile(skinfile);
 
-      {$REGION 'Create bar and apply skin'}
-      // Create the bar and load the skin
-      BarWnd := TBarWnd.Create(nil);
-      BarWnd.Visible := false;
-      BarWnd.Width := barWidth;
-      BarWnd.SkinComp.LoadFromXmlFile(skinfile);
+    // Get the scheme
+    BarWnd.Scheme.Colors := colors;
+    BarWnd.SkinComp.UpdateDynamicProperties(BarWnd.Scheme);
 
-      // Get the scheme
-      BarWnd.ssMain.Colors := colors;
-      BarWnd.SkinComp.UpdateDynamicProperties(BarWnd.ssMain);
+    // Apply the scheme and skin to the bar
+    BarWnd.Bar.UpdateSkin;
 
-      // Apply the scheme and skin to the bar
-      Bar.UpdateSkin;
+    // Set bar size and initialise
+    srcBitmap.SetSize(max(barWidth, 1), BarWnd.SkinManager.Skin.Bar.BarHeight);
+    srcBitmap.Clear(color32(0, 0, 0, 0));
 
-      // Set bar size and initialise
-      srcBitmap.SetSize(max(barWidth, 1), BarWnd.SkinManager.Skin.BarSkin.SkinDim.HeightAsInt);
-      srcBitmap.Clear(color32(0, 0, 0, 0));
-{$ENDREGION}
-
-      {$REGION 'Draw Glass Effect'}
-      if drawGlass then begin
-
-        with BarWnd.Background do
-        begin
-          SetSize(srcBitmap.Width + 3 * csize, srcBitmap.Height + 3 * csize);
-          Clear(color32(clsilver));
-          for x := 0 to (srcBitmap.Width + 2 * csize) div (2 * csize) do
-            for y := 0 to (srcBitmap.Height + 2 * csize) div (csize) do
-              if y mod 2 = 0 then
-                FillRect(2 * x * csize, y * csize, 2 * x * csize + csize, y * csize + csize, clWhite32)
-              else FillRect(2 * x * csize + csize, y * csize, 2 * x * csize + 2 * csize, y * csize + csize, clWhite32);
-          DrawTo(srcBitmap, -round(1.5 * csize), -round(1.5 * csize));
-        end;
-
-        if BarWnd.SkinManager.Skin.BarSkin.GlassEffect then
-        begin
-
-          xml.LoadFromFile(themeskinfile);
-          with xml.Root.Items do
-          begin
-            BarWnd.ApplyGlassEffect(IntValue('GEBlurRadius', 2),
-              IntValue('GEBlurIterations', 2),
-              BoolValue('GEBlend', False),
-              IntValue('GEBlendColor', clblue),
-              IntValue('GEBlendAlpha', 32),
-              BoolValue('GELighten', True),
-              IntValue('GELightenAmount', 23));
-          end;
-
-        end;
-
+    if drawGlass then
+    begin
+      with BarWnd.Background do
+      begin
+        SetSize(srcBitmap.Width + 3 * csize, srcBitmap.Height + 3 * csize);
+        Clear(color32(clsilver));
+        for x := 0 to (srcBitmap.Width + 2 * csize) div (2 * csize) do
+          for y := 0 to (srcBitmap.Height + 2 * csize) div (csize) do
+            if y mod 2 = 0 then
+              FillRect(2 * x * csize, y * csize, 2 * x * csize + csize, y * csize + csize, clWhite32)
+            else FillRect(2 * x * csize + csize, y * csize, 2 * x * csize + 2 * csize, y * csize + csize, clWhite32);
+        DrawTo(srcBitmap, -round(1.5 * csize), -round(1.5 * csize));
       end;
-{$ENDREGION}
 
-      {$REGION 'Draw elements to source bitmap'}
-      // Draw background
-      Bar.abackground.Skin.Drawto(srcBitmap, 0, 0);
-
-      // Draw bar
-      Bar.Skin.DrawTo(srcBitmap, 0, 0);
-
-      // Draw throbber
-      ThrobberPos := Point(BarWnd.SkinManager.Skin.BarSkin.ThDim.XAsInt,
-        BarWnd.SkinManager.Skin.BarSkin.ThDim.YAsInt);
-      Bar.Throbber.UpdateSkin;
-      Bar.Throbber.Skin.DrawTo(srcBitmap, ThrobberPos.X, ThrobberPos.Y);
-
-      // Draw button
-      ButtonPos := Point(BarWnd.SkinManager.Skin.BarSkin.PAXoffset.XAsInt + 8,
-        BarWnd.SkinManager.Skin.BarSkin.PAYoffset.XAsInt + BarWnd.SkinManager.Skin.ButtonSkin.SkinDim.YAsInt);
-      Button.UpdateSkin;
-      Button.Skin.DrawTo(srcBitmap, ButtonPos.X, ButtonPos.Y);
-{$ENDREGION}
-
+      if BarWnd.SkinManager.Skin.Bar.GlassEffect then
+      begin
+        xml.LoadFromFile(themeskinfile);
+        with xml.Root.Items do
+        begin
+          BarWnd.ApplyGlassEffect(IntValue('GEBlurRadius', 2),
+            IntValue('GEBlurIterations', 2),
+            BoolValue('GEBlend', False),
+            IntValue('GEBlendColor', clblue),
+            IntValue('GEBlendAlpha', 32),
+            BoolValue('GELighten', True),
+            IntValue('GELightenAmount', 23));
+        end;
+      end;
     end;
+
+    // Draw background
+    BarWnd.Bar.abackground.Skin.Drawto(srcBitmap, 0, 0);
+
+    // Draw bar
+    BarWnd.Bar.Skin.DrawTo(srcBitmap, 0, 0);
+
+    // Draw throbber
+    r := BarWnd.SkinManager.Skin.Bar.GetThrobberDim(Rect(0,0,BarWnd.Width,BarWnd.Height));
+    ThrobberPos := Point(r.left,r.top);
+    BarWnd.Bar.Throbber.UpdateSkin;
+    BarWnd.Bar.Throbber.Skin.DrawTo(srcBitmap, ThrobberPos.X, ThrobberPos.Y);
+
+    // Draw button
+    ButtonPos := Point(BarWnd.SkinManager.Skin.Bar.PAXoffset.X + 8,
+      BarWnd.SkinManager.Skin.Bar.PAYoffset.X + BarWnd.SkinManager.Skin.Button.Location.Y);
+    BarWnd.Button.UpdateSkin;
+    BarWnd.Button.Skin.DrawTo(srcBitmap, ButtonPos.X, ButtonPos.Y);
   finally
     xml.Free;
-    FreeAndNil(barWnd);
+    FreeAndNil(BarWnd);
   end;
 end;
 
