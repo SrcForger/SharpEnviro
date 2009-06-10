@@ -258,7 +258,7 @@ type
     FBlue32, FBlue48, FBlue64: TBitmap32;
     FWhite32, FWhite48, FWhite64: TBitmap32;
     FFontList: TFontList;
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     procedure RefreshFontList;
     procedure UpdateIcon;
     procedure SendUpdate;
@@ -273,7 +273,7 @@ type
     procedure UpdateLinkPage;
     property FontList: TFontList read FFontList;
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost
+    property PluginHost: ISharpCenterHost read FPluginHost
       write FPluginHost;
   end;
 

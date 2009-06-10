@@ -47,6 +47,7 @@ uses
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uISharpETheme,
+  uSharpCenterPluginScheme,
   uSharpDeskObjectSettings in '..\..\..\..\Common\Units\XML\uSharpDeskObjectSettings.pas',
   RecycleBinObjectXMLSettings in '..\..\..\Objects\RecycleBin\RecycleBinObjectXMLSettings.pas';
 
@@ -61,14 +62,14 @@ type
     procedure SetDefaults(xmlSettings: TRecycleXMLSettings; ITheme: ISharpETheme);
     procedure SetHasChanged(xmlSettings: TRecycleXMLSettings; ITheme: ISharpETheme);
   public
-    constructor Create(APluginHost: TInterfacedSharpCenterHostBase);
+    constructor Create(APluginHost: ISharpCenterHost);
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
     procedure Save; override; stdcall;
 
     function GetPluginDescriptionText: string; override; stdcall;
-    procedure Refresh; override; stdcall;
+    procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
     procedure AddPluginTabs(ATabItems: TStringList); stdcall;
     procedure ClickPluginTab(ATab: TStringItem); stdcall;
   end;
@@ -100,7 +101,7 @@ begin
   FreeAndNil(frmSettings);
 end;
 
-constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
+constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
 end;
@@ -240,9 +241,9 @@ begin
   result := PluginHost.Open(frmSettings);
 end;
 
-procedure TSharpCenterPlugin.Refresh;
+procedure TSharpCenterPlugin.Refresh(Theme : TCenterThemeInfo; AEditing: Boolean);
 begin
-  PluginHost.AssignThemeToPluginForm(frmSettings);
+  AssignThemeToPluginForm(frmSettings,AEditing,Theme);
 
   
   frmSettings.edtSingle.Color := PluginHost.theme.PluginBackground;
@@ -429,7 +430,7 @@ begin
   end;
 end;
 
-function InitPluginInterface(APluginHost: TInterfacedSharpCenterHostBase): ISharpCenterPlugin;
+function InitPluginInterface(APluginHost: ISharpCenterHost): ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
 end;

@@ -70,11 +70,11 @@ type
     { Private declarations }
     FUpdating: Boolean;
     FItemEdit: TButtonBarItem;
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
   public
     { Public declarations }
     
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
     property ItemEdit: TButtonBarItem read FItemEdit write FItemEdit;
     procedure Init;

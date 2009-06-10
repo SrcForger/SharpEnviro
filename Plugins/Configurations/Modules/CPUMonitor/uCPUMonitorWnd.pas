@@ -84,12 +84,12 @@ type
     procedure pagMonShow(Sender: TObject);
     procedure Button1Click(Sender: TObject);
   private
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     sLastPage: TJvStandardPage;
     procedure UpdateSettings;
     procedure CheckValidKeys;
   public
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
   end;
 

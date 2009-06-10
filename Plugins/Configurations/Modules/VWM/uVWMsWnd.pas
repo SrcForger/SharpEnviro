@@ -29,9 +29,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvSimpleXml, JclFileUtils,
-  ImgList, PngImageList, GR32, GR32_PNG, SharpApi,
-  ExtCtrls, Menus, JclStrings, GR32_Image, SharpEGaugeBoxEdit,
+  Dialogs, StdCtrls, JclFileUtils,
+  ImgList, SharpApi,
+  ExtCtrls, Menus, SharpEGaugeBoxEdit,
   JvPageList, JvExControls, ComCtrls, Mask, SharpEColorEditorEx,
   SharpESwatchManager, ISharpCenterHostUnit, SharpECenterHeader, JvXPCore,
   JvXPCheckCtrls;
@@ -67,11 +67,10 @@ type
     procedure sgb_backgroundChangeValue(Sender: TObject; Value: Integer);
     procedure ColorsChangeColor(ASender: TObject; AValue: Integer);
   private
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     procedure UpdateSettings;
   public
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
-      FPluginHost;
+    property PluginHost: ISharpCenterHost read FPluginHost write FPluginHost;
   end;
 
 var

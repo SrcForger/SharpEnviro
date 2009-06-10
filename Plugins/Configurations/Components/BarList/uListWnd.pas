@@ -99,7 +99,7 @@ type
 
   private
     FWinHandle: THandle;
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     function IsBarRunning(ID: integer): boolean;
 
     procedure CustomWndProc(var msg: TMessage);
@@ -110,8 +110,7 @@ type
 
     function BarSpaceCheck: boolean;
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
-      FPluginHost;
+    property PluginHost: ISharpCenterHost read FPluginHost write FPluginHost;
 
   end;
 

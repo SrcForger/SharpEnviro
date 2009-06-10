@@ -42,6 +42,7 @@ uses
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uSharpDeskTDeskSettings,
+  uSharpCenterPluginScheme,
   settingsWnd in 'settingsWnd.pas' {frmSettings};
 
 {$E .dll}
@@ -54,7 +55,7 @@ type
     FXmlDeskSettings: TDeskSettings;
     procedure LoadSettings;
   public
-    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
+    constructor Create( APluginHost: ISharpCenterHost );
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
@@ -62,7 +63,7 @@ type
     procedure Save; override; stdcall;
 
     function GetPluginDescriptionText: String; override; stdCall;
-    procedure Refresh; override; stdcall;
+    procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
 
     property XmlDeskSettings: TDeskSettings read FXmlDeskSettings write
       FXmlDeskSettings;
@@ -75,7 +76,7 @@ begin
   FreeAndNil(frmSettings);
 end;
 
-constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
+constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
 end;
@@ -134,9 +135,9 @@ begin
   end;
 end;
 
-procedure TSharpCenterPlugin.Refresh;
+procedure TSharpCenterPlugin.Refresh(Theme : TCenterThemeInfo; AEditing: Boolean);
 begin
-  PluginHost.AssignThemeToPluginForm(frmSettings);
+  AssignThemeToPluginForm(frmSettings,AEditing,Theme);
 end;
 
 procedure TSharpCenterPlugin.Save;
@@ -178,7 +179,7 @@ begin
   end;
 end;
 
-function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+function InitPluginInterface( APluginHost: ISharpCenterHost ) : ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
 end;

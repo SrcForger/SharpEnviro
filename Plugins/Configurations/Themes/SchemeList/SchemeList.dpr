@@ -42,6 +42,7 @@ uses
   uThemeConsts,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
+  uSharpCenterPluginScheme,
   uListWnd in 'uListWnd.pas' {frmListWnd},
   uEditWnd in 'uEditWnd.pas' {frmEditWnd},
   uSchemeList in 'uSchemeList.pas';
@@ -56,7 +57,7 @@ type
     procedure ValidateInvalidChars(Sender: TObject; ValueToValidate: Variant; var Valid: Boolean);
   public
     Theme : ISharpETheme;
-    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
+    constructor Create( APluginHost: ISharpCenterHost );
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
@@ -65,7 +66,7 @@ type
 
     function GetPluginDescriptionText: String; override; stdCall;
     function GetPluginStatusText: String; override; stdCall;
-    procedure Refresh; override; stdcall;
+    procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
     procedure SetupValidators; stdcall;
     procedure UpdatePreview(ABitmap: TBitmap32); stdcall;
 
@@ -87,7 +88,7 @@ begin
   FreeAndNil(frmEditWnd);
 end;
 
-constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
+constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
   Theme := GetTheme(PluginHost.PluginID);
@@ -149,9 +150,9 @@ begin
   frmEditWnd.InitUI;
 end;
 
-procedure TSharpCenterPlugin.Refresh;
+procedure TSharpCenterPlugin.Refresh(Theme : TCenterThemeInfo; AEditing: Boolean);
 begin
-  PluginHost.AssignThemeToForms(frmListWnd,frmEditWnd);
+  AssignThemeToForms(frmListWnd,frmEditWnd,AEditing,Theme);
 end;
 
 procedure TSharpCenterPlugin.SetupValidators;
@@ -228,7 +229,7 @@ begin
 end;
 
 
-function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+function InitPluginInterface( APluginHost: ISharpCenterHost ) : ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
 end;

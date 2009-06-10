@@ -39,7 +39,6 @@ uses
   Forms,
   Dialogs,
   StdCtrls,
-  JvSimpleXml,
   JclFileUtils,
   ImgList,
   PngImageList,
@@ -118,14 +117,14 @@ type
     procedure btnRevertClick(Sender: TObject);
   private
     FFontList: TFontList;
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     FIsUpdating: boolean;
     function GetChangedControlCount: integer;
     procedure UpdateSettingsChanged;
   public
     procedure RefreshFontList;
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
+    property PluginHost: ISharpCenterHost read FPluginHost write FPluginHost;
     property IsUpdating: boolean read FIsUpdating write FIsUpdating;
   end;
 

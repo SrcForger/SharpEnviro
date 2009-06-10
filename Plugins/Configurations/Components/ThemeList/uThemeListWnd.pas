@@ -89,7 +89,7 @@ type
       const ASelected: Boolean);
   private
     FLoading: Boolean;
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     FPngMissing: TPNGObject;
     FMask: TBitmap32;
 
@@ -103,7 +103,7 @@ type
 
     property Loading: boolean read FLoading write FLoading;
     procedure EditTheme( name: String);
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
+    property PluginHost: ISharpCenterHost read FPluginHost write FPluginHost;
   end;
 
 var

@@ -93,7 +93,7 @@ type
     procedure tmrSetSchemeTimer(Sender: TObject);
 
   private
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     procedure SelectSchemeItem(ASchemeName: string);
 
     { Private declarations }
@@ -109,7 +109,7 @@ type
     procedure EditScheme(tmpSchemeItem: TSchemeItem); overload;
     procedure EditScheme(name: string); overload;
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
   end;
 
@@ -148,7 +148,7 @@ begin
     if tmpSchemeItem = nil then
       exit;
 
-    BarPreview.CreateBarPreview(bmp, FSchemeManager.PluginID, FSchemeManager.Theme.Skin.Name,
+    CreateBarPreview(bmp, FSchemeManager.PluginID, FSchemeManager.Theme.Skin.Name,
       tmpSchemeItem.Name, 150, FSchemeManager.Theme, true );
 
     ABmp.SetSize(bmp.Width, bmp.height);

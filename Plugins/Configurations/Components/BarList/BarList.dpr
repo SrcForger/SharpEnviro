@@ -32,7 +32,7 @@ uses
   Dialogs,
   Contnrs,
   graphics,
-  JvSimpleXml,
+  JclSimpleXml,
   JvValidators,
   PngSpeedButton,
   uVistaFuncs,
@@ -43,6 +43,7 @@ uses
   SharpFileUtils,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
+  uSharpCenterPluginScheme,
   uListWnd in 'uListWnd.pas' {frmListWnd},
   uEditWnd in 'uEditWnd.pas' {frmEditwnd};
 
@@ -54,12 +55,8 @@ type
   TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin, ISharpCenterPluginEdit,
     ISharpCenterPluginValidation )
   private
-    procedure ValidateHotkeyExists(Sender: TObject; ValueToValidate: Variant;
-      var Valid: Boolean);
-    procedure ValidateNameExists(Sender: TObject; ValueToValidate: Variant;
-      var Valid: Boolean);
   public
-    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
+    constructor Create( APluginHost: ISharpCenterHost );
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
@@ -68,7 +65,7 @@ type
 
     function GetPluginDescriptionText: String; override; stdCall;
     function GetPluginStatusText: String; override; stdCall;
-    procedure Refresh; override; stdcall;
+    procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
     procedure SetupValidators; stdcall;
 
   end;
@@ -89,7 +86,7 @@ begin
   FreeAndNil(frmEditWnd);
 end;
 
-constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
+constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
 end;
@@ -151,17 +148,17 @@ begin
   frmEditWnd.Init;
 end;
 
-procedure TSharpCenterPlugin.Refresh;
+procedure TSharpCenterPlugin.Refresh(Theme : TCenterThemeInfo; AEditing: Boolean);
 begin
-  PluginHost.AssignThemeToForms(frmListWnd,frmEditWnd);
+  AssignThemeToForms(frmListWnd,frmEditWnd,AEditing,Theme);
 end;
 
 procedure TSharpCenterPlugin.SetupValidators;
-var
-  tmp: TJvCustomValidator;
+//var
+//  tmp: TJvCustomValidator;
 begin
   // Can not leave fields blank
-  PluginHost.AddRequiredFieldValidator( frmEditWnd.edName,'Please enter a toolbar name','Text');
+  PluginHost.AddRequiredFieldValidator(frmEditWnd.edName,'Please enter a toolbar name','Text');
 //  PluginHost.AddRequiredFieldValidator( frmEditWnd.edCommand,'Please enter a command name','Text');
 //  PluginHost.AddRequiredFieldValidator( frmEditWnd.edHotkey,'Please enter hotkey','Text');
 //
@@ -170,64 +167,6 @@ begin
 //  tmp.OnValidate := ValidateNameExists;
 //  tmp := PluginHost.AddCustomValidator( frmEditWnd.edHotkey,'There is already a command with this hotkey','Text');
 //  tmp.OnValidate := ValidateHotkeyExists;
-end;
-
-procedure TSharpCenterPlugin.ValidateNameExists(Sender: TObject;
-  ValueToValidate: Variant; var Valid: Boolean);
-var
-  idx: Integer;
-  s: string;
-begin
-//  Valid := True;
-//
-//  s := '';
-//  if ValueToValidate <> null then
-//    s := VarToStr(ValueToValidate);
-//
-//  if s = '' then begin
-//    Valid := False;
-//    Exit;
-//  end;
-//
-//  idx := FHotkeyList.IndexOfName(s);
-//
-//  if (idx <> -1) then begin
-//
-//    if frmEditWnd.ItemEdit <> nil then
-//      if frmEditWnd.ItemEdit.Name = s then
-//        exit;
-//
-//    Valid := False;
-//  end;
-end;
-
-procedure TSharpCenterPlugin.ValidateHotkeyExists(Sender: TObject;
-  ValueToValidate: Variant; var Valid: Boolean);
-var
-  idx: Integer;
-  s: string;
-begin
-//  Valid := True;
-//
-//  s := '';
-//  if ValueToValidate <> null then
-//    s := VarToStr(ValueToValidate);
-//
-//  if s = '' then begin
-//    Valid := False;
-//    Exit;
-//  end;
-//
-//  idx := FHotkeyList.IndexOfHotkey(s);
-//
-//  if (idx <> -1) then begin
-//
-//    if frmEditWnd.ItemEdit <> nil then
-//      if frmEditWnd.ItemEdit.Hotkey = s then
-//        exit;
-//
-//    Valid := False;
-//  end;
 end;
 
 function GetMetaData(): TMetaData;
@@ -244,7 +183,7 @@ begin
   end;
 end;
 
-function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+function InitPluginInterface(APluginHost: ISharpCenterHost) : ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
 end;

@@ -59,7 +59,6 @@ uses
   uSharpEMenuLoader,
   uSharpEMenuSaver,
   uSharpEMenuItem,
-  SharpESkinManager,
 
   ISharpCenterHostUnit;
 
@@ -77,7 +76,6 @@ type
 
   TfrmList = class(TForm)
     lbItems: TSharpEListBoxEx;
-    smMain: TSharpESkinManager;
     pilIcons: TPngImageList;
     pilDefault: TPngImageList;
     tmrUpdatePosition: TTimer;
@@ -105,7 +103,7 @@ type
   private
     FMenuFile: string;
     FMenu: TSharpEMenu;
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
 
     procedure RenderItemsBuffered(AMenu: TSharpEMenu; AClear: Boolean = True;
       AParent: Boolean = False);
@@ -122,7 +120,7 @@ type
 
     procedure Save;
     procedure LoadMenu;
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
+    property PluginHost: ISharpCenterHost read FPluginHost write FPluginHost;
   end;
 
 var
@@ -428,7 +426,7 @@ end;
 procedure TfrmList.LoadMenu;
 begin
   SharpEMenuIcons := TSharpEMenuIcons.Create;
-  FMenu := uSharpEMenuLoader.LoadMenu(FMenuFile, smMain, True);
+  FMenu := uSharpEMenuLoader.LoadMenu(FMenuFile, nil, True);
 
   RenderItemsBuffered(FMenu);
 end;
@@ -441,7 +439,6 @@ var
   tmpMenu: TSharpEMenu;
   newItem: TSharpEListItem;
   png: TPngImageCollectionItem;
-  bmp, bmpResized: TBitmap32;
   pt: TPoint;
 begin
 

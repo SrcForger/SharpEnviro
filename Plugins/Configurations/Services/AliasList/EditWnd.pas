@@ -21,7 +21,7 @@ type
   private
     FItemEdit: TAliasListItem;
     FUpdating: Boolean;
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     { Private declarations }
   public
     { Public declarations }
@@ -29,7 +29,7 @@ type
     procedure Save;
 
     property ItemEdit: TAliasListItem read FItemEdit write FItemEdit;
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
+    property PluginHost: ISharpCenterHost read FPluginHost write FPluginHost;
   end;
 
 var

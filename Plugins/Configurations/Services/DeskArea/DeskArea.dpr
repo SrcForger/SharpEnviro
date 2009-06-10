@@ -30,10 +30,6 @@ uses
   Windows,
   SysUtils,
   Forms,
-  Dialogs,
-  JclSimpleXml,
-  PngSpeedButton,
-  SharpETabList,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   SharpCenterApi,
@@ -41,6 +37,7 @@ uses
   GR32,
   SharpThemeApiEx,
   uVistaFuncs,
+  uSharpCenterPluginScheme,
   uSettingsWnd in 'uSettingsWnd.pas' {frmSettings};
 
 {$E .dll}
@@ -52,14 +49,15 @@ type
   private
     procedure Load;
   public
-    constructor Create(APluginHost: TInterfacedSharpCenterHostBase);
+    constructor Create(APluginHost: ISharpCenterHost);
+    destructor Destroy; override;
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
 
     procedure Save; override; stdcall;
     function GetPluginDescriptionText: string; override; stdcall;
-    procedure Refresh; override; stdcall;
+    procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
     procedure UpdatePreview(ABitmap: TBitmap32); stdcall;
     procedure AddPluginTabs(ATabItems: TStringList); stdcall;
     procedure ClickPluginTab(ATab: TStringItem); stdcall;
@@ -97,9 +95,16 @@ begin
   FreeAndNil(frmSettings);
 end;
 
-constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
+constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
+  PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpCore\Services\DeskArea\DeskArea.xml';
+end;
+
+destructor TSharpCenterPlugin.Destroy;
+begin
+
+  inherited;
 end;
 
 function TSharpCenterPlugin.GetPluginDescriptionText: string;
@@ -118,7 +123,6 @@ const
   primaryId = -100;
 
 begin
-  PluginHost.Xml.XmlFilename := SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\DeskArea\DeskArea.xml';
   if PluginHost.Xml.Load then begin
 
     with PluginHost.Xml.XmlRoot do begin
@@ -182,9 +186,9 @@ begin
   result := PluginHost.Open(frmSettings);
 end;
 
-procedure TSharpCenterPlugin.Refresh;
+procedure TSharpCenterPlugin.Refresh(Theme : TCenterThemeInfo; AEditing: Boolean);
 begin
-  PluginHost.AssignThemeToPluginForm(frmSettings);
+  AssignThemeToPluginForm(frmSettings,AEditing,Theme);
 end;
 
 procedure TSharpCenterPlugin.Save;
@@ -237,7 +241,7 @@ begin
   end;
 end;
 
-function InitPluginInterface(APluginHost: TInterfacedSharpCenterHostBase): ISharpCenterPlugin;
+function InitPluginInterface(APluginHost: ISharpCenterHost): ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
 end;

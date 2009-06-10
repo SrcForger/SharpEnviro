@@ -43,7 +43,7 @@ type
     FWinHandle: THandle;
     FWeatherList: TWeatherList;
     FWeatherOptions: TWeatherOptions;
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
 
     { Private declarations }
     function GetWeatherIndex(AWeatherItem: TWeatherItem): Integer;
@@ -53,7 +53,7 @@ type
     procedure UpdateDisplay;
 
     property EditMode: TSCE_EDITMODE_ENUM read FEditMode write FEditMode;
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
+    property PluginHost: ISharpCenterHost read FPluginHost write FPluginHost;
     property WeatherList: TWeatherList read FWeatherList write FWeatherList;
     property WeatherOptions: TWeatherOptions read FWeatherOptions write FWeatherOptions;
   end;

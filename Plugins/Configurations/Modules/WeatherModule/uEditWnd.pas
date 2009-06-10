@@ -38,10 +38,8 @@ uses
   Controls,
   Forms,
   StdCtrls,
-  ImgList,
-  PngImageList,
   SharpTypes,
-  SharpEListBoxEx, TaskFilterList, ExtCtrls, JclSimpleXml, JclStrings, Menus,
+  SharpEListBoxEx, TaskFilterList, ExtCtrls, JclSimpleXml, Menus,
   ISharpCenterHostUnit, SharpECenterHeader, JvExControls, JvXPCore,
   JvXPCheckCtrls;
 
@@ -148,10 +146,10 @@ type
     procedure miTagClick(Sender: TObject);
     procedure miExampleClick(Sender: TObject);
   private
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     procedure PopulateLocations;
   public
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
   end;
 

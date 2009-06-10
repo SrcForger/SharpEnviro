@@ -40,6 +40,7 @@ uses
   SharpApi,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
+  uSharpCenterPluginScheme,
   uListWnd in 'uListWnd.pas' {frmListWnd},
   uEditWnd in 'uEditWnd.pas' {frmEditWnd};
 
@@ -51,7 +52,7 @@ type
   TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin, ISharpCenterPluginEdit )
   private
   public
-    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
+    constructor Create( APluginHost: ISharpCenterHost );
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
@@ -61,7 +62,7 @@ type
     function GetPluginName: string; override; stdCall;
     function GetPluginDescriptionText: String; override; stdCall;
     function GetPluginStatusText: string; override; stdCall;
-    procedure Refresh; override; stdcall;
+    procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
 
   end;
 
@@ -83,7 +84,7 @@ begin
   frmListWnd.BuildModuleList;
 end;
 
-constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
+constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
 end;
@@ -137,9 +138,9 @@ begin
   frmEditWnd.Init;
 end;
 
-procedure TSharpCenterPlugin.Refresh;
+procedure TSharpCenterPlugin.Refresh(Theme : TCenterThemeInfo; AEditing: Boolean);
 begin
-  PluginHost.AssignThemeToForms(frmListWnd,frmEditWnd);
+  AssignThemeToForms(frmListWnd,frmEditWnd,AEditing,Theme);
   PluginHost.SetEditTabVisibility(scbEditTab,false);
 end;
 
@@ -157,7 +158,7 @@ begin
   end;
 end;
 
-function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+function InitPluginInterface( APluginHost: ISharpCenterHost ) : ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
 end;

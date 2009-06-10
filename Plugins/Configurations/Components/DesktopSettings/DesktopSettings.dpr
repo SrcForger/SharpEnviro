@@ -31,7 +31,7 @@ uses
   Windows,
   Forms,
   Dialogs,
-  JvSimpleXml,
+  JclSimpleXml,
   ComCtrls,
   PngSpeedButton,
   uVistaFuncs,

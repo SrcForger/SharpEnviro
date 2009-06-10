@@ -61,10 +61,10 @@ type
     procedure tmrRefreshTimer(Sender: TObject);
     procedure sceGlassOptionsUiChange(Sender: TObject);
   private
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     FIsUpdating: boolean;
   public
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
+    property PluginHost: ISharpCenterHost read FPluginHost write FPluginHost;
     property IsUpdating: boolean read FIsUpdating write FIsUpdating;
   end;
 

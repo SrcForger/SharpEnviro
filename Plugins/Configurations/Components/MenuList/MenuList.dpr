@@ -47,6 +47,7 @@ uses
   SharpEListBoxEx,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
+  uSharpCenterPluginScheme,
   JvValidators;
 
 {$E .dll}
@@ -61,7 +62,7 @@ type
     procedure ValidateMenuName(Sender: TObject;
       ValueToValidate: Variant; var Valid: Boolean);
   public
-    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
+    constructor Create( APluginHost: ISharpCenterHost );
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
@@ -71,7 +72,7 @@ type
     function GetPluginName: String; override; stdCall;
     function GetPluginStatusText: String; override; stdCall;
 
-    procedure Refresh; override; stdcall;
+    procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
     function OpenEdit: Cardinal; stdcall;
     procedure CloseEdit(AApply: Boolean); stdcall;
     procedure SetupValidators; stdcall;
@@ -96,7 +97,7 @@ begin
     FreeAndNil(frmEdit);
 end;
 
-constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
+constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
 end;
@@ -145,9 +146,9 @@ begin
   frmEdit.InitUi;
 end;
 
-procedure TSharpCenterPlugin.Refresh;
+procedure TSharpCenterPlugin.Refresh(Theme : TCenterThemeInfo; AEditing: Boolean);
 begin
-  PluginHost.AssignThemeToForms(frmList,frmEdit);
+  AssignThemeToForms(frmList,frmEdit,AEditing,Theme);
 end;
 
 procedure TSharpCenterPlugin.SetupValidators;
@@ -187,7 +188,7 @@ begin
   Valid := not (bExistsName);
 end;
 
-function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+function InitPluginInterface(APluginHost: ISharpCenterHost) : ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
 end;

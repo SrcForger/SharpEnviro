@@ -37,6 +37,7 @@ uses
   uHomeWnd in 'uHomeWnd.pas' {frmHome},
   SharpCenterApi,
   SharpApi,
+  uSharpCenterPluginScheme,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit;
 
@@ -48,14 +49,14 @@ type
   TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin, ISharpCenterPluginTabs )
   private
   public
-    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
+    constructor Create( APluginHost: ISharpCenterHost );
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
 
     procedure ClickPluginTab(ATab: TStringItem); stdCall;
     procedure AddPluginTabs(ATabItems: TStringList); stdCall;
-    procedure Refresh; override; stdcall;
+    procedure Refresh(Theme : TCenterThemeInfo; AEditing : Boolean); override; stdcall;
 
   end;
 
@@ -90,7 +91,7 @@ begin
   FreeAndNil(frmHome); 
 end;
 
-constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
+constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
 end;
@@ -104,9 +105,9 @@ begin
   result := PluginHost.Open(frmHome);
 end;
 
-procedure TSharpCenterPlugin.Refresh;
+procedure TSharpCenterPlugin.Refresh(Theme : TCenterThemeInfo; AEditing : Boolean);
 begin
-  PluginHost.AssignThemeToPluginForm(frmHome);
+  AssignThemeToPluginForm(frmHome, AEditing, Theme);
 end;
 
 function GetMetaData(): TMetaData;
@@ -130,7 +131,7 @@ begin
   end;
 end;
 
-function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+function InitPluginInterface(APluginHost: ISharpCenterHost) : ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
 end;

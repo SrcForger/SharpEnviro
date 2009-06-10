@@ -39,10 +39,8 @@ uses
   Dialogs,
   StdCtrls,
   ExtCtrls,
-  JclSimpleXml,
   JclFileUtils,
   SharpFileUtils,
-  SharpEGaugeBoxEdit,
   SharpAPI,
   SharpDialogs,
   SharpECenterHeader,
@@ -71,11 +69,11 @@ type
     procedure btnBrowseClick(Sender: TObject);
     procedure gbSizeChangeValue(Sender: TObject; Value: Integer);
   private
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     procedure PopulateMenus;
     procedure UpdateSettings;
   public
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
   end;
 

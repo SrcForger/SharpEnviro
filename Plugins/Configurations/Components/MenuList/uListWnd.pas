@@ -89,7 +89,7 @@ type
       AItem: TSharpEListItem);
   private
     FItems: TObjectList;
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     procedure AddItemsToList(AList: TObjectList);
     procedure SelectMenuItem(AName: string);
   public
@@ -102,7 +102,7 @@ type
       EnableIcons: Boolean; EnableGeneric: Boolean; DisplayExtensions: Boolean); overload;
 
     procedure EditMenu(name: string);
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost; end;
 
 var

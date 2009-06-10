@@ -38,12 +38,9 @@ uses
   Forms,
   Dialogs,
   StdCtrls,
-  JvSimpleXml,
   JclFileUtils,
   ImgList,
   PngImageList,
-  SharpEListBox,
-  SharpEListBoxEx,
   GR32,
   GR32_PNG,
   SharpApi,
@@ -58,9 +55,6 @@ uses
   JvExControls,
   SharpEPageControl,
   ComCtrls,
-  Mask,
-  JvExMask,
-  JvToolEdit,
   SharpEColorEditorEx,
   SharpESwatchManager,
 
@@ -139,7 +133,7 @@ type
     procedure PngSpeedButton1Click(Sender: TObject);
     procedure IconColorsResize(Sender: TObject);
   private
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     function GetChangedControlCount: integer;
     procedure UpdateSettingsChanged;
 
@@ -148,7 +142,7 @@ type
   public
     sObjectID: string;
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost
+    property PluginHost: ISharpCenterHost read FPluginHost
       write FPluginHost;
 
     procedure UpdatePageUI;

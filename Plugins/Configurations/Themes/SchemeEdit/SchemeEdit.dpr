@@ -38,6 +38,7 @@ uses
   uVistaFuncs,
   uThemeConsts,
   uISharpETheme,
+  uSharpCenterPluginScheme,
   BarPreview,
   forms,
   GR32,
@@ -51,14 +52,13 @@ type
     FTheme : ISharpETheme;
     procedure Load;
   public
-    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
+    constructor Create( APluginHost: ISharpCenterHost );
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
 
     function GetPluginDescriptionText: String; override; stdCall;
-    procedure Refresh; override; stdcall;
-
+    procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
 
     procedure Save; override; stdCall;
     procedure UpdatePreview(ABitmap: TBitmap32); stdcall;
@@ -72,7 +72,7 @@ begin
   FreeAndNil(frmEditWnd);
 end;
 
-constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
+constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 var
   pluginId, themeId, schemeId: String;
 begin
@@ -121,9 +121,9 @@ begin
   result := PluginHost.Open(frmEditWnd);
 end;
 
-procedure TSharpCenterPlugin.Refresh;
+procedure TSharpCenterPlugin.Refresh(Theme : TCenterThemeInfo; AEditing: Boolean);
 begin
-  PluginHost.AssignThemeToPluginForm(frmEditWnd);
+  AssignThemeToPluginForm(frmEditWnd,AEditing,Theme);
 end;
 
 function XmlGetSchemeAuthor(ATheme: string; AScheme: string; ITheme : ISharpETheme): string;
@@ -221,7 +221,7 @@ begin
 end;
 
 
-function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+function InitPluginInterface( APluginHost: ISharpCenterHost ) : ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
 end;

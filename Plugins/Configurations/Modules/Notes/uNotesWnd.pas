@@ -29,12 +29,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvSimpleXml, JclFileUtils,
-  ImgList, PngImageList, GR32, GR32_PNG, SharpApi,
-  ExtCtrls, Menus, JclStrings, GR32_Image, SharpEGaugeBoxEdit,
-  JvPageList, JvExControls, ComCtrls, Mask, SharpCenterAPI, ISharpCenterHostUnit,
-  SharpECenterHeader, JvXPCore, JvXPCheckCtrls, JvXPButtons, JvBaseDlg,
-  JvBrowseFolder;
+  Dialogs, StdCtrls, SharpApi, ExtCtrls, Menus, JvPageList, JvExControls,
+  ComCtrls, Mask, SharpCenterAPI, ISharpCenterHostUnit, SharpECenterHeader,
+  JvXPCore, JvXPCheckCtrls, JvXPButtons, JvBaseDlg, JvBrowseFolder;
 
 type
   TStringObject = class(TObject)
@@ -65,12 +62,12 @@ type
     procedure btnBrowseClick(Sender: TObject);
     procedure editDirectoryChange(Sender: TObject);
   private
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     procedure UpdateSettings;
   public
     sModuleID: string;
     sBarID : string;
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
   end;
 

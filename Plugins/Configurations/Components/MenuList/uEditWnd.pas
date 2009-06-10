@@ -68,7 +68,7 @@ type
   private
     { Private declarations }
     FUpdating: Boolean;
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     procedure UpdateOverrideState;
   public
     { Public declarations }
@@ -76,7 +76,7 @@ type
     procedure InitUi;
     procedure Save;
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
 
   end;

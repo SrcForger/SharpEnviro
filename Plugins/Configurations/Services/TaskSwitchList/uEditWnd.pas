@@ -36,25 +36,14 @@ uses
   Controls,
   StdCtrls,
   ExtCtrls,
-  SharpeColorEditorEx,
-  ContNrs,
 
-  SharpERoundPanel,
-  JclIniFiles,
   SharpApi,
   SharpCenterApi,
   SharpThemeApiEx,
-  SharpESwatchManager,
-  SharpEColorEditor,
-  ImgList,
-  PngImageList,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
 
-  uTaskswitchUtility,
-  JvExControls,
-  JvXPCore,
-  JvXPCheckCtrls;
+  uTaskswitchUtility;
 
 type
   TfrmEdit = class(TForm)
@@ -64,7 +53,7 @@ type
     procedure FormCreate(Sender: TObject);
   private
     FUpdating: Boolean;
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     FItemEdit: TTaskSwitchItem;
 
   public
@@ -72,7 +61,7 @@ type
     procedure Save;
 
     property ItemEdit: TTaskSwitchItem read FItemEdit write FItemEdit;
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
   end;
 

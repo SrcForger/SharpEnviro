@@ -173,7 +173,7 @@ type
     procedure HSLColorChangeEvent(Sender: TObject; Value: Integer);
     procedure cboGradTypeSelect(Sender: TObject);
   private
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     FCurrentWP: TWPItem;
     FTheme: ISharpETheme;
     procedure UpdateWpItem;
@@ -186,7 +186,7 @@ type
     procedure UpdateColorPage;
     procedure UpdateGradientPage;
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
+    property PluginHost: ISharpCenterHost read FPluginHost write FPluginHost;
     property CurrentWP: TWPItem read FCurrentWP write FCurrentWP;
     property Theme: ISharpETheme read FTheme write FTheme;
   end;

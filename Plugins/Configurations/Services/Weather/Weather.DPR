@@ -6,13 +6,10 @@ uses
   Classes,
   Messages,
   graphics,
-  activex,
   sysutils,
-  Jclstrings,
   forms,
   SharpApi,
   SharpCenterApi,
-  PngSpeedButton,
   uVistaFuncs,
   uListWnd in 'uListWnd.pas' {frmItemswnd},
   uEditWnd in 'uEditWnd.pas' {frmEditWnd},
@@ -21,9 +18,9 @@ uses
   VKToString in '..\..\..\..\Common\Units\SCHotkeyManager\VKToString.pas',
   uScHotkeyMgr in '..\..\..\..\Common\Units\SCHotkeyManager\uScHotkeyMgr.pas',
   uWeatherOptions in '..\..\..\Services\Weather\uWeatherOptions.pas',
-
   ISharpCenterHostUnit,
-  ISharpCenterPluginUnit;
+  ISharpCenterPluginUnit,
+  uSharpCenterPluginScheme;
 
 {$E dll}
 
@@ -36,7 +33,7 @@ type
     procedure Load;
 
   public
-    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
+    constructor Create( APluginHost: ISharpCenterHost );
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
@@ -46,7 +43,7 @@ type
 
 
     function GetPluginDescriptionText: String; override; stdCall;
-    procedure Refresh; override; stdcall;
+    procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
     procedure SetupValidators; stdcall;
   end;
 
@@ -66,7 +63,7 @@ begin
   FreeAndNil(frmEditWnd);
 end;
 
-constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
+constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
 end;
@@ -106,9 +103,9 @@ begin
   frmEditWnd.Init;
 end;
 
-procedure TSharpCenterPlugin.Refresh;
+procedure TSharpCenterPlugin.Refresh(Theme : TCenterThemeInfo; AEditing: Boolean);
 begin
-  PluginHost.AssignThemeToForms(frmItemsWnd, frmEditWnd);
+  AssignThemeToForms(frmItemsWnd, frmEditWnd, AEditing, Theme);
 end;
 
 procedure TSharpCenterPlugin.Save;
@@ -138,7 +135,7 @@ begin
   end;
 end;
 
-function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+function InitPluginInterface( APluginHost: ISharpCenterHost ) : ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
 end;

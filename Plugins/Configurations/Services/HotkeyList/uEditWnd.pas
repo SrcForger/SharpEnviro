@@ -53,12 +53,8 @@ uses
   SharpCenterApi,
 
   // PNG Image
-  pngimage,
-  JvComponentBase,
-  PngImageList,
-  PngBitBtn,
-  JvExStdCtrls,
   PngSpeedButton,
+
   uHotkeyServiceList,
 
   ISharpCenterHostUnit,
@@ -79,14 +75,14 @@ type
     { Private declarations }
     FItemEdit: ThotkeyItem;
     FUpdating: Boolean;
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
   public
     { Public declarations }
     SelectedText: string;
     procedure Init;
     procedure Save;
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
     property ItemEdit: ThotkeyItem read FItemEdit write FItemEdit;
   end;

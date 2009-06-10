@@ -29,9 +29,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvSimpleXml, Menus, ComCtrls, SharpApi, SharpCenterApi,
-  SharpEGaugeBoxEdit, ImgList, PngImageList, JvPageList, JvExControls, ExtCtrls,
-  SharpECenterHeader, JvXPCore, JvXPCheckCtrls, ISharpCenterHostUnit;
+  Dialogs, StdCtrls, Menus, SharpApi, SharpCenterApi,
+  ExtCtrls, SharpECenterHeader, JvXPCore, JvXPCheckCtrls,
+  ISharpCenterHostUnit, JvExControls;
 
 type
   TStringObject = Class(TObject)
@@ -52,10 +52,10 @@ type
     procedure cboHorizPosChange(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     procedure SendUpdate;
   public
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
     procedure UpdateUI;
   end;

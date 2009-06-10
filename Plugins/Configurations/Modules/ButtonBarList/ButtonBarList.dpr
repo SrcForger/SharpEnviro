@@ -40,6 +40,7 @@ uses
   SharpCenterApi,
   SharpApi,
   jvValidators,
+  uSharpCenterPluginScheme,
   uListWnd in 'uListWnd.pas' {frmList},
   uEditWnd in 'uEditWnd.pas' {frmEdit},
   uButtonBarList in 'uButtonBarList.pas';
@@ -53,7 +54,7 @@ type
     ISharpCenterPluginValidation )
   private
   public
-    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
+    constructor Create( APluginHost: ISharpCenterHost );
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
@@ -64,7 +65,7 @@ type
     function GetPluginDescriptionText: String; override; stdCall;
     function GetPluginStatusText: String; override; stdCall;
     function GetPluginName: String; override; stdCall;
-    procedure Refresh; override; stdcall;
+    procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
     procedure SetupValidators; stdcall;
   end;
 
@@ -84,7 +85,7 @@ begin
   FreeAndNil(FrmEdit);
 end;
 
-constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
+constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
 end;
@@ -132,9 +133,9 @@ begin
   FrmEdit.Init;
 end;
 
-procedure TSharpCenterPlugin.Refresh;
+procedure TSharpCenterPlugin.Refresh(Theme : TCenterThemeInfo; AEditing: Boolean);
 begin
-  PluginHost.AssignThemeToForms(frmList,FrmEdit);
+  AssignThemeToForms(frmList,FrmEdit,AEditing,Theme);
   frmList.UpdateImages;
 end;
 
@@ -168,7 +169,7 @@ begin
 end;
 
 
-function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+function InitPluginInterface( APluginHost: ISharpCenterHost ) : ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
 end;

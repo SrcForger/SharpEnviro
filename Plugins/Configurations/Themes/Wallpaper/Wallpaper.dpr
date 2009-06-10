@@ -36,7 +36,6 @@ uses
   Forms,
   Types,
   Dialogs,
-  JvSimpleXml,
   PngSpeedButton,
   uVistaFuncs,
   SysUtils,
@@ -53,6 +52,7 @@ uses
   SharpCenterApi,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
+  uSharpCenterPluginScheme,
   uSettingsWnd in 'uSettingsWnd.pas' {frmSettingsWnd};
 
 {$E .dll}
@@ -67,14 +67,14 @@ type
     function Load: Boolean;
     procedure PopulateAvailableMonitors;
   public
-    constructor Create(APluginHost: TInterfacedSharpCenterHostBase);
+    constructor Create(APluginHost: ISharpCenterHost);
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
     procedure Save; override; stdcall;
 
     function GetPluginDescriptionText: string; override; stdcall;
-    procedure Refresh; override; stdcall;
+    procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
     procedure UpdatePreview(ABitmap: TBitmap32); stdcall;
     procedure AddPluginTabs(ATabItems: TStringList); stdcall;
     procedure ClickPluginTab(ATab: TStringItem); stdcall;
@@ -109,7 +109,7 @@ begin
   FreeAndNil(frmSettingsWnd);
 end;
 
-constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
+constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
   FTheme := GetTheme(PluginHost.PluginID);
@@ -216,9 +216,9 @@ begin
   end;
 end;
 
-procedure TSharpCenterPlugin.Refresh;
+procedure TSharpCenterPlugin.Refresh(Theme : TCenterThemeInfo; AEditing: Boolean);
 begin
-  PluginHost.AssignThemeToPluginForm(frmSettingsWnd);
+  AssignThemeToPluginForm(frmSettingsWnd,AEditing,Theme);
 end;
 
 procedure TSharpCenterPlugin.Save;
@@ -316,7 +316,7 @@ begin
   end;
 end;
 
-function InitPluginInterface(APluginHost: TInterfacedSharpCenterHostBase): ISharpCenterPlugin;
+function InitPluginInterface(APluginHost: ISharpCenterHost): ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
 end;

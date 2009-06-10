@@ -63,12 +63,12 @@ type
     procedure FormCreate(Sender: TObject);
   private
     FIsUpdating: Boolean;
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     FPlugin: TInterfacedSharpCenterPlugin;
     procedure SendUpdate;
   public
     property IsUpdating: Boolean read FIsUpdating write FIsUpdating;
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
+    property PluginHost: ISharpCenterHost read FPluginHost write FPluginHost;
     property Plugin: TInterfacedSharpCenterPlugin read FPlugin write FPlugin;
 
     procedure UpdateUi;

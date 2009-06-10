@@ -29,7 +29,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvSimpleXml, JclFileUtils,
+  Dialogs, StdCtrls, JclSimpleXml, JclFileUtils,
   ImgList, PngImageList,
   SharpEListBox, SharpEListBoxEx,GR32, GR32_PNG, SharpApi,
   ExtCtrls, Menus, JclStrings, GR32_Image, SharpGraphicsUtils,
@@ -66,7 +66,7 @@ type
       const ACol: Integer; AItem: TSharpEListItem; var AImageIndex: Integer;
       const ASelected: Boolean);
   private
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     FPreview: TBitmap32;
     FCursor: string;
     procedure BuildCursorPreview;
@@ -74,7 +74,7 @@ type
     procedure BuildCursorList;
     procedure SendUpdate;
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
 
     property Cursor: string read FCursor write FCursor;
@@ -231,16 +231,15 @@ var
   newItem:TSharpEListItem;
   sr : TSearchRec;
   Dir : String;
-  XML : TJvSimpleXML;
+  XML : TJclSimpleXML;
   s, sName, sAuthor:String;
   obj: TStringObject;
 begin
-  
-  LockWindowUpdate(Application.MainForm.Handle);
+  LockWindowUpdate(Application.Handle);
   lbCursorList.Clear;
   Try
 
-  XML := TJvSimpleXML.Create(nil);
+  XML := TJclSimpleXML.Create;
 
   Dir := SharpApi.GetSharpeDirectory + 'Cursors\';
 

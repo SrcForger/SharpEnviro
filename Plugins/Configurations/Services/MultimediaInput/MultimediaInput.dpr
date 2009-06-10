@@ -30,11 +30,9 @@ uses
   Windows,
   Forms,
   Dialogs,
-  JclSimpleXml,
-  PngSpeedButton,
+  uSharpCenterPluginScheme,
   uVistaFuncs,
   SysUtils,
-  JvPageList,
   Graphics,
   SharpApi,
   SharpCenterApi,
@@ -51,14 +49,14 @@ type
   private
     procedure Load;
   public
-    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
+    constructor Create( APluginHost: ISharpCenterHost );
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
     procedure Save; override; stdCall;
 
     function GetPluginDescriptionText: String; override; stdCall;
-    procedure Refresh; override; stdcall;
+    procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
   end;
 
 { TSharpCenterPlugin }
@@ -68,7 +66,7 @@ begin
   FreeAndNil(frmSettings);
 end;
 
-constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
+constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
   PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpCore\Services\MultimediaInput\MultimediaInput.xml';
@@ -102,9 +100,9 @@ begin
   result := PluginHost.Open(frmSettings);
 end;
 
-procedure TSharpCenterPlugin.Refresh;
+procedure TSharpCenterPlugin.Refresh(Theme : TCenterThemeInfo; AEditing: Boolean);
 begin
-  PluginHost.AssignThemeToPluginForm(frmSettings);
+  AssignThemeToPluginForm(frmSettings,AEditing,Theme);
 end;
 
 procedure TSharpCenterPlugin.Save;
@@ -135,7 +133,7 @@ begin
   end;
 end;
 
-function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+function InitPluginInterface( APluginHost: ISharpCenterHost ) : ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
 end;

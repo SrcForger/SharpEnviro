@@ -54,7 +54,7 @@ type
     procedure cboModulesClick(Sender: TObject);
   private
     FModuleItem : TObject;
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     { Private declarations }
   public
     { Public declarations }
@@ -63,7 +63,7 @@ type
 
     property ModuleItem: TObject read FModuleItem write FModuleItem;
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
 
     procedure Init;

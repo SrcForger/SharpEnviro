@@ -105,7 +105,7 @@ type
   private
     { Private declarations }
     FUpdating: Boolean;
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     procedure InitWnd;
     procedure SelectMenuItemType(AItemType: TSharpEMenuItemType);
     procedure UpdateEditState;
@@ -115,7 +115,7 @@ type
     procedure InitUI;
     procedure Save;
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
+    property PluginHost: ISharpCenterHost read FPluginHost write FPluginHost;
   end;
 
 var
@@ -551,7 +551,7 @@ begin
                 edSubmenuIcon.Text, edSubmenuTarget.Text, False, nInsertPos);
 
               TSharpEMenuItem(tmpMenuItem).SubMenu :=
-                TSharpEMenu.Create(TSharpEMenuItem(tmpMenuItem), frmList.smMain,
+                TSharpEMenu.Create(TSharpEMenuItem(tmpMenuItem), nil,
                 frmList.Menu.Settings);
 
                 tmp := TSharpEMenu(TSharpEMenuItem(tmpMenuItem).SubMenu);

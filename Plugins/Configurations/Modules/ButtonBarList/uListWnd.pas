@@ -77,15 +77,15 @@ type
 
   private
     FItems: TButtonBarList;
-    FPluginHost: TInterfacedSharpCenterHostBase;
-    procedure SetPluginHost(const Value: TInterfacedSharpCenterHostBase);
+    FPluginHost: ISharpCenterHost;
+    procedure SetPluginHost(const Value: ISharpCenterHost);
   public
     property Items: TButtonBarList read FItems write FItems;
     procedure RenderItems;
     procedure UpdateImages;
     function GetImage(pTarget,pIcon : String; selected: Boolean) : TBitmap;
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write SetPluginHost;
+    property PluginHost: ISharpCenterHost read FPluginHost write SetPluginHost;
   end;
 
 var
@@ -330,7 +330,7 @@ begin
   FPluginHost.Refresh;
 end;
 
-procedure TfrmList.SetPluginHost(const Value: TInterfacedSharpCenterHostBase);
+procedure TfrmList.SetPluginHost(const Value: ISharpCenterHost);
 begin
   FPluginHost := Value;
 end;

@@ -86,7 +86,7 @@ type
   private
     FSkin: string;
     FTheme: ISharpETheme;
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     procedure BuildSkinList;
     procedure BuildPreviewList;
 
@@ -98,7 +98,7 @@ type
     procedure RefreshSkinList;
     property Skin: string read FSkin write FSkin;
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
+    property PluginHost: ISharpCenterHost read FPluginHost write FPluginHost;
     property Theme: ISharpETheme read FTheme write FTheme;    
   end;
 

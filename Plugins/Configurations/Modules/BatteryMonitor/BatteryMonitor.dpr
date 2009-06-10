@@ -29,9 +29,6 @@ uses
   Classes,
   Windows,
   Forms,
-  Dialogs,
-  JclSimpleXml,
-  JvPageList,
   uVistaFuncs,
   SysUtils,
   Graphics,
@@ -39,6 +36,7 @@ uses
   SharpCenterAPI,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
+  uSharpCenterPluginScheme,
   uBatteryMonitorWnd in 'uBatteryMonitorWnd.pas' {frmBMon};
 
 {$E .dll}
@@ -52,16 +50,16 @@ type
     moduleID : string;
     procedure LoadSettings;
   public
-    constructor Create(APluginHost: TInterfacedSharpCenterHostBase);
+    constructor Create(APluginHost: ISharpCenterHost);
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
     procedure Save; override; stdcall;
     function GetPluginDescriptionText: string; override; stdcall;
-    procedure Refresh; override; stdcall;
+    procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
 end;
 
-constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
+constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
   PluginHost.GetBarModuleIdFromPluginId(barID, moduleID);
@@ -131,12 +129,12 @@ begin
   end;
 end;
 
-procedure TSharpCenterPlugin.Refresh;
+procedure TSharpCenterPlugin.Refresh(Theme : TCenterThemeInfo; AEditing: Boolean);
 begin
-  PluginHost.AssignThemeToPluginForm(frmBMon);
+  AssignThemeToPluginForm(frmBMon,AEditing,Theme);
 end;
 
-function InitPluginInterface(APluginHost: TInterfacedSharpCenterHostBase) : ISharpCenterPlugin;
+function InitPluginInterface(APluginHost: ISharpCenterHost) : ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
 end;

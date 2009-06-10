@@ -13,13 +13,10 @@ uses
   Forms,
   pngimage,
   uWeatherList,
-  jvSimpleXml,
   PngSpeedButton,
   SharpEListBoxEx,
   SharpApi,
-  ImgList,
-  PngImageList,
-  SharpCenterApi, SharpERoundPanel, ISharpCenterHostUnit, JvXPCore,
+  SharpCenterApi, ISharpCenterHostUnit, JvXPCore,
   JvXPCheckCtrls, JvExControls, StdCtrls, ExtCtrls, Buttons, Menus;
 
 type
@@ -45,7 +42,7 @@ type
     { Private declarations }
     FItemEdit: TWeatherItem;
     FUpdating: Boolean;
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     procedure DownloadLocationData(Location: string);
     procedure UpdateSearchList(AResults: string);
     procedure Debug(Str: string; ErrorType: Integer);
@@ -55,7 +52,7 @@ type
     procedure Init;
     procedure Save;
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
     property ItemEdit: TWeatherItem read FItemEdit write FItemEdit;
   end;
@@ -120,7 +117,7 @@ end;
 
 procedure TfrmEditWnd.UpdateSearchList(AResults: string);
 var
-  xml: TJvSimpleXML;
+  xml: TJclSimpleXML;
   n: integer;
   tmpWl: TWeatherLocation;
   newMi: TMenuItem;
@@ -129,7 +126,7 @@ var
 begin
   mnuSearch.Items.Clear;
 
-  xml := TJvSimpleXML.Create(nil);
+  xml := TJclSimpleXML.Create;
   try
     xml.LoadFromString(AResults);
 

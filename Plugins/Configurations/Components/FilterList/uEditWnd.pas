@@ -111,7 +111,7 @@ type
   private
     { Private declarations }
     FUpdating: Boolean;
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
 
     procedure EnumerateWindows;
     procedure EnumerateShowCommands;
@@ -122,7 +122,7 @@ type
     procedure Init;
     procedure Save;
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
   end;
 

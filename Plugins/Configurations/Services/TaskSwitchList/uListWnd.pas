@@ -38,19 +38,15 @@ uses
   Dialogs,
   StdCtrls,
   ExtCtrls,
-  ComCtrls,
   pngimage,
-  Mask,
-  ContNrs,
-  GR32_Image,
   SharpApi,
   SharpCenterApi,
   SharpThemeApiEx,
   SharpEListBoxEx,
   PngImageList,
-  JclSimpleXML,
-  Gr32,
   ImgList,
+  Gr32,
+  GR32_Image,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uTaskswitchUtility;
@@ -76,7 +72,7 @@ type
     procedure FormShow(Sender: TObject);
 
   private
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     FTaskSwitchList: TTaskSwitchItemList;
     procedure ConfigureItem;
   public
@@ -84,7 +80,7 @@ type
     procedure AddItems;
 
     property TaskSwitchList: TTaskSwitchItemList read FTaskSwitchList write FTaskSwitchList;
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
 
   end;

@@ -73,14 +73,14 @@ type
     procedure edThemeNameKeyPress(Sender: TObject; var Key: Char);
     procedure btnConfigureClick(Sender: TObject);
   private
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     { Private declarations }
   public
     { Public declarations }
     procedure Init;
     procedure Save;
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
+    property PluginHost: ISharpCenterHost read FPluginHost write FPluginHost;
   end;
 
 var

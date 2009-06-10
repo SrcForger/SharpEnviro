@@ -109,13 +109,13 @@ type
   private
     FWinHandle: Thandle;
     FModuleList: TObjectList;
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     procedure CustomWndProc(var msg: TMessage);
 
   public
     procedure BuildModuleList;
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
   end;
 

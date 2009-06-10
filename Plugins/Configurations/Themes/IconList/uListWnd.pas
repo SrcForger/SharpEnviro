@@ -72,7 +72,7 @@ type
     procedure tmrTimer(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     FIconSet: string;
 
   public
@@ -80,7 +80,7 @@ type
     procedure BuildIconPreview(var ABmp: TBitmap32);
 
     property IconSet: string read FIconSet write FIconSet;
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
   end;
 

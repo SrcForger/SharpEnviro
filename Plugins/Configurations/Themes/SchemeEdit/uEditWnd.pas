@@ -35,13 +35,9 @@ uses
   Graphics,
   Controls,
   Forms,
-  Dialogs,
   StdCtrls,
   ExtCtrls,
-  ComCtrls,
   pngimage,
-  Mask,
-  ContNrs,
   GR32_Image,
   SharpApi,
   SharpCenterApi,
@@ -70,14 +66,14 @@ type
   private
     FTheme: ISharpETheme;
     FScheme: string;
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
   public
     Colors: TSharpEColorSet;
     procedure CreatePreviewBitmap(var ABmp: TBitmap32);
     property Theme: ISharpETheme read FTheme write FTheme;
     property Scheme: string read FScheme write FScheme;
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
+    property PluginHost: ISharpCenterHost read FPluginHost write FPluginHost;
   end;
 
 var

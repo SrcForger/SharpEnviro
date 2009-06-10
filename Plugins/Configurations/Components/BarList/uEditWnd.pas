@@ -89,7 +89,7 @@ type
   private
     FBarItem: TBarItem;
     FUpdating: Boolean;
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     { Private declarations }
   public
     { Public declarations }
@@ -103,8 +103,7 @@ type
     procedure Init();
     procedure Save();
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
-      FPluginHost;
+    property PluginHost: ISharpCenterHost read FPluginHost write FPluginHost;
   end;
 
 type

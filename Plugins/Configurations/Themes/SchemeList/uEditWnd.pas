@@ -60,14 +60,14 @@ type
     FUpdating: boolean;
     FSchemeItem: TSchemeItem;
     FSelectedColorIdx: Integer;
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
   public
     property SchemeItem: TSchemeItem read FSchemeItem write FSchemeItem;
 
     procedure InitUI;
     procedure Save;
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
   end;
 

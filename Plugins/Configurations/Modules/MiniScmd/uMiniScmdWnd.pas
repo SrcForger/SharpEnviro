@@ -29,10 +29,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvSimpleXml, JclFileUtils,
-  ImgList, PngImageList, GR32, GR32_PNG, SharpApi,
-  ExtCtrls, Menus, JclStrings, GR32_Image, SharpEGaugeBoxEdit,
-  JvPageList, JvExControls, ComCtrls, Mask, ISharpCenterHostUnit,
+  Dialogs, StdCtrls, SharpApi, ExtCtrls, Menus, JclStrings, SharpEGaugeBoxEdit,
+  JvPageList, JvExControls, ComCtrls, ISharpCenterHostUnit,
   SharpECenterHeader, JvXPCore, JvXPCheckCtrls;
 
 type
@@ -48,10 +46,10 @@ type
     procedure cbQuickSelectClick(Sender: TObject);
     procedure sgb_widthChangeValue(Sender: TObject; Value: Integer);
   private
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     procedure UpdateSettings;
   public
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
   end;
 

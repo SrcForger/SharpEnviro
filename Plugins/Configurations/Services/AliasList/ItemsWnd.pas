@@ -28,14 +28,14 @@ type
     { Private declarations }
     FAliasItems: TAliasList;
     FWinHandle: THandle;
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     procedure CustomWndProc(var msg: TMessage);
   public
     { Public declarations }
     procedure AddItems;
     property AliasItems: TAliasList read FAliasItems write FAliasItems;
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
   end;
 

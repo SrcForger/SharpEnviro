@@ -47,6 +47,7 @@ uses
   SharpThemeApiEx,
   uISharpETheme,
   uThemeConsts,
+  uSharpCenterPluginScheme,
   uSettingsWnd in 'uSettingsWnd.pas' {frmSettingsWnd};
 
 {$E .dll}
@@ -56,11 +57,11 @@ uses
 type
   TSharpCenterPlugin = class(TInterfacedSharpCenterPlugin)
   private
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     FTheme : ISharpETheme;
     procedure Load;
   public
-    constructor Create(APluginHost: TInterfacedSharpCenterHostBase);
+    constructor Create(APluginHost: ISharpCenterHost);
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
@@ -68,9 +69,9 @@ type
 
     function GetPluginDescriptionText: string; override; stdcall;
     function GetPluginStatusText: string; override; stdcall;
-    procedure Refresh; override; stdcall;
+    procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost
+    property PluginHost: ISharpCenterHost read FPluginHost
       write FPluginHost;
   end;
 
@@ -81,7 +82,7 @@ begin
   FreeAndNil(frmSettingsWnd);
 end;
 
-constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
+constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
   FTheme := GetTheme(APluginHost.PluginId);
@@ -187,9 +188,9 @@ begin
 
 end;
 
-procedure TSharpCenterPlugin.Refresh;
+procedure TSharpCenterPlugin.Refresh(Theme : TCenterThemeInfo; AEditing: Boolean);
 begin
-  PluginHost.AssignThemeToPluginForm(frmSettingsWnd);
+  AssignThemeToPluginForm(frmSettingsWnd,AEditing,Theme);
 end;
 
 procedure TSharpCenterPlugin.Save;
@@ -226,7 +227,7 @@ begin
   end;
 end;
 
-function InitPluginInterface(APluginHost: TInterfacedSharpCenterHostBase): ISharpCenterPlugin;
+function InitPluginInterface(APluginHost: ISharpCenterHost): ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
 end;

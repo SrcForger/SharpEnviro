@@ -102,7 +102,7 @@ type
   private
     FTaskFilterList: TFilterItemList;
     FUpdating: boolean;
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     FTaskSwitchList: TTaskSwitchItemList;
     
   public
@@ -111,7 +111,7 @@ type
 
     property Updating: boolean read FUpdating write FUpdating;
     property TaskSwitchList: TTaskSwitchItemList read FTaskSwitchList write FTaskSwitchList;
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
   end;
 

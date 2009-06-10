@@ -86,12 +86,12 @@ type
     FAddItemsType: TAddItemsType;
     procedure WndProcHandler(var msg: TMessage);
   private
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
   public
     FComponentList: TComponentList;
     procedure AddItems( AAddItemsType: TAddItemsType=aiAll);
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
+    property PluginHost: ISharpCenterHost read FPluginHost write FPluginHost;
   end;
 
 var

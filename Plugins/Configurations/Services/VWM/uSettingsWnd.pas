@@ -29,8 +29,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvSimpleXml, Menus, ComCtrls, SharpApi, SharpCenterApi,
-  SharpEGaugeBoxEdit, ImgList, PngImageList, JvPageList, JvExControls, ExtCtrls,
+  StdCtrls, SharpApi, SharpCenterApi,
+  SharpEGaugeBoxEdit, JvExControls, ExtCtrls,
   SharpECenterHeader, JvXPCore, JvXPCheckCtrls, ISharpCenterHostUnit;
 
 type
@@ -55,10 +55,10 @@ type
     procedure sgbVwmCountChangeValue(Sender: TObject; Value: Integer);
     procedure SettingsChanged(Sender: TObject);
   private
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     procedure SendUpdate;
   public
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
   end;
 

@@ -79,12 +79,12 @@ type
     { Private declarations }
     FUpdating: Boolean;
     FItemEdit: TAppBarItem;
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     procedure BuildWindowList;    
   public
     { Public declarations }
     
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
     property ItemEdit: TAppBarItem read FItemEdit write FItemEdit;
     procedure Init;

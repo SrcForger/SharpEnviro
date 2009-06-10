@@ -57,9 +57,9 @@ type
     lbUsers: TSharpEListBoxEx;
     imgLogo: TImage;
     lblCredits: TLabel;
-    Image1: TImage;
     lblUrls: TLabel;
     lbUrls: TSharpEListBoxEx;
+    Image2: TImage;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure lbUsersGetCellText(Sender: TObject; const ACol: Integer;
@@ -88,11 +88,11 @@ type
   private
     FUsers: TList;
     FUrls: TList;
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     procedure AddUsersToList;
   public
     procedure AddUrlsToList(ASupport: Boolean=False);
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
+    property PluginHost: ISharpCenterHost read FPluginHost write FPluginHost;
   end;
 
 var

@@ -31,11 +31,6 @@ uses
   Forms,
   Math,
   Dialogs,
-  JvSimpleXml,
-  GR32,
-  GR32_Image,
-  PngSpeedButton,
-  JvPageList,
   uVistaFuncs,
   SysUtils,
   Graphics,
@@ -43,6 +38,7 @@ uses
   SharpCenterAPI,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
+  uSharpCenterPluginScheme,
   uNotesWnd in 'uNotesWnd.pas' {frmNotes};
 
 {$E .dll}
@@ -56,17 +52,17 @@ type
     moduleID : string;
     procedure Load;
   public
-    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
+    constructor Create( APluginHost: ISharpCenterHost );
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
     procedure Save; override; stdcall;
-    procedure Refresh; override; stdCall;
+    procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdCall;
 
     function GetPluginDescriptionText: String; override; stdCall;
 end;
 
-constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
+constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
   PluginHost.GetBarModuleIdFromPluginId(barID, moduleID);
@@ -178,12 +174,12 @@ begin
 end;
 
 
-procedure TSharpCenterPlugin.Refresh;
+procedure TSharpCenterPlugin.Refresh(Theme : TCenterThemeInfo; AEditing: Boolean);
 begin
-  PluginHost.AssignThemeToPluginForm(frmNotes);
+  AssignThemeToPluginForm(frmNotes,AEditing,Theme);
 end;
 
-function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+function InitPluginInterface( APluginHost: ISharpCenterHost ) : ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
 end;

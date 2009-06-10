@@ -29,9 +29,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvSimpleXml, Menus, ComCtrls, SharpApi, SharpCenterAPI,
-  ExtCtrls, SharpEGaugeBoxEdit, SharpECenterHeader, JvExStdCtrls, JvExControls,
-  JvXPCore, JvXPCheckCtrls, ISharpCenterHostUnit;
+  Dialogs, StdCtrls, Menus, SharpApi, SharpCenterAPI,
+  ExtCtrls, SharpECenterHeader, ISharpCenterHostUnit;
 
 type
   TfrmClock = class(TForm)
@@ -72,7 +71,7 @@ type
     procedure btnTooltipClick(Sender: TObject);
     procedure UpdateSettingsEvent(Sender: TObject);
   private
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     procedure UpdatePopupMenuCaptions;
     procedure UpdateSettings;
     procedure UpdateBottomEdit;
@@ -80,7 +79,7 @@ type
     ModuleID: string;
     BarID : string;
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
   end;
 

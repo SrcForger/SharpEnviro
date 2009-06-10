@@ -74,7 +74,7 @@ type
     procedure lbHotkeysGetCellText(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AColText: string);
   private
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     function CtrlDown: Boolean;
     { Private declarations }
   public
@@ -82,7 +82,7 @@ type
     procedure RefreshHotkeys;
     procedure LoadHotkeyList;
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
   end;
 

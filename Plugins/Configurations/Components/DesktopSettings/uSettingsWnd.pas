@@ -29,8 +29,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvSimpleXml, Menus, ComCtrls, SharpApi, SharpCenterApi,
-  SharpEGaugeBoxEdit, ImgList, PngImageList, JvPageList, JvExControls, ExtCtrls,
+  Dialogs, StdCtrls,  Menus, ComCtrls, SharpApi, SharpCenterApi,
+  SharpEGaugeBoxEdit, ImgList, PngImageList, JvExControls, ExtCtrls,
   ISharpCenterHostUnit, SharpECenterHeader, JvXPCore, JvXPCheckCtrls;
 
 type
@@ -78,13 +78,13 @@ type
     procedure FormCreate(Sender: TObject);
     procedure cbMenuListChange(Sender: TObject);
   private
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     procedure UpdateGridBox;
     procedure SendUpdate;
   public
     procedure BuildMenuList(cMenu,sMenu : String);
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
   end;
 

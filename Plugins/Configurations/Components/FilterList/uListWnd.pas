@@ -77,14 +77,14 @@ type
     procedure FormShow(Sender: TObject);
   private
     FFilterItemList: TFilterItemList;
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
   public
     property FilterItemList: TFilterItemList read FFilterItemList write
       FFilterItemList;
     procedure RenderItems;
     procedure Save;
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
   end;
 

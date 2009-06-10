@@ -28,12 +28,11 @@ unit uSettingsWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvSimpleXml, Menus, ComCtrls, SharpApi,
-  ExtCtrls, Buttons, PngBitBtn, GR32_Image, Math,
-  SharpThemeApiEx, Contnrs, GR32, GR32_Resamplers, SharpCenterApi,
-  SharpGraphicsUtils, SharpEGaugeBoxEdit, Types, SharpECenterHeader,
-  ISharpCenterHostUnit, graphicsFx;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  StdCtrls, Menus, SharpApi, ExtCtrls, Buttons, Math,
+  GR32, SharpCenterApi, SharpGraphicsUtils, SharpEGaugeBoxEdit,
+  Types, SharpECenterHeader, ISharpCenterHostUnit, graphicsFx, JvExControls,
+  JvXPCore, JvXPCheckCtrls;
 
 type
   TDAItem = class
@@ -47,7 +46,6 @@ type
 
   TfrmSettings = class(TForm)
     Panel1: TPanel;
-    cb_automode: TCheckBox;
     Panel2: TPanel;
     sgb_left: TSharpeGaugeBox;
     sgb_top: TSharpeGaugeBox;
@@ -55,12 +53,13 @@ type
     sgb_right: TSharpeGaugeBox;
     SharpECenterHeader4: TSharpECenterHeader;
     SharpECenterHeader1: TSharpECenterHeader;
+    cb_automode: TJvXPCheckbox;
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure sgb_leftChangeValue(Sender: TObject; Value: Integer);
     procedure cb_automodeClick(Sender: TObject);
   private
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     procedure SendUpdate;
     
   public
@@ -72,7 +71,7 @@ type
     procedure RenderPreview;
     procedure UpdatePreview( var ABmp: TBitmap32 );
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
   end;
 

@@ -38,7 +38,6 @@ uses
   Forms,
   Dialogs,
   StdCtrls,
-  JvSimpleXml,
   Menus,
   ComCtrls,
   SharpApi,
@@ -56,8 +55,6 @@ uses
   SharpEColorEditorEx,
   SharpEFontSelectorFontList,
   ImgList,
-  Mask,
-  JvExMask,
   SharpEGaugeBoxEdit,
   SharpERoundPanel,
   JvExStdCtrls,
@@ -182,7 +179,7 @@ type
     FBlue32, FBlue48, FBlue64: TBitmap32;
     FWhite32, FWhite48, FWhite64: TBitmap32;
     FFontList: TFontList;
-    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginHost: ISharpCenterHost;
     procedure SendUpdate;
     procedure RefreshFontList;
 
@@ -195,7 +192,7 @@ type
     FFontName: string;
     procedure UpdatePageUi;
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+    property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
   end;
 

@@ -43,6 +43,7 @@ uses
   SharpCenterApi,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
+  uSharpCenterPluginScheme,
   uEditWnd in 'uEditWnd.pas' {frmEdit},
   uTaskswitchUtility in '..\TaskswitchList\uTaskswitchUtility.pas';
 
@@ -54,7 +55,7 @@ type
   TSharpCenterPlugin = class(TInterfacedSharpCenterPlugin)
   private
   public
-    constructor Create(APluginHost: TInterfacedSharpCenterHostBase);
+    constructor Create(APluginHost: ISharpCenterHost);
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
@@ -63,7 +64,7 @@ type
 
     function GetPluginDescriptionText: string; override; stdcall;
     function GetPluginName: string; override; stdcall;
-    procedure Refresh; override; stdcall;
+    procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
 
   end;
 
@@ -74,7 +75,7 @@ begin
   FreeAndNil(frmEdit);
 end;
 
-constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
+constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
 end;
@@ -157,9 +158,9 @@ begin
   Load;
 end;
 
-procedure TSharpCenterPlugin.Refresh;
+procedure TSharpCenterPlugin.Refresh(Theme : TCenterThemeInfo; AEditing: Boolean);
 begin
-  PluginHost.AssignThemeToPluginForm(frmEdit);
+  AssignThemeToPluginForm(frmEdit,AEditing,Theme);
 end;
 
 procedure TSharpCenterPlugin.Save;
@@ -224,7 +225,7 @@ begin
   end;
 end;
 
-function InitPluginInterface(APluginHost: TInterfacedSharpCenterHostBase): ISharpCenterPlugin;
+function InitPluginInterface(APluginHost: ISharpCenterHost): ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
 end;
