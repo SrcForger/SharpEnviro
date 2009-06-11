@@ -195,7 +195,7 @@ begin
     if Monitors[I].Handle = Handle then
     begin
       Result := Monitors[I];
-      break;
+      Exit;
     end;
 
  // Added code to update internal monitor-list if first try didn't give any result
