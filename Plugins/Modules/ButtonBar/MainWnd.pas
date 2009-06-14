@@ -254,7 +254,7 @@ begin
 
     if sShowIcon then
     begin
-      if not IconStringToIcon(pIcon,pTarget,btn.Glyph32) then
+      if not IconStringToIcon(pIcon,pTarget,btn.Glyph32,32) then
          btn.Glyph32.SetSize(0,0)
     end else btn.Glyph32.SetSize(0,0);
   end;
@@ -269,7 +269,7 @@ begin
   for n := 0 to High(FButtonList) do
       with FButtonList[n] do
       begin
-        if not IconStringToIcon(Icon,Target,btn.Glyph32) then
+        if not IconStringToIcon(Icon,Target,btn.Glyph32,32) then
           btn.Glyph32.SetSize(0,0);
         btn.Repaint;
       end;
