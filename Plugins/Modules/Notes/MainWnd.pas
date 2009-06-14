@@ -140,7 +140,7 @@ begin
 
   TempBmp.Clear(color32(0,0,0,0));
   try
-    ResStream := TResourceStream.Create(HInstance, 'ResID', RT_RCDATA);
+    ResStream := TResourceStream.Create(HInstance, ResID, RT_RCDATA);
     try
       LoadBitmap32FromPng(TempBmp,ResStream,b);
       Button.Glyph32.Assign(tempBmp);
