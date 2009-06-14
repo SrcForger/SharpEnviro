@@ -58,7 +58,9 @@ type
       procedure SetSize(Value : integer); override;
       procedure SetLeft(Value : integer); override;
   end;
+
 {$R *.res}
+{$R Glyphs.res}
 
 { TInterfacedSharpBarModule }
 

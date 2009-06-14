@@ -29,7 +29,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms, Types,
-  Dialogs, StdCtrls, GR32, SharpEBaseControls, SharpEButton,
+  Dialogs, StdCtrls, GR32, GR32_PNG, SharpEBaseControls, SharpEButton,
   JvSimpleXML, SharpApi, Math, SharpEEdit, Menus,
   uISharpBarModule;
 
@@ -51,6 +51,7 @@ type
   private
     sWidth   : integer;
     sButton  : boolean;
+    procedure LoadIcon;
     procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
   public
     mInterface : ISharpBarModule;
@@ -71,6 +72,43 @@ uses SharpDialogs,
      uSystemFuncs;
 
 {$R *.dfm}
+
+procedure TMainForm.LoadIcon;
+var
+  ResStream : TResourceStream;
+  TempBmp : TBitmap32;
+  b : boolean;
+  ResID : String;
+begin
+  if mInterface = nil then
+    exit;
+  if mInterface.SkinInterface = nil then
+    exit;
+
+  TempBmp := TBitmap32.Create;
+  if mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y <= 16 then
+  begin
+    TempBmp.SetSize(16,16);
+    ResID := 'miniscmdicon';
+  end else
+  begin
+    TempBmp.SetSize(32,32);
+    ResID := 'miniscmdicon32';
+  end;
+
+  TempBmp.Clear(color32(0,0,0,0));
+  try
+    ResStream := TResourceStream.Create(HInstance, ResID, RT_RCDATA);
+    try
+      LoadBitmap32FromPng(TempBmp,ResStream,b);
+      btn_select.Glyph32.Assign(tempBmp);
+    finally
+      ResStream.Free;
+    end;
+  except
+  end;
+  TempBmp.Free;
+end;
 
 procedure TMainForm.LoadSettings;
 var
@@ -104,6 +142,7 @@ begin
   if sButton then
   begin
     btn_select.Width := mInterface.SkinInterface.SkinManager.Skin.Button.WidthMod;
+    LoadIcon;
     if btn_select.Glyph32 <> nil then
       btn_select.Width := btn_select.Width + btn_select.GetIconWidth;
     btn_select.Width := btn_select.Width - 4;
