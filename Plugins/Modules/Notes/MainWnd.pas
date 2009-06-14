@@ -120,12 +120,27 @@ var
   ResStream : TResourceStream;
   TempBmp : TBitmap32;
   b : boolean;
+  ResID : String;
 begin
+  if mInterface = nil then
+    exit;
+  if mInterface.SkinInterface = nil then
+    exit;
+
   TempBmp := TBitmap32.Create;
-  TempBmp.SetSize(32,32);
+  if mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y <= 16 then
+  begin
+    TempBmp.SetSize(16,16);
+    ResID := 'buttonicon';
+  end else
+  begin
+    TempBmp.SetSize(32,32);
+    ResID := 'buttonicon32';
+  end;
+
   TempBmp.Clear(color32(0,0,0,0));
   try
-    ResStream := TResourceStream.Create(HInstance, 'buttonicon', RT_RCDATA);
+    ResStream := TResourceStream.Create(HInstance, 'ResID', RT_RCDATA);
     try
       LoadBitmap32FromPng(TempBmp,ResStream,b);
       Button.Glyph32.Assign(tempBmp);
