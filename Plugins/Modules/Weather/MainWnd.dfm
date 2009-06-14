@@ -12,7 +12,10 @@ object MainForm: TMainForm
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
+  OnDblClick = BackgroundDblClick
   OnDestroy = FormDestroy
+  OnMouseEnter = MouseEnter
+  OnMouseLeave = MouseLeave
   OnPaint = FormPaint
   PixelsPerInch = 96
   TextHeight = 13

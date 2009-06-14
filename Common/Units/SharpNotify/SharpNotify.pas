@@ -67,9 +67,14 @@ var
 procedure CraeteNotifyText(pID : Cardinal; pData : TObject; px,py : integer; pCaption : WideString;
                            pEdge : TSharpNotifyEdge; pSM : ISharpESkinManager; pTimeout : integer;
                            pAreaRect : TRect; Replace: boolean);
+
 procedure CreateNotifyWindow(pID : Cardinal; pData : TObject; px,py : integer; pCaption : WideString;
                              pIcon : TSharpNotifyIcon; pEdge : TSharpNotifyEdge; pSM : ISharpESkinManager;
                              pTimeout : integer; pAreaRect : TRect);
+
+procedure CreateNotifyWindowBitmap(pId : Cardinal; pData : TObject; px, py : Integer; pBitmap : TBitmap32;
+                            pEdge : TSharpNotifyEdge; pSM : ISharpESkinManager; pTimeout : Integer;
+                            pAreaRect : TRect);
 
 implementation
 
@@ -93,6 +98,7 @@ type
       FEdge : TSharpNotifyEdge;
       FAreaRect : TRect;
       procedure RenderText(pCaption : WideString);
+      procedure RenderBitmap(pBitmap : TBitmap32);
       procedure Render(pCaption : WideString; pIcon : TSharpNotifyIcon); overload;
       procedure Render(pCaption : WideString; pIcon : TBitmap32); overload;
       procedure RenderSpecial;
@@ -102,6 +108,7 @@ type
       procedure Show;
       constructor Create(pID : Cardinal; pData : TObject; px,py : integer; pCaption : WideString; pIcon : TSharpNotifyIcon; pEdge: TSharpNotifyEdge; pSM : ISharpESkinManager; pTimeout : integer; pAreaRect : TRect);
       constructor CreateText(pID : Cardinal; pData : TObject; px,py : integer; pCaption : WideString; pEdge: TSharpNotifyEdge; pSM : ISharpESkinManager; pTimeout : integer; pAreaRect : TRect);
+      constructor CreateBitmap(pID : Cardinal; pData : TObject; px, py : Integer; pBitmap : TBitmap32; pEdge : TSharpNotifyEdge; pSM : ISharpESkinManager; pTimeout : Integer; pAreaRect : TRect);
       destructor Destroy; override;
   end;
 
@@ -234,6 +241,36 @@ begin
     SharpNotifyTimer.Enabled := True;
 end;
 
+procedure CreateNotifyWindowBitmap(pId : Cardinal; pData : TObject; px, py : Integer; pBitmap : TBitmap32;
+                            pEdge : TSharpNotifyEdge; pSM : ISharpESkinManager; pTimeout : Integer;
+                            pAreaRect : TRect);
+var
+  item,listitem : TNotifyItem;
+  idrunning : boolean;
+  n : integer;
+begin
+  item := TNotifyItem.CreateBitmap(pID, pData, px, py, pBitmap, pEdge, pSM, pTimeout, pAreaRect);
+  SharpNotifyWindows.Add(item);
+  idrunning := False;
+  for n := 0 to SharpNotifyWindows.Count - 1 do
+  begin
+    listitem := TNotifyItem(SharpNotifyWindows.Items[n]);
+    if (listitem.FID = item.FID) and (listitem.FActive) then
+    begin
+      idrunning := True;
+      break;
+    end;
+  end;
+  if not idrunning then
+  begin
+    item.Show;
+    if Assigned(SharpNotifyEvent.OnShow) then
+     SharpNotifyEvent.OnShow(item.FWnd, item.FID, item.FData);
+  end;
+
+  if not SharpNotifyTimer.Enabled then
+    SharpNotifyTimer.Enabled := True;
+end;
 
 procedure PreMul(Bitmap: TBitmap32);
 const
@@ -315,7 +352,7 @@ begin
   FEdge := pEdge;
   FAreaRect := pAreaRect;
 
-  Render(pCaption,pIcon);  
+  Render(pCaption,pIcon);
 end;
 
 constructor TNotifyItem.CreateText(pID: Cardinal; pData: TObject; px,
@@ -338,6 +375,26 @@ begin
   FAreaRect := pAreaRect;
 
   RenderText(pCaption);
+end;
+
+constructor TNotifyItem.CreateBitmap(pID: Cardinal; pData: TObject; px: Integer; py: Integer; pBitmap: TBitmap32; pEdge: TSharpNotifyEdge; pSM : ISharpESkinManager; pTimeout: Integer; pAreaRect : TRect);
+begin
+  inherited Create;
+
+  FID := pID;
+  FData := pData;
+  FSkinManager := pSM;
+  FTimeout := pTimeout;
+  FX := pX;
+  FY := pY;
+  FBitmap := TBitmap32.Create;
+  FBitmap.CombineMode := cmMerge;
+  FBitmap.DrawMode := dmBlend;
+  FActive := False;
+  FEdge := pEdge;
+  FAreaRect := pAreaRect;
+
+  RenderBitmap(pBitmap);
 end;
 
 procedure TNotifyItem.CreateWindow;
@@ -656,6 +713,26 @@ begin
   FBitmap.SetSize(w,h);
   FBitmap.Clear(color32(0,0,0,0));
   FSkinManager.Skin.OSDText.RenderToW(FBitmap,5,5,pCaption,FSkinManager.Scheme);
+end;
+
+procedure TNotifyItem.RenderBitmap(pBitmap : TBitmap32);
+var
+  NS : ISharpENotifySkin;
+begin
+  if FSkinManager = nil then
+    Exit;
+
+  NS := FSkinManager.Skin.Notify;
+
+  FXMod := NS.Location.X;
+  FYMod := NS.Location.Y;
+
+  // Add in the offsets with the width and height of the bitmap.
+  FBitmap.SetSize(pBitmap.Width + NS.CALROffset.X + NS.CALROffset.Y, pBitmap.Height + NS.CATBOffset.X + NS.CATBOffset.Y);
+  FBitmap.Clear(color32(0,0,0,0));
+  NS.Background.DrawTo(FBitmap, FSkinManager.Scheme);
+  // We added offsets to the size so render the bitmap at the top and left offset.
+  pBitmap.DrawTo(FBitmap, NS.CALROffset.X, NS.CATBOffset.Y);
 end;
 
 procedure TNotifyItem.Show;

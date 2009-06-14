@@ -39,9 +39,10 @@ uses
   uISharpBarModule,
   uISharpESkin,
   uISharpBar,
-  uInterfacedSharpBarModuleBase,  
+  uInterfacedSharpBarModuleBase,
   MainWnd in 'MainWnd.pas' {MainForm},
-  uWeatherParser in '..\..\Objects\Weather\uWeatherParser.pas';
+  uWeatherParser in '..\..\Objects\Weather\uWeatherParser.pas',
+  SharpNotify in '..\..\..\Common\Units\SharpNotify\SharpNotify.pas';
 
 type
   TInterfacedSharpBarModule = class(TInterfacedSharpBarModuleBase)
