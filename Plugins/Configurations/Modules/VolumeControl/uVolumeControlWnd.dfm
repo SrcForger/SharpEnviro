@@ -3,7 +3,7 @@ object frmVolumeControl: TfrmVolumeControl
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmVolumeControl'
-  ClientHeight = 204
+  ClientHeight = 306
   ClientWidth = 428
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -19,15 +19,17 @@ object frmVolumeControl: TfrmVolumeControl
     Left = 0
     Top = 0
     Width = 428
-    Height = 204
+    Height = 306
     ActivePage = JvSettingsPage
     PropagateEnable = False
     Align = alClient
+    ExplicitHeight = 204
     object JvSettingsPage: TJvStandardPage
       Left = 0
       Top = 0
       Width = 428
-      Height = 204
+      Height = 306
+      ExplicitHeight = 204
       object lblMixerNote: TLabel
         AlignWithMargins = True
         Left = 5
@@ -141,6 +143,64 @@ object frmVolumeControl: TfrmVolumeControl
         DescriptionColor = clRed
         Align = alTop
         Color = clWindow
+      end
+      object pnButtonPos: TPanel
+        Left = 0
+        Top = 244
+        Width = 428
+        Height = 31
+        Align = alTop
+        BevelOuter = bvNone
+        Color = clWindow
+        ParentBackground = False
+        TabOrder = 4
+        object Label1: TLabel
+          Left = 8
+          Top = 10
+          Width = 106
+          Height = 13
+          Margins.Top = 10
+          AutoSize = False
+          Caption = 'Button Position'
+          Color = clWindow
+          ParentColor = False
+          WordWrap = True
+        end
+        object cboButtonPos: TComboBox
+          Left = 93
+          Top = 7
+          Width = 85
+          Height = 21
+          Style = csDropDownList
+          Ctl3D = True
+          ItemHeight = 13
+          ItemIndex = 0
+          ParentCtl3D = False
+          TabOrder = 0
+          Text = 'Left'
+          OnChange = cboButtonPosChange
+          Items.Strings = (
+            'Left'
+            'Right')
+        end
+      end
+      object scmQuickSelect: TSharpECenterHeader
+        AlignWithMargins = True
+        Left = 5
+        Top = 205
+        Width = 418
+        Height = 37
+        Margins.Left = 5
+        Margins.Top = 8
+        Margins.Right = 5
+        Margins.Bottom = 2
+        Title = 'Mute Button Options'
+        Description = 'Configure the position of the mute button.'
+        TitleColor = clWindowText
+        DescriptionColor = clRed
+        Align = alTop
+        Color = clWindow
+        ExplicitTop = 271
       end
     end
   end

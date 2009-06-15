@@ -85,6 +85,9 @@ begin
     with PluginHost.Xml.XmlRoot.Items, frmVolumeControl do
     begin
       sgb_Width.Value := IntValue('Width',50);
+      if BoolValue('ButtonRight', False) then
+        cboButtonPos.ItemIndex := 1
+      else cboButtonPos.ItemIndex := 0;
       i := IntValue('Mixer',MIXERLINE_COMPONENTTYPE_DST_SPEAKERS);
       for n := 0 to IDList.Count -1 do
       begin
@@ -123,6 +126,7 @@ begin
       Add('Mixer',IDList[cb_mlist.ItemIndex]);
 
     Add('Width', sgb_Width.Value);
+    Add('ButtonRight',(cboButtonPos.ItemIndex = 1));
   end;
 
   PluginHost.Xml.Save;

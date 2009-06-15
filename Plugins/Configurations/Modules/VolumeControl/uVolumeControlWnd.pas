@@ -44,9 +44,14 @@ type
     cb_mlist: TComboBox;
     schMixer: TSharpECenterHeader;
     schSize: TSharpECenterHeader;
+    pnButtonPos: TPanel;
+    Label1: TLabel;
+    cboButtonPos: TComboBox;
+    scmQuickSelect: TSharpECenterHeader;
     procedure FormCreate(Sender: TObject);
     procedure cb_mlistChange(Sender: TObject);
     procedure sgb_widthChangeValue(Sender: TObject; Value: Integer);
+    procedure cboButtonPosChange(Sender: TObject);
   private
     FPluginHost: ISharpCenterHost;
     procedure SendUpdate;
@@ -93,6 +98,11 @@ begin
     end;
   end;
    mixerclose(Mixer);
+end;
+
+procedure TfrmVolumeControl.cboButtonPosChange(Sender: TObject);
+begin
+  SendUpdate;
 end;
 
 procedure TfrmVolumeControl.cb_mlistChange(Sender: TObject);
