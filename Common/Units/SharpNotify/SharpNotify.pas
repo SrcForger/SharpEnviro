@@ -682,6 +682,7 @@ begin
              FY,
              SRCCOPY or CAPTUREBLT);
       Theme := GetCurrentTheme;
+      FBitmap.ResetAlpha;
       if Theme.Skin.GlassEffect.Blend then
         BlendImageC(FBitmap,Theme.Skin.GlassEffect.BlendColor,Theme.Skin.GlassEffect.BlendAlpha);
       fastblur(FBitmap,Theme.Skin.GlassEffect.BlurRadius,Theme.Skin.GlassEffect.BlurIterations);
