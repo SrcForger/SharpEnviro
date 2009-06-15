@@ -30,7 +30,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms,
   Dialogs, StdCtrls, SharpEButton, SharpApi, Menus, Math,
-  ShellApi, MediaPlayerList, GR32,  Types, SharpEBaseControls, ExtCtrls,
+  ShellApi, MediaPlayerList, GR32, GR32_PNG, Types, SharpEBaseControls, ExtCtrls,
   Registry, uSharpEMenuWnd, uSharpEMenu, uSharpEMenuSettings, uSharpEMenuItem,
   uISharpBarModule;
 
@@ -62,6 +62,7 @@ type
     procedure WMExecAction(var msg : TMessage); message WM_SHARPEACTIONMESSAGE;
     procedure SendAppCommand(pType : TControlCommandType);
     function GetStartPlayer(Root : HKEY; Key : String; Value : String) : String;
+    procedure LoadIcons;
   public
     sPlayer : String;
     sPSelect : Boolean;
@@ -84,6 +85,7 @@ uses
   JclSimpleXML,PlayerSelectWnd;
 
 {$R *.dfm}
+{$R MPGlyphs.res}
 
 function TMainForm.GetStartPlayer(Root : HKEY; Key : String; Value : String) : String;
 var
@@ -192,6 +194,96 @@ begin
   XML.Free;
 end;
 
+procedure TMainForm.LoadIcons;
+var
+  ResStream : TResourceStream;
+  TempBmp : TBitmap32;
+  b : boolean;
+  ResIDSuffix : String;
+begin
+  if mInterface = nil then
+    exit;
+  if mInterface.SkinInterface = nil then
+    exit;
+
+  TempBmp := TBitmap32.Create;
+  if mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y <= 16 then
+  begin
+    TempBmp.SetSize(16,16);
+    ResIDSuffix := '';
+  end else if mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y <= 22 then
+  begin
+    TempBmp.SetSize(22,22);
+    ResIDSuffix := '22';
+  end else
+  begin
+    TempBmp.SetSize(32,32);
+    ResIDSuffix := '32';
+  end;
+
+  TempBmp.Clear(color32(0,0,0,0));
+  try
+    ResStream := TResourceStream.Create(HInstance, 'mppause'+ResIDSuffix, RT_RCDATA);
+    try
+      LoadBitmap32FromPng(TempBmp,ResStream,b);
+      btn_pause.Glyph32.Assign(tempBmp);
+    finally
+      ResStream.Free;
+    end;
+  except
+  end;
+
+  TempBmp.Clear(color32(0,0,0,0));
+  try
+    ResStream := TResourceStream.Create(HInstance, 'mpplay'+ResIDSuffix, RT_RCDATA);
+    try
+      LoadBitmap32FromPng(TempBmp,ResStream,b);
+      btn_play.Glyph32.Assign(tempBmp);
+    finally
+      ResStream.Free;
+    end;
+  except
+  end;
+
+  TempBmp.Clear(color32(0,0,0,0));
+  try
+    ResStream := TResourceStream.Create(HInstance, 'mpstop'+ResIDSuffix, RT_RCDATA);
+    try
+      LoadBitmap32FromPng(TempBmp,ResStream,b);
+      btn_stop.Glyph32.Assign(tempBmp);
+    finally
+      ResStream.Free;
+    end;
+  except
+  end;
+
+  TempBmp.Clear(color32(0,0,0,0));
+  try
+    ResStream := TResourceStream.Create(HInstance, 'mpprev'+ResIDSuffix, RT_RCDATA);
+    try
+      LoadBitmap32FromPng(TempBmp,ResStream,b);
+      btn_prev.Glyph32.Assign(tempBmp);
+    finally
+      ResStream.Free;
+    end;
+  except
+  end;
+
+  TempBmp.Clear(color32(0,0,0,0));
+  try
+    ResStream := TResourceStream.Create(HInstance, 'mpnext'+ResIDSuffix, RT_RCDATA);
+    try
+      LoadBitmap32FromPng(TempBmp,ResStream,b);
+      btn_next.Glyph32.Assign(tempBmp);
+    finally
+      ResStream.Free;
+    end;
+  except
+  end;  
+
+  TempBmp.Free;
+end;
+
 procedure TMainForm.LoadSettings;
 var
   XML : TJclSimpleXML;
@@ -268,6 +360,7 @@ var
   i : integer;
   buttonwidth : integer;
 begin
+  LoadIcons;
   buttonwidth := mInterface.SkinInterface.SkinManager.Skin.Button.WidthMod;
   buttonwidth := buttonwidth + btn_play.GetIconWidth;
   buttonwidth := buttonwidth - 4;
