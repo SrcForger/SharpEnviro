@@ -43,7 +43,7 @@ type
     scmSize: TSharpECenterHeader;
     cbQuickSelect: TJvXPCheckbox;
     pnButtonPos: TPanel;
-    Label1: TLabel;
+    lbButtonPos: TLabel;
     cboButtonPos: TComboBox;
     procedure FormCreate(Sender: TObject);
     procedure cbQuickSelectClick(Sender: TObject);
@@ -93,7 +93,8 @@ end;
 
 procedure TfrmMiniScmd.UpdateGUI;
 begin
-  pnButtonPos.Visible := cbQuickSelect.Checked;
+  lbButtonPos.Enabled := cbQuickSelect.Checked;
+  cboButtonPos.Enabled := cbQuickSelect.Checked;
 end;
 
 procedure TfrmMiniScmd.UpdateSettings;
