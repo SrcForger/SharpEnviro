@@ -80,6 +80,7 @@ begin
 
     Add('Width', sgb_width.Value);
     Add('Button', cbQuickSelect.Checked);
+    Add('ButtonRight', (cboButtonPos.ItemIndex = 1));
   end;
 
   PluginHost.Xml.Save;
@@ -93,8 +94,12 @@ begin
     begin
       sgb_width.Value := IntValue('Width', 100);
       cbQuickSelect.Checked := BoolValue('Button', True);
+      if BoolValue('ButtonRight',True) then
+        cboButtonPos.ItemIndex := 1
+      else cboButtonPos.ItemIndex := 0;
     end;
   end;
+  frmMiniScmd.UpdateGUI;
 end;
 
 function TSharpCenterPlugin.Open: Cardinal;

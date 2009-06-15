@@ -13,6 +13,7 @@ object frmMiniScmd: TfrmMiniScmd
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object plMain: TJvPageList
@@ -31,7 +32,7 @@ object frmMiniScmd: TfrmMiniScmd
       object pnlSize: TPanel
         AlignWithMargins = True
         Left = 5
-        Top = 121
+        Top = 152
         Width = 425
         Height = 21
         Margins.Left = 5
@@ -42,9 +43,7 @@ object frmMiniScmd: TfrmMiniScmd
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 0
-        ExplicitLeft = 3
-        ExplicitTop = 165
-        ExplicitWidth = 429
+        ExplicitTop = 121
         object sgb_width: TSharpeGaugeBox
           Left = 0
           Top = 0
@@ -85,14 +84,11 @@ object frmMiniScmd: TfrmMiniScmd
         DescriptionColor = clRed
         Align = alTop
         Color = clWindow
-        ExplicitLeft = 3
-        ExplicitTop = 3
-        ExplicitWidth = 429
       end
       object scmSize: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
-        Top = 74
+        Top = 105
         Width = 425
         Height = 37
         Margins.Left = 5
@@ -105,9 +101,7 @@ object frmMiniScmd: TfrmMiniScmd
         DescriptionColor = clRed
         Align = alTop
         Color = clWindow
-        ExplicitLeft = 3
-        ExplicitTop = 126
-        ExplicitWidth = 429
+        ExplicitTop = 74
       end
       object cbQuickSelect: TJvXPCheckbox
         AlignWithMargins = True
@@ -132,9 +126,48 @@ object frmMiniScmd: TfrmMiniScmd
         ParentShowHint = False
         ShowHint = True
         OnClick = cbQuickSelectClick
-        ExplicitLeft = 20
-        ExplicitTop = 46
-        ExplicitWidth = 405
+      end
+      object pnButtonPos: TPanel
+        Left = 0
+        Top = 64
+        Width = 435
+        Height = 31
+        Align = alTop
+        BevelOuter = bvNone
+        Color = clWindow
+        ParentBackground = False
+        TabOrder = 4
+        ExplicitTop = 37
+        ExplicitWidth = 425
+        object Label1: TLabel
+          Left = 8
+          Top = 10
+          Width = 106
+          Height = 13
+          Margins.Top = 10
+          AutoSize = False
+          Caption = 'Button Position'
+          Color = clWindow
+          ParentColor = False
+          WordWrap = True
+        end
+        object cboButtonPos: TComboBox
+          Left = 93
+          Top = 7
+          Width = 85
+          Height = 21
+          Style = csDropDownList
+          Ctl3D = True
+          ItemHeight = 13
+          ItemIndex = 1
+          ParentCtl3D = False
+          TabOrder = 0
+          Text = 'Right'
+          OnChange = cboButtonPosChange
+          Items.Strings = (
+            'Left'
+            'Right')
+        end
       end
     end
   end

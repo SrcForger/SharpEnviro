@@ -42,15 +42,20 @@ type
     scmQuickSelect: TSharpECenterHeader;
     scmSize: TSharpECenterHeader;
     cbQuickSelect: TJvXPCheckbox;
+    pnButtonPos: TPanel;
+    Label1: TLabel;
+    cboButtonPos: TComboBox;
     procedure FormCreate(Sender: TObject);
     procedure cbQuickSelectClick(Sender: TObject);
     procedure sgb_widthChangeValue(Sender: TObject; Value: Integer);
+    procedure cboButtonPosChange(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     FPluginHost: ISharpCenterHost;
     procedure UpdateSettings;
   public
-    property PluginHost: ISharpCenterHost read FPluginHost write
-      FPluginHost;
+    procedure UpdateGUI;  
+    property PluginHost: ISharpCenterHost read FPluginHost write FPluginHost;
   end;
 
 var
@@ -60,9 +65,15 @@ implementation
 
 {$R *.dfm}
 
+procedure TfrmMiniScmd.cboButtonPosChange(Sender: TObject);
+begin
+  UpdateSettings;
+end;
+
 procedure TfrmMiniScmd.cbQuickSelectClick(Sender: TObject);
 begin
   UpdateSettings;
+  UpdateGUI;
 end;
 
 procedure TfrmMiniScmd.FormCreate(Sender: TObject);
@@ -70,9 +81,19 @@ begin
   DoubleBuffered := true;
 end;
 
+procedure TfrmMiniScmd.FormShow(Sender: TObject);
+begin
+  UpdateGUI;
+end;
+
 procedure TfrmMiniScmd.sgb_widthChangeValue(Sender: TObject; Value: Integer);
 begin
   UpdateSettings
+end;
+
+procedure TfrmMiniScmd.UpdateGUI;
+begin
+  pnButtonPos.Visible := cbQuickSelect.Checked;
 end;
 
 procedure TfrmMiniScmd.UpdateSettings;
