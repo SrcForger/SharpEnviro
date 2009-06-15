@@ -2,12 +2,12 @@ object MainForm: TMainForm
   Left = 0
   Top = 0
   Caption = 'Weather'
-  ClientHeight = 159
-  ClientWidth = 277
+  ClientHeight = 208
+  ClientWidth = 362
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -11
+  Font.Height = -14
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
@@ -15,15 +15,14 @@ object MainForm: TMainForm
   OnDblClick = BackgroundDblClick
   OnDestroy = FormDestroy
   OnMouseEnter = MouseEnter
-  OnMouseLeave = MouseLeave
   OnPaint = FormPaint
-  PixelsPerInch = 96
-  TextHeight = 13
+  PixelsPerInch = 120
+  TextHeight = 17
   object lb_bottom: TSharpESkinLabel
-    Left = 50
+    Left = 65
     Top = 0
-    Width = 12
-    Height = 21
+    Width = 16
+    Height = 27
     AutoSize = True
     Visible = False
     OnDblClick = BackgroundDblClick
@@ -32,15 +31,21 @@ object MainForm: TMainForm
     LabelStyle = lsSmall
   end
   object lb_top: TSharpESkinLabel
-    Left = 2
+    Left = 3
     Top = 0
-    Width = 12
-    Height = 21
+    Width = 15
+    Height = 27
     AutoSize = True
     Visible = False
     OnDblClick = BackgroundDblClick
     Caption = '.'
     AutoPos = apTop
     LabelStyle = lsSmall
+  end
+  object PopupTimer: TTimer
+    Enabled = False
+    OnTimer = PopupTimerTimer
+    Left = 24
+    Top = 32
   end
 end

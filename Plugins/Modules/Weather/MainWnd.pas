@@ -39,12 +39,13 @@ type
   TMainForm = class(TForm)
     lb_bottom: TSharpESkinLabel;
     lb_top: TSharpESkinLabel;
+    PopupTimer: TTimer;
     procedure FormPaint(Sender: TObject);
     procedure BackgroundDblClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure MouseEnter(Sender: TObject);
-    procedure MouseLeave(Sender: TObject);
+    procedure PopupTimerTimer(Sender: TObject);
   protected
   private
     bShowIcon    : boolean;
@@ -52,7 +53,6 @@ type
     sLocation    : String;
     sTopLabel    : String;
     sBottomLabel : String;
-    bHovering : Boolean;
     FIcon        : TBitmap32;
     FWeatherParser : TWeatherParser;
     function ReplaceDataInString(pString : String) : String;
@@ -203,27 +203,23 @@ end;
 
 procedure TMainForm.MouseEnter(Sender: TObject);
 begin
-  // If the mouse has just entered over the form or one
-  // of the controls then display the notification only
-  // if the cursor was not already over the form or controls.
-  // It is set to true or false in the mouseleave because
-  // we don't want to display it more than once when you move
-  // to a control on the form.
-  if not bHovering then
-    ShowWeatherNotification;
+  PopupTimer.Enabled := True;
 end;
 
-procedure TMainForm.MouseLeave(Sender: TObject);
+procedure TMainForm.PopupTimerTimer(Sender: TObject);
 var
   cursorPos : TPoint;
   clientPos : TPoint;
 begin
-  // Get the cursor position and see if it is over the form
-  // by checking it against the forms boundries.
+  PopupTimer.Enabled := False;
+
   GetCursorPosSecure(cursorPos);
   clientPos := Self.ScreenToClient(cursorPos);
 
-  bHovering := PtInRect(BoundsRect, clientPos);
+  if not PtInRect(Rect(0,0,Width,Height), clientPos) then
+    exit;
+  
+  ShowWeatherNotification;
 end;
 
 procedure TMainForm.ReAlignComponents(Broadcast : boolean = True);
@@ -491,7 +487,6 @@ begin
   bShowLabels  := True;
   sTopLabel    := 'Temperature: {#TEMPERATURE#}°{#UNITTEMP#}';
   sBottomLabel := 'Condition: {#CONDITION#}';  
-  bHovering := False;
   
   FIcon := TBitmap32.Create;
   FIcon.DrawMode := dmBlend;
