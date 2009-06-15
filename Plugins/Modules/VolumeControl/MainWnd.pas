@@ -57,10 +57,11 @@ type
   private
     sWidth  : integer;
     sMixer  : integer;
+    sButtonRight : boolean;
     FDLow,FDMed,FDHigh,FDMute : TBitmap32;
     lastvolume : integer;
     lastmute : boolean;
-    procedure InitDefaultImages;
+    procedure LoadIcons;
   public
     mInterface : ISharpBarModule;
     procedure LoadSettings;
@@ -69,23 +70,40 @@ type
     procedure UpdateSize;
   end;
 
+var
+  forceupdate : boolean;
 
 implementation
 
 {$R *.dfm}
 {$R glyphs.res}
 
-procedure TMainForm.InitDefaultImages;
+procedure TMainForm.LoadIcons;
 var
   ResStream : TResourceStream;
   TempBmp : TBitmap32;
   b : boolean;
+  ResIDSuffix : String;
 begin
+  if mInterface = nil then
+    exit;
+  if mInterface.SkinInterface = nil then
+    exit;
+
   TempBmp := TBitmap32.Create;
-  TempBmp.SetSize(32,32);
+  if mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y <= 16 then
+  begin
+    TempBmp.SetSize(16,16);
+    ResIDSuffix := '';
+  end else
+  begin
+    TempBmp.SetSize(32,32);
+    ResIDSuffix := '32';
+  end;
+
   TempBmp.Clear(color32(0,0,0,0));
   try
-    ResStream := TResourceStream.Create(HInstance, 'high', RT_RCDATA);
+    ResStream := TResourceStream.Create(HInstance, 'high'+ResIDSuffix, RT_RCDATA);
     try
       LoadBitmap32FromPng(TempBmp,ResStream,b);
       FDHigh.Assign(tempBmp);
@@ -96,7 +114,7 @@ begin
   end;
 
   try
-    ResStream := TResourceStream.Create(HInstance, 'medium', RT_RCDATA);
+    ResStream := TResourceStream.Create(HInstance, 'medium'+ResIDSuffix, RT_RCDATA);
     try
       LoadBitmap32FromPng(TempBmp,ResStream,b);
       FDMed.Assign(tempBmp);
@@ -107,7 +125,7 @@ begin
   end;
 
   try
-    ResStream := TResourceStream.Create(HInstance, 'low', RT_RCDATA);
+    ResStream := TResourceStream.Create(HInstance, 'low'+ResIDSuffix, RT_RCDATA);
     try
       LoadBitmap32FromPng(TempBmp,ResStream,b);
       FDLow.Assign(tempBmp);
@@ -118,7 +136,7 @@ begin
   end;
 
   try
-    ResStream := TResourceStream.Create(HInstance, 'muted', RT_RCDATA);
+    ResStream := TResourceStream.Create(HInstance, 'muted'+ResIDSuffix, RT_RCDATA);
     try
       LoadBitmap32FromPng(TempBmp,ResStream,b);
       FDMute.Assign(tempBmp);
@@ -138,6 +156,7 @@ var
 begin
   sWidth  := 50;
   sMixer  := MIXERLINE_COMPONENTTYPE_DST_SPEAKERS;
+  sButtonRight := False;
 
   XML := TJclSimpleXML.Create;
   try
@@ -151,6 +170,7 @@ begin
     begin
       sWidth := IntValue('Width',50);
       sMixer := IntValue('Mixer',MIXERLINE_COMPONENTTYPE_DST_SPEAKERS);
+      sButtonRight := BoolValue('ButtonRight',False);
     end;
   XMl.Free;
 end;
@@ -163,12 +183,23 @@ end;
 
 procedure TMainForm.UpdateSize;
 begin
+  LoadIcons;
+  forceupdate := True;
   mute.Width := mInterface.SkinInterface.SkinManager.Skin.Button.WidthMod;
   if mute.Glyph32 <> nil then
     mute.Width := mute.Width + mute.GetIconWidth;
   mute.Width := mute.Width - 4;
-  pbar.Left := mute.Left + mute.Width + 2;
-  pbar.Width := Width - mute.Left - mute.Width - 4;
+  if sButtonRight then
+  begin
+    mute.Left := Width - 2 - mute.Width;
+    pbar.Left := 2;
+    pbar.Width := Width - mute.Width - 4 - pbar.Left;
+  end else
+  begin
+    mute.Left := 2;
+    pbar.Left := mute.Left + mute.Width + 2;
+    pbar.Width := Width - mute.Left - mute.Width - 4;
+  end;
   pbar.Height := Height - 8;
   cshape.Left   := pbar.Left;
   cshape.Top    := pbar.Top;
@@ -194,13 +225,13 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  forceupdate := False;
   DoubleBuffered := True;
   FDLow  := TBitmap32.Create;
   FDMed  := TBitmap32.Create;
   FDHigh := TBitmap32.Create;
   FDMute := TBitmap32.Create;
   lastvolume := -1;
-  InitDefaultImages;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -217,7 +248,7 @@ var
   v : real;
 begin
   i := Integer(GetMasterVolume(sMixer));
-  if (i<>lastvolume) or (GetMasterMuteStatus(sMixer)<>lastmute) then
+  if (i<>lastvolume) or (GetMasterMuteStatus(sMixer)<>lastmute) or forceupdate then
   begin
     lastvolume := i;
     lastmute   := GetMasterMuteStatus(sMixer);
@@ -229,6 +260,7 @@ begin
        else mute.Glyph32.Assign(FDLow);
     mute.UpdateSkin;
   end;
+  forceupdate := False;
 end;
 
 procedure TMainForm.muteClick(Sender: TObject);
