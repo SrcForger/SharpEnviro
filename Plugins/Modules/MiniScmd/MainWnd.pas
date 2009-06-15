@@ -49,8 +49,9 @@ type
     procedure editKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
   protected
   private
-    sWidth   : integer;
-    sButton  : boolean;
+    sWidth       : integer;
+    sButton      : Boolean;
+    sButtonRight : Boolean;
     procedure LoadIcon;
     procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
   public
@@ -117,9 +118,11 @@ var
 begin
   UpdateBangs;
 
-  sWidth     := 100;
-  sButton    := True;
-  rightbutton := False;
+  sWidth       := 100;
+  sButton      := True;
+  sButtonRight := True;
+  
+  rightbutton  := False;
 
   XML := TJvSimpleXML.Create(nil);
   try
@@ -133,6 +136,7 @@ begin
     begin
       sWidth  := IntValue('Width',100);
       sButton := BoolValue('Button',True);
+      sButtonRight := BoolValue('ButtonRight',True);
     end;
   XML.Free;
 end;
@@ -146,11 +150,20 @@ begin
     if btn_select.Glyph32 <> nil then
       btn_select.Width := btn_select.Width + btn_select.GetIconWidth;
     btn_select.Width := btn_select.Width - 4;
-    btn_select.Left := Width - btn_select.Width - 2;
+    if sButtonRight then
+    begin
+      btn_select.Left := Width - btn_select.Width - 2;
+      edit.Left := 2;
+    end else
+    begin
+      btn_select.Left := 2;
+      edit.Left := 2 + btn_select.Width + 2;
+    end;
     btn_select.show;
     edit.Width := max(1,(Width - 6) - btn_select.width);
   end else
   begin
+    btn_select.Left := 2;
     edit.Width := max(1,(Width - 4));
     btn_select.Hide;
   end;
@@ -163,8 +176,6 @@ var
 begin
   self.Caption := '';
   if sWidth<20 then sWidth := 20;
-
-  edit.Left := 2;
 
   newWidth := sWidth + 4;
   Tag := newWidth;
