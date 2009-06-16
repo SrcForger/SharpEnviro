@@ -59,25 +59,6 @@ type
     OnTimeout : TSharpNotifyShowEventProc;
   end;
 
-var
-  SharpNotifyEvent : TSharpNotifyEvent;
-
-{$R SharpNotifyIcons.res}
-
-procedure CraeteNotifyText(pID : Cardinal; pData : TObject; px,py : integer; pCaption : WideString;
-                           pEdge : TSharpNotifyEdge; pSM : ISharpESkinManager; pTimeout : integer;
-                           pAreaRect : TRect; Replace: boolean);
-
-procedure CreateNotifyWindow(pID : Cardinal; pData : TObject; px,py : integer; pCaption : WideString;
-                             pIcon : TSharpNotifyIcon; pEdge : TSharpNotifyEdge; pSM : ISharpESkinManager;
-                             pTimeout : integer; pAreaRect : TRect);
-
-procedure CreateNotifyWindowBitmap(pId : Cardinal; pData : TObject; px, py : Integer; pBitmap : TBitmap32;
-                            pEdge : TSharpNotifyEdge; pSM : ISharpESkinManager; pTimeout : Integer;
-                            pAreaRect : TRect);
-
-implementation
-
 type
   TSharpNotifyTimerEvent = object
                              procedure OnTimer(Sender : TObject);
@@ -111,6 +92,27 @@ type
       constructor CreateBitmap(pID : Cardinal; pData : TObject; px, py : Integer; pBitmap : TBitmap32; pEdge : TSharpNotifyEdge; pSM : ISharpESkinManager; pTimeout : Integer; pAreaRect : TRect);
       destructor Destroy; override;
   end;
+
+var
+  SharpNotifyEvent : TSharpNotifyEvent;
+
+{$R SharpNotifyIcons.res}
+
+procedure CraeteNotifyText(pID : Cardinal; pData : TObject; px,py : integer; pCaption : WideString;
+                           pEdge : TSharpNotifyEdge; pSM : ISharpESkinManager; pTimeout : integer;
+                           pAreaRect : TRect; Replace: boolean);
+
+procedure CreateNotifyWindow(pID : Cardinal; pData : TObject; px,py : integer; pCaption : WideString;
+                             pIcon : TSharpNotifyIcon; pEdge : TSharpNotifyEdge; pSM : ISharpESkinManager;
+                             pTimeout : integer; pAreaRect : TRect);
+
+function CreateNotifyWindowBitmap(pId : Cardinal; pData : TObject; px, py : Integer; pBitmap : TBitmap32;
+                            pEdge : TSharpNotifyEdge; pSM : ISharpESkinManager; pTimeout : Integer;
+                            pAreaRect : TRect) : TNotifyItem;
+
+procedure CloseNotifyWindow(item : TNotifyItem);
+
+implementation
 
 function SharpENotifyWndClassProc(hWnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall; forward;
 
@@ -241,9 +243,9 @@ begin
     SharpNotifyTimer.Enabled := True;
 end;
 
-procedure CreateNotifyWindowBitmap(pId : Cardinal; pData : TObject; px, py : Integer; pBitmap : TBitmap32;
+function CreateNotifyWindowBitmap(pId : Cardinal; pData : TObject; px, py : Integer; pBitmap : TBitmap32;
                             pEdge : TSharpNotifyEdge; pSM : ISharpESkinManager; pTimeout : Integer;
-                            pAreaRect : TRect);
+                            pAreaRect : TRect) : TNotifyItem;
 var
   item,listitem : TNotifyItem;
   idrunning : boolean;
@@ -270,6 +272,17 @@ begin
 
   if not SharpNotifyTimer.Enabled then
     SharpNotifyTimer.Enabled := True;
+
+  Result := item;
+end;
+
+procedure CloseNotifyWindow(item : TNotifyItem);
+begin
+  if SharpNotifyWindows.IndexOf(item) = -1 then
+    Exit;
+
+  SharpNotifyWindows.Extract(item);
+  item.Free;
 end;
 
 procedure PreMul(Bitmap: TBitmap32);

@@ -40,14 +40,18 @@ type
     lb_bottom: TSharpESkinLabel;
     lb_top: TSharpESkinLabel;
     PopupTimer: TTimer;
+    ClosePopupTimer: TTimer;
     procedure FormPaint(Sender: TObject);
     procedure BackgroundDblClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure MouseEnter(Sender: TObject);
     procedure PopupTimerTimer(Sender: TObject);
+    procedure ClosePopupTimerTimer(Sender: TObject);
+    procedure MouseLeave(Sender: TObject);
   protected
   private
+    notifyItem : TNotifyItem;
     bShowIcon    : boolean;
     bShowLabels  : boolean;
     sLocation    : String;
@@ -213,13 +217,36 @@ var
 begin
   PopupTimer.Enabled := False;
 
-  GetCursorPosSecure(cursorPos);
-  clientPos := Self.ScreenToClient(cursorPos);
+  if GetCursorPosSecure(cursorPos) then
+    clientPos := ScreenToClient(cursorPos)
+  else Exit;
 
   if not PtInRect(Rect(0,0,Width,Height), clientPos) then
     exit;
   
   ShowWeatherNotification;
+end;
+
+procedure TMainForm.MouseLeave(Sender: TObject);
+begin
+  ClosePopupTimer.Enabled := True;
+end;
+
+procedure TMainForm.ClosePopupTimerTimer(Sender: TObject);
+var
+  cursorPos : TPoint;
+  clientPos : TPoint;
+begin
+  ClosePopupTimer.Enabled := False;
+
+  if GetCursorPosSecure(cursorPos) then
+    clientPos := ScreenToClient(cursorPos)
+  else Exit;
+
+  if PtInRect(Rect(0,0,Width,Height), clientPos) then
+    Exit;
+    
+  SharpNotify.CloseNotifyWindow(notifyItem);
 end;
 
 procedure TMainForm.ReAlignComponents(Broadcast : boolean = True);
@@ -463,7 +490,7 @@ begin
   // Render the last updated datetime to the bottom of the bitmap (below the greater heither for the icon or text).
   SkinText.RenderToW(BmpToDisplay, 0, Max(BmpIcon.Height, BmpText.Height), formattedValue, mInterface.SkinInterface.SkinManager.Scheme);
 
-  SharpNotify.CreateNotifyWindowBitmap(
+  notifyItem := SharpNotify.CreateNotifyWindowBitmap(
     0,
     nil,
     x,
