@@ -43,7 +43,6 @@ object frmMiniScmd: TfrmMiniScmd
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 0
-        ExplicitTop = 121
         object sgb_width: TSharpeGaugeBox
           Left = 0
           Top = 0
@@ -101,7 +100,6 @@ object frmMiniScmd: TfrmMiniScmd
         DescriptionColor = clRed
         Align = alTop
         Color = clWindow
-        ExplicitTop = 74
       end
       object cbQuickSelect: TJvXPCheckbox
         AlignWithMargins = True
@@ -137,12 +135,10 @@ object frmMiniScmd: TfrmMiniScmd
         Color = clWindow
         ParentBackground = False
         TabOrder = 4
-        ExplicitTop = 37
-        ExplicitWidth = 425
-        object Label1: TLabel
+        object lbButtonPos: TLabel
           Left = 8
           Top = 10
-          Width = 106
+          Width = 79
           Height = 13
           Margins.Top = 10
           AutoSize = False
