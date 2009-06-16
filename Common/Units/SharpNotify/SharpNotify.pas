@@ -705,6 +705,7 @@ begin
       ReplaceTransparentAreas(FBitmap,temp,Color32(0,0,0,0));
       temp.DrawTo(FBitmap,0,0);
     finally
+      temp.Free;
       ReleaseDC(GetDesktopWindow, dc);
     end;
   end;
