@@ -853,6 +853,7 @@ begin
              pTop,
              SRCCOPY or CAPTUREBLT);
       Theme := GetCurrentTheme;
+      FSpecialBackground.ResetAlpha;
       if Theme.Skin.GlassEffect.Blend then
         BlendImageC(FSpecialBackground,Theme.Skin.GlassEffect.BlendColor,Theme.Skin.GlassEffect.BlendAlpha);
       fastblur(FSpecialBackground,Theme.Skin.GlassEffect.BlurRadius,Theme.Skin.GlassEffect.BlurIterations);
