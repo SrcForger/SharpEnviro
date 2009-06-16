@@ -119,7 +119,7 @@ begin
   newicon := 0;
   if FIcon <> 0 then DestroyIcon(FIcon);
   try
-    SendMessageTimeout(Handle, WM_GETICON, 0, 0, SMTO_ABORTIFHUNG, 1000, DWORD(newicon));
+    SendMessageTimeout(Handle, WM_GETICON, ICON_BIG, 0, SMTO_ABORTIFHUNG, 1000, DWORD(newicon));
 
     if (newicon = 0) then newicon := HICON(GetClassLong(Handle, GCL_HICON));
 
