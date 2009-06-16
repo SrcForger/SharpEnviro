@@ -12,8 +12,10 @@ object TabOptionsForm: TTabOptionsForm
   Font.Name = 'Tahoma'
   Font.Style = []
   FormStyle = fsStayOnTop
+  KeyPreview = True
   OldCreateOrder = False
   Position = poOwnerFormCenter
+  OnKeyPress = FormKeyPress
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13

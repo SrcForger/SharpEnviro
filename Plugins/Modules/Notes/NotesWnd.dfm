@@ -2713,6 +2713,36 @@ object SharpENotesForm: TSharpENotesForm
       Caption = 'Word Wrap'
       OnClick = miWordWrapClick
     end
+    object miTab: TMenuItem
+      Caption = 'Tab'
+      SubMenuImages = pilTabImages
+      object miAddTab: TMenuItem
+        Caption = 'Add New'
+        ImageIndex = 0
+        ShortCut = 16468
+        OnClick = miAddTabClick
+      end
+      object miDeleteTab: TMenuItem
+        Caption = 'Delete Current'
+        ImageIndex = 1
+        OnClick = miDeleteTabClick
+      end
+      object miEditTab: TMenuItem
+        Caption = 'Edit Current'
+        ImageIndex = 2
+        OnClick = miEditTabClick
+      end
+      object miAddFromSelectedText: TMenuItem
+        Caption = 'Add From Selected Text'
+        ShortCut = 24660
+        OnClick = miAddFromSelectedTextClick
+      end
+      object miAddFromCurrentTab: TMenuItem
+        Caption = 'Add From Current Tab'
+        ShortCut = 49236
+        OnClick = miAddFromCurrentTabClick
+      end
+    end
     object miFormat: TMenuItem
       Caption = 'Format'
       object miTextBackColor: TMenuItem

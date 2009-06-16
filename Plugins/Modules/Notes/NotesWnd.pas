@@ -95,6 +95,12 @@ type
     miFormat: TMenuItem;
     ColorDialog: TColorDialog;
     miTextBackColor: TMenuItem;
+    miTab: TMenuItem;
+    miAddTab: TMenuItem;
+    miDeleteTab: TMenuItem;
+    miEditTab: TMenuItem;
+    miAddFromSelectedText: TMenuItem;
+    miAddFromCurrentTab: TMenuItem;
     procedure FormShow(Sender: TObject);
     procedure pcNotesTabChange(ASender: TObject;
       const ATabIndex: Integer; var AChange: Boolean);
@@ -147,6 +153,11 @@ type
     procedure FormCreate(Sender: TObject);
     procedure EditorChange(Sender: TObject);
     procedure miTextBackColorClick(Sender: TObject);
+    procedure miAddTabClick(Sender: TObject);
+    procedure miDeleteTabClick(Sender: TObject);
+    procedure miEditTabClick(Sender: TObject);
+    procedure miAddFromSelectedTextClick(Sender: TObject);
+    procedure miAddFromCurrentTabClick(Sender: TObject);
   private
     { Private declarations }
     FIndex: Integer;
@@ -154,7 +165,8 @@ type
     function NotesDir: string;
     function CurrText: TJvTextAttributes;
     procedure FocusEditor;
-    procedure ShowTabOptions(New: Boolean; Name: string);
+    function ShowTabOptions(New: Boolean; Name: string) : Boolean;
+    procedure AddTabWithText(text : string);
     function AddTab(Name: string) : Integer;
     procedure DeleteTab;
     function TabName(Index: Integer) : string;
@@ -219,12 +231,14 @@ begin
       SetFocus;
 end;
 
-procedure TSharpENotesForm.ShowTabOptions(New: Boolean; Name: string);
+function TSharpENotesForm.ShowTabOptions(New: Boolean; Name: string) : Boolean;
 var
   tabSettings : NotesTabSettings;
   frmTabOptions : TTabOptionsForm;
   oldTabName : string;
 begin
+  Result := False;
+  
   if not New and (FIndex = -1) then Exit;
 
   // Create the tab option form.
@@ -306,10 +320,18 @@ begin
       // Save the tabs settings and send an update to other notes modules.
       TMainForm(Owner).SaveTabsSettings;
       TMainForm(Owner).SendUpdateNotes;
+
+      Result := True;
     end;
   finally
     frmTabOptions.Free;
   end;
+end;
+
+procedure TSharpENotesForm.AddTabWithText(text: string);
+begin
+  if ShowTabOptions(True, '') then
+    reNotes.Text := text;
 end;
 
 procedure TSharpENotesForm.EditorChange(Sender: TObject);
@@ -356,7 +378,18 @@ begin
       Word('O'): btnImport.OnClick(Sender);
       Word('P'): btnPrint.OnClick(Sender);
       Word('S'): btnExport.OnClick(Sender);
-      Word('T'): ShowTabOptions(True, '');
+      Word('T'):
+      begin
+        if ssShift in Shift then
+          // Ctrl + Shift + T
+          miAddFromSelectedText.Click
+        else if ssAlt in Shift then
+          // Ctrl + Alt + T
+          miAddFromCurrentTab.Click
+        else
+          // Ctrl + T
+          ShowTabOptions(True, '');
+      end;
       Word('U'):
       begin
         // Toggle the button and call its click event.
@@ -927,6 +960,11 @@ begin
   miPaste.Enabled := reNotes.CanPaste;
   miDelete.Enabled := reNotes.SelText <> '';
   miWordWrap.Checked := reNotes.WordWrap;
+  miAddTab.Enabled := True;
+  miDeleteTab.Enabled := FIndex > -1;
+  miEditTab.Enabled := FIndex > -1;
+  miAddFromSelectedText.Enabled := reNotes.SelText <> '';
+  miAddFromCurrentTab.Enabled := FIndex > -1;
 end;
 
 procedure TSharpENotesForm.miUndoClick(Sender: TObject);
@@ -942,6 +980,31 @@ end;
 procedure TSharpENotesForm.miCutClick(Sender: TObject);
 begin
   reNotes.CutToClipboard;
+end;
+
+procedure TSharpENotesForm.miAddTabClick(Sender: TObject);
+begin
+  ShowTabOptions(True, '');
+end;
+
+procedure TSharpENotesForm.miDeleteTabClick(Sender: TObject);
+begin
+  DeleteTab;
+end;
+
+procedure TSharpENotesForm.miEditTabClick(Sender: TObject);
+begin
+  ShowTabOptions(False, TabName(FIndex));
+end;
+
+procedure TSharpENotesForm.miAddFromSelectedTextClick(Sender: TObject);
+begin
+  AddTabWithText(reNotes.SelText);
+end;
+
+procedure TSharpENotesForm.miAddFromCurrentTabClick(Sender: TObject);
+begin
+  AddTabWithText(reNotes.Text);
 end;
 
 procedure TSharpENotesForm.miCopyClick(Sender: TObject);

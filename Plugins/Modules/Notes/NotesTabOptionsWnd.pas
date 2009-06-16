@@ -31,7 +31,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, JvExControls, JvXPCore, JvXPButtons, ImgList,
   PngImageList, JvExForms, JvCustomItemViewer, JvImageListViewer, ComCtrls,
-  JvOwnerDrawViewer, JvXPCheckCtrls;
+  JvOwnerDrawViewer, JvXPCheckCtrls, JclAnsiStrings;
 
 type
   TTabOptionsForm = class(TForm)
@@ -48,6 +48,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure ilvIconDrawItem(Sender: TObject; Index: Integer;
       State: TCustomDrawState; Canvas: TCanvas; ItemRect, TextRect: TRect);
+    procedure FormKeyPress(Sender: TObject; var Key: Char);
   private
     { Private declarations }
     FOriginalTabName: string;
@@ -110,6 +111,15 @@ begin
   if Handled then
     // Handle the keypress by changing the key.
     Key := #0;
+end;
+
+procedure TTabOptionsForm.FormKeyPress(Sender: TObject; var Key: Char);
+begin
+  if Key = AnsiEscape then
+  begin
+    ModalResult := mrCancel;
+    Close;
+  end;
 end;
 
 procedure TTabOptionsForm.FormShow(Sender: TObject);
