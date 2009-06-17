@@ -318,7 +318,7 @@ begin
   for n := SharpNotifyWindows.Count - 1 downto 0 do
   begin
     item := TNotifyItem(SharpNotifyWindows.Items[n]);
-    if (currenttick - item.FStartTime > item.FTimeout) and (item.FActive) then
+    if (currenttick - item.FStartTime > item.FTimeout) and (item.FActive) and (item.FTimeout <> 0) then
     begin
       SharpNotifyWindows.Extract(item);
       id := item.FID;

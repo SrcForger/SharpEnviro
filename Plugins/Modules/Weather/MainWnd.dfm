@@ -15,7 +15,6 @@ object MainForm: TMainForm
   OnDblClick = BackgroundDblClick
   OnDestroy = FormDestroy
   OnMouseEnter = MouseEnter
-  OnMouseLeave = MouseLeave
   OnPaint = FormPaint
   PixelsPerInch = 96
   TextHeight = 13
@@ -52,7 +51,6 @@ object MainForm: TMainForm
   end
   object ClosePopupTimer: TTimer
     Enabled = False
-    Interval = 750
     OnTimer = ClosePopupTimerTimer
     Left = 56
     Top = 32

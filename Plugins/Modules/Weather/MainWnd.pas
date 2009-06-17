@@ -48,7 +48,6 @@ type
     procedure MouseEnter(Sender: TObject);
     procedure PopupTimerTimer(Sender: TObject);
     procedure ClosePopupTimerTimer(Sender: TObject);
-    procedure MouseLeave(Sender: TObject);
   protected
   private
     notifyItem : TNotifyItem;
@@ -207,7 +206,13 @@ end;
 
 procedure TMainForm.MouseEnter(Sender: TObject);
 begin
-  PopupTimer.Enabled := True;
+  // Only enable the timers once while the mouse is over the module
+  // and don't allow more than 1 window to popup at a time.
+  if not PopupTimer.Enabled and not ClosePopupTimer.Enabled then
+  begin
+    PopupTimer.Enabled := True;
+    ClosePopupTimer.Enabled := True;
+  end;
 end;
 
 procedure TMainForm.PopupTimerTimer(Sender: TObject);
@@ -227,26 +232,20 @@ begin
   ShowWeatherNotification;
 end;
 
-procedure TMainForm.MouseLeave(Sender: TObject);
-begin
-  ClosePopupTimer.Enabled := True;
-end;
-
 procedure TMainForm.ClosePopupTimerTimer(Sender: TObject);
 var
   cursorPos : TPoint;
   clientPos : TPoint;
 begin
-  ClosePopupTimer.Enabled := False;
-
   if GetCursorPosSecure(cursorPos) then
     clientPos := ScreenToClient(cursorPos)
   else Exit;
 
   if PtInRect(Rect(0,0,Width,Height), clientPos) then
     Exit;
-    
+
   SharpNotify.CloseNotifyWindow(notifyItem);
+  ClosePopupTimer.Enabled := False;
 end;
 
 procedure TMainForm.ReAlignComponents(Broadcast : boolean = True);
@@ -389,7 +388,8 @@ begin
   textMaxValueWidth := 0;
   // The space between sections.
   spacer := 5;
-  timeout := 10000;
+  // We will close the window manually so disable the timeout
+  timeout := 0;//10000
   iconPath := SharpApi.GetSharpeDirectory + 'Icons\Weather\93x93\' + WeatherParser.wxml.CurrentCondition.IconCode + '.png';
 
   BmpToDisplay := TBitmap32.Create;
@@ -473,13 +473,13 @@ begin
     SkinText.RenderToW(BmpText, textMaxTitleWidth - BmpText.TextWidth(VisibilityTitle), textHeight * 8, VisibilityTitle + formattedValue, mInterface.SkinInterface.SkinManager.Scheme);
 
     // we'll render this after we render the icon and text bitmaps.
-    formattedValue := 'Last updated from ' + CurrentCondition.ObservationStation + ' at ' + CurrentCondition.DateTimeLastUpdate;
+    formattedValue := 'Last updated' + ' at ' + CurrentCondition.DateTimeLastUpdate;
   end;
 
   // Set the width to the sum of both bitmaps and the height to the greater of the two.
   BmpToDisplay.SetSize(
     Max(BmpIcon.Width + spacer + textMaxTitleWidth + textMaxValueWidth, BmpToDisplay.TextWidth(formattedValue)),
-    Max(BmpIcon.Height + textHeight, BmpText.Height + textHeight));
+    Max(BmpIcon.Height + textHeight, BmpText.Height + textHeight) + spacer);
 
   // Draw the icon bitmap onto the bitmap we will eventually display.
   BmpIcon.DrawTo(BmpToDisplay, 0, 0);
@@ -488,7 +488,7 @@ begin
   BmpText.DrawTo(BmpToDisplay, BmpIcon.Width + spacer, 0);
 
   // Render the last updated datetime to the bottom of the bitmap (below the greater heither for the icon or text).
-  SkinText.RenderToW(BmpToDisplay, 0, Max(BmpIcon.Height, BmpText.Height), formattedValue, mInterface.SkinInterface.SkinManager.Scheme);
+  SkinText.RenderToW(BmpToDisplay, 0, Max(BmpIcon.Height, BmpText.Height) + spacer, formattedValue, mInterface.SkinInterface.SkinManager.Scheme);
 
   notifyItem := SharpNotify.CreateNotifyWindowBitmap(
     0,
