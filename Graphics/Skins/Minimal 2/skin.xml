@@ -399,7 +399,7 @@
       <text>
         <draw>1</draw>
         <location>20,ch</location>
-	<dimension>w-1,h</dimension>
+	<dimension>w-20,h</dimension>
         <name>Verdana</name>
         <size>8</size>
         <color>$Text-64</color>
@@ -603,7 +603,7 @@
         <text>
         <draw>1</draw>
         <location>20,ch</location>
-	<dimension>w-1,h</dimension>
+	<dimension>w-18,h</dimension>
         <name>Verdana</name>
         <size>8</size>
         <color>$Text-64</color>
@@ -1342,4 +1342,105 @@
       </skinpart>    
     </background>
   </notify>    
+  <taskpreview>
+    <dimension>5,400</dimension>
+    <location>-1,0</location>
+    <catboffset>22,8</catboffset>
+    <calroffset>8,8</calroffset>
+    <text>
+      <draw>1</draw>
+      <dimension>w-24,0</dimension>
+      <location>cw,5</location>
+      <name>Tahoma</name>
+      <size>8</size>
+      <color>$Text-64</color>
+      <shadow>1</shadow>
+      <shadowcolor>$TextShadow</shadowcolor>
+      <shadowtype>Outline</shadowtype>
+      <shadowalpha>196</shadowalpha>
+    </text>
+    <icon>
+      <draw>1</draw>
+      <size>32,32</size>
+      <location>4,hh-ihh</location>
+    </icon>    
+    <background>
+      <skinpart>
+        <location>2,2</location>
+        <dimension>w-3,h-3</dimension>
+        <image>images/Empty.png</image>
+        <color>$Background</color>
+        <alpha>$MAlpha+33</alpha>
+      </skinpart>
+      <skinpart>
+        <location>2,1</location>
+        <dimension>w-3,1</dimension>
+        <image>images/Empty.png</image>
+        <color>$Border</color>
+        <alpha>$BAlpha</alpha>
+      </skinpart>
+      <skinpart>
+        <location>w-1,2</location>
+        <dimension>1,h-3</dimension>
+        <image>images/Empty.png</image>
+        <color>$Border</color>
+        <alpha>$BAlpha</alpha>
+      </skinpart>
+      <skinpart>
+        <location>2,h-1</location>
+        <dimension>w-3,1</dimension>
+        <image>images/Empty.png</image>
+        <color>$Border</color>
+        <alpha>$BAlpha</alpha>
+      </skinpart>
+      <skinpart>
+        <location>1,2</location>
+        <dimension>1,h-3</dimension>
+        <image>images/Empty.png</image>
+        <color>$Border</color>
+        <alpha>$BAlpha</alpha>
+      </skinpart>    
+    </background>
+    <hover>
+      <text>
+        <color>$Text</color>
+        <shadowalpha>196</shadowalpha>
+      </text>
+      <skinpart>
+        <location>2,2</location>
+        <dimension>w-3,h-3</dimension>
+        <image>images/Empty.png</image>
+        <color>$Background+64</color>
+        <alpha>$MAlpha+33+32</alpha>
+      </skinpart>
+      <skinpart>
+        <location>2,1</location>
+        <dimension>w-3,1</dimension>
+        <image>images/Empty.png</image>
+        <color>$Border</color>
+        <alpha>$BAlpha+32</alpha>
+      </skinpart>
+      <skinpart>
+        <location>w-1,2</location>
+        <dimension>1,h-3</dimension>
+        <image>images/Empty.png</image>
+        <color>$Border</color>
+        <alpha>$BAlpha+32</alpha>
+      </skinpart>
+      <skinpart>
+        <location>2,h-1</location>
+        <dimension>w-3,1</dimension>
+        <image>images/Empty.png</image>
+        <color>$Border</color>
+        <alpha>$BAlpha+32</alpha>
+      </skinpart>
+      <skinpart>
+        <location>1,2</location>
+        <dimension>1,h-3</dimension>
+        <image>images/Empty.png</image>
+        <color>$Border</color>
+        <alpha>$BAlpha+32</alpha>
+      </skinpart>  
+    </hover>
+  </taskpreview>
 </sharpESkin>
