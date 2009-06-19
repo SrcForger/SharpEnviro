@@ -28,8 +28,8 @@ unit MainWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, Menus, Math, GR32, ToolTipApi, ShellApi, CommCtrl,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Contnrs,
+  Dialogs, Menus, Math, GR32, ToolTipApi, ShellApi, CommCtrl, dwmapi,
   JclSimpleXML,
   SharpCenterApi,
   SharpApi,
@@ -46,6 +46,7 @@ uses
   uSharpEMenuItem,
   uTaskManager,
   uTaskItem,
+  uTaskPreviewWnd,
   VWMFunctions,
   MonitorList,
   SharpIconUtils, ImgList, PngImageList, ExtCtrls;
@@ -67,6 +68,7 @@ type
     Delete1: TMenuItem;
     PngImageList1: TPngImageList;
     CheckTimer: TTimer;
+    PreviewCheckTimer: TTimer;
     procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -79,6 +81,7 @@ type
     procedure sb_configClick(Sender: TObject);
     procedure Delete1Click(Sender: TObject);
     procedure CheckTimerTimer(Sender: TObject);
+    procedure PreviewCheckTimerTimer(Sender: TObject);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   private
@@ -87,6 +90,7 @@ type
     sAutoHeight  : integer;
     sMonitorOnly : boolean;
     sVWMOnly     : boolean;
+    sTaskPreview : boolean;
     FButtonSpacing : integer;
     sCountOverlay : boolean;
     FButtonList  : array of TButtonRecord;
@@ -95,13 +99,16 @@ type
     hasmoved     : boolean;
     FLastMenu    : TSharpEMenuWnd;
     FLastButton  : TButtonRecord;
-    FTM : TTaskManager;
+    FTM          : TTaskManager;
+    FPreviewWnds : TObjectList;
+    FPreviewButton : TSharpETaskItem;
     function CheckWindow(wnd : hwnd) : boolean;
     procedure OnNewTask(pItem : TTaskItem; Index : integer);
     procedure OnRemoveTask(pItem : TTaskItem; Index : integer);
     procedure OnUpdateTask(pItem : TTaskItem; Index : integer);
     procedure OnFlaskTask(pItem : TTaskItem; Index : integer);
     procedure OnActivateTask(pItem : TTaskItem; Index : integer);
+    procedure OnPreviewClick(Sender : TObject);
     procedure ClearButtons;
     procedure UpdateButtonIcon(Btn : TButtonRecord);
     function GetButtonItem(pButton : TSharpETaskItem) : TButtonRecord;
@@ -313,7 +320,7 @@ begin
           end;
         end;
     end;
-    FButtonList[n].btn.Down := (count > 0);
+    FButtonList[n].btn.Special := (count > 0);
     oldcount := FButtonList[n].btn.Tag;
     FButtonList[n].btn.Tag := count;
     if count = 0 then
@@ -361,6 +368,7 @@ begin
   with FButtonList[Index] do
   begin
     btn := TSharpETaskItem.Create(self);
+    btn.UseSpecial := True;
     btn.State := sState; 
     btn.PopUpMenu := ButtonPopup;
     btn.Visible := False;
@@ -387,7 +395,7 @@ begin
 
     btn.Caption := pCaption;
 
-    if not IconStringToIcon(pIcon,pTarget,btn.Glyph32) then
+    if not IconStringToIcon(pIcon,pTarget,btn.Glyph32,32) then
        btn.Glyph32.SetSize(0,0)
   end;
 end;
@@ -399,7 +407,7 @@ begin
   for n := 0 to High(FButtonList) do
       with FButtonList[n] do
       begin
-        if not IconStringToIcon(Icon,Target,btn.Glyph32) then
+        if not IconStringToIcon(Icon,Target,btn.Glyph32,32) then
           btn.Glyph32.SetSize(0,0);
         btn.Repaint;
       end;
@@ -522,6 +530,7 @@ begin
   sCountOverlay := True;
   sVWMOnly     := False;
   sMonitorOnly := False;
+  sTaskPreview := True;
 
   XML := TJclSimpleXML.Create;
   try
@@ -537,6 +546,7 @@ begin
       sCountOverlay := BoolValue('CountOverlay',True);
       sVWMOnly := BoolValue('VWMOnly',sVWMOnly);
       sMonitorOnly := BoolValue('MonitorOnly',sMonitorOnly);
+      sTaskPreview := BoolValue('TaskPreview',sTaskPreview);
       if ItemNamed['Apps'] <> nil then
       with ItemNamed['Apps'].Items do
            for n := 0 to Count - 1 do
@@ -545,6 +555,9 @@ begin
                          Item[n].Items.Value('Caption','C:\'));
     end;
   XML.Free;
+
+  if not DwmCompositionEnabled then
+    sTaskPreview := False;  
 end;
 
 procedure TMainForm.mnMouseUp(pItem: TSharpEMenuItem; Button: TMouseButton;
@@ -584,10 +597,10 @@ begin
     if FLastMenu = nil then
       if FLastButton.btn <> nil then
       begin
-        FLastButton.btn.Down := False;
+        FLastButton.btn.Special := False;
         FLastButton.btn.Tag := 0;
       end;
-    UpdateButtonIcon(FLastButton);      
+    UpdateButtonIcon(FLastButton);
   end;
 end;
 
@@ -603,17 +616,46 @@ end;
 
 procedure TMainForm.OnActivateTask(pItem: TTaskItem; Index: integer);
 var
-  n : integer;
+  n,i : integer;
+  isItem : boolean;
+  TaskItem : TTaskItem;
 begin
   if pItem = nil then exit;
 
   for n := 0 to High(FButtonList) do
-    if FButtonList[n].wnd = pItem.Handle then
+  begin
+    IsItem := False;
+    if FButtonList[n].btn.UseSpecial then
+      FButtonList[n].btn.Down := False;
+      
+    if FButtonList[n].btn.Tag > 1 then
+    begin
+      // go through associated window list
+      for i := 0 to FTM.ItemCount - 1 do
+      begin
+        TaskItem := TTaskItem(FTM.GetItemByIndex(i));
+        if TaskItem <> nil then
+          if (CompareText(TaskItem.FileName,FButtonList[n].exename) = 0)
+            and (pItem.Handle = TaskItem.Handle) then
+          begin
+            isItem := True;
+            break;
+          end;
+      end;
+    end else isItem := (FButtonList[n].wnd = pItem.Handle);
+
+    if IsItem then    
+    begin
+      if FButtonList[n].btn.UseSpecial then
+        FButtonList[n].btn.Down := True;
+      FButtonList[n].btn.Repaint;
       if FButtonList[n].btn.Flashing then
       begin
         FButtonList[n].btn.Flashing := False;
         FButtonList[n].btn.Repaint;
       end;
+    end;
+  end;
 end;
 
 procedure TMainForm.OnFlaskTask(pItem: TTaskItem; Index: integer);
@@ -638,7 +680,7 @@ begin
       begin
         FButtonList[n].btn.Tag := FButtonList[n].btn.Tag + 1;
         if FButtonList[n].btn.Tag >= 1 then
-          FButtonList[n].btn.Down := True;
+          FButtonList[n].btn.Special := True;
         if FButtonList[n].btn.Tag > 1 then
           UpdateButtonIcon(FButtonList[n]);
 
@@ -653,10 +695,16 @@ begin
   end;
 end;
 
+procedure TMainForm.OnPreviewClick(Sender: TObject);
+begin
+  FPreviewWnds.Clear;
+end;
+
 procedure TMainForm.OnRemoveTask(pItem: TTaskItem; Index: integer);
 var
   n : integer;
   s : String;
+  PreviewItem : TTaskPreviewWnd;
 begin
   for n := 0 to High(FButtonList) do
   begin
@@ -668,7 +716,8 @@ begin
         if FButtonList[n].btn.Tag <= 0 then
         begin
           FButtonList[n].btn.Tag := 0;
-          FButtonList[n].btn.Down := False;
+          FButtonList[n].btn.Down := False;          
+          FButtonList[n].btn.Special := False;
         end else UpdateButtonIcon(FButtonList[n]);
 
         if FButtonList[n].btn.Tag > 1 then
@@ -679,6 +728,12 @@ begin
         end else FButtonList[n].btn.Caption := pItem.Caption;
       end;
     end;
+  end;
+  for n := 0 to FPreviewWnds.Count - 1 do
+  begin
+    PreviewItem := TTaskPreviewWnd(FPreviewWnds.Items[n]);
+    if PreviewItem.Wnd = pItem.Handle then
+      PreviewItem.HideWindow(True);
   end;
 end;
 
@@ -704,6 +759,64 @@ begin
   end;
 end;
 
+function PointInRect(P : TPoint; Rect : TRect) : boolean;
+begin
+  if (P.X>=Rect.Left) and (P.X<=Rect.Right)
+     and (P.Y>=Rect.Top) and (P.Y<=Rect.Bottom) then PointInRect:=True
+     else PointInRect:=False;
+end;
+
+procedure TMainForm.PreviewCheckTimerTimer(Sender: TObject);
+var
+  CPos,cursorPos : TPoint;
+  n : integer;
+  R : TRect;
+  item : TTaskPreviewWnd;
+  valid : boolean;
+  KS: TKeyboardState;
+  SS: TShiftState;  
+begin
+  if GetCursorPosSecure(cursorPos) then
+    CPos := ScreenToClient(cursorPos)
+  else exit;
+
+  GetKeyboardState(KS);
+  SS := KeyboardStateToShiftState(KS);
+  if (GetAsyncKeyState(VK_SHIFT) <> 0) then
+    exit;
+
+  if not PointInRect(CPos,Rect(-5,-5,Width+5,Height+5)) then
+  begin
+    if FPreviewWnds.Count > 0 then
+    begin
+      valid := False;
+      for n := 0 to FPreviewWnds.Count - 1 do
+      begin
+        item := TTaskPreviewWnd(FPreviewWnds.Items[n]);       
+        GetWindowRect(item.Wnd,R);
+        if PointInRect(cursorPos,Rect(R.Left-5,R.Top-5,R.Right+5,R.Bottom+5))
+          and IsWindowVisible(item.Wnd) then
+        begin
+          valid := True;
+          break;
+        end;         
+      end;
+      if (not valid) or (FPreviewWnds.Count = 1) then
+      begin
+        if FPreviewWnds.Count = 1 then
+          TTaskPreviewWnd(FPreviewWnds.Items[0]).HideWindow(True);
+        PreviewCheckTimer.Enabled := False;
+        FPreviewWnds.Clear;
+        FPreviewButton := nil;
+      end;
+    end else
+    begin
+      PreviewCheckTimer.Enabled := False;
+      FPreviewButton := nil;
+    end;
+  end;
+end;
+
 procedure TMainForm.UpdateSize;
 begin
   UpdateButtons;
@@ -713,9 +826,15 @@ procedure TMainForm.ReAlignComponents(BroadCast : boolean = True);
 var
   newWidth : integer;
   n : integer;
+  hasspecial : boolean;
 begin
   self.Caption := 'ApplicationBar';
 
+  case sState of
+    tisCompact: hasspecial := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Compact.HasSpecial;
+    tisMini   : hasspecial := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Mini.HasSpecial;
+    else hasspecial := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Full.HasSpecial;
+  end;  
   case sState of
     tisCompact: sAutoHeight := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Compact.Dimension.Y;
     tisMini   : sAutoHeight := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Mini.Dimension.Y;
@@ -736,11 +855,14 @@ begin
   else newWidth := FButtonSpacing + High(FButtonList)*FButtonSpacing + length(FButtonList)*sAutoWidth + FButtonSpacing;
   
   for n := 0 to High(FButtonList) do
+  begin
     if FButtonList[n].btn.Height <> sAutoHeight then
     begin
       FButtonList[n].btn.Height := sAutoHeight;
       FButtonList[n].btn.UpdateSkin;
     end;
+    FButtonList[n].btn.UseSpecial := hasspecial;
+  end;
 
   mInterface.MinSize := NewWidth;
   mInterface.MaxSize := NewWidth;
@@ -820,18 +942,30 @@ procedure TMainForm.btnMouseMove(Sender: TObject; Shift: TShiftState; X,
 var
   cButton : TSharpETaskItem;
   cButtonIndex : integer;
-  p : TPoint;
+  p,cursorPos : TPoint;
   n : integer;
   cPos : integer;
   temp : TButtonRecord;
   MoveButtonIndex : integer;
+  Animate : boolean;
+  popupdown : boolean;
+  size : real;
+  xpos,ypos : real;
+  pos : TPoint;
+  R : TRect;
+  TaskItem : TTaskItem;
+  wndlist : TObjectList;
+  perline : integer;
+  count : integer;
+  item : TTaskPreviewWnd;
 begin
-  if MoveButton = nil then
-    exit;
-
   cButton := nil;
   cButtonIndex := -1;
-  p := ScreenToClient(Mouse.CursorPos);
+
+  if GetCursorPosSecure(cursorPos) then
+    p := ScreenToClient(cursorPos)
+  else exit;
+
   for n := 0 to High(FButtonList) do
     if (p.x > FButtonList[n].btn.Left)
       and (p.x < FButtonList[n].btn.Left + FButtonList[n].btn.Width) then
@@ -843,6 +977,108 @@ begin
 
   if cButton = nil then
     exit;
+
+  if MoveButton = nil then
+  begin
+    if (not sTaskPreview) then
+      exit;
+    if FPreviewButton = cButton then
+      exit;
+      
+    if FPreviewWnds.Count > 0 then
+    begin
+      FPreviewWnds.Clear;
+      Animate := False;
+    end else Animate := True;
+
+    // app not running, exit
+    if (cButton.Tag <= 0) then
+    begin
+      FPreviewButton := nil;
+      exit;
+    end;
+
+    FPreviewButton := cButton;
+
+    popupdown := (ClientToScreen(Point(0,0)).y < Monitor.Top + Monitor.Height div 2);
+
+    perline := mInterface.SkinInterface.SkinManager.Skin.TaskPreview.Dimension.X;
+    size := Monitor.Width / perline;
+    GetWindowRect(mInterface.BarInterface.BarWnd,R);
+
+    // go through associated window list
+    wndlist := TObjectList.Create(False);
+    for n := 0 to FTM.ItemCount - 1 do
+    begin
+      TaskItem := TTaskItem(FTM.GetItemByIndex(n));
+      if TaskItem <> nil then
+        if CompareText(TaskItem.FileName,FButtonList[cButtonIndex].exename) = 0 then
+          WndList.Add(TaskItem);
+    end;
+
+    if wndlist.count > 0 then
+    begin
+      if wndlist.count > perline then
+        count := perline
+      else count := wndlist.count;
+      if count > 1 then
+        Animate := False;      
+
+      pos := ClientToScreen(Point(cButton.Left + cButton.Width div 2,0));
+      xpos := pos.X - (count * size) / 2;
+      if xpos < Monitor.Left then
+        xpos := Monitor.Left;
+      if popupdown then
+        ypos := R.Bottom
+      else ypos := R.Top;
+
+      // first line
+      xpos := xpos - size;
+      for n := 0 to count - 1 do
+      begin
+        TaskItem := TTaskItem(wndlist.Items[n]);
+        xpos := xpos + size;
+        item := TTaskPreviewWnd.Create(TaskItem.handle,
+                                       popupdown,
+                                       round(xpos),
+                                       round(ypos),
+                                       round(xpos) - round(xpos - size),
+                                       mInterface.SkinInterface.SkinManager,
+                                       TaskItem.Caption,
+                                       Animate,
+                                       (wndlist.Count > 1));
+        item.OnPreviewClick := OnPreviewClick;                                                
+        FPreviewWnds.Add(item);
+      end;
+      if count < wndlist.Count then
+        for n := count to wndlist.Count - 1 do
+        begin
+          TaskItem := TTaskItem(wndlist.Items[n]);
+          GetWindowRect(TTaskPreviewWnd(FPreviewWnds.Items[FPreviewWnds.Count - perline]).Wnd,R);
+          xpos := R.Left;
+          if popupdown then
+            ypos := R.Bottom
+          else ypos := R.Top;
+
+          item := TTaskPreviewWnd.Create(TaskItem.handle,
+                                         popupdown,
+                                         round(xpos),
+                                         round(ypos),
+                                         round(xpos) - round(xpos - size),
+                                         mInterface.SkinInterface.SkinManager,
+                                         TaskItem.Caption,
+                                         Animate,
+                                         (wndlist.Count > 1));
+          item.OnPreviewClick := OnPreviewClick;
+          FPreviewWnds.Add(item);
+        end;          
+
+      PreviewCheckTimer.Enabled := True;
+    end;
+    wndlist.Free;
+
+    exit;
+  end;
 
   if cButton <> MoveButton then
   begin
@@ -878,6 +1114,7 @@ procedure TMainForm.btnMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
   BtnItem : TButtonRecord;
+  wascleared : boolean;
 begin
   MoveButton := nil;
   BtnItem := GetButtonItem(TSharpETaskItem(Sender));
@@ -885,18 +1122,34 @@ begin
   begin
     if (Button = mbLeft) and (not hasmoved) then
     begin
-      if BtnItem.Btn.Down then
+      if (BtnItem.Btn.Special) or (BtnItem.btn.Down and not BtnItem.btn.UseSpecial) then
       begin
-        if BtnItem.Btn.Tag > 1 then
+        if (BtnItem.Btn.Tag > 1) and (FPreviewWnds.Count = 0) and (not sTaskPreview) then
           BuildAndShowMenu(BtnItem)
         else begin
+          if (FPreviewWnds.Count > 0) then
+          begin
+            FPreviewWnds.Clear;
+            wascleared := True;
+          end else wascleared := False;
+          if (BtnItem.Btn.Tag > 1) then begin
+            if not wascleared then
+              FPreviewButton := nil;
+              BtnItem.btn.OnMouseMove(Sender,Shift,X,Y);
+            exit;
+          end;
+
           if IsIconic(BtnItem.wnd) or (FTM.LastActiveTask <> BtnItem.wnd) then
             SwitchToThisWindow(BtnItem.wnd,True)
           else PostMessage(BtnItem.wnd,WM_SYSCOMMAND,SC_MINIMIZE,0);
         end;
       end else SharpApi.SharpExecute(BtnItem.target);
     end else if (Button = mbMiddle) and (not hasmoved) then
+    begin
       SharpApi.SharpExecute(BtnItem.target);
+      if (FPreviewWnds.Count > 0) then
+        FPreviewWnds.Clear;
+    end;
     if hasmoved then
       SaveSettings;
   end;
@@ -972,6 +1225,8 @@ procedure TMainForm.FormCreate(Sender: TObject);
 begin
   CurrentVWM := SharpApi.GetCurrentVWM;
 
+  FPreviewWnds := TObjectList.Create(True);
+
   FTM := TTaskManager.Create;
   FTM.OnNewTask := OnNewTask;
   FTM.OnRemoveTask := OnRemoveTask;
@@ -986,8 +1241,13 @@ end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
+  FPreviewWnds.Free;
+  FPreviewWnds := nil;
+  FPreviewButton := nil;
+  
   if FHintWnd <> 0 then
      DestroyWindow(FHintWnd);
+     
   FTM.Enabled := False;
   FTM.Free;
 end;
@@ -1008,20 +1268,13 @@ begin
       result := FButtonList[n];
       exit;
     end;
-    
+
   result.btn := nil;
 end;
 
 procedure TMainForm.CheckTimerTimer(Sender: TObject);
 begin
   CheckList;
-end;
-
-function PointInRect(P : TPoint; Rect : TRect) : boolean;
-begin
-  if (P.X>=Rect.Left) and (P.X<=Rect.Right)
-     and (P.Y>=Rect.Top) and (P.Y<=Rect.Bottom) then PointInRect:=True
-     else PointInRect:=False;
 end;
 
 function TMainForm.CheckWindow(wnd: hwnd): boolean;
