@@ -169,6 +169,7 @@ procedure TMainForm.ReAlignComponents;
 var
   newWidth : integer;
   c : TColor32;
+  heightmod : integer;
 begin
   self.Caption := inttostr(sCPU);
 
@@ -183,6 +184,9 @@ begin
   if newWidth <> Width then
     mInterface.BarInterface.UpdateModuleSize;
 
+  heightmod := mInterface.SkinInterface.SkinManager.Skin.Bar.NCYOffset.X +
+               mInterface.SkinInterface.SkinManager.Skin.Bar.NCYOffset.Y; 
+
   sFGColor     := mInterface.SkinInterface.SkinManager.ParseColor(sFGColorStr);
   sBGColor     := mInterface.SkinInterface.SkinManager.ParseColor(sBGColorStr);
   sBorderColor := mInterface.SkinInterface.SkinManager.ParseColor(sBorderColorStr);
@@ -192,12 +196,12 @@ begin
            cpugraphcont.Visible := True;
            cpugraphcont.Left := 2;
            cpugraphcont.Width := Width - 4;
-           cpugraphcont.Top   := 2;
-           cpugraphcont.Height := Height - 4;
+           cpugraphcont.Top   := 2 + mInterface.SkinInterface.SkinManager.Skin.Bar.NCYOffset.X;
+           cpugraphcont.Height := Height - 4 - heightmod;
            if (cpugraphcont.Bitmap.Width <> Max(Width - 4,4)) or
-              (cpugraphcont.Bitmap.Height <> Height -4) then
+              (cpugraphcont.Bitmap.Height <> Height - 4) then
            begin
-             cpugraphcont.Bitmap.SetSize(Max(Width - 4,4),Height -4);
+             cpugraphcont.Bitmap.SetSize(Max(Width - 4,4),Height - 4 - heightmod);
              cpugraph.SetSize(cpugraphcont.Bitmap.Width-2,cpugraphcont.Bitmap.Height-2);
              cpugraph.Clear(color32(0,0,0,0));
              mInterface.Background.DrawTo(cpugraphcont.Bitmap,-2,-2);
