@@ -158,7 +158,8 @@ procedure TMainForm.UpdateVWMSettings;
 begin
   VWMCount := GetVWMCount;
   VWMIndex := GetCurrentVWM;
-  VWMHeight := Height - 2;
+  VWMHeight := Height - 2 - mInterface.SkinInterface.SkinManager.Skin.Bar.NCYOffset.X
+               - mInterface.SkinInterface.SkinManager.Skin.Bar.NCYOffset.Y;
 //  VWMWidth := round(VWMHeight / MonList.PrimaryMonitor.Height * MonList.PrimaryMonitor.Width);
   VWMWidth := round(VWMHeight / MonList.DesktopHeight * MonList.DesktopWidth);
 end;
@@ -362,7 +363,7 @@ var
 begin
   tmp := TBitmap32.Create;
   tmp.assign(mInterface.Background);
-  VWM.DrawTo(tmp);
+  VWM.DrawTo(tmp,0,mInterface.SkinInterface.SkinManager.Skin.Bar.NCYOffset.X);
   tmp.DrawTo(Canvas.Handle,0,0);
   tmp.Free;
 end;
@@ -402,13 +403,10 @@ procedure TMainForm.FormCreate(Sender: TObject);
 begin
   DoubleBuffered := True;
 
-  // Create all clases
   VWM := TBitmap32.Create;
   VWM.SetSize(0,0);
   VWM.DrawMode := dmBlend;
   VWM.CombineMode := cmMerge;
-
-  // Create all visual components
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);

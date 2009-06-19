@@ -175,7 +175,7 @@ begin
     TMainForm(Form).DrawVWMToForm;
   end;
 
-  if [part] <= [suScheme,suSkin,suTheme] then
+  if [part] <= [suScheme,suSkin,suTheme,suSkinFileChanged] then
     TMainForm(Form).UpdateColors;
         
   if [part] <= [suTheme,suSkinFileChanged] then
