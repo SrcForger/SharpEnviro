@@ -1097,7 +1097,7 @@ begin
     if ItemNamed['underline'] <> nil then
       FStyleUnderline := BoolValue('underline',false);
     if ItemNamed['dimension'] <> nil then
-      SetDimension(Value('dimension'),'w,h');
+      SetDimension(Value('dimension','w,h'));
     
     if ItemNamed['width'] <> nil then
       FWidth := Value('width','w');
@@ -1156,8 +1156,8 @@ var
 begin
   cw := CompRect.Right - CompRect.Left;
   ch := CompRect.Bottom - CompRect.Top;
-  result.x := ParseCoordinate(FWidth,cw,ch,cw,ch,0,0);
-  result.y := ParseCoordinate(FHeight,cw,ch,cw,ch,0,0);
+  result.x := ParseCoordinate(FWidth,0,0,cw,ch,0,0);
+  result.y := ParseCoordinate(FHeight,0,0,cw,ch,0,0);
 end;
 
 function TSkinText.GetDrawText: boolean;
