@@ -78,6 +78,11 @@ type
     property Visible;
     property OnClick;
     property OnDblClick;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnMouseEnter;
+    property OnMouseLeave;    
     property Caption: string read FCaption write SetCaption;
     property AutoPos: TSharpEBarAutoPos read FAutoPos write SetAutoPos;
     property LabelStyle: TSharpELabelStyle read FLabelStyle write SetLabelStyle;
