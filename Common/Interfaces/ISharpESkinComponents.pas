@@ -243,6 +243,25 @@ type
     property WidthMod : integer read GetWidthMod;
   end;
 
+  ISharpETaskPreviewSkin = interface
+    ['{29054221-2F65-4F5C-B801-335EFF69B7AD}']
+    function GetBackground : ISharpESkinPartEx; stdcall;
+    function GetHover      : ISharpESkinPartEx; stdcall;
+
+    function GetCATBOffset : TPoint; stdcall;
+    function GetCALROffset : TPoint; stdcall;
+    function GetLocation   : TPoint; stdcall;
+    function GetDimension  : TPoint; stdcall;
+
+    property Background : ISharpESkinPartEx read GetBackground;
+    property Hover      : ISharpESkinPartEx read GetHover;
+
+    property CATBOffset : TPoint read GetCATBOffset;
+    property CALROffset : TPoint read GetCALROffset;
+    property Location   : TPoint read GetLocation;
+    property Dimension  : TPoint read GetDimension;
+  end;  
+
   ISharpENotifySkin = interface
     ['{D558CFED-A6E5-4B45-A34F-489AAD681B08}']
     function GetBackground : ISharpESkinPartEx; stdcall;
@@ -314,6 +333,9 @@ type
     function GetPAYOffset : TPoint; stdcall;
     function GetFSMod     : TPoint; stdcall;
     function GetSBMod     : TPoint; stdcall;
+    function GetNCYOffset  : TPoint; stdcall;
+    function GetNCTYOffset : TPoint; stdcall;
+    function GetNCBYOffset : TPoint; stdcall;
 
     function GetGlassEffect     : Boolean; stdcall;
     function GetEnableVFlip     : Boolean; stdcall;
@@ -347,6 +369,9 @@ type
     property PAYOffset : TPoint read GetPAYOffset;
     property FSMod     : TPoint read GetFSMod;
     property SBMod     : TPoint read GetSBMod;
+    property NCYOffset  : TPoint read GetNCYOffset;
+    property NCTYOffset : TPoint read GetNCTYOffset;
+    property NCBYOffset : TPoint read GetNCBYOffset;    
 
     property GlassEffect     : Boolean read GetGlassEffect;
     property EnableVFlip     : Boolean read GetEnableVFlip;
@@ -366,7 +391,10 @@ type
     function GetDownHover      : ISharpESkinPartEx; stdcall;
     function GetHighlight      : ISharpESkinPartEx; stdcall;
     function GetHighlightHover : ISharpESkinPartEx; stdcall;
+    function GetSpecial        : ISharpESkinPartEx; stdcall;
+    function GetSpecialHover   : ISharpESkinPartEx; stdcall;       
 
+    function GetHasSpecial : boolean; stdcall;
     function GetLocation : TPoint; stdcall;
     function GetSpacing : integer; stdcall;
     function GetDimension : TPoint; stdcall;
@@ -386,7 +414,10 @@ type
     property DownHover      : ISharpESkinPartEx read GetDownHover;
     property Highlight      : ISharpESkinPartEx read GetHighlight;
     property HighlightHover : ISharpESkinPartEx read GetHighlightHover;
+    property Special        : ISharpESkinPartEx read GetSpecial;
+    property SpecialHover   : ISharpESkinPartEx read GetSpecialHover;
 
+    property HasSpecial : boolean read GetHasSpecial;
     property Location : TPoint read GetLocation;
     property Spacing : integer read GetSpacing;
     property Dimension : TPoint read GetDimension;
@@ -487,6 +518,7 @@ type
     function GetTaskItemSkin     : ISharpETaskItemSkin; stdcall;
     function GetTaskSwitchSkin   : ISharpETaskSwitchSkin; stdcall;
     function GetMiniThrobberSkin : ISharpEMiniThrobberSkin; stdcall;
+    function GetTaskPreviewSkin  : ISharpETaskPreviewSkin; stdcall;
 
     function GetSmallText  : ISharpESkinText; stdcall;
     function GetMediumText : ISharpESkinText; stdcall;
@@ -506,6 +538,7 @@ type
     property TaskItem     : ISharpETaskItemSkin read GetTaskItemSkin;
     property TaskSwitch   : ISharpETaskSwitchSkin read GetTaskSwitchSkin;
     property MiniThrobber : ISharpEMiniThrobberSkin read GetMiniThrobberSkin;
+    property TaskPreview  : ISharpETaskPreviewSkin read GetTaskPreviewSkin;
 
     property SmallText  : ISharpESkinText read GetSmallText;
     property MediumText : ISharpESkinText read GetMediumText;
