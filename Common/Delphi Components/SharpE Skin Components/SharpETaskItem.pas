@@ -42,6 +42,7 @@ uses
   SharpEDefault,
   ISharpESkinComponents,
   SharpTypes,
+  SharpApi,
   math,
   Types,
   Buttons;
@@ -59,6 +60,8 @@ type
   TSharpETaskItem = class(TCustomSharpEGraphicControl)
   private
     //FCancel: Boolean;
+    FSpecial : boolean;       
+    FUseSpecial : boolean;
     FTimerCallback : TSharpETaskItemAnimCallback;
     FTimerCallbackInterface : ISharpESkinAnimTimerCallback;
     FFlashing : boolean;
@@ -97,6 +100,7 @@ type
     procedure SetState(Value: TSharpETaskItemStates);
     procedure SetFlashing(Value : Boolean);
     procedure SetFlashState(Value : Boolean);
+    procedure SetSpecial(Value : Boolean);
   protected
     procedure DrawDefaultSkin(bmp: TBitmap32; Scheme: ISharpEScheme); override;
     procedure DrawManagedSkin(bmp: TBitmap32; Scheme: ISharpEScheme); override;
@@ -150,6 +154,8 @@ type
     property Handle: Cardinal read FHandle write FHandle;
     property Overlay: TBitmap32 read FOverlay;
     property OverlayPos: TPoint read FOverlayPos write FOverlayPos;
+    property UseSpecial: boolean read FUseSpecial write FUseSpecial;
+    property Special: boolean read FSpecial write SetSpecial;
    { Published declarations }
   end;
 
@@ -171,6 +177,8 @@ begin
   FOverlay.DrawMode := dmBlend;
   FOverlay.CombineMode := cmMerge;
 
+  FSpecial := False;
+  FUseSpecial := False;
   FOverlayPos := Point(0,0);
   FDestroying := False;
   FHandle := 0;
@@ -294,6 +302,25 @@ begin
   end;
 end;
 
+procedure TSharpETaskItem.SetSpecial(Value: Boolean);
+begin
+  if FUseSpecial then
+  begin
+    if Value <> FSpecial then
+    begin
+      FSpecial := Value;
+      UpdateSkin;
+    end;
+  end else
+  begin
+    if Value <> FDown then
+    begin
+      FDown := Value;
+      UpdateSkin;
+    end;
+  end;
+end;
+
 procedure TSharpETaskItem.SetState(Value: TSharpETaskItemStates);
 begin
   if Value <> FState then
@@ -305,7 +332,7 @@ end;
 
 procedure TSharpETaskItem.SetDown(Value: Boolean);
 begin
-  if Value <> FDown then
+  if (Value <> FDown) and ((not FUseSpecial) or FSpecial) then
   begin
     FDown := Value;
     UpdateSkin;
@@ -609,10 +636,23 @@ begin
             DrawPart := CurrentState.HighlightHover
            else DrawPart := CurrentState.Normal;
         end else
+        if FUseSpecial and CurrentState.HasSpecial then
+        begin
+          if FSpecial then
+            DrawPart := CurrentState.NormalHover
+          else DrawPart := CurrentState.SpecialHover;
+        end else
         if (not HasNormalHoverScript) then
              DrawPart := CurrentState.NormalHover
-           else DrawPart := CurrentState.Normal;
-      end else DrawPart := CurrentState.Normal;
+            else DrawPart := CurrentState.Normal;
+      end else begin
+            if FUseSpecial and CurrentState.HasSpecial then
+            begin
+              if FSpecial then
+                DrawPart := CurrentState.Normal
+              else DrawPart := CurrentState.Special;
+            end else DrawPart := CurrentState.Normal;
+           end;
     end;
 
     SkinIcon := DrawPart.Icon;

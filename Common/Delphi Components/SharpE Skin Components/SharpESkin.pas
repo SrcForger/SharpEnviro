@@ -58,6 +58,7 @@ type
   TSharpEMenuItemSkin = class;
   TSharpETaskSwitchSkin = class;
   TSharpENotifySkin = class;
+  TSharpETaskPreviewSkin = class;
   TSkinEvent = procedure of object;
 
   TSkinName = string;
@@ -96,6 +97,7 @@ type
     FTaskItemSkin     : TSharpETaskItemSkin;
     FTaskSwitchSkin   : TSharpETaskSwitchSkin;
     FMiniThrobberSkin : TSharpEMiniThrobberSkin;
+    FTaskPreviewSkin  : TSharpETaskPreviewSkin;
 
     FButtonInterface       : ISharpEButtonSkin;
     FEditInterface         : ISharpEEditSkin;
@@ -107,6 +109,7 @@ type
     FTaskItemInterface     : ISharpETaskItemSkin;
     FTaskSwitchInterface   : ISharpETaskSwitchSkin;
     FMiniThrobberInterface : ISharpEMiniThrobberSkin;
+    FTaskPreviewInterface  : ISharpETaskPreviewSkin;
 
     FSkinHeader: TSharpeSkinHeader;
     FXml: TJclSimpleXml;
@@ -129,6 +132,7 @@ type
     function GetTaskItemSkin     : ISharpETaskItemSkin; stdcall;
     function GetTaskSwitchSkin   : ISharpETaskSwitchSkin; stdcall;
     function GetMiniThrobberSkin : ISharpEMiniThrobberSkin; stdcall;
+    function GetTaskPreviewSkin  : ISharpETaskPreviewSkin; stdcall;
 
     function GetSmallText  : ISharpESkinText; stdcall;
     function GetMediumText : ISharpESkinText; stdcall;
@@ -140,7 +144,7 @@ type
   protected
   public
     constructor Create; overload;
-    constructor Create(Skins: TSharpESkinItems = ALL_SHARPE_SKINS); reintroduce; overload;
+    constructor Create(Skins: TSharpESkinItems); reintroduce; overload;
     constructor CreateBmp(BmpList : TSkinBitmapList; Skins: TSharpESkinItems = ALL_SHARPE_SKINS); overload;
     destructor Destroy; override;
     procedure Clear;
@@ -162,6 +166,7 @@ type
     property TaskItem     : ISharpETaskItemSkin read GetTaskItemSkin;
     property TaskSwitch   : ISharpETaskSwitchSkin read GetTaskSwitchSkin;
     property MiniThrobber : ISharpEMiniThrobberSkin read GetMiniThrobberSkin;
+    property TaskPreview  : ISharpETaskPreviewSkin read GetTaskPreviewSkin;
 
     property SmallText  : ISharpESkinText read GetSmallText;
     property MediumText : ISharpESkinText read GetMediumText;
@@ -219,6 +224,8 @@ type
     FDownHover      : TSkinPartEx;
     FHighlight      : TSkinPartEx;
     FHighlightHover : TSkinPartEx;
+    FSpecial        : TSkinPartEx;
+    FSpecialHover   : TSkinPartEx;
 
     FNormalInterface         : ISharpESkinPartEx;
     FNormalHoverInterface    : ISharpESkinPartEx;
@@ -226,7 +233,10 @@ type
     FDownHoverInterface      : ISharpESkinPartEx;
     FHighlightInterface      : ISharpESkinPartEx;
     FHighlightHoverInterface : ISharpESkinPartEx;
+    FSpecialInterface        : ISharpESkinPartEx;
+    FSpecialHoverInterface   : ISharpESkinPartEx;
 
+    FHasSpecial     : boolean;
     FSpacing        : integer;
     FSkinDim        : TSkinDim;
     FOnNormalMouseEnterScript    : String;
@@ -244,7 +254,10 @@ type
     function GetDownHover      : ISharpESkinPartEx; stdcall;
     function GetHighlight      : ISharpESkinPartEx; stdcall;
     function GetHighlightHover : ISharpESkinPartEx; stdcall;
+    function GetSpecial        : ISharpESkinPartEx; stdcall;
+    function GetSpecialHover   : ISharpESkinPartEx; stdcall;
 
+    function GetHasSpecial : boolean; stdcall;
     function GetLocation : TPoint; stdcall;    
     function GetSpacing : integer; stdcall;
     function GetDimension : TPoint; stdcall;
@@ -274,7 +287,10 @@ type
     property DownHover      : ISharpESkinPartEx read GetDownHover;
     property Highlight      : ISharpESkinPartEx read GetHighlight;
     property HighlightHover : ISharpESkinPartEx read GetHighlightHover;
+    property Special        : ISharpESkinPartEx read GetSpecial;
+    property SpecialHover   : ISharpESkinPartEx read GetSpecialHover;
 
+    property HasSpecial : boolean read GetHasSpecial;
     property Location : TPoint read GetLocation;
     property Spacing : integer read GetSpacing;
     property Dimension : TPoint read GetDimension;
@@ -316,7 +332,45 @@ type
     property Full : ISharpETaskItemStateSkin read GetFull;
     property Compact : ISharpETaskItemStateSkin read GetCompact;
     property Mini : ISharpETaskItemStateSkin read GetMini;
- end;
+  end;
+
+  TSharpETaskPreviewSkin = class(TInterfacedObject, ISharpETaskPreviewSkin)
+  private
+    FSkinDim    : TSkinDim;
+    FCATBOffset : TSkinPoint;
+    FCALROffset : TSkinPoint;
+
+    FBackground : TSkinPartEx;
+    FHover      : TSkinPartEx;
+
+    FBackgroundInterface : ISharpESkinPartEx;
+    FHoverInterface      : ISharpESkinPartEx;
+    
+    function GetBackground : ISharpESkinPartEx; stdcall;
+    function GetHover      : ISharpESkinPartEx; stdcall;
+
+    function GetCATBOffset : TPoint; stdcall;
+    function GetCALROffset : TPoint; stdcall;
+    function GetLocation   : TPoint; stdcall;
+    function GetDimension  : TPoint; stdcall;    
+  public
+    constructor Create(BmpList : TSkinBitmapList);
+    destructor Destroy; override;
+    procedure Clear;
+    procedure SaveToStream(Stream: TStream);
+    procedure LoadFromStream(Stream: TStream);
+    procedure LoadFromXML(xml: TJclSimpleXmlElem; path: string);
+    procedure UpdateDynamicProperties(cs: ISharpEScheme);
+
+    property SkinDim : TSkinDim read FSkinDim;
+
+    property Background : ISharpESkinPartEx read GetBackground;
+    property Hover      : ISharpESkinPartEx read GetHover;
+    property CATBOffset : TPoint read GetCATBOffset;
+    property CALROffset : TPoint read GetCALROffset;
+    property Location   : TPoint read GetLocation;
+    property Dimension  : TPoint read GetDimension;
+  end;
 
   TSharpENotifySkin = class(TInterfacedObject, ISharpENotifySkin)
   private
@@ -612,12 +666,15 @@ type
     FSpecialHideForm: boolean;
     FDefaultSkin: boolean;
     FGlassEffect: boolean;
-    FPAXoffset: TSkinPoint;
-    FPAYoffset: TSkinPoint;    
+    FPAXoffset : TSkinPoint;
+    FPAYoffset : TSkinPoint;
     FPTXoffset : TSkinPoint;
     FPTYoffset : TSkinPoint;
     FPBXoffset : TSkinPoint;
     FPBYoffset : TSkinPoint;
+    FNCYOffset  : TSkinPoint;
+    FNCTYOffset : TSkinPoint;
+    FNCBYOffset : TSkinPoint;
     function GetBar             : ISharpESkinPart; stdcall;
     function GetBarBorder       : ISharpESkinPart; stdcall;
     function GetBarBottom       : ISharpESkinPart; stdcall;
@@ -626,14 +683,17 @@ type
     function GetThDown          : ISharpESkinPart; stdcall;
     function GetThHover         : ISharpESkinPart; stdcall;
 
-    function GetPTXOffset : TPoint; stdcall;
-    function GetPTYOffset : TPoint; stdcall;
-    function GetPBXOffset : TPoint; stdcall;
-    function GetPBYOffset : TPoint; stdcall;
-    function GetPAXOffset : TPoint; stdcall;
-    function GetPAYOffset : TPoint; stdcall;
-    function GetFSMod     : TPoint; stdcall;
-    function GetSBMod     : TPoint; stdcall;
+    function GetPTXOffset  : TPoint; stdcall;
+    function GetPTYOffset  : TPoint; stdcall;
+    function GetPBXOffset  : TPoint; stdcall;
+    function GetPBYOffset  : TPoint; stdcall;
+    function GetPAXOffset  : TPoint; stdcall;
+    function GetPAYOffset  : TPoint; stdcall;
+    function GetFSMod      : TPoint; stdcall;
+    function GetSBMod      : TPoint; stdcall;
+    function GetNCYOffset  : TPoint; stdcall;
+    function GetNCTYOffset : TPoint; stdcall;
+    function GetNCBYOffset : TPoint; stdcall;
 
     function GetGlassEffect     : Boolean; stdcall;
     function GetEnableVFlip     : Boolean; stdcall;
@@ -668,14 +728,17 @@ type
     property ThDown          : ISharpESkinPart read GetThDown;
     property ThHover         : ISharpESkinPart read GetThHover;
 
-    property PTXOffset : TPoint read GetPTXOffset;
-    property PTYOffset : TPoint read GetPTYOffset;
-    property PBXOffset : TPoint read GetPBXOffset;
-    property PBYOffset : TPoint read GetPBYOffset;
-    property PAXOffset : TPoint read GetPAXOffset;
-    property PAYOffset : TPoint read GetPAYOffset;
+    property PTXOffset  : TPoint read GetPTXOffset;
+    property PTYOffset  : TPoint read GetPTYOffset;
+    property PBXOffset  : TPoint read GetPBXOffset;
+    property PBYOffset  : TPoint read GetPBYOffset;
+    property PAXOffset  : TPoint read GetPAXOffset;
+    property PAYOffset  : TPoint read GetPAYOffset;
     property FSMod : TPoint read GetFSMod;
-    property SBMod : TPoint read GetSBMod; 
+    property SBMod : TPoint read GetSBMod;
+    property NCYOffset  : TPoint read GetNCYOffset;
+    property NCTYOffset : TPoint read GetNCTYOffset;
+    property NCBYOffset : TPoint read GetNCBYOffset;
 
     property GlassEffect     : Boolean read GetGlassEffect;
     property EnableVFlip     : Boolean read GetEnableVFlip;
@@ -808,7 +871,7 @@ begin
   Create(ALL_SHARPE_SKINS);
 end;
 
-constructor TSharpESkin.Create(Skins: TSharpESkinItems = ALL_SHARPE_SKINS);
+constructor TSharpESkin.Create(Skins: TSharpESkinItems);
 begin
   inherited Create;
 
@@ -881,6 +944,11 @@ begin
   begin
     FNotifySkin := TSharpENotifySkin.Create(FBitmapList);
     FNotifyInterface := FNotifySkin;
+  end;
+  if scTaskPreview in FLoadSkins then
+  begin
+    FTaskPreviewSkin := TSharpETaskPreviewSkin.Create(FBitmapList);
+    FTaskPreviewInterface := FTaskPreviewSkin;
   end;
 
   FXml := TJclSimpleXml.Create;
@@ -955,7 +1023,11 @@ begin
     FNotifyInterface := nil;
     FNotifySkin := nil;
   end;
-
+  if FTaskPreviewSkin <> nil then
+  begin
+    FTaskPreviewInterface := nil;
+    FTaskPreviewSkin := nil;
+  end;
 
   FBitmapList.Free;
   inherited;
@@ -973,6 +1045,8 @@ begin
   if FMenuItemSkin <> nil then FMenuItemSkin.UpdateDynamicProperties(Scheme);
   if FTaskSwitchSkin <> nil then FTaskSwitchSkin.UpdateDynamicProperties(Scheme);
   if FNotifySkin <> nil then FNotifySkin.UpdateDynamicProperties(Scheme);
+  if FTaskPreviewSkin <> nil then FTaskPreviewSkin.UpdateDynamicProperties(Scheme);
+
 
   FSkinText.UpdateDynamicProperties(Scheme);
   FSmallText.UpdateDynamicProperties(Scheme);
@@ -1053,18 +1127,24 @@ begin
     RemoveSkinPartBitmaps(FTaskItemSkin.FFull.FDownHover,List);
     RemoveSkinPartBitmaps(FTaskItemSkin.FFull.FHighlight,List);
     RemoveSkinPartBitmaps(FTaskItemSkin.FFull.FHighlightHover,List);
+    RemoveSkinPartBitmaps(FTaskItemSkin.FFull.FSpecial,List);
+    RemoveSkinPartBitmaps(FTaskItemSkin.FFull.FSpecialHover,List);
     RemoveSkinPartBitmaps(FTaskItemSkin.FCompact.FNormal,List);
     RemoveSkinPartBitmaps(FTaskItemSkin.FCompact.FNormalHover,List);
     RemoveSkinPartBitmaps(FTaskItemSkin.FCompact.FDown,List);
     RemoveSkinPartBitmaps(FTaskItemSkin.FCompact.FDownHover,List);
     RemoveSkinPartBitmaps(FTaskItemSkin.FCompact.FHighlight,List);
     RemoveSkinPartBitmaps(FTaskItemSkin.FCompact.FHighlightHover,List);
+    RemoveSkinPartBitmaps(FTaskItemSkin.FCompact.FSpecial,List);
+    RemoveSkinPartBitmaps(FTaskItemSkin.FCompact.FSpecialHover,List);
     RemoveSkinPartBitmaps(FTaskItemSkin.FMini.FNormal,List);
     RemoveSkinPartBitmaps(FTaskItemSkin.FMini.FNormalHover,List);
     RemoveSkinPartBitmaps(FTaskItemSkin.FMini.FDown,List);
     RemoveSkinPartBitmaps(FTaskItemSkin.FMini.FDownHover,List);
     RemoveSkinPartBitmaps(FTaskItemSkin.FMini.FHighlight,List);
     RemoveSkinPartBitmaps(FTaskItemSkin.FMini.FHighlightHover,List);
+    RemoveSkinPartBitmaps(FTaskItemSkin.FMini.FSpecial,List);
+    RemoveSkinPartBitmaps(FTaskItemSkin.FMini.FSpecialHover,List);
   end;
   if FMiniThrobberSkin <> nil then
   begin
@@ -1095,6 +1175,11 @@ begin
   if FNotifySkin <> nil then
   begin
     RemoveskinpartBitmaps(FNotifySkin.FBackground,List);
+  end;
+  if FTaskPreviewSkin <> nil then
+  begin
+    RemoveSkinpartBitmaps(FTaskPreviewSkin.FBackground,List);
+    RemoveSkinpartBitmaps(FTaskPreviewSkin.FHover,List);
   end;
 
   for n := 0 to List.Count - 1 do
@@ -1248,6 +1333,18 @@ begin
       Stream.CopyFrom(tempStream, Size);
     end;
 
+    //Write TaskPreview Skin
+    if FTaskPreviewSkin <> nil then
+    begin
+      tempStream.clear;
+      StringSaveToStream('TaskPreview', Stream);
+      FTaskPreviewSkin.SaveToStream(tempStream);
+      size := tempStream.Size;
+      tempStream.Position := 0;
+      Stream.WriteBuffer(size, sizeof(size));
+      Stream.CopyFrom(tempStream, Size);
+    end;
+
     //Write Header
     {StringSaveToStream('Header', Stream);
     FSkinHeader.SaveToStream(tempStream);
@@ -1313,6 +1410,8 @@ begin
         FTaskSwitchSkin.LoadFromStream(Stream)
       else if (temp = 'Notify') and (FNotifySkin <> nil) then
         FNotifySkin.LoadFromStream(Stream)
+      else if (temp = 'TaskPreview') and (FTaskPreviewSkin <> nil) then
+        FTaskPreviewSkin.LoadFromStream(Stream)
       else Stream.Position := Stream.Position + size;
 
       temp := StringLoadFromStream(Stream);
@@ -1339,7 +1438,8 @@ begin
   if FMenuItemSkin <> nil then FMenuItemSkin.Clear;
   if FTaskItemSkin <> nil then FTaskItemSkin.Clear;
   if FTaskSwitchSkin <> nil then FTaskSwitchSkin.Clear;
-  if FNotifySkin <> nil then FNotifySkin.Clear;  
+  if FNotifySkin <> nil then FNotifySkin.Clear;
+  if FTaskPreviewSkin <> nil then FTaskPreviewSkin.Clear;
 
   FSmallText.Clear;
   FMediumText.Clear;
@@ -1441,6 +1541,8 @@ begin
     FTaskSwitchSkin.LoadFromXML(FXML.Root.Items.ItemNamed['taskswitch'],path);
   if (FXml.Root.Items.ItemNamed['notify'] <> nil) and (FNotifySkin <> nil) then
     FNotifySkin.LoadFromXML(FXML.Root.Items.ItemNamed['notify'],path);
+  if (FXml.Root.Items.ItemNamed['taskpreview'] <> nil) and (FTaskPreviewSkin <> nil) then
+    FTaskPreviewSkin.LoadFromXML(FXML.Root.Items.ItemNamed['taskpreview'],path);
 
   if FBarSkin <> nil then
      FBarSkin.CheckValid;
@@ -2689,6 +2791,12 @@ begin
   FPBYoffset := TSkinPoint.Create;
   FPAXoffset := FPTXoffset;
   FPAYoffset := FPTYoffset;
+
+  FNCTYOffset := TSkinPoint.Create;
+  FNCBYOffset := TSkinPoint.Create;
+  FNCYOffset  := FNCTYOffset;
+
+
   FEnableVFlip := False;
   FSpecialHideForm := False;
   FGlassEffect := False;
@@ -2714,6 +2822,8 @@ begin
   FPTYoffset.Free;
   FPBXoffset.Free;
   FPBYoffset.Free;
+  FNCTYOffset.Free;
+  FNCBYOffset.Free;
 end;
 
 procedure TSharpEBarSkin.UpdateDynamicProperties(cs: ISharpEScheme);
@@ -2747,6 +2857,9 @@ begin
   FPBXoffset.SaveToStream(Stream);
   FPBYoffset.SaveToStream(Stream);
 
+  FNCTYOffset.SaveToStream(Stream);
+  FNCBYOffset.SaveToStream(Stream);
+
   if FEnableVFlip then StringSavetoStream('1', Stream)
      else StringSavetoStream('0', Stream);
 
@@ -2761,12 +2874,14 @@ procedure TSharpEBarSkin.SetBarBottom;
 begin
   FPAXoffset := FPBXoffset;
   FPAYoffset := FPBYoffset;
+  FNCYOffset := FNCBYOffset;
 end;
 
 procedure TSharpEBarSkin.SetBarTop;
 begin
   FPAXoffset := FPTXoffset;
   FPAYoffset := FPTYoffset;
+  FNCYOffset := FNCTYOffset;
 end;
 
 procedure TSharpEBarSkin.LoadFromStream(Stream: TStream);
@@ -2795,7 +2910,10 @@ begin
   FPTYoffset.LoadFromStream(Stream);
   FPBXoffset.LoadFromStream(Stream);
   FPBYoffset.LoadFromStream(Stream);
-  
+
+  FNCTYOffset.LoadFromStream(Stream);
+  FNCBYOffset.LoadFromStream(Stream);
+
   if StringLoadFromStream(Stream) = '1' then FEnableVFlip := True
      else FEnableVFlip := False;
   if StringLoadFromStream(Stream) = '1' then FSpecialHideForm := True
@@ -2858,6 +2976,8 @@ begin
   FPTYoffset.Clear;
   FPBXoffset.Clear;
   FPBYoffset.Clear;
+  FNCTYOffset.Clear;
+  FNCBYOffset.Clear;
   FSkinDim.SetDimension('w', 'h');
   FThDim.SetDimension('0', '0');
   FThDim.SetLocation('0', '0');
@@ -2930,6 +3050,10 @@ begin
         FPBYoffset.SetPoint(Value('payoffsetsbottom', '0,0'));
       if ItemNamed['paxoffsetsbottom'] <> nil then
         FPBXoffset.SetPoint(Value('paxoffsetsbottom', '0,0'));
+      if ItemNamed['ncyoffsets'] <> nil then
+        FNCTYOffset.SetPoint(Value('ncyoffsets','0,0'));
+      if ItemNamed['ncyoffsetsbottom'] <> nil then
+        FNCBYOffset.SetPoint(Value('ncyoffsetsbottom','0,0'));
       if ItemNamed['enablevflip'] <> nil then
         FEnablevflip := BoolValue('enablevflip', False);
       if ItemNamed['specialhideform'] <> nil then
@@ -2989,6 +3113,21 @@ end;
 function TSharpEBarSkin.GetGlassEffect: Boolean;
 begin
   result := FGlassEffect;
+end;
+
+function TSharpEBarSkin.GetNCBYOffset: TPoint;
+begin
+  result := Point(FNCBYOffset.XAsInt,FNCBYOffset.YAsInt);
+end;
+
+function TSharpEBarSkin.GetNCTYOffset: TPoint;
+begin
+  result := Point(FNCTYOffset.XAsInt,FNCTYOffset.YAsInt);
+end;
+
+function TSharpEBarSkin.GetNCYOffset: TPoint;
+begin
+  result := Point(FNCYOffset.XAsInt,FNCYOffset.YAsInt);
 end;
 
 function TSharpEBarSkin.GetPAXOffset: TPoint;
@@ -3220,6 +3359,11 @@ begin
   result := FTaskItemInterface;
 end;
 
+function TSharpESkin.GetTaskPreviewSkin: ISharpETaskPreviewSkin;
+begin
+  result := FTaskPreviewInterface;
+end;
+
 function TSharpESkin.GetTaskSwitchSkin: ISharpETaskSwitchSkin;
 begin
   result := FTaskSwitchInterface;
@@ -3377,10 +3521,140 @@ begin
   FBackground.UpdateDynamicProperties(cs);
 end;
 
+{ TSharpETaskPreviewSkin }
+
+procedure TSharpETaskPreviewSkin.Clear;
+begin
+  FSkinDim.SetLocation('0','0');
+  FSkinDim.SetDimension('256','64');
+  FCATBOffset.SetPoint('0','0');
+  FCALROffset.SetPoint('0','0');
+  FBackground.Clear;
+  FHover.Clear;
+end;
+
+constructor TSharpETaskPreviewSkin.Create(BmpList: TSkinBitmapList);
+begin
+  Inherited Create;
+
+  FSkinDim := TSkinDim.Create;
+  FCATBOffset := TSkinPoint.Create;
+  FCALROffset := TSkinPoint.Create;
+
+  FBackground := TSkinPartEx.Create(BmpList);
+  FHover      := TSkinPartEx.Create(BmpList);
+
+  FBackgroundInterface := FBackground;
+  FHoverInterface      := FHover;
+
+  Clear;
+end;
+
+destructor TSharpETaskPreviewSkin.Destroy;
+begin
+  FSkinDim.Free;
+  FCATBOffset.Free;
+  FCALROffset.Free;
+  FBackgroundInterface := nil;
+  FHoverInterface := nil;
+
+  inherited Destroy;
+end;
+
+function TSharpETaskPreviewSkin.GetBackground: ISharpESkinPartEx;
+begin
+  result := FBackgroundInterface;
+end;
+
+function TSharpETaskPreviewSkin.GetCALROffset: TPoint;
+begin
+  result := Point(FCALROffset.XAsInt,FCALROffset.YAsInt);
+end;
+
+function TSharpETaskPreviewSkin.GetCATBOffset: TPoint;
+begin
+  result := Point(FCATBOffset.XAsInt,FCATBOffset.YAsInt);
+end;
+
+function TSharpETaskPreviewSkin.GetDimension: TPoint;
+begin
+  result := Point(FSkinDim.WidthAsInt,FSkinDim.HeightAsInt);
+end;
+
+function TSharpETaskPreviewSkin.GetHover: ISharpESkinPartEx;
+begin
+  result := FHoverInterface;
+end;
+
+function TSharpETaskPreviewSkin.GetLocation: TPoint;
+begin
+  result := Point(FSkinDim.XAsInt,FSkinDim.YAsInt);
+end;
+
+procedure TSharpETaskPreviewSkin.LoadFromStream(Stream: TStream);
+begin
+  FSkinDim.LoadFromStream(Stream);
+  FCATBOffset.LoadFromStream(Stream);
+  FCALROffset.LoadFromStream(Stream);
+  FBackground.LoadFromStream(Stream);
+  FHover.LoadFromStream(Stream);
+end;
+
+procedure TSharpETaskPreviewSkin.LoadFromXML(xml: TJclSimpleXmlElem; path: string);
+var
+  SkinText: TSkinText;
+  SkinIcon : TSkinIcon;
+begin
+  SkinIcon := TSkinIcon.Create(True);
+  SkinIcon.DrawIcon := False;
+  SkinText := TSkinText.Create(True);
+  SkinText.SetLocation('cw', 'ch');
+  try
+    with xml.Items do
+    begin
+      if ItemNamed['icon'] <> nil then
+        SkinIcon.LoadFromXML(ItemNamed['icon']);
+      if ItemNamed['text'] <> nil then
+        SkinText.LoadFromXML(ItemNamed['text']);
+      if ItemNamed['dimension'] <> nil then
+        FSkinDim.SetDimension(Value('dimension', 'w,h'));
+      if ItemNamed['location'] <> nil then
+        FSkinDim.SetLocation(Value('location','0,0'));
+      if ItemNamed['catboffset'] <> nil then
+        FCATBOffset.SetPoint(Value('catboffset', '0,0'));
+      if ItemNamed['calroffset'] <> nil then
+        FCALROffset.SetPoint(Value('calroffset','0,0'));
+      if ItemNamed['background'] <> nil then
+        FBackground.LoadFromXML(ItemNamed['background'], path, SkinText, SkinIcon);
+      if ItemNamed['hover'] <> nil then
+        FHover.LoadFromXML(ItemNamed['hover'], path, SkinText, SkinIcon);
+    end;
+  finally
+    SkinText.SelfInterface := nil;
+    SkinIcon.SelfInterface := nil;
+  end;
+end;
+
+procedure TSharpETaskPreviewSkin.SaveToStream(Stream: TStream);
+begin
+  FSkinDim.SaveToStream(Stream);
+  FCATBOffset.SaveToStream(Stream);
+  FCALROffset.SaveToStream(Stream);
+  FBackground.SaveToStream(Stream);
+  FHover.SaveToStream(Stream);
+end;
+
+procedure TSharpETaskPreviewSkin.UpdateDynamicProperties(cs: ISharpEScheme);
+begin
+  FBackground.UpdateDynamicProperties(cs);
+  FHover.UpdateDynamicProperties(cs);
+end;
+
 { TSharpETaskItemState }
 
 procedure TSharpETaskItemState.Clear;
 begin
+  FHasSpecial := False;
   FSkinDim.Clear;
   FSkinDim.SetLocation('0','0');
   FSkinDim.SetDimension('w', 'h');
@@ -3390,6 +3664,7 @@ begin
   FDownHover.Clear;
   FHighlight.Clear;
   FHighlightHover.Clear;
+  FSpecial.Clear;
   FSpacing := 2;
   FOnNormalMouseEnterScript    := '';
   FOnNormalMouseLeaveScript    := '';
@@ -3411,6 +3686,8 @@ begin
   FDownHover      := TSkinPartEx.Create(BmpList);
   FHighlight      := TSkinPartEx.Create(BmpList);
   FHighlightHover := TSkinPartEx.Create(BmpList);
+  FSpecial        := TSkinPartEx.Create(BmpList);
+  FSpecialHover   := TSkinPartEx.Create(BmpList);
 
   FNormalInterface         := FNormal;
   FNormalHoverInterface    := FNormalHover;
@@ -3418,6 +3695,10 @@ begin
   FDownHoverInterface      := FDownHover;
   FHighlightInterface      := FHighlight;
   FHighlightHoverInterface := FHighlightHover;
+  FSpecialInterface        := FSpecial;
+  FSpecialHoverInterface   := FSpecialHover;
+
+  Clear;  
 end;
 
 destructor TSharpETaskItemState.Destroy;
@@ -3430,6 +3711,8 @@ begin
   FDownHoverInterface      := nil;
   FHighlightInterface      := nil;
   FHighlightHoverInterface := nil;
+  FSpecialInterface        := nil;
+  FSpecialHoverInterface   := nil;
 
   inherited;
 end;
@@ -3447,6 +3730,11 @@ end;
 function TSharpETaskItemState.GetDownHover: ISharpESkinPartEx;
 begin
   result := FDownHoverInterface;
+end;
+
+function TSharpETaskItemState.GetHasSpecial: boolean;
+begin
+  result := FHasSpecial;
 end;
 
 function TSharpETaskItemState.GetHighlight: ISharpESkinPartEx;
@@ -3519,6 +3807,16 @@ begin
   result := FSpacing;
 end;
 
+function TSharpETaskItemState.GetSpecial: ISharpESkinPartEx;
+begin
+  result := FSpecialInterface;
+end;
+
+function TSharpETaskItemState.GetSpecialHover: ISharpESkinPartEx;
+begin
+  result := FSpecialHoverInterface;
+end;
+
 procedure TSharpETaskItemState.LoadFromStream(Stream: TStream);
 begin
   FSkinDim.LoadFromStream(Stream);
@@ -3528,7 +3826,9 @@ begin
   FDownHover.LoadFromStream(Stream);
   FHighlight.LoadFromStream(Stream);
   FHighlightHover.LoadFromStream(Stream);
-  
+  FSpecial.LoadFromStream(Stream);
+  FSpecialHover.LoadFromStream(Stream);
+
   FSpacing := StrToInt(StringLoadFromStream(Stream));
 
   FOnNormalMouseEnterScript    := StringLoadFromStream(Stream);
@@ -3539,6 +3839,9 @@ begin
   FOnHighlightMouseLeaveScript := StringLoadFromStream(Stream);
   FOnHighlightStepStartScript  := StringLoadFromStream(Stream);
   FOnHighlightStepEndScript    := StringLoadFromStream(Stream);
+
+  if StringLoadFromStream(Stream) = '1' then FHasSpecial := True
+     else FHasSpecial := False;  
 end;
 
 procedure TSharpETaskItemState.LoadFromXML(xml: TJclSimpleXmlElem; path: string);
@@ -3559,7 +3862,7 @@ begin
       if ItemNamed['icon'] <> nil then
          SkinIcon.LoadFromXML(ItemNamed['icon']);
       if ItemNamed['normal'] <> nil then
-         FNormal.LoadFromXML(ItemNamed['normal'],path,SkinText,SkinIcon);
+        FNormal.LoadFromXML(ItemNamed['normal'],path,SkinText,SkinIcon);
       if ItemNamed['normalhover'] <> nil then
          FNormalHover.LoadFromXML(ItemNamed['normalhover'],path,SkinText,SkinIcon);
       if ItemNamed['down'] <> nil then
@@ -3570,6 +3873,13 @@ begin
          FHighlight.LoadFromXML(ItemNamed['highlight'],path,SkinText,SkinIcon);
       if ItemNamed['highlighthover'] <> nil then
          FHighlightHover.LoadFromXML(ItemNamed['highlighthover'],path,SkinText,SkinIcon);
+      if ItemNamed['special'] <> nil then
+      begin
+        FHasSpecial := True;
+        FSpecial.LoadFromXML(ItemNamed['special'],path,SkinText,SkinIcon);
+      end;
+      if ItemNamed['specialhover'] <> nil then
+         FSpecialHover.LoadFromXML(ItemNamed['specialhover'],path,SkinText,SkinIcon);
       if ItemNamed['dimension'] <> nil then
          FSkinDim.SetDimension(Value('dimension', 'w,h'));
       if ItemNamed['location'] <> nil then
@@ -3610,6 +3920,8 @@ begin
   FDownHover.SaveToStream(Stream);
   FHighlight.SaveToStream(Stream);
   FHighlightHover.SaveToStream(Stream);
+  FSpecial.SaveToStream(Stream);
+  FSpecialHover.SaveToStream(Stream);
 
   StringSaveToStream(inttostr(FSpacing),Stream);
 
@@ -3620,7 +3932,10 @@ begin
   StringSaveToStream(FOnHighlightMouseEnterScript,Stream);
   StringSaveToStream(FOnHighlightMouseLeaveScript,Stream);
   StringSaveToStream(FOnHighlightStepStartScript,Stream);
-  StringSaveToStream(FOnHighlightStepEndScript,Stream);  
+  StringSaveToStream(FOnHighlightStepEndScript,Stream);
+
+  if FHasSpecial then StringSavetoStream('1', Stream)
+     else StringSavetoStream('0', Stream);
 end;
 
 procedure TSharpETaskItemState.UpdateDynamicProperties(cs: ISharpEScheme);
@@ -3631,6 +3946,8 @@ begin
   FDownHover.UpdateDynamicProperties(cs);
   FHighlight.UpdateDynamicProperties(cs);
   FHighlightHover.UpdateDynamicProperties(cs);
+  FSpecial.UpdateDynamicProperties(cs);
+  FSpecialHover.UpdateDynamicProperties(cs);   
 end;
 
 end.
