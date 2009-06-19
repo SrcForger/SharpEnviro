@@ -139,4 +139,11 @@ object MainForm: TMainForm
     Left = 240
     Top = 56
   end
+  object PreviewCheckTimer: TTimer
+    Enabled = False
+    Interval = 100
+    OnTimer = PreviewCheckTimerTimer
+    Left = 272
+    Top = 56
+  end
 end

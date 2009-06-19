@@ -30,11 +30,11 @@ interface
 uses
   Types, Windows, Messages, SysUtils, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls, JclSimpleXML, SharpApi, Menus,
-  Math, Contnrs, SharpETaskItem, MonitorList,
+  Math, Contnrs, SharpETaskItem, MonitorList, uVistaFuncs, dwmapi,
   SharpEBaseControls, SharpECustomSkinSettings, uTaskManager, uTaskItem,
   DateUtils, GR32, GR32_PNG, SharpIconUtils, SharpEButton, JvComponentBase,
   JvDragDrop, VWMFunctions,Commctrl,TaskFilterList,SWCmdList, SharpTypes,
-  uISharpBarModule, uSystemFuncs;
+  uISharpBarModule, uSystemFuncs, uTaskPreviewWnd;
 
 
 type
@@ -55,6 +55,7 @@ type
     DDHandler: TJvDragDrop;
     DropTarget: TJvDropTarget;
     Timer1: TTimer;
+    PreviewCheckTimer: TTimer;
     procedure DropTargetDragOver(Sender: TJvDropTarget;
       var Effect: TJvDropEffect);
     procedure FormShow(Sender: TObject);
@@ -64,6 +65,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
+    procedure PreviewCheckTimerTimer(Sender: TObject);
   protected
   private
     FMoveToVWMIcon : TBitmap;
@@ -83,6 +85,7 @@ type
     sIFilter,sEFilter : Boolean;
     sIGlobalFilters : array of String;
     sIFilters,sEFilters,sFilters : TFilterItemList;
+    sTaskPreview : boolean;
     FLocked : boolean;
     FSpecialButtonWidth : integer;
     FDminA,FDmaxA : TBitmap32; // default min/max all images
@@ -93,6 +96,8 @@ type
     FMoveItem : TSharpETaskItem;
     FHasMoved : boolean;
     FRefreshOnNextMouseMove : boolean;
+    FPreviewWnd : TTaskPreviewWnd;
+    FPreviewWndHandle : hwnd;
     procedure WMNotify(var msg: TWMNotify); message WM_NOTIFY;
     procedure WMCommand(var msg: TMessage); message WM_COMMAND;
     procedure WMShellHook(var msg : TMessage); message WM_SHARPSHELLMESSAGE;
@@ -656,6 +661,11 @@ var
   n : integer;
   item : TSharpETaskItem;
   item1,item2 : TTaskItem;
+  pos : TPoint;
+  size : integer;
+  popupdown : boolean;
+  R : TRect;
+  Animate : boolean;
 begin
   if (FMoveItem = nil) then
   begin
@@ -665,12 +675,63 @@ begin
       TSharpETaskItem(IList[IList.Count - 1]).UpdateSkin;
       TSharpETaskItem(IList[IList.Count - 1]).Repaint;
     end;
+
+    if not sTaskPreview then
+      exit;
+
+    if GetCursorPosSecure(cursorPos) then
+      CPos := ScreenToClient(cursorPos)
+    else exit;  
+
+    // find the item which over which the cursor is
+    for n := 0 to IList.Count - 1 do
+    begin
+      item := TSharpETaskItem(IList.Items[n]);
+      if (CPos.X > item.Left) and (CPos.X < item.left + item.Width) then
+      begin
+        Animate := True;
+        if FPreviewWnd <> nil then
+        begin
+          if FPreviewWnd.TaskWnd <> item.Handle then
+          begin
+            FPreviewWnd.Free;
+            FPreviewWnd := nil;
+            Animate := False;
+          end else exit;
+        end;
+
+        // FPreviewWndHandle <> means that the window has been closed by a click on the task item
+        // only display again when the item changed
+        if FPreviewWndHandle = item.Handle then
+          exit;          
+        FPreviewWndHandle := 0;
+        
+        popupdown := (ClientToScreen(Point(0,0)).y < Monitor.Top + Monitor.Height div 2);
+
+        size := round(Monitor.Width / mInterface.SkinInterface.SkinManager.Skin.TaskPreview.Dimension.X);
+        GetWindowRect(mInterface.BarInterface.BarWnd,R);
+        pos := ClientToScreen(Point(item.Left + item.Width div 2 - size div 2,0));
+        if popupdown then
+          pos.y := R.Bottom
+        else pos.y := R.Top;
+        FPreviewWnd := TTaskPreviewWnd.Create(item.handle, 
+                                              popupdown,
+                                              pos.x,
+                                              pos.y,
+                                              size,
+                                              mInterface.SkinInterface.SkinManager,
+                                              item.Caption,
+                                              Animate,
+                                              False);
+        PreviewCheckTimer.Enabled := True;
+      end;
+    end;
     exit;
   end;
 
   if GetCursorPosSecure(cursorPos) then
     CPos := ScreenToClient(cursorPos)
-  else exit;
+  else exit;  
 
   for n := 0 to IList.Count - 1 do
   begin
@@ -710,6 +771,27 @@ begin
       PostThreadMessage(GetWindowThreadProcessID(TSharpETaskItem(Sender).Handle, nil), WM_QUIT, 0, 0);
     end;
   end;
+end;
+
+procedure TMainForm.PreviewCheckTimerTimer(Sender: TObject);
+var
+  CPos,cursorPos : TPoint;
+begin
+  if GetCursorPosSecure(cursorPos) then
+    CPos := ScreenToClient(cursorPos)
+  else exit;  
+
+  if not PointInRect(CPos,Rect(-10,-10,Width+10,Height+10)) then
+  begin
+    PreviewCheckTimer.Enabled := False;
+    if FPreviewWnd <> nil then
+    begin
+      FPreviewWnd.HideWindow(True); 
+      FPreviewWnd.Free;
+      FPreviewWnd := nil;
+    end;
+    FPreviewWndHandle := 0;    
+  end;  
 end;
 
 procedure TMainForm.LoadFilterSettingsFromXML;
@@ -760,6 +842,7 @@ begin
   sIFilter   := True;
   sMiddleClose := True;
   sShowAppBarWindows := False;
+  sTaskPreview := True;
 
   LoadFilterSettingsFromXML;
 
@@ -784,6 +867,7 @@ begin
       sDebug   := BoolValue('Debug',False);
       sMiddleClose := BoolValue('MiddleClose',True);
       sShowAppBarWindows := BoolValue('AppBarWindow',False);
+      sTaskPreview := BoolValue('TaskPreview',True);
       if ItemNamed['IFilters'] <> nil then
       begin
         SList.Clear;
@@ -819,6 +903,9 @@ begin
     end;
   XML.Free;
   Slist.Free;
+
+  if not DwmCompositionEnabled then
+    sTaskPreview := False;
   
   if sEFilters.Count = 0 then sEFilter := False;
   if sIFilters.Count = 0 then sIFilter := False;
@@ -885,8 +972,9 @@ begin
   AlignSpecialButtons;
   NewWidth := Max(FSpecialButtonWidth + IList.Count * sMaxWidth + (IList.Count - 1) * sSpacing,1);
 
-  ToolTipApi.EnableToolTip(FTipWnd);
-//  ToolTipApi.DisableToolTip(FTipWnd);
+  if not sTaskPreview then
+    ToolTipApi.EnableToolTip(FTipWnd)
+  else ToolTipApi.DisableToolTip(FTipWnd);
 
   if sState = tisMini then mInterface.MinSize := Max(FSpecialButtonWidth + IList.Count * sMaxWidth + (IList.Count - 1) * sSpacing,1)
      else mInterface.MinSize := Max(FSpecialButtonWidth + IList.Count * 16 + (IList.Count - 1) * sSpacing,1);
@@ -1354,6 +1442,13 @@ begin
 
   if pItem <> nil then
   begin
+    FPreviewWndHandle := pItem.Handle;
+    if FPreviewWnd <> nil then
+    begin
+      FPreviewWnd.HideWindow(True);
+      FPreviewWnd.Free;
+      FPreviewWnd := nil;
+    end;
     pItem.UpdateVisibleState;
     if (not pItem.Visible) or (TM.LastActiveTask <> TSharpETaskItem(Sender).Handle) then
     begin

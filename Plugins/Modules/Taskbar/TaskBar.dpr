@@ -55,7 +55,8 @@ uses
   SWCmdList in '..\..\..\Common\Units\TaskFilterList\SWCmdList.pas',
   TaskFilterList in '..\..\..\Common\Units\TaskFilterList\TaskFilterList.pas',
   uInterfacedSharpBarModuleBase in '..\..\..\Components\SharpBar\uInterfacedSharpBarModuleBase.pas',
-  GR32Utils in '..\..\..\Common\Units\GR32Utils\GR32Utils.pas';
+  GR32Utils in '..\..\..\Common\Units\GR32Utils\GR32Utils.pas',
+  uTaskPreviewWnd in 'uTaskPreviewWnd.pas';
 
 type
   TInterfacedSharpBarModule = class(TInterfacedSharpBarModuleBase)
