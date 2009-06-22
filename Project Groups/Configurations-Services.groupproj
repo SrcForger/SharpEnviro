@@ -1,0 +1,104 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{5c13eea3-9012-440a-906c-a24b370b7649}</ProjectGuid>
+  </PropertyGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Projects Include="..\Plugins\Configurations\Services\AliasList\AliasList.dproj" />
+    <Projects Include="..\Plugins\Configurations\Services\DeskArea\DeskArea.dproj" />
+    <Projects Include="..\Plugins\Configurations\Services\HotkeyList\HotkeyList.dproj" />
+    <Projects Include="..\Plugins\Configurations\Services\MultimediaInput\MultimediaInput.dproj" />
+    <Projects Include="..\Plugins\Configurations\Services\TaskSwitchEdit\TaskSwitchEdit.dproj" />
+    <Projects Include="..\Plugins\Configurations\Services\TaskSwitchList\TaskswitchList.dproj" />
+    <Projects Include="..\Plugins\Configurations\Services\VWM\VWM.dproj" />
+    <Projects Include="..\Plugins\Configurations\Services\Weather\Weather.dproj" />
+  </ItemGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Default.Personality</Borland.Personality>
+    <Borland.ProjectType />
+    <BorlandProject>
+  <BorlandProject xmlns=""> <Default.Personality> </Default.Personality> </BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Target Name="AliasList">
+    <MSBuild Projects="..\Plugins\Configurations\Services\AliasList\AliasList.dproj" Targets="" />
+  </Target>
+  <Target Name="AliasList:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Services\AliasList\AliasList.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="AliasList:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Services\AliasList\AliasList.dproj" Targets="Make" />
+  </Target>
+  <Target Name="DeskArea">
+    <MSBuild Projects="..\Plugins\Configurations\Services\DeskArea\DeskArea.dproj" Targets="" />
+  </Target>
+  <Target Name="DeskArea:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Services\DeskArea\DeskArea.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="DeskArea:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Services\DeskArea\DeskArea.dproj" Targets="Make" />
+  </Target>
+  <Target Name="HotkeyList">
+    <MSBuild Projects="..\Plugins\Configurations\Services\HotkeyList\HotkeyList.dproj" Targets="" />
+  </Target>
+  <Target Name="HotkeyList:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Services\HotkeyList\HotkeyList.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="HotkeyList:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Services\HotkeyList\HotkeyList.dproj" Targets="Make" />
+  </Target>
+  <Target Name="MultimediaInput">
+    <MSBuild Projects="..\Plugins\Configurations\Services\MultimediaInput\MultimediaInput.dproj" Targets="" />
+  </Target>
+  <Target Name="MultimediaInput:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Services\MultimediaInput\MultimediaInput.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="MultimediaInput:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Services\MultimediaInput\MultimediaInput.dproj" Targets="Make" />
+  </Target>
+  <Target Name="TaskSwitchEdit">
+    <MSBuild Projects="..\Plugins\Configurations\Services\TaskSwitchEdit\TaskSwitchEdit.dproj" Targets="" />
+  </Target>
+  <Target Name="TaskSwitchEdit:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Services\TaskSwitchEdit\TaskSwitchEdit.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="TaskSwitchEdit:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Services\TaskSwitchEdit\TaskSwitchEdit.dproj" Targets="Make" />
+  </Target>
+  <Target Name="TaskswitchList">
+    <MSBuild Projects="..\Plugins\Configurations\Services\TaskSwitchList\TaskswitchList.dproj" Targets="" />
+  </Target>
+  <Target Name="TaskswitchList:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Services\TaskSwitchList\TaskswitchList.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="TaskswitchList:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Services\TaskSwitchList\TaskswitchList.dproj" Targets="Make" />
+  </Target>
+  <Target Name="VWM">
+    <MSBuild Projects="..\Plugins\Configurations\Services\VWM\VWM.dproj" Targets="" />
+  </Target>
+  <Target Name="VWM:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Services\VWM\VWM.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="VWM:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Services\VWM\VWM.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Weather">
+    <MSBuild Projects="..\Plugins\Configurations\Services\Weather\Weather.dproj" Targets="" />
+  </Target>
+  <Target Name="Weather:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Services\Weather\Weather.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Weather:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Services\Weather\Weather.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Build">
+    <CallTarget Targets="AliasList;DeskArea;HotkeyList;MultimediaInput;TaskSwitchEdit;TaskswitchList;VWM;Weather" />
+  </Target>
+  <Target Name="Clean">
+    <CallTarget Targets="AliasList:Clean;DeskArea:Clean;HotkeyList:Clean;MultimediaInput:Clean;TaskSwitchEdit:Clean;TaskswitchList:Clean;VWM:Clean;Weather:Clean" />
+  </Target>
+  <Target Name="Make">
+    <CallTarget Targets="AliasList:Make;DeskArea:Make;HotkeyList:Make;MultimediaInput:Make;TaskSwitchEdit:Make;TaskswitchList:Make;VWM:Make;Weather:Make" />
+  </Target>
+  <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
+</Project>

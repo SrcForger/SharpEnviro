@@ -1,0 +1,214 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{af7e3be7-5a25-4829-97d9-b0533bd1d650}</ProjectGuid>
+  </PropertyGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Projects Include="..\Plugins\Configurations\Modules\AppBarList\AppBarList.dproj" />
+    <Projects Include="..\Plugins\Configurations\Modules\AppBarOptions\AppBarOptions.dproj" />
+    <Projects Include="..\Plugins\Configurations\Modules\BatteryMonitor\BatteryMonitor.dproj" />
+    <Projects Include="..\Plugins\Configurations\Modules\ButtonBarList\ButtonBarList.dproj" />
+    <Projects Include="..\Plugins\Configurations\Modules\ButtonBarOptions\ButtonBarOptions.dproj" />
+    <Projects Include="..\Plugins\Configurations\Modules\ButtonModule\ButtonModule.dproj" />
+    <Projects Include="..\Plugins\Configurations\Modules\Clock\Clock.dproj" />
+    <Projects Include="..\Plugins\Configurations\Modules\CPUMonitor\CPUMonitor.dproj" />
+    <Projects Include="..\Plugins\Configurations\Modules\KeyboardLayout\KeyboardLayout.dproj" />
+    <Projects Include="..\Plugins\Configurations\Modules\MemoryMonitor\MemoryMonitor.dproj" />
+    <Projects Include="..\Plugins\Configurations\Modules\MenuModule\MenuModule.dproj" />
+    <Projects Include="..\Plugins\Configurations\Modules\MiniScmd\MiniScmd.dproj" />
+    <Projects Include="..\Plugins\Configurations\Modules\Notes\Notes.dproj" />
+    <Projects Include="..\Plugins\Configurations\Modules\QuickScript\QuickScript.dproj" />
+    <Projects Include="..\Plugins\Configurations\Modules\SystemTray\SystemTray.dproj" />
+    <Projects Include="..\Plugins\Configurations\Modules\TaskModule\TaskModule.dproj" />
+    <Projects Include="..\Plugins\Configurations\Modules\VolumeControl\VolumeControl.dproj" />
+    <Projects Include="..\Plugins\Configurations\Modules\VWM\VWM.dproj" />
+    <Projects Include="..\Plugins\Configurations\Modules\WeatherModule\WeatherModule.dproj" />
+  </ItemGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Default.Personality</Borland.Personality>
+    <Borland.ProjectType />
+    <BorlandProject>
+<BorlandProject xmlns=""><Default.Personality></Default.Personality></BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Target Name="AppBarList">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\AppBarList\AppBarList.dproj" Targets="" />
+  </Target>
+  <Target Name="AppBarList:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\AppBarList\AppBarList.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="AppBarList:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\AppBarList\AppBarList.dproj" Targets="Make" />
+  </Target>
+  <Target Name="AppBarOptions">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\AppBarOptions\AppBarOptions.dproj" Targets="" />
+  </Target>
+  <Target Name="AppBarOptions:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\AppBarOptions\AppBarOptions.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="AppBarOptions:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\AppBarOptions\AppBarOptions.dproj" Targets="Make" />
+  </Target>
+  <Target Name="BatteryMonitor">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\BatteryMonitor\BatteryMonitor.dproj" Targets="" />
+  </Target>
+  <Target Name="BatteryMonitor:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\BatteryMonitor\BatteryMonitor.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="BatteryMonitor:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\BatteryMonitor\BatteryMonitor.dproj" Targets="Make" />
+  </Target>
+  <Target Name="ButtonBarList">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\ButtonBarList\ButtonBarList.dproj" Targets="" />
+  </Target>
+  <Target Name="ButtonBarList:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\ButtonBarList\ButtonBarList.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="ButtonBarList:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\ButtonBarList\ButtonBarList.dproj" Targets="Make" />
+  </Target>
+  <Target Name="ButtonBarOptions">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\ButtonBarOptions\ButtonBarOptions.dproj" Targets="" />
+  </Target>
+  <Target Name="ButtonBarOptions:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\ButtonBarOptions\ButtonBarOptions.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="ButtonBarOptions:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\ButtonBarOptions\ButtonBarOptions.dproj" Targets="Make" />
+  </Target>
+  <Target Name="ButtonModule">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\ButtonModule\ButtonModule.dproj" Targets="" />
+  </Target>
+  <Target Name="ButtonModule:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\ButtonModule\ButtonModule.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="ButtonModule:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\ButtonModule\ButtonModule.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Clock">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\Clock\Clock.dproj" Targets="" />
+  </Target>
+  <Target Name="Clock:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\Clock\Clock.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Clock:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\Clock\Clock.dproj" Targets="Make" />
+  </Target>
+  <Target Name="CPUMonitor">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\CPUMonitor\CPUMonitor.dproj" Targets="" />
+  </Target>
+  <Target Name="CPUMonitor:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\CPUMonitor\CPUMonitor.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="CPUMonitor:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\CPUMonitor\CPUMonitor.dproj" Targets="Make" />
+  </Target>
+  <Target Name="KeyboardLayout">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\KeyboardLayout\KeyboardLayout.dproj" Targets="" />
+  </Target>
+  <Target Name="KeyboardLayout:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\KeyboardLayout\KeyboardLayout.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="KeyboardLayout:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\KeyboardLayout\KeyboardLayout.dproj" Targets="Make" />
+  </Target>
+  <Target Name="MemoryMonitor">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\MemoryMonitor\MemoryMonitor.dproj" Targets="" />
+  </Target>
+  <Target Name="MemoryMonitor:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\MemoryMonitor\MemoryMonitor.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="MemoryMonitor:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\MemoryMonitor\MemoryMonitor.dproj" Targets="Make" />
+  </Target>
+  <Target Name="MenuModule">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\MenuModule\MenuModule.dproj" Targets="" />
+  </Target>
+  <Target Name="MenuModule:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\MenuModule\MenuModule.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="MenuModule:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\MenuModule\MenuModule.dproj" Targets="Make" />
+  </Target>
+  <Target Name="MiniScmd">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\MiniScmd\MiniScmd.dproj" Targets="" />
+  </Target>
+  <Target Name="MiniScmd:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\MiniScmd\MiniScmd.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="MiniScmd:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\MiniScmd\MiniScmd.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Notes">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\Notes\Notes.dproj" Targets="" />
+  </Target>
+  <Target Name="Notes:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\Notes\Notes.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Notes:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\Notes\Notes.dproj" Targets="Make" />
+  </Target>
+  <Target Name="QuickScript">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\QuickScript\QuickScript.dproj" Targets="" />
+  </Target>
+  <Target Name="QuickScript:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\QuickScript\QuickScript.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="QuickScript:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\QuickScript\QuickScript.dproj" Targets="Make" />
+  </Target>
+  <Target Name="SystemTray">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\SystemTray\SystemTray.dproj" Targets="" />
+  </Target>
+  <Target Name="SystemTray:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\SystemTray\SystemTray.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="SystemTray:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\SystemTray\SystemTray.dproj" Targets="Make" />
+  </Target>
+  <Target Name="TaskModule">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\TaskModule\TaskModule.dproj" Targets="" />
+  </Target>
+  <Target Name="TaskModule:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\TaskModule\TaskModule.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="TaskModule:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\TaskModule\TaskModule.dproj" Targets="Make" />
+  </Target>
+  <Target Name="VolumeControl">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\VolumeControl\VolumeControl.dproj" Targets="" />
+  </Target>
+  <Target Name="VolumeControl:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\VolumeControl\VolumeControl.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="VolumeControl:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\VolumeControl\VolumeControl.dproj" Targets="Make" />
+  </Target>
+  <Target Name="VWM">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\VWM\VWM.dproj" Targets="" />
+  </Target>
+  <Target Name="VWM:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\VWM\VWM.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="VWM:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\VWM\VWM.dproj" Targets="Make" />
+  </Target>
+  <Target Name="WeatherModule">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\WeatherModule\WeatherModule.dproj" Targets="" />
+  </Target>
+  <Target Name="WeatherModule:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\WeatherModule\WeatherModule.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="WeatherModule:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\WeatherModule\WeatherModule.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Build">
+    <CallTarget Targets="AppBarList;AppBarOptions;BatteryMonitor;ButtonBarList;ButtonBarOptions;ButtonModule;Clock;CPUMonitor;KeyboardLayout;MemoryMonitor;MenuModule;MiniScmd;Notes;QuickScript;SystemTray;TaskModule;VolumeControl;VWM;WeatherModule" />
+  </Target>
+  <Target Name="Clean">
+    <CallTarget Targets="AppBarList:Clean;AppBarOptions:Clean;BatteryMonitor:Clean;ButtonBarList:Clean;ButtonBarOptions:Clean;ButtonModule:Clean;Clock:Clean;CPUMonitor:Clean;KeyboardLayout:Clean;MemoryMonitor:Clean;MenuModule:Clean;MiniScmd:Clean;Notes:Clean;QuickScript:Clean;SystemTray:Clean;TaskModule:Clean;VolumeControl:Clean;VWM:Clean;WeatherModule:Clean" />
+  </Target>
+  <Target Name="Make">
+    <CallTarget Targets="AppBarList:Make;AppBarOptions:Make;BatteryMonitor:Make;ButtonBarList:Make;ButtonBarOptions:Make;ButtonModule:Make;Clock:Make;CPUMonitor:Make;KeyboardLayout:Make;MemoryMonitor:Make;MenuModule:Make;MiniScmd:Make;Notes:Make;QuickScript:Make;SystemTray:Make;TaskModule:Make;VolumeControl:Make;VWM:Make;WeatherModule:Make" />
+  </Target>
+  <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
+</Project>

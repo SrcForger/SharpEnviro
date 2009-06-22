@@ -1,0 +1,124 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{a936a2fe-020a-4fa2-8fe1-04c80463e77b}</ProjectGuid>
+  </PropertyGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Projects Include="..\Plugins\Configurations\Components\BarList\BarList.dproj" />
+    <Projects Include="..\Plugins\Configurations\Components\DesktopSettings\DesktopSettings.dproj" />
+    <Projects Include="..\Plugins\Configurations\Components\FilterList\FilterList.dproj" />
+    <Projects Include="..\Plugins\Configurations\Components\Home\Home.dproj" />
+    <Projects Include="..\Plugins\Configurations\Components\MenuEdit\MenuEdit.dproj" />
+    <Projects Include="..\Plugins\Configurations\Components\MenuList\MenuList.dproj" />
+    <Projects Include="..\Plugins\Configurations\Components\MenuSettings\MenuSettings.dproj" />
+    <Projects Include="..\Plugins\Configurations\Components\ModuleList\ModuleList.dproj" />
+    <Projects Include="..\Plugins\Configurations\Components\ServiceList\ServiceList.dproj" />
+    <Projects Include="..\Plugins\Configurations\Components\ThemeList\ThemeList.dproj" />
+  </ItemGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Default.Personality</Borland.Personality>
+    <Borland.ProjectType />
+    <BorlandProject>
+  <BorlandProject xmlns=""> <Default.Personality> </Default.Personality> </BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Target Name="BarList">
+    <MSBuild Projects="..\Plugins\Configurations\Components\BarList\BarList.dproj" Targets="" />
+  </Target>
+  <Target Name="BarList:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Components\BarList\BarList.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="BarList:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Components\BarList\BarList.dproj" Targets="Make" />
+  </Target>
+  <Target Name="DesktopSettings">
+    <MSBuild Projects="..\Plugins\Configurations\Components\DesktopSettings\DesktopSettings.dproj" Targets="" />
+  </Target>
+  <Target Name="DesktopSettings:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Components\DesktopSettings\DesktopSettings.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="DesktopSettings:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Components\DesktopSettings\DesktopSettings.dproj" Targets="Make" />
+  </Target>
+  <Target Name="FilterList">
+    <MSBuild Projects="..\Plugins\Configurations\Components\FilterList\FilterList.dproj" Targets="" />
+  </Target>
+  <Target Name="FilterList:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Components\FilterList\FilterList.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="FilterList:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Components\FilterList\FilterList.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Home">
+    <MSBuild Projects="..\Plugins\Configurations\Components\Home\Home.dproj" Targets="" />
+  </Target>
+  <Target Name="Home:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Components\Home\Home.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Home:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Components\Home\Home.dproj" Targets="Make" />
+  </Target>
+  <Target Name="MenuEdit">
+    <MSBuild Projects="..\Plugins\Configurations\Components\MenuEdit\MenuEdit.dproj" Targets="" />
+  </Target>
+  <Target Name="MenuEdit:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Components\MenuEdit\MenuEdit.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="MenuEdit:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Components\MenuEdit\MenuEdit.dproj" Targets="Make" />
+  </Target>
+  <Target Name="MenuList">
+    <MSBuild Projects="..\Plugins\Configurations\Components\MenuList\MenuList.dproj" Targets="" />
+  </Target>
+  <Target Name="MenuList:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Components\MenuList\MenuList.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="MenuList:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Components\MenuList\MenuList.dproj" Targets="Make" />
+  </Target>
+  <Target Name="MenuSettings">
+    <MSBuild Projects="..\Plugins\Configurations\Components\MenuSettings\MenuSettings.dproj" Targets="" />
+  </Target>
+  <Target Name="MenuSettings:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Components\MenuSettings\MenuSettings.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="MenuSettings:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Components\MenuSettings\MenuSettings.dproj" Targets="Make" />
+  </Target>
+  <Target Name="ModuleList">
+    <MSBuild Projects="..\Plugins\Configurations\Components\ModuleList\ModuleList.dproj" Targets="" />
+  </Target>
+  <Target Name="ModuleList:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Components\ModuleList\ModuleList.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="ModuleList:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Components\ModuleList\ModuleList.dproj" Targets="Make" />
+  </Target>
+  <Target Name="ServiceList">
+    <MSBuild Projects="..\Plugins\Configurations\Components\ServiceList\ServiceList.dproj" Targets="" />
+  </Target>
+  <Target Name="ServiceList:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Components\ServiceList\ServiceList.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="ServiceList:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Components\ServiceList\ServiceList.dproj" Targets="Make" />
+  </Target>
+  <Target Name="ThemeList">
+    <MSBuild Projects="..\Plugins\Configurations\Components\ThemeList\ThemeList.dproj" Targets="" />
+  </Target>
+  <Target Name="ThemeList:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Components\ThemeList\ThemeList.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="ThemeList:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Components\ThemeList\ThemeList.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Build">
+    <CallTarget Targets="BarList;DesktopSettings;FilterList;Home;MenuEdit;MenuList;MenuSettings;ModuleList;ServiceList;ThemeList" />
+  </Target>
+  <Target Name="Clean">
+    <CallTarget Targets="BarList:Clean;DesktopSettings:Clean;FilterList:Clean;Home:Clean;MenuEdit:Clean;MenuList:Clean;MenuSettings:Clean;ModuleList:Clean;ServiceList:Clean;ThemeList:Clean" />
+  </Target>
+  <Target Name="Make">
+    <CallTarget Targets="BarList:Make;DesktopSettings:Make;FilterList:Make;Home:Make;MenuEdit:Make;MenuList:Make;MenuSettings:Make;ModuleList:Make;ServiceList:Make;ThemeList:Make" />
+  </Target>
+  <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
+</Project>

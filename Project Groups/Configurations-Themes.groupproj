@@ -1,0 +1,114 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{74ec1d20-3bdf-4d1c-a324-8cddc67ed0f5}</ProjectGuid>
+  </PropertyGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Projects Include="..\Plugins\Configurations\Themes\CursorList\CursorList.dproj" />
+    <Projects Include="..\Plugins\Configurations\Themes\DesktopTheme\DesktopTheme.dproj" />
+    <Projects Include="..\Plugins\Configurations\Themes\Font\Font.dproj" />
+    <Projects Include="..\Plugins\Configurations\Themes\Glass\Glass.dproj" />
+    <Projects Include="..\Plugins\Configurations\Themes\IconList\IconList.dproj" />
+    <Projects Include="..\Plugins\Configurations\Themes\SchemeEdit\SchemeEdit.dproj" />
+    <Projects Include="..\Plugins\Configurations\Themes\SchemeList\SchemeList.dproj" />
+    <Projects Include="..\Plugins\Configurations\Themes\SkinList\SkinList.dproj" />
+    <Projects Include="..\Plugins\Configurations\Themes\Wallpaper\Wallpaper.dproj" />
+  </ItemGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Default.Personality</Borland.Personality>
+    <Borland.ProjectType />
+    <BorlandProject>
+  <BorlandProject xmlns=""> <Default.Personality> </Default.Personality> </BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Target Name="CursorList">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\CursorList\CursorList.dproj" Targets="" />
+  </Target>
+  <Target Name="CursorList:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\CursorList\CursorList.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="CursorList:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\CursorList\CursorList.dproj" Targets="Make" />
+  </Target>
+  <Target Name="DesktopTheme">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\DesktopTheme\DesktopTheme.dproj" Targets="" />
+  </Target>
+  <Target Name="DesktopTheme:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\DesktopTheme\DesktopTheme.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="DesktopTheme:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\DesktopTheme\DesktopTheme.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Font">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\Font\Font.dproj" Targets="" />
+  </Target>
+  <Target Name="Font:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\Font\Font.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Font:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\Font\Font.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Glass">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\Glass\Glass.dproj" Targets="" />
+  </Target>
+  <Target Name="Glass:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\Glass\Glass.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Glass:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\Glass\Glass.dproj" Targets="Make" />
+  </Target>
+  <Target Name="IconList">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\IconList\IconList.dproj" Targets="" />
+  </Target>
+  <Target Name="IconList:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\IconList\IconList.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="IconList:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\IconList\IconList.dproj" Targets="Make" />
+  </Target>
+  <Target Name="SchemeEdit">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\SchemeEdit\SchemeEdit.dproj" Targets="" />
+  </Target>
+  <Target Name="SchemeEdit:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\SchemeEdit\SchemeEdit.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="SchemeEdit:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\SchemeEdit\SchemeEdit.dproj" Targets="Make" />
+  </Target>
+  <Target Name="SchemeList">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\SchemeList\SchemeList.dproj" Targets="" />
+  </Target>
+  <Target Name="SchemeList:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\SchemeList\SchemeList.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="SchemeList:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\SchemeList\SchemeList.dproj" Targets="Make" />
+  </Target>
+  <Target Name="SkinList">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\SkinList\SkinList.dproj" Targets="" />
+  </Target>
+  <Target Name="SkinList:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\SkinList\SkinList.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="SkinList:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\SkinList\SkinList.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Wallpaper">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\Wallpaper\Wallpaper.dproj" Targets="" />
+  </Target>
+  <Target Name="Wallpaper:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\Wallpaper\Wallpaper.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Wallpaper:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\Wallpaper\Wallpaper.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Build">
+    <CallTarget Targets="CursorList;DesktopTheme;Font;Glass;IconList;SchemeEdit;SchemeList;SkinList;Wallpaper" />
+  </Target>
+  <Target Name="Clean">
+    <CallTarget Targets="CursorList:Clean;DesktopTheme:Clean;Font:Clean;Glass:Clean;IconList:Clean;SchemeEdit:Clean;SchemeList:Clean;SkinList:Clean;Wallpaper:Clean" />
+  </Target>
+  <Target Name="Make">
+    <CallTarget Targets="CursorList:Make;DesktopTheme:Make;Font:Make;Glass:Make;IconList:Make;SchemeEdit:Make;SchemeList:Make;SkinList:Make;Wallpaper:Make" />
+  </Target>
+  <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
+</Project>
