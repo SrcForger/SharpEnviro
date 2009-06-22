@@ -238,7 +238,9 @@ begin
     if Height < 20 then
       FTrayClient.IconSize := Height - 4
     else FTrayClient.IconSize := 16;
+    FTrayClient.TopOffset := (Height - FTrayClient.IconSize) div 2;
     FTrayClient.RenderIcons;
+    FTrayClient.UpdateTrayIcons;
 
     if Initialized then
       TMainForm(Form).RepaintIcons;

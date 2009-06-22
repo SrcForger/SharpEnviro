@@ -99,6 +99,7 @@ type
                    FIconSize : integer;
                    FIconSpacing : integer;
                    FTopSpacing  : integer;
+                   FTopOffset   : integer;
                    FItems : TObjectList;
                    FBitmap : TBitmap32;
                    FWinVersion : Cardinal;
@@ -132,6 +133,7 @@ type
                    procedure ModifyTrayIcon(NIDv6 : TNotifyIconDataV7);
                    procedure DeleteTrayIcon(NIDv6 : TNotifyIconDataV7);
                    procedure DeleteTrayIconByIndex(index : integer);
+                   procedure UpdateTrayIcons;
                    procedure RenderIcons;
                    procedure SpecialRender(target : TBitmap32; si, ei : integer);
                    function PerformIconAction(x,y,gx,gy,imod : integer; msg : uint; parent : TForm) : boolean;
@@ -161,6 +163,7 @@ type
                    property IconAlpha : integer read FIconAlpha write SetIconAlpha;
                    property IconSize : integer read FIconSize write FIconSize;
                    property IconSpacing : integer read FIconSpacing write FIconSpacing;
+                   property TopOffset : integer read FTopOffset write FTopOffset;
                    property TopSpacing  : integer read FTopSpacing write FTopSpacing;
                    property ColorBlend     : boolean read FColorBlend write FColorBlend;
                    property BlendColor     : integer read FBlendColor write SetBlendColor;
@@ -404,7 +407,7 @@ begin
     ToolTipApi.AddToolTipByCallback(FTipWnd,
                                     FTipForm,
                                     item.TipIndex,
-                                    Rect(FTopSpacing+n*(FIconSize + FIconSpacing),FTopSpacing,FTopSpacing+n*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopSpacing));
+                                    Rect(FTopSpacing+n*(FIconSize + FIconSpacing),FTopOffset,FTopSpacing+n*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopOffset));
   end;
 end;
 
@@ -639,6 +642,20 @@ begin
   FLastTipItem := nil;
 end;
 
+procedure TTrayClient.UpdateTrayIcons;
+var
+  i : integer;
+begin
+  for i := 0 to FItems.Count - 1 do
+    ToolTipApi.UpdateToolTipRect(FTipWnd,
+                                 FTipForm,
+                                 TTrayItem(FItems.Items[i]).TipIndex,
+                                 Rect(FTopSpacing+(i-1)*(FIconSize + FIconSpacing),
+                                      FTopOffset,
+                                      FTopSpacing+(i-1)*(FIconSize + FIconSpacing)+FIconSize,
+                                      FIconSize+FTopOffset));
+end;
+
 function TTrayClient.GetFreeTipIndex : integer;
 var
   b : boolean;
@@ -674,9 +691,9 @@ begin
                                     FTipForm,
                                     tempItem.TipIndex,
                                     Rect(FTopSpacing+n*(FIconSize + FIconSpacing),
-                                         FTopSpacing,
+                                         FTopOffset,
                                          FTopSpacing+n*(FIconSize + FIconSpacing)+FIconSize,
-                                         FIconSize+FTopSpacing));
+                                         FIconSize+FTopOffset));
 
   RenderIcons;
 end;
@@ -823,9 +840,9 @@ begin
                                    FTipForm,
                                    TTrayItem(FItems.Items[i]).TipIndex,
                                    Rect(FTopSpacing+(i-1)*(FIconSize + FIconSpacing),
-                                        FTopSpacing,
+                                        FTopOffset,
                                         FTopSpacing+(i-1)*(FIconSize + FIconSpacing)+FIconSize,
-                                        FIconSize+FTopSpacing));
+                                        FIconSize+FTopOffset));
     end;
   FItems.Extract(temp);
   FreeAndNil(Temp);
@@ -969,7 +986,7 @@ begin
   result := false;
   for n := 0 to FItems.Count - 1 do
   begin
-    if PointInRect(Point(x,y),Rect(FTopSpacing+n*(FIconSize + FIconSpacing),FTopSpacing,FTopSpacing+n*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopSpacing)) then
+    if PointInRect(Point(x,y),Rect(FIconSpacing+n*(FIconSize + FIconSpacing),FTopOffset,FIconSpacing+n*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopOffset)) then
     if (n + imod >= 0 ) and (n + imod <= FItems.Count - 1) then
     begin
       tempItem := TTrayItem(FItems.Items[n+imod]);

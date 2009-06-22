@@ -249,6 +249,7 @@ begin
       sBorderColor     := SharpESkinPart.ParseColor(sBorderColorStr,mInterface.SkinInterface.SkinManager.Scheme);
       sBlendColor      := SharpESkinPart.ParseColor(sBlendColorStr,mInterface.SkinInterface.SkinManager.Scheme);
 
+      FTrayClient.TopOffset       := (Height - FTrayClient.IconSize) div 2;
       FTrayClient.BackGroundColor := sBackGroundColor;
       FTrayClient.DrawBackground  := sShowBackground;
       FTrayClient.BackgroundAlpha := sBackgroundAlpha;
@@ -280,7 +281,7 @@ begin
      else PointInRect:=False;
 end;
 
-procedure TMainForm.RepaintIcons(pRepaint : boolean = True);
+procedure TMainForm.RepaintIcons(pRepaint : boolean = True); 
 begin
   Buffer.Assign(mInterface.Background);
   if FTrayClient = nil then exit;
