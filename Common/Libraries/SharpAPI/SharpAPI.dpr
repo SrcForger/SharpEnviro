@@ -326,6 +326,7 @@ begin
     fFlags := FOF_FILESONLY;
     pFrom  := PChar(fromDir + #0);
     pTo    := PChar(toDir);
+    fFlags := FOF_SILENT or FOF_NOCONFIRMATION;
   end;
   result := (0 = SHFileOperation(fos));
 end;
@@ -341,6 +342,21 @@ begin
     pFrom  := PChar(DirFrom);
     pTo    := PChar(DirTo);
     fFlags := FOF_FILESONLY or FOF_ALLOWUNDO or FOF_SILENT or FOF_NOCONFIRMATION;
+  end;
+  SHFileOperation(shellinfo);
+end;
+
+procedure DeleteDir(Dir : string);
+var
+  shellinfo : TShFileOpStruct;
+begin
+  with shellinfo do
+  begin
+    wnd    := 0;
+    wFunc  := FO_DELETE;
+    pFrom  := PChar(Dir);
+    pTo    := nil;
+    fFlags := FOF_SILENT or FOF_NOCONFIRMATION;
   end;
   SHFileOperation(shellinfo);
 end;
@@ -953,9 +969,10 @@ begin
   if not (DirectoryExists(Path)) then
   begin
     // check if the default settings dir exists
-    if DirectoryExists(Fn + 'Settings\'+DEFAULTSETTINGSDIR)
-       and not DirectoryExists(Fn + 'Settings\User\'+DEFAULTSETTINGSDIR) then
+    if DirectoryExists(Fn + 'Settings\'+DEFAULTSETTINGSDIR) then
     begin
+      if DirectoryExists(Fn + 'Settings\User\'+DEFAULTSETTINGSDIR) then
+        DeleteDir(Fn + 'Settings\User\'+DEFAULTSETTINGSDIR);
       SysUtils.ForceDirectories(Fn + 'Settings\User\');
       CopyDir(Fn + 'Settings\'+DEFAULTSETTINGSDIR,Fn + 'Settings\User');
       RenameDir(Fn + 'Settings\User\'+DEFAULTSETTINGSDIR,Fn + 'Settings\User\'+User);
