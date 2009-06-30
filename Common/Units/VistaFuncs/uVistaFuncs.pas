@@ -4,7 +4,8 @@ interface
 
 uses Forms, Windows, Graphics;
 
-function IsWindowsVista: Boolean;  
+function IsWindowsVista: Boolean;
+function IsWindows7: Boolean;
 procedure SetVistaFonts(const AForm: TCustomForm);
 procedure SetVistaContentFonts(const AFont: TFont);     
 procedure SetDesktopIconFonts(const AFont: TFont);
@@ -95,14 +96,24 @@ begin
     SetDefaultFonts(AFont);
 end;
 
-function IsWindowsVista: Boolean;   
+function IsWindows7: Boolean;
 var
   VerInfo: TOSVersioninfo;
 begin
   VerInfo.dwOSVersionInfoSize := SizeOf(TOSVersionInfo);
-  GetVersionEx(VerInfo);        
+  GetVersionEx(VerInfo);
+  Result := (((VerInfo.dwMajorVersion = 6) and (VerInfo.dwMinorVersion > 0))
+             or (VerInfo.dwMajorVersion >= 7));
+end;
+
+function IsWindowsVista: Boolean;
+var
+  VerInfo: TOSVersioninfo;
+begin
+  VerInfo.dwOSVersionInfoSize := SizeOf(TOSVersionInfo);
+  GetVersionEx(VerInfo);
   Result := VerInfo.dwMajorVersion >= 6;
-end;  
+end;
 
 const
   dwmapi = 'dwmapi.dll';
