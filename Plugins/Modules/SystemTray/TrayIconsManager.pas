@@ -1047,15 +1047,15 @@ begin
                         end;
           WM_RBUTTONUP: begin
                           lp := MakeLParam(WM_RBUTTONUP,tempItem.uID);
-                          SendMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,lp);
+                          SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,lp);
                           lp := MakeLParam(WM_CONTEXTMENU,tempItem.uID);
                         end;
         end;
-        SendMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,lp);
+        SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,lp);
       end else
       begin
         // NotifyIcon Version < 4
-        PostMessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,msg);
+        SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,msg);
       end;
     end;
   end;
