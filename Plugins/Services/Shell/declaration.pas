@@ -75,6 +75,19 @@ type
   pAppBarMsgDataV2 = ^TAppBarMsgDataV2;
   pAppBarMsgDataV1 = ^TAppBarMsgDataV1;
 
+
+  TNotifyIconIdentifierMsg = record
+    dwMagic : DWORD;
+    dwMessage : DWORD;
+    cbSize : DWORD;
+    cbPadding : DWORD;
+    Wnd : HWND;
+    uID : UINT;
+    guidItem: TGUID;
+  end;
+
+  pNotifyIconIdentifierMsg = ^TNotifyIconIdentifierMsg;
+
   TNotifyIconDataV7 = record
     cbSize: DWORD;
     Wnd: HWND;
@@ -193,9 +206,10 @@ type
 const
   ABM_SETSTATE = 10; 
 
-  SH_APPBAR_DATA   = 0;
-  SH_TRAY_DATA     = 1;
-  SH_LOADPROC_DATA = 2;
+  SH_APPBAR_DATA     = 0;
+  SH_TRAY_DATA       = 1;
+  SH_LOADPROC_DATA   = 2;
+  SH_ICON_IDENTIFIER = 3;
 
   //version >= 5.00
   NIN_SELECT = ($0400 + 0);

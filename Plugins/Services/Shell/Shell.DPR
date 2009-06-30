@@ -266,11 +266,24 @@ begin
   end else Result := DefWindowProc(wnd, Msg, wParam, lParam);
 end;
 
+procedure DebugIconData(pData : TNotifyIconDataV7);
+begin
+  SharpApi.SendDebugMessage('shell','version: ' + inttostr(pData.Union.uVersion),0);
+  SharpApi.SendDebugMessage('shell','size: ' + inttostr(pData.cbSize),0);
+  SharpApi.SendDebugMessage('shell','wnd: ' + inttostr(pData.Wnd),0);
+  SharpApi.SendDebugMessage('shell','uID: ' + inttostr(pData.uID),0);
+  SharpApi.SendDebugMessage('shell','uFlags: ' + inttostr(pData.uFlags),0);
+  SharpApi.SendDebugMessage('shell','uCallbackMessage: ' + inttostr(pData.uCallbackMessage),0);
+  SharpApi.SendDebugMessage('shell','Icon: ' + inttostr(pData.Icon),0);
+  SharpApi.SendDebugMessage('shell','szTip: ' + pData.szTip,0);        
+end;
+
 function ShellTrayWndProc(wnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall;
 var
   n : integer;
   TrayCmd: integer;
   Icondata: TNotifyIconDataV7;
+  IconIdent : TNotifyIconIdentifierMsg;
   AppBarMsgData : TAppBarMsgDataV2;
   data: pCopyDataStruct;
   hidden : boolean;
@@ -281,6 +294,7 @@ var
   e : boolean;
   wpos: PWindowPos;
   sstruct : PStyleStruct;
+  cpos : TPoint;
 begin
   if TrayManager = nil then
   begin
@@ -311,17 +325,35 @@ begin
         result := 0;
       end else result := DefWindowProc(wnd, Msg, wParam, lParam);
     end;
-    WM_COPYDATA: begin
-
+    WM_COPYDATA:
+    begin
+      //SharpApi.SendDebugMessage('shell','---------TRAY MESSAGE--------',0);
+      //SharpApi.SendDebugMessage('shell','LParam(size):' + inttostr(SizeOf(LParam)),0);
       Data := pCopyDataStruct(LParam);
       case Data.dwData of
         SH_APPBAR_DATA :
         begin
+          //SharpApi.SendDebugMessage('TRAY','dwData: SH_APPBAR_DATA',0);
           AppBarMsgData := pAppBarMsgDataV2(Data.lpData)^;
           Result := TrayManager.HandleAppBarMessage(AppBarMsgData,lparam);
         end;
+        SH_ICON_IDENTIFIER:
+        begin
+          //SharpApi.SendDebugMessage('shell','dwData: SH_UNKNOWN_3',0);
+          //SharpApi.SendDebugMessage('shell','lpData: ' + inttostr(SizeOf(Data.lpData)),0);
+          IconIdent := pNotifyIconIdentifierMsg(PCHAR(Data.lpdata))^;
+          if GetCursorPosSecure(cpos) then
+          begin
+            case IconIdent.dwMessage of
+              2: result := MAKELONG(16,16);
+              else result := MAKELONG(cpos.X,cpos.y);
+            end;
+          end else result := MAKELONG(0,0);
+        end;
         SH_TRAY_DATA :
         begin
+          //SharpApi.SendDebugMessage('shell','dwData: SH_TRAY_DATA',0);
+          //SharpApi.SendDebugMessage('shell','lpdata(size):' + inttostr(SizeOf(Data.lpdata)),0);
           TrayCmd := pINT(PCHAR(Data.lpdata) + 4)^;
           Icondata := pNotifyIconDataV7(PCHAR(Data.lpdata) + 8)^;
           hidden := false;
@@ -345,17 +377,27 @@ begin
           begin
             case TrayCmd of
               NIM_ADD: begin
+                         //SharpApi.SendDebugMessage('shell','TrayCmd: NIM_ADD',0);
+                         //DebugIconData(IconData);
                          if hidden then e := False
                          else if pItem = nil then TrayManager.ModifyTrayIcon(pItem,IconData,False,False,TrayCmd)
                          else e := False;
                        end;
-              NIM_SETVERSION: TrayManager.UpdateTrayVersion(pItem,IconData);
+              NIM_SETVERSION: begin
+                //SharpApi.SendDebugMessage('shell','TrayCmd: NIM_SETVERSION',0);
+                //DebugIconData(IconData);
+                TrayManager.UpdateTrayVersion(pItem,IconData);
+              end;
               NIM_MODIFY: begin
+                            //SharpApi.SendDebugMessage('shell','NIM_MODIFY: NIM_ADD',0);
+                            //DebugIconData(IconData);
                             if (hidden) and (pItem<>nil) then TrayManager.RemoveTrayIcon(pItem)
                             else if (pItem <> nil) then TrayManager.ModifyTrayIcon(pItem,IconData,False,False,TrayCmd)
                             else e := False;
                         end;
               NIM_DELETE: begin
+                            //SharpApi.SendDebugMessage('shell','TrayCmd: NIM_DELETE',0);
+                            //DebugIconData(IconData);
                             if (pItem <> nil) then TrayManager.RemoveTrayIcon(pItem)
                               else e := False;
                           end;
@@ -365,8 +407,11 @@ begin
           if e then Result := 1
             else Result := 0;
         end;
-
-        else Result := DefWindowProc(wnd, Msg, WParam, LParam);
+        else
+        begin
+           SharpApi.SendDebugMessage('shell','dwData: SH_UNKNOWN(' + inttostr(Data.dwData) + ')',0);
+           Result := DefWindowProc(wnd, Msg, WParam, LParam);
+        end;
       end;
     end;
     WM_REGISTERWITHTRAY: begin
