@@ -259,6 +259,12 @@ begin
       h := round(Size.cy * (w - TPS.CALROffset.X - TPS.CALROffset.Y) / Size.cx)
            + TPS.CATBOffset.X + TPS.CATBOffset.Y;
 
+      if (w > 1024) or (h > 1024) then
+      begin
+        w := 256;
+        h := 256;
+      end;
+
       // Render Notify Skin as background/Border of the window
       XMod := TPS.Location.X;
       YMod := TPS.Location.Y;
