@@ -69,6 +69,8 @@ type
     PngImageList1: TPngImageList;
     CheckTimer: TTimer;
     PreviewCheckTimer: TTimer;
+    mnPopupSep1: TMenuItem;
+    mnPopupCloseAll: TMenuItem;
     procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -82,6 +84,7 @@ type
     procedure Delete1Click(Sender: TObject);
     procedure CheckTimerTimer(Sender: TObject);
     procedure PreviewCheckTimerTimer(Sender: TObject);
+    procedure mnPopupCloseAllClick(Sender: TObject);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   private
@@ -111,6 +114,7 @@ type
     procedure OnPreviewClick(Sender : TObject);
     procedure ClearButtons;
     procedure UpdateButtonIcon(Btn : TButtonRecord);
+    function GetButtonIndex(pButton : TSharpETaskItem) : integer;
     function GetButtonItem(pButton : TSharpETaskItem) : TButtonRecord;
     procedure AddButton(pTarget,pIcon,pCaption : String; Index : integer = -1);
     procedure UpdateButtons;
@@ -119,8 +123,10 @@ type
     procedure WMShellHook(var msg : TMessage); message WM_SHARPSHELLMESSAGE;
     procedure WMCopyData(var msg : TMessage); message WM_COPYDATA;
     procedure WMAddAppBarTask(var msg : TMessage); message WM_ADDAPPBARTASK;
+    procedure WMCommand(var msg: TMessage); message WM_COMMAND;    
     procedure mnOnClick(pItem : TSharpEMenuItem; var CanClose : boolean);
     procedure mnMouseUp(pItem : TSharpEMenuItem; Button: TMouseButton; Shift: TShiftState);
+    procedure DisplaySystemMenu(pBtn : TButtonRecord);    
   public
     mInterface : ISharpBarModule;
     CurrentVWM   : integer;    
@@ -142,6 +148,10 @@ implementation
 
 uses
   IXmlBaseUnit, SharpESkinPart;
+
+
+var
+  SysMenuButton : TButtonRecord;  
 
 {$R *.dfm}
 
@@ -193,6 +203,7 @@ begin
                             Caption);        
     end;
   end;
+  FPreviewWnds.Clear;
   setlength(FButtonList,length(FButtonList)-1);
   SaveSettings;
   RealignComponents(True);
@@ -241,6 +252,76 @@ begin
     CheckList;
     exit;         
   end;
+end;
+
+procedure TMainForm.WMCommand(var msg: TMessage);
+var
+  VWMCount : integer;
+  VWMIndex : integer;
+  TaskItem : TTaskItem;
+  n : integer;
+  startindex : integer;
+  dbtnwidth : integer;  
+begin
+  if SysMenuButton.btn = nil then
+    exit;
+
+  PostMessage(SysMenuButton.wnd, WM_SYSCOMMAND, msg.wparam, msg.lparam);
+
+  VWMCount := GetVWMCount;
+  if msg.WParam > 512 then // Remove From Appbar message
+  begin
+    startindex := -1;
+    for n := 0 to High(FButtonList) do
+    if FButtonList[n].btn = SysMenuButton.btn then    
+    begin
+      startindex := n;
+      break;
+    end;
+
+    ToolTipApi.DeleteToolTip(FHintWnd,self,startindex);
+    dbtnwidth := FButtonList[startindex].btn.Width + FButtonSpacing;
+    FButtonList[startindex].btn.Free;
+    for n := startindex to High(FButtonList)-1 do
+    begin
+      ToolTipApi.DeleteToolTip(FHintWnd,self,n+1);
+      with FButtonList[n] do
+      begin
+        btn := FButtonList[n+1].btn;
+        btn.Left := FButtonList[n].btn.Left - dbtnwidth;
+        target := FButtonList[n+1].target;
+        caption := FButtonList[n+1].caption;
+        exename := FButtonList[n+1].exename;
+        icon := FButtonList[n+1].icon;
+        ToolTipApi.AddToolTip(FHintWnd,self,n,
+                              Rect(btn.left,btn.top,btn.Left + btn.Width,btn.Top + btn.Height),
+                              Caption);
+      end;
+    end;
+    setlength(FButtonList,length(FButtonList)-1);
+    SaveSettings;
+    RealignComponents(True);
+    UpdateGlobalFilterList(True);
+    CheckList;
+  end else
+  if VWMCount > 0 then
+    if (msg.WParam >= 256) and (msg.WParam <= 256 + VWMCount) then
+    begin
+      TaskItem := FTM.GetItemByHandle(SysMenuButton.wnd);
+      if TaskItem <> nil then
+        TaskItem.LastVWM := msg.WParam - 256 + 1;
+
+      if not IsIconic(SysMenuButton.wnd) then
+      begin
+        VWMIndex := GetCurrentVWM;
+        VWMMoveWindotToVWM(msg.WParam - 256 + 1,VWMIndex,VWMCount,SysMenuButton.wnd);
+      end;
+
+      PostMessage(GetShellTaskMgrWindow,WM_TASKVWMCHANGE,Integer(SysMenuButton.wnd),msg.WParam - 256 + 1);      
+      taskitem.Used := True;
+    end;
+
+  inherited;
 end;
 
 procedure TMainForm.WMCopyData(var msg: TMessage);
@@ -343,6 +424,39 @@ begin
   setlength(FButtonList,0);
 end;
 
+procedure TMainForm.mnPopupCloseAllClick(Sender: TObject);
+var
+  n : integer;
+  wndlist : array of hwnd;
+  TaskItem : TTaskItem;
+  ButtonIndex : integer;
+begin
+  ButtonIndex := ButtonPopup.Tag;
+  if (ButtonIndex > High(FButtonList)) or (ButtonIndex < 0) then
+    exit;
+
+  setlength(wndlist,0);
+  for n := 0 to FTM.ItemCount - 1 do
+  begin
+    TaskItem := TTaskItem(FTM.GetItemByIndex(n));
+    if TaskItem <> nil then
+      if CompareText(TaskItem.FileName,FButtonList[ButtonIndex].exename) = 0 then
+      begin
+        setlength(wndlist,length(wndlist)+1);
+        wndlist[High(wndlist)] := TaskItem.Handle;
+      end;
+  end;
+
+  for n := 0 to High(wndlist) do
+  begin
+    PostMessage(wndlist[n], WM_CLOSE, 0, 0);
+    PostThreadMessage(GetWindowThreadProcessID(wndlist[n], nil), WM_QUIT, 0, 0);
+  end;
+
+  setlength(wndlist,0);
+  FPreviewWnds.Clear;  
+end;
+
 procedure TMainForm.AddButton(pTarget,pIcon,pCaption : String; Index : integer = -1);
 var
   n : integer;
@@ -370,7 +484,7 @@ begin
     btn := TSharpETaskItem.Create(self);
     btn.UseSpecial := True;
     btn.State := sState; 
-    btn.PopUpMenu := ButtonPopup;
+    btn.PopUpMenu := nil;
     btn.Visible := False;
     btn.Parent := self;
     btn.Height := Height;
@@ -558,6 +672,112 @@ begin
 
   if not DwmCompositionEnabled then
     sTaskPreview := False;  
+end;
+
+procedure TMainForm.DisplaySystemMenu(pBtn : TButtonRecord);
+var
+  cp: TPoint;
+  AppMenu: hMenu;
+  MenuItemInfo: TMenuItemInfo;
+  n : integer;
+  VWMMenu : hMenu;
+  VWMCount : integer;
+  pItem : TTaskItem;
+begin
+  if not (isWindow(pBtn.wnd)) then
+    exit;
+
+  SysMenuButton := pBtn;
+  GetCursorPos(cp);
+  AppMenu := GetSystemMenu(pBtn.wnd, False);
+  if not IsMenu(AppMenu) then
+  begin
+    GetSystemMenu(pBtn.wnd, True);
+    AppMenu := GetSystemMenu(pBtn.wnd, False);
+  end;
+
+  if IsIconic(pBtn.wnd) then
+  begin
+    EnableMenuItem(AppMenu, SC_Restore,  mf_bycommand or mf_enabled);
+    EnableMenuItem(AppMenu, SC_Move,     mf_bycommand or mf_grayed);
+    EnableMenuItem(AppMenu, SC_Size,     mf_bycommand or mf_grayed);
+    EnableMenuItem(AppMenu, SC_Minimize, mf_bycommand or mf_grayed);
+  end else
+  if IsZoomed(pBtn.wnd) then
+  begin
+    EnableMenuItem(AppMenu, SC_Restore,  mf_bycommand or mf_enabled);
+    EnableMenuItem(AppMenu, SC_Move,     mf_bycommand or mf_grayed);
+    EnableMenuItem(AppMenu, SC_Size,     mf_bycommand or mf_grayed);
+    EnableMenuItem(AppMenu, SC_Maximize, mf_bycommand or mf_grayed);
+  end else
+  begin
+    EnableMenuItem(AppMenu, SC_Restore,  mf_bycommand or mf_grayed);
+    EnableMenuItem(AppMenu, SC_Move,     mf_bycommand or mf_enabled);
+    EnableMenuItem(AppMenu, SC_Size,     mf_bycommand or mf_enabled);
+    EnableMenuItem(AppMenu, SC_Minimize, mf_bycommand or mf_enabled);
+  end;
+
+  { Add a seperator }
+  FillChar(MenuItemInfo, SizeOf(MenuItemInfo), #0);
+  MenuItemInfo.cbSize := 44; //SizeOf(MenuItemInfo);
+  MenuItemInfo.fMask := MIIM_CHECKMARKS or MIIM_DATA or
+    MIIM_ID or MIIM_STATE or MIIM_SUBMENU or MIIM_TYPE;
+  MenuItemInfo.fType := MFT_SEPARATOR;
+  MenuItemInfo.wID := $EFFF;
+  InsertMenuItem(AppMenu, DWORD(0), True, MenuItemInfo);
+
+  { Add Remove From App Bar Item}
+  FillChar(MenuItemInfo, SizeOf(MenuItemInfo), #0);
+  MenuItemInfo.cbSize := 44; //SizeOf(MenuItemInfo);
+  MenuItemInfo.fMask := MIIM_DATA or
+    MIIM_ID or MIIM_STATE or MIIM_SUBMENU or MIIM_TYPE;
+  MenuItemInfo.fType := MFT_STRING;
+  MenuItemInfo.dwTypeData := 'Remove from Application Bar';
+  MenuItemInfo.wID := $EFFF;
+  InsertMenuItem(AppMenu, DWORD(0), True, MenuItemInfo);
+
+  VWMMenu := 0;
+  VWMCount := GetVWMCount;
+  if (GetVWMCount > 0) then
+  begin
+   { Add a VWM Item}
+   FillChar(MenuItemInfo, SizeOf(MenuItemInfo), #0);
+   MenuItemInfo.cbSize := 44; //SizeOf(MenuItemInfo);
+   MenuItemInfo.fMask := MIIM_DATA or
+     MIIM_ID or MIIM_STATE or MIIM_SUBMENU or MIIM_TYPE;
+   MenuItemInfo.fType := MFT_STRING;
+   MenuItemInfo.dwTypeData := 'Move to VWM';
+   VWMMenu := CreateMenu;
+   MenuItemInfo.hSubMenu := VWMMenu;
+   MenuItemInfo.wID := 512;
+ //  MenuItemInfo.hbmpItem := FMoveToVWMIcon.Handle;
+   InsertMenuItem(AppMenu, DWORD(0), True, MenuItemInfo);
+
+   pItem := FTM.GetItemByHandle(pBtn.wnd);
+   for n := VWMCount - 1 downto 0 do
+   begin
+     FillChar(MenuItemInfo, SizeOf(MenuItemInfo), #0);
+     MenuItemInfo.cbSize := 44; //SizeOf(MenuItemInfo);
+     MenuItemInfo.fMask := MIIM_CHECKMARKS or MIIM_DATA or
+       MIIM_ID or MIIM_STATE or MIIM_SUBMENU or MIIM_TYPE;
+     MenuItemInfo.fType := MFT_STRING;
+     MenuItemInfo.dwTypeData := PChar(inttostr(n + 1));
+     MenuItemInfo.wID := 256 + n;
+     if pItem <> nil then
+       if pItem.LastVWM = n + 1 then
+         MenuItemInfo.fState := 1;
+     InsertMenuItem(VWMMenu, DWORD(0), True, MenuItemInfo);
+   end;
+  end;
+
+  SendMessage(pBtn.wnd, WM_INITMENUPOPUP, AppMenu, MAKELPARAM(0, 1));
+  SendMessage(pBtn.wnd, WM_INITMENU, AppMenu, 0);
+  TrackPopupMenu(AppMenu, tpm_leftalign or tpm_leftbutton, cp.x, cp.y, 0, Handle, nil);
+  
+  if VWMMenu <> 0 then
+    DeleteMenu(AppMenu,0,MF_BYPOSITION);
+  DeleteMenu(AppMenu,0,MF_BYPOSITION);
+  DeleteMenu(AppMenu,0,MF_BYPOSITION);
 end;
 
 procedure TMainForm.mnMouseUp(pItem: TSharpEMenuItem; Button: TMouseButton;
@@ -1120,6 +1340,17 @@ begin
   BtnItem := GetButtonItem(TSharpETaskItem(Sender));
   if BtnItem.Btn <> nil then
   begin
+    if (Button = mbRight) then
+    begin
+      if (BtnItem.Btn.Tag = 1) then
+        DisplaySystemMenu(BtnItem)
+      else begin
+        ButtonPopup.Tag := GetButtonIndex(BtnItem.btn);
+        mnPopupSep1.Visible := (BtnItem.btn.Tag > 0);
+        mnPopupCloseAll.Visible := (BtnItem.btn.Tag > 0);
+        ButtonPopup.Popup(Mouse.CursorPos.X,Mouse.CursorPos.Y)
+      end;
+    end else
     if (Button = mbLeft) and (not hasmoved) then
     begin
       if (BtnItem.Btn.Special) or (BtnItem.btn.Down and not BtnItem.btn.UseSpecial) then
@@ -1256,6 +1487,20 @@ procedure TMainForm.FormPaint(Sender: TObject);
 begin
   if mInterface <> nil then
      mInterface.Background.DrawTo(Canvas.Handle,0,0);
+end;
+
+function TMainForm.GetButtonIndex(pButton : TSharpETaskItem) : integer;
+var
+  n : integer;
+begin
+  for n := 0 to High(FButtonList) do
+    if FButtonList[n].btn = pButton then
+    begin
+      result := n;
+      exit;
+    end;
+
+  result := -1;
 end;
 
 function TMainForm.GetButtonItem(pButton: TSharpETaskItem): TButtonRecord;
