@@ -30,9 +30,11 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, GR32_Image, SharpEBaseControls, SharpEButton,
-  JclSimpleXML, SharpApi, Menus, GR32_Layers, Types,
+  JclSimpleXML, SharpApi, Menus, GR32_Layers, Types, JclSysInfo,
   TrayIconsManager, Math, GR32, SharpECustomSkinSettings, SharpESkinLabel,
-  ToolTipApi,Commctrl, uISharpBarModule;
+  ToolTipApi,Commctrl, uISharpBarModule, SharpIconUtils, GR32_PNG,
+  uSharpEMenu, uSharpEMenuWnd, uSharpEMenuSettings, uSharpEMenuItem, pngimage,
+  ExtCtrls;
 
 
 type
@@ -46,8 +48,10 @@ type
     procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure mnOnClick(pItem: TSharpEMenuItem; pMenuWnd : TObject; var CanClose: boolean);
   protected
   private
+    sEnableIconHiding   : Boolean;
     sShowBackground     : Boolean;
     sBackgroundColor    : integer;
     sBackgroundColorStr : String;
@@ -64,6 +68,7 @@ type
     cwidth              : integer;
     doubleclick         : boolean;
     refreshed           : boolean;
+    FShowHideIcon       : TBitmap32;
     FCustomSkinSettings : TSharpECustomSkinSettings;
     procedure CMMOUSELEAVE(var msg : TMessage); message CM_MOUSELEAVE;
     procedure WMNotify(var msg : TWMNotify); message WM_NOTIFY;
@@ -71,8 +76,10 @@ type
     FTrayClient : TTrayClient;
     Buffer     : TBitmap32;
     mInterface : ISharpBarModule;
+    procedure ShowHideMenu;
     procedure RepaintIcons(pRepaint : boolean = True);
     procedure LoadSettings;
+    procedure SaveSettings;
     procedure ReAlignComponents;
     procedure UpdateComponentSkins;
   end;
@@ -80,8 +87,8 @@ type
 
 implementation
 
-uses SharpESkinPart,
-     SharpThemeApiEx;
+uses SharpThemeApiEx,
+     declaration;
 
 type
   TTrayWnd = class
@@ -90,6 +97,7 @@ type
                TipWnd : hwnd;
              end;
 
+{$R trayicons.res}
 {$R *.dfm}
 
 function Li2Double(x: LARGE_INTEGER): Double;
@@ -100,6 +108,223 @@ end;
 procedure TMainForm.UpdateComponentSkins;
 begin
   lb_servicenotrunning.SkinManager := mInterface.SkinInterface.SkinManager;
+end;
+
+procedure TMainForm.mnOnClick(pItem: TSharpEMenuItem; pMenuWnd : TObject; var CanClose: boolean);
+var
+  n : integer;
+  TrayItem : TTrayItem;
+  menu : TSharpEMenu;
+  menuWnd : TSharpEMenuWnd;
+begin
+  CanClose := False;
+
+  if pItem = nil then
+    exit;
+
+  TrayItem := nil;
+  for n := 0 to FTrayClient.Items.Count - 1 do
+  begin
+    TrayItem := TTrayItem(FTrayClient.Items.Items[n]);
+    if (TrayItem.Wnd = pItem.PropList.GetInt('Wnd'))
+      and (TrayItem.UID = pItem.PropList.GetInt('uID')) then
+      break;
+    TrayItem := nil;
+  end;
+  
+  if TrayItem <> nil then
+  begin
+    menu := TSharpEMenu(pItem.OwnerMenu);
+    menuwnd := TSharpEMenuWnd(pMenuWnd);
+
+    if pItem.PropList.GetBool('Hide') then
+    begin
+      FTrayClient.HiddenList.Add(GetProcessNameFromWnd(TrayItem.Wnd) + ':' + inttostr(TrayItem.UID));
+      TrayItem.HiddenByClient := True;
+      TSharpEMenu(pItem.OwnerMenu).Items.Extract(pItem);
+      menu.Items.Insert(menu.items.count,pItem);      
+      //TSharpEMenu(TSharpEMenuItem(TSharpEMenu(TSharpEMenu(pItem.OwnerMenu).ParentMenuItem.OwnerMenu).Items.Items[1]).SubMenu).Items.Add(pItem);
+      //pItem.OwnerMenu := TSharpEMenu(TSharpEMenuItem(TSharpEMenu(TSharpEMenu(pItem.OwnerMenu).ParentMenuItem.OwnerMenu).Items.Items[1]).SubMenu);
+      pItem.PropList.Add('Hide',False);
+    end else
+    begin
+      n := FTrayClient.HiddenList.IndexOf(GetProcessNameFromWnd(TrayItem.Wnd) + ':' + inttostr(TrayItem.UID));
+      if n >= 0 then
+        FTrayClient.HiddenList.Delete(n);
+      TrayItem.HiddenByClient := False;
+      TSharpEMenu(pItem.OwnerMenu).Items.Extract(pItem);
+      for n := menu.items.Count - 1 downto 0 do
+        if TSharpEMenuItem(menu.items.items[n]).ItemType = mtLabel then
+        begin
+          menu.Items.Insert(n-1,pItem);
+          break;
+        end;
+        
+      //TSharpEMenu(TSharpEMenuItem(TSharpEMenu(TSharpEMenu(pItem.OwnerMenu).ParentMenuItem.OwnerMenu).Items.Items[0]).SubMenu).Items.Add(pItem);
+      //pItem.OwnerMenu := TSharpEMenu(TSharpEMenuItem(TSharpEMenu(TSharpEMenu(pItem.OwnerMenu).ParentMenuItem.OwnerMenu).Items.Items[0]).SubMenu);
+      pItem.PropList.Add('Hide',True);
+    end;
+    FTrayClient.UpdateHiddenStatus;
+    FTrayClient.UpdateTrayIcons;
+    FTrayClient.RenderIcons;
+    RealignComponents;
+
+    menuwnd.IgnoreNextDeactivate := True;
+    menu.RenderBackground(menuwnd.Left,menuwnd.Top,menu.SpecialBackgroundSource);
+    menu.RenderNormalMenu;
+    menu.RenderTo(menuwnd.Picture);
+    menuwnd.PreMul(menuwnd.Picture);
+    menuwnd.DrawWindow;
+
+    SaveSettings;
+  end;
+end;
+
+procedure TMainForm.SaveSettings;
+var
+  XML : TJclSimpleXML;
+  n : integer;
+  fileloaded : boolean;
+begin
+  XML := TJclSimpleXML.Create;
+  try
+    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
+    fileloaded := True;
+  except
+    fileloaded := False;
+  end;
+  if not fileloaded then
+  begin
+    XML.Root.Clear;
+    XML.Root.Name := 'SystemTrayModuleSettings';
+  end;
+  with xml.Root.Items do
+  begin
+    if (ItemNamed['Hidden'] = nil) then
+      Add('Hidden');
+    with ItemNamed['Hidden'].Items do
+    begin
+      Clear;
+      for n := 0 to FTrayClient.HiddenList.Count - 1 do
+        Add('item',FTrayClient.HiddenList[n]);
+    end;
+  end;
+  XML.SaveToFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
+  XML.Free;
+
+end;
+
+procedure TMainForm.ShowHideMenu;
+var
+  p : TPoint;
+  mn : TSharpEMenu;
+  ms : TSharpEMenuSettings;
+  wnd : TSharpEMenuWnd;
+  n: integer;
+  item : TSharpEMenuItem;
+  R : TRect;
+  Bmp : TBitmap32;
+  TrayItem : TTrayItem;
+  s : String;
+begin
+  if FindWindow('TSharpEMenuWnd',nil) <> 0 then
+    exit;
+
+  ms := TSharpEMenuSettings.Create;
+  ms.LoadFromXML;
+
+  mn := TSharpEMenu.Create(mInterface.SkinInterface.SkinManager,ms);
+  ms.Free;
+
+  SharpEMenuIcons.Items.Clear;
+
+  Bmp := TBitmap32.Create;
+
+  mn.AddLabelItem('Visible Icons',False);
+  for n := 0 to FTrayClient.Items.Count - 1 do
+  begin
+    TrayItem := TTrayItem(FTrayClient.Items.Items[n]);
+    if IsWindow(TrayItem.wnd) then
+    begin
+      IconToImage(Bmp,TrayItem.Icon);
+      s := TrayItem.FTip + ' (' + ExtractFileName(GetProcessNameFromWnd(TrayItem.Wnd)) + ')';
+      if not TrayItem.HiddenByClient then
+      begin
+        item := TSharpEMenuItem(mn.AddCustomItem(s,'customicon:'+inttostr(n),Bmp));
+        item.PropList.Add('wnd',TrayItem.wnd);
+        item.PropList.Add('uID',TrayItem.UID);
+        item.PropList.Add('Hide',not TrayItem.HiddenByClient);
+        item.OnClick := mnOnClick;
+      end;
+    end;
+  end;
+  mn.AddSeparatorItem(False);
+  mn.AddLabelItem('Hidden Icons',False);
+  for n := 0 to FTrayClient.Items.Count - 1 do
+  begin
+    TrayItem := TTrayItem(FTrayClient.Items.Items[n]);
+    if IsWindow(TrayItem.wnd) then
+    begin
+      IconToImage(Bmp,TrayItem.Icon);
+      s := TrayItem.FTip + ' (' + ExtractFileName(GetProcessNameFromWnd(TrayItem.Wnd)) + ')';
+      if TrayItem.HiddenByClient then
+      begin
+        item := TSharpEMenuItem(mn.AddCustomItem(s,'customicon:'+inttostr(n),Bmp));
+        item.PropList.Add('wnd',TrayItem.wnd);
+        item.PropList.Add('uID',TrayItem.UID);
+        item.PropList.Add('Hide',not TrayItem.HiddenByClient);
+        item.OnClick := mnOnClick;
+      end;
+    end;
+  end;  
+
+  {item := TSharpEMenuItem(mn.AddSubMenuItem('Hide Icons','icon.settings','',False));
+  item.SubMenu := TSharpEMenu.Create(item,mInterface.SkinInterface.SkinManager,mn.Settings);
+  hidemenu := TSharpEMenu(item.SubMenu);
+
+  item := TSharpEMenuItem(mn.AddSubMenuItem('Show Icons','icon.settings','',False));
+  item.SubMenu := TSharpEMenu.Create(item,mInterface.SkinInterface.SkinManager,mn.Settings);
+  showmenu := TSharpEMenu(item.SubMenu);
+
+  for n := 0 to FTrayClient.Items.Count - 1 do
+  begin
+    TrayItem := TTrayItem(FTrayClient.Items.Items[n]);
+    if IsWindow(TrayItem.wnd) then
+    begin
+      IconToImage(Bmp,TrayItem.Icon);
+      s := TrayItem.FTip + ' (' + ExtractFileName(GetProcessNameFromWnd(TrayItem.Wnd)) + ')';
+      if TrayItem.HiddenByClient then
+        item := TSharpEMenuItem(showmenu.AddCustomItem(s,'customicon:'+inttostr(n),Bmp))
+      else item := TSharpEMenuItem(hidemenu.AddCustomItem(s,'customicon:'+inttostr(n),Bmp));
+      item.PropList.Add('wnd',TrayItem.wnd);
+      item.PropList.Add('uID',TrayItem.UID);
+      item.PropList.Add('Hide',not TrayItem.HiddenByClient);
+      item.OnClick := mnOnClick;
+    end;
+  end;     }
+  Bmp.Free;
+
+  mn.RenderBackground(0,0);  
+
+  wnd := TSharpEMenuWnd.Create(self,mn);
+  wnd.FreeMenu := True; // menu will free itself when closed
+
+  GetWindowRect(mInterface.BarInterface.BarWnd,R);
+  p := ClientToScreen(Point(0, self.Height + self.Top));
+  p.y := R.Top;
+  p.x := p.x + mInterface.SkinInterface.SkinManager.Skin.Menu.LocationOffset.X - mn.Background.Width div 2;
+  if p.x < Monitor.Left then
+    p.x := Monitor.Left;
+  if p.x + mn.Background.Width  > Monitor.Left + Monitor.Width then
+    p.x := Monitor.Left + Monitor.Width - mn.Background.Width;
+  wnd.Left := p.x;
+  if p.Y < Monitor.Top + Monitor.Height div 2 then
+    wnd.Top := R.Bottom + mInterface.SkinInterface.SkinManager.Skin.Menu.LocationOffset.Y
+  else begin
+    wnd.Top := R.Top - wnd.Picture.Height - mInterface.SkinInterface.SkinManager.Skin.Menu.LocationOffset.Y;
+  end;
+  RegisterShellHookReceiver(wnd.handle);
+  wnd.Show;
 end;
 
 procedure TMainForm.CMMOUSELEAVE(var msg : TMessage);
@@ -165,6 +390,7 @@ var
   XML : TJclSimpleXML;
   fileloaded : boolean;
   skin : String;
+  n : integer;
 begin
   // Load Skin custom settings as default
   sShowBackground     := False;
@@ -180,23 +406,26 @@ begin
   sBlendColorStr      := 'clwhite';
   sBlendAlpha         := 255;
   sIconAlpha          := 255;
+  sEnableIconHiding   := True;
   FCustomSkinSettings.LoadFromXML('');
   try
     with FCustomSkinSettings.xml.Items do
-         if ItemNamed['systemtray'] <> nil then
-            with ItemNamed['systemtray'].Items do
-            begin
-              sShowBackground     := BoolValue('showbackground',False);
-              sBackgroundColorStr := Value('backgroundcolor','0');
-              sBackgroundAlpha    := IntValue('backgroundalpha',255);
-              sShowBorder         := BoolValue('showborder',False);
-              sBorderColorStr     := Value('bordercolor','clwhite');
-              sBorderAlpha        := IntValue('borderalpha',255);
-              sColorBlend         := BoolValue('colorblend',false);
-              sBlendColorStr      := Value('blendrcolor','clwhite');
-              sBlendAlpha         := IntValue('blendalpha',0);
-              sIconAlpha          := IntValue('iconalpha',255);
-            end;
+    begin
+      if ItemNamed['systemtray'] <> nil then
+        with ItemNamed['systemtray'].Items do
+        begin
+          sShowBackground     := BoolValue('showbackground',False);
+          sBackgroundColorStr := Value('backgroundcolor','0');
+          sBackgroundAlpha    := IntValue('backgroundalpha',255);
+          sShowBorder         := BoolValue('showborder',False);
+          sBorderColorStr     := Value('bordercolor','clwhite');
+          sBorderAlpha        := IntValue('borderalpha',255);
+          sColorBlend         := BoolValue('colorblend',false);
+          sBlendColorStr      := Value('blendrcolor','clwhite');
+          sBlendAlpha         := IntValue('blendalpha',0);
+          sIconAlpha          := IntValue('iconalpha',255);
+         end;
+    end;
   except
   end;
 
@@ -211,7 +440,17 @@ begin
     with xml.Root.Items do
     begin
       skin := GetCurrentTheme.Skin.Name;
-      skin := StringReplace(skin,' ','_',[rfReplaceAll]);   
+      skin := StringReplace(skin,' ','_',[rfReplaceAll]);
+
+      FTrayClient.HiddenList.Clear;
+
+      sEnableIconHiding   := BoolValue('iconhiding', True);
+      if (ItemNamed['Hidden'] <> nil) and (sEnableIconHiding) then
+        with ItemNamed['Hidden'].Items do
+        for n := 0 to Count - 1 do
+          FTrayClient.HiddenList.Add(Item[n].Value);
+      FTrayClient.UpdateHiddenStatus;
+
       if ItemNamed['skin'] <> nil then
          if ItemNamed['skin'].Items.ItemNamed[skin] <> nil then
             with ItemNamed['skin'].Items.ItemNamed[skin].Items do
@@ -229,12 +468,60 @@ begin
             end;
     end;
   XML.Free;
+  if not sEnableIconHiding then
+  begin
+    FTrayClient.HiddenList.Clear;
+    if FTrayClient.Items.Count > 0 then
+      if TTrayItem(FTrayClient.Items.Items[0]).IsSpecial then
+        FTrayClient.DeleteTrayIconByIndex(0);
+  end;
+      
+  FTrayClient.UpdateTrayIcons;
 end;
 
 procedure TMainForm.ReAlignComponents;
 var
  newwidth : integer;
+ n : integer;
+ addfirstitem : boolean;
+ item : TTrayItem;
+ temp : TNotifyIconDataV7;
+ s : WideString; 
 begin
+  addfirstitem := False;
+  if sEnableIconHiding then
+  begin
+    if FTrayClient.Items.Count = 0 then
+      addfirstitem := True
+    else if (not TTrayItem(FTrayClient.Items.Items[0]).IsSpecial) then
+      addfirstitem := True;
+  end;
+
+  if (addfirstitem) and (not lb_servicenotrunning.visible) then
+  begin
+    temp.cbSize := sizeOf(temp);
+    temp.Wnd := 0;
+    temp.uID := 0;
+    temp.uFlags := NIF_ICON or NIF_TIP;
+    temp.Union.uVersion := 5;
+    s := 'Hide/Show icons';
+    for n := 0 to length(s) - 1 do
+      temp.szTip[n] := s[n];
+    item := TTrayItem.Create(temp);
+    item.Owner := FTrayClient;
+    item.TipIndex := FTrayClient.GetFreeTipIndex;
+    item.IsSpecial := True;
+    item.Bitmap.Assign(FShowHideIcon);
+    item.HiddenByClient := True; // UpdateHiddenStatus will make it visible, but will also add the tooltip
+    FTrayClient.Items.Insert(0,item);
+    FTrayClient.UpdateHiddenStatus;
+    FTrayClient.UpdateTrayIcons;
+    FTrayClient.RenderIcons;
+    ToolTipApi.UpdateToolTipTextByCallback(FTrayClient.TipWnd,
+                                           FTrayClient.TipForm,
+                                           item.TipIndex);    
+  end;
+
   if lb_servicenotrunning.visible then
   begin
     lb_servicenotrunning.UpdateSkin;
@@ -245,9 +532,9 @@ begin
   begin
     if FTrayClient <> nil then
     begin
-      sBackGroundColor := SharpESkinPart.ParseColor(sBackGroundColorStr,mInterface.SkinInterface.SkinManager.Scheme);
-      sBorderColor     := SharpESkinPart.ParseColor(sBorderColorStr,mInterface.SkinInterface.SkinManager.Scheme);
-      sBlendColor      := SharpESkinPart.ParseColor(sBlendColorStr,mInterface.SkinInterface.SkinManager.Scheme);
+      sBackGroundColor := mInterface.SkinInterface.SkinManager.ParseColor(sBackGroundColorStr);
+      sBorderColor     := mInterface.SkinInterface.SkinManager.ParseColor(sBorderColorStr);
+      sBlendColor      := mInterface.SkinInterface.SkinManager.ParseColor(sBlendColorStr);
 
       FTrayClient.TopOffset       := (Height - FTrayClient.IconSize) div 2;
       FTrayClient.BackGroundColor := sBackGroundColor;
@@ -292,18 +579,44 @@ begin
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
+var
+  ResStream : TResourceStream;
+  TempBmp : TBitmap32;
+  b : boolean;
 begin
   DoubleBuffered := True;
+  FShowHideIcon := TBitmap32.Create;
   FCustomSkinSettings := TSharpECustomSkinSettings.Create;
   Buffer := TBitmap32.Create;
   Buffer.DrawMode := dmBlend;
   Buffer.CombineMode := cmMerge;
+
+  TempBmp := TBitmap32.Create;
+  TempBmp.SetSize(22,22);
+  TempBmp.Clear(color32(0,0,0,0));
+
+  TempBmp.DrawMode := dmBlend;
+  TempBmp.CombineMode := cmMerge;
+
+  try
+    ResStream := TResourceStream.Create(HInstance, 'traysettingsicon', RT_RCDATA);
+    try
+      LoadBitmap32FromPng(TempBmp,ResStream,b);
+      FShowHideIcon.Assign(tempBmp);
+    finally
+      ResStream.Free;
+    end;
+  except
+  end;
+
+  TempBmp.Free;   
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(FCustomSkinSettings);
   Buffer.Free;
+  FShowHideIcon.Free;
 end;
 
 procedure TMainForm.FormPaint(Sender: TObject);

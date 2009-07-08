@@ -27,7 +27,7 @@ unit TrayIconsManager;
 
 interface
 
-uses Windows, Dialogs, SysUtils,
+uses Windows, Dialogs, SysUtils, Classes,
      Forms, Controls, Messages, Types, Graphics, Contnrs, ExtCtrls,
      GR32,
      SharpApi,
@@ -36,6 +36,7 @@ uses Windows, Dialogs, SysUtils,
      WinVer,
      declaration,
      DateUtils,
+     JclSysInfo,
      Math,
      SharpThemeApiEx,
      SharpGraphicsUtils,
@@ -70,6 +71,8 @@ type
                    FBInfoFlags : DWORD;
                    FOwner : TObject;
                    FTipIndex : integer;
+                   FHiddenByClient : boolean;
+                   FIsSpecial : boolean;
                  public
                    FTip : ArrayWideChar128;
                    FInfo : ArrayWideChar256;
@@ -88,6 +91,8 @@ type
                    property BInfoFlags : DWORD read FBInfoFlags;
                    property Owner : TObject read FOwner write FOwner;
                    property TipIndex : integer read FTipIndex write FTipIndex;
+                   property HiddenByClient : boolean read FHiddenByClient write FHiddenByClient;
+                   property IsSpecial : boolean read FIsSpecial write FIsSpecial;
                  end;
 
   TTrayClient = class
@@ -120,14 +125,17 @@ type
                    FRepaintHash     : integer;
                    FScreenPos       : TPoint;
                    FLastMessage     : Int64;
+                   FHiddenList      : TStringList;
                    procedure FOnBallonClick(wnd: hwnd; ID: Cardinal; Data: TObject;  Msg: integer);
                    procedure FOnBallonShow(wnd: hwnd; ID: Cardinal; Data: TObject);
                    procedure FOnBallonTimeOut(wnd: hwnd; ID: Cardinal; Data: TObject);
                    procedure FOnTipTimer(Sender : TObject);
                    procedure NewRepaintHash;
                  public
-                   function  GetTrayIconIndex(pWnd : THandle; UID : Cardinal) : integer;
-                   function  GetTrayIcon(pWnd : THandle; UID : Cardinal) : TTrayItem;
+                   function GetHiddenStatus(NIDv6 : TNotifyIconDataV7) : boolean;
+                   procedure UpdateHiddenStatus;
+                   function GetTrayIconIndex(pWnd : THandle; UID : Cardinal) : integer;
+                   function GetTrayIcon(pWnd : THandle; UID : Cardinal) : TTrayItem;
                    procedure AddOrModifyTrayIcon(NIDv6 : TNotifyIconDataV7);
                    procedure AddTrayIcon(NIDv6 : TNotifyIconDataV7);
                    procedure ModifyTrayIcon(NIDv6 : TNotifyIconDataV7);
@@ -135,7 +143,6 @@ type
                    procedure DeleteTrayIconByIndex(index : integer);
                    procedure UpdateTrayIcons;
                    procedure RenderIcons;
-                   procedure SpecialRender(target : TBitmap32; si, ei : integer);
                    function PerformIconAction(x,y,gx,gy,imod : integer; msg : uint; parent : TForm) : boolean;
                    procedure StartTipTimer(x,y,gx,gy : integer);
                    procedure StopTipTimer;
@@ -180,7 +187,8 @@ type
                    property LastTipItem    : TTrayItem read FLastTipItem;
                    property TipGPoint      : TPoint read FTipGPoint;
                    property TipWnd         : hwnd read FTipWnd;
-                   property TipForm        : TForm read FTipForm;  
+                   property TipForm        : TForm read FTipForm;      
+                   property HiddenList     : TStringList read FHiddenList;
                  end;
 
 function AllowSetForegroundWindow(ProcessID : DWORD) : boolean; stdcall; external 'user32.dll' name 'AllowSetForegroundWindow';
@@ -302,6 +310,7 @@ constructor TTrayItem.Create(NIDv6 : TNotifyIconDataV7);
 begin
   FBitmap := TBitmap32.Create;
   FBitmap.SetSize(16,16);
+  FHiddenByClient := False;
   TLinearResampler.Create(FBitmap);
   AssignFromNIDv6(NIDv6);
   Inherited Create;
@@ -359,6 +368,9 @@ begin
 
   Randomize;
   NewRepaintHash;
+  FHiddenList := TStringList.Create;
+  FHiddenList.CaseSensitive := False;
+  FHiddenList.Clear;
   FColorBlend := False;
   FIconAlpha  := 255;
   FBlendAlpha := 255;
@@ -397,17 +409,21 @@ end;
 procedure TTrayClient.InitToolTips(wnd : TObject);
 var
   n : integer;
+  hcount : integer;
   item : TTrayItem;
 begin
   FTipForm := TMainForm(wnd);
   FTipWnd := ToolTipApi.RegisterToolTip(TMainForm(wnd));
+  hcount := 0;
   for n := 0 to FItems.Count - 1 do
   begin
     item := TTrayItem(FItems.Items[n]);
-    ToolTipApi.AddToolTipByCallback(FTipWnd,
-                                    FTipForm,
-                                    item.TipIndex,
-                                    Rect(FTopSpacing+n*(FIconSize + FIconSpacing),FTopOffset,FTopSpacing+n*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopOffset));
+    if item.HiddenByClient then
+      hcount := hcount + 1
+    else ToolTipApi.AddToolTipByCallback(FTipWnd,
+                                         FTipForm,
+                                         item.TipIndex,
+                                         Rect(FTopSpacing+(n-hcount)*(FIconSize + FIconSpacing),FTopOffset,FTopSpacing+(n-hcount)*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopOffset));
   end;
 end;
 
@@ -418,9 +434,12 @@ begin
   if (FTipWnd <> 0) then
   begin
     for i := 0 to FItems.Count - 1 do
-      ToolTipApi.DeleteToolTip(FTipWnd,
-                               FTipForm,
-                               TTrayItem(FItems.Items[i]).TipIndex);
+    begin
+      if not TTrayItem(Fitems.Items[i]).HiddenByClient then      
+        ToolTipApi.DeleteToolTip(FTipWnd,
+                                 FTipForm,
+                                 TTrayItem(FItems.Items[i]).TipIndex);
+    end;
     DestroyWindow(FTipWnd);
   end;
   FTipWnd := 0;
@@ -504,6 +523,7 @@ begin
   FMsgWnd.Free;
   FItems.Free;
   FBitmap.Free;
+  FHiddenList.Free;
   FTipTimer.Enabled := False;
   FTipTimer.Free;
   inherited Destroy;
@@ -642,18 +662,66 @@ begin
   FLastTipItem := nil;
 end;
 
+procedure TTrayClient.UpdateHiddenStatus;
+var
+  n,i : integer;
+  TrayItem : TTrayItem;
+  found : boolean;
+  s : String;
+begin
+  for i := 0 to FItems.Count - 1 do
+  begin
+    TrayItem := TTrayItem(FItems.Items[i]);
+    found := False;
+    for n := 0 to HiddenList.Count - 1 do
+    begin
+      s := GetProcessNameFromWnd(TrayItem.Wnd) + ':' + inttostr(TrayItem.UID);
+      if CompareText(s,HiddenList[n]) = 0 then
+      begin
+        if not TrayItem.HiddenByClient then
+        begin
+          TrayItem.HiddenByClient := True;
+          ToolTipApi.DeleteToolTip(FTipWnd,
+                                   FTipForm,
+                                   TrayItem.TipIndex);
+        end;
+        found := True;
+        break;
+      end;
+    end;
+    if not found then
+      if TrayItem.HiddenByClient then
+      begin
+        TrayItem.HiddenByClient := False;
+        ToolTipApi.AddToolTipByCallback(FTipWnd,
+                                        FTipForm,
+                                        TrayItem.TipIndex,
+                                        Rect(FTopSpacing+(i)*(FIconSize + FIconSpacing),
+                                             FTopOffset,
+                                             FTopSpacing+(i)*(FIconSize + FIconSpacing)+FIconSize,
+                                             FIconSize+FTopOffset));
+      end;
+  end;
+end;
+
 procedure TTrayClient.UpdateTrayIcons;
 var
   i : integer;
+  hcount : integer;
 begin
+  hcount := 0;
   for i := 0 to FItems.Count - 1 do
-    ToolTipApi.UpdateToolTipRect(FTipWnd,
-                                 FTipForm,
-                                 TTrayItem(FItems.Items[i]).TipIndex,
-                                 Rect(FTopSpacing+(i-1)*(FIconSize + FIconSpacing),
-                                      FTopOffset,
-                                      FTopSpacing+(i-1)*(FIconSize + FIconSpacing)+FIconSize,
-                                      FIconSize+FTopOffset));
+  begin
+    if TTrayItem(FItems.Items[i]).HiddenByClient then
+      hcount := hcount + 1
+    else ToolTipApi.UpdateToolTipRect(FTipWnd,
+                                      FTipForm,
+                                      TTrayItem(FItems.Items[i]).TipIndex,
+                                      Rect(FTopSpacing+(i-1-hcount)*(FIconSize + FIconSpacing),
+                                           FTopOffset,
+                                           FTopSpacing+(i-1-hcount)*(FIconSize + FIconSpacing)+FIconSize,
+                                           FIconSize+FTopOffset));
+  end;
 end;
 
 function TTrayClient.GetFreeTipIndex : integer;
@@ -676,25 +744,49 @@ begin
   result := i;
 end;
 
+function TTrayClient.GetHiddenStatus(NIDv6: TNotifyIconDataV7): boolean;
+var
+  hstring : String;
+begin
+  result := False;
+  
+  hstring := GetProcessNameFromWnd(NIDv6.Wnd);
+  if length(trim(hstring)) > 0 then
+  begin
+    hstring := hstring + ':' + inttostr(NIDv6.uID);
+    if HiddenList.IndexOf(hstring) >= 0 then
+      result := True;
+    end;
+end;
+
 procedure TTrayClient.AddTrayIcon(NIDv6 : TNotifyIconDataV7);
 var
   tempItem : TTrayItem;
-  n : integer;
+  n,truecount : integer;
 begin
   tempItem := TTrayItem.Create(NIDv6);
   tempItem.Owner := self;
   tempItem.TipIndex := GetFreeTipIndex;
+  tempItem.HiddenByClient := GetHiddenStatus(NIDv6);
   FItems.Add(TempItem);
-  n := FItems.Count - 1;
-  if FTipWnd <> 0 then
-    ToolTipApi.AddToolTipByCallback(FTipWnd,
-                                    FTipForm,
-                                    tempItem.TipIndex,
-                                    Rect(FTopSpacing+n*(FIconSize + FIconSpacing),
-                                         FTopOffset,
-                                         FTopSpacing+n*(FIconSize + FIconSpacing)+FIconSize,
-                                         FIconSize+FTopOffset));
 
+  truecount := 0;
+  for n := 0 to FItems.Count - 1 do
+    if not TTrayItem(FItems.Items[n]).HiddenByClient then
+      truecount := truecount + 1;
+  n := truecount - 1;
+  
+  if FTipWnd <> 0 then
+  begin
+    if not TempItem.HiddenByClient then
+      ToolTipApi.AddToolTipByCallback(FTipWnd,
+                                      FTipForm,
+                                      tempItem.TipIndex,
+                                      Rect(FTopSpacing+(n)*(FIconSize + FIconSpacing),
+                                           FTopOffset,
+                                           FTopSpacing+(n)*(FIconSize + FIconSpacing)+FIconSize,
+                                           FIconSize+FTopOffset));
+  end;
   RenderIcons;
 end;
 
@@ -802,10 +894,11 @@ begin
     rs := TempItem.AssignFromNIDv6(NIDv6);
     if tceIcon in rs then RenderIcons;
     if tceTip in rs then
-      if FTipWnd <> 0 then      
-         ToolTipApi.UpdateToolTipTextByCallback(FTipWnd,
-                                                FTipForm,
-                                                tempItem.TipIndex);
+      if FTipWnd <> 0 then
+        if not TempItem.HiddenByClient then        
+          ToolTipApi.UpdateToolTipTextByCallback(FTipWnd,
+                                                 FTipForm,
+                                                 tempItem.TipIndex);
   end;
 end;
 
@@ -829,7 +922,7 @@ begin
   if temp = FLastTipItem then
     StopTipTimer;
 
-  if (index < FItems.Count - 1) and (FTipWnd <> 0) then
+  if (index < FItems.Count - 1) and (FTipWnd <> 0) and (not temp.HiddenByClient) then
   begin
     ToolTipApi.DeleteToolTip(FTipWnd,
                              FTipForm,
@@ -855,11 +948,12 @@ var
   tempItem : TTrayItem;
   w, h : integer;
   tempBmp : TBitmap32;
+  truecount, hcount : integer;
 begin
-  for n := FItems.Count -1 downto 0 do
+  for n := FItems.Count - 1 downto 0 do
   begin
     tempItem := TTrayItem(FItems.Items[n]);
-    if not iswindow(tempItem.Wnd) then
+    if (not iswindow(tempItem.Wnd)) and (not tempItem.IsSpecial) then
     begin
       DeleteTrayIconByIndex(n);
       RenderIcons;
@@ -871,7 +965,12 @@ begin
   tempBmp.DrawMode := dmBlend;
   tempBmp.CombineMode := cmMerge;
   try
-    w := FItems.Count * (FIconSize + FIconSpacing)+2*FTopSpacing;
+    truecount := 0;
+    for n := 0 to FItems.Count - 1 do
+      if not TTrayItem(FItems.Items[n]).HiddenByClient then
+        truecount := truecount + 1;
+      
+    w := truecount * (FIconSize + FIconSpacing)+2*FTopSpacing;
     h := FIconSize + 2*FTopSpacing;
     FBitmap.SetSize(w,h);
     FBitmap.Clear(color32(0,0,0,0));
@@ -880,55 +979,16 @@ begin
       FBitmap.FillRect(0,0,FBitmap.Width,FBitmap.Height,FBorderColor);
       FBitmap.FillRect(1,1,FBitmap.Width-1,FBitmap.Height-1,Color32(0,0,0,0));
     end;
-    if FDrawBackground then FBitmap.FillRect(1,1,FBitmap.Width-1,FBitmap.Height-1,FBackgroundColor);
+    if FDrawBackground then
+      FBitmap.FillRect(1,1,FBitmap.Width-1,FBitmap.Height-1,FBackgroundColor);
+    hcount := 0;
     for n := 0 to FItems.Count - 1 do
     begin
       tempItem := TTrayItem(FItems.Items[n]);
-      tempItem.Bitmap.DrawMode := dmBlend;
-      tempItem.Bitmap.MasterAlpha := FIconAlpha;
-      if FColorBlend then
+      if TempItem.HiddenByClient then
+        hcount := hcount + 1
+      else
       begin
-        tempBmp.SetSize(tempItem.Bitmap.Width,tempItem.Bitmap.Height);
-        tempBmp.Clear(color32(0,0,0,0));
-        tempItem.Bitmap.MasterAlpha := 255;
-        tempItem.Bitmap.DrawTo(tempBmp);
-        BlendImageA(tempBmp,FBlendColor,FBlendAlpha);
-        tempBmp.MasterAlpha := FIconAlpha;
-        tempBmp.DrawTo(FBitmap,Rect(FTopSpacing+n*(FIconSize + FIconSpacing),FTopSpacing,FTopSpacing+n*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopSpacing));
-      end else tempItem.Bitmap.DrawTo(FBitmap,Rect(FTopSpacing+n*(FIconSize + FIconSpacing),FTopSpacing,FTopSpacing+n*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopSpacing));
-    end;
-    NewRepaintHash;
-  finally
-    tempBmp.Free;
-  end;
-end;
-
-procedure TTrayClient.SpecialRender(target : TBitmap32; si, ei : integer);
-var
-  n : integer;
-  tempItem : TTrayItem;
-  w, h : integer;
-  tempBmp : TBitmap32;
-begin
-  tempBmp := TBitmap32.Create;
-  tempBmp.DrawMode := dmBlend;
-  tempBmp.CombineMode := cmMerge;
-  try
-    w := abs(ei-si) * (FIconSize + FIconSpacing) + 2*FTopSpacing;
-    h := FIconSize + 2*FTopSpacing;
-    target.SetSize(w,h);
-    target.Clear(color32(0,0,0,0));
-    if FDrawBorder then
-    begin
-      target.FillRect(0,0,target.Width,target.Height,FBorderColor);
-      target.FillRect(1,1,target.Width-1,target.Height-1,Color32(0,0,0,0));
-    end;
-    if FDrawBackground then target.FillRect(1,1,target.Width-1,target.Height-1,FBackgroundColor);
-    for n := 0 to abs(ei-si)-1 do
-    begin
-      if si+n < FItems.Count then
-      begin
-        tempItem := TTrayItem(FItems.Items[si+n]);
         tempItem.Bitmap.DrawMode := dmBlend;
         tempItem.Bitmap.MasterAlpha := FIconAlpha;
         if FColorBlend then
@@ -939,8 +999,8 @@ begin
           tempItem.Bitmap.DrawTo(tempBmp);
           BlendImageA(tempBmp,FBlendColor,FBlendAlpha);
           tempBmp.MasterAlpha := FIconAlpha;
-          tempBmp.DrawTo(target,Rect(FTopSpacing+n*(FIconSize + FIconSpacing),FTopSpacing,FTopSpacing+n*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopSpacing));
-        end else tempItem.Bitmap.DrawTo(target,Rect(FTopSpacing+n*(FIconSize + FIconSpacing),FTopSpacing,FTopSpacing+n*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopSpacing));
+          tempBmp.DrawTo(FBitmap,Rect(FTopSpacing+(n-hcount)*(FIconSize + FIconSpacing),FTopSpacing,FTopSpacing+(n-hcount)*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopSpacing));
+        end else tempItem.Bitmap.DrawTo(FBitmap,Rect(FTopSpacing+(n-hcount)*(FIconSize + FIconSpacing),FTopSpacing,FTopSpacing+(n-hcount)*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopSpacing));
       end;
     end;
     NewRepaintHash;
@@ -982,22 +1042,34 @@ var
   ix,iy : DWORD;
   lp : lparam;
   wp : wparam;
+  hcount : integer;
 begin
   result := false;
+  hcount := 0;
   for n := 0 to FItems.Count - 1 do
   begin
-    if PointInRect(Point(x,y),Rect(FIconSpacing+n*(FIconSize + FIconSpacing),FTopOffset,FIconSpacing+n*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopOffset)) then
+    if TTrayItem(FItems.Items[n]).HiddenByClient then
+      hcount := hcount + 1
+    else
+    if PointInRect(Point(x,y),Rect(FIconSpacing+(n-hcount)*(FIconSize + FIconSpacing),FTopOffset,FIconSpacing+(n-hcount)*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopOffset)) then
     if (n + imod >= 0 ) and (n + imod <= FItems.Count - 1) then
     begin
       tempItem := TTrayItem(FItems.Items[n+imod]);
       if tempItem = nil then
         exit;
 
+      if TempItem.IsSpecial then
+      begin
+        if (msg = WM_LBUTTONUP) or (msg = WM_RBUTTONUP) then
+          TMainForm(FTipForm).ShowHideMenu;
+        exit;
+      end;
+
       // Check if there was a tray icon which displayed a new Vista tooltip
       if (TempItem <> FV4Popup) and (FV4Popup <> nil) then
           CloseVistaInfoTip;
 
-      if not iswindow(tempItem.Wnd) then
+      if (not iswindow(tempItem.Wnd)) and (not tempItem.IsSpecial) then
       begin
         StopTipTimer;
         DeleteTrayIconByIndex(n+imod);
