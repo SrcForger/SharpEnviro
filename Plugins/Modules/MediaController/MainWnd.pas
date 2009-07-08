@@ -53,7 +53,7 @@ type
     procedure btn_pauseClick(Sender: TObject);
     procedure btn_playClick(Sender: TObject);
     procedure btn_nextClick(Sender: TObject);
-    procedure mnOnClick(pItem : TSharpEMenuItem; var CanClose : boolean);
+    procedure mnOnClick(pItem : TSharpEMenuItem; pMenuWnd : TObject; var CanClose : boolean);
     procedure btn_pselectMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
   protected
@@ -336,7 +336,7 @@ begin
   UpdateSelectIcon;
 end;
 
-procedure TMainForm.mnOnClick(pItem: TSharpEMenuItem; var CanClose: boolean);
+procedure TMainForm.mnOnClick(pItem: TSharpEMenuItem; pMenuWnd : TObject; var CanClose: boolean);
 var
   mitem : TMediaPlayerItem;
 begin

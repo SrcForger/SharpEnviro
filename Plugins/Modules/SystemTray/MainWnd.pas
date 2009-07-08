@@ -323,7 +323,6 @@ begin
   else begin
     wnd.Top := R.Top - wnd.Picture.Height - mInterface.SkinInterface.SkinManager.Skin.Menu.LocationOffset.Y;
   end;
-  RegisterShellHookReceiver(wnd.handle);
   wnd.Show;
 end;
 

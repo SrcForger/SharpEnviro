@@ -47,7 +47,7 @@ type
     procedure btnMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure FormShow(Sender: TObject);
-    procedure OnMenuItemClick(pItem : TSharpEMenuItem; var CanClose : boolean);
+    procedure OnMenuItemClick(pItem : TSharpEMenuItem; pMenuWnd : TObject; var CanClose : boolean);
   protected
   private
     sShowIcon : boolean;
@@ -117,7 +117,7 @@ begin
   else UpdateSize;
 end;
 
-procedure TMainForm.OnMenuItemClick(pItem : TSharpEMenuItem; var CanClose : boolean);
+procedure TMainForm.OnMenuItemClick(pItem : TSharpEMenuItem; pMenuWnd : TObject; var CanClose : boolean);
 var
   List : TJclKeyboardLayoutList;
   n : integer;

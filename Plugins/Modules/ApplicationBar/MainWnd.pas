@@ -124,7 +124,7 @@ type
     procedure WMCopyData(var msg : TMessage); message WM_COPYDATA;
     procedure WMAddAppBarTask(var msg : TMessage); message WM_ADDAPPBARTASK;
     procedure WMCommand(var msg: TMessage); message WM_COMMAND;    
-    procedure mnOnClick(pItem : TSharpEMenuItem; var CanClose : boolean);
+    procedure mnOnClick(pItem : TSharpEMenuItem; pMenuWnd : TObject; var CanClose : boolean);
     procedure mnMouseUp(pItem : TSharpEMenuItem; Button: TMouseButton; Shift: TShiftState);
     procedure DisplaySystemMenu(pBtn : TButtonRecord);    
   public
@@ -824,7 +824,7 @@ begin
   end;
 end;
 
-procedure TMainForm.mnOnClick(pItem: TSharpEMenuItem; var CanClose: boolean);
+procedure TMainForm.mnOnClick(pItem: TSharpEMenuItem; pMenuWnd : TObject; var CanClose: boolean);
 begin
   CanClose := True;
 
