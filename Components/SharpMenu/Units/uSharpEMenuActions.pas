@@ -46,9 +46,9 @@ type
     FOwner : TObject;
   public
     constructor Create(pOwner : TObject); reintroduce;
-    procedure OnDesktopObjectClick(pItem : TSharpEMenuItem; var CanClose : boolean);
-    procedure OnLinkClick(pItem : TSharpEMenuItem; var CanClose : boolean);
-    procedure OnFolderclick(pItem : TSharpEMenuItem; var CanClose : boolean);
+    procedure OnDesktopObjectClick(pItem : TSharpEMenuItem; pMenuWnd : TObject; var CanClose : boolean);
+    procedure OnLinkClick(pItem : TSharpEMenuItem; pMenuWnd : TObject; var CanClose : boolean);
+    procedure OnFolderclick(pItem : TSharpEMenuItem; pMenuWnd : TObject; var CanClose : boolean);
     procedure UpdateDynamicDirectory(var pDynList : TObjectList; pDir,
                                      pFilter : String; pSort,pMaxItems : integer; pRecursive : Boolean);
     procedure UpdateDynamicDriveList(var pDynList : TObjectList; pDriveNames : boolean);
@@ -76,7 +76,7 @@ begin
   FOwner := pOwner;
 end;
 
-procedure TSharpEMenuActions.OnDesktopObjectClick(pItem: TSharpEMenuItem; var CanClose: boolean);
+procedure TSharpEMenuActions.OnDesktopObjectClick(pItem: TSharpEMenuItem; pMenuWnd : TObject; var CanClose: boolean);
 var
   wnd : hwnd;
   msg: TSharpE_DataStruct;
@@ -100,13 +100,13 @@ begin
   CanClose := True;
 end;
 
-procedure TSharpEMenuActions.OnFolderclick(pItem : TSharpEMenuItem; var CanClose : boolean);
+procedure TSharpEMenuActions.OnFolderclick(pItem : TSharpEMenuItem; pMenuWnd : TObject; var CanClose : boolean);
 begin
   SharpApi.SharpExecute(pItem.PropList.GetString('Target'));
   CanClose := True;
 end;
 
-procedure TSharpEMenuActions.OnLinkClick(pItem : TSharpEMenuItem; var CanClose : boolean);
+procedure TSharpEMenuActions.OnLinkClick(pItem : TSharpEMenuItem; pMenuWnd : TObject; var CanClose : boolean);
 begin
   SharpApi.SharpExecute(pItem.PropList.GetString('Action'));
   CanClose := True;

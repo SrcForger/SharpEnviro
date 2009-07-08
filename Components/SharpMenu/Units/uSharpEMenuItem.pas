@@ -38,7 +38,7 @@ type
   TSharpEMenuItemState = (msNormal,msHover,msDown);
 
   TSharpEMenuItemMouseEvent = procedure(pItem : TSharpEMenuItem; Button: TMouseButton; Shift: TShiftState) of object;  
-  TSharpEMenuItemClickEvent = procedure(pItem : TSharpEMenuItem; var CanClose : boolean) of object;
+  TSharpEMenuItemClickEvent = procedure(pItem : TSharpEMenuItem; pMenuWnd : TObject; var CanClose : boolean) of object;
   TSharpEMenuItemPaintEvent = procedure(Dst : TBitmap32; px,py : integer;
                                         pItem : TObject; state : TSharpEMenuItemState) of object;
 
@@ -70,7 +70,7 @@ type
     property Icon      : TSharpEMenuIcon read FIcon write FIcon;
     property ItemType  : TSharpEMenuItemType read FItemType;
     property SubMenu   : TObject read FSubMenu write FSubMenu;
-    property OwnerMenu : TObject read FOwnerMenu;
+    property OwnerMenu : TObject read FOwnerMenu write FOwnerMenu;
     property isDynamic : boolean read FDynamic write FDynamic;
     property isVisible : boolean read FVisible write FVisible;
     property isWrapMenu : boolean read FWrapMenu write FWrapMenu;

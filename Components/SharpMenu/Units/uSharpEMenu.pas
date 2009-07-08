@@ -51,6 +51,7 @@ type
     FBackground : TBitmap32;
     FNormalMenu : TBitmap32;
     FSpecialBackground : TBitmap32;
+    FSpecialBackgroundSource : TBitmap32;
     FItemIndex : integer;
     FItemWidth : integer;
     FItemsHeight : TIntArray;
@@ -105,7 +106,7 @@ type
     function PerformMouseMove(px,py : integer; var submenu : boolean) : boolean;
     function PerformMouseDown(Wnd : TObject; Button: TMouseButton; X,Y : integer) : boolean;
     function PerformMouseUp(Wnd : TObject; Button: TMouseButton; Shift: TShiftState; X,Y : integer) : boolean;
-    function PerformClick : boolean;
+    function PerformClick(Wnd : TObject) : boolean;
 
     // Refresh Content
     procedure RefreshDynamicContent;
@@ -118,6 +119,7 @@ type
     property CurrentItem : TSharpEMenuItem read GetCurrentItem;
     property Background : TBitmap32 read FBackground;
     property NormalMenu : TBitmap32 read FNormalMenu;
+    property SpecialBackgroundSource : TBitmap32 read FSpecialBackgroundSource;
     property SkinManager : ISharpESkinManager read FSkinManager;
     property Items : TObjectList read FItems;
     property ItemsHeight : TIntArray read FItemsHeight;
@@ -196,6 +198,8 @@ begin
      FreeAndNil(FNormalMenu);
   if FSpecialBackground <> nil then
      FreeAndNil(FSpecialBackground);
+  if FSpecialBackgroundSource <> nil then
+    FreeAndNil(FSpecialBackgroundSource);     
 
   inherited Destroy;
 end;
@@ -206,6 +210,8 @@ begin
   FreeAndNil(FNormalMenu);
   if FSpecialBackground <> nil then
     FreeAndNil(FSpecialBackground);
+  if FSpecialBackgroundSource <> nil then
+    FreeAndNil(FSpecialBackgroundSource);
 end;
 
 function DynSort(Item1 : Pointer; Item2 : Pointer) : integer;
@@ -575,7 +581,7 @@ begin
   tl.x := menuskin.LROffset.X;
   tl.y := menuskin.TBOffset.X;
 
-  for n := 0 to High(FItemsHeight) do
+  for n := 0 to Min(High(FItemsHeight),FItems.Count-1) do
   begin
     item := TSharpEMenuItem(FItems.Items[n]);
     if (PointInRect(Point(px,py),Rect(0,tl.y,tl.y + tl.x+FItemWidth,tl.y + FItemsHeight[n]))
@@ -836,24 +842,33 @@ begin
   if FSkinManager.Skin.Bar.GlassEffect then
   begin
     ImageCheck(FSpecialBackground,Point(w,h));
+    ImageCheck(FSpecialBackgroundSource,Point(w,h));
     FSpecialBackground.SetSize(w,h);
     FSpecialBackground.Clear(color32(0,0,0,0));
+    if BGBmp = nil then
+    begin
+      FSpecialBackgroundSource.SetSize(w,h);
+      FSpecialBackgroundSource.Clear(color32(0,0,0,0));
+    end;
     dc := GetWindowDC(GetDesktopWindow);
     try
+      Theme := GetCurrentTheme;    
       if BGBmp <> nil then
-        BGBmp.DrawTo(FSpecialBackground,pLeft,pTop)
+        BGBmp.DrawTo(FSpecialBackground,0,0)
       else
-      BitBlt(FSpecialBackground.Canvas.Handle,
-             0,
-             0,
-             FSpecialBackground.Width,
-             FSpecialBackground.Height,
-             dc,
-             pLeft,
-             pTop,
-             SRCCOPY or CAPTUREBLT);
-      Theme := GetCurrentTheme;
-      FSpecialBackground.ResetAlpha;
+      begin
+        BitBlt(FSpecialBackgroundSource.Canvas.Handle,
+               0,
+               0,
+               FSpecialBackgroundSource.Width,
+               FSpecialBackgroundSource.Height,
+               dc,
+               pLeft,
+               pTop,
+               SRCCOPY or CAPTUREBLT);
+        FSpecialBackgroundSource.ResetAlpha;
+        FSpecialBackground.Assign(FSpecialBackgroundSource);
+      end;
       if Theme.Skin.GlassEffect.Blend then
         BlendImageC(FSpecialBackground,Theme.Skin.GlassEffect.BlendColor,Theme.Skin.GlassEffect.BlendAlpha);
       fastblur(FSpecialBackground,Theme.Skin.GlassEffect.BlurRadius,Theme.Skin.GlassEffect.BlurIterations);
@@ -1095,7 +1110,7 @@ begin
   temp.assign(FNormalMenu);
   y := 0;
   try
-    for n := 0 to High(FItemsHeight) do
+    for n := 0 to Min(High(FItemsHeight),FItems.Count-1) do
     begin
       if (n = FItemIndex) and (TSharpEMenuItem(FItems.Items[n]).isVisible) then
       begin
@@ -1127,7 +1142,7 @@ var
   n : integer;
   item : TSharpEMenuItem;
 begin
-  for n := 0 to High(FItemsHeight) do
+  for n := 0 to Min(High(FItemsHeight),FItems.Count-1) do
   begin
     item := TSharpEMenuItem(FItems.Items[n]);
     if item.SubMenu = pSubMenu then
@@ -1151,7 +1166,7 @@ begin
   RenderTo(Dst,0);
 end;
 
-function TSharpEMenu.PerformClick : boolean;
+function TSharpEMenu.PerformClick(Wnd : TObject) : boolean;
 var
   item : TSharpEMenuItem;
   CanClose : boolean;
@@ -1164,7 +1179,7 @@ begin
     begin
       CanClose := False;
       if not ((item.isDynamic) and (item.ItemType = mtSubMenu)) then
-        item.OnClick(item,CanClose);
+        item.OnClick(item,Wnd,CanClose);
       result := CanClose;
       exit;
     end;
@@ -1229,7 +1244,7 @@ begin
   tl.x := menuskin.LROffset.X;
   tl.y := menuskin.TBOffset.X;
 
-  for n := 0 to High(FItemsHeight) do
+  for n := 0 to Min(High(FItemsHeight),FItems.Count-1) do
   begin
     item := TSharpEMenuItem(FItems.Items[n]);
     if (PointInRect(Point(px,py),Rect(0,tl.y,tl.y + tl.x+FItemWidth,tl.y + FItemsHeight[n]))

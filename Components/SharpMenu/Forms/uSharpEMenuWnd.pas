@@ -83,13 +83,16 @@ type
     FSubMenu : TSharpEMenuWnd;
     FPicture : TBitmap32;
     FIsClosing : boolean;
+    FIgnoreNextDeactivate : boolean;
     FRootMenu : boolean;
+    FFreeMenuSub : boolean;
     FFreeMenu : boolean; // Set to True if the menu is a single menu without popups
                          // and if you want it to free itself OnDeactivate
     DC: HDC;
     Blend: TBlendFunction;
     procedure UpdateWndLayer;
   protected
+    procedure WMActivate(var Msg : TMessage); message WM_ACTIVATE;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure WMKillFocus(var Msg: TMessage); message WM_KILLFOCUS;
     procedure WMNCHitTest(var Message: TWMNCHitTest);
@@ -109,6 +112,7 @@ type
     property cOwner : TObject read FOwner;
     property RootMenu : boolean read FRootMenu;
     property FreeMenu : boolean read FFreeMenu write FFreeMenu;
+    property IgnoreNextDeactivate : boolean read FIgnoreNextDeactivate write FIgnoreNextDeactivate;
   end;
 
 implementation
@@ -169,12 +173,16 @@ begin
   FOwner := AOwner;
   FPicture := TBitmap32.Create;
   FParentMenu := nil;
+  FIgnoreNextDeactivate := False;
+  FFreeMenuSub := False;
 
   InitMenu(pMenu,False);
 end;
 
 procedure TSharpEMenuWnd.WMSharpTerminate(var Msg : TMessage);
 begin
+  FFreeMenuSub := False;
+  FFreeMenuSub := False;
   Application.ProcessMessages;
   CloseAll;
 end;
@@ -372,7 +380,7 @@ procedure TSharpEMenuWnd.FormClick(Sender: TObject);
 begin
   if FMenu = nil then exit;
 
-  if FMenu.PerformClick then
+  if FMenu.PerformClick(self) then
      CloseAll
   else SubMenuTimerTimer(nil);
 end;
@@ -397,7 +405,7 @@ begin
   FPicture.Free;
   if (FFreeMenu or (Tag = - 1)) and (SharpEMenuPopups <> nil) then
      FreeAndNil(SharpEMenuPopups);
-  if FRootMenu then
+  if FRootMenu or FreeMenu then
      SharpApi.UnRegisterShellHookReceiver(Handle);
   if FRootMenu then Application.Terminate;
 end;
@@ -407,6 +415,7 @@ begin
   SubMenuCloseTimer.Enabled := False;
   if FSubMenu <> nil then
   begin
+    FSubMenu.FIgnoreNextDeactivate := True;
     FSubMenu.SharpEMenu.RecycleBitmaps;
     FSubMenu.Visible := False;
     FSubMenu.Release;
@@ -430,6 +439,7 @@ begin
     begin
       if (item.SubMenu = FSubMenu.SharpEMenu) then
         exit;
+      FSubMenu.FIgnoreNextDeactivate := True;
       FSubMenu.SharpEMenu.RecycleBitmaps;
       FSubMenu.Visible := False;
       FSubMenu.Release;
@@ -462,7 +472,9 @@ begin
         t := 0;
       end;
       FSubMenu.top := t;
-      FSubMenu.show;
+      FIgnoreNextDeactivate := True;
+      FSubMenu.FFreeMenuSub := FFreeMenu;
+      FSubMenu.Show;
      end;
   end;
 end;
@@ -524,8 +536,56 @@ begin
   OffsetTimer.Enabled := False;
   SubMenuTimer.Enabled := False;
 
-  if (FFreeMenu) then
+  if FIgnoreNextDeactivate then
   begin
+    FIgnoreNextDeactivate := False;
+    exit;
+  end;
+
+  if (FFreeMenu) or (FFreeMenuSub) then
+  begin
+    FFreeMenu := False;
+    FFreeMenuSub := False;
+    if FParentMenu <> nil then
+      FParentMenu.Release
+    else
+    begin
+      Tag := -1;
+      if FMenu <> nil then
+         FreeAndNil(FMenu);
+      Release;
+    end;
+  end;
+end;
+
+
+function GetWndClass(pHandle: hwnd): string;
+var
+  buf: array[0..254] of Char;
+begin
+  GetClassName(pHandle, buf, SizeOf(buf));
+  result := buf;
+end;
+
+procedure TSharpEMenuWnd.WMActivate(var Msg: TMessage);
+var
+  s : String;
+begin
+  Msg.Result := 0;
+  if (not FFreeMenu) and (not FFreeMenuSub) then
+    exit;
+
+  if msg.WParam = WA_INACTIVE then
+  begin
+    s := '';
+    if IsWindow(msg.LParam) then
+      s := GetWndClass(msg.LParam);
+  //  if (CompareText(s,'TSharpEMenuWnd') = 0) then// or (CompareText(s,'TSharpBarMainForm') = 0) then
+    //  exit;
+    if not (CompareText(s,'TSharpBarMainForm') = 0) then
+      exit;
+
+    exit;
     FFreeMenu := False;
     Tag := -1;
     if FMenu <> nil then
@@ -535,9 +595,18 @@ begin
 end;
 
 procedure TSharpEMenuWnd.WMKillFocus(var Msg: TMessage);
+var
+  wclass : String;
 begin
   if (FFreeMenu) then
   begin
+    if Msg.WParam <> 0 then
+    begin
+      wclass := GetWndClass(Msg.Wparam);
+      if CompareText(wclass,'TSharpEMenuWnd') = 0 then
+        exit;
+    end;
+
     FFreeMenu := False;
     Tag := -1;
     if FMenu <> nil then
