@@ -32,6 +32,7 @@ uses
   classes,
   sysutils,
   shellapi,
+  registry,
   messages,
   Contnrs,
   JclSysInfo,
@@ -615,21 +616,42 @@ begin
   end;
 end;
 
+function NETFramework35: Boolean;
+var
+  Reg: TRegistry;
+begin
+  Result := False;
+  Reg := TRegistry.Create(KEY_READ);
+  try
+    Reg.RootKey := HKEY_LOCAL_MACHINE;
+    if Reg.OpenKey('SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5', False) then
+      if Reg.ReadBool('Install') then
+        result := True;
+  finally
+    Reg.Free
+  end;
+end;
+
 procedure StartShellServices;
 var
   Dir : String;
 begin
   Dir := IncludeTrailingBackslash(SharpAPI.GetSharpeDirectory);
   //ShellExecute(Application.Handle, nil, pChar(Dir + 'SharpShellServices.exe'),nil,nil,SW_SHOWNORMAL);
-  SharpExecute(Dir + 'SharpShellServices.exe');
+  if (NETFramework35) and (FileExists(Dir + 'SharpShellServicesNET.exe')) then
+    SharpExecute(Dir + 'SharpShellServicesNET.exe')
+  else SharpExecute(Dir + 'SharpShellServices.exe');
 end;
 
 procedure TerminateShellServices;
 var
   PID : DWord;
 begin
-  PID := GetPidFromProcessName('SharpShellServices.exe');
-  TerminateApp(PID,100);
+  PID := GetPidFromProcessName('SharpShellServicesNET.exe');
+  if PID = INVALID_HANDLE_VALUE then  
+    PID := GetPidFromProcessName('SharpShellServices.exe');
+  if PID <> INVALID_HANDLE_VALUE then  
+    TerminateApp(PID,100);
 end;
 
 procedure Stop;
