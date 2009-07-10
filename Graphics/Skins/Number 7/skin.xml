@@ -9,7 +9,7 @@
   </header>
   <sharpbar>
     <dimension>w,40</dimension>
-    <fsmod>0,0</fsmod>
+    <fsmod>2,2</fsmod>
     <sbmod>0,0</sbmod>
     <paxoffsets>8,8</paxoffsets>
     <payoffsets>0,2</payoffsets>
@@ -43,10 +43,38 @@
         <color>$Special</color>
         <alpha>$Alpha+64</alpha>
       </skinpart>
+      <skinpart>
+        <location>w-1,0</location>
+        <dimension>1,h</dimension>
+        <image>images/Empty.png</image>
+        <color>$Border</color>
+        <alpha>$Alpha+92</alpha>
+      </skinpart>
+      <skinpart>
+        <location>w-2,0</location>
+        <dimension>1,h-2</dimension>
+        <image>images/Empty.png</image>
+        <color>$Special</color>
+        <alpha>$Alpha+64</alpha>
+      </skinpart>
+      <skinpart>
+        <location>0,0</location>
+        <dimension>1,h</dimension>
+        <image>images/Empty.png</image>
+        <color>$Border</color>
+        <alpha>$Alpha+92</alpha>
+      </skinpart>
+      <skinpart>
+        <location>1,0</location>
+        <dimension>1,h-2</dimension>
+        <image>images/Empty.png</image>
+        <color>$Special</color>
+        <alpha>$Alpha+64</alpha>
+      </skinpart>
     </bar>
     <throbber>
-      <location>0,0</location>
-      <locationbottom>0,2</locationbottom>
+      <location>2,0</location>
+      <locationbottom>2,2</locationbottom>
       <dimension>10,38</dimension>
       <normal>
       <skinpart>
