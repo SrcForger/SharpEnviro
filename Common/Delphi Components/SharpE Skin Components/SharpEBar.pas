@@ -764,18 +764,11 @@ begin
       FManager.Skin.Bar.SetBarTop;
     end;
 
-    try
-      fsmod.X := FManager.Skin.Bar.FSMod.X;
-      fsmod.Y := FManager.Skin.Bar.FSMod.Y;
-    except
-      fsmod := Point(0, 0);
-    end;
-    try
-      sbmod.X := FManager.Skin.Bar.SBMod.X;
-      sbmod.Y := FManager.Skin.Bar.SBMod.Y;
-    except
-      fsmod := Point(0, 0);
-    end;
+    fsmod.X := FManager.Skin.Bar.FSMod.X;
+    fsmod.Y := FManager.Skin.Bar.FSMod.Y;
+    sbmod.X := FManager.Skin.Bar.SBMod.X;
+    sbmod.Y := FManager.Skin.Bar.SBMod.Y;
+    
     case FVertPos of
       vpTop: sbmod.Y := 0;
     end;
@@ -1071,6 +1064,7 @@ procedure TSharpEThrobber.DrawManagedSkin(bmp: TBitmap32; Scheme: ISharpEScheme)
 var
   r, CompRect: TRect;
   e : boolean;
+  fsmod : TPoint;
 begin
   if not Assigned(FManager) then
   begin
@@ -1098,9 +1092,23 @@ begin
         height := r.Bottom - r.Top;
         e := True;
       end;
-      if (r.Left <> Left) or (r.Top <> Top) then
+
+      fsmod.X := FManager.Skin.Bar.FSMod.X;
+      fsmod.Y := FManager.Skin.Bar.FSMod.Y;
+
+      case FPar.FHorizPos of
+        hpLeft: fsmod.Y := 0;
+        hpMiddle:
+          begin
+            fsmod.X := 0;
+            fsmod.Y := 0;
+          end;
+        hpRight: fsmod.X := 0;
+      end;
+      
+      if (r.Left - fsmod.X <> Left) or (r.Top <> Top) then
       begin
-        Left := r.Left;
+        Left := r.Left - fsmod.X;
         Top := r.Top;
         e := True;
       end;
