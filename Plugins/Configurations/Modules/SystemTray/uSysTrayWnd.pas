@@ -56,6 +56,9 @@ type
     chkBackground: TJvXPCheckbox;
     chkBorder: TJvXPCheckbox;
     chkBlend: TJvXPCheckbox;
+    Panel1: TPanel;
+    chkIconHiding: TJvXPCheckbox;
+    SharpECenterHeader1: TSharpECenterHeader;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure cb_numbersClick(Sender: TObject);

@@ -88,6 +88,9 @@ begin
   begin
     skin := GetCurrentTheme.Skin.Name;
     skin := StringReplace(skin,' ','_',[rfReplaceAll]);    
+    if ItemNamed['iconhiding'] <> nil then
+      ItemNamed['iconhiding'].BoolValue := chkIconHiding.Checked
+    else Add('iconhiding',chkIconHiding.Checked);
 
     if ItemNamed['skin'] <> nil then
     begin
@@ -150,6 +153,7 @@ begin
   begin
     with PluginHost.Xml.XmlRoot.Items, frmSysTray do
     begin
+      chkIconHiding.Checked := BoolValue('iconhiding',true);
       if ItemNamed['skin'] <> nil then
       begin
          if ItemNamed['skin'].Items.ItemNamed[skin] <> nil then
