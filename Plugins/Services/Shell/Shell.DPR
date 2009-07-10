@@ -1098,6 +1098,7 @@ begin
              + (shellwndmoninfo.rcMonitor.Bottom - shellwndmoninfo.rcMonitor.Top) div 2 then
             phandle.uEdge := ABE_TOP
           else phandle.uEdge := ABE_BOTTOM;
+          phandle.rc := shellwndrect;
         end;
         UnLockAppBarMempory(phandle);
       end;
