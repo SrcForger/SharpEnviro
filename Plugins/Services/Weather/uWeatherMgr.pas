@@ -230,9 +230,9 @@ const
 
 {$REGION 'Private'}
   fsCCUrl =
-    'http://xoap.weather.com/weather/local/%s?&unit=%s&cc=*&link=xoap&par=1003043975&key=d387802826c0d318';
+    'http://xoap.weather.com/weather/local/%s?&unit=%s&cc=*&link=xoap&prod=xoap&par=1003043975&key=d387802826c0d318';
   fsForecastUrl =
-    'http://xoap.weather.com/weather/local/%s?&unit=%s&dayf=10&link=xoap&par=1003043975&key=d387802826c0d318';
+    'http://xoap.weather.com/weather/local/%s?&unit=%s&dayf=10&link=xoap&prod=xoap&par=1003043975&key=d387802826c0d318';
 {$ENDREGION}
 
 begin
