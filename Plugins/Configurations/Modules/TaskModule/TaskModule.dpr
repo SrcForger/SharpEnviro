@@ -102,6 +102,9 @@ begin
         end;
       end;
 
+      // Task Previews
+      chkTaskPreviews.Checked := BoolValue('TaskPreview',True);
+
       // App Bar Windows
       chkAppBar.Checked := BoolValue('AppBarWindow', False);
 
@@ -169,7 +172,7 @@ begin
   begin
     // Clear the list so we don't get duplicates.
     Clear;
-    
+
     // State
     case cbStyle.ItemIndex of
       0: Add('State', integer(tisFull));
@@ -189,6 +192,9 @@ begin
       3: Add('SortType', Integer(stTime));
       4: Add('SortType', Integer(stIcon));
     end;
+
+    // TaskPreview
+    Add('TaskPreview',chkTaskPreviews.Checked);
 
     // App Bar Windows
     Add('AppBarWindow', chkAppBar.Checked);

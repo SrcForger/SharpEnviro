@@ -29,6 +29,7 @@ interface
 
 uses
   Windows,
+  DwmApi,
   Messages,
   SysUtils,
   Variants,
@@ -76,6 +77,7 @@ type
     SharpECenterHeader1: TSharpECenterHeader;
     Panel1: TPanel;
     chkAppBar: TJvXPCheckbox;
+    chkTaskPreviews: TJvXPCheckbox;
     procedure lbItemsResize(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -92,6 +94,7 @@ type
     procedure SettingsChange(Sender: TObject);
     procedure lbItemsGetCellText(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AColText: string);
+    procedure FormShow(Sender: TObject);
   private
     FPluginHost: ISharpCenterHost;
     FTaskFilterList: TFilterItemList;
@@ -142,6 +145,11 @@ end;
 procedure TfrmEdit.FormDestroy(Sender: TObject);
 begin
   FTaskFilterList.Free;
+end;
+
+procedure TfrmEdit.FormShow(Sender: TObject);
+begin
+  chkTaskPreviews.Enabled := DwmApi.DwmCompositionEnabled;
 end;
 
 procedure TfrmEdit.lbItemsClickCheck(Sender: TObject; const ACol: Integer;
