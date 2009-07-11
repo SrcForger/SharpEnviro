@@ -75,15 +75,6 @@ object frmList: TfrmList
     Align = alTop
     DragMode = dmAutomatic
   end
-  object smMain: TSharpESkinManager
-    SkinSource = ssDefault
-    SchemeSource = ssDefault
-    ComponentSkins = [scBar]
-    HandleUpdates = True
-    HandleThemeApiUpdates = True
-    Left = 336
-    Top = 208
-  end
   object pilIcons: TPngImageList
     PngImages = <>
     Left = 252
