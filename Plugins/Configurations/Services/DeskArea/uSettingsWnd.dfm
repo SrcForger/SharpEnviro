@@ -32,7 +32,7 @@ object frmSettings: TfrmSettings
     Color = clWindow
     ParentBackground = False
     TabOrder = 0
-    object cb_automode: TCheckBox
+    object cb_automode: TJvXPCheckbox
       AlignWithMargins = True
       Left = 0
       Top = 0
@@ -43,9 +43,9 @@ object frmSettings: TfrmSettings
       Margins.Right = 5
       Margins.Bottom = 0
       Caption = 'Automated Mode'
+      TabOrder = 0
       Checked = True
       State = cbChecked
-      TabOrder = 0
       OnClick = cb_automodeClick
     end
   end
