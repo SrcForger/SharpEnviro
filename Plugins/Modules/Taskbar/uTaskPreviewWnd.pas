@@ -46,6 +46,7 @@ type
       FAllowHover : boolean;
       FCaption : String;
       FOnPreviewClick : TTaskPreviewClickEvent;
+      FLockKey : integer;
 
       fproc: TFarproc;
 
@@ -68,6 +69,7 @@ type
       property Wnd : hwnd read FWnd;
       property AllowHover : boolean read FAllowHover;
       property OnPreviewClick : TTaskPreviewClickEvent read FOnPreviewClick write FOnPreviewClick;
+      property LockKey : integer read FLockKey write FLockKey;
   end;
 
 function PlainWinProc(hWnd : hwnd; Msg, wParam, lParam: Integer): Cardinal; export; stdcall; forward;
@@ -99,7 +101,8 @@ end;
 
 procedure TTaskPreviewWnd.WndProc(var msg: TMessage);
 var
-  tme: TTRACKMOUSEEVENT;  
+  tme: TTRACKMOUSEEVENT;
+  Locked : boolean;
   TrackMouseEvent_: function(var EventTrack: TTrackMouseEvent): BOOL; stdcall;
 begin
   if Msg.Msg = WM_MOUSEMOVE then
@@ -138,7 +141,11 @@ begin
     begin
       SwitchToThisWindow(FTaskWnd,True);
       HideWindow(False);
-      if not ((Msg.Wparam and MK_SHIFT) = MK_SHIFT) then
+      case FLockKey of
+        0: Locked := ((Msg.Wparam and MK_CONTROL) = MK_CONTROL)
+        else Locked := ((Msg.Wparam and MK_SHIFT) = MK_SHIFT)
+      end;
+      if not Locked then
       begin
         if Assigned(FOnPreviewClick) then
           FOnPreviewClick(self);
@@ -150,7 +157,11 @@ begin
     begin
       PostMessage(FTaskWnd, WM_CLOSE, 0, 0);
       PostThreadMessage(GetWindowThreadProcessID(FTaskWnd, nil), WM_QUIT, 0, 0);
-      if not ((Msg.Wparam and MK_SHIFT) = MK_SHIFT) then
+      case FLockKey of
+        0: Locked := ((Msg.Wparam and MK_CONTROL) = MK_CONTROL)
+        else Locked := ((Msg.Wparam and MK_SHIFT) = MK_SHIFT)
+      end;
+      if not Locked then
       begin
         HideWindow(True);
         if Assigned(FOnPreviewClick) then
@@ -228,6 +239,7 @@ begin
   FHover := False;
   FCaption := pCaption;
   FAllowHover := pAllowHover;
+  FLockKey := 1; // Shift;
 
   // set dwm thumnail properties
   with FdwmThumbProps do
