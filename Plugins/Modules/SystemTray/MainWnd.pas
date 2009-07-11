@@ -420,7 +420,7 @@ begin
           sBorderColorStr     := Value('bordercolor','clwhite');
           sBorderAlpha        := IntValue('borderalpha',255);
           sColorBlend         := BoolValue('colorblend',false);
-          sBlendColorStr      := Value('blendrcolor','clwhite');
+          sBlendColorStr      := Value('blendcolor','clwhite');
           sBlendAlpha         := IntValue('blendalpha',0);
           sIconAlpha          := IntValue('iconalpha',255);
          end;
