@@ -116,7 +116,7 @@ begin
   begin
     with PluginHost.Xml.XmlRoot.Items, frmSettings do
     begin
-      chkTaskPreviews.Checked := BoolValue('TaskPreviews',True);
+      chkTaskPreviews.Checked := BoolValue('TaskPreview',True);
       cbLockKey.ItemIndex := IntValue('TPLockKey',1);
       chkOverlay.Checked := BoolValue('CountOverlay', True);
       cbStyle.ItemIndex := IntValue('State', 2);

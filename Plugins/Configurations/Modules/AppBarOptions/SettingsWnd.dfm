@@ -241,7 +241,7 @@ object frmSettings: TfrmSettings
     object chkTaskPreviews: TJvXPCheckbox
       Left = 0
       Top = 0
-      Width = 369
+      Width = 417
       Height = 21
       Margins.Left = 2
       Margins.Top = 0

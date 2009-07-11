@@ -149,6 +149,9 @@ end;
 
 procedure TfrmEdit.FormShow(Sender: TObject);
 begin
+  if not DwmApi.DwmCompositionEnabled then
+    chkTaskPreviews.Checked := False;
+
   chkTaskPreviews.Enabled := DwmApi.DwmCompositionEnabled;
 end;
 

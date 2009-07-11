@@ -74,7 +74,6 @@ object frmEdit: TfrmEdit
     Borderstyle = bsNone
     Ctl3d = False
     Align = alTop
-    ExplicitTop = 352
   end
   object pnlOptions: TPanel
     Left = 0
@@ -100,7 +99,6 @@ object frmEdit: TfrmEdit
       BevelOuter = bvNone
       ParentColor = True
       TabOrder = 0
-      ExplicitTop = 50
       object lblSort: TLabel
         Left = 205
         Top = 4
@@ -176,7 +174,6 @@ object frmEdit: TfrmEdit
       BevelOuter = bvNone
       ParentColor = True
       TabOrder = 1
-      ExplicitTop = 161
       object chkMinimiseBtn: TJvXPCheckbox
         Left = 0
         Top = -1
@@ -212,7 +209,6 @@ object frmEdit: TfrmEdit
       DescriptionColor = clRed
       Align = alTop
       Color = clWindow
-      ExplicitTop = 3
     end
     object schButtons: TSharpECenterHeader
       AlignWithMargins = True
@@ -230,7 +226,6 @@ object frmEdit: TfrmEdit
       DescriptionColor = clRed
       Align = alTop
       Color = clWindow
-      ExplicitTop = 114
     end
     object schFilters: TSharpECenterHeader
       AlignWithMargins = True
@@ -248,7 +243,6 @@ object frmEdit: TfrmEdit
       DescriptionColor = clRed
       Align = alTop
       Color = clWindow
-      ExplicitTop = 276
     end
     object chkMiddleClose: TJvXPCheckbox
       AlignWithMargins = True
@@ -264,7 +258,6 @@ object frmEdit: TfrmEdit
       State = cbChecked
       Align = alTop
       OnClick = chkFilterTasksClick
-      ExplicitTop = 84
     end
     object chkFilterTasks: TJvXPCheckbox
       AlignWithMargins = True
@@ -280,7 +273,6 @@ object frmEdit: TfrmEdit
       TabOrder = 6
       Align = alTop
       OnClick = chkFilterTasksClick
-      ExplicitTop = 323
     end
     object SharpECenterHeader1: TSharpECenterHeader
       AlignWithMargins = True
@@ -300,7 +292,6 @@ object frmEdit: TfrmEdit
       DescriptionColor = clRed
       Align = alTop
       Color = clWindow
-      ExplicitTop = 200
     end
     object Panel1: TPanel
       AlignWithMargins = True
@@ -316,7 +307,6 @@ object frmEdit: TfrmEdit
       BevelOuter = bvNone
       ParentColor = True
       TabOrder = 8
-      ExplicitTop = 247
       object chkAppBar: TJvXPCheckbox
         Left = 0
         Top = -1
@@ -341,7 +331,6 @@ object frmEdit: TfrmEdit
       State = cbChecked
       Align = alTop
       OnClick = chkFilterTasksClick
-      ExplicitLeft = 0
     end
   end
   object pilListBox: TPngImageList
