@@ -66,6 +66,8 @@ type
     procedure FormCreate(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure PreviewCheckTimerTimer(Sender: TObject);
+    procedure ses_minallMouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer);
   protected
   private
     FMoveToVWMIcon : TBitmap;
@@ -1588,6 +1590,16 @@ begin
 
   FLocked := False;
   RealignComponents(True);
+end;
+
+procedure TMainForm.ses_minallMouseMove(Sender: TObject; Shift: TShiftState; X,
+  Y: Integer);
+begin
+  if FPreviewWnd <> nil then
+  begin
+    FPreviewWnd.Free;
+    FPreviewWnd := nil;
+  end;
 end;
 
 procedure TMainForm.ses_maxallClick(Sender: TObject);
