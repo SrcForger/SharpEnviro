@@ -117,8 +117,6 @@ begin
 end;
 
 function TSharpCenterPlugin.Open: Cardinal;
-var
-  sBar: String;
 begin
   if frmListWnd = nil then frmListWnd := TfrmListWnd.Create(nil);
   

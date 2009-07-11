@@ -271,7 +271,7 @@ end;
 
 procedure TfrmListWnd.FormCreate(Sender: TObject);
 begin
-  FWinHandle := AllocateHWND(CustomWndProc);
+  FWinHandle := Classes.AllocateHWnd(CustomWndProc);
   FModuleList := TObjectList.Create;
   Self.DoubleBuffered := true;
   lbModulesRight.DoubleBuffered := True;
@@ -280,7 +280,7 @@ end;
 
 procedure TfrmListWnd.FormDestroy(Sender: TObject);
 begin
-  DeallocateHWnd(FWinHandle);
+  Classes.DeallocateHWnd(FWinHandle);
   FModuleList.Free;
 end;
 

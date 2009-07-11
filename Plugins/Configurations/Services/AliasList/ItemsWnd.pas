@@ -103,7 +103,7 @@ procedure TfrmItemsWnd.FormCreate(Sender: TObject);
 var
   srvSettingsPath, sAliasPath: string;
 begin
-  FWinHandle := AllocateHWND(CustomWndProc);
+  FWinHandle := Classes.AllocateHWND(CustomWndProc);
   lbItems.DoubleBuffered := True;
 
   srvSettingsPath := GetSharpeUserSettingsPath + 'SharpCore\Services\Exec\';
@@ -125,7 +125,7 @@ end;
 procedure TfrmItemsWnd.FormDestroy(Sender: TObject);
 begin
   FAliasItems.Free;
-  DeallocateHWnd(FWinHandle);
+  Classes.DeallocateHWnd(FWinHandle);
 end;
 
 procedure TfrmItemsWnd.FormShow(Sender: TObject);

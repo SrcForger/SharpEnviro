@@ -60,14 +60,14 @@ begin
 
   // Message Handler
   ae := TActionEvent.Create;
-  h := allocatehwnd(Ae.MessageHandler);
+  h := Classes.AllocateHWnd(Ae.MessageHandler);
 
   ServiceDone('Weather');
 end;
 
 procedure Stop;
 begin
-  DeallocateHWnd(h);
+  Classes.DeallocateHWnd(h);
   AE.Free;
 
   FreeAndNil(WeatherMgr);
