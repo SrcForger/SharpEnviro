@@ -72,11 +72,19 @@ end;
 
 procedure TSharpCenterPlugin.Save;
 begin
-  PluginHost.Xml.XmlRoot.Name := 'ButtonBarModuleSettings';
+  PluginHost.Xml.XmlRoot.Name := 'AppBarModuleSettings';
 
   with PluginHost.Xml.XmlRoot.Items, frmSettings do
   begin
     // Do not clear the list as the AppBarModule also saves to this file.
+
+    if ItemNamed['TaskPreview'] <> nil then
+      ItemNamed['TaskPreview'].BoolValue := chkTaskPreviews.Checked
+    else Add('TaskPreview',chkTaskPreviews.Checked);
+
+    if ItemNamed['TPLockKey'] <> nil then
+      ItemNamed['TPLockKey'].IntValue := cbLockKey.ItemIndex
+    else Add('TPLockKey',cbLockKey.ItemIndex);
 
     if ItemNamed['State'] <> nil then
       ItemNamed['State'].IntValue := cbStyle.ItemIndex
@@ -108,6 +116,8 @@ begin
   begin
     with PluginHost.Xml.XmlRoot.Items, frmSettings do
     begin
+      chkTaskPreviews.Checked := BoolValue('TaskPreviews',True);
+      cbLockKey.ItemIndex := IntValue('TPLockKey',1);
       chkOverlay.Checked := BoolValue('CountOverlay', True);
       cbStyle.ItemIndex := IntValue('State', 2);
       chkVWM.Checked := BoolValue('VWMOnly', False);

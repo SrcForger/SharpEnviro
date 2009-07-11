@@ -29,7 +29,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  StdCtrls, SharpApi, SharpECenterHeader,
+  StdCtrls, SharpApi, SharpECenterHeader, DwmApi,
   ExtCtrls, Menus, SharpEGaugeBoxEdit,
   JvExControls, JvXPCore, JvXPCheckCtrls, ISharpCenterHostUnit;
 
@@ -47,8 +47,15 @@ type
     SharpECenterHeader2: TSharpECenterHeader;
     Panel3: TPanel;
     chkMonitor: TJvXPCheckbox;
+    SharpECenterHeader3: TSharpECenterHeader;
+    Panel4: TPanel;
+    chkTaskPreviews: TJvXPCheckbox;
+    Panel5: TPanel;
+    Label1: TLabel;
+    cbLockKey: TComboBox;
     procedure CheckClick(Sender: TObject);
     procedure cbStyleClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     FPluginHost: ISharpCenterHost;
     procedure UpdateSettings;
@@ -75,6 +82,13 @@ end;
 procedure TfrmSettings.CheckClick(Sender: TObject);
 begin
   UpdateSettings;
+end;
+
+procedure TfrmSettings.FormShow(Sender: TObject);
+begin
+  chkTaskPreviews.Enabled := DwmApi.DwmCompositionEnabled;
+  cbLockKey.Enabled := chkTaskPreviews.Enabled;
+  Label1.Enabled := chkTaskPreviews.Enabled;
 end;
 
 procedure TfrmSettings.UpdateSettings;
