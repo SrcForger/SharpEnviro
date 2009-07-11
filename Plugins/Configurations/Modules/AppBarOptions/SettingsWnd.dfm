@@ -94,7 +94,6 @@ object frmSettings: TfrmSettings
     DescriptionColor = clRed
     Align = alTop
     Color = clWindow
-    ExplicitTop = 78
   end
   object Panel1: TPanel
     AlignWithMargins = True
@@ -111,7 +110,6 @@ object frmSettings: TfrmSettings
     Color = clWindow
     ParentBackground = False
     TabOrder = 3
-    ExplicitTop = 125
     object chkOverlay: TJvXPCheckbox
       Left = 0
       Top = 0
@@ -144,7 +142,6 @@ object frmSettings: TfrmSettings
     Color = clWindow
     ParentBackground = False
     TabOrder = 4
-    ExplicitTop = 203
     object chkVWM: TJvXPCheckbox
       Left = 0
       Top = 0
@@ -176,7 +173,6 @@ object frmSettings: TfrmSettings
     DescriptionColor = clRed
     Align = alTop
     Color = clWindow
-    ExplicitTop = 156
   end
   object Panel3: TPanel
     AlignWithMargins = True
@@ -193,7 +189,6 @@ object frmSettings: TfrmSettings
     Color = clWindow
     ParentBackground = False
     TabOrder = 6
-    ExplicitTop = 234
     object chkMonitor: TJvXPCheckbox
       Left = 0
       Top = 0
@@ -227,8 +222,6 @@ object frmSettings: TfrmSettings
     DescriptionColor = clRed
     Align = alTop
     Color = clWindow
-    ExplicitLeft = 10
-    ExplicitTop = 68
   end
   object Panel4: TPanel
     AlignWithMargins = True
@@ -245,8 +238,6 @@ object frmSettings: TfrmSettings
     Color = clWindow
     ParentBackground = False
     TabOrder = 8
-    ExplicitLeft = 0
-    ExplicitTop = 116
     object chkTaskPreviews: TJvXPCheckbox
       Left = 0
       Top = 0
@@ -286,7 +277,6 @@ object frmSettings: TfrmSettings
     ParentShowHint = False
     ShowHint = True
     TabOrder = 9
-    ExplicitLeft = 61
     object Label1: TLabel
       Left = 0
       Top = 3
@@ -324,9 +314,8 @@ object frmSettings: TfrmSettings
       Text = 'Shift'
       OnClick = cbStyleClick
       Items.Strings = (
-        'Alt'
-        'Shift'
-        'Ctrl')
+        'Ctrl'
+        'Shift')
     end
   end
 end
