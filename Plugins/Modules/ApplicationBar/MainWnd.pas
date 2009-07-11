@@ -94,6 +94,7 @@ type
     sMonitorOnly : boolean;
     sVWMOnly     : boolean;
     sTaskPreview : boolean;
+    sTPLockKey   : integer;
     FButtonSpacing : integer;
     sCountOverlay : boolean;
     FButtonList  : array of TButtonRecord;
@@ -645,6 +646,7 @@ begin
   sVWMOnly     := False;
   sMonitorOnly := False;
   sTaskPreview := True;
+  sTPLockKey := 1; // (Shift)
 
   XML := TJclSimpleXML.Create;
   try
@@ -661,6 +663,7 @@ begin
       sVWMOnly := BoolValue('VWMOnly',sVWMOnly);
       sMonitorOnly := BoolValue('MonitorOnly',sMonitorOnly);
       sTaskPreview := BoolValue('TaskPreview',sTaskPreview);
+      sTPLockKey   := IntValue('TPLockKey',sTPLockKey);
       if ItemNamed['Apps'] <> nil then
       with ItemNamed['Apps'].Items do
            for n := 0 to Count - 1 do
@@ -994,7 +997,8 @@ var
   item : TTaskPreviewWnd;
   valid : boolean;
   KS: TKeyboardState;
-  SS: TShiftState;  
+  SS: TShiftState;
+  LockKey : integer;
 begin
   if GetCursorPosSecure(cursorPos) then
     CPos := ScreenToClient(cursorPos)
@@ -1002,7 +1006,11 @@ begin
 
   GetKeyboardState(KS);
   SS := KeyboardStateToShiftState(KS);
-  if (GetAsyncKeyState(VK_SHIFT) <> 0) then
+  case sTPLockKey of
+    0: LockKey := VK_CONTROL;
+    else LockKey := VK_SHIFT;
+  end;
+  if (GetAsyncKeyState(LockKey) <> 0) then
     exit;
 
   if not PointInRect(CPos,Rect(-5,-5,Width+5,Height+5)) then
@@ -1065,6 +1073,10 @@ begin
     tisMini   : sAutoWidth := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Mini.Dimension.X;
     else sAutoWidth := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Full.Dimension.X;
   end;
+
+  if not sTaskPreview then
+    ToolTipApi.EnableToolTip(FHintWnd)
+  else ToolTipApi.DisableToolTip(FHintWnd);
 
   sb_config.Visible := (length(FButtonList) = 0);
   if sb_config.Visible then
@@ -1267,6 +1279,7 @@ begin
                                        TaskItem.Caption,
                                        Animate,
                                        (wndlist.Count > 1));
+        item.LockKey := sTPLockKey;
         item.OnPreviewClick := OnPreviewClick;                                                
         FPreviewWnds.Add(item);
       end;
@@ -1289,6 +1302,7 @@ begin
                                          TaskItem.Caption,
                                          Animate,
                                          (wndlist.Count > 1));
+          item.LockKey := sTPLockKey;
           item.OnPreviewClick := OnPreviewClick;
           FPreviewWnds.Add(item);
         end;          
