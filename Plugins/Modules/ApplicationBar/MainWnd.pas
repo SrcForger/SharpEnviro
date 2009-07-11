@@ -270,7 +270,7 @@ begin
   PostMessage(SysMenuButton.wnd, WM_SYSCOMMAND, msg.wparam, msg.lparam);
 
   VWMCount := GetVWMCount;
-  if msg.WParam > 512 then // Remove From Appbar message
+  if msg.WParam = $EFFF then // Remove From Appbar message
   begin
     startindex := -1;
     for n := 0 to High(FButtonList) do
