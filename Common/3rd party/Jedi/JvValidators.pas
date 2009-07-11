@@ -21,15 +21,22 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id: JvValidators.pas 11400 2007-06-28 21:24:06Z ahuser $
+// $Id: JvValidators.pas 11893 2008-09-09 20:45:14Z obones $
 
 unit JvValidators;
 
 {$I jvcl.inc}
+// NB: this is here so a user can disable DB support if he wants to
+// NB2: this need not be defined in the design package because GetDataLink is
+// defined differently depending on this define
+{.$DEFINE JVVALIDATORS_SUPPORTS_DBCONTROLS}
 
 interface
 
 uses
+  {$IFDEF JVVALIDATORS_SUPPORTS_DBCONTROLS}
+  DB,
+  {$ENDIF JVVALIDATORS_SUPPORTS_DBCONTROLS}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
@@ -74,6 +81,7 @@ type
     FErrorControl: TControl;
     FValidator: TJvValidators;
     FOnValidateFailed: TNotifyEvent;
+
     procedure SetControlToValidate(Value: TControl);
     procedure SetErrorControl(Value: TControl);
   protected
@@ -91,7 +99,14 @@ type
     // get info on a registered class
     class procedure GetBaseValidatorInfo(Index: Integer; var DisplayName: string;
       var ABaseValidatorClass: TJvBaseValidatorClass);
+
   public
+    {$IFDEF JVVALIDATORS_SUPPORTS_DBCONTROLS}
+    // return a TDataLink if the control is a DB control or nil if is not
+    function GetDataLink(AControl:TControl):TDataLink;virtual;
+    {$ELSE}
+    function GetDataLink(AControl:TControl):TObject;virtual;
+    {$ENDIF JVVALIDATORS_SUPPORTS_DBCONTROLS}
     // register a new base validator class. DisplayName is used by the design-time editor.
     // A class with an empty DisplayName will not sshow up in the editor
     class procedure RegisterBaseValidator(const DisplayName: string; AValidatorClass: TJvBaseValidatorClass);
@@ -103,7 +118,7 @@ type
     function HasParent: Boolean; override;
     property Value: Variant read GetValidationPropertyValue;
   published
-    property Valid: Boolean read GetValid write SetValid;
+    property Valid: Boolean read GetValid write SetValid default true;
     // the control that is used to align the error indicator (nil means that the ControlToValidate should be used)
     property ErrorControl: TControl read FErrorControl write SetErrorControl;
     // the control to validate
@@ -112,7 +127,7 @@ type
     property PropertyToValidate: string read FPropertyToValidate write FPropertyToValidate;
     // make this validator a part of a group so it can be validated separately using Validate(GroupName)
     property GroupName:string read FGroupName write FGroupName;
-    property Enabled: Boolean read FEnabled write FEnabled;
+    property Enabled: Boolean read FEnabled write FEnabled default true;
     // the message to display in case of error
     property ErrorMessage: string read FErrorMessage write FErrorMessage;
     // triggered when Valid is set to False
@@ -132,9 +147,11 @@ type
     FOperator: TJvValidateCompareOperator;
   protected
     procedure Validate; override;
+  public
+    constructor Create(AOwner: TComponent); override;
   published
     property ValueToCompare: Variant read FValueToCompare write FValueToCompare;
-    property Operator: TJvValidateCompareOperator read FOperator write FOperator;
+    property Operator: TJvValidateCompareOperator read FOperator write FOperator default vcoEqual;
   end;
 
   TJvRangeValidator = class(TJvBaseValidator)
@@ -168,6 +185,7 @@ type
   published
     property OnValidate: TJvCustomValidateEvent read FOnValidate write FOnValidate;
   end;
+  
   // compares the properties of two controls
   // if CompareToControl implements the IJvValidationProperty interface, the value
   // to compare is taken from GetValidationPropertyValue, otherwise RTTI is used to get the
@@ -178,6 +196,7 @@ type
     FCompareToProperty: string;
     FOperator: TJvValidateCompareOperator;
     FAllowNull: Boolean;
+    procedure SetCompareToControl(const Value: TControl);
   protected
     procedure Validate; override;
     function GetPropertyValueToCompare: Variant;
@@ -186,9 +205,9 @@ type
     constructor Create(AOwner: TComponent); override;
 
   published
-    property CompareToControl: TControl read FCompareToControl write FCompareToControl;
+    property CompareToControl: TControl read FCompareToControl write SetCompareToControl;
     property CompareToProperty: string read FCompareToProperty write FCompareToProperty;
-    property Operator: TJvValidateCompareOperator read FOperator write FOperator;
+    property Operator: TJvValidateCompareOperator read FOperator write FOperator default vcoEqual;
     property AllowNull: Boolean read FAllowNull write FAllowNull default True;
   end;
 
@@ -264,15 +283,22 @@ type
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jvcl.svn.sourceforge.net/svnroot/jvcl/branches/JVCL3_33_PREPARATION/run/JvValidators.pas $';
-    Revision: '$Revision: 11400 $';
-    Date: '$Date: 2007-06-28 23:24:06 +0200 (jeu., 28 juin 2007) $';
+    RCSfile: '$URL: https://jvcl.svn.sourceforge.net/svnroot/jvcl/branches/JVCL3_36_PREPARATION/run/JvValidators.pas $';
+    Revision: '$Revision: 11893 $';
+    Date: '$Date: 2008-09-09 22:45:14 +0200 (mar., 09 sept. 2008) $';
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
+
+const
+  cValidatorsDBValue = '(DBValue)';
+
 implementation
 
 uses
+  {$IFDEF JVVALIDATORS_SUPPORTS_DBCONTROLS}
+  DBCtrls,
+  {$ENDIF JVVALIDATORS_SUPPORTS_DBCONTROLS}
   Masks,
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
@@ -388,14 +414,24 @@ function TJvBaseValidator.GetValidationPropertyValue: Variant;
 var
   ValProp: IJvValidationProperty;
   PropInfo: PPropInfo;
+  {$IFDEF JVVALIDATORS_SUPPORTS_DBCONTROLS}
+  DataLink:TDataLink;
+  {$ENDIF JVVALIDATORS_SUPPORTS_DBCONTROLS}
 begin
   Result := Null;
   if FControlToValidate <> nil then
   begin
     if Supports(FControlToValidate, IJvValidationProperty, ValProp) then
       Result := ValProp.GetValidationPropertyValue
-    else
-    if FPropertyToValidate <> '' then
+    {$IFDEF JVVALIDATORS_SUPPORTS_DBCONTROLS}
+    else if AnsiSameText(FPropertyToValidate,cValidatorsDBValue) then
+    begin
+      DataLink := GetDataLink(FControlToValidate);
+      if (DataLink is TFieldDataLink) and (TFieldDataLink(DataLink).Field <> nil) then
+        Result := TFieldDataLink(DataLink).Field.DisplayText;
+    end
+    {$ENDIF JVVALIDATORS_SUPPORTS_DBCONTROLS}
+    else if FPropertyToValidate <> '' then
     begin
       PropInfo := GetPropInfo(FControlToValidate, FPropertyToValidate);
       if (PropInfo <> nil) and (PropInfo^.GetProc <> nil) then
@@ -448,8 +484,13 @@ begin
     if FControlToValidate <> nil then
     begin
       FControlToValidate.FreeNotification(Self);
-      if Supports(FControlToValidate, IJvValidationProperty, Obj) then
-        PropertyToValidate := Obj.GetValidationPropertyName;
+      if not (csLoading in ComponentState) then
+      begin
+        if Supports(FControlToValidate, IJvValidationProperty, Obj) then
+          PropertyToValidate := Obj.GetValidationPropertyName
+        else
+          PropertyToValidate := '';
+      end;
     end;
   end;
 end;
@@ -504,6 +545,22 @@ begin
     FOnValidateFailed(Self);
 end;
 
+{$IFDEF JVVALIDATORS_SUPPORTS_DBCONTROLS}
+function TJvBaseValidator.GetDataLink(AControl:TControl): TDataLink;
+begin
+  if AControl <> nil then
+    Result := TDataLink(AControl.Perform(CM_GETDATALINK, 0, 0))
+  else
+    Result := nil;
+end;
+{$ELSE}
+function TJvBaseValidator.GetDataLink(AControl:TControl):TObject;
+begin
+  Result := nil;
+end;
+{$ENDIF JVVALIDATORS_SUPPORTS_DBCONTROLS}
+
+
 //=== { TJvRequiredFieldValidator } ==========================================
 
 procedure TJvRequiredFieldValidator.Validate;
@@ -513,7 +570,7 @@ begin
   R := GetValidationPropertyValue;
   case VarType(R) of
     varDate:
-      Valid := VarCompareValue(R, 0) <> vrEqual; // zero is the invalid valid
+      Valid := VarCompareValue(R, 0) <> vrEqual; // zero is the invalid value for dates
     varSmallint,
     varInteger,
     varSingle,
@@ -543,8 +600,8 @@ end;
 
 //=== { TJvRegularExpressionValidator } ======================================
 
-function MatchesMask(const Filename, Mask: string;
-  const SearchFlags: TSearchFlags = [sfCaseSensitive]): Boolean;
+function MatchesMask(const Filename, Mask: string{;
+  const SearchFlags: TSearchFlags = [sfCaseSensitive]}): Boolean;
 {var
   URE: TURESearch;
   SL: TWideStringList;}
@@ -578,6 +635,12 @@ begin
 end;
 
 //=== { TJvCompareValidator } ================================================
+
+constructor TJvCompareValidator.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FOperator := vcoEqual;
+end;
 
 procedure TJvCompareValidator.Validate;
 var
@@ -621,6 +684,7 @@ constructor TJvControlsCompareValidator.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FAllowNull := True;
+  FOperator := vcoEqual;
 end;
 
 function TJvControlsCompareValidator.GetPropertyValueToCompare: Variant;
@@ -649,6 +713,26 @@ begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = CompareToControl) then
     CompareToControl := nil;
+end;
+
+procedure TJvControlsCompareValidator.SetCompareToControl(const Value: TControl);
+var
+  Obj: IJvValidationProperty;
+begin
+  if FCompareToControl <> Value then
+  begin
+    if FCompareToControl <> nil then
+      FCompareToControl.RemoveFreeNotification(Self);
+    FCompareToControl := Value;
+    if FCompareToControl <> nil then
+    begin
+      FCompareToControl.FreeNotification(Self);
+      if Supports(FCompareToControl, IJvValidationProperty, Obj) then
+        CompareToProperty := Obj.GetValidationPropertyName
+      else
+        CompareToProperty := '';
+    end;
+  end;
 end;
 
 procedure TJvControlsCompareValidator.Validate;
