@@ -262,22 +262,27 @@ var
   p : single;
   TypeString : String;
 begin
-  CurrentVolume := SoundControls.GetMasterVolume(mixer);
-  CurrentVolume := Min(65535,CurrentVolume + 65535 div 20);
-  SoundControls.SetMasterVolume(CurrentVolume,mixer);
+  try
+    CurrentVolume := SoundControls.GetMasterVolume(mixer);
+    CurrentVolume := Min(65535,CurrentVolume + 65535 div 20);
+    SoundControls.SetMasterVolume(CurrentVolume,mixer);
 
-  p := CurrentVolume / 65535 * 100;
-  for n := 0 to 20 do
-  begin
-    if n <= round(p / 5) then
-      OSDString := OSDString + '|'
-    else OSDString := OSDString + '.';
+    p := CurrentVolume / 65535 * 100;
+    for n := 0 to 20 do
+    begin
+      if n <= round(p / 5) then
+        OSDString := OSDString + '|'
+      else OSDString := OSDString + '.';
+    end;
+    case mixer of
+      MIXERLINE_COMPONENTTYPE_SRC_FIRST: TypeString := 'Microphone'
+      else TypeString := 'Volume';
+    end;
+    ShowOSD(TypeString + ' ' + OSDString + ' ' + inttostr(round(p)) + '%');
+  except
+    // Squash any exception as there may not be an audio device
+    // attached or the audio service may be disabled.
   end;
-  case mixer of
-    MIXERLINE_COMPONENTTYPE_SRC_FIRST: TypeString := 'Microphone'
-    else TypeString := 'Volume';
-  end;
-  ShowOSD(TypeString + ' ' + OSDString + ' ' + inttostr(round(p)) + '%');
 end;
 
 procedure VolumeDown(mixer : integer);
@@ -288,22 +293,27 @@ var
   n : integer;
   p : single;
 begin
-  CurrentVolume := SoundControls.GetMasterVolume(mixer);
-  CurrentVolume := Max(0,CurrentVolume - 65535 div 20);
-  SoundControls.SetMasterVolume(CurrentVolume,mixer);
+  try
+    CurrentVolume := SoundControls.GetMasterVolume(mixer);
+    CurrentVolume := Max(0,CurrentVolume - 65535 div 20);
+    SoundControls.SetMasterVolume(CurrentVolume,mixer);
 
-  p := CurrentVolume / 65535 * 100;
-  for n := 0 to 20 do
-  begin
-    if n <= round(p / 5) then
-      OSDString := OSDString + '|'
-    else OSDString := OSDString + '.';
+    p := CurrentVolume / 65535 * 100;
+    for n := 0 to 20 do
+    begin
+      if n <= round(p / 5) then
+        OSDString := OSDString + '|'
+      else OSDString := OSDString + '.';
+    end;
+    case mixer of
+      MIXERLINE_COMPONENTTYPE_SRC_FIRST: TypeString := 'Microphone'
+      else TypeString := 'Volume';
+    end;
+    ShowOSD(TypeString + ' ' + OSDString + ' ' + inttostr(round(p)) + '%');
+  except
+    // Squash any exception as there may not be an audio device
+    // attached or the audio service may be disabled.
   end;
-  case mixer of
-    MIXERLINE_COMPONENTTYPE_SRC_FIRST: TypeString := 'Microphone'
-    else TypeString := 'Volume';
-  end;
-  ShowOSD(TypeString + ' ' + OSDString + ' ' + inttostr(round(p)) + '%');
 end;
 
 procedure VolumeMute(mixer : integer);
@@ -311,16 +321,21 @@ var
   Mute : boolean;
   TypeString : String;
 begin
-  Mute := SoundControls.GetMasterMuteStatus(mixer);
-  Mute := not Mute;
-  SoundControls.MuteMaster(mixer);
-  case mixer of
-    MIXERLINE_COMPONENTTYPE_SRC_FIRST: TypeString := 'Microphone'
-    else TypeString := 'Volume';
+  try
+    Mute := SoundControls.GetMasterMuteStatus(mixer);
+    Mute := not Mute;
+    SoundControls.MuteMaster(mixer);
+    case mixer of
+      MIXERLINE_COMPONENTTYPE_SRC_FIRST: TypeString := 'Microphone'
+      else TypeString := 'Volume';
+    end;
+    if Mute then
+      ShowOSD(TypeString + ' Mute')
+    else ShowOSD(TypeString + ' Enabled');
+  except
+    // Squash any exception as there may not be an audio device
+    // attached or the audio service may be disabled.
   end;
-  if Mute then
-    ShowOSD(TypeString + ' Mute')
-  else ShowOSD(TypeString + ' Enabled');
 end;
 
 procedure TActionEvent.MessageHandler(var msg: TMessage);
