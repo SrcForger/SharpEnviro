@@ -31,7 +31,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, GR32, GR32_PNG, SharpEBaseControls, SharpEButton,
   ExtCtrls, SharpEProgressBar, JclSimpleXML, SharpApi, Menus,
-  Math, SoundControls, MMSystem, uISharpBarModule;
+  Math, SoundControls, MMSystem, uISharpBarModule, uVistaFuncs;
 
 
 type
@@ -62,6 +62,7 @@ type
     lastvolume : integer;
     lastmute : boolean;
     procedure LoadIcons;
+    procedure AdjustVolume(value: Integer; mixer: Integer);
   public
     mInterface : ISharpBarModule;
     procedure LoadSettings;
@@ -251,65 +252,114 @@ var
   i : integer;
   v : real;
 begin
-  i := Integer(GetMasterVolume(sMixer));
-  if (i<>lastvolume) or (GetMasterMuteStatus(sMixer)<>lastmute) or forceupdate then
-  begin
-    lastvolume := i;
-    lastmute   := GetMasterMuteStatus(sMixer);
-    pbar.Value := i;
-    v := i / pbar.Max;
-    if (lastmute) then mute.Glyph32.Assign(FDMute)
-       else if v > 0.8 then mute.Glyph32.Assign(FDHigh)
-       else if v > 0.3 then mute.Glyph32.Assign(FDMed)
-       else mute.Glyph32.Assign(FDLow);
+  try
+    i := Integer(GetMasterVolume(sMixer));
+    if (i<>lastvolume) or (GetMasterMuteStatus(sMixer)<>lastmute) or forceupdate then
+    begin
+      lastvolume := i;
+      lastmute   := GetMasterMuteStatus(sMixer);
+      pbar.Value := i;
+      v := i / pbar.Max;
+      if (lastmute) then mute.Glyph32.Assign(FDMute)
+         else if v > 0.8 then mute.Glyph32.Assign(FDHigh)
+         else if v > 0.3 then mute.Glyph32.Assign(FDMed)
+         else mute.Glyph32.Assign(FDLow);
+      mute.UpdateSkin;
+    end;
+    forceupdate := False;
+    ClockTimer.Interval := 250;
+  except
+    // We couldn't get a device so increase the time to 30 seconds
+    // so we don't keep trying every 250 milliseconds.
+    ClockTimer.Interval := 30000;
+    // Assign some defaults in case there is no audio device attached.
+    mute.Glyph32.Assign(FDMute);
     mute.UpdateSkin;
+    pbar.Value := 0;
+    // Force an update incase the audio service was off and
+    // the user turned it back on or a device was added.
+    forceupdate := True;
   end;
-  forceupdate := False;
 end;
 
 procedure TMainForm.muteClick(Sender: TObject);
 begin
-  MuteMaster(sMixer);
+  try
+    MuteMaster(sMixer);
+  except
+    // Squash any exceptions that may occur here as some
+    // systems may not have an audio device attached.
+  end;
   ClockTimer.OnTimer(ClockTimer);
 end;
 
 procedure TMainForm.cshapeMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
+var
+  newValue : Integer;
 begin
   cshape.Tag := 1;
-  if x>cshape.Width then pbar.Value := pbar.Max
-     else if x<0 then pbar.Value := 0
-     else pbar.Value := round((X/cshape.Width) * pbar.Max);
-  SetMasterVolume(pbar.Value,(sMixer));
+  if x>cshape.Width then newValue := pbar.Max
+     else if x<0 then newValue := 0
+     else newValue := round((X/cshape.Width) * pbar.Max);
+
+  AdjustVolume(newValue, sMixer);
+  // Only update the postion if we were able update the volume.
+  pbar.Value := newValue;
 end;
 
 procedure TMainForm.cshapeMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
+var
+  newValue : Integer;
 begin
   if cshape.Tag = 1 then
   begin
-    if x>cshape.Width then pbar.Value := pbar.Max
-       else if x<0 then pbar.Value := 0
-       else pbar.Value := round((X/cshape.Width) * pbar.Max);
-    SetMasterVolume(pbar.Value,(sMixer));
+    if x>cshape.Width then newValue := pbar.Max
+       else if x<0 then newValue := 0
+       else newValue := round((X/cshape.Width) * pbar.Max);
+
+    AdjustVolume(newValue, sMixer);
+    // Only update the postion if we were able update the volume.
+    pbar.Value := newValue;
   end;
 end;
 
 procedure TMainForm.cshapeMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
+var
+  newValue : Integer;
 begin
   cshape.Tag := 0;
-  if x>cshape.Width then pbar.Value := pbar.Max
-     else if x<0 then pbar.Value := 0
-     else pbar.Value := round((X/cshape.Width) * pbar.Max);
-  SetMasterVolume(pbar.Value,(sMixer));
+  if x>cshape.Width then newValue := pbar.Max
+     else if x<0 then newValue := 0
+     else newValue := round((X/cshape.Width) * pbar.Max);
+
+  AdjustVolume(newValue, sMixer);
+  // Only update the postion if we were able update the volume.
+  pbar.Value := newValue;
+end;
+
+procedure TMainForm.AdjustVolume(value: Integer; mixer: Integer);
+begin
+  try
+    SetMasterVolume(value, mixer);
+  except
+    // Squash any exceptions that may occur here as some
+    // systems may not have an audio device attached.
+  end;
 end;
 
 procedure TMainForm.muteMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   if Button = mbRight then
-    SharpApi.SharpExecute('sndvol32.exe');
+  begin
+    if IsWindowsVista or IsWindows7 then
+      SharpApi.SharpExecute('sndvol.exe')
+    else
+      SharpApi.SharpExecute('sndvol32.exe');
+  end;
 end;
 
 procedure TMainForm.FormPaint(Sender: TObject);
