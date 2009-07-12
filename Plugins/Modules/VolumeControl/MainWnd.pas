@@ -215,6 +215,10 @@ begin
   if ClockTimer.Enabled then
     ClockTimer.OnTimer(ClockTimer);
 
+  mute.Width := mInterface.SkinInterface.SkinManager.Skin.Button.WidthMod;
+  if mute.Glyph32 <> nil then
+    mute.Width := mute.Width + mute.GetIconWidth;
+        
   newWidth := sWidth + mute.Width + 6;
   mInterface.MinSize := NewWidth;
   mInterface.MaxSize := NewWidth;  
