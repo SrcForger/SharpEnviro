@@ -139,6 +139,7 @@ type
     schLabelOptions: TSharpECenterHeader;
     chkDisplayIcon: TJvXPCheckbox;
     chkDisplayLabels: TJvXPCheckbox;
+    chkDisplayNotification: TJvXPCheckbox;
     procedure FormCreate(Sender: TObject);
 
     procedure SettingsChange(Sender: TObject);

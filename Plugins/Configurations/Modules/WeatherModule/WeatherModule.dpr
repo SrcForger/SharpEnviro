@@ -107,6 +107,7 @@ begin
 
       chkDisplayIcon.Checked := BoolValue('ShowIcon', True);
       chkDisplayLabels.Checked := BoolValue('ShowLabels', True);
+      chkDisplayNotification.Checked := BoolValue('ShowNotification', True);
       edtTopLabel.Text := Value('TopLabel', 'Temperature: {#TEMPERATURE#}°{#UNITTEMP#}');
       edtBottomLabel.Text := Value('BottomLabel', 'Condition: {#CONDITION#}');
     end;
@@ -167,6 +168,7 @@ begin
     Add('Location', s);
     Add('ShowIcon', chkDisplayIcon.Checked);
     Add('ShowLabels', chkDisplayLabels.Checked);
+    Add('ShowNotification', chkDisplayNotification.Checked);
     Add('TopLabel', edtTopLabel.Text);
     Add('BottomLabel', edtBottomLabel.Text);
   end;

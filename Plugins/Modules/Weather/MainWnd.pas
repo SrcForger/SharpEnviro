@@ -53,6 +53,7 @@ type
     notifyItem : TNotifyItem;
     bShowIcon    : boolean;
     bShowLabels  : boolean;
+    bShowNotification : Boolean;
     sLocation    : String;
     sTopLabel    : String;
     sBottomLabel : String;
@@ -168,6 +169,7 @@ var
 begin
   bShowIcon    := True;
   bShowLabels  := True;
+  bShowNotification := True;
   sTopLabel    := 'Temperature: {#TEMPERATURE#}°{#UNITTEMP#}';
   sBottomLabel := 'Condition: {#CONDITION#}';
   sLocation    := '0';
@@ -184,6 +186,7 @@ begin
     begin
       bShowIcon    := BoolValue('showicon',True);
       bShowLabels  := BoolValue('showlabels',True);
+      bShowNotification := BoolValue('ShowNotification', True);
       sLocation    := Value('location',slocation);
       sTopLabel    := Value('toplabel',sTopLabel);
       sBottomLabel := Value('bottomlabel',sBottomLabel);
@@ -206,6 +209,9 @@ end;
 
 procedure TMainForm.MouseEnter(Sender: TObject);
 begin
+  if not bShowNotification then
+    Exit;
+    
   // Only enable the timers once while the mouse is over the module
   // and don't allow more than 1 window to popup at a time.
   if not PopupTimer.Enabled and not ClosePopupTimer.Enabled then
@@ -512,6 +518,7 @@ begin
 
   bShowIcon    := True;
   bShowLabels  := True;
+  bShowNotification := True;
   sTopLabel    := 'Temperature: {#TEMPERATURE#}°{#UNITTEMP#}';
   sBottomLabel := 'Condition: {#CONDITION#}';  
   

@@ -101,6 +101,20 @@ object frmEdit: TfrmEdit
         Align = alLeft
         OnClick = SettingsChange
       end
+      object chkDisplayNotification: TJvXPCheckbox
+        Left = 195
+        Top = 0
+        Width = 134
+        Height = 19
+        Hint = 'Display a weather notifcation window while moused over.'
+        Caption = 'Display Notification'
+        TabOrder = 2
+        Checked = True
+        State = cbChecked
+        ParentShowHint = False
+        ShowHint = True
+        OnClick = SettingsChange
+      end
     end
     object Panel3: TPanel
       AlignWithMargins = True
