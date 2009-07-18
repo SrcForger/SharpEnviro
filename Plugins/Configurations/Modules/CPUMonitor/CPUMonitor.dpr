@@ -157,9 +157,9 @@ begin
     if ItemNamed['cpumonitor'] <> nil then
       with ItemNamed['cpumonitor'].Items, frmCPUMon do
       begin
-        Colors.Items.Item[0].ColorCode := Theme.Scheme.SchemeCodeToColor(IntValue('bgcolor', 0));
-        Colors.Items.Item[1].ColorCode := Theme.Scheme.SchemeCodeToColor(IntValue('fgcolor', clwhite));
-        Colors.Items.Item[2].ColorCode := Theme.Scheme.SchemeCodeToColor(IntValue('bordercolor', clwhite));
+        Colors.Items.Item[0].ColorCode := Theme.Scheme.ParseColor(Value('bgcolor', '0'));
+        Colors.Items.Item[1].ColorCode := Theme.Scheme.ParseColor(Value('fgcolor', 'clwhite'));
+        Colors.Items.Item[2].ColorCode := Theme.Scheme.ParseColor(Value('bordercolor', 'clwhite'));
         sgbBackground.Value := IntValue('bgalpha', 255);
         sgbForeground.Value := IntValue('fgalpha', 255);
         sgbBorder.Value := IntValue('borderalpha', 255);
