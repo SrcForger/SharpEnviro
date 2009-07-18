@@ -362,6 +362,13 @@ begin
   iStart := Pos('(', pSrc);
   iEnd := Pos(')', pSrc);
 
+  for n := 0 to High(FColors) do
+    if CompareText(Colors[n].Tag,pSrc) = 0 then
+    begin
+      result := Colors[n].Color;
+      exit;
+    end;
+
   if (iStart = 0) or (iEnd = 0) then begin
     // try to convert
     if TryStrToInt(pSrc, n) then
