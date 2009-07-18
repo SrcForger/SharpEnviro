@@ -56,6 +56,7 @@ type
     FMenuIcon   : TBitmap32;
   public
     mInterface : ISharpBarModule;
+    procedure LoadIcons;
     procedure LoadSettings;
     procedure ReAlignComponents(Broadcast : Boolean = True);
     procedure UpdateComponentSkins;
@@ -67,6 +68,54 @@ implementation
 
 {$R *.dfm}
 {$R Icons.res}
+
+procedure TMainForm.LoadIcons;
+var
+  TempBmp : TBitmap32;
+  ResStream : TResourceStream;
+  b : boolean;
+  ResIDSuffix : String;  
+begin
+  TempBmp := TBitmap32.Create;
+  TempBmp.SetSize(22,22);
+  TempBmp.Clear(color32(0,0,0,0));
+
+  TempBmp := TBitmap32.Create;
+  if mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y <= 16 then
+  begin
+    TempBmp.SetSize(16,16);
+    ResIDSuffix := '16';
+  end else
+  begin
+    TempBmp.SetSize(32,32);
+    ResIDSuffix := '32';
+  end;
+
+  TempBmp.Clear(color32(0,0,0,0));
+  try
+    ResStream := TResourceStream.Create(HInstance, 'globe'+ResIDSuffix, RT_RCDATA);
+    try
+      LoadBitmap32FromPng(TempBmp,ResStream,b);
+      FButtonIcon.Assign(tempBmp);
+    finally
+      ResStream.Free;
+    end;
+  except
+  end;
+
+  try
+    ResStream := TResourceStream.Create(HInstance, 'item', RT_RCDATA);
+    try
+      LoadBitmap32FromPng(TempBmp,ResStream,b);
+      FMenuIcon.Assign(tempBmp);
+    finally
+      ResStream.Free;
+    end;
+  except
+  end;
+
+  TempBmp.Free;  
+end;
 
 procedure TMainForm.LoadSettings;
 var
@@ -93,7 +142,12 @@ end;
 
 procedure TMainForm.UpdateSize;
 begin
+  LoadIcons;
   btn.Width := max(1,Width - 4);
+  if sShowIcon then
+    btn.Glyph32.Assign(FButtonIcon)
+  else
+    btn.Glyph32.SetSize(0,0);
 end;
 
 procedure TMainForm.ReAlignComponents(BroadCast : boolean = True);
@@ -194,47 +248,11 @@ begin
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
-var
-  ResStream : TResourceStream;
-  TempBmp : TBitmap32;
-  b : boolean;
 begin
   DoubleBuffered := True;
 
   FButtonIcon := TBitmap32.Create;
   FMenuIcon := TBitmap32.Create;
-
-
-  TempBmp := TBitmap32.Create;
-  TempBmp.SetSize(22,22);
-  TempBmp.Clear(color32(0,0,0,0));
-
-  TempBmp.DrawMode := dmBlend;
-  TempBmp.CombineMode := cmMerge;
-
-  try
-    ResStream := TResourceStream.Create(HInstance, 'globe', RT_RCDATA);
-    try
-      LoadBitmap32FromPng(TempBmp,ResStream,b);
-      FButtonIcon.Assign(tempBmp);
-    finally
-      ResStream.Free;
-    end;
-  except
-  end;
-
-  try
-    ResStream := TResourceStream.Create(HInstance, 'item', RT_RCDATA);
-    try
-      LoadBitmap32FromPng(TempBmp,ResStream,b);
-      FMenuIcon.Assign(tempBmp);
-    finally
-      ResStream.Free;
-    end;
-  except
-  end;
-
-  TempBmp.Free;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
