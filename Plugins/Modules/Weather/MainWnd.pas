@@ -60,6 +60,7 @@ type
     FIcon        : TBitmap32;
     FWeatherParser : TWeatherParser;
     function ReplaceDataInString(pString : String) : String;
+    function LeftPad(stringToPad: string; charToPadWith: Char; paddedLength: Integer) : string;
   public
     mInterface : ISharpBarModule;
     procedure LoadSettings;
@@ -259,8 +260,6 @@ var
   newWidth : integer;
   iIconWidth, iTopWidth, iBottomWidth : integer;
   s : String;
-  i : integer;
-  sicon : String;
   b : boolean;
   bTopLabel : boolean;
   bBottomLabel : boolean;
@@ -272,18 +271,10 @@ begin
 
   if (bShowIcon) and (FWeatherParser.CCValid) then
   begin
-    if TryStrToInt(FWeatherParser.wxml.CurrentCondition.IconCode,i) then
-    begin
-      sicon := inttostr(i);
-    end else sicon := 'na';
-
-    s := SharpApi.GetSharpeDirectory
-         + 'Icons\Weather\61x61\'
-         + sicon
-         + '.png';
-
-    //if not FileExists(s) then
-    //  s := SharpApi.GetSharpeDirectory + 'Icons\Weather\64x64\na.png';
+    s := SharpApi.GetSharpeDirectory +
+      'Icons\Weather\61x61\' +
+      LeftPad(FWeatherParser.wxml.CurrentCondition.IconCode, '0', 2) +
+      '.png';
 
     if FileExists(s) then
     begin
@@ -395,8 +386,12 @@ begin
   // The space between sections.
   spacer := 5;
   // We will close the window manually so disable the timeout
-  timeout := 0;//10000
-  iconPath := SharpApi.GetSharpeDirectory + 'Icons\Weather\93x93\' + WeatherParser.wxml.CurrentCondition.IconCode + '.png';
+  timeout := 0;
+  
+  iconPath := SharpApi.GetSharpeDirectory +
+    'Icons\Weather\93x93\' +
+    LeftPad(WeatherParser.wxml.CurrentCondition.IconCode, '0', 2) +
+    '.png';
 
   BmpToDisplay := TBitmap32.Create;
   BmpToDisplay.DrawMode := dmBlend;
@@ -555,6 +550,19 @@ begin
      FIcon.DrawTo(Bmp,Rect(1,1,Height-1,Height-1));
   Bmp.DrawTo(Canvas.Handle,0,0);
   Bmp.Free;
+end;
+
+function TMainForm.LeftPad(stringToPad: string; charToPadWith: Char; paddedLength: Integer) : string;
+var
+  numberOfCharsToPadWith: Integer;
+begin
+  Result := stringToPad;
+
+  numberOfCharsToPadWith := paddedLength - Length(stringToPad);
+  if numberOfCharsToPadWith < 1 then
+    Exit;
+    
+  Result := StringOfChar(charToPadWith, numberOfCharsToPadWith) + stringToPad;
 end;
 
 end.
