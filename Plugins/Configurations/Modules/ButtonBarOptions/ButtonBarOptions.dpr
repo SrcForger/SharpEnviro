@@ -86,11 +86,6 @@ begin
       ItemNamed['ShowIcon'].BoolValue := chkButtonIcon.Checked
     else
       Add('ShowIcon', chkButtonIcon.Checked);
-
-    if ItemNamed['Width'] <> nil then
-      ItemNamed['Width'].IntValue := sgbWidth.Value
-    else
-      Add('Width', sgbWidth.Value);
   end;
 
   PluginHost.Xml.Save;
@@ -104,7 +99,6 @@ begin
     begin
       chkButtonCaption.Checked := BoolValue('ShowCaption', False);
       chkButtonIcon.Checked := BoolValue('ShowIcon', True);
-      sgbWidth.Value := IntValue('Width', 25);
     end;
   end;
 end;

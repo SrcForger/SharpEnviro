@@ -19,75 +19,19 @@ object frmSettings: TfrmSettings
     Top = 0
     Width = 443
     Height = 159
-    ActivePage = pagNotes
+    ActivePage = pagOptions
     PropagateEnable = False
     Align = alClient
     ParentBackground = True
-    object pagNotes: TJvStandardPage
+    object pagOptions: TJvStandardPage
       Left = 0
       Top = 0
       Width = 443
       Height = 159
-      object Panel7: TPanel
+      object schIconAndCaption: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
-        Top = 47
-        Width = 433
-        Height = 23
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Align = alTop
-        BevelOuter = bvNone
-        ParentColor = True
-        TabOrder = 0
-        object sgbWidth: TSharpeGaugeBox
-          AlignWithMargins = True
-          Left = 0
-          Top = 0
-          Width = 250
-          Height = 23
-          Margins.Left = 0
-          Margins.Top = 0
-          Margins.Right = 5
-          Margins.Bottom = 0
-          Align = alLeft
-          Color = clWindow
-          Constraints.MaxWidth = 300
-          ParentBackground = False
-          Min = 16
-          Max = 200
-          Value = 100
-          Prefix = 'Width: '
-          Suffix = ' px'
-          Description = 'Adjust button size'
-          PopPosition = ppBottom
-          PercentDisplay = False
-          OnChangeValue = GaugeBoxChange
-          BackgroundColor = clWindow
-        end
-      end
-      object SharpECenterHeader4: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 5
-        Top = 0
-        Width = 433
-        Height = 37
-        Margins.Left = 5
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Title = 'Button Size'
-        Description = 'Define the width for all buttons globally'
-        TitleColor = clWindowText
-        DescriptionColor = clGrayText
-        Align = alTop
-      end
-      object SharpECenterHeader6: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 5
-        Top = 80
+        Top = 10
         Width = 433
         Height = 37
         Margins.Left = 5
@@ -99,11 +43,12 @@ object frmSettings: TfrmSettings
         TitleColor = clWindowText
         DescriptionColor = clGrayText
         Align = alTop
+        ExplicitTop = 80
       end
-      object Panel1: TPanel
+      object pnlShowIconsAndCaptions: TPanel
         AlignWithMargins = True
         Left = 5
-        Top = 127
+        Top = 57
         Width = 433
         Height = 21
         Margins.Left = 5
@@ -114,7 +59,8 @@ object frmSettings: TfrmSettings
         BevelOuter = bvNone
         Color = clWindow
         ParentBackground = False
-        TabOrder = 3
+        TabOrder = 1
+        ExplicitTop = 127
         object chkButtonIcon: TJvXPCheckbox
           Left = 0
           Top = 0

@@ -66,7 +66,6 @@ type
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   private
-    sWidth       : integer;
     sShowLabel   : boolean;
     FButtonSpacing : integer;
     sShowIcon    : boolean;
@@ -206,6 +205,7 @@ end;
 procedure TMainForm.AddButton(pTarget,pIcon,pCaption : String; Index : integer = -1);
 var
   n : integer;
+  btnLeft : Integer;
 begin
   setlength(FButtonList,length(FButtonList)+1);
   if (Index < Low(FButtonList)) or (Index > High(FButtonList)) then
@@ -224,6 +224,13 @@ begin
                                 Caption);
         end;
       end;
+
+  btnLeft := FButtonSpacing;
+  if Index > 0 then
+    // If this is not the 1st button added then align the new button
+    // to the right side of the previous button with some spacing.
+    btnLeft := FButtonList[Index - 1].btn.Left + FButtonList[Index - 1].btn.Width + FButtonSpacing;
+
   with FButtonList[Index] do
   begin
     btn := TSharpEButton.Create(self);
@@ -232,9 +239,8 @@ begin
     btn.AutoPosition := True;
     btn.AutoSize := True;
     btn.Hint := pTarget;
-    btn.Width := sWidth;
     btn.Parent := self;
-    btn.left := FButtonSpacing + High(FButtonList)*FButtonSpacing + High(FButtonList)*sWidth;
+    btn.Left := btnLeft;
     btn.OnMouseUp := btnMouseUp;
     btn.OnMouseDown := btnMouseDown;
     btn.OnMouseMove := btnMouseMove;
@@ -257,6 +263,18 @@ begin
       if not IconStringToIcon(pIcon,pTarget,btn.Glyph32,32) then
          btn.Glyph32.SetSize(0,0)
     end else btn.Glyph32.SetSize(0,0);
+
+    btn.Width := mInterface.SkinInterface.SkinManager.Skin.Button.WidthMod;
+    
+    if sShowIcon and sShowLabel then
+      btn.Width := btn.Width + btn.GetIconWidth + btn.GetTextWidth
+    else if sShowIcon then
+      btn.Width := btn.Width + btn.GetIconWidth
+    else if sShowLabel then
+      btn.Width := btn.Width + btn.GetTextWidth;
+
+    if btn.Width < Height then
+      btn.Width := Height;
   end;
 end;
 
@@ -284,7 +302,6 @@ begin
   XML.Root.Name := 'ButtonBarModuleSettings';
   with XML.Root.Items do
   begin
-    Add('Width',sWidth);
     Add('ShowCaption',sShowLabel);
     Add('ShowIcon',sShowIcon);
     with Add('Buttons').Items do
@@ -318,12 +335,29 @@ end;
 procedure TMainForm.UpdateButtons;
 var
   n : integer;
+  btnLeft : Integer;
 begin
+  btnLeft := FButtonSpacing;
   for n := 0 to High(FButtonList) do
       with FButtonList[n] do
       begin
-        btn.Width := sWidth;
-        btn.Left := FButtonSpacing + n*FButtonSpacing + n*sWidth;
+        btn.Width := mInterface.SkinInterface.SkinManager.Skin.Button.WidthMod;
+        if sShowIcon and sShowLabel then
+          btn.Width := btn.Width + btn.GetIconWidth + btn.GetTextWidth
+        else if sShowIcon then
+          btn.Width := btn.Width + btn.GetIconWidth
+        else if sShowLabel then
+          btn.Width := btn.Width + btn.GetTextWidth;
+
+        if btn.Width < Height then
+          btn.Width := Height;
+          
+        if n > 0 then
+          // If this is not the 1st button then align the button
+          // to the right side of the previous button with some spacing.
+          btnLeft := FButtonList[n - 1].btn.Left + FButtonList[n - 1].btn.Width + FButtonSpacing;
+             
+        btn.Left := btnLeft;
         if btn.Left + btn.Width < Width then
            btn.Visible := True
            else btn.Visible := False;
@@ -340,7 +374,6 @@ var
 begin
   ClearButtons;
 
-  sWidth       := 25;
   sShowLabel   := False;
   sShowIcon    := True;
   FButtonSpacing := 2;
@@ -355,7 +388,6 @@ begin
   if fileloaded then
     with xml.Root.Items do
     begin
-      sWidth       := IntValue('Width',25);
       sShowLabel   := BoolValue('ShowCaption',False);
       sShowIcon    := BoolValue('ShowIcon',sShowIcon);
       if ItemNamed['Buttons'] <> nil then
@@ -378,18 +410,18 @@ var
   newWidth : integer;
 begin
   self.Caption := 'ButtonBar (' + inttostr(length(FButtonList)) + ')';
-  if sWidth<20 then sWidth := 20;
 
   sb_config.Visible := (length(FButtonList) = 0);
   if sb_config.Visible then
   begin
     sb_config.Left := 2;
-    newWidth := sb_config.Left + sb_config.Width + 2
+    newWidth := sb_config.Left + sb_config.Width + 2;
   end
-  else newWidth := FButtonSpacing + High(FButtonList)*FButtonSpacing + length(FButtonList)*sWidth + FButtonSpacing;
+  else
+    newWidth := FButtonSpacing + FButtonList[High(FButtonList)].btn.Left + FButtonList[High(FButtonList)].btn.Width + FButtonSpacing;
 
-  mInterface.MinSize := NewWidth;
-  mInterface.MaxSize := NewWidth;
+  mInterface.MinSize := newWidth;
+  mInterface.MaxSize := newWidth;
   if newWidth <> Width then
     mInterface.BarInterface.UpdateModuleSize
   else UpdateButtons;

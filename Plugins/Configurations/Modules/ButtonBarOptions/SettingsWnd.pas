@@ -36,14 +36,11 @@ uses
 type
   TfrmSettings = class(TForm)
     plMain: TJvPageList;
-    pagNotes: TJvStandardPage;
-    Panel7: TPanel;
-    sgbWidth: TSharpeGaugeBox;
-    SharpECenterHeader4: TSharpECenterHeader;
-    SharpECenterHeader6: TSharpECenterHeader;
+    pagOptions: TJvStandardPage;
+    schIconAndCaption: TSharpECenterHeader;
     chkButtonCaption: TJvXPCheckbox;
     chkButtonIcon: TJvXPCheckbox;
-    Panel1: TPanel;
+    pnlShowIconsAndCaptions: TPanel;
     procedure GaugeBoxChange(Sender: TObject; Value: Integer);
     procedure CheckClick(Sender: TObject);
   private
