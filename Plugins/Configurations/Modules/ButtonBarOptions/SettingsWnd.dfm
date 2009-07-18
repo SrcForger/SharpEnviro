@@ -22,13 +22,12 @@ object frmSettings: TfrmSettings
     ActivePage = pagNotes
     PropagateEnable = False
     Align = alClient
-    ExplicitHeight = 233
+    ParentBackground = True
     object pagNotes: TJvStandardPage
       Left = 0
       Top = 0
       Width = 443
       Height = 159
-      ExplicitHeight = 233
       object Panel7: TPanel
         AlignWithMargins = True
         Left = 5
@@ -67,7 +66,6 @@ object frmSettings: TfrmSettings
           PercentDisplay = False
           OnChangeValue = GaugeBoxChange
           BackgroundColor = clWindow
-          ExplicitHeight = 21
         end
       end
       object SharpECenterHeader4: TSharpECenterHeader
@@ -101,7 +99,6 @@ object frmSettings: TfrmSettings
         TitleColor = clWindowText
         DescriptionColor = clGrayText
         Align = alTop
-        ExplicitTop = 78
       end
       object Panel1: TPanel
         AlignWithMargins = True
@@ -118,7 +115,6 @@ object frmSettings: TfrmSettings
         Color = clWindow
         ParentBackground = False
         TabOrder = 3
-        ExplicitTop = 172
         object chkButtonIcon: TJvXPCheckbox
           Left = 0
           Top = 0
@@ -138,7 +134,7 @@ object frmSettings: TfrmSettings
         object chkButtonCaption: TJvXPCheckbox
           Left = 149
           Top = 0
-          Width = 436
+          Width = 149
           Height = 21
           Margins.Left = 2
           Margins.Top = 0
@@ -149,9 +145,6 @@ object frmSettings: TfrmSettings
           TabStop = False
           Align = alLeft
           OnClick = CheckClick
-          ExplicitLeft = 158
-          ExplicitTop = 12
-          ExplicitHeight = 17
         end
       end
     end

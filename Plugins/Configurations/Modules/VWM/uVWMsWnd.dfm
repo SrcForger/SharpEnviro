@@ -23,18 +23,17 @@ object frmVWM: TfrmVWM
     ActivePage = pagVWM
     PropagateEnable = False
     Align = alClient
-    ExplicitHeight = 637
+    ParentBackground = True
     object pagVWM: TJvStandardPage
       Left = 0
       Top = 0
       Width = 435
       Height = 614
-      ExplicitHeight = 637
       object Panel1: TPanel
         AlignWithMargins = True
-        Left = 6
-        Top = 122
-        Width = 423
+        Left = 5
+        Top = 121
+        Width = 425
         Height = 22
         Margins.Left = 5
         Margins.Top = 0
@@ -70,9 +69,9 @@ object frmVWM: TfrmVWM
       end
       object Panel2: TPanel
         AlignWithMargins = True
-        Left = 6
-        Top = 144
-        Width = 423
+        Left = 5
+        Top = 143
+        Width = 425
         Height = 31
         Margins.Left = 5
         Margins.Top = 0
@@ -108,9 +107,9 @@ object frmVWM: TfrmVWM
       end
       object Panel3: TPanel
         AlignWithMargins = True
-        Left = 6
-        Top = 175
-        Width = 423
+        Left = 5
+        Top = 174
+        Width = 425
         Height = 31
         Margins.Left = 5
         Margins.Top = 0
@@ -146,9 +145,9 @@ object frmVWM: TfrmVWM
       end
       object Panel4: TPanel
         AlignWithMargins = True
-        Left = 6
-        Top = 206
-        Width = 423
+        Left = 5
+        Top = 205
+        Width = 425
         Height = 31
         Margins.Left = 5
         Margins.Top = 0
@@ -184,9 +183,9 @@ object frmVWM: TfrmVWM
       end
       object Panel5: TPanel
         AlignWithMargins = True
-        Left = 6
-        Top = 237
-        Width = 423
+        Left = 5
+        Top = 236
+        Width = 425
         Height = 31
         Margins.Left = 5
         Margins.Top = 0
@@ -221,9 +220,9 @@ object frmVWM: TfrmVWM
       end
       object Colors: TSharpEColorEditorEx
         AlignWithMargins = True
-        Left = 6
-        Top = 333
-        Width = 423
+        Left = 5
+        Top = 332
+        Width = 425
         Height = 128
         Margins.Left = 5
         Margins.Top = 10
@@ -320,9 +319,9 @@ object frmVWM: TfrmVWM
       end
       object schColorVisibility: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 6
-        Top = 75
-        Width = 423
+        Left = 5
+        Top = 74
+        Width = 425
         Height = 37
         Margins.Left = 5
         Margins.Top = 10
@@ -339,9 +338,9 @@ object frmVWM: TfrmVWM
       end
       object schColorSelection: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 6
-        Top = 286
-        Width = 423
+        Left = 5
+        Top = 285
+        Width = 425
         Height = 37
         Margins.Left = 5
         Margins.Top = 10
@@ -357,9 +356,9 @@ object frmVWM: TfrmVWM
       end
       object schNumbers: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 6
-        Top = 1
-        Width = 423
+        Left = 5
+        Top = 0
+        Width = 425
         Height = 37
         Margins.Left = 5
         Margins.Top = 0
@@ -376,9 +375,9 @@ object frmVWM: TfrmVWM
       end
       object chkShowNumbers: TJvXPCheckbox
         AlignWithMargins = True
-        Left = 6
-        Top = 48
-        Width = 423
+        Left = 5
+        Top = 47
+        Width = 425
         Height = 17
         Margins.Left = 5
         Margins.Top = 0
@@ -396,7 +395,7 @@ object frmVWM: TfrmVWM
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
     PopulateThemeColors = True
-    Width = 390
+    Width = 392
     ShowCaptions = True
     SwatchHeight = 16
     SwatchWidth = 16

@@ -23,13 +23,12 @@ object frmVolumeControl: TfrmVolumeControl
     ActivePage = JvSettingsPage
     PropagateEnable = False
     Align = alClient
-    ExplicitHeight = 204
+    ParentBackground = True
     object JvSettingsPage: TJvStandardPage
       Left = 0
       Top = 0
       Width = 428
       Height = 306
-      ExplicitHeight = 204
       object lblMixerNote: TLabel
         AlignWithMargins = True
         Left = 5
@@ -145,15 +144,19 @@ object frmVolumeControl: TfrmVolumeControl
         Color = clWindow
       end
       object pnButtonPos: TPanel
-        Left = 0
-        Top = 244
-        Width = 428
+        AlignWithMargins = True
+        Left = 3
+        Top = 247
+        Width = 422
         Height = 31
         Align = alTop
         BevelOuter = bvNone
         Color = clWindow
         ParentBackground = False
         TabOrder = 4
+        ExplicitLeft = 0
+        ExplicitTop = 244
+        ExplicitWidth = 428
         object Label1: TLabel
           Left = 8
           Top = 10
@@ -200,7 +203,6 @@ object frmVolumeControl: TfrmVolumeControl
         DescriptionColor = clRed
         Align = alTop
         Color = clWindow
-        ExplicitTop = 271
       end
     end
   end

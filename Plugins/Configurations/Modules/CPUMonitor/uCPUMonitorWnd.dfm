@@ -23,6 +23,7 @@ object frmCPUMon: TfrmCPUMon
     ActivePage = pagMon
     PropagateEnable = False
     Align = alClient
+    ParentBackground = True
     object pagMon: TJvStandardPage
       Left = 0
       Top = 0
@@ -31,9 +32,9 @@ object frmCPUMon: TfrmCPUMon
       OnShow = pagMonShow
       object Panel5: TPanel
         AlignWithMargins = True
-        Left = 6
-        Top = 246
-        Width = 420
+        Left = 5
+        Top = 245
+        Width = 422
         Height = 23
         Margins.Left = 5
         Margins.Top = 10
@@ -47,9 +48,9 @@ object frmCPUMon: TfrmCPUMon
       end
       object Panel6: TPanel
         AlignWithMargins = True
-        Left = 6
-        Top = 213
-        Width = 420
+        Left = 5
+        Top = 212
+        Width = 422
         Height = 23
         Margins.Left = 5
         Margins.Top = 10
@@ -104,9 +105,9 @@ object frmCPUMon: TfrmCPUMon
       end
       object SharpECenterHeader3: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 6
-        Top = 1
-        Width = 420
+        Left = 5
+        Top = 0
+        Width = 422
         Height = 37
         Margins.Left = 5
         Margins.Top = 0
@@ -120,9 +121,9 @@ object frmCPUMon: TfrmCPUMon
       end
       object SharpECenterHeader5: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 6
-        Top = 166
-        Width = 420
+        Left = 5
+        Top = 165
+        Width = 422
         Height = 37
         Margins.Left = 5
         Margins.Top = 10
@@ -138,9 +139,9 @@ object frmCPUMon: TfrmCPUMon
       end
       object Panel1: TPanel
         AlignWithMargins = True
-        Left = 6
-        Top = 48
-        Width = 420
+        Left = 5
+        Top = 47
+        Width = 422
         Height = 23
         Margins.Left = 5
         Margins.Top = 10
@@ -174,9 +175,9 @@ object frmCPUMon: TfrmCPUMon
       end
       object SharpECenterHeader4: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 6
-        Top = 81
-        Width = 420
+        Left = 5
+        Top = 80
+        Width = 422
         Height = 37
         Margins.Left = 5
         Margins.Top = 10
@@ -190,9 +191,9 @@ object frmCPUMon: TfrmCPUMon
       end
       object Panel3: TPanel
         AlignWithMargins = True
-        Left = 6
-        Top = 128
-        Width = 420
+        Left = 5
+        Top = 127
+        Width = 422
         Height = 23
         Margins.Left = 5
         Margins.Top = 10
@@ -233,13 +234,12 @@ object frmCPUMon: TfrmCPUMon
       Width = 432
       Height = 378
       Caption = 'pagColors'
-      Color = clWhite
       OnShow = pagColorsShow
       object Colors: TSharpEColorEditorEx
         AlignWithMargins = True
-        Left = 3
-        Top = 161
-        Width = 423
+        Left = 2
+        Top = 160
+        Width = 425
         Height = 80
         Margins.Left = 2
         Margins.Top = 0
@@ -308,9 +308,9 @@ object frmCPUMon: TfrmCPUMon
       end
       object Panel2: TPanel
         AlignWithMargins = True
-        Left = 6
-        Top = 48
-        Width = 415
+        Left = 5
+        Top = 47
+        Width = 417
         Height = 23
         Margins.Left = 5
         Margins.Top = 0
@@ -368,9 +368,9 @@ object frmCPUMon: TfrmCPUMon
       end
       object Panel4: TPanel
         AlignWithMargins = True
-        Left = 6
-        Top = 81
-        Width = 415
+        Left = 5
+        Top = 80
+        Width = 417
         Height = 23
         Margins.Left = 5
         Margins.Top = 5
@@ -406,9 +406,9 @@ object frmCPUMon: TfrmCPUMon
       end
       object SharpECenterHeader1: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 6
-        Top = 1
-        Width = 420
+        Left = 5
+        Top = 0
+        Width = 422
         Height = 37
         Margins.Left = 5
         Margins.Top = 0
@@ -422,9 +422,9 @@ object frmCPUMon: TfrmCPUMon
       end
       object SharpECenterHeader2: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 6
-        Top = 114
-        Width = 420
+        Left = 5
+        Top = 113
+        Width = 422
         Height = 37
         Margins.Left = 5
         Margins.Top = 10
@@ -445,9 +445,9 @@ object frmCPUMon: TfrmCPUMon
       Caption = 'pagError'
       object SharpERoundPanel1: TSharpERoundPanel
         AlignWithMargins = True
-        Left = 5
-        Top = 5
-        Width = 422
+        Left = 4
+        Top = 4
+        Width = 424
         Height = 141
         Margins.Left = 4
         Margins.Top = 4
@@ -469,7 +469,7 @@ object frmCPUMon: TfrmCPUMon
           AlignWithMargins = True
           Left = 8
           Top = 80
-          Width = 406
+          Width = 408
           Height = 15
           Margins.Left = 8
           Margins.Top = 0
@@ -488,7 +488,7 @@ object frmCPUMon: TfrmCPUMon
           AlignWithMargins = True
           Left = 8
           Top = 8
-          Width = 406
+          Width = 408
           Height = 57
           Margins.Left = 8
           Margins.Top = 8
@@ -508,7 +508,7 @@ object frmCPUMon: TfrmCPUMon
           AlignWithMargins = True
           Left = 8
           Top = 65
-          Width = 406
+          Width = 408
           Height = 15
           Margins.Left = 8
           Margins.Top = 0
@@ -542,9 +542,9 @@ object frmCPUMon: TfrmCPUMon
       Caption = 'pagError2'
       object SharpERoundPanel2: TSharpERoundPanel
         AlignWithMargins = True
-        Left = 5
-        Top = 5
-        Width = 422
+        Left = 4
+        Top = 4
+        Width = 424
         Height = 189
         Margins.Left = 4
         Margins.Top = 4
@@ -566,7 +566,7 @@ object frmCPUMon: TfrmCPUMon
           AlignWithMargins = True
           Left = 22
           Top = 105
-          Width = 392
+          Width = 394
           Height = 24
           Margins.Left = 22
           Margins.Top = 0
@@ -582,7 +582,7 @@ object frmCPUMon: TfrmCPUMon
           AlignWithMargins = True
           Left = 8
           Top = 8
-          Width = 406
+          Width = 408
           Height = 57
           Margins.Left = 8
           Margins.Top = 8
@@ -602,7 +602,7 @@ object frmCPUMon: TfrmCPUMon
           AlignWithMargins = True
           Left = 8
           Top = 65
-          Width = 406
+          Width = 408
           Height = 15
           Margins.Left = 8
           Margins.Top = 0
@@ -621,7 +621,7 @@ object frmCPUMon: TfrmCPUMon
           AlignWithMargins = True
           Left = 8
           Top = 88
-          Width = 406
+          Width = 408
           Height = 17
           Margins.Left = 8
           Margins.Top = 8
@@ -637,7 +637,7 @@ object frmCPUMon: TfrmCPUMon
           AlignWithMargins = True
           Left = 8
           Top = 137
-          Width = 406
+          Width = 408
           Height = 17
           Margins.Left = 8
           Margins.Top = 0
@@ -654,7 +654,7 @@ object frmCPUMon: TfrmCPUMon
           AlignWithMargins = True
           Left = 8
           Top = 162
-          Width = 406
+          Width = 408
           Height = 17
           Margins.Left = 8
           Margins.Top = 8
@@ -673,7 +673,7 @@ object frmCPUMon: TfrmCPUMon
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
     PopulateThemeColors = True
-    Width = 390
+    Width = 392
     ShowCaptions = True
     SwatchHeight = 16
     SwatchWidth = 16
