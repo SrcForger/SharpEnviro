@@ -29,7 +29,7 @@ interface
 
 uses
   Windows, SysUtils, Classes, Controls, Forms,
-  Dialogs, StdCtrls, SharpEBaseControls, 
+  Dialogs, StdCtrls, SharpEBaseControls, GR32_Resamplers,
   ExtCtrls, SharpEProgressBar, GR32, uISharpBarModule,
   JclSimpleXML, SharpApi, Menus, Math, SharpESkinLabel;
 
@@ -60,6 +60,7 @@ type
     procedure UpdateComponentSkins;
     procedure UpdateSize;
     procedure RenderIcon(pRepaint : boolean = True);
+    procedure LoadIcons;
     property LastIcon : TBitmap32 read FLastIcon write FLastIcon;
   end;
 
@@ -116,6 +117,60 @@ begin
  Result := GetLastError;
 end;
 
+procedure TMainForm.LoadIcons;
+var
+  ResStream : TResourceStream;
+  TempBmp : TBitmap32;
+  b : boolean;
+  ResIDSuffix : String;
+begin
+  if mInterface = nil then
+    exit;
+  if mInterface.SkinInterface = nil then
+    exit;
+
+  TempBmp := TBitmap32.Create;
+  if mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y <= 16 then
+  begin
+    TempBmp.SetSize(16,16);
+    ResIDSuffix := '16';
+  end else
+  begin
+    TempBmp.SetSize(32,32);
+    ResIDSuffix := '32';
+  end;
+
+  TempBmp.Clear(color32(0,0,0,0));
+  try
+    ResStream := TResourceStream.Create(HInstance, 'battery'+ResIDSuffix, RT_RCDATA);
+    try
+      LoadBitmap32FromPng(TempBmp,ResStream,b);
+      FBStatus1.Assign(tempBmp);
+    finally
+      ResStream.Free;
+    end;
+  except
+  end;
+
+  try
+    ResStream := TResourceStream.Create(HInstance, 'batterylow'+ResIDSuffix, RT_RCDATA);
+    try
+      LoadBitmap32FromPng(TempBmp,ResStream,b);
+      FBStatus2.Assign(tempBmp);
+    finally
+      ResStream.Free;
+    end;
+  except
+  end;
+
+  TempBmp.Free;
+
+  FBStatus1.DrawMode := dmBlend;
+  FBStatus1.CombineMode := cmMerge;
+  FBStatus2.DrawMode := dmBlend;
+  FBStatus2.CombineMode := cmMerge;  
+end;
+
 procedure TMainForm.LoadSettings;
 var
   XML : TJclSimpleXML;
@@ -151,6 +206,7 @@ end;
 procedure TMainForm.UpdateSize;
 begin
   FLastIcon := nil;
+  LoadIcons;
   RenderIcon;
 end;
 
@@ -278,10 +334,6 @@ begin
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
-var
-  ResStream : TResourceStream;
-  TempBmp : TBitmap32;
-  b : boolean;
 begin
   DoubleBuffered := True;
 
@@ -292,42 +344,7 @@ begin
 
   FLastIcon := nil;
   FBStatus1 := TBitmap32.Create;
-  FBStatus1.DrawMode := dmBlend;
-  FBStatus1.CombineMode := cmMerge;
   FBStatus2 := TBitmap32.Create;
-  FBStatus2.DrawMode := dmBlend;
-  FBStatus2.CombineMode := cmMerge;
-
-  TempBmp := TBitmap32.Create;
-  TempBmp.SetSize(22,22);
-  TempBmp.Clear(color32(0,0,0,0));
-
-  TempBmp.DrawMode := dmBlend;
-  TempBmp.CombineMode := cmMerge;
-
-  try
-    ResStream := TResourceStream.Create(HInstance, 'battery', RT_RCDATA);
-    try
-      LoadBitmap32FromPng(TempBmp,ResStream,b);
-      FBStatus1.Assign(tempBmp);
-    finally
-      ResStream.Free;
-    end;
-  except
-  end;
-
-  try
-    ResStream := TResourceStream.Create(HInstance, 'batterylow', RT_RCDATA);
-    try
-      LoadBitmap32FromPng(TempBmp,ResStream,b);
-      FBStatus2.Assign(tempBmp);
-    finally
-      ResStream.Free;
-    end;
-  except
-  end;
-
-  TempBmp.Free;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -343,8 +360,12 @@ begin
   Bmp := TBitmap32.Create;
   Bmp.Assign(mInterface.Background);
   if (FLastIcon <> nil) and sShowIcon then
+  begin
 //     FLastIcon.DrawTo(Canvas.Handle,Rect(2,2,Height-2,Height-2),FLastIcon.BoundsRect);
+     if FLastIcon.Resampler = nil then
+       TLinearResampler.Create(FLastIcon);
      FLastIcon.DrawTo(Bmp,Rect(2,2,Height-2,Height-2));
+  end;
   Bmp.DrawTo(Canvas.Handle,0,0);
   Bmp.Free;
 end;

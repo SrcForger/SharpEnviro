@@ -1,2 +1,4 @@
-battery RCDATA "battery.png"
-batterylow RCDATA "battery-caution.png"
+battery16 RCDATA "battery16.png"
+batterylow16 RCDATA "battery-caution16.png"
+battery32 RCDATA "battery.png"
+batterylow32 RCDATA "battery-caution.png"
