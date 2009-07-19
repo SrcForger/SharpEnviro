@@ -80,6 +80,7 @@ type
     procedure WMDropFiles(var msg: TMessage); message WM_DROPFILES;    
   public
     mInterface : ISharpBarModule;
+    procedure LoadIcons;
     procedure LoadSettings;
     procedure ReAlignComponents(Broadcast : Boolean = True);
     procedure UpdateComponentSkins;
@@ -91,7 +92,53 @@ type
 
 implementation
 
+uses GR32_PNG;
+
 {$R *.dfm}
+{$R glyphs.res}
+
+procedure TMainForm.LoadIcons;
+var
+  ResStream : TResourceStream;
+  TempBmp : TBitmap32;
+  b : boolean;
+  ResIDSuffix : String;
+begin
+  if mInterface = nil then
+    exit;
+  if mInterface.SkinInterface = nil then
+    exit;
+
+  TempBmp := TBitmap32.Create;
+  if mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y <= 16 then
+  begin
+    TempBmp.SetSize(16,16);
+    ResIDSuffix := '16';
+  end else
+  begin
+    TempBmp.SetSize(32,32);
+    ResIDSuffix := '32';
+  end;
+
+  TempBmp.Clear(color32(0,0,0,0));
+  try
+    ResStream := TResourceStream.Create(HInstance, 'listadd'+ResIDSuffix, RT_RCDATA);
+    try
+      LoadBitmap32FromPng(TempBmp,ResStream,b);
+      sb_config.Glyph32.Assign(TempBmp);
+    finally
+      ResStream.Free;
+    end;
+  except
+  end;
+
+  TempBmp.Free;
+
+  sb_config.Glyph32.DrawMode := dmBlend;
+  sb_config.Glyph32.CombineMode := cmMerge;
+  sb_config.Glyph32.DrawMode := dmBlend;
+  sb_config.Glyph32.CombineMode := cmMerge;
+end;
 
 procedure TMainForm.CreateParams(var Params: TCreateParams);
 begin
@@ -183,7 +230,7 @@ begin
      StrDispose(pcFileName);
   end;
   DragFinish(Msg.wParam);
-  sb_config.Left := -200;  
+  sb_config.Visible := False;  
   UpdateButtons;
   SaveSettings;
   RealignComponents(True);
@@ -337,11 +384,19 @@ var
   n : integer;
   btnLeft : Integer;
 begin
+  if sb_config.Visible then
+  begin
+    sb_config.SkinManager := mInterface.SkinInterface.SkinManager;
+    sb_config.Width := mInterface.SkinInterface.SkinManager.Skin.Button.WidthMod +
+      sb_config.GetIconWidth + sb_config.GetTextWidth;
+  end;
+  
   btnLeft := FButtonSpacing;
   for n := 0 to High(FButtonList) do
       with FButtonList[n] do
       begin
         btn.Width := mInterface.SkinInterface.SkinManager.Skin.Button.WidthMod;
+
         if sShowIcon and sShowLabel then
           btn.Width := btn.Width + btn.GetIconWidth + btn.GetTextWidth
         else if sShowIcon then
@@ -377,7 +432,7 @@ begin
   sShowLabel   := False;
   sShowIcon    := True;
   FButtonSpacing := 2;
-
+  
   XML := TJclSimpleXML.Create;
   try
     XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
@@ -402,6 +457,7 @@ end;
 
 procedure TMainForm.UpdateSize;
 begin
+  LoadIcons;
   UpdateButtons;
 end;
 
@@ -414,8 +470,10 @@ begin
   sb_config.Visible := (length(FButtonList) = 0);
   if sb_config.Visible then
   begin
-    sb_config.Left := 2;
-    newWidth := sb_config.Left + sb_config.Width + 2;
+    sb_config.SkinManager := mInterface.SkinInterface.SkinManager;
+    sb_config.Width := mInterface.SkinInterface.SkinManager.Skin.Button.WidthMod +
+      sb_config.GetIconWidth + sb_config.GetTextWidth;
+    newWidth := FButtonSpacing + sb_config.Left + sb_config.Width + FButtonSpacing;
   end
   else
     newWidth := FButtonSpacing + FButtonList[High(FButtonList)].btn.Left + FButtonList[High(FButtonList)].btn.Width + FButtonSpacing;
@@ -424,7 +482,7 @@ begin
   mInterface.MaxSize := newWidth;
   if newWidth <> Width then
     mInterface.BarInterface.UpdateModuleSize
-  else UpdateButtons;
+  else UpdateSize;
 end;
 
 procedure TMainForm.UpdateComponentSkins;
