@@ -132,6 +132,7 @@ type
     mInterface : ISharpBarModule;
     CurrentVWM   : integer;    
     procedure BuildAndShowMenu(btn : TButtonRecord);
+    procedure LoadIcons;
     procedure LoadSettings;
     procedure ReAlignComponents(Broadcast : Boolean = True);
     procedure UpdateComponentSkins;
@@ -148,13 +149,57 @@ function SwitchToThisWindow(Wnd : hwnd; fAltTab : boolean) : boolean; stdcall; e
 implementation
 
 uses
-  IXmlBaseUnit, SharpESkinPart;
+  IXmlBaseUnit, SharpESkinPart, GR32_PNG;
 
 
 var
   SysMenuButton : TButtonRecord;  
 
 {$R *.dfm}
+{$R appbarglyphs.res}
+
+procedure TMainForm.LoadIcons;
+var
+  ResStream : TResourceStream;
+  TempBmp : TBitmap32;
+  b : boolean;
+  ResIDSuffix : String;
+begin
+  if mInterface = nil then
+    exit;
+  if mInterface.SkinInterface = nil then
+    exit;
+
+  TempBmp := TBitmap32.Create;
+  if mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y <= 16 then
+  begin
+    TempBmp.SetSize(16,16);
+    ResIDSuffix := '16';
+  end else
+  begin
+    TempBmp.SetSize(32,32);
+    ResIDSuffix := '32';
+  end;
+
+  TempBmp.Clear(color32(0,0,0,0));
+  try
+    ResStream := TResourceStream.Create(HInstance, 'listadd'+ResIDSuffix, RT_RCDATA);
+    try
+      LoadBitmap32FromPng(TempBmp,ResStream,b);
+      sb_config.Glyph32.Assign(TempBmp);
+    finally
+      ResStream.Free;
+    end;
+  except
+  end;
+
+  TempBmp.Free;
+
+  sb_config.Glyph32.DrawMode := dmBlend;
+  sb_config.Glyph32.CombineMode := cmMerge;
+  sb_config.Glyph32.DrawMode := dmBlend;
+  sb_config.Glyph32.CombineMode := cmMerge;
+end;
 
 procedure TMainForm.CreateParams(var Params: TCreateParams);
 begin
@@ -245,7 +290,7 @@ begin
     FileName := LowerCase(ExtractFileName(FilePath));
     AddButton(FilePath,'shell:icon',FileName,Length(FButtonList));
 
-    sb_config.Left := -200;
+    sb_config.Visible := False;
     UpdateButtons;
     SaveSettings;
     RealignComponents(True);
@@ -371,7 +416,7 @@ begin
      StrDispose(pcFileName);
   end;
   DragFinish(Msg.wParam);
-  sb_config.Left := -200;
+  sb_config.Visible := False;
   UpdateButtons;
   SaveSettings;
   RealignComponents(True);
@@ -618,6 +663,13 @@ procedure TMainForm.UpdateButtons;
 var
   n : integer;
 begin
+  if sb_config.Visible then
+  begin
+    sb_config.SkinManager := mInterface.SkinInterface.SkinManager;
+    sb_config.Width := mInterface.SkinInterface.SkinManager.Skin.Button.WidthMod +
+      sb_config.GetIconWidth + sb_config.GetTextWidth;
+  end;
+  
   for n := 0 to High(FButtonList) do
       with FButtonList[n] do
       begin
@@ -1047,6 +1099,7 @@ end;
 
 procedure TMainForm.UpdateSize;
 begin
+  LoadIcons;
   UpdateButtons;
 end;
 
@@ -1081,8 +1134,10 @@ begin
   sb_config.Visible := (length(FButtonList) = 0);
   if sb_config.Visible then
   begin
-    sb_config.Left := 2;
-    newWidth := sb_config.Left + sb_config.Width + 2
+    sb_config.SkinManager := mInterface.SkinInterface.SkinManager;
+    sb_config.Width := mInterface.SkinInterface.SkinManager.Skin.Button.WidthMod +
+      sb_config.GetIconWidth + sb_config.GetTextWidth;
+    newWidth := sb_config.Left + sb_config.Width + FButtonSpacing;
   end
   else newWidth := FButtonSpacing + High(FButtonList)*FButtonSpacing + length(FButtonList)*sAutoWidth + FButtonSpacing;
   
@@ -1100,7 +1155,7 @@ begin
   mInterface.MaxSize := NewWidth;
   if newWidth <> Width then
     mInterface.BarInterface.UpdateModuleSize
-  else UpdateButtons;
+  else UpdateSize;
 end;
 
 procedure TMainForm.UpdateComponentSkins;
