@@ -106,6 +106,7 @@ type
     FTM          : TTaskManager;
     FPreviewWnds : TObjectList;
     FPreviewButton : TSharpETaskItem;
+    FRefreshOnNextMouseMove : boolean;
     function CheckWindow(wnd : hwnd) : boolean;
     procedure OnNewTask(pItem : TTaskItem; Index : integer);
     procedure OnRemoveTask(pItem : TTaskItem; Index : integer);
@@ -558,6 +559,8 @@ begin
     if not IconStringToIcon(pIcon,pTarget,btn.Glyph32,32) then
        btn.Glyph32.SetSize(0,0)
   end;
+  
+  FRefreshOnNextMouseMove := True;
 end;
 
 procedure TMainForm.RefreshIcons;
@@ -1267,6 +1270,16 @@ begin
 
   if MoveButton = nil then
   begin
+    if FRefreshOnNextMouseMove then
+    begin
+      FRefreshOnNextMouseMove := False;
+      for n := 0 to High(FButtonList) do
+      begin
+        FButtonList[n].btn.UpdateSkin;
+        FButtonList[n].btn.Repaint;
+      end;
+    end;
+
     if (not sTaskPreview) then
       exit;
     if FPreviewButton = cButton then
