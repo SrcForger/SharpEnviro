@@ -282,6 +282,8 @@ var
   stemp: string;
   bsm: boolean;
 
+function AllowSetForegroundWindow(ProcessID : DWORD) : boolean; stdcall; external 'user32.dll' name 'AllowSetForegroundWindow';
+
 function GetSharpeDirectory: String; forward;
 function SharpEBroadCast(msg: integer; wpar: wparam; lpar: lparam; pSendMessage: boolean = False): integer; forward;
 
@@ -686,13 +688,18 @@ var
   iElevate: Integer;
   iHistory: Integer;
   sTemp: String;
+  wnd : hWnd;
 begin
 //  Result := HR_OK;
 
   try
     if IsServiceStarted('exec') = MR_STARTED then
+    begin
+      wnd := FindWindow('TSharpCoreMainWnd', nil);
+      if wnd <> 0 then
+        AllowSetForegroundWindow(wnd);
       result := ServiceMsg('exec', data)
-    else
+    end else
     begin
       sTemp := data;
       iElevate := Pos('_elevate,',sTemp);
