@@ -19,10 +19,10 @@
     <Version>7.0</Version>
     <DCC_ExeOutput>..\..\..\SharpE\</DCC_ExeOutput>
     <DCC_Define>DEBUG</DCC_Define>
-    <DCC_UnitSearchPath>..\..\Common\Libraries\SharpApi</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\Common\Libraries\SharpApi</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\Common\Libraries\SharpApi</DCC_ObjPath>
-    <DCC_IncludePath>..\..\Common\Libraries\SharpApi</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\..\Common\Libraries\SharpApi;..\..\Common\Units\SystemFuncs;..\..\Common\Units\SharpTypes</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\Common\Libraries\SharpApi;..\..\Common\Units\SystemFuncs;..\..\Common\Units\SharpTypes</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\Common\Libraries\SharpApi;..\..\Common\Units\SystemFuncs;..\..\Common\Units\SharpTypes</DCC_ObjPath>
+    <DCC_IncludePath>..\..\Common\Libraries\SharpApi;..\..\Common\Units\SystemFuncs;..\..\Common\Units\SharpTypes</DCC_IncludePath>
   </PropertyGroup>
   <ProjectExtensions>
     <Borland.Personality>Delphi.Personality</Borland.Personality>

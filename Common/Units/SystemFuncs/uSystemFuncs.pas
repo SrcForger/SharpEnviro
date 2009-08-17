@@ -8,11 +8,26 @@ const
   // new shell hook param
   HSHELL_SYSMENU = 9;
 
+function IsWow64(): boolean;
 function NETFramework35: Boolean;
 function FindAllWindows(const WindowClass: string): THandleArray;
 function ForceForegroundWindow(hwnd: THandle): Boolean;
 
 implementation
+
+function IsWow64(): boolean;
+type
+  TIsWow64Process = function(Handle: THandle; var Res: boolean): boolean; stdcall;
+var
+  IsWow64Result: boolean;
+  IsWow64Process: TIsWow64Process;
+begin
+  result := False;
+  IsWow64Process := GetProcAddress(GetModuleHandle('kernel32'), 'IsWow64Process');
+  if Assigned(IsWow64Process) then
+    if IsWow64Process(GetCurrentProcess, IsWow64Result) then
+      result := IsWow64Result;
+end;                                             
 
 function NETFramework35: Boolean;
 var

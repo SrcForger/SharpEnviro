@@ -28,12 +28,11 @@ unit uShellSwitcher;
 interface
 
 uses
-  Windows, ShellApi, SysUtils;
+  Windows, ShellApi, SysUtils, uSystemFuncs;
 
 function IsSeperateExplorerFixApplied : boolean;
 function ApplySeperateExplorerFix : boolean;
 function SetNewShell(path : PChar) : boolean;
-function IsWow64(): boolean;
 
 const
   cSeperateExplorerKey = 'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer';
@@ -42,20 +41,6 @@ const
   cUserWinLogon = 'USR:Software\Microsoft\Windows NT\CurrentVersion\Winlogon';
 
 implementation
-
-function IsWow64(): boolean;
-type
-  TIsWow64Process = function(Handle: THandle; var Res: boolean): boolean; stdcall;
-var
-  IsWow64Result: boolean;
-  IsWow64Process: TIsWow64Process;
-begin
-  result := False;
-  IsWow64Process := GetProcAddress(GetModuleHandle('kernel32'), 'IsWow64Process');
-  if Assigned(IsWow64Process) then
-    if IsWow64Process(GetCurrentProcess, IsWow64Result) then
-      result := IsWow64Result;
-end;
 
 function ApplySeperateExplorerFix : boolean;
 const
