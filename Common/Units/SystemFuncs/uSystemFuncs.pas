@@ -2,16 +2,33 @@ unit uSystemFuncs;
 
 interface
 
-uses Types, Windows, Classes, SysUtils, ShellApi, SharpTypes;
+uses Types, Registry, Windows, Classes, SysUtils, ShellApi, SharpTypes;
 
 const
   // new shell hook param
   HSHELL_SYSMENU = 9;
 
+function NETFramework35: Boolean;
 function FindAllWindows(const WindowClass: string): THandleArray;
 function ForceForegroundWindow(hwnd: THandle): Boolean;
 
 implementation
+
+function NETFramework35: Boolean;
+var
+  Reg: TRegistry;
+begin
+  Result := False;
+  Reg := TRegistry.Create(KEY_READ);
+  try
+    Reg.RootKey := HKEY_LOCAL_MACHINE;
+    if Reg.OpenKey('SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5', False) then
+      if Reg.ReadBool('Install') then
+        result := True;
+  finally
+    Reg.Free
+  end;
+end;
 
 // function based on http://www.delphipraxis.net/post452421.html
 function FindAllWindows(const WindowClass: string): THandleArray;
