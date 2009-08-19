@@ -44,6 +44,7 @@ uses
   // Common
   SharpApi,
   uVistaFuncs,
+  uSystemFuncs,
 
   // JCL
   JclFileUtils,
@@ -136,6 +137,8 @@ var
   showans: boolean;
 
   SharpExec: TSharpExec;
+
+function AllowSetForegroundWindow(ProcessID : DWORD) : boolean; stdcall; external 'user32.dll' name 'AllowSetForegroundWindow';
 
 implementation
 
@@ -396,6 +399,8 @@ begin
 end;
 
 function TSharpExec.ExecuteText(text: string; SaveHistory: Boolean; Elevate: Boolean): boolean;
+const
+  linktimeout = 2000;
 var
   url: string;
   FileCommandl: TExecFileCommandl;
@@ -404,6 +409,12 @@ var
   iResult: Integer;
 
   link: TShellLink;
+
+  SUInfo: TStartupInfo;
+  ProcInfo: TProcessInformation;
+  s : String;
+  striparray : array[0..0] of char;
+  i : integer;
 begin
   // Initialise the local variables
   url := text;
@@ -444,9 +455,28 @@ begin
       end;
     end
     else
-
       // LNK files
-      if (ExtractFileExt(text) = '.lnk') then begin
+      if (ExtractFileExt(text) = '.lnk') then
+      begin
+        if (uSystemFuncs.NETFramework35) //and IsWow64()
+          and (SysUtils.FileExists(GetSharpeDirectory + 'SharpLinkLauncherNET.exe')) then
+        begin
+          FillChar(SUInfo, SizeOf(SUInfo), #0);
+          SUInfo.cb := SizeOf(SUInfo);
+          striparray[0] := '"';
+          s := GetSharpeDirectory + 'SharpLinkLauncherNET.exe' + ' -l:"' + StrRemoveChars(text,striparray)+'" -t:' + inttostr(3000);
+          Result := CreateProcess(PChar(GetSharpeDirectory + 'SharpLinkLauncherNET.exe'),
+                                  PChar(s), nil, nil, False,
+                                  CREATE_NEW_CONSOLE or NORMAL_PRIORITY_CLASS,
+                                  nil, nil,
+                                  SUInfo, ProcInfo);
+          // Wait for it to finish initialization
+          if Result then
+            WaitForInputIdle(ProcInfo.hProcess,linktimeout);
+          AllowSetForegroundWindow(ProcInfo.dwProcessId);
+          PostThreadMessage(ProcInfo.dwThreadId,WM_SHARPELINKLAUNCH,0,0);
+          exit;
+        end else
         if JclShell.ShellLinkResolve(text, link) = S_OK then begin
           if ShellOpenFile(Handle, link.Target, link.Arguments, link.WorkingDirectory, Elevate) = 1 then begin
 
