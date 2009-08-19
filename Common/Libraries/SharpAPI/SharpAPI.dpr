@@ -71,6 +71,8 @@ const
 
   WM_DESKCLOSING          = WM_APP + 537;
 
+  WM_SHARPELINKLAUNCH     = WM_APP + 540;
+
   WM_SHARPTERMINATE       = WM_APP + 550;
 
   // Shell Hooks
@@ -689,6 +691,7 @@ var
   iHistory: Integer;
   sTemp: String;
   wnd : hWnd;
+  PID : DWORD;
 begin
 //  Result := HR_OK;
 
@@ -697,7 +700,10 @@ begin
     begin
       wnd := FindWindow('TSharpCoreMainWnd', nil);
       if wnd <> 0 then
-        AllowSetForegroundWindow(wnd);
+      begin
+        GetWindowThreadProcessId(wnd, @PID);
+        AllowSetForegroundWindow(PID);
+      end;
       result := ServiceMsg('exec', data)
     end else
     begin

@@ -58,6 +58,8 @@ const
 
   WM_DESKCLOSING          = WM_APP + 537;
 
+  WM_SHARPELINKLAUNCH     = WM_APP + 540;
+
   WM_SHARPTERMINATE       = WM_APP + 550;
 
   // Shell Hooks
