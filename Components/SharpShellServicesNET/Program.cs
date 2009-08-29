@@ -66,12 +66,20 @@ namespace SharpEnviro.ShellServices
                     // load the sso
                     Guid regsso = new Guid(regguid);
                     Type regssoType = Type.GetTypeFromCLSID(regsso, false);
+
                     if (regssoType.IsCOMObject)
                     {
-                        object regssoObj = Activator.CreateInstance(regssoType);
-                        IOleCommandTarget pCmdTarget = (IOleCommandTarget)regssoObj;
-                        Object o = new object();
-                        pCmdTarget.Exec(ref CGID_ShellServiceObject, 2, 0, ref o, ref o);
+						try
+						{
+							object regssoObj = Activator.CreateInstance(regssoType);
+							IOleCommandTarget pCmdTarget = (IOleCommandTarget)regssoObj;
+							Object o = new object();
+							pCmdTarget.Exec(ref CGID_ShellServiceObject, 2, 0, ref o, ref o);
+						}
+						catch
+						{
+							// Squash any exceptions, as in the case when the type is not registered properly.
+						}
                     }
                 }
             }
