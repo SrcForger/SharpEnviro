@@ -77,8 +77,19 @@ namespace SharpLinkLauncherNET
             {
 				if (lpMsg.message == WM_SHARPELINKLAUNCH)
 				{
-					Process.Start(COM.ResolveShortcut(linkPath));
-					Environment.Exit((int)ExitCode.Success);
+					try
+					{
+						// Try and execute the link after resolving it to its target.
+						Process.Start(COM.ResolveShortcut(linkPath));
+						Environment.Exit((int)ExitCode.Success);
+					}
+					catch
+					{
+						// If for some reason there was an exception executing the resolved shortcut
+						// then just try and execute the shortcut itself.
+						Process.Start(linkPath);
+						Environment.Exit((int)ExitCode.Success);
+					}
 				}
 
                 if (lpMsg.message == WM_ENDSESSION ||
