@@ -30,6 +30,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Contnrs,
   Dialogs, Menus, Math, GR32, ToolTipApi, ShellApi, CommCtrl, dwmapi,
+  SharpFileUtils,
   JclSimpleXML,
   SharpCenterApi,
   SharpApi,
@@ -528,6 +529,9 @@ begin
       end;
   with FButtonList[Index] do
   begin
+    if not FileExists(pTarget) then
+      pTarget := FindFilePath(pTarget);
+
     btn := TSharpETaskItem.Create(self);
     btn.UseSpecial := True;
     btn.State := sState; 
