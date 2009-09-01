@@ -285,6 +285,7 @@ begin
   ofdialog := TOpenDialog.Create(nil);
   try
     ofdialog.Filter := 'Images (*.jpg,*.png,*.ico)|*.jpg;*.jpeg;*.ico;*.png';
+    ofdialog.Options := ofdialog.Options + [ofNoDereferenceLinks];
     if ofdialog.Execute then iconmenuresult := ofdialog.FileName;
   finally
     ofdialog.Free;
@@ -388,6 +389,7 @@ begin
   ofdialog := TOpenDialog.Create(nil);
   try
     ofdialog.Filter := 'All Files (*.*)|*.*';
+    ofdialog.Options := ofdialog.Options + [ofNoDereferenceLinks];
     if ofdialog.Execute then targetmenuresult := ofdialog.FileName;
   finally
     ofdialog.Free;
