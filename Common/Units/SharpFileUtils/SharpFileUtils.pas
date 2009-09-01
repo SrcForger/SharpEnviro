@@ -29,14 +29,29 @@ interface
 
 uses
   Classes,
+  windows,
   SysUtils,
   JclStrings;
 
 procedure FindFiles(var FilesList: TStringList; StartDir, FileMask: string); overload;
 procedure FindFiles(var FilesList: TStringList; StartDir, FileMask: string; Recurse: Boolean); overload;
 function GetFileNameWithoutParams(pTarget : String) : String;
+function FindFilePath(pTarget : String) : String;
+
+Function PathFindOnPath(pszPath, ppszOtherDirs: PChar): BOOL; stdcall; external 'shlwapi.dll' Name 'PathFindOnPathA';
 
 implementation
+
+function FindFilePath(pTarget : String) : String;
+var
+  buf: array [0..MAX_PATH] of Char;
+begin
+  result := pTarget;
+
+  Move(pTarget[1], buf, Succ(Length(pTarget)));
+  if PathFindOnPath(buf,nil) then
+    result := buf;
+end;
 
 procedure FindFiles(var FilesList: TStringList; StartDir, FileMask: string);
 begin
