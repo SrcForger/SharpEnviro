@@ -55,9 +55,6 @@ function IconStringToIcon(Icon,Target : String; Bmp : TBitmap32; Size : integer)
 implementation
 
 
-function PrivateExtractIcons(lpszFile: PChar; nIconIndex, cxIcon, cyIcon: integer; phicon: PHandle; piconid: PDWORD; nIcons, flags: DWORD): DWORD; stdcall;
-  external 'user32.dll' name 'PrivateExtractIconsA';
-
 type
   TColorRec = packed record
                 b,g,r,a: Byte;
