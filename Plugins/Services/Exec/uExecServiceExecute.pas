@@ -398,9 +398,31 @@ begin
   end;
 end;
 
-function TSharpExec.ExecuteText(text: string; SaveHistory: Boolean; Elevate: Boolean): boolean;
+function NETLinkLaunch(textstripped : string) : Boolean;
 const
   linktimeout = 2000;
+var
+  SUInfo: TStartupInfo;
+  ProcInfo: TProcessInformation;
+  s : String;
+begin
+  FillChar(SUInfo, SizeOf(SUInfo), #0);
+  SUInfo.cb := SizeOf(SUInfo);
+  s := GetSharpeDirectory + 'SharpLinkLauncherNET.exe' + ' -l:"' + textstripped +'" -t:' + inttostr(3000);
+  Debug('Execute: SharpLinkLauncherNET with param: ' + s, DMT_TRACE);
+  Result := CreateProcess(PChar(GetSharpeDirectory + 'SharpLinkLauncherNET.exe'),
+                          PChar(s), nil, nil, False,
+                          CREATE_NEW_CONSOLE or NORMAL_PRIORITY_CLASS,
+                          nil, nil,
+                          SUInfo, ProcInfo);
+  // Wait for it to finish initialization
+  if Result then
+    WaitForInputIdle(ProcInfo.hProcess,linktimeout);
+  AllowSetForegroundWindow(ProcInfo.dwProcessId);
+  PostThreadMessage(ProcInfo.dwThreadId,WM_SHARPELINKLAUNCH,0,0);
+end;
+
+function TSharpExec.ExecuteText(text: string; SaveHistory: Boolean; Elevate: Boolean): boolean;
 var
   url: string;
   FileCommandl: TExecFileCommandl;
@@ -408,19 +430,20 @@ var
   oldhandle: THandle;
   iResult: Integer;
 
+  failed,forceshelllinkopen : boolean;
   link: TShellLink;
 
-  SUInfo: TStartupInfo;
-  ProcInfo: TProcessInformation;
-  s : String;
   striparray : array[0..0] of char;
-  i : integer;
+  textstripped : string;
 begin
   // Initialise the local variables
   url := text;
   showans := False;
   calcanswer := '';
   handle := FindWindow('TSharpCoreMainWnd', nil);
+
+  striparray[0] := '"';
+  textstripped := StrRemoveChars(text,striparray);
 
   ForceForegroundWindow(handle, oldhandle);
   try
@@ -456,30 +479,31 @@ begin
     end
     else
       // LNK files
-      if (ExtractFileExt(text) = '.lnk') then
+      if (ExtractFileExt(textstripped) = '.lnk') then
       begin
-        if (uSystemFuncs.NETFramework35) //and IsWow64()
-          and (SysUtils.FileExists(GetSharpeDirectory + 'SharpLinkLauncherNET.exe')) then
+        failed := True;
+        forceshelllinkopen := False;
+        CoInitialize(nil);
+        if JclShell.ShellLinkResolve(textstripped, link) = S_OK then
         begin
-          FillChar(SUInfo, SizeOf(SUInfo), #0);
-          SUInfo.cb := SizeOf(SUInfo);
-          striparray[0] := '"';
-          s := GetSharpeDirectory + 'SharpLinkLauncherNET.exe' + ' -l:"' + StrRemoveChars(text,striparray)+'" -t:' + inttostr(3000);
-          Result := CreateProcess(PChar(GetSharpeDirectory + 'SharpLinkLauncherNET.exe'),
-                                  PChar(s), nil, nil, False,
-                                  CREATE_NEW_CONSOLE or NORMAL_PRIORITY_CLASS,
-                                  nil, nil,
-                                  SUInfo, ProcInfo);
-          // Wait for it to finish initialization
-          if Result then
-            WaitForInputIdle(ProcInfo.hProcess,linktimeout);
-          AllowSetForegroundWindow(ProcInfo.dwProcessId);
-          PostThreadMessage(ProcInfo.dwThreadId,WM_SHARPELINKLAUNCH,0,0);
-          exit;
-        end else
-        if JclShell.ShellLinkResolve(text, link) = S_OK then begin
-          if ShellOpenFile(Handle, link.Target, link.Arguments, link.WorkingDirectory, Elevate) = 1 then begin
+          if (length(trim(link.Target)) = 0) and (length(trim(link.IconLocation)) = 0) then
+          begin
+            link.Target := text;
+            forceshelllinkopen := true;
+          end;
 
+          if (uSystemFuncs.NETFramework35)
+            and (SysUtils.FileExists(GetSharpeDirectory + 'SharpLinkLauncherNET.exe'))
+            and (not forceshelllinkopen) then
+          begin
+            result := NETLinkLaunch(textstripped);
+            SaveMostUsedItem(text, SaveHistory);
+            SaveRecentItem(text, SaveHistory);            
+            exit;
+          end;
+
+          if ShellOpenFile(Handle, link.Target, link.Arguments, link.WorkingDirectory, Elevate) = 1 then
+          begin
             // Save to recent item list
             SaveMostUsedItem(text, SaveHistory);
             SaveRecentItem(text, SaveHistory);
@@ -488,10 +512,20 @@ begin
             Exit;
           end;
         end;
+        CoUninitialize;
+        if Failed then
+          if (uSystemFuncs.NETFramework35) //and IsWow64()
+            and (SysUtils.FileExists(GetSharpeDirectory + 'SharpLinkLauncherNET.exe')) then
+          begin
+            result := NETLinkLaunch(textstripped);
+            SaveMostUsedItem(text, SaveHistory);
+            SaveRecentItem(text, SaveHistory);            
+            exit;
+          end
       end
       else
-        if ((ExtractFileExt(text) = '.sip') or (ExtractFileExt(text) = '.sescript')) then begin
-          if ShellOpenFile(Handle, GetSharpeDirectory + 'SharpScript.exe', '"' + text + '"', GetSharpeDirectory, Elevate) = 1 then begin
+        if ((ExtractFileExt(textstripped) = '.sip') or (ExtractFileExt(textstripped) = '.sescript')) then begin
+          if ShellOpenFile(Handle, GetSharpeDirectory + 'SharpScript.exe', '"' + textstripped + '"', GetSharpeDirectory, Elevate) = 1 then begin
             Result := True;
             Exit;
           end;
@@ -520,7 +554,7 @@ begin
               Exit;
             end;
           end
-          else if PathIsUNC(PathAddSeparator(text)) or (isdirectory(text)) then begin
+          else if PathIsUNC(PathAddSeparator(textstripped)) or (isdirectory(textstripped)) then begin
             Debug('ExecuteType: Path', DMT_TRACE);
             iResult := ShellOpenFile(Handle, GetAltExplorer, text, '', Elevate);
 
@@ -556,7 +590,7 @@ begin
               Exit;
             end;
           end
-          else if ((ExtractFileExt(text) = '.msc') and (Pos('mmc', lowercase(text)) <> 0)) then begin
+          else if ((ExtractFileExt(textstripped) = '.msc') and (Pos('mmc', lowercase(text)) <> 0)) then begin
             Debug('ExecuteType: MSC Console', DMT_TRACE);
 
             if ShellOpenFile(Handle, GetWindowsSystemFolder + '\mmc.exe',
@@ -767,6 +801,11 @@ begin
   inherited Destroy;
 end;
 
+function PCharOrNil(const S: string): PChar;
+begin
+  Result := Pointer(S);
+end;
+
 function TSharpExec.ShellOpenFile(hWnd: HWND; AFileName, AParams, ADefaultDir:
   string; Elevate: Boolean): integer;
 var
@@ -796,10 +835,12 @@ begin
     FDebugText := Format('File: %s -- Param: %s -- Dir: %s', [AFileName, AParams, ADefaultDir]);
     Result := 1;
   end else
-    result := shellapi.ShellExecute(hWnd, PChar(sOperation), pChar(AFileName),
+  begin
+    result := shellapi.ShellExecute(0, PChar(sOperation), pChar(AFileName),
       pChar(AParams),
       pChar(ADefaultDir),
       SW_SHOWNORMAL);
+  end;
   case result of
     0: Debug('The operating system is out of memory or resources.', DMT_ERROR);
     ERROR_FILE_NOT_FOUND: Debug('The specified file was not found.', DMT_ERROR);
