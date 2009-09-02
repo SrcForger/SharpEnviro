@@ -232,6 +232,9 @@ begin
 
   ms := TSharpEMenuSettings.Create;
   ms.LoadFromXML;
+  ms.WrapMenu := False;
+  ms.UseGenericIcons := False;
+  ms.CacheIcons := False;
 
   mn := TSharpEMenu.Create(mInterface.SkinInterface.SkinManager,ms);
   ms.Free;
@@ -322,6 +325,12 @@ begin
     wnd.Top := R.Bottom + mInterface.SkinInterface.SkinManager.Skin.Menu.LocationOffset.Y
   else begin
     wnd.Top := R.Top - wnd.Picture.Height - mInterface.SkinInterface.SkinManager.Skin.Menu.LocationOffset.Y;
+  end;
+  if wnd.Top < Monitor.Top then
+  begin
+    if wnd.Picture.Height > Monitor.Height then
+      wnd.Height := Monitor.Height;
+    wnd.Top := 0;
   end;
   wnd.Show;
 end;
