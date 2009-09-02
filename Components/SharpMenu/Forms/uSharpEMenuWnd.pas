@@ -203,6 +203,7 @@ procedure TSharpEMenuWnd.UpdateWndLayer;
 var
   TopLeft, BmpTopLeft: TPoint;
   BmpSize: TSize;
+  Bmp : TBitmap32;
 begin
   if (Height <> FPicture.Height) then
   begin
@@ -224,8 +225,13 @@ begin
 
   BmpSize.cx := Width;
   BmpSize.cy := Height;
-  BmpTopLeft := Point(0, FOffset);
+ // BmpTopLeft := Point(0, FOffset);
+  BmpTopLEft := Point(0,0);
   TopLeft := BoundsRect.TopLeft;
+
+  Bmp := TBitmap32.Create;
+  Bmp.SetSize(Width,Height);
+  FPicture.DrawTo(Bmp,0,-FOffset);
 
   DC := GetDC(Handle);
   try
@@ -234,11 +240,12 @@ begin
       RaiseLastWin32Error;
 
      if not Win32Check(UpdateLayeredWindow(Handle, DC, @TopLeft, @BmpSize,
-      FPicture.Handle, @BmpTopLeft, clNone, @Blend, ULW_ALPHA)) then
+      Bmp.Handle, @BmpTopLeft, clNone, @Blend, ULW_ALPHA)) then
       RaiseLastWin32Error;
     {$WARNINGS ON}
   finally
     ReleaseDC(Handle, DC);
+    Bmp.Free;
   end;
 end;
 
@@ -287,6 +294,7 @@ procedure TSharpEMenuWnd.FormMouseMove(Sender: TObject; Shift: TShiftState; X,
 var
   submenu : boolean;
   item : TSharpEMenuItem;
+  CPos : TPoint;
 begin
   if FIsClosing then exit;
   if FMenu = nil then exit;
@@ -322,7 +330,8 @@ begin
     DrawWindow;
   end;
 
-  if (Y < 10) or (Y > Monitor.Height - 10) then
+  CPos := Mouse.CursorPos;
+  if (Y < 10) or (Y > Monitor.Height - 10 - Top) or (CPos.y < Monitor.Top + 10) then
      offsettimer.Enabled := True;
 end;
 
@@ -496,7 +505,7 @@ begin
   CPos := Mouse.CursorPos;
   if (CPos.X > Left) and (CPos.X < Left + Width) then
   begin
-    if (CPos.Y >= Monitor.Top) and (CPos.Y <= Monitor.Top + 5) and (FOffset >= 0) then
+    if (CPos.Y >= Monitor.Top + Top) and (CPos.Y <= Monitor.Top + 5 + Top) and (FOffset >= 0) then
     begin
       FOffset := FOffset -15;
       if FOffset < 0 then FOffset := 0;
@@ -513,11 +522,11 @@ begin
     else
     if (CPos.Y >= Monitor.Top + Monitor.Height - 5)
         and (CPos.Y <= Monitor.Top + Monitor.Height)
-        and (FOffset <= FPicture.Height - Monitor.Height) then
+        and (FOffset <= FPicture.Height - Monitor.Height + top) then
     begin
       FOffset := FOffset +15;
-      if FOffset > FPicture.Height - Monitor.Height then
-         FOffset := FPicture.Height - Monitor.Height;
+      if FOffset > FPicture.Height - Monitor.Height + top then
+         FOffset := FPicture.Height - Monitor.Height + top;
 
       if FMenu.ItemIndex <> -1 then
         FMenu.ItemIndex := -1;
