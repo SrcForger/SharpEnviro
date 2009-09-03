@@ -23,7 +23,7 @@
     <WndClass>Winamp v1.x</WndClass>
     <WndCaption>Winamp 5.03</WndCaption>
     <Icon>MediaMonkey.png</Icon>
-    <AppCommand>0</AppCommand>
+    <MessageType>1</MessageType>
     <btnPlay>40045</btnPlay>
     <btnPause>40046</btnPause>
     <btnStop>40047</btnStop>
@@ -46,15 +46,15 @@
   </item>  
   <item>
     <Name>VLC Media Player</Name>
-    <WndClass>wxWindowClassNR</WndClass>
+    <WndClass>QWidget</WndClass>
     <WndCaption>VCL media player</WndCaption>
     <Icon>vlc_icon.png</Icon>
-    <AppCommand>0</AppCommand>
-    <btnPlay>7109</btnPlay>
-    <btnPause>7109</btnPause>
-    <btnStop>13003</btnStop>
-    <btnNext>13014</btnNext>
-    <btnPrev>13013</btnPrev>
+    <MessageType>2</MessageType>
+    <btnPlay>32</btnPlay>
+    <btnPause>32</btnPause>
+    <btnStop>115</btnStop>
+    <btnNext>110</btnNext>
+    <btnPrev>112</btnPrev>
     <RegPath>SOFTWARE\VideoLAN\VLC</RegPath>
     <RegValue></RegValue>
   </item>
@@ -63,7 +63,7 @@
     <WndClass>Winamp v1.x</WndClass>
     <WndCaption>Winamp 5.03</WndCaption>
     <Icon>winamp_icon.png</Icon>
-    <AppCommand>0</AppCommand>
+    <MessageType>1</MessageType>
     <btnPlay>40045</btnPlay>
     <btnPause>40046</btnPause>
     <btnStop>40047</btnStop>
@@ -84,7 +84,7 @@
     <WndClass>TAppBilly</WndClass>
     <WndCaption></WndCaption>
     <Icon>Billy.png</Icon>
-    <AppCommand>0</AppCommand>
+    <MessageType>0</MessageType>
     <btnPlay>45</btnPlay>
     <btnPause>46</btnPause>
     <btnStop>47</btnStop>

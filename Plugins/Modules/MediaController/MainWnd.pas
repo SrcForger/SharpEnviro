@@ -413,9 +413,16 @@ begin
         cctPrev  : param := mitem.btnPrev;
         else param := 0;
       end;
-      if mitem.AppCommand then
-        SendMessage(wnd,WM_APPCOMMAND,0,MakeLParam(0,param))
-      else SendMessage(wnd,WM_COMMAND,param,0)
+      case mitem.MessageType of
+        smtAppCommand: SendMessage(wnd,WM_APPCOMMAND,0,MakeLParam(0,param));
+        smtCommand: SendMessage(wnd,WM_COMMAND,param,0);
+        smtKey:
+        begin
+          SendMessage(wnd, WM_KEYDOWN, VkKeyScan(Chr(param)), 0);
+          SendMessage(wnd, WM_CHAR, VkKeyScan(Chr(param)), 0);
+          SendMessage(wnd, WM_KEYUP, VkKeyScan(Chr(param)), 0);
+        end;
+      end;
     end else
     begin
       if FileExists(mitem.PlayerPath) then

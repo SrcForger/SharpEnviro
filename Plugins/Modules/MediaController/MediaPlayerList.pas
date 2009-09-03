@@ -31,6 +31,8 @@ uses
   Windows,SysUtils,GR32,Contnrs,Dialogs,JclSimpleXML;
 
 type
+  TSendMessageType = (smtAppCommand, smtCommand, smtKey);
+  
   TMediaPlayerItem = class
   private
     procedure LoadIcon(pIconFile : String);
@@ -40,7 +42,7 @@ type
     WndClassName : String;
     WndCaption : String;
     WndSubClass : String;
-    AppCommand : boolean;
+    MessageType : TSendMessageType;
     btnPlay  : integer;
     btnPause : integer;
     btnStop  : integer;
@@ -201,7 +203,7 @@ begin
   RegPath := pXML.Value('RegPath','');
   RegValue := pXML.Value('RegValue','');
 
-  AppCommand := pXML.BoolValue('AppCommand',True);
+  MessageType := TSendMessageType(pXML.IntValue('MessageType', Integer(smtAppCommand)));
   btnPlay    := pXML.IntValue('btnPlay',APPCOMMAND_MEDIA_PLAY_PAUSE);
   btnPause   := pXML.IntValue('btnPause',APPCOMMAND_MEDIA_PLAY_PAUSE);
   btnStop    := pXML.IntValue('btnStop',APPCOMMAND_MEDIA_STOP);
