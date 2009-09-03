@@ -79,4 +79,16 @@
     <RegPath>SOFTWARE\Microsoft\Multimedia\WMPlayer</RegPath>
     <RegValue>Player.Path</RegValue>
   </item>   
+  <item>
+    <Name>Billy</Name>
+    <WndClass>TAppBilly</WndClass>
+    <WndCaption></WndCaption>
+    <Icon>Billy.png</Icon>
+    <AppCommand>0</AppCommand>
+    <btnPlay>45</btnPlay>
+    <btnPause>46</btnPause>
+    <btnStop>47</btnStop>
+    <btnNext>49</btnNext>
+    <btnPrev>50</btnPrev>
+  </item>
 </MediaPlayers>
