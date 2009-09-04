@@ -24,7 +24,7 @@ namespace SharpEnviro.ShellServices
     class SSOVista
     {
     }
-
+    
     class ShellServiceObjects
     {
         // Import GetMessage function from user32.dll
@@ -39,6 +39,8 @@ namespace SharpEnviro.ShellServices
 
         private static Guid CGID_ShellServiceObject = new Guid("000214D2-0000-0000-C000-000000000046");
 
+        static List<IOleCommandTarget> SSO = new List<IOleCommandTarget>();
+
         // Load Shell Services on Vista and Win7
         static void LoadShellServicesVista()
         {
@@ -46,6 +48,7 @@ namespace SharpEnviro.ShellServices
             IOleCommandTarget pCmdTarget = (IOleCommandTarget)pSSOVista;
             Object o = new object();
             pCmdTarget.Exec(ref CGID_ShellServiceObject, 2, 0, ref o, ref o);
+            SSO.Add(pCmdTarget);
         }
 
         // Load Shell Services the old (XP and before) way
@@ -75,6 +78,7 @@ namespace SharpEnviro.ShellServices
 							IOleCommandTarget pCmdTarget = (IOleCommandTarget)regssoObj;
 							Object o = new object();
 							pCmdTarget.Exec(ref CGID_ShellServiceObject, 2, 0, ref o, ref o);
+                            SSO.Add(pCmdTarget);
 						}
 						catch
 						{
@@ -83,6 +87,16 @@ namespace SharpEnviro.ShellServices
                     }
                 }
             }
+        }
+
+        static void UnloadShellServices()
+        {
+            foreach (IOleCommandTarget cmdTarget in SSO)
+            {
+                Object o = new object();
+                cmdTarget.Exec(ref CGID_ShellServiceObject, 3, 0, ref o, ref o);
+            }
+            SSO.Clear();
         }
 
         static void Main(string[] args)
@@ -104,6 +118,8 @@ namespace SharpEnviro.ShellServices
                         break;
                     }
                 }
+
+                UnloadShellServices();
             }
         }
     }
