@@ -408,7 +408,7 @@ var
 begin
   FillChar(SUInfo, SizeOf(SUInfo), #0);
   SUInfo.cb := SizeOf(SUInfo);
-  s := GetSharpeDirectory + 'SharpLinkLauncherNET.exe' + ' -l:"' + textstripped +'" -t:' + inttostr(3000);
+  s := '"' + GetSharpeDirectory + 'SharpLinkLauncherNET.exe"' + ' -l:"' + textstripped +'" -t:' + inttostr(3000);
   Debug('Execute: SharpLinkLauncherNET with param: ' + s, DMT_TRACE);
   Result := CreateProcess(PChar(GetSharpeDirectory + 'SharpLinkLauncherNET.exe'),
                           PChar(s), nil, nil, False,
