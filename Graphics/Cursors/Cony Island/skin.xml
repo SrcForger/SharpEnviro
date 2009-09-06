@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Curses>
+  <SknDef>
+    <Title>Cony Island</Title>
+    <Author>Ron Huggins</Author>
+    <OtherInfo></OtherInfo>
+  </SknDef>
+  <CursPoints>
+    <AppStarting>7,5</AppStarting>
+    <Hand>13,3</Hand>
+    <Help>14,14</Help>
+    <IBeam>16,16</IBeam>
+    <No>8,6</No>
+    <Normal>8,8</Normal>
+    <SizeAll>14,14</SizeAll>
+    <SizeNESW>16,16</SizeNESW>
+    <SizeNS>16,16</SizeNS>
+    <SizeNWSE>16,16</SizeNWSE>
+    <SizeWE>16,16</SizeWE>
+    <Wait>5,5</Wait>
+  </CursPoints>
+</Curses>

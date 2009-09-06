@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Curses>
+  <SknDef>
+    <Title>Snubby</Title>
+    <Author>Ron Huggins</Author>
+    <OtherInfo></OtherInfo>
+  </SknDef>
+  <CursPoints>
+    <AppStarting>8,8</AppStarting>
+    <Hand>10,10</Hand>
+    <Help>14,14</Help>
+    <IBeam>14,14</IBeam>
+    <No>9,9</No>
+    <Normal>13,13</Normal>
+    <SizeAll>14,14</SizeAll>
+    <SizeNESW>14,14</SizeNESW>
+    <SizeNS>14,14</SizeNS>
+    <SizeNWSE>14,14</SizeNWSE>
+    <SizeWE>14,14</SizeWE>
+    <Wait>8,8</Wait>
+  </CursPoints>
+</Curses>

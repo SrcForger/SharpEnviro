@@ -36,16 +36,55 @@ uses
   Messages,
   SysUtils,
   Classes,
+  GR32,
+  GR32_Image,
   Graphics,
   sharpapi,
+  SharpGraphicsUtils,
   SharpThemeApiEx,
   jvSimpleXml,
   jclStrings,
   uISharpETheme,
+  ExtCtrls, StdCtrls,
 
   uCursesServiceSettings;
 
 type
+  TCursor = class(TObject)
+  private
+    FPath: string;
+
+    FType: integer;
+    FPoint: string;
+
+    FWidth: integer;
+    FHeight: integer;
+
+    FNumFrames: integer;
+    FCurFrame: integer;
+
+    FBitmap: TBitmap32;
+    FCurBitmap: TBitmap32;
+
+  public
+    constructor Create; reintroduce;
+    destructor Destroy; override;
+
+    procedure Load(path: string; Settings: TCursesSettings);
+
+    function GetBitmap(): TBitmap32;
+
+    // Properties
+    property CType: integer read FType write FType; 
+    property Point: string read FPoint write FPoint;
+
+    property Width: integer read FWidth write FWidth;
+    property Height: integer read FHeight write FHeight;
+
+    property NumFrames: integer read FNumFrames write FNumFrames;
+    property CurFrame: integer read FCurFrame;
+  end;
+
   TCursorInfo = class(TObject)
   private
     FName: string;
@@ -53,36 +92,17 @@ type
     FOtherInfo: string;
     FPath: string;
 
-    FAppStarting: string;
-    FHand: string;
-    FHelp: string;
-    FIbeam: string;
-    FNo: string;
-    FNormal: string;
-    FSizeall: string;
-    FSizenesw: string;
-    FSizens: string;
-    FSizenwse: string;
-    FSizewe: string;
-    FWait: string;
+    FAnimInterval: integer;
+
+    Cursors: Array of TCursor;
+
   public
     property Name: string read FName write FName;
     property Author: string read FAuthor write FAuthor;
     property OtherInfo: string read FOtherInfo write FOtherInfo;
     property Path: string read FPath write FPath;
 
-    property AppStarting: string read FAppStarting write FAppStarting;
-    property Hand: string read FHand write FHand;
-    property Help: string read FHelp write FHelp;
-    property Ibeam: string read FIBeam write FIBeam;
-    property No: string read FNo write FNo;
-    property Normal: string read FNormal write FNormal;
-    property Sizeall: string read FSizeAll write FSizeAll;
-    property Sizenesw: string read FSizeNESW write FSizeNESW;
-    property Sizens: string read FSizeNS write FSizeNS;
-    property Sizenwse: string read FSizeNWSE write FSizeNWSE;
-    property Sizewe: string read FSizeWE write FSizeWE;
-    property Wait: string read FWait write FWait;
+    property AnimInterval: integer read FAnimInterval write FAnimInterval;
   end;
 
   TCursesManager = class
@@ -90,12 +110,14 @@ type
     function GetCursesFolder: string;
     function GetPoint(s: string): TPoint;
     function Bitmap2Cursor(Bitmap: TBitmap; HotSpot: TPoint): HCursor;
-    procedure ReplaceColor(Bitmap: TBitmap; Col1, Col2: TColor);
+
+    procedure CursorOnTimer(Sender: TObject);
   public
+    UpdTimer: TTimer;
+    CurrentCursor: integer;
+
     FCursorInfo: TCursorInfo;
     FCursesSettings: TCursesSettings;
-
-    CursorBmpArray: array[0..10] of TBitmap;
 
     constructor Create; reintroduce;
     destructor Destroy; override;
@@ -110,10 +132,6 @@ type
 
 var
   CursesManager: TCursesManager;
-
-  CursorItemArray: array[0..9] of string = ('appstarting.bmp', 'wait.bmp',
-    'hand.bmp', 'no.bmp', 'ibeam.bmp', 'sizeall.bmp',
-    'sizenesw.bmp', 'sizens.bmp', 'sizenwse.bmp', 'sizewe.bmp');
 
   ItemSelectedID: Integer = 0;
   bmp: TBitmap;
@@ -130,6 +148,186 @@ procedure Debug(Text: string; DebugType: Integer);
 begin
   SendDebugMessageEx('Curses Service', Pchar(Text), 0, DebugType);
 end;
+
+
+procedure ReplaceColor(Bitmap: TBitmap; Col1, Col2: TColor);
+type
+  TrRGB = packed record
+    b, g, r: Byte;
+  end;
+  PRGBAry = ^TRGBAry;
+  TRGBAry = array[0..16383] of TrRGB;
+
+var
+  PSL: PRGBAry;
+  RByte, GByte, BByte: Byte;
+  x, y: Integer;
+begin
+  Bitmap.PixelFormat := pf24bit;
+  {you MUST change the PixelFormat to pf24bit
+  other Pixel Formats will NOT work in this type of scanline}
+
+  RByte := GetRValue(col1);
+  GByte := GetGValue(col1);
+  BByte := GetBValue(col1);
+  {get the Red green and blue bytes for the color you want to change}
+  for y := 0 to Bitmap.Height - 1 do begin
+    PSL := Bitmap.ScanLine[y];
+    for x := 0 to Bitmap.Width - 1 do
+      if (PSL[x].r = RByte) and (PSL[x].g = GByte) and (PSL[x].b = BByte) then begin
+        {set the Red Green and Blue for the NEW color here}
+        PSL[x].r := GetRValue(col2);
+        PSL[x].g := GetGValue(col2);
+        PSL[x].b := GetBValue(col2)
+      end;
+  end;
+end;
+
+function GetCursorID(name: string): integer;
+begin
+  Result := OCR_NORMAL;
+
+  if name = 'AppStarting' then
+  begin
+    Result := OCR_APPSTARTING;
+  end else if name = 'Wait' then
+  begin
+    Result := OCR_WAIT;
+  end else if name = 'Hand' then
+  begin
+    Result := OCR_HAND;
+  end else if name = 'No' then
+  begin
+    Result := OCR_NO;
+  end else if name = 'IBeam' then
+  begin
+    Result := OCR_IBEAM;
+  end else if name = 'SizeAll' then
+  begin
+    Result := OCR_SIZEALL;
+  end else if name = 'SizeNESW' then
+  begin
+    Result := OCR_SIZENESW;
+  end else if name = 'SizeNS' then
+  begin
+    Result := OCR_SIZENS;
+  end else if name = 'SizeNWSE' then
+  begin
+    Result := OCR_SIZENWSE;
+  end else if name = 'SizeWE' then
+  begin
+    Result := OCR_SIZEWE;
+  end;
+end;
+
+
+{ TCursor }
+constructor TCursor.Create;
+begin
+  inherited;
+
+  FBitmap := TBitmap32.Create();
+  FCurBitmap := TBitmap32.Create();
+
+  FCurFrame := 0;
+  FNumFrames := 0;
+  FWidth := 0;
+  FHeight := 0;
+end;
+
+destructor TCursor.Destroy;
+begin
+  FBitmap.free;
+  FCurBitmap.free;
+
+  inherited;
+end;
+
+procedure TCursor.Load(path: string; Settings: TCursesSettings);
+var
+  n: integer;
+  clist : array of integer;
+  Theme : ISharpETheme;
+  TmpBitmap : TBitmap32;
+begin
+  try
+  // convert to scheme colors
+  setlength(clist,length(Settings.Colors));
+  Theme := GetCurrentTheme;
+  for n := 0 to High(Settings.Colors) do
+  begin
+    clist[n] := Theme.Scheme.SchemeCodeToColor(Settings.Colors[n]);
+
+    // black will be transparent... but if selected as blend then color it's
+    // not supposed to be transparent, so adjust the black and make clFuchsia
+    // the new transparent color...
+    if clist[n] = 0 then
+       clist[n] := 1
+       else if clist[n] = clFuchsia then
+               clist[n] := 0;
+  end;
+
+  // Assign Bitmaps
+  FPath := path;
+  TmpBitmap := TBitmap32.Create();
+  TmpBitmap.LoadFromFile(path);
+
+  FBitmap.SetSize(TmpBitmap.width, TmpBitmap.height);
+  FBitmap.Clear(color32(0,0,0,0));
+  FBitmap.Assign(TmpBitmap);
+  
+  FreeAndNil(TmpBitmap);
+
+  ReplaceColor32(FBitmap, color32(0,0,0,255), color32(0,0,0,0));
+  ReplaceColor32(FBitmap, color32(255,0,0,255), color32(GetRValue(clist[0]),GetGValue(clist[0]),GetBValue(clist[0]),255));
+  ReplaceColor32(FBitmap, color32(0,0,255,255), color32(GetRValue(clist[1]),GetGValue(clist[1]),GetBValue(clist[1]),255));
+  ReplaceColor32(FBitmap, color32(0,255,0,255), color32(GetRValue(clist[2]),GetGValue(clist[2]),GetBValue(clist[2]),255));
+  ReplaceColor32(FBitmap, color32(255,255,0,255), color32(GetRValue(clist[3]),GetGValue(clist[3]),GetBValue(clist[3]),255));
+
+  {ReplaceColor32(FBitmap, color32(0,0,0,255), color32(0,0,0,0));
+  ReplaceColor32(FBitmap, color32(255,0,0,255), clist[0]);
+  ReplaceColor32(FBitmap, color32(0,0,255,255), clist[1]);
+  ReplaceColor32(FBitmap, color32(0,255,0,255), clist[2]);
+  ReplaceColor32(FBitmap, color32(255,255,0,255), clist[3]);  }
+
+  setlength(clist,0);
+
+  except
+    on E: Exception do
+    begin
+      Debug(Format('Error While Loading Cursor: %s', [path]),DMT_ERROR);
+      Debug(E.Message, DMT_TRACE);
+    end;
+  end;
+end;
+
+function TCursor.GetBitmap(): TBitmap32;
+var
+  sRect: Windows.TRect;
+begin
+  try
+  FCurBitmap.SetSize(FWidth, FHeight);
+  FCurBitmap.Clear(color32(0,0,0,0));
+
+  sRect := Rect(FWidth * FCurFrame, 0, FWidth + (FCurFrame * FWidth), FHeight);
+  FBitmap.DrawTo(FCurBitmap, 0, 0, sRect);
+
+  FCurFrame := FCurFrame + 1;
+  if(FCurFrame >= FNumFrames) then
+    FCurFrame := 0;
+
+  Result := FCurBitmap;
+  except
+    on E: Exception do
+    begin
+      Debug('Error While Getting Bitmap',DMT_ERROR);
+      Debug(E.Message, DMT_TRACE);
+
+      Result := nil;
+    end;
+  end;
+end;
+
 
 { TCursesManager }
 
@@ -150,69 +348,52 @@ begin
   end else msg.Result := DefWindowProc(h,msg.Msg,Msg.WParam,msg.LParam);
 end;
 
+
+
 procedure TCursesManager.ApplySkin;
 var
-  n: integer;
-  clist : array of integer;
-  Theme : ISharpETheme;
+  i : integer;
+  Bitmap : TBitmap;
 begin
-  for n := Low(CursorBmpArray) to High(CursorBmpArray) do
-      if CursorBmpArray[n] <> nil then
-      begin
-        CursorBmpArray[n].Free;
-        CursorBmpArray[n] := nil;
-      end;
-
-  // convert to scheme colors
-  setlength(clist,length(FCursesSettings.Colors));
-  Theme := GetCurrentTheme;
-  for n := 0 to High(FCursesSettings.Colors) do
-  begin
-    clist[n] := Theme.Scheme.SchemeCodeToColor(FCursesSettings.Colors[n]);
-
-    // black will be transparent... but if selected as blend then color it's
-    // not supposed to be transparent, so adjust the black and make clFuchsia
-    // the new transparent color...
-    if clist[n] = 0 then
-       clist[n] := 1
-       else if clist[n] = clFuchsia then
-               clist[n] := 0;
-  end;
-
-  // Assign Bitmaps
-  for n := 0 to 10 do
-  begin
-    if n = 0 then
-    begin
-      CursorBmpArray[n] := TBitMap.Create;
-      CursorBmpArray[n].LoadFromFile(FCursorInfo.Path + 'normal.bmp');
-    end
-    else begin
-      CursorBmpArray[n] := TBitMap.Create;
-      CursorBmpArray[n].LoadFromFile(FCursorInfo.Path + CursorItemArray[n - 1]);
-    end;
-
-    ReplaceColor(CursorBmpArray[n], clRed,    clist[0]);
-    ReplaceColor(CursorBmpArray[n], clBlue,   clist[1]);
-    ReplaceColor(CursorBmpArray[n], clLime,  clist[2]);
-    ReplaceColor(CursorBmpArray[n], clYellow, clist[3]);
-  end;
-  setlength(clist,0);
-
   // Assign Bitmaps to Cursors
   with FCursorInfo do
   begin
-    SetSystemCursor(Bitmap2Cursor(CursorBmpArray[0], GetPoint(Normal)), OCR_NORMAL);
-    SetSystemCursor(Bitmap2Cursor(CursorBmpArray[1], GetPoint(AppStarting)), OCR_APPSTARTING);
-    SetSystemCursor(Bitmap2Cursor(CursorBmpArray[2], GetPoint(Wait)), OCR_WAIT);
-    SetSystemCursor(Bitmap2Cursor(CursorBmpArray[3], GetPoint(hand)), OCR_HAND);
-    SetSystemCursor(Bitmap2Cursor(CursorBmpArray[4], GetPoint(no)), OCR_NO);
-    SetSystemCursor(Bitmap2Cursor(CursorBmpArray[5], GetPoint(ibeam)), OCR_IBEAM);
-    SetSystemCursor(Bitmap2Cursor(CursorBmpArray[6], GetPoint(sizeall)), OCR_SIZEALL);
-    SetSystemCursor(Bitmap2Cursor(CursorBmpArray[7], GetPoint(sizenesw)), OCR_SIZENESW);
-    SetSystemCursor(Bitmap2Cursor(CursorBmpArray[8], GetPoint(Normal)), OCR_SIZENS);
-    SetSystemCursor(Bitmap2Cursor(CursorBmpArray[9], GetPoint(Normal)), OCR_SIZENWSE);
-    SetSystemCursor(Bitmap2Cursor(CursorBmpArray[10], GetPoint(Normal)), OCR_SIZEWE);
+    for i := Low(Cursors) to High(Cursors) do
+    begin
+      Bitmap := TBitmap.Create();
+      Bitmap.Assign(Cursors[i].GetBitmap());
+      SetSystemCursor(Bitmap2Cursor(Bitmap, GetPoint(Cursors[i].Point)), Cursors[i].CType);
+    end;
+  end;
+
+  UpdTimer := TTimer.Create(nil);
+  UpdTimer.Interval := FCursorInfo.AnimInterval;
+  UpdTimer.OnTimer := CursorOnTimer;
+  UpdTimer.Enabled := True;
+end;
+
+procedure TCursesManager.CursorOnTimer(Sender: TObject);
+var
+  i: integer;
+  Bitmap : TBitmap;
+begin
+  try
+  with FCursorInfo do
+  begin
+    for i := Low(Cursors) to High(Cursors) do
+    begin
+      Bitmap := TBitmap.Create();
+      Bitmap.Assign(Cursors[i].GetBitmap());
+      SetSystemCursor(Bitmap2Cursor(Bitmap, GetPoint(Cursors[i].Point)), Cursors[i].CType);
+      Bitmap.free;
+    end;
+  end;
+  except
+    on E: Exception do
+    begin
+      Debug('Error In OnTimer function', DMT_ERROR);
+      Debug(E.Message, DMT_TRACE);
+    end;
   end;
 end;
 
@@ -238,6 +419,8 @@ begin
   inherited Create;
 
   FCursorInfo := TCursorInfo.Create;
+  SetLength(FCursorInfo.Cursors, 0);
+
   FCursesSettings := TCursesSettings.Create;
   if length(trim(FCursesSettings.CurrentSkin)) > 0 then
   begin
@@ -250,11 +433,13 @@ destructor TCursesManager.Destroy;
 var
   i: integer;
 begin
+  UpdTimer.Enabled := false;
+
+  for i := Low(FCursorInfo.Cursors) to High(FCursorInfo.Cursors) do
+    FCursorInfo.Cursors[i].Free;
+
   FCursorInfo.Free;
   FCursesSettings.Free;
-
-  for i := Low(CursorBmpArray) to High(CursorBmpArray) do
-    CursorBmpArray[i].Free;
 
   inherited Destroy;
 end;
@@ -286,8 +471,20 @@ var
   sr: TSearchRec;
   XML: TJvSimpleXML;
   xmlfile : String;
+
+  I, C : integer;
+  IName : string;
 begin
   XML := TJvSimpleXML.Create(nil);
+
+  if Length(FCursorInfo.Cursors) > 0 then
+  begin
+    for i := Low(FCursorInfo.Cursors) to High(FCursorInfo.Cursors) do
+      FCursorInfo.Cursors[i].Free;
+    SetLength(FCursorInfo.Cursors, 0);
+
+    UpdTimer.Enabled := false;
+  end;
 
   if FindFirst(GetCursesFolder + '*.*', faDirectory, sr) = 0 then
   begin
@@ -313,24 +510,66 @@ begin
                         FCursorInfo.Name := Value('Title','');
                         FCursorInfo.Author := Value('Author','');
                         FCursorInfo.OtherInfo := Value('OtherInfo','');
+                        FCursorInfo.AnimInterval := IntValue('AnimInterval', 1000);
                       end;
 
+                   C := 0;
+                   IName := '';
+
+                   // Old way
                    if ItemNamed['CursPoints'] <> nil then
-                      with ItemNamed['CursPoints'].Items do
-                      begin
-                        FCursorInfo.AppStarting := Value('AppStarting', '');
-                        FCursorInfo.Hand        := Value('Hand', '');
-                        FCursorInfo.Help        := Value('Help', '');
-                        FCursorInfo.IBeam       := Value('IBeam', '');
-                        FCursorInfo.No          := Value('No', '');
-                        FCursorInfo.Normal      := Value('Normal', '');
-                        FCursorInfo.SizeAll     := Value('SizeAll', '');
-                        FCursorInfo.SizeNESW    := Value('SizeNESW', '');
-                        FCursorInfo.SizeNS      := Value('SizeNS', '');
-                        FCursorInfo.SizeNWSE    := Value('SizeNWSE', '');
-                        FCursorInfo.SizeWE      := Value('SizeWE', '');
-                        FCursorInfo.Wait        := Value('Wait', '');
-                      end;
+                   begin
+                     with ItemNamed['CursPoints'].Items do
+                     begin
+                        for I := 0 to Count - 1 do
+                        begin
+                          if FileExists(FCursorInfo.Path + AnsiLowerCase(Item[I].Name) + '.bmp') then
+                          begin
+                            SetLength(FCursorInfo.Cursors, C + 1);
+
+                            FCursorInfo.Cursors[C] := TCursor.Create();
+                            FCursorInfo.Cursors[C].Width := 32;
+                            FCursorInfo.Cursors[C].Height := 32;
+                            FCursorInfo.Cursors[C].Point := Value(Item[I].Name, '');
+                            FCursorInfo.Cursors[C].NumFrames := 0;
+                            FCursorInfo.Cursors[C].CType := GetCursorID(Item[I].Name);
+                            FCursorInfo.Cursors[C].Load(FCursorInfo.Path + AnsiLowerCase(Item[I].Name) + '.bmp', FCursesSettings);
+
+                            C := C + 1;
+                          end;
+                        end;
+                     end;
+                   // New way (with animations)
+                   end else
+                   begin  
+                      if ItemNamed['Cursors'] <> nil then
+                        with ItemNamed['Cursors'].Items do
+                        begin
+                          for I := 0 to Count - 1 do
+                          begin
+                            IName := Item[I].Name;
+
+                            if Item[I] <> nil then
+                              with Item[I].Items do
+                                begin
+                                  if FileExists(FCursorInfo.Path + Value('File', '')) then
+                                  begin
+                                    SetLength(FCursorInfo.Cursors, C + 1);
+
+                                    FCursorInfo.Cursors[C] := TCursor.Create();
+                                    FCursorInfo.Cursors[C].Width := IntValue('Width', 32);
+                                    FCursorInfo.Cursors[C].Height := IntValue('Height', 32);
+                                    FCursorInfo.Cursors[C].Point := Value('Point', '');
+                                    FCursorInfo.Cursors[C].NumFrames := IntValue('NumFrames', 0);
+                                    FCursorInfo.Cursors[C].CType := GetCursorID(IName);
+                                    FCursorInfo.Cursors[C].Load(FCursorInfo.Path + Value('File', ''), FCursesSettings);
+
+                                    C := C + 1;
+                                  end;
+                                end;
+                          end;
+                        end;
+                   end;
                  end;
                except
                  on E: Exception do
@@ -346,39 +585,6 @@ begin
     FindClose(sr);
   end;
   XML.Free;
-end;
-
-procedure TCursesManager.ReplaceColor(Bitmap: TBitmap; Col1, Col2: TColor);
-type
-  TrRGB = packed record
-    b, g, r: Byte;
-  end;
-  PRGBAry = ^TRGBAry;
-  TRGBAry = array[0..16383] of TrRGB;
-
-var
-  PSL: PRGBAry;
-  RByte, GByte, BByte: Byte;
-  x, y: Integer;
-begin
-  Bitmap.PixelFormat := pf24bit;
-  {you MUST change the PixelFormat to pf24bit
-  other Pixel Formats will NOT work in this type of scanline}
-
-  RByte := GetRValue(col1);
-  GByte := GetGValue(col1);
-  BByte := GetBValue(col1);
-  {get the Red green and blue bytes for the color you want to change}
-  for y := 0 to Bitmap.Height - 1 do begin
-    PSL := Bitmap.ScanLine[y];
-    for x := 0 to Bitmap.Width - 1 do
-      if (PSL[x].r = RByte) and (PSL[x].g = GByte) and (PSL[x].b = BByte) then begin
-        {set the Red Green and Blue for the NEW color here}
-        PSL[x].r := GetRValue(col2);
-        PSL[x].g := GetGValue(col2);
-        PSL[x].b := GetBValue(col2)
-      end;
-  end;
 end;
 
 end.

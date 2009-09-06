@@ -45,6 +45,28 @@ type
   end;
 
 type
+  TCursor = class(TObject)
+  private
+    FWidth, FHeight: integer;
+    FCurFrame, FNumFrames: integer;
+    FBitmap, FCurBitmap: TBitmap32;
+
+  public
+    constructor Create; reintroduce;
+    destructor Destroy; override;
+
+    procedure Load(path: string);
+
+    function GetBitmap(): TBitmap32;
+
+    // Properties
+    property Width: integer read FWidth write FWidth;
+    property Height: integer read FHeight write FHeight;
+
+    property NumFrames: integer read FNumFrames write FNumFrames;
+    property CurFrame: integer read FCurFrame;
+  end;
+
   TfrmSettingsWnd = class(TForm)
     lbCursorList: TSharpEListBoxEx;
     SharpESwatchManager1: TSharpESwatchManager;
@@ -69,6 +91,8 @@ type
     FPluginHost: ISharpCenterHost;
     FPreview: TBitmap32;
     FCursor: string;
+    FNames: Array of string;
+
     procedure BuildCursorPreview;
   public
     procedure BuildCursorList;
@@ -84,9 +108,7 @@ type
 var
   frmSettingsWnd: TfrmSettingsWnd;
 
-  CursorItemArray: array[0..10] of string = ('normal.bmp','appstarting.bmp', 'wait.bmp',
-    'hand.bmp', 'no.bmp', 'ibeam.bmp', 'sizeall.bmp',
-    'sizenesw.bmp', 'sizens.bmp', 'sizenwse.bmp', 'sizewe.bmp');
+  CursorItemArray: array of TCursor;
 
 implementation
 
@@ -94,6 +116,52 @@ uses SharpThemeApiEx,
      SharpCenterApi;
 
 {$R *.dfm}
+
+{ TCursor }
+constructor TCursor.Create;
+begin
+  inherited;
+
+  FCurFrame := 0;
+  FNumFrames := 0;
+  FWidth := 0;
+  FHeight := 0;
+  
+  FBitmap := TBitmap32.Create();
+  FCurBitmap := TBitmap32.Create();
+end;
+
+destructor TCursor.Destroy;
+begin
+  FBitmap.Free;
+  FCurBitmap.Free;
+
+  inherited;
+end;
+
+procedure TCursor.Load(path: string);
+begin
+  // Assign Bitmaps
+  FBitmap.LoadFromFile(path);
+end;
+
+function TCursor.GetBitmap(): TBitmap32;
+var
+  sRect: Windows.TRect;
+begin
+  FCurBitmap.SetSize(FWidth, FHeight);
+  FCurBitmap.Clear(color32(0,0,0,0));
+  
+  sRect := Rect(FWidth * FCurFrame, 0, FWidth + (FWidth * FCurFrame), FHeight);
+  FBitmap.DrawTo(FCurBitmap, 0, 0, sRect);
+
+  FCurFrame := FCurFrame + 1;
+  if(FCurFrame >= FNumFrames) then
+    FCurFrame := 0;
+  
+  Result := FCurBitmap;
+end;
+
 
 { TfrmConfigListWnd }
 
@@ -159,9 +227,13 @@ var
   Dir : String;
   n : integer;
   bmp : TBitmap32;
+  sRect : TRect;
   Bmp32: TBitmap32;
   w,h : integer;
   IconCount : integer;
+
+  XML : TJclSimpleXML;
+  I, C : integer;
 begin
   LockWindowUpdate(self.Handle);
   try
@@ -171,16 +243,71 @@ begin
     exit;
   end;
 
-  FCursor := TStringObject(lbCursorList.SelectedItem.Data).Str;
+  FCursor := FNames[lbCursorList.ItemIndex];
   Dir := SharpApi.GetSharpeDirectory + 'Cursors\' + FCursor + '\';
+
+  
+  XML := TJclSimpleXML.Create;
+  XML.LoadFromFile(Dir + 'Skin.xml');
+
+  C := 0;
+  with XML.Root.Items do
+  begin
+    // Old way
+    if ItemNamed['CursPoints'] <> nil then
+    begin
+      with ItemNamed['CursPoints'].Items do
+      begin
+        for I := 0 to Count - 1 do
+        begin
+          if FileExists(Dir + AnsiLowerCase(Item[I].Name) + '.bmp') then
+          begin
+            SetLength(CursorItemArray, C + 1);
+
+            CursorItemArray[C] := TCursor.Create();
+            CursorItemArray[C].Width := 32;
+            CursorItemArray[C].Height := 32;
+            CursorItemArray[C].Load(Dir + AnsiLowerCase(Item[I].Name) + '.bmp');
+
+            C := C + 1;
+          end;
+        end;
+      end;
+    // New way (with animations)
+    end else
+    begin  
+      if ItemNamed['Cursors'] <> nil then
+      begin
+        with ItemNamed['Cursors'].Items do
+        begin
+          for I := 0 to Count - 1 do
+          begin
+            if Item[I] <> nil then
+            begin
+              with Item[I].Items do
+              begin
+                if FileExists(Dir + Value('File', '')) then
+                begin
+                  SetLength(CursorItemArray, C + 1);
+
+                  CursorItemArray[C] := TCursor.Create();
+                  CursorItemArray[C].Width := IntValue('Width', 32);
+                  CursorItemArray[C].Height := IntValue('Height', 32);
+                  CursorItemArray[C].Load(Dir + Value('File', ''));
+
+                  C := C + 1;
+                end;
+              end;
+            end;
+          end;
+        end;
+      end;
+    end;
+  end;
 
   Bmp32 := TBitmap32.Create;
   Bmp32.DrawMode := dmBlend;
   Bmp32.CombineMode := cmMerge;
-
-  Bmp := TBitmap32.Create;
-  Bmp.DrawMode := dmBlend;
-  Bmp.CombineMode := cmMerge;
 
   IconCount := length(CursorItemArray);
   w := ((Width - 64) div IconSize) * IconSize;
@@ -194,18 +321,22 @@ begin
   y := 0;
   for n := 0 to High(CursorItemArray) do
   begin
+    sRect := Rect(0, 0, CursorItemArray[n].GetBitmap().Width, CursorItemArray[n].GetBitmap().Height);
 
-    if FileExists(Dir + CursorItemArray[n]) then
+    Bmp := TBitmap32.Create;
+    Bmp.SetSize(32, 32);
+    Bmp.Clear(color32(0,0,0,0));
+    
+    CursorItemArray[n].GetBitmap().DrawTo(Bmp, 32 - CursorItemArray[n].GetBitmap().Width, 32 - CursorItemArray[n].GetBitmap().Height, sRect);
+    Bmp.DrawTo(Bmp32, x*Bmp.Width, y*Bmp.Height);
+    x := x + 1;
+    if x*Bmp.Width >= bmp32.Width then
     begin
-      Bmp.LoadFromFile(Dir + CursorItemArray[n]);
-      Bmp.DrawTo(Bmp32,x*Bmp.Width,y*Bmp.Height);
-      x := x + 1;
-      if x*Bmp.Width >= bmp32.Width then
-      begin
-        x := 0;
-        y := y + 1;
-      end;
+      x := 0;
+      y := y + 1;
     end;
+
+    Bmp.Free;
   end;
 
   ReplaceColor32(bmp32,color32(0,0,0,255),color32(0,0,0,0));
@@ -216,10 +347,8 @@ begin
 
   FPreview.Assign(bmp32);
 
-  Bmp.Free;
   Bmp32.Free;
 
-  
   finally
     LockWindowUpdate(0);
     PluginHost.Refresh(rtPreview);
@@ -234,40 +363,64 @@ var
   XML : TJclSimpleXML;
   s, sName, sAuthor:String;
   obj: TStringObject;
+
+  I : integer;
 begin
   LockWindowUpdate(Application.Handle);
   lbCursorList.Clear;
   Try
 
+  if Length(CursorItemArray) > 0 then
+  begin
+    for I := Low(CursorItemArray) to High(CursorItemArray) do
+      CursorItemArray[I].Free;
+      
+    SetLength(CursorItemArray, 0);
+  end;
+
   XML := TJclSimpleXML.Create;
 
+  if Length(FNames) > 0 then
+    SetLength(FNames, 0);
+  
   Dir := SharpApi.GetSharpeDirectory + 'Cursors\';
-
+  I := 0;
+  
   if FindFirst(Dir + '*',FADirectory,sr) = 0 then
   repeat
-    if (CompareText(sr.Name,'.') <> 0) and (CompareText(sr.Name,'..') <> 0) then
+    if (CompareText(sr.Name, '.') <> 0) and (CompareText(sr.Name, '..') <> 0) then
     begin
       if FileExists(Dir + sr.Name + '\Skin.xml') then
       begin
         try
+          SetLength(FNames, I + 1);
+          FNames[I] := sr.Name;
+        
           XML.LoadFromFile(Dir + sr.Name + '\Skin.xml');
           if XML.Root.Items.ItemNamed['SknDef'] <> nil then
           begin
-
-          sName := XML.Root.Items.ItemNamed['SknDef'].Items.Value('Title','Unknown');
-          sAuthor := XML.Root.Items.ItemNamed['SknDef'].Items.Value('Author','Unknown');
-          s := Format('%s by %s', [sName, sAuthor]);
-
-            newItem := lbCursorList.AddItem(s);
-            obj := TStringObject.Create();
-            obj.Str := sName;
-
-            newItem.Data := ( obj );
-
-            if CompareText(sr.Name,FCursor) = 0 then
+            with XML.Root.Items do
             begin
-              lbCursorList.ItemIndex := lbCursorList.Items.Count - 1;
-              BuildCursorPreview;
+              sName := ItemNamed['SknDef'].Items.Value('Title','Unknown');
+              sAuthor := ItemNamed['SknDef'].Items.Value('Author','Unknown');
+              s := Format('%s by %s', [sName, sAuthor]);
+
+              newItem := lbCursorList.AddItem(s);
+              obj := TStringObject.Create();
+
+              obj.Str := sName;
+              if XML.Root.Items.ItemNamed['CursPoints'] <> nil then
+                obj.Str := obj.Str;
+
+              newItem.Data := ( obj );
+
+              if CompareText(sr.Name,FCursor) = 0 then
+              begin
+                lbCursorList.ItemIndex := I;
+                BuildCursorPreview;
+              end;
+
+              I := I + 1;
             end;
           end;
         except
