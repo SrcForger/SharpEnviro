@@ -43,6 +43,7 @@ type
     WndCaption : String;
     WndSubClass : String;
     MessageType : TSendMessageType;
+    Command  : integer;
     btnPlay  : integer;
     btnPause : integer;
     btnStop  : integer;
@@ -204,11 +205,12 @@ begin
   RegValue := pXML.Value('RegValue','');
 
   MessageType := TSendMessageType(pXML.IntValue('MessageType', Integer(smtAppCommand)));
-  btnPlay    := pXML.IntValue('btnPlay',APPCOMMAND_MEDIA_PLAY_PAUSE);
-  btnPause   := pXML.IntValue('btnPause',APPCOMMAND_MEDIA_PLAY_PAUSE);
-  btnStop    := pXML.IntValue('btnStop',APPCOMMAND_MEDIA_STOP);
-  btnNext    := pXML.IntValue('btnNext',APPCOMMAND_MEDIA_NEXTTRACK);
-  btnPrev    := pXML.IntValue('btnPrev',APPCOMMAND_MEDIA_PREVIOUSTRACK);
+  Command     := pXML.IntValue('Command',-1);
+  btnPlay     := pXML.IntValue('btnPlay',APPCOMMAND_MEDIA_PLAY_PAUSE);
+  btnPause    := pXML.IntValue('btnPause',APPCOMMAND_MEDIA_PLAY_PAUSE);
+  btnStop     := pXML.IntValue('btnStop',APPCOMMAND_MEDIA_STOP);
+  btnNext     := pXML.IntValue('btnNext',APPCOMMAND_MEDIA_NEXTTRACK);
+  btnPrev     := pXML.IntValue('btnPrev',APPCOMMAND_MEDIA_PREVIOUSTRACK);
 
   Icon := TBitmap32.Create;
   Icon.SetSize(16,16);
