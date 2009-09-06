@@ -113,6 +113,7 @@ var
   Item : TSharpEMenuIcon;
 begin
   result := False;
+
   for n := 0 to FItems.Count -1 do
   begin
     Item := TSharpEMenuIcon(FItems.Items[n]);
@@ -145,7 +146,7 @@ begin
   Item := FindIcon(pIconSource,pIconData);
   if Item = nil then
   begin
-    Item := TSharpEMenuIcon.Create(pIconSource,pIconData,True);
+    Item := TSharpEMenuIcon.Create(pIconSource,pIconData,not (length(trim(pIconData)) = 0));
     FItems.Add(Item);
   end else Item.Count := Item.Count + 1;
   result := Item;
