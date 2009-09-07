@@ -23,15 +23,11 @@ object frmNotes: TfrmNotes
     ActivePage = pagNotes
     PropagateEnable = False
     Align = alClient
-    ExplicitWidth = 456
-    ExplicitHeight = 360
     object pagNotes: TJvStandardPage
       Left = 0
       Top = 0
       Width = 435
       Height = 317
-      ExplicitWidth = 456
-      ExplicitHeight = 360
       object rb_icon: TRadioButton
         AlignWithMargins = True
         Left = 5
@@ -46,7 +42,6 @@ object frmNotes: TfrmNotes
         Caption = 'Icon'
         TabOrder = 0
         OnClick = rb_textClick
-        ExplicitWidth = 446
       end
       object rb_text: TRadioButton
         AlignWithMargins = True
@@ -62,7 +57,6 @@ object frmNotes: TfrmNotes
         Caption = 'Text'
         TabOrder = 1
         OnClick = rb_textClick
-        ExplicitWidth = 446
       end
       object rb_icontext: TRadioButton
         AlignWithMargins = True
@@ -80,7 +74,6 @@ object frmNotes: TfrmNotes
         TabOrder = 2
         TabStop = True
         OnClick = rb_textClick
-        ExplicitWidth = 446
       end
       object schWindowOptions: TSharpECenterHeader
         AlignWithMargins = True
@@ -99,7 +92,6 @@ object frmNotes: TfrmNotes
         DescriptionColor = clRed
         Align = alTop
         Color = clWindow
-        ExplicitWidth = 446
       end
       object schDisplayOptions: TSharpECenterHeader
         AlignWithMargins = True
@@ -116,7 +108,6 @@ object frmNotes: TfrmNotes
         DescriptionColor = clRed
         Align = alTop
         Color = clWindow
-        ExplicitWidth = 446
       end
       object cbAlwaysOnTop: TJvXPCheckbox
         AlignWithMargins = True
@@ -132,7 +123,6 @@ object frmNotes: TfrmNotes
         State = cbChecked
         Align = alTop
         OnClick = cbAlwaysOnTopClick
-        ExplicitWidth = 441
       end
       object editCaptionText: TLabeledEdit
         AlignWithMargins = True

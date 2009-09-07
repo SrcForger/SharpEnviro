@@ -117,10 +117,10 @@ begin
   begin
     with PluginHost.Xml.XmlRoot.Items, frmNotes do
     begin
-      editDirectory.Text := Value('Directory', SharpApi.GetSharpeUserSettingsPath + 'Notes');
+      editDirectory.Text := Value('Directory', '{#SharpEUserSettingsDir#}' + 'Notes');
 
       if editDirectory.Text = '' then
-        editDirectory.Text := SharpApi.GetSharpeUserSettingsPath + 'Notes';
+        editDirectory.Text := '{#SharpEUserSettingsDir#}' + 'Notes';
 
       editCaptionText.Text := Value('CaptionText', 'Notes');
       

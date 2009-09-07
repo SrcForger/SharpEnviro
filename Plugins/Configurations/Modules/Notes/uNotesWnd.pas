@@ -82,9 +82,9 @@ procedure TfrmNotes.btnBrowseClick(Sender: TObject);
 var
   newDirectory : string;
 begin
-  newDirectory := editDirectory.Text;
+  newDirectory := StringReplace(editDirectory.Text, '{#SharpEUserSettingsDir#}', SharpApi.GetSharpeUserSettingsPath, [rfReplaceAll,rfIgnoreCase]);
   if BrowseForFolder('Browse for Notes folder...', True, newDirectory) then
-    editDirectory.Text := newDirectory;
+    editDirectory.Text := StringReplace(newDirectory, SharpApi.GetSharpeUserSettingsPath, '{#SharpEUserSettingsDir#}', [rfReplaceAll,rfIgnoreCase]);
 end;
 
 procedure TfrmNotes.cbAlwaysOnTopClick(Sender: TObject);

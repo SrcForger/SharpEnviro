@@ -160,7 +160,7 @@ begin
   XML.Root.Name := 'NotesModuleSettings';
   with xml.Root.Items do
   begin
-    Add('Directory', Settings.Directory);
+    Add('Directory', StringReplace(Settings.Directory, SharpApi.GetSharpeUserSettingsPath, '{#SharpEUserSettingsDir#}', [rfReplaceAll,rfIgnoreCase]));
     Add('CaptionText', Settings.Caption);
     Add('Caption', Settings.ShowCaption);
     Add('Icon', Settings.ShowIcon);
@@ -232,7 +232,8 @@ begin
     begin
       // Get the directory the module should use to store and display tabs.
       notesDirectory := Value('Directory', Settings.Directory);
-      notesDirectoryChanged := (Settings.Directory <> notesDirectory);
+      notesDirectory := StringReplace(notesDirectory, '{#SharpEUserSettingsDir#}', SharpApi.GetSharpeUserSettingsPath, [rfReplaceAll,rfIgnoreCase]);
+      notesDirectoryChanged := (CompareText(Settings.Directory, notesDirectory) <> 0);
       notesOpen := NotesForm.Visible;
 
       // If the user changed the notes directory then we need to reload the tabs.
