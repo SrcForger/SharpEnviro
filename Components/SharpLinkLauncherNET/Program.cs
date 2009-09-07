@@ -77,6 +77,10 @@ namespace SharpLinkLauncherNET
             {
 				if (lpMsg.message == WM_SHARPELINKLAUNCH)
 				{
+					// Disable the timer as we have received the WM_SHARPELINKLAUNCH message
+					// and so that we don't kill the process prematurely.
+					timer.Enabled = false;
+
 					try
 					{
 						// Try and execute the link after resolving it to its target.
