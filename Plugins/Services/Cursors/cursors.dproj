@@ -42,7 +42,7 @@
     <DelphiCompile Include="cursors.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
-    <DCCReference Include="uCursesServiceManager.pas" />
-    <DCCReference Include="uCursesServiceSettings.pas" />
+    <DCCReference Include="uCursorsServiceManager.pas" />
+    <DCCReference Include="uCursorsServiceSettings.pas" />
   </ItemGroup>
 </Project>

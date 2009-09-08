@@ -1,5 +1,5 @@
 {
-Source Name: uCursesServiceManager
+Source Name: uCursorsServiceManager
 Description: Cursor Management
 Copyright (C) (2007) Martin Krämer (MartinKraemer@gmx.net)
               (2004) Pixol (Pixol@SharpE-Shell.org)
@@ -25,7 +25,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
-unit uCursesServiceManager;
+unit uCursorsServiceManager;
 
 interface
 
@@ -46,7 +46,7 @@ uses
   uISharpETheme,
   ExtCtrls, StdCtrls,
 
-  uCursesServiceSettings;
+  uCursorsServiceSettings;
 
 type
   TCursor = class(TObject)
@@ -65,7 +65,7 @@ type
     destructor Destroy; override;
 
     procedure ReplaceColors(clist : Array of integer);
-    procedure Load(path: string; Settings: TCursesSettings);
+    procedure Load(path: string; Settings: TCursorsSettings);
 
     function GetBitmap(): TBitmap32;
 
@@ -108,9 +108,9 @@ type
     property AnimInterval: integer read FAnimInterval write FAnimInterval;
   end;
 
-  TCursesManager = class
+  TCursorsManager = class
   private
-    function GetCursesFolder: string;
+    function GetCursorsFolder: string;
     function GetPoint(s: string): TPoint;
     function BitmapToCursor(Bitmap: TBitmap; HotSpot: TPoint): HCursor;
     function Bitmap32ToCursor(Bitmap: TBitmap32;HotSpot: TPoint): HCursor;
@@ -121,7 +121,7 @@ type
     CurrentCursor: integer;
 
     FCursorInfo: TCursorInfo;
-    FCursesSettings: TCursesSettings;
+    FCursorsSettings: TCursorsSettings;
 
     constructor Create; reintroduce;
     destructor Destroy; override;
@@ -131,11 +131,11 @@ type
 
     procedure MessageHandler(var msg: TMessage);
 
-    property CursesFolder: string read GetCursesFolder;
+    property CursorsFolder: string read GetCursorsFolder;
   end;
 
 var
-  CursesManager: TCursesManager;
+  CursorsManager: TCursorsManager;
 
   ItemSelectedID: Integer = 0;
   bmp: TBitmap;
@@ -150,7 +150,7 @@ implementation
 
 procedure Debug(Text: string; DebugType: Integer);
 begin
-  SendDebugMessageEx('Curses Service', Pchar(Text), 0, DebugType);
+  SendDebugMessageEx('Cursors Service', Pchar(Text), 0, DebugType);
 end;
 
 function GetCursorID(name: string): integer;
@@ -232,7 +232,7 @@ begin
   end;
 end;
 
-procedure TCursor.Load(path: string; Settings: TCursesSettings);
+procedure TCursor.Load(path: string; Settings: TCursorsSettings);
 var
   n: integer;
   clist : array of integer;
@@ -324,17 +324,17 @@ begin
 end;
 
 
-{ TCursesManager }
+{ TCursorsManager }
 
-procedure TCursesManager.MessageHandler(var msg: TMessage);
+procedure TCursorsManager.MessageHandler(var msg: TMessage);
 begin
   if msg.Msg = WM_SHARPEUPDATESETTINGS then
   begin
     if (msg.wparam = Integer(suCursor)) or (msg.wparam = Integer(suScheme))
        or (msg.wparam = Integer(suSkin)) or (msg.wparam = Integer(suTheme)) then
     begin
-      FCursesSettings.Load;
-      if length(trim(FCursesSettings.CurrentSkin)) > 0 then
+      FCursorsSettings.Load;
+      if length(trim(FCursorsSettings.CurrentSkin)) > 0 then
       begin
         UpdateCursorInfo;
         ApplySkin;
@@ -345,7 +345,7 @@ end;
 
 
 
-procedure TCursesManager.ApplySkin;
+procedure TCursorsManager.ApplySkin;
 var
   i : integer;
 begin
@@ -370,7 +370,7 @@ begin
   UpdTimer.Enabled := True;
 end;
 
-procedure TCursesManager.CursorOnTimer(Sender: TObject);
+procedure TCursorsManager.CursorOnTimer(Sender: TObject);
 var
   i: integer;
 begin
@@ -397,7 +397,7 @@ begin
   end;
 end;
 
-function TCursesManager.BitmapToCursor(Bitmap: TBitmap;
+function TCursorsManager.BitmapToCursor(Bitmap: TBitmap;
   HotSpot: TPoint): HCursor;
 var
   IconInfo: TIconInfo;
@@ -415,7 +415,7 @@ begin
   end;
 end;
 
-function TCursesManager.Bitmap32ToCursor(Bitmap: TBitmap32;
+function TCursorsManager.Bitmap32ToCursor(Bitmap: TBitmap32;
   HotSpot: TPoint): HCursor;
 var
   bmp: TBitmap;
@@ -429,22 +429,22 @@ begin
   end;
 end;
 
-constructor TCursesManager.Create;
+constructor TCursorsManager.Create;
 begin
   inherited Create;
 
   FCursorInfo := TCursorInfo.Create;
   SetLength(FCursorInfo.Cursors, 0);
 
-  FCursesSettings := TCursesSettings.Create;
-  if length(trim(FCursesSettings.CurrentSkin)) > 0 then
+  FCursorsSettings := TCursorsSettings.Create;
+  if length(trim(FCursorsSettings.CurrentSkin)) > 0 then
   begin
     UpdateCursorInfo;
     ApplySkin;
   end;
 end;
 
-destructor TCursesManager.Destroy;
+destructor TCursorsManager.Destroy;
 var
   i: integer;
 begin
@@ -454,18 +454,18 @@ begin
     FCursorInfo.Cursors[i].Free;
 
   FCursorInfo.Free;
-  FCursesSettings.Free;
+  FCursorsSettings.Free;
 
   inherited Destroy;
 end;
 
-function TCursesManager.GetCursesFolder: string;
+function TCursorsManager.GetCursorsFolder: string;
 begin
   Result := SharpApi.GetSharpeDirectory + 'Cursors\';
   ForceDirectories(Result);
 end;
 
-function TCursesManager.GetPoint(s: string): TPoint;
+function TCursorsManager.GetPoint(s: string): TPoint;
 var
   strl: Tstringlist;
   x, y: integer;
@@ -481,7 +481,7 @@ begin
   end;
 end;
 
-procedure TCursesManager.UpdateCursorInfo;
+procedure TCursorsManager.UpdateCursorInfo;
 var
   sr: TSearchRec;
   XML: TJvSimpleXML;
@@ -501,15 +501,15 @@ begin
     UpdTimer.Enabled := false;
   end;
 
-  if FindFirst(GetCursesFolder + '*.*', faDirectory, sr) = 0 then
+  if FindFirst(GetCursorsFolder + '*.*', faDirectory, sr) = 0 then
   begin
     repeat
       if (CompareText(sr.Name,'.') <> 0) and
          (CompareText(sr.Name,'..') <> 0) then
          begin
-           if CompareText(sr.Name,FCursesSettings.CurrentSkin) = 0 then
+           if CompareText(sr.Name,FCursorsSettings.CurrentSkin) = 0 then
            begin
-             xmlfile := GetCursesFolder + sr.Name + '\skin.xml';
+             xmlfile := GetCursorsFolder + sr.Name + '\skin.xml';
              if fileexists(xmlfile) then
              begin
                try
@@ -518,7 +518,7 @@ begin
 
                  with xml.Root.Items do
                  begin
-                   FCursorInfo.Path := GetCursesFolder + sr.Name + '\';
+                   FCursorInfo.Path := GetCursorsFolder + sr.Name + '\';
                    if ItemNamed['SknDef'] <> nil then
                       with ItemNamed['SknDef'].Items do
                       begin
@@ -549,7 +549,7 @@ begin
                             FCursorInfo.Cursors[C].Point := Value(Item[I].Name, '');
                             FCursorInfo.Cursors[C].NumFrames := 0;
                             FCursorInfo.Cursors[C].CType := GetCursorID(Item[I].Name);
-                            FCursorInfo.Cursors[C].Load(FCursorInfo.Path + AnsiLowerCase(Item[I].Name) + '.bmp', FCursesSettings);
+                            FCursorInfo.Cursors[C].Load(FCursorInfo.Path + AnsiLowerCase(Item[I].Name) + '.bmp', FCursorsSettings);
 
                             C := C + 1;
                           end;
@@ -579,7 +579,7 @@ begin
                                     FCursorInfo.Cursors[C].Point := Value('Point', '');
                                     FCursorInfo.Cursors[C].NumFrames := IntValue('NumFrames', 0);
                                     FCursorInfo.Cursors[C].CType := GetCursorID(IName);
-                                    FCursorInfo.Cursors[C].Load(FCursorInfo.Path + Value('File', ''), FCursesSettings);
+                                    FCursorInfo.Cursors[C].Load(FCursorInfo.Path + Value('File', ''), FCursorsSettings);
 
                                     C := C + 1;
                                   end;
@@ -591,7 +591,7 @@ begin
                except
                  on E: Exception do
                  begin
-                   Debug(Format('Error While Loading Curses Skin: %s', [xmlfile]),DMT_ERROR);
+                   Debug(Format('Error While Loading Cursors Skin: %s', [xmlfile]),DMT_ERROR);
                    Debug(E.Message, DMT_TRACE);
                  end;
              end;

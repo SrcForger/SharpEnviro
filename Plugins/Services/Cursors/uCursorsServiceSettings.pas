@@ -1,5 +1,5 @@
 {
-Source Name: uCursesServiceSettings
+Source Name: uCursorsServiceSettings
 Description: Settings class to load/save settings
 Copyright (C) (2007) Martin Krämer (MartinKraemer@gmx.net)
               (2004) Pixol (Pixol@SharpE-Shell.org)
@@ -25,7 +25,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
-unit uCursesServiceSettings;
+unit uCursorsServiceSettings;
 
 interface
 
@@ -43,7 +43,7 @@ uses
 type
   TColorArray = array of integer;
 
-  TCursesSettings = class
+  TCursorsSettings = class
   private
     FFileName: string;
     FCurrentSkin: string;
@@ -62,12 +62,12 @@ type
 implementation
 
 uses
-  uCursesServiceManager,
+  uCursorsServiceManager,
   SharpApi;
 
 { TCursorSettings }
 
-constructor TCursesSettings.Create;
+constructor TCursorsSettings.Create;
 begin
   inherited Create;
 
@@ -87,14 +87,14 @@ begin
     Save;
 end;
 
-destructor TCursesSettings.Destroy;
+destructor TCursorsSettings.Destroy;
 begin
   setlength(FColors,0);
   
   Inherited Destroy;
 end;
 
-procedure TCursesSettings.Load;
+procedure TCursorsSettings.Load;
 var
   xml: TJclSimpleXml;
   n: integer;
@@ -127,7 +127,7 @@ begin
 
 end;
 
-procedure TCursesSettings.Save;
+procedure TCursorsSettings.Save;
 var
   xml: TJclSimpleXml;
   n : integer;

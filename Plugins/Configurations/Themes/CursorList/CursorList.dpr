@@ -1,6 +1,6 @@
 ﻿{
-Source Name: Curses
-Description: Curses Service Config Dll
+Source Name: Cursors
+Description: Cursors Service Config Dll
 Copyright (C) Martin Krämer (MartinKraemer@gmx.net)
 
 Source Forge Site

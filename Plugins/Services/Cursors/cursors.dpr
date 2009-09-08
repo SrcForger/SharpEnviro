@@ -35,8 +35,8 @@ uses
   SysUtils,
   windows,
   SharpApi,
-  uCursesServiceManager in 'uCursesServiceManager.pas',
-  uCursesServiceSettings in 'uCursesServiceSettings.pas';
+  uCursorsServiceManager in 'uCursorsServiceManager.pas',
+  uCursorsServiceSettings in 'uCursorsServiceSettings.pas';
 
 {$R *.RES}
 
@@ -44,7 +44,7 @@ procedure Stop;
 begin
   if IsStarted then
   begin
-    FreeAndNil(CursesManager);
+    FreeAndNil(CursorsManager);
     DeallocateHWnd(h);
   End;
 
@@ -55,9 +55,9 @@ end;
 function Start(owner: hwnd): hwnd;
 begin
   IsStarted := True;
-  CursesManager := TCursesManager.Create;
+  CursorsManager := TCursorsManager.Create;
 
-  h := allocatehwnd(CursesManager.MessageHandler);
+  h := allocatehwnd(CursorsManager.MessageHandler);
   ServiceDone('Cursors');
   Result := Application.Handle;
 end;
@@ -68,7 +68,7 @@ var
   s : string;
 begin
   result := 0;
-  SharpApi.SendDebugMessage('Curses','Received message : '+msg,0);
+  SharpApi.SendDebugMessage('Cursors','Received message : '+msg,0);
   i := length('Load Cursor:');
   if (LeftStr(msg,i) = 'Load Cursor:') then
   begin
@@ -76,11 +76,11 @@ begin
     begin
       try
         s := RightStr(msg,length(msg)-i);
-        SharpApi.SendDebugMessage('Curses','Loading Cursor with ID '+s+ ' by message' ,0);
-        CursesManager.FCursesSettings.CurrentSkin := s;
-        CursesManager.FCursesSettings.Save;
-        CursesManager.UpdateCursorInfo;
-        CursesManager.ApplySkin;
+        SharpApi.SendDebugMessage('Cursors','Loading Cursor with ID '+s+ ' by message' ,0);
+        CursorsManager.FCursorsSettings.CurrentSkin := s;
+        CursorsManager.FCursorsSettings.Save;
+        CursorsManager.UpdateCursorInfo;
+        CursorsManager.ApplySkin;
       except
       end;
     end;
@@ -94,7 +94,7 @@ begin
     Name := 'Cursors';
     Description := 'Changes the standard windows cursors to a fancier skinned set';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.7.4.0';
+    Version := '0.7.6.0';
     DataType := tteService;
     ExtraData := 'priority: 110| delay: 0';
   end;

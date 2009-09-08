@@ -10,7 +10,7 @@
     </Desktop>
     <Curses> 
       <Dll>_themedlls\CursorList.dll</Dll>
-      <Icon>_themedlls\Curses.png</Icon>
+      <Icon>_themedlls\Cursor.png</Icon>
     </Curses>
     <Skin> 
       <Dll>_themedlls\SkinList.dll</Dll>
