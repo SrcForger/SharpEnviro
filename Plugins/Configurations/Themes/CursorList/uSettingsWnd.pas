@@ -157,7 +157,7 @@ end;
 procedure TCursor.ReplaceColors(ccolors : TSharpEColorEditorEx);
 begin
   // Replace the colors
-  if FReplaceColor = true and (not FIsCursor) then
+  if (FReplaceColor) and (not FIsCursor) then
   begin
     if FHasAlpha <> true then
       ReplaceColor32(FBitmap, color32(0,0,0,255), color32(0,0,0,0));
