@@ -1,54 +1,54 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Curses>
   <SknDef>
-    <Title>GNOME</Title>
-    <Author>Homer</Author>
+    <Title>MoonShine</Title>
+    <Author>VovanR @ DeviantArt</Author>
     <OtherInfo></OtherInfo>
     <AnimInterval>100</AnimInterval>
   </SknDef>
   <Cursors>
 	<AppStarting>
-		<File>appstarting.png</File>
+		<File>MoonShine_v2_Busy.ani</File>
 		<ReplaceColor>0</ReplaceColor>
-		<Point>11,11</Point>
+		<Point>1,1</Point>
 		<Width>22</width>
 		<Height>22</Height>
-		<NumFrames>8</NumFrames>
+		<NumFrames>1</NumFrames>
 	</AppStarting>
 	<Hand>
-		<File>hand.png</File>
+		<File>MoonShine_v2_Link.ani</File>
 		<ReplaceColor>0</ReplaceColor>
-		<Point>3,0</Point>
+		<Point>1,1</Point>
 		<Width>19</width>
 		<Height>17</Height>
 		<NumFrames>1</NumFrames>
 	</Hand>
 	<IBeam>
-		<File>ibeam.png</File>
+		<File>MoonShine_v2_Text.cur</File>
 		<ReplaceColor>0</ReplaceColor>
-		<Point>1,5</Point>
+		<Point>1,1</Point>
 		<Width>9</width>
 		<Height>16</Height>
 		<NumFrames>1</NumFrames>
 	</IBeam>
 	<No>
-		<File>no.png</File>
+		<File>MoonShine_v2_Unavailable.ani</File>
 		<ReplaceColor>0</ReplaceColor>
-		<Point>12,12</Point>
+		<Point>1,1</Point>
 		<Width>15</width>
 		<Height>15</Height>
 		<NumFrames>1</NumFrames>
 	</No>
 	<Normal>
-		<File>normal.png</File>
+		<File>MoonShine_v2_Pointer.cur</File>
 		<ReplaceColor>0</ReplaceColor>
 		<Point>0,0</Point>
 		<Width>13</width>
-		<Height>20</Height>
+		<Height>19</Height>
 		<NumFrames>1</NumFrames>
 	</Normal>
 	<SizeAll>
-		<File>sizeall.png</File>
+		<File>MoonShine_v2_Move.cur</File>
 		<ReplaceColor>0</ReplaceColor>
 		<Point>12,12</Point>
 		<Width>25</width>
@@ -56,7 +56,7 @@
 		<NumFrames>1</NumFrames>
 	</SizeAll>
 	<SizeNESW>
-		<File>sizenesw.png</File>
+		<File>MoonShine_v2_Dgn2.cur</File>
 		<ReplaceColor>0</ReplaceColor>
 		<Point>10,10</Point>
 		<Width>20</width>
@@ -64,7 +64,7 @@
 		<NumFrames>1</NumFrames>
 	</SizeNESW>
 	<SizeNS>
-		<File>sizens.png</File>
+		<File>MoonShine_v2_Vert.cur</File>
 		<ReplaceColor>0</ReplaceColor>
 		<Point>7,13</Point>
 		<Width>15</width>
@@ -72,7 +72,7 @@
 		<NumFrames>1</NumFrames>
 	</SizeNS>
 	<SizeNWSE>
-		<File>sizenwse.png</File>
+		<File>MoonShine_v2_Dgn1.cur</File>
 		<ReplaceColor>0</ReplaceColor>
 		<Point>10,10</Point>
 		<Width>20</width>
@@ -80,7 +80,7 @@
 		<NumFrames>1</NumFrames>
 	</SizeNWSE>
 	<SizeWE>
-		<File>sizewe.png</File>
+		<File>MoonShine_v2_Horz.cur</File>
 		<ReplaceColor>0</ReplaceColor>
 		<Point>13,7</Point>
 		<Width>26</width>
@@ -88,7 +88,7 @@
 		<NumFrames>1</NumFrames>
 	</SizeWE>
 	<Wait>
-		<File>wait.png</File>
+		<File>MoonShine_v2_Work_Bonus.ani</File>
 		<ReplaceColor>0</ReplaceColor>
 		<Point>0,0</Point>
 		<Width>17</width>

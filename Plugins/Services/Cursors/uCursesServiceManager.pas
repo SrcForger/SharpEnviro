@@ -34,10 +34,9 @@ interface
 uses
   Windows,
   Messages,
-  SysUtils,
+  SysUtils, StrUtils,
   Classes,
-  GR32,
-  GR32_Image,
+  GR32, GR32_Image, GR32_PNG,
   Graphics,
   sharpapi,
   SharpGraphicsUtils,
@@ -52,29 +51,30 @@ uses
 type
   TCursor = class(TObject)
   private
-    FPath: string;
-
     FType: integer;
     FPoint: string;
 
-    FWidth: integer;
-    FHeight: integer;
-
-    FNumFrames: integer;
-    FCurFrame: integer;
-
-    FBitmap: TBitmap32;
-    FCurBitmap: TBitmap32;
+    FIsValid, FHasAlpha, FReplaceColor : boolean;
+    FWidth, FHeight: integer;
+    FCurFrame, FNumFrames: integer;
+    FBitmap, FCurBitmap: TBitmap32;
+    FhCursor: HICON;
 
   public
     constructor Create; reintroduce;
     destructor Destroy; override;
 
+    procedure ReplaceColors(clist : Array of integer);
     procedure Load(path: string; Settings: TCursesSettings);
 
     function GetBitmap(): TBitmap32;
 
     // Properties
+    property IsValid: boolean read FIsValid;
+    property HasAlpha: boolean read FHasAlpha;
+
+    property ReplaceColor: boolean write FReplaceColor;
+
     property CType: integer read FType write FType; 
     property Point: string read FPoint write FPoint;
 
@@ -83,6 +83,9 @@ type
 
     property NumFrames: integer read FNumFrames write FNumFrames;
     property CurFrame: integer read FCurFrame;
+
+    property Bitmap: TBitmap32 read GetBitmap;
+    property Cursor: HICON read FhCursor;
   end;
 
   TCursorInfo = class(TObject)
@@ -109,7 +112,8 @@ type
   private
     function GetCursesFolder: string;
     function GetPoint(s: string): TPoint;
-    function Bitmap2Cursor(Bitmap: TBitmap; HotSpot: TPoint): HCursor;
+    function BitmapToCursor(Bitmap: TBitmap; HotSpot: TPoint): HCursor;
+    function Bitmap32ToCursor(Bitmap: TBitmap32;HotSpot: TPoint): HCursor;
 
     procedure CursorOnTimer(Sender: TObject);
   public
@@ -147,40 +151,6 @@ implementation
 procedure Debug(Text: string; DebugType: Integer);
 begin
   SendDebugMessageEx('Curses Service', Pchar(Text), 0, DebugType);
-end;
-
-
-procedure ReplaceColor(Bitmap: TBitmap; Col1, Col2: TColor);
-type
-  TrRGB = packed record
-    b, g, r: Byte;
-  end;
-  PRGBAry = ^TRGBAry;
-  TRGBAry = array[0..16383] of TrRGB;
-
-var
-  PSL: PRGBAry;
-  RByte, GByte, BByte: Byte;
-  x, y: Integer;
-begin
-  Bitmap.PixelFormat := pf24bit;
-  {you MUST change the PixelFormat to pf24bit
-  other Pixel Formats will NOT work in this type of scanline}
-
-  RByte := GetRValue(col1);
-  GByte := GetGValue(col1);
-  BByte := GetBValue(col1);
-  {get the Red green and blue bytes for the color you want to change}
-  for y := 0 to Bitmap.Height - 1 do begin
-    PSL := Bitmap.ScanLine[y];
-    for x := 0 to Bitmap.Width - 1 do
-      if (PSL[x].r = RByte) and (PSL[x].g = GByte) and (PSL[x].b = BByte) then begin
-        {set the Red Green and Blue for the NEW color here}
-        PSL[x].r := GetRValue(col2);
-        PSL[x].g := GetGValue(col2);
-        PSL[x].b := GetBValue(col2)
-      end;
-  end;
 end;
 
 function GetCursorID(name: string): integer;
@@ -226,8 +196,12 @@ constructor TCursor.Create;
 begin
   inherited;
 
+  FIsValid := false;
+  FHasAlpha := false;
+
   FBitmap := TBitmap32.Create();
   FCurBitmap := TBitmap32.Create();
+  FhCursor := 0;
 
   FCurFrame := 0;
   FNumFrames := 0;
@@ -243,54 +217,71 @@ begin
   inherited;
 end;
 
+procedure TCursor.ReplaceColors(clist : Array of integer);
+begin
+  if FReplaceColor then
+  begin
+    // Replace colors & alpha
+    if FHasAlpha <> true then
+      ReplaceColor32(FBitmap, color32(0,0,0,255), color32(0,0,0,0));
+
+    ReplaceColor32(FBitmap, color32(255,0,0,255), color32(GetRValue(clist[0]),GetGValue(clist[0]),GetBValue(clist[0]),255));
+    ReplaceColor32(FBitmap, color32(0,0,255,255), color32(GetRValue(clist[1]),GetGValue(clist[1]),GetBValue(clist[1]),255));
+    ReplaceColor32(FBitmap, color32(0,255,0,255), color32(GetRValue(clist[2]),GetGValue(clist[2]),GetBValue(clist[2]),255));
+    ReplaceColor32(FBitmap, color32(255,255,0,255), color32(GetRValue(clist[3]),GetGValue(clist[3]),GetBValue(clist[3]),255));
+  end;
+end;
+
 procedure TCursor.Load(path: string; Settings: TCursesSettings);
 var
   n: integer;
   clist : array of integer;
   Theme : ISharpETheme;
-  TmpBitmap : TBitmap32;
 begin
   try
-  // convert to scheme colors
-  setlength(clist,length(Settings.Colors));
-  Theme := GetCurrentTheme;
-  for n := 0 to High(Settings.Colors) do
-  begin
-    clist[n] := Theme.Scheme.SchemeCodeToColor(Settings.Colors[n]);
+    // Check if the file is in cursor format (.ani or .cur)
+    FhCursor := LoadCursorFromFile(PAnsiChar(path));
+    if FhCursor <> 0 then
+    begin
+      FIsValid := true;
+    end else
+    begin
+      // convert to scheme colors
+      setlength(clist,length(Settings.Colors));
+      Theme := GetCurrentTheme;
+      for n := 0 to High(Settings.Colors) do
+      begin
+        clist[n] := Theme.Scheme.SchemeCodeToColor(Settings.Colors[n]);
 
-    // black will be transparent... but if selected as blend then color it's
-    // not supposed to be transparent, so adjust the black and make clFuchsia
-    // the new transparent color...
-    if clist[n] = 0 then
-       clist[n] := 1
-       else if clist[n] = clFuchsia then
-               clist[n] := 0;
-  end;
+        // black will be transparent... but if selected as blend then color it's
+        // not supposed to be transparent, so adjust the black and make clFuchsia
+        // the new transparent color...
+        if clist[n] = 0 then
+          clist[n] := 1
+          else if clist[n] = clFuchsia then
+            clist[n] := 0;
+      end;
 
-  // Assign Bitmaps
-  FPath := path;
-  TmpBitmap := TBitmap32.Create();
-  TmpBitmap.LoadFromFile(path);
+      // Assign Bitmaps
+      try
+        FIsValid := true;
+        try
+          LoadBitmap32FromPng(FBitmap, path, FHasAlpha);
+        except
+          try
+            FBitmap.LoadFromFile(path);
+          except
+            FIsValid := false;
+          end;
+        end;
 
-  FBitmap.SetSize(TmpBitmap.width, TmpBitmap.height);
-  FBitmap.Clear(color32(0,0,0,0));
-  FBitmap.Assign(TmpBitmap);
-  
-  FreeAndNil(TmpBitmap);
+        ReplaceColors(clist);
+      except
+        FIsValid := false;
+      end;
 
-  ReplaceColor32(FBitmap, color32(0,0,0,255), color32(0,0,0,0));
-  ReplaceColor32(FBitmap, color32(255,0,0,255), color32(GetRValue(clist[0]),GetGValue(clist[0]),GetBValue(clist[0]),255));
-  ReplaceColor32(FBitmap, color32(0,0,255,255), color32(GetRValue(clist[1]),GetGValue(clist[1]),GetBValue(clist[1]),255));
-  ReplaceColor32(FBitmap, color32(0,255,0,255), color32(GetRValue(clist[2]),GetGValue(clist[2]),GetBValue(clist[2]),255));
-  ReplaceColor32(FBitmap, color32(255,255,0,255), color32(GetRValue(clist[3]),GetGValue(clist[3]),GetBValue(clist[3]),255));
-
-  {ReplaceColor32(FBitmap, color32(0,0,0,255), color32(0,0,0,0));
-  ReplaceColor32(FBitmap, color32(255,0,0,255), clist[0]);
-  ReplaceColor32(FBitmap, color32(0,0,255,255), clist[1]);
-  ReplaceColor32(FBitmap, color32(0,255,0,255), clist[2]);
-  ReplaceColor32(FBitmap, color32(255,255,0,255), clist[3]);  }
-
-  setlength(clist,0);
+      setlength(clist,0);
+    end;
 
   except
     on E: Exception do
@@ -306,17 +297,21 @@ var
   sRect: Windows.TRect;
 begin
   try
-  FCurBitmap.SetSize(FWidth, FHeight);
-  FCurBitmap.Clear(color32(0,0,0,0));
+    if FIsValid = true then
+    begin
+      FCurBitmap.SetSize(FWidth, FHeight);
+      FCurBitmap.Clear(color32(0,0,0,0));
 
-  sRect := Rect(FWidth * FCurFrame, 0, FWidth + (FCurFrame * FWidth), FHeight);
-  FBitmap.DrawTo(FCurBitmap, 0, 0, sRect);
+      sRect := Rect(FWidth * FCurFrame, 0, FWidth + (FCurFrame * FWidth), FHeight);
+      FBitmap.DrawTo(FCurBitmap, 0, 0, sRect);
 
-  FCurFrame := FCurFrame + 1;
-  if(FCurFrame >= FNumFrames) then
-    FCurFrame := 0;
+      FCurFrame := FCurFrame + 1;
+      if(FCurFrame >= FNumFrames) then
+        FCurFrame := 0;
 
-  Result := FCurBitmap;
+        Result := FCurBitmap;
+    end else
+      Result := nil;
   except
     on E: Exception do
     begin
@@ -353,16 +348,19 @@ end;
 procedure TCursesManager.ApplySkin;
 var
   i : integer;
-  Bitmap : TBitmap;
 begin
   // Assign Bitmaps to Cursors
   with FCursorInfo do
   begin
     for i := Low(Cursors) to High(Cursors) do
     begin
-      Bitmap := TBitmap.Create();
-      Bitmap.Assign(Cursors[i].GetBitmap());
-      SetSystemCursor(Bitmap2Cursor(Bitmap, GetPoint(Cursors[i].Point)), Cursors[i].CType);
+      if (Cursors[i].IsValid) and (Cursors[i].Cursor <> 0) then
+      begin
+        SetSystemCursor(Cursors[i].Cursor, Cursors[i].CType);
+      end else if (Cursors[i].IsValid) then
+      begin
+        SetSystemCursor(Bitmap32ToCursor(Cursors[i].Bitmap, GetPoint(Cursors[i].Point)), Cursors[i].CType);
+      end;
     end;
   end;
 
@@ -375,29 +373,31 @@ end;
 procedure TCursesManager.CursorOnTimer(Sender: TObject);
 var
   i: integer;
-  Bitmap : TBitmap;
 begin
   try
   with FCursorInfo do
   begin
     for i := Low(Cursors) to High(Cursors) do
     begin
-      Bitmap := TBitmap.Create();
-      Bitmap.Assign(Cursors[i].GetBitmap());
-      SetSystemCursor(Bitmap2Cursor(Bitmap, GetPoint(Cursors[i].Point)), Cursors[i].CType);
-      Bitmap.free;
+      if (Cursors[i].IsValid) and (Cursors[i].Cursor <> 0) then
+      begin
+        SetSystemCursor(Cursors[i].Cursor, Cursors[i].CType);
+      end else if (Cursors[i].IsValid) then
+        SetSystemCursor(Bitmap32ToCursor(Cursors[i].Bitmap, GetPoint(Cursors[i].Point)), Cursors[i].CType);
     end;
   end;
   except
     on E: Exception do
     begin
-      Debug('Error In OnTimer function', DMT_ERROR);
+      Debug('Error In OnTimer function, stopping the timer. Please restart the Cursor service.', DMT_ERROR);
       Debug(E.Message, DMT_TRACE);
+
+      UpdTimer.Enabled := false;
     end;
   end;
 end;
 
-function TCursesManager.Bitmap2Cursor(Bitmap: TBitmap;
+function TCursesManager.BitmapToCursor(Bitmap: TBitmap;
   HotSpot: TPoint): HCursor;
 var
   IconInfo: TIconInfo;
@@ -410,7 +410,22 @@ begin
     IconInfo.yHotspot := hotspot.y;
 
     Result := CreateIconIndirect(IconInfo);
+  except
+    Result := 0;
+  end;
+end;
+
+function TCursesManager.Bitmap32ToCursor(Bitmap: TBitmap32;
+  HotSpot: TPoint): HCursor;
+var
+  bmp: TBitmap;
+begin
+  bmp := TBitmap.Create;
+  try
+    bmp.Assign(Bitmap);
+    Result := BitmapToCursor(bmp, HotSpot);
   finally
+    bmp.Free;
   end;
 end;
 
@@ -528,6 +543,7 @@ begin
                             SetLength(FCursorInfo.Cursors, C + 1);
 
                             FCursorInfo.Cursors[C] := TCursor.Create();
+                            FCursorInfo.Cursors[C].ReplaceColor := true;
                             FCursorInfo.Cursors[C].Width := 32;
                             FCursorInfo.Cursors[C].Height := 32;
                             FCursorInfo.Cursors[C].Point := Value(Item[I].Name, '');
@@ -557,6 +573,7 @@ begin
                                     SetLength(FCursorInfo.Cursors, C + 1);
 
                                     FCursorInfo.Cursors[C] := TCursor.Create();
+                                    FCursorInfo.Cursors[C].ReplaceColor := BoolValue('ReplaceColor', True);
                                     FCursorInfo.Cursors[C].Width := IntValue('Width', 32);
                                     FCursorInfo.Cursors[C].Height := IntValue('Height', 32);
                                     FCursorInfo.Cursors[C].Point := Value('Point', '');

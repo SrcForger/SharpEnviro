@@ -31,8 +31,8 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JclSimpleXml, JclFileUtils,
   ImgList, PngImageList,
-  SharpEListBox, SharpEListBoxEx,GR32, GR32_PNG, SharpApi,
-  ExtCtrls, Menus, JclStrings, GR32_Image, SharpGraphicsUtils,
+  SharpEListBox, SharpEListBoxEx,GR32, GR32_PNG, pngimage, PngFunctions, SharpApi,
+  ExtCtrls, Menus, JclStrings, GR32_Image, SharpGraphicsUtils, SharpIconUtils,
   SharpEColorEditorEx, SharpESwatchManager,
 
   ISharpCenterHostUnit,
@@ -47,6 +47,7 @@ type
 type
   TCursor = class(TObject)
   private
+    FIsValid, FHasAlpha, FIsCursor, FReplaceColor : boolean;
     FWidth, FHeight: integer;
     FCurFrame, FNumFrames: integer;
     FBitmap, FCurBitmap: TBitmap32;
@@ -55,16 +56,25 @@ type
     constructor Create; reintroduce;
     destructor Destroy; override;
 
+    procedure ReplaceColors(ccolors : TSharpEColorEditorEx);
     procedure Load(path: string);
 
     function GetBitmap(): TBitmap32;
 
     // Properties
+    property IsValid: boolean read FIsValid;
+    property HasAlpha: boolean read FHasAlpha;
+    property IsCursor: boolean read FIsCursor;
+
+    property ReplaceColor: boolean read FReplaceColor write FReplaceColor;
+
     property Width: integer read FWidth write FWidth;
     property Height: integer read FHeight write FHeight;
 
     property NumFrames: integer read FNumFrames write FNumFrames;
     property CurFrame: integer read FCurFrame;
+
+    property Bitmap: TBitmap32 read GetBitmap;
   end;
 
   TfrmSettingsWnd = class(TForm)
@@ -122,11 +132,16 @@ constructor TCursor.Create;
 begin
   inherited;
 
+  FIsValid := false;
+  FHasAlpha := false;
+  FIsCursor := false;
+  FReplaceColor := false;
+
   FCurFrame := 0;
   FNumFrames := 0;
   FWidth := 0;
   FHeight := 0;
-  
+
   FBitmap := TBitmap32.Create();
   FCurBitmap := TBitmap32.Create();
 end;
@@ -139,27 +154,89 @@ begin
   inherited;
 end;
 
-procedure TCursor.Load(path: string);
+procedure TCursor.ReplaceColors(ccolors : TSharpEColorEditorEx);
 begin
-  // Assign Bitmaps
-  FBitmap.LoadFromFile(path);
+  // Replace the colors
+  if FReplaceColor = true and (not FIsCursor) then
+  begin
+    if FHasAlpha <> true then
+      ReplaceColor32(FBitmap, color32(0,0,0,255), color32(0,0,0,0));
+      
+    ReplaceColor32(FBitmap, color32(255,0,0,255), color32(ccolors.Items.Item[0].ColorAsTColor));
+    ReplaceColor32(FBitmap, color32(0,0,255,255), color32(ccolors.Items.Item[1].ColorAsTColor));
+    ReplaceColor32(FBitmap, color32(0,255,0,255), color32(ccolors.Items.Item[2].ColorAsTColor));
+    ReplaceColor32(FBitmap, color32(255,255,0,255), color32(ccolors.Items.Item[3].ColorAsTColor));
+  end;
+end;
+
+procedure TCursor.Load(path: string);
+var
+  hCursor : HICON;
+  HasAlpha : boolean;
+begin
+  FIsValid := false;
+  FIsCursor := false;
+
+  hCursor := LoadCursorFromFile(PAnsiChar(path));
+  if hCursor <> 0 then
+  begin
+    try
+      FIsValid := true;
+      FIsCursor := true;
+
+      IconToImage(FBitmap, hCursor);
+      FWidth := FBitmap.Width;
+      FHeight := FBitmap.Height;
+    except
+      FIsValid := false;
+    end;
+  end else
+  begin
+    FIsValid := true;
+
+    try
+      LoadBitmap32FromPng(FBitmap, path, HasAlpha);
+      if (FHasAlpha <> true) and (HasAlpha = true) then
+        FHasAlpha := true;
+        
+    except
+      try
+        FBitmap.LoadFromFile(path);
+      except
+        FIsValid := false;
+      end;
+    end;
+  end;
 end;
 
 function TCursor.GetBitmap(): TBitmap32;
 var
   sRect: Windows.TRect;
 begin
-  FCurBitmap.SetSize(FWidth, FHeight);
-  FCurBitmap.Clear(color32(0,0,0,0));
-  
-  sRect := Rect(FWidth * FCurFrame, 0, FWidth + (FWidth * FCurFrame), FHeight);
-  FBitmap.DrawTo(FCurBitmap, 0, 0, sRect);
+  if FIsValid then
+  begin
+    if FIsCursor then
+    begin
+      Result := FBitmap;
+    end else
+    begin
+      FCurBitmap.DrawMode := dmTransparent;
+      FCurBitmap.CombineMode := cmMerge;
+      FCurBitmap.SetSize(FWidth, FHeight);
+      FCurBitmap.Clear(color32(0,0,0,0));
 
-  FCurFrame := FCurFrame + 1;
-  if(FCurFrame >= FNumFrames) then
-    FCurFrame := 0;
+      sRect := Rect(FWidth * FCurFrame, 0, FWidth + (FWidth * FCurFrame), FHeight);
+      FBitmap.DrawTo(FCurBitmap, 0, 0, sRect);
+
+      FCurFrame := FCurFrame + 1;
+      if(FCurFrame >= FNumFrames) then
+        FCurFrame := 0;
   
-  Result := FCurBitmap;
+      Result := FCurBitmap;
+    end;
+  end else
+    Result := nil;
+    
 end;
 
 
@@ -226,9 +303,8 @@ var
   x,y : integer;
   Dir : String;
   n : integer;
-  bmp : TBitmap32;
+  PreBmp : TBitmap32;
   sRect : TRect;
-  Bmp32: TBitmap32;
   w,h : integer;
   IconCount : integer;
 
@@ -265,6 +341,7 @@ begin
             SetLength(CursorItemArray, C + 1);
 
             CursorItemArray[C] := TCursor.Create();
+            CursorItemArray[C].ReplaceColor := true;
             CursorItemArray[C].Width := 32;
             CursorItemArray[C].Height := 32;
             CursorItemArray[C].Load(Dir + AnsiLowerCase(Item[I].Name) + '.bmp');
@@ -291,6 +368,7 @@ begin
                   SetLength(CursorItemArray, C + 1);
 
                   CursorItemArray[C] := TCursor.Create();
+                  CursorItemArray[C].ReplaceColor := BoolValue('ReplaceColor', True);
                   CursorItemArray[C].Width := IntValue('Width', 32);
                   CursorItemArray[C].Height := IntValue('Height', 32);
                   CursorItemArray[C].Load(Dir + Value('File', ''));
@@ -305,49 +383,40 @@ begin
     end;
   end;
 
-  Bmp32 := TBitmap32.Create;
-  Bmp32.DrawMode := dmBlend;
-  Bmp32.CombineMode := cmMerge;
+  PreBmp := TBitmap32.Create;
+  PreBmp.DrawMode := dmBlend;
 
   IconCount := length(CursorItemArray);
   w := ((Width - 64) div IconSize) * IconSize;
   h := (IconCount div (w div IconSize) + 1) * IconSize;
 
-  Bmp32.SetSize(w,h);
-  Bmp32.Clear(color32(0,0,0,0));
-  bmp32.DrawMode := dmTransparent;
+  PreBmp.DrawMode := dmTransparent;
+  PreBmp.SetSize(w,h);
+  PreBmp.Clear(color32(0,0,0,0));
 
   x := 0;
   y := 0;
   for n := 0 to High(CursorItemArray) do
   begin
-    sRect := Rect(0, 0, CursorItemArray[n].GetBitmap().Width, CursorItemArray[n].GetBitmap().Height);
+    sRect := Rect(0, 0, CursorItemArray[n].Width, CursorItemArray[n].Height);
 
-    Bmp := TBitmap32.Create;
-    Bmp.SetSize(32, 32);
-    Bmp.Clear(color32(0,0,0,0));
-    
-    CursorItemArray[n].GetBitmap().DrawTo(Bmp, 32 - CursorItemArray[n].GetBitmap().Width, 32 - CursorItemArray[n].GetBitmap().Height, sRect);
-    Bmp.DrawTo(Bmp32, x*Bmp.Width, y*Bmp.Height);
+    CursorItemArray[n].ReplaceColors(ccolors);
+    CursorItemArray[n].Bitmap.DrawTo(PreBmp, (x * 32) + (32 - CursorItemArray[n].Width), (y * 32) + (32 - CursorItemArray[n].Height), sRect);
+
     x := x + 1;
-    if x*Bmp.Width >= bmp32.Width then
+    if (x * 32) >= (PreBmp.Width) then
     begin
       x := 0;
       y := y + 1;
     end;
-
-    Bmp.Free;
   end;
 
-  ReplaceColor32(bmp32,color32(0,0,0,255),color32(0,0,0,0));
-  ReplaceColor32(bmp32,color32(255,0,0,255),color32(ccolors.Items.Item[0].ColorAsTColor));
-  ReplaceColor32(bmp32,color32(0,0,255,255),color32(ccolors.Items.Item[1].ColorAsTColor));
-  ReplaceColor32(bmp32,color32(0,255,0,255),color32(ccolors.Items.Item[2].ColorAsTColor));
-  ReplaceColor32(bmp32,color32(255,255,0,255),color32(ccolors.Items.Item[3].ColorAsTColor));
+  FPreview.Assign(PreBmp);
 
-  FPreview.Assign(bmp32);
+  PreBmp.Free;
 
-  Bmp32.Free;
+  // Hide the colors for cursors that do not support replacing colors.
+  ccolors.Visible := CursorItemArray[lbCursorList.ItemIndex].ReplaceColor;
 
   finally
     LockWindowUpdate(0);
