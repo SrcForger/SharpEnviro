@@ -62,6 +62,7 @@ type
     FPrecacheText : ISharpESkinText;
     FPrecacheBmp  : TBitmap32;
     FPrecacheCaption : String;
+    FGlyphColor : integer;
     procedure CMDialogKey(var Message: TCMDialogKey); message CM_DIALOGKEY;
     procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
     procedure CMFocusChanged(var Message: TCMFocusChanged); message CM_FOCUSCHANGED;
@@ -88,6 +89,7 @@ type
     destructor Destroy; override;
     procedure UpdateAutoPosition;
     function HasNormalHoverScript : boolean;
+    procedure CalculateGlyphColor;    
   published
     //property Align;
     property Anchors;
@@ -118,13 +120,16 @@ type
     property ModalResult: TModalResult read FModalResult write FModalResult default 0;
     property Default: Boolean read FDefault write SetDefault default False;
     property AutoPosition: Boolean read FAutoPosition write SetAutoPosition;
+    property GlyphColor : integer read FGlyphColor;
    { Published declarations }
   end;
 
 implementation
 
 uses
-  gr32_png;
+  gr32_png,
+  uThemeConsts,
+  SharpGraphicsUtils;
 
 constructor TSharpEButton.Create;
 begin
@@ -138,6 +143,8 @@ begin
   FMargin := -1;
   Flayout := blGlyphleft;
   FButtonDown := False;
+
+  CalculateGlyphColor;
 end;
 
 procedure TSharpEButton.CNCommand(var Message: TWMCommand);
@@ -172,6 +179,13 @@ begin
       Result := 1;
     end else   }
   inherited;
+end;
+
+procedure TSharpEButton.CalculateGlyphColor;
+begin
+  if FGlyph32 <> nil then
+    FGlyphColor := GetColorAverage(FGlyph32)
+  else FGlyphColor := clWhite;
 end;
 
 procedure TSharpEButton.CMDialogChar(var Message: TCMDialogChar);
@@ -419,6 +433,7 @@ var
   GlyphPos, TextPos: TPoint;
   SkinText : ISharpESkinText;
   SkinIcon : ISharpESkinIcon;
+  i : integer;
 begin
   CompRect := Rect(0, 0, width, height);
 
@@ -451,6 +466,19 @@ begin
 
     FSkin.SetSize(Width,Height);
     FSkin.Clear(Color32(0, 0, 0, 0));
+
+    i := Scheme.GetColorIndexByTag('$IconHighlight');
+    if (i > -1) and (i <= High(Scheme.Colors)) then
+    begin
+      if Scheme.Colors[i].SchemeType = stDynamic then
+        if Scheme.Colors[i].Color <> FGlyphColor then
+        begin
+          Scheme.Colors[i].Color := FGlyphColor;
+          FManager.Skin.Button.Normal.UpdateDynamicProperties(Scheme);
+          FManager.Skin.Button.Down.UpdateDynamicProperties(Scheme);
+          FManager.Skin.Button.Hover.UpdateDynamicProperties(Scheme);
+        end;
+    end;
 
     if FButtonDown and not (FManager.Skin.Button.Down.Empty) then
     begin
@@ -584,6 +612,8 @@ begin
     FGlyph32FileName := ExtractFileName(Value);
   end;
 
+  CalculateGlyphColor;
+
   UpdateSkin;
 end;
 
@@ -594,6 +624,8 @@ begin
   if (Value = nil) then
     FGlyph32FileName := '';
   FGlyph32.Assign(Value);
+
+  CalculateGlyphColor;
 
   UpdateSkin;
 end;

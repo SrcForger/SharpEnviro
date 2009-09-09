@@ -35,8 +35,10 @@ uses
   Controls,
   Forms,
   StdCtrls,
+  uThemeConsts,
   gr32,
   gr32_resamplers,
+  SharpGraphicsUtils,
   SharpEBase,
   SharpEBaseControls,
   SharpEDefault,
@@ -84,6 +86,7 @@ type
     FDestroying : boolean;
     FOverlay : TBitmap32;
     FOverlayPos : TPoint;
+    FGlyphColor : integer;
     procedure CMDialogKey(var Message: TCMDialogKey); message CM_DIALOGKEY;
     procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
     procedure CMFocusChanged(var Message: TCMFocusChanged); message CM_FOCUSCHANGED;
@@ -117,6 +120,7 @@ type
     function HasHighlightAnimationScript : boolean;
 //    function HasHighlightHoverScript : boolean;
     function GetCurrentStateItem : ISharpETaskItemStateSkin;
+    procedure CalculateGlyphColor;
   published
     //property Align;
     property Anchors;
@@ -188,6 +192,8 @@ begin
   FButtonDown := False;
   FFlashing := False;
   Tag := 0;
+
+  CalculateGlyphColor;
 end;
 
 procedure TSharpETaskItem.CNCommand(var Message: TWMCommand);
@@ -358,6 +364,13 @@ end;
 procedure TSharpETaskItem.CMDialogKey(var Message: TCMDialogKey);
 begin
   inherited;
+end;
+
+procedure TSharpETaskItem.CalculateGlyphColor;
+begin
+  if FGlyph32 <> nil then
+    FGlyphColor := GetColorAverage(FGlyph32)
+  else FGlyphColor := clWhite;
 end;
 
 procedure TSharpETaskItem.CMDialogChar(var Message: TCMDialogChar);
@@ -566,6 +579,7 @@ procedure TSharpETaskItem.DrawManagedSkin(bmp: TBitmap32; Scheme: ISharpEScheme)
 var
   r, TextRect, CompRect, IconRect: TRect;
   TextSize : TPoint;
+  i : integer;
   GlyphPos, TextPos: TPoint;
   mw : integer;
   DrawCaption : WideString;
@@ -612,6 +626,24 @@ begin
       FButtonDown := False;
       FButtonOver := False;
     end;
+
+    i := Scheme.GetColorIndexByTag('$IconHighlight');
+    if (i > -1) and (i <= High(Scheme.Colors)) then
+    begin
+      if Scheme.Colors[i].SchemeType = stDynamic then
+        if Scheme.Colors[i].Color <> FGlyphColor then
+        begin
+          Scheme.Colors[i].Color := FGlyphColor;
+          CurrentState.Normal.UpdateDynamicProperties(Scheme);
+          CurrentState.NormalHover.UpdateDynamicProperties(Scheme);
+          CurrentState.Down.UpdateDynamicProperties(Scheme);
+          CurrentState.DownHover.UpdateDynamicProperties(Scheme);
+          CurrentState.Highlight.UpdateDynamicProperties(Scheme);
+          CurrentState.HighlightHover.UpdateDynamicProperties(Scheme);
+          CurrentState.Special.UpdateDynamicProperties(Scheme);
+          CurrentState.SpecialHover.UpdateDynamicProperties(Scheme);
+        end;
+    end;    
 
     FSkin.Clear(Color32(0, 0, 0, 0));
     if (FFlashing) and (not CurrentState.Highlight.Empty) and (not FManager.AnimationHasScriptRunning(self))
@@ -780,6 +812,8 @@ begin
     FGlyph32FileName := ExtractFileName(Value);
   end;
 
+  CalculateGlyphColor;
+
   if not assigned(FManager) then exit;  
   if not FManager.AnimationHasScriptRunning(self) then UpdateSkin;
 end;
@@ -791,6 +825,8 @@ begin
   if (Value = nil) then
     FGlyph32FileName := '';
   FGlyph32.Assign(Value);
+
+  CalculateGlyphColor;
 
   if not Assigned(FManager) then exit;
   if not FManager.AnimationHasScriptRunning(self) then UpdateSkin;
