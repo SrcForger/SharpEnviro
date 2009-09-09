@@ -251,6 +251,8 @@ begin
           FColors[High(FColors)].SchemeType := stBoolean
         else if CompareText(s, 'integer') = 0 then
           FColors[High(FColors)].SchemeType := stInteger
+        else if CompareText(s, 'dynamic') = 0 then
+          FColors[High(FColors)].SchemeType := stDynamic
         else
           FColors[High(FColors)].SchemeType := stColor;
       end;

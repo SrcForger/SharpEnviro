@@ -130,7 +130,7 @@ type
   end;
 
   // TThemeScheme
-  TSharpESchemeType = (stColor, stBoolean, stInteger);
+  TSharpESchemeType = (stColor, stBoolean, stInteger, stDynamic);
 
   TSharpESkinColor = record
     Name: string;
