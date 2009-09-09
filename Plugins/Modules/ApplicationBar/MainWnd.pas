@@ -561,7 +561,8 @@ begin
     btn.Caption := pCaption;
 
     if not IconStringToIcon(pIcon,pTarget,btn.Glyph32,32) then
-       btn.Glyph32.SetSize(0,0)
+       btn.Glyph32.SetSize(0,0);
+    btn.CalculateGlyphColor;
   end;
   
   FRefreshOnNextMouseMove := True;
@@ -576,6 +577,7 @@ begin
       begin
         if not IconStringToIcon(Icon,Target,btn.Glyph32,32) then
           btn.Glyph32.SetSize(0,0);
+        btn.CalculateGlyphColor;
         btn.Repaint;
       end;
 end;
