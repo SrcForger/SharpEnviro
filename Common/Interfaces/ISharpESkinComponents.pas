@@ -152,6 +152,7 @@ type
     function GetEmpty : Boolean; stdcall;
     function GetDrawText : Boolean; stdcall;
     function CreateThemedSkinText : ISharpESkinText; stdcall;
+    procedure UpdateDynamicProperties(Scheme : ISharpEScheme); stdcall;
     procedure ExecuteScript(pComponent : TObject;
                            pScript : String;
                            pScheme : ISharpEScheme;
@@ -167,6 +168,7 @@ type
     ['{A99FCC31-D190-4ACA-9051-B846C5F0B1E8}']
     function GetIcon : ISharpESkinIcon; stdcall;
     function GetWidthMod : integer; stdcall;
+    procedure UpdateDynamicProperties(Scheme : ISharpEScheme); stdcall;    
 
     property Icon : ISharpESkinIcon read GetIcon;
     property WidthMod : integer read GetWidthMod;
