@@ -57,8 +57,48 @@ type
   function ColorToColor32Alpha(Color : TColor; Alpha : integer) : TColor32;
   function LightenColor32(Color : TColor32; Amount : integer) : TColor32;
 
+  function GetColorAverage(Src : TBitmap32) : integer;  
+
 implementation
 
+
+function GetColorAverage(Src : TBitmap32) : integer;
+var
+  PSrc : PColor32;
+  MaxValue : double;
+  RSum,GSum,BSum : double;
+  AlphaFactor : double;
+  R,G,B,A : byte;
+  X,Y : integer;
+begin
+  RSum := 0;
+  GSum := 0;
+  BSum := 0;
+  PSrc := Src.PixelPtr[0, 0];
+
+  for Y := 0 to Src.Height - 1 do
+  begin
+    for X := 0 to Src.Width - 1 do
+    begin
+      Color32ToRGBA(PSrc^,R,G,B,A);
+      AlphaFactor := A / 255;
+      RSum := RSum + R * AlphaFactor;
+      GSum := GSum + G * AlphaFactor;
+      BSum := BSum + B * AlphaFactor;
+      inc(PSrc);
+    end;
+  end;
+
+  MaxValue := Max(BSum,Max(RSum, GSum));
+  if MaxValue > 0 then
+  begin
+    RSum := RSum / MaxValue * 255;
+    GSum := GSum / MaxValue * 255;
+    BSum := BSum / MaxValue * 255;
+
+    result := RGB(round(RSum),round(GSum),round(BSum));
+  end else result := 0;
+end;
 
 function Max2(const A, B, C: Integer): Integer;
 asm
