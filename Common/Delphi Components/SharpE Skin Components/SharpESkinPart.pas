@@ -352,7 +352,7 @@ type
     procedure LoadFromStream(Stream: TStream); virtual;
 
     function CreateThemedSkinText : ISharpESkinText; stdcall;    
-    procedure UpdateDynamicProperties(cs: ISharpEScheme); virtual;
+    procedure UpdateDynamicProperties(cs: ISharpEScheme); virtual; stdcall;
 
     function LoadFromXML(xml: TJvSimpleXMLElem; path: string; Text: TSkinText): boolean; virtual;
     procedure draw(bmp: TBitmap32; cs: ISharpEScheme);
