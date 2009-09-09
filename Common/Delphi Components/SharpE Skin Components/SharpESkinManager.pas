@@ -57,6 +57,7 @@ type
   private
     FRootInterface: ISharpESkinManager;
     FNoSystemSchemeInit: boolean;
+    FNoSystemSkinInit : boolean;
     FOnSkinChanged: TNotifyEvent;
     FUsingMainWnd : boolean;
     FHandleUpdates : boolean;
@@ -127,6 +128,7 @@ constructor TSharpESkinManager.CreateRuntime(MainForm: TComponent;
                                              Skins : TSharpESkinItems = ALL_SHARPE_SKINS);
 begin
   FNoSystemSchemeInit := NoSystemScheme;
+  FNoSystemSkinInit := NoSystemScheme;
   CreateRuntime(MainForm, Skin, Scheme, Skins);
 end;
 
@@ -209,7 +211,8 @@ end;
 
 procedure TSharpESkinManager.UpdateSkin;
 begin
-  LoadSkinFromStream;
+  if not FNoSystemSkinInit then
+    LoadSkinFromStream;
   if not FNoSystemSchemeInit then
     LoadSharpEScheme(FScheme);
   FSkin.UpdateDynamicProperties(FSchemeInterface);
