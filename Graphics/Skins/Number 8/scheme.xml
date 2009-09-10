@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpESkinScheme>
+  <item>
+    <Name>Border</Name>
+    <Tag>$Border</Tag>
+    <Info>Border Color</Info>
+    <Default>RGB(0,0,0)</Default>
+  </item>
+  <item>
+    <Name>Background</Name>
+    <Tag>$Background</Tag>
+    <Info>Background Color</Info>
+    <Default>RGB(32,32,32)</Default>
+  </item>
+  <item>
+    <Name>Special</Name>
+    <Tag>$Special</Tag>
+    <Info>Special Color</Info>
+    <Default>RGB(196,196,196)</Default>
+  </item>
+  <item>
+    <Name>Highlight</Name>
+    <Tag>$Highlight</Tag>
+    <Info>Highlight Color</Info>
+    <Default>clRed</Default>
+  </item>
+  <item>
+    <Name>Text</Name>
+    <Tag>$Text</Tag>
+    <Info>Text Color</Info>
+    <Default>RGB(255,255,255)</Default>
+  </item>
+  <item>
+    <Name>Text Shadow</Name>
+    <Tag>$TextShadow</Tag>
+    <Info>Text Shadow Color</Info>
+    <Default>0</Default>
+  </item>
+  <item>
+    <Name>Background Alpha</Name>
+    <Tag>$Alpha</Tag>
+    <Info>Background Alpha</Info>
+    <Default>196</Default>
+    <type>Integer</type>
+  </item>
+  <item>
+    <Name>Menu Alpha</Name>
+    <Tag>$MAlpha</Tag>
+    <Info>Menu, Task Switch and Notification Alpha</Info>
+    <Default>196</Default>
+    <type>Integer</type>
+  </item>
+  <item>
+    <Name>Border Alpha</Name>
+    <Tag>$BAlpha</Tag>
+    <Info>Alpha for Borders</Info>
+    <Default>196</Default>
+    <type>Integer</type>
+  </item>
+  <item>
+    <Name>Special Border Alpha</Name>
+    <Tag>$SAlpha</Tag>
+    <Info>Alpha for special borders (task item, ...)</Info>
+    <Default>196</Default>
+    <type>Integer</type>
+  </item>
+  <item>
+    <Name>Icon Highlight</Name>
+    <Tag>$IconHighlight</Tag>
+    <Info>Icon Highlight Color</Info>
+    <Default>clWhite</Default>
+    <type>Dynamic</type>
+  </item>
+</SharpESkinScheme>
