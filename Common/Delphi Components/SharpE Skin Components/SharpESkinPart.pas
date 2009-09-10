@@ -2337,7 +2337,8 @@ begin
   IWidth := FSize.XAsInt;
   IHeight := FSize.YAsInt;
 
-  TLinearResampler.Create(Src);
+  //TLinearResampler.Create(Src);
+  TKernelResampler.Create(Src).Kernel := TLanczosKernel.Create;
   if (IWidth <> Icon.Width) or (IHeight <> Icon.Height) then
   begin
     icon.setsize(IWidth,IHeight);
