@@ -446,10 +446,9 @@ begin
           begin
             count := count + 1;
             FButtonList[n].wnd := Item.Handle;
-          end;
+          end else FButtonList[n].btn.Down := False;
         end;
     end;
-    FButtonList[n].btn.Down := False;
     FButtonList[n].btn.Special := (count > 0);
     oldcount := FButtonList[n].btn.Tag;
     FButtonList[n].btn.Tag := count;
