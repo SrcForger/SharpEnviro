@@ -39,6 +39,7 @@ uses
   SharpTypes,
   SharpETaskItem,
   uISharpBarModule,
+  ISharpESkinComponents,
   JclSysUtils,
   JclSysInfo,
   uSharpEMenu,
@@ -628,6 +629,10 @@ var
   Bmp : TBitmap32;
   x,y : integer;
   n : integer;
+  currentstate : ISharpETaskItemStateSkin;
+  SkinText : ISharpESkinText;
+  s : string;
+  p : TPoint;
 begin
   if not sCountOverlay then
     exit;
@@ -645,20 +650,37 @@ begin
   Bmp.DrawMode := dmBlend;
   Bmp.CombineMode := cmMerge;
 
-  x := 3;
-  y := 3;
-  for n := 1 to Btn.Btn.Tag do
+  case sState of
+    tisCompact: currentstate := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Compact;
+    tisMini   : currentstate := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Mini;
+    else currentstate := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Full;
+  end;
+
+  if currentstate.HasOverlay then
   begin
-    Bmp.FrameRectTS(x,y,x+4,y+4,Color32(0,0,0,196));
-    Bmp.FillRectT(x+1,y+1,x+3,y+3,color32(255,255,255,196));
-    y := y + 5;
-    if y > sAutoHeight - 8 then
+    SkinText := currentstate.OverlayText.CreateThemedSkinText;
+    SkinText.AssignFontTo(bmp.Font,mInterface.SkinInterface.SkinManager.Scheme);
+    p := SkinText.GetXY(Rect(0,0,0,0),Rect(0,0,Bmp.Width,Bmp.Height),Rect(0,0,0,0));
+    s := inttostr(Btn.Btn.Tag);
+    SkinText.RenderTo(Bmp,p.x,p.y,s,mInterface.SkinInterface.SkinManager.Scheme);
+    SkinText := nil;
+  end else
+  begin
+    x := 3;
+    y := 3;
+    for n := 1 to Btn.Btn.Tag do
     begin
-      y := 3;
-      x := x + 5;
+      Bmp.FrameRectTS(x,y,x+4,y+4,Color32(0,0,0,196));
+      Bmp.FillRectT(x+1,y+1,x+3,y+3,color32(255,255,255,196));
+      y := y + 5;
+      if y > sAutoHeight - 8 then
+      begin
+        y := 3;
+        x := x + 5;
+      end;
+      if x > sAutoWidth - 8 then
+        break;
     end;
-    if x > sAutoWidth - 8 then
-      break;
   end;
 
   Btn.Btn.Overlay.Assign(Bmp);
@@ -1158,6 +1180,7 @@ begin
       FButtonList[n].btn.UpdateSkin;
     end;
     FButtonList[n].btn.UseSpecial := hasspecial;
+    UpdateButtonIcon(FButtonList[n]);
   end;
 
   mInterface.MinSize := NewWidth;
