@@ -227,6 +227,9 @@ type
     FSpecial        : TSkinPartEx;
     FSpecialHover   : TSkinPartEx;
 
+    FOverlayText : TSkinText;
+    FOverlayTextInterface : ISharpESkinText;
+
     FNormalInterface         : ISharpESkinPartEx;
     FNormalHoverInterface    : ISharpESkinPartEx;
     FDownInterface           : ISharpESkinPartEx;
@@ -236,6 +239,7 @@ type
     FSpecialInterface        : ISharpESkinPartEx;
     FSpecialHoverInterface   : ISharpESkinPartEx;
 
+    FHasOverlay     : boolean;
     FHasSpecial     : boolean;
     FSpacing        : integer;
     FSkinDim        : TSkinDim;
@@ -257,7 +261,10 @@ type
     function GetSpecial        : ISharpESkinPartEx; stdcall;
     function GetSpecialHover   : ISharpESkinPartEx; stdcall;
 
+    function GetOverlayText : ISharpESkinText; stdcall;
+
     function GetHasSpecial : boolean; stdcall;
+    function GetHasOverlay : boolean; stdcall;
     function GetLocation : TPoint; stdcall;    
     function GetSpacing : integer; stdcall;
     function GetDimension : TPoint; stdcall;
@@ -290,7 +297,10 @@ type
     property Special        : ISharpESkinPartEx read GetSpecial;
     property SpecialHover   : ISharpESkinPartEx read GetSpecialHover;
 
+    property OverlayText : ISharpESkinText read GetOverlayText;
+
     property HasSpecial : boolean read GetHasSpecial;
+    property HasOverlay : boolean read GetHasOverlay;
     property Location : TPoint read GetLocation;
     property Spacing : integer read GetSpacing;
     property Dimension : TPoint read GetDimension;
@@ -3655,6 +3665,7 @@ end;
 procedure TSharpETaskItemState.Clear;
 begin
   FHasSpecial := False;
+  FHasOverlay := False;
   FSkinDim.Clear;
   FSkinDim.SetLocation('0','0');
   FSkinDim.SetDimension('w', 'h');
@@ -3665,6 +3676,7 @@ begin
   FHighlight.Clear;
   FHighlightHover.Clear;
   FSpecial.Clear;
+  FOverlayText.Clear;
   FSpacing := 2;
   FOnNormalMouseEnterScript    := '';
   FOnNormalMouseLeaveScript    := '';
@@ -3689,6 +3701,8 @@ begin
   FSpecial        := TSkinPartEx.Create(BmpList);
   FSpecialHover   := TSkinPartEx.Create(BmpList);
 
+  FOverlayText := TSkinText.Create(False);
+
   FNormalInterface         := FNormal;
   FNormalHoverInterface    := FNormalHover;
   FDownInterface           := FDown;
@@ -3697,6 +3711,8 @@ begin
   FHighlightHoverInterface := FHighlightHover;
   FSpecialInterface        := FSpecial;
   FSpecialHoverInterface   := FSpecialHover;
+
+  FOverlayTextInterface := FOverlayText;
 
   Clear;  
 end;
@@ -3714,6 +3730,8 @@ begin
   FSpecialInterface        := nil;
   FSpecialHoverInterface   := nil;
 
+  FOverlayTextInterface   := nil;
+
   inherited;
 end;
 
@@ -3730,6 +3748,11 @@ end;
 function TSharpETaskItemState.GetDownHover: ISharpESkinPartEx;
 begin
   result := FDownHoverInterface;
+end;
+
+function TSharpETaskItemState.GetHasOverlay: boolean;
+begin
+  result := FHasOverlay;
 end;
 
 function TSharpETaskItemState.GetHasSpecial: boolean;
@@ -3802,6 +3825,11 @@ begin
   result := FOnNormalMouseLeaveScript;
 end;
 
+function TSharpETaskItemState.GetOverlayText: ISharpESkinText;
+begin
+  result := FOverlayTextInterface;
+end;
+
 function TSharpETaskItemState.GetSpacing: integer;
 begin
   result := FSpacing;
@@ -3829,6 +3857,8 @@ begin
   FSpecial.LoadFromStream(Stream);
   FSpecialHover.LoadFromStream(Stream);
 
+  FOverlayText.LoadFromStream(Stream);
+
   FSpacing := StrToInt(StringLoadFromStream(Stream));
 
   FOnNormalMouseEnterScript    := StringLoadFromStream(Stream);
@@ -3841,7 +3871,9 @@ begin
   FOnHighlightStepEndScript    := StringLoadFromStream(Stream);
 
   if StringLoadFromStream(Stream) = '1' then FHasSpecial := True
-     else FHasSpecial := False;  
+     else FHasSpecial := False;
+  if StringLoadFromStream(Stream) = '1' then FHasOverlay := True
+     else FHasOverlay := False;       
 end;
 
 procedure TSharpETaskItemState.LoadFromXML(xml: TJclSimpleXmlElem; path: string);
@@ -3877,6 +3909,11 @@ begin
       begin
         FHasSpecial := True;
         FSpecial.LoadFromXML(ItemNamed['special'],path,SkinText,SkinIcon);
+      end;
+      if ItemNamed['overlaytext'] <> nil then
+      begin
+        FHasOverlay := True;
+        FOverlayText.LoadFromXML(ItemNamed['overlaytext']);
       end;
       if ItemNamed['specialhover'] <> nil then
          FSpecialHover.LoadFromXML(ItemNamed['specialhover'],path,SkinText,SkinIcon);
@@ -3923,6 +3960,8 @@ begin
   FSpecial.SaveToStream(Stream);
   FSpecialHover.SaveToStream(Stream);
 
+  FOverlayText.SaveToStream(Stream);
+
   StringSaveToStream(inttostr(FSpacing),Stream);
 
   StringSaveToStream(FOnNormalMouseEnterScript,Stream);
@@ -3936,6 +3975,8 @@ begin
 
   if FHasSpecial then StringSavetoStream('1', Stream)
      else StringSavetoStream('0', Stream);
+  if FHasOverlay then StringSavetoStream('1', Stream)
+     else StringSavetoStream('0', Stream);     
 end;
 
 procedure TSharpETaskItemState.UpdateDynamicProperties(cs: ISharpEScheme);
@@ -3947,7 +3988,8 @@ begin
   FHighlight.UpdateDynamicProperties(cs);
   FHighlightHover.UpdateDynamicProperties(cs);
   FSpecial.UpdateDynamicProperties(cs);
-  FSpecialHover.UpdateDynamicProperties(cs);   
+  FSpecialHover.UpdateDynamicProperties(cs);
+  FOverlayText.UpdateDynamicProperties(cs); 
 end;
 
 end.

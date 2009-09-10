@@ -394,9 +394,12 @@ type
     function GetHighlight      : ISharpESkinPartEx; stdcall;
     function GetHighlightHover : ISharpESkinPartEx; stdcall;
     function GetSpecial        : ISharpESkinPartEx; stdcall;
-    function GetSpecialHover   : ISharpESkinPartEx; stdcall;       
+    function GetSpecialHover   : ISharpESkinPartEx; stdcall;
+
+    function GetOverlayText : ISharpESkinText; stdcall;       
 
     function GetHasSpecial : boolean; stdcall;
+    function GetHasOverlay : boolean; stdcall;
     function GetLocation : TPoint; stdcall;
     function GetSpacing : integer; stdcall;
     function GetDimension : TPoint; stdcall;
@@ -419,7 +422,10 @@ type
     property Special        : ISharpESkinPartEx read GetSpecial;
     property SpecialHover   : ISharpESkinPartEx read GetSpecialHover;
 
+    property OverlayText : ISharpESkinText read GetOverlayText;
+
     property HasSpecial : boolean read GetHasSpecial;
+    property HasOverlay : boolean read GetHasOverlay;
     property Location : TPoint read GetLocation;
     property Spacing : integer read GetSpacing;
     property Dimension : TPoint read GetDimension;
