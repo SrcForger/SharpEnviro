@@ -1051,11 +1051,13 @@ begin
   hcount := 0;
   for n := 0 to FItems.Count - 1 do
   begin
-    if TTrayItem(FItems.Items[n]).HiddenByClient then
+    if (n + imod < 0 ) or (n + imod > FItems.Count - 1) then
+      exit;
+
+    if TTrayItem(FItems.Items[n+imod]).HiddenByClient then
       hcount := hcount + 1
     else
     if PointInRect(Point(x,y),Rect(FIconSpacing+(n-hcount)*(FIconSize + FIconSpacing),FTopOffset,FIconSpacing+(n-hcount)*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopOffset)) then
-    if (n + imod >= 0 ) and (n + imod <= FItems.Count - 1) then
     begin
       tempItem := TTrayItem(FItems.Items[n+imod]);
       if tempItem = nil then
