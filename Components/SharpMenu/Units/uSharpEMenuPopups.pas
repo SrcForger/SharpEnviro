@@ -163,7 +163,10 @@ begin
          end;
       2: DisplayPropDialog(Application.Handle,item.PropList.GetString('Action'));
       3: SharpApi.SharpExecute(item.PropList.GetString('Action'));
-      4: SharpApi.SharpExecute('_elevate,'+item.PropList.GetString('Action'));
+      4: begin
+           SharpApi.SharpExecute('_elevate,'+item.PropList.GetString('Action'));
+           menuwnd.CloseAll;
+         end;
     end;
   end;
 end;
