@@ -93,6 +93,8 @@ begin
           tmpRec.schemetype := stBoolean
         else if CompareText(s, 'integer') = 0 then
           tmpRec.schemetype := stInteger
+        else if CompareText(s, 'dynamic') = 0 then
+          tmpRec.schemetype := stDynamic
         else
           tmpRec.schemetype := stColor;
       end;
