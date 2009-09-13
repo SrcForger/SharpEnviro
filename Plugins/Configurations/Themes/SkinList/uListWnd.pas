@@ -137,6 +137,7 @@ var
   i: integer;
   png, png2: TPngImageCollectionItem;
   bmp32: TBitmap32;
+  path : string;
 begin
   pilNormal.Clear;
   pilSelected.Clear;
@@ -148,10 +149,10 @@ begin
     for i := 0 to Pred( files.Count ) do begin
 
       // Get skin name
-      skin := ExtractFilePath(files[i]);
+      path := ExtractFilePath(files[i]);
       tokens := TStringList.Create;
       try
-        StrTokenToStrings(skin, '\', tokens);
+        StrTokenToStrings(path, '\', tokens);
         skin := tokens[tokens.Count - 1];
       finally
         tokens.Free;
@@ -165,7 +166,13 @@ begin
         bmp32.Clear( color32( PluginHost.Theme.PluginSelectedItem ) );
 
         scheme := 'DEFAULT';
-        CreateBarPreview(Bmp32, PluginHost.PluginId, skin, scheme, 120, FTheme);
+        if FileExists(path + 'preview.bmp') then
+          bmp32.LoadFromFile(path + 'preview.bmp')
+        else
+        begin
+          CreateBarPreview(Bmp32, PluginHost.PluginId, skin, scheme, 120, FTheme);
+          bmp32.SaveToFile(path + 'preview.bmp');
+        end;
 
         pilNormal.BkColor := FPluginHost.Theme.PluginItem;
         pilSelected.BkColor := FPluginHost.Theme.PluginSelectedItem;
