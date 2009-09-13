@@ -16,12 +16,13 @@ namespace SharpLinkLauncherNET
 	{
 		static void Main(string[] args)
 		{
-			if (args.Length != 2)
+			if (args.Length != 3)
 				// The number of arguments is not 2 (-l and -t) so exit.
 				Environment.Exit((int)ExitCode.InvalidNumberArguments);
 
 			string linkPath = null;
 			int timeout = -1;
+			bool elevate = false;
 
 			foreach (string arg in args)
 			{
@@ -47,6 +48,16 @@ namespace SharpLinkLauncherNET
 
 					timeout = int.Parse(t);
 				}
+				else if (arg.ToLower().StartsWith("-e:"))
+				{
+					string e = arg.Substring(3).Trim('\"');
+
+					if (e == String.Empty)
+						// If there was nothing after the -e: switch then exit.
+						Environment.Exit((int)ExitCode.InvalidElevate);
+
+					elevate = bool.Parse(e);
+				}
 			}
 
 			if (String.IsNullOrEmpty(linkPath) || !File.Exists(linkPath))
@@ -67,9 +78,6 @@ namespace SharpLinkLauncherNET
 				});
 			timer.Enabled = true;
 
-			//Process.Start(COM.ResolveShortcut(linkPath));
-			//Environment.Exit((int)ExitCode.Success);
-
             MSG lpMsg;
 
 			// Loop through message until a quit message is received
@@ -83,16 +91,20 @@ namespace SharpLinkLauncherNET
 
 					try
 					{
-						// Try and execute the link after resolving it to its target.
-						Process.Start(COM.ResolveShortcut(linkPath));
+						ProcessStartInfo psi = new ProcessStartInfo(linkPath);
+						psi.UseShellExecute = true;
+
+						if (elevate)
+							psi.Verb = "runas";
+
+						// Execute the link using ShellExecute and elevated if necessary.
+						Process.Start(psi);
 						Environment.Exit((int)ExitCode.Success);
 					}
 					catch
 					{
-						// If for some reason there was an exception executing the resolved shortcut
-						// then just try and execute the shortcut itself.
-						Process.Start(linkPath);
-						Environment.Exit((int)ExitCode.Success);
+						// If for some reason there was an exception executing the link squash it.
+						Environment.Exit((int)ExitCode.ProcessStartFailed);
 					}
 				}
 

@@ -398,7 +398,7 @@ begin
   end;
 end;
 
-function NETLinkLaunch(textstripped : string) : Boolean;
+function NETLinkLaunch(textstripped : string; elevate : Boolean) : Boolean;
 const
   linktimeout = 2000;
 var
@@ -408,7 +408,7 @@ var
 begin
   FillChar(SUInfo, SizeOf(SUInfo), #0);
   SUInfo.cb := SizeOf(SUInfo);
-  s := '"' + GetSharpeDirectory + 'SharpLinkLauncherNET.exe"' + ' -l:"' + textstripped +'" -t:' + inttostr(3000);
+  s := '"' + GetSharpeDirectory + 'SharpLinkLauncherNET.exe"' + ' -l:"' + textstripped +'" -t:' + inttostr(3000) + ' -e:' + BoolToStr(elevate, true);
   Debug('Execute: SharpLinkLauncherNET with param: ' + s, DMT_TRACE);
   Result := CreateProcess(PChar(GetSharpeDirectory + 'SharpLinkLauncherNET.exe'),
                           PChar(s), nil, nil, False,
@@ -496,7 +496,7 @@ begin
             and (SysUtils.FileExists(GetSharpeDirectory + 'SharpLinkLauncherNET.exe'))
             and (not forceshelllinkopen) then
           begin
-            result := NETLinkLaunch(textstripped);
+            result := NETLinkLaunch(textstripped, Elevate);
             SaveMostUsedItem(text, SaveHistory);
             SaveRecentItem(text, SaveHistory);            
             exit;
@@ -517,7 +517,7 @@ begin
           if (uSystemFuncs.NETFramework35) //and IsWow64()
             and (SysUtils.FileExists(GetSharpeDirectory + 'SharpLinkLauncherNET.exe')) then
           begin
-            result := NETLinkLaunch(textstripped);
+            result := NETLinkLaunch(textstripped, Elevate);
             SaveMostUsedItem(text, SaveHistory);
             SaveRecentItem(text, SaveHistory);            
             exit;

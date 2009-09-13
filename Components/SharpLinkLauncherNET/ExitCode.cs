@@ -38,6 +38,16 @@ namespace SharpLinkLauncherNET
 		/// <summary>
 		/// The process received a quit message before it could execute the link
 		/// </summary>
-	    QuitMessage = -5
+	    QuitMessage = -5,
+
+		/// <summary>
+		/// The -e argument was not a valid boolean.
+		/// </summary>
+		InvalidElevate = -6,
+
+		/// <summary>
+		/// Calling Process.Start failed for some reason.
+		/// </summary>
+		ProcessStartFailed = -7
 	}
 }
