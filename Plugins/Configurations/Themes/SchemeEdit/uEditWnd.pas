@@ -147,23 +147,25 @@ begin
   cexScheme.BeginUpdate;
   cexScheme.Items.Clear;
   try
-    for i := 0 to high(Colors) do begin
-      color := Colors[i];
-      item := TSharpEColorEditorExItem.Create(cexScheme.Items);
+    for i := 0 to high(Colors) do
+      if Colors[i].SchemeType <> stDynamic then
+      begin
+        color := Colors[i];
+        item := TSharpEColorEditorExItem.Create(cexScheme.Items);
 
-      item.Title := color.Name;
-      item.ColorCode := color.Color;
-      item.Tag := i;
+        item.Title := color.Name;
+        item.ColorCode := color.Color;
+        item.Tag := i;
 
-      if color.schemetype = stInteger then
-        item.ValueEditorType := vetValue
-      else
-        item.ValueEditorType := vetColor;
+        if color.schemetype = stInteger then
+          item.ValueEditorType := vetValue
+        else
+          item.ValueEditorType := vetColor;
 
-      item.Value := color.Color;
-      item.Description := color.Info + ':';
-      item.ValueText := color.Name;
-    end;
+        item.Value := color.Color;
+        item.Description := color.Info + ':';
+        item.ValueText := color.Name;
+      end;
   finally
     cexScheme.EndUpdate;
   end;
