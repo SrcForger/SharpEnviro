@@ -453,10 +453,14 @@ end;
 procedure TSharpBarMainForm.WMPowerBroadcast(var msg: TMessage);
 begin
   case msg.WParam of
-    PBT_APMSUSPEND: FSuspended := True;
+    PBT_APMSUSPEND: begin
+      ModuleManager.BroadcastPluginMessage('MM_APM_SUSPEND');
+      FSuspended := True;
+    end;
     PBT_APMRESUMESUSPEND: begin
         FSuspended := False;
         RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
+        ModuleManager.BroadcastPluginMessage('MM_APM_RESUMESUSPEND');
       end;
   end;
   msg.Result := 1;
