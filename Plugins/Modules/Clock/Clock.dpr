@@ -54,6 +54,7 @@ type
       function SetTopHeight(Top,Height : integer) : HRESULT; override;
       function UpdateMessage(part : TSU_UPDATE_ENUM; param : integer) : HRESULT; override;
       function InitModule : HRESULT; override;
+      function ModuleMessage(msg: string) : HRESULT; override;
 
       procedure SetSkinInterface(Value : ISharpESkinInterface); override;
       procedure SetSize(Value : integer); override;
@@ -110,6 +111,21 @@ begin
     TMainForm(Form).LoadSettings;
     TMainForm(Form).RealignComponents;
     TMainForm(Form).ClockTimer.Enabled := True;
+  end;
+end;
+
+function TInterfacedSharpBarModule.ModuleMessage(msg: string): HRESULT;
+begin
+  result := inherited ModuleMessage(msg);
+  
+  if Form = nil then exit;
+
+  if CompareText(msg,'MM_APM_RESUMESUSPEND') = 0 then
+  begin
+    TMainForm(Form).lb_bottomclock.UpdateSkin;
+    TMainForm(Form).lb_bottomclock.Invalidate;
+    TMainForm(Form).lb_clock.UpdateSkin;
+    TMainForm(Form).lb_clock.Invalidate;     
   end;
 end;
 
