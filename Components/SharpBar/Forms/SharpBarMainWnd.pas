@@ -137,6 +137,7 @@ type
     FBarInterface : TSharpBarInterface;
     FSharpEBar: TSharpEBar;
     FBarName: string;
+    FRegisteredSessionNotification : Boolean;
 
     procedure CreateNewBar;
     procedure LoadBarModules(XMLElem: TJclSimpleXMlElem);
@@ -161,6 +162,10 @@ type
 
     // Power Management
     procedure WMPowerBroadcast(var msg: TMessage); message WM_POWERBROADCAST;
+
+    procedure WMWTSSessionChange(var msg: TMessage); message WM_WTSSESSION_CHANGE;
+    function RegisterSessionNotification(Wnd: HWND; dwFlags: DWORD): Boolean;
+    function UnRegisterSesssionNotification(Wnd: HWND): Boolean;
 
     // Shutdown
     procedure WMEndSession(var msg: TMessage); message WM_ENDSESSION;
@@ -464,6 +469,60 @@ begin
       end;
   end;
   msg.Result := 1;
+end;
+
+procedure TSharpBarMainForm.WMWTSSessionChange(var msg: TMessage);
+begin
+  case msg.WParam of
+    WTS_SESSION_UNLOCK:
+    begin
+      ModuleManager.BroadcastPluginMessage('MM_SESSION_UNLOCK');
+    end;
+  end;
+end;
+
+function TSharpBarMainForm.RegisterSessionNotification(Wnd: HWND; dwFlags: Cardinal) : Boolean;
+type
+  TWTSRegisterSessionNotification = function(Wnd: HWND; dwFlags: DWORD): BOOL; stdcall;
+var
+  hWTSapi32dll : THandle;
+  WTSRegisterSessionNotification : TWTSRegisterSessionNotification;
+begin
+  Result := False;
+  hWTSapi32dll := LoadLibrary('Wtsapi32.dll');
+  if hWTSapi32dll > 0 then
+  begin
+    try
+      @WTSRegisterSessionNotification := GetProcAddress(hWTSapi32dll, 'WTSRegisterSessionNotification');
+      if Assigned(WTSRegisterSessionNotification) then
+        Result:= WTSRegisterSessionNotification(Wnd, dwFlags);
+    finally
+      if hWTSapi32dll > 0 then
+        FreeLibrary(hWTSAPI32DLL);
+    end;
+  end;
+end;
+
+function TSharpBarMainForm.UnRegisterSesssionNotification(Wnd: HWND) : Boolean;
+type
+  TWTSUnRegisterSessionNotification = function(Wnd: HWND) : BOOL; stdcall;
+var
+  hWTSapi32dll : THandle;
+  WTSUnRegisterSessionNotification : TWTSUnRegisterSessionNotification;
+begin
+  Result := False;
+  hWTSapi32dll := LoadLibrary('Wtsapi32.dll');
+  if hWTSapi32dll > 0 then
+  begin
+    try
+      @WTSUnRegisterSessionNotification := GetProcAddress(hWTSapi32dll, 'WTSUnRegisterSessionNotification');
+      if Assigned(WTSUnregisterSessionNotification) then
+        Result:= WTSUnRegisterSessionNotification(Wnd);
+    finally
+      if hWTSapi32dll > 0 then
+        FreeLibrary(hWTSapi32dll);
+    end;
+  end;
 end;
 
 // A Module is requesting how much free bar space is left
@@ -1067,15 +1126,21 @@ begin
   FShellBCInProgress := False;
 
   ModuleManager.DebugOutput('Setting Form properties', 2, 1);
-  Setwindowlong(Application.handle, GWL_EXSTYLE, WS_EX_TOOLWINDOW);
-  SetWindowPos(application.handle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
+  Setwindowlong(Application.Handle, GWL_EXSTYLE, WS_EX_TOOLWINDOW);
+  SetWindowPos(Application.Handle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
   ShowWindow(Application.Handle, SW_HIDE);
 
   KeyPreview := true;
+
+  // Register for notifications of this session (0), 1 = all sessions.
+  FRegisteredSessionNotification := RegisterSessionNotification(Handle, 0);
 end;
 
 procedure TSharpBarMainForm.FormDestroy(Sender: TObject);
 begin
+  if FRegisteredSessionNotification then
+    UnRegisterSesssionNotification(Handle);
+    
   if BarHideForm <> nil then begin
     if BarHideForm.Visible then
       BarHideForm.Close;

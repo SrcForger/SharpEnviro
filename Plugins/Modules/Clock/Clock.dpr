@@ -120,12 +120,12 @@ begin
   
   if Form = nil then exit;
 
-  if CompareText(msg,'MM_APM_RESUMESUSPEND') = 0 then
+  if (CompareText(msg,'MM_APM_RESUMESUSPEND') = 0) or (CompareText(msg, 'MM_SESSION_UNLOCK') = 0) then
   begin
     TMainForm(Form).lb_bottomclock.UpdateSkin;
     TMainForm(Form).lb_bottomclock.Invalidate;
     TMainForm(Form).lb_clock.UpdateSkin;
-    TMainForm(Form).lb_clock.Invalidate;     
+    TMainForm(Form).lb_clock.Invalidate;
   end;
 end;
 
