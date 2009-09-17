@@ -14,7 +14,7 @@
   <package Name="Configurations - Modules">
      <project Name="AppBar Options" Type="DLL">Plugins\Configurations\Modules\AppBarOptions\AppBarOptions.dproj</project>
      <project Name="Battery Monitor" Type="DLL">Plugins\Configurations\Modules\BatteryMonitor\BatteryMonitor.dproj</project>
-     <project Name="Button" Type="DLL">Plugins\Configurations\Modules\Button\Button.dproj</project>
+     <project Name="Button" Type="DLL">Plugins\Configurations\Modules\ButtonModule\ButtonModule.dproj</project>
      <project Name="Button Bar List" Type="DLL">Plugins\Configurations\Modules\ButtonBarList\ButtonBarList.dproj</project>
      <project Name="AppBar List" Type="DLL">Plugins\Configurations\Modules\AppBarList\AppBarList.dproj</project> 
 	 <project Name="Button Bar Options" Type="DLL">Plugins\Configurations\Modules\ButtonBarOptions\ButtonBarOptions.dproj</project>
