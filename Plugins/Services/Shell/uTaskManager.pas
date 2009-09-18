@@ -35,7 +35,8 @@ uses Windows,
      uTaskItem,
      SharpTypes,
      JclSysUtils,
-     JclStrings;
+     JclStrings,
+     JclSysInfo;
 
 type
   TTaskChangeEvent = procedure(pItem : TTaskItem; Index : integer) of object;
@@ -299,7 +300,9 @@ begin
   // send an activate message
   wndclass := GetWndClass(pHandle);
   if (CompareText(wndclass,'ConsoleWindowClass') = 0) // cmd.exe
-    or (CompareText(wndclass,'PuTTYConfigBox') = 0) then // Putty.exe
+    or (CompareText(wndclass,'PuTTYConfigBox') = 0) // Putty.exe
+    or ((CompareText(wndclass,'WindowsForms10.Window.8.app.0.259f9d2') = 0)
+    and (CompareText(ExtractFileName(GetProcessNameFromWnd(pHandle)), 'VpxClient.exe') = 0)) then // VpxClient.exe
   begin
      FLastActiveTask := pHandle;
      AddTask(pHandle)
