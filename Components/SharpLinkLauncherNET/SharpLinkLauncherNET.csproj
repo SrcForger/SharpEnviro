@@ -65,8 +65,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExitCode.cs" />
+    <Compile Include="Interop\Enums\MSI.cs" />
     <Compile Include="Interop\Enums\SLGP.cs" />
     <Compile Include="Interop\Enums\SLR.cs" />
+    <Compile Include="Interop\MSI.cs" />
     <Compile Include="Interop\Structs\WIN32_FIND_DATAW.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

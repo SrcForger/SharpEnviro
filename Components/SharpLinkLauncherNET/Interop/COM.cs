@@ -158,6 +158,10 @@ namespace SharpLinkLauncherNET.Interop
 
 		public static string ResolveShortcut(string filename)
 		{
+            string MSIShortcut = MSI.ParseShortcut(filename);
+            if (MSIShortcut != null)
+                return MSIShortcut;
+
 			ShellLink link = new ShellLink();
 			((IPersistFile)link).Load(filename, STGM_READ);
 			// TODO: if I can get hold of the hwnd call resolve first. This handles moved and renamed files.  
