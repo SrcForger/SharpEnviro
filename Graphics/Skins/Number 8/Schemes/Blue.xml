@@ -30,7 +30,7 @@
   </Item>
   <Item>
     <Tag>$Alpha</Tag>
-    <Color>164</Color>
+    <Color>135</Color>
   </Item>
   <Item>
     <Tag>$MAlpha</Tag>
@@ -38,10 +38,14 @@
   </Item>
   <Item>
     <Tag>$BAlpha</Tag>
-    <Color>192</Color>
+    <Color>210</Color>
   </Item>
   <Item>
-    <Tag>$SAlpha</Tag>
-    <Color>139</Color>
+    <Tag>$BBAlpha</Tag>
+    <Color>255</Color>
+  </Item>
+  <Item>
+    <Tag>$IconHighlight</Tag>
+    <Color>0</Color>
   </Item>
 </SharpESkinScheme>

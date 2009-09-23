@@ -58,9 +58,9 @@
     <type>Integer</type>
   </item>
   <item>
-    <Name>Special Border Alpha</Name>
-    <Tag>$SAlpha</Tag>
-    <Info>Alpha for special borders (task item, ...)</Info>
+    <Name>Bar Border Alpha</Name>
+    <Tag>$BBAlpha</Tag>
+    <Info>Alpha for bar borders</Info>
     <Default>196</Default>
     <type>Integer</type>
   </item>

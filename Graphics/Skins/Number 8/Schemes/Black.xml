@@ -41,7 +41,11 @@
     <Color>196</Color>
   </Item>
   <Item>
-    <Tag>$SAlpha</Tag>
-    <Color>196</Color>
+    <Tag>$BBAlpha</Tag>
+    <Color>228</Color>
+  </Item>
+  <Item>
+    <Tag>$IconHighlight</Tag>
+    <Color>0</Color>
   </Item>
 </SharpESkinScheme>
