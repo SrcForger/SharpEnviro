@@ -335,6 +335,7 @@ type
     FGradientColor : TSkinPoint;
     FGradientColorS : TSkinPoint;
     FGradientAlpha : TSkinPoint;
+    FGradientAlphaS : TSkinPoint;
     Procedure DoCombine(F: TColor32; var B: TColor32; M: TColor32);
     procedure TileDraw(Src,Dest : TBitmap32; DestRect : TRect);
     procedure CustomDraw(Src, Dst : TBitmap32; SrcRect, DstRect : TRect);
@@ -374,6 +375,7 @@ type
     property GradientAlpha: TSkinPoint read FGradientAlpha write FGradientAlpha;
     property GradientColor: TSkinPoint read FGradientColor write FGradientColor;
     property GradientColorS : TSkinPoint read FGradientColorS write FGradientColorS;
+    property GradientAlphaS : TSkinPoint read FGradientAlphaS write FGradientAlphaS;
     property MasterAlpha : byte read FMasterAlpha write FMasterAlpha;
     property MasterAlphaString : String read FMasterAlphaString write FMasterAlphaString;
     property Enabled : boolean read FEnabled write FEnabled;
@@ -1748,6 +1750,8 @@ begin
   FBlendColor := ParseColor(FBlendColorString,cs);
   FGradientColor.FX := inttostr(ParseColor(FGradientColorS.X,cs));
   FGradientColor.FY := inttostr(ParseColor(FGradientColorS.Y,cs));
+  FGradientAlpha.FX := inttostr(ParseColor(FGradientAlphaS.X,cs));
+  FGradientAlpha.FY := inttostr(ParseColor(FGradientAlphaS.Y,cs));
   FMasterAlpha := Min(255,Max(0,EvaluateValue(FMasterAlphaString,cs)));
   n := 1;
   if length(FEnabledString) > 0 then
@@ -1780,7 +1784,7 @@ begin
   StringSaveToStream(FID, Stream);
   Stream.WriteBuffer(FEnabled,SizeOf(FEnabled));
   StringSaveToStream(FEnabledString,Stream);
-  FGradientAlpha.SaveToStream(Stream);
+  FGradientAlphaS.SaveToStream(Stream);
   FGradientColorS.SaveToStream(Stream);
   StringSavetoStream(FGradientType, Stream);
   FSkinDim.SaveToStream(Stream);
@@ -1809,7 +1813,7 @@ begin
     FID := StringLoadFromStream(Stream);
     Stream.ReadBuffer(FEnabled, sizeof(FEnabled));
     FEnabledString := StringLoadFromStream(Stream);
-    FGradientAlpha.LoadFromStream(Stream);
+    FGradientAlphaS.LoadFromStream(Stream);
     FGradientColorS.LoadFromStream(Stream);
     FGradientType := StringLoadFromStream(Stream);
     FSkinDim.LoadFromStream(Stream);
@@ -1991,7 +1995,7 @@ begin
       if ItemNamed['gradientcolor'] <> nil then
         FGradientColorS.SetPoint(Value('gradientcolor','0,0'));
       if ItemNamed['gradientalpha'] <> nil then
-        FGradientAlpha.SetPoint(Value('gradientalpha','0,0'));
+        FGradientAlphaS.SetPoint(Value('gradientalpha','0,0'));
       if ItemNamed['text'] <> nil then
         FSkinText.LoadFromXml(ItemNamed['text']);
       if ItemNamed['location'] <> nil then
@@ -2083,6 +2087,7 @@ begin
   FGradientColor.Assign(Value.GradientColor);
   FGradientAlpha.Assign(Value.GradientAlpha);
   FGradientColorS.Assign(Value.GradientColorS);
+  FGradientAlphaS.Assign(Value.GradientAlphaS);
   FLayerMode := Value.LayerMode;
   FEnabled := Value.Enabled;
   FEnabledString := Value.FEnabledString;
@@ -2108,6 +2113,7 @@ begin
   FGradientColor.Clear;
   FGradientColorS.Clear;
   FGradientAlpha.Clear;
+  FGradientAlphaS.Clear;
   FGradientType := 'horizontal';
   FEnabled := True;
   FEnabledString := '1';
@@ -2126,6 +2132,7 @@ begin
   FGradientColor := TSkinPoint.Create;
   FGradientColorS := TSkinPoint.Create;
   FGradientAlpha := TSkinPoint.Create;
+  FGradientAlphaS := TSkinPoint.Create;
   FGradientType := 'horizontal';
   FBlend := false;
   FBlendColor := 0;
@@ -2156,6 +2163,7 @@ begin
   FGradientColor.Free;
   FGradientColorS.Free;
   FGradientAlpha.Free;
+  FGradientAlphaS.Free;
   inherited Destroy;
 end;
 
