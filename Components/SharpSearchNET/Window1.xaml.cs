@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using System.Threading;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
+using System.Diagnostics;
 
 namespace SharpSearchNET
 {
@@ -33,7 +34,6 @@ namespace SharpSearchNET
         {
             Dispatcher.Invoke(DispatcherPriority.Normal, (ThreadStart)delegate
             {
-
                 foreach (SearchResultData searchResultData in searchResultsData)
                 {
                     if ((searchResultData.Name.Equals(item.Name)) && (searchResultData.Description.Equals(item.Description)) && (searchResultData.Location.Equals(item.Location)))
@@ -43,6 +43,9 @@ namespace SharpSearchNET
                     }
                 }
                 ApplyDataBinding(false);
+
+				if (lstResults.Items.Count > 0)
+					lstResults.SelectedIndex = 0;
             });
         }
         
@@ -73,6 +76,9 @@ namespace SharpSearchNET
             Dispatcher.Invoke(DispatcherPriority.Normal, (ThreadStart)delegate
             {
                 tbStatus.Text = "Finished Searching!";
+
+				if (lstResults.Items.Count > 0)
+					lstResults.SelectedIndex = 0;
             });
         }
 
@@ -92,12 +98,16 @@ namespace SharpSearchNET
             searchCallback.OnStartLocation += new LocationChangeHandler(StartLocation);
             searchCallback.OnFinishSearch += new SearchEventHandler(FinishSearch);
 
-            searchThread = new Thread(new ThreadStart(DoSearch));
-            searchThread.Start();
+			if (!String.IsNullOrEmpty(searchQuery))
+			{
+				searchThread = new Thread(new ThreadStart(DoSearch));
+				searchThread.Start();
+			}
 
             Left = App.InitialPosition.X;
             Top = App.InitialPosition.Y;
             edtQuery.Text = App.InitialQuery;
+			edtQuery.Focus();
          }
 
         private void DoSearch()
@@ -125,11 +135,29 @@ namespace SharpSearchNET
 
         private void edtQuery_KeyUp(object sender, KeyEventArgs e)
         {
-            if (edtQuery.Text.Length > searchQuery.Length)
-            {   // a new character has been entered
+			if (e.Key == Key.Escape ||
+				e.Key == Key.Tab ||
+				e.Key == Key.Up ||
+				e.Key == Key.Down ||
+				e.Key == Key.Enter)
+				return;
+
+			if (edtQuery.Text == searchQuery)
+				return;
+
+			if (String.IsNullOrEmpty(searchQuery) && searchThread == null)
+			{
+				searchQuery = edtQuery.Text;
+				searchThread = new Thread(new ThreadStart(DoSearch));
+				searchThread.Start();
+			}
+            else if (edtQuery.Text.Length > searchQuery.Length)
+            {
+				// a new character has been entered
                 searchQuery = edtQuery.Text;
                 searchMgr.UpdateSearch(searchQuery, searchResults, searchCallback);
-            } else
+            }
+			else
             {
                 // a character was removed, we aren't caching previous resulsts - so start search again
                 searchQuery = edtQuery.Text;
@@ -146,5 +174,50 @@ namespace SharpSearchNET
                 searchThread.Start();                
             }
         }
+
+		private void ResultWindow_KeyUp(object sender, KeyEventArgs e)
+		{
+			e.Handled = true;
+
+			switch (e.Key)
+			{
+				case Key.Escape:
+					Environment.Exit(0);
+					break;
+				case Key.Tab:
+					break;
+				case Key.Up:
+					if (lstResults.Items.Count > 0 && lstResults.SelectedIndex > 0)
+						lstResults.SelectedIndex--;
+					break;
+				case Key.Down:
+					if (lstResults.Items.Count > 0)
+						lstResults.SelectedIndex++;
+					break;
+				case Key.Enter:
+					StartProcessAndExit();
+					break;
+				default:
+					e.Handled = false;
+					break;
+			}
+		}
+
+		private void lstResults_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			StartProcessAndExit();
+		}
+
+		/// <summary>
+		/// Start the selected item and exit, if no item is selected then this is a no op.
+		/// </summary>
+		private void StartProcessAndExit()
+		{
+			if (lstResults.SelectedItem != null)
+			{
+				Process.Start(((SearchResultData)lstResults.SelectedItem).Location);
+				Environment.Exit(0);
+			}
+		}
     }
 }

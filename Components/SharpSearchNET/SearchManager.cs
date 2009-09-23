@@ -22,7 +22,8 @@ namespace SharpSearchNET
             bool validSettingsFile = false;
 
             if (System.IO.File.Exists(settingsFile))
-            {   // load settings if file exists
+            {
+				// load settings if file exists
                 XmlDocument xml = new XmlDocument();
                 try
                 {
@@ -55,7 +56,8 @@ namespace SharpSearchNET
             }
 
             if (!validSettingsFile) 
-            {   // settings file doesn't exist or there was an error reading it, use default values
+            {
+				// settings file doesn't exist or there was an error reading it, use default values
                 Locations.Clear();
             }
         }

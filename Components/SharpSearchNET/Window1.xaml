@@ -1,29 +1,36 @@
 ﻿<Window x:Class="SharpSearchNET.Window1"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="SharpSearch" Height="300" Width="300" Name="ResultWindow">
+    Title="SharpSearch" Height="300" Width="300" Name="ResultWindow" KeyUp="ResultWindow_KeyUp">
     <Window.Resources>
         <DataTemplate x:Key="listBoxTemplate">
             <StackPanel Margin="3">
-                <DockPanel >
-                    <TextBlock FontWeight="Bold" Text="Name:"
-                        DockPanel.Dock="Left"
-                        Margin="5,0,10,0"/>
-                    <TextBlock Text="  " />
+                <DockPanel>
+                    <TextBlock
+						FontWeight="Bold"
+						Text="Name: "
+                        DockPanel.Dock="Left"/>
                     <TextBlock Text="{Binding Path=Name}" Foreground="Green" FontWeight="Bold" />
                 </DockPanel>
-                <DockPanel >
-                    <TextBlock FontWeight="Bold" Text="Description:" Foreground ="DarkOrange" 
-                        DockPanel.Dock="Left"
-                        Margin="5,0,5,0"/>
+                <DockPanel>
+                    <TextBlock
+						FontWeight="Bold"
+						Text="Description: "
+						Foreground="DarkOrange" 
+                        DockPanel.Dock="Left"/>
                     <TextBlock Text="{Binding Path=Description}" />
                 </DockPanel>
             </StackPanel>
         </DataTemplate>
     </Window.Resources>
     <Grid>
-        <ListBox Margin="0,0,0,48" Name="lstResults" ItemTemplate="{StaticResource listBoxTemplate}"/>
-        <TextBox Height="23" Name="edtQuery" VerticalAlignment="Bottom" TextChanged="edtQuery_TextChanged" KeyUp="edtQuery_KeyUp" />
-        <TextBlock Height="21" Margin="0,0,0,21" Name="tbStatus" VerticalAlignment="Bottom" Text="" />
+		<Grid.RowDefinitions>
+			<RowDefinition />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+        <ListBox Grid.Row="0" Name="lstResults" ItemTemplate="{StaticResource listBoxTemplate}" IsTabStop="True" MouseDoubleClick="lstResults_MouseDoubleClick" />
+		<TextBlock Grid.Row="1" Name="tbStatus" VerticalAlignment="Bottom" Text="" />
+        <TextBox Grid.Row="2" Name="edtQuery" VerticalAlignment="Bottom" TextChanged="edtQuery_TextChanged" KeyUp="edtQuery_KeyUp" />
     </Grid>
 </Window>

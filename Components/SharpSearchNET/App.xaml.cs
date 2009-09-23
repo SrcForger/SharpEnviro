@@ -37,7 +37,7 @@ namespace SharpSearchNET
                 }
             }
 
-            if ((InitialPosition.X == -100000) || (InitialPosition.Y == -100000) || (InitialQuery == null) || (InitialQuery == String.Empty))
+            if ((InitialPosition.X == -100000) || (InitialPosition.Y == -100000))
             {
                 Environment.Exit(0);
             }
