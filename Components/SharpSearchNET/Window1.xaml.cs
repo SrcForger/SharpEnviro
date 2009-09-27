@@ -118,7 +118,37 @@ namespace SharpSearchNET
 
         private void edtQuery_TextChanged(object sender, TextChangedEventArgs e)
         {
+			if (edtQuery.Text == searchQuery)
+				return;
 
+			if (String.IsNullOrEmpty(searchQuery) && searchThread == null)
+			{
+				searchQuery = edtQuery.Text;
+				searchThread = new Thread(new ThreadStart(DoSearch));
+				searchThread.Start();
+			}
+			else if (edtQuery.Text.Length > searchQuery.Length)
+			{
+				// a new character has been entered
+				searchQuery = edtQuery.Text;
+				searchMgr.UpdateSearch(searchQuery, searchResults, searchCallback);
+			}
+			else
+			{
+				// a character was removed, we aren't caching previous resulsts - so start search again
+				searchQuery = edtQuery.Text;
+				if (searchThread != null)
+				{
+					searchThread.Abort();
+					searchThread = null;
+				}
+
+				searchResults.Clear();
+				ApplyDataBinding(true);
+
+				searchThread = new Thread(new ThreadStart(DoSearch));
+				searchThread.Start();
+			}
         }
 
         public void ApplyDataBinding(bool reset)
@@ -131,48 +161,6 @@ namespace SharpSearchNET
                     searchResultsData.Add(new SearchResultData(searchResult.Name, searchResult.Description, searchResult.Location));
             }
             lstResults.ItemsSource = searchResultsData;
-        }
-
-        private void edtQuery_KeyUp(object sender, KeyEventArgs e)
-        {
-			if (e.Key == Key.Escape ||
-				e.Key == Key.Tab ||
-				e.Key == Key.Up ||
-				e.Key == Key.Down ||
-				e.Key == Key.Enter)
-				return;
-
-			if (edtQuery.Text == searchQuery)
-				return;
-
-			if (String.IsNullOrEmpty(searchQuery) && searchThread == null)
-			{
-				searchQuery = edtQuery.Text;
-				searchThread = new Thread(new ThreadStart(DoSearch));
-				searchThread.Start();
-			}
-            else if (edtQuery.Text.Length > searchQuery.Length)
-            {
-				// a new character has been entered
-                searchQuery = edtQuery.Text;
-                searchMgr.UpdateSearch(searchQuery, searchResults, searchCallback);
-            }
-			else
-            {
-                // a character was removed, we aren't caching previous resulsts - so start search again
-                searchQuery = edtQuery.Text;
-                if (searchThread != null)
-                {
-                    searchThread.Abort();
-                    searchThread = null;
-                }
-
-                searchResults.Clear();
-                ApplyDataBinding(true);
-
-                searchThread = new Thread(new ThreadStart(DoSearch));
-                searchThread.Start();                
-            }
         }
 
 		private void ResultWindow_KeyUp(object sender, KeyEventArgs e)

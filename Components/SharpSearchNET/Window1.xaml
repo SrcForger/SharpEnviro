@@ -31,6 +31,6 @@
 		</Grid.RowDefinitions>
         <ListBox Grid.Row="0" Name="lstResults" ItemTemplate="{StaticResource listBoxTemplate}" IsTabStop="True" MouseDoubleClick="lstResults_MouseDoubleClick" />
 		<TextBlock Grid.Row="1" Name="tbStatus" VerticalAlignment="Bottom" Text="" />
-        <TextBox Grid.Row="2" Name="edtQuery" VerticalAlignment="Bottom" TextChanged="edtQuery_TextChanged" KeyUp="edtQuery_KeyUp" />
+        <TextBox Grid.Row="2" Name="edtQuery" VerticalAlignment="Bottom" TextChanged="edtQuery_TextChanged" />
     </Grid>
 </Window>
