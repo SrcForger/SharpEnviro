@@ -83,6 +83,7 @@ type
     ccolors: TSharpEColorEditorEx;
     tmr: TTimer;
     PngImageList1: TPngImageList;
+
     procedure FormDestroy(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -97,12 +98,16 @@ type
     procedure lbCursorListGetCellImageIndex(Sender: TObject;
       const ACol: Integer; AItem: TSharpEListItem; var AImageIndex: Integer;
       const ASelected: Boolean);
+
   private
     FPluginHost: ISharpCenterHost;
     FPreview: TBitmap32;
     FCursor: string;
     FNames: Array of string;
 
+    AnimTimer: TTimer;
+
+    procedure AnimOnTimer(Sender: TObject);
     procedure BuildCursorPreview;
   public
     procedure BuildCursorList;
@@ -296,16 +301,62 @@ begin
   lbCursorList.DoubleBuffered := true;
 end;
 
+procedure TfrmSettingsWnd.AnimOnTimer(Sender: TObject);
+var
+  x, y, tX, tY : integer;
+  sRect : TRect;
+  n : integer;
+begin
+  LockWindowUpdate(self.Handle);
+  try
+    FPreview.Clear(color32(0,0,0,0));
+
+    x := 0;
+    y := 0;
+    for n := 0 to High(CursorItemArray) do
+    begin
+      sRect := Rect(0, 0, CursorItemArray[n].Width, CursorItemArray[n].Height);
+
+      // Align the cursor
+      tX := x;
+      if CursorItemArray[n].Width < 32 then
+        tX := tX + ((32 div 2) - (CursorItemArray[n].Width div 2));
+
+      tY := y;
+      if CursorItemArray[n].Height < 32 then
+        tY := tY + ((32 div 2) - (CursorItemArray[n].Height div 2));
+
+      CursorItemArray[n].ReplaceColors(ccolors);
+      CursorItemArray[n].Bitmap.DrawTo(FPreview, tX, tY, sRect);
+
+      if CursorItemArray[n].Width < 32 then begin
+        x := x + 32;
+      end else
+        x := x + CursorItemArray[n].Width;
+
+      if x >= (16 * 32) then
+      begin
+        x := 0;
+        y := y + CursorItemArray[n].Height + 3;
+      end;
+    end;
+  finally
+    LockWindowUpdate(0);
+    PluginHost.Refresh(rtPreview);
+  end;
+end;
+
+
 procedure TfrmSettingsWnd.BuildCursorPreview;
 const
   IconSize = 32;
 var
-  x,y : integer;
+  x, y, tX, tY : integer;
   Dir : String;
   n : integer;
   PreBmp : TBitmap32;
   sRect : TRect;
-  w,h : integer;
+  w, h, tW, tH : integer;
   IconCount : integer;
 
   XML : TJclSimpleXML;
@@ -329,6 +380,16 @@ begin
   C := 0;
   with XML.Root.Items do
   begin
+    if ItemNamed['SknDef'] <> nil then
+    begin
+      with ItemNamed['SknDef'].Items do
+      begin
+        // Set the timer interval
+        AnimTimer.Interval := IntValue('AnimInterval', 1000);
+        AnimTimer.Enabled := True;
+      end;
+    end;
+
     // Old way
     if ItemNamed['CursPoints'] <> nil then
     begin
@@ -344,6 +405,7 @@ begin
             CursorItemArray[C].ReplaceColor := true;
             CursorItemArray[C].Width := 32;
             CursorItemArray[C].Height := 32;
+            CursorItemArray[C].NumFrames := 0;
             CursorItemArray[C].Load(Dir + AnsiLowerCase(Item[I].Name) + '.bmp');
 
             C := C + 1;
@@ -371,6 +433,7 @@ begin
                   CursorItemArray[C].ReplaceColor := BoolValue('ReplaceColor', True);
                   CursorItemArray[C].Width := IntValue('Width', 32);
                   CursorItemArray[C].Height := IntValue('Height', 32);
+                  CursorItemArray[C].NumFrames := IntValue('NumFrames', 0);
                   CursorItemArray[C].Load(Dir + Value('File', ''));
 
                   C := C + 1;
@@ -386,9 +449,41 @@ begin
   PreBmp := TBitmap32.Create;
   PreBmp.DrawMode := dmBlend;
 
-  IconCount := length(CursorItemArray);
+  {IconCount := length(CursorItemArray);
   w := ((Width - 64) div IconSize) * IconSize;
-  h := (IconCount div (w div IconSize) + 1) * IconSize;
+  h := (IconCount div (w div IconSize) + 1) * IconSize;  }
+
+  // Calculate the width and height of the preview list
+  w := 0;
+  h := 0;
+  tW := 0;
+  tH := 0;
+  for n := 0 to High(CursorItemArray) do
+  begin
+    if CursorItemArray[n].Width <= 32 then begin
+      tW := tW + 32;
+    end else
+      tW := tW + CursorItemArray[n].Width;
+
+    if CursorItemArray[n].Height <= 32 then begin
+      tH := 32;
+    end else
+      tH := CursorItemArray[n].Height;
+
+    if (tW + CursorItemArray[n].Width) > (16 * 32) then
+    begin
+      if w < tW then
+        w := tW;
+
+      h := h + tH;
+
+      tW := 0;
+      tH := 0;
+    end;
+  end;
+
+  w := w + tW;
+  h := h + tH;
 
   PreBmp.DrawMode := dmTransparent;
   PreBmp.SetSize(w,h);
@@ -400,14 +495,27 @@ begin
   begin
     sRect := Rect(0, 0, CursorItemArray[n].Width, CursorItemArray[n].Height);
 
-    CursorItemArray[n].ReplaceColors(ccolors);
-    CursorItemArray[n].Bitmap.DrawTo(PreBmp, (x * 32) + (32 - CursorItemArray[n].Width), (y * 32) + (32 - CursorItemArray[n].Height), sRect);
+    // Align the cursor
+    tX := x;
+    if CursorItemArray[n].Width < 32 then
+      tX := tX + ((32 div 2) - (CursorItemArray[n].Width div 2));
 
-    x := x + 1;
-    if (x * 32) >= (PreBmp.Width) then
+    tY := y;
+    if CursorItemArray[n].Height < 32 then
+      tY := tY + ((32 div 2) - (CursorItemArray[n].Height div 2));
+
+    CursorItemArray[n].ReplaceColors(ccolors);
+    CursorItemArray[n].Bitmap.DrawTo(PreBmp, tX, tY, sRect);
+
+    if CursorItemArray[n].Width < 32 then begin
+      x := x + 32;
+    end else
+      x := x + CursorItemArray[n].Width;
+
+    if x >= (16 * 32) then
     begin
       x := 0;
-      y := y + 1;
+      y := y + CursorItemArray[n].Height + 3;
     end;
   end;
 
@@ -470,17 +578,16 @@ begin
           begin
             with XML.Root.Items do
             begin
+              obj := TStringObject.Create();
+
+              // Get the Name and Author
               sName := ItemNamed['SknDef'].Items.Value('Title','Unknown');
               sAuthor := ItemNamed['SknDef'].Items.Value('Author','Unknown');
               s := Format('%s by %s', [sName, sAuthor]);
 
-              newItem := lbCursorList.AddItem(s);
-              obj := TStringObject.Create();
-
               obj.Str := sName;
-              if XML.Root.Items.ItemNamed['CursPoints'] <> nil then
-                obj.Str := obj.Str;
 
+              newItem := lbCursorList.AddItem(s);
               newItem.Data := ( obj );
 
               if CompareText(sr.Name,FCursor) = 0 then
@@ -513,6 +620,10 @@ end;
 
 procedure TfrmSettingsWnd.FormShow(Sender: TObject);
 begin
+  AnimTimer := TTimer.Create(nil);
+  AnimTimer.OnTimer := AnimOnTimer;
+  AnimTimer.Enabled := false;
+
   tmr.Enabled := true;
 end;
 
@@ -524,6 +635,7 @@ end;
 
 procedure TfrmSettingsWnd.FormDestroy(Sender: TObject);
 begin
+  AnimTimer.Enabled := False;
   FPreview.Free;
 end;
 
