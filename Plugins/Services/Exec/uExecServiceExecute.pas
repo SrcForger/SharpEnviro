@@ -412,7 +412,7 @@ begin
   Debug('Execute: SharpLinkLauncherNET with param: ' + s, DMT_TRACE);
   Result := CreateProcess(PChar(GetSharpeDirectory + 'SharpLinkLauncherNET.exe'),
                           PChar(s), nil, nil, False,
-                          CREATE_NEW_CONSOLE or NORMAL_PRIORITY_CLASS,
+                          CREATE_NEW_PROCESS_GROUP + NORMAL_PRIORITY_CLASS,
                           nil, nil,
                           SUInfo, ProcInfo);
   // Wait for it to finish initialization
