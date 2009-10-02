@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Windows;
 using System.IO;
+using System.Threading;
 using SharpSearchNET.Locations;
 
 namespace SharpSearchNET
@@ -14,11 +15,19 @@ namespace SharpSearchNET
     /// </summary>
     public partial class App : Application
     {
+        public Mutex LockMuteX; 
+
         public static string InitialQuery = null;
         public static Point InitialPosition;
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            bool createdNew = false;
+            LockMuteX = new Mutex(true, "SharpSearch", out createdNew);
+
+            if (!createdNew)
+                Environment.Exit(0);
+
             InitialPosition.X = -100000;
             InitialPosition.Y = -100000;
             foreach (string arg in e.Args)
