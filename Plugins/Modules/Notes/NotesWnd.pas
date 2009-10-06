@@ -356,7 +356,8 @@ procedure TSharpENotesForm.EditorKeyDown(Sender: TObject; var Key: Word;
 var
   Handled: Boolean;
 begin
-  if ssCtrl in Shift then
+  // Valid shortcut is Ctrl + Key is pressed, exclude Alt and Shift.
+  if (ssCtrl in Shift) and not (ssAlt in Shift) and not (ssShift in Shift) then
   begin
     Handled := True;
     
@@ -806,7 +807,8 @@ var
   changed: Boolean;
   i: Integer;
 begin
-  if ssCtrl in Shift then
+  // Valid shortcut is Ctrl + Tab or Ctrl + Shift + Tab, exclude Alt.
+  if (ssCtrl in Shift) and not (ssAlt in Shift) then
   begin
     Handled := False;
     
