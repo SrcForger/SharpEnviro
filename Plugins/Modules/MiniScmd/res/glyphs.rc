@@ -1,2 +1,2 @@
-miniscmdicon RCDATA "utilities-terminal.png"
-miniscmdicon32 RCDATA "utilities-terminal-32.png"
+miniscmdicon RCDATA "application_xp_terminal_16.png"
+miniscmdicon32 RCDATA "application_xp_terminal_32.png"
