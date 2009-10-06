@@ -634,6 +634,18 @@ begin
       end;
     end;
 
+    // Use net launcher as a last resort
+    if ((uSystemFuncs.NETFramework35)
+        and (SysUtils.FileExists(GetSharpeDirectory + 'SharpLinkLauncherNET.exe'))) then
+    begin
+      Result := NETLinkLaunch(textstripped, Elevate);
+      SaveMostUsedItem(text, SaveHistory);
+      SaveRecentItem(text, SaveHistory);
+
+      if Result then
+        exit;
+    end;
+
     // If all else fails try to execute the text, if this does not work discard it
     Debug('ExecuteType: Last ShellOpenFile:', DMT_TRACE);
     Debug('Param: ' + text, DMT_TRACE);

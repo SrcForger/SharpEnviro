@@ -60,7 +60,7 @@ namespace SharpLinkLauncherNET
 				}
 			}
 
-			if (String.IsNullOrEmpty(linkPath) || !File.Exists(linkPath))
+			if (String.IsNullOrEmpty(linkPath))
 				// The path to the link does not exists so do nothing.
 				Environment.Exit((int)ExitCode.InvalidLinkPath);
 
