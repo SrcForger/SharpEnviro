@@ -28,10 +28,11 @@ unit MainWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, Forms, Types,
+  Windows, Messages, SysUtils, Classes, Controls, Forms, Types, StrUtils, ShellApi,
   Dialogs, StdCtrls, GR32, GR32_PNG, SharpEBaseControls, SharpEButton,
   JvSimpleXML, SharpApi, Math, SharpEEdit, Menus,
-  uISharpBarModule;
+  uISharpBarModule,
+  ComObj, AutoComplete;
 
 
 type
@@ -47,8 +48,13 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure btn_selectClick(Sender: TObject);
     procedure editKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+
   protected
   private
+    // Auto-Complete
+    FAutoComplete: IAutoComplete2;
+    sItems : TACItems;
+
     sWidth       : integer;
     sButton      : Boolean;
     sButtonRight : Boolean;
@@ -61,6 +67,10 @@ type
     procedure ReAlignComponents;
     procedure UpdateComponentSkins;
     procedure UpdateSize;
+
+    procedure ReloadAutoComplete;
+    procedure LoadAutoComplete;
+    procedure SaveAutoComplete(Item : string);
   end;
 
 var
@@ -73,6 +83,8 @@ uses SharpDialogs,
      uSystemFuncs;
 
 {$R *.dfm}
+
+{MainForm}
 
 procedure TMainForm.LoadIcon;
 var
@@ -141,6 +153,89 @@ begin
   XML.Free;
 end;
 
+procedure TMainForm.ReloadAutoComplete;
+begin
+  if Assigned(FAutoComplete) then
+    FAutoComplete := nil;
+
+  FAutoComplete := CreateComObject(CLSID_AutoComplete) as IAutoComplete2;
+  OleCheck(FAutoComplete.SetOptions(ACO_AUTOSUGGEST or ACO_UPDOWNKEYDROPSLIST));
+  OleCheck(FAutoComplete.Init(edit.edit.Handle, sItems.GetStrList() as IUnknown, nil, nil));
+end;
+
+procedure TMainForm.LoadAutoComplete;
+var
+  XML : TJvSimpleXML;
+  n : integer;
+begin
+  // Load the auto-complete words from the Xml file
+  XML := TJvSimpleXML.Create(nil);
+  try
+    XML.LoadFromFile(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\MiniScmd\AutoComplete.xml');
+
+    for n := 0 to XML.Root.Items.Count - 1 do
+    begin
+      with XML.Root.Items.Item[n].Items do
+      begin
+        sItems.Add(Value('Name', ''), IntValue('Count', 0));
+      end;
+    end;
+  except
+    // Failed to load the xml
+    sItems.Add('', 0);
+  end;
+  XML.Free;
+
+  // Setup the TSharpEEdit for Auto-Completion (with auWords as the string list)
+  ReloadAutoComplete;
+end;
+
+procedure TMainForm.SaveAutoComplete(Item : string);
+var
+  XML : TJvSimpleXML;
+  n : Integer;
+  i: Integer;
+
+  tFound : boolean;
+  tItem : TACItem;
+begin
+  tFound := false;
+  
+  for i := 0 to sItems.Count - 1 do
+  begin
+    if sItems.Get(i).str = Item then
+    begin
+      tItem := sItems.Get(i);
+      sItems.Remove(i);
+      tItem.cnt := tItem.cnt + 1;
+      sItems.Add(tItem.str, tItem.cnt);
+
+      tFound := true;
+    end;
+  end;
+
+  if not tFound then
+    sItems.Add(Item, 0);
+
+  // Sort the resulting array
+  //sItems.Sort;
+
+  XML := TJvSimpleXML.Create(nil);
+  XML.Root.Name := 'AutoComplete';
+  for n := 0 to sItems.Count - 1 do
+  begin
+    with XML.Root.Items.Add('Item').Items do
+    begin
+      Add('Name', sItems.Get(n).str);
+      Add('Count', sItems.Get(n).cnt);
+    end;
+  end;
+  
+  CreateDir(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\MiniScmd');
+  XML.SaveToFile(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\MiniScmd\AutoComplete.xml');
+  XML.Free;
+end;
+
 procedure TMainForm.UpdateSize;
 begin
   if sButton then
@@ -175,7 +270,7 @@ var
   newWidth : integer;
 begin
   self.Caption := '';
-  if sWidth<20 then sWidth := 20;
+  if sWidth < 20 then sWidth := 20;
 
   newWidth := sWidth + 4;
   Tag := newWidth;
@@ -190,15 +285,36 @@ end;
 
 procedure TMainForm.editKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
+{var
+  sSearch : string; }
 begin
   if (Key = VK_RETURN) then
   begin
     SetFocus;
+
     if length(trim(edit.Text)) > 0 then
     begin
-       SharpApi.SharpExecute(trim(edit.Text));
-       edit.Text := '';
-       edit.edit.text := '';
+      // Search [TODO]
+      {if edit.Text[1] = '?' then
+      begin
+        sSearch := RightStr(edit.Text, Length(edit.Text) - 2);
+
+        // Check if we are using .NET 3.5 and if SharpSearchNET.exe exists
+        if (uSystemFuncs.NETFramework35)
+            and (SysUtils.FileExists(GetSharpeDirectory + 'SharpLinkLauncherNET.exe'))
+
+        edit.Text := '';
+        edit.edit.text := '';
+      end else
+      begin}
+        SharpApi.SharpExecute(trim(edit.Text));
+        // Save the auto-complete list
+        SaveAutoComplete(trim(edit.Text));
+        edit.Text := '';
+        edit.edit.text := '';
+        // And reload it
+        ReloadAutoComplete;
+      {end;}
     end;
   end;
 end;
@@ -235,7 +351,7 @@ begin
     edit.Text := s;
     edit.Edit.SelectAll;
     if not rightbutton then
-    begin
+    begin    
       SharpApi.SharpExecute(trim(edit.Text));
       edit.Text := '';
       edit.Edit.Text := '';
@@ -259,12 +375,21 @@ end;
 procedure TMainForm.editKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
+  // Fix for auto-complete when selecting an entry with the mouse
+  if (Key = VK_RETURN) then
+    edit.Text := edit.edit.Text;
+
   if ((SSALT in Shift) and (Key = VK_F4)) then
      Key := 0;
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  // Initialize Auto-Complete
+  FAutoComplete := nil;
+  sItems := TACItems.Create;
+  LoadAutoComplete;
+  
   DoubleBuffered := True;
 end;
 

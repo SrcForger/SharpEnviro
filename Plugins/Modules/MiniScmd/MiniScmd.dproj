@@ -41,6 +41,7 @@
     <DelphiCompile Include="MiniScmd.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
+    <DCCReference Include="AutoComplete.pas" />
     <DCCReference Include="MainWnd.pas">
       <Form>MainForm</Form>
     </DCCReference>
