@@ -186,6 +186,8 @@ type
       procedure Add(str : string; cnt : integer);
       procedure Remove(i : integer);
 
+      procedure IncCount(i : integer);
+
       function Get(i : integer): TACItem;
       function GetStrList(): TEnumString;
 
@@ -325,13 +327,10 @@ begin
   inherited;
 
   sList := TEnumString.Create;
-  Clear;
 end;
 
 destructor TACItems.Destroy;
 begin
-  Clear;
-  sItems := nil;
   FreeAndNil(sList);
 
   inherited;
@@ -363,6 +362,11 @@ begin
 
   System.Move(sItems[i + 1], sItems[i],(Length(sItems) - i - 1) * SizeOf(TACItem) + 1) ;
   SetLength(sItems, Length(sItems) - 1) ;
+end;
+
+procedure TACItems.IncCount(i : integer);
+begin
+  sItems[i].cnt := sItems[i].cnt + 1;
 end;
 
 procedure TACItems.Sort;

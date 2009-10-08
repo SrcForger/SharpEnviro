@@ -29,7 +29,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms, Types, StrUtils, ShellApi,
-  Dialogs, StdCtrls, GR32, GR32_PNG, SharpEBaseControls, SharpEButton,
+  Dialogs, StdCtrls, GR32, GR32_PNG, SharpEBaseControls, SharpEButton, Graphics,
   JvSimpleXML, SharpApi, Math, SharpEEdit, Menus,
   uISharpBarModule,
   ComObj, AutoComplete;
@@ -41,6 +41,7 @@ type
     btn_select: TSharpEButton;
     procedure FormPaint(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure editKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btn_selectMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -182,11 +183,10 @@ begin
     end;
   except
     // Failed to load the xml
-    sItems.Add('', 0);
   end;
   XML.Free;
 
-  // Setup the TSharpEEdit for Auto-Completion (with auWords as the string list)
+  // Setup the TSharpEEdit for Auto-Completion
   ReloadAutoComplete;
 end;
 
@@ -197,7 +197,6 @@ var
   i: Integer;
 
   tFound : boolean;
-  tItem : TACItem;
 begin
   tFound := false;
   
@@ -205,11 +204,8 @@ begin
   begin
     if sItems.Get(i).str = Item then
     begin
-      tItem := sItems.Get(i);
-      sItems.Remove(i);
-      tItem.cnt := tItem.cnt + 1;
-      sItems.Add(tItem.str, tItem.cnt);
-
+      sItems.IncCount(i);
+      
       tFound := true;
     end;
   end;
@@ -386,11 +382,16 @@ end;
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   // Initialize Auto-Complete
-  FAutoComplete := nil;
   sItems := TACItems.Create;
   LoadAutoComplete;
   
   DoubleBuffered := True;
+end;
+
+procedure TMainForm.FormDestroy(Sender: TObject);
+begin
+  FAutoComplete := nil;
+  sItems := nil;
 end;
 
 procedure TMainForm.FormPaint(Sender: TObject);
