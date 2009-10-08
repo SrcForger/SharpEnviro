@@ -26,6 +26,7 @@ namespace SharpSearchNET
         SearchManager searchMgr;
         SearchCallback searchCallback;
         Thread searchThread;
+        Thread updateThread;
         public List<SearchResult> searchResults;
         public List<SearchResultData> searchResultsData;
         string searchQuery;
@@ -36,7 +37,8 @@ namespace SharpSearchNET
             {
                 foreach (SearchResultData searchResultData in searchResultsData)
                 {
-                    if ((searchResultData.Name.Equals(item.Name)) && (searchResultData.Description.Equals(item.Description)) && (searchResultData.Location.Equals(item.Location)))
+                    //if ((searchResultData.Name.Equals(item.Name)) && (searchResultData.Description.Equals(item.Description)) && (searchResultData.Location.Equals(item.Location)))
+                    if (searchResultData.Location.Equals(item.Location))
                     {
                         searchResultsData.Remove(searchResultData);
                         break;
@@ -113,7 +115,13 @@ namespace SharpSearchNET
         private void DoSearch()
         {
             searchResults.Clear();
+            searchMgr.DoDatabaseSearch(searchQuery, searchResults, searchCallback);
             searchMgr.DoSearch(searchQuery,searchResults,searchCallback);
+        }
+
+        private void DoUpdate()
+        {
+            searchMgr.UpdateSearch(searchQuery, searchResults, searchCallback);
         }
 
         private void edtQuery_TextChanged(object sender, TextChangedEventArgs e)
@@ -130,12 +138,19 @@ namespace SharpSearchNET
 			else if (edtQuery.Text.Length > searchQuery.Length)
 			{
 				// a new character has been entered
-				searchQuery = edtQuery.Text;
-				searchMgr.UpdateSearch(searchQuery, searchResults, searchCallback);
+                if (updateThread != null)
+                {
+                    updateThread.Abort();
+                    updateThread = null;
+                }                
+
+                searchQuery = edtQuery.Text;
+                updateThread = new Thread(new ThreadStart(DoUpdate));
+                updateThread.Start();
 			}
 			else
 			{
-				// a character was removed, we aren't caching previous resulsts - so start search again
+				// a character was removed, we aren't caching previous results - so start search again
 				searchQuery = edtQuery.Text;
 				if (searchThread != null)
 				{

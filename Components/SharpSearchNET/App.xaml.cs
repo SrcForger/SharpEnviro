@@ -26,7 +26,7 @@ namespace SharpSearchNET
             LockMuteX = new Mutex(true, "SharpSearch", out createdNew);
 
             if (!createdNew)
-                Environment.Exit(0);
+                Environment.Exit((int)ExitCode.AlreadyRunning);
 
             InitialPosition.X = -100000;
             InitialPosition.Y = -100000;
@@ -48,7 +48,7 @@ namespace SharpSearchNET
 
             if ((InitialPosition.X == -100000) || (InitialPosition.Y == -100000))
             {
-                Environment.Exit(0);
+                Environment.Exit((int)ExitCode.InvalidPosition);
             }
         }
     }
