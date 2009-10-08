@@ -170,10 +170,13 @@ begin
 end;
 
 function CheckFilter(wnd : hwnd; TA : TTaskAction; currentvwm,vwm : integer) : boolean;
+const
+  MonRectOffset = 32;
 var
   n : integer;
   R : TRect;
   Mon : TMonitor;
+  MonRect : TRect;
   nm : boolean;
   CF : TFilterItem;
   WndShowCmd : integer;
@@ -214,12 +217,17 @@ begin
           fteProcess: if CompareText(WndFileName,CF.FileName) = 0 then nm := True;
           fteCurrentMonitor: begin
                Mon := Screen.MonitorFromWindow(wnd);
+               MonRect := Mon.BoundsRect;
+               MonRect.Left := MonRect.Left + MonRectOffset;
+               MonRect.Top := MonRect.Top + MonRectOffset;
+               MonRect.Right := MonRect.Right - MonRectOffset;
+               MonRect.Bottom := MonRect.Bottom - MonRectOffset;
                GetWindowRect(wnd,R);
-               if PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect)
-                  or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)
-                  or PointInRect(Point(R.Left, R.Bottom), Mon.BoundsRect)
-                  or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
-                  or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect) then
+               if PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), MonRect)
+                  or PointInRect(Point(R.Left, R.Top), MonRect)
+                  or PointInRect(Point(R.Left, R.Bottom), MonRect)
+                  or PointInRect(Point(R.Right, R.Top), MonRect)
+                  or PointInRect(Point(R.Right, R.Bottom), MonRect) then
                  nm := True;
              end;
           fteCurrentVWM: begin
@@ -248,12 +256,17 @@ begin
           fteProcess: if CompareText(WndFileName,CF.FileName) = 0 then result := false;
           fteCurrentMonitor: begin
                Mon := Screen.MonitorFromWindow(wnd);
+               MonRect := Mon.BoundsRect;
+               MonRect.Left := MonRect.Left + MonRectOffset;
+               MonRect.Top := MonRect.Top + MonRectOffset;
+               MonRect.Right := MonRect.Right - MonRectOffset;
+               MonRect.Bottom := MonRect.Bottom - MonRectOffset;
                GetWindowRect(wnd,R);
-               if PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect)
-                  or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)
-                  or PointInRect(Point(R.Left, R.Bottom), Mon.BoundsRect)
-                  or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
-                  or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect) then
+               if PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), MonRect)
+                  or PointInRect(Point(R.Left, R.Top), MonRect)
+                  or PointInRect(Point(R.Left, R.Bottom), MonRect)
+                  or PointInRect(Point(R.Right, R.Top), MonRect)
+                  or PointInRect(Point(R.Right, R.Bottom), MonRect) then
                  result := false;
              end;
           fteCurrentVWM: begin

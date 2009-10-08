@@ -1136,11 +1136,14 @@ begin
 end;
 
 function TMainForm.CheckFilter(pItem : TTaskItem) : boolean;
+const
+  MonRectOffset = 32;
 var
   n : integer;
   R : TRect;
   Mon : TMonitorItem;
   nm : boolean;
+  MonRect : TRect;
 begin
   if pItem = nil then
   begin
@@ -1179,12 +1182,17 @@ begin
               nm := True;
         fteCurrentMonitor: begin
              Mon := MonList.MonitorFromWindow(mInterface.BarInterface.BarWnd);
+             MonRect := Mon.BoundsRect;
+             MonRect.Left := MonRect.Left + MonRectOffset;
+             MonRect.Top := MonRect.Top + MonRectOffset;
+             MonRect.Right := MonRect.Right - MonRectOffset;
+             MonRect.Bottom := MonRect.Bottom - MonRectOffset;
              GetWindowRect(pItem.Handle,R);
-             if PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect)
-                or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)
-                or PointInRect(Point(R.Left, R.Bottom), Mon.BoundsRect)
-                or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
-                or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect) then
+             if PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), MonRect)
+                or PointInRect(Point(R.Left, R.Top), MonRect)
+                or PointInRect(Point(R.Left, R.Bottom), MonRect)
+                or PointInRect(Point(R.Right, R.Top), MonRect)
+                or PointInRect(Point(R.Right, R.Bottom), MonRect) then
                nm := True;
            end;
         fteCurrentVWM: begin
@@ -1214,12 +1222,17 @@ begin
               result := False;
         fteCurrentMonitor: begin
              Mon := MonList.MonitorFromWindow(mInterface.BarInterface.BarWnd);
+             MonRect := Mon.BoundsRect;
+             MonRect.Left := MonRect.Left + MonRectOffset;
+             MonRect.Top := MonRect.Top + MonRectOffset;
+             MonRect.Right := MonRect.Right - MonRectOffset;
+             MonRect.Bottom := MonRect.Bottom - MonRectOffset;             
              GetWindowRect(pItem.Handle,R);
-             if PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect)
-                or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)
-                or PointInRect(Point(R.Left, R.Bottom), Mon.BoundsRect)
-                or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
-                or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect) then
+             if PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), MonRect)
+                or PointInRect(Point(R.Left, R.Top), MonRect)
+                or PointInRect(Point(R.Left, R.Bottom), MonRect)
+                or PointInRect(Point(R.Right, R.Top), MonRect)
+                or PointInRect(Point(R.Right, R.Bottom), MonRect) then
                result := false;
            end;
         fteCurrentVWM: begin

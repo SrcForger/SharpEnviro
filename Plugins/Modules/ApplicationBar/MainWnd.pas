@@ -1634,10 +1634,13 @@ begin
 end;
 
 function TMainForm.CheckWindow(wnd: hwnd): boolean;
+const
+  MonRectOffset = 32;
 var
   pItem : TTaskItem;
   Mon : TMonitorItem;
   R : TRect;
+  MonRect : TRect;
 begin
   result := True;
   if (not sVWMOnly) and (not sMonitorOnly) then
@@ -1651,12 +1654,17 @@ begin
     if sMonitorOnly then
     begin
       Mon := MonList.MonitorFromWindow(mInterface.BarInterface.BarWnd);
+      MonRect := Mon.BoundsRect;
+      MonRect.Left := MonRect.Left + MonRectOffset;
+      MonRect.Top := MonRect.Top + MonRectOffset;
+      MonRect.Right := MonRect.Right - MonRectOffset;
+      MonRect.Bottom := MonRect.Bottom - MonRectOffset;
       GetWindowRect(pItem.Handle,R);
-      if not (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect)
-        or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)
-        or PointInRect(Point(R.Left, R.Bottom), Mon.BoundsRect)
-        or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
-        or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then
+      if not (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), MonRect)
+        or PointInRect(Point(R.Left, R.Top), MonRect)
+        or PointInRect(Point(R.Left, R.Bottom), MonRect)
+        or PointInRect(Point(R.Right, R.Top), MonRect)
+        or PointInRect(Point(R.Right, R.Bottom), MonRect)) then
           result := False;
       end;
     end;
