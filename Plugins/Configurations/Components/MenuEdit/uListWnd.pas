@@ -210,7 +210,7 @@ begin
         bDelete := True;
         if not (CtrlDown) then
           if (MessageDlg(Format('Are you sure you want to delete: %s item?', [tmp.GetCaption]),
-            mtConfirmation, [mbOK, mbCancel], 0) = mrCancel) then
+            mtConfirmation, [mbYes, mbNo], 0) = mrNo) then
             bDelete := False;
 
         if bDelete then begin
