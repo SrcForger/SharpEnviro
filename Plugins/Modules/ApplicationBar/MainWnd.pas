@@ -51,7 +51,7 @@ uses
   uTaskPreviewWnd,
   VWMFunctions,
   MonitorList,
-  SharpIconUtils, ImgList, PngImageList, ExtCtrls;
+  SharpIconUtils, ImgList, PngImageList, ExtCtrls, JvDragDrop, JvComponentBase;
 
 
 type
@@ -73,6 +73,8 @@ type
     PreviewCheckTimer: TTimer;
     mnPopupSep1: TMenuItem;
     mnPopupCloseAll: TMenuItem;
+    DropTarget: TJvDropTarget;
+    DDHandler: TJvDragDrop;
     procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -87,6 +89,9 @@ type
     procedure CheckTimerTimer(Sender: TObject);
     procedure PreviewCheckTimerTimer(Sender: TObject);
     procedure mnPopupCloseAllClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure DropTargetDragOver(Sender: TJvDropTarget;
+      var Effect: TJvDropEffect);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   private
@@ -109,6 +114,8 @@ type
     FPreviewWnds : TObjectList;
     FPreviewButton : TSharpETaskItem;
     FRefreshOnNextMouseMove : boolean;
+    FLastDragItem : TSharpETaskItem; // Only a pointer, don't free it...
+    FLastDragMinimized : Boolean;    
     function CheckWindow(wnd : hwnd) : boolean;
     procedure OnNewTask(pItem : TTaskItem; Index : integer);
     procedure OnRemoveTask(pItem : TTaskItem; Index : integer);
@@ -123,17 +130,16 @@ type
     procedure AddButton(pTarget,pIcon,pCaption : String; Index : integer = -1);
     procedure UpdateButtons;
     procedure WMNotify(var msg : TWMNotify); message WM_NOTIFY;
-    procedure WMDropFiles(var msg: TMessage); message WM_DROPFILES;
     procedure WMShellHook(var msg : TMessage); message WM_SHARPSHELLMESSAGE;
     procedure WMCopyData(var msg : TMessage); message WM_COPYDATA;
     procedure WMAddAppBarTask(var msg : TMessage); message WM_ADDAPPBARTASK;
-    procedure WMCommand(var msg: TMessage); message WM_COMMAND;    
+    procedure WMCommand(var msg: TMessage); message WM_COMMAND;
     procedure mnOnClick(pItem : TSharpEMenuItem; pMenuWnd : TObject; var CanClose : boolean);
     procedure mnMouseUp(pItem : TSharpEMenuItem; Button: TMouseButton; Shift: TShiftState);
-    procedure DisplaySystemMenu(pBtn : TButtonRecord);    
+    procedure DisplaySystemMenu(pBtn : TButtonRecord);
   public
     mInterface : ISharpBarModule;
-    CurrentVWM   : integer;    
+    CurrentVWM   : integer;
     procedure BuildAndShowMenu(btn : TButtonRecord);
     procedure LoadIcons;
     procedure LoadSettings;
@@ -160,6 +166,13 @@ var
 
 {$R *.dfm}
 {$R appbarglyphs.res}
+
+function PointInRect(P : TPoint; Rect : TRect) : boolean;
+begin
+  if (P.X>=Rect.Left) and (P.X<=Rect.Right)
+     and (P.Y>=Rect.Top) and (P.Y<=Rect.Bottom) then PointInRect:=True
+     else PointInRect:=False;
+end;
 
 procedure TMainForm.LoadIcons;
 var
@@ -281,6 +294,10 @@ begin
     HSHELL_WINDOWACTIVATED + 32768 : FTM.HandleShellMessage(msg.WParam,msg.LParam);
     HSHELL_GETMINRECT      : FTM.HandleShellMessage(msg.WParam,msg.LParam);
   end;
+
+  if (msg.wparam = HSHELL_WINDOWACTIVATED) or
+    (msg.wparam = HSHELL_WINDOWACTIVATED + 32768) then
+    FLastDragItem := nil;  
 end;
 
 procedure TMainForm.WMAddAppBarTask(var msg: TMessage);
@@ -389,42 +406,6 @@ begin
     msg.result := 1;
     CheckList;
   end;
-end;
-
-procedure TMainForm.WMDropFiles(var msg: TMessage);
-var
-  pcFileName: PChar;
-  i, iSize, iFileCount: integer;
-  p : TPoint;
-  n : integer;
-  index : integer;
-begin
-  index := High(FButtonList) + 1;
-  p := ScreenToClient(Mouse.CursorPos);
-  for n := 0 to High(FButtonList) do
-   if p.x < FButtonList[n].btn.Left then
-   begin
-     index := n - 1;
-     break;
-   end;
-
-  pcFileName := '';
-  iFileCount := DragQueryFile(Msg.wParam, $FFFFFFFF, pcFileName, 255);
-  for i := 0 to iFileCount - 1 do
-  begin
-     iSize := DragQueryFile(Msg.wParam, i, nil, 0) + 1;
-     pcFileName := StrAlloc(iSize);
-     DragQueryFile(Msg.wParam, i, pcFileName, iSize);
-     AddButton(pcFileName,'shell:icon',ExtractFileName(pcFileName),index);
-     StrDispose(pcFileName);
-  end;
-  DragFinish(Msg.wParam);
-  sb_config.Visible := False;
-  UpdateButtons;
-  SaveSettings;
-  RealignComponents(True);
-  UpdateGlobalFilterList(True);
-  CheckList;
 end;
 
 procedure TMainForm.CheckList;
@@ -866,6 +847,43 @@ begin
   DeleteMenu(AppMenu,0,MF_BYPOSITION);
 end;
 
+procedure TMainForm.DropTargetDragOver(Sender: TJvDropTarget;
+  var Effect: TJvDropEffect);
+var
+  p : TPoint;
+  n,i : integer;
+  btnrec,btnrecold : TButtonRecord;
+begin
+  p := ScreenToClient(Mouse.CursorPos);
+  for n := 0 to High(FButtonList) do
+  begin
+    btnrec := FButtonList[n];
+    if PointInRect(p,Rect(btnrec.btn.Left,btnrec.btn.Top,btnrec.btn.Left + btnrec.btn.Width,btnrec.btn.Top + btnrec.btn.Height)) then
+    begin
+      if (FLastDragItem <> btnrec.btn) and (btnrec.btn.Tag = 1) then
+      begin
+        if (FLastDragMinimized) and (FLastDragItem <> nil) then
+        begin
+          btnrecold.btn := nil;
+          for i := 0 to High(FButtonList) do
+            if (FLastDragItem = FButtonList[i].btn) then
+            begin
+              btnrecold := FButtonList[i];
+              break;
+            end;
+
+          if btnrecold.btn <> nil then
+            PostMessage(btnrecold.wnd,WM_SYSCOMMAND,SC_MINIMIZE,0);
+        end;
+        FLastDragMinimized := IsIconic(btnrec.wnd);
+        SwitchToThisWindow(btnrec.wnd,True);
+        FLastDragItem := btnrec.btn;
+      end;
+      exit;      
+    end;
+  end;
+end;
+
 procedure TMainForm.mnMouseUp(pItem: TSharpEMenuItem; Button: TMouseButton;
   Shift: TShiftState);
 var
@@ -1063,13 +1081,6 @@ begin
       end;
     end;
   end;
-end;
-
-function PointInRect(P : TPoint; Rect : TRect) : boolean;
-begin
-  if (P.X>=Rect.Left) and (P.X<=Rect.Right)
-     and (P.Y>=Rect.Top) and (P.Y<=Rect.Bottom) then PointInRect:=True
-     else PointInRect:=False;
 end;
 
 procedure TMainForm.PreviewCheckTimerTimer(Sender: TObject);
@@ -1598,6 +1609,11 @@ procedure TMainForm.FormPaint(Sender: TObject);
 begin
   if mInterface <> nil then
      mInterface.Background.DrawTo(Canvas.Handle,0,0);
+end;
+
+procedure TMainForm.FormShow(Sender: TObject);
+begin
+  DropTarget.Control := self;
 end;
 
 function TMainForm.GetButtonIndex(pButton : TSharpETaskItem) : integer;

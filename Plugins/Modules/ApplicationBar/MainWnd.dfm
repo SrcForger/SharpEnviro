@@ -117,4 +117,15 @@ object MainForm: TMainForm
     Left = 272
     Top = 8
   end
+  object DropTarget: TJvDropTarget
+    OnDragOver = DropTargetDragOver
+    Left = 152
+    Top = 96
+  end
+  object DDHandler: TJvDragDrop
+    AcceptDrag = False
+    DropTarget = Owner
+    Left = 184
+    Top = 96
+  end
 end
