@@ -70,6 +70,7 @@ type
     Text: string;
     SaveHistory: Boolean;
     Elevate: Boolean;
+    Properties: Boolean;
   end;
 
   TSharpExec = class(TThread)
@@ -90,8 +91,8 @@ type
     constructor Create;
 
     destructor Destroy; override;
-    procedure AddProcessString(Text: string; SaveHistory: Boolean = True; Elevate: Boolean = False);
-    function ProcessString(Text: string; SaveHistory: Boolean = True; Elevate: Boolean = False): Boolean;
+    procedure AddProcessString(Text: string; SaveHistory: Boolean = True; Elevate: Boolean = False; Properties: Boolean = False);
+    function ProcessString(Text: string; SaveHistory: Boolean = True; Elevate: Boolean = False; Properties: Boolean = False): Boolean;
     property UseDebug: Boolean read FUseDebug write FUseDebug;
     property DebugText: string read FDebugText write FDebugText;
 
@@ -249,7 +250,7 @@ end;
   and components used within TSharpExec
 ==============================================================================}
 
-procedure TSharpExec.AddProcessString(Text: string; SaveHistory, Elevate: Boolean);
+procedure TSharpExec.AddProcessString(Text: string; SaveHistory, Elevate, Properties: Boolean);
 var
   item: TExecItem;
 begin
@@ -257,6 +258,7 @@ begin
   item.Text := Text;
   item.SaveHistory := SaveHistory;
   item.Elevate := Elevate;
+  item.Properties := Properties;
   FExecList.Add(item);
 end;
 
@@ -311,7 +313,7 @@ begin
     while FExecList.Count > 0 do
     begin
       item := TExecItem(FExecList.Items[0]);
-      ProcessString(item.Text, item.SaveHistory, item.Elevate);
+      ProcessString(item.Text, item.SaveHistory, item.Elevate, item.Properties);
       FExecList.Remove(item);
     end;
     Suspend;
@@ -673,7 +675,7 @@ end;
   is part of an alias
 ==============================================================================}
 
-function TSharpExec.ProcessString(Text: string; SaveHistory: Boolean = True; Elevate: Boolean = False): Boolean;
+function TSharpExec.ProcessString(Text: string; SaveHistory: Boolean = True; Elevate: Boolean = False; Properties: Boolean = False): Boolean;
 var
   s: string;
 begin
@@ -694,6 +696,14 @@ begin
     if not (ExpandAliases(Text, Elevate)) then
       ExpandCommonFiles(Text);
   end;
+
+  if Properties then
+  begin
+    Debug(Text, DMT_TRACE);
+    DisplayPropDialog(Handle, Text);
+    exit;
+  end;
+
   Result := ExecuteText(Text, SaveHistory, Elevate);
   BarMsg('scmd', '_execupdate');
 end;

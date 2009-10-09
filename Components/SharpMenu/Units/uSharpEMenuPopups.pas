@@ -128,7 +128,7 @@ begin
            menuwnd.DrawWindow;
            menuwnd.Visible := True;
          end;
-      2: DisplayPropDialog(Application.Handle,item.PropList.GetString('Target'));
+      2: SharpApi.SharpExecute('_properties,' + item.PropList.GetString('Target'));
       3: SharpApi.SharpExecute(item.PropList.GetString('Target'));
     end;
   end;
@@ -161,7 +161,7 @@ begin
            menuwnd.DrawWindow;
            menuwnd.Visible := True;           
          end;
-      2: DisplayPropDialog(Application.Handle,item.PropList.GetString('Action'));
+      2: SharpApi.SharpExecute('_properties,' + item.PropList.GetString('Action'));
       3: SharpApi.SharpExecute(item.PropList.GetString('Action'));
       4: begin
            SharpApi.SharpExecute('_elevate,'+item.PropList.GetString('Action'));
@@ -252,7 +252,7 @@ begin
   // Seperator
   item := TMenuItem.Create(FDynamicLinkPopup);
   item.Caption := '-';
-  item.Visible := False;
+  item.Visible := True;
   FDynamicLinkPopup.Items.Add(item);
 
   // Properties
@@ -260,7 +260,7 @@ begin
   item.Caption := 'Properties';
   item.Tag := 2;
   item.ImageIndex := 1;
-  item.Visible := False;
+  item.Visible := True;
   item.OnClick := DynamicLinkPopupOnClick;
   FDynamicLinkPopup.Items.Add(item);
 end;
