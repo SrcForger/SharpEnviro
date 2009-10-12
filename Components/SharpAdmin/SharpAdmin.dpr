@@ -28,27 +28,13 @@ program SharpAdmin;
 {$APPTYPE CONSOLE}
 
 uses
-  Windows,SysUtils, Classes, JclStrings;
+  Windows, SysUtils, Classes, JclStrings, uSystemFuncs;
 
 {$R VistaElevated.res}
 
 const
   cIniFileMap = 'Software\Microsoft\Windows NT\CurrentVersion\IniFileMapping\system.ini\boot';
   cUserWinLogon = 'USR:Software\Microsoft\Windows NT\CurrentVersion\Winlogon';
-
-function IsWow64(): boolean;
-type
-  TIsWow64Process = function(Handle: THandle; var Res: boolean): boolean; stdcall;
-var
-  IsWow64Result: boolean;
-  IsWow64Process: TIsWow64Process;
-begin
-  result := False;
-  IsWow64Process := GetProcAddress(GetModuleHandle('kernel32'), 'IsWow64Process');
-  if Assigned(IsWow64Process) then
-    if IsWow64Process(GetCurrentProcess, IsWow64Result) then
-      result := IsWow64Result;
-end;
 
 function IniFileMappingFix : boolean;
 var

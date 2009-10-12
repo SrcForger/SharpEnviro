@@ -15,12 +15,20 @@
     <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
     <DCC_Define>RELEASE</DCC_Define>
     <DCC_ExeOutput>..\..\..\SharpE\</DCC_ExeOutput>
+    <DCC_UnitSearchPath>..\..\Common\Units\SystemFuncs;..\..\Common\Units\SharpTypes</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\Common\Units\SystemFuncs;..\..\Common\Units\SharpTypes</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\Common\Units\SystemFuncs;..\..\Common\Units\SharpTypes</DCC_ObjPath>
+    <DCC_IncludePath>..\..\Common\Units\SystemFuncs;..\..\Common\Units\SharpTypes</DCC_IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
     <DCC_Define>DEBUG</DCC_Define>
     <DCC_ExeOutput>..\..\..\SharpE\</DCC_ExeOutput>
     <DCC_Optimize>False</DCC_Optimize>
+    <DCC_UnitSearchPath>..\..\Common\Units\SystemFuncs;..\..\Common\Units\SharpTypes</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\Common\Units\SystemFuncs;..\..\Common\Units\SharpTypes</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\Common\Units\SystemFuncs;..\..\Common\Units\SharpTypes</DCC_ObjPath>
+    <DCC_IncludePath>..\..\Common\Units\SystemFuncs;..\..\Common\Units\SharpTypes</DCC_IncludePath>
   </PropertyGroup>
   <ProjectExtensions>
     <Borland.Personality>Delphi.Personality</Borland.Personality>
