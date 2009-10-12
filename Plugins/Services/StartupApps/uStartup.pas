@@ -47,6 +47,7 @@ uses
   jclshell,
   jclfileutils,
   sharpapi,
+  uSystemFuncs,
 
   windows;
 
@@ -96,7 +97,6 @@ type
     procedure InitialisePaths;
     function AddRegistryStartupItem( hk: cardinal; hks: string; subKey: string; x64: boolean; runOnce: boolean): TRegistryStartupItem;
     function AddPath( path: string ): TPathStartupItem;
-    function IsWow64(): boolean;
     function RegEnum(const rootKey: HKEY; const name: String;
          var resultList: TStringList; const process64: boolean; const DoKeys: Boolean): Boolean;
     function RegReadValue(const rootKey: HKEY; const name: String; const value: String;
@@ -125,21 +125,8 @@ implementation
 { TStartup }
 
 {$REGION 'Registry methods'}
-  function TStartup.IsWow64(): boolean;
-  type
-    TIsWow64Process = function(Handle: THandle; var Res: boolean): boolean; stdcall;
-  var
-    IsWow64Result: boolean;
-    IsWow64Process: TIsWow64Process;
-  begin
-    result := False;
-    IsWow64Process := GetProcAddress(GetModuleHandle('kernel32'), 'IsWow64Process');
-    if Assigned(IsWow64Process) then
-      if IsWow64Process(GetCurrentProcess, IsWow64Result) then
-        result := IsWow64Result;
-  end;
 
-  function TStartup.RegEnum(const rootKey: HKEY; const name: String;
+function TStartup.RegEnum(const rootKey: HKEY; const name: String;
            var resultList: TStringList; const process64: boolean; const DoKeys: Boolean): Boolean;
 
 var Buf     : Array[0..2047] of Char;
