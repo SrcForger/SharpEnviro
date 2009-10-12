@@ -74,18 +74,33 @@ begin
          dir := IncludeTrailingPathDelimiter(dir);
          SetNewShell(PChar(dir + 'SharpCore.exe'));
        end;
-    else uShellSwitcher.SetNewShell('explorer.exe');
+    else SetNewShell('explorer.exe');
   end;
 
-  if not uShellSwitcher.IsSeperateExplorerFixApplied then
+  // Only apply the separate explorer fix if the use wants it and it is not applied.
+  if (cb_seb.Checked) and (not IsSeparateExplorerFixApplied) then
   begin
-    if not uShellSwitcher.ApplySeperateExplorerFix then
-       MessageBox(handle,
-                  'Unable to apply the seperate explorer fix. Make sure that you have Administrator Priviledges',
-                  'Seperate Explorer Fix Failed',
+    if not ApplySeparateExplorerFix then
+       MessageBox(Handle,
+                  'Unable to apply the seperate explorer fix. Make sure that you have Administrator Privileges',
+                  'Applying Seperate Explorer Fix Failed',
                   MB_OK or MB_ICONEXCLAMATION);
   end;
 
+  // Only remove the separate explorer fix if the user doesn't want it and it is applied.
+  if (not cb_seb.Checked) and (IsSeparateExplorerFixApplied) then
+  begin
+    if not RemoveSeparateExplorerFix then
+      MessageBox(Handle,
+        'Unable to remove the separate explorer fix.  Make sure that you have Administrator Privileges',
+        'Removing Separate Explorer Fix Failed',
+        MB_OK or MB_ICONEXCLAMATION);    
+  end;
+
+  // Only apply the IniFileMapping fix if it is not, avoids unnecessarily showing the elevation dialog.
+  if not IsIniFileMappingFixApplied then
+    ApplyIniFileMappingFix;
+  
   if MessageBox(handle,
                 PChar('It is necessary to reboot the computer for the changes to take effect' + #10 + #13 +
                 'Reboot now?'),'Confirm Reboot', MB_YESNO or MB_ICONQUESTION) = IDYES then
