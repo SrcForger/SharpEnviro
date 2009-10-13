@@ -166,6 +166,8 @@ begin
       end;
 
       AddItems(FAddItemsType);
+
+      FPluginHost.Refresh(rtTabs);
     end;
   end;
 end;
