@@ -29,15 +29,48 @@ unit SharpImageUtils;
 interface
 
 uses
-  GR32,GR32_Resamplers,JPeg,SharpIconUtils,SysUtils;
+  GR32,GR32_PNG,GR32_Resamplers,JPeg,SharpIconUtils,SysUtils,Classes;
 
-function LoadImage(Image : String; Bmp : TBitmap32) : Boolean;
+function LoadImage(Image : String; Bmp : TBitmap32) : Boolean; overload;
+function LoadImage(Image : TStream; Ext : String; Bmp : TBitmap32) : Boolean; overload;
 procedure RescaleImage(Src,Dst : TBitmap32; Width,Height : integer; Resample : boolean);
+procedure ScaleImage(Src,Dst : TBitmap32; Factor : real; Resample : boolean);
 
 implementation
 
+function LoadImage(Image : TStream; Ext : String; Bmp : TBitmap32) : Boolean;
+var
+  b : boolean;
+  Jpeg : TJpegImage;
+begin
+  result := False;
+  if (Image <> nil) then
+    if (Image.Size > 0) then
+    begin
+      if CompareText(Ext,'.bmp') = 0 then
+      begin
+        Bmp.LoadFromStream(Image);
+        result := True;
+      end else
+      if (CompareText(Ext,'.jpg') = 0) or (CompareText(Ext,'.jpeg') = 0) then
+      begin
+        Jpeg := TJpegImage.Create;
+        Jpeg.LoadFromStream(Image);
+        Bmp.Assign(Jpeg);
+        Jpeg.Free;
+        result := True;
+      end else
+      if (CompareText(Ext,'.png') = 0) then
+      begin
+        GR32_PNG.LoadBitmap32FromPNG(Bmp,Image,b);
+        result := True;
+      end;
+    end;
+end;
+
 function LoadImage(Image : String; Bmp : TBitmap32) : Boolean;
 var
+  b : boolean;
   Ext : String;
 begin
   result := SharpIconUtils.IconStringToIcon(Image,Image,Bmp);
@@ -54,6 +87,11 @@ begin
       if (CompareText(Ext,'.jpg') = 0) or (CompareText(Ext,'.jpeg') = 0) then
       begin
         Bmp.LoadFromFile(Image);
+        result := True;
+      end else
+      if (CompareText(Ext,'.png') = 0) then
+      begin
+        GR32_PNG.LoadBitmap32FromPNG(Bmp,Image,b);
         result := True;
       end;
     end;
@@ -95,6 +133,19 @@ begin
    if Resample then
      TLinearResampler.Create(Src);
    Src.DrawTo(Dst,R);
+end;
+
+procedure ScaleImage(Src,Dst : TBitmap32; Factor : real; Resample : boolean);
+var
+  Temp : TBitmap32;
+begin
+  Temp := TBitmap32.Create;
+  Temp.SetSize(round(Src.Width * Factor), round(Src.Height * Factor));
+  if Resample then
+    TLinearResampler.Create(Src);
+  Src.DrawTo(Temp,Rect(0,0,Temp.Width,Temp.Height));
+  Dst.Assign(Temp);
+  Temp.Free;
 end;
 
 end.
