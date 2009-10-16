@@ -147,6 +147,7 @@ object SharpENotesForm: TSharpENotesForm
       OnKeyPress = EditorKeyPress
       OnSelectionChange = EditorSelectionChange
       OnCloseFindDialog = EditorCloseFindDialog
+      OnURLClick = EditorURLClick
     end
     object tbNotes: TJvToolBar
       AlignWithMargins = True
@@ -390,7 +391,6 @@ object SharpENotesForm: TSharpENotesForm
         Top = 0
         Width = 121
         Height = 22
-        Modified = False
         HideSelection = False
         TabOrder = 0
         OnChange = FilterChange

@@ -158,6 +158,8 @@ type
     procedure miEditTabClick(Sender: TObject);
     procedure miAddFromSelectedTextClick(Sender: TObject);
     procedure miAddFromCurrentTabClick(Sender: TObject);
+    procedure EditorURLClick(Sender: TObject; const URLText: string;
+      Button: TMouseButton);
   private
     { Private declarations }
     FIndex: Integer;
@@ -967,6 +969,12 @@ begin
   miEditTab.Enabled := FIndex > -1;
   miAddFromSelectedText.Enabled := reNotes.SelText <> '';
   miAddFromCurrentTab.Enabled := FIndex > -1;
+end;
+
+procedure TSharpENotesForm.EditorURLClick(Sender: TObject;
+  const URLText: string; Button: TMouseButton);
+begin
+  SharpExecute(URLText);
 end;
 
 procedure TSharpENotesForm.miUndoClick(Sender: TObject);
