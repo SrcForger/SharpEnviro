@@ -15,6 +15,7 @@ object MainForm: TMainForm
   OnCreate = FormCreate
   OnDblClick = FormDblClick
   OnDestroy = FormDestroy
+  OnMouseEnter = FormMouseEnter
   OnPaint = FormPaint
   PixelsPerInch = 96
   TextHeight = 13

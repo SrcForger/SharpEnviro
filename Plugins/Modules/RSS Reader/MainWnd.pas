@@ -68,6 +68,7 @@ type
   private
     sShowNotification : boolean;  
     sShowIcon    : boolean;
+    sCustomIcon  : boolean;
     sURL         : String;
     sFeedUpdate  : integer;
     sSwitchTime  : integer;
@@ -86,7 +87,8 @@ type
     FImageList   : TObjectList;
     FThreadList  : TObjectList;
     FDeleteList  : TObjectList;
-    notifyItem   : TNotifyItem;    
+    notifyItem   : TNotifyItem;
+    FIconsInitialized : boolean;
     function FindImage(pUrl : String) : TBitmap32;
     procedure OnFeedImageDownload(Sender: TObject);
     procedure OnThumbImageDownload(Sender : TObject);
@@ -166,9 +168,10 @@ begin
   sURL := 'http://rss.cnn.com/rss/cnn_world.rss';
   sShowNotification := True;
   sShowIcon := True;
-  sSwitchTime := 20000;
-  sFeedUpdate := 900000;
+  sSwitchTime := 20; // seconds
+  sFeedUpdate := 15; // minutes
   sShowButtons := False;
+  sCustomIcon := True;
 
   XML := TJclSimpleXML.Create;
   try
@@ -186,14 +189,22 @@ begin
       sSwitchTime := IntValue('switchtime',sSwitchTime);
       sFeedUpdate := IntValue('feedupdate',sFeedUpdate);
       sShowButtons := BoolValue('showbuttons',sShowButtons);
+      sCustomIcon := BoolValue('customicon',sCustomIcon);
     end;
   XML.Free;
-  if sFeedUpdate < 60000 then
-    sFeedUpdate := 60000;
+  if sFeedUpdate < 1 then
+    sFeedUpdate := 1;
+  if (sSwitchTime < 5) and (sSwitchTime <> 0) then
+    sSwitchTime := 20;
+  sSwitchTime := sSwitchTime * 1000;
+  sFeedUpdate := sFeedUpdate * 1000 * 60;
+  SwitchTimer.Enabled := (sSwitchTime > 0);
   UpdateTimer.Interval := sFeedUpdate;
   SwitchTimer.Interval := sSwitchTime;
   if UpdateTimer.Enabled then
+  begin
     UpdateTimer.OnTimer(UpdateTimer);
+  end;
 end;
 
 procedure TMainForm.OnFeedImageDownload(Sender: TObject);
@@ -205,7 +216,12 @@ end;
 procedure TMainForm.OnThreadFinished(Sender: TObject);
 begin
   if Sender <> nil then
+  begin
     FThreadList.Remove(Sender);
+    if Sender is TFeedDownloadThread then
+      if CompareText(FErrorMsg,'Error downloading Feed') = 0 then
+        RealignComponents(True);
+  end;
 end;
 
 procedure TMainForm.OnThumbImageDownload(Sender: TObject);
@@ -345,7 +361,9 @@ begin
                 lb_bottom.Caption := bottom;
                 RealignComponents(True);
                 FFeedURL := Value('link','no link');
-                FFeedDesc := Value('description','no description');
+                FFeedDesc := Value('description','');
+                if length(trim(FFeedDesc)) = 0 then
+                  FFeedDesc := s;
                 hasEnclosure := (ItemNamed['enclosure'] <> nil);
                 if ItemNamed['thumbnail'] <> nil then
                   hasMediaThumbnail := (CompareText(ItemNamed['thumbnail'].NameSpace,'media') = 0)
@@ -396,44 +414,46 @@ begin
   SwitchTimer.Enabled := False;
   SwitchTimer.Enabled := True;
 
-  if FFeedValid then
-  with FFeed.Root.Items do
+  if (FFeedValid) and (sCustomIcon) then
   begin
-    // count all channels and select which channel to read
-    channelcount := 0;
-    for n := 0 to Count - 1 do
-      if CompareText(Item[n].Name,'channel') = 0 then
-        channelcount := channelcount + 1;
-    if FFeedChannel >= channelcount then
-      channel := 0
-    else channel := FFeedChannel;
+    with FFeed.Root.Items do
+    begin
+      // count all channels and select which channel to read
+      channelcount := 0;
+      for n := 0 to Count - 1 do
+        if CompareText(Item[n].Name,'channel') = 0 then
+          channelcount := channelcount + 1;
+      if FFeedChannel >= channelcount then
+        channel := 0
+      else channel := FFeedChannel;
 
-    channelcount := 0;
-    for n := 0 to Count - 1 do
-      if CompareText(Item[n].Name,'channel') = 0 then
-      begin
-        // this is the channel we are going to use
-        if channelcount = channel then
-        with Item[n].Items do
+      channelcount := 0;
+      for n := 0 to Count - 1 do
+        if CompareText(Item[n].Name,'channel') = 0 then
         begin
-          s := '';
-          if ItemNamed['image'] <> nil then
-            s := ItemNamed['image'].Items.Value('url','');
-          if length(trim(s)) > 0 then
+          // this is the channel we are going to use
+          if channelcount = channel then
+          with Item[n].Items do
           begin
-            Thread := TImageDownloadThread.Create(s,FChannelIcon);
-            Thread.OnFinishedDownload := OnFeedImageDownload;
-            Thread.OnThreadFinished := OnThreadFinished;
-            FThreadList.Add(Thread);
-          end
-          else begin
-            FCustomIcon := False;
-            FChannelIcon.Assign(FIcon);
+            s := '';
+            if ItemNamed['image'] <> nil then
+              s := ItemNamed['image'].Items.Value('url','');
+            if length(trim(s)) > 0 then
+            begin
+              Thread := TImageDownloadThread.Create(s,FChannelIcon);
+              Thread.OnFinishedDownload := OnFeedImageDownload;
+              Thread.OnThreadFinished := OnThreadFinished;
+              FThreadList.Add(Thread);
+            end
+            else begin
+              FCustomIcon := False;
+              FChannelIcon.Assign(FIcon);
+            end;
           end;
-        end;
 
-        break;
-      end;
+          break;
+        end;
+    end;
   end else
   begin
     FCustomIcon := False;
@@ -477,6 +497,14 @@ begin
   begin
     lb_top.Caption := FErrorMsg;
     lb_bottom.Caption := '';
+  end;
+
+  if not FIconsInitialized then
+  begin
+    LoadIcons;
+    FCustomIcon := False;
+    FChannelIcon.Assign(FIcon);
+    FIconsInitialized := True;
   end;
 
   o1 := 4;
@@ -866,6 +894,7 @@ begin
   FFeed := TJclSimpleXML.Create;
 
   FImageList := TObjectList.Create(True);
+  FIconsInitialized := False;
 end;
 
 procedure TMainForm.FormDblClick(Sender: TObject);
@@ -949,9 +978,12 @@ begin
 //     FLastIcon.DrawTo(Canvas.Handle,Rect(2,2,Height-2,Height-2),FLastIcon.BoundsRect);
      if FChannelIcon.Resampler = nil then
        TKernelResampler.Create(FChannelIcon).Kernel := TLanczosKernel.Create;
-     R := Rect(4,4,round(FChannelIcon.Width * (Height - 8) / FChannelIcon.Height),Height-4);
+     R := Rect(2,4,round(FChannelIcon.Width * (Height - 8) / FChannelIcon.Height)+2,Height-4);
      if FCustomIcon then
        Bmp.FillRect(R.Left - 1,R.Top - 1, R.Right + 1,R.Bottom + 1,color32(0,0,0,255));
+     // FChannelIcon.CombineMode := cmMerge;
+     // FChannelIcon.DrawMode := dmBlend;
+     // FChannelIcon.MasterAlpha := 196;
      FChannelIcon.DrawTo(Bmp,R);
   end;
   Bmp.DrawTo(Canvas.Handle,0,0);
