@@ -148,7 +148,6 @@ namespace SharpSearchNET
             foreach (ISearchLocation searchLocation in Locations)
             {
                 searchLocation.SearchQuery = newQuery;
-
                 if (!searchLocation.FilterList(list, searchCallback, SearchBw))
                     break;
             }

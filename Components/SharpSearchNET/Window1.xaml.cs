@@ -47,7 +47,7 @@ namespace SharpSearchNET
                         break;
                     }
                 }
-                ApplyDataBinding(false);
+                ApplyDataBinding(true);
 
 				if (lstResults.Items.Count > 0)
 					lstResults.SelectedIndex = 0;
@@ -135,8 +135,6 @@ namespace SharpSearchNET
                 }
                 else
                     searchCancel = !searchMgr.UpdateSearch(searchQuery, searchResults, searchCallback, bw);
-
-                searchUpdate = false;
             }
         }
 
@@ -147,10 +145,11 @@ namespace SharpSearchNET
                 if (pendingSearchQuery.Length <= 0 || pendingSearchQuery == searchQuery)
                     return;
 
-                if (pendingSearchQuery.Length > searchQuery.Length && searchQuery != "")
+                if (!searchCancel && pendingSearchQuery.Length > searchQuery.Length && searchQuery != "")
                     searchUpdate = true;
                 else
                 {
+                    searchResults.Clear();
                     ApplyDataBinding(true);
                     searchUpdate = false;
                 }
