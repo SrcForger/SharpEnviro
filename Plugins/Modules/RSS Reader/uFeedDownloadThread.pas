@@ -29,7 +29,7 @@ interface
 
 uses
   Classes,Contnrs,IdHTTP,GR32,SharpApi,SharpImageUtils,MainWnd,JclStrings,
-  JclStreams, Windows;
+  JclStreams, Windows, SysUtils;
 
 type
   TFeedDownloadThread = class(TThread)
@@ -80,6 +80,8 @@ var
   validType : boolean;
   success : boolean;
   n: Integer;
+  UTF8 : boolean;
+  s : String;
 begin
   success := False;
   if FMainWnd = nil then
@@ -108,6 +110,9 @@ begin
   end;
 
   validType := False;
+  s := LOWERCASE(idHttp.Response.ContentType);
+  UTF8 := (StrFind(s,'utf-8') > 0) or (Pos('utf-8',s) > 0); // DO NOT TOUCH!! THIS IS CORRECT! ARRRGH! utf-8 != utf-8
+
   for n := 0 to MimeList.Count - 1 do
     if StrFind(MimeList[n],idHttp.Response.ContentType) > 0 then
     begin
@@ -145,7 +150,10 @@ begin
       try
         Stream.Position := 0;
 
-        FMainWnd.Feed.LoadFromStream(Stream,seUTF8);
+        if UTF8 then
+          FMainWnd.Feed.LoadFromStream(Stream,seUTF8)
+        else FMainWnd.Feed.LoadFromStream(Stream,seAuto);
+
         FMainWnd.FeedValid := True;
         FMainWnd.FeedIndex := 0;
         FMainWnd.UpdateDisplay;
