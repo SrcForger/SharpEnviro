@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpCenter>
+  <Sections>
+    <SystemTray>
+      <Dll>_ModuleDlls\RSSReader.dll</Dll>
+      <Icon>_ModuleDlls\RSSReader.png</Icon>
+    </SystemTray>
+  </Sections>
+</SharpCenter>

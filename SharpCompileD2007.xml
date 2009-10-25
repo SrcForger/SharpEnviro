@@ -27,6 +27,7 @@
      <project Name="Notes" Type="DLL">Plugins\Configurations\Modules\Notes\Notes.dproj</project>
      <project Name="Quick Script" Type="DLL">Plugins\Configurations\Modules\QuickScript\QuickScript.dproj</project>
      <project Name="System Tray" Type="DLL">Plugins\Configurations\Modules\SystemTray\SystemTray.dproj</project>
+     <project Name="RSS Reader" Type="DLL">Plugins\Configurations\Modules\RSS Reader\RSSReader.dproj</project>
      <project Name="Task" Type="DLL">Plugins\Configurations\Modules\TaskModule\TaskModule.dproj</project>
      <project Name="Volume Control" Type="DLL">Plugins\Configurations\Modules\VolumeControl\VolumeControl.dproj</project>
      <project Name="VWM" Type="DLL">Plugins\Configurations\Modules\VWM\VWM.dproj</project>
