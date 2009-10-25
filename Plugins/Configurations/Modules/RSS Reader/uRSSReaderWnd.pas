@@ -68,7 +68,6 @@ type
     ntv1: TMenuItem;
     SpiegelSchlagzeilen1: TMenuItem;
     SpiegelNachrichten1: TMenuItem;
-    HeiseOnline1: TMenuItem;
     agesschau1: TMenuItem;
     BBCTopNews1: TMenuItem;
     BBCTechnology1: TMenuItem;
@@ -81,6 +80,7 @@ type
     procedure UpdateSettingsEvent(Sender: TObject);
     procedure cbIconClick(Sender: TObject);
     procedure sgbUpdateIntervalChangeValue(Sender: TObject; Value: Integer);
+    procedure Button1Click(Sender: TObject);
   private
     FPluginHost: ISharpCenterHost;
     procedure UpdateSettings;
@@ -98,6 +98,12 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TfrmRSSReader.Button1Click(Sender: TObject);
+begin
+  PopUpMenu1.PopupComponent := edtURL;
+  PopUpMenu1.Popup(Mouse.CursorPos.X,Mouse.CursorPos.Y);
+end;
 
 procedure TfrmRSSReader.cbIconClick(Sender: TObject);
 begin

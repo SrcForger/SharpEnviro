@@ -152,6 +152,7 @@ object frmRSSReader: TfrmRSSReader
       Height = 22
       Caption = '...'
       TabOrder = 1
+      OnClick = Button1Click
     end
   end
   object Panel1: TPanel
@@ -384,11 +385,6 @@ object frmRSSReader: TfrmRSSReader
     end
     object German1: TMenuItem
       Caption = 'German'
-      object HeiseOnline1: TMenuItem
-        Caption = 'Heise Online'
-        Hint = 'http://www.heise.de/newsticker/heise-atom.xml'
-        OnClick = MenuItemClick
-      end
       object ntv1: TMenuItem
         Caption = 'n-tv'
         Hint = 'http://www.n-tv.de/rss'
