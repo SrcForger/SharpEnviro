@@ -29,7 +29,8 @@ unit SharpImageUtils;
 interface
 
 uses
-  GR32,GR32_PNG,GR32_Resamplers,JPeg,SharpIconUtils,SysUtils,Classes;
+  GR32,GR32_PNG,GR32_Resamplers,JPeg,SharpIconUtils,SysUtils,Classes,GifImg,
+  Graphics;
 
 function LoadImage(Image : String; Bmp : TBitmap32) : Boolean; overload;
 function LoadImage(Image : TStream; Ext : String; Bmp : TBitmap32) : Boolean; overload;
@@ -37,6 +38,35 @@ procedure RescaleImage(Src,Dst : TBitmap32; Width,Height : integer; Resample : b
 procedure ScaleImage(Src,Dst : TBitmap32; Factor : real; Resample : boolean);
 
 implementation
+
+procedure LoadGifFromStream(Image : TStream; Bmp : TBitmap32; Background : TColor32);
+var
+  Gif : TGifImage;
+  P : PColor32;
+  I : integer;
+begin
+  if (Image = nil) or (Bmp = nil) then
+    exit;
+
+  Gif := TGifImage.Create;
+  try
+    Gif.LoadFromStream(Image);
+    Bmp.SetSize(Gif.Width,Gif.Height);
+    Bmp.Clear(Background);
+    Bmp.Assign(Gif);
+    P := @Bmp.Bits[0];
+    for I := 0 to Bmp.Width * Bmp.Height - 1 do
+    begin
+      if P^ = color32(Gif.BackgroundColor) then
+        P^ := Background;
+      Inc(P);
+    end;
+  except
+    Bmp.SetSize(16,16);
+    Bmp.Clear(color32(0,0,0,0));
+  end;
+  Gif.Free;
+end;
 
 function LoadImage(Image : TStream; Ext : String; Bmp : TBitmap32) : Boolean;
 var
@@ -63,6 +93,11 @@ begin
       if (CompareText(Ext,'.png') = 0) then
       begin
         GR32_PNG.LoadBitmap32FromPNG(Bmp,Image,b);
+        result := True;
+      end else
+      if (CompareText(Ext,'.gif') = 0) then
+      begin
+        LoadGifFromStream(Image,Bmp,Color32(255,255,255,255));
         result := True;
       end;
     end;
@@ -92,6 +127,11 @@ begin
       if (CompareText(Ext,'.png') = 0) then
       begin
         GR32_PNG.LoadBitmap32FromPNG(Bmp,Image,b);
+        result := True;
+      end else
+      if (CompareText(Ext,'.gif') = 0) then
+      begin
+        Bmp.LoadFromFile(Image);
         result := True;
       end;
     end;
