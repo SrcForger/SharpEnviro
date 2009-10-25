@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.IO;
 using System.Text;
@@ -19,9 +20,6 @@ namespace SharpSearchNET.Locations
         string searchQuery;
 
         string tableID = "dir0";
-        EventWaitHandle waitHandle = null;
-        EventWaitHandle waiting = new EventWaitHandle(true, EventResetMode.ManualReset);
-        bool isWaiting = true;
 
         public string Name
         {
@@ -33,35 +31,27 @@ namespace SharpSearchNET.Locations
             get { return description; }
         }
 
-        public void DoDatabaseSearch(string query, List<SearchResult> list, ISearchCallback searchCallback, SQLiteConnection sqlConnection)
+        public bool DoDatabaseSearch(string query, List<SearchResult> list, ISearchCallback searchCallback, SQLiteConnection sqlConnection, BackgroundWorker SearchBw)
         {
-            isWaiting = false;
-
             if (sqlConnection == null)
-                return;
+                return false;
 
             using (SQLiteCommand sqlCommand = sqlConnection.CreateCommand())
             {
                 sqlCommand.CommandText = "CREATE TABLE IF NOT EXISTS " + tableID + "(filename STRING(256), description STRING(512), location STRING(1024), flag BOOLEAN);";
                 sqlCommand.ExecuteNonQuery();
- 
+
+                if(query != null)
+                    query = query.Replace("'", "''");
+
                 sqlCommand.CommandText = "SELECT ROWID, filename, description, location FROM " + tableID + " WHERE filename LIKE '%" + query + "%' OR description LIKE '%" + query + "%';";
                 using (SQLiteDataReader sqlReader = sqlCommand.ExecuteReader())
                 {
                     while (sqlReader.Read())
                     {
                         // Check if thread should wait
-                        if (waitHandle != null)
-                        {
-                            isWaiting = true;
-                            waiting.Set();
-                            waitHandle.WaitOne();
-                            waitHandle = null;
-                            isWaiting = false;
-                            sqlReader.Close();
-                            DoDatabaseSearch(searchQuery, list, searchCallback, sqlConnection);
-                            return;
-                        }
+                        if(SearchBw.CancellationPending)
+                            return false;
 
                         Int64 rowID = sqlReader.GetInt64(0);
                         string fileName = sqlReader.GetString(1);
@@ -87,17 +77,14 @@ namespace SharpSearchNET.Locations
                 }
             }
 
-            isWaiting = true;
-            waiting.Set();
+            return true;
         }
 
-        public void DoSearch(string query, List<SearchResult> list, ISearchCallback searchCallback, SQLiteConnection sqlConnection)
+        public bool DoSearch(string query, List<SearchResult> list, ISearchCallback searchCallback, SQLiteConnection sqlConnection, BackgroundWorker SearchBw)
         {
-            isWaiting = false;
-
             searchQuery = query.ToLower();
             if (!Directory.Exists(path))
-                return;
+                return false;
 
             SQLiteTransaction sqlTransaction = null;
 
@@ -119,6 +106,10 @@ namespace SharpSearchNET.Locations
 
             while (stack.Count > 0)
             {
+                // Check if thread should wait
+                if (SearchBw.CancellationPending)
+                    return false;
+
                 string currentDirectory = stack.Pop();
 
                 try
@@ -131,14 +122,8 @@ namespace SharpSearchNET.Locations
                         try
                         {
                             // Check if thread should wait
-                            if (waitHandle != null)
-                            {
-                                isWaiting = true;
-                                waiting.Set();
-                                waitHandle.WaitOne();
-                                waitHandle = null;
-                                isWaiting = false;
-                            }
+                            if (SearchBw.CancellationPending)
+                                return false;
 
                             if ((File.GetAttributes(file) & FileAttributes.Hidden) != FileAttributes.Hidden)
                             {
@@ -160,9 +145,11 @@ namespace SharpSearchNET.Locations
                                 {
                                     using (SQLiteCommand sqlCommand = sqlConnection.CreateCommand())
                                     {
-                                        sqlCommand.CommandText = "SELECT ROWID FROM " + tableID + " WHERE location='" + file + "';";
-                                        using (SQLiteDataReader sqlReader = sqlCommand.ExecuteReader())
+                                        sqlCommand.CommandText = "SELECT ROWID FROM " + tableID + " WHERE location='" + file.Replace("'", "''") + "';";
+                                        
+                                        try
                                         {
+                                            SQLiteDataReader sqlReader = sqlCommand.ExecuteReader();
                                             if (sqlReader.HasRows)
                                             {
                                                 // set flag to 1
@@ -171,7 +158,14 @@ namespace SharpSearchNET.Locations
                                                 using (SQLiteCommand sqlCommand2 = sqlConnection.CreateCommand())
                                                 {
                                                     sqlCommand2.CommandText = "UPDATE " + tableID + " SET flag=1 WHERE ROWID=" + rowID + ";";
-                                                    sqlCommand2.ExecuteNonQuery();
+                                                    try
+                                                    {
+                                                        sqlCommand2.ExecuteNonQuery();
+                                                    }
+                                                    catch
+                                                    {
+                                                        // An SQLite exception occured
+                                                    }
                                                 }
                                                 sqlReader.Close();
                                             }
@@ -179,15 +173,32 @@ namespace SharpSearchNET.Locations
                                             {
                                                 using (SQLiteCommand sqlCommand2 = sqlConnection.CreateCommand())
                                                 {
-                                                    sqlCommand2.CommandText = "INSERT INTO " + tableID + " VALUES('" + Path.GetFileNameWithoutExtension(fileName) + "','" + info.FileDescription + "','" + file + "',1)";
-                                                    sqlCommand2.ExecuteNonQuery();
+                                                    // desc is used to avoid NullReference Exception
+                                                    string desc = info.FileDescription;
+                                                    if (desc != null)
+                                                        desc = desc.Replace("'", "''");
+
+                                                    sqlCommand2.CommandText = "INSERT INTO " + tableID.Replace("'", "''") + " VALUES('" + Path.GetFileNameWithoutExtension(fileName).Replace("'", "''") + "','" + desc + "','" + file.Replace("'", "''") + "',1)";
+                                                    try
+                                                    {
+                                                        sqlCommand2.ExecuteNonQuery();
+                                                    }
+                                                    catch
+                                                    {
+                                                        // An SQLite exception occured
+                                                    }
                                                 }
                                             }
+                                        }
+                                        catch
+                                        {
+                                            // An SQLite exception occured
                                         }
                                     }                                    
                                 }
 
-                                if ((fileName.ToLower().Contains(searchQuery)) || info.FileDescription.ToLower().Contains(searchQuery))
+                                if ((fileName != null && fileName.ToLower().Contains(searchQuery)) ||
+                                    (info.FileDescription != null && info.FileDescription.ToLower().Contains(searchQuery)))
                                 {   // Search if filename or filedescription contain the search query
                                     SearchResult item = new SearchResult(Path.GetFileNameWithoutExtension(fileName), info.FileDescription, file);
                                     bool found = false;
@@ -232,14 +243,20 @@ namespace SharpSearchNET.Locations
                 using (SQLiteCommand sqlCommand = sqlConnection.CreateCommand())
                 {
                     sqlCommand.CommandText = "DELETE FROM " + tableID + " WHERE flag=0;";
-                    sqlCommand.ExecuteNonQuery();
+                    try
+                    {
+                        sqlCommand.ExecuteNonQuery();
+                    }
+                    catch
+                    {
+
+                    }
                 }
 
                 sqlTransaction.Commit();
             }
 
-            isWaiting = true;
-            waiting.Set();
+            return true;
         }
 
         [DllImport("shell32.dll")]
@@ -281,43 +298,31 @@ namespace SharpSearchNET.Locations
             set { searchQuery = value; }
         }
 
-        public EventWaitHandle Waiting
-        {
-            get { return waiting; }
-        }
-
-        public bool IsWaiting
-        {
-            get { return isWaiting; }
-        }
-
-        public void FilterList(List<SearchResult> list, ISearchCallback searchCallback)
+        public bool FilterList(List<SearchResult> list, ISearchCallback searchCallback, BackgroundWorker SearchBw)
         {
             searchQuery = searchQuery.ToLower();
             List<SearchResult> remove = new List<SearchResult>();   
             foreach (SearchResult searchResult in list)
             {
+                // Check if thread should wait
+                if (SearchBw.CancellationPending)
+                    return false;
+
                 if ((!searchResult.Name.ToLower().Contains(searchQuery)) && (!searchResult.Description.ToLower().Contains(searchQuery)))
                     remove.Add(searchResult);
             }
             foreach (SearchResult searchResult in remove)
             {
+                // Check if thread should wait
+                if (SearchBw.CancellationPending)
+                    return false;
+
                 list.Remove(searchResult);
                 if (searchCallback != null)
                     searchCallback.RemoveResult(searchResult);
             }
-        }
 
-        public void LockThread(EventWaitHandle ewh)
-        {
-            waiting.Reset();
-            waitHandle = ewh;
-        }
-
-        public void UnlockThread()
-        {
-            waitHandle = null;
-            waiting.Set();
+            return true;
         }
     }
 }

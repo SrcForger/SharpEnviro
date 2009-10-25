@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Data.SQLite;
@@ -13,13 +14,9 @@ namespace SharpSearchNET
         string Description { get; }
 
         string SearchQuery { get; set; }
-        EventWaitHandle Waiting { get; }
-        bool IsWaiting { get; }
 
-        void LockThread(EventWaitHandle ewh);
-        void UnlockThread();
-        void DoDatabaseSearch(string query, List<SearchResult> list, ISearchCallback searchCallback, SQLiteConnection sqlConnection);
-        void DoSearch(string query, List<SearchResult> list, ISearchCallback searchCallback, SQLiteConnection sqlConnection);
-        void FilterList(List<SearchResult> list, ISearchCallback searchCallback);
+        bool DoDatabaseSearch(string query, List<SearchResult> list, ISearchCallback searchCallback, SQLiteConnection sqlConnection, BackgroundWorker SearchBw);
+        bool DoSearch(string query, List<SearchResult> list, ISearchCallback searchCallback, SQLiteConnection sqlConnection, BackgroundWorker SearchBw);
+        bool FilterList(List<SearchResult> list, ISearchCallback searchCallback, BackgroundWorker SearchBw);
     }
 }

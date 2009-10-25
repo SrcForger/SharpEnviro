@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Xml;
@@ -100,69 +101,62 @@ namespace SharpSearchNET
         // The reason why Database search and normal search are seperated is because the database search will in most cases be
         // significantly faster. For all search locations a quick database search will be done first. The normal search of each
         // search location will be started after all database searches are done
-        public void DoDatabaseSearch(string query, List<SearchResult> list, ISearchCallback searchCallback)
+        private bool DoDatabaseSearch(string query, List<SearchResult> list, ISearchCallback searchCallback, BackgroundWorker SearchBw)
         {
-            // set the search query for all targets before starting the search (it might change while searching!)
-            foreach (ISearchLocation searchLocation in Locations)
-                searchLocation.SearchQuery = query;
-
             foreach (ISearchLocation searchLocation in Locations)
             {
+                searchLocation.SearchQuery = query;
+
                 if (searchCallback != null)
                     searchCallback.StartLocation(searchLocation);
-                searchLocation.DoDatabaseSearch(searchLocation.SearchQuery, list, searchCallback, SqlConnection);
+                if (!searchLocation.DoDatabaseSearch(searchLocation.SearchQuery, list, searchCallback, SqlConnection, SearchBw))
+                    break;
                 if (searchCallback != null)
                     searchCallback.FinishLocation(searchLocation);
             }
 
             if (searchCallback != null)
                 searchCallback.FinishSearch();
+
+            return !(SearchBw.CancellationPending);
         }
 
-        public void DoSearch(string query, List<SearchResult> list, ISearchCallback searchCallback)
+        public bool DoSearch(string query, List<SearchResult> list, ISearchCallback searchCallback, BackgroundWorker SearchBw)
         {
-            // set the search query for all targets before starting the search (it might change while searching!)
-            foreach (ISearchLocation searchLocation in Locations)
-                searchLocation.SearchQuery = query;
+            DoDatabaseSearch(query, list, searchCallback, SearchBw);
 
             foreach (ISearchLocation searchLocation in Locations)
             {
+                searchLocation.SearchQuery = query;
+
                 if (searchCallback != null)
                     searchCallback.StartLocation(searchLocation);
-                searchLocation.DoSearch(searchLocation.SearchQuery, list, searchCallback, SqlConnection);
+                if (!searchLocation.DoSearch(searchLocation.SearchQuery, list, searchCallback, SqlConnection, SearchBw))
+                    break;
                 if (searchCallback != null)
                     searchCallback.FinishLocation(searchLocation);
             }
 
             if (searchCallback != null)
                 searchCallback.FinishSearch();
+
+            return !(SearchBw.CancellationPending);
         }
 
-        public void UpdateSearch(string newQuery, List<SearchResult> list, ISearchCallback searchCallback)
+        public bool UpdateSearch(string newQuery, List<SearchResult> list, ISearchCallback searchCallback, BackgroundWorker SearchBw)
         {
-            EventWaitHandle ewh = new EventWaitHandle(false, EventResetMode.ManualReset);
-
             foreach (ISearchLocation searchLocation in Locations)
             {
-                searchLocation.LockThread(ewh);
                 searchLocation.SearchQuery = newQuery;
+
+                if (!searchLocation.FilterList(list, searchCallback, SearchBw))
+                    break;
             }
 
-            // wait for all possibly running search locations to stop
-            foreach (ISearchLocation searchLocation in Locations)
-            {
-                if (!searchLocation.IsWaiting)
-                    searchLocation.Waiting.WaitOne();
-            }
+            if (searchCallback != null)
+                searchCallback.FinishSearch();
 
-            foreach (ISearchLocation searchLocation in Locations)
-                searchLocation.FilterList(list, searchCallback);
-
-            ewh.Set();
-            foreach (ISearchLocation searchLocation in Locations)
-            {
-                searchLocation.UnlockThread();
-            }
+            return !(SearchBw.CancellationPending);
         }
 
         ~SearchManager()

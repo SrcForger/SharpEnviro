@@ -1,7 +1,7 @@
 ﻿<Window x:Class="SharpSearchNET.Window1"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="SharpSearch" Height="300" Width="300" Name="ResultWindow" KeyUp="ResultWindow_KeyUp">
+    Title="SharpSearch" Height="300" Width="300" Name="ResultWindow" KeyUp="ResultWindow_KeyUp" Closing="OnClose">
     <Window.Resources>
         <DataTemplate x:Key="listBoxTemplate">
             <StackPanel Margin="3">

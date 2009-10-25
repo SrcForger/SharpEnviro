@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -25,11 +26,13 @@ namespace SharpSearchNET
     {
         SearchManager searchMgr;
         SearchCallback searchCallback;
-        Thread searchThread;
-        Thread updateThread;
         public List<SearchResult> searchResults;
         public List<SearchResultData> searchResultsData;
-        string searchQuery;
+
+        BackgroundWorker SearchBw = new BackgroundWorker();
+        volatile bool searchUpdate = false, searchCancel = false, searchClose = false;
+
+        string searchQuery, pendingSearchQuery;
 
         private void RemoveResult(SearchResult item)
         {
@@ -64,7 +67,7 @@ namespace SharpSearchNET
         {
             Dispatcher.Invoke(DispatcherPriority.Normal, (ThreadStart)delegate
             {
-                tbStatus.Text = "Searching... " + item.Name;
+                tbStatus.Text = "Searching for " + searchQuery + "... " + item.Name;
             });
         }
 
@@ -89,9 +92,14 @@ namespace SharpSearchNET
             InitializeComponent();
 
             searchMgr = new SearchManager();
-            searchQuery = App.InitialQuery;
+            searchQuery = "";
+            pendingSearchQuery = App.InitialQuery;
             searchResults = new List<SearchResult>();
             searchResultsData = new List<SearchResultData>();
+
+            SearchBw.WorkerSupportsCancellation = true;
+            SearchBw.DoWork += new DoWorkEventHandler(RunWorker);
+            SearchBw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(RunWorkerComplete);
 
             searchCallback = new SearchCallback();
             searchCallback.OnNewResult += new ItemChangeHandler(NewResult);
@@ -100,82 +108,102 @@ namespace SharpSearchNET
             searchCallback.OnStartLocation += new LocationChangeHandler(StartLocation);
             searchCallback.OnFinishSearch += new SearchEventHandler(FinishSearch);
 
-			if (!String.IsNullOrEmpty(searchQuery))
-			{
-				searchThread = new Thread(new ThreadStart(DoSearch));
-				searchThread.Start();
-			}
-
             Left = App.InitialPosition.X;
             Top = App.InitialPosition.Y;
             edtQuery.Text = App.InitialQuery;
 			edtQuery.Focus();
          }
 
-        private void DoSearch()
+        private void OnClose(object sender, CancelEventArgs e) 
         {
-            searchResults.Clear();
-            searchMgr.DoDatabaseSearch(searchQuery, searchResults, searchCallback);
-            searchMgr.DoSearch(searchQuery,searchResults,searchCallback);
+            if (SearchBw.IsBusy)
+            {
+                SearchBw.CancelAsync();
+                searchClose = true;
+                e.Cancel = true;
+            }
         }
 
-        private void DoUpdate()
+        private void DoSearch(BackgroundWorker bw)
         {
-            searchMgr.UpdateSearch(searchQuery, searchResults, searchCallback);
+            if (searchQuery != null)
+            {
+                if (!searchUpdate)
+                {
+                    searchResults.Clear();
+                    searchCancel = !searchMgr.DoSearch(searchQuery, searchResults, searchCallback, bw);
+                }
+                else
+                    searchCancel = !searchMgr.UpdateSearch(searchQuery, searchResults, searchCallback, bw);
+
+                searchUpdate = false;
+            }
+        }
+
+        private void SetSearchQuery(bool Restart)
+        {
+            Dispatcher.Invoke(DispatcherPriority.Normal, (ThreadStart)delegate
+            {
+                if (pendingSearchQuery.Length <= 0 || pendingSearchQuery == searchQuery)
+                    return;
+
+                if (pendingSearchQuery.Length > searchQuery.Length && searchQuery != "")
+                    searchUpdate = true;
+                else
+                {
+                    ApplyDataBinding(true);
+                    searchUpdate = false;
+                }
+
+                searchQuery = pendingSearchQuery;
+
+                pendingSearchQuery = "";
+
+                if (Restart)
+                    SearchBw.RunWorkerAsync();
+            });
+        }
+
+        private void RunWorker(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker bw = sender as BackgroundWorker;
+            DoSearch(bw);
+        }
+
+        private void RunWorkerComplete(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (searchClose)
+                Close();
+            else
+            {
+                SetSearchQuery(searchCancel);
+                searchCancel = false;
+            }
         }
 
         private void edtQuery_TextChanged(object sender, TextChangedEventArgs e)
         {
-			if (edtQuery.Text == searchQuery)
-				return;
+            Dispatcher.Invoke(DispatcherPriority.Normal, (ThreadStart)delegate
+            {
+                pendingSearchQuery = edtQuery.Text;
 
-			if (String.IsNullOrEmpty(searchQuery) && searchThread == null)
-			{
-				searchQuery = edtQuery.Text;
-				searchThread = new Thread(new ThreadStart(DoSearch));
-				searchThread.Start();
-			}
-			else if (edtQuery.Text.Length > searchQuery.Length)
-			{
-				// a new character has been entered
-                if (updateThread != null)
-                {
-                    updateThread.Abort();
-                    updateThread = null;
-                }                
-
-                searchQuery = edtQuery.Text;
-                updateThread = new Thread(new ThreadStart(DoUpdate));
-                updateThread.Start();
-			}
-			else
-			{
-				// a character was removed, we aren't caching previous results - so start search again
-				searchQuery = edtQuery.Text;
-				if (searchThread != null)
-				{
-					searchThread.Abort();
-					searchThread = null;
-				}
-
-				searchResults.Clear();
-				ApplyDataBinding(true);
-
-				searchThread = new Thread(new ThreadStart(DoSearch));
-				searchThread.Start();
-			}
+                if (SearchBw.IsBusy)
+                    SearchBw.CancelAsync();
+                else
+                    SetSearchQuery(true);
+            });
         }
 
         public void ApplyDataBinding(bool reset)
         {
-            lstResults.ItemsSource = null;
+            this.lstResults.ItemsSource = null;
             if (reset)
             {
                 searchResultsData.Clear();
                 foreach (SearchResult searchResult in searchResults)
                     searchResultsData.Add(new SearchResultData(searchResult.Name, searchResult.Description, searchResult.Location));
             }
-            lstResults.ItemsSource = searchResultsData;
+            this.lstResults.ItemsSource = searchResultsData;
         }
 
 		private void ResultWindow_KeyUp(object sender, KeyEventArgs e)
