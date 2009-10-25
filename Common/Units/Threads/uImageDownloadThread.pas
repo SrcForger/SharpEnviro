@@ -40,13 +40,20 @@ type
 
   TImageDownloadThread = class(TThread)
   private
+    FOnFinishedDownload : TNotifyEvent;
+    FOnThreadFinished : TNotifyEvent;
     FList : TObjectList;
     FUrl : String;
+    FBmp : TBitmap32;
   protected
     procedure Execute; override;
     procedure DoDownload;
   public
-    constructor Create(pUrl : String; pList : TObjectList);
+    constructor Create(pUrl : String; pList : TObjectList); overload;
+    constructor Create(pUrl : String; pBmp : TBitmap32); overload;
+    destructor Destroy; override;
+    property OnFinishedDownload : TNotifyEvent read FOnFinishedDownload write FOnFinishedDownload;
+    property OnThreadFinished : TNotifyEvent read FOnThreadFinished write FOnThreadFinished;
   end;
 
 implementation
@@ -54,13 +61,34 @@ implementation
 
 { TImageDownloadThread }
 
-constructor TImageDownloadThread.Create(pUrl: String; pList: TObjectList);
+constructor TImageDownloadThread.Create(pUrl : String; pBmp : TBitmap32);
 begin
-  FList := pList;
+  FOnFinishedDownload := nil;
+  FList := nil;
   FUrl := pUrl;
+  FBmp := pBmp;
 
   inherited Create(False);
   FreeOnTerminate := True;
+end;
+
+constructor TImageDownloadThread.Create(pUrl: String; pList: TObjectList);
+begin
+  FOnFinishedDownload := nil;
+  FList := pList;
+  FUrl := pUrl;
+  FBmp := nil;
+
+  inherited Create(False);
+  FreeOnTerminate := True;
+end;
+
+destructor TImageDownloadThread.Destroy;
+begin
+  if Assigned(FOnThreadFinished) then
+    FOnThreadFinished(self);
+
+  inherited Destroy;
 end;
 
 procedure TImageDownloadThread.DoDownload;
@@ -79,10 +107,11 @@ begin
   MimeList.Add('image/jpeg');
   MimeList.Add('image/png');
   MimeList.Add('image/bmp');
+  MimeList.Add('image/gif');
 
   idHTTP := TidHTTP.Create(nil);
   idHTTP.ConnectTimeout := 5000;
-  idHTTP.Request.Accept := 'image/jpeg,image/png,image/bmp';
+  idHTTP.Request.Accept := 'image/jpeg,image/png,image/bmp,image/gif';
   idHTTP.HandleRedirects := True;
   try
     idHTTP.Head(FUrl);
@@ -95,6 +124,7 @@ begin
     try
       if idHttp.Response.ContentType = 'image/jpeg' then Ext := '.jpg'
         else if idHttp.Response.ContentType = 'image/png' then Ext := '.png'
+        else if idHttp.Response.ContentType = 'image/gif' then Ext := '.gif'
         else Ext := '.bmp';
       SharpApi.SendDebugMessage('ImageDownloadThread','Starting download: ' + FURL,0);
       idHTTP.Get(FURL,Stream);
@@ -113,14 +143,23 @@ begin
   // try to load file
   if success then
   begin
-    item := TImageListItem.Create;
-    item.Url := FURL;
-    Stream.Position := 0;
-    if SharpImageUtils.LoadImage(Stream,Ext,item.Bmp) then
+    Stream.Position := 0;  
+    if FList <> nil then
     begin
-      if FList <> nil then      
-        FList.Add(item)
-    end else item.Free;
+      item := TImageListItem.Create;
+      item.Url := FURL;
+      if SharpImageUtils.LoadImage(Stream,Ext,item.Bmp) then
+      begin
+        FList.Add(item);
+        if Assigned(FOnFinishedDownload) then
+          FOnFinishedDownload(nil);
+      end else item.Free;
+    end else if FBmp <> nil then
+    begin
+      SharpImageUtils.LoadImage(Stream,Ext,FBmp);
+      if Assigned(FOnFinishedDownload) then
+        FOnFinishedDownload(nil);
+    end;
   end;
 
   Stream.Free;
