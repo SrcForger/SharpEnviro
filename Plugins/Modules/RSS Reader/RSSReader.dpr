@@ -43,7 +43,8 @@ uses
   GR32,
   GR32_PNG,
   MainWnd in 'MainWnd.pas' {MainForm},
-  uImageDownloadThread in '..\..\..\Common\Units\Threads\uImageDownloadThread.pas';
+  uImageDownloadThread in '..\..\..\Common\Units\Threads\uImageDownloadThread.pas',
+  uFeedDownloadThread in 'uFeedDownloadThread.pas';
 
 type
   TInterfacedSharpBarModule = class(TInterfacedSharpBarModuleBase)
@@ -85,7 +86,7 @@ constructor TInterfacedSharpBarModule.Create(pID, pBarID: integer;
   pBarWnd: hwnd);
 begin
   inherited Create(pID, pBarID, pBarWnd);
-  ModuleName := 'Battery Monitor Module';
+  ModuleName := 'RSS Reader Module';
 
   try
     Form := TMainForm.CreateParented(BarWnd);
@@ -108,8 +109,8 @@ begin
 
   if Form <> nil then
   begin
-    TMainForm(Form).UpdateTimer.Enabled := True;
     TMainForm(Form).LoadSettings;
+    TMainForm(Form).UpdateTimer.Enabled := True;    
     TMainForm(Form).UpdateTimerTimer(TMainForm(Form).UpdateTimer);    
     TMainForm(Form).RealignComponents;
     TMainForm(Form).SwitchTimer.Enabled := True;

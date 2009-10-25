@@ -2,27 +2,29 @@ object MainForm: TMainForm
   Left = 0
   Top = 0
   Caption = 'Battery Monitor'
-  ClientHeight = 208
-  ClientWidth = 362
+  ClientHeight = 159
+  ClientWidth = 291
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -14
+  Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnClick = FormClick
   OnCreate = FormCreate
   OnDblClick = FormDblClick
   OnDestroy = FormDestroy
   OnPaint = FormPaint
-  PixelsPerInch = 120
-  TextHeight = 17
+  PixelsPerInch = 96
+  TextHeight = 13
   object lb_bottom: TSharpESkinLabel
-    Left = 8
-    Top = 24
-    Width = 15
-    Height = 27
+    Left = 6
+    Top = 18
+    Width = 12
+    Height = 21
     AutoSize = True
+    OnClick = FormClick
     OnDblClick = lb_bottomDblClick
     OnMouseEnter = FormMouseEnter
     Caption = '.'
@@ -30,11 +32,12 @@ object MainForm: TMainForm
     LabelStyle = lsSmall
   end
   object lb_top: TSharpESkinLabel
-    Left = 8
+    Left = 6
     Top = 0
-    Width = 15
-    Height = 27
+    Width = 12
+    Height = 21
     AutoSize = True
+    OnClick = FormClick
     OnDblClick = lb_topDblClick
     OnMouseEnter = FormMouseEnter
     Caption = '.'
@@ -42,9 +45,9 @@ object MainForm: TMainForm
     LabelStyle = lsSmall
   end
   object btnRight: TSharpEButton
-    Left = 80
+    Left = 61
     Top = 0
-    Width = 30
+    Width = 23
     Height = 25
     AutoSize = True
     OnClick = btnRightClick
@@ -185,9 +188,9 @@ object MainForm: TMainForm
     AutoPosition = True
   end
   object btnLeft: TSharpEButton
-    Left = 80
-    Top = 31
-    Width = 30
+    Left = 61
+    Top = 24
+    Width = 23
     Height = 25
     AutoSize = True
     OnClick = btnLeftClick
@@ -343,6 +346,7 @@ object MainForm: TMainForm
   end
   object ClosePopupTimer: TTimer
     Enabled = False
+    Interval = 500
     OnTimer = ClosePopupTimerTimer
     Left = 224
     Top = 48
@@ -353,5 +357,19 @@ object MainForm: TMainForm
     OnTimer = PopupTimerTimer
     Left = 256
     Top = 48
+  end
+  object DoubleClickTimer: TTimer
+    Enabled = False
+    Interval = 250
+    OnTimer = DoubleClickTimerTimer
+    Left = 224
+    Top = 80
+  end
+  object ClearNotifyWindows: TTimer
+    Enabled = False
+    Interval = 10
+    OnTimer = ClearNotifyWindowsTimer
+    Left = 256
+    Top = 80
   end
 end

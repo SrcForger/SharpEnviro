@@ -28,7 +28,7 @@ unit MainWnd;
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls, Forms, Contnrs,
+  Windows, SysUtils, Classes, Controls, Forms, Contnrs, Types,
   Dialogs, StdCtrls, SharpEBaseControls, GR32_Resamplers, SharpNotify,
   ExtCtrls, GR32, uISharpBarModule, SharpTypes, ISharpESkinComponents,
   JclStrings, JclSimpleXML, SharpApi, Menus, Math, SharpESkinLabel,
@@ -46,6 +46,8 @@ type
     PopupTimer: TTimer;
     btnRight: TSharpEButton;
     btnLeft: TSharpEButton;
+    DoubleClickTimer: TTimer;
+    ClearNotifyWindows: TTimer;
     procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -58,7 +60,10 @@ type
     procedure btnLeftClick(Sender: TObject);
     procedure lb_topDblClick(Sender: TObject);
     procedure lb_bottomDblClick(Sender: TObject);
-    procedure FormDblClick(Sender: TObject);
+    procedure FormDblClick(Sender: TObject);                        
+    procedure FormClick(Sender: TObject);
+    procedure DoubleClickTimerTimer(Sender: TObject);
+    procedure ClearNotifyWindowsTimer(Sender: TObject);
   protected
   private
     sShowNotification : boolean;  
@@ -70,15 +75,22 @@ type
     FFeed        : TJclSimpleXML;
     FFeedValid   : boolean;
     FIcon        : TBitmap32;
+    FChannelIcon : TBitmap32;
     FFeedIndex   : integer;
     FFeedChannel : integer;
     FFeedURL     : String;
     FFeedDesc    : String;
     FFeedImage   : String;
     FErrorMsg    : String;
+    FCustomIcon  : Boolean;
     FImageList   : TObjectList;
+    FThreadList  : TObjectList;
+    FDeleteList  : TObjectList;
     notifyItem   : TNotifyItem;    
     function FindImage(pUrl : String) : TBitmap32;
+    procedure OnFeedImageDownload(Sender: TObject);
+    procedure OnThumbImageDownload(Sender : TObject);
+    procedure OnThreadFinished(Sender : TObject);
   public
     mInterface : ISharpBarModule;
     procedure UpdateDisplay;
@@ -88,14 +100,19 @@ type
     procedure ReAlignComponents(Broadcast : boolean = True);
     procedure UpdateComponentSkins;
     procedure UpdateSize;
+    procedure UpdateFeedIcon;
     procedure RenderIcon(pRepaint : boolean = True);
     procedure LoadIcons;
+    property FeedValid : boolean read FFeedValid write FFeedValid;
+    property Feed : TJclSimpleXML read FFeed;
+    property FeedIndex : integer read FFeedIndex write FFeedIndex;
+    property ErrorMsg : String read FErrorMsg write FErrorMsg;
   end;
 
 
 implementation
 
-uses GR32_PNG, IdHTTP;
+uses GR32_PNG, IdHTTP, uFeedDownloadThread;
 
 {$R *.dfm}
 {$R rssglyphs.res}
@@ -146,12 +163,12 @@ var
   XML : TJclSimpleXML;
   fileloaded : boolean;
 begin
-  sURL := 'http://www.n-tv.de/rss';
+  sURL := 'http://rss.cnn.com/rss/cnn_world.rss';
   sShowNotification := True;
   sShowIcon := True;
   sSwitchTime := 20000;
   sFeedUpdate := 900000;
-  sShowButtons := True;
+  sShowButtons := False;
 
   XML := TJclSimpleXML.Create;
   try
@@ -177,6 +194,41 @@ begin
   SwitchTimer.Interval := sSwitchTime;
   if UpdateTimer.Enabled then
     UpdateTimer.OnTimer(UpdateTimer);
+end;
+
+procedure TMainForm.OnFeedImageDownload(Sender: TObject);
+begin
+  FCustomIcon := True;
+  RealignComponents(True);
+end;
+
+procedure TMainForm.OnThreadFinished(Sender: TObject);
+begin
+  if Sender <> nil then
+    FThreadList.Remove(Sender);
+end;
+
+procedure TMainForm.OnThumbImageDownload(Sender: TObject);
+var
+  wasEnabled : boolean;
+begin
+  wasEnabled := False;
+  if SwitchTimer.Enabled then
+  begin
+    wasEnabled := True;
+    SwitchTimer.Enabled := False;
+  end;
+
+  if notifyItem <> nil then
+  begin
+    ClosePopupTimer.Enabled := False;
+    FDeleteList.Add(notifyItem);
+    notifyItem := nil;    
+    ClearNotifyWindows.Enabled := True;
+  end;
+
+  if wasEnabled then
+    SwitchTimer.Enabled := True;
 end;
 
 procedure TMainForm.PopupTimerTimer(Sender: TObject);
@@ -245,6 +297,7 @@ var
   hasEnclosure : Boolean;
   hasMediaThumbnail : Boolean;
   hasMediaContent : Boolean;
+  Thread : TImageDownloadThread;
 begin
   SwitchTimer.Enabled := False;
   SwitchTimer.Enabled := True;
@@ -313,7 +366,12 @@ begin
 
                   if length(trim(image)) > 0 then
                     if FindImage(image) = nil then
-                      TImageDownloadThread.Create(image,FImageList);
+                    begin
+                      Thread := TImageDownloadThread.Create(image,FImageList);
+                      Thread.OnFinishedDownload := OnThumbImageDownload;
+                      Thread.OnThreadFinished := OnThreadFinished;
+                      FThreadList.Add(Thread);
+                    end;
                 end else FFeedImage := '';
                 
                 break;
@@ -327,6 +385,62 @@ begin
   end;
 end;
 
+procedure TMainForm.UpdateFeedIcon;
+var
+  n : integer;
+  channelcount : integer;
+  channel : integer;
+  s : String;
+  Thread : TImageDownloadThread;
+begin
+  SwitchTimer.Enabled := False;
+  SwitchTimer.Enabled := True;
+
+  if FFeedValid then
+  with FFeed.Root.Items do
+  begin
+    // count all channels and select which channel to read
+    channelcount := 0;
+    for n := 0 to Count - 1 do
+      if CompareText(Item[n].Name,'channel') = 0 then
+        channelcount := channelcount + 1;
+    if FFeedChannel >= channelcount then
+      channel := 0
+    else channel := FFeedChannel;
+
+    channelcount := 0;
+    for n := 0 to Count - 1 do
+      if CompareText(Item[n].Name,'channel') = 0 then
+      begin
+        // this is the channel we are going to use
+        if channelcount = channel then
+        with Item[n].Items do
+        begin
+          s := '';
+          if ItemNamed['image'] <> nil then
+            s := ItemNamed['image'].Items.Value('url','');
+          if length(trim(s)) > 0 then
+          begin
+            Thread := TImageDownloadThread.Create(s,FChannelIcon);
+            Thread.OnFinishedDownload := OnFeedImageDownload;
+            Thread.OnThreadFinished := OnThreadFinished;
+            FThreadList.Add(Thread);
+          end
+          else begin
+            FCustomIcon := False;
+            FChannelIcon.Assign(FIcon);
+          end;
+        end;
+
+        break;
+      end;
+  end else
+  begin
+    FCustomIcon := False;
+    FChannelIcon.Assign(FIcon);
+  end;
+end;
+
 procedure TMainForm.UpdateSize;
 begin
   LoadIcons;
@@ -336,82 +450,20 @@ end;
 
 procedure TMainForm.UpdateTimerTimer(Sender: TObject);
 var
-  idHTTP : TIdHTTP;
-  Stream : TMemoryStream;
-  MimeList: TStringList;
-  validType : boolean;
-  success : boolean;
-  n: Integer;
+  Thread : TFeedDownloadThread;
+  n : integer;
 begin
-  success := False;
-  
-  MimeList := TStringList.Create;
-  MimeList.Clear;
-  MimeList.Add('text/plain');
-  MimeList.Add('text/xml');
-  MimeList.Add('application/xml');
-  MimeList.Add('application/rss');
-  MimeList.Add('application/rss+xml');
-  MimeList.Add('text/xml-external-parsed-entity');
-  MimeList.Add('application/xml-external-parsed-entity');
-  MimeList.Add('application/xml-dtd');
-  idHTTP := TidHTTP.Create(nil);
-  idHTTP.ConnectTimeout := 5000;
-  idHTTP.Request.Accept := 'text/plain,text/xml,application/xml,text/xml-external-parsed-entity' +
-                           'application/xml-external-parsed-entity,application/xml-dtd' +
-                           'application/rss,application/rss+xml';
-  idHTTP.HandleRedirects := True;
-  try
-    idHTTP.Head(sURL);
-  except
-  end;
+  UpdateTimer.Enabled := False;
 
-  validType := False;
-  for n := 0 to MimeList.Count - 1 do
-    if StrFind(MimeList[n],idHttp.Response.ContentType) > 0 then
-    begin
-      validType := True;
-      break;
-    end;
-  SharpApi.SendDebugMessage('rssReader.module','Response.ContentType: ' + idHttp.Response.ContentType,0);
+  // check for old and already dead threads
+  for n := FThreadList.Count - 1 downto 0 do
+    if (FThreadList.Items[n] = nil) then
+      FThreadList.Delete(n);
 
-  Stream := TMemoryStream.Create;
-  if validType then
-  begin
-    try
-      SharpApi.SendDebugMessage('rssReader.module','Starting download: ' + sURL,0);
-      idHTTP.Get(sURL,Stream);
-      SharpApi.SendDebugMessage('rssReader.module','Download finished',0);
-      success := true;
-    except
-    end;
-  end;
-
-  try
-    idHttp.Disconnect;
-    idHttp.Free;
-  except
-  end;
-
-  // try to load file
-  FFeedValid := False;
-  if success then
-  begin
-    try
-      Stream.Position := 0;
-      FFeed.LoadFromStream(Stream,seUTF8);
-      FFeedValid := True;
-      FFeedIndex := 0;
-      UpdateDisplay;
-      SyncImagesWithFeed;
-    except
-      FErrorMsg := 'Invalid feed file';
-    end;
-  end else
-    FErrorMsg := 'Error downloading feed';
-
-  Stream.Free;
-  MimeList.Free;
+  InitializeCriticalSection(CriticalFeedSection);
+  Thread := TFeedDownloadThread.Create(sURL,self);
+  Thread.OnThreadFinished := OnThreadFinished;
+  FThreadList.Add(Thread);
 end;
 
 procedure TMainForm.ReAlignComponents(Broadcast : boolean = True);
@@ -421,11 +473,17 @@ var
 begin
   self.Caption := 'Rss Reader Module:' + sURL;
 
+  if not FFeedValid then
+  begin
+    lb_top.Caption := FErrorMsg;
+    lb_bottom.Caption := '';
+  end;
+
   o1 := 4;
   if sShowIcon then
   begin
     RenderIcon;
-    o1 := o1 + Height - 4 + 2;
+    o1 := o1 + round(FChannelIcon.Width * (Height - 8) / FChannelIcon.Height) + 2;
   end;
 
   if sShowButtons then
@@ -612,6 +670,13 @@ begin
   if notifyitem <> nil then
     exit;
 
+  if (not FFeedValid) then
+  begin
+    UpdateTimerTimer(nil);
+    exit;
+  end;
+
+
   FFeedIndex := FFeedIndex + 1;
   UpdateDisplay;
 end;
@@ -680,7 +745,7 @@ begin
   wasEnabled := False;
   if SwitchTimer.Enabled then
   begin
-    wasEnabled := False;
+    wasEnabled := True;
     SwitchTimer.Enabled := False;
   end;
 
@@ -697,10 +762,10 @@ procedure TMainForm.btnRightClick(Sender: TObject);
 var
   wasEnabled : boolean;
 begin
-  wasEnabled := True;
+  wasEnabled := False;
   if SwitchTimer.Enabled then
   begin
-    wasEnabled := False;
+    wasEnabled := True;
     SwitchTimer.Enabled := False;
   end;
 
@@ -709,6 +774,31 @@ begin
 
   if wasEnabled then
     SwitchTimer.Enabled := True;
+
+  if notifyItem <> nil then
+  begin
+    ClosePopupTimer.Enabled := False;  
+    SharpNotify.CloseNotifyWindow(notifyItem);
+    notifyItem := nil;
+    ShowDescriptionNotification;
+    ClosePopupTimer.Enabled := True;
+  end;
+end;
+
+procedure TMainForm.ClearNotifyWindowsTimer(Sender: TObject);
+var
+  n : integer;
+begin
+  // delete all the possibly still existing notify windows
+  for n := 0 to FDeleteList.Count - 1 do
+    if (FDeleteList.Items[n] <> nil) then
+      SharpNotify.CloseNotifyWindow(TNotifyItem(FDeleteList.Items[n]));
+
+  FDeleteList.Clear();
+  ClearNotifyWindows.Enabled := False;
+
+  ShowDescriptionNotification;
+  ClosePopupTimer.Enabled := True;
 end;
 
 procedure TMainForm.ClosePopupTimerTimer(Sender: TObject);
@@ -732,6 +822,12 @@ begin
   ClosePopupTimer.Enabled := False;
 end;
 
+procedure TMainForm.DoubleClickTimerTimer(Sender: TObject);
+begin
+  btnRightClick(nil);
+  DoubleClickTimer.Enabled := False;
+end;
+
 function TMainForm.FindImage(pUrl: String): TBitmap32;
 var
   n : integer;
@@ -745,13 +841,23 @@ begin
   result := nil;
 end;
 
+procedure TMainForm.FormClick(Sender: TObject);
+begin
+  DoubleClickTimer.Enabled := True;
+end;
+
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   DoubleBuffered := True;
 
   sShowIcon := True;
 
+  FChannelIcon := TBitmap32.Create;
+  FCustomIcon := False;
   FIcon := TBitmap32.Create;
+
+  FThreadList := TObjectList.Create(False);
+  FDeleteList := TObjectList.Create(False);
 
   FFeedValid := False;
   FFeedIndex := 0;
@@ -768,6 +874,8 @@ var
   clientPos : TPoint;
   R : TRect;
 begin
+  DoubleClickTimer.Enabled := False;
+
   if GetCursorPosSecure(cursorPos) then
     clientPos := ScreenToClient(cursorPos)
   else Exit;
@@ -780,14 +888,36 @@ begin
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
+var
+  n : integer;
 begin
   SwitchTimer.Enabled := False;
   UpdateTimer.Enabled := False;
+  ClearNotifyWindows.Enabled := False;
+  PopupTimer.Enabled := False;
+  ClosePopupTimer.Enabled := False;
 
+  if notifyItem <> nil then
+    FDeleteList.Add(notifyItem);
+
+  // wait for all thread to finish
+  for n := 0 to FThreadList.Count - 1 do
+    if (FThreadList.Items[n] <> nil) then
+      TThread(FThreadList.Items[n]).WaitFor();
+
+  // delete all the possibly still existing notify windows
+  for n := 0 to FDeleteList.Count - 1 do
+    if (FDeleteList.Items[n] <> nil) then
+      SharpNotify.CloseNotifyWindow(TNotifyItem(FDeleteList.Items[n]));  
+
+  FThreadList.Free;
+  FDeleteList.Free;
+  
   FImageList.Clear;
   FImageList.Free;
-  
+
   FreeAndNil(FIcon);
+  FreeAndNil(FChannelIcon);
 
   FFeedValid := False;  
   FFeed.Free;
@@ -810,15 +940,19 @@ end;
 procedure TMainForm.FormPaint(Sender: TObject);
 var
   Bmp : TBitmap32;
+  R : TRect;
 begin
   Bmp := TBitmap32.Create;
   Bmp.Assign(mInterface.Background);
   if sShowIcon then
   begin
 //     FLastIcon.DrawTo(Canvas.Handle,Rect(2,2,Height-2,Height-2),FLastIcon.BoundsRect);
-     if FIcon.Resampler = nil then
-       TLinearResampler.Create(FIcon);
-     FIcon.DrawTo(Bmp,Rect(2,2,Height-2,Height-2));
+     if FChannelIcon.Resampler = nil then
+       TKernelResampler.Create(FChannelIcon).Kernel := TLanczosKernel.Create;
+     R := Rect(4,4,round(FChannelIcon.Width * (Height - 8) / FChannelIcon.Height),Height-4);
+     if FCustomIcon then
+       Bmp.FillRect(R.Left - 1,R.Top - 1, R.Right + 1,R.Bottom + 1,color32(0,0,0,255));
+     FChannelIcon.DrawTo(Bmp,R);
   end;
   Bmp.DrawTo(Canvas.Handle,0,0);
   Bmp.Free;
@@ -827,10 +961,12 @@ end;
 procedure TMainForm.lb_bottomDblClick(Sender: TObject);
 begin
   SharpApi.SharpExecute(FFeedURL);
+  DoubleClickTimer.Enabled := False;
 end;
 
 procedure TMainForm.lb_topDblClick(Sender: TObject);
 begin
+  DoubleClickTimer.Enabled := False;
   SharpApi.SharpExecute(FFeedURL);
 end;
 
