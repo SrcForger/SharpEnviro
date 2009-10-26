@@ -20,8 +20,9 @@ namespace SharpSearchNET
         void LoadDatabase()
         {
             string databaseFile = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            databaseFile = databaseFile + "\\Settings\\User\\" + Environment.UserName + "\\Search\\Database.db3";
-
+            databaseFile += "\\Settings\\User\\" + Environment.UserName + "\\Search\\";
+            System.IO.Directory.CreateDirectory(databaseFile);
+            databaseFile += "Database.db3";
             string connectionString = "Data Source=" + databaseFile;
             connectionString = connectionString + ";Pooling=true;FailIfMissing=false";
 
