@@ -19,14 +19,21 @@ function IsWow64(): boolean;
 type
   TIsWow64Process = function(Handle: THandle; var Res: boolean): boolean; stdcall;
 var
+  lib : THandle;
   IsWow64Result: boolean;
   IsWow64Process: TIsWow64Process;
 begin
   result := False;
-  IsWow64Process := GetProcAddress(GetModuleHandle('kernel32'), 'IsWow64Process');
-  if Assigned(IsWow64Process) then
-    if IsWow64Process(GetCurrentProcess, IsWow64Result) then
-      result := IsWow64Result;
+
+  lib := LoadLibrary('kernel32.dll');
+  try
+    @IsWow64Process := GetProcAddress(lib, 'IsWow64Process');
+    if Assigned(IsWow64Process) then
+      if IsWow64Process(GetCurrentProcess, IsWow64Result) then
+        result := IsWow64Result;
+  finally
+    FreeLibrary(lib);
+  end;
 end;                                             
 
 function NETFramework35: Boolean;
