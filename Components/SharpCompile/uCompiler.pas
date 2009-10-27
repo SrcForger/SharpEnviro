@@ -36,6 +36,24 @@ uses
 type
   TCompileEvent = procedure(Sender: TObject; CmdOutput: string) of object;
   {$M+}
+  TCSharpSolution = class
+  private
+    FName : string;
+    FPath : string;
+    FPackage : string;
+    FSummaryIndex : Integer;
+    FDetailIndex : Integer;
+  public
+    property Name : string read FName;
+    property Path : string read FPath;
+    property Package : string read FPackage write FPackage;
+    property SummaryIndex : Integer read FSummaryIndex write FSummaryIndex;
+    property DetailIndex : Integer read FDetailIndex write FDetailIndex;
+  published
+    constructor Create(csharpSolutionFile : string; name : string); reintroduce;
+    destructor Destroy; override;
+  end;
+
   TDelphiProject = class
   private
     FSearchPath   : String;
@@ -74,6 +92,19 @@ type
 
   end;
 
+  TCSharpCompiler = class
+  private
+    FOnCompilerCmdOutput : TCompileEvent;
+    procedure OnCompilerNewLine(Sender: TObject; NewLine: string; OutputType: TOutputType);
+  public
+    constructor Create; reintroduce;
+    destructor Destroy; override;
+    function NETFramework35InstallPath() : string;
+    function CompileSolution(Project : TCSharpSolution; bDebug : Boolean = False) : Boolean;
+  published
+    property OnCompilerCmdOutput : TCompileEvent read FOnCompilerCmdOutput write FOnCompilerCmdOutput;
+  end;
+
   TDelphiCompiler = class
   private
     FOnCompilerCmdOutput : TCompileEvent;
@@ -98,6 +129,92 @@ type
 
 implementation
 
+{$REGION 'TCSharpSolution'}
+
+constructor TCSharpSolution.Create(csharpSolutionFile: string; name: string);
+begin
+  inherited Create;
+
+  FName := name;
+  FPath := csharpSolutionFile;
+end;
+
+destructor TCSharpSolution.Destroy;
+begin
+  inherited Destroy;
+end;
+
+{$ENDREGION 'TCSharpSolution'}
+
+{$REGION 'TCSharpCompiler'}
+
+constructor TCSharpCompiler.Create;
+begin
+  inherited Create;
+end;
+
+destructor TCSharpCompiler.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TCSharpCompiler.OnCompilerNewLine(Sender: TObject; NewLine: string; OutputType: TOutputType);
+begin
+  if Assigned(FOnCompilerCmdOutput) then
+     FOnCompilerCmdOutput(Sender,NewLine);
+end;
+
+function TCSharpCompiler.CompileSolution(Project: TCSharpSolution; bDebug: Boolean) : Boolean;
+var
+  dc : TDosCommand;
+  cmd : string;
+  config : string;
+  exitCode : Integer;
+begin
+  Result := False;
+
+  if not FileExists(Project.Path) then
+    Exit;
+
+  config := 'Release';
+  if bDebug then
+    config := 'Debug';
+
+  // MSBuild.exe solutionFilePath /p:Configuration=Release
+  // MSBuild.exe solutionFilePath /p:Configuration=Debug
+  cmd := NETFramework35InstallPath + 'MSBuild.exe ' + Project.Path + ' /p:Configuration=' + config;
+
+  dc := TDosCommand.Create(nil);
+  try
+    dc.OnNewLine := OnCompilerNewLine;
+
+    dc.CommandLine := cmd;
+    dc.Execute2;
+    exitCode := dc.ExitCode;
+  finally
+    dc.Free;
+  end;
+
+  Result := (exitCode = 0);
+end;
+
+function TCSharpCompiler.NETFramework35InstallPath: string;
+var
+  Reg: TRegistry;
+begin
+  Reg := TRegistry.Create(KEY_READ);
+  try
+    Reg.RootKey := HKEY_LOCAL_MACHINE;
+    if Reg.OpenKey('SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5', False) then
+      Result := Reg.ReadString('InstallPath');
+  finally
+    Reg.Free
+  end;
+end;
+
+{$ENDREGION 'TCSharpCompiler'}
+
+{$REGION 'TDelphiProject'}
 
 constructor TDelphiProject.Create(pBDSProjFile: String; sName: String);
 begin
@@ -198,6 +315,9 @@ begin
   FSearchPath := StringReplace(FSearchPath,'$(ProgramFiles)',JclSysInfo.GetProgramFilesFolder,[rfReplaceAll,rfIgnoreCase]);
 end;
 
+{$ENDREGION 'TDelphiProject'}
+
+{$REGION 'TDelphiCompiler'}
 
 constructor TDelphiCompiler.Create;
 begin
@@ -447,5 +567,7 @@ begin
     DeleteFile(PChar(Project.OutputDir + s + '.map'));
 
 end;
+
+{$ENDREGION 'TDelphiCompiler'}
 
 end.

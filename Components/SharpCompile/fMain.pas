@@ -45,7 +45,6 @@ type
     procedure mSummary_Change(Sender: TObject);
     procedure ctvProjectsSelectionChange(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure btnSaveClick(Sender: TObject);
     procedure lbSummaryDblClickItem(Sender: Tobject; const ACol: Integer;
       AItem: TSharpEListItem);
     procedure lbSummaryGetCellColor(Sender: TObject;
@@ -58,8 +57,11 @@ type
     procedure lbSummaryGetCellCursor(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var ACursor: TCursor);
   private
+    procedure InsertSplitter();
+    procedure Log(msg : string);
     procedure CompilerNewLine(Sender: TObject; CmdOutput: string);
-    procedure CompileProject(Project: TDelphiProject; bDebug: Boolean; iPercent: Integer);
+    procedure CompileProject(Project: TCSharpSolution; bDebug : Boolean; iPercent : Integer); overload;
+    procedure CompileProject(Project: TDelphiProject; bDebug: Boolean; iPercent: Integer); overload;
     procedure OpenFile(sXML: String);
     procedure SaveSettings();
     procedure LoadSettings();
@@ -71,7 +73,6 @@ type
 var
   frmMain: TfrmMain;
   sPath: String;
-  dtTotalStart: TDateTime;
   sSettingsFile: String;
   bDebug: Boolean;
 
@@ -96,7 +97,6 @@ procedure TfrmMain.FormDestroy(Sender: TObject);
 begin
   SaveSettings;
 end;
-
 
 procedure TfrmMain.lbSummaryClickItem(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem);
@@ -168,105 +168,188 @@ begin
   mDetailed.Clear;
 end;
 
+function IsClassName(pData : Pointer; name : string) : Boolean;
+var
+  ClassRef : TClass;
+begin
+  ClassRef := TObject(pData).ClassType;
+  Result := ClassRef.ClassNameIs(name);
+end;
+
+function GetDetailIndex(pData : Pointer) : Integer;
+begin
+  if IsClassName(pData, 'TCSharpSolution') then
+    Result := TCSharpSolution(pData).DetailIndex
+  else
+    Result := TDelphiProject(pData).DIndex;
+end;
+
+procedure TfrmMain.Log(msg : string);
+begin
+  mDetailed.Lines.Add(FormatDateTime('hh:nn:ss', Now) + ' ' + msg);
+end;
+
 procedure TfrmMain.tbCompileClick(Sender: TObject);
 var
   i,iProjCount,iStatus: integer;
   iPercent: integer;
   sPackage: String;
+  buildStart, buildEnd : TDateTime;
 begin
   iProjCount := 0;
   iStatus := 0;
   sPackage := '';
-  dtTotalStart := Now;
+  buildStart := Now;
+
   for i := 0 to ctvProjects.Items.Count - 1 do
   begin
     if ctvProjects.Checked[ctvProjects.Items[i]] then
       if not ctvProjects.Items[i].HasChildren then
         iProjCount := iProjCount + 1;
   end;
+
+  Log('Building ' + IntToStr(iProjCount) + ' projects/solutions.');
+  InsertSplitter;
+  
   for i := 0 to ctvProjects.Items.Count - 1 do
   begin
     if ctvProjects.Checked[ctvProjects.Items[i]] then
     begin
-      if TDelphiProject(ctvProjects.Items[i].Data) <> nil then
+      if ctvProjects.Items[i].Data <> nil then
       begin
-        if sPackage <> TDelphiProject(ctvProjects.Items[i].Data).Package then
-        begin
-          sPackage := TDelphiProject(ctvProjects.Items[i].Data).Package;
-          lbSummary.AddItem(sPackage);
-        end;
         iStatus := iStatus + 1;
         iPercent := Round(iStatus * 100 / iProjCount);
-        CompileProject(TDelphiProject(ctvProjects.Items[i].Data), clbOptions.Checked[0], iPercent);
+
+        if IsClassName(ctvProjects.Items[i].Data, 'TCSharpSolution') then
+        begin
+          if sPackage <> TCSharpSolution(ctvProjects.Items[i].Data).Package then
+          begin
+            sPackage := TCSharpSolution(ctvProjects.Items[i].Data).Package;
+            lbSummary.AddItem(sPackage);
+          end;
+          CompileProject(TCSharpSolution(ctvProjects.Items[i].Data), clbOptions.Checked[0], iPercent);
+        end
+        else if IsClassName(ctvProjects.Items[i].Data, 'TDelphiProject') then
+        begin
+          if sPackage <> TDelphiProject(ctvProjects.Items[i].Data).Package then
+          begin
+            sPackage := TDelphiProject(ctvProjects.Items[i].Data).Package;
+            lbSummary.AddItem(sPackage);
+          end;
+          CompileProject(TDelphiProject(ctvProjects.Items[i].Data), clbOptions.Checked[0], iPercent);
+        end;
       end;
     end;
   end;
-
+  
+  buildEnd := Now;
+  Log('Build finished.');
+  Log('Total build time was ' + FormatDateTime('hh:nn:ss', Frac(buildEnd) - Frac(buildStart)));
 end;
 
-procedure TfrmMain.btnSaveClick(Sender: TObject);
+procedure TfrmMain.CompileProject(Project: TCSharpSolution; bDebug: Boolean; iPercent: Integer);
+var
+  compiler : TCSharpCompiler;
+  status : string;
+  newItem: TSharpEListItem;
+  succeeded : Boolean;
+  buildStart, buildEnd : TDateTime;
 begin
-  SaveSettings;
+  newItem := lbSummary.AddItem('Compiling ' + Project.Name + '...',2);
+  newItem.AddSubItem('');
+
+  lbSummary.ItemIndex := lbSummary.Count - 1;
+  Project.SummaryIndex := lbSummary.Count - 1;
+  
+  compiler := TCSharpCompiler.Create;
+  compiler.OnCompilerCmdOutput := CompilerNewLine;
+  
+  buildStart := Now;
+  Log('Build for ' + Project.Name + ' started at ' + FormatDateTime('hh:nn:ss', buildStart));
+
+  Project.DetailIndex := mDetailed.Lines.Count - 1;
+  
+  succeeded := compiler.CompileSolution(Project, bDebug);
+  buildEnd := Now;
+
+  if succeeded then
+  begin
+    status := 'Success! (' + IntToStr(iPercent) + '%)';
+    newItem.ImageIndex := 1;
+    Log('Build for ' + Project.Name + ' finished at ' + FormatDateTime('hh:nn:ss', buildEnd));
+    Log('Build took ' + FormatDateTime('hh:nn:ss', Frac(buildEnd) - Frac(buildStart)));
+  end
+  else
+  begin
+    status := 'Failed! (' + IntToStr(iPercent) + '%)';
+    newItem.ImageIndex := 0;
+    Log('Build for ' + Project.Name + ' Failed!');
+  end;
+
+  Project.DetailIndex := mDetailed.Lines.Count - 1;
+  newItem.Caption := newItem.Caption + status;
+
+  InsertSplitter;
 end;
 
 procedure TfrmMain.CompileProject(Project: TDelphiProject; bDebug: Boolean; iPercent: Integer);
 var
   dCompiler: TDelphiCompiler;
-  sSummary,sStatus: String;
+  sStatus: String;
   newItem: TSharpEListItem;
-  dtStart,dtEnd,dtTotalEnd: TDateTime;
-  iChars, i: Integer;
-  sSplitter: String;
+  dtStart, dtEnd : TDateTime;
+  succeeded : Boolean;
 begin
   newItem := lbSummary.AddItem('Compiling ' + Project.Name + '...',2);
   newItem.AddSubItem('');
   lbSummary.ItemIndex := lbSummary.Count-1;
   Project.SIndex := lbSummary.Count -1;
-  sSummary := lbSummary.Item[Project.SIndex].Caption;
+
   dtStart := Now;
-  mDetailed.Lines.Add('Build started at ' + FormatDateTime('hh:nn:ss', dtStart));
-  mDetailed.Lines.Add(sSummary);
+  Log('Build for ' + Project.Name + ' started at ' + FormatDateTime('hh:nn:ss', dtStart));
+
   Project.DIndex := mDetailed.Lines.Count -1;
 
   dCompiler := TDelphiCompiler.Create;
   dCompiler.OnCompilerCmdOutput := CompilerNewLine;
-  if dCompiler.CompileProject(Project, bDebug) then
+
+  succeeded := dCompiler.CompileProject(Project, bDebug);
+  dtEnd := Now;
+
+  if succeeded then
   begin
     sStatus := 'Success! (' + IntToStr(iPercent) + '%)';
     newItem.ImageIndex := 1;
     if bDebug then
-      mDetailed.Lines.Add('Inserted ' + IntToStr(Project.DataSize) + ' bytes of debug data');
+      Log('Inserted ' + IntToStr(Project.DataSize) + ' bytes of debug data');
+
+    Log('Build for ' + Project.Name + ' finished.');
+    Log('Build took ' + FormatDateTime('hh:nn:ss', Frac(dtEnd) - Frac(dtStart)));
   end
   else
   begin
     sStatus := 'Failed! (' + IntToStr(iPercent) + '%)';
     newItem.ImageIndex := 0;
+    Log('Build for ' + Project.Name + ' Failed!');
   end;
 
+  Project.DIndex := mDetailed.Lines.Count - 1;
   newItem.Caption := newItem.Caption + sStatus;
-  dtEnd := Now;
-  if LeftStr(sStatus, 8) = 'Success!' then
-  begin
-    mDetailed.Lines.Add('Finished at ' + FormatDateTime('hh:nn:ss', dtEnd) + '. Build took ' + FormatDateTime('hh:nn:ss', Frac(dtEnd) - Frac(dtStart)));
-  end
-  else
-  begin
-    Project.DIndex := mDetailed.Lines.Count - 1;
-    mDetailed.Lines.Add('Build Failed!');
-  end;
 
-  iChars := Trunc(mDetailed.ClientWidth / Abs(Canvas.TextWidth('-')));
+  InsertSplitter;
+end;
+
+procedure TfrmMain.InsertSplitter();
+var
+  i, c : Integer;
+  sSplitter : string;
+begin
+  c := Trunc(mDetailed.ClientWidth / Abs(Canvas.TextWidth('-')));
   sSplitter := '';
-  for i := 0 to iChars - 3 do
+  for i := 0 to c - 3 do
     sSplitter := sSplitter + '-';
+
   mDetailed.Lines.Add(sSplitter);
-
-  if iPercent = 100 then
-  begin
-    dtTotalEnd := Now;
-    mDetailed.Lines.Add('Total build time was ' + FormatDateTime('hh:nn:ss', Frac(dtTotalEnd) - Frac(dtTotalStart)));
-  end;
-
 end;
 
 procedure TfrmMain.CompilerNewLine(Sender: TObject; CmdOutput: string);
@@ -275,7 +358,7 @@ var
 begin
   sTemp := mDetailed.Lines[mDetailed.Lines.Count - 1];
   if (RightStr(sTemp, Length(sTemp) - 9) <> CmdOutput) and (CmdOutput <> '') then
-    mDetailed.Lines.Add(FormatDateTime('hh:nn:ss', Now) + ' ' + CmdOutput);
+    Log(CmdOutput);
 end;
 
 procedure TfrmMain.ctvProjectsSelectionChange(Sender: TObject);
@@ -283,7 +366,7 @@ begin
   if ctvProjects.Selected.Data <> nil then
   begin
     mDetailed.Perform(EM_LINESCROLL, 0, 0 - mDetailed.Lines.Count);
-    mDetailed.Perform(EM_LINESCROLL, 0, TDelphiProject(ctvProjects.Selected.Data).DIndex);
+    mDetailed.Perform(EM_LINESCROLL, 0, GetDetailIndex(ctvProjects.Selected.Data));
   end;
 end;
 
@@ -293,9 +376,12 @@ var
   xFile: TJvSimpleXML;
   nProject,nComponent: TTreeNode;
   sPackage: String;
+  sProjectName, sProjectType : string;
 begin
     if ctvProjects.Items.Count > 0 then
-      for n := 0 to ctvProjects.Items.Count - 1 do
+      // Loop over the items backwards to avoid conflicts
+      // when items are removed for the treeview.
+      for n := ctvProjects.Items.Count - 1 downto 0 do
       begin
         ctvProjects.Items[n].Delete;
       end;
@@ -314,18 +400,30 @@ begin
           for i := 0 to Items.Count - 1 do
             with Items.Item[i] do
             begin
-              nComponent := ctvProjects.Items.AddChild(nProject, Properties.Value('Name', 'error'));
-              nComponent.Data := TDelphiProject.Create(sPath + Value, Properties.Value('Name', 'error'));
-              TDelphiProject(nComponent.Data).Package := sPackage;
+              sProjectName := Properties.Value('Name', 'error');
+              sProjectType := Properties.Value('Type', 'Application');
+              nComponent := ctvProjects.Items.AddChild(nProject, sProjectName);
+
+              if sProjectType = 'Solution' then
+              begin
+                nComponent.Data := TCSharpSolution.Create(sPath + Value, sProjectName);
+                TCSharpSolution(nComponent.Data).Package := sPackage;
+              end
+              else
+              begin
+                nComponent.Data := TDelphiProject.Create(sPath + Value, sProjectName);
+                TDelphiProject(nComponent.Data).Package := sPackage;
+              end;
+              
               ctvProjects.SetChecked(nComponent, True);
-              mDetailed.Lines.Add('Loaded "' + Properties.Value('Name', 'error')
-                + '" of type ' + Properties.Value('Type', 'Application') + ' which requires '
-                + Properties.Value('Requ', 'Turbo Delphi Explorer 2006'));
+              Log('Loaded "' + sProjectName
+                + '" of type ' + sProjectType + ' which requires '
+                + Properties.Value('Requ', 'Delphi 2007'));
             end;
         end;
       lbSummary.AddItem('Loaded ' + ExtractFileName(sXML), 2);
 	  end;
-
+    InsertSplitter;
 end;
 
 procedure TfrmMain.tbOpenClick(Sender: TObject);
@@ -371,7 +469,9 @@ begin
       if ctvProjects.Items[i].Text = sProjName then
       begin
         mDetailed.Perform(EM_LINESCROLL, 0, 0 - mDetailed.Lines.Count);
-        iPos := TDelphiProject(ctvProjects.Items[i].Data).DIndex;
+
+        iPos := GetDetailIndex(ctvProjects.Items[i].Data);
+
         if Pos('Failed!', AItem.Caption) <> 0 then
           iPos := iPos - Trunc(mDetailed.Height / Abs(Canvas.TextHeight('Wg')) - 1);
         mDetailed.Perform(EM_LINESCROLL, 0, iPos);
