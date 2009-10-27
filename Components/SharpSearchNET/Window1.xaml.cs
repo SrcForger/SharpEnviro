@@ -30,6 +30,7 @@ namespace SharpSearchNET
         public List<SearchResultData> searchResultsData;
 
         BackgroundWorker SearchBw = new BackgroundWorker();
+        BackgroundWorker InitBw = new BackgroundWorker();
         volatile bool searchUpdate = false, searchCancel = false, searchClose = false;
 
         string searchQuery, pendingSearchQuery;
@@ -101,6 +102,8 @@ namespace SharpSearchNET
             SearchBw.DoWork += new DoWorkEventHandler(RunWorker);
             SearchBw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(RunWorkerComplete);
 
+            InitBw.DoWork += new DoWorkEventHandler(InitWorker);
+
             searchCallback = new SearchCallback();
             searchCallback.OnNewResult += new ItemChangeHandler(NewResult);
             searchCallback.OnRemoveResult += new ItemChangeHandler(RemoveResult);
@@ -110,8 +113,9 @@ namespace SharpSearchNET
 
             Left = App.InitialPosition.X;
             Top = App.InitialPosition.Y;
-            edtQuery.Text = App.InitialQuery;
-			edtQuery.Focus();
+
+            // Start the initial query
+            InitBw.RunWorkerAsync();
          }
 
         private void OnClose(object sender, CancelEventArgs e) 
@@ -160,6 +164,15 @@ namespace SharpSearchNET
 
                 if (Restart)
                     SearchBw.RunWorkerAsync();
+            });
+        }
+
+        private void InitWorker(object sender, DoWorkEventArgs e)
+        {
+            Dispatcher.Invoke(DispatcherPriority.Normal, (ThreadStart)delegate
+            {
+                edtQuery.Text = App.InitialQuery;
+                edtQuery.Focus();
             });
         }
 
