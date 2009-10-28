@@ -40,6 +40,7 @@ type
 
 var
   VWMSpacing : integer;
+  VWMMoveToolWindows : boolean;
 
 function WindowInRect(wnd : hwnd; Rect : TRect) : boolean;  
 function VWMGetWindowList(pArea : TRect) : TWndArray;
@@ -181,7 +182,7 @@ var
        (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_APPWINDOW <> 0)) and
        ((IsWindowVisible(Wnd) or IsIconic(wnd)) and
        (GetWindowLong(Wnd, GWL_STYLE) and WS_CHILD = 0) and
-       (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0))  then
+       ((GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0) or (VWMMoveToolWindows)))  then
     begin
       if ((pArea.Right - pArea.Left) = 0) or (WindowInRect(wnd,pArea)) then
       with PParam(LParam)^ do
@@ -275,5 +276,6 @@ end;
 
 Initialization
    VWMSpacing := 32;
+   VWMMoveToolWindows := True;
 
 end.

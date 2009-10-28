@@ -137,6 +137,7 @@ var
   Dir: string;
   FName: string;
   fileloaded: boolean;
+  movetw : boolean;
 begin
   VWMCount := 4;
   SharpApi.UnRegisterShellHookReceiver(Handle);
@@ -144,6 +145,7 @@ begin
   sFollowFocus := False;
   sResetOnResChange := True;
   sShowOCD := True;
+  movetw := True;
   Dir := GetSharpeUserSettingsPath + 'SharpCore\Services\VWM\';
   FName := Dir + 'VWM.xml';
   if FileExists(FName) then
@@ -159,6 +161,7 @@ begin
     begin
       VWMCount := XML.Root.Items.IntValue('VWMCount', VWMCount);
       VWMCount := Max(2, Min(VWMCount, 12));
+      movetw := XML.Root.Items.BoolValue('MoveToolWindows', movetw);
       sFocusTopMost := XML.Root.Items.BoolValue('FocusTopMost', sFocusTopMost);
       sFollowFocus := XML.Root.Items.BoolValue('FollowFocus', sFollowFocus);
       sShowOCD := XML.Root.Items.BoolValue('ShowOCD', sShowOCD);
@@ -166,6 +169,7 @@ begin
     end;
     XML.Free;
   end;
+  VWMFunctions.VWMMoveToolWindows := movetw;
   if sFollowFocus then
     SharpApi.RegisterShellHookReceiver(Handle);
 end;
@@ -310,6 +314,12 @@ begin
     WM_VWMGETCURRENTDESK:
       begin
         Message.result := CurrentDesktop;
+      end;
+    WM_VWMGETMOVETOOLWINDOWS:
+      begin
+        if VWMFunctions.VWMMoveToolWindows then
+          Message.result := 1
+        else Message.result := 0;
       end;
     WM_SHARPEUPDATESETTINGS:
       begin

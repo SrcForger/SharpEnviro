@@ -156,6 +156,7 @@ end;
 
 procedure TMainForm.UpdateVWMSettings;
 begin
+  VWMFunctions.VWMMoveToolWindows := GetVWMMoveToolWindows;
   VWMCount := GetVWMCount;
   VWMIndex := GetCurrentVWM;
   VWMHeight := Height - 2 - mInterface.SkinInterface.SkinManager.Skin.Bar.NCYOffset.X
