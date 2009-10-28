@@ -66,12 +66,11 @@ uses
   SharpECenterHeader,
   SharpEGaugeBoxEdit,
   SharpEColorEditorEx,
-  SharpEHotkeyEdit,
   SharpESwatchManager,
   JvExControls,
   JvPageList,
   JvXPCheckCtrls,
-  JvExMask, JvToolEdit;
+  JvExMask, JvToolEdit, AppEvnts;
 
 const
   cEditTabHide = 0;
@@ -117,6 +116,7 @@ type
     lbHistory: TSharpEListBoxEx;
     tabExport: TTabSheet;
     lblDescription: TLabel;
+    ApplicationEvents1: TApplicationEvents;
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure tlPluginTabsTabChange(ASender: TObject; const ATabIndex: Integer;
       var AChange: Boolean);
@@ -154,6 +154,7 @@ type
     procedure pnlPluginContainerTabClick(ASender: TObject;
       const ATabIndex: Integer);
     procedure FormCreate(Sender: TObject);
+    procedure ApplicationEvents1Message(var Msg: tagMSG; var Handled: Boolean);
   private
     FCancelClicked: Boolean;
     FSelectedTabID: Integer;
@@ -1298,6 +1299,44 @@ begin
     sbPlugin.Padding.Right := 6
   else
     sbPlugin.Padding.Right := 0;
+end;
+
+procedure TSharpCenterWnd.ApplicationEvents1Message(var Msg: tagMSG;
+  var Handled: Boolean);
+var
+  actrl : TWinControl;
+begin
+  Handled := False;
+  if (Msg.Message = WM_KEYDOWN) then
+  begin
+    if IsWindow(SCM.EditWndHandle) then
+    begin
+      actrl := TForm(GetControlByHandle(SCM.EditWndHandle)).ActiveControl;
+      if actrl <> nil then
+      begin
+        Handled := True;
+        if Msg.wParam = VK_TAB then
+          SendMessage(SCM.EditWndHandle,Msg.message,Msg.wParam,Msg.lParam)
+        else if (Msg.wParam = VK_LEFT) or (Msg.wParam = VK_RIGHT)
+              or (Msg.wParam = VK_UP) or (Msg.wParam = VK_DOWN) then
+          SendMessage(actrl.Handle,Msg.message,Msg.wParam,Msg.lParam)
+        else Handled := False;
+      end;
+    end else if IsWindow(SCM.PluginWndHandle) then
+    begin
+      actrl := TForm(GetControlByHandle(SCM.PluginWndHandle)).ActiveControl;
+      if actrl <> nil then
+      begin
+        Handled := True;
+        if Msg.wParam = VK_TAB then
+          SendMessage(SCM.PluginWndHandle,Msg.message,Msg.wParam,Msg.lParam)
+        else if (Msg.wParam = VK_LEFT) or (Msg.wParam = VK_RIGHT)
+              or (Msg.wParam = VK_UP) or (Msg.wParam = VK_DOWN) then
+          SendMessage(actrl.Handle,Msg.message,Msg.wParam,Msg.lParam)
+        else Handled := False;
+      end;    
+    end;
+  end;
 end;
 
 procedure TSharpCenterWnd.ApplyEditEvent(Sender: TObject);
