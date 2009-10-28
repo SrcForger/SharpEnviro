@@ -2,18 +2,39 @@ unit uSystemFuncs;
 
 interface
 
-uses Types, Registry, Windows, Classes, SysUtils, ShellApi, SharpTypes;
-
+uses
+  Types, Registry, Windows, Classes, SysUtils, ShellApi, SharpTypes;
 const
   // new shell hook param
   HSHELL_SYSMENU = 9;
 
+function HasWriteAccess(pFile : String) : boolean;  
 function IsWow64(): boolean;
 function NETFramework35: Boolean;
 function FindAllWindows(const WindowClass: string): THandleArray;
 function ForceForegroundWindow(hwnd: THandle): Boolean;
 
 implementation
+
+function HasWriteAccess(pFile : String) : boolean;
+var
+  handle : hfile;
+  EMode : DWord;
+begin
+  EMode := SetErrorMode(SEM_FAILCRITICALERRORS);
+  result := False;
+  try
+    handle := CreateFile(PChar(pFile), GENERIC_WRITE, 0, nil, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+    if not (handle = INVALID_HANDLE_VALUE) then
+    begin
+      CloseHandle(handle);
+      DeleteFile(pFile);
+      result := True;
+    end;
+  except
+  end;
+  SetErrorMode(EMode);
+end;
 
 function IsWow64(): boolean;
 type
