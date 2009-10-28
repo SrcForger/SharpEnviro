@@ -96,11 +96,12 @@ const
   WM_BARREPOSITION        = WM_APP + 614;
 
   // VWM Functions
-  WM_VWMSWITCHDESKTOP     = WM_APP + 620;
-  WM_VWMDESKTOPCHANGED    = WM_APP + 621;
-  WM_VWMGETDESKCOUNT      = WM_APP + 622;
-  WM_VWMGETCURRENTDESK    = WM_APP + 623;
-  WM_VWMUPDATESETTINGS    = WM_APP + 624;  
+  WM_VWMSWITCHDESKTOP      = WM_APP + 620;
+  WM_VWMDESKTOPCHANGED     = WM_APP + 621;
+  WM_VWMGETDESKCOUNT       = WM_APP + 622;
+  WM_VWMGETCURRENTDESK     = WM_APP + 623;
+  WM_VWMUPDATESETTINGS     = WM_APP + 624;
+  WM_VWMGETMOVETOOLWINDOWS = WM_APP + 625;
 
   // System Tray Service
   WM_REGISTERWITHTRAY     = WM_APP + 650;
@@ -385,6 +386,16 @@ begin
   if wnd <> 0 then
     result := SendMessage(wnd,WM_VWMGETDESKCOUNT,0,0)
   else result := 0;
+end;
+
+function GetVWMMoveToolWindows : boolean;
+var
+  wnd : hwnd;
+begin
+  wnd := FindWindow('SharpE_VWM',nil);
+  if wnd <> 0 then
+    result := (SendMessage(wnd,WM_VWMGETMOVETOOLWINDOWS,0,0) <> 0)
+  else result := True;
 end;
 
 function SwitchToVWM(Index : integer; ExceptWnd : hwnd = 0) : boolean;
@@ -1538,6 +1549,7 @@ exports
 
   GetVWMCount,
   GetCurrentVWM,
+  GetVWMMoveToolWindows,
   SwitchToVWM,
 
   GetComponentMetaData,

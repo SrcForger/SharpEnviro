@@ -82,11 +82,12 @@ const
   WM_BARREPOSITION        = WM_APP + 614;
 
   // VWM Functions
-  WM_VWMSWITCHDESKTOP     = WM_APP + 620;
-  WM_VWMDESKTOPCHANGED    = WM_APP + 621;
-  WM_VWMGETDESKCOUNT      = WM_APP + 622;
-  WM_VWMGETCURRENTDESK    = WM_APP + 623;
-  WM_VWMUPDATESETTINGS    = WM_APP + 624;
+  WM_VWMSWITCHDESKTOP      = WM_APP + 620;
+  WM_VWMDESKTOPCHANGED     = WM_APP + 621;
+  WM_VWMGETDESKCOUNT       = WM_APP + 622;
+  WM_VWMGETCURRENTDESK     = WM_APP + 623;
+  WM_VWMUPDATESETTINGS     = WM_APP + 624;
+  WM_VWMGETMOVETOOLWINDOWS = WM_APP + 625;
 
   // System Tray Service
   WM_REGISTERWITHTRAY     = WM_APP + 650;
@@ -274,6 +275,7 @@ function UnRegisterShellHookReceiver(Wnd : hwnd) : boolean; external 'SharpApi.d
 
 function GetVWMCount : integer; external 'SharpApi.dll' name 'GetVWMCount';
 function GetCurrentVWM : integer; external 'SharpApi.dll' name 'GetCurrentVWM';
+function GetVWMMoveToolWindows : boolean; external 'SharpApi.dll' name 'GetVWMMoveToolWindows';
 function SwitchToVWM(Index : integer; ExceptWnd : hwnd = 0) : boolean; external 'SharpApi.dll' name 'SwitchToVWM';
 
 //meta data functions
