@@ -14,6 +14,7 @@ object MainForm: TMainForm
   OldCreateOrder = False
   Position = poScreenCenter
   PixelsPerInch = 96
+  OnCreate = FormCreate
   TextHeight = 13
   object Panel1: TPanel
     Left = 0
