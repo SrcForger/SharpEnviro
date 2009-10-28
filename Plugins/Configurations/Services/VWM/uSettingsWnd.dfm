@@ -3,7 +3,7 @@ object frmSettings: TfrmSettings
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmSettings'
-  ClientHeight = 376
+  ClientHeight = 451
   ClientWidth = 528
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -31,7 +31,6 @@ object frmSettings: TfrmSettings
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
-    ExplicitWidth = 756
   end
   object pnlGrid: TPanel
     AlignWithMargins = True
@@ -47,7 +46,6 @@ object frmSettings: TfrmSettings
     BevelOuter = bvNone
     ParentColor = True
     TabOrder = 1
-    ExplicitWidth = 751
     object sgbVwmCount: TSharpeGaugeBox
       Left = 0
       Top = 0
@@ -68,7 +66,7 @@ object frmSettings: TfrmSettings
   object SharpECenterHeader2: TSharpECenterHeader
     AlignWithMargins = True
     Left = 5
-    Top = 78
+    Top = 152
     Width = 518
     Height = 37
     Margins.Left = 5
@@ -82,12 +80,12 @@ object frmSettings: TfrmSettings
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
-    ExplicitWidth = 756
+    ExplicitTop = 78
   end
   object chkFocusTopMost: TJvXPCheckbox
     AlignWithMargins = True
     Left = 3
-    Top = 125
+    Top = 199
     Width = 520
     Height = 17
     Margins.Top = 0
@@ -99,12 +97,12 @@ object frmSettings: TfrmSettings
     State = cbChecked
     Align = alTop
     OnClick = SettingsChanged
-    ExplicitWidth = 758
+    ExplicitTop = 125
   end
   object SharpECenterHeader3: TSharpECenterHeader
     AlignWithMargins = True
     Left = 5
-    Top = 152
+    Top = 226
     Width = 518
     Height = 37
     Margins.Left = 5
@@ -118,12 +116,12 @@ object frmSettings: TfrmSettings
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
-    ExplicitWidth = 654
+    ExplicitTop = 152
   end
   object chkFollowFocus: TJvXPCheckbox
     AlignWithMargins = True
     Left = 3
-    Top = 199
+    Top = 273
     Width = 520
     Height = 17
     Margins.Top = 0
@@ -135,12 +133,12 @@ object frmSettings: TfrmSettings
     State = cbChecked
     Align = alTop
     OnClick = SettingsChanged
-    ExplicitWidth = 758
+    ExplicitTop = 199
   end
   object SharpECenterHeader4: TSharpECenterHeader
     AlignWithMargins = True
     Left = 5
-    Top = 300
+    Top = 374
     Width = 518
     Height = 37
     Margins.Left = 5
@@ -154,12 +152,12 @@ object frmSettings: TfrmSettings
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
-    ExplicitWidth = 756
+    ExplicitTop = 300
   end
   object chkNotifications: TJvXPCheckbox
     AlignWithMargins = True
     Left = 3
-    Top = 347
+    Top = 421
     Width = 520
     Height = 17
     Margins.Top = 0
@@ -171,12 +169,12 @@ object frmSettings: TfrmSettings
     State = cbChecked
     Align = alTop
     OnClick = SettingsChanged
-    ExplicitWidth = 758
+    ExplicitTop = 347
   end
   object SharpECenterHeader5: TSharpECenterHeader
     AlignWithMargins = True
     Left = 5
-    Top = 226
+    Top = 300
     Width = 518
     Height = 37
     Margins.Left = 5
@@ -190,12 +188,12 @@ object frmSettings: TfrmSettings
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
-    ExplicitWidth = 756
+    ExplicitTop = 226
   end
   object chkResetOnDisplayChange: TJvXPCheckbox
     AlignWithMargins = True
     Left = 3
-    Top = 273
+    Top = 347
     Width = 520
     Height = 17
     Margins.Top = 0
@@ -207,6 +205,42 @@ object frmSettings: TfrmSettings
     State = cbChecked
     Align = alTop
     OnClick = SettingsChanged
-    ExplicitWidth = 758
+    ExplicitTop = 273
+  end
+  object SharpECenterHeader6: TSharpECenterHeader
+    AlignWithMargins = True
+    Left = 5
+    Top = 78
+    Width = 518
+    Height = 37
+    Margins.Left = 5
+    Margins.Top = 10
+    Margins.Right = 5
+    Margins.Bottom = 10
+    Title = 'Move Tool Windows'
+    Description = 
+      'Enable this option if you want tool windows to be also affected ' +
+      'by the VWM.'
+    TitleColor = clWindowText
+    DescriptionColor = clRed
+    Align = alTop
+    ExplicitLeft = 10
+  end
+  object chkToolWindows: TJvXPCheckbox
+    AlignWithMargins = True
+    Left = 3
+    Top = 125
+    Width = 520
+    Height = 17
+    Margins.Top = 0
+    Margins.Right = 5
+    Margins.Bottom = 0
+    Caption = 'Move tool windows'
+    TabOrder = 11
+    Checked = True
+    State = cbChecked
+    Align = alTop
+    OnClick = SettingsChanged
+    ExplicitLeft = -2
   end
 end

@@ -82,6 +82,7 @@ begin
     with PluginHost.Xml.XmlRoot, frmSettings do begin
       sgbVwmCount.Value := Items.IntValue('VWMCount',4);
       chkFocusTopMost.Checked := Items.BoolValue('FocusTopMost',False);
+      chkToolWindows.Checked := Items.BoolValue('MoveToolWindows',True);
       chkFollowFocus.Checked := Items.BoolValue('FollowFocus',False);
       chkNotifications.Checked := Items.BoolValue('ShowOCD',True);
       chkResetOnDisplayChange.Checked := Items.BoolValue('ResetOnDisplayChange', True);      
@@ -112,6 +113,7 @@ begin
     Items.Clear;
     Items.Add('VWMCount',sgbVwmCount.Value);
     Items.Add('FocusTopMost',chkFocusTopMost.Checked);
+    Items.Add('MoveToolWindows',chkToolWindows.Checked);
     Items.Add('FollowFocus',chkFollowFocus.Checked);
     Items.Add('ShowOCD',chkNotifications.Checked);
     Items.Add('ResetOnDisplayChange',chkResetOnDisplayChange.Checked);
