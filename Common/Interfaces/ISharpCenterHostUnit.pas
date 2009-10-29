@@ -13,6 +13,11 @@ type
   TRefreshTypeEnum = ( rtAll, rtSize, rtPreview, rtTabs, rtTheme, rtTitle, rtStatus, rtDescription, rtValidation );
 
 type
+  TWinControlEx = class(TWinControl)
+  public
+    procedure SelectNext(CurControl: TWinControl; GoForward, CheckTabStop: Boolean);
+  end;
+
   ISharpCenterHost = interface(IInterface)
   ['{2277C19F-F87B-4CED-9ADA-8C3467426066}']
 
@@ -125,6 +130,8 @@ type
       function GetEditing : Boolean; stdCall;
       function GetWarning : Boolean; stdcall;
       procedure SetWarning(Value : Boolean); stdcall;
+
+      procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     public
       constructor Create;
       destructor Destroy; override;
@@ -301,6 +308,18 @@ begin
   FErrorIndicator.Free;
 end;
 
+procedure TInterfacedSharpCenterHostBase.FormKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Sender = nil then
+    exit;
+
+  if Key = VK_TAB then
+  begin
+    TWinControlEx(Sender).SelectNext(TForm(Sender).ActiveControl,GetKEyStatE(VK_SHIFT) >= 0,True);
+  end;
+end;
+
 function TInterfacedSharpCenterHostBase.GetEditing: Boolean;
 begin
   Result := FEditing;
@@ -356,6 +375,8 @@ begin
   AForm.Left := 0;
   AForm.Top := 0;
   AForm.Show;
+  if not Assigned(AForm.OnKeyDown) then
+    AForm.OnKeyDown := FormKeyDown;
   result := AForm.Handle;
 end;
 
@@ -366,6 +387,8 @@ begin
   AForm.Left := 0;
   AForm.Top := 0;
   AForm.Show;
+  if not Assigned(AForm.OnKeyDown) then
+    AForm.OnKeyDown := FormKeyDown;
   result := AForm.Handle;
 end;
 
@@ -505,6 +528,14 @@ begin
     if Assigned(FOnSetWarning) then
       FOnSetWarning(Value);
   end;
+end;
+
+{ TWinControlEx }
+
+procedure TWinControlEx.SelectNext(CurControl: TWinControl; GoForward,
+  CheckTabStop: Boolean);
+begin
+  inherited SelectNext(CurControl,GoForward,CheckTabStop);
 end;
 
 end.
