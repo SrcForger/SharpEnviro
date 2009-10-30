@@ -87,6 +87,7 @@ type
     procedure ResetIcon(pItem : TTrayIcon);
     procedure ResetSharing(pItem : TTrayIcon);
     procedure RemoveTrayIcon(pItem : TTrayIcon);
+    procedure HideTrayIcon(pItem: TTrayIcon);
     procedure ModifyTrayIcon(pItem : TTrayIcon; pData : TNotifyIconDataV7; Hidden,Shared : boolean; Action : integer);
     procedure UpdateTrayVersion(pItem : TTrayIcon; pData : TNotifyIconDataV7);
     procedure CheckForDeadIcons;
@@ -123,8 +124,7 @@ type
     procedure Disable;
 
     property ScreenChange : Boolean read FScreenChange write FScreenChange;
-  end;  
-
+  end;
 
 {$R *.RES}
 
@@ -276,7 +276,7 @@ begin
   SharpApi.SendDebugMessage('shell','uFlags: ' + inttostr(pData.uFlags),0);
   SharpApi.SendDebugMessage('shell','uCallbackMessage: ' + inttostr(pData.uCallbackMessage),0);
   SharpApi.SendDebugMessage('shell','Icon: ' + inttostr(pData.Icon),0);
-  SharpApi.SendDebugMessage('shell','szTip: ' + pData.szTip,0);        
+  SharpApi.SendDebugMessage('shell','szTip: ' + pData.szTip,0);
 end;
 
 function ShellTrayWndProc(wnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall;
@@ -378,30 +378,36 @@ begin
           begin
             case TrayCmd of
               NIM_ADD: begin
-                         //SharpApi.SendDebugMessage('shell','TrayCmd: NIM_ADD',0);
-                         //DebugIconData(IconData);
-                         if hidden then e := False
-                         else if pItem = nil then TrayManager.ModifyTrayIcon(pItem,IconData,False,False,TrayCmd)
-                         else e := False;
-                       end;
+                //SharpApi.SendDebugMessage('shell','TrayCmd: NIM_ADD',0);
+                //DebugIconData(IconData);
+                if pItem = nil then
+                  TrayManager.ModifyTrayIcon(pItem,IconData,Hidden,Shared,TrayCmd)
+                else
+                  e := false;
+              end;
               NIM_SETVERSION: begin
                 //SharpApi.SendDebugMessage('shell','TrayCmd: NIM_SETVERSION',0);
                 //DebugIconData(IconData);
                 TrayManager.UpdateTrayVersion(pItem,IconData);
               end;
               NIM_MODIFY: begin
-                            //SharpApi.SendDebugMessage('shell','NIM_MODIFY: NIM_ADD',0);
-                            //DebugIconData(IconData);
-                            if (hidden) and (pItem<>nil) then TrayManager.RemoveTrayIcon(pItem)
-                            else if (pItem <> nil) then TrayManager.ModifyTrayIcon(pItem,IconData,False,False,TrayCmd)
-                            else e := False;
-                        end;
+                //SharpApi.SendDebugMessage('shell','NIM_MODIFY: NIM_ADD',0);
+                //DebugIconData(IconData);
+                if (pItem <> nil) and (Hidden) then
+                  TrayManager.HideTrayIcon(pItem)
+                else if (pItem <> nil) then
+                  TrayManager.ModifyTrayIcon(pItem,IconData,Hidden,Shared,TrayCmd)
+                else
+                  e := False;
+              end;
               NIM_DELETE: begin
-                            //SharpApi.SendDebugMessage('shell','TrayCmd: NIM_DELETE',0);
-                            //DebugIconData(IconData);
-                            if (pItem <> nil) then TrayManager.RemoveTrayIcon(pItem)
-                              else e := False;
-                          end;
+                //SharpApi.SendDebugMessage('shell','TrayCmd: NIM_DELETE',0);
+                //DebugIconData(IconData);
+                if (pItem <> nil) then
+                  TrayManager.RemoveTrayIcon(pItem)
+                else
+                  e := False;
+              end;
             end;
           end;
 
@@ -1171,6 +1177,14 @@ begin
   if pItem.valid then
      BroadCastTrayMessage(pItem,1)
      else BroadCastTrayMessage(pItem,2);
+end;
+
+procedure TTrayManager.HideTrayIcon(pItem: TTrayIcon);
+begin
+  if pItem.valid then
+  begin
+    BroadCastTrayMessage(pItem,2);
+  end;
 end;
 
 procedure TTrayManager.RemoveTrayIcon(pItem: TTrayIcon);
