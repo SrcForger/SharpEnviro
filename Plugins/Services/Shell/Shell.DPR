@@ -87,7 +87,6 @@ type
     procedure ResetIcon(pItem : TTrayIcon);
     procedure ResetSharing(pItem : TTrayIcon);
     procedure RemoveTrayIcon(pItem : TTrayIcon);
-    procedure HideTrayIcon(pItem: TTrayIcon);
     procedure ModifyTrayIcon(pItem : TTrayIcon; pData : TNotifyIconDataV7; Hidden,Shared : boolean; Action : integer);
     procedure UpdateTrayVersion(pItem : TTrayIcon; pData : TNotifyIconDataV7);
     procedure CheckForDeadIcons;
@@ -393,9 +392,7 @@ begin
               NIM_MODIFY: begin
                 //SharpApi.SendDebugMessage('shell','NIM_MODIFY: NIM_ADD',0);
                 //DebugIconData(IconData);
-                if (pItem <> nil) and (Hidden) then
-                  TrayManager.HideTrayIcon(pItem)
-                else if (pItem <> nil) then
+                if (pItem <> nil) then
                   TrayManager.ModifyTrayIcon(pItem,IconData,Hidden,Shared,TrayCmd)
                 else
                   e := False;
@@ -1177,14 +1174,6 @@ begin
   if pItem.valid then
      BroadCastTrayMessage(pItem,1)
      else BroadCastTrayMessage(pItem,2);
-end;
-
-procedure TTrayManager.HideTrayIcon(pItem: TTrayIcon);
-begin
-  if pItem.valid then
-  begin
-    BroadCastTrayMessage(pItem,2);
-  end;
 end;
 
 procedure TTrayManager.RemoveTrayIcon(pItem: TTrayIcon);
