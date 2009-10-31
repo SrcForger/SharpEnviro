@@ -180,9 +180,9 @@ begin
   if bDebug then
     config := 'Debug';
 
-  // MSBuild.exe solutionFilePath /p:Configuration=Release
-  // MSBuild.exe solutionFilePath /p:Configuration=Debug
-  cmd := NETFramework35InstallPath + 'MSBuild.exe ' + Project.Path + ' /p:Configuration=' + config;
+  // MSBuild.exe "solutionFilePath" /t:Rebuild /p:Configuration=Release
+  // MSBuild.exe "solutionFilePath" /t:Rebuild /p:Configuration=Debug
+  cmd := NETFramework35InstallPath + 'MSBuild.exe "' + Project.Path + '" /t:Rebuild /p:Configuration=' + config;
 
   dc := TDosCommand.Create(nil);
   try
