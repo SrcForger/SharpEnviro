@@ -64,9 +64,15 @@ namespace SharpLinkLauncherNET
 				// The path to the link does not exists so do nothing.
 				Environment.Exit((int)ExitCode.InvalidLinkPath);
 
-			if (timeout < 0)
+			// Valid values for the Timer.Interval is > 0.
+			// We use -1 to indicate we should not wait for a WM_SHARPELINKLAUNCH message.
+			if (timeout < -1 || timeout == 0)
 				// The timeout was invalid so do nothing.
 				Environment.Exit((int)ExitCode.InvalidTimeout);
+
+			if (timeout == -1)
+				// We are not waiting so execute the link and exit.
+				StartProcessAndExit(linkPath, elevate);
 
 			// Setup the timeout timer so we don't wait forever for the WM_SHARPELINKLAUNCH message.
 			Timer timer = new Timer(timeout);
@@ -89,23 +95,7 @@ namespace SharpLinkLauncherNET
 					// and so that we don't kill the process prematurely.
 					timer.Enabled = false;
 
-					try
-					{
-						ProcessStartInfo psi = new ProcessStartInfo(linkPath);
-						psi.UseShellExecute = true;
-
-						if (elevate)
-							psi.Verb = "runas";
-
-						// Execute the link using ShellExecute and elevated if necessary.
-						Process.Start(psi);
-						Environment.Exit((int)ExitCode.Success);
-					}
-					catch
-					{
-						// If for some reason there was an exception executing the link squash it.
-						Environment.Exit((int)ExitCode.ProcessStartFailed);
-					}
+					StartProcessAndExit(linkPath, elevate);
 				}
 
                 if (lpMsg.message == WM_ENDSESSION ||
@@ -115,6 +105,32 @@ namespace SharpLinkLauncherNET
                     Environment.Exit((int)ExitCode.QuitMessage);
                 }
             }
+		}
+
+		/// <summary>
+		/// Execute the link and exit the process whether or not the execution is successful or not.
+		/// </summary>
+		/// <param name="linkPath">The link to be executed using ShellExecute.</param>
+		/// <param name="elevate">Whether or not to execute the link with elevate privileges.</param>
+		static void StartProcessAndExit(string linkPath, bool elevate)
+		{
+			try
+			{
+				ProcessStartInfo psi = new ProcessStartInfo(linkPath);
+				psi.UseShellExecute = true;
+
+				if (elevate)
+					psi.Verb = "runas";
+
+				// Execute the link using ShellExecute and elevated if necessary.
+				Process.Start(psi);
+				Environment.Exit((int)ExitCode.Success);
+			}
+			catch
+			{
+				// If for some reason there was an exception executing the link squash it.
+				Environment.Exit((int)ExitCode.ProcessStartFailed);
+			}
 		}
 
 		const int WM_SHARPELINKLAUNCH = 0x8000 + 540;
