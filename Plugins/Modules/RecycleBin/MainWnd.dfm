@@ -18,14 +18,14 @@ object MainForm: TMainForm
   object btnRecycle: TSharpEButton
     Left = 0
     Top = 0
-    Width = 32
-    Height = 32
-    AutoSize = False
+    Width = 42
+    Height = 25
+    AutoSize = True
     OnDblClick = btnRecycleOnDblClick
     OnMouseUp = btnRecycleOnClick
     Glyph32.ResamplerClassName = 'TNearestResampler'
     Layout = blGlyphLeft
-    AutoPosition = False
+    AutoPosition = True
   end
   object mnuRecycle: TPopupMenu
     Left = 72
@@ -108,7 +108,7 @@ object MainForm: TMainForm
     end
   end
   object recycleTimer: TTimer
-    Interval = 100
+    Interval = 10000
     OnTimer = recycleTimerOnTimer
     Left = 24
     Top = 56

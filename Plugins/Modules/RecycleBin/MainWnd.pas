@@ -82,7 +82,7 @@ implementation
 procedure TMainForm.LoadIcons;
 var
   TempBmp : TBitmap32;
-  Icon, Target : string;
+  Icon : string;
 begin
   TempBmp := TBitmap32.Create;
   TempBmp.Clear(color32(0,0,0,0));
@@ -91,7 +91,7 @@ begin
   if IsEmpty then
     Icon := 'icon.recyclebin.empty';
 
-  IconStringToIcon(Icon, Target, TempBmp);
+  IconStringToIcon(Icon, '', TempBmp);
   TempBmp.SetSize(32, 32);
 
   btnRecycle.Glyph32.Assign(tempBmp);
@@ -102,7 +102,8 @@ end;
 
 procedure TMainForm.LoadSettings;
 begin
-  
+  if recycleTimer.Enabled then
+    recycleTimer.OnTimer(recycleTimer);  
 end;
 
 procedure TMainForm.UpdateComponentSkins;
@@ -112,7 +113,7 @@ end;
 
 procedure TMainForm.UpdateSize;
 begin
-  LoadIcons;
+  btnRecycle.Width := Width - 4;
   Repaint;
 end;
 
@@ -122,16 +123,12 @@ var
 begin
   self.Caption := 'Recyclebin';
 
-  if btnRecycle <> nil then
-  begin
-    btnRecycle.Left := 0;
-    Repaint;
-  end;
+  btnRecycle.Left := 2;
 
   newWidth := mInterface.SkinInterface.SkinManager.Skin.Button.WidthMod;
-  
+
   if (btnRecycle.Glyph32 <> nil) then
-    newWidth := newWidth + btnRecycle.Width - 20;
+    newWidth := newWidth + btnRecycle.GetIconWidth;  
 
   mInterface.MinSize := NewWidth;
   mInterface.MaxSize := NewWidth;
