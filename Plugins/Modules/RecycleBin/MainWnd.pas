@@ -29,7 +29,7 @@ interface
 
 uses
   Windows, SysUtils, Classes, Forms, Dialogs, SharpIconUtils,
-  GR32, uISharpBarModule, ISharpESkinComponents,
+  GR32, uISharpBarModule, ISharpESkinComponents, JclShell,
   SharpApi, Menus, SharpEButton, ExtCtrls, SharpEBaseControls, Controls;
 
 
@@ -47,16 +47,19 @@ type
     Open1: TMenuItem;
     EmptyRecyclebin1: TMenuItem;
     recycleTimer: TTimer;
+    Properties1: TMenuItem;
 
     procedure GetRecycleBinStatus;
 
     procedure FormPaint(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure btnRecycleOnClick(Sender: TObject);
+    procedure recycleTimerOnTimer(Sender: TObject);
+    procedure btnRecycleOnClick(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure btnRecycleOnDblClick(Sender: TObject);
     procedure btnRecycleOpen(Sender: TObject);
     procedure btnRecycleEmpty(Sender: TObject);
-    procedure recycleTimerOnTimer(Sender: TObject);
-    procedure btnRecycleOnDblClick(Sender: TObject);
+    procedure btnRecycleProperties(Sender: TObject);
   public
     SHEmptyRecycleBin : function (hWnd: HWND; pszRootPath: PChar; dwFlags: DWORD): HResult; stdcall;
     SHQueryRecycleBin : function (pszRootPath: PChar; var pSHQueryRBInfo: TSHQueryRBInfo): HResult; stdcall;
@@ -165,13 +168,14 @@ begin
   end;
 end;
 
-procedure TMainForm.btnRecycleOnClick(Sender: TObject);
+procedure TMainForm.btnRecycleOnClick(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
 var
   p : TPoint;
   m : TMenuItem;
 begin
   p := ClientToScreen(Point(btnRecycle.Left, self.Top));
-  
+
   // Disable Empty Recycle Bin if it's empty
   m := mnuRecycle.Items[1];
   m.Enabled := not IsEmpty;
@@ -197,6 +201,11 @@ begin
     
   SHEmptyRecycleBin(Application.Handle, nil, 0);
   GetRecycleBinStatus;
+end;
+
+procedure TMainForm.btnRecycleProperties(Sender: TObject);
+begin
+  DisplayPropDialog(Application.Handle, 'shell:RecycleBinFolder');
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
