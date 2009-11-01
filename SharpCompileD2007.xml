@@ -2,6 +2,7 @@
   <package Name="Configurations - Components">
     <project Name="Toolbar List" Type="DLL">Plugins\Configurations\Components\Barlist\BarList.dproj</project>
     <project Name="Desktop" Type="DLL">Plugins\Configurations\Components\DesktopSettings\DesktopSettings.dproj</project>
+    <project Name="Filter List" Type="DLL">Plugins\Configurations\Components\FilterList\FilterList.dproj</project>
     <project Name="Home" Type="DLL">Plugins\Configurations\Components\Home\Home.dproj</project>
     <project Name="Menu Editor" Type="DLL">Plugins\Configurations\Components\MenuEdit\MenuEdit.dproj</project>
     <project Name="Menu List" Type="DLL">Plugins\Configurations\Components\MenuList\MenuList.dproj</project>
@@ -9,14 +10,13 @@
     <project Name="Module List" Type="DLL">Plugins\Configurations\Components\ModuleList\ModuleList.dproj</project>
     <project Name="Service List" Type="DLL">Plugins\Configurations\Components\ServiceList\ServiceList.dproj</project>
     <project Name="Theme List" Type="DLL">Plugins\Configurations\Components\ThemeList\ThemeList.dproj</project>
-    <project Name="Filter List" Type="DLL">Plugins\Configurations\Components\FilterList\FilterList.dproj</project>
   </package>
     <package Name="Configurations - Modules">
+    <project Name="AppBar List" Type="DLL">Plugins\Configurations\Modules\AppBarList\AppBarList.dproj</project> 
     <project Name="AppBar Options" Type="DLL">Plugins\Configurations\Modules\AppBarOptions\AppBarOptions.dproj</project>
     <project Name="Battery Monitor" Type="DLL">Plugins\Configurations\Modules\BatteryMonitor\BatteryMonitor.dproj</project>
     <project Name="Button" Type="DLL">Plugins\Configurations\Modules\ButtonModule\ButtonModule.dproj</project>
     <project Name="Button Bar List" Type="DLL">Plugins\Configurations\Modules\ButtonBarList\ButtonBarList.dproj</project>
-    <project Name="AppBar List" Type="DLL">Plugins\Configurations\Modules\AppBarList\AppBarList.dproj</project> 
     <project Name="Button Bar Options" Type="DLL">Plugins\Configurations\Modules\ButtonBarOptions\ButtonBarOptions.dproj</project>
     <project Name="Clock" Type="DLL">Plugins\Configurations\Modules\Clock\Clock.dproj</project>
     <project Name="CPU Monitor" Type="DLL">Plugins\Configurations\Modules\CPUMonitor\CPUMonitor.dproj</project>
@@ -26,8 +26,8 @@
     <project Name="Mini Scmd" Type="DLL">Plugins\Configurations\Modules\MiniScmd\MiniScmd.dproj</project>
     <project Name="Notes" Type="DLL">Plugins\Configurations\Modules\Notes\Notes.dproj</project>
     <project Name="Quick Script" Type="DLL">Plugins\Configurations\Modules\QuickScript\QuickScript.dproj</project>
-    <project Name="System Tray" Type="DLL">Plugins\Configurations\Modules\SystemTray\SystemTray.dproj</project>
     <project Name="RSS Reader" Type="DLL">Plugins\Configurations\Modules\RSS Reader\RSSReader.dproj</project>
+    <project Name="System Tray" Type="DLL">Plugins\Configurations\Modules\SystemTray\SystemTray.dproj</project>
     <project Name="Task" Type="DLL">Plugins\Configurations\Modules\TaskModule\TaskModule.dproj</project>
     <project Name="Volume Control" Type="DLL">Plugins\Configurations\Modules\VolumeControl\VolumeControl.dproj</project>
     <project Name="VWM" Type="DLL">Plugins\Configurations\Modules\VWM\VWM.dproj</project>
@@ -40,8 +40,8 @@
     <project Name="Multimedia Input" Type="DLL">Plugins\Configurations\Services\MultimediaInput\MultimediaInput.dproj</project>
     <project Name="VWM" Type="DLL">Plugins\Configurations\Services\VWM\VWM.dproj</project>
     <project Name="Weather" Type="DLL">Plugins\Configurations\Services\Weather\Weather.dproj</project>
-    <project Name="TaskSwitchList" Type="DLL">Plugins\Configurations\Services\TaskSwitchList\TaskSwitchList.dproj</project>
-    <project Name="TaskSwitchEdit" Type="DLL">Plugins\Configurations\Services\TaskSwitchEdit\TaskSwitchEdit.dproj</project>
+    <project Name="TaskSwitch Edit" Type="DLL">Plugins\Configurations\Services\TaskSwitchEdit\TaskSwitchEdit.dproj</project>
+    <project Name="TaskSwitch List" Type="DLL">Plugins\Configurations\Services\TaskSwitchList\TaskSwitchList.dproj</project>
   </package>
   <package Name="Configurations - Themes">
     <project Name="Cursor List" Type="DLL">Plugins\Configurations\Themes\CursorList\CursorList.dproj</project>
@@ -98,8 +98,9 @@
     <project Name="Mini Scmd" Type="DLL" >Plugins\Modules\MiniScmd\MiniScmd.dproj</project>
     <project Name="Notes" Type="DLL" >Plugins\Modules\Notes\Notes.dproj</project>
     <project Name="Quick Script" Type="DLL" >Plugins\Modules\QuickScript\QuickScript.dproj</project>
-    <project Name="System Tray" Type="DLL" >Plugins\Modules\SystemTray\SystemTray.dproj</project>
+    <project Name="Recycle Bin" Type="DLL" >Plugins\Modules\RecycleBin\RecycleBin.dproj</project>
     <project Name="RSS Reader" Type="DLL" >Plugins\Modules\RSS Reader\RSSReader.dproj</project>
+    <project Name="System Tray" Type="DLL" >Plugins\Modules\SystemTray\SystemTray.dproj</project>
     <project Name="Taskbar" Type="DLL" >Plugins\Modules\Taskbar\Taskbar.dproj</project>
     <project Name="Volume Control" Type="DLL" >Plugins\Modules\VolumeControl\VolumeControl.dproj</project>
     <project Name="VWM" Type="DLL" >Plugins\Modules\VWM\VWM.dproj</project>
