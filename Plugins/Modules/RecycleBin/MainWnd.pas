@@ -48,6 +48,7 @@ type
     EmptyRecyclebin1: TMenuItem;
     recycleTimer: TTimer;
     Properties1: TMenuItem;
+    Separator1: TMenuItem;
 
     procedure GetRecycleBinStatus;
 

@@ -73,7 +73,8 @@ object MainForm: TMainForm
       Caption = 'Empty Recycle Bin'
       OnClick = btnRecycleEmpty
     end
-    object TMenuItem
+    object Separator1: TMenuItem
+      Caption = '-'
     end
     object Properties1: TMenuItem
       Bitmap.Data = {
