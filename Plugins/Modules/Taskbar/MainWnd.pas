@@ -678,7 +678,7 @@ begin
       TSharpETaskItem(IList[IList.Count - 1]).Repaint;
     end;
 
-    if not sTaskPreview then
+    if (not sTaskPreview) or (not DwmCompositionEnabled) then
       exit;
 
     if GetCursorPosSecure(cursorPos) then
@@ -905,9 +905,6 @@ begin
     end;
   XML.Free;
   Slist.Free;
-
-  if not DwmCompositionEnabled then
-    sTaskPreview := False;
   
   if sEFilters.Count = 0 then sEFilter := False;
   if sIFilters.Count = 0 then sIFilter := False;
@@ -974,7 +971,7 @@ begin
   AlignSpecialButtons;
   NewWidth := Max(FSpecialButtonWidth + IList.Count * sMaxWidth + (IList.Count - 1) * sSpacing,1);
 
-  if not sTaskPreview then
+  if (not sTaskPreview) or (not DwmCompositionEnabled) then
     ToolTipApi.EnableToolTip(FTipWnd)
   else ToolTipApi.DisableToolTip(FTipWnd);
 

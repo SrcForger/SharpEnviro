@@ -736,9 +736,6 @@ begin
                          Item[n].Items.Value('Caption','C:\'));
     end;
   XML.Free;
-
-  if not DwmCompositionEnabled then
-    sTaskPreview := False;  
 end;
 
 procedure TMainForm.DisplaySystemMenu(pBtn : TButtonRecord);
@@ -1169,7 +1166,7 @@ begin
     else sAutoWidth := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Full.Dimension.X;
   end;
 
-  if not sTaskPreview then
+  if (not sTaskPreview) or (not DwmCompositionEnabled) then
     ToolTipApi.EnableToolTip(FHintWnd)
   else ToolTipApi.DisableToolTip(FHintWnd);
 
@@ -1320,7 +1317,7 @@ begin
       end;
     end;
 
-    if (not sTaskPreview) then
+    if (not sTaskPreview) or (not DwmCompositionEnabled) then
       exit;
     if FPreviewButton = cButton then
       exit;
@@ -1477,7 +1474,7 @@ begin
     begin
       if (BtnItem.Btn.Special) or (BtnItem.btn.Down and not BtnItem.btn.UseSpecial) then
       begin
-        if (BtnItem.Btn.Tag > 1) and (FPreviewWnds.Count = 0) and (not sTaskPreview) then
+        if (BtnItem.Btn.Tag > 1) and (FPreviewWnds.Count = 0) and ((not sTaskPreview) or (not DwmCompositionEnabled)) then
           BuildAndShowMenu(BtnItem)
         else begin
           if (FPreviewWnds.Count > 0) then
