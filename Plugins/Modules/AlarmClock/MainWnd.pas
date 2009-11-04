@@ -29,22 +29,23 @@ interface
 
 uses
   Windows, SysUtils, Classes, Forms, Dialogs, DateUtils, SharpIconUtils,
-  GR32, uISharpBarModule, ISharpESkinComponents, JclShell, MPlayer,
+  uISharpBarModule, ISharpESkinComponents, JclShell,
   SharpApi, Menus, SharpEButton, ExtCtrls, SharpEBaseControls, Controls,
-  GR32_PNG, GR32_Image, JclSimpleXML;
+  GR32, GR32_PNG, GR32_Image, JclSimpleXML, cbAudioPlay, DirectShow;
 
 
 type
-
   TAlarmTime = class
   private
+    wParent : TWinControl;
+
     iSec, iMin, iHou : integer;
     iDay, iMon, iYea: integer;
 
-    IsPlaying : Boolean;
-    Sound: TMediaPlayer;
+    IsTemp : boolean;
 
-    procedure SoundNotify(Sender: TObject);
+    Sound: TcbAudioPlay;
+    FDeviceIdx : integer;
 
   public
     constructor Create(par : TWinControl); reintroduce;
@@ -56,9 +57,9 @@ type
     function Compare(alarm : TAlarmTime) : boolean; overload;
 
     procedure SoundLoad(s : string);
+    procedure SoundClose;
     procedure SoundPlay;
     procedure SoundStop;
-
 
     property Sec: integer read iSec write iSec;
     property Min: integer read iMin write iMin;
@@ -79,6 +80,8 @@ type
   TAlarmSettings = record
     IsOn, IsAlarming : boolean;
     Timeout, Snooze : integer;
+
+    Sound : string;
 
     Alarm: TAlarmTime;
   end;
@@ -127,25 +130,19 @@ implementation
 {$R *.dfm}
 {$R AlarmGlyphs.res}
 
+
+{TAlarmTime}
 constructor TAlarmTime.Create(par : TWinControl);
 begin
-  Sound := TMediaPlayer.Create(Application);
-  Sound.Parent := par;
-
-  Sound.DeviceType := dtAutoSelect;
-
-  Sound.Visible := False;
-  Sound.Left := 0;
-  Sound.Top := 0;
-
-  Sound.Notify := True;
-  Sound.OnNotify := SoundNotify;
+  wParent := par;
+  Sound := nil;
+  IsTemp := False;
 end;
 
 destructor TAlarmTime.Destroy;
 begin
-  Sound.Stop;
-  Sound.Free;
+  SoundClose;
+  FreeAndNil(Sound);
 end;
 
 procedure TAlarmTime.SetTime(sSec, sMin, sHou, sDay, sMon, sYea : string);
@@ -189,8 +186,12 @@ var
   ResSt : TResourceStream;
   TempPath, TempFile : PChar;
 begin
+  IsTemp := False;
+
   if (s = '') or (s = 'Default') or (not FileExists(s)) then
   begin
+    IsTemp := True;
+
     ResSt := TResourceStream.Create(hInstance, 'wavdefault', RT_RCDATA);
     
     TempPath := nil;
@@ -201,13 +202,11 @@ begin
       GetMem(TempFile, MAX_PATH);
       GetTempPath(MAX_PATH, TempPath);
       GetTempFileName(TempPath, 'alarmclock', 0, TempFile);
-      StrCopy(TempFile, StrCat(TempFile, '.wav'));
       ResSt.SaveToFile(string(TempFile));
 
-      Sound.Close;
-      Sound.Filename := string(TempFile);
-      Sound.Wait := true;
-      Sound.Open;
+      FreeAndNil(Sound);
+      Sound := TcbAudioPlay.Create(wParent, TempFile, FDeviceIdx);
+      Sound.Loop := True;
     finally
       FreeMem(TempPath);
       FreeMem(TempFile);
@@ -215,51 +214,43 @@ begin
     end;
   end else
   begin
-    Sound.Close;
-    Sound.FileName := s;
-    Sound.Wait := true;
-    Sound.Open;
+    FreeAndNil(Sound);
+    Sound := TcbAudioPlay.Create(wParent, s, FDeviceIdx);
+    Sound.Loop := True;
   end;
+end;
+
+procedure TAlarmTime.SoundClose;
+begin
+  if Sound = nil then
+    exit;
+
+  if IsTemp and FileExists(Sound.FileName) then
+    DeleteFile(Sound.FileName);
 end;
 
 procedure TAlarmTime.SoundPlay;
 begin
-  if Sound.FileName = '' then
+  if (Sound = nil) or (Sound.FileName = '') then
     exit;
 
-  IsPlaying := True;
   Sound.Play;
 end;
 
 procedure TAlarmTime.SoundStop;
+var
+  Pos : LONGLONG;
 begin
-  if Sound.FileName = '' then
+  if (Sound = nil) or (Sound.FileName = '') then
     exit;
 
-  IsPlaying := False;
   Sound.Stop;
-  Sound.Rewind;
+  Pos := 0;
+  Sound.SetCurrentPosition(Pos, AM_SEEKING_AbsolutePositioning);
 end;
 
-procedure TAlarmTime.SoundNotify(Sender: TObject);
-begin
-  with Sender as TMediaPlayer do
-  begin
-    case Mode of
-      mpStopped:
-      begin
-        if IsPlaying then
-        begin
-          Rewind;
-          Play;
-        end;
-      end;
-    end;
 
-    Notify := True;
-  end;
-end;
-
+{TMainForm}
 
 procedure TMainForm.LoadIcons;
 var
@@ -299,6 +290,13 @@ var
 
   n : integer;
 begin
+  alarmSettings.IsAlarming := False;
+  alarmSettings.IsOn := False;
+  alarmSettings.Timeout := 60 * 1000;
+  alarmSettings.Snooze := 60 * 90 * 1000;
+  alarmSettings.Alarm.SetTime('0', '0', '0', '0', '0', '0');
+  alarmSettings.Sound := 'Default';
+
   XML := TJclSimpleXML.Create;
   try
     XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
@@ -320,7 +318,7 @@ begin
         end else if XML.Root.Items.Item[n].Name = 'Time' then
         begin
           alarmSettings.IsAlarming := False;
-          alarmSettings.IsOn := BoolValue('AutoStart', False);
+          alarmSettings.IsOn := (alarmSettings.IsOn) or (BoolValue('AutoStart', False));
 
           alarmSettings.Alarm.SetTime(Value('Second', '0'),
                                       Value('Minute', '0'),
@@ -329,9 +327,7 @@ begin
                                       Value('Month', '0'),
                                       Value('Year', '0'));
 
-          if Value('Sound', '') <> '' then
-            alarmSettings.Alarm.SoundLoad(Value('Sound', ''));
-
+          alarmSettings.Sound := Value('Sound', 'Default');
           alarmUpdTimer.Enabled := alarmSettings.IsOn;
         end;
       end;
@@ -353,6 +349,7 @@ begin
     alarmUpdTimer.Enabled := alarmSettings.IsOn;
   end else
   begin
+    alarmSettings.IsOn := True;
     LoadSettings;
   end;
 
@@ -408,18 +405,20 @@ end;
 
 procedure TMainForm.alarmOnTimeoutTimer(Sender: TObject);
 begin
+  alarmSettings.IsAlarming := True;
   alarmTimeoutTimer.Enabled := False;
   alarmSnoozeTimer.Enabled := False;
 
   Snooze;
+  UpdateAlarm;
 end;
 
 procedure TMainForm.alarmOnSnoozeTimer(Sender: TObject);
 begin
+  alarmSettings.IsAlarming := True;
   alarmTimeoutTimer.Enabled := False;
   alarmSnoozeTimer.Enabled := False;
 
-  alarmSettings.IsAlarming := True;
   Timeout;
   UpdateAlarm;
 end;
@@ -438,9 +437,14 @@ end;
 procedure TMainForm.UpdateAlarm;
 begin
   if alarmSettings.IsAlarming then
-    alarmSettings.Alarm.SoundPlay
-  else
+  begin
+    alarmSettings.Alarm.SoundLoad(alarmSettings.Sound);
+    alarmSettings.Alarm.SoundPlay;
+  end else
+  begin
     alarmSettings.Alarm.SoundStop;
+    alarmSettings.Alarm.SoundClose;
+  end;
 
   LoadIcons;
   Repaint;
@@ -448,12 +452,18 @@ end;
 
 procedure TMainForm.Timeout;
 begin
+  if (not alarmSettings.IsOn) then
+    exit;
+
   alarmTimeoutTimer.Interval := alarmSettings.Timeout;
   alarmTimeoutTimer.Enabled := True;
 end;
 
 procedure TMainForm.Snooze;
 begin
+  if (not alarmSettings.IsOn) or (not alarmSettings.IsAlarming) then
+    exit;
+
   alarmSettings.IsAlarming := False;
   alarmSnoozeTimer.Interval := alarmSettings.Snooze;
   alarmSnoozeTimer.Enabled := True;
@@ -497,6 +507,7 @@ begin
   DoubleBuffered := True;
 
   alarmSettings.Alarm := TAlarmTime.Create(Self);
+  alarmSettings.IsOn := False;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);

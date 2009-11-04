@@ -177,7 +177,7 @@ begin
   with result do
   begin
     Name := 'Alarm Clock';
-    Author := 'Mathias Tillman <mathias.tillman@gmail.com>';
+    Author := 'Mathias Tillman <mathias@sharpenviro.com>';
     Description := 'Adds a configurable Alarm Clock to the bar';
     Version := '0.7.6.0';
     ExtraData := 'preview: False';
