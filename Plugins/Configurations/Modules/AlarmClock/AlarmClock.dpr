@@ -88,7 +88,7 @@ begin
     Items.Add('Time');
     with Items.ItemNamed['Time'].Items do
     begin
-      Add('AutoStart', frmAlarmClock.cbAutostart.Checked);
+      Add('AutoStart', integer(frmAlarmClock.cbAutostart.Checked));
       Add('Sound', frmAlarmClock.edtSound.Text);
 
       Add('Second', frmAlarmClock.sgbTimeSecond.Value);
@@ -130,7 +130,8 @@ begin
           frmAlarmClock.sgbTimeYear.Value := IntValue('Year', 0);
         end;
     end;
-  end;
+  end else
+    Save;
 end;
 
 function TSharpCenterPlugin.Open: Cardinal;

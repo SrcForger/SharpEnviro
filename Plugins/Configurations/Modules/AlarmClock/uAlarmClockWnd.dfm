@@ -30,7 +30,6 @@ object frmAlarmClock: TfrmAlarmClock
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
-    ExplicitLeft = 10
   end
   object SharpECenterHeader2: TSharpECenterHeader
     AlignWithMargins = True
@@ -47,8 +46,6 @@ object frmAlarmClock: TfrmAlarmClock
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
-    ExplicitLeft = 10
-    ExplicitTop = 146
   end
   object pnlBottom: TPanel
     AlignWithMargins = True
@@ -173,8 +170,6 @@ object frmAlarmClock: TfrmAlarmClock
       Height = 17
       Caption = 'Auto Enabled'
       TabOrder = 6
-      Checked = True
-      State = cbChecked
       OnClick = cbOnChange
     end
     object edtSound: TSharpEEdit
@@ -253,7 +248,6 @@ object frmAlarmClock: TfrmAlarmClock
     ParentBackground = False
     ParentColor = True
     TabOrder = 4
-    ExplicitTop = 78
     object Label2: TLabel
       Left = 0
       Top = 9
