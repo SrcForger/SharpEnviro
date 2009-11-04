@@ -56,6 +56,7 @@ type
     DropTarget: TJvDropTarget;
     Timer1: TTimer;
     PreviewCheckTimer: TTimer;
+    ses_togall: TSharpEButton;
     procedure DropTargetDragOver(Sender: TJvDropTarget;
       var Effect: TJvDropEffect);
     procedure FormShow(Sender: TObject);
@@ -68,6 +69,7 @@ type
     procedure PreviewCheckTimerTimer(Sender: TObject);
     procedure ses_minallMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
+    procedure ses_togallClick(Sender: TObject);
   protected
   private
     FMoveToVWMIcon : TBitmap;
@@ -83,6 +85,7 @@ type
     sMiddleClose : boolean;
     sMaxAllButton : boolean;
     sMinAllButton : boolean;
+    sTogAllButton : boolean;
     sShowAppBarWindows : boolean;
     sIFilter,sEFilter : Boolean;
     sIGlobalFilters : array of String;
@@ -184,6 +187,7 @@ begin
       TSharpETaskItem(IList.Items[n]).Repaint;
   ses_minall.Repaint;
   ses_maxall.Repaint;
+  ses_togall.Repaint;
 end;
 
 procedure TMainForm.UpdateComponentSkins;
@@ -192,9 +196,30 @@ var
 begin
   ses_maxall.SkinManager := mInterface.SkinInterface.SkinManager;
   ses_minall.SkinManager := mInterface.SkinInterface.SkinManager;
+  ses_togall.SkinManager := mInterface.SkinInterface.SkinManager;
 
   for n := 0 to IList.Count - 1 do
     TSharpETaskItem(IList.Items[n]).SkinManager := mInterface.SkinInterface.SkinManager;
+end;
+
+procedure LoadTogAll(var ses_togall : TSharpEButton);
+var
+  TempBmp : TBitmap32;
+  ResStream : TResourceStream;
+  Alpha : Boolean;
+begin
+  // Default Toggle All icon
+  TempBmp := TBitmap32.Create;
+  TempBmp.Clear(color32(0,0,0,0));
+  ResStream := TResourceStream.Create(HInstance, 'togallicon', RT_RCDATA);
+
+  try
+    LoadBitmap32FromPng(TempBmp,ResStream,Alpha);
+    ses_togall.Glyph32.Assign(TempBmp);
+  finally
+    TempBmp.Free;
+    ResStream.Free;
+  end;
 end;
 
 procedure TMainForm.UpdateCustomSettings;
@@ -203,7 +228,6 @@ var
   b : boolean;
 begin
   DebugOutPutInfo('TMainForm.UpdatecustomSettings (Procedure)');
-  if (not ses_minall.Visible) and (not ses_maxall.Visible) then exit;
 
   FCustomSkinSettings.LoadFromXML('');
   try
@@ -216,7 +240,7 @@ begin
           {$WARNINGS OFF}
           dir := IncludeTrailingBackSlash(FCustomSkinSettings.Path);
           {$WARNINGS ON}
-          if FileExists(dir + items.Value('minallicon')) then
+          if (items.ItemNamed['minallicon'] <> nil) and FileExists(dir + items.Value('minallicon')) then
           begin
             try
               GR32_PNG.LoadBitmap32FromPNG(ses_minall.Glyph32,dir + items.Value('minallicon'),b);
@@ -224,7 +248,7 @@ begin
               ses_minall.Glyph32.Assign(FDminA);
             end;
           end else ses_minall.Glyph32.Assign(FDminA);
-          if FileExists(dir + Items.Value('maxallicon')) then
+          if (items.ItemNamed['maxallicon'] <> nil) and  FileExists(dir + Items.Value('maxallicon')) then
           begin
             try
               GR32_PNG.LoadBitmap32FromPNG(ses_maxall.Glyph32,dir + items.Value('maxallicon'),b);
@@ -232,16 +256,26 @@ begin
               ses_maxall.Glyph32.Assign(FDmaxA);
             end;
           end else ses_maxall.Glyph32.Assign(FDmaxA);
+          if (items.ItemNamed['togallicon'] <> nil) and FileExists(dir + Items.Value('togallicon')) then
+          begin
+            try
+              GR32_PNG.LoadBitmap32FromPNG(ses_togall.Glyph32,dir + items.Value('togallicon'),b);
+            except
+              LoadTogAll(ses_togall);
+            end;
+          end else LoadTogAll(ses_togall);
         end;
       end else
       begin
         ses_minall.Glyph32.Assign(FDminA);
         ses_maxall.Glyph32.Assign(FDmaxA);
+        LoadTogAll(ses_togall);
       end;
     end;
   except
     ses_minall.Glyph32.Assign(FDminA);
     ses_maxall.Glyph32.Assign(FDmaxA);
+    LoadTogAll(ses_togall);
   end;
 end;
 
@@ -387,13 +421,26 @@ begin
   begin
     ses_maxall.Visible := True;
     ses_maxall.Left := n;
-    ses_minall.UpdateSkin;    
+    ses_maxall.UpdateSkin;    
     ses_maxall.Width := mInterface.SkinInterface.SkinManager.Skin.Button.WidthMod;
     if ses_maxall.Glyph32 <> nil then
       ses_maxall.Width := ses_maxall.Width + ses_maxall.GetIconWidth;
     n := n + ses_maxall.Width + 2;
     ses_maxall.Width := ses_maxall.Width - 4;
   end else ses_maxall.Visible := False;
+
+  if sTogAllButton then
+  begin
+    ses_togall.Visible := True;
+    ses_togall.Left := n;
+    ses_togall.UpdateSkin;
+    ses_togall.Width := mInterface.SkinInterface.SkinManager.Skin.Button.WidthMod;
+    if ses_togall.Glyph32 <> nil then
+      ses_togall.Width := ses_togall.Width + ses_togall.GetIconWidth;
+    n := n + ses_togall.Width + 2;
+    ses_togall.Width := ses_togall.Width - 4;
+  end else ses_togall.Visible := False;
+
   FSpecialButtonWidth := n + 4;
 
   // Update Tooltips
@@ -418,6 +465,17 @@ begin
   begin
     ToolTipApi.DeleteToolTip(FTipWnd,self,2);
     ses_maxall.Tag := 0;
+  end;
+  if sTogAllButton then
+  begin
+    if ses_togall.tag = 0 then
+      ToolTipApi.AddToolTip(FTipWnd,self,3,ses_togall.BoundsRect,'Toggle All Windows')
+    else ToolTipApi.UpdateToolTipRect(FTipWnd,self,3,ses_togall.BoundsRect);
+    ses_togall.Tag := 1;
+  end else
+  begin
+    ToolTipApi.DeleteToolTip(FTipWnd,self,3);
+    ses_togall.Tag := 0;
   end;
 end;
 
@@ -864,6 +922,7 @@ begin
       sSortType := TSharpeTaskManagerSortType(IntValue('SortType',0));
       sMinAllButton := BoolValue('MinAllButton',False);
       sMaxAllButton := BoolValue('MaxAllButton',False);
+      sTogAllButton := BoolValue('TogAllButton',False);
       sIFilter := BoolValue('FilterTasks',True);
       sEFilter := BoolValue('FilterTasks',True);
       sDebug   := BoolValue('Debug',False);
@@ -1538,6 +1597,7 @@ begin
   sEFilter := False;
   sMinAllButton := False;
   sMaxAllButton := False;
+  sTogAllButton := False;
   sMaxwidth  := 128;
   IList := TObjectList.Create(True);
   IList.Clear;
@@ -1576,27 +1636,11 @@ begin
 end;
 
 procedure TMainForm.ses_minallClick(Sender: TObject);
-var
-  n : integer;
-  pTaskItem : TSharpETaskItem;
-  pItem : TTaskItem;
 begin
   DebugOutPutInfo('TMainForm.ses_minallClick (Procedure)');
   FLocked := True;
-  for n := IList.Count -1 downto 0 do
-  begin
-    pTaskItem := TSharpETaskItem(IList.Items[n]);
-    pTaskItem.Down := False;
-//    pItem := TTaskItem(TM.GetItemByHandle(pTaskItem.Handle));
-//    if pItem <> nil then
-//       pItem.Minimize;
-  end;
-  for n := 0 to TM.ItemCount - 1 do
-  begin
-    pItem := TM.GetItemByIndex(n);
-    if pItem <> nil then
-      pItem.Minimize;
-  end;
+
+  SharpApi.SharpExecute('!MinimizeAll');
 
   FLocked := False;
   RealignComponents(True);
@@ -1612,29 +1656,18 @@ begin
   end;
 end;
 
+procedure TMainForm.ses_togallClick(Sender: TObject);
+begin
+  SharpApi.SharpExecute('!ToggleAllWindows');
+end;
+
 procedure TMainForm.ses_maxallClick(Sender: TObject);
-var
-  n : integer;
- // pTaskItem : TSharpETaskItem;
-  pItem : TTaskItem;
 begin
   DebugOutPutInfo('TMainForm.ses_maxallClick (Procedure)');
   FLocked := True;
 
-  {for n := IList.Count -1 downto 0 do
-  begin
-    pTaskItem := TSharpETaskItem(IList.Items[n]);
-    pItem := TTaskItem(TM.GetItemByHandle(pTaskItem.Handle));
-    if pItem <> nil then
-       pItem.Restore;
-  end;  }
-  for n := 0 to TM.ItemCount - 1 do
-  begin
-    pItem := TM.GetItemByIndex(n);
-    if pItem <> nil then
-      pItem.Restore;
-  end;
-  
+  SharpApi.SharpExecute('!RestoreAll');
+
   FLocked := False;
   RealignComponents(True);
 end;

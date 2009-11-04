@@ -78,6 +78,7 @@ type
     Panel1: TPanel;
     chkAppBar: TJvXPCheckbox;
     chkTaskPreviews: TJvXPCheckbox;
+    chckToggleBtn: TJvXPCheckbox;
     procedure lbItemsResize(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);

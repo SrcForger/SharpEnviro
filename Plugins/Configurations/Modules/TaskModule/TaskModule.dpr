@@ -111,6 +111,7 @@ begin
       // Buttons
       chkMinimiseBtn.Checked := BoolValue('MinAllButton', False);
       chkRestoreBtn.Checked := BoolValue('MaxAllButton', False);
+      chckToggleBtn.Checked := BoolValue('TogAllButton', False);
       chkFilterTasks.Checked := BoolValue('FilterTasks', False);
       chkMiddleClose.Checked := BoolValue('MiddleClose', True);
       lbItems.Visible := chkFilterTasks.Checked;
@@ -202,6 +203,7 @@ begin
     // Buttons
     Add('MinAllButton', chkMinimiseBtn.Checked);
     Add('MaxAllButton', chkRestoreBtn.Checked);
+    Add('TogAllButton', chckToggleBtn.Checked);
     Add('FilterTasks', chkFilterTasks.Checked);
     Add('MiddleClose', chkMiddleClose.Checked);
 
