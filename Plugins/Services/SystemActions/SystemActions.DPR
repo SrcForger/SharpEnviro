@@ -197,12 +197,20 @@ var
   EnumParam: TParam;
 
   function EnumWindowsProc(Wnd: HWND; LParam: LPARAM): BOOL; stdcall;
+  var
+    rc : TRect;
   begin
+    GetWindowRect(Wnd, rc);
+
+    // The IsIconic call was removed beacuse it caused problems in utorrent when it was minimized to the tray
+    // the main window was not visible (IsWindowVisible = false) but it was iconic (IsIconic = true)
+    // which caused the window to be unminimized when the Restore/Toggle action was called
     if (GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) and
-      ((IsWindowVisible(Wnd) or IsIconic(wnd)) and
+      ((IsWindowVisible(Wnd) {or IsIconic(wnd)}) and
       ((GetWindowLong(Wnd, GWL_HWNDPARENT) = 0) or
       (GetWindowLong(Wnd, GWL_HWNDPARENT) = Integer(GetDesktopWindow))) and
-      (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0)) then
+      (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0) and
+      (rc.Right-rc.Left > 0) and (rc.Bottom-rc.Top > 0)) then
       with PParam(LParam)^ do
       begin
         setlength(wndlist, length(wndlist) + 1);
