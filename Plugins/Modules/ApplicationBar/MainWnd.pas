@@ -1166,10 +1166,6 @@ begin
     else sAutoWidth := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Full.Dimension.X;
   end;
 
-  if (not sTaskPreview) or (not DwmCompositionEnabled) then
-    ToolTipApi.EnableToolTip(FHintWnd)
-  else ToolTipApi.DisableToolTip(FHintWnd);
-
   sb_config.Visible := (length(FButtonList) = 0);
   if sb_config.Visible then
   begin
@@ -1318,7 +1314,13 @@ begin
     end;
 
     if (not sTaskPreview) or (not DwmCompositionEnabled) then
-      exit;
+    begin
+      ToolTipApi.EnableToolTip(FHintWnd);
+      Exit;
+    end;
+
+    ToolTipApi.DisableToolTip(FHintWnd);
+    
     if FPreviewButton = cButton then
       exit;
       
