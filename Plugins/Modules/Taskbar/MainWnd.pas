@@ -67,9 +67,11 @@ type
     procedure FormCreate(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure PreviewCheckTimerTimer(Sender: TObject);
-    procedure ses_minallMouseMove(Sender: TObject; Shift: TShiftState; X,
+    procedure ses_MouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
     procedure ses_togallClick(Sender: TObject);
+    procedure ses_MouseEnter(Sender: TObject);
+    procedure ses_MouseLeave(Sender: TObject);
   protected
   private
     FMoveToVWMIcon : TBitmap;
@@ -737,7 +739,12 @@ begin
     end;
 
     if (not sTaskPreview) or (not DwmCompositionEnabled) then
-      exit;
+    begin
+      ToolTipApi.EnableToolTip(FTipWnd);
+      Exit;
+    end;
+
+    ToolTipApi.DisableToolTip(FTipWnd);
 
     if GetCursorPosSecure(cursorPos) then
       CPos := ScreenToClient(cursorPos)
@@ -1029,10 +1036,6 @@ begin
 
   AlignSpecialButtons;
   NewWidth := Max(FSpecialButtonWidth + IList.Count * sMaxWidth + (IList.Count - 1) * sSpacing,1);
-
-  if (not sTaskPreview) or (not DwmCompositionEnabled) then
-    ToolTipApi.EnableToolTip(FTipWnd)
-  else ToolTipApi.DisableToolTip(FTipWnd);
 
   if sState = tisMini then mInterface.MinSize := Max(FSpecialButtonWidth + IList.Count * sMaxWidth + (IList.Count - 1) * sSpacing,1)
      else mInterface.MinSize := Max(FSpecialButtonWidth + IList.Count * 16 + (IList.Count - 1) * sSpacing,1);
@@ -1646,7 +1649,7 @@ begin
   RealignComponents(True);
 end;
 
-procedure TMainForm.ses_minallMouseMove(Sender: TObject; Shift: TShiftState; X,
+procedure TMainForm.ses_MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
   if FPreviewWnd <> nil then
@@ -1654,6 +1657,16 @@ begin
     FPreviewWnd.Free;
     FPreviewWnd := nil;
   end;
+end;
+
+procedure TMainForm.ses_MouseEnter(Sender: TObject);
+begin
+  ToolTipApi.EnableToolTip(FTipWnd);
+end;
+
+procedure TMainForm.ses_MouseLeave(Sender: TObject);
+begin
+  ToolTipApi.DisableToolTip(FTipWnd);
 end;
 
 procedure TMainForm.ses_togallClick(Sender: TObject);

@@ -27,7 +27,9 @@ object MainForm: TMainForm
     ShowHint = False
     AutoSize = True
     OnClick = ses_maxallClick
-    OnMouseMove = ses_minallMouseMove
+    OnMouseMove = ses_MouseMove
+    OnMouseEnter = ses_MouseEnter
+    OnMouseLeave = ses_MouseLeave
     Glyph32.DrawMode = dmBlend
     Glyph32.CombineMode = cmMerge
     Glyph32.ResamplerClassName = 'TLinearResampler'
@@ -78,7 +80,9 @@ object MainForm: TMainForm
     ShowHint = False
     AutoSize = True
     OnClick = ses_minallClick
-    OnMouseMove = ses_minallMouseMove
+    OnMouseMove = ses_MouseMove
+    OnMouseEnter = ses_MouseEnter
+    OnMouseLeave = ses_MouseLeave
     Glyph32.DrawMode = dmBlend
     Glyph32.CombineMode = cmMerge
     Glyph32.ResamplerClassName = 'TLinearResampler'
@@ -129,6 +133,9 @@ object MainForm: TMainForm
     ShowHint = False
     AutoSize = True
     OnClick = ses_togallClick
+    OnMouseMove = ses_MouseMove
+    OnMouseEnter = ses_MouseEnter
+    OnMouseLeave = ses_MouseLeave
     Glyph32.DrawMode = dmBlend
     Glyph32.CombineMode = cmMerge
     Glyph32.ResamplerClassName = 'TNearestResampler'
