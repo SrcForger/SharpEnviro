@@ -1,7 +1,7 @@
 object MainForm: TMainForm
   Left = 0
   Top = 0
-  Caption = 'Battery Monitor'
+  Caption = 'Alarm Clock'
   ClientHeight = 159
   ClientWidth = 291
   Color = clBtnFace
@@ -47,6 +47,7 @@ object MainForm: TMainForm
     Top = 32
   end
   object mnuRight: TPopupMenu
+    Alignment = paCenter
     Left = 168
     Top = 32
     object urnOff1: TMenuItem

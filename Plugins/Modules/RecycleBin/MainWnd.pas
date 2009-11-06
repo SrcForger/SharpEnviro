@@ -1,7 +1,7 @@
 {
 Source Name: MainWnd
-Description: RSS Reader Monitor module main window
-Copyright (C) Martin Krämer <MartinKraemer@gmx.net>
+Description: Recycle Bin module main window
+Copyright (C) Mathias Tillman <mathias@sharpenviro.com>
 
 Source Forge Site
 https://sourceforge.net/projects/sharpe/
@@ -172,14 +172,20 @@ var
   p : TPoint;
   m : TMenuItem;
 begin
-  p := ClientToScreen(Point(btnRecycle.Left, self.Top));
+  if Button = mbRight then
+  begin
+    // Get the cordinates on the screen where the popup should appear.
+    p := ClientToScreen(Point(0, Self.Height));
+    if p.Y > Monitor.Top + Monitor.Height div 2 then
+      p.Y := p.Y - Self.Height;
 
-  // Disable Empty Recycle Bin if it's empty
-  m := mnuRecycle.Items[1];
-  m.Enabled := not IsEmpty;
+    // Disable Empty Recycle Bin if it's empty
+    m := mnuRecycle.Items[1];
+    m.Enabled := not IsEmpty;
 
-  // Show the menu
-  mnuRecycle.Popup(p.X, p.Y);
+    // Show the menu
+    mnuRecycle.Popup(p.X, p.Y);
+  end;
 end;
 
 procedure TMainForm.btnRecycleOnDblClick(Sender: TObject);

@@ -1,7 +1,7 @@
 {
 Source Name: MainWnd
-Description: RSS Reader Monitor module main window
-Copyright (C) Martin Krämer <MartinKraemer@gmx.net>
+Description: Alarm Clock module main window
+Copyright (C) Mathias Tillman <mathias@sharpenviro.com>
 
 Source Forge Site
 https://sourceforge.net/projects/sharpe/
@@ -484,6 +484,11 @@ begin
   end else if Button = mbRight then
   begin
     p := ClientToScreen(Point(btnAlarm.Left, btnAlarm.Top));
+
+    // Get the cordinates on the screen where the popup should appear.
+    p := ClientToScreen(Point(0, Self.Height));
+    if p.Y > Monitor.Top + Monitor.Height div 2 then
+      p.Y := p.Y - Self.Height;
 
     m := mnuRight.Items[0];
     m.Enabled := (alarmSettings.IsAlarming);

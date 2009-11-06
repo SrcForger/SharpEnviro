@@ -1,7 +1,7 @@
 object MainForm: TMainForm
   Left = 0
   Top = 0
-  Caption = 'Battery Monitor'
+  Caption = 'Recycle Bin'
   ClientHeight = 159
   ClientWidth = 291
   Color = clBtnFace
@@ -28,6 +28,7 @@ object MainForm: TMainForm
     AutoPosition = True
   end
   object mnuRecycle: TPopupMenu
+    Alignment = paCenter
     Left = 72
     Top = 16
     object Open1: TMenuItem
