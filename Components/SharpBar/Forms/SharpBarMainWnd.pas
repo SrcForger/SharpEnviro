@@ -122,6 +122,7 @@ type
     procedure BarManagment1Click(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure LaunchSharpCenter1Click(Sender: TObject);
+    procedure FormPaint(Sender: TObject);
   private
     { Private-Deklarationen }
     FUser32DllHandle: THandle;
@@ -189,6 +190,7 @@ type
     procedure UpdateBGZone;
     procedure UpdateBGImage(NewWidth: integer = -1);
     procedure InitBar;
+    procedure HideBar;
     property BGImage: TBitmap32 read FBGImage;
     property SharpEBar: TSharpEBar read FSharpEBar;
     property ShellBCInProgress: boolean read FShellBCInProgress;
@@ -302,6 +304,7 @@ begin
         SharpEBar.AutoStart := Items.BoolValue('AutoStart', True);
         SharpEBar.ShowThrobber := Items.BoolValue('ShowThrobber', True);
         SharpEBar.DisableHideBar := Items.BoolValue('DisableHideBar', True);
+        SharpEBar.StartHidden := Items.BoolValue('StartHidden', False);
         ModuleManager.ShowMiniThrobbers := Items.BoolValue('ShowMiniThrobbers', True);
         SharpEBar.AlwaysOnTop := Items.BoolValue('AlwaysOnTop', False);
       end;
@@ -1021,6 +1024,7 @@ begin
         SharpEBar.AutoStart := Items.BoolValue('AutoStart', True);
         SharpEBar.ShowThrobber := Items.BoolValue('ShowThrobber', True);
         SharpEBar.DisableHideBar := Items.BoolValue('DisableHideBar', True);
+        SharpEBar.StartHidden := Items.BoolValue('StartHidden', False);
         ModuleManager.ShowMiniThrobbers := Items.BoolValue('ShowMiniThrobbers', True);
         SharpEBar.AlwaysOnTop := Items.BoolValue('AlwaysOnTop', False);
 
@@ -1051,6 +1055,7 @@ begin
   FSharpEBar.AutoPosition := True;
   FSharpEBar.AutoStart := True;
   FSharpEBar.DisableHideBar := True;
+  FSharpEBar.StartHidden := False;
   FSharpEBar.HorizPos := hpMiddle;
   FSharpEBar.MonitorIndex := 0;
   FSharpEBar.PrimaryMonitor := True;
@@ -1106,7 +1111,7 @@ begin
   if mfParamID <> -255 then begin
     SharpBarMainForm.LoadBarFromID(mfParamID);
     mfParamID := -255;
-  end;    
+  end;
 
   SharpApi.RegisterActionEx(PChar('!FocusBar (' + inttostr(FBarID) + ')'), 'SharpBar', Handle, 1);
   SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));
@@ -1702,6 +1707,31 @@ begin
     BarMove := False;
 end;
 
+procedure TSharpBarMainForm.HideBar;
+begin
+  if not SharpEBar.DisableHideBar then begin
+    //BarHideForm.Color := SkinManager.Scheme.Throbberback;
+    if (SharpEbar.VertPos = vpBottom) then begin
+      BarHideForm.Left := Left;
+      BarHideForm.Width := Width;
+      BarHideForm.Height := 1;
+      BarHideForm.Top := Top + Height - 1;
+      SharpBarMainForm.Hide;
+      BarHideForm.Show;
+      SharpApi.ServiceMsg('DeskArea', 'Update');
+    end
+    else if (SharpEBar.VertPos = vpTop) then begin
+      BarHideForm.Left := Left;
+      BarHideForm.Width := Width;
+      BarHideForm.Height := 1;
+      BarHideForm.Top := Top;
+      SharpBarMainForm.Hide;
+      BarHideForm.Show;
+      SharpApi.ServiceMsg('DeskArea', 'Update');
+    end;
+  end;
+end;
+
 procedure TSharpBarMainForm.FormMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
@@ -1726,26 +1756,16 @@ begin
           SharpEBar.Throbber.Repaint;
       end;
     end;
-  if (Button = mbLeft) and (not SharpEBar.DisableHideBar) then begin
-    //BarHideForm.Color := SkinManager.Scheme.Throbberback;
-    if (Y = Height - 1) and (SharpEbar.VertPos = vpBottom) then begin
-      BarHideForm.Left := Left;
-      BarHideForm.Width := Width;
-      BarHideForm.Height := 1;
-      BarHideForm.Top := Top + Height - 1;
-      SharpBarMainForm.Hide;
-      BarHideForm.Show;
-      SharpApi.ServiceMsg('DeskArea', 'Update');
-    end
-    else if (Y = 0) and (SharpEBar.VertPos = vpTop) then begin
-      BarHideForm.Left := Left;
-      BarHideForm.Width := Width;
-      BarHideForm.Height := 1;
-      BarHideForm.Top := Top;
-      SharpBarMainForm.Hide;
-      BarHideForm.Show;
-      SharpApi.ServiceMsg('DeskArea', 'Update');
-    end;
+  if (Button = mbLeft) and ((Y = 0) or (Y = Height - 1)) then
+    HideBar;
+end;
+
+procedure TSharpBarMainForm.FormPaint(Sender: TObject);
+begin
+  if Visible and SharpEBar.StartHidden then
+  begin
+    HideBar;
+    SharpEBar.StartHidden := False;
   end;
 end;
 

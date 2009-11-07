@@ -90,6 +90,7 @@ type
     FShowThrobber: Boolean;
     FDisableHideThrobber: Boolean;
     FDisableHideBar     : Boolean;
+    FStartHidden : Boolean;
     //FSpecialHideForm    : Boolean;
     procedure PC_NoAlpha(F: TColor32; var B: TColor32; M: TColor32);
     procedure FormPaint(Sender: TObject);
@@ -131,6 +132,7 @@ type
 
     property ShowThrobber: Boolean read FShowThrobber write SetShowThrobber;
     property DisableHideBar: Boolean read FDisableHideBar write FDisableHideBar;
+    property StartHidden: Boolean read FStartHidden write FStartHidden;
     property SpecialHideForm : Boolean read GetSpecialHideForm;
     property onThrobberMouseDown: TMouseEvent read FonMouseDown write FonMouseDown;
     property onThrobberMouseUp: TMouseEvent read FonMouseUp write FonMouseUp;
