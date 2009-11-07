@@ -31,7 +31,7 @@ uses
   Windows, SysUtils, Classes, Forms, Dialogs, DateUtils, SharpIconUtils,
   uISharpBarModule, ISharpESkinComponents, JclShell,
   SharpApi, Menus, SharpEButton, ExtCtrls, SharpEBaseControls, Controls,
-  GR32, GR32_PNG, GR32_Image, JclSimpleXML, cbAudioPlay, DirectShow;
+  GR32, GR32_PNG, GR32_Image, JclSimpleXML, IXmlBaseUnit, cbAudioPlay, DirectShow;
 
 
 type
@@ -113,6 +113,7 @@ type
 
     mInterface : ISharpBarModule;
     procedure LoadSettings;
+    procedure SaveSettings;
     procedure ReAlignComponents(Broadcast : boolean = True);
     procedure UpdateComponentSkins;
     procedure UpdateSize;
@@ -337,6 +338,46 @@ begin
   LoadIcons;
 end;
 
+procedure TMainForm.SaveSettings;
+var
+  XML : TInterfacedXmlBase;
+begin
+  XML := TInterfacedXmlBase.Create;
+  XML.XmlFilename := mInterface.BarInterface.GetModuleXMLFile(mInterface.ID);
+
+  with XML.XmlRoot do
+  begin
+    Name := 'AlarmClockModuleSettings';
+
+    // Clear the list so we don't get duplicates.
+    Items.Clear;
+
+    Items.Add('Settings');
+    with Items.ItemNamed['Settings'].Items do
+    begin
+      Add('Timeout', alarmSettings.Timeout);
+      Add('Snooze', alarmSettings.Snooze);
+    end;
+
+    Items.Add('Time');
+    with Items.ItemNamed['Time'].Items do
+    begin
+      Add('AutoStart', alarmSettings.IsOn);
+      Add('Sound', alarmSettings.Sound);
+
+      Add('Second', alarmSettings.Alarm.Sec);
+      Add('Minute', alarmSettings.Alarm.Min);
+      Add('Hour', alarmSettings.Alarm.Hou);
+      Add('Day', alarmSettings.Alarm.Day);
+      Add('Month', alarmSettings.Alarm.Mon);
+      Add('Year', alarmSettings.Alarm.Yea);
+    end;
+  end;
+  
+  XML.Save;
+  XML.Free;
+end;
+
 procedure TMainForm.mnuRightDisableClick(Sender: TObject);
 begin
   if alarmSettings.IsOn then
@@ -517,6 +558,9 @@ end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
+  // Save settings before the Alarm clock is removed
+  SaveSettings;
+
   FreeAndNil(alarmSettings.Alarm);
 end;
 
