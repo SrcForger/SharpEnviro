@@ -65,25 +65,20 @@ type
     destructor Destroy; override;
 
     procedure ReplaceColors(clist : Array of integer);
-    procedure Load(path: string; Settings: TCursorsSettings);
+    function Load(path: string; Settings: TCursorsSettings): boolean;
 
     function GetBitmap(): TBitmap32;
 
     // Properties
     property IsValid: boolean read FIsValid;
     property HasAlpha: boolean read FHasAlpha;
-
     property ReplaceColor: boolean write FReplaceColor;
-
     property CType: integer read FType write FType; 
     property Point: string read FPoint write FPoint;
-
     property Width: integer read FWidth write FWidth;
     property Height: integer read FHeight write FHeight;
-
     property NumFrames: integer read FNumFrames write FNumFrames;
     property CurFrame: integer read FCurFrame;
-
     property Bitmap: TBitmap32 read GetBitmap;
     property Cursor: HICON read FhCursor;
   end;
@@ -95,8 +90,6 @@ type
     FOtherInfo: string;
     FPath: string;
 
-    FAnimInterval: integer;
-
     Cursors: Array of TCursor;
 
   public
@@ -104,8 +97,6 @@ type
     property Author: string read FAuthor write FAuthor;
     property OtherInfo: string read FOtherInfo write FOtherInfo;
     property Path: string read FPath write FPath;
-
-    property AnimInterval: integer read FAnimInterval write FAnimInterval;
   end;
 
   TCursorsManager = class
@@ -232,12 +223,14 @@ begin
   end;
 end;
 
-procedure TCursor.Load(path: string; Settings: TCursorsSettings);
+function TCursor.Load(path: string; Settings: TCursorsSettings): boolean;
 var
   n: integer;
   clist : array of integer;
   Theme : ISharpETheme;
 begin
+  Result := False;
+
   try
     // Check if the file is in cursor format (.ani or .cur)
     FhCursor := LoadCursorFromFile(PAnsiChar(path));
@@ -281,6 +274,8 @@ begin
       end;
 
       setlength(clist,0);
+
+      Result := True;
     end;
 
   except
@@ -363,11 +358,6 @@ begin
       end;
     end;
   end;
-
-  UpdTimer := TTimer.Create(nil);
-  UpdTimer.Interval := FCursorInfo.AnimInterval;
-  UpdTimer.OnTimer := CursorOnTimer;
-  UpdTimer.Enabled := True;
 end;
 
 procedure TCursorsManager.CursorOnTimer(Sender: TObject);
@@ -380,9 +370,8 @@ begin
     for i := Low(Cursors) to High(Cursors) do
     begin
       if (Cursors[i].IsValid) and (Cursors[i].Cursor <> 0) then
-      begin
-        SetSystemCursor(Cursors[i].Cursor, Cursors[i].CType);
-      end else if (Cursors[i].IsValid) then
+        SetSystemCursor(Cursors[i].Cursor, Cursors[i].CType)
+      else if (Cursors[i].IsValid) and (Cursors[i].NumFrames > 1) then
         SetSystemCursor(Bitmap32ToCursor(Cursors[i].Bitmap, GetPoint(Cursors[i].Point)), Cursors[i].CType);
     end;
   end;
@@ -432,6 +421,10 @@ end;
 constructor TCursorsManager.Create;
 begin
   inherited Create;
+
+  UpdTimer := TTimer.Create(nil);
+  UpdTimer.OnTimer := CursorOnTimer;
+  UpdTimer.Enabled := False;
 
   FCursorInfo := TCursorInfo.Create;
   SetLength(FCursorInfo.Cursors, 0);
@@ -490,6 +483,8 @@ var
   I, C : integer;
   IName : string;
 begin
+  UpdTimer.Enabled := false;
+
   XML := TJvSimpleXML.Create(nil);
 
   if Length(FCursorInfo.Cursors) > 0 then
@@ -497,8 +492,6 @@ begin
     for i := Low(FCursorInfo.Cursors) to High(FCursorInfo.Cursors) do
       FCursorInfo.Cursors[i].Free;
     SetLength(FCursorInfo.Cursors, 0);
-
-    UpdTimer.Enabled := false;
   end;
 
   if FindFirst(GetCursorsFolder + '*.*', faDirectory, sr) = 0 then
@@ -525,7 +518,7 @@ begin
                         FCursorInfo.Name := Value('Title','');
                         FCursorInfo.Author := Value('Author','');
                         FCursorInfo.OtherInfo := Value('OtherInfo','');
-                        FCursorInfo.AnimInterval := IntValue('AnimInterval', 1000);
+                        UpdTimer.Interval := IntValue('AnimInterval', 1000);
                       end;
 
                    C := 0;
@@ -577,9 +570,9 @@ begin
                                     FCursorInfo.Cursors[C].Width := IntValue('Width', 32);
                                     FCursorInfo.Cursors[C].Height := IntValue('Height', 32);
                                     FCursorInfo.Cursors[C].Point := Value('Point', '');
-                                    FCursorInfo.Cursors[C].NumFrames := IntValue('NumFrames', 0);
+                                    FCursorInfo.Cursors[C].NumFrames := IntValue('NumFrames', 1);
                                     FCursorInfo.Cursors[C].CType := GetCursorID(IName);
-                                    FCursorInfo.Cursors[C].Load(FCursorInfo.Path + Value('File', ''), FCursorsSettings);
+                                    UpdTimer.Enabled := FCursorInfo.Cursors[C].Load(FCursorInfo.Path + Value('File', ''), FCursorsSettings);
 
                                     C := C + 1;
                                   end;
