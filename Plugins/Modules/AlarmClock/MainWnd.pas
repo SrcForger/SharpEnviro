@@ -292,7 +292,6 @@ var
   n : integer;
 begin
   alarmSettings.IsAlarming := False;
-  alarmSettings.IsOn := False;
   alarmSettings.Timeout := 60 * 1000;
   alarmSettings.Snooze := 60 * 90 * 1000;
   alarmSettings.Alarm.SetTime('0', '0', '0', '0', '0', '0');
@@ -382,12 +381,12 @@ procedure TMainForm.mnuRightDisableClick(Sender: TObject);
 begin
   if alarmSettings.IsOn then
   begin
+    alarmSettings.IsOn := False;
     alarmSettings.IsAlarming := False;
+    
     alarmTimeoutTimer.Enabled := False;
     alarmSnoozeTimer.Enabled := False;
-
-    alarmSettings.IsOn := False;
-    alarmUpdTimer.Enabled := alarmSettings.IsOn;
+    alarmUpdTimer.Enabled := False;
   end else
   begin
     alarmSettings.IsOn := True;
