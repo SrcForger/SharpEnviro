@@ -120,6 +120,9 @@ end;
 
 destructor TCustomSharpeColorPicker.Destroy;
 begin
+  if Assigned(FTimer) then
+    FreeAndNil(FTimer);
+
   inherited;
 end;
 
@@ -190,6 +193,7 @@ var
 begin
 
   osBmp := TBitmap.Create;
+  png := TPNGObject.Create;
   try
     osBmp.Height := Self.Height;//.Bottom;
     osBmp.Width := Self.Width;//.Right;
@@ -203,7 +207,6 @@ begin
     DrawColorSelector(osBmp, rColorPicker);
 
     // Draw Status
-    png := TPNGObject.Create;
 
     if FMouseDown then
       png.LoadFromResourceName(HInstance, 'PIPETTESEL_PNG')
@@ -223,6 +226,7 @@ begin
 
   finally
     osBmp.Free;
+    png.Free;
   end;
 
 end;
@@ -247,7 +251,7 @@ begin
   GetCursorPos(P);
   HDC := GetDC(0);
   C := GetPixel(HDC, P.x, P.y);
-  ReleaseDC(HDC, 0);
+  ReleaseDC(0, HDC);
   Color := c;
 
   if Assigned(FOnColorClick) then
