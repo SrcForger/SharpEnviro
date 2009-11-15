@@ -135,6 +135,9 @@ begin
   end;
 
   H3 := CombineRgn(H2, H2, H, RGN_AND);
+  if (H2 <> H) then
+    DeleteObject(H2);
+  DeleteObject(H);
 
   SetWindowRgn(Handle, H3, True);
   Invalidate;

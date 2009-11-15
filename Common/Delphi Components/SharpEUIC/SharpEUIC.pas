@@ -199,6 +199,8 @@ begin
   H := CreateRoundRectRgn(0, 0, Width + 1, Height + 1, FRoundValue, FRoundValue);
   H2 := H;
   H3 := CombineRgn(H2,H2,H,RGN_AND);
+  DeleteObject(H2);
+  DeleteObject(H);
 
   SetWindowRgn(Handle, H3, True);
   UpdateBtnStatus;
