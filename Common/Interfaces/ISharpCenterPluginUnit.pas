@@ -64,6 +64,8 @@ type
     function GetPluginHost : ISharpCenterHost; stdcall;
     procedure SetPluginHost(Value : ISharpCenterHost); stdcall;
   public
+    destructor Destroy; override;
+
     property PluginHost: ISharpCenterHost read GetPluginHost write SetPluginHost;
 
     function Open : THandle; virtual; stdcall;
@@ -86,6 +88,13 @@ implementation
 procedure TInterfacedSharpCenterPlugin.Close;
 begin
 
+end;
+
+destructor TInterfacedSharpCenterPlugin.Destroy;
+begin
+  FPluginHost := nil;
+  
+  inherited;
 end;
 
 function TInterfacedSharpCenterPlugin.GetPluginDescriptionText: string;
