@@ -852,7 +852,7 @@ procedure TSharpESwatchManager.BeforeDestruction;
 var
   s: string;
 begin
-  inherited;
+  inherited BeforeDestruction;
 
   if not (csDesigning in ComponentState) then begin
     s := GetSharpeUserSettingsPath + cXmlOptionsFile;
@@ -861,6 +861,10 @@ begin
     s := GetSharpeUserSettingsPath + cXmlDefaultSwatchFile;
     Save(s);
   end;
+
+  FSwatchFont.Free;
+  FSwatches.Free;
+  FCachedBitmap.Free;
 end;
 
 end.

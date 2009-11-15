@@ -109,7 +109,6 @@ type
     FTabSelectedColor: TColor;
     FOnTabChange: TSharpETabChange;
     FMouseOverID: Integer;
-    FTimer: TTimer;
     FImage32: Timage32;
     FAutoSizeTabs: Boolean;
     FCaptionSelectedColor: TColor;
@@ -1171,8 +1170,12 @@ end;
 
 destructor TSharpETabList.Destroy;
 begin
+  FTabList.Free;
+  FButtons.Free;
   FImage32.Free;
-  FTimer.Free;
+  FScrollButtonImageList.Free;
+  FScrollLeft.Free;
+  FScrollRight.Free;
 
   inherited;
 

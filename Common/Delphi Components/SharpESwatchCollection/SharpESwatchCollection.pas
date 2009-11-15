@@ -329,7 +329,13 @@ end;
 
 destructor TSharpESwatchCollection.Destroy;
 begin
-  inherited;
+  FPopupMenu.Free;
+  FOpenDialog.Free;
+  FSaveDialog.Free;
+  FImage32.Free;
+  FImageList.Free;
+
+  inherited Destroy;
 end;
 
 procedure TSharpESwatchCollection.LoadResources;

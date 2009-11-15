@@ -538,7 +538,26 @@ end;
 
 destructor TSharpEColorEditor.Destroy;
 begin
-  inherited;
+  FColorPicker.Free;
+  FAddColorButton.Free;
+  FNameLabel.Free;
+  FHueSlider.Free;
+  FSatSlider.Free;
+  FLumSlider.Free;
+  FRedSlider.Free;
+  FGreenSlider.Free;
+  FBlueSlider.Free;
+  FValueSlider.Free;
+  FBoolCheckbox.Free;
+  FSharpESwatchCollection.Free;
+  FSwatchesPage.Free;  
+  FBoolDefinePage.Free;
+  FValDefinePage.Free;
+  FColDefinePage.Free;
+  FPanel.Free;
+  FPageControl.Free;
+
+  inherited Destroy;
 end;
 
 procedure TSharpEColorEditor.SetExpanded(const Value: Boolean);

@@ -86,6 +86,7 @@ type
     procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
+    procedure BeforeDestruction; override;
     property TabList: TSharpETabList read FTabList write FTabList;
     property Minimized: Boolean read GetMinimized write SetMinimized;
     property TabControlVisible: boolean read FTabControlVisible write SetTabControlVisible;
@@ -148,6 +149,14 @@ begin
 end;
 
 { TSharpEPageControl }
+
+procedure TSharpEPageControl.BeforeDestruction;
+begin
+  inherited BeforeDestruction;
+
+  FTabList.Free;
+  FPnlContent.Free;
+end;
 
 constructor TSharpEPageControl.Create(AOwner: TComponent);
 begin

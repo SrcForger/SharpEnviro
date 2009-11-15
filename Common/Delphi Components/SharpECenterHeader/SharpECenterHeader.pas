@@ -22,6 +22,7 @@ type
     procedure SetTitleColor(const Value: TColor);
     public
       constructor Create(AOwner: TComponent); override;
+      procedure BeforeDestruction; override;
     published
       property Title: string read FTitle write SetTitle;
       property Description: string read FDescription write SetDescription;
@@ -51,6 +52,15 @@ implementation
 procedure Register;
 begin
   RegisterComponents('SharpE_Common', [TSharpECenterHeader]);
+end;
+
+procedure TCustomSharpECenterHeader.BeforeDestruction;
+begin
+  inherited BeforeDestruction;
+
+  titleLabel.Free;
+  descriptionLabel.Free;
+  shp.Free;
 end;
 
 constructor TCustomSharpECenterHeader.Create(AOwner: TComponent);
