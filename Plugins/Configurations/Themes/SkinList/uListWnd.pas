@@ -138,6 +138,7 @@ var
   png, png2: TPngImageCollectionItem;
   bmp32: TBitmap32;
   path : string;
+  tmp: TPNGObject;
 begin
   pilNormal.Clear;
   pilSelected.Clear;
@@ -178,9 +179,14 @@ begin
         pilSelected.BkColor := FPluginHost.Theme.PluginSelectedItem;
 
         png := pilNormal.PngImages.Add(false);
-        png.PngImage := SaveBitmap32ToPNG(bmp32, False, true, FPluginHost.Theme.PluginItem );
+        tmp := SaveBitmap32ToPNG(bmp32, False, true, FPluginHost.Theme.PluginItem);
+        png.PngImage.Assign(tmp);
+        tmp.Free;
+
         png2 := pilSelected.PngImages.Add(false);
-        png2.PngImage := SaveBitmap32ToPNG(bmp32, False, true, FPluginHost.Theme.PluginSelectedItem );
+        tmp := SaveBitmap32ToPNG(bmp32, False, true, FPluginHost.Theme.PluginSelectedItem);
+        png2.PngImage.Assign(tmp);
+        tmp.Free;
       finally
         bmp32.Free;
       end;
