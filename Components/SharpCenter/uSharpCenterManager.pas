@@ -796,6 +796,7 @@ begin
     tmpPiC.Background := clWindow;
 
     AItem.IconIndex := tmpPic.Index;
+    tmpPngImage.Free;
   end
   else if AItem.ItemType = itmFolder then
     AItem.IconIndex := SCE_ICON_FOLDER
