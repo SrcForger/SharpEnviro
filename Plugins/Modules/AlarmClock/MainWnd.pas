@@ -30,7 +30,7 @@ interface
 uses
   Windows, SysUtils, Classes, Forms, Dialogs, DateUtils, SharpIconUtils,
   uISharpBarModule, ISharpESkinComponents, JclShell,
-  SharpApi, Menus, SharpEButton, ExtCtrls, SharpEBaseControls, Controls,
+  SharpApi, SharpCenterApi, Menus, SharpEButton, ExtCtrls, SharpEBaseControls, Controls,
   GR32, GR32_PNG, GR32_Image, JclSimpleXML, IXmlBaseUnit, cbAudioPlay, DirectShow;
 
 
@@ -92,9 +92,11 @@ type
     alarmSnoozeTimer: TTimer;
     alarmTimeoutTimer: TTimer;
     mnuRight: TPopupMenu;
-    urnOff1: TMenuItem;
-    urnOff2: TMenuItem;
-    Disable1: TMenuItem;
+    mnuSnoozeBtn: TMenuItem;
+    mnuTurnOffBtn: TMenuItem;
+    mnuDisableBtn: TMenuItem;
+    N1: TMenuItem;
+    mnuConfigBtn: TMenuItem;
 
     procedure FormPaint(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -108,6 +110,7 @@ type
     procedure mnuRightSnoozeClick(Sender: TObject);
     procedure mnuRightTurnOffClick(Sender: TObject);
     procedure mnuRightDisableClick(Sender: TObject);
+    procedure mnuRightConfigClick(Sender: TObject);
   public
     alarmSettings : TAlarmSettings;
 
@@ -354,8 +357,8 @@ begin
     Items.Add('Settings');
     with Items.ItemNamed['Settings'].Items do
     begin
-      Add('Timeout', alarmSettings.Timeout);
-      Add('Snooze', alarmSettings.Snooze);
+      Add('Timeout', alarmSettings.Timeout div 1000);
+      Add('Snooze', alarmSettings.Snooze div 1000);
     end;
 
     Items.Add('Time');
@@ -377,13 +380,25 @@ begin
   XML.Free;
 end;
 
+procedure TMainForm.mnuRightConfigClick(Sender: TObject);
+var
+  cfile : string;
+begin
+  cfile := SharpApi.GetCenterDirectory + '_Modules\AlarmClock.con';
+
+  if FileExists(cfile) then
+    SharpCenterApi.CenterCommand(sccLoadSetting,
+      PChar(cfile),
+      PChar(inttostr(mInterface.BarInterface.BarID) + ':' + inttostr(mInterface.ID)));
+end;
+
 procedure TMainForm.mnuRightDisableClick(Sender: TObject);
 begin
   if alarmSettings.IsOn then
   begin
     alarmSettings.IsOn := False;
     alarmSettings.IsAlarming := False;
-    
+
     alarmTimeoutTimer.Enabled := False;
     alarmSnoozeTimer.Enabled := False;
     alarmUpdTimer.Enabled := False;

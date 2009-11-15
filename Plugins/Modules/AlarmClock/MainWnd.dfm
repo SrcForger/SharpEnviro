@@ -51,17 +51,24 @@ object MainForm: TMainForm
     Alignment = paCenter
     Left = 168
     Top = 32
-    object urnOff1: TMenuItem
+    object mnuSnoozeBtn: TMenuItem
       Caption = 'Snooze'
       OnClick = mnuRightSnoozeClick
     end
-    object urnOff2: TMenuItem
+    object mnuTurnOffBtn: TMenuItem
       Caption = 'Turn Off'
       OnClick = mnuRightTurnOffClick
     end
-    object Disable1: TMenuItem
+    object mnuDisableBtn: TMenuItem
       Caption = 'Disable'
       OnClick = mnuRightDisableClick
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object mnuConfigBtn: TMenuItem
+      Caption = 'Configure'
+      OnClick = mnuRightConfigClick
     end
   end
 end
