@@ -64,6 +64,7 @@ type
     procedure UpdateEditState(Sender: TObject);
     procedure editStateEvent(Sender: TObject);
     procedure chkOverrideClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
 
   private
     { Private declarations }
@@ -228,6 +229,11 @@ end;
 procedure TfrmEdit.editStateEvent(Sender: TObject);
 begin
   UpdateEditState(nil);
+end;
+
+procedure TfrmEdit.FormShow(Sender: TObject);
+begin
+  UpdateOverrideState;
 end;
 
 end.

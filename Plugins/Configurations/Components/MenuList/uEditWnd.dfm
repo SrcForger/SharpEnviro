@@ -13,6 +13,7 @@ object frmEdit: TfrmEdit
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = False
+  OnShow = FormShow
   DesignSize = (
     499
     94)
