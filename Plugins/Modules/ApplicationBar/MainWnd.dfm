@@ -14,6 +14,7 @@ object MainForm: TMainForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnPaint = FormPaint
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object sb_config: TSharpEButton
@@ -123,7 +124,6 @@ object MainForm: TMainForm
     Top = 96
   end
   object DDHandler: TJvDragDrop
-    AcceptDrag = False
     DropTarget = Owner
     Left = 184
     Top = 96
