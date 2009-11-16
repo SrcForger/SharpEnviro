@@ -370,6 +370,9 @@ begin
   if ( not( fileexists(AFile) ) ) then exit;
 
   LockWindowUpdate(Application.MainForm.Handle);
+
+  FPngImageList.Clear;
+  
   try
 
     if Assigned(FOnInitNavigation) then
@@ -468,6 +471,8 @@ begin
 
   iCount := 0;
   LockWindowUpdate(Application.MainForm.Handle);
+
+  FPngImageList.Clear;
 
   if Assigned(FOnInitNavigation) then
     FOnInitNavigation(Self);
