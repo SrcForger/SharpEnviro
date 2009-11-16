@@ -71,6 +71,12 @@ end;
 
 procedure TSharpCenterPlugin.Save;
 begin
+  if frmMiniScmd.ACRemove and FileExists(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\MiniScmd\AutoComplete.xml') then
+  begin
+    if DeleteFile(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\MiniScmd\AutoComplete.xml') then
+      MessageBox(frmMiniScmd.Handle, 'The Auto-Complete list was removed', 'Information', MB_OK)
+  end;
+
   PluginHost.Xml.XmlRoot.Name := 'MiniScmdModuleSettings';
 
   with PluginHost.Xml.XmlRoot.Items, frmMiniScmd do
@@ -81,6 +87,7 @@ begin
     Add('Width', sgb_width.Value);
     Add('Button', cbQuickSelect.Checked);
     Add('ButtonRight', (cboButtonPos.ItemIndex = 1));
+    Add('AutoComplete', cbEnableAutoCom.Checked);
   end;
 
   PluginHost.Xml.Save;
@@ -97,6 +104,8 @@ begin
       if BoolValue('ButtonRight',True) then
         cboButtonPos.ItemIndex := 1
       else cboButtonPos.ItemIndex := 0;
+
+      cbEnableAutoCom.Checked := BoolValue('AutoComplete', True);
     end;
   end;
   frmMiniScmd.UpdateGUI;

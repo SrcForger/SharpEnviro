@@ -45,15 +45,22 @@ type
     pnButtonPos: TPanel;
     lbButtonPos: TLabel;
     cboButtonPos: TComboBox;
+    SharpECenterHeader1: TSharpECenterHeader;
+    cbEnableAutoCom: TJvXPCheckbox;
+    btnACClearList: TButton;
     procedure FormCreate(Sender: TObject);
     procedure cbQuickSelectClick(Sender: TObject);
     procedure sgb_widthChangeValue(Sender: TObject; Value: Integer);
     procedure cboButtonPosChange(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure cbEnableAutoComClick(Sender: TObject);
+    procedure btnACClearListClick(Sender: TObject);
   private
     FPluginHost: ISharpCenterHost;
     procedure UpdateSettings;
   public
+    ACRemove : Boolean;
+
     procedure UpdateGUI;  
     property PluginHost: ISharpCenterHost read FPluginHost write FPluginHost;
   end;
@@ -76,8 +83,24 @@ begin
   UpdateGUI;
 end;
 
+procedure TfrmMiniScmd.btnACClearListClick(Sender: TObject);
+begin
+  if FileExists(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\MiniScmd\AutoComplete.xml') then
+  begin
+    ACRemove := True;
+    UpdateSettings;
+  end;
+end;
+
+procedure TfrmMiniScmd.cbEnableAutoComClick(Sender: TObject);
+begin
+  UpdateSettings;
+end;
+
 procedure TfrmMiniScmd.FormCreate(Sender: TObject);
 begin
+  ACRemove := False;
+
   DoubleBuffered := true;
 end;
 
@@ -85,6 +108,7 @@ procedure TfrmMiniScmd.FormShow(Sender: TObject);
 begin
   UpdateGUI;
 end;
+
 
 procedure TfrmMiniScmd.sgb_widthChangeValue(Sender: TObject; Value: Integer);
 begin

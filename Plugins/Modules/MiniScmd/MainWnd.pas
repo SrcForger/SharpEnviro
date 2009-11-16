@@ -59,6 +59,7 @@ type
     sWidth       : integer;
     sButton      : Boolean;
     sButtonRight : Boolean;
+    sEnableAC    : Boolean;
     procedure LoadIcon;
     procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
   public
@@ -134,6 +135,7 @@ begin
   sWidth       := 100;
   sButton      := True;
   sButtonRight := True;
+  sEnableAC    := True;
   
   rightbutton  := False;
 
@@ -150,8 +152,15 @@ begin
       sWidth  := IntValue('Width',100);
       sButton := BoolValue('Button',True);
       sButtonRight := BoolValue('ButtonRight',True);
+      sEnableAC := BoolValue('AutoComplete',True);
     end;
   XML.Free;
+
+  sItems.Clear;
+  if sEnableAC then
+    LoadAutoComplete
+  else
+    ReloadAutoComplete;
 end;
 
 procedure TMainForm.ReloadAutoComplete;
@@ -305,11 +314,13 @@ begin
       begin}
         SharpApi.SharpExecute(trim(edit.Text));
         // Save the auto-complete list
-        SaveAutoComplete(trim(edit.Text));
+        if sEnableAC then
+          SaveAutoComplete(trim(edit.Text));
         edit.Text := '';
         edit.edit.text := '';
         // And reload it
-        ReloadAutoComplete;
+        if sEnableAC then
+          ReloadAutoComplete;
       {end;}
     end;
   end;
@@ -383,7 +394,6 @@ procedure TMainForm.FormCreate(Sender: TObject);
 begin
   // Initialize Auto-Complete
   sItems := TACItems.Create;
-  LoadAutoComplete;
   
   DoubleBuffered := True;
 end;
