@@ -236,18 +236,7 @@ procedure TSharpEButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
 begin
   inherited;
 
-  if not assigned(FManager) then
-  begin
-    UpdateSkin;
-    exit;
-  end;
-
-  if HasNormalHoverScript then
-     FManager.Skin.Button.Normal.ExecuteScript(self,
-                                               FManager.Skin.Button.OnNormalMouseEnterScript,
-                                               FManager.Scheme,
-                                               nil)
-     else UpdateSkin;
+  SMouseLeave;
 end;
 
 procedure TSharpEButton.SMouseEnter;
