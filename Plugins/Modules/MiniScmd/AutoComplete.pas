@@ -172,35 +172,6 @@ type
     property Sorted: boolean read GetSorted write SetSorted;
   end;
 
-  { TACItem record }
-  TACItem = record
-    str : string;
-    cnt : integer;
-  end;
-
-  { TACItems class }
-  TACItems = class(TObject)
-      constructor Create; reintroduce;
-      destructor Destroy; override;
-
-      procedure Add(str : string; cnt : integer);
-      procedure Remove(i : integer);
-
-      procedure IncCount(i : integer);
-
-      function Get(i : integer): TACItem;
-      function GetStrList(): TEnumString;
-
-      procedure Sort;
-
-      procedure Clear();
-      function Count(): integer;
-
-    private
-      sItems : Array of TACItem;
-      sList: TEnumString;
-  end;
-
 implementation
 
 { TEnumString }
@@ -318,101 +289,6 @@ end;
 function TEnumString.GetSorted(): boolean;
 begin
   Result := FStrings.Sorted;
-end;
-
-
-{TACItems}
-constructor TACItems.Create;
-begin
-  inherited;
-
-  sList := TEnumString.Create;
-end;
-
-destructor TACItems.Destroy;
-begin
-  FreeAndNil(sList);
-
-  inherited;
-end;
-
-procedure TACItems.Add(str : string; cnt : integer);
-var
-  i : integer;
-begin
-  i := Length(sItems);
-  setLength(sItems, i + 1);
-
-  sItems[i].str := str;
-  sItems[i].cnt := cnt;
-end;
-
-procedure TACItems.Remove(i : integer);
-begin
-  if Length(sItems) <= 0 then
-    Exit;
-
-  if i > High(sItems) then Exit;
-  if i < Low(sItems) then Exit;
-  if i = High(sItems) then
-  begin
-    SetLength(sItems, Length(sItems) - 1);
-    Exit;
-  end;
-
-  System.Move(sItems[i + 1], sItems[i],(Length(sItems) - i - 1) * SizeOf(TACItem) + 1) ;
-  SetLength(sItems, Length(sItems) - 1) ;
-end;
-
-procedure TACItems.IncCount(i : integer);
-begin
-  sItems[i].cnt := sItems[i].cnt + 1;
-end;
-
-procedure TACItems.Sort;
-var
-  i, j : integer;
-  tempItem : TACItem;
-begin
-  for i := High(sItems) downto Low(sItems) do
-    for j := Low(sItems) to High(sItems) - 1 do
-      if sItems[j].cnt < sItems[j+1].cnt then
-      begin
-        tempItem := sItems[j];
-        sItems[j] := sItems[j+1];
-        sItems[j+1] := tempItem;
-      end;
-end;
-
-procedure TACItems.Clear;
-begin
-  SetLength(sItems, 0);
-end;
-
-function TACItems.Get(i : integer): TACItem;
-begin
-  Result := sItems[i];
-end;
-
-function TACItems.GetStrList(): TEnumString;
-var
-  i : integer;
-begin
-  sList.Clear;
-  sList.Capacity := High(sItems) + 1;
-  sList.Sorted := False;
-
-  for i := 0 to High(sItems) do
-  begin
-    sList.Add(sItems[i].str);
-  end;
-
-  Result := sList;
-end;
-
-function TACItems.Count(): integer;
-begin
-  Result := Length(sItems);
 end;
 
 end.

@@ -54,7 +54,7 @@ type
   private
     // Auto-Complete
     FAutoComplete: IAutoComplete2;
-    sItems : TACItems;
+    sItems : TEnumString;
 
     sWidth       : integer;
     sButton      : Boolean;
@@ -70,7 +70,6 @@ type
     procedure UpdateComponentSkins;
     procedure UpdateSize;
 
-    procedure ReloadAutoComplete;
     procedure LoadAutoComplete;
     procedure SaveAutoComplete(Item : string);
   end;
@@ -156,21 +155,10 @@ begin
     end;
   XML.Free;
 
-  sItems.Clear;
   if sEnableAC then
     LoadAutoComplete
   else
-    ReloadAutoComplete;
-end;
-
-procedure TMainForm.ReloadAutoComplete;
-begin
-  if Assigned(FAutoComplete) then
-    FAutoComplete := nil;
-
-  FAutoComplete := CreateComObject(CLSID_AutoComplete) as IAutoComplete2;
-  OleCheck(FAutoComplete.SetOptions(ACO_AUTOSUGGEST or ACO_UPDOWNKEYDROPSLIST));
-  OleCheck(FAutoComplete.Init(edit.edit.Handle, sItems.GetStrList() as IUnknown, nil, nil));
+    sItems.Clear;
 end;
 
 procedure TMainForm.LoadAutoComplete;
@@ -178,6 +166,8 @@ var
   XML : TJvSimpleXML;
   n : integer;
 begin
+  sItems.Clear;
+
   // Load the auto-complete words from the Xml file
   XML := TJvSimpleXML.Create(nil);
   try
@@ -187,16 +177,13 @@ begin
     begin
       with XML.Root.Items.Item[n].Items do
       begin
-        sItems.Add(Value('Name', ''), IntValue('Count', 0));
+        sItems.Add(Value('Name', ''));
       end;
     end;
   except
     // Failed to load the xml
   end;
   XML.Free;
-
-  // Setup the TSharpEEdit for Auto-Completion
-  ReloadAutoComplete;
 end;
 
 procedure TMainForm.SaveAutoComplete(Item : string);
@@ -211,19 +198,14 @@ begin
   
   for i := 0 to sItems.Count - 1 do
   begin
-    if sItems.Get(i).str = Item then
+    if sItems.Str[i] = Item then
     begin
-      sItems.IncCount(i);
-      
       tFound := true;
     end;
   end;
 
   if not tFound then
-    sItems.Add(Item, 0);
-
-  // Sort the resulting array
-  //sItems.Sort;
+    sItems.Add(Item);
 
   XML := TJvSimpleXML.Create(nil);
   XML.Root.Name := 'AutoComplete';
@@ -231,8 +213,7 @@ begin
   begin
     with XML.Root.Items.Add('Item').Items do
     begin
-      Add('Name', sItems.Get(n).str);
-      Add('Count', sItems.Get(n).cnt);
+      Add('Name', sItems.Str[n]);
     end;
   end;
   
@@ -318,9 +299,6 @@ begin
           SaveAutoComplete(trim(edit.Text));
         edit.Text := '';
         edit.edit.text := '';
-        // And reload it
-        if sEnableAC then
-          ReloadAutoComplete;
       {end;}
     end;
   end;
@@ -393,8 +371,11 @@ end;
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   // Initialize Auto-Complete
-  sItems := TACItems.Create;
-  
+  sItems := TEnumString.Create;
+  FAutoComplete := CreateComObject(CLSID_AutoComplete) as IAutoComplete2;
+  OleCheck(FAutoComplete.SetOptions(ACO_AUTOSUGGEST or ACO_UPDOWNKEYDROPSLIST));
+  OleCheck(FAutoComplete.Init(edit.edit.Handle, sItems as IUnknown, nil, nil));
+
   DoubleBuffered := True;
 end;
 
