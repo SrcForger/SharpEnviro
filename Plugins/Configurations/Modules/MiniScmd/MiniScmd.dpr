@@ -71,12 +71,6 @@ end;
 
 procedure TSharpCenterPlugin.Save;
 begin
-  if frmMiniScmd.ACRemove and FileExists(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\MiniScmd\AutoComplete.xml') then
-  begin
-    if DeleteFile(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\MiniScmd\AutoComplete.xml') then
-      MessageBox(frmMiniScmd.Handle, 'The Auto-Complete list was removed', 'Information', MB_OK)
-  end;
-
   PluginHost.Xml.XmlRoot.Name := 'MiniScmdModuleSettings';
 
   with PluginHost.Xml.XmlRoot.Items, frmMiniScmd do
@@ -95,6 +89,8 @@ end;
 
 procedure TSharpCenterPlugin.Load;
 begin
+  frmMiniScmd.moduleID := StrToInt(moduleID);
+
   if PluginHost.Xml.Load then
   begin
     with PluginHost.Xml.XmlRoot.Items, frmMiniScmd do

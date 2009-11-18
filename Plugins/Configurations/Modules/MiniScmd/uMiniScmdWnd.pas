@@ -59,7 +59,7 @@ type
     FPluginHost: ISharpCenterHost;
     procedure UpdateSettings;
   public
-    ACRemove : Boolean;
+    moduleID : integer;
 
     procedure UpdateGUI;  
     property PluginHost: ISharpCenterHost read FPluginHost write FPluginHost;
@@ -87,8 +87,11 @@ procedure TfrmMiniScmd.btnACClearListClick(Sender: TObject);
 begin
   if FileExists(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\MiniScmd\AutoComplete.xml') then
   begin
-    ACRemove := True;
-    UpdateSettings;
+    if DeleteFile(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\MiniScmd\AutoComplete.xml') then
+    begin
+      MessageBox(frmMiniScmd.Handle, 'The Auto-Complete list was removed', 'Information', MB_OK);
+      SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(suModule), moduleID);
+    end;
   end;
 end;
 
@@ -99,8 +102,6 @@ end;
 
 procedure TfrmMiniScmd.FormCreate(Sender: TObject);
 begin
-  ACRemove := False;
-
   DoubleBuffered := true;
 end;
 

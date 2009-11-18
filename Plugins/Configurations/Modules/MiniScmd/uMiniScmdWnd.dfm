@@ -3,7 +3,7 @@ object frmMiniScmd: TfrmMiniScmd
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmMiniScmd'
-  ClientHeight = 286
+  ClientHeight = 260
   ClientWidth = 435
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -20,17 +20,17 @@ object frmMiniScmd: TfrmMiniScmd
     Left = 0
     Top = 0
     Width = 435
-    Height = 286
+    Height = 260
     ActivePage = pagMiniScmd
     PropagateEnable = False
     Align = alClient
-    ExplicitHeight = 197
+    ExplicitHeight = 286
     object pagMiniScmd: TJvStandardPage
       Left = 0
       Top = 0
       Width = 435
-      Height = 286
-      ExplicitHeight = 197
+      Height = 260
+      ExplicitHeight = 286
       object pnlSize: TPanel
         AlignWithMargins = True
         Left = 6
@@ -45,7 +45,6 @@ object frmMiniScmd: TfrmMiniScmd
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 0
-        ExplicitTop = 153
         object sgb_width: TSharpeGaugeBox
           Left = 0
           Top = 0
@@ -66,7 +65,6 @@ object frmMiniScmd: TfrmMiniScmd
           PercentDisplay = False
           OnChangeValue = sgb_widthChangeValue
           BackgroundColor = clWindow
-          ExplicitTop = -10
         end
       end
       object scmQuickSelect: TSharpECenterHeader
@@ -185,11 +183,10 @@ object frmMiniScmd: TfrmMiniScmd
         DescriptionColor = clRed
         Align = alTop
         Color = clWindow
-        ExplicitTop = 225
       end
       object cbEnableAutoCom: TJvXPCheckbox
         Left = 6
-        Top = 225
+        Top = 233
         Width = 161
         Height = 17
         Caption = 'Enable Auto-Complete'
@@ -199,8 +196,8 @@ object frmMiniScmd: TfrmMiniScmd
         OnClick = cbEnableAutoComClick
       end
       object btnACClearList: TButton
-        Left = 6
-        Top = 248
+        Left = 181
+        Top = 225
         Width = 82
         Height = 25
         Caption = 'Clear List'
