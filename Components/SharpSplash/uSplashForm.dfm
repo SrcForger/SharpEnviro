@@ -5,7 +5,7 @@ object SplashForm: TSplashForm
   VertScrollBar.Visible = False
   BorderIcons = []
   BorderStyle = bsNone
-  Caption = 'Menu'
+  Caption = 'SharpSplash'
   ClientHeight = 265
   ClientWidth = 259
   Color = clBtnFace

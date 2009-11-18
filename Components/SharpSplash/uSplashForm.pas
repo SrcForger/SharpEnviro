@@ -176,31 +176,31 @@ begin
   // set terminate flag if picture could not be loaded
   try
     LoadBitmap32FromPNG(FPicture, FullFileName, b);
-  except
-    ShowSplash := False;
-  end;
 
-  if ShowSplash then
-  begin
     PreMul(FPicture);
     Width  := FPicture.Width;
     Height := FPicture.Height;
-    left   := Screen.WorkAreaWidth div 2 - self.Width div 2;
-    top    := Screen.WorkAreaHeight div 2 - self.Height div 2;
-
-    DC := 0;
-
-    with Blend do
-    begin
-      BlendOp := AC_SRC_OVER;
-      BlendFlags := 0;
-      SourceConstantAlpha := 255;
-      AlphaFormat := AC_SRC_ALPHA;
-    end;
-
-    if SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) or WS_EX_LAYERED or WS_EX_TOOLWINDOW) = 0 then
-      SendDebugMessage('SharpSplash', 'Error setting window style.', 0);
+  except
+    ShowSplash := False;
+    Width  := 0;
+    Height := 0;
   end;
+
+  left := Screen.WorkAreaWidth div 2 - self.Width div 2;
+  top := Screen.WorkAreaHeight div 2 - self.Height div 2;
+
+  DC := 0;
+
+  with Blend do
+  begin
+    BlendOp := AC_SRC_OVER;
+    BlendFlags := 0;
+    SourceConstantAlpha := 255;
+    AlphaFormat := AC_SRC_ALPHA;
+  end;
+
+  if SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) or WS_EX_LAYERED or WS_EX_TOOLWINDOW) = 0 then
+    SendDebugMessage('SharpSplash', 'Error setting window style.', 0);
 end;
 
 procedure TSplashForm.FormDestroy(Sender: TObject);
@@ -228,8 +228,7 @@ begin
     until n >= 255;
 
     CloseTimer.Enabled := True;
-  end else
-    Close;
+  end;
 end;
 
 procedure TSplashForm.ClosetimerTimer(Sender: TObject);
