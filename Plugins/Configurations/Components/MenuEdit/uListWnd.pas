@@ -81,7 +81,6 @@ type
     tmrUpdatePosition: TTimer;
 
     procedure lbItemsResize(Sender: TObject);
-    procedure FormShow(Sender: TObject);
     procedure lbItemsGetCellText(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AColText: string);
     procedure lbItemsGetCellImageIndex(Sender: TObject; const ACol: Integer;
@@ -100,6 +99,8 @@ type
     procedure lbItemsGetCellClickable(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AClickable: Boolean);
     procedure OnUpdatePosition(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     FMenuFile: string;
     FMenu: TSharpEMenu;
@@ -169,6 +170,18 @@ begin
 
   Self.DoubleBuffered := True;
   lbItems.DoubleBuffered := True;
+end;
+
+procedure TfrmList.FormDestroy(Sender: TObject);
+begin
+  FMenu.Free;
+  FMenu := nil;
+
+  if (SharpEMenuIcons <> nil) then
+  begin
+    SharpEMenuIcons.Free;
+    SharpEMenuIcons := nil;
+  end;  
 end;
 
 procedure TfrmList.FormShow(Sender: TObject);
@@ -425,8 +438,10 @@ end;
 
 procedure TfrmList.LoadMenu;
 begin
-  SharpEMenuIcons := TSharpEMenuIcons.Create;
-  FMenu := uSharpEMenuLoader.LoadMenu(FMenuFile, nil, True);
+  if not Assigned(SharpEMenuIcons) then
+    SharpEMenuIcons := TSharpEMenuIcons.Create;
+  if not Assigned(FMenu) then
+    FMenu := uSharpEMenuLoader.LoadMenu(FMenuFile, nil, True);
 
   RenderItemsBuffered(FMenu);
 end;
@@ -461,7 +476,7 @@ begin
     newItem.AddSubItem('');
 
     png := pilIcons.PngImages.Add(false);
-    png.PngImage := pilDefault.PngImages[iidxParentFolder].PngImage;
+    png.PngImage.Assign(pilDefault.PngImages[iidxParentFolder].PngImage);
     tmpData.IconIndex := png.Index;
   end;
 
@@ -474,42 +489,42 @@ begin
     case tmpData.MenuItem.ItemType of
       mtDynamicDir: begin
           png := pilIcons.PngImages.Add(false);
-          png.PngImage := pilDefault.PngImages[iidxDynamicFolder].PngImage;
+          png.PngImage.Assign(pilDefault.PngImages[iidxDynamicFolder].PngImage);
           tmpData.IconIndex := png.Index;
         end;
       mtDriveList: begin
           png := pilIcons.PngImages.Add(false);
-          png.PngImage := pilDefault.PngImages[iidxDrives].PngImage;
+          png.PngImage.Assign(pilDefault.PngImages[iidxDrives].PngImage);
           tmpData.IconIndex := png.Index;
         end;
       mtLabel: begin
           png := pilIcons.PngImages.Add(false);
-          png.PngImage := pilDefault.PngImages[iidxText].PngImage;
+          png.PngImage.Assign(pilDefault.PngImages[iidxText].PngImage);
           tmpData.IconIndex := png.Index;
         end;
       mtDesktopObjectList: begin
           png := pilIcons.PngImages.Add(false);
-          png.PngImage := pilDefault.PngImages[iidxObjects].PngImage;
+          png.PngImage.Assign(pilDefault.PngImages[iidxObjects].PngImage);
           tmpData.IconIndex := png.Index;
         end;
       mtCPLList: begin
           png := pilIcons.PngImages.Add(false);
-          png.PngImage := pilDefault.PngImages[iidxCplList].PngImage;
+          png.PngImage.Assign(pilDefault.PngImages[iidxCplList].PngImage);
           tmpData.IconIndex := png.Index;
         end;
       mtLink: begin
           png := pilIcons.PngImages.Add(false);
-          png.PngImage := pilDefault.PngImages[iidxlink].PngImage;
+          png.PngImage.Assign(pilDefault.PngImages[iidxlink].PngImage);
           tmpData.IconIndex := png.Index;
         end;
       mtSubMenu: begin
           png := pilIcons.PngImages.Add(false);
-          png.PngImage := pilDefault.PngImages[iidxFolder].PngImage;
+          png.PngImage.Assign(pilDefault.PngImages[iidxFolder].PngImage);
           tmpData.IconIndex := png.Index;
         end;
       mtulist: begin
           png := pilIcons.PngImages.Add(false);
-          png.PngImage := pilDefault.PngImages[iidxMruList].PngImage;
+          png.PngImage.Assign(pilDefault.PngImages[iidxMruList].PngImage);
           tmpData.IconIndex := png.Index;
         end;
     end;
