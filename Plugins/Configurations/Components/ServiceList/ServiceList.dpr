@@ -79,7 +79,7 @@ begin
 
   tmpList := TComponentList.Create;
   try
-    tmpList.BuildList('.dll', false);
+    tmpList.BuildList('.dll', false, true);
 
     for i := 0 to Pred(tmpList.Count) do begin
 
@@ -133,7 +133,7 @@ var
 begin
   tmpList := TComponentList.Create;
   try
-    tmpList.BuildList('.dll', false);
+    tmpList.BuildList('.dll', false, false);
     result := IntToStr(tmpList.Count);
   finally
     tmpList.Free;
