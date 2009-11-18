@@ -64,10 +64,10 @@ type
     FadeIn : integer;
     FadeOut : integer;
     ShowDelay : integer;
+    ShowSplash : boolean;
     procedure UpdateWndLayer;
   protected
   public
-    TerminateFlag : Boolean;
     procedure DrawWindow;
   end;
 
@@ -106,7 +106,9 @@ var
   BmpSize: TSize;
   Bmp : TBitmap32;
 begin
-  if TerminateFlag then Exit;
+  if not ShowSplash then
+    exit;
+
   BmpSize.cx := Width;
   BmpSize.cy := Height;
   BmpTopLeft := Point(0, 0);
@@ -145,7 +147,7 @@ var
   Theme : ISharpETheme;
 begin
   FPicture := TBitmap32.Create;
-  TerminateFlag := False;
+  ShowSplash := True;
 
   Theme := GetCurrentTheme;
   
@@ -175,10 +177,10 @@ begin
   try
     LoadBitmap32FromPNG(FPicture, FullFileName, b);
   except
-    TerminateFlag := True;
+    ShowSplash := False;
   end;
 
-  if not TerminateFlag then
+  if ShowSplash then
   begin
     PreMul(FPicture);
     Width  := FPicture.Width;
@@ -198,7 +200,6 @@ begin
 
     if SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) or WS_EX_LAYERED or WS_EX_TOOLWINDOW) = 0 then
       SendDebugMessage('SharpSplash', 'Error setting window style.', 0);
-
   end;
 end;
 
@@ -212,16 +213,23 @@ var
  n : real;
  ni : real;
 begin
-  n := 0;
-  ni := (70*255)/FadeIn;
-  repeat
-    n := n + ni;
-    if n>255 then n := 255;
-    Blend.SourceConstantAlpha := round(n);
-    DrawWindow;
-    sleep(50);
-  until n>=255;
-  CloseTimer.Enabled := True;
+  if ShowSplash then
+  begin
+    n := 0;
+    ni := (70*255)/FadeIn;
+    repeat
+      n := n + ni;
+      if n > 255 then
+        n := 255;
+
+      Blend.SourceConstantAlpha := round(n);
+      DrawWindow;
+      sleep(50);
+    until n >= 255;
+
+    CloseTimer.Enabled := True;
+  end else
+    Close;
 end;
 
 procedure TSplashForm.ClosetimerTimer(Sender: TObject);
@@ -235,15 +243,20 @@ var
  n : real;
  ni : real;
 begin
-  n := 255;
-  ni := (70*255)/FadeOut;
-  repeat
-    n := n - ni;
-    if n<0 then n := 0;
-    Blend.SourceConstantAlpha := round(n);
-    DrawWindow;
-    sleep(50);
-  until n<=0;
+  if ShowSplash then
+  begin
+    n := 255;
+    ni := (70*255)/FadeOut;
+    repeat
+      n := n - ni;
+      if n < 0 then
+        n := 0;
+        
+      Blend.SourceConstantAlpha := round(n);
+      DrawWindow;
+      sleep(50);
+    until n <= 0;
+  end;
 end;
 
 end.

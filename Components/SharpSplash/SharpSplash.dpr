@@ -13,6 +13,5 @@ begin
   Application.Initialize;
   Application.Title := 'SharpSplash';
   Application.CreateForm(TSplashForm, SplashForm);
-  if not SplashForm.TerminateFlag then
-    Application.Run;
+  Application.Run;
 end.
