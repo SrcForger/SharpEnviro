@@ -52,7 +52,7 @@ object frmAlarmClock: TfrmAlarmClock
     Left = 5
     Top = 149
     Width = 406
-    Height = 79
+    Height = 95
     Margins.Left = 5
     Margins.Top = 10
     Margins.Right = 10
@@ -65,15 +65,57 @@ object frmAlarmClock: TfrmAlarmClock
     TabOrder = 0
     object Label5: TLabel
       Left = 2
-      Top = 66
+      Top = 82
       Width = 53
       Height = 13
       Caption = 'Sound File:'
     end
+    object Label6: TLabel
+      Left = 2
+      Top = 23
+      Width = 24
+      Height = 13
+      Caption = 'YYYY'
+    end
+    object Label7: TLabel
+      Left = 51
+      Top = 23
+      Width = 16
+      Height = 13
+      Caption = 'MM'
+    end
+    object Label8: TLabel
+      Left = 95
+      Top = 23
+      Width = 14
+      Height = 13
+      Caption = 'DD'
+    end
+    object Label9: TLabel
+      Left = 167
+      Top = 23
+      Width = 14
+      Height = 13
+      Caption = 'HH'
+    end
+    object Label10: TLabel
+      Left = 207
+      Top = 23
+      Width = 16
+      Height = 13
+      Caption = 'MM'
+    end
+    object Label11: TLabel
+      Left = 247
+      Top = 23
+      Width = 12
+      Height = 13
+      Caption = 'SS'
+    end
     object sgbTimeDay: TSharpeGaugeBox
       AlignWithMargins = True
       Left = 95
-      Top = 31
+      Top = 39
       Width = 42
       Height = 21
       ParentBackground = False
@@ -83,12 +125,13 @@ object frmAlarmClock: TfrmAlarmClock
       Description = 'Adjust to set the transparency'
       PopPosition = ppBottom
       PercentDisplay = False
+      Formatting = '%.2d'
       OnChangeValue = sgbOnChangeValue
       BackgroundColor = clWindow
     end
     object sgbTimeHour: TSharpeGaugeBox
       Left = 167
-      Top = 31
+      Top = 39
       Width = 34
       Height = 21
       ParentBackground = False
@@ -98,12 +141,13 @@ object frmAlarmClock: TfrmAlarmClock
       Description = 'Adjust to set the transparency'
       PopPosition = ppBottom
       PercentDisplay = False
+      Formatting = '%.2d'
       OnChangeValue = sgbOnChangeValue
       BackgroundColor = clWindow
     end
     object sgbTimeMinute: TSharpeGaugeBox
       Left = 207
-      Top = 31
+      Top = 39
       Width = 34
       Height = 21
       ParentBackground = False
@@ -113,13 +157,14 @@ object frmAlarmClock: TfrmAlarmClock
       Description = 'Adjust to set the transparency'
       PopPosition = ppBottom
       PercentDisplay = False
+      Formatting = '%.2d'
       OnChangeValue = sgbOnChangeValue
       BackgroundColor = clWindow
     end
     object sgbTimeMonth: TSharpeGaugeBox
       AlignWithMargins = True
       Left = 51
-      Top = 31
+      Top = 39
       Width = 38
       Height = 21
       ParentBackground = False
@@ -129,12 +174,13 @@ object frmAlarmClock: TfrmAlarmClock
       Description = 'Adjust to set the transparency'
       PopPosition = ppBottom
       PercentDisplay = False
+      Formatting = '%.2d'
       OnChangeValue = sgbOnChangeValue
       BackgroundColor = clWindow
     end
     object sgbTimeSecond: TSharpeGaugeBox
       Left = 247
-      Top = 31
+      Top = 39
       Width = 34
       Height = 21
       ParentBackground = False
@@ -144,13 +190,14 @@ object frmAlarmClock: TfrmAlarmClock
       Description = 'Adjust to set the transparency'
       PopPosition = ppBottom
       PercentDisplay = False
+      Formatting = '%.2d'
       OnChangeValue = sgbOnChangeValue
       BackgroundColor = clWindow
     end
     object sgbTimeYear: TSharpeGaugeBox
       AlignWithMargins = True
       Left = 2
-      Top = 31
+      Top = 39
       Width = 43
       Height = 21
       ParentBackground = False
@@ -160,6 +207,7 @@ object frmAlarmClock: TfrmAlarmClock
       Description = 'Adjust to set the transparency'
       PopPosition = ppBottom
       PercentDisplay = False
+      Formatting = '%.4d'
       OnChangeValue = sgbOnChangeValue
       BackgroundColor = clWindow
     end
@@ -174,7 +222,7 @@ object frmAlarmClock: TfrmAlarmClock
     end
     object edtSound: TSharpEEdit
       Left = 85
-      Top = 58
+      Top = 74
       Width = 196
       Height = 21
       AutoSize = False
@@ -184,7 +232,7 @@ object frmAlarmClock: TfrmAlarmClock
     end
     object btnSoundBrowse: TButton
       Left = 287
-      Top = 58
+      Top = 74
       Width = 21
       Height = 21
       Caption = '...'
