@@ -35,7 +35,7 @@ type
   public
     destructor Destroy; override;
     function Add(Item: TComponentData): Integer;
-    function BuildList(strExtension: string; buildComponents: Boolean = True): Integer;
+    function BuildList(strExtension: string; buildComponents: Boolean = True; getComponentData: Boolean = True): Integer;
     function FindByName(Name: string): Integer;
     function FindByID(ID: Integer): Integer;
   end;
@@ -113,7 +113,7 @@ begin
   inherited Sort(@CheckLocation); //sort the list
 end;
 
-function TComponentList.BuildList(strExtension: string; buildComponents: Boolean = True): Integer;
+function TComponentList.BuildList(strExtension: string; buildComponents: Boolean = True; getComponentData: Boolean = True): Integer;
 var
   intFound: Integer;
   srFile: TSearchRec;
@@ -128,7 +128,8 @@ begin
   while intFound = 0 do begin
     cdComponent := TComponentData.Create;
     cdComponent.FileName := sPath + srFile.Name;
-    GetServiceMetaData(sPath + srFile.Name, cdComponent.MetaData, cdComponent.Priority, cdComponent.Delay);
+    if getComponentData then  
+      GetServiceMetaData(sPath + srFile.Name, cdComponent.MetaData, cdComponent.Priority, cdComponent.Delay);
     cdComponent.ID := Count + 50; //add 50 to ID to make sure it's unique
 
     Add(cdComponent);
