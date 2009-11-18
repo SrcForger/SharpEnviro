@@ -71,6 +71,7 @@ type
     FFlatStyle: Boolean;
     FPopPosition: TPopPosition;
     FDescription: string;
+    FFormatting: string;
 
     function CreateInitialControls: Boolean;
 
@@ -126,6 +127,8 @@ type
     property PopPosition: TPopPosition read FPopPosition write SetPopPosition;
     property PercentDisplay: boolean read FPercentDisplay write SetPercentDisplay;
 
+    property Formatting: string read FFormatting write FFormatting;
+
     property OnChangeValue: TChangeValueEvent read FOnChangeValue write FOnChangeValue;
 
     property BackgroundColor: TColor read GetBackgroundColor write SetBackgroundColor;
@@ -166,6 +169,7 @@ begin
   FFlatStyle := True;
   FPopPosition := ppBottom;
   FDescription := 'Adjust to set the transparency';
+  FFormatting := '%d';
 
   FArrowColor := acGray;
 
@@ -321,7 +325,7 @@ begin
   if FPercentDisplay then
      temp := round(FValue / FMax * 100)
      else temp := FValue;
-  FValueEdit.Text := Format('%s%d%s', [FPrefix, temp, FSuffix]);
+  FValueEdit.Text := Format('%s' + FFormatting + '%s', [FPrefix, temp, FSuffix]);
 end;
 
 procedure TSharpeGaugeBox.ValueEditKeyPress(Sender: TObject; var Key: Char);
