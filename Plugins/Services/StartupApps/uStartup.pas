@@ -39,9 +39,11 @@ uses
   dialogs,
 
   sysutils,
+  StrUtils,
   tlhelp32,
   fileutils,
   shellapi,
+  PsAPI,
 
   jclstrings,
   jclshell,
@@ -85,6 +87,11 @@ type
 type
   TAddRegEvent = procedure(key: string; value: string) of object;
   TAddDirEvent = procedure(filename : string) of object;
+
+  TExecFileCommandl = record
+    Filename: string;
+    Commandline: string;
+  end;
 type
   TStartup = class(TList)
   private
@@ -108,7 +115,7 @@ type
 
     function RunEntriesIn(reg: TRegistryStartupItem; process64: boolean): integer;
     procedure RunDir(dir: string);
-    function FindTask(ExeFileName: string): Integer;
+    function FindTask(ExeFileName: string): Boolean;
     class procedure DebugMsg(Str: string; MessageType: Integer); static;
 
     function AppRunning(AFile:String):Boolean;
@@ -279,46 +286,190 @@ begin
 end;
 {$ENDREGION}
 
-{$REGION 'Process discovery'}
-  function TStartup.AppRunning(AFile:String):Boolean;
-  var
-    s:String;
-  begin
-    Result := False;
-    s := AFile;
-    s := ExpandEnvVars(s);
-    s := Copy(s, 1, Length(s) - 2);
-  
-    if findtask(s) = 1 then
-       Result := True;
+{$REGION 'Process utilities'}
+function StrtoFileandCmd(str: string): TExecFileCommandl;
+var
+  filetoexecute, commandline: string;
+  i: Integer;
+  tmp, s: string;
+  tokens: Tstringlist;
+  rs: boolean;
+
+begin
+  // Iniitialise
+  if str <> '' then begin
+    filetoexecute := '';
+    commandline := '';
+    Result.Filename := '';
+    Result.Commandline := '';
+
+    // First check if the first char is a quote
+    if str[1] = '"' then begin
+      s := Copy(str, 2, length(str));
+      i := Pos('"', s);
+
+      Result.Filename := Copy(str, 2, i - 1);
+      Result.Commandline := Copy(str, i + 2, length(str));
+      Exit;
+    end;
+
+    // Remove quotes from quoted string
+    str := StrRemoveChars(str, ['"']);
+
+    // Get number of spaces in str
+    tokens := TStringList.Create;
+    try
+      StrTokenToStrings(str, ' ', tokens);
+
+      tmp := '';
+      for i := 0 to tokens.count - 1 do begin
+        filetoexecute := filetoexecute + tokens.Strings[i];
+        tmp := filetoexecute;
+
+        rs := False;
+        if (filetoexecute <> tmp) and (filetoexecute <> str) then
+          rs := True;
+
+        // if the string is now an actual file then return the remainder as a command
+        if FileExists(filetoexecute) and (isDirectory(filetoexecute) = false) then begin
+          if rs then begin
+            StrReplace(str, tmp, '', [rfIgnoreCase]);
+            str := filetoexecute + str;
+          end;
+
+          commandline := copy(str, length(filetoexecute) + 1, length(str) - length(filetoexecute));
+          if StrCompare(filetoexecute, commandline) = 0 then
+            commandline := '';
+          Result.Filename := Filetoexecute;
+          Result.Commandline := commandline;
+          Exit;
+        end;
+        filetoexecute := filetoexecute + ' ';
+      end;
+    finally
+      tokens.Free;
+    end;
   end;
-  
-  function TStartup.FindTask(ExeFileName: string): Integer;
+end;
+
+function GetLongPathAndFilename(const S : String) : String;
+var
+  srSRec : TSearchRec;
+  iP, iRes : Integer;
+  sTemp, sRest : String;
+  Bo : Boolean;
+Begin
+  Result := S;
+  // Check if file exists
+  Bo := FileExists(S);
+  // Check if directory exists
+  iRes := FindFirst(S + '\*.*', faAnyFile, srSRec);
+  // If both not found then exit
+  if ((not Bo) and (iRes <> 0)) then
+    Exit;
+
+  sRest := S;
+  iP := Pos('\', sRest);
+  if iP > 0 then
+  begin
+    sTemp := Copy(sRest, 1, iP - 1); // Drive
+    sRest := Copy(sRest, iP + 1,255); // Path and filename
+  end else
+   exit;
+
+  // Get long path name
+  while Pos('\', sRest) > 0 do
+  begin
+    iP := Pos('\', sRest);
+    if iP > 0 then
+    begin
+      iRes := FindFirst(sTemp + '\' + Copy(sRest, 1, iP - 1), faAnyFile, srSRec);
+      sRest := Copy(sRest, iP + 1, 255);
+
+      If iRes = 0 then
+        sTemp := sTemp + '\' + srSRec.FindData.cFileName;
+    end;
+  end;
+
+  // Get long filename
+  if FindFirst(sTemp + '\' + sRest, faAnyFile, srSRec) = 0 then
+    Result := sTemp + '\' + srSRec.FindData.cFilename;
+
+  SysUtils.FindClose(srSRec);
+end;
+
+function FixFileName(s : string): string;
+var
+  FileCmd : TExecFileCommandl;
+begin
+  FileCmd := StrtoFileandCmd(s);
+  FileCmd.Filename := GetLongPathAndFilename(FileCmd.Filename);
+
+  Result := FileCmd.Filename;
+  if FileCmd.Commandline <> '' then
+    Result := Result + FileCmd.Commandline;
+end;
+
+
+function ProcessFileName(PID: DWORD): string;
+var
+  Handle: THandle;
+begin
+  Result := '';
+  Handle := OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ, False, PID);
+  if Handle <> 0 then
+    try
+      SetLength(Result, MAX_PATH);
+      if GetModuleFileNameEx(Handle, 0, PChar(Result), MAX_PATH) > 0 then
+        SetLength(Result, StrLen(PChar(Result)))
+      else
+        Result := '';
+    finally
+      CloseHandle(Handle);
+    end;
+end;
+
+{$ENDREGION}
+
+{$REGION 'Process discovery'}
+  function TStartup.AppRunning(AFile:String): Boolean;
+  var
+    s : String;
+  begin
+    s := ExpandEnvVars(AFile);
+    s := Copy(s, 1, Length(s) - 2);
+
+    Result := FindTask(s);
+  end;
+
+  function TStartup.FindTask(ExeFilename: string): Boolean;
   const
     PROCESS_TERMINATE = $0001;
   var
     ContinueLoop: BOOL;
     FSnapshotHandle: THandle;
     FProcessEntry32: TProcessEntry32;
-    currentscan, currenttask: string;
+    CurrentScan, CurrentTask: string;
   begin
-    Result := -1;
+    Result := False;
     FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     try
       FProcessEntry32.dwSize := Sizeof(FProcessEntry32);
       ContinueLoop := Process32First(FSnapshotHandle, FProcessEntry32);
-  
-      currenttask := extractfilename(exefilename);
-      DebugMsg('Searching For: ' + currenttask,DMT_INFO);
+
+      // Extract the filename
+      CurrentTask := FixFileName(ExeFilename);
+
+      DebugMsg('Searching For: ' + CurrentTask, DMT_INFO);
       while integer(ContinueLoop) <> 0 do
       begin
-        currentscan := string(FProcessEntry32.szExeFile);
-  
-        //Debug('Current Scan: ' + currentscan,DMT_INFO);
-        if CompareText(currenttask,currentscan) = 0 then
+        CurrentScan := ProcessFileName(FProcessEntry32.th32ProcessID);
+
+        //DebugMsg('Current Scan: ' + CurrentScan, DMT_INFO);
+        if CompareText(CurrentTask, CurrentScan) = 0 then
         begin
-          DebugMsg('Found: ' + currenttask,DMT_INFO);
-          Result := 1;
+          DebugMsg('Found: ' + CurrentTask, DMT_INFO);
+          Result := True;
           exit;
         end;
         ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);
@@ -336,32 +487,27 @@ var
   Data: TWin32FindData;
   lpShortcut: TShellLink;
 begin
-
-        a := FindFirstFile(PChar(dir + '\*.*'), Data);
-        repeat
-          if not (((Data.cFileName[0] = '.') and (Data.cFileName[1] = '')) or
+  a := FindFirstFile(PChar(dir + '\*.*'), Data);
+  repeat
+    if not (((Data.cFileName[0] = '.') and (Data.cFileName[1] = '')) or
             ((Data.cFileName[0] = '.') and (Data.cFileName[1] = '.') and
             (Data.cFileName[2] = ''))) or
-            ((Data.cFileName[0] = 'd')) then begin
-            if (PChar(string(lowercase(Data.cFileName)))) = 'desktop.ini' then
-              outputdebugstring('not loading')
-            else begin
+            ((Data.cFileName[0] = 'd')) then
+    begin
+      if (PChar(string(lowercase(Data.cFileName)))) = 'desktop.ini' then
+        outputdebugstring('not loading')
+      else
+      begin
+        JclShell.ShellLinkResolve(dir + '\' + Data.cFileName,lpShortcut);
 
-              JclShell.ShellLinkResolve(dir + '\' + Data.cFileName,lpShortcut);
+        if assigned(FOnAddDirEvent) then
+          FOnAddDirEvent(dir + '\' + Data.cFileName);
 
-              if assigned(FOnAddDirEvent) then
-                FOnAddDirEvent(dir + '\' + Data.cFileName);
-
-              if findtask(lpShortcut.Target) = -1
-                then begin
-
-                  if not Debug then
-                    ServiceMsg('exec',pchar('_nohist,' + dir + '\' + Data.cFileName));
-              end;
-            end;
-          end;
-        until not FindNextFile(a, Data);
-
+        if (not FindTask(lpShortcut.Target)) and (not Debug) then
+          ServiceMsg('exec',pchar('_nohist,' + dir + '\' + Data.cFileName));
+      end;
+    end;
+  until not FindNextFile(a, Data);
 end;
 
 function TStartup.RunEntriesIn(reg: TRegistryStartupItem; process64: boolean): integer;
@@ -370,7 +516,6 @@ var
   i: integer;
   s: string;
 begin
-
   list := TStringList.Create;
   try
     RegEnum( reg.HKey, reg.subKey, list, process64, false );
@@ -381,26 +526,19 @@ begin
       reg.ValueKey := list[i];
 
       s := RegReadValue(reg.FHkey,reg.subKey,list[i], process64);
-      if s <> '' then begin
-
+      if s <> '' then
+      begin
         if Assigned(FOnAddRegEvent) then
             FOnAddRegEvent( reg.HKeyStr + '\' + reg.subKey, list[i] + ' - ' + s);
 
         if reg.runOnce then
-              FDeleteList.Add( TRegistryStartupItem.Create(reg.HKey,reg.HKeyStr,
-                reg.SubKey, reg.ValueKey, reg.Process64, reg.RunOnce) );
+          FDeleteList.Add(  TRegistryStartupItem.Create(reg.HKey,reg.HKeyStr,
+                            reg.SubKey, reg.ValueKey, reg.Process64, reg.RunOnce) );
 
-        if Not(AppRunning(ExtractFileName(s))) then begin
-
-          if Not(Debug) then begin
-            ServiceMsg('exec',pchar('_nohist,' + s));
-
-
-            end;
-          end;
-        end;
+        if (not AppRunning(s)) and (not Debug) then
+          ServiceMsg('exec', pchar('_nohist,' + s));
       end;
-
+    end;
   finally
     list.Free;
   end;
