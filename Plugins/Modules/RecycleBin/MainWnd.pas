@@ -30,7 +30,8 @@ interface
 uses
   Windows, SysUtils, Classes, Forms, Dialogs, SharpIconUtils,
   GR32, uISharpBarModule, ISharpESkinComponents, JclShell,
-  SharpApi, Menus, SharpEButton, ExtCtrls, SharpEBaseControls, Controls;
+  SharpApi, Menus, SharpEButton, ExtCtrls, SharpEBaseControls,
+  ToolTipApi, Controls;
 
 
 type
@@ -50,8 +51,6 @@ type
     Properties1: TMenuItem;
     Separator1: TMenuItem;
 
-    procedure GetRecycleBinStatus;
-
     procedure FormPaint(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure recycleTimerOnTimer(Sender: TObject);
@@ -61,6 +60,11 @@ type
     procedure btnRecycleOpen(Sender: TObject);
     procedure btnRecycleEmpty(Sender: TObject);
     procedure btnRecycleProperties(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    
+  private
+    FTipWnd : HWND;
+    
   public
     SHEmptyRecycleBin : function (hWnd: HWND; pszRootPath: PChar; dwFlags: DWORD): HResult; stdcall;
     SHQueryRecycleBin : function (pszRootPath: PChar; var pSHQueryRBInfo: TSHQueryRBInfo): HResult; stdcall;
@@ -68,6 +72,7 @@ type
     IsEmpty : Boolean;
 
     mInterface : ISharpBarModule;
+    function GetRecycleBinStatus: integer;
     procedure LoadSettings;
     procedure ReAlignComponents(Broadcast : boolean = True);
     procedure UpdateComponentSkins;
@@ -141,14 +146,33 @@ begin
 end;
 
 procedure TMainForm.recycleTimerOnTimer(Sender: TObject);
+var
+  n : integer;
 begin
-  GetRecycleBinStatus;
+  n := GetRecycleBinStatus;
+
+  ToolTipApi.DeleteToolTip(FTipWnd,Self,1);
+
+  if n = 1 then
+    ToolTipApi.AddToolTip(FTipWnd,Self,1,
+                          Rect(btnRecycle.Left, btnRecycle.Top,
+                              btnRecycle.Left + btnRecycle.Width,
+                              btnRecycle.Top + btnRecycle.Height),
+                              IntToStr(n) + ' item')
+  else
+    ToolTipApi.AddToolTip(FTipWnd,Self,1,
+                          Rect(btnRecycle.Left, btnRecycle.Top,
+                              btnRecycle.Left + btnRecycle.Width,
+                              btnRecycle.Top + btnRecycle.Height),
+                              IntToStr(n) + ' items');
 end;
 
-procedure TMainForm.GetRecycleBinStatus;
+function TMainForm.GetRecycleBinStatus: integer;
 var
   rbinfo : TSHQUERYRBINFO;
 begin
+  Result := 0;
+
   if @SHQueryRecycleBin = nil then
     exit;
     
@@ -157,6 +181,8 @@ begin
   rbinfo.i64NumItems := 0;
   if SHQueryRecycleBin(nil, rbinfo) = S_OK then
   begin
+    Result := rbinfo.i64NumItems;
+
     if IsEmpty <> (rbinfo.i64NumItems <= 0) then
     begin
       IsEmpty := (rbinfo.i64NumItems <= 0);
@@ -230,8 +256,18 @@ begin
     FreeLibrary(DllHandle);
   end;
 
+  // Enable tool-tip
+  FTipWnd := ToolTipApi.RegisterToolTip(self);
+  ToolTipApi.EnableToolTip(FTipWnd);
+
   GetRecycleBinStatus;
   LoadIcons;
+end;
+
+procedure TMainForm.FormDestroy(Sender: TObject);
+begin
+  if FTipWnd <> 0 then
+     DestroyWindow(FTipWnd); 
 end;
 
 procedure TMainForm.FormPaint(Sender: TObject);
