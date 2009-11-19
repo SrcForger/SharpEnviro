@@ -28,8 +28,8 @@ unit MainWnd;
 interface
 
 uses
-  Windows, SysUtils, Classes, Forms, Dialogs, SharpIconUtils,
-  GR32, uISharpBarModule, ISharpESkinComponents, JclShell,
+  Windows, Messages, SysUtils, Classes, Forms, Dialogs, CommCtrl,
+  SharpIconUtils, GR32, uISharpBarModule, ISharpESkinComponents, JclShell,
   SharpApi, Menus, SharpEButton, ExtCtrls, SharpEBaseControls,
   ToolTipApi, Controls;
 
@@ -64,6 +64,8 @@ type
     
   private
     FTipWnd : HWND;
+
+    procedure WMNotify(var msg : TWMNotify); message WM_NOTIFY;
     
   public
     SHEmptyRecycleBin : function (hWnd: HWND; pszRootPath: PChar; dwFlags: DWORD): HResult; stdcall;
@@ -73,6 +75,8 @@ type
 
     mInterface : ISharpBarModule;
     function GetRecycleBinStatus: integer;
+    procedure UpdateStatus;
+
     procedure LoadSettings;
     procedure ReAlignComponents(Broadcast : boolean = True);
     procedure UpdateComponentSkins;
@@ -84,6 +88,16 @@ type
 implementation
 
 {$R *.dfm}
+
+procedure TMainForm.WMNotify(var msg: TWMNotify);
+begin
+  if Msg.NMHdr.code = TTN_SHOW then
+  begin
+    SetWindowPos(Msg.NMHdr.hwndFrom, HWND_TOPMOST, 0, 0, 0, 0,SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOSIZE);
+    Msg.result := 1;
+    exit;
+  end else Msg.result := 0;
+end;
 
 procedure TMainForm.LoadIcons;
 var
@@ -146,25 +160,20 @@ begin
 end;
 
 procedure TMainForm.recycleTimerOnTimer(Sender: TObject);
+begin
+  UpdateStatus;
+end;
+
+procedure TMainForm.UpdateStatus;
 var
   n : integer;
 begin
   n := GetRecycleBinStatus;
 
-  ToolTipApi.DeleteToolTip(FTipWnd,Self,1);
-
   if n = 1 then
-    ToolTipApi.AddToolTip(FTipWnd,Self,1,
-                          Rect(btnRecycle.Left, btnRecycle.Top,
-                              btnRecycle.Left + btnRecycle.Width,
-                              btnRecycle.Top + btnRecycle.Height),
-                              IntToStr(n) + ' item')
+    ToolTipApi.UpdateToolTipText(FTipWnd, Self, 1, IntToStr(n) + ' item')
   else
-    ToolTipApi.AddToolTip(FTipWnd,Self,1,
-                          Rect(btnRecycle.Left, btnRecycle.Top,
-                              btnRecycle.Left + btnRecycle.Width,
-                              btnRecycle.Top + btnRecycle.Height),
-                              IntToStr(n) + ' items');
+    ToolTipApi.UpdateToolTipText(FTipWnd, Self, 1, IntToStr(n) + ' items');
 end;
 
 function TMainForm.GetRecycleBinStatus: integer;
@@ -230,7 +239,7 @@ begin
     exit;
     
   SHEmptyRecycleBin(Application.Handle, nil, 0);
-  GetRecycleBinStatus;
+  UpdateStatus;
 end;
 
 procedure TMainForm.btnRecycleProperties(Sender: TObject);
@@ -259,13 +268,19 @@ begin
   // Enable tool-tip
   FTipWnd := ToolTipApi.RegisterToolTip(self);
   ToolTipApi.EnableToolTip(FTipWnd);
+  ToolTipApi.AddToolTip(FTipWnd,Self,1,
+                        Rect(btnRecycle.Left, btnRecycle.Top,
+                        btnRecycle.Left + btnRecycle.Width,
+                        btnRecycle.Top + btnRecycle.Height),
+                        '');
 
-  GetRecycleBinStatus;
+  UpdateStatus;
   LoadIcons;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
+  ToolTipApi.DeleteToolTip(FTipWnd,Self,1);
   if FTipWnd <> 0 then
      DestroyWindow(FTipWnd); 
 end;

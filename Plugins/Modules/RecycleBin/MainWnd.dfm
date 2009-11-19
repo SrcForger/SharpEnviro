@@ -111,7 +111,7 @@ object MainForm: TMainForm
     end
   end
   object recycleTimer: TTimer
-    Interval = 10000
+    Interval = 5000
     OnTimer = recycleTimerOnTimer
     Left = 24
     Top = 56
