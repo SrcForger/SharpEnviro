@@ -405,9 +405,10 @@ begin
   FileCmd := StrtoFileandCmd(s);
   FileCmd.Filename := GetLongPathAndFilename(FileCmd.Filename);
 
-  Result := FileCmd.Filename;
   if FileCmd.Commandline <> '' then
-    Result := Result + FileCmd.Commandline;
+    Result := ''
+  else
+    Result := FileCmd.Filename;
 end;
 
 
@@ -459,26 +460,28 @@ end;
 
       // Extract the filename
       CurrentTask := FixFileName(ExeFilename);
-
-      DebugMsg('Searching For: ' + CurrentTask, DMT_INFO);
-      while integer(ContinueLoop) <> 0 do
+      if CurrentTask <> '' then
       begin
-        CurrentScan := ProcessFileName(FProcessEntry32.th32ProcessID);
-
-        //DebugMsg('Current Scan: ' + CurrentScan, DMT_INFO);
-        if CompareText(CurrentTask, CurrentScan) = 0 then
+        DebugMsg('Searching For: ' + CurrentTask, DMT_INFO);
+        while integer(ContinueLoop) <> 0 do
         begin
-          DebugMsg('Found: ' + CurrentTask, DMT_INFO);
-          Result := True;
-          exit;
+          CurrentScan := ProcessFileName(FProcessEntry32.th32ProcessID);
+
+          //DebugMsg('Current Scan: ' + CurrentScan, DMT_INFO);
+          if CompareText(CurrentTask, CurrentScan) = 0 then
+          begin
+            DebugMsg('Found: ' + CurrentTask, DMT_INFO);
+            Result := True;
+            break;
+          end;
+          ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);
         end;
-        ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);
       end;
     finally
       CloseHandle(FSnapshotHandle);
     end;
   end;
-  
+
 {$ENDREGION}
 
 procedure TStartup.RunDir(dir: string);
