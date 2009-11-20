@@ -177,6 +177,9 @@ end;
 
 procedure TfrmEditWnd.btnSearchClick(Sender: TObject);
 begin
+  if edLocation.Text = '' then
+    exit;
+
   DownloadLocationData(edLocation.Text);
 end;
 
