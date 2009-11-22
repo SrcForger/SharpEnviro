@@ -560,7 +560,7 @@ procedure TfrmSettingsWnd.FormCreate(Sender: TObject);
 begin
   Self.DoubleBuffered := true;
 
-  WPList := TObjecTList.Create(False);
+  WPList := TObjecTList.Create(True);
 end;
 
 procedure TfrmSettingsWnd.FormDestroy(Sender: TObject);
