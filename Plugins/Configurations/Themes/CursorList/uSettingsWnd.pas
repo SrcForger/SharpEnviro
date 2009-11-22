@@ -446,6 +446,8 @@ begin
     end;
   end;
 
+  XML.Free;
+
   PreBmp := TBitmap32.Create;
   PreBmp.DrawMode := dmBlend;
 
