@@ -129,6 +129,9 @@ begin
 
   Bmp.DrawTo(BGBmp);
   BGBmp.DrawTo(result.Canvas.Handle,Rect(0,0,result.Width,result.Height),Rect(0,0,Bmp.Width,Bmp.Height));
+
+  Bmp.Free;
+  BGBmp.Free;
 end;
 
 procedure TfrmList.FormCreate(Sender: TObject);
@@ -388,6 +391,8 @@ begin
         end;
       end;
     end;
+
+ BmpMask.Free;
 end;
 
 end.
