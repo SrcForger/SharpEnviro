@@ -13,6 +13,7 @@ object frmVolumeControl: TfrmVolumeControl
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
   object JvPageList1: TJvPageList
@@ -154,9 +155,6 @@ object frmVolumeControl: TfrmVolumeControl
         Color = clWindow
         ParentBackground = False
         TabOrder = 4
-        ExplicitLeft = 0
-        ExplicitTop = 244
-        ExplicitWidth = 428
         object Label1: TLabel
           Left = 8
           Top = 10

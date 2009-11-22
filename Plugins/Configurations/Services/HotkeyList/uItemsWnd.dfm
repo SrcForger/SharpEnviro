@@ -13,6 +13,7 @@ object frmItemsWnd: TfrmItemsWnd
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 14

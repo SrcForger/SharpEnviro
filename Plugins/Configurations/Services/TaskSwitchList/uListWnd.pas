@@ -70,6 +70,7 @@ type
       AItem: TSharpEListItem; var AImageIndex: Integer;
       const ASelected: Boolean);
     procedure FormShow(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
 
   private
     FPluginHost: ISharpCenterHost;
@@ -167,6 +168,12 @@ procedure TfrmList.FormCreate(Sender: TObject);
 begin
   Self.DoubleBuffered := True;
   lbList.DoubleBuffered := True;
+end;
+
+procedure TfrmList.FormDestroy(Sender: TObject);
+begin
+  if Assigned(FTaskSwitchList) then
+    FreeAndNil(FTaskSwitchList);
 end;
 
 procedure TfrmList.FormShow(Sender: TObject);

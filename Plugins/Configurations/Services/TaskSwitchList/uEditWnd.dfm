@@ -14,6 +14,7 @@ object frmEdit: TfrmEdit
   OldCreateOrder = False
   Position = poDesigned
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   DesignSize = (
     482
     40)

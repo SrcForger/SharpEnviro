@@ -51,6 +51,7 @@ type
     edAction: TLabeledEdit;
     procedure edNameKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     FUpdating: Boolean;
     FPluginHost: ISharpCenterHost;
@@ -85,6 +86,11 @@ end;
 procedure TfrmEdit.FormCreate(Sender: TObject);
 begin
   FItemEdit := TTaskSwitchItem.Create;
+end;
+
+procedure TfrmEdit.FormDestroy(Sender: TObject);
+begin
+  FItemEdit.Free;
 end;
 
 procedure TfrmEdit.Init;

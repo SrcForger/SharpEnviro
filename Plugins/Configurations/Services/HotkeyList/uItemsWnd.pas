@@ -73,6 +73,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure lbHotkeysGetCellText(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AColText: string);
+    procedure FormDestroy(Sender: TObject);
   private
     FPluginHost: ISharpCenterHost;
     function CtrlDown: Boolean;
@@ -112,6 +113,12 @@ uses
 procedure TfrmItemsWnd.FormCreate(Sender: TObject);
 begin
   lbHotkeys.DoubleBuffered := True;
+end;
+
+procedure TfrmItemsWnd.FormDestroy(Sender: TObject);
+begin
+  if Assigned(FHotkeyList) then
+    FreeAndNil(FHotkeyList);
 end;
 
 procedure TfrmItemsWnd.FormShow(Sender: TObject);

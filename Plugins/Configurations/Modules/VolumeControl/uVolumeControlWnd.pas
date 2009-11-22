@@ -52,6 +52,7 @@ type
     procedure cb_mlistChange(Sender: TObject);
     procedure sgb_widthChangeValue(Sender: TObject; Value: Integer);
     procedure cboButtonPosChange(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     FPluginHost: ISharpCenterHost;
     procedure SendUpdate;
@@ -115,6 +116,11 @@ begin
   Self.DoubleBuffered := true;
   IDList := TStringList.Create;
   IDList.Clear;
+end;
+
+procedure TfrmVolumeControl.FormDestroy(Sender: TObject);
+begin
+  IDList.Free;
 end;
 
 procedure TfrmVolumeControl.SendUpdate;
