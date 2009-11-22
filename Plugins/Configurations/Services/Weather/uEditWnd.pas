@@ -159,6 +159,8 @@ begin
         newMi.Tag := Integer(tmpWl);
         newMi.OnClick := ClickItem;
         mnuSearch.Items.Add(newMi);
+
+        tmpWl.Free;
       end;
     end;
 
