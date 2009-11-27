@@ -1,7 +1,7 @@
 {
-Source Name: RSSReader.dpr
-Description: SharpBar Rss Reader Module - Main Project File
-Copyright (C) Martin Krämer <MartinKraemer@gmx.net>
+Source Name: AlarmClock.dpr
+Description: SharpBar AlarmClock Module - Main Project File
+Copyright (C) Mathias Tillman <mathias@sharpenviro.com>
 
 Source Forge Site
 https://sourceforge.net/projects/sharpe/

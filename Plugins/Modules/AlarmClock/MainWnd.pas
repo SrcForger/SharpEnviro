@@ -31,7 +31,8 @@ uses
   Windows, SysUtils, Classes, Forms, Dialogs, DateUtils, SharpIconUtils,
   uISharpBarModule, ISharpESkinComponents, JclShell,
   SharpApi, SharpCenterApi, Menus, SharpEButton, ExtCtrls, SharpEBaseControls, Controls,
-  GR32, GR32_PNG, GR32_Image, JclSimpleXML, IXmlBaseUnit, cbAudioPlay, DirectShow;
+  GR32, GR32_PNG, GR32_Image, JclSimpleXML, IXmlBaseUnit, cbAudioPlay, DirectShow,
+  ImgList, PngImageList;
 
 
 type
@@ -97,6 +98,7 @@ type
     mnuDisableBtn: TMenuItem;
     N1: TMenuItem;
     mnuConfigBtn: TMenuItem;
+    PngImageList1: TPngImageList;
 
     procedure FormPaint(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -553,9 +555,14 @@ begin
 
     m := mnuRight.Items[2];
     if alarmSettings.IsOn then
+    begin
+      m.ImageIndex := 3;
       m.Caption := 'Disable'
-    else
+    end else
+    begin
+      m.ImageIndex := 2;    
       m.Caption := 'Enable';
+    end;
 
     // Show the menu
     mnuRight.Popup(p.X, p.Y);
