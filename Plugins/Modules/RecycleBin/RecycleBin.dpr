@@ -1,7 +1,7 @@
 {
-Source Name: RSSReader.dpr
-Description: SharpBar Rss Reader Module - Main Project File
-Copyright (C) Martin Krämer <MartinKraemer@gmx.net>
+Source Name: RecycleBin.dpr
+Description: SharpBar RecycleBin Module - Main Project File
+Copyright (C) Mathias Tillman <mathias@sharpenviro.com>
 
 Source Forge Site
 https://sourceforge.net/projects/sharpe/

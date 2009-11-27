@@ -31,7 +31,7 @@ uses
   Windows, Messages, SysUtils, Classes, Forms, Dialogs, CommCtrl,
   SharpIconUtils, GR32, uISharpBarModule, ISharpESkinComponents, JclShell,
   SharpApi, Menus, SharpEButton, ExtCtrls, SharpEBaseControls,
-  ToolTipApi, Controls;
+  ToolTipApi, Controls, ImgList, PngImageList;
 
 
 type
@@ -50,6 +50,7 @@ type
     recycleTimer: TTimer;
     Properties1: TMenuItem;
     Separator1: TMenuItem;
+    PngImageList1: TPngImageList;
 
     procedure FormPaint(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -105,14 +106,15 @@ var
   Icon : string;
 begin
   TempBmp := TBitmap32.Create;
-  TempBmp.Clear(color32(0,0,0,0));
 
   Icon := 'icon.recyclebin.full';
   if IsEmpty then
     Icon := 'icon.recyclebin.empty';
 
-  IconStringToIcon(Icon, '', TempBmp);
   TempBmp.SetSize(32, 32);
+  TempBmp.Clear(color32(0,0,0,0));  
+  IconStringToIcon(Icon, '', TempBmp);
+
 
   btnRecycle.Glyph32.Assign(tempBmp);
   btnRecycle.UpdateSkin;
