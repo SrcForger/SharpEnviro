@@ -57,6 +57,7 @@ type
                    FSortTasks      : Boolean;
                    FSortType       : TSharpeTaskManagerSortType;
                    FLastActiveTask : hwnd;
+                   FLastActiveTaskPos : TRect;
                  public
                    procedure RemoveDeadTasks;
                    procedure AddTask(pHandle : hwnd);
@@ -91,6 +92,7 @@ type
                    property OnTaskExchange : TTaskExChangeEvent read FOnTaskExChange write FOnTaskExChange;
                    property ItemCount      : integer          read GetCount;
                    property LastActiveTask : hwnd             read FLastActiveTask write FLastActiveTask;
+                   property LastActiveTaskPos : TRect         read FLastActiveTaskPos write FLastActiveTaskPos;
                  end;
 
 implementation
@@ -111,6 +113,7 @@ begin
   FSortTasks := False;
   FSortType  := stCaption;
   FLastActiveTask := 0;
+  FLastActiveTaskPos := Rect(0,0,0,0);
   FEnabled := False;
   FListMode := False;
 end;
@@ -288,6 +291,7 @@ begin
       if pItem.Handle = pHandle then
       begin
         FLastActiveTask := pHandle;
+        GetWindowRect(FLastActiveTask,FLastActiveTaskPos);
         if not FListMode then        
           pItem.UpdateFromHwnd
         else pItem.UpdateNonCriticalFromHwnd;
@@ -305,6 +309,7 @@ begin
     and (CompareText(ExtractFileName(GetProcessNameFromWnd(pHandle)), 'VpxClient.exe') = 0)) then // VpxClient.exe
   begin
      FLastActiveTask := pHandle;
+     GetWindowRect(FLastActiveTask,FLastActiveTaskPos);
      AddTask(pHandle)
   end else// Task wasn found, remove focus from any activated task
    if Assigned(OnActivateTask) then FOnActivateTask(nil,-1);

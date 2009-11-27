@@ -453,10 +453,30 @@ var
   vwm : integer;
   deskswitch : boolean;
   b : integer;
+  R : TRect;
 begin
   result := 0;
   if TaskMsgManager <> nil then
   begin
+    if (Msg = WM_TIMER) and (wParam = 1) then
+    begin
+      if IsWindow(TaskManager.LastActiveTask) then
+      begin
+        pItem := TaskManager.GetItemByHandle(TaskManager.LastActiveTask);
+        GetWindowRect(TaskManager.LastActiveTask,R);
+        if ((R.Left <> TaskManager.LastActiveTaskPos.Left) // Check if Window has moved
+           or (R.Top <> TaskManager.LastActiveTaskPos.Top)) and (pItem <> nil) then
+        begin
+          vwm := VWMGetWindowVWM(GetCurrentVWM,GetVWMCount,TaskManager.LastActiveTask);
+          TaskManager.LastActiveTaskPos := R;
+          pItem.LastVWM := vwm; // Update the VWM of the task and forward it to all modules
+          for n := High(TaskMsgManager.WndList) downto 0 do
+            if IsWindow(TaskMsgManager.WndList[n]) then
+              PostMessage(TaskMsgManager.WndList[n],WM_TASKVWMCHANGE,pItem.Handle,pItem.LastVWM)
+            else TaskMsgManager.DeleteWnd(n);
+        end;
+      end;
+    end else
     if Integer(Msg) = WM_SHELLHOOK then
     begin
       deskswitch := False;
@@ -717,6 +737,7 @@ begin
   lastappcommand := GetTickCount;
   WM_SHELLHOOK := RegisterWindowMessage('SHELLHOOK');
   setlength(WndList,0);
+  SetTimer(MsTaskSwWClass,1,500,nil);
 end;
 
 procedure TTaskMsgManager.DeleteWnd(Index: Integer);
@@ -742,6 +763,8 @@ end;
 
 destructor TTaskMsgManager.Destroy;
 begin
+  KillTimer(MsTaskSwWClass,1); 
+
   UnregisterHook;
 
   setlength(WndList,0);
