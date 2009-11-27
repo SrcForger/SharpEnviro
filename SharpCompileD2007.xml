@@ -12,6 +12,7 @@
     <project Name="Theme List" Type="DLL">Plugins\Configurations\Components\ThemeList\ThemeList.dproj</project>
   </package>
     <package Name="Configurations - Modules">
+    <project Name="AlarmClock" Type="DLL">Plugins\Configurations\Modules\AlarmClock\AlarmClock.dproj</project>
     <project Name="AppBar List" Type="DLL">Plugins\Configurations\Modules\AppBarList\AppBarList.dproj</project> 
     <project Name="AppBar Options" Type="DLL">Plugins\Configurations\Modules\AppBarOptions\AppBarOptions.dproj</project>
     <project Name="Battery Monitor" Type="DLL">Plugins\Configurations\Modules\BatteryMonitor\BatteryMonitor.dproj</project>
@@ -85,6 +86,7 @@
     <project Name="SharpThemeApiEx" Type="DLL">Common\Libraries\SharpThemeApiEx\SharpThemeApiEx.dproj</project>
   </package>
   <package Name="Modules">
+    <project Name="Alarm Clock" Type="DLL" >Plugins\Modules\AlarmClock\AlarmClock.dproj</project>
     <project Name="Application Bar" Type="DLL" >Plugins\Modules\ApplicationBar\ApplicationBar.dproj</project>
     <project Name="Battery Monitor" Type="DLL" >Plugins\Modules\Battery Monitor\BatteryMonitor.dproj</project>
     <project Name="Button" Type="DLL" >Plugins\Modules\Button\Button.dproj</project>

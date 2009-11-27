@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpCenter>
+  <Sections>
+    <AlarmClock>
+      <Dll>_ModuleDlls\AlarmClock.dll</Dll>
+      <Icon>_ModuleDlls\AlarmClock.png</Icon>
+    </AlarmClock>
+  </Sections>
+</SharpCenter>
