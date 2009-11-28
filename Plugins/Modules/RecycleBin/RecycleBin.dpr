@@ -175,7 +175,7 @@ begin
   with result do
   begin
     Name := 'RecycleBin';
-    Author := 'Mathias Tillman <mathias.tillman@gmail.com>';
+    Author := 'Mathias Tillman <mathias@sharpenviro.com>';
     Description := 'Allows quick access to the Recycle Bin';
     Version := '0.7.6.0';
     ExtraData := 'preview: False';
