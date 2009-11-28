@@ -834,8 +834,9 @@ begin
     mbRight: DisplaySystemMenu(TSharpETaskItem(Sender).Handle);
     mbMiddle: if sMiddleClose then
     begin
-      PostMessage(TSharpETaskItem(Sender).Handle, WM_CLOSE, 0, 0);
-      PostThreadMessage(GetWindowThreadProcessID(TSharpETaskItem(Sender).Handle, nil), WM_QUIT, 0, 0);
+      //PostMessage(TSharpETaskItem(Sender).Handle, WM_CLOSE, 0, 0);
+      //PostThreadMessage(GetWindowThreadProcessID(TSharpETaskItem(Sender).Handle, nil), WM_QUIT, 0, 0);
+      SendMessage(TSharpeTaskItem(Sender).Handle, WM_SYSCOMMAND, SC_CLOSE, 0);
     end;
   end;
 end;
