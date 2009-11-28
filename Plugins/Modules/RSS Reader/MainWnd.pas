@@ -32,7 +32,8 @@ uses
   Dialogs, StdCtrls, SharpEBaseControls, GR32_Resamplers, SharpNotify,
   ExtCtrls, GR32, uISharpBarModule, SharpTypes, ISharpESkinComponents,
   JclStrings, JclSimpleXML, SharpApi, Menus, Math, SharpESkinLabel,
-  uImageDownloadThread, SharpImageUtils, JclStreams, SharpEButton;
+  uImageDownloadThread, SharpImageUtils, JclStreams, SharpEButton, ImgList,
+  PngImageList, AppEvnts;
 
 
 type
@@ -48,6 +49,9 @@ type
     btnLeft: TSharpEButton;
     DoubleClickTimer: TTimer;
     ClearNotifyWindows: TTimer;
+    Popup: TPopupMenu;
+    PngImageList1: TPngImageList;
+    ApplicationEvents1: TApplicationEvents;
     procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -64,6 +68,9 @@ type
     procedure FormClick(Sender: TObject);
     procedure DoubleClickTimerTimer(Sender: TObject);
     procedure ClearNotifyWindowsTimer(Sender: TObject);
+    procedure MenuItemClick(Sender: TObject);
+    procedure PopupPopup(Sender: TObject);
+    procedure ApplicationEvents1Idle(Sender: TObject; var Done: Boolean);
   protected
   private
     sShowNotification : boolean;  
@@ -89,6 +96,7 @@ type
     FDeleteList  : TObjectList;
     notifyItem   : TNotifyItem;
     FIconsInitialized : boolean;
+    FActivePopup : TPopupMenu;    
     function FindImage(pUrl : String) : TBitmap32;
     procedure OnFeedImageDownload(Sender: TObject);
     procedure OnThumbImageDownload(Sender : TObject);
@@ -207,6 +215,11 @@ begin
   end;
 end;
 
+procedure TMainForm.MenuItemClick(Sender: TObject);
+begin
+  SharpExecute(TMenuItem(Sender).Hint);
+end;
+
 procedure TMainForm.OnFeedImageDownload(Sender: TObject);
 begin
   FCustomIcon := True;
@@ -245,6 +258,18 @@ begin
 
   if wasEnabled then
     SwitchTimer.Enabled := True;
+end;
+
+procedure TMainForm.PopupPopup(Sender: TObject);
+begin
+  FActivePopup := TPopupMenu(Sender);
+
+  if notifyItem <> nil then
+  begin
+    ClosePopupTimer.Enabled := False;  
+    SharpNotify.CloseNotifyWindow(notifyItem);
+    notifyItem := nil;
+  end;
 end;
 
 procedure TMainForm.PopupTimerTimer(Sender: TObject);
@@ -314,9 +339,14 @@ var
   hasMediaThumbnail : Boolean;
   hasMediaContent : Boolean;
   Thread : TImageDownloadThread;
+  mitem : TMenuItem;
+  mroot : TMenuItem;
 begin
   SwitchTimer.Enabled := False;
   SwitchTimer.Enabled := True;
+
+  Popup.Items.Clear;
+  mroot := Popup.Items;
 
   if FFeedValid then
   with FFeed.Root.Items do
@@ -351,11 +381,27 @@ begin
           for i := 0 to Count - 1 do
             if CompareText(Item[i].Name,'item') = 0 then
             begin
+              s := Item[i].Items.Value('Title','Error Loading Title');
+              if (itemcount mod 20  = 0) and (itemcount > 0) then
+              begin
+                mitem := TMenuItem.Create(mroot);
+                mitem.Caption := 'More...';
+                mitem.ImageIndex := 1;
+                mroot.Add(mitem);
+                mroot := mitem;
+              end;
+              mitem := TMenuItem.Create(mroot);
+              mitem.Caption := s;
+              mitem.Hint := Item[i].Items.Value('link','no link');
+              mitem.ImageIndex := 0;
+              mitem.OnClick := MenuItemClick;
+              mroot.Add(mitem);
+
               // This is the item index in the channel we want to display
               if FFeedIndex = itemcount then
               with Item[i].Items do
               begin
-                s := Value('Title','Error Loading Title');
+                s := Value('Title','Error Loading Title');              
                 CutString(s,top,bottom);
                 lb_top.Caption := top;
                 lb_bottom.Caption := bottom;
@@ -391,11 +437,11 @@ begin
                       FThreadList.Add(Thread);
                     end;
                 end else FFeedImage := '';
-                
-                break;
+
               end;
               itemcount := itemcount + 1;
             end;
+
           break;
         end;
         channelcount := channelcount + 1;
@@ -599,6 +645,9 @@ begin
   if not FFeedValid then
     exit;
 
+  if (FActivePopup <> nil) then
+    exit;
+
   // Get the cordinates on the screen where the notification window should appear.
   p := Self.ClientToScreen(Point(0, Self.Height));
   x := p.X;
@@ -695,6 +744,9 @@ end;
 
 procedure TMainForm.SwitchTimerTimer(Sender: TObject);
 begin
+  if (FActivePopup <> nil) then
+    exit;
+
   if notifyitem <> nil then
     exit;
 
@@ -764,6 +816,12 @@ begin
         
     RssImages.Free;
   end;
+end;
+
+procedure TMainForm.ApplicationEvents1Idle(Sender: TObject; var Done: Boolean);
+begin
+  if Assigned(FActivePopup) then
+    FActivePopup := nil;
 end;
 
 procedure TMainForm.btnLeftClick(Sender: TObject);
