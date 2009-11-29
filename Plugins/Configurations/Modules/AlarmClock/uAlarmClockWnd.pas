@@ -41,14 +41,11 @@ type
     pnlBottom: TPanel;
     Panel2: TPanel;
     Panel1: TPanel;
-    edtTimeout: TSharpEEdit;
     Label1: TLabel;
     Label2: TLabel;
-    edtSnooze: TSharpEEdit;
     cbAutostart: TJvXPCheckbox;
     Label3: TLabel;
     Label4: TLabel;
-    edtSound: TSharpEEdit;
     Label5: TLabel;
     sgbTimeYear: TSharpeGaugeBox;
     sgbTimeMonth: TSharpeGaugeBox;
@@ -63,10 +60,16 @@ type
     Label9: TLabel;
     Label10: TLabel;
     Label11: TLabel;
+    edtTimeout: TEdit;
+    edtSnooze: TEdit;
+    edtSound: TEdit;
     procedure FormCreate(Sender: TObject);
     procedure UpdateSettingsEvent(Sender: TObject);
+
+    procedure edtOnChange(Sender: TObject; var Key: Char);
+    procedure edtNumOnChange(Sender: TObject; var Key: Char);
+
     procedure sgbUpdateIntervalChangeValue(Sender: TObject; Value: Integer);
-    procedure edtOnChange(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure sgbOnChangeValue(Sender: TObject; Value: Integer);
     procedure cbOnChange(Sender: TObject);
     procedure btnSoundBrowseClick(Sender: TObject);
@@ -112,11 +115,13 @@ begin
   dlg.FilterIndex := 1;
 
   if dlg.Execute then
+  begin
     edtSound.Text := dlg.FileName;
+
+    UpdateSettings;
+  end;
     
   dlg.Free;
-
-  UpdateSettings;
 end;
 
 procedure TfrmAlarmClock.cbOnChange(Sender: TObject);
@@ -124,8 +129,16 @@ begin
   UpdateSettings;
 end;
 
-procedure TfrmAlarmClock.edtOnChange(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TfrmAlarmClock.edtNumOnChange(Sender: TObject; var Key: Char);
+begin
+  // #8 is Backspace
+  if not (Key in [#8, '0'..'9']) then
+    Key := #0
+  else
+    UpdateSettings;
+end;
+
+procedure TfrmAlarmClock.edtOnChange(Sender: TObject; var Key: Char);
 begin
   UpdateSettings;
 end;

@@ -20,7 +20,7 @@ object frmAlarmClock: TfrmAlarmClock
     Left = 5
     Top = 0
     Width = 411
-    Height = 35
+    Height = 37
     Margins.Left = 5
     Margins.Top = 0
     Margins.Right = 5
@@ -34,9 +34,9 @@ object frmAlarmClock: TfrmAlarmClock
   object SharpECenterHeader2: TSharpECenterHeader
     AlignWithMargins = True
     Left = 5
-    Top = 104
+    Top = 106
     Width = 411
-    Height = 35
+    Height = 37
     Margins.Left = 5
     Margins.Top = 5
     Margins.Right = 5
@@ -50,7 +50,7 @@ object frmAlarmClock: TfrmAlarmClock
   object pnlBottom: TPanel
     AlignWithMargins = True
     Left = 5
-    Top = 149
+    Top = 153
     Width = 406
     Height = 95
     Margins.Left = 5
@@ -64,7 +64,7 @@ object frmAlarmClock: TfrmAlarmClock
     ParentColor = True
     TabOrder = 0
     object Label5: TLabel
-      Left = 2
+      Left = 0
       Top = 82
       Width = 53
       Height = 13
@@ -220,30 +220,29 @@ object frmAlarmClock: TfrmAlarmClock
       TabOrder = 6
       OnClick = cbOnChange
     end
-    object edtSound: TSharpEEdit
-      Left = 85
-      Top = 74
-      Width = 196
-      Height = 21
-      AutoSize = False
-      Text = 'Default'
-      AutoPosition = False
-      OnKeyUp = edtOnChange
-    end
     object btnSoundBrowse: TButton
-      Left = 287
+      Left = 271
       Top = 74
       Width = 21
       Height = 21
       Caption = '...'
-      TabOrder = 8
+      TabOrder = 7
       OnClick = btnSoundBrowseClick
+    end
+    object edtSound: TEdit
+      Left = 64
+      Top = 74
+      Width = 201
+      Height = 21
+      TabOrder = 8
+      Text = 'Default'
+      OnKeyPress = edtOnChange
     end
   end
   object Panel2: TPanel
     AlignWithMargins = True
     Left = 5
-    Top = 45
+    Top = 47
     Width = 406
     Height = 21
     Margins.Left = 5
@@ -258,33 +257,32 @@ object frmAlarmClock: TfrmAlarmClock
     TabOrder = 3
     object Label1: TLabel
       Left = 0
-      Top = 5
+      Top = 8
       Width = 45
       Height = 13
       Caption = 'Timeout: '
     end
     object Label3: TLabel
-      Left = 167
-      Top = 4
+      Left = 160
+      Top = 8
       Width = 39
       Height = 13
       Caption = 'seconds'
     end
-    object edtTimeout: TSharpEEdit
-      Left = 61
+    object edtTimeout: TEdit
+      Left = 64
       Top = 0
-      Width = 100
+      Width = 90
       Height = 21
-      AutoSize = False
+      TabOrder = 0
       Text = '60'
-      AutoPosition = False
-      OnKeyUp = edtOnChange
+      OnKeyPress = edtNumOnChange
     end
   end
   object Panel1: TPanel
     AlignWithMargins = True
     Left = 5
-    Top = 74
+    Top = 76
     Width = 406
     Height = 25
     Margins.Left = 5
@@ -304,21 +302,20 @@ object frmAlarmClock: TfrmAlarmClock
       Caption = 'Snooze:'
     end
     object Label4: TLabel
-      Left = 167
+      Left = 160
       Top = 9
       Width = 39
       Height = 13
       Caption = 'seconds'
     end
-    object edtSnooze: TSharpEEdit
-      Left = 61
-      Top = 5
-      Width = 100
+    object edtSnooze: TEdit
+      Left = 64
+      Top = 1
+      Width = 90
       Height = 21
-      AutoSize = False
+      TabOrder = 0
       Text = '540'
-      AutoPosition = False
-      OnKeyUp = edtOnChange
+      OnKeyPress = edtNumOnChange
     end
   end
 end
