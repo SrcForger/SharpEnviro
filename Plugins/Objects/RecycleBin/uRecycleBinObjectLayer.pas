@@ -63,6 +63,7 @@ type
     FIconFull        : TBitmap32;
     FPicture         : TBitmap32;
     FBinSize         : extended;
+    FBinExt          : string;
     FBinItems        : integer;
     FBinTimer        : TTimer;
     FFontSettings    : TDeskFont;
@@ -159,6 +160,27 @@ begin
   rbinfo.i64NumItems := 0;
   if SHQueryRecycleBin(nil,rbinfo) = s_OK then
   begin
+    if rbinfo.i64Size < 1024 then
+    begin
+      FBinSize := rbinfo.i64Size;
+      if rbinfo.i64Size = 1 then
+        FBinExt := 'Byte'
+      else
+        FBinExt := 'Bytes';
+    end else if rbinfo.i64Size < 1024 * 1024 then
+    begin
+      FBinSize := rbinfo.i64Size / 1024;
+      FBinExt := 'KB';
+    end else if rbinfo.i64Size < 1024 * 1024 * 1024 then
+    begin
+      FBinSize := rbinfo.i64Size / 1024 / 1024;
+      FBinExt := 'MB';
+    end else
+    begin
+      FBinSize := rbinfo.i64Size / 1024 / 1024 / 1024;
+      FBinExt := 'GB';
+    end;
+
     FBinSize:=rbinfo.i64Size / 1024 / 1024;
     FBinItems:=Rbinfo.i64NumItems;
     if FBinItems = 0 then
@@ -266,7 +288,7 @@ begin
   begin
     FCaptionSettings.Caption.Delete(FCaptionSettings.Caption.Count-1);
     FCaptionSettings.Caption.Delete(FCaptionSettings.Caption.Count-1);
-    FCaptionSettings.Caption.Add('Size : '+FloatToStrF(FBinSize,ffFixed,6,2)+' MB');
+    FCaptionSettings.Caption.Add('Size : '+FloatToStrF(FBinSize,ffFixed,6,2)+' '+FBinExt);
     FCaptionSettings.Caption.Add('Items : '+inttostr(FBinItems));
   end;
 
