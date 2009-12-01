@@ -75,7 +75,7 @@ type
     IsEmpty : Boolean;
 
     mInterface : ISharpBarModule;
-    function GetRecycleBinStatus: integer;
+    function GetRecycleBinStatus: TSHQUERYRBINFO;
     procedure UpdateStatus;
 
     procedure LoadSettings;
@@ -168,31 +168,54 @@ end;
 
 procedure TMainForm.UpdateStatus;
 var
-  n : integer;
-begin
-  n := GetRecycleBinStatus;
+  info : TSHQUERYRBINFO;
 
-  if n = 1 then
-    ToolTipApi.UpdateToolTipText(FTipWnd, Self, 1, IntToStr(n) + ' item')
+  size : extended;
+  ext : string;
+begin
+  info := GetRecycleBinStatus;
+
+  if info.i64Size < 1024 then
+  begin
+    size := info.i64Size;
+    if info.i64Size = 1 then
+      ext := 'Byte'
+    else
+      ext := 'Bytes';
+  end else if info.i64Size < 1024 * 1024 then
+  begin
+    size := info.i64Size / 1024;
+    ext := 'KB';
+  end else if info.i64Size < 1024 * 1024 * 1024 then
+  begin
+    size := info.i64Size / 1024 / 1024;
+    ext := 'MB';
+  end else
+  begin
+    size := info.i64Size / 1024 / 1024 / 1024;
+    ext := 'GB';
+  end;
+
+  if info.i64NumItems = 1 then
+    ToolTipApi.UpdateToolTipText(FTipWnd, Self, 1, '1 item - ' + (FloatToStrF(size, ffFixed, 6, 2)) + ' ' + ext)
   else
-    ToolTipApi.UpdateToolTipText(FTipWnd, Self, 1, IntToStr(n) + ' items');
+    ToolTipApi.UpdateToolTipText(FTipWnd, Self, 1, IntToStr(info.i64NumItems) + ' items - ' + (FloatToStrF(size, ffFixed, 6, 2)) + ' ' + ext);
 end;
 
-function TMainForm.GetRecycleBinStatus: integer;
+function TMainForm.GetRecycleBinStatus: TSHQUERYRBINFO;
 var
   rbinfo : TSHQUERYRBINFO;
 begin
-  Result := 0;
-
-  if @SHQueryRecycleBin = nil then
-    exit;
-    
   rbinfo.cbSize := sizeof(TSHQUERYRBINFO);
   rbinfo.i64Size := 0;
   rbinfo.i64NumItems := 0;
+
+  if @SHQueryRecycleBin = nil then
+    exit;
+
   if SHQueryRecycleBin(nil, rbinfo) = S_OK then
   begin
-    Result := rbinfo.i64NumItems;
+    Result := rbinfo;
 
     if IsEmpty <> (rbinfo.i64NumItems <= 0) then
     begin
