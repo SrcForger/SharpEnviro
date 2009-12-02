@@ -209,8 +209,11 @@ begin
         Add('item',FTrayClient.HiddenList[n]);
     end;
   end;
-  XML.SaveToFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
-  XML.Free;
+  try
+    XML.SaveToFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
+  finally
+    XML.Free;
+  end;
 
 end;
 

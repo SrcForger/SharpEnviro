@@ -157,25 +157,28 @@ var
   XML : TJclSimpleXML;
 begin
   XML := TJclSimpleXML.Create;
-  XML.Root.Name := 'NotesModuleSettings';
-  with xml.Root.Items do
-  begin
-    Add('Directory', StringReplace(Settings.Directory, SharpApi.GetSharpeUserSettingsPath, '{#SharpEUserSettingsDir#}', [rfReplaceAll,rfIgnoreCase]));
-    Add('CaptionText', Settings.Caption);
-    Add('Caption', Settings.ShowCaption);
-    Add('Icon', Settings.ShowIcon);
-    Add('AlwaysOnTop', Settings.AlwaysOnTop);
-    Add('Left', Settings.Left);
-    Add('Top', Settings.Top);
-    Add('Height', Settings.Height);
-    Add('Width', Settings.Width);
-    Add('LineWrap', Settings.WordWrap);
-    Add('Filter', Settings.Filter);
-    Add('FilterIndex', Settings.FilterIndex);
-    Add('LastTab', Settings.LastTab);
+  try
+    XML.Root.Name := 'NotesModuleSettings';
+    with xml.Root.Items do
+    begin
+      Add('Directory', StringReplace(Settings.Directory, SharpApi.GetSharpeUserSettingsPath, '{#SharpEUserSettingsDir#}', [rfReplaceAll,rfIgnoreCase]));
+      Add('CaptionText', Settings.Caption);
+      Add('Caption', Settings.ShowCaption);
+      Add('Icon', Settings.ShowIcon);
+      Add('AlwaysOnTop', Settings.AlwaysOnTop);
+      Add('Left', Settings.Left);
+      Add('Top', Settings.Top);
+      Add('Height', Settings.Height);
+      Add('Width', Settings.Width);
+      Add('LineWrap', Settings.WordWrap);
+      Add('Filter', Settings.Filter);
+      Add('FilterIndex', Settings.FilterIndex);
+      Add('LastTab', Settings.LastTab);
+    end;
+    XML.SaveToFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
+  finally
+    XML.Free;
   end;
-  XML.SaveToFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
-  XML.Free;
 end;
 
 procedure TMainForm.SaveTabsSettings;
@@ -184,24 +187,27 @@ var
   i : Integer;
 begin
   XML := TJclSimpleXML.Create;
-  XML.Root.Name := 'NotesModuleTabsSettings';
-  with xml.Root.Items do
-  begin
-    with Add('Tabs').Items do
-      for i := 0 to Pred(Settings.Tabs.Count) do
-        with Add('Tab').Items do
-        begin
-          Add('Name', NotesTabSettings(Settings.Tabs.Objects[i]).Name);
-          Add('Tags', NotesTabSettings(Settings.Tabs.Objects[i]).Tags);
-          Add('IconIndex', NotesTabSettings(Settings.Tabs.Objects[i]).IconIndex);
-          Add('SelStart', NotesTabSettings(Settings.Tabs.Objects[i]).SelStart);
-          Add('SelLength', NotesTabSettings(Settings.Tabs.Objects[i]).SelLength);
-        end;
+  try
+    XML.Root.Name := 'NotesModuleTabsSettings';
+    with xml.Root.Items do
+    begin
+      with Add('Tabs').Items do
+        for i := 0 to Pred(Settings.Tabs.Count) do
+          with Add('Tab').Items do
+          begin
+            Add('Name', NotesTabSettings(Settings.Tabs.Objects[i]).Name);
+            Add('Tags', NotesTabSettings(Settings.Tabs.Objects[i]).Tags);
+            Add('IconIndex', NotesTabSettings(Settings.Tabs.Objects[i]).IconIndex);
+            Add('SelStart', NotesTabSettings(Settings.Tabs.Objects[i]).SelStart);
+            Add('SelLength', NotesTabSettings(Settings.Tabs.Objects[i]).SelLength);
+          end;
+    end;
+    if not DirectoryExists(Settings.Directory) then
+      ForceDirectories(Settings.Directory);
+    XML.SaveToFile(Settings.Directory + '\NotesModuleTabsSettings.xml');
+  finally
+    XML.Free;
   end;
-  if not DirectoryExists(Settings.Directory) then
-    ForceDirectories(Settings.Directory);
-  XML.SaveToFile(Settings.Directory + '\NotesModuleTabsSettings.xml');
-  XML.Free;
 end;
 
 procedure TMainForm.LoadSettings;

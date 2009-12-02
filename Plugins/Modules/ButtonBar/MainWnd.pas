@@ -346,25 +346,28 @@ var
   n : integer;
 begin
   XML := TJclSimpleXMl.Create;
-  XML.Root.Name := 'ButtonBarModuleSettings';
-  with XML.Root.Items do
-  begin
-    Add('ShowCaption',sShowLabel);
-    Add('ShowIcon',sShowIcon);
-    with Add('Buttons').Items do
+  try
+    XML.Root.Name := 'ButtonBarModuleSettings';
+    with XML.Root.Items do
     begin
-      for n := 0 to High(FButtonList) do
-      with FButtonList[n] do
-           with Add('item').Items do
-           begin
-             Add('Target',Target);
-             Add('Icon',Icon);
-             Add('Caption',Caption);
-           end;
+      Add('ShowCaption',sShowLabel);
+      Add('ShowIcon',sShowIcon);
+      with Add('Buttons').Items do
+      begin
+        for n := 0 to High(FButtonList) do
+          with FButtonList[n] do
+            with Add('item').Items do
+            begin
+              Add('Target',Target);
+              Add('Icon',Icon);
+              Add('Caption',Caption);
+            end;
+      end;
     end;
+    XML.SaveToFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
+  finally
+    XML.Free;
   end;
-  XML.SaveToFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
-  XML.Free;
 end;
 
 procedure TMainForm.sb_configClick(Sender: TObject);

@@ -165,33 +165,39 @@ var
   mitem : TMediaPlayerItem;
 begin
   XML := TJclSimpleXML.Create;
-  XML.Root.Name := 'MediaControllerModuleSettings';
-  with XML.Root.Items do
-  begin
-    Add('Player',sPlayer);
-    AdD('PSelect',sPSelect);
+  try
+    XML.Root.Name := 'MediaControllerModuleSettings';
+    with XML.Root.Items do
+    begin
+      Add('Player',sPlayer);
+      AdD('PSelect',sPSelect);
+    end;
+    XML.SaveToFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
+  finally
+    XML.Free;
   end;
-  XML.SaveToFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
-  XML.Free;
 
   XML := TJclSimpleXML.Create;
-  XML.Root.Name := 'MediaControllerPlayers';
-  for n := 0 to FMPlayers.Items.Count - 1 do
-    with XML.Root.Items.Add('Item').Items do
-    begin
-      mitem := TMediaPlayerItem(FMPlayers.Items[n]);
-      Add('Name',mitem.Name);
-      Add('Path',mitem.PlayerPath);
-    end;
-  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\';
-  FName := Dir + 'MediaPlayers.xml';
-  if not DirectoryExists(Dir) then
-     ForceDirectories(Dir);
-  XML.SaveToFile(FName + '~');
-  if FileExists(FName) then
-     DeleteFile(FName);
-  RenameFile(FName + '~',FName);
-  XML.Free;
+  try
+    XML.Root.Name := 'MediaControllerPlayers';
+    for n := 0 to FMPlayers.Items.Count - 1 do
+      with XML.Root.Items.Add('Item').Items do
+      begin
+        mitem := TMediaPlayerItem(FMPlayers.Items[n]);
+        Add('Name',mitem.Name);
+        Add('Path',mitem.PlayerPath);
+      end;
+    Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\';
+    FName := Dir + 'MediaPlayers.xml';
+    if not DirectoryExists(Dir) then
+      ForceDirectories(Dir);
+    XML.SaveToFile(FName + '~');
+    if FileExists(FName) then
+      DeleteFile(FName);
+    RenameFile(FName + '~',FName);
+  finally
+    XML.Free;
+  end;
 end;
 
 procedure TMainForm.LoadIcons;

@@ -336,6 +336,8 @@ begin
     reNotes.Text := text;
 end;
 
+{$REGION 'Editor Events'}
+
 procedure TSharpENotesForm.EditorChange(Sender: TObject);
 begin
   if FIndex = -1 then
@@ -492,6 +494,14 @@ begin
     TMainForm(Owner).SaveTabsSettings;
   end;
 end;
+
+procedure TSharpENotesForm.EditorURLClick(Sender: TObject;
+  const URLText: string; Button: TMouseButton);
+begin
+  SharpExecute(URLText);
+end;
+
+{$ENDREGION 'Editor Events'}
 
 {$REGION 'Toolbar Events'}
 
@@ -969,12 +979,6 @@ begin
   miEditTab.Enabled := FIndex > -1;
   miAddFromSelectedText.Enabled := reNotes.SelText <> '';
   miAddFromCurrentTab.Enabled := FIndex > -1;
-end;
-
-procedure TSharpENotesForm.EditorURLClick(Sender: TObject;
-  const URLText: string; Button: TMouseButton);
-begin
-  SharpExecute(URLText);
 end;
 
 procedure TSharpENotesForm.miUndoClick(Sender: TObject);
