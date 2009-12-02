@@ -454,8 +454,8 @@ begin
       items.Add('ShowSwatchText', FShowCaptions);
       items.Add('SortMode', Integer(FSortMode));
     end;
-  finally
     xml.SaveToFile(AFileName);
+  finally
     xml.Free;
   end;
 end;
@@ -500,8 +500,8 @@ begin
       end;
     end;
 
-  finally
     xml.SaveToFile(AFileName);
+  finally
     xml.Free;
   end;
 end;
@@ -595,8 +595,8 @@ var
 begin
   if FileExists(AFileName) then begin
     xml := TJvSimpleXML.Create(nil);
-    xml.LoadFromFile(AFileName);
     try
+      xml.LoadFromFile(AFileName);
       if xml.Root.Name <> 'SharpESwatchCollectionOptions' then
         exit;
 

@@ -236,17 +236,18 @@ var
   Settings : TImageXMLSettings;          
 begin
   XML := TJvSimpleXML.Create(nil);
-  ForceDirectories(GetSharpeGlobalSettingsPath + 'SharpDesk\DragAndDrop\');  
-  for n := 0 to 4 do
-  begin
-    case n of
-     0 : ext := 'bmp';
-     1 : ext := 'jpg';
-     2 : ext := 'jpeg';
-     3 : ext := 'png';
-     4 : ext := 'ico';
-    end;
-    try
+  try
+    ForceDirectories(GetSharpeGlobalSettingsPath + 'SharpDesk\DragAndDrop\');  
+    for n := 0 to 4 do
+    begin
+      case n of
+        0 : ext := 'bmp';
+        1 : ext := 'jpg';
+        2 : ext := 'jpeg';
+        3 : ext := 'png';
+        4 : ext := 'ico';
+      end;
+
       XML.Root.Items.Clear;
       XML.Root.Name := 'Image.object';
       XML.Root.Items.Add('Settings');
@@ -263,10 +264,11 @@ begin
       Settings.SaveSettings(False);
       Settings.Free;
       XML.SaveToFile(GetSharpeGlobalSettingsPath + 'SharpDesk\DragAndDrop\Image('+Ext+').xml');
-    finally
     end;
   end;
-  XML.Free;  
+  finally
+    XML.Free;
+  end;
 end;
 
 

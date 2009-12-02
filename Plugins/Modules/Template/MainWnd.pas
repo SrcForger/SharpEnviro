@@ -172,16 +172,19 @@ begin
       // ...
 
       XML := TJvSimpleXML.Create(nil);
-      XML.Root.Name := 'TemplateModuleModuleSettings';
-      with XML.Root.Items do
-      begin
-        // Save the settings to this XML item!
-        // it's recommend to just Clear the item and add the settings again!
-        // Example:
-        // Add('Width',sWidth);
+      try
+        XML.Root.Name := 'TemplateModuleModuleSettings';
+        with XML.Root.Items do
+        begin
+          // Save the settings to this XML item!
+          // it's recommend to just Clear the item and add the settings again!
+          // Example:
+          // Add('Width',sWidth);
+        end;
+        XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+      finally
+        XML.Free;
       end;
-      XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
-      XML.Free;
     end;
     ReAlignComponents(True);
 

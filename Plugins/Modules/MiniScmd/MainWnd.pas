@@ -208,18 +208,21 @@ begin
     sItems.Add(Item);
 
   XML := TJvSimpleXML.Create(nil);
-  XML.Root.Name := 'AutoComplete';
-  for n := 0 to sItems.Count - 1 do
-  begin
-    with XML.Root.Items.Add('Item').Items do
+  try
+    XML.Root.Name := 'AutoComplete';
+    for n := 0 to sItems.Count - 1 do
     begin
-      Add('Name', sItems.Str[n]);
+      with XML.Root.Items.Add('Item').Items do
+      begin
+        Add('Name', sItems.Str[n]);
+      end;
     end;
-  end;
   
-  CreateDir(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\MiniScmd');
-  XML.SaveToFile(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\MiniScmd\AutoComplete.xml');
-  XML.Free;
+    CreateDir(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\MiniScmd');
+    XML.SaveToFile(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\MiniScmd\AutoComplete.xml');
+  finally
+    XML.Free;
+  end;
 end;
 
 procedure TMainForm.UpdateSize;

@@ -218,8 +218,8 @@ begin
     xml.Root.Name := 'Defaults';
     xml.Root.Items.Add('Author', AFields.Author);
     xml.Root.Items.Add('Website', AFields.Website);
-  finally
     xml.SaveToFile(sFile);
+  finally
     xml.Free;
   end;
 end;
