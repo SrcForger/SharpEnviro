@@ -234,64 +234,27 @@ begin
         end;
 
         xml := TJvSimpleXML.Create(nil);
-        if FileCheck(dir + newId + '\Bar.xml', True) then begin
-          try
-            xml.LoadFromFile(dir + newId + '\Bar.xml');
-            fileLoaded := True;
-          except
+        try
+          if FileCheck(dir + newId + '\Bar.xml', True) then begin
+            try
+              xml.LoadFromFile(dir + newId + '\Bar.xml');
+              fileLoaded := True;
+            except
+              fileLoaded := False;
+            end;
+          end
+          else
             fileLoaded := False;
-          end;
-        end
-        else
-          fileLoaded := False;
-
-        if not fileLoaded then
-          xml.Root.Name := 'SharpBar';
-
-        with xml.Root.Items do begin
-          if ItemNamed['Settings'] = nil then
-            Add('Settings');
-
-          with ItemNamed['Settings'].Items do begin
-            clear;
-            Add('ID', newId);
-            Add('Name', edName.Text);
-            Add('ShowThrobber', True);
-            Add('DisableHideBar', True);
-            Add('AutoStart', True);
-            Add('AutoPosition', True);
-            Add('PrimaryMonitor', (cobo_monitor.ItemIndex = 0));
-            Add('MonitorIndex', TIntObject(cobo_monitor.Items.Objects[cobo_monitor.ItemIndex]).Value);
-            Add('HorizPos', cobo_halign.ItemIndex);
-            Add('VertPos', cobo_valign.ItemIndex);
-          end;
-
-          if ItemNamed['Modules'] = nil then
-            Add('Modules');
-        end;
-        ForceDirectories(dir + newId);
-        if FileCheck(dir + newId + '\Bar.xml') then
-          xml.SaveToFile(dir + newId + '\Bar.xml');
-        xml.Free;
-      end;
-    sceEdit: begin
-        copyId := TBarItem(FBarItem).BarID;
-        xml := TJvSimpleXML.Create(nil);
-        fileLoaded := False;
-        if FileCheck(dir + inttostr(copyId) + '\Bar.xml', True) then begin
-          try
-            xml.LoadFromFile(dir + inttostr(copyId) + '\Bar.xml');
-            fileLoaded := True;
-          except
-          end;
-        end;
-        if fileLoaded then
+  
+          if not fileLoaded then
+            xml.Root.Name := 'SharpBar';
+  
           with xml.Root.Items do begin
             if ItemNamed['Settings'] = nil then
               Add('Settings');
-
+  
             with ItemNamed['Settings'].Items do begin
-              Clear;
+              clear;
               Add('ID', newId);
               Add('Name', edName.Text);
               Add('ShowThrobber', True);
@@ -303,10 +266,54 @@ begin
               Add('HorizPos', cobo_halign.ItemIndex);
               Add('VertPos', cobo_valign.ItemIndex);
             end;
+  
+            if ItemNamed['Modules'] = nil then
+              Add('Modules');
           end;
-        if FileCheck(dir + inttostr(copyId) + '\Bar.xml') then
-          xml.SaveToFile(dir + inttostr(copyId) + '\Bar.xml');
-        xml.Free;
+          ForceDirectories(dir + newId);
+          if FileCheck(dir + newId + '\Bar.xml') then
+            xml.SaveToFile(dir + newId + '\Bar.xml');
+        finally
+          xml.Free;
+        end;
+      end;
+    sceEdit: begin
+        copyId := TBarItem(FBarItem).BarID;
+        xml := TJvSimpleXML.Create(nil);
+        fileLoaded := False;
+        try
+          if FileCheck(dir + inttostr(copyId) + '\Bar.xml', True) then
+          begin
+            try
+              xml.LoadFromFile(dir + inttostr(copyId) + '\Bar.xml');
+              fileLoaded := True;
+            except
+            end;
+          end;
+          if fileLoaded then
+            with xml.Root.Items do begin
+              if ItemNamed['Settings'] = nil then
+                Add('Settings');
+
+              with ItemNamed['Settings'].Items do begin
+                Clear;
+                Add('ID', newId);
+                Add('Name', edName.Text);
+                Add('ShowThrobber', True);
+                Add('DisableHideBar', True);
+                Add('AutoStart', True);
+                Add('AutoPosition', True);
+                Add('PrimaryMonitor', (cobo_monitor.ItemIndex = 0));
+                Add('MonitorIndex', TIntObject(cobo_monitor.Items.Objects[cobo_monitor.ItemIndex]).Value);
+                Add('HorizPos', cobo_halign.ItemIndex);
+                Add('VertPos', cobo_valign.ItemIndex);
+              end;
+            end;
+          if FileCheck(dir + inttostr(copyId) + '\Bar.xml') then
+            xml.SaveToFile(dir + inttostr(copyId) + '\Bar.xml');
+        finally
+          xml.Free;
+        end;
       end;
   end;
 

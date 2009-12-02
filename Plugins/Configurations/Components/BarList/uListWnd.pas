@@ -240,28 +240,31 @@ begin
         FName := Dir + 'bar.xml';
 
         XML := TJvSimpleXML.Create(nil);
-        if FileCheck(FName, True) then begin
-          try
-            XML.LoadFromFile(FName);
-            fileloaded := True;
-          except
-            fileloaded := False;
-          end;
-          if fileloaded then
-            with XML.Root.Items do begin
-              if ItemNamed['Settings'] = nil then
-                Add('Settings');
-              with ItemNamed['Settings'].Items do begin
-                if ItemNamed['AutoStart'] <> nil then
-                  ItemNamed['AutoStart'].BoolValue := tmpBar.AutoStart
-                else
-                  Add('AutoStart', tmpBar.AutoStart);
-              end;
+        try
+          if FileCheck(FName, True) then begin
+            try
+              XML.LoadFromFile(FName);
+              fileloaded := True;
+            except
+              fileloaded := False;
             end;
+            if fileloaded then
+              with XML.Root.Items do begin
+                if ItemNamed['Settings'] = nil then
+                  Add('Settings');
+                with ItemNamed['Settings'].Items do begin
+                  if ItemNamed['AutoStart'] <> nil then
+                    ItemNamed['AutoStart'].BoolValue := tmpBar.AutoStart
+                  else
+                    Add('AutoStart', tmpBar.AutoStart);
+                end;
+              end;
+          end;
+          if FileCheck(FName) then
+            XML.SaveToFile(FName);
+        finally
+          XML.Free;
         end;
-        if FileCheck(FName) then
-          XML.SaveToFile(FName);
-        XML.Free;
 
         tmrUpdate.Enabled := True;
       end;

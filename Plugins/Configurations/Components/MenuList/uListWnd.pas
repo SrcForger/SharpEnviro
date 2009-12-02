@@ -477,14 +477,13 @@ begin
     xml := TJclSimpleXML.Create;
     try
       xml.Root.Name := 'SharpEMenuFile';
-    finally
       sFileName := sMenuDir + trim(StrRemoveChars(AName,
         ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']) + '.xml');
 
       xml.SaveToFile(sFileName);
-      xml.Free;
-
       result := sFileName;
+    finally
+      xml.Free;
     end;
   end;
 end;
@@ -554,10 +553,10 @@ begin
       end;
 
     end;
-  finally
+
     if bSave then
       xml.SaveToFile(fileName);
-
+  finally
     xml.Free;
   end;
 end;
