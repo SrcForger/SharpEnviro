@@ -268,7 +268,7 @@ end;
 
 procedure TSharpBarMainForm.WMBarReposition(var msg: TMessage);
 var
-  XML: TJclSimpleXML;
+  xml: TJclSimpleXML;
   Dir: string;
   b: boolean;
 begin
@@ -313,6 +313,8 @@ begin
     SharpEBar.UpdatePosition;
     UpdateBGZone;
   end;
+
+  xml.Free;
 end;
 
 // A Module is being inserted into the bar via Drag & Drop
@@ -931,26 +933,29 @@ begin
   ModuleManager.DebugOutput('Creating New Bar', 1, 1);
   Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
   xml := TJclSimpleXMl.Create;
-  xml.Root.Clear;
-  xml.Root.Name := 'SharpBar';
+  try
+    xml.Root.Clear;
+    xml.Root.Name := 'SharpBar';
 
-  // Generate a new unique bar ID and make sure that there is no other
-  // bar with the same ID
-  repeat
-    NewID := '';
-    for n := 1 to 8 do
-      NewID := NewID + inttostr(random(9) + 1);
-  until not DirectoryExists(Dir + NewID);
-  FBarID := strtoint(NewID);
-  FBarInterface.BarID := FBarID;
-  ModuleManager.BarID := FBarID;
-  ForceDirectories(Dir + NewID);
+    // Generate a new unique bar ID and make sure that there is no other
+    // bar with the same ID
+    repeat
+      NewID := '';
+      for n := 1 to 8 do
+        NewID := NewID + inttostr(random(9) + 1);
+    until not DirectoryExists(Dir + NewID);
+    FBarID := strtoint(NewID);
+    FBarInterface.BarID := FBarID;
+    ModuleManager.BarID := FBarID;
+    ForceDirectories(Dir + NewID);
 
-  xml.Root.Items.Add('Settings');
-  xml.Root.Items.Add('Modules');
+    xml.Root.Items.Add('Settings');
+    xml.Root.Items.Add('Modules');
 
-  xml.SaveToFile(Dir + NewID + '\Bar.xml');
-  xml.Free;
+    xml.SaveToFile(Dir + NewID + '\Bar.xml');
+  finally
+    xml.Free;
+  end;
 
   // New bar is now loaded!
   // Set window caption to SharpBar_ID

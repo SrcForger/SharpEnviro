@@ -70,8 +70,12 @@ begin
   begin
     ForceDirectories(Dir);
     XML := TJclSimpleXML.Create;
-    XML.Root.Name := 'ModuleSettings';
-    XML.SaveToFile(Dir + inttostr(ModuleID) + '.xml');
+    try
+      XML.Root.Name := 'ModuleSettings';
+      XML.SaveToFile(Dir + inttostr(ModuleID) + '.xml');
+    finally
+      XML.Free;
+    end;
   end;
   result := Dir + inttostr(ModuleID) + '.xml';
 end;

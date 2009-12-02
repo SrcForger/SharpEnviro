@@ -340,40 +340,43 @@ begin
   DebugOutput('Saving Bar Settings', 1, 1);
   Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + inttostr(FBarID) + '\';
   xml := TJclSimpleXMl.Create;
-  xml.Root.Name := 'SharpBar';
+  try
+    xml.Root.Name := 'SharpBar';
 
-  // Save Bar Settings
-  with xml.Root.Items.Add('Settings') do begin
-    Items.AdD('Name', FBarName);
-    Items.Add('AutoPosition', FBar.AutoPosition);
-    Items.Add('PrimaryMonitor', FBar.PrimaryMonitor);
-    Items.Add('MonitorIndex', FBar.MonitorIndex);
-    Items.Add('HorizPos', HorizPosToInt(FBar.HorizPos));
-    Items.Add('VertPos', VertPosToInt(FBar.VertPos));
-    Items.Add('AutoStart', FBar.AutoStart);
-    Items.Add('ShowThrobber', FBar.ShowThrobber);
-    Items.Add('DisableHideBar', FBar.DisableHideBar);
-    Items.Add('StartHidden', not FBar.aform.Visible);
-    Items.Add('AlwaysOnTop', FBar.AlwaysOnTop);
-    Items.Add('ShowMiniThrobbers', ModuleManager.ShowMiniThrobbers);
-  end;
+    // Save Bar Settings
+    with xml.Root.Items.Add('Settings') do begin
+      Items.AdD('Name', FBarName);
+      Items.Add('AutoPosition', FBar.AutoPosition);
+      Items.Add('PrimaryMonitor', FBar.PrimaryMonitor);
+      Items.Add('MonitorIndex', FBar.MonitorIndex);
+      Items.Add('HorizPos', HorizPosToInt(FBar.HorizPos));
+      Items.Add('VertPos', VertPosToInt(FBar.VertPos));
+      Items.Add('AutoStart', FBar.AutoStart);
+      Items.Add('ShowThrobber', FBar.ShowThrobber);
+      Items.Add('DisableHideBar', FBar.DisableHideBar);
+      Items.Add('StartHidden', not FBar.aform.Visible);
+      Items.Add('AlwaysOnTop', FBar.AlwaysOnTop);
+      Items.Add('ShowMiniThrobbers', ModuleManager.ShowMiniThrobbers);
+    end;
 
-  // Save the Module List
-  with xml.Root.Items.Add('Modules') do begin
-    for i := 0 to ModuleManager.Modules.Count - 1 do begin
-      tempModule := TModule(ModuleManager.Modules.Items[i]);
-      with Items.Add('Item') do begin
-        Items.Add('ID', tempModule.mInterface.ID);
-        Items.Add('Position', tempModule.Position);
-        Items.Add('Module', ExtractFileName(tempModule.ModuleFile.FileName));
+    // Save the Module List
+    with xml.Root.Items.Add('Modules') do begin
+      for i := 0 to ModuleManager.Modules.Count - 1 do begin
+        tempModule := TModule(ModuleManager.Modules.Items[i]);
+        with Items.Add('Item') do begin
+          Items.Add('ID', tempModule.mInterface.ID);
+          Items.Add('Position', tempModule.Position);
+          Items.Add('Module', ExtractFileName(tempModule.ModuleFile.FileName));
+        end;
       end;
     end;
-  end;
 
-  ForceDirectories(Dir);
-  if FileCheck(Dir + 'Bar.xml') then
-    xml.SaveToFile(Dir + 'Bar.xml');
-  xml.Free;
+    ForceDirectories(Dir);
+    if FileCheck(Dir + 'Bar.xml') then
+      xml.SaveToFile(Dir + 'Bar.xml');
+  finally
+    xml.Free;
+  end;
 end;
 
 // Broadcast a message to a single module by ID
