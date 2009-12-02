@@ -127,8 +127,8 @@ begin
     xml.LoadFromFile(sFilename);
     if xml.Root.Items.ItemNamed['info'] <> nil then
       xml.Root.Items.ItemNamed['info'].Items.ItemNamed['name'].Value := sCopyName;
+    xml.SaveToFile(sFileName);
   finally
-    xml.SaveToFile(sFilename);
     xml.Free;
 
     ACopyName := sCopyName;
@@ -175,8 +175,8 @@ begin
         Add('Name',sName);
         Add('Author',AAuthor);
       end;
-    finally
       XML.SaveToFile(sFilename);
+    finally
       XML.Free;
     end;
   end else
@@ -184,6 +184,7 @@ begin
     sFilename := Theme.Scheme.Directory + sName + '.xml';
 
     XML := TJclSimpleXML.Create;
+    try
     XML.Root.Name := 'SharpESkinScheme';
     with XML.Root.Items.Add('Info').Items do
     begin
@@ -191,7 +192,9 @@ begin
       Add('Author', AAuthor);
     end;
     XML.SaveToFile(sFilename);
-    XML.Free;
+    finally
+      XML.Free;
+    end;
   end;
 end;
 

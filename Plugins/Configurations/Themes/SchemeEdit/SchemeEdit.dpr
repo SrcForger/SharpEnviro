@@ -174,13 +174,12 @@ begin
         Items.Add('Color', AThemeScheme[i].Color);
       end;
     end;
-  finally
-
     sSkin := ASkin;
     sSkinDir := GetSharpeDirectory + SKINS_DIRECTORY + '\' + sSkin + '\';
     sSchemeDir := sSkinDir + SKINS_SCHEME_DIRECTORY + '\';
     sFileName := sSchemeDir + AScheme + '.xml';
     xml.SaveToFile(sFileName);
+  finally
     xml.Free;
   end;
 

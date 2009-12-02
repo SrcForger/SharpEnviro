@@ -174,39 +174,43 @@ begin
   lbIcons.Clear;
 
   XML := TJclSimpleXML.Create;
-
-  Dir := SharpApi.GetSharpeDirectory + 'Icons\';
-
-  if FindFirst(Dir + '*', FADirectory, sr) = 0 then
-    repeat
-      if (CompareText(sr.Name, '.') <> 0) and (CompareText(sr.Name, '..') <> 0) then begin
-        if FileExists(Dir + sr.Name + '\IconSet.xml') then begin
-          try
-            XML.LoadFromFile(Dir + sr.Name + '\IconSet.xml');
-
-            tmp := TIconItem.Create;
-            tmp.Name := XML.Root.Items.Value('name', '...');
-            tmp.Author := XML.Root.Items.Value('author', '...');
-            tmp.Website := XML.Root.Items.Value('website', '');
-
-            newItem := lbIcons.AddItem('', 0);
-            newItem.Data := tmp;
-            if length(trim(tmp.Website)) > 0 then
-              newItem.AddSubItem('', 1)
-            else
-              newItem.AddSubItem('', -1);
-
-            if CompareText(sr.Name,FIconSet) = 0 then begin
-              lbIcons.ItemIndex := lbIcons.Items.Count - 1;
-              //BuildIconPreview;
+  try
+    Dir := SharpApi.GetSharpeDirectory + 'Icons\';
+  
+    if FindFirst(Dir + '*', FADirectory, sr) = 0 then
+    begin
+      repeat
+        if (CompareText(sr.Name, '.') <> 0) and (CompareText(sr.Name, '..') <> 0) then begin
+          if FileExists(Dir + sr.Name + '\IconSet.xml') then begin
+            try
+              XML.LoadFromFile(Dir + sr.Name + '\IconSet.xml');
+  
+              tmp := TIconItem.Create;
+              tmp.Name := XML.Root.Items.Value('name', '...');
+              tmp.Author := XML.Root.Items.Value('author', '...');
+              tmp.Website := XML.Root.Items.Value('website', '');
+  
+              newItem := lbIcons.AddItem('', 0);
+              newItem.Data := tmp;
+              if length(trim(tmp.Website)) > 0 then
+                newItem.AddSubItem('', 1)
+              else
+                newItem.AddSubItem('', -1);
+  
+              if CompareText(sr.Name,FIconSet) = 0 then begin
+                lbIcons.ItemIndex := lbIcons.Items.Count - 1;
+                //BuildIconPreview;
+              end;
+            except
             end;
-          except
           end;
         end;
-      end;
-    until FindNext(sr) <> 0;
-  FindClose(sr);
-  XML.Free;
+      until FindNext(sr) <> 0;
+      FindClose(sr);
+    end;
+  finally
+    XML.Free;
+  end;
 
   if (lbIcons.ItemIndex < 0) and (lbIcons.Count > 0) then begin
     lbIcons.ItemIndex := 0;

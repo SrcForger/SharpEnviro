@@ -375,68 +375,70 @@ begin
 
   
   XML := TJclSimpleXML.Create;
-  XML.LoadFromFile(Dir + 'Skin.xml');
+  try
+    XML.LoadFromFile(Dir + 'Skin.xml');
 
-  C := 0;
-  with XML.Root.Items do
-  begin
-    if ItemNamed['SknDef'] <> nil then
+    C := 0;
+    with XML.Root.Items do
     begin
-      with ItemNamed['SknDef'].Items do
+      if ItemNamed['SknDef'] <> nil then
       begin
-        // Set the timer interval
-        AnimTimer.Interval := IntValue('AnimInterval', 1000);
-        AnimTimer.Enabled := True;
-      end;
-    end;
-
-    // Old way
-    if ItemNamed['CursPoints'] <> nil then
-    begin
-      with ItemNamed['CursPoints'].Items do
-      begin
-        for I := 0 to Count - 1 do
+        with ItemNamed['SknDef'].Items do
         begin
-          if FileExists(Dir + AnsiLowerCase(Item[I].Name) + '.bmp') then
-          begin
-            SetLength(CursorItemArray, C + 1);
-
-            CursorItemArray[C] := TCursor.Create();
-            CursorItemArray[C].ReplaceColor := true;
-            CursorItemArray[C].Width := 32;
-            CursorItemArray[C].Height := 32;
-            CursorItemArray[C].NumFrames := 0;
-            CursorItemArray[C].Load(Dir + AnsiLowerCase(Item[I].Name) + '.bmp');
-
-            C := C + 1;
-          end;
+          // Set the timer interval
+          AnimTimer.Interval := IntValue('AnimInterval', 1000);
+          AnimTimer.Enabled := True;
         end;
       end;
-    // New way (with animations)
-    end else
-    begin  
-      if ItemNamed['Cursors'] <> nil then
+
+      // Old way
+      if ItemNamed['CursPoints'] <> nil then
       begin
-        with ItemNamed['Cursors'].Items do
+        with ItemNamed['CursPoints'].Items do
         begin
           for I := 0 to Count - 1 do
           begin
-            if Item[I] <> nil then
+            if FileExists(Dir + AnsiLowerCase(Item[I].Name) + '.bmp') then
             begin
-              with Item[I].Items do
+              SetLength(CursorItemArray, C + 1);
+
+              CursorItemArray[C] := TCursor.Create();
+              CursorItemArray[C].ReplaceColor := true;
+              CursorItemArray[C].Width := 32;
+              CursorItemArray[C].Height := 32;
+              CursorItemArray[C].NumFrames := 0;
+              CursorItemArray[C].Load(Dir + AnsiLowerCase(Item[I].Name) + '.bmp');
+
+              C := C + 1;
+            end;
+          end;
+        end;
+      // New way (with animations)
+      end else
+      begin  
+        if ItemNamed['Cursors'] <> nil then
+        begin
+          with ItemNamed['Cursors'].Items do
+          begin
+            for I := 0 to Count - 1 do
+            begin
+              if Item[I] <> nil then
               begin
-                if FileExists(Dir + Value('File', '')) then
+                with Item[I].Items do
                 begin
-                  SetLength(CursorItemArray, C + 1);
+                  if FileExists(Dir + Value('File', '')) then
+                  begin
+                    SetLength(CursorItemArray, C + 1);
 
-                  CursorItemArray[C] := TCursor.Create();
-                  CursorItemArray[C].ReplaceColor := BoolValue('ReplaceColor', True);
-                  CursorItemArray[C].Width := IntValue('Width', 32);
-                  CursorItemArray[C].Height := IntValue('Height', 32);
-                  CursorItemArray[C].NumFrames := IntValue('NumFrames', 0);
-                  CursorItemArray[C].Load(Dir + Value('File', ''));
+                    CursorItemArray[C] := TCursor.Create();
+                    CursorItemArray[C].ReplaceColor := BoolValue('ReplaceColor', True);
+                    CursorItemArray[C].Width := IntValue('Width', 32);
+                    CursorItemArray[C].Height := IntValue('Height', 32);
+                    CursorItemArray[C].NumFrames := IntValue('NumFrames', 0);
+                    CursorItemArray[C].Load(Dir + Value('File', ''));
 
-                  C := C + 1;
+                    C := C + 1;
+                  end;
                 end;
               end;
             end;
@@ -444,9 +446,9 @@ begin
         end;
       end;
     end;
+  finally
+    XML.Free;
   end;
-
-  XML.Free;
 
   PreBmp := TBitmap32.Create;
   PreBmp.DrawMode := dmBlend;
@@ -548,66 +550,69 @@ begin
   LockWindowUpdate(Application.Handle);
   lbCursorList.Clear;
   Try
-
-  if Length(CursorItemArray) > 0 then
-  begin
-    for I := Low(CursorItemArray) to High(CursorItemArray) do
-      CursorItemArray[I].Free;
-      
-    SetLength(CursorItemArray, 0);
-  end;
-
-  XML := TJclSimpleXML.Create;
-
-  if Length(FNames) > 0 then
-    SetLength(FNames, 0);
-  
-  Dir := SharpApi.GetSharpeDirectory + 'Cursors\';
-  I := 0;
-  
-  if FindFirst(Dir + '*',FADirectory,sr) = 0 then
-  repeat
-    if (CompareText(sr.Name, '.') <> 0) and (CompareText(sr.Name, '..') <> 0) then
+    if Length(CursorItemArray) > 0 then
     begin
-      if FileExists(Dir + sr.Name + '\Skin.xml') then
+      for I := Low(CursorItemArray) to High(CursorItemArray) do
+        CursorItemArray[I].Free;
+
+      SetLength(CursorItemArray, 0);
+    end;
+
+    XML := TJclSimpleXML.Create;
+    try
+      if Length(FNames) > 0 then
+        SetLength(FNames, 0);
+
+      Dir := SharpApi.GetSharpeDirectory + 'Cursors\';
+      I := 0;
+
+      if FindFirst(Dir + '*',FADirectory,sr) = 0 then
       begin
-        try
-          SetLength(FNames, I + 1);
-          FNames[I] := sr.Name;
-        
-          XML.LoadFromFile(Dir + sr.Name + '\Skin.xml');
-          if XML.Root.Items.ItemNamed['SknDef'] <> nil then
+        repeat
+          if (CompareText(sr.Name, '.') <> 0) and (CompareText(sr.Name, '..') <> 0) then
           begin
-            with XML.Root.Items do
+            if FileExists(Dir + sr.Name + '\Skin.xml') then
             begin
-              obj := TStringObject.Create();
+              try
+                SetLength(FNames, I + 1);
+                FNames[I] := sr.Name;
 
-              // Get the Name and Author
-              sName := ItemNamed['SknDef'].Items.Value('Title','Unknown');
-              sAuthor := ItemNamed['SknDef'].Items.Value('Author','Unknown');
-              s := Format('%s by %s', [sName, sAuthor]);
+                XML.LoadFromFile(Dir + sr.Name + '\Skin.xml');
+                if XML.Root.Items.ItemNamed['SknDef'] <> nil then
+                begin
+                  with XML.Root.Items do
+                  begin
+                    obj := TStringObject.Create();
 
-              obj.Str := sName;
+                    // Get the Name and Author
+                    sName := ItemNamed['SknDef'].Items.Value('Title','Unknown');
+                    sAuthor := ItemNamed['SknDef'].Items.Value('Author','Unknown');
+                    s := Format('%s by %s', [sName, sAuthor]);
 
-              newItem := lbCursorList.AddItem(s);
-              newItem.Data := ( obj );
+                    obj.Str := sName;
 
-              if CompareText(sr.Name,FCursor) = 0 then
-              begin
-                lbCursorList.ItemIndex := I;
-                BuildCursorPreview;
+                    newItem := lbCursorList.AddItem(s);
+                    newItem.Data := ( obj );
+
+                    if CompareText(sr.Name,FCursor) = 0 then
+                    begin
+                      lbCursorList.ItemIndex := I;
+                      BuildCursorPreview;
+                    end;
+
+                    I := I + 1;
+                  end;
+                end;
+              except
               end;
-
-              I := I + 1;
             end;
           end;
-        except
-        end;
+        until FindNext(sr) <> 0;
+        FindClose(sr);
       end;
+    finally
+      XML.Free;
     end;
-  until FindNext(sr) <> 0;
-  FindClose(sr);
-  XML.Free;
   Finally
     LockWindowUpdate(0);
   End;
