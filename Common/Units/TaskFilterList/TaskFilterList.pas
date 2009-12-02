@@ -272,9 +272,8 @@ begin
       end;
 
     end;
-
-  finally
     xml.SaveToFile(sFile);
+  finally
     xml.Free;
     showCmds.Free;
     sList.Free;
