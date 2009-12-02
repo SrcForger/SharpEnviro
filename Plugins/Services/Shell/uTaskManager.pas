@@ -306,7 +306,9 @@ begin
   if (CompareText(wndclass,'ConsoleWindowClass') = 0) // cmd.exe
     or (CompareText(wndclass,'PuTTYConfigBox') = 0) // Putty.exe
     or ((CompareText(wndclass,'WindowsForms10.Window.8.app.0.259f9d2') = 0)
-    and (CompareText(ExtractFileName(GetProcessNameFromWnd(pHandle)), 'VpxClient.exe') = 0)) then // VpxClient.exe
+    and (CompareText(ExtractFileName(GetProcessNameFromWnd(pHandle)), 'VpxClient.exe') = 0)) // VpxClient.exe
+    or ((CompareText(wndclass,'#32770') = 0)
+    and (CompareText(ExtractFileName(GetProcessNameFromWnd(pHandle)), 'KeePass.exe') = 0)) then
   begin
      FLastActiveTask := pHandle;
      GetWindowRect(FLastActiveTask,FLastActiveTaskPos);
