@@ -265,7 +265,6 @@ begin
       Settings.Free;
       XML.SaveToFile(GetSharpeGlobalSettingsPath + 'SharpDesk\DragAndDrop\Image('+Ext+').xml');
     end;
-  end;
   finally
     XML.Free;
   end;
