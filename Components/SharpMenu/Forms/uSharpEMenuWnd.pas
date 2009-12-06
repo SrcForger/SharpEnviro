@@ -78,6 +78,7 @@ type
     procedure SubMenuCloseTimerTimer(Sender: TObject);
     procedure HideTimerOnTimer(Sender: TObject);
     procedure FormMouseLeave(Sender: TObject);
+    procedure FormMouseEnter(Sender: TObject);
   private
     FMenu : TSharpEMenu;
     FParentMenu : TSharpeMenuWnd;
@@ -93,6 +94,7 @@ type
                          // and if you want it to free itself OnDeactivate
 
     FMenuID : string;
+    FMouseLeave : boolean;
 
     DC: HDC;
     Blend: TBlendFunction;
@@ -116,7 +118,10 @@ type
     constructor Create(AOwner: TComponent; pMenu : TSharpEMenu); reintroduce; overload;
 
     procedure SetMenuID(path : string);
+    function GetHideTimeout: integer;
     procedure SetHideTimeout(n : integer);
+    procedure EnableHideTimeout;
+    procedure DisableHideTimeout;
   published
     property SharpEMenu : TSharpEMenu read FMenu;
     property SharpESubMenu : TSharpEMenuWnd read FSubMenu write FSubMenu;
@@ -127,7 +132,7 @@ type
     property FreeMenu : boolean read FFreeMenu write FFreeMenu;
     property IgnoreNextDeactivate : boolean read FIgnoreNextDeactivate write FIgnoreNextDeactivate;
     property MenuID : string read FMenuID write SetMenuID;
-    property HideTimeout : integer write SetHideTimeout;
+    property HideTimeout : integer read GetHideTimeout write SetHideTimeout;
   end;
 
 implementation
@@ -173,6 +178,7 @@ begin
   left   := Screen.WorkAreaWidth div 2 - self.Width div 2;
   top    := Screen.WorkAreaHeight div 2 - self.Height div 2;
 
+  FMouseLeave := False;
   HideTimer.Enabled := False;
 end;
 
@@ -229,10 +235,26 @@ begin
   SetLength(FMenuID, Length(FMenuID) - Length(ExtractFileExt(FMenuID)));
 end;
 
+function TSharpEMenuWnd.GetHideTimeout;
+begin
+  Result := HideTimer.Interval;
+end;
+
 procedure TSharpEMenuWnd.SetHideTimeout(n : integer);
 begin
-  SharpApi.SendDebugMessage('SharpMenu', InttoStr(n), 0);
   HideTimer.Interval := n;
+end;
+
+procedure TSharpEMenuWnd.EnableHideTimeout;
+begin
+  FMouseLeave := True;
+  HideTimer.Enabled := False;
+end;
+
+procedure TSharpEMenuWnd.DisableHideTimeout;
+begin
+  FMouseLeave := False;
+  HideTimer.Enabled := False;
 end;
 
 procedure TSharpEMenuWnd.UpdateWndLayer;
@@ -385,9 +407,31 @@ begin
   end;
 end;
 
+procedure TSharpEMenuWnd.FormMouseEnter(Sender: TObject);
+begin
+  if FSubMenu <> nil then
+  begin
+    if not FMouseLeave and FSubMenu.FMouseLeave then
+    begin
+      FSubMenu.DisableHideTimeout;
+      EnableHideTimeout;
+    end;
+  end;
+  if FParentMenu <> nil then
+  begin
+    if FParentMenu.FMouseLeave and not FMouseLeave then
+    begin
+      FParentMenu.DisableHideTimeout;
+      HideTimer.Interval := FParentMenu.HideTimeout;
+      EnableHideTimeout;
+    end;
+  end else if not FMouseLeave then
+    EnableHideTimeout;
+end;
+
 procedure TSharpEMenuWnd.FormMouseLeave(Sender: TObject);
 begin
-  if HideTimer.Interval > 0 then
+  if FMouseLeave and (HideTimer.Interval > 0) then
     HideTimer.Enabled := True;
 end;
 
@@ -444,6 +488,15 @@ begin
   if FMenu.PerformClick(self) then
      CloseAll
   else SubMenuTimerTimer(nil);
+end;
+
+procedure TSharpEMenuWnd.FormShow(Sender: TObject);
+begin
+  if FMenu = nil then
+    exit;
+
+  FMenu.RenderTo(FPicture,Left,Top);
+  PreMul(FPicture);
 end;
 
 procedure TSharpEMenuWnd.FormDestroy(Sender: TObject);
@@ -797,14 +850,6 @@ begin
      FOffset := 0;
   if o <> FOffset then
      DrawWindow;
-end;
-
-procedure TSharpEMenuWnd.FormShow(Sender: TObject);
-begin
-  if FMenu = nil then
-    exit;
-  FMenu.RenderTo(FPicture,Left,Top);
-  PreMul(FPicture);
 end;
 
 procedure TSharpEMenuWnd.ApplicationEvents1Message(var Msg: tagMSG;

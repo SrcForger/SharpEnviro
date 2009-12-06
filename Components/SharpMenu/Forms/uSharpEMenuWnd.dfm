@@ -24,6 +24,7 @@ object SharpEMenuWnd: TSharpEMenuWnd
   OnDeactivate = FormDeactivate
   OnKeyDown = FormKeyDown
   OnMouseDown = FormMouseDown
+  OnMouseEnter = FormMouseEnter
   OnMouseLeave = FormMouseLeave
   OnMouseMove = FormMouseMove
   OnMouseUp = FormMouseUp
