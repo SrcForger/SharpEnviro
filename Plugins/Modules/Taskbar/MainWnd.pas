@@ -1563,7 +1563,12 @@ begin
 
   DebugOutPutInfo('TMainForm.WMShellHook (Message Procedure)');
   if Cardinal(msg.LParam) = Handle then exit;
-  TM.HandleShellMessage(msg.WParam,Cardinal(msg.LParam));
+
+  try // fix for a very rare list index out of bounds error caused by
+      // wnd proc hooks of JVCL components
+    TM.HandleShellMessage(msg.WParam,Cardinal(msg.LParam));
+  except
+  end;
 
   if (msg.wparam = HSHELL_WINDOWACTIVATED) or
     (msg.wparam = HSHELL_WINDOWACTIVATED + 32768) then
