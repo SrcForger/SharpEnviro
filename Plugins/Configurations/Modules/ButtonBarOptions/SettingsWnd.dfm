@@ -43,7 +43,6 @@ object frmSettings: TfrmSettings
         TitleColor = clWindowText
         DescriptionColor = clGrayText
         Align = alTop
-        ExplicitTop = 80
       end
       object pnlShowIconsAndCaptions: TPanel
         AlignWithMargins = True
@@ -59,8 +58,7 @@ object frmSettings: TfrmSettings
         BevelOuter = bvNone
         Color = clWindow
         ParentBackground = False
-        TabOrder = 1
-        ExplicitTop = 127
+        TabOrder = 0
         object chkButtonIcon: TJvXPCheckbox
           Left = 0
           Top = 0
@@ -88,7 +86,6 @@ object frmSettings: TfrmSettings
           Margins.Bottom = 10
           Caption = 'Enable button captions'
           TabOrder = 1
-          TabStop = False
           Align = alLeft
           OnClick = CheckClick
         end

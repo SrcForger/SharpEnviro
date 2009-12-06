@@ -31,7 +31,6 @@ object frmRSSReader: TfrmRSSReader
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
-    ExplicitWidth = 431
   end
   object SharpECenterHeader2: TSharpECenterHeader
     AlignWithMargins = True
@@ -48,8 +47,6 @@ object frmRSSReader: TfrmRSSReader
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
-    ExplicitTop = 83
-    ExplicitWidth = 431
   end
   object pnlTop: TPanel
     AlignWithMargins = True
@@ -66,9 +63,7 @@ object frmRSSReader: TfrmRSSReader
     BevelOuter = bvNone
     ParentBackground = False
     ParentColor = True
-    TabOrder = 0
-    ExplicitTop = 167
-    ExplicitWidth = 426
+    TabOrder = 3
     object cbNotify: TJvXPCheckbox
       Left = 0
       Top = 0
@@ -96,9 +91,7 @@ object frmRSSReader: TfrmRSSReader
     BevelOuter = bvNone
     ParentBackground = False
     ParentColor = True
-    TabOrder = 1
-    ExplicitTop = 194
-    ExplicitWidth = 426
+    TabOrder = 4
     object cbButtons: TJvXPCheckbox
       Left = 0
       Top = 0
@@ -124,8 +117,7 @@ object frmRSSReader: TfrmRSSReader
     BevelOuter = bvNone
     ParentBackground = False
     ParentColor = True
-    TabOrder = 4
-    ExplicitWidth = 426
+    TabOrder = 0
     object Label4: TLabel
       Left = 0
       Top = 0
@@ -169,8 +161,7 @@ object frmRSSReader: TfrmRSSReader
     BevelOuter = bvNone
     ParentBackground = False
     ParentColor = True
-    TabOrder = 5
-    ExplicitWidth = 426
+    TabOrder = 1
     object Label3: TLabel
       Left = 0
       Top = 0
@@ -213,10 +204,7 @@ object frmRSSReader: TfrmRSSReader
     BevelOuter = bvNone
     ParentBackground = False
     ParentColor = True
-    TabOrder = 6
-    ExplicitLeft = 0
-    ExplicitTop = 224
-    ExplicitWidth = 426
+    TabOrder = 5
     object cbIcon: TJvXPCheckbox
       Left = 0
       Top = 0
@@ -244,10 +232,7 @@ object frmRSSReader: TfrmRSSReader
     BevelOuter = bvNone
     ParentBackground = False
     ParentColor = True
-    TabOrder = 7
-    ExplicitLeft = 10
-    ExplicitTop = 251
-    ExplicitWidth = 426
+    TabOrder = 6
     object cbCustomIcon: TJvXPCheckbox
       Left = 0
       Top = 0
@@ -272,10 +257,7 @@ object frmRSSReader: TfrmRSSReader
     BevelOuter = bvNone
     ParentBackground = False
     ParentColor = True
-    TabOrder = 8
-    ExplicitLeft = 13
-    ExplicitTop = 88
-    ExplicitWidth = 426
+    TabOrder = 2
     object Label1: TLabel
       Left = 0
       Top = 0
@@ -294,7 +276,6 @@ object frmRSSReader: TfrmRSSReader
       Align = alRight
       Caption = '(set to 0 to disable)    '
       Layout = tlCenter
-      ExplicitLeft = 303
       ExplicitHeight = 13
     end
     object sgbSwitchInterval: TSharpeGaugeBox

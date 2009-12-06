@@ -74,7 +74,6 @@ object frmEdit: TfrmEdit
     Borderstyle = bsNone
     Ctl3d = False
     Align = alTop
-    ExplicitTop = 375
   end
   object pnlOptions: TPanel
     Left = 0
@@ -89,7 +88,7 @@ object frmEdit: TfrmEdit
     object pnlStyleAndSort: TPanel
       AlignWithMargins = True
       Left = 5
-      Top = 45
+      Top = 47
       Width = 493
       Height = 31
       Margins.Left = 5
@@ -100,7 +99,7 @@ object frmEdit: TfrmEdit
       BevelOuter = bvNone
       ParentColor = True
       TabOrder = 0
-      ExplicitTop = 47
+      ExplicitTop = 45
       object lblSort: TLabel
         Left = 205
         Top = 4
@@ -165,7 +164,7 @@ object frmEdit: TfrmEdit
     object pnlButtons: TPanel
       AlignWithMargins = True
       Left = 5
-      Top = 177
+      Top = 181
       Width = 488
       Height = 19
       Margins.Left = 5
@@ -175,8 +174,8 @@ object frmEdit: TfrmEdit
       Align = alTop
       BevelOuter = bvNone
       ParentColor = True
-      TabOrder = 1
-      ExplicitTop = 181
+      TabOrder = 3
+      ExplicitTop = 177
       object chkMinimiseBtn: TJvXPCheckbox
         Left = 0
         Top = -1
@@ -210,7 +209,7 @@ object frmEdit: TfrmEdit
       Left = 5
       Top = 0
       Width = 493
-      Height = 35
+      Height = 37
       Margins.Left = 5
       Margins.Top = 0
       Margins.Right = 5
@@ -225,9 +224,9 @@ object frmEdit: TfrmEdit
     object schButtons: TSharpECenterHeader
       AlignWithMargins = True
       Left = 5
-      Top = 132
+      Top = 134
       Width = 493
-      Height = 35
+      Height = 37
       Margins.Left = 5
       Margins.Top = 10
       Margins.Right = 5
@@ -242,9 +241,9 @@ object frmEdit: TfrmEdit
     object schFilters: TSharpECenterHeader
       AlignWithMargins = True
       Left = 5
-      Top = 290
+      Top = 296
       Width = 493
-      Height = 35
+      Height = 37
       Margins.Left = 5
       Margins.Top = 0
       Margins.Right = 5
@@ -255,18 +254,18 @@ object frmEdit: TfrmEdit
       DescriptionColor = clRed
       Align = alTop
       Color = clWindow
-      ExplicitTop = 292
+      ExplicitTop = 294
     end
     object chkMiddleClose: TJvXPCheckbox
       AlignWithMargins = True
       Left = 5
-      Top = 79
+      Top = 81
       Width = 493
       Height = 17
       Margins.Left = 5
       Margins.Right = 5
       Caption = 'Close tasks on middle click'
-      TabOrder = 5
+      TabOrder = 1
       Checked = True
       State = cbChecked
       Align = alTop
@@ -275,7 +274,7 @@ object frmEdit: TfrmEdit
     object chkFilterTasks: TJvXPCheckbox
       AlignWithMargins = True
       Left = 5
-      Top = 335
+      Top = 343
       Width = 493
       Height = 17
       Margins.Left = 5
@@ -283,17 +282,17 @@ object frmEdit: TfrmEdit
       Margins.Right = 5
       Margins.Bottom = 10
       Caption = 'Filter Tasks (When enabled only checked tasks will apply)'
-      TabOrder = 6
+      TabOrder = 5
       Align = alTop
       OnClick = chkFilterTasksClick
-      ExplicitTop = 337
+      ExplicitTop = 341
     end
     object SharpECenterHeader1: TSharpECenterHeader
       AlignWithMargins = True
       Left = 5
-      Top = 216
+      Top = 220
       Width = 493
-      Height = 35
+      Height = 37
       Margins.Left = 5
       Margins.Top = 10
       Margins.Right = 5
@@ -310,7 +309,7 @@ object frmEdit: TfrmEdit
     object Panel1: TPanel
       AlignWithMargins = True
       Left = 5
-      Top = 261
+      Top = 267
       Width = 488
       Height = 19
       Margins.Left = 5
@@ -320,7 +319,7 @@ object frmEdit: TfrmEdit
       Align = alTop
       BevelOuter = bvNone
       ParentColor = True
-      TabOrder = 8
+      TabOrder = 4
       object chkAppBar: TJvXPCheckbox
         Left = 0
         Top = -1
@@ -334,13 +333,13 @@ object frmEdit: TfrmEdit
     object chkTaskPreviews: TJvXPCheckbox
       AlignWithMargins = True
       Left = 5
-      Top = 102
+      Top = 104
       Width = 493
       Height = 17
       Margins.Left = 5
       Margins.Right = 5
       Caption = 'Show task previews (Requires Vista/Win7 Home Premium or above)'
-      TabOrder = 9
+      TabOrder = 2
       Checked = True
       State = cbChecked
       Align = alTop

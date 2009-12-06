@@ -44,7 +44,7 @@ object frmCPUMon: TfrmCPUMon
         AutoSize = True
         BevelOuter = bvNone
         ParentColor = True
-        TabOrder = 0
+        TabOrder = 3
       end
       object Panel6: TPanel
         AlignWithMargins = True
@@ -60,7 +60,7 @@ object frmCPUMon: TfrmCPUMon
         AutoSize = True
         BevelOuter = bvNone
         ParentColor = True
-        TabOrder = 1
+        TabOrder = 2
         object edit_cpu: TSharpeGaugeBox
           Left = 0
           Top = 0
@@ -71,6 +71,7 @@ object frmCPUMon: TfrmCPUMon
           Margins.Right = 8
           Margins.Bottom = 0
           ParentBackground = False
+          TabOrder = 0
           Min = 0
           Max = 16
           Value = 0
@@ -78,6 +79,7 @@ object frmCPUMon: TfrmCPUMon
           Description = 'Adjust Update Interval'
           PopPosition = ppBottom
           PercentDisplay = False
+          Formatting = '%d'
           OnChangeValue = sgbWidthChangeValue
           BackgroundColor = clWindow
         end
@@ -91,6 +93,7 @@ object frmCPUMon: TfrmCPUMon
           Margins.Right = 8
           Margins.Bottom = 0
           ParentBackground = False
+          TabOrder = 1
           Min = 100
           Max = 2000
           Value = 250
@@ -99,6 +102,7 @@ object frmCPUMon: TfrmCPUMon
           Description = 'Adjust Update Interval'
           PopPosition = ppBottom
           PercentDisplay = False
+          Formatting = '%d'
           OnChangeValue = sgbWidthChangeValue
           BackgroundColor = clWindow
         end
@@ -150,7 +154,7 @@ object frmCPUMon: TfrmCPUMon
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
-        TabOrder = 4
+        TabOrder = 0
         object cboGraphType: TComboBox
           Left = 0
           Top = 0
@@ -202,7 +206,7 @@ object frmCPUMon: TfrmCPUMon
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
-        TabOrder = 6
+        TabOrder = 1
         object sgbWidth: TSharpeGaugeBox
           AlignWithMargins = True
           Left = 0
@@ -216,6 +220,7 @@ object frmCPUMon: TfrmCPUMon
           Color = clWindow
           Constraints.MaxWidth = 300
           ParentBackground = False
+          TabOrder = 0
           Min = 16
           Max = 200
           Value = 100
@@ -223,6 +228,7 @@ object frmCPUMon: TfrmCPUMon
           Description = 'Adjust graph size'
           PopPosition = ppBottom
           PercentDisplay = False
+          Formatting = '%d'
           OnChangeValue = sgbWidthChangeValue
           BackgroundColor = clWindow
         end
@@ -254,7 +260,7 @@ object frmCPUMon: TfrmCPUMon
         BorderStyle = bsNone
         Color = clWhite
         ParentColor = False
-        TabOrder = 0
+        TabOrder = 2
         Items = <
           item
             Title = 'Background'
@@ -320,7 +326,7 @@ object frmCPUMon: TfrmCPUMon
         AutoSize = True
         BevelOuter = bvNone
         ParentColor = True
-        TabOrder = 1
+        TabOrder = 0
         object sgbBackground: TSharpeGaugeBox
           AlignWithMargins = True
           Left = 0
@@ -332,6 +338,7 @@ object frmCPUMon: TfrmCPUMon
           Margins.Right = 10
           Margins.Bottom = 0
           ParentBackground = False
+          TabOrder = 0
           Min = 0
           Max = 255
           Value = 128
@@ -340,6 +347,7 @@ object frmCPUMon: TfrmCPUMon
           Description = 'Adjust transparency'
           PopPosition = ppBottom
           PercentDisplay = True
+          Formatting = '%d'
           OnChangeValue = sgbWidthChangeValue
           BackgroundColor = clWindow
         end
@@ -354,6 +362,7 @@ object frmCPUMon: TfrmCPUMon
           Margins.Right = 0
           Margins.Bottom = 0
           ParentBackground = False
+          TabOrder = 1
           Min = 0
           Max = 255
           Value = 128
@@ -362,6 +371,7 @@ object frmCPUMon: TfrmCPUMon
           Description = 'Adjust transparency'
           PopPosition = ppBottom
           PercentDisplay = True
+          Formatting = '%d'
           OnChangeValue = sgbWidthChangeValue
           BackgroundColor = clWindow
         end
@@ -380,7 +390,7 @@ object frmCPUMon: TfrmCPUMon
         AutoSize = True
         BevelOuter = bvNone
         ParentColor = True
-        TabOrder = 2
+        TabOrder = 1
         object sgbBorder: TSharpeGaugeBox
           AlignWithMargins = True
           Left = 0
@@ -392,6 +402,7 @@ object frmCPUMon: TfrmCPUMon
           Margins.Right = 0
           Margins.Bottom = 0
           ParentBackground = False
+          TabOrder = 0
           Min = 0
           Max = 255
           Value = 255
@@ -400,6 +411,7 @@ object frmCPUMon: TfrmCPUMon
           Description = 'Adjust Blend Strength'
           PopPosition = ppBottom
           PercentDisplay = True
+          Formatting = '%d'
           OnChangeValue = sgbWidthChangeValue
           BackgroundColor = clWindow
         end

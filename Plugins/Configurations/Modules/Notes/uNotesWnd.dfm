@@ -40,7 +40,8 @@ object frmNotes: TfrmNotes
         Margins.Bottom = 5
         Align = alTop
         Caption = 'Icon'
-        TabOrder = 0
+        TabOrder = 2
+        TabStop = True
         OnClick = rb_textClick
       end
       object rb_text: TRadioButton
@@ -55,7 +56,7 @@ object frmNotes: TfrmNotes
         Margins.Bottom = 5
         Align = alTop
         Caption = 'Text'
-        TabOrder = 1
+        TabOrder = 3
         OnClick = rb_textClick
       end
       object rb_icontext: TRadioButton
@@ -71,8 +72,7 @@ object frmNotes: TfrmNotes
         Align = alTop
         Caption = 'Icon and Text'
         Checked = True
-        TabOrder = 2
-        TabStop = True
+        TabOrder = 1
         OnClick = rb_textClick
       end
       object schWindowOptions: TSharpECenterHeader
@@ -118,7 +118,7 @@ object frmNotes: TfrmNotes
         Margins.Left = 5
         Margins.Right = 10
         Caption = 'Enable windows on top'
-        TabOrder = 5
+        TabOrder = 0
         Checked = True
         State = cbChecked
         Align = alTop
@@ -134,7 +134,7 @@ object frmNotes: TfrmNotes
         EditLabel.Height = 13
         EditLabel.Caption = 'Button Caption: '
         LabelPosition = lpLeft
-        TabOrder = 6
+        TabOrder = 4
         OnChange = editCaptionTextChange
       end
       object editDirectory: TLabeledEdit
@@ -147,7 +147,7 @@ object frmNotes: TfrmNotes
         EditLabel.Caption = 'Directory:'
         LabelPosition = lpLeft
         ReadOnly = True
-        TabOrder = 7
+        TabOrder = 5
         OnChange = editDirectoryChange
       end
       object schDirectoryOptions: TSharpECenterHeader
@@ -168,7 +168,7 @@ object frmNotes: TfrmNotes
         Left = 351
         Top = 279
         Caption = 'Browse'
-        TabOrder = 9
+        TabOrder = 6
         OnClick = btnBrowseClick
       end
     end

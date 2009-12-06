@@ -188,7 +188,7 @@ object frmSettings: TfrmSettings
     BevelOuter = bvNone
     Color = clWindow
     ParentBackground = False
-    TabOrder = 6
+    TabOrder = 5
     object chkMonitor: TJvXPCheckbox
       Left = 0
       Top = 0
@@ -237,7 +237,7 @@ object frmSettings: TfrmSettings
     BevelOuter = bvNone
     Color = clWindow
     ParentBackground = False
-    TabOrder = 8
+    TabOrder = 1
     object chkTaskPreviews: TJvXPCheckbox
       Left = 0
       Top = 0
@@ -276,7 +276,7 @@ object frmSettings: TfrmSettings
     ParentColor = True
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 9
+    TabOrder = 2
     object Label1: TLabel
       Left = 0
       Top = 3

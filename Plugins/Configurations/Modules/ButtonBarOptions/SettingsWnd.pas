@@ -29,7 +29,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, SharpApi, ExtCtrls, Menus, JclStrings, SharpEGaugeBoxEdit,
+  Dialogs, StdCtrls, SharpApi, ExtCtrls, Menus, JclStrings,
   JvPageList, JvExControls, SharpECenterHeader, JvXPCore, JvXPCheckCtrls,
   ISharpCenterHostUnit;
 
@@ -41,7 +41,6 @@ type
     chkButtonCaption: TJvXPCheckbox;
     chkButtonIcon: TJvXPCheckbox;
     pnlShowIconsAndCaptions: TPanel;
-    procedure GaugeBoxChange(Sender: TObject; Value: Integer);
     procedure CheckClick(Sender: TObject);
   private
     FPluginHost: ISharpCenterHost;
@@ -62,11 +61,6 @@ uses
 {$R *.dfm}
 
 procedure TfrmSettings.CheckClick(Sender: TObject);
-begin
-  UpdateSettings;
-end;
-
-procedure TfrmSettings.GaugeBoxChange(Sender: TObject; Value: Integer);
 begin
   UpdateSettings;
 end;

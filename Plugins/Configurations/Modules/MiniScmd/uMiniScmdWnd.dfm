@@ -24,18 +24,16 @@ object frmMiniScmd: TfrmMiniScmd
     ActivePage = pagMiniScmd
     PropagateEnable = False
     Align = alClient
-    ExplicitHeight = 286
     object pagMiniScmd: TJvStandardPage
       Left = 0
       Top = 0
       Width = 435
       Height = 260
-      ExplicitHeight = 286
       object pnlSize: TPanel
         AlignWithMargins = True
-        Left = 6
-        Top = 149
-        Width = 423
+        Left = 5
+        Top = 152
+        Width = 425
         Height = 21
         Margins.Left = 5
         Margins.Top = 10
@@ -44,7 +42,8 @@ object frmMiniScmd: TfrmMiniScmd
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
-        TabOrder = 0
+        TabOrder = 2
+        ExplicitTop = 148
         object sgb_width: TSharpeGaugeBox
           Left = 0
           Top = 0
@@ -69,10 +68,10 @@ object frmMiniScmd: TfrmMiniScmd
       end
       object scmQuickSelect: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 6
-        Top = 1
-        Width = 423
-        Height = 35
+        Left = 5
+        Top = 0
+        Width = 425
+        Height = 37
         Margins.Left = 5
         Margins.Top = 0
         Margins.Right = 5
@@ -88,10 +87,10 @@ object frmMiniScmd: TfrmMiniScmd
       end
       object scmSize: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 6
-        Top = 104
-        Width = 423
-        Height = 35
+        Left = 5
+        Top = 105
+        Width = 425
+        Height = 37
         Margins.Left = 5
         Margins.Top = 10
         Margins.Right = 5
@@ -105,9 +104,9 @@ object frmMiniScmd: TfrmMiniScmd
       end
       object cbQuickSelect: TJvXPCheckbox
         AlignWithMargins = True
-        Left = 6
-        Top = 46
-        Width = 423
+        Left = 5
+        Top = 47
+        Width = 425
         Height = 17
         Hint = 
           'Enable this option to display a button next to the command box w' +
@@ -119,7 +118,7 @@ object frmMiniScmd: TfrmMiniScmd
         Margins.Right = 5
         Margins.Bottom = 0
         Caption = 'Display '#39'Quick Select'#39' Button'
-        TabOrder = 3
+        TabOrder = 0
         Checked = True
         State = cbChecked
         Align = alTop
@@ -128,15 +127,15 @@ object frmMiniScmd: TfrmMiniScmd
         OnClick = cbQuickSelectClick
       end
       object pnButtonPos: TPanel
-        Left = 1
-        Top = 63
-        Width = 433
+        Left = 0
+        Top = 64
+        Width = 435
         Height = 31
         Align = alTop
         BevelOuter = bvNone
         Color = clWindow
         ParentBackground = False
-        TabOrder = 4
+        TabOrder = 1
         object lbButtonPos: TLabel
           Left = 8
           Top = 10
@@ -169,10 +168,10 @@ object frmMiniScmd: TfrmMiniScmd
       end
       object SharpECenterHeader1: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 6
-        Top = 180
-        Width = 423
-        Height = 35
+        Left = 5
+        Top = 183
+        Width = 425
+        Height = 37
         Margins.Left = 5
         Margins.Top = 10
         Margins.Right = 5
@@ -190,7 +189,7 @@ object frmMiniScmd: TfrmMiniScmd
         Width = 161
         Height = 17
         Caption = 'Enable Auto-Complete'
-        TabOrder = 6
+        TabOrder = 3
         Checked = True
         State = cbChecked
         OnClick = cbEnableAutoComClick
@@ -201,7 +200,7 @@ object frmMiniScmd: TfrmMiniScmd
         Width = 82
         Height = 25
         Caption = 'Clear List'
-        TabOrder = 7
+        TabOrder = 4
         OnClick = btnACClearListClick
       end
     end

@@ -24,7 +24,6 @@ object frmEdit: TfrmEdit
     BevelOuter = bvNone
     ParentColor = True
     TabOrder = 0
-    ExplicitHeight = 222
     object pnlDisplay: TPanel
       AlignWithMargins = True
       Left = 5
@@ -82,7 +81,7 @@ object frmEdit: TfrmEdit
       AutoSize = True
       BevelOuter = bvNone
       ParentColor = True
-      TabOrder = 1
+      TabOrder = 3
       object Label2: TLabel
         Left = 0
         Top = 4
@@ -128,7 +127,7 @@ object frmEdit: TfrmEdit
       AutoSize = True
       BevelOuter = bvNone
       ParentColor = True
-      TabOrder = 2
+      TabOrder = 1
       object Label7: TLabel
         Left = 0
         Top = 4
@@ -166,7 +165,7 @@ object frmEdit: TfrmEdit
       AutoSize = True
       BevelOuter = bvNone
       ParentColor = True
-      TabOrder = 3
+      TabOrder = 2
       object Label8: TLabel
         Left = 0
         Top = 4
@@ -245,8 +244,7 @@ object frmEdit: TfrmEdit
       AutoSize = True
       BevelOuter = bvNone
       ParentColor = True
-      TabOrder = 6
-      ExplicitTop = 212
+      TabOrder = 4
       object Label1: TLabel
         Left = 0
         Top = 4

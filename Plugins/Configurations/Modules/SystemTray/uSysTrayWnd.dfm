@@ -42,8 +42,7 @@ object frmSysTray: TfrmSysTray
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
-        TabOrder = 0
-        ExplicitTop = 47
+        TabOrder = 1
         object sgbIconAlpha: TSharpeGaugeBox
           AlignWithMargins = True
           Left = 0
@@ -81,8 +80,7 @@ object frmSysTray: TfrmSysTray
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
-        TabOrder = 1
-        ExplicitTop = 121
+        TabOrder = 2
         object sgbBackground: TSharpeGaugeBox
           Left = 146
           Top = 5
@@ -107,7 +105,7 @@ object frmSysTray: TfrmSysTray
           Width = 135
           Height = 17
           Caption = 'Display Background'
-          TabOrder = 1
+          TabOrder = 0
           OnClick = cbBackgroundClick
         end
       end
@@ -130,7 +128,7 @@ object frmSysTray: TfrmSysTray
         BorderStyle = bsNone
         Color = clWindow
         ParentColor = False
-        TabOrder = 2
+        TabOrder = 5
         Items = <
           item
             Title = 'Background'
@@ -181,7 +179,6 @@ object frmSysTray: TfrmSysTray
         BackgroundTextColor = clBlack
         ContainerColor = clBlack
         ContainerTextColor = clBlack
-        ExplicitTop = 365
       end
       object pnlBorder: TPanel
         AlignWithMargins = True
@@ -197,7 +194,6 @@ object frmSysTray: TfrmSysTray
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 3
-        ExplicitTop = 194
         object sgbBorder: TSharpeGaugeBox
           Left = 146
           Top = 5
@@ -222,7 +218,7 @@ object frmSysTray: TfrmSysTray
           Width = 135
           Height = 17
           Caption = 'Display Border'
-          TabOrder = 1
+          TabOrder = 0
           OnClick = cbBorderClick
         end
       end
@@ -240,7 +236,6 @@ object frmSysTray: TfrmSysTray
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 4
-        ExplicitTop = 277
         object sgbBlend: TSharpeGaugeBox
           Left = 146
           Top = 5
@@ -264,7 +259,7 @@ object frmSysTray: TfrmSysTray
           Width = 135
           Height = 17
           Caption = 'Color Blend Icon'
-          TabOrder = 1
+          TabOrder = 0
           OnClick = cbBlendClick
         end
       end
@@ -284,7 +279,6 @@ object frmSysTray: TfrmSysTray
         DescriptionColor = clRed
         Align = alTop
         Color = clWindow
-        ExplicitTop = 0
       end
       object schBackgroundVisibility: TSharpECenterHeader
         AlignWithMargins = True
@@ -304,7 +298,6 @@ object frmSysTray: TfrmSysTray
         DescriptionColor = clRed
         Align = alTop
         Color = clWindow
-        ExplicitTop = 79
       end
       object schBorderVisibility: TSharpECenterHeader
         AlignWithMargins = True
@@ -322,7 +315,6 @@ object frmSysTray: TfrmSysTray
         DescriptionColor = clRed
         Align = alTop
         Color = clWindow
-        ExplicitTop = 152
       end
       object schColorBlendOptions: TSharpECenterHeader
         AlignWithMargins = True
@@ -340,7 +332,6 @@ object frmSysTray: TfrmSysTray
         DescriptionColor = clRed
         Align = alTop
         Color = clWindow
-        ExplicitTop = 235
       end
       object schColor: TSharpECenterHeader
         AlignWithMargins = True
@@ -358,7 +349,6 @@ object frmSysTray: TfrmSysTray
         DescriptionColor = clRed
         Align = alTop
         Color = clWindow
-        ExplicitTop = 318
       end
       object Panel1: TPanel
         AlignWithMargins = True
@@ -373,7 +363,7 @@ object frmSysTray: TfrmSysTray
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
-        TabOrder = 10
+        TabOrder = 0
         object chkIconHiding: TJvXPCheckbox
           Left = 0
           Top = 3
@@ -402,7 +392,6 @@ object frmSysTray: TfrmSysTray
         DescriptionColor = clRed
         Align = alTop
         Color = clWindow
-        ExplicitWidth = 415
       end
     end
   end

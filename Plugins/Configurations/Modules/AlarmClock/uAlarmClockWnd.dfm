@@ -62,7 +62,7 @@ object frmAlarmClock: TfrmAlarmClock
     BevelOuter = bvNone
     ParentBackground = False
     ParentColor = True
-    TabOrder = 0
+    TabOrder = 2
     object Label5: TLabel
       Left = 0
       Top = 82
@@ -119,6 +119,7 @@ object frmAlarmClock: TfrmAlarmClock
       Width = 42
       Height = 21
       ParentBackground = False
+      TabOrder = 3
       Min = 0
       Max = 31
       Value = 0
@@ -135,6 +136,7 @@ object frmAlarmClock: TfrmAlarmClock
       Width = 34
       Height = 21
       ParentBackground = False
+      TabOrder = 4
       Min = 0
       Max = 23
       Value = 0
@@ -151,6 +153,7 @@ object frmAlarmClock: TfrmAlarmClock
       Width = 34
       Height = 21
       ParentBackground = False
+      TabOrder = 5
       Min = 0
       Max = 59
       Value = 0
@@ -168,6 +171,7 @@ object frmAlarmClock: TfrmAlarmClock
       Width = 38
       Height = 21
       ParentBackground = False
+      TabOrder = 2
       Min = 0
       Max = 12
       Value = 0
@@ -184,6 +188,7 @@ object frmAlarmClock: TfrmAlarmClock
       Width = 34
       Height = 21
       ParentBackground = False
+      TabOrder = 6
       Min = 0
       Max = 59
       Value = 0
@@ -201,6 +206,7 @@ object frmAlarmClock: TfrmAlarmClock
       Width = 43
       Height = 21
       ParentBackground = False
+      TabOrder = 1
       Min = 0
       Max = 3000
       Value = 0
@@ -217,7 +223,7 @@ object frmAlarmClock: TfrmAlarmClock
       Width = 161
       Height = 17
       Caption = 'Auto Enabled'
-      TabOrder = 6
+      TabOrder = 0
       OnClick = cbOnChange
     end
     object btnSoundBrowse: TButton
@@ -226,7 +232,7 @@ object frmAlarmClock: TfrmAlarmClock
       Width = 21
       Height = 21
       Caption = '...'
-      TabOrder = 7
+      TabOrder = 8
       OnClick = btnSoundBrowseClick
     end
     object edtSound: TEdit
@@ -234,7 +240,7 @@ object frmAlarmClock: TfrmAlarmClock
       Top = 74
       Width = 201
       Height = 21
-      TabOrder = 8
+      TabOrder = 7
       Text = 'Default'
       OnKeyPress = edtOnChange
     end
@@ -254,7 +260,7 @@ object frmAlarmClock: TfrmAlarmClock
     BevelOuter = bvNone
     ParentBackground = False
     ParentColor = True
-    TabOrder = 3
+    TabOrder = 0
     object Label1: TLabel
       Left = 0
       Top = 8
@@ -293,7 +299,7 @@ object frmAlarmClock: TfrmAlarmClock
     BevelOuter = bvNone
     ParentBackground = False
     ParentColor = True
-    TabOrder = 4
+    TabOrder = 1
     object Label2: TLabel
       Left = 0
       Top = 9

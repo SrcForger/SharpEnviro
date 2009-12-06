@@ -70,7 +70,7 @@ object frmEdit: TfrmEdit
   end
   object edIcon: TLabeledEdit
     Left = 56
-    Top = 40
+    Top = 36
     Width = 299
     Height = 22
     Anchors = [akLeft, akTop, akRight]

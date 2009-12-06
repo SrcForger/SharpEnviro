@@ -38,7 +38,7 @@ object frmEdit: TfrmEdit
       AutoSize = True
       BevelOuter = bvNone
       ParentColor = True
-      TabOrder = 0
+      TabOrder = 3
       object cbMenu: TComboBox
         Left = 0
         Top = 0
@@ -110,7 +110,7 @@ object frmEdit: TfrmEdit
       Align = alTop
       BevelOuter = bvNone
       ParentColor = True
-      TabOrder = 3
+      TabOrder = 0
       object chkDisplayIcon: TCheckBox
         Left = 0
         Top = 0
@@ -180,14 +180,14 @@ object frmEdit: TfrmEdit
       AutoSize = True
       BevelOuter = bvNone
       ParentColor = True
-      TabOrder = 6
+      TabOrder = 2
       object btnIconBrowse: TButton
         Left = 258
         Top = 0
         Width = 37
         Height = 22
         Caption = '...'
-        TabOrder = 0
+        TabOrder = 1
         OnClick = btnBrowseClick
       end
       object editIcon: TEdit
@@ -196,7 +196,7 @@ object frmEdit: TfrmEdit
         Width = 252
         Height = 25
         Align = alLeft
-        TabOrder = 1
+        TabOrder = 0
         OnChange = SettingsChange
         ExplicitHeight = 21
       end

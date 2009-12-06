@@ -42,7 +42,7 @@ uses
   PngImageList,
   SharpTypes,
   SharpEListBoxEx, TaskFilterList, ExtCtrls, JclSimpleXml, JclFileUtils, JclStrings, Menus,
-  SharpEGaugeBoxEdit, GR32_Image, GR32, SharpECenterHeader,
+  GR32_Image, GR32, SharpECenterHeader,
   JvExControls, JvXPCore, JvXPCheckCtrls, ISharpCenterHostUnit;
 
 type

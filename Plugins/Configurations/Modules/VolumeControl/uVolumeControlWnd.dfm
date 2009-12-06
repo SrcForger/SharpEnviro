@@ -66,7 +66,7 @@ object frmVolumeControl: TfrmVolumeControl
         Align = alTop
         BevelOuter = bvNone
         Color = clWindow
-        TabOrder = 0
+        TabOrder = 1
         object sgb_width: TSharpeGaugeBox
           Left = 0
           Top = 3
@@ -98,7 +98,7 @@ object frmVolumeControl: TfrmVolumeControl
         Align = alTop
         BevelOuter = bvNone
         Color = clWindow
-        TabOrder = 1
+        TabOrder = 0
         object cb_mlist: TComboBox
           Left = 0
           Top = 3
@@ -154,7 +154,7 @@ object frmVolumeControl: TfrmVolumeControl
         BevelOuter = bvNone
         Color = clWindow
         ParentBackground = False
-        TabOrder = 4
+        TabOrder = 2
         object Label1: TLabel
           Left = 8
           Top = 10
