@@ -108,9 +108,10 @@ begin
            i := Max(0,Min(1,IntValue('WrapPosition',0)));
            cboWrapPos.ItemIndex := i;
 
-           chkCacheIcons.Checked := BoolValue('CacheIcons',True);
            chkUseIcons.Checked := BoolValue('UseIcons',True);
            chkUseGenericIcons.Checked := BoolValue('UseGenericIcons',False);
+           chkHideTimeout.Checked := (IntValue('HideTimeout', 0) > 0);
+           edtHideTimeout.Text := Value('HideTimeout','0');
            UpdateUi;
          end;
     end;
@@ -156,9 +157,12 @@ begin
       Add('WrapMenu',chkMenuWrapping.Checked);
       Add('WrapCount',sgbWrapCount.Value);
       Add('WrapPosition',cboWrapPos.ItemIndex);
-      Add('CacheIcons',chkCacheIcons.Checked);
       Add('UseIcons',chkUseIcons.Checked);
       Add('UseGenericIcons',chkUseGenericIcons.Checked);
+      if chkHideTimeout.Checked then
+        Add('HideTimeout',edtHideTimeout.Text)
+      else
+        Add('HideTimeout','0');
     end;
 
     PluginHost.Xml.Save;

@@ -50,17 +50,24 @@ type
     SharpECenterHeader3: TSharpECenterHeader;
     SharpECenterHeader4: TSharpECenterHeader;
     chkUseIcons: TJvXPCheckbox;
-    chkCacheIcons: TJvXPCheckbox;
     chkMenuWrapping: TJvXPCheckbox;
     pnlGenericIcons: TPanel;
     schGenericIcons: TSharpECenterHeader;
     chkUseGenericIcons: TJvXPCheckbox;
+    chkHideTimeout: TJvXPCheckbox;
+    Label2: TLabel;
+    edtHideTimeout: TEdit;
+    Label3: TLabel;
     procedure cboWrapPosChange(Sender: TObject);
     procedure sgbWrapCountChangeValue(Sender: TObject; Value: Integer);
     procedure chkUseIconsClick(Sender: TObject);
     procedure chkMenuWrappingClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure chkHideTimeoutClick(Sender: TObject);
+    procedure edtHideTimeoutKeyPress(Sender: TObject; var Key: Char);
+    procedure edtHideTimeoutKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     FIsUpdating: Boolean;
     FPluginHost: ISharpCenterHost;
@@ -94,6 +101,11 @@ begin
   chkUseIconsClick(self);
 end;
 
+procedure TfrmSettings.chkHideTimeoutClick(Sender: TObject);
+begin
+  SendUpdate;
+end;
+
 procedure TfrmSettings.chkMenuWrappingClick(Sender: TObject);
 begin
   SendUpdate;
@@ -111,6 +123,19 @@ begin
   UpdateUi;
 end;
 
+procedure TfrmSettings.edtHideTimeoutKeyPress(Sender: TObject; var Key: Char);
+begin
+  // #8 is Backspace
+  if not (Key in [#8, '0'..'9']) then
+    Key := #0;
+end;
+
+procedure TfrmSettings.edtHideTimeoutKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  SendUpdate;
+end;
+
 procedure TfrmSettings.sgbWrapCountChangeValue(Sender: TObject;
   Value: Integer);
 begin
@@ -119,7 +144,6 @@ end;
 
 procedure TfrmSettings.UpdateUi;
 begin
-  chkCacheicons.Enabled := chkUseIcons.Checked;
   pnlGenericIcons.Visible := chkUseIcons.Checked;
 end;
 
