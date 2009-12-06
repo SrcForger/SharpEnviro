@@ -1114,7 +1114,7 @@ begin
 
         //Result := true;
         AText := AliasList[i].AliasValue;
-        if ((AliasList[i].Elevate) and (Pos('_elevate', AliasList[i].AliasValue) = 0)) then
+        if (AliasList[i].Elevate) or (Pos('_elevate', AliasList[i].AliasValue) <> 0) then
           AElevate := True;
 
         // Check for various defined application paths
@@ -1126,12 +1126,23 @@ begin
             break;
         end;
 
+        // Reset the params as we will build a space delimited list
+        // for any that are not used during the replacement.
+        Params := '';
+
         // Expand the advanced alias
-        if ParamsStrl.Count >= 1 then begin
+        if ParamsStrl.Count > 0 then begin
 
           s1 := AText;
+
           for j := 0 to ParamsStrl.Count - 1 do begin
-            StrReplace(s1, '%' + inttostr(j + 1), ParamsStrl.Strings[j], [rfIgnoreCase]);
+            if StrFind('%' + IntToStr(j), s1) > 0 then
+              StrReplace(s1, '%' + inttostr(j), ParamsStrl[j], [rfIgnoreCase])
+            else
+              if StrCompare('_elevate', ParamsStrl[j]) = 0 then
+                AElevate := True
+              else
+                Params := Params + ' ' + ParamsStrl[j];
           end;
 
           AText := s1;
@@ -1142,7 +1153,8 @@ begin
 
   finally
     Result := bMatch;
-    if ((bMatch) and (ParamsStrl.Count > 0)) then
+
+    if ((bMatch) and (Length(Params) > 0)) then
       AText := AText + ' ' + Params;
 
     ParamsStrl.Free;

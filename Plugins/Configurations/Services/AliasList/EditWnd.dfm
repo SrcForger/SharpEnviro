@@ -31,12 +31,17 @@ object frmEditWnd: TfrmEditWnd
     Top = 8
     Width = 409
     Height = 21
+    Hint = 
+      'The Alias name for the command.  Type the Alias name in MiniScmd' +
+      ' followed by a space and a comma delimited list of args.'
     Anchors = [akLeft, akTop, akRight]
     EditLabel.Width = 31
     EditLabel.Height = 13
     EditLabel.Caption = 'Name:'
     LabelPosition = lpLeft
     LabelSpacing = 6
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 0
     OnChange = UpdateEditState
   end
@@ -46,8 +51,8 @@ object frmEditWnd: TfrmEditWnd
     Width = 289
     Height = 21
     Hint = 
-      'Replacement tokens can also be used (0-9): http://www.google.co.' +
-      'uk/search?hl=en&q={1}+{2}&btnG=Search&meta='
+      'Replacement tokens can also be used %(0-9): http://www.google.co' +
+      '.uk/search?hl=en&q=%1+%2&btnG=Search&meta='
     Anchors = [akLeft, akTop, akRight]
     EditLabel.Width = 51
     EditLabel.Height = 13
