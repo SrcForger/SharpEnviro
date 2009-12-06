@@ -218,7 +218,7 @@ begin
       end;
     end;
   
-    CreateDir(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\MiniScmd');
+    ForceDirectories(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\MiniScmd');
     XML.SaveToFile(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\MiniScmd\AutoComplete.xml');
   finally
     XML.Free;
