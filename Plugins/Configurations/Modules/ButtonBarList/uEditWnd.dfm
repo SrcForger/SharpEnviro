@@ -65,7 +65,7 @@ object frmEdit: TfrmEdit
     EditLabel.Caption = 'Command:'
     LabelPosition = lpLeft
     LabelSpacing = 6
-    TabOrder = 1
+    TabOrder = 2
     OnChange = UpdateEditState
   end
   object edIcon: TLabeledEdit
@@ -79,7 +79,7 @@ object frmEdit: TfrmEdit
     EditLabel.Caption = 'Icon:'
     LabelPosition = lpLeft
     LabelSpacing = 6
-    TabOrder = 2
+    TabOrder = 1
     OnChange = UpdateEditState
   end
 end
