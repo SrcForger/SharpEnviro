@@ -123,7 +123,7 @@ end;
 
 procedure TfrmRSSReader.FormShow(Sender: TObject);
 begin
-  cbIconClick(nil);
+  cbCustomIcon.Enabled := cbIcon.Checked;
 end;
 
 procedure TfrmRSSReader.MenuItemClick(Sender: TObject);

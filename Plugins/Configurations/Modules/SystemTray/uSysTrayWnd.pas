@@ -69,6 +69,9 @@ type
     procedure cbBlendClick(Sender: TObject);
   private
     FPluginHost: ISharpCenterHost;
+    procedure BackgroundChanged;
+    procedure BlendChanged;
+    procedure BorderChanged;
     procedure UpdateSettings;
   public
     property PluginHost: ISharpCenterHost read FPluginHost write
@@ -87,23 +90,38 @@ uses
 
 procedure TfrmSysTray.cbBackgroundClick(Sender: TObject);
 begin
+  BackgroundChanged;
+  UpdateSettings;
+end;
+
+procedure TfrmSysTray.BackgroundChanged();
+begin
   sgbBackground.Enabled := chkBackground.Checked;
   Colors.Items.Item[0].Visible := chkBackground.Checked;
-  UpdateSettings;
 end;
 
 procedure TfrmSysTray.cbBlendClick(Sender: TObject);
 begin
+  BlendChanged;
+  UpdateSettings;
+end;
+
+procedure TfrmSysTray.BlendChanged();
+begin
   sgbBlend.Enabled := chkBlend.Checked;
   Colors.Items.Item[2].Visible := chkBlend.Checked;
-  UpdateSettings;
 end;
 
 procedure TfrmSysTray.cbBorderClick(Sender: TObject);
 begin
+  BorderChanged;
+  UpdateSettings;
+end;
+
+procedure TfrmSysTray.BorderChanged;
+begin
   sgbBorder.Enabled := chkBorder.Checked;
   Colors.Items.Item[1].Visible := chkBorder.Checked;
-  UpdateSettings;
 end;
 
 procedure TfrmSysTray.cb_numbersClick(Sender: TObject);
@@ -123,9 +141,9 @@ end;
 
 procedure TfrmSysTray.FormShow(Sender: TObject);
 begin
-  chkBackground.OnClick(chkBackground);
-  chkBorder.OnClick(chkBorder);
-  chkBlend.OnClick(chkBlend);
+  BackgroundChanged;
+  BorderChanged;
+  BlendChanged;
 end;
 
 procedure TfrmSysTray.sgbIconAlphaChangeValue(Sender: TObject; Value: Integer);

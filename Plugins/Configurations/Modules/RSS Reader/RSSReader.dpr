@@ -123,15 +123,15 @@ end;
 
 function TSharpCenterPlugin.GetPluginDescriptionText: String;
 begin
-  result := 'Configure formatting options for the clock module';
+  result := 'Configure formatting options for the rss reader module';
 end;
 
 function GetMetaData(): TMetaData;
 begin
   with result do
   begin
-    Name := 'Clock';
-    Description := 'Clock Module Configuration';
+    Name := 'RSS Reader';
+    Description := 'RSS Reader Module Configuration';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
     Version := '0.7.6.0';
     DataType := tteConfig;
