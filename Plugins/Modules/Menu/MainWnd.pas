@@ -194,46 +194,25 @@ begin
   //SharpApi.SharpExecute(ActionStr);
 end;
 
-function GetHashCode(Str: PChar): Integer;
-var
-  Off, Len, Skip, I: Integer;
-begin
-  Result := 0;
-  Off := 1;
-  Len := StrLen(Str);
-  if Len < 16 then
-    for I := (Len - 1) downto 0 do
-    begin
-      Result := (Result * 37) + Ord(Str[Off]);
-      Inc(Off);
-    end
-  else
-  begin
-    { Only sample some characters }
-    Skip := Len div 8;
-    I := Len - 1;
-    while I >= 0 do
-    begin
-      Result := (Result * 39) + Ord(Str[Off]);
-      Dec(I, Skip);
-      Inc(Off, Skip);
-    end;
-  end;
-end;
-
 procedure TMainForm.btnMouseEnter(Sender: TObject);
 var
   MutexHandle : Cardinal;
   wnd : HWND;
-  MenuID : integer;
+  atm, len : integer;
+  buf : PChar;
 begin
+  atm := 0;
+  len := 0;
   wnd := FindWindow('TSharpEMenuWnd', 'Menu');
   if wnd <> 0 then
   begin
-    MenuID := SendMessage(wnd, WM_MENUID, 0, 0);
-    SharpApi.SendDebugMessage('Menu', 'sMenu ' + IntToStr(GetHashCode(PAnsiChar(sMenu))) + ' ' + IntToStr(MenuID), 0);
+    SendMessage(wnd, WM_MENUID, atm, len);
 
-    if MenuID <> GetHashCode(PAnsiChar(sMenu)) then
+    buf := StrAlloc(len + 1);
+    GlobalGetAtomName(atm, buf, len + 1);
+    GlobalDeleteAtom(atm);
+
+    if buf <> sMenu then
     begin
       SendMessage(wnd, WM_SHARPTERMINATE, 0, 0);
       OpenMenu;

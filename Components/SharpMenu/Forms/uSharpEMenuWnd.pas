@@ -89,7 +89,7 @@ type
     FFreeMenu : boolean; // Set to True if the menu is a single menu without popups
                          // and if you want it to free itself OnDeactivate
 
-    FMenuID : integer;
+    FMenuID : string;
 
     DC: HDC;
     Blend: TBlendFunction;
@@ -122,6 +122,8 @@ type
     property RootMenu : boolean read FRootMenu;
     property FreeMenu : boolean read FFreeMenu write FFreeMenu;
     property IgnoreNextDeactivate : boolean read FIgnoreNextDeactivate write FIgnoreNextDeactivate;
+
+    property MenuID : string read FMenuID write SetMenuID;
   end;
 
 implementation
@@ -210,46 +212,16 @@ begin
     Message.Result := HTClient;
 end;
 
-function GetHashCode(Str: PChar): Integer;
-var
-  Off, Len, Skip, I: Integer;
-begin
-  Result := 0;
-  Off := 1;
-  Len := StrLen(Str);
-  if Len < 16 then
-    for I := (Len - 1) downto 0 do
-    begin
-      Result := (Result * 37) + Ord(Str[Off]);
-      Inc(Off);
-    end
-  else
-  begin
-    { Only sample some characters }
-    Skip := Len div 8;
-    I := Len - 1;
-    while I >= 0 do
-    begin
-      Result := (Result * 39) + Ord(Str[Off]);
-      Dec(I, Skip);
-      Inc(Off, Skip);
-    end;
-  end;
-end;
-
 procedure TSharpEMenuWnd.SetMenuID(path : string);
-var
-  sID : string;
 begin
-  sID := ExtractFileName(path);
-  SetLength(sID, Length(sID) - Length(ExtractFileExt(sID)));
-
-  FMenuID := GetHashCode(PAnsiChar(sID))
+  FMenuID := ExtractFileName(path);
+  SetLength(FMenuID, Length(FMenuID) - Length(ExtractFileExt(FMenuID)));
 end;
 
 procedure TSharpEMenuWnd.WMMenuID(var Msg : TMessage);
 begin
-  Msg.Result := FMenuID;
+  Msg.LParam := GlobalAddAtom(PAnsiChar(FMenuID));
+  Msg.WParam := Length(FMenuID);
 end;
 
 procedure TSharpEMenuWnd.UpdateWndLayer;

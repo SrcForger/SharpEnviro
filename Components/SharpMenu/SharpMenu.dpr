@@ -159,7 +159,7 @@ begin
   GetCurrentTheme.LoadTheme([tpSkinScheme,tpIconSet,tpSkinFont]);
 
   wnd.MuteXHandle := MutexHandle;
-  wnd.SetMenuID(mfile);
+  wnd.MenuID := mfile;
 
   DebugTime('IconStuff');
   iconcachefile := ExtractFileName(mfile);
