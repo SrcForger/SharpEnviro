@@ -220,8 +220,8 @@ end;
 
 procedure TSharpEMenuWnd.WMMenuID(var Msg : TMessage);
 begin
-  Msg.LParam := GlobalAddAtom(PAnsiChar(FMenuID));
-  Msg.WParam := Length(FMenuID);
+  Msg.Result := GlobalAddAtom(PAnsiChar(FMenuID));
+  //Msg.WParam := Word(Length(FMenuID));
 end;
 
 procedure TSharpEMenuWnd.UpdateWndLayer;

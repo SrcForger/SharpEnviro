@@ -196,20 +196,17 @@ end;
 
 procedure TMainForm.btnMouseEnter(Sender: TObject);
 var
-  MutexHandle : Cardinal;
   wnd : HWND;
-  atm, len : integer;
-  buf : PChar;
+  atm : Word;
+  buf : PAnsiChar;
 begin
-  atm := 0;
-  len := 0;
   wnd := FindWindow('TSharpEMenuWnd', 'Menu');
   if wnd <> 0 then
   begin
-    SendMessage(wnd, WM_MENUID, atm, len);
+    atm := SendMessage(wnd, WM_MENUID, 0, 0);
 
-    buf := StrAlloc(len + 1);
-    GlobalGetAtomName(atm, buf, len + 1);
+    buf := StrAlloc(256);
+    GlobalGetAtomName(atm, buf, 256);
     GlobalDeleteAtom(atm);
 
     if buf <> sMenu then
