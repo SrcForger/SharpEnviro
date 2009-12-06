@@ -24,6 +24,7 @@ object SharpEMenuWnd: TSharpEMenuWnd
   OnDeactivate = FormDeactivate
   OnKeyDown = FormKeyDown
   OnMouseDown = FormMouseDown
+  OnMouseLeave = FormMouseLeave
   OnMouseMove = FormMouseMove
   OnMouseUp = FormMouseUp
   OnMouseWheelDown = FormMouseWheelDown
@@ -55,6 +56,13 @@ object SharpEMenuWnd: TSharpEMenuWnd
     Interval = 250
     OnTimer = SubMenuCloseTimerTimer
     Left = 112
+    Top = 104
+  end
+  object HideTimer: TTimer
+    Enabled = False
+    Interval = 0
+    OnTimer = HideTimerOnTimer
+    Left = 144
     Top = 104
   end
 end

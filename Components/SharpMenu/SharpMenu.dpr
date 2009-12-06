@@ -160,6 +160,7 @@ begin
 
   wnd.MuteXHandle := MutexHandle;
   wnd.MenuID := mfile;
+  wnd.HideTimeout := menusettings.HideTimeout;
 
   DebugTime('IconStuff');
   iconcachefile := ExtractFileName(mfile);

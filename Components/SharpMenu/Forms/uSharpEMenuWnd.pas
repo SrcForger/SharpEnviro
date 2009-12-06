@@ -54,6 +54,7 @@ type
     offsettimer: TTimer;
     ApplicationEvents1: TApplicationEvents;
     SubMenuCloseTimer: TTimer;
+    HideTimer: TTimer;
     procedure ApplicationEvents1Message(var Msg: tagMSG; var Handled: Boolean);
     procedure FormMouseWheelUp(Sender: TObject; Shift: TShiftState;
       MousePos: TPoint; var Handled: Boolean);
@@ -75,6 +76,8 @@ type
     procedure FormActivate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure SubMenuCloseTimerTimer(Sender: TObject);
+    procedure HideTimerOnTimer(Sender: TObject);
+    procedure FormMouseLeave(Sender: TObject);
   private
     FMenu : TSharpEMenu;
     FParentMenu : TSharpeMenuWnd;
@@ -113,6 +116,7 @@ type
     constructor Create(AOwner: TComponent; pMenu : TSharpEMenu); reintroduce; overload;
 
     procedure SetMenuID(path : string);
+    procedure SetHideTimeout(n : integer);
   published
     property SharpEMenu : TSharpEMenu read FMenu;
     property SharpESubMenu : TSharpEMenuWnd read FSubMenu write FSubMenu;
@@ -122,8 +126,8 @@ type
     property RootMenu : boolean read FRootMenu;
     property FreeMenu : boolean read FFreeMenu write FFreeMenu;
     property IgnoreNextDeactivate : boolean read FIgnoreNextDeactivate write FIgnoreNextDeactivate;
-
     property MenuID : string read FMenuID write SetMenuID;
+    property HideTimeout : integer write SetHideTimeout;
   end;
 
 implementation
@@ -168,6 +172,8 @@ begin
   Height := FPicture.Height;
   left   := Screen.WorkAreaWidth div 2 - self.Width div 2;
   top    := Screen.WorkAreaHeight div 2 - self.Height div 2;
+
+  HideTimer.Enabled := False;
 end;
 
 constructor TSharpEMenuWnd.Create(AOwner: TComponent);
@@ -212,16 +218,21 @@ begin
     Message.Result := HTClient;
 end;
 
+procedure TSharpEMenuWnd.WMMenuID(var Msg : TMessage);
+begin
+  Msg.Result := GlobalAddAtom(PAnsiChar(FMenuID));
+end;
+
 procedure TSharpEMenuWnd.SetMenuID(path : string);
 begin
   FMenuID := ExtractFileName(path);
   SetLength(FMenuID, Length(FMenuID) - Length(ExtractFileExt(FMenuID)));
 end;
 
-procedure TSharpEMenuWnd.WMMenuID(var Msg : TMessage);
+procedure TSharpEMenuWnd.SetHideTimeout(n : integer);
 begin
-  Msg.Result := GlobalAddAtom(PAnsiChar(FMenuID));
-  //Msg.WParam := Word(Length(FMenuID));
+  SharpApi.SendDebugMessage('SharpMenu', InttoStr(n), 0);
+  HideTimer.Interval := n;
 end;
 
 procedure TSharpEMenuWnd.UpdateWndLayer;
@@ -374,6 +385,12 @@ begin
   end;
 end;
 
+procedure TSharpEMenuWnd.FormMouseLeave(Sender: TObject);
+begin
+  if HideTimer.Interval > 0 then
+    HideTimer.Enabled := True;
+end;
+
 procedure TSharpEMenuWnd.FormMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
@@ -408,6 +425,16 @@ begin
     pOwner := TSharpEMenuWnd(pOwner).cOwner;
   end;
   TSharpEMenuWnd(lm).Release;
+end;
+
+procedure TSharpEMenuWnd.HideTimerOnTimer(Sender: TObject);
+begin
+  FFreeMenuSub := False;
+  FFreeMenuSub := False;
+  Application.ProcessMessages;
+  CloseAll;
+
+  CloseHandle(MuteXHandle);
 end;
 
 procedure TSharpEMenuWnd.FormClick(Sender: TObject);
