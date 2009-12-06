@@ -96,6 +96,9 @@ const
   // SharpCenter
   WM_SHARPCENTERMESSAGE = WM_APP + 660;
 
+  // SharpMenu
+  WM_MENUID = WM_APP + 661;
+
   // WM_BARCOMMAND messages param
   BC_ADD = 0;
   BC_DELETE = 1;
