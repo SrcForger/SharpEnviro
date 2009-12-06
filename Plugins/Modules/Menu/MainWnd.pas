@@ -47,6 +47,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure btnMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure btnMouseEnter(Sender: TObject);
   protected
   private
     sShowIcon    : boolean; 
@@ -55,6 +56,8 @@ type
     sCaption     : String;
     sMenu        : String;
     procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
+
+    procedure OpenMenu;
   public
     mInterface : ISharpBarModule;
     procedure UpdateIcon;
@@ -84,7 +87,7 @@ end;
 procedure TMainForm.WMSharpEBang(var Msg : TMessage);
 begin
   case msg.LParam of
-    1: btn.OnMouseUp(btn,mbLeft,[],0,0);
+    1: OpenMenu;
   end;
 end;
 
@@ -161,37 +164,89 @@ begin
 end;
 
 
-procedure TMainForm.btnMouseUp(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
+procedure TMainForm.OpenMenu;
 var
   ActionStr, pdir : String;
   p : TPoint;
   R : TRect;
 begin
-  if Button = mbLeft then
+  GetWindowRect(mInterface.BarInterface.BarWnd,R);
+  p := ClientToScreen(Point(btn.Left + btn.Width div 2, self.Height + self.Top));
+  p.x := p.x - btn.Width div 2;
+  p.y := R.Top;
+  if p.y > Monitor.Top + Monitor.Height div 2 then
   begin
-    GetWindowRect(mInterface.BarInterface.BarWnd,R);
-    p := ClientToScreen(Point(btn.Left + btn.Width div 2, self.Height + self.Top));
-    p.x := p.x - btn.Width div 2;
-    p.y := R.Top;    
-    if p.y > Monitor.Top + Monitor.Height div 2 then
-    begin
-      p.y := R.Top;
-      pdir := '-1';
-    end
-    else
-    begin
-      p.y := R.Bottom;
-      pdir := '1';
-    end;
+    p.y := R.Top;
+    pdir := '-1';
+  end
+  else
+  begin
+    p.y := R.Bottom;
+    pdir := '1';
+  end;
 //    ActionStr := SharpApi.GetSharpeDirectory;
 //    ActionStr := ActionStr + 'SharpMenu.exe';
 //    ActionStr := ActionStr + ' ' + inttostr(p.x) + ' ' + inttostr(p.y);
-    ActionStr := inttostr(p.x) + ' ' + inttostr(p.y) + ' ' + pdir;
-    ActionStr := ActionStr + ' "' + SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\';
-    ActionStr := ActionStr + sMenu + '.xml"';
-    ShellApi.ShellExecute(Handle,'open',PChar(GetSharpEDirectory + 'SharpMenu.exe'),PChar(ActionStr),PChar(GetSharpEDirectory),SW_SHOWNORMAL);
-    //SharpApi.SharpExecute(ActionStr);
+  ActionStr := inttostr(p.x) + ' ' + inttostr(p.y) + ' ' + pdir;
+  ActionStr := ActionStr + ' "' + SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\';
+  ActionStr := ActionStr + sMenu + '.xml"';
+  ShellApi.ShellExecute(Handle,'open',PChar(GetSharpEDirectory + 'SharpMenu.exe'),PChar(ActionStr),PChar(GetSharpEDirectory),SW_SHOWNORMAL);
+  //SharpApi.SharpExecute(ActionStr);
+end;
+
+function GetHashCode(Str: PChar): Integer;
+var
+  Off, Len, Skip, I: Integer;
+begin
+  Result := 0;
+  Off := 1;
+  Len := StrLen(Str);
+  if Len < 16 then
+    for I := (Len - 1) downto 0 do
+    begin
+      Result := (Result * 37) + Ord(Str[Off]);
+      Inc(Off);
+    end
+  else
+  begin
+    { Only sample some characters }
+    Skip := Len div 8;
+    I := Len - 1;
+    while I >= 0 do
+    begin
+      Result := (Result * 39) + Ord(Str[Off]);
+      Dec(I, Skip);
+      Inc(Off, Skip);
+    end;
+  end;
+end;
+
+procedure TMainForm.btnMouseEnter(Sender: TObject);
+var
+  MutexHandle : Cardinal;
+  wnd : HWND;
+  MenuID : integer;
+begin
+  wnd := FindWindow('TSharpEMenuWnd', 'Menu');
+  if wnd <> 0 then
+  begin
+    MenuID := SendMessage(wnd, WM_MENUID, 0, 0);
+    SharpApi.SendDebugMessage('Menu', 'sMenu ' + IntToStr(GetHashCode(PAnsiChar(sMenu))) + ' ' + IntToStr(MenuID), 0);
+
+    if MenuID <> GetHashCode(PAnsiChar(sMenu)) then
+    begin
+      SendMessage(wnd, WM_SHARPTERMINATE, 0, 0);
+      OpenMenu;
+    end;
+  end;
+end;
+
+procedure TMainForm.btnMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if Button = mbLeft then
+  begin
+    OpenMenu;
   end;
 end;
 
