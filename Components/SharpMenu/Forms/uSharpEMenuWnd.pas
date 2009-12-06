@@ -88,6 +88,9 @@ type
     FFreeMenuSub : boolean;
     FFreeMenu : boolean; // Set to True if the menu is a single menu without popups
                          // and if you want it to free itself OnDeactivate
+
+    FMenuID : integer;
+
     DC: HDC;
     Blend: TBlendFunction;
     procedure UpdateWndLayer;
@@ -97,13 +100,19 @@ type
     procedure WMKillFocus(var Msg: TMessage); message WM_KILLFOCUS;
     procedure WMNCHitTest(var Message: TWMNCHitTest);
     procedure WMSharpTerminate(var Msg : TMessage); message WM_SHARPTERMINATE;
+
+    procedure WMMenuID(var Msg : TMessage); message WM_MENUID;
   public
+    MuteXHandle : THandle;
+
     procedure DrawWindow;
     procedure PreMul(Bitmap: TBitmap32);
     procedure InitMenu(pMenu : TSharpEMenu; pRootMenu : boolean);
     procedure CloseAll;
     constructor Create(AOwner: TComponent); overload; override;
     constructor Create(AOwner: TComponent; pMenu : TSharpEMenu); reintroduce; overload;
+
+    procedure SetMenuID(path : string);
   published
     property SharpEMenu : TSharpEMenu read FMenu;
     property SharpESubMenu : TSharpEMenuWnd read FSubMenu write FSubMenu;
@@ -185,6 +194,8 @@ begin
   FFreeMenuSub := False;
   Application.ProcessMessages;
   CloseAll;
+
+  CloseHandle(MuteXHandle);
 end;
 
 procedure TSharpEMenuWnd.WMPaint(var Msg: TWMPaint);
@@ -197,6 +208,48 @@ procedure TSharpEMenuWnd.WMNCHitTest(var Message: TWMNCHitTest);
 begin
   if PtInRect(ClientRect, ScreenToClient(Point(Message.XPos, Message.YPos))) then
     Message.Result := HTClient;
+end;
+
+function GetHashCode(Str: PChar): Integer;
+var
+  Off, Len, Skip, I: Integer;
+begin
+  Result := 0;
+  Off := 1;
+  Len := StrLen(Str);
+  if Len < 16 then
+    for I := (Len - 1) downto 0 do
+    begin
+      Result := (Result * 37) + Ord(Str[Off]);
+      Inc(Off);
+    end
+  else
+  begin
+    { Only sample some characters }
+    Skip := Len div 8;
+    I := Len - 1;
+    while I >= 0 do
+    begin
+      Result := (Result * 39) + Ord(Str[Off]);
+      Dec(I, Skip);
+      Inc(Off, Skip);
+    end;
+  end;
+end;
+
+procedure TSharpEMenuWnd.SetMenuID(path : string);
+var
+  sID : string;
+begin
+  sID := ExtractFileName(path);
+  SetLength(sID, Length(sID) - Length(ExtractFileExt(sID)));
+
+  FMenuID := GetHashCode(PAnsiChar(sID))
+end;
+
+procedure TSharpEMenuWnd.WMMenuID(var Msg : TMessage);
+begin
+  Msg.Result := FMenuID;
 end;
 
 procedure TSharpEMenuWnd.UpdateWndLayer;

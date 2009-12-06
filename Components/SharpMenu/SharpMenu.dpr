@@ -120,7 +120,7 @@ begin
 
   st := GetCurrentTime;
   MutexHandle := CreateMutex(nil, TRUE, 'SharpMenuMutex');
-  if MuteXHandle <>0 then
+  if MuteXHandle <> 0 then
   begin
     if GetLastError = ERROR_ALREADY_EXISTS then
     begin
@@ -157,6 +157,9 @@ begin
   Application.CreateForm(TSharpEMenuWnd, wnd);
   DebugTime('LoadTheme');
   GetCurrentTheme.LoadTheme([tpSkinScheme,tpIconSet,tpSkinFont]);
+
+  wnd.MuteXHandle := MutexHandle;
+  wnd.SetMenuID(mfile);
 
   DebugTime('IconStuff');
   iconcachefile := ExtractFileName(mfile);
@@ -223,6 +226,4 @@ begin
   SharpEMenuIcons.Free;     
 
   SkinManagerInterface := nil;
-
-  CloseHandle(MuteXHandle);
 end.
