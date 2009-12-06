@@ -409,6 +409,9 @@ end;
 
 procedure TSharpEMenuWnd.FormMouseEnter(Sender: TObject);
 begin
+  if FMouseLeave and (HideTimer.Interval > 0) and (HideTimer.Enabled) then
+    HideTimer.Enabled := False;
+
   if FSubMenu <> nil then
   begin
     if not FMouseLeave and FSubMenu.FMouseLeave then
