@@ -115,6 +115,8 @@ type
     property Constraints;
     property ParentBackground;
     property Visible;
+    property TabOrder;
+    property TabStop;
 
     property Min: Integer read FMin write SetMin;
     property Max: Integer read FMax write SetMax;
