@@ -101,7 +101,7 @@ object frmEdit: TfrmEdit
           Height = 22
           Anchors = [akTop, akRight]
           Caption = 'Browse'
-          TabOrder = 0
+          TabOrder = 1
           OnClick = btnSubmenuTargetBrowseClick
         end
         object edSubmenuTarget: TLabeledEdit
@@ -116,7 +116,7 @@ object frmEdit: TfrmEdit
           EditLabel.Caption = 'Target:'
           LabelPosition = lpLeft
           LabelSpacing = 6
-          TabOrder = 1
+          TabOrder = 0
           OnChange = UpdateEditState
         end
         object rbProcess: TJvXPCheckbox
@@ -152,7 +152,7 @@ object frmEdit: TfrmEdit
           Width = 514
           Height = 17
           Caption = 'Minimised Tasks'
-          TabOrder = 0
+          TabOrder = 2
           TabStop = False
           Align = alTop
           OnClick = SystemOptionsClick
@@ -177,7 +177,7 @@ object frmEdit: TfrmEdit
           Height = 17
           Margins.Top = 0
           Caption = 'Current VWM'
-          TabOrder = 2
+          TabOrder = 0
           TabStop = False
           Align = alTop
           OnClick = SystemOptionsClick
@@ -187,6 +187,10 @@ object frmEdit: TfrmEdit
         Caption = 'tabWindowCommand'
         ImageIndex = 2
         TabVisible = False
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object lbSwCommands: TSharpEListBoxEx
           Left = 0
           Top = 0

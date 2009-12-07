@@ -391,11 +391,15 @@ object frmHome: TfrmHome
       Caption = 'tabUrls'
       ImageIndex = 2
       TabVisible = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Image1: TImage
         AlignWithMargins = True
         Left = 4
         Top = 4
-        Width = 497
+        Width = 146
         Height = 47
         Margins.Left = 4
         Margins.Top = 4
@@ -691,13 +695,12 @@ object frmHome: TfrmHome
           5A5A8A781D18ED202EB12F644748259CA66A51198EC14EDD9E02E0ED506677E6
           6554FEFEFEA3187877DAE4290598ED1DD4F171C5DEB8E0E0FF9CF1FF01B16DFE
           278114E1B70000000049454E44AE426082}
-        ExplicitWidth = 146
       end
       object lblUrls: TLabel
         AlignWithMargins = True
         Left = 8
         Top = 59
-        Width = 493
+        Width = 467
         Height = 26
         Margins.Left = 8
         Margins.Top = 4
@@ -709,8 +712,6 @@ object frmHome: TfrmHome
           ' us a number of ways, either by email, using the web forum or in' +
           ' our Irc chat room.'
         WordWrap = True
-        ExplicitTop = 62
-        ExplicitWidth = 467
       end
       object lbUrls: TSharpEListBoxEx
         AlignWithMargins = True

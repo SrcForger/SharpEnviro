@@ -77,7 +77,7 @@ object frmEdit: TfrmEdit
         EditLabel.Caption = 'Website:'
         LabelPosition = lpLeft
         LabelSpacing = 6
-        TabOrder = 2
+        TabOrder = 3
         OnKeyPress = edThemeNameKeyPress
       end
       object cbBasedOn: TComboBox
@@ -86,8 +86,8 @@ object frmEdit: TfrmEdit
         Width = 137
         Height = 21
         Style = csDropDownList
-        ItemHeight = 0
-        TabOrder = 3
+        ItemHeight = 13
+        TabOrder = 2
         OnSelect = cbBasedOnSelect
       end
     end

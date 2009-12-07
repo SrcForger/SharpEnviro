@@ -293,12 +293,14 @@ object frmEdit: TfrmEdit
         Width = 101
         Height = 22
         ParentBackground = False
+        TabOrder = 2
         Min = -1
         Max = 1000
         Value = 0
         Description = 'Set the max number of items to display (-1 Unlimited)'
         PopPosition = ppBottom
         PercentDisplay = False
+        Formatting = '%d'
         OnChangeValue = sgbDynamicDirMaxItemsChangeValue
         BackgroundColor = clWindow
       end
@@ -308,7 +310,7 @@ object frmEdit: TfrmEdit
         Width = 105
         Height = 21
         Style = csDropDownList
-        ItemHeight = 13
+        ItemHeight = 0
         TabOrder = 3
         OnChange = edtChange
         Items.Strings = (
@@ -357,7 +359,7 @@ object frmEdit: TfrmEdit
         AlignWithMargins = True
         Left = 8
         Top = 0
-        Width = 488
+        Width = 166
         Height = 13
         Margins.Left = 8
         Margins.Top = 0
@@ -366,7 +368,6 @@ object frmEdit: TfrmEdit
         Align = alTop
         Caption = 'There are no configuration options'
         Enabled = False
-        ExplicitWidth = 166
       end
     end
     object pagMru: TJvStandardPage
@@ -388,12 +389,15 @@ object frmEdit: TfrmEdit
         Width = 101
         Height = 22
         ParentBackground = False
+        TabOrder = 2
+        TabStop = True
         Min = 1
         Max = 25
         Value = 10
         Description = 'Set the max number of items to display (-1 Unlimited)'
         PopPosition = ppBottom
         PercentDisplay = False
+        Formatting = '%d'
         OnChangeValue = sgbDynamicDirMaxItemsChangeValue
         BackgroundColor = clWindow
       end
@@ -415,7 +419,6 @@ object frmEdit: TfrmEdit
         Height = 17
         Caption = 'Most Used Items'
         TabOrder = 1
-        TabStop = False
         OnClick = rbMruListMostUsedItemsClick
       end
     end

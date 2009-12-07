@@ -173,7 +173,7 @@ object frmSettings: TfrmSettings
         Margins.Right = 5
         Margins.Bottom = 0
         Caption = 'Enable drag && drop'
-        TabOrder = 0
+        TabOrder = 2
         Checked = True
         State = cbChecked
         Align = alTop
@@ -189,7 +189,7 @@ object frmSettings: TfrmSettings
         Margins.Right = 5
         Margins.Bottom = 0
         Caption = 'Single click action'
-        TabOrder = 1
+        TabOrder = 3
         Align = alTop
         OnClick = cb_singleclickClick
       end
@@ -258,13 +258,14 @@ object frmSettings: TfrmSettings
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
-        TabOrder = 5
+        TabOrder = 1
         object sgb_gridy: TSharpeGaugeBox
           Left = 0
           Top = 0
           Width = 120
           Height = 21
           ParentBackground = False
+          TabOrder = 0
           Min = 2
           Max = 128
           Value = 32
@@ -273,6 +274,7 @@ object frmSettings: TfrmSettings
           Description = 'Grid Height'
           PopPosition = ppBottom
           PercentDisplay = False
+          Formatting = '%d'
           OnChangeValue = sgb_gridyChangeValue
           BackgroundColor = clWindow
         end
@@ -282,6 +284,7 @@ object frmSettings: TfrmSettings
           Width = 120
           Height = 21
           ParentBackground = False
+          TabOrder = 1
           Min = 2
           Max = 128
           Value = 32
@@ -290,6 +293,7 @@ object frmSettings: TfrmSettings
           Description = 'Grid Width'
           PopPosition = ppBottom
           PercentDisplay = False
+          Formatting = '%d'
           OnChangeValue = sgb_gridyChangeValue
           BackgroundColor = clWindow
         end
@@ -304,7 +308,7 @@ object frmSettings: TfrmSettings
         Margins.Right = 5
         Margins.Bottom = 0
         Caption = 'Align objects to grid'
-        TabOrder = 6
+        TabOrder = 0
         Checked = True
         State = cbChecked
         Align = alTop

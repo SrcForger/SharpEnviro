@@ -59,7 +59,6 @@ type
     lblCredits: TLabel;
     lblUrls: TLabel;
     lbUrls: TSharpEListBoxEx;
-    Image2: TImage;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure lbUsersGetCellText(Sender: TObject; const ACol: Integer;
