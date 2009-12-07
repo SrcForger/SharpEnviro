@@ -52,6 +52,8 @@ type
     property Align;
     property Anchors;
     property Text;
+    property TabOrder;
+    property TabStop;
   end;
 
 procedure Register;
