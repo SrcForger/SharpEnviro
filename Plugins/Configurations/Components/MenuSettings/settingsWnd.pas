@@ -58,6 +58,7 @@ type
     Label2: TLabel;
     edtHideTimeout: TEdit;
     Label3: TLabel;
+    pnlAutoHide: TPanel;
     procedure cboWrapPosChange(Sender: TObject);
     procedure sgbWrapCountChangeValue(Sender: TObject; Value: Integer);
     procedure chkUseIconsClick(Sender: TObject);

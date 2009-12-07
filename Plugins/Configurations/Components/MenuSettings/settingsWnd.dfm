@@ -50,7 +50,6 @@ object frmSettings: TfrmSettings
     State = cbChecked
     Align = alTop
     OnClick = chkUseIconsClick
-    ExplicitLeft = 0
   end
   object pnlGenericIcons: TPanel
     Left = 0
@@ -131,8 +130,6 @@ object frmSettings: TfrmSettings
     State = cbChecked
     Align = alTop
     OnClick = chkMenuWrappingClick
-    ExplicitLeft = 10
-    ExplicitTop = 192
   end
   object Panel1: TPanel
     Left = 0
@@ -161,6 +158,7 @@ object frmSettings: TfrmSettings
       Width = 149
       Height = 21
       ParentBackground = False
+      TabOrder = 0
       Min = 5
       Max = 100
       Value = 25
@@ -182,7 +180,7 @@ object frmSettings: TfrmSettings
       ItemHeight = 13
       ItemIndex = 0
       ParentCtl3D = False
-      TabOrder = 3
+      TabOrder = 1
       Text = 'Bottom'
       OnChange = cboWrapPosChange
       Items.Strings = (
@@ -207,40 +205,50 @@ object frmSettings: TfrmSettings
     TitleColor = clWindowText
     DescriptionColor = clGrayText
     Align = alTop
-    ExplicitLeft = 10
-    ExplicitTop = 254
   end
-  object chkHideTimeout: TJvXPCheckbox
-    Left = 8
-    Top = 301
-    Width = 161
-    Height = 17
-    Caption = 'Enable Auto-Hide'
+  object pnlAutoHide: TPanel
+    Left = 0
+    Top = 300
+    Width = 600
+    Height = 42
+    Align = alTop
+    AutoSize = True
+    BevelOuter = bvNone
+    Color = clWindow
+    ParentBackground = False
     TabOrder = 4
-    OnClick = chkHideTimeoutClick
-  end
-  object Label2: TLabel
-    Left = 8
-    Top = 327
-    Width = 80
-    Height = 13
-    Caption = 'Auto-Hide After:'
-  end
-  object edtHideTimeout: TEdit
-    Left = 112
-    Top = 324
-    Width = 57
-    Height = 22
-    TabOrder = 5
-    Text = '0'
-    OnKeyPress = edtHideTimeoutKeyPress
-    OnKeyUp = edtHideTimeoutKeyUp
-  end
-  object Label3: TLabel
-    Left = 175
-    Top = 327
-    Width = 13
-    Height = 13
-    Caption = 'ms'
+    object Label2: TLabel
+      Left = 8
+      Top = 29
+      Width = 80
+      Height = 13
+      Caption = 'Auto-Hide After:'
+    end
+    object Label3: TLabel
+      Left = 172
+      Top = 29
+      Width = 13
+      Height = 13
+      Caption = 'ms'
+    end
+    object chkHideTimeout: TJvXPCheckbox
+      Left = 0
+      Top = 0
+      Width = 161
+      Height = 17
+      Caption = 'Enable Auto-Hide'
+      TabOrder = 0
+      OnClick = chkHideTimeoutClick
+    end
+    object edtHideTimeout: TEdit
+      Left = 112
+      Top = 21
+      Width = 57
+      Height = 21
+      TabOrder = 1
+      Text = '0'
+      OnKeyPress = edtHideTimeoutKeyPress
+      OnKeyUp = edtHideTimeoutKeyUp
+    end
   end
 end
