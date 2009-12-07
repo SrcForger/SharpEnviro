@@ -73,7 +73,6 @@ object frmEdit: TfrmEdit
     Borderstyle = bsNone
     Ctl3d = False
     Align = alTop
-    ExplicitTop = 236
   end
   object SharpECenterHeader1: TSharpECenterHeader
     AlignWithMargins = True
@@ -120,7 +119,7 @@ object frmEdit: TfrmEdit
     Align = alTop
     BevelOuter = bvNone
     ParentBackground = False
-    TabOrder = 3
+    TabOrder = 1
     object Label6: TLabel
       Left = 0
       Top = 4
@@ -163,8 +162,7 @@ object frmEdit: TfrmEdit
     Align = alTop
     BevelOuter = bvNone
     ParentBackground = False
-    TabOrder = 4
-    ExplicitLeft = 0
+    TabOrder = 0
     object chkMouse: TJvXPCheckbox
       AlignWithMargins = True
       Left = 333
@@ -176,10 +174,9 @@ object frmEdit: TfrmEdit
       Margins.Right = 0
       Margins.Bottom = 0
       Caption = 'Mouse Selection'
-      TabOrder = 0
+      TabOrder = 2
       Align = alLeft
       OnClick = SettingsChange
-      ExplicitLeft = 165
     end
     object chkGui: TJvXPCheckbox
       AlignWithMargins = True
@@ -192,7 +189,7 @@ object frmEdit: TfrmEdit
       Margins.Right = 0
       Margins.Bottom = 0
       Caption = 'Use task switcher window'
-      TabOrder = 1
+      TabOrder = 0
       Align = alLeft
       OnClick = SettingsChange
     end
@@ -207,7 +204,7 @@ object frmEdit: TfrmEdit
       Margins.Right = 0
       Margins.Bottom = 0
       Caption = 'Render preview for tasks'
-      TabOrder = 2
+      TabOrder = 1
       Align = alLeft
       OnClick = SettingsChange
     end
@@ -240,9 +237,8 @@ object frmEdit: TfrmEdit
     Margins.Bottom = 0
     Align = alTop
     Caption = 'Filter Tasks (When enabled only checked tasks will apply)'
-    TabOrder = 6
+    TabOrder = 3
     OnClick = chkFilterClick
-    ExplicitTop = 209
   end
   object chkAppBars: TCheckBox
     AlignWithMargins = True
@@ -258,9 +254,8 @@ object frmEdit: TfrmEdit
     Caption = 'Show Application Bar Windows'
     Checked = True
     State = cbChecked
-    TabOrder = 7
+    TabOrder = 2
     OnClick = SettingsChange
-    ExplicitLeft = 10
   end
   object pilListBox: TPngImageList
     PngImages = <

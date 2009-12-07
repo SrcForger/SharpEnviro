@@ -60,7 +60,7 @@ object frmEditWnd: TfrmEditWnd
     EditLabel.Caption = 'Command:'
     LabelPosition = lpLeft
     LabelSpacing = 6
-    TabOrder = 1
+    TabOrder = 2
     OnChange = UpdateEditState
   end
   object edHotkey: TSharpEHotkeyEdit
@@ -78,5 +78,6 @@ object frmEditWnd: TfrmEditWnd
     Color = clBtnFace
     OnKeyUp = edHotkeyKeyUp
     Anchors = [akTop, akRight]
+    TabOrder = 1
   end
 end

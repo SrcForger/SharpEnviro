@@ -216,7 +216,7 @@ object frmEditWnd: TfrmEditWnd
     LabelSpacing = 6
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 1
+    TabOrder = 0
     OnChange = UpdateEditState
   end
   object edWeatherID: TLabeledEdit
@@ -235,7 +235,7 @@ object frmEditWnd: TfrmEditWnd
     LabelSpacing = 6
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 2
+    TabOrder = 1
     OnChange = UpdateEditState
   end
   object chkMetric: TJvXPCheckbox
@@ -244,7 +244,7 @@ object frmEditWnd: TfrmEditWnd
     Width = 193
     Height = 17
     Caption = 'Use metric system.'
-    TabOrder = 0
+    TabOrder = 2
     OnClick = UpdateEditState
   end
   object mnuSearch: TPopupMenu

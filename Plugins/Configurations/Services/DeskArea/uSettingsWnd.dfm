@@ -71,6 +71,8 @@ object frmSettings: TfrmSettings
       Width = 130
       Height = 21
       ParentBackground = False
+      TabOrder = 0
+      TabStop = True
       Min = 0
       Max = 512
       Value = 0
@@ -79,6 +81,7 @@ object frmSettings: TfrmSettings
       Description = 'Left Offset'
       PopPosition = ppTop
       PercentDisplay = False
+      Formatting = '%d'
       OnChangeValue = sgb_leftChangeValue
       BackgroundColor = clWindow
     end
@@ -88,6 +91,8 @@ object frmSettings: TfrmSettings
       Width = 130
       Height = 21
       ParentBackground = False
+      TabOrder = 2
+      TabStop = True
       Min = -32
       Max = 512
       Value = 0
@@ -96,6 +101,7 @@ object frmSettings: TfrmSettings
       Description = 'Top Offset'
       PopPosition = ppBottom
       PercentDisplay = False
+      Formatting = '%d'
       OnChangeValue = sgb_leftChangeValue
       BackgroundColor = clWindow
     end
@@ -105,6 +111,8 @@ object frmSettings: TfrmSettings
       Width = 130
       Height = 21
       ParentBackground = False
+      TabOrder = 3
+      TabStop = True
       Min = -32
       Max = 512
       Value = 0
@@ -113,6 +121,7 @@ object frmSettings: TfrmSettings
       Description = 'Bottom Offset'
       PopPosition = ppBottom
       PercentDisplay = False
+      Formatting = '%d'
       OnChangeValue = sgb_leftChangeValue
       BackgroundColor = clWindow
     end
@@ -122,6 +131,8 @@ object frmSettings: TfrmSettings
       Width = 130
       Height = 21
       ParentBackground = False
+      TabOrder = 1
+      TabStop = True
       Min = 0
       Max = 512
       Value = 0
@@ -130,6 +141,7 @@ object frmSettings: TfrmSettings
       Description = 'Right Offset'
       PopPosition = ppTop
       PercentDisplay = False
+      Formatting = '%d'
       OnChangeValue = sgb_leftChangeValue
       BackgroundColor = clWindow
     end

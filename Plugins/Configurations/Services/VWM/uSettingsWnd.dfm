@@ -45,13 +45,14 @@ object frmSettings: TfrmSettings
     Align = alTop
     BevelOuter = bvNone
     ParentColor = True
-    TabOrder = 1
+    TabOrder = 0
     object sgbVwmCount: TSharpeGaugeBox
       Left = 0
       Top = 0
       Width = 250
       Height = 21
       ParentBackground = False
+      TabOrder = 0
       Min = 2
       Max = 12
       Value = 4
@@ -59,6 +60,7 @@ object frmSettings: TfrmSettings
       Description = 'Desktop count'
       PopPosition = ppBottom
       PercentDisplay = False
+      Formatting = '%d'
       OnChangeValue = sgbVwmCountChangeValue
       BackgroundColor = clWindow
     end
@@ -80,7 +82,6 @@ object frmSettings: TfrmSettings
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
-    ExplicitTop = 78
   end
   object chkFocusTopMost: TJvXPCheckbox
     AlignWithMargins = True
@@ -92,12 +93,11 @@ object frmSettings: TfrmSettings
     Margins.Right = 5
     Margins.Bottom = 0
     Caption = 'Enable focusing of top most windows'
-    TabOrder = 3
+    TabOrder = 2
     Checked = True
     State = cbChecked
     Align = alTop
     OnClick = SettingsChanged
-    ExplicitTop = 125
   end
   object SharpECenterHeader3: TSharpECenterHeader
     AlignWithMargins = True
@@ -116,7 +116,6 @@ object frmSettings: TfrmSettings
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
-    ExplicitTop = 152
   end
   object chkFollowFocus: TJvXPCheckbox
     AlignWithMargins = True
@@ -128,12 +127,11 @@ object frmSettings: TfrmSettings
     Margins.Right = 5
     Margins.Bottom = 0
     Caption = 'Enable follow window focus'
-    TabOrder = 5
+    TabOrder = 3
     Checked = True
     State = cbChecked
     Align = alTop
     OnClick = SettingsChanged
-    ExplicitTop = 199
   end
   object SharpECenterHeader4: TSharpECenterHeader
     AlignWithMargins = True
@@ -152,7 +150,6 @@ object frmSettings: TfrmSettings
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
-    ExplicitTop = 300
   end
   object chkNotifications: TJvXPCheckbox
     AlignWithMargins = True
@@ -164,12 +161,11 @@ object frmSettings: TfrmSettings
     Margins.Right = 5
     Margins.Bottom = 5
     Caption = 'Enable display of notifications'
-    TabOrder = 7
+    TabOrder = 5
     Checked = True
     State = cbChecked
     Align = alTop
     OnClick = SettingsChanged
-    ExplicitTop = 347
   end
   object SharpECenterHeader5: TSharpECenterHeader
     AlignWithMargins = True
@@ -188,7 +184,6 @@ object frmSettings: TfrmSettings
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
-    ExplicitTop = 226
   end
   object chkResetOnDisplayChange: TJvXPCheckbox
     AlignWithMargins = True
@@ -200,12 +195,11 @@ object frmSettings: TfrmSettings
     Margins.Right = 5
     Margins.Bottom = 0
     Caption = 'Enable reset on display change'
-    TabOrder = 9
+    TabOrder = 4
     Checked = True
     State = cbChecked
     Align = alTop
     OnClick = SettingsChanged
-    ExplicitTop = 273
   end
   object SharpECenterHeader6: TSharpECenterHeader
     AlignWithMargins = True
@@ -224,7 +218,6 @@ object frmSettings: TfrmSettings
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
-    ExplicitLeft = 10
   end
   object chkToolWindows: TJvXPCheckbox
     AlignWithMargins = True
@@ -236,11 +229,10 @@ object frmSettings: TfrmSettings
     Margins.Right = 5
     Margins.Bottom = 0
     Caption = 'Move tool windows'
-    TabOrder = 11
+    TabOrder = 1
     Checked = True
     State = cbChecked
     Align = alTop
     OnClick = SettingsChanged
-    ExplicitLeft = -2
   end
 end

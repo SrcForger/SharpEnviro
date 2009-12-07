@@ -3,8 +3,8 @@ object frmSettings: TfrmSettings
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmSettings'
-  ClientHeight = 492
-  ClientWidth = 690
+  ClientHeight = 286
+  ClientWidth = 532
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,8 +19,8 @@ object frmSettings: TfrmSettings
     AlignWithMargins = True
     Left = 5
     Top = 10
-    Width = 680
-    Height = 42
+    Width = 522
+    Height = 37
     Margins.Left = 5
     Margins.Top = 10
     Margins.Right = 5
@@ -32,12 +32,13 @@ object frmSettings: TfrmSettings
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
+    ExplicitWidth = 680
   end
   object chkShowOSD: TJvXPCheckbox
     AlignWithMargins = True
     Left = 3
-    Top = 62
-    Width = 682
+    Top = 57
+    Width = 524
     Height = 23
     Margins.Top = 0
     Margins.Right = 5
@@ -48,17 +49,19 @@ object frmSettings: TfrmSettings
     State = cbChecked
     Align = alTop
     OnClick = SettingsChanged
+    ExplicitWidth = 682
   end
   object Panel1: TPanel
     Left = 0
-    Top = 85
-    Width = 690
+    Top = 80
+    Width = 532
     Height = 41
     Align = alTop
     BevelOuter = bvNone
     Color = clWindow
     ParentBackground = False
     TabOrder = 2
+    ExplicitWidth = 690
     object Label1: TLabel
       Left = 288
       Top = 14
@@ -85,13 +88,13 @@ object frmSettings: TfrmSettings
       Left = 389
       Top = 11
       Width = 111
-      Height = 25
+      Height = 21
       Style = csDropDownList
       Ctl3D = True
-      ItemHeight = 17
+      ItemHeight = 13
       ItemIndex = 2
       ParentCtl3D = False
-      TabOrder = 0
+      TabOrder = 1
       Text = 'Bottom'
       OnChange = cboHorizPosChange
       Items.Strings = (
@@ -103,13 +106,13 @@ object frmSettings: TfrmSettings
       Left = 122
       Top = 11
       Width = 111
-      Height = 25
+      Height = 21
       Style = csDropDownList
       Ctl3D = True
-      ItemHeight = 17
+      ItemHeight = 13
       ItemIndex = 1
       ParentCtl3D = False
-      TabOrder = 1
+      TabOrder = 0
       Text = 'Center'
       OnChange = cboHorizPosChange
       Items.Strings = (
