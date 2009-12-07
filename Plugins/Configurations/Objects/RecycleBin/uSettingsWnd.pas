@@ -711,8 +711,8 @@ procedure TfrmSettings.spcCaptionTabChange(ASender: TObject; const ATabIndex: In
 begin
   pl.ActivePageIndex := ATabIndex;
   if pl.ActivePageIndex = 1 then
-    mmoMulti.lines.CommaText := edtSingle.Text
-  else edtSingle.Text := mmoMulti.Lines.CommaText;
+    mmoMulti.lines.DelimitedText := edtSingle.Text
+  else edtSingle.Text := mmoMulti.Lines.DelimitedText;
   SendUpdate;
   AChange := True;
 end;

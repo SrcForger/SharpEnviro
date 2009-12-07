@@ -140,7 +140,8 @@ begin
       else spcCaption.TabIndex := 0;
 
       edtSingle.Text := Caption;
-      mmoMulti.Lines.CommaText := Caption;
+      mmoMulti.Lines.Delimiter := ' ';
+      mmoMulti.Lines.DelimitedText := Caption;
 
       // Icon and target text
       edtIcon.Text := xmlSettings.Icon;
@@ -266,7 +267,7 @@ begin
       if spcCaption.TabIndex = 1 then
       begin
         MLineCaption := True;
-        Caption := mmoMulti.Lines.CommaText;
+        Caption := mmoMulti.Lines.DelimitedText;
       end else
       begin
         MLineCaption := False;

@@ -364,11 +364,9 @@ begin
     FFontSettings.ShadowSize       := Theme[DS_TEXTSHADOWSIZE].IntValue;
 
     FCaptionSettings.Caption.Clear;
-    if FCaptionSettings.Draw then
-    begin
-      if FSettings.MLineCaption then FCaptionSettings.Caption.CommaText := FSettings.Caption
-         else if Length(Trim(FSettings.Caption)) >0 then FCaptionSettings.Caption.Add(FSettings.Caption);
-    end;
+    FCaptionSettings.Caption.Delimiter := ' ';
+    if FSettings.MLineCaption then FCaptionSettings.Caption.DelimitedText := FSettings.Caption
+       else FCaptionSettings.Caption.Add(FSettings.Caption);
     if FSettings.ShowData then
     begin
       FCaptionSettings.Caption.Add('-');

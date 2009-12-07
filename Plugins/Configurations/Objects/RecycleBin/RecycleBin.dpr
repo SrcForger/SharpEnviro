@@ -136,7 +136,8 @@ begin
 
       // Single-line caption
       edtSingle.Text := xmlSettings.Caption;
-      mmoMulti.Lines.CommaText := xmlSettings.Caption;
+      mmoMulti.Lines.Delimiter := ' ';
+      mmoMulti.Lines.DelimitedText := xmlSettings.Caption;
 
       // Multi-line caption page index
       if MLineCaption then
@@ -269,7 +270,7 @@ begin
       if spcCaption.TabIndex = 1 then
       begin
         MLineCaption := True;
-        xmlSettings.Caption := mmoMulti.Lines.CommaText;
+        xmlSettings.Caption := mmoMulti.Lines.DelimitedText;
       end else
       begin
         MLineCaption := False;

@@ -170,13 +170,14 @@ var
 begin
   try
     mlinewnd := TMlineForm.Create(self);
+    mlinewnd.Memo1.Lines.Delimiter := ' ';
     p := self.ClientToScreen(point(0,0));
     mlinewnd.Left := p.x + self.Width div 2 - mlinewnd.Width div 2;
     mlinewnd.top := p.y + self.Width div 2 - mlinewnd.Height div 2;
-    mlinewnd.Memo1.Lines.CommaText := edit_caption.Text;
+    mlinewnd.Memo1.Lines.DelimitedText := edit_caption.Text;
     if mlinewnd.ShowModal = mrOk then
     begin
-      edit_caption.Text := mlinewnd.Memo1.Lines.CommaText;
+      edit_caption.Text := mlinewnd.Memo1.Lines.DelimitedText;
     end;
   finally
     FreeAndNil(mlinewnd);

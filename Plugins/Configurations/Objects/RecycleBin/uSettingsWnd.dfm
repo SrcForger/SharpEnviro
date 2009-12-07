@@ -79,7 +79,7 @@ object frmSettings: TfrmSettings
             Margins.Right = 5
             Margins.Bottom = 10
             Caption = 'Display Caption'
-            TabOrder = 1
+            TabOrder = 0
             Align = alTop
             OnClick = chkCaptionClick
           end
@@ -112,7 +112,7 @@ object frmSettings: TfrmSettings
           Margins.Bottom = 5
           Align = alTop
           BevelOuter = bvNone
-          TabOrder = 2
+          TabOrder = 1
           object Label1: TLabel
             Left = 5
             Top = 116
@@ -129,7 +129,7 @@ object frmSettings: TfrmSettings
             Style = csDropDownList
             ItemHeight = 13
             ItemIndex = 2
-            TabOrder = 0
+            TabOrder = 1
             Text = 'Bottom'
             OnChange = cboCaptionAlignChange
             Items.Strings = (
@@ -261,7 +261,7 @@ object frmSettings: TfrmSettings
           Margins.Bottom = 0
           Align = alTop
           BevelOuter = bvNone
-          TabOrder = 3
+          TabOrder = 4
           object PngSpeedButton1: TPngSpeedButton
             AlignWithMargins = True
             Left = 406
@@ -343,7 +343,7 @@ object frmSettings: TfrmSettings
           Margins.Bottom = 0
           Align = alTop
           BevelOuter = bvNone
-          TabOrder = 5
+          TabOrder = 3
           object PngSpeedButton2: TPngSpeedButton
             AlignWithMargins = True
             Left = 406
@@ -424,7 +424,7 @@ object frmSettings: TfrmSettings
           Margins.Right = 5
           Margins.Bottom = 10
           Caption = 'Enable status text'
-          TabOrder = 7
+          TabOrder = 2
           Align = alTop
           OnClick = chkBinStatusClick
         end
@@ -439,21 +439,21 @@ object frmSettings: TfrmSettings
         Left = 0
         Top = 0
         Width = 445
-        Height = 556
+        Height = 557
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
         TabOrder = 0
         object Panel1: TPanel
           Left = 0
-          Top = 274
+          Top = 275
           Width = 445
           Height = 52
           Align = alTop
           AutoSize = True
           BevelOuter = bvNone
           Color = clWindow
-          TabOrder = 0
+          TabOrder = 2
           object uicIconAlpha: TSharpEUIC
             AlignWithMargins = True
             Left = 4
@@ -465,6 +465,7 @@ object frmSettings: TfrmSettings
             Margins.Right = 4
             Margins.Bottom = 0
             Align = alTop
+            AutoSize = True
             BevelOuter = bvNone
             Caption = 'uicIconAlpha'
             Color = clWhite
@@ -502,6 +503,7 @@ object frmSettings: TfrmSettings
             Margins.Right = 5
             Margins.Bottom = 0
             Align = alTop
+            AutoSize = True
             BevelOuter = bvNone
             Caption = 'uicIconAlphaValue'
             Color = clWhite
@@ -522,6 +524,7 @@ object frmSettings: TfrmSettings
               Margins.Bottom = 2
               Align = alLeft
               ParentBackground = False
+              TabOrder = 0
               Min = 16
               Max = 255
               Value = 192
@@ -529,6 +532,7 @@ object frmSettings: TfrmSettings
               Description = 'Adjust to set the transparency'
               PopPosition = ppBottom
               PercentDisplay = True
+              Formatting = '%d'
               OnChangeValue = sgbIconAlphaChangeValue
               BackgroundColor = clWindow
             end
@@ -538,23 +542,24 @@ object frmSettings: TfrmSettings
           Left = 0
           Top = 47
           Width = 445
-          Height = 81
+          Height = 82
           Align = alTop
           AutoSize = True
           BevelOuter = bvNone
           Color = clWindow
-          TabOrder = 1
+          TabOrder = 0
           object uicIconSize: TSharpEUIC
             AlignWithMargins = True
             Left = 5
             Top = 0
             Width = 435
-            Height = 81
+            Height = 82
             Margins.Left = 5
             Margins.Top = 0
             Margins.Right = 5
             Margins.Bottom = 0
             Align = alTop
+            AutoSize = True
             BevelOuter = bvNone
             Caption = 'uicIconSize'
             Color = clWhite
@@ -690,7 +695,6 @@ object frmSettings: TfrmSettings
                 Margins.Top = 4
                 Caption = '48x48'
                 TabOrder = 1
-                TabStop = False
                 Align = alTop
                 OnClick = rdoIcon48Click
               end
@@ -738,7 +742,6 @@ object frmSettings: TfrmSettings
                 Margins.Top = 4
                 Caption = '64x64'
                 TabOrder = 1
-                TabStop = False
                 Align = alTop
                 OnClick = rdoIcon64Click
               end
@@ -766,6 +769,7 @@ object frmSettings: TfrmSettings
                 Width = 113
                 Height = 22
                 ParentBackground = False
+                TabOrder = 1
                 Min = 12
                 Max = 256
                 Value = 96
@@ -774,6 +778,7 @@ object frmSettings: TfrmSettings
                 Description = 'Adjust to set the icon size'
                 PopPosition = ppBottom
                 PercentDisplay = False
+                Formatting = '%d'
                 OnChangeValue = sgbIconSizeChangeValue
                 BackgroundColor = clWindow
               end
@@ -787,7 +792,6 @@ object frmSettings: TfrmSettings
                 Margins.Top = 4
                 Caption = 'Custom'
                 TabOrder = 0
-                TabStop = False
                 Align = alTop
                 OnClick = rdoIconCustomClick
               end
@@ -796,14 +800,14 @@ object frmSettings: TfrmSettings
         end
         object Panel6: TPanel
           Left = 0
-          Top = 175
+          Top = 176
           Width = 445
           Height = 52
           Align = alTop
           AutoSize = True
           BevelOuter = bvNone
           Color = clWindow
-          TabOrder = 2
+          TabOrder = 1
           object uicIconBlend: TSharpEUIC
             AlignWithMargins = True
             Left = 4
@@ -815,6 +819,7 @@ object frmSettings: TfrmSettings
             Margins.Right = 4
             Margins.Bottom = 0
             Align = alTop
+            AutoSize = True
             BevelOuter = bvNone
             Caption = 'uicIconBlend'
             Color = clWhite
@@ -853,6 +858,7 @@ object frmSettings: TfrmSettings
             Margins.Right = 5
             Margins.Bottom = 0
             Align = alTop
+            AutoSize = True
             BevelOuter = bvNone
             Caption = 'uicIconBlendAlpha'
             Color = clWhite
@@ -873,6 +879,7 @@ object frmSettings: TfrmSettings
               Margins.Bottom = 2
               Align = alLeft
               ParentBackground = False
+              TabOrder = 0
               Min = 16
               Max = 255
               Value = 192
@@ -880,6 +887,7 @@ object frmSettings: TfrmSettings
               Description = 'Adjust to set the transparency'
               PopPosition = ppBottom
               PercentDisplay = True
+              Formatting = '%d'
               OnChangeValue = sgbIconBlendAlphaChangeValue
               BackgroundColor = clWindow
             end
@@ -887,7 +895,7 @@ object frmSettings: TfrmSettings
         end
         object Panel7: TPanel
           Left = 0
-          Top = 378
+          Top = 379
           Width = 445
           Height = 52
           Align = alTop
@@ -906,6 +914,7 @@ object frmSettings: TfrmSettings
             Margins.Right = 4
             Margins.Bottom = 0
             Align = alTop
+            AutoSize = True
             BevelOuter = bvNone
             Color = clWhite
             ParentBackground = False
@@ -942,6 +951,7 @@ object frmSettings: TfrmSettings
             Margins.Right = 5
             Margins.Bottom = 0
             Align = alTop
+            AutoSize = True
             BevelOuter = bvNone
             Caption = 'uicIconShadowAlpha'
             Color = clWhite
@@ -962,6 +972,7 @@ object frmSettings: TfrmSettings
               Margins.Bottom = 2
               Align = alLeft
               ParentBackground = False
+              TabOrder = 0
               Min = 16
               Max = 255
               Value = 192
@@ -969,6 +980,7 @@ object frmSettings: TfrmSettings
               Description = 'Adjust to set the transparency'
               PopPosition = ppBottom
               PercentDisplay = True
+              Formatting = '%d'
               OnChangeValue = sgbIconShadowAlphaChangeValue
               BackgroundColor = clWindow
             end
@@ -977,7 +989,7 @@ object frmSettings: TfrmSettings
         object SharpECenterHeader3: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 237
+          Top = 238
           Width = 435
           Height = 37
           Margins.Left = 5
@@ -1009,7 +1021,7 @@ object frmSettings: TfrmSettings
         object SharpECenterHeader7: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 133
+          Top = 134
           Width = 435
           Height = 37
           Margins.Left = 5
@@ -1025,7 +1037,7 @@ object frmSettings: TfrmSettings
         object SharpECenterHeader8: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 336
+          Top = 337
           Width = 435
           Height = 37
           Margins.Left = 5
@@ -1041,7 +1053,7 @@ object frmSettings: TfrmSettings
         object SharpECenterHeader9: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 440
+          Top = 441
           Width = 435
           Height = 37
           Margins.Left = 5
@@ -1057,7 +1069,7 @@ object frmSettings: TfrmSettings
         object uicIconBlendColor: TSharpEUIC
           AlignWithMargins = True
           Left = 5
-          Top = 487
+          Top = 488
           Width = 435
           Height = 32
           Margins.Left = 5
@@ -1070,7 +1082,7 @@ object frmSettings: TfrmSettings
           Caption = 'uicIconBlendColor'
           Color = clWhite
           ParentBackground = False
-          TabOrder = 9
+          TabOrder = 4
           HasChanged = True
           AutoReset = False
           MonitorControl = sceIconBlendColor
@@ -1126,7 +1138,7 @@ object frmSettings: TfrmSettings
         object uicIconShadowColor: TSharpEUIC
           AlignWithMargins = True
           Left = 5
-          Top = 519
+          Top = 520
           Width = 435
           Height = 32
           Margins.Left = 5
@@ -1139,7 +1151,7 @@ object frmSettings: TfrmSettings
           Caption = 'SharpEUIC1'
           Color = clWhite
           ParentBackground = False
-          TabOrder = 10
+          TabOrder = 5
           HasChanged = True
           AutoReset = False
           MonitorControl = sceIconShadowColor
@@ -1217,6 +1229,7 @@ object frmSettings: TfrmSettings
           Margins.Right = 5
           Margins.Bottom = 0
           Align = alTop
+          AutoSize = True
           BevelOuter = bvNone
           Caption = 'uicDesktopFontName'
           Color = clWhite
@@ -1256,11 +1269,12 @@ object frmSettings: TfrmSettings
           Margins.Right = 5
           Margins.Bottom = 5
           Align = alTop
+          AutoSize = True
           BevelOuter = bvNone
           Caption = 'uicTextAlpha'
           Color = clWhite
           ParentBackground = False
-          TabOrder = 1
+          TabOrder = 2
           HasChanged = True
           AutoReset = False
           MonitorControl = chkTextAlpha
@@ -1278,7 +1292,6 @@ object frmSettings: TfrmSettings
             TabOrder = 0
             Align = alLeft
             OnClick = chkTextAlphaClick
-            ExplicitTop = 1
           end
         end
         object uicTextAlphaValue: TSharpEUIC
@@ -1292,11 +1305,12 @@ object frmSettings: TfrmSettings
           Margins.Right = 5
           Margins.Bottom = 0
           Align = alTop
+          AutoSize = True
           BevelOuter = bvNone
           Caption = 'uicTextAlpha'
           Color = clWhite
           ParentBackground = False
-          TabOrder = 2
+          TabOrder = 3
           HasChanged = True
           AutoReset = False
           MonitorControl = sgbTextAlphaValue
@@ -1312,6 +1326,7 @@ object frmSettings: TfrmSettings
             Margins.Bottom = 2
             Align = alLeft
             ParentBackground = False
+            TabOrder = 0
             Min = 0
             Max = 255
             Value = 0
@@ -1319,6 +1334,7 @@ object frmSettings: TfrmSettings
             Description = 'Change font opacity'
             PopPosition = ppBottom
             PercentDisplay = True
+            Formatting = '%d'
             OnChangeValue = sgbTextAlphaValueChangeValue
             BackgroundColor = clWindow
           end
@@ -1334,11 +1350,12 @@ object frmSettings: TfrmSettings
           Margins.Right = 5
           Margins.Bottom = 0
           Align = alTop
+          AutoSize = True
           BevelOuter = bvNone
           Caption = 'uicTextBold'
           Color = clWhite
           ParentBackground = False
-          TabOrder = 3
+          TabOrder = 6
           HasChanged = True
           AutoReset = False
           MonitorControl = chkTextBold
@@ -1369,11 +1386,12 @@ object frmSettings: TfrmSettings
           Margins.Right = 5
           Margins.Bottom = 0
           Align = alTop
+          AutoSize = True
           BevelOuter = bvNone
           Caption = 'uicTextColor'
           Color = clWhite
           ParentBackground = False
-          TabOrder = 4
+          TabOrder = 7
           HasChanged = True
           AutoReset = False
           MonitorControl = sceTextColor
@@ -1435,6 +1453,7 @@ object frmSettings: TfrmSettings
           Margins.Right = 5
           Margins.Bottom = 0
           Align = alTop
+          AutoSize = True
           BevelOuter = bvNone
           Caption = 'UICBold'
           Color = clWhite
@@ -1470,11 +1489,12 @@ object frmSettings: TfrmSettings
           Margins.Right = 5
           Margins.Bottom = 0
           Align = alTop
+          AutoSize = True
           BevelOuter = bvNone
           Caption = 'uicTextSize'
           Color = clWhite
           ParentBackground = False
-          TabOrder = 6
+          TabOrder = 1
           HasChanged = True
           AutoReset = False
           MonitorControl = sgbTextSize
@@ -1490,6 +1510,7 @@ object frmSettings: TfrmSettings
             Margins.Bottom = 2
             Align = alLeft
             ParentBackground = False
+            TabOrder = 0
             Min = 6
             Max = 24
             Value = 0
@@ -1497,6 +1518,7 @@ object frmSettings: TfrmSettings
             Description = 'Change font size'
             PopPosition = ppBottom
             PercentDisplay = False
+            Formatting = '%d'
             OnChangeValue = sgbTextSizeChangeValue
             BackgroundColor = clWindow
           end
@@ -1512,11 +1534,12 @@ object frmSettings: TfrmSettings
           Margins.Right = 5
           Margins.Bottom = 0
           Align = alTop
+          AutoSize = True
           BevelOuter = bvNone
           Caption = 'uicTextUnderline'
           Color = clWhite
           ParentBackground = False
-          TabOrder = 7
+          TabOrder = 4
           HasChanged = True
           AutoReset = False
           MonitorControl = chkTextUnderline
@@ -1628,7 +1651,7 @@ object frmSettings: TfrmSettings
         Left = 0
         Top = 0
         Width = 445
-        Height = 318
+        Height = 315
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
@@ -1638,7 +1661,7 @@ object frmSettings: TfrmSettings
           Left = 0
           Top = 68
           Width = 445
-          Height = 250
+          Height = 247
           Margins.Left = 0
           Margins.Top = 0
           Margins.Right = 0
@@ -1647,7 +1670,7 @@ object frmSettings: TfrmSettings
           AutoSize = True
           BevelOuter = bvNone
           ParentColor = True
-          TabOrder = 0
+          TabOrder = 1
           object SharpECenterHeader10: TSharpECenterHeader
             AlignWithMargins = True
             Left = 5
@@ -1675,10 +1698,11 @@ object frmSettings: TfrmSettings
             Margins.Right = 5
             Margins.Bottom = 0
             Align = alTop
+            AutoSize = True
             BevelOuter = bvNone
             Color = clWhite
             ParentBackground = False
-            TabOrder = 1
+            TabOrder = 0
             HasChanged = True
             AutoReset = False
             MonitorControl = cboTextShadowType
@@ -1694,7 +1718,7 @@ object frmSettings: TfrmSettings
               Margins.Bottom = 2
               Align = alLeft
               Style = csDropDownList
-              ItemHeight = 13
+              ItemHeight = 0
               ItemIndex = 0
               TabOrder = 0
               Text = 'Left Shadow'
@@ -1732,10 +1756,11 @@ object frmSettings: TfrmSettings
             Margins.Right = 5
             Margins.Bottom = 0
             Align = alTop
+            AutoSize = True
             BevelOuter = bvNone
             Color = clWhite
             ParentBackground = False
-            TabOrder = 3
+            TabOrder = 1
             HasChanged = True
             AutoReset = False
             MonitorControl = sgbTextShadowAlpha
@@ -1752,6 +1777,7 @@ object frmSettings: TfrmSettings
               Align = alLeft
               Constraints.MaxWidth = 532
               ParentBackground = False
+              TabOrder = 0
               Min = 0
               Max = 255
               Value = 0
@@ -1759,6 +1785,7 @@ object frmSettings: TfrmSettings
               Description = 'Change shadow opacity'
               PopPosition = ppBottom
               PercentDisplay = True
+              Formatting = '%d'
               OnChangeValue = sgbTextShadowAlphaChangeValue
               BackgroundColor = clWindow
             end
@@ -1784,17 +1811,18 @@ object frmSettings: TfrmSettings
             Left = 5
             Top = 215
             Width = 435
-            Height = 35
+            Height = 32
             Margins.Left = 5
             Margins.Top = 0
             Margins.Right = 5
             Margins.Bottom = 0
             Align = alTop
+            AutoSize = True
             BevelOuter = bvNone
             Caption = 'uicTextShadowColor'
             Color = clWhite
             ParentBackground = False
-            TabOrder = 5
+            TabOrder = 2
             HasChanged = True
             AutoReset = False
             MonitorControl = sceTextShadowColor
@@ -1857,11 +1885,12 @@ object frmSettings: TfrmSettings
           Margins.Right = 5
           Margins.Bottom = 0
           Align = alTop
+          AutoSize = True
           BevelOuter = bvNone
           Caption = 'uicTextShadow'
           Color = clWhite
           ParentBackground = False
-          TabOrder = 1
+          TabOrder = 0
           HasChanged = True
           AutoReset = False
           MonitorControl = chkTextShadow

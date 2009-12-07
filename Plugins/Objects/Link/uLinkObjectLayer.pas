@@ -277,7 +277,8 @@ begin
     FFontSettings.ShadowSize       := Theme[DS_TEXTSHADOWSIZE].IntValue;
 
     FCaptionSettings.Caption.Clear;
-    if FSettings.MLineCaption then FCaptionSettings.Caption.CommaText := FSettings.Caption
+    FCaptionSettings.Caption.Delimiter := ' ';
+    if FSettings.MLineCaption then FCaptionSettings.Caption.DelimitedText := FSettings.Caption
        else FCaptionSettings.Caption.Add(FSettings.Caption);
     FCaptionSettings.Align := IntToTextAlign(FSettings.CaptionAlign);
     FCaptionSettings.Xoffset := 0;
