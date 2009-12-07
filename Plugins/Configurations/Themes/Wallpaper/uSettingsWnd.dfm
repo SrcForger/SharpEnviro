@@ -102,8 +102,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Width = 69
           Height = 23
           Caption = 'Stretch'
-          TabOrder = 0
-          TabStop = False
+          TabOrder = 2
           Align = alLeft
           OnClick = AlignmentChangeEvent
         end
@@ -114,7 +113,6 @@ object frmSettingsWnd: TfrmSettingsWnd
           Height = 23
           Caption = 'Scale'
           TabOrder = 1
-          TabStop = False
           Align = alLeft
           OnClick = AlignmentChangeEvent
         end
@@ -124,7 +122,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Width = 69
           Height = 23
           Caption = 'Center'
-          TabOrder = 2
+          TabOrder = 0
           Checked = True
           State = cbChecked
           Align = alLeft
@@ -137,7 +135,6 @@ object frmSettingsWnd: TfrmSettingsWnd
           Height = 23
           Caption = 'Tile'
           TabOrder = 3
-          TabStop = False
           Align = alLeft
           OnClick = AlignmentChangeEvent
         end
@@ -163,7 +160,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Width = 97
           Height = 23
           Caption = 'Vertical'
-          TabOrder = 0
+          TabOrder = 1
           Align = alLeft
           OnClick = MirrorChangeEvent
         end
@@ -173,7 +170,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Width = 81
           Height = 23
           Caption = 'Horizontal'
-          TabOrder = 1
+          TabOrder = 0
           Align = alLeft
           OnClick = MirrorChangeEvent
         end
@@ -187,7 +184,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         BitmapAlign = baTopLeft
         Scale = 1.000000000000000000
         ScaleMode = smNormal
-        TabOrder = 3
+        TabOrder = 5
         Visible = False
       end
       object Panel9: TPanel
@@ -204,7 +201,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         BevelOuter = bvNone
         ParentBackground = False
         ParentColor = True
-        TabOrder = 4
+        TabOrder = 3
         object sgbWpTrans: TSharpeGaugeBox
           Left = 0
           Top = 0
@@ -216,6 +213,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Margins.Bottom = 0
           Align = alLeft
           ParentBackground = False
+          TabOrder = 0
           Min = 0
           Max = 255
           Value = 0
@@ -224,6 +222,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Description = 'Change Wallpaper Transparency'
           PopPosition = ppBottom
           PercentDisplay = True
+          Formatting = '%d'
           OnChangeValue = WallpaperTransChangeEvent
           BackgroundColor = clWindow
         end
@@ -247,7 +246,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         BorderStyle = bsNone
         Color = clBlack
         ParentColor = False
-        TabOrder = 5
+        TabOrder = 4
         Items = <
           item
             Title = 'Background'
@@ -369,7 +368,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         BitmapAlign = baTopLeft
         Scale = 1.000000000000000000
         ScaleMode = smNormal
-        TabOrder = 1
+        TabOrder = 2
         Visible = False
       end
       object pnlColor: TPanel
@@ -385,7 +384,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         Align = alClient
         BevelOuter = bvNone
         Color = clWindow
-        TabOrder = 2
+        TabOrder = 1
         object Panel10: TPanel
           AlignWithMargins = True
           Left = 5
@@ -413,6 +412,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Margins.Bottom = 0
             Align = alLeft
             ParentBackground = False
+            TabOrder = 2
             Min = -255
             Max = 255
             Value = 0
@@ -420,6 +420,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Description = 'Change Luminance'
             PopPosition = ppBottom
             PercentDisplay = False
+            Formatting = '%d'
             OnChangeValue = HSLColorChangeEvent
             BackgroundColor = clWindow
           end
@@ -435,6 +436,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Margins.Bottom = 0
             Align = alLeft
             ParentBackground = False
+            TabOrder = 1
             Min = -255
             Max = 255
             Value = 0
@@ -442,6 +444,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Description = 'Change Saturation'
             PopPosition = ppBottom
             PercentDisplay = False
+            Formatting = '%d'
             OnChangeValue = HSLColorChangeEvent
             BackgroundColor = clWindow
           end
@@ -456,6 +459,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Margins.Bottom = 0
             Align = alLeft
             ParentBackground = False
+            TabOrder = 0
             Min = -255
             Max = 255
             Value = 0
@@ -463,6 +467,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Description = 'Change Hue'
             PopPosition = ppBottom
             PercentDisplay = False
+            Formatting = '%d'
             OnChangeValue = HSLColorChangeEvent
             BackgroundColor = clWindow
           end
@@ -544,7 +549,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Height = 21
             Align = alLeft
             Style = csDropDownList
-            ItemHeight = 13
+            ItemHeight = 0
             TabOrder = 0
             OnSelect = cboGradTypeSelect
             Items.Strings = (
@@ -576,6 +581,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Height = 22
             Align = alLeft
             ParentBackground = False
+            TabOrder = 0
             Min = 0
             Max = 255
             Value = 255
@@ -584,8 +590,11 @@ object frmSettingsWnd: TfrmSettingsWnd
             Description = 'Set the Start Transparency'
             PopPosition = ppBottom
             PercentDisplay = True
+            Formatting = '%d'
             OnChangeValue = WallpaperTransChangeEvent
             BackgroundColor = clWindow
+            ExplicitLeft = -3
+            ExplicitTop = -3
           end
           object sgbGradEndTrans: TSharpeGaugeBox
             AlignWithMargins = True
@@ -599,6 +608,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Margins.Bottom = 0
             Align = alLeft
             ParentBackground = False
+            TabOrder = 1
             Min = 0
             Max = 255
             Value = 255
@@ -607,6 +617,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Description = 'Set the End Transparency'
             PopPosition = ppBottom
             PercentDisplay = True
+            Formatting = '%d'
             OnChangeValue = WallpaperTransChangeEvent
             BackgroundColor = clWindow
           end
@@ -757,7 +768,7 @@ object frmSettingsWnd: TfrmSettingsWnd
     BevelOuter = bvNone
     ParentBackground = False
     ParentColor = True
-    TabOrder = 1
+    TabOrder = 0
     DrawMode = srpNormal
     NoTopBorder = False
     RoundValue = 10
@@ -789,7 +800,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         Left = 0
         Top = 0
         Width = 250
-        Height = 23
+        Height = 21
         Margins.Left = 28
         Margins.Top = 8
         Margins.Right = 8
@@ -798,7 +809,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         Style = csDropDownList
         Constraints.MaxWidth = 250
         DropDownCount = 12
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 0
         OnChange = MonitorChangeEvent
       end

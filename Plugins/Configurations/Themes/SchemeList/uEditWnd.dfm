@@ -30,7 +30,7 @@ object frmEditWnd: TfrmEditWnd
     EditLabel.Caption = 'By:'
     LabelPosition = lpLeft
     LabelSpacing = 6
-    TabOrder = 0
+    TabOrder = 1
     OnChange = EditChange
   end
   object edName: TLabeledEdit
@@ -43,7 +43,7 @@ object frmEditWnd: TfrmEditWnd
     EditLabel.Caption = 'Name:'
     LabelPosition = lpLeft
     LabelSpacing = 6
-    TabOrder = 1
+    TabOrder = 0
     OnChange = EditChange
   end
 end

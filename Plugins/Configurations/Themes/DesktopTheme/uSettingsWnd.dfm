@@ -44,7 +44,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         AutoSize = True
         BevelOuter = bvNone
         Color = clWindow
-        TabOrder = 0
+        TabOrder = 6
         object sgbIconTrans: TSharpeGaugeBox
           AlignWithMargins = True
           Left = 0
@@ -57,6 +57,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Margins.Bottom = 0
           Constraints.MaxWidth = 534
           ParentBackground = False
+          TabOrder = 0
           Min = 1
           Max = 255
           Value = 192
@@ -64,6 +65,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Description = 'Adjust to set the transparency'
           PopPosition = ppBottom
           PercentDisplay = True
+          Formatting = '%d'
           OnChangeValue = SendUpdateEvent
           BackgroundColor = clWindow
         end
@@ -82,7 +84,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         AutoSize = True
         BevelOuter = bvNone
         Color = clWindow
-        TabOrder = 1
+        TabOrder = 0
         object SharpERoundPanel1: TSharpERoundPanel
           Left = 0
           Top = 0
@@ -149,7 +151,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             BitmapAlign = baCenter
             Scale = 1.000000000000000000
             ScaleMode = smNormal
-            TabOrder = 0
+            TabOrder = 1
           end
           object rdoIcon32: TJvXPCheckbox
             AlignWithMargins = True
@@ -160,7 +162,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Margins.Left = 5
             Margins.Top = 4
             Caption = '32x32'
-            TabOrder = 1
+            TabOrder = 0
             Checked = True
             State = cbChecked
             Align = alTop
@@ -198,7 +200,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             BitmapAlign = baCenter
             Scale = 1.000000000000000000
             ScaleMode = smNormal
-            TabOrder = 0
+            TabOrder = 1
           end
           object rdoIcon48: TJvXPCheckbox
             AlignWithMargins = True
@@ -209,8 +211,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Margins.Left = 5
             Margins.Top = 4
             Caption = '48x48'
-            TabOrder = 1
-            TabStop = False
+            TabOrder = 0
             Align = alTop
             OnClick = rdoIconCustomClick
           end
@@ -246,7 +247,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             BitmapAlign = baCenter
             Scale = 1.000000000000000000
             ScaleMode = smNormal
-            TabOrder = 0
+            TabOrder = 1
           end
           object rdoIcon64: TJvXPCheckbox
             AlignWithMargins = True
@@ -257,8 +258,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Margins.Left = 5
             Margins.Top = 4
             Caption = '64x64'
-            TabOrder = 1
-            TabStop = False
+            TabOrder = 0
             Align = alTop
             OnClick = rdoIconCustomClick
           end
@@ -287,6 +287,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Height = 22
             Align = alTop
             ParentBackground = False
+            TabOrder = 1
             Min = 12
             Max = 256
             Value = 96
@@ -295,6 +296,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Description = 'Adjust to set the icon size'
             PopPosition = ppBottom
             PercentDisplay = False
+            Formatting = '%d'
             OnChangeValue = SendUpdateEvent
             BackgroundColor = clWindow
           end
@@ -308,7 +310,6 @@ object frmSettingsWnd: TfrmSettingsWnd
             Margins.Top = 4
             Caption = 'Custom'
             TabOrder = 0
-            TabStop = False
             Align = alTop
             OnClick = rdoIconCustomClick
           end
@@ -341,6 +342,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Margins.Bottom = 0
           Constraints.MaxWidth = 534
           ParentBackground = False
+          TabOrder = 0
           Min = 1
           Max = 255
           Value = 192
@@ -348,6 +350,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Description = 'Adjust to set the transparency'
           PopPosition = ppBottom
           PercentDisplay = True
+          Formatting = '%d'
           OnChangeValue = SendUpdateEvent
           BackgroundColor = clWindow
         end
@@ -366,7 +369,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         AutoSize = True
         BevelOuter = bvNone
         Color = clWindow
-        TabOrder = 3
+        TabOrder = 4
         object sgbIconShadow: TSharpeGaugeBox
           AlignWithMargins = True
           Left = 0
@@ -379,6 +382,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Margins.Bottom = 0
           Constraints.MaxWidth = 534
           ParentBackground = False
+          TabOrder = 0
           Min = 1
           Max = 255
           Value = 192
@@ -386,6 +390,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Description = 'Adjust to set the transparency'
           PopPosition = ppBottom
           PercentDisplay = True
+          Formatting = '%d'
           OnChangeValue = SendUpdateEvent
           BackgroundColor = clWindow
         end
@@ -398,7 +403,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         Align = alClient
         BevelOuter = bvNone
         Color = clWindow
-        TabOrder = 4
+        TabOrder = 7
         object sceIconColor: TSharpEColorEditorEx
           AlignWithMargins = True
           Left = 1
@@ -548,7 +553,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         Margins.Right = 5
         Margins.Bottom = 5
         Caption = 'Colour blend the icon'
-        TabOrder = 7
+        TabOrder = 1
         Checked = True
         State = cbChecked
         Align = alTop
@@ -565,7 +570,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         Margins.Right = 5
         Margins.Bottom = 0
         Caption = 'Apply an icon shadow'
-        TabOrder = 9
+        TabOrder = 3
         Checked = True
         State = cbChecked
         Align = alTop
@@ -582,7 +587,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         Margins.Right = 5
         Margins.Bottom = 0
         Caption = 'Apply icon visibility'
-        TabOrder = 11
+        TabOrder = 5
         Checked = True
         State = cbChecked
         Align = alTop
@@ -613,7 +618,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         Color = clBlack
         ParentBackground = True
         ParentColor = False
-        TabOrder = 0
+        TabOrder = 5
         Items = <
           item
             Title = 'Font Colour'
@@ -641,7 +646,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         AlignWithMargins = True
         Left = 5
         Top = 47
-        Width = 580
+        Width = 250
         Height = 23
         Margins.Left = 5
         Margins.Top = 10
@@ -652,7 +657,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         Constraints.MaxWidth = 250
         DropDownCount = 12
         ItemHeight = 17
-        TabOrder = 1
+        TabOrder = 0
         OnChange = cboFontNameChange
         OnDrawItem = cboFontNameDrawItem
       end
@@ -671,7 +676,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         BevelOuter = bvNone
         ParentBackground = False
         ParentColor = True
-        TabOrder = 2
+        TabOrder = 1
         object sgbFontSize: TSharpeGaugeBox
           Left = 0
           Top = 0
@@ -683,6 +688,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Margins.Bottom = 0
           Align = alLeft
           ParentBackground = False
+          TabOrder = 0
           Min = 6
           Max = 24
           Value = 10
@@ -690,6 +696,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Description = 'Change font size'
           PopPosition = ppBottom
           PercentDisplay = False
+          Formatting = '%d'
           OnChangeValue = SendUpdateEvent
           BackgroundColor = clWindow
         end
@@ -721,6 +728,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Margins.Bottom = 0
           Align = alLeft
           ParentBackground = False
+          TabOrder = 0
           Min = 0
           Max = 255
           Value = 0
@@ -728,6 +736,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Description = 'Change font opacity'
           PopPosition = ppBottom
           PercentDisplay = True
+          Formatting = '%d'
           OnChangeValue = SendUpdateEvent
           BackgroundColor = clWindow
         end
@@ -810,7 +819,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         BevelOuter = bvNone
         ParentBackground = False
         ParentColor = True
-        TabOrder = 9
+        TabOrder = 4
         object chkBold: TJvXPCheckbox
           Left = 0
           Top = 3
@@ -879,7 +888,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         Margins.Right = 5
         Margins.Bottom = 5
         Caption = 'Apply font opacity'
-        TabOrder = 4
+        TabOrder = 2
         Align = alTop
         OnClick = UpdateFontPageEvent
       end
@@ -897,7 +906,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         Align = alClient
         BevelOuter = bvNone
         ParentColor = True
-        TabOrder = 0
+        TabOrder = 1
         object Panel9: TPanel
           AlignWithMargins = True
           Left = 0
@@ -928,7 +937,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             BevelOuter = bvNone
             ParentBackground = False
             ParentColor = True
-            TabOrder = 0
+            TabOrder = 5
             Visible = False
             object sgbAnimSize: TSharpeGaugeBox
               Left = 0
@@ -937,6 +946,7 @@ object frmSettingsWnd: TfrmSettingsWnd
               Height = 22
               Align = alLeft
               ParentBackground = False
+              TabOrder = 0
               Min = -64
               Max = 64
               Value = 32
@@ -945,6 +955,7 @@ object frmSettingsWnd: TfrmSettingsWnd
               Description = 'Adjust to set the scale size'
               PopPosition = ppBottom
               PercentDisplay = False
+              Formatting = '%d'
               OnChangeValue = SendUpdateEvent
               BackgroundColor = clWindow
             end
@@ -972,6 +983,7 @@ object frmSettingsWnd: TfrmSettingsWnd
               Height = 22
               Align = alLeft
               ParentBackground = False
+              TabOrder = 0
               Min = -255
               Max = 255
               Value = 64
@@ -980,6 +992,7 @@ object frmSettingsWnd: TfrmSettingsWnd
               Description = 'Adjust to set the brightness modification value'
               PopPosition = ppBottom
               PercentDisplay = True
+              Formatting = '%d'
               OnChangeValue = SendUpdateEvent
               BackgroundColor = clWindow
             end
@@ -998,7 +1011,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             BevelOuter = bvNone
             ParentBackground = False
             ParentColor = True
-            TabOrder = 6
+            TabOrder = 7
             object sgbAnimColorBlend: TSharpeGaugeBox
               Left = 0
               Top = 0
@@ -1006,6 +1019,7 @@ object frmSettingsWnd: TfrmSettingsWnd
               Height = 22
               Align = alLeft
               ParentBackground = False
+              TabOrder = 0
               Min = 0
               Max = 255
               Value = 255
@@ -1014,8 +1028,10 @@ object frmSettingsWnd: TfrmSettingsWnd
               Description = 'Adjust to set the color blend strength'
               PopPosition = ppBottom
               PercentDisplay = True
+              Formatting = '%d'
               OnChangeValue = SendUpdateEvent
               BackgroundColor = clWindow
+              ExplicitTop = -2
             end
           end
           object Panel15: TPanel
@@ -1033,7 +1049,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             BevelOuter = bvNone
             ParentBackground = False
             ParentColor = True
-            TabOrder = 7
+            TabOrder = 1
             object sgbAnimTrans: TSharpeGaugeBox
               Left = 0
               Top = 0
@@ -1041,6 +1057,7 @@ object frmSettingsWnd: TfrmSettingsWnd
               Height = 22
               Align = alLeft
               ParentBackground = False
+              TabOrder = 0
               Min = -255
               Max = 255
               Value = 64
@@ -1049,6 +1066,7 @@ object frmSettingsWnd: TfrmSettingsWnd
               Description = 'Adjust to set the alpha modification value'
               PopPosition = ppBottom
               PercentDisplay = True
+              Formatting = '%d'
               OnChangeValue = SendUpdateEvent
               BackgroundColor = clWindow
             end
@@ -1172,7 +1190,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Margins.Right = 10
             Margins.Bottom = 5
             Caption = 'Apply animation transparency'
-            TabOrder = 1
+            TabOrder = 0
             Align = alTop
             OnClick = UpdateAnimationPageEvent
           end
@@ -1187,7 +1205,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Margins.Right = 5
             Margins.Bottom = 0
             Caption = 'Apply animation scale'
-            TabOrder = 2
+            TabOrder = 4
             Align = alTop
             Visible = False
             OnClick = UpdateAnimationPageEvent
@@ -1203,7 +1221,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Margins.Right = 5
             Margins.Bottom = 0
             Caption = 'Apply animation brightness'
-            TabOrder = 4
+            TabOrder = 2
             Align = alTop
             OnClick = UpdateAnimationPageEvent
           end
@@ -1218,7 +1236,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Margins.Right = 5
             Margins.Bottom = 0
             Caption = 'Apply animation colour blend'
-            TabOrder = 5
+            TabOrder = 6
             Align = alTop
             OnClick = UpdateAnimationPageEvent
           end
@@ -1251,7 +1269,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         Margins.Right = 10
         Margins.Bottom = 10
         Caption = 'Apply desktop icon animation'
-        TabOrder = 2
+        TabOrder = 0
         Align = alTop
         OnClick = UpdateAnimationPageEvent
       end
@@ -1288,7 +1306,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         BevelOuter = bvNone
         ParentBackground = False
         ParentColor = True
-        TabOrder = 2
+        TabOrder = 1
         object SharpECenterHeader2: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
@@ -1335,7 +1353,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           AutoSize = True
           BevelOuter = bvNone
           ParentColor = True
-          TabOrder = 2
+          TabOrder = 1
           object sgbFontShadowTrans: TSharpeGaugeBox
             Left = 0
             Top = 0
@@ -1348,6 +1366,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Align = alLeft
             Constraints.MaxWidth = 532
             ParentBackground = False
+            TabOrder = 0
             Min = 0
             Max = 255
             Value = 0
@@ -1355,6 +1374,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Description = 'Transparency'
             PopPosition = ppBottom
             PercentDisplay = True
+            Formatting = '%d'
             OnChangeValue = SendUpdateEvent
             BackgroundColor = clWindow
           end
@@ -1394,7 +1414,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Color = clBlack
           ParentBackground = True
           ParentColor = False
-          TabOrder = 4
+          TabOrder = 2
           Items = <
             item
               Title = 'Shadow Colour'
@@ -1432,7 +1452,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           AutoSize = True
           BevelOuter = bvNone
           ParentColor = True
-          TabOrder = 5
+          TabOrder = 0
           object cboFontShadowType: TComboBox
             Left = 0
             Top = 0
@@ -1444,7 +1464,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Margins.Bottom = 0
             Align = alLeft
             Style = csDropDownList
-            ItemHeight = 13
+            ItemHeight = 0
             ItemIndex = 0
             TabOrder = 0
             Text = 'Left Shadow'
@@ -1453,7 +1473,6 @@ object frmSettingsWnd: TfrmSettingsWnd
               'Left Shadow'
               'Right Shadow'
               'Outline Glow')
-            ExplicitTop = 2
           end
         end
       end

@@ -25,7 +25,7 @@ object frmSettingsWnd: TfrmSettingsWnd
     Align = alTop
     BevelOuter = bvNone
     Color = clWindow
-    TabOrder = 0
+    TabOrder = 1
   end
   object plMain: TJvPageList
     Left = 0
@@ -52,11 +52,12 @@ object frmSettingsWnd: TfrmSettingsWnd
         Margins.Right = 5
         Margins.Bottom = 10
         Align = alTop
+        AutoSize = True
         BevelOuter = bvNone
         Caption = 'uicFontSize'
         Color = clWhite
         ParentBackground = False
-        TabOrder = 0
+        TabOrder = 1
         HasChanged = False
         AutoReset = True
         DefaultValue = '0'
@@ -73,6 +74,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Margins.Bottom = 5
           Align = alLeft
           ParentBackground = False
+          TabOrder = 0
           Min = -8
           Max = 8
           Value = 0
@@ -80,6 +82,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Description = 'Change font size by'
           PopPosition = ppBottom
           PercentDisplay = False
+          Formatting = '%d'
           OnChangeValue = SgbUicValueChanged
           BackgroundColor = clWindow
         end
@@ -99,7 +102,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         BevelOuter = bvNone
         Color = clWhite
         ParentBackground = False
-        TabOrder = 1
+        TabOrder = 0
         HasChanged = False
         AutoReset = False
         DefaultValue = '-1'
@@ -109,7 +112,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Left = 0
           Top = 0
           Width = 250
-          Height = 22
+          Height = 25
           Margins.Left = 0
           Margins.Top = 0
           Margins.Right = 0
@@ -132,7 +135,7 @@ object frmSettingsWnd: TfrmSettingsWnd
       object uicAlpha: TSharpEUIC
         AlignWithMargins = True
         Left = 5
-        Top = 209
+        Top = 206
         Width = 424
         Height = 22
         Margins.Left = 5
@@ -140,6 +143,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         Margins.Right = 5
         Margins.Bottom = 10
         Align = alTop
+        AutoSize = True
         BevelOuter = bvNone
         Caption = 'UIC_Size'
         Color = clWhite
@@ -161,6 +165,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Margins.Bottom = 5
           Align = alLeft
           ParentBackground = False
+          TabOrder = 0
           Min = -255
           Max = 255
           Value = 0
@@ -168,6 +173,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Description = 'Change font opacity'
           PopPosition = ppBottom
           PercentDisplay = True
+          Formatting = '%d'
           OnChangeValue = SgbUicValueChanged
           BackgroundColor = clWindow
         end
@@ -175,7 +181,7 @@ object frmSettingsWnd: TfrmSettingsWnd
       object uicBold: TSharpEUIC
         AlignWithMargins = True
         Left = 5
-        Top = 423
+        Top = 417
         Width = 424
         Height = 22
         Margins.Left = 5
@@ -183,10 +189,11 @@ object frmSettingsWnd: TfrmSettingsWnd
         Margins.Right = 5
         Margins.Bottom = 0
         Align = alTop
+        AutoSize = True
         BevelOuter = bvNone
         Color = clWhite
         ParentBackground = False
-        TabOrder = 3
+        TabOrder = 6
         HasChanged = False
         AutoReset = False
         DefaultValue = 'False'
@@ -196,7 +203,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Left = 0
           Top = 0
           Width = 49
-          Height = 25
+          Height = 22
           Margins.Left = 0
           Margins.Top = 0
           Margins.Right = 0
@@ -210,7 +217,7 @@ object frmSettingsWnd: TfrmSettingsWnd
       object uicItalic: TSharpEUIC
         AlignWithMargins = True
         Left = 5
-        Top = 363
+        Top = 357
         Width = 424
         Height = 25
         Margins.Left = 5
@@ -218,6 +225,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         Margins.Right = 5
         Margins.Bottom = 0
         Align = alTop
+        AutoSize = True
         BevelOuter = bvNone
         Color = clWhite
         ParentBackground = False
@@ -245,7 +253,7 @@ object frmSettingsWnd: TfrmSettingsWnd
       object uicUnderline: TSharpEUIC
         AlignWithMargins = True
         Left = 5
-        Top = 393
+        Top = 387
         Width = 424
         Height = 25
         Margins.Left = 5
@@ -253,6 +261,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         Margins.Right = 5
         Margins.Bottom = 0
         Align = alTop
+        AutoSize = True
         BevelOuter = bvNone
         Caption = 'UIC_Size'
         Color = clWhite
@@ -281,7 +290,7 @@ object frmSettingsWnd: TfrmSettingsWnd
       object uicCleartype: TSharpEUIC
         AlignWithMargins = True
         Left = 5
-        Top = 286
+        Top = 280
         Width = 424
         Height = 25
         Margins.Left = 5
@@ -289,10 +298,11 @@ object frmSettingsWnd: TfrmSettingsWnd
         Margins.Right = 5
         Margins.Bottom = 10
         Align = alTop
+        AutoSize = True
         BevelOuter = bvNone
         Color = clWhite
         ParentBackground = False
-        TabOrder = 6
+        TabOrder = 3
         HasChanged = False
         AutoReset = False
         DefaultValue = '0'
@@ -350,7 +360,7 @@ object frmSettingsWnd: TfrmSettingsWnd
       object SharpECenterHeader2: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
-        Top = 162
+        Top = 159
         Width = 424
         Height = 37
         Margins.Left = 5
@@ -366,7 +376,7 @@ object frmSettingsWnd: TfrmSettingsWnd
       object SharpECenterHeader3: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
-        Top = 244
+        Top = 238
         Width = 424
         Height = 37
         Margins.Left = 5
@@ -382,7 +392,7 @@ object frmSettingsWnd: TfrmSettingsWnd
       object SharpECenterHeader13: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
-        Top = 321
+        Top = 315
         Width = 424
         Height = 37
         Margins.Left = 5
@@ -413,6 +423,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         Margins.Right = 5
         Margins.Bottom = 10
         Align = alTop
+        AutoSize = True
         BevelOuter = bvNone
         Caption = 'UIC_Size'
         Color = clWhite
@@ -459,6 +470,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Margins.Right = 5
           Margins.Bottom = 10
           Align = alTop
+          AutoSize = True
           BevelOuter = bvNone
           Color = clWhite
           ParentBackground = False
@@ -502,6 +514,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Margins.Right = 5
           Margins.Bottom = 8
           Align = alTop
+          AutoSize = True
           BevelOuter = bvNone
           Color = clWhite
           ParentBackground = False
@@ -522,6 +535,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Margins.Bottom = 5
             Align = alLeft
             ParentBackground = False
+            TabOrder = 0
             Min = -255
             Max = 255
             Value = 0
@@ -529,6 +543,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Description = 'Change shadow opacity'
             PopPosition = ppBottom
             PercentDisplay = True
+            Formatting = '%d'
             OnChangeValue = SgbUicValueChanged
             BackgroundColor = clWindow
           end
@@ -582,7 +597,7 @@ object frmSettingsWnd: TfrmSettingsWnd
     BevelOuter = bvNone
     ParentBackground = False
     ParentColor = True
-    TabOrder = 2
+    TabOrder = 0
     object Image1: TImage
       Left = 0
       Top = 0
@@ -625,7 +640,7 @@ object frmSettingsWnd: TfrmSettingsWnd
       Left = 22
       Top = 5
       Width = 258
-      Height = 13
+      Height = 15
       Margins.Left = 2
       Margins.Top = 5
       Margins.Right = 5
@@ -633,6 +648,7 @@ object frmSettingsWnd: TfrmSettingsWnd
       Align = alLeft
       Caption = 'The options below will override the default skin values'
       Layout = tlCenter
+      ExplicitHeight = 13
     end
     object btnRevert: TPngSpeedButton
       Left = 316
