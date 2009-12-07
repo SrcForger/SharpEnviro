@@ -390,7 +390,6 @@ object frmEdit: TfrmEdit
         Height = 22
         ParentBackground = False
         TabOrder = 2
-        TabStop = True
         Min = 1
         Max = 25
         Value = 10

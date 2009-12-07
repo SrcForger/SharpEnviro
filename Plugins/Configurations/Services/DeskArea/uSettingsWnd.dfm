@@ -72,7 +72,6 @@ object frmSettings: TfrmSettings
       Height = 21
       ParentBackground = False
       TabOrder = 0
-      TabStop = True
       Min = 0
       Max = 512
       Value = 0
@@ -92,7 +91,6 @@ object frmSettings: TfrmSettings
       Height = 21
       ParentBackground = False
       TabOrder = 2
-      TabStop = True
       Min = -32
       Max = 512
       Value = 0
@@ -112,7 +110,6 @@ object frmSettings: TfrmSettings
       Height = 21
       ParentBackground = False
       TabOrder = 3
-      TabStop = True
       Min = -32
       Max = 512
       Value = 0
@@ -132,7 +129,6 @@ object frmSettings: TfrmSettings
       Height = 21
       ParentBackground = False
       TabOrder = 1
-      TabStop = True
       Min = 0
       Max = 512
       Value = 0

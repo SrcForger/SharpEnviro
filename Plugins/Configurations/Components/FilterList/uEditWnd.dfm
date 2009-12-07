@@ -88,6 +88,7 @@ object frmEdit: TfrmEdit
       Align = alClient
       Style = tsFlatButtons
       TabOrder = 0
+      TabStop = False
       object tabEditSearch: TTabSheet
         Caption = 'tabEditSearch'
         TabVisible = False
@@ -137,7 +138,6 @@ object frmEdit: TfrmEdit
           Height = 17
           Caption = 'Window'
           TabOrder = 3
-          TabStop = False
           OnClick = rbProcessClick
         end
       end
@@ -153,7 +153,6 @@ object frmEdit: TfrmEdit
           Height = 17
           Caption = 'Minimised Tasks'
           TabOrder = 2
-          TabStop = False
           Align = alTop
           OnClick = SystemOptionsClick
         end
@@ -165,7 +164,6 @@ object frmEdit: TfrmEdit
           Height = 17
           Caption = 'Current Monitor'
           TabOrder = 1
-          TabStop = False
           Align = alTop
           OnClick = SystemOptionsClick
         end
@@ -178,7 +176,6 @@ object frmEdit: TfrmEdit
           Margins.Top = 0
           Caption = 'Current VWM'
           TabOrder = 0
-          TabStop = False
           Align = alTop
           OnClick = SystemOptionsClick
         end
@@ -187,10 +184,6 @@ object frmEdit: TfrmEdit
         Caption = 'tabWindowCommand'
         ImageIndex = 2
         TabVisible = False
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object lbSwCommands: TSharpEListBoxEx
           Left = 0
           Top = 0
