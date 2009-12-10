@@ -150,12 +150,12 @@ end;
 function TSEShutDown.GetShutdownTypeAsString: string;
 begin
   case FActionType of
-    sdPowerOff: result := 'power off';
-    sdShutdown: result := 'shut down' ;
-    sdReboot: result := 'reboot';
-    sdLogOff: result := 'log off';
-    sdLock: result := 'lock' ;
-    sdHibernate: result := 'hibernate';
+    sdPowerOff: result := 'Shut Down';
+    sdShutdown: result := 'Shut Down' ;
+    sdReboot: result := 'Reboot';
+    sdLogOff: result := 'Log Off';
+    sdLock: result := 'Lock' ;
+    sdHibernate: result := 'Hibernate';
   end;
 end;
 
@@ -174,7 +174,7 @@ begin
   sDescription := format('Confirm %s',[shutdownType]);
 
   if windows.MessageBox(FParentHandle, PChar(sTitle),
-          PChar(sDescription), MB_YESNO or MB_ICONQUESTION or MB_APPLMODAL or MB_TOPMOST) = IDYES then
+          PChar(sDescription), MB_YESNO or MB_ICONQUESTION or MB_APPLMODAL or MB_SETFOREGROUND or MB_TOPMOST) = IDYES then
             result := true;
 end;
 
