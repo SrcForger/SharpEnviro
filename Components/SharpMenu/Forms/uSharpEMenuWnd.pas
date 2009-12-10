@@ -446,9 +446,13 @@ begin
   if FIsClosing then exit;
   if FMenu = nil then exit;
 
+  DisableHideTimeout;
+
   p := ClientToScreen(point(X,Y));
   if FMenu.PerformMouseUp(self,Button, Shift, p.X,p.Y) then
   begin
+    EnableHideTimeout;
+
     FMenu.RenderTo(FPicture,FOffset);
     PreMul(FPicture);
     DrawWindow;
@@ -486,7 +490,8 @@ end;
 
 procedure TSharpEMenuWnd.FormClick(Sender: TObject);
 begin
-  if FMenu = nil then exit;
+  if FMenu = nil then
+    exit;
 
   if FMenu.PerformClick(self) then
      CloseAll
