@@ -48,12 +48,18 @@ type
     wndlist: array of hwnd;
   end;
 
+  TRunFileDlgA = procedure(hWndOwner : HWND; Icon : HICON; Directory,Title,Description : PChar; Flags : UInt); stdcall;
+  TRunFileDlgW = procedure(hWndOwner : HWND; Icon : HICON; Directory,Title,Description : PWideChar; Flags : UInt); stdcall;
+
 var
   AE: TActionEvent;
   h: THandle;
   LocalsList: TJclKeyboardLayoutList;
   WindowToggle: Boolean = false;
   Param: TParam;
+
+  RunFileDlgA : TRunFileDlgA;
+  RunFileDlgW : TRunFileDlgW;
 
 const
   cRestartIdx = 0;
@@ -77,7 +83,15 @@ const
   cToggleAllBarsIdx = 22;
   cToggleAllWindowsIdx = 23;
 
+  cRunDlgIdx = 24;
+
   cKeyboardLayoutIdx = 99;
+
+  RFF_NOBROWSE = 1; //Removes the browse button.
+  RFF_NODEFAULT = 2; // No default item selected.
+  RFF_CALCDIRECTORY = 4; // Calculates the working directory from the file name.
+  RFF_NOLABEL = 8; // Removes the edit box label.
+  RFF_NOSEPARATEMEM = 14; // Removes the Separate Memory Space check box (Windows NT only)
 
   {$R *.RES}
 
@@ -143,12 +157,16 @@ begin
 
   RegisterActionEx('!ToggleAllBars', 'SharpBar', h, cToggleAllBarsIdx);
 
+  RegisterActionEx('!RunDlg', 'Misc', h, cRunDlgIdx);
+
   RegisterKeyBoardLocals;
 end;
 
 // Service is started
 
 function Start(owner: hwnd): hwnd;
+var
+  hDll : THandle;
 begin
   Result := owner;
 
@@ -159,6 +177,18 @@ begin
   LocalsList.Refresh;
 
   RegisterActions;
+
+  if not Assigned(RunFileDlgA) or not Assigned(RunFileDlgW) then
+  begin
+    hDll := LoadLibrary('shell32.dll');
+    try
+      @RunFileDlgA := GetProcAddress(hDll, PAnsiChar(MAKELPARAM(61, 0)));
+      @RunFileDlgW := GetProcAddress(hDll, PAnsiChar(MAKELPARAM(61, 0)))
+    finally
+      FreeLibrary(hDll);
+    end;
+  end;
+
   ServiceDone('System Actions');
 end;
 
@@ -186,7 +216,49 @@ begin
   UnRegisterAction('!ToggleAllBars');
   UnRegisterAction('!ToggleAllWindows');
 
+  UnRegisterAction('!RunDlg');
+
   LocalsList.Free;
+end;
+
+procedure RunFileDlg(hOwner : HWND; Directory,Title,Description : PChar; Flags : UInt);
+var
+  DirectoryW,TitleW,DescriptionW: PWideChar;
+begin
+  if Assigned(RunFileDlgW) then
+  begin
+    DirectoryW := nil;
+    TitleW := nil;
+    DescriptionW := nil;
+
+    try
+      if Directory <> nil then
+      begin
+        GetMem(DirectoryW, sizeof(WideChar) * Succ(Length(Directory)));
+        StringToWideChar(Directory, DirectoryW, Succ(Length(Directory)));
+      end;
+      if Title <> nil then
+      begin
+        GetMem(TitleW, sizeof(WideChar) * Succ(Length(Title)));
+        StringToWideChar(Title, TitleW, Succ(Length(Title)));
+      end;
+      if Description <> nil then
+      begin
+        GetMem(DescriptionW, sizeof(WideChar) * Succ(Length(Description)));
+        StringToWideChar(Description, DescriptionW, Succ(Length(Description)));
+      end;
+
+      RunFileDlgW(hOwner, 0, DirectoryW, TitleW, DescriptionW, Flags);
+    finally
+      if DirectoryW <> nil then
+        FreeMem(DirectoryW);
+      if TitleW <> nil then
+        FreeMem(TitleW);
+      if DescriptionW <> nil then
+        FreeMem(DescriptionW);
+    end;
+  end else if Assigned(RunFileDlgA) then
+    RunFileDlgA(hOwner, 0, Directory, Title, Description, Flags);
 end;
 
 { TActionEvent }
@@ -342,6 +414,9 @@ begin
           // Toggle (Show/Hide) all windows
           WindowToggle := not (WindowToggle);
         end;
+      cRunDlgIdx: begin
+        RunFileDlg(0, nil, nil, nil, 0);
+      end;
     end;
 
   end
