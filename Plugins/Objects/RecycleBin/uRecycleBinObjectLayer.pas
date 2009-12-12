@@ -181,7 +181,6 @@ begin
       FBinExt := 'GB';
     end;
 
-    FBinSize:=rbinfo.i64Size / 1024 / 1024;
     FBinItems:=Rbinfo.i64NumItems;
     if FBinItems = 0 then
     begin
