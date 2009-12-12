@@ -6,8 +6,8 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, SharpEColorEditor, StdCtrls, JvPageList, JvExControls,
   JvComponent, ComCtrls, JvExComCtrls, JvComCtrls, XPMan, Mask, JvExMask, JvSpin,
-  JvExStdCtrls, JvHtControls, sharpthemeapi, uVistaFuncs, JvLinkLabel, JvPanel,
-  JvLabel, JvExExtCtrls, SharpESwatchManager, JvXPCore, JvXPCheckCtrls, SharpThemeApiEx;
+  JvExStdCtrls, JvHtControls, SharpThemeApiEx, uVistaFuncs, JvLinkLabel, JvPanel,
+  JvLabel, JvExExtCtrls, SharpESwatchManager, JvXPCore, JvXPCheckCtrls;
 
 type
   TMainWnd = class(TForm)

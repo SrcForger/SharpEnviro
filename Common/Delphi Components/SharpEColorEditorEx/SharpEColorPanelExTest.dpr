@@ -11,7 +11,6 @@ uses
   SharpEColorPicker in '..\SharpEColorPicker\SharpEColorPicker.pas',
   SharpAPI in '..\..\Libraries\SharpAPI\SharpAPI.pas',
   SharpFX in '..\..\Units\SharpFX\SharpFX.pas',
-  SharpThemeApi in '..\..\Libraries\SharpThemeApi\SharpThemeApi.pas',
   SharpESwatchCollection in '..\SharpESwatchCollection\SharpESwatchCollection.pas',
   SharpGraphicsUtils in '..\..\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas',
   SharpETabList in '..\SharpETabList\SharpETabList.pas',

@@ -5,8 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, SharpEColorEditorEx, ExtCtrls, StdCtrls, XPMan, comctrls,
-  sharpthemeapi, SharpESwatchManager, ToolWin, JvExForms,
-  JvScrollPanel, uVistaFuncs;
+  SharpThemeApiEx, SharpESwatchManager, ToolWin, JvExForms,
+  JvScrollPanel, uVistaFuncs, uThemeConsts;
 
 type
   TForm1 = class(TForm)
@@ -45,7 +45,7 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  loadtheme;
+  GetCurrentTheme.LoadTheme;
 
   SharpEColorEditorEx1.Items.Item[4].ColorCode := clBlue;
 end;

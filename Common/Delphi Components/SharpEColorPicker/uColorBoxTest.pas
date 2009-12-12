@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, SharpEColorPicker, ExtCtrls, StdCtrls, XPMan,
-  sharpthemeapi;
+  SharpThemeApiEx;
 
 type
   TForm1 = class(TForm)
@@ -28,7 +28,7 @@ implementation
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  sharpthemeapi.LoadTheme;
+  GetCurrentTheme.LoadTheme;
 end;
 
 end.

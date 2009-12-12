@@ -31,7 +31,6 @@ object Form2: TForm2
     BorderColor = clBlack
     Border = True
     BackgroundColor = clBtnFace
-    ExplicitTop = 24
   end
   object SharpETabList1: TSharpETabList
     Left = 0
@@ -39,7 +38,7 @@ object Form2: TForm2
     Width = 402
     Height = 25
     Align = alTop
-    TabWidth = 62
+    ButtonWidth = 24
     TabIndex = 0
     TabColor = 15724527
     TabSelectedColor = clWindow
@@ -49,6 +48,10 @@ object Form2: TForm2
     CaptionUnSelectedColor = clBlack
     StatusUnSelectedColor = clGreen
     TabAlign = taLeftJustify
+    TextSpacingX = 8
+    TextSpacingY = 6
+    IconSpacingX = 4
+    IconSpacingY = 4
     AutoSizeTabs = False
     BottomBorder = False
     Border = True
@@ -58,14 +61,14 @@ object Form2: TForm2
       item
         Caption = 'Test'
         ImageIndex = 0
-        ID = 0
         Visible = True
       end
       item
         Caption = 'Test2'
         ImageIndex = 0
-        ID = 1
         Visible = True
       end>
+    Buttons = <>
+    Minimized = False
   end
 end

@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{cec53dab-3968-4424-96a8-37138a147e23}</ProjectGuid>
+    <MainSource>SharpEColorPanelExTest.dpr</MainSource>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+    <DCC_DependencyCheckOutputName>..\..\..\..\SharpE\SharpEColorPanelExTest.exe</DCC_DependencyCheckOutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_DebugInformation>False</DCC_DebugInformation>
+    <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
+    <DCC_Optimize>False</DCC_Optimize>
+    <DCC_IntegerOverflowCheck>True</DCC_IntegerOverflowCheck>
+    <DCC_RangeChecking>True</DCC_RangeChecking>
+    <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+    <DCC_Define>RELEASE</DCC_Define>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_Optimize>False</DCC_Optimize>
+    <DCC_IntegerOverflowCheck>True</DCC_IntegerOverflowCheck>
+    <DCC_RangeChecking>True</DCC_RangeChecking>
+    <DCC_Define>DEBUG</DCC_Define>
+    <DCC_UnitSearchPath>..\..\Delphi Components\SharpEPageControl;..\..\Libraries\SharpThemeApiEx</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\Delphi Components\SharpEPageControl;..\..\Libraries\SharpThemeApiEx</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\Delphi Components\SharpEPageControl;..\..\Libraries\SharpThemeApiEx</DCC_ObjPath>
+    <DCC_IncludePath>..\..\Delphi Components\SharpEPageControl;..\..\Libraries\SharpThemeApiEx</DCC_IncludePath>
+    <DCC_ExeOutput>..\..\..\..\SharpE</DCC_ExeOutput>
+  </PropertyGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Delphi.Personality</Borland.Personality>
+    <Borland.ProjectType />
+    <BorlandProject>
+<BorlandProject> <Delphi.Personality>   <Parameters>
+      <Parameters Name="UseLauncher">False</Parameters>
+      <Parameters Name="LoadAllSymbols">True</Parameters>
+      <Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
+    </Parameters>
+    <VersionInfo>
+      <VersionInfo Name="IncludeVerInfo">False</VersionInfo>
+      <VersionInfo Name="AutoIncBuild">False</VersionInfo>
+      <VersionInfo Name="MajorVer">1</VersionInfo>
+      <VersionInfo Name="MinorVer">0</VersionInfo>
+      <VersionInfo Name="Release">0</VersionInfo>
+      <VersionInfo Name="Build">0</VersionInfo>
+      <VersionInfo Name="Debug">False</VersionInfo>
+      <VersionInfo Name="PreRelease">False</VersionInfo>
+      <VersionInfo Name="Special">False</VersionInfo>
+      <VersionInfo Name="Private">False</VersionInfo>
+      <VersionInfo Name="DLL">False</VersionInfo>
+      <VersionInfo Name="Locale">2057</VersionInfo>
+      <VersionInfo Name="CodePage">1252</VersionInfo>
+    </VersionInfo>
+    <VersionInfoKeys>
+      <VersionInfoKeys Name="CompanyName"></VersionInfoKeys>
+      <VersionInfoKeys Name="FileDescription"></VersionInfoKeys>
+      <VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys>
+      <VersionInfoKeys Name="InternalName"></VersionInfoKeys>
+      <VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys>
+      <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
+      <VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys>
+      <VersionInfoKeys Name="ProductName"></VersionInfoKeys>
+      <VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
+      <VersionInfoKeys Name="Comments"></VersionInfoKeys>
+    </VersionInfoKeys>
+    <Excluded_Packages>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      <Excluded_Packages Name="C:\Users\Lee Green\Documents\Borland Studio Projects\Bpl\PngComponentsD9.bpl">Png components</Excluded_Packages>
+    </Excluded_Packages>
+    <Source>
+      <Source Name="MainSource">SharpEColorPanelExTest.dpr</Source>
+    </Source>
+  </Delphi.Personality> </BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
+  <ItemGroup>
+    <DelphiCompile Include="SharpEColorPanelExTest.dpr">
+      <MainSource>MainSource</MainSource>
+    </DelphiCompile>
+    <DCCReference Include="..\..\Libraries\SharpAPI\SharpAPI.pas" />
+    <DCCReference Include="..\..\Units\SharpFX\graphicsFX.pas" />
+    <DCCReference Include="..\..\Units\SharpFX\SharpFX.pas" />
+    <DCCReference Include="..\..\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas" />
+    <DCCReference Include="..\..\Units\VistaFuncs\uVistaFuncs.pas" />
+    <DCCReference Include="..\SharpEColorEditor\SharpEColorEditor.pas" />
+    <DCCReference Include="..\SharpEColorPicker\SharpEColorPicker.pas" />
+    <DCCReference Include="..\SharpERoundPanel\SharpERoundPanel.pas" />
+    <DCCReference Include="..\SharpESwatchCollection\SharpESwatchCollection.pas" />
+    <DCCReference Include="..\SharpESwatchManager\SharpESwatchManager.pas" />
+    <DCCReference Include="..\SharpETabList\SharpETabList.pas" />
+    <DCCReference Include="SharpEColorEditorEx.pas" />
+    <DCCReference Include="uSharpEColorEditorManualTest.pas">
+      <Form>Form2</Form>
+    </DCCReference>
+    <DCCReference Include="uSharpEColorPanelExTest.pas">
+      <Form>Form1</Form>
+    </DCCReference>
+  </ItemGroup>
+</Project>
