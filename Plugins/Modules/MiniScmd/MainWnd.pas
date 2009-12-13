@@ -31,8 +31,7 @@ uses
   Windows, Messages, SysUtils, Classes, Controls, Forms, Types, StrUtils, ShellApi,
   Dialogs, StdCtrls, GR32, GR32_PNG, SharpEBaseControls, SharpEButton, Graphics,
   JvSimpleXML, SharpApi, Math, SharpEEdit, Menus,
-  uISharpBarModule,
-  ComObj, AutoComplete;
+  uISharpBarModule;
 
 
 type
@@ -53,8 +52,7 @@ type
   protected
   private
     // Auto-Complete
-    FAutoComplete: IAutoComplete2;
-    sItems : TEnumString;
+    sItems : TStringList;
 
     sWidth       : integer;
     sButton      : Boolean;
@@ -183,6 +181,7 @@ begin
   except
     // Failed to load the xml
   end;
+
   XML.Free;
 end;
 
@@ -198,7 +197,7 @@ begin
   
   for i := 0 to sItems.Count - 1 do
   begin
-    if sItems.Str[i] = Item then
+    if sItems[i] = Item then
     begin
       tFound := true;
     end;
@@ -214,7 +213,7 @@ begin
     begin
       with XML.Root.Items.Add('Item').Items do
       begin
-        Add('Name', sItems.Str[n]);
+        Add('Name', sItems[n]);
       end;
     end;
   
@@ -374,17 +373,14 @@ end;
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   // Initialize Auto-Complete
-  sItems := TEnumString.Create;
-  FAutoComplete := CreateComObject(CLSID_AutoComplete) as IAutoComplete2;
-  OleCheck(FAutoComplete.SetOptions(ACO_AUTOSUGGEST or ACO_UPDOWNKEYDROPSLIST));
-  OleCheck(FAutoComplete.Init(edit.edit.Handle, sItems as IUnknown, nil, nil));
+  sItems := TStringList.Create;
+  edit.ACItems := sItems;
 
   DoubleBuffered := True;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
-  FAutoComplete := nil;
   sItems := nil;
 end;
 

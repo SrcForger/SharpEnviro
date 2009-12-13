@@ -74,5 +74,8 @@ object MainForm: TMainForm
     AutoPosition = True
     OnKeyUp = editKeyUp
     OnKeyDown = editKeyDown
+    ACEnabled = True
+    ACOptions = [acAutoAppend, acAutoSuggest, acUseArrowKey]
+    ACSource = acsList
   end
 end

@@ -39,8 +39,9 @@ uses
   uISharpBarModule,
   uISharpESkin,
   uISharpBar,
-  uInterfacedSharpBarModuleBase,  
-  MainWnd in 'MainWnd.pas' {MainForm};
+  uInterfacedSharpBarModuleBase,
+  MainWnd in 'MainWnd.pas' {MainForm},
+  AutoComplete in 'AutoComplete.pas';
 
 type
   TInterfacedSharpBarModule = class(TInterfacedSharpBarModuleBase)
