@@ -45,9 +45,53 @@ uses
   math,
   StrTools,
   ShlIntf,
-  ActiveX,
-  ComObj,
+  ActiveX, ShlObj, ComObj,
   TranComp;
+
+const
+  IID_IAutoComplete: TGUID = '{00bb2762-6a77-11d0-a535-00c04fd7d062}';
+  IID_IAutoComplete2: TGUID = '{EAC04BC0-3791-11d2-BB95-0060977B464C}';
+  CLSID_IAutoComplete: TGUID = '{00BB2763-6A77-11D0-A535-00C04FD7D062}';
+  IID_IACList: TGUID = '{77A130B0-94FD-11D0-A544-00C04FD7d062}';
+  IID_IACList2: TGUID = '{470141a0-5186-11d2-bbb6-0060977b464c}';
+  CLSID_ACLHistory: TGUID = '{00BB2764-6A77-11D0-A535-00C04FD7D062}';
+  CLSID_ACListISF: TGUID = '{03C036F1-A186-11D0-824A-00AA005B4383}';
+  CLSID_ACLMRU: TGUID = '{6756a641-de71-11d0-831b-00aa005b4383}';
+
+const
+  {Options for IAutoComplete2}
+  ACO_NONE = 0;
+  ACO_AUTOSUGGEST = $1;
+  ACO_AUTOAPPEND = $2;
+  ACO_SEARCH = $4;
+  ACO_FILTERPREFIXES = $8;
+  ACO_USETAB = $10;
+  ACO_UPDOWNKEYDROPSLIST = $20;
+  ACO_RTLREADING = $40;
+
+type
+  IAutoComplete2 = interface(IAutoComplete)
+    ['{EAC04BC0-3791-11d2-BB95-0060977B464C}']
+    function SetOptions(dwFlag: DWORD): HResult; stdcall;
+    function GetOptions(out pdwFlag: DWORD): HResult; stdcall;
+  end;
+
+  TEnumString = class(TInterfacedObject, IEnumString)
+  private
+    FStrings: TStringList;
+    FCurrIndex: integer;
+  public
+    {IEnumString}
+    function Next(celt: Longint; out elt; pceltFetched: PLongint): HResult; stdcall;
+    function Skip(celt: Longint): HResult; stdcall;
+    function Reset: HResult; stdcall;
+    function Clone(out enm: IEnumString): HResult; stdcall;
+    {VCL}
+    constructor Create;
+    destructor Destroy; override;
+
+    property Strings: TStringList read FStrings write FStrings;
+  end;
 
 type
   TSearchListChangeEvent = procedure of object;
@@ -73,7 +117,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Loaded; override;
-    procedure SetAutoComplete;
     property SearchList: TStringlist read FStringList write SetFStringList;
 
     procedure SearchListChange;
@@ -91,6 +134,9 @@ type
     property OptFilterPrefixes: Boolean read FOptFilterPrefixes write FOptFilterPrefixes;
   End;
 
+  TACOption = (acAutoAppend, acAutoSuggest, acUseArrowKey);
+  TACOptions = set of TACOption;
+  TACSource = (acsList, acsHistory, acsMRU, acsShell);
 
   TSharpEEdit = class(TCustomSharpEControl)
   private
@@ -99,6 +145,14 @@ type
     FEdit  : TSharpEEditText;
     FMouseOver: Boolean;
     FText: String;
+
+    // Auto-Complete
+    FACList: TEnumString;
+    FAutoComplete: IAutoComplete;
+    FACEnabled: boolean;
+    FACOptions: TACOptions;
+    FACSource: TACSource;
+
     procedure CMDialogKey(var Message: TCMDialogKey); message CM_DIALOGKEY;
     procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
     procedure CNCommand(var Message: TWMCommand); message CN_COMMAND;
@@ -114,6 +168,14 @@ type
     procedure EditEnterEvent(Sender:TObject);
     procedure EditChangeEvent(Sender:TObject);
     procedure SetAutoSizeProperty(const Value: Boolean);
+
+    // Auto-Complete
+    function GetACStrings: TStringList;
+    procedure SetACStrings(const Value: TStringList);
+    procedure SetACEnabled(const Value: boolean);
+    procedure SetACOptions(const Value: TACOptions);
+    procedure SetACSource(const Value: TACSource);
+    
   protected
     FAutoSize: boolean;
     procedure Paint; override;
@@ -122,11 +184,16 @@ type
     procedure SetEnabled(Value: Boolean); override;
     procedure DoExit; override;
     procedure DoEnter; override;
+
+    procedure CreateWnd; override;
+    procedure DestroyWnd; override;
   public
     procedure UpdateSkin; override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure SetFocus; override;
+    
+    property ACItems: TStringList read GetACStrings write SetACStrings;
   published
     property AutoSize: Boolean read FAutosize write SetAutoSizeProperty;
     property Anchors;
@@ -148,12 +215,79 @@ type
     property AutoPosition : Boolean read FAutoPosition write FAutoPosition;
     property OnKeyUp;
     property OnKeyDown;
+
+    property ACEnabled: boolean read FACEnabled write SetACEnabled;
+    property ACOptions: TACOptions read FACOptions write SetACOptions;
+    property ACSource: TACSource read FACSource write SetACSource;
   end;
 
 procedure CopyParentImage(Control: TControl; Dest: TCanvas);
 
 implementation
 
+{ TEnumString }
+constructor TEnumString.Create;
+begin
+  inherited Create;
+  FStrings := TStringList.Create;
+  FCurrIndex := 0;
+end;
+
+function TEnumString.Clone(out enm: IEnumString): HResult;
+begin
+  Result := E_NOTIMPL;
+  pointer(enm) := nil;
+end;
+
+destructor TEnumString.Destroy;
+begin
+  FStrings.Free;
+  inherited;
+end;
+
+function TEnumString.Next(celt: Integer; out elt; pceltFetched: PLongint): HResult;
+var
+  I: Integer;
+  wStr: WideString;
+begin
+  I := 0;
+  while (I < celt) and (FCurrIndex < FStrings.Count) do
+  begin
+    wStr := FStrings[FCurrIndex];
+    TPointerList(elt)[I] := CoTaskMemAlloc(2 * (Length(wStr) + 1));
+    StringToWideChar(wStr, TPointerList(elt)[I], 2 * (Length(wStr) + 1));
+    Inc(I);
+    Inc(FCurrIndex);
+  end;
+  if pceltFetched <> nil then
+    pceltFetched^ := I;
+  if I = celt then
+    Result := S_OK
+  else
+    Result := S_FALSE;
+end;
+
+function TEnumString.Reset: HResult;
+begin
+  FCurrIndex := 0;
+  Result := S_OK;
+end;
+
+function TEnumString.Skip(celt: Integer): HResult;
+begin
+  if (FCurrIndex + celt) <= FStrings.Count then
+  begin
+    Inc(FCurrIndex, celt);
+    Result := S_OK;
+  end
+  else
+  begin
+    FCurrIndex := FStrings.Count;
+    Result := S_FALSE;
+  end;
+end;
+
+{ TSharpEEditText }
 procedure TSharpEEditText.WMSetFocus(var Message: TWMSetFocus);
 begin
   inherited;
@@ -173,82 +307,7 @@ end;
 procedure TSharpEEditText.SetFStringList(const Value: TStringlist);
 begin
   SearchList.Assign(Value);
-  SetAutoComplete;
   SearchListChange;
-end;
-
-procedure TSharpEEditText.SetAutoComplete;
-var
-  FAutoComplete: IAutoComplete2;
-  FStrings, FSF, FSHist, FSMru: IUnknown;
-  om: IObjMgr;
-  ACOOptions: Integer;
-begin
-  // THIS SHIT IS LEAKING! SOMEONE FIX IT! :)
-  exit;
-  CoInitialize(nil);
-  FAutoComplete := CreateComObject(CLSID_AutoComplete) as IAutoComplete2;
-  Try
-    // creates a "multi-list" that combines several lists
-    CoCreateInstance(CLSID_ACLMulti, nil, CLSCTX_INPROC_SERVER, IID_IObjMgr, om);
-    FStrings := TEnumString.Create(FStringList) as IUnknown;
-
-    // System Files
-    if FIncSystemFiles then begin
-      FSF := CreateComObject(CLSID_ACListISF) as IEnumString;
-      om.Append(FSF);
-    End;
-
-    // MRU
-    If FIncMRU then begin
-      FSMru := CreateComObject(CLSID_ACLMRU) as IEnumString;
-      om.Append(FSMru);
-    End;
-
-    // History
-    if FIncHistory then begin
-      FSHist := CreateComObject(CLSID_ACLHistory) as IEnumString;
-      om.Append(FSHist);
-    End;
-
-    // Custom Strings
-    IF FIncCustomStrings then
-      om.Append(FStrings);
-
-    // ACO AutoSuggest
-    ACOOptions := 0;
-    if FOptACOSuggest then
-      ACOOptions := ACOOptions + ACO_AUTOSUGGEST;
-
-    // ACO Append
-    if FOptACOAppend then
-      ACOOptions := ACOOptions + ACO_AUTOAPPEND;
-
-    // ACO UPDOWNKEYDROPSLIST
-    If FOptUpDownKeyDropList then
-      ACOOptions := ACOOptions + ACO_UPDOWNKEYDROPSLIST;
-
-    // ACO USE TAB
-    If FOptUseTab then
-      ACOOptions := ACOOptions + ACO_USETAB;
-
-    // ACO FILTER PREFIXES
-    If FOptFilterPrefixes then
-      ACOOptions := ACOOptions + ACO_FILTERPREFIXES;
-
-    OleCheck(FAutoComplete.SetOptions(ACOOptions));
-
-    // Assign
-    OleCheck(FAutoComplete.Init(Self.Handle, om, nil, nil));
-
-    finally
-    FAutoComplete := nil;
-    FStrings := nil;
-    FSF := nil;
-    FSHist := nil;
-    FSMru := nil;
-    om := nil;
-    end;
 end;
 
 procedure TSharpEEditText.SearchListChange;
@@ -276,7 +335,6 @@ end;
 procedure TSharpEEditText.Loaded;
 begin
   inherited;
-  SetAutoComplete;
 end;
 
 destructor TSharpEEditText.Destroy;
@@ -350,6 +408,7 @@ begin
 {$ENDIF}
 end;
 
+{ TSharpEEdit }
 constructor TSharpEEdit.Create;
 begin
   inherited Create(AOwner);
@@ -377,6 +436,64 @@ begin
 
   FEdit.OnKeyUp := KeyUpEvent;
   FEdit.OnKeyDown := KeyDownEvent;
+
+  FACList := TEnumString.Create;
+  FACEnabled := true;
+  FACOptions := [acAutoAppend, acAutoSuggest, acUseArrowKey];
+end;
+
+destructor TSharpEEdit.Destroy;
+begin
+  FreeAndNil(FEdit);
+  FACList := nil;
+  inherited Destroy;
+end;
+
+procedure TSharpEEdit.CreateWnd;
+var
+  Dummy: IUnknown;
+  Strings: IEnumString;
+begin
+  inherited;
+
+  if HandleAllocated then
+  begin
+    try
+      Dummy := CreateComObject(CLSID_IAutoComplete);
+      if (Dummy <> nil) and (Dummy.QueryInterface(IID_IAutoComplete, FAutoComplete) =
+        S_OK) then
+      begin
+        case FACSource of
+          acsHistory:
+            Strings := CreateComObject(CLSID_ACLHistory) as IEnumString;
+          acsMRU:
+            Strings := CreateComObject(CLSID_ACLMRU) as IEnumString;
+          acsShell:
+            Strings := CreateComObject(CLSID_ACListISF) as IEnumString;
+        else
+          Strings := FACList as IEnumString;
+        end;
+        if S_OK = FAutoComplete.Init(edit.Handle, Strings, nil, nil) then
+        begin
+          SetACEnabled(FACEnabled);
+          SetACOptions(FACOptions);
+        end;
+      end;
+    except
+      {CLSID_IAutoComplete is not available}
+    end;
+  end;
+end;
+
+procedure TSharpEEdit.DestroyWnd;
+begin
+  if (FAutoComplete <> nil) then
+  begin
+    FAutoComplete.Enable(false);
+    FAutoComplete := nil;
+  end;
+
+  inherited;
 end;
 
 procedure TSharpEEdit.CMFocusChanged(var Message: TCMFocusChanged);
@@ -403,8 +520,6 @@ begin
       CaseSensitive := False;
       Sorted := True
     end;
-
-    FEdit.SetAutoComplete;
 end;
 
 procedure TSharpEEdit.KeyDownEvent(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -425,12 +540,6 @@ begin
 
   if Key = VK_RETURN then
      Text := '';
-end;
-
-destructor TSharpEEdit.Destroy;
-begin
-  FreeAndNil(FEdit);
-  inherited Destroy;
 end;
 
 procedure TSharpEEdit.SetEnabled(Value: Boolean);
@@ -657,6 +766,59 @@ begin
   FAutosize := Value;
   UpdateSkin;
   Invalidate;
+end;
+
+function TSharpEEdit.GetACStrings: TStringList;
+begin
+  Result := FACList.Strings;
+end;
+
+procedure TSharpEEdit.SetACStrings(const Value: TStringList);
+begin
+  FACList.Strings := Value;
+end;
+
+procedure TSharpEEdit.SetACEnabled(const Value: boolean);
+begin
+  if (FAutoComplete <> nil) then
+  begin
+    FAutoComplete.Enable(FACEnabled);
+  end;
+  FACEnabled := Value;
+end;
+
+procedure TSharpEEdit.SetACOptions(const Value: TACOptions);
+const
+  Options: array[TACOption] of integer = (ACO_AUTOAPPEND, ACO_AUTOSUGGEST,
+    ACO_UPDOWNKEYDROPSLIST);
+var
+  Option: TACOption;
+  Opt: DWORD;
+  AC2: IAutoComplete2;
+begin
+  if (FAutoComplete <> nil) then
+  begin
+    if S_OK = FAutoComplete.QueryInterface(IID_IAutoComplete2, AC2) then
+    begin
+      Opt := ACO_NONE;
+      for Option := Low(Options) to High(Options) do
+      begin
+        if (Option in FACOptions) then
+          Opt := Opt or DWORD(Options[Option]);
+      end;
+      AC2.SetOptions(Opt);
+    end;
+  end;
+  FACOptions := Value;
+end;
+
+procedure TSharpEEdit.SetACSource(const Value: TACSource);
+begin
+  if FACSource <> Value then
+  begin
+    FACSource := Value;
+    RecreateWnd;
+  end;
 end;
 
 end.
