@@ -19,6 +19,18 @@
     <Icon>iTunes.png</Icon>
   </item>  
   <item>
+    <Name>J. River Media Center</Name>
+    <WndClass>MJFrame</WndClass>
+    <Icon>JRiverMediaCenter.png</Icon>
+    <MessageType>1</MessageType>
+	<Command>33768</Command>
+    <btnPlay>10001</btnPlay>
+    <btnPause>10000</btnPause>
+    <btnStop>10002</btnStop>
+    <btnNext>10003</btnNext>
+    <btnPrev>10004</btnPrev>
+  </item> 
+  <item>
     <Name>Media Monkey</Name>
     <WndClass>Winamp v1.x</WndClass>
     <WndCaption>Winamp 5.03</WndCaption>
