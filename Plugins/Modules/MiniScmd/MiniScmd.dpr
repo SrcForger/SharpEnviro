@@ -40,8 +40,7 @@ uses
   uISharpESkin,
   uISharpBar,
   uInterfacedSharpBarModuleBase,
-  MainWnd in 'MainWnd.pas' {MainForm},
-  AutoComplete in 'AutoComplete.pas';
+  MainWnd in 'MainWnd.pas' {MainForm};
 
 type
   TInterfacedSharpBarModule = class(TInterfacedSharpBarModuleBase)
