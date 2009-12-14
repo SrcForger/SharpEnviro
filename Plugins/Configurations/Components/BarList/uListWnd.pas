@@ -557,9 +557,9 @@ var
   newItem: TBarItem;
   dir: string;
   slBars, slModules: TStringList;
-  i, j: Integer;
+  n,i, j: Integer;
 
-  function ExtractBarID(ABarXmlFileName: string): Integer;
+  function ExtractBarID(ABarXmlFileName: string): String;
   var
     s: string;
     n: Integer;
@@ -567,8 +567,7 @@ var
     s := PathRemoveSeparator(ExtractFilePath(ABarXmlFileName));
     n := JclStrings.StrLastPos('\', s);
     s := Copy(s, n + 1, length(s));
-    result := StrToInt(s);
-
+    result := s;
   end;
 
 begin
@@ -583,39 +582,44 @@ begin
 
     // build list of bar.xml files
     AdvBuildFileList(dir + '*bar.xml', faAnyFile, slBars, amAny, [flFullNames, flRecursive]);
-    for i := 0 to Pred(slBars.Count) do begin
-      xml.LoadFromFile(slBars[i]);
-      if xml.Root.Items.ItemNamed['Settings'] <> nil then
-        with xml.Root.Items.ItemNamed['Settings'].Items do begin
-          newItem := TBarItem.Create;
-          with newItem do begin
-            Name := Value('Name', 'Toolbar');
-            BarID := ExtractBarID(slBars[i]);
-            Monitor := IntValue('MonitorIndex', 0);
-            PMonitor := BoolValue('PrimaryMonitor', True);
-            HPos := IntValue('HorizPos', 0);
-            VPos := IntValue('VertPos', 0);
-            AutoStart := BoolValue('AutoStart', True);
-          end;
-        end;
-
-      slModules.Clear;
-      if xml.Root.Items.ItemNamed['Modules'] <> nil then
-        with xml.Root.Items.ItemNamed['Modules'] do begin
-          newItem.ModuleCount := Items.Count;
-          for j := 0 to Pred(Items.Count) do begin
-
-            if Items.Item[j].Items.Value('Module') <> '' then
-              slModules.Add(PathRemoveExtension(Items.Item[j].Items.Value('Module')))
+    for i := 0 to Pred(slBars.Count) do
+    begin
+      if TryStrToInt(ExtractBarID(slBars[i]),n) then
+      begin
+        xml.LoadFromFile(slBars[i]);
+        if xml.Root.Items.ItemNamed['Settings'] <> nil then
+          with xml.Root.Items.ItemNamed['Settings'].Items do
+          begin
+            newItem := TBarItem.Create;
+            with newItem do
+            begin
+              Name := Value('Name', 'Toolbar');
+              BarID := StrToInt(ExtractBarID(slBars[i]));
+              Monitor := IntValue('MonitorIndex', 0);
+              PMonitor := BoolValue('PrimaryMonitor', True);
+              HPos := IntValue('HorizPos', 0);
+              VPos := IntValue('VertPos', 0);
+              AutoStart := BoolValue('AutoStart', True);
+            end;
           end;
 
-          if slModules.Count <> 0 then
-            newItem.Modules := slModules.CommaText;
-        end;
+          slModules.Clear;
+          if xml.Root.Items.ItemNamed['Modules'] <> nil then
+          with xml.Root.Items.ItemNamed['Modules'] do
+          begin
+            newItem.ModuleCount := Items.Count;
+            for j := 0 to Pred(Items.Count) do
+            begin
+              if Items.Item[j].Items.Value('Module') <> '' then
+                slModules.Add(PathRemoveExtension(Items.Item[j].Items.Value('Module')))
+            end;
 
-      AList.Add(newItem);
+            if slModules.Count <> 0 then
+              newItem.Modules := slModules.CommaText;
+          end;
+          AList.Add(newItem);
+      end;
     end;
-
   finally
     slBars.Free;
     slModules.Free;
