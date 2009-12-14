@@ -150,6 +150,8 @@ var
   sr : TSearchRec;
   fileloaded : boolean;
   lab : boolean;
+  n : integer;
+  IsInt : boolean;
 begin
   Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
 
@@ -159,7 +161,8 @@ begin
     if FindFirst(Dir + '*',FADirectory,sr) = 0 then
     begin
       repeat
-        if FileCheck(Dir + sr.Name + '\Bar.xml',True) then
+        IsInt := TryStrToInt(sr.Name,n);
+        if (FileCheck(Dir + sr.Name + '\Bar.xml',True)) and (IsInt) then
         begin
           fileloaded := False;
           try
