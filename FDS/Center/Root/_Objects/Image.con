@@ -3,7 +3,7 @@
   <Sections>
     <Image>
       <Dll>_ObjectDlls\Image.dll</Dll>
-      <Icon>Icons\Image.png</Icon>
+      <Icon>_ObjectDlls\Image.png</Icon>
     </Image>
   </Sections>
 </SharpCenter>
