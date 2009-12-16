@@ -538,6 +538,19 @@ begin
           // ** SHELL: PATHS **
           if (Pos('shell:', LowerCase(text)) = 1) then begin
             Debug('Execute: SHELL:', DMT_TRACE);
+
+            if CompareText(text, 'shell:ControlPanel') = 0 then
+            begin
+              if ShellOpenFile(Handle, 'Control', '', '', Elevate) = 1 then begin
+                // Save to recent item list
+                SaveMostUsedItem(text, SaveHistory);
+                SaveRecentItem(text, SaveHistory);
+
+                Result := True;
+                Exit;
+              end;
+            end;
+
             if IsWindowsVista then
             begin
               if CompareText(text,'shell:drivefolder') = 0 then
