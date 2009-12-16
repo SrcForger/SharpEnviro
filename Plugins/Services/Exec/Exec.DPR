@@ -32,11 +32,11 @@ uses
   StrUtils,
   sharpapi,
   uExecServiceExecute in 'uExecServiceExecute.pas',
-  uExecServiceAliasList in 'uExecServiceAliasList.pas',
   uExecServicePathIncludeList in 'uExecServicePathIncludeList.pas',
   uExecServiceSettings in 'uExecServiceSettings.pas',
   uExecServiceRecentItemList in 'uExecServiceRecentItemList.pas',
-  uExecServiceUsedItemList in 'uExecServiceUsedItemList.pas';
+  uExecServiceUsedItemList in 'uExecServiceUsedItemList.pas',
+  uAliasList in '..\..\..\Common\Units\AliasList\uAliasList.pas';
 
 {$R *.RES}
 
