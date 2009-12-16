@@ -31,7 +31,7 @@ uses
   Windows, Messages, SysUtils, Classes, Controls, Forms, Types, StrUtils, ShellApi,
   Dialogs, StdCtrls, GR32, GR32_PNG, SharpEBaseControls, SharpEButton, Graphics,
   JvSimpleXML, SharpApi, Math, SharpEEdit, Menus,
-  uISharpBarModule;
+  uISharpBarModule, uAliasList;
 
 
 type
@@ -162,7 +162,8 @@ end;
 procedure TMainForm.LoadAutoComplete;
 var
   XML : TJvSimpleXML;
-  n : integer;
+  n, n1 : integer;
+  AliasList : TAliasList;
 begin
   sItems.Clear;
 
@@ -183,6 +184,21 @@ begin
   end;
 
   XML.Free;
+
+  // Add the Alias-List items
+  AliasList := TAliasList.Create;
+  AliasList.Load(GetSharpeUserSettingsPath + 'SharpCore\Services\Exec\AliasList.xml');
+  for n := 0 to AliasList.Count - 1 do
+  begin
+    for n1 := 0 to sItems.Count - 1 do
+    begin
+      if sItems[n1] = AliasList.AliasItem[n].AliasName then
+        break;
+    end;
+
+    if n1 >= sItems.Count - 1 then
+      sItems.Add(AliasList.AliasItem[n].AliasName);
+  end;
 end;
 
 procedure TMainForm.SaveAutoComplete(Item : string);

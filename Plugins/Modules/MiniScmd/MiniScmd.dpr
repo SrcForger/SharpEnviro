@@ -40,7 +40,8 @@ uses
   uISharpESkin,
   uISharpBar,
   uInterfacedSharpBarModuleBase,
-  MainWnd in 'MainWnd.pas' {MainForm};
+  MainWnd in 'MainWnd.pas' {MainForm},
+  uAliasList in '..\..\..\Common\Units\AliasList\uAliasList.pas';
 
 type
   TInterfacedSharpBarModule = class(TInterfacedSharpBarModuleBase)
