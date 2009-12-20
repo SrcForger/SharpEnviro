@@ -142,7 +142,7 @@ var
   item : TNotifyItem;
   id : Cardinal;
 begin
-  if (Msg = WM_LBUTTONUP) or (Msg = WM_RBUTTONUP) then
+  if (Msg = WM_LBUTTONDOWN) or (Msg = WM_RBUTTONDOWN) then
   begin
     for n := SharpNotifyWindows.Count - 1 downto 0 do
     begin

@@ -581,8 +581,8 @@ begin
   begin
     item := TTrayItem(Data);
     case Msg of
-      WM_LBUTTONUP:  postmessage(item.Wnd,item.CallbackMessage,item.UID,NIN_BALLOONUSERCLICK);
-      else postmessage(item.Wnd,item.CallbackMessage,item.UID,NIN_BALLOONHIDE);
+      WM_LBUTTONDOWN:  postmessage(item.Wnd,item.CallbackMessage,item.UID,NIN_BALLOONUSERCLICK);
+      else postmessage(item.Wnd,item.CallbackMessage,item.UID,NIN_BALLOONTIMEOUT);
     end;
   end;
 end;
