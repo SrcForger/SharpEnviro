@@ -205,9 +205,9 @@ begin
     if not DirectoryExists(Settings.Directory) then
       ForceDirectories(Settings.Directory);
     XML.SaveToFile(Settings.Directory + '\NotesModuleTabsSettings.xml');
-  finally
-    XML.Free;
+  except
   end;
+  XML.Free;
 end;
 
 procedure TMainForm.LoadSettings;
