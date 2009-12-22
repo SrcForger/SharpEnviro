@@ -124,7 +124,8 @@ begin
    SList.Add('shell:ConflictFolder=Conflicts');
    SList.Add('shell:ConnectionsFolder=Connections');
    SList.Add('shell:Contacts=Contacts');
-   SList.Add('shell:ControlPanelFolder=Control Panel');
+   SList.Add('shell:ControlPanel=Control Panel');
+   SList.Add('shell:ControlPanelFolder=Control Panel Folder');
    SList.Add('shell:Cookies=Cookies');
    SList.Add('shell:CredentialManager=Credential Manager');
    SList.Add('shell:CryptoKeys=Crypto Keys');
