@@ -42,8 +42,7 @@ uses
   SharpApi,
   uSharpCenterPluginScheme,
   ItemsWnd in 'ItemsWnd.pas' {frmItemsWnd},
-  EditWnd in 'EditWnd.pas' {frmEditWnd},
-  uExecServiceAliasList in '..\..\..\Services\Exec\uExecServiceAliasList.pas';
+  EditWnd in 'EditWnd.pas' {frmEditWnd};
 
 {$E .dll}
 

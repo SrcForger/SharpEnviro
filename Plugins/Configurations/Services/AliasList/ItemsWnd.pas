@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, SharpEListBoxEx, ImgList, PngImageList, uExecServiceAliasList,
+  Dialogs, StdCtrls, SharpEListBoxEx, ImgList, PngImageList, uAliasList,
   SharpAPI, SharpCenterApi, EditWnd, ISharpCenterHostUnit;
 
 type

@@ -7,7 +7,7 @@ uses
   Dialogs, SharpApi, Buttons, PngSpeedButton, StdCtrls,
   ExtCtrls, SharpDialogs, JclFileUtils, SharpEListBoxEx,
   JvComponentBase, ImgList, SharpcenterApi,
-  uExecServiceAliasList, ISharpCenterHostUnit, JvExControls, JvXPCore,
+  uAliasList, ISharpCenterHostUnit, JvExControls, JvXPCore,
   JvXPCheckCtrls;
 
 type
