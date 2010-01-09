@@ -8,6 +8,7 @@ const
   // new shell hook param
   HSHELL_SYSMENU = 9;
 
+procedure SetForegroundWindowEx(Wnd: HWND);
 function HasWriteAccess(pFile : String) : boolean;  
 function IsWow64(): boolean;
 function NETFramework35: Boolean;
@@ -15,6 +16,30 @@ function FindAllWindows(const WindowClass: string): THandleArray;
 function ForceForegroundWindow(hwnd: THandle): Boolean;
 
 implementation
+
+procedure SetForegroundWindowEx(Wnd: HWND);
+var
+  Attached: Boolean;
+  ThreadId: DWORD;
+  FgWindow: HWND;
+  AttachTo: DWORD;
+begin                   
+  Attached := False;
+  ThreadId := GetCurrentThreadId;
+  FgWindow := GetForegroundWindow();
+  AttachTo := GetWindowThreadProcessId(FgWindow, nil);
+  if (AttachTo <> 0) and (AttachTo <> ThreadId) then
+     if AttachThreadInput(ThreadId, AttachTo, True) then
+     begin
+       Attached := Windows.SetFocus(Wnd) <> 0;
+       AttachThreadInput(ThreadId, AttachTo, False);
+     end;
+  if not Attached then
+  begin
+    SetForegroundWindow(Wnd);
+    SetFocus(Wnd);
+  end;
+end;
 
 function HasWriteAccess(pFile : String) : boolean;
 var
