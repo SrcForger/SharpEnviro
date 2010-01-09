@@ -54,7 +54,7 @@ uses
 
   // Project
   uExecServicePathIncludeList,
-  uExecServiceAliasList,
+  uAliasList,
   uExecServiceRecentItemList,
   uExecServiceUsedItemList,
   uExecServiceSettings;
