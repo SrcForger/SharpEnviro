@@ -38,7 +38,7 @@ type
   TfrmAlarmClock = class(TForm)
     SharpECenterHeader1: TSharpECenterHeader;
     SharpECenterHeader2: TSharpECenterHeader;
-    pnlBottom: TPanel;
+    Panel3: TPanel;
     Panel2: TPanel;
     Panel1: TPanel;
     Label1: TLabel;
@@ -46,14 +46,12 @@ type
     cbAutostart: TJvXPCheckbox;
     Label3: TLabel;
     Label4: TLabel;
-    Label5: TLabel;
     sgbTimeYear: TSharpeGaugeBox;
     sgbTimeMonth: TSharpeGaugeBox;
     sgbTimeDay: TSharpeGaugeBox;
     sgbTimeHour: TSharpeGaugeBox;
     sgbTimeMinute: TSharpeGaugeBox;
     sgbTimeSecond: TSharpeGaugeBox;
-    btnSoundBrowse: TButton;
     Label6: TLabel;
     Label7: TLabel;
     Label8: TLabel;
@@ -62,7 +60,13 @@ type
     Label11: TLabel;
     edtTimeout: TEdit;
     edtSnooze: TEdit;
+    SharpECenterHeader3: TSharpECenterHeader;
+    Panel4: TPanel;
+    Label5: TLabel;
     edtSound: TEdit;
+    btnSoundBrowse: TButton;
+    cbDefaultSound: TJvXPCheckbox;
+    Label12: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure UpdateSettingsEvent(Sender: TObject);
 
@@ -126,6 +130,9 @@ end;
 
 procedure TfrmAlarmClock.cbOnChange(Sender: TObject);
 begin
+  edtSound.Enabled := not cbDefaultSound.Checked;
+  btnSoundBrowse.Enabled := not cbDefaultSound.Checked;
+
   UpdateSettings;
 end;
 

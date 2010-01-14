@@ -26,7 +26,7 @@ object frmAlarmClock: TfrmAlarmClock
     Margins.Right = 5
     Margins.Bottom = 0
     Title = 'Global Settings'
-    Description = 'Define the length of timeout and snooze'
+    Description = 'Define how long the alarm should sound'
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
@@ -47,12 +47,12 @@ object frmAlarmClock: TfrmAlarmClock
     DescriptionColor = clRed
     Align = alTop
   end
-  object pnlBottom: TPanel
+  object Panel3: TPanel
     AlignWithMargins = True
     Left = 5
     Top = 153
     Width = 406
-    Height = 95
+    Height = 79
     Margins.Left = 5
     Margins.Top = 10
     Margins.Right = 10
@@ -63,13 +63,6 @@ object frmAlarmClock: TfrmAlarmClock
     ParentBackground = False
     ParentColor = True
     TabOrder = 2
-    object Label5: TLabel
-      Left = 0
-      Top = 82
-      Width = 53
-      Height = 13
-      Caption = 'Sound File:'
-    end
     object Label6: TLabel
       Left = 2
       Top = 23
@@ -78,48 +71,55 @@ object frmAlarmClock: TfrmAlarmClock
       Caption = 'YYYY'
     end
     object Label7: TLabel
-      Left = 51
+      Left = 58
       Top = 23
       Width = 16
       Height = 13
       Caption = 'MM'
     end
     object Label8: TLabel
-      Left = 95
+      Left = 110
       Top = 23
       Width = 14
       Height = 13
       Caption = 'DD'
     end
     object Label9: TLabel
-      Left = 167
+      Left = 168
       Top = 23
       Width = 14
       Height = 13
       Caption = 'HH'
     end
     object Label10: TLabel
-      Left = 207
+      Left = 216
       Top = 23
       Width = 16
       Height = 13
       Caption = 'MM'
     end
     object Label11: TLabel
-      Left = 247
+      Left = 264
       Top = 23
       Width = 12
       Height = 13
       Caption = 'SS'
     end
+    object Label12: TLabel
+      Left = 2
+      Top = 66
+      Width = 301
+      Height = 13
+      Caption = 'Note: Setting Year, Month or Date to 0 ignores that parameter'
+      Enabled = False
+    end
     object sgbTimeDay: TSharpeGaugeBox
       AlignWithMargins = True
-      Left = 95
+      Left = 110
       Top = 39
-      Width = 42
+      Width = 46
       Height = 21
       ParentBackground = False
-      TabOrder = 3
       Min = 0
       Max = 31
       Value = 0
@@ -131,12 +131,11 @@ object frmAlarmClock: TfrmAlarmClock
       BackgroundColor = clWindow
     end
     object sgbTimeHour: TSharpeGaugeBox
-      Left = 167
+      Left = 168
       Top = 39
-      Width = 34
+      Width = 42
       Height = 21
       ParentBackground = False
-      TabOrder = 4
       Min = 0
       Max = 23
       Value = 0
@@ -148,12 +147,11 @@ object frmAlarmClock: TfrmAlarmClock
       BackgroundColor = clWindow
     end
     object sgbTimeMinute: TSharpeGaugeBox
-      Left = 207
+      Left = 216
       Top = 39
-      Width = 34
+      Width = 42
       Height = 21
       ParentBackground = False
-      TabOrder = 5
       Min = 0
       Max = 59
       Value = 0
@@ -166,12 +164,11 @@ object frmAlarmClock: TfrmAlarmClock
     end
     object sgbTimeMonth: TSharpeGaugeBox
       AlignWithMargins = True
-      Left = 51
+      Left = 58
       Top = 39
-      Width = 38
+      Width = 46
       Height = 21
       ParentBackground = False
-      TabOrder = 2
       Min = 0
       Max = 12
       Value = 0
@@ -183,12 +180,11 @@ object frmAlarmClock: TfrmAlarmClock
       BackgroundColor = clWindow
     end
     object sgbTimeSecond: TSharpeGaugeBox
-      Left = 247
+      Left = 264
       Top = 39
-      Width = 34
+      Width = 42
       Height = 21
       ParentBackground = False
-      TabOrder = 6
       Min = 0
       Max = 59
       Value = 0
@@ -203,10 +199,9 @@ object frmAlarmClock: TfrmAlarmClock
       AlignWithMargins = True
       Left = 2
       Top = 39
-      Width = 43
+      Width = 50
       Height = 21
       ParentBackground = False
-      TabOrder = 1
       Min = 0
       Max = 3000
       Value = 0
@@ -218,31 +213,13 @@ object frmAlarmClock: TfrmAlarmClock
       BackgroundColor = clWindow
     end
     object cbAutostart: TJvXPCheckbox
-      Left = 0
+      Left = 1
       Top = 0
       Width = 161
       Height = 17
       Caption = 'Auto Enabled'
       TabOrder = 0
       OnClick = cbOnChange
-    end
-    object btnSoundBrowse: TButton
-      Left = 271
-      Top = 74
-      Width = 21
-      Height = 21
-      Caption = '...'
-      TabOrder = 8
-      OnClick = btnSoundBrowseClick
-    end
-    object edtSound: TEdit
-      Left = 64
-      Top = 74
-      Width = 201
-      Height = 21
-      TabOrder = 7
-      Text = 'Default'
-      OnKeyPress = edtOnChange
     end
   end
   object Panel2: TPanel
@@ -263,20 +240,20 @@ object frmAlarmClock: TfrmAlarmClock
     TabOrder = 0
     object Label1: TLabel
       Left = 0
-      Top = 8
-      Width = 45
+      Top = 4
+      Width = 61
       Height = 13
-      Caption = 'Timeout: '
+      Caption = 'Silence After'
     end
     object Label3: TLabel
-      Left = 160
-      Top = 8
+      Left = 171
+      Top = 4
       Width = 39
       Height = 13
       Caption = 'seconds'
     end
     object edtTimeout: TEdit
-      Left = 64
+      Left = 75
       Top = 0
       Width = 90
       Height = 21
@@ -301,27 +278,98 @@ object frmAlarmClock: TfrmAlarmClock
     ParentColor = True
     TabOrder = 1
     object Label2: TLabel
-      Left = 0
-      Top = 9
-      Width = 39
+      Left = 2
+      Top = 6
+      Width = 35
       Height = 13
-      Caption = 'Snooze:'
+      Caption = 'Snooze'
     end
     object Label4: TLabel
-      Left = 160
-      Top = 9
+      Left = 171
+      Top = 6
       Width = 39
       Height = 13
       Caption = 'seconds'
     end
     object edtSnooze: TEdit
-      Left = 64
+      Left = 75
       Top = 1
       Width = 90
       Height = 21
       TabOrder = 0
       Text = '540'
       OnKeyPress = edtNumOnChange
+    end
+  end
+  object SharpECenterHeader3: TSharpECenterHeader
+    AlignWithMargins = True
+    Left = 5
+    Top = 237
+    Width = 411
+    Height = 37
+    Margins.Left = 5
+    Margins.Top = 5
+    Margins.Right = 5
+    Margins.Bottom = 0
+    Title = 'Alarm Sound'
+    Description = 'Select an alarm sound'
+    TitleColor = clWindowText
+    DescriptionColor = clRed
+    Align = alTop
+    ExplicitLeft = 0
+    ExplicitTop = 244
+  end
+  object Panel4: TPanel
+    AlignWithMargins = True
+    Left = 5
+    Top = 284
+    Width = 406
+    Height = 44
+    Margins.Left = 5
+    Margins.Top = 10
+    Margins.Right = 10
+    Margins.Bottom = 0
+    Align = alTop
+    AutoSize = True
+    BevelOuter = bvNone
+    ParentBackground = False
+    ParentColor = True
+    TabOrder = 6
+    ExplicitLeft = 10
+    ExplicitTop = 301
+    object Label5: TLabel
+      Left = 2
+      Top = 26
+      Width = 16
+      Height = 13
+      Caption = 'File'
+    end
+    object edtSound: TEdit
+      Left = 48
+      Top = 23
+      Width = 201
+      Height = 21
+      TabOrder = 0
+      Text = 'Default'
+      OnKeyPress = edtOnChange
+    end
+    object btnSoundBrowse: TButton
+      Left = 255
+      Top = 22
+      Width = 21
+      Height = 21
+      Caption = '...'
+      TabOrder = 1
+      OnClick = btnSoundBrowseClick
+    end
+    object cbDefaultSound: TJvXPCheckbox
+      Left = 0
+      Top = 0
+      Width = 161
+      Height = 17
+      Caption = 'Use Default Sound'
+      TabOrder = 2
+      OnClick = cbOnChange
     end
   end
 end

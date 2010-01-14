@@ -89,7 +89,10 @@ begin
     with Items.ItemNamed['Time'].Items do
     begin
       Add('AutoStart', integer(frmAlarmClock.cbAutostart.Checked));
-      Add('Sound', frmAlarmClock.edtSound.Text);
+      if frmAlarmClock.cbDefaultSound.Checked then
+        Add('Sound', 'Default')
+      else
+        Add('Sound', frmAlarmClock.edtSound.Text);
 
       Add('Second', frmAlarmClock.sgbTimeSecond.Value);
       Add('Minute', frmAlarmClock.sgbTimeMinute.Value);
@@ -120,7 +123,6 @@ begin
         with Items.ItemNamed['Time'].Items do
         begin
           frmAlarmClock.cbAutostart.Checked := BoolValue('AutoStart', True);
-          frmAlarmClock.edtSound.Text := Value('Sound', 'Default');
 
           frmAlarmClock.sgbTimeSecond.Value := IntValue('Second', 0);
           frmAlarmClock.sgbTimeMinute.Value := IntValue('Minute', 0);
@@ -128,10 +130,16 @@ begin
           frmAlarmClock.sgbTimeDay.Value := IntValue('Day', 0);
           frmAlarmClock.sgbTimeMonth.Value := IntValue('Month', 0);
           frmAlarmClock.sgbTimeYear.Value := IntValue('Year', 0);
+
+          frmAlarmClock.cbDefaultSound.Checked := (Value('Sound', 'Default') = 'Default');
+          frmAlarmClock.edtSound.Text := Value('Sound', 'Default');
         end;
     end;
   end else
     Save;
+
+  frmAlarmClock.edtSound.Enabled := not frmAlarmClock.cbDefaultSound.Checked;
+  frmAlarmClock.btnSoundBrowse.Enabled := not frmAlarmClock.cbDefaultSound.Checked;
 end;
 
 function TSharpCenterPlugin.Open: Cardinal;
