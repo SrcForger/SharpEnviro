@@ -118,7 +118,7 @@ begin
   dlg.Filter := 'Audio Files (*.mp3, *.wav)|*.mp3;*.wav';
   dlg.FilterIndex := 1;
 
-  if dlg.Execute then
+  if dlg.Execute(FindWindow('TSharpCenterWnd', nil)) then
   begin
     edtSound.Text := dlg.FileName;
 

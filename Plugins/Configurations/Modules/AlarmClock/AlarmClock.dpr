@@ -144,7 +144,9 @@ end;
 
 function TSharpCenterPlugin.Open: Cardinal;
 begin
-  if frmAlarmClock = nil then frmAlarmClock := TfrmAlarmClock.Create(nil);
+  if frmAlarmClock = nil then
+    frmAlarmClock := TfrmAlarmClock.Create(nil);
+    
   frmAlarmClock.PluginHost := PluginHost;
   uVistaFuncs.SetVistaFonts(frmAlarmClock);
 
@@ -168,7 +170,7 @@ begin
   begin
     Name := 'Alarm Clock';
     Description := 'Alarm Clock Module Configuration';
-    Author := 'Mathias Tillman (mathias.tillman@gmail.com)';
+    Author := 'Mathias Tillman (mathias@sharpenviro.com)';
     Version := '0.7.6.0';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),

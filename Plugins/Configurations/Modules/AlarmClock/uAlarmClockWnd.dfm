@@ -3,7 +3,7 @@ object frmAlarmClock: TfrmAlarmClock
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmAlarmClock'
-  ClientHeight = 333
+  ClientHeight = 338
   ClientWidth = 421
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -246,16 +246,16 @@ object frmAlarmClock: TfrmAlarmClock
       Caption = 'Silence After'
     end
     object Label3: TLabel
-      Left = 171
+      Left = 153
       Top = 4
       Width = 39
       Height = 13
       Caption = 'seconds'
     end
     object edtTimeout: TEdit
-      Left = 75
+      Left = 85
       Top = 0
-      Width = 90
+      Width = 62
       Height = 21
       TabOrder = 0
       Text = '60'
@@ -285,16 +285,16 @@ object frmAlarmClock: TfrmAlarmClock
       Caption = 'Snooze'
     end
     object Label4: TLabel
-      Left = 171
+      Left = 153
       Top = 6
       Width = 39
       Height = 13
       Caption = 'seconds'
     end
     object edtSnooze: TEdit
-      Left = 75
+      Left = 85
       Top = 1
-      Width = 90
+      Width = 62
       Height = 21
       TabOrder = 0
       Text = '540'
@@ -316,8 +316,6 @@ object frmAlarmClock: TfrmAlarmClock
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
-    ExplicitLeft = 0
-    ExplicitTop = 244
   end
   object Panel4: TPanel
     AlignWithMargins = True
@@ -335,8 +333,6 @@ object frmAlarmClock: TfrmAlarmClock
     ParentBackground = False
     ParentColor = True
     TabOrder = 6
-    ExplicitLeft = 10
-    ExplicitTop = 301
     object Label5: TLabel
       Left = 2
       Top = 26
