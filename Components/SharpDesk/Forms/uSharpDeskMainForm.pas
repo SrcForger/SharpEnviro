@@ -4,7 +4,7 @@ Description: Main window for displaying and controling all desktop objects
 Copyright (C) Martin Krämer <MartinKraemer@gmx.net>
 
 Source Forge Site
-https://sourceforge.net/projects/sharpe/
+https://sourceforge.net/projects/sharpe/                                     
 
 SharpE Site
 http://www.sharpenviro.com
@@ -331,44 +331,9 @@ begin
 end;
 
 procedure TSharpDeskMainForm.WMDisplayChange(var Msg : TMessage);
-var
-  wnd : hwnd;
-  n : integer;
-  R : TRect;
-  b : boolean;
 begin
-  wnd := GetForeGroundWindow;
-  if wnd <> 0 then
-  begin
-    b := False;
-    // check if a window is running in FullScreen
-    if ((GetWindowLong(wnd,GWL_STYLE) and WS_BORDER) = 0) and
-       ((GetWindowLong(wnd,GWL_STYLE) and WS_CAPTION) = 0) then
-      for n := 0 to Screen.MonitorCount - 1 do
-      begin
-        GetWindowRect(wnd,R);
-        if (R.Left = Screen.Monitors[n].BoundsRect.Left) and
-           (R.Right = Screen.Monitors[n].BoundsRect.Right) and
-           (R.Top = Screen.Monitors[n].BoundsRect.Top) and
-           (R.Bottom = Screen.Monitors[n].BoundsRect.Bottom) then
-        begin
-          b := True;
-          break;
-        end;     
-      end;
-
-    if (not b) or (wnd = handle) then
-    begin
-      SizePosChanging := True;
-      SharpDeskMainForm.Left := Screen.DesktopLeft;
-      SharpDeskMainForm.Top  := Screen.DesktopTop;
-      SharpDeskMainForm.Width := Screen.DesktopWidth;
-      SharpDeskMainForm.Height := Screen.DesktopHeight;
-      SizePosChanging := False;
-      BackgroundReloadTimer.Enabled := False;
-      BackgroundReloadTimer.Enabled := True;
-    end;
-  end;
+  BackgroundReloadTimer.Enabled := False;
+  BackgroundReloadTimer.Enabled := True;
 end;
 
 procedure TSharpDeskMainForm.WMMouseMove(var Msg: TMessage);
@@ -800,8 +765,43 @@ end;
 
 
 procedure TSharpDeskMainForm.BackgroundReloadTimerTimer(Sender: TObject);
+var
+  wnd : hwnd;
+  n : integer;
+  R : TRect;
+  b : boolean;
 begin
   BackgroundReloadTimer.Enabled := False;
+
+  wnd := GetForeGroundWindow;
+  if wnd <> 0 then
+  begin
+    b := False;
+    GetWindowRect(wnd, R);
+    // check if a window is running in FullScreen
+    for n := 0 to Screen.MonitorCount - 1 do
+    begin
+      if (R.Left = Screen.Monitors[n].BoundsRect.Left) and
+        (R.Right = Screen.Monitors[n].BoundsRect.Right) and
+        (R.Top = Screen.Monitors[n].BoundsRect.Top) and
+        (R.Bottom = Screen.Monitors[n].BoundsRect.Bottom) then
+      begin
+        b := True;
+        break;
+      end;
+    end;
+
+    if (not b) or (wnd = handle) then
+    begin
+      SizePosChanging := True;
+      SharpDeskMainForm.Left := Screen.DesktopLeft;
+      SharpDeskMainForm.Top  := Screen.DesktopTop;
+      SharpDeskMainForm.Width := Screen.DesktopWidth;
+      SharpDeskMainForm.Height := Screen.DesktopHeight;
+      SizePosChanging := False;
+    end;
+  end;
+
   SharpDeskMainForm.SendMessageToConsole('loading wallpaper settings',COLOR_OK,DMT_STATUS);
   SharpDeskMainForm.SendMessageToConsole('loading wallpaper',COLOR_OK,DMT_STATUS);
   Background.Reload(False);
@@ -1550,8 +1550,8 @@ end;
 
 procedure TSharpDeskMainForm.FormResize(Sender: TObject);
 begin
-  SharpDesk.ResizeBackgroundLayer;
   BackgroundReloadTimer.Enabled := False;
+  SharpDesk.ResizeBackgroundLayer;
   BackgroundReloadTimer.Enabled := True;
 end;
 
