@@ -2603,7 +2603,8 @@ begin
 
   result := SchemedStringToColor(Color,cs);
   result := abs(result);
-  result := LightenRGB(result,ModValue);
+  // result := LightenRGB(result,ModValue);
+  result := SharpGraphicsUtils.ChangeBrightnessHSL32(result,ModValue);
 end;
 
 function SchemedStringToColor(str: string; cs: ISharpEScheme): TColor;
@@ -2652,7 +2653,7 @@ begin
   R := GetRValue(src);
   G := GetGValue(src);
   B := GetBValue(src);
-  R2 := R + amount;
+  R2 := R + amount;                
   G2 := G + amount;
   B2 := B + amount;
 
@@ -2672,8 +2673,8 @@ begin
   else if B2 < 0 then
     bo := B2;
   if (ro < 0) or (go < 0) or (bo < 0) then
-    overhead := min(ro,min(go,bo))
-  else overhead := max(ro,max(go,bo));
+    overhead := max(ro,min(go,bo))
+  else overhead := min(ro,max(go,bo));
   R2 := R2 - overhead;
   G2 := G2 - overhead;
   B2 := B2 - overhead;
