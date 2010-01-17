@@ -46,6 +46,7 @@ type
   procedure ReplaceTransparentAreas(Dst,AlphaSource : TBitmap32; ReplaceColor : TColor32);
 
   procedure HSLChangeImage(bmp : Tbitmap32; HMod,SMod,LMod : integer);
+  function ChangeBrightnessHSL32(Src : TColor32; Amount : integer) : TColor32;  
 
   procedure VGradient(Bmp : TBitmap32; color1,color2 : TColor; st,et : byte; Rect : TRect);
   procedure HGradient(Bmp : TBitmap32; color1,color2 : TColor; st,et : byte; Rect : TRect);
@@ -297,6 +298,16 @@ begin
     end;
   finally
   end;
+end;
+
+function ChangeBrightnessHSL32(Src : TColor32; Amount : integer) : TColor32;
+var
+  h,s,l : byte;
+begin
+  RGBToHSL(Src,h,s,l);
+  l := l + Amount;
+  l := Min(Max(l,0),255);
+  result := HSLToRGB(h,s,l);
 end;
 
 procedure HSLChangeImage(bmp : Tbitmap32; HMod,SMod,LMod : integer);
