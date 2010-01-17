@@ -102,7 +102,8 @@ var
   i: Integer;
 begin
   for i := 0 to High(EnumParam.Wndlist) do
-    CloseWindow(EnumParam.WndList[i]);
+    if GetWindowLong(EnumParam.WndList[i], GWL_STYLE) and WS_MINIMIZE = 0 then
+      ShowWindowAsync(EnumParam.WndList[i], SW_MINIMIZE);
 end;
 
 procedure RestoreAll(var EnumParam: TParam);
@@ -110,8 +111,8 @@ var
   i: Integer;
 begin
   for i := 0 to High(EnumParam.WndList) do
-    if IsIconic(EnumParam.WndList[i]) then ShowWindow(EnumParam.WndList[i], SW_Restore)
-    else SwitchToThisWindow(EnumParam.WndList[i], True);
+    if GetWindowLong(EnumParam.WndList[i], GWL_STYLE) and WS_MINIMIZE <> 0 then
+      ShowWindowAsync(EnumParam.WndList[i], SW_RESTORE);
 end;
 
 procedure RegisterKeyBoardLocals;
