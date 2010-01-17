@@ -1516,7 +1516,7 @@
           <location>0,0</location>
           <dimension>w,h</dimension>
           <image>images/Empty.png</image>
-	  <color>$IconHighlight-128</color>
+	  <color>$IconHighlight-48</color>
           <alpha>164</alpha>
         </skinpart>
         <skinpart>
@@ -1567,7 +1567,7 @@
           <location>0,0</location>
           <dimension>w,h</dimension>
           <image>images/Empty.png</image>
-	  <color>$IconHighlight-128</color>
+	  <color>$IconHighlight-48</color>
           <alpha>164</alpha>
         </skinpart>
         <skinpart>
@@ -1622,8 +1622,8 @@
           <location>0,0</location>
           <dimension>w,h</dimension>
           <image>images/Empty.png</image>
-	  <color>$IconHighlight-128</color>
-          <alpha>194</alpha>
+	  <color>$IconHighlight-12</color>
+          <alpha>164</alpha>
         </skinpart>
         <skinpart>
           <location>2,0</location>
@@ -1669,12 +1669,16 @@
         </skinpart>        
       </normalhover>
       <down>
+        <icon>
+          <lighten>1</lighten>
+          <lightenamount>24</lightenamount>
+        </icon> 
         <skinpart>
           <location>0,0</location>
           <dimension>w,h</dimension>
           <image>images/Empty.png</image>
-	  <color>$IconHighlight-128</color>
-          <alpha>255</alpha>
+	  <color>$IconHighlight-32</color>
+          <alpha>196</alpha>
         </skinpart>
         <skinpart>
           <location>2,0</location>
@@ -1732,14 +1736,14 @@
         </text>
         <icon>
           <lighten>1</lighten>
-          <lightenamount>32</lightenamount>
+          <lightenamount>48</lightenamount>
         </icon>     
         <skinpart>
           <location>0,0</location>
           <dimension>w,h</dimension>
           <image>images/Empty.png</image>
-	  <color>$IconHighlight-96</color>
-          <alpha>255</alpha>
+	  <color>$IconHighlight</color>
+          <alpha>196</alpha>
         </skinpart>
         <skinpart>
           <location>2,0</location>
