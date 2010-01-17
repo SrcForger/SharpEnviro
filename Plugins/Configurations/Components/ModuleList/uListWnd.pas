@@ -120,7 +120,7 @@ type
   end;
 
 procedure AddItemsToList(APluginID: string; AList: TObjectList);
-function ExtractBarID(ABarXmlFileName: string): Integer;
+function ExtractBarID(ABarXmlFileName: string): String;
 function ExtractBarName(ABarID: string): string;
 
 var
@@ -296,17 +296,16 @@ begin
   lblRight.Font.Color := lblLeft.Font.Color;
 end;
 
-function ExtractBarID(ABarXmlFileName: string): Integer;
-  var
-    s: string;
-    n: Integer;
-  begin
-    s := PathRemoveSeparator(ExtractFilePath(ABarXmlFileName));
-    n := JclStrings.StrLastPos('\', s);
-    s := Copy(s, n + 1, length(s));
-    result := StrToInt(s);
-
-  end;
+function ExtractBarID(ABarXmlFileName: string): String;
+var
+  s: string;
+  n: Integer;
+begin
+  s := PathRemoveSeparator(ExtractFilePath(ABarXmlFileName));
+  n := JclStrings.StrLastPos('\', s);
+  s := Copy(s, n + 1, length(s));
+  result := s;
+end;
 
 function ExtractBarName(ABarID: string): String;
   var
@@ -404,7 +403,7 @@ var
   newItem: TModuleItem;
   dir: string;
   slBars: TStringList;
-  i, j, n: Integer;
+  i, j, k : Integer;
 
 begin
   AList.Clear;
@@ -418,8 +417,8 @@ begin
     AdvBuildFileList(dir + '*bar.xml', faAnyFile, slBars, amAny, [flFullNames, flRecursive]);
     for i := 0 to Pred(slBars.Count) do begin
 
-      n := ExtractBarID(slBars[i]);
-      if n = StrToInt(APluginID) then begin
+      if TryStrToInt(ExtractBarID(slBars[i]),k) then
+      if k = StrToInt(APluginID) then begin
         if FileCheck(slBars[i],True) then
         begin
           xml.LoadFromFile(slBars[i]);
