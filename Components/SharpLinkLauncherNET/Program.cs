@@ -114,16 +114,40 @@ namespace SharpLinkLauncherNET
 		/// <param name="elevate">Whether or not to execute the link with elevate privileges.</param>
 		static void StartProcessAndExit(string linkPath, bool elevate)
 		{
+			if (elevate)
+				RestartElevated(linkPath);
+
 			try
 			{
 				ProcessStartInfo psi = new ProcessStartInfo(linkPath);
 				psi.UseShellExecute = true;
 
-				if (elevate)
-					psi.Verb = "runas";
-
 				// Execute the link using ShellExecute and elevated if necessary.
 				Process.Start(psi);
+				Environment.Exit((int)ExitCode.Success);
+			}
+			catch
+			{
+				// If for some reason there was an exception executing the link squash it.
+				Environment.Exit((int)ExitCode.ProcessStartFailed);
+			}
+		}
+
+		/// <summary>
+		/// Restart the link launcher elevated and exit the process whether or not the execution is successful or not.
+		/// </summary>
+		/// <param name="linkPath">The link to be executed using ShellExecute.</param>
+		static void RestartElevated(string linkPath)
+		{
+			try
+			{
+				ProcessStartInfo psi = new ProcessStartInfo(System.Windows.Forms.Application.ExecutablePath);
+				psi.UseShellExecute = true;
+				psi.Verb = "runas";
+				// Pass -1 to disable the timeout, the link to be launched
+				// and false to not elevate as the process will already be elevated.
+				psi.Arguments = String.Format("-t:{0} -l:\"{1}\" -e:{2}", -1, linkPath, false);
+				Process p = Process.Start(psi);
 				Environment.Exit((int)ExitCode.Success);
 			}
 			catch
