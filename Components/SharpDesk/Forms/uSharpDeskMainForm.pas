@@ -765,42 +765,15 @@ end;
 
 
 procedure TSharpDeskMainForm.BackgroundReloadTimerTimer(Sender: TObject);
-var
-  wnd : hwnd;
-  n : integer;
-  R : TRect;
-  b : boolean;
 begin
   BackgroundReloadTimer.Enabled := False;
 
-  wnd := GetForeGroundWindow;
-  if wnd <> 0 then
-  begin
-    b := False;
-    GetWindowRect(wnd, R);
-    // check if a window is running in FullScreen
-    for n := 0 to Screen.MonitorCount - 1 do
-    begin
-      if (R.Left = Screen.Monitors[n].BoundsRect.Left) and
-        (R.Right = Screen.Monitors[n].BoundsRect.Right) and
-        (R.Top = Screen.Monitors[n].BoundsRect.Top) and
-        (R.Bottom = Screen.Monitors[n].BoundsRect.Bottom) then
-      begin
-        b := True;
-        break;
-      end;
-    end;
-
-    if (not b) or (wnd = handle) then
-    begin
-      SizePosChanging := True;
-      SharpDeskMainForm.Left := Screen.DesktopLeft;
-      SharpDeskMainForm.Top  := Screen.DesktopTop;
-      SharpDeskMainForm.Width := Screen.DesktopWidth;
-      SharpDeskMainForm.Height := Screen.DesktopHeight;
-      SizePosChanging := False;
-    end;
-  end;
+  SizePosChanging := True;
+  SharpDeskMainForm.Left := Screen.DesktopLeft;
+  SharpDeskMainForm.Top  := Screen.DesktopTop;
+  SharpDeskMainForm.Width := Screen.DesktopWidth;
+  SharpDeskMainForm.Height := Screen.DesktopHeight;
+  SizePosChanging := False;
 
   SharpDeskMainForm.SendMessageToConsole('loading wallpaper settings',COLOR_OK,DMT_STATUS);
   SharpDeskMainForm.SendMessageToConsole('loading wallpaper',COLOR_OK,DMT_STATUS);
