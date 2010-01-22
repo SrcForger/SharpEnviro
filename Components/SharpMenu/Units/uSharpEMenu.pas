@@ -934,6 +934,7 @@ var
   ST : ISharpESkinText;
   textrect,iconrect : TRect;
   fixedCaption : String;
+  DPIMod : integer;
 
 procedure AssignDrawPart(part : ISharpESkinPartEx); overload;
 begin
@@ -1009,9 +1010,11 @@ begin
         text.SetSize(w,h);
         text.clear(color32(0,0,0,0));
         ST.AssignFontTo(text.Font,FSkinManager.Scheme);
-        FixedCaption := FixCaption(text,item.Caption,w-32);        
+        FixedCaption := FixCaption(text,item.Caption,w-32);
+        DPIMod := round((FSkinManager.DPIScaleFactor - 1) * 6);        
         Tpos := ST.GetXY(Rect(0, 0, text.TextWidth(FixedCaption), text.TextHeight(FixedCaption)),
                          Rect(0, 0, w, h),iconrect);
+        TPos.Y := TPos.Y - DPIMod;                         
         ST.RenderTo(text,Tpos.x,Tpos.y,FixedCaption,FSkinManager.Scheme);
         textrect := rect(TPos.X,TPos.Y,TPos.X + text.TextWidth(FixedCaption),TPos.Y + text.TextHeight(FixedCaption));
         dtext := true;
