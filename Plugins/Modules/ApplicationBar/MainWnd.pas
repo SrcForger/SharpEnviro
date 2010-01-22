@@ -738,6 +738,7 @@ begin
                          Item[n].Items.Value('Icon','shell:icon'),
                          Item[n].Items.Value('Caption','C:\'));
     end;
+  
   XML.Free;
 end;
 
@@ -1152,6 +1153,12 @@ var
   hasspecial : boolean;
 begin
   self.Caption := 'ApplicationBar';
+
+  case sState of
+    tisCompact: FButtonSpacing := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Compact.Spacing;
+    tisMini   : FButtonSpacing := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Mini.Spacing;
+    else FButtonSpacing := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Full.Spacing;
+  end;  
 
   case sState of
     tisCompact: hasspecial := mInterface.SkinInterface.SkinManager.Skin.TaskItem.Compact.HasSpecial;
