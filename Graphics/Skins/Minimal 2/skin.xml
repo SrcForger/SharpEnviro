@@ -1099,8 +1099,8 @@
     </disabled>
   </button>
   <font>
-    <locationTL>0,-5</locationTL>
-    <locationBL>0,6</locationBL>
+    <locationTL>0,-4</locationTL>
+    <locationBL>0,7</locationBL>
     <small>
       <size>6</size>
       <name>Small Fonts</name>

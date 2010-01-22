@@ -1826,7 +1826,7 @@
     </disabled>
   </button>
   <font>
-    <locationTL>0,-6</locationTL>
+    <locationTL>0,-5</locationTL>
     <locationBL>0,6</locationBL>
     <small>
       <size>6</size>

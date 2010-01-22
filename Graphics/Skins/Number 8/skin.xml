@@ -418,7 +418,7 @@
     <text>
       <draw>1</draw>
       <dimension>w-40,h</dimension>
-      <location>25,4</location>
+      <location>25,3</location>
       <name>Calibri</name>
       <size>11</size>
       <cleartype>1</cleartype>
@@ -2136,7 +2136,7 @@
     <locationBL>0,12</locationBL>
     <small>
       <bold>0</bold>
-      <name>Calibri</name>
+      <name>Calibri,Tahoma</name>
       <size>10</size>
       <cleartype>1</cleartype>
       <color>$Text</color>
@@ -2147,7 +2147,7 @@
       <location>0,0</location>
     </small>
     <medium>
-      <name>Calibri</name>
+      <name>Calibri,Tahoma</name>
       <size>12</size>
       <bold>0</bold>
       <color>$Text</color>
@@ -2159,7 +2159,7 @@
       <location>0,-2</location>
     </medium>
     <big>
-      <name>Calibri</name>
+      <name>Calibri,Tahoma</name>
       <size>14</size>
       <bold>0</bold>
       <color>$Text</color>
@@ -2168,7 +2168,7 @@
       <shadowcolor>$TextShadow</shadowcolor>
       <shadowtype>Outline</shadowtype>
       <shadowalpha>196</shadowalpha>
-      <location>0,-2</location>
+      <location>0,-1</location>
     </big>
   </font>
   <progressbar>

@@ -1643,8 +1643,8 @@
     </disabled>
   </button>
   <font>
-    <locationTL>0,-6</locationTL>
-    <locationBL>0,4</locationBL>
+    <locationTL>0,-5</locationTL>
+    <locationBL>0,5</locationBL>
     <small>
       <size>6</size>
       <name>Small Fonts</name>
