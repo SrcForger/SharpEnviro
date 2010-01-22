@@ -1354,7 +1354,7 @@ begin
     begin
       TaskItem := TTaskItem(FTM.GetItemByIndex(n));
       if TaskItem <> nil then
-        if CompareText(TaskItem.FileName,FButtonList[cButtonIndex].exename) = 0 then
+        if (CompareText(TaskItem.FileName,FButtonList[cButtonIndex].exename) = 0) and (CheckWindow(TaskItem.Handle)) then
           WndList.Add(TaskItem);
     end;
 
