@@ -127,6 +127,7 @@ var
   TextRect, CompRect: TRect;
   TextPos: TPoint;
   SkinText : ISharpESkinText;
+  DPIMod : integer;
 begin
   if not Assigned(FManager) then
   begin
@@ -148,13 +149,14 @@ begin
   FTWidth := Bmp.TextWidth(Caption);
   FTHeight := Bmp.TextHeight(Caption);
 
+  DPIMod := round((FManager.DPIScaleFactor - 1)* 6);
   case FAutoPos of
-    apTop: if Top <> FManager.Skin.TextPosTL.Y then
-             Top := FManager.Skin.TextPosTL.Y;
-    apCenter: if Top <> parent.Height div 2 - (FTHeight + 10) div 2 + TextPos.Y div 2 then
-                Top := parent.Height div 2 - (FTHeight + 10) div 2 + TextPos.Y div 2;
-    apBottom: if Top <> FManager.Skin.TextPosBL.Y then
-             Top := FManager.Skin.TextPosBL.Y;
+    apTop: if Top <> FManager.Skin.TextPosTL.Y - DPIMod then
+             Top := FManager.Skin.TextPosTL.Y - DPIMod;
+    apCenter: if Top <> parent.Height div 2 - (FTHeight + 10) div 2 + TextPos.Y div 2 - DPIMod div 2 then
+                Top := parent.Height div 2 - (FTHeight + 10) div 2 + TextPos.Y div 2 - DPIMod div 2;
+    apBottom: if Top <> FManager.Skin.TextPosBL.Y - DPIMod then
+             Top := FManager.Skin.TextPosBL.Y - DPIMod;
   end;
 
   if (FAutoSize) then

@@ -42,6 +42,7 @@ uses
   GR32_Resamplers,
   GR32_Blend,
   GR32_LowLevel,
+  SystemFontList,
   SharpTypes,
   Sharpapi,
   SharpGraphicsUtils,
@@ -250,7 +251,7 @@ type
 
     procedure UpdateDynamicProperties(cs: ISharpEScheme); stdcall;
 
-    procedure LoadFromXML(xml: TJvSimpleXMLElem);
+    procedure LoadFromXML(xml: TJvSimpleXMLElem; pFontList : TFontList);
     function GetXY(TextRect,CompRect,IconRect: TRect): TPoint; stdcall;
     function GetDim(CompRect: TRect): TPoint; stdcall;
     function GetFont(cs: ISharpEScheme): TFont;
@@ -355,7 +356,8 @@ type
     function CreateThemedSkinText : ISharpESkinText; stdcall;    
     procedure UpdateDynamicProperties(cs: ISharpEScheme); virtual; stdcall;
 
-    function LoadFromXML(xml: TJvSimpleXMLElem; path: string; Text: TSkinText): boolean; virtual;
+    function LoadFromXML(xml: TJvSimpleXMLElem; path: string; Text: TSkinText; pFontList : TFontList): boolean; overload; virtual;
+    function LoadFromXML(xml: TJvSimpleXMLElem; path: string; Text: TSkinText): boolean; overload; virtual;
     procedure draw(bmp: TBitmap32; cs: ISharpEScheme);
     function GetBitmap: TBitmap32;
 
@@ -408,7 +410,7 @@ type
     procedure SaveToStream(Stream: TStream); override;
     procedure LoadFromStream(Stream: TStream); override;
     function LoadFromXML(xml: TJvSimpleXMLElem; path: string;
-                         Text: TSkinText; Icon : TSkinIcon): boolean; reintroduce;
+                         Text: TSkinText; Icon : TSkinIcon; pFontList : TFontList): boolean; reintroduce;
 
     property SkinIcon : TSkinIcon read FSkinIcon;
 
@@ -1078,14 +1080,18 @@ begin
   FColor       := ParseColor(FColorString,cs);
 end;
 
-procedure TSkinText.LoadFromXML(xml: TJvSimpleXMLElem);
+procedure TSkinText.LoadFromXML(xml: TJvSimpleXMLElem; pFontList : TFontList);
 var
   s : string;
 begin
   with xml.Items do
   begin
     if ItemNamed['name'] <> nil then
+    begin
       FName := Value('name', 'Arial');
+      if pFontList <> nil then
+        FName := pFontList.ParseFont(FName);
+    end;
     if ItemNamed['size'] <> nil then
       FSize := IntValue('size', 7);
     if ItemNamed['color'] <> nil then
@@ -1971,6 +1977,11 @@ begin
 end;
 
 function TSkinPart.LoadFromXML(xml: TJvSimpleXMLElem; path: string; Text: TSkinText): boolean;
+begin
+  result := LoadFromXML(xml,path,Text,nil);
+end;
+
+function TSkinPart.LoadFromXML(xml: TJvSimpleXMLElem; path: string; Text: TSkinText; pFontList : TFontList): boolean;
 var sp: TSkinPart;
   i: integer;
   fil: string;
@@ -1997,7 +2008,7 @@ begin
       if ItemNamed['gradientalpha'] <> nil then
         FGradientAlphaS.SetPoint(Value('gradientalpha','0,0'));
       if ItemNamed['text'] <> nil then
-        FSkinText.LoadFromXml(ItemNamed['text']);
+        FSkinText.LoadFromXml(ItemNamed['text'],pFontList);
       if ItemNamed['location'] <> nil then
         FSkinDim.SetLocation(Value('location', '0,0'));
       if ItemNamed['dimension'] <> nil then
@@ -2441,9 +2452,9 @@ begin
 end;
 
 function TSkinPartEx.LoadFromXML(xml: TJvSimpleXMLElem; path: string;
-                                 Text: TSkinText; Icon : TSkinIcon): boolean;
+                                 Text: TSkinText; Icon : TSkinIcon; pFontList : TFontList): boolean;
 begin
-  result := inherited LoadFromXML(xml,path,Text);
+  result := inherited LoadFromXML(xml,path,Text,pFontList);
 
   if Icon <> nil then
      FSkinIcon.Assign(Icon);

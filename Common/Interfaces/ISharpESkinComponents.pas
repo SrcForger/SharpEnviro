@@ -574,6 +574,9 @@ type
 
     function GetSkinItems : TSharpESkinItems; stdcall;
 
+    function GetDPI : integer; stdcall;
+    function GetDPIScaleFactor : double; stdcall;
+
     function GetBarBottom : boolean; stdcall;
     procedure SetBarBottom(Value : boolean); stdcall;
 
@@ -583,6 +586,9 @@ type
     property SkinItems : TSharpEskinItems read GetSkinItems;
 
     property BarBottom : boolean read GetBarBottom write SetBarBottom;
+
+    property DPI : integer read GetDPI;
+    property DPIScaleFactor : double read GetDPIScaleFactor;
   end;
 
 implementation

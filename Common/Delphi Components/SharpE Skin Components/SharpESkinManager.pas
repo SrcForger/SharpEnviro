@@ -69,6 +69,8 @@ type
     FSchemeInterface : ISharpEScheme;
     FSkin : TSharpESkin;
     FSkinInterface : ISharpESkin;
+    FDPI : integer;
+    FDPIScaleFactor : double;
     procedure ComponentSkinUpdated;
     function MessageHook(var Msg: TMessage): Boolean;
     procedure MessageHook2(var Msg: TMessage);
@@ -103,6 +105,9 @@ type
     function GetScheme : ISharpEScheme; stdcall;
     function GetSkin : ISharpESkin; stdcall;
 
+    function GetDPI : integer; stdcall;
+    function GetDPIScaleFactor : double; stdcall;
+
     function GetBarBottom : boolean; stdcall;
     procedure SetBarBottom(Value : boolean); stdcall;
 
@@ -110,6 +115,9 @@ type
     property Skin : ISharpESkin read GetSkin;
 
     property BarBottom : boolean read GetBarBottom write SetBarBottom;
+
+    property DPI : integer read GetDPI;
+    property DPIScaleFactor : double read GetDPIScaleFactor;    
   end;
 
 procedure LoadSharpEScheme(Scheme: TSharpEScheme);
@@ -168,6 +176,9 @@ begin
   FRootInterface := nil;
   FSkinItems := Skins;
 
+  FDPI := 0;
+  FDPIScaleFactor := 1;
+
   if FScheme = nil then
     FScheme := TSharpEScheme.Create;
   FSchemeInterface := FScheme;
@@ -210,7 +221,18 @@ begin
 end;
 
 procedure TSharpESkinManager.UpdateSkin;
+var
+  dc : hdc;
 begin
+  // Update DPI Settings
+  dc := GetDC(0);
+  if (dc <> 0) then
+  begin
+    FDPI := GetDeviceCaps(dc, LOGPIXELSX);
+    ReleaseDC(0, dc);
+  end else FDPI := 96;
+  FDPIScaleFactor := FDPI / 96;
+
   if not FNoSystemSkinInit then
     LoadSkinFromStream;
   if not FNoSystemSchemeInit then
@@ -338,6 +360,16 @@ end;
 function TSharpESkinManager.GetBarBottom: boolean;
 begin
   result := SharpESkinPart.SharpESkinTextBarBottom;
+end;
+
+function TSharpESkinManager.GetDPI: integer;
+begin
+  result := FDPI;
+end;
+
+function TSharpESkinManager.GetDPIScaleFactor: double;
+begin
+  result := FDPIScaleFactor;
 end;
 
 function TSharpESkinManager.GetScheme: ISharpEScheme;

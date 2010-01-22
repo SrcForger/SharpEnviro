@@ -37,6 +37,7 @@ uses
   Contnrs,
   gr32,
   JclSimpleXML,
+  SystemFontList,
   types,
   ISharpESkinComponents,
   SharpESkinPart,
@@ -848,6 +849,9 @@ type
     property BottomSkinDim : TSkinDim read FBottomSkinDim;
   end;
 
+var
+  FontList : TFontList;
+
 
 implementation
 
@@ -884,6 +888,10 @@ end;
 constructor TSharpESkin.Create(Skins: TSharpESkinItems);
 begin
   inherited Create;
+
+  if FontList = nil then
+    FontList := TFontList.Create;
+  FontList.RefreshFontInfo;
 
   FLoadSkins := Skins;
 
@@ -1040,6 +1048,7 @@ begin
   end;
 
   FBitmapList.Free;
+
   inherited;
 end;
 
@@ -1374,6 +1383,9 @@ var temp          : string;
   size            : int64;
   BmpListInStream : boolean;
 begin
+  if FontList <> nil then
+    FontList.RefreshFontInfo;
+  
   Clear;
   try
     Stream.ReadBuffer(FSkinVersion, sizeof(FSkinVersion));
@@ -1499,6 +1511,9 @@ procedure TSharpESkin.LoadFromXmlFile(filename: string);
 var
   Path: string;
 begin
+  if FontList <> nil then
+    FontList.RefreshFontInfo;
+
   try
     Path := ExtractFilePath(filename);
     Fxml.LoadFromFile(filename);
@@ -1521,13 +1536,13 @@ begin
        if ItemNamed['locationBL'] <> nil then
           FTextPosBL.SetPoint(ItemNamed['locationBL'].Value);
        if ItemNamed['small'] <> nil then
-          FSmallText.LoadFromXML(ItemNamed['small']);
+          FSmallText.LoadFromXML(ItemNamed['small'],FontList);
        if ItemNamed['medium'] <> nil then
-          FMediumText.LoadFromXML(ItemNamed['medium']);
+          FMediumText.LoadFromXML(ItemNamed['medium'],FontList);
        if ItemNamed['big'] <> nil then
-          FLargeText.LoadFromXML(ItemNamed['big']);
+          FLargeText.LoadFromXML(ItemNamed['big'],FontList);
        if ItemNamed['osd'] <> nil then
-          FOSDText.LoadFromXML(ItemNamed['osd']);
+          FOSDText.LoadFromXML(ItemNamed['osd'],FontList);
      end;
   if FXml.Root.Items.ItemNamed['header'] <> nil then
     FSkinHeader.LoadFromXml(FXml.Root.Items.ItemNamed['header'], path);
@@ -1731,9 +1746,9 @@ begin
     with xml.Items do
     begin
       if ItemNamed['text'] <> nil then
-        SkinText.LoadFromXML(ItemNamed['text']);
+        SkinText.LoadFromXML(ItemNamed['text'], FontList);
       if ItemNamed['background'] <> nil then
-        FBackground.LoadFromXML(ItemNamed['background'], path, SkinText);
+        FBackground.LoadFromXML(ItemNamed['background'], path, SkinText, FontList);
       if ItemNamed['item'] <> nil then
         FItem.LoadFromXML(ItemNamed['item'], path, SkinText);
       if ItemNamed['itemhover'] <> nil then
@@ -1866,9 +1881,9 @@ begin
     with xml.Items do
     begin
       if ItemNamed['text'] <> nil then
-        SkinText.LoadFromXML(ItemNamed['text']);
+        SkinText.LoadFromXML(ItemNamed['text'],FontList);
       if ItemNamed['background'] <> nil then
-        FBackground.LoadFromXML(ItemNamed['background'], path, SkinText);
+        FBackground.LoadFromXML(ItemNamed['background'], path, SkinText, FontList);
       if ItemNamed['dimension'] <> nil then
         FSkinDim.SetDimension(Value('dimension', 'w,h'));
       if ItemNamed['location'] <> nil then
@@ -2022,25 +2037,25 @@ begin
       if ItemNamed['icon'] <> nil then
         SkinIcon.LoadFromXML(ItemNamed['icon']);
       if ItemNamed['text'] <> nil then
-        SkinText.LoadFromXML(ItemNamed['text']);
+        SkinText.LoadFromXML(ItemNamed['text'], FontList);
       if ItemNamed['dimension'] <> nil then
         FSkinDim.SetDimension(Value('dimension', 'w,h'));
       if ItemNamed['location'] <> nil then
         FSkinDim.SetLocation(Value('location','0,0'));
       if ItemNamed['Separator'] <> nil then
-        FSeparator.LoadFromXML(ItemNamed['Separator'], path, SkinText);
+        FSeparator.LoadFromXML(ItemNamed['Separator'], path, SkinText, FontList);
       if ItemNamed['normal'] <> nil then
-        FNormalItem.LoadFromXML(ItemNamed['normal'], path, SkinText, SkinIcon);
+        FNormalItem.LoadFromXML(ItemNamed['normal'], path, SkinText, SkinIcon, FontList);
       if ItemNamed['down'] <> nil then
-        FDownItem.LoadFromXML(ItemNamed['down'], path, SkinText, SkinIcon);
+        FDownItem.LoadFromXML(ItemNamed['down'], path, SkinText, SkinIcon, FontList);
       if ItemNamed['normalsub'] <> nil then
-        FNormalSubItem.LoadFromXML(ItemNamed['normalsub'], path, SkinText, SkinIcon);
+        FNormalSubItem.LoadFromXML(ItemNamed['normalsub'], path, SkinText, SkinIcon, FontList);
       if ItemNamed['hover'] <> nil then
-        FHoverItem.LoadFromXML(ItemNamed['hover'], path, SkinText, SkinIcon);
+        FHoverItem.LoadFromXML(ItemNamed['hover'], path, SkinText, SkinIcon, FontList);
       if ItemNamed['hoversub'] <> nil then
-        FHoverSubItem.LoadFromXML(ItemNamed['hoversub'], path, SkinText, SkinIcon);
+        FHoverSubItem.LoadFromXML(ItemNamed['hoversub'], path, SkinText, SkinIcon, FontList);
       if ItemNamed['label'] <> nil then
-        FLabelItem.LoadFromXml(ItemNamed['label'], path, SkinText, SkinIcon);
+        FLabelItem.LoadFromXml(ItemNamed['label'], path, SkinText, SkinIcon, FontList);
     end;
   finally
     SkinText.SelfInterface := nil;
@@ -2138,16 +2153,16 @@ begin
     with xml.Items do
     begin
       if ItemNamed['text'] <> nil then
-        SkinText.LoadFromXML(ItemNamed['text']);
+        SkinText.LoadFromXML(ItemNamed['text'], FontList);
       if ItemNamed['icon'] <> nil then
         SkinIcon.LoadFromXML(ItemNamed['icon']);
 
       if ItemNamed['normal'] <> nil then
-        FNormal.LoadFromXML(ItemNamed['normal'], path, SkinText, SkinIcon);
+        FNormal.LoadFromXML(ItemNamed['normal'], path, SkinText, SkinIcon, FontList);
       if ItemNamed['down'] <> nil then
-        FDown.LoadFromXML(ItemNamed['down'], path, SkinText, SkinIcon);
+        FDown.LoadFromXML(ItemNamed['down'], path, SkinText, SkinIcon, FontList);
       if ItemNamed['hover'] <> nil then
-        FHover.LoadFromXML(ItemNamed['hover'], path, SkinText, SkinIcon);
+        FHover.LoadFromXML(ItemNamed['hover'], path, SkinText, SkinIcon, FontList);
       if ItemNamed['dimension'] <> nil then
         FSkinDim.SetDimension(Value('dimension', 'w,h'));
       if ItemNamed['location'] <> nil then
@@ -2401,13 +2416,13 @@ begin
     with xml.Items do
     begin
       if ItemNamed['text'] <> nil then
-        SkinText.LoadFromXML(ItemNamed['text']);
+        SkinText.LoadFromXML(ItemNamed['text'], FontList);
       if ItemNamed['normal'] <> nil then
-        FNormal.LoadFromXML(ItemNamed['normal'], path, SkinText);
+        FNormal.LoadFromXML(ItemNamed['normal'], path, SkinText, FontList);
       if ItemNamed['down'] <> nil then
-        FDown.LoadFromXML(ItemNamed['down'], path, SkinText);
+        FDown.LoadFromXML(ItemNamed['down'], path, SkinText, FontList);
       if ItemNamed['hover'] <> nil then
-        FHover.LoadFromXML(ItemNamed['hover'], path, SkinText);
+        FHover.LoadFromXML(ItemNamed['hover'], path, SkinText, FontList);
       if ItemNamed['dimension'] <> nil then
         FSkinDim.SetDimension(Value('dimension', 'w,h'));
       if ItemNamed['location'] <> nil then
@@ -2536,15 +2551,15 @@ begin
     with xml.Items do
     begin
       if ItemNamed['text'] <> nil then
-        SkinText.LoadFromXML(ItemNamed['text']);
+        SkinText.LoadFromXML(ItemNamed['text'], FontList);
       if ItemNamed['normal'] <> nil then
-        FNormal.LoadFromXML(ItemNamed['normal'], path, SkinText);
+        FNormal.LoadFromXML(ItemNamed['normal'], path, SkinText, FontList);
       if ItemNamed['focus'] <> nil then
-        FFocus.LoadFromXML(ItemNamed['focus'], path, SkinText);
+        FFocus.LoadFromXML(ItemNamed['focus'], path, SkinText, FontList);
       if ItemNamed['dimension'] <> nil then
         FSkinDim.SetDimension(Value('dimension', 'w,h'));
       if ItemNamed['hover'] <> nil then
-        FHover.LoadFromXMl(ItemNamed['hover'], path, SkinText);
+        FHover.LoadFromXMl(ItemNamed['hover'], path, SkinText, FontList);
       if ItemNamed['editxoffsets'] <> nil then
         FEditXOffsets.SetPoint(Value('editxoffsets','2,2'));
       if ItemNamed['edityoffsets'] <> nil then
@@ -3500,7 +3515,7 @@ begin
       if ItemNamed['icon'] <> nil then
         SkinIcon.LoadFromXML(ItemNamed['icon']);
       if ItemNamed['text'] <> nil then
-        SkinText.LoadFromXML(ItemNamed['text']);
+        SkinText.LoadFromXML(ItemNamed['text'], FontList);
       if ItemNamed['dimension'] <> nil then
         FSkinDim.SetDimension(Value('dimension', 'w,h'));
       if ItemNamed['location'] <> nil then
@@ -3510,7 +3525,7 @@ begin
       if ItemNamed['calroffset'] <> nil then
         FCALROffset.SetPoint(Value('calroffset','0,0'));
       if ItemNamed['background'] <> nil then
-        FBackground.LoadFromXML(ItemNamed['background'], path, SkinText, SkinIcon);
+        FBackground.LoadFromXML(ItemNamed['background'], path, SkinText, SkinIcon, FontList);
     end;
   finally
     SkinText.SelfInterface := nil;
@@ -3625,7 +3640,7 @@ begin
       if ItemNamed['icon'] <> nil then
         SkinIcon.LoadFromXML(ItemNamed['icon']);
       if ItemNamed['text'] <> nil then
-        SkinText.LoadFromXML(ItemNamed['text']);
+        SkinText.LoadFromXML(ItemNamed['text'], FontList);
       if ItemNamed['dimension'] <> nil then
         FSkinDim.SetDimension(Value('dimension', 'w,h'));
       if ItemNamed['location'] <> nil then
@@ -3635,9 +3650,9 @@ begin
       if ItemNamed['calroffset'] <> nil then
         FCALROffset.SetPoint(Value('calroffset','0,0'));
       if ItemNamed['background'] <> nil then
-        FBackground.LoadFromXML(ItemNamed['background'], path, SkinText, SkinIcon);
+        FBackground.LoadFromXML(ItemNamed['background'], path, SkinText, SkinIcon, FontList);
       if ItemNamed['hover'] <> nil then
-        FHover.LoadFromXML(ItemNamed['hover'], path, SkinText, SkinIcon);
+        FHover.LoadFromXML(ItemNamed['hover'], path, SkinText, SkinIcon, FontList);
     end;
   finally
     SkinText.SelfInterface := nil;
@@ -3890,33 +3905,33 @@ begin
     with xml.Items do
     begin
       if ItemNamed['text'] <> nil then
-         SkinText.LoadFromXML(ItemNamed['text']);
+         SkinText.LoadFromXML(ItemNamed['text'], FontList);
       if ItemNamed['icon'] <> nil then
          SkinIcon.LoadFromXML(ItemNamed['icon']);
       if ItemNamed['normal'] <> nil then
-        FNormal.LoadFromXML(ItemNamed['normal'],path,SkinText,SkinIcon);
+        FNormal.LoadFromXML(ItemNamed['normal'],path,SkinText,SkinIcon, FontList);
       if ItemNamed['normalhover'] <> nil then
-         FNormalHover.LoadFromXML(ItemNamed['normalhover'],path,SkinText,SkinIcon);
+         FNormalHover.LoadFromXML(ItemNamed['normalhover'],path,SkinText,SkinIcon, FontList);
       if ItemNamed['down'] <> nil then
-         FDown.LoadFromXML(ItemNamed['down'],path,SkinText,SkinIcon);
+         FDown.LoadFromXML(ItemNamed['down'],path,SkinText,SkinIcon, FontList);
       if ItemNamed['downhover'] <> nil then
-         FDownHover.LoadFromXML(ItemNamed['downhover'],path,SkinText,SkinIcon);
+         FDownHover.LoadFromXML(ItemNamed['downhover'],path,SkinText,SkinIcon, FontList);
       if ItemNamed['highlight'] <> nil then
-         FHighlight.LoadFromXML(ItemNamed['highlight'],path,SkinText,SkinIcon);
+         FHighlight.LoadFromXML(ItemNamed['highlight'],path,SkinText,SkinIcon, FontList);
       if ItemNamed['highlighthover'] <> nil then
-         FHighlightHover.LoadFromXML(ItemNamed['highlighthover'],path,SkinText,SkinIcon);
+         FHighlightHover.LoadFromXML(ItemNamed['highlighthover'],path,SkinText,SkinIcon, FontList);
       if ItemNamed['special'] <> nil then
       begin
         FHasSpecial := True;
-        FSpecial.LoadFromXML(ItemNamed['special'],path,SkinText,SkinIcon);
+        FSpecial.LoadFromXML(ItemNamed['special'],path,SkinText,SkinIcon, FontList);
       end;
       if ItemNamed['overlaytext'] <> nil then
       begin
         FHasOverlay := True;
-        FOverlayText.LoadFromXML(ItemNamed['overlaytext']);
+        FOverlayText.LoadFromXML(ItemNamed['overlaytext'], FontList);
       end;
       if ItemNamed['specialhover'] <> nil then
-         FSpecialHover.LoadFromXML(ItemNamed['specialhover'],path,SkinText,SkinIcon);
+         FSpecialHover.LoadFromXML(ItemNamed['specialhover'],path,SkinText,SkinIcon, FontList);
       if ItemNamed['dimension'] <> nil then
          FSkinDim.SetDimension(Value('dimension', 'w,h'));
       if ItemNamed['location'] <> nil then
@@ -3991,5 +4006,14 @@ begin
   FSpecialHover.UpdateDynamicProperties(cs);
   FOverlayText.UpdateDynamicProperties(cs); 
 end;
+
+initialization
+
+finalization
+  if FontList <> nil then
+  begin
+    FontList.Free;
+    FontList := nil;
+  end;
 
 end.
