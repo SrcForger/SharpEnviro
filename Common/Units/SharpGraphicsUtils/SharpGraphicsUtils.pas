@@ -303,11 +303,12 @@ end;
 function ChangeBrightnessHSL32(Src : TColor32; Amount : integer) : TColor32;
 var
   h,s,l : byte;
+  newl : integer;
 begin
   RGBToHSL(Src,h,s,l);
-  l := l + Amount;
-  l := Min(Max(l,0),255);
-  result := HSLToRGB(h,s,l);
+  newl := l + Amount;
+  newl := Min(Max(newl,0),255);
+  result := HSLToRGB(h,s,newl);
 end;
 
 procedure HSLChangeImage(bmp : Tbitmap32; HMod,SMod,LMod : integer);
