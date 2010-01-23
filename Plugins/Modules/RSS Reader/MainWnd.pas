@@ -564,19 +564,26 @@ begin
   begin
     btnLeft.Left := o1 - 1;
     btnLeft.Visible := True;
-    btnRight.Visible := True;
     o1 := o1 + btnLeft.Width + 4;
   end else
   begin
     btnLeft.Visible := False;
-    btnRight.Visible := False;
   end;
 
   lb_top.Left := o1-5;
   lb_bottom.Left := lb_top.Left;
 
-  o1 := o1 + btnRight.Width + 4;
-
+  // Handle adding the width of the right button after
+  // we determine the placement for the labels.
+  if sShowButtons then
+  begin
+    btnRight.Visible := True;
+    o1 := o1 + btnRight.Width + 4;
+  end else
+  begin
+    btnRight.Visible := False;
+  end;
+    
   if length(trim(lb_bottom.Caption)) = 0 then
   begin
     lb_top.AutoPos := apCenter;
