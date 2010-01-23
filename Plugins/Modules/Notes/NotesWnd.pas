@@ -541,14 +541,22 @@ begin
 end;
 
 procedure TSharpENotesForm.btnExportClick(Sender: TObject);
+var
+  ext : string;
 begin
   if FIndex = -1 then
     Exit;
-    
+
   if SaveDialog.Execute(Self.Handle) then
   begin
+    ext := '';
+    if (SaveDialog.FilterIndex = 1) and (ExtractFileExt(SaveDialog.FileName) <> '.rtf') then
+      ext := '.rtf'
+    else if (SaveDialog.FilterIndex  = 2) and (ExtractFileExt(SaveDialog.FileName) <> '.txt') then
+      ext := '.txt';
+
     // Save the current text to the new file.
-    reNotes.Lines.SaveToFile(SaveDialog.FileName);
+    reNotes.Lines.SaveToFile(SaveDialog.FileName + ext);
 
     // Delete the exported file from disk.
     DeleteFile(TabFilePath(FIndex));

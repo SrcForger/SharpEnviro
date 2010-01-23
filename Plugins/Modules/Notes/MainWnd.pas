@@ -206,6 +206,7 @@ begin
       ForceDirectories(Settings.Directory);
     XML.SaveToFile(Settings.Directory + '\NotesModuleTabsSettings.xml');
   except
+    // Squash any except when trying to save
   end;
   XML.Free;
 end;
