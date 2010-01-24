@@ -32,16 +32,21 @@ uses JvSimpleXML,
      SharpApi,
      uSharpDeskObjectSettings,
      uSharpDeskFunctions;
+     
+type
+  ImageLocationType = (ilFile, ilURL, ilDirectory);
 
 type
     TImageXMLSettings = class(TDesktopXMLSettings)
     private
     public
       {Settings Block}
-      IconFile   : String;
-      ftURL      : Boolean;
-      Size       : integer;
-      URLRefresh : integer;
+      Path : String;
+      Size : integer;
+      RefreshInterval : integer;
+      LocationType : ImageLocationType;
+      ImageHeight : Integer;
+      ImageWidth : Integer;
       procedure LoadSettings; override;
       procedure SaveSettings(SaveToFile : boolean); reintroduce;
 
@@ -57,10 +62,12 @@ begin
 
   with FXMLRoot.Items do
   begin
-    IconFile   := Value('IconFile','icon.application');
-    Size       := IntValue('Size',100);
-    URLRefresh := IntValue('URLRefresh',30);
-    ftURL      := BoolValue('ftURL',False);
+    Path := Value('IconFile','icon.application');
+    Size := IntValue('Size',100);
+    RefreshInterval := IntValue('URLRefresh',30);
+    LocationType := ImageLocationType(IntValue('LocationType', Int64(ilFile)));
+    ImageHeight := IntValue('ImageHeight', 500);
+    ImageWidth := IntValue('ImageWidth', 500);
   end;
 end;
 
@@ -73,10 +80,12 @@ begin
 
   with FXMLRoot.Items do
   begin
-    Add('IconFile',IconFile).Properties.Add('SortValue',True);;
+    Add('IconFile',Path).Properties.Add('SortValue',True);
     Add('Size',Size);
-    Add('URLRefresh',URLRefresh);
-    Add('ftURL',ftURL);
+    Add('URLRefresh',RefreshInterval);
+    Add('LocationType', Int64(LocationType));
+    Add('ImageHeight', ImageHeight);
+    Add('ImageWidth', ImageWidth);
   end;
 
   inherited FinishSaveSettings(SaveToFile);

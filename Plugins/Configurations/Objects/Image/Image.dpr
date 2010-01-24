@@ -114,18 +114,29 @@ begin
 
   with frmSettings, Settings do
   begin
-    sgb_size.Value := Size;
-    if ftURL then
-    begin
-      spc.TabIndex := 1;
-      sgb_refresh.Value := UrlRefresh;
-      imageurl.Text := IconFile;
-    end else
-    begin
-      spc.TabIndex := 0;
-      imagefile.Text := IconFile;
+    case LocationType of
+      ilFile:
+      begin
+        sgbFileScaling.Value := Size;
+        spc.TabIndex := 0;
+        imagefile.Text := Path;
+      end;
+      ilURL:
+      begin
+        sgbURLScaling.Value := Size;
+        spc.TabIndex := 1;
+        imageurl.Text := Path;
+        sgbURLInterval.Value := RefreshInterval;
+      end;
+      ilDirectory:
+      begin
+        spc.TabIndex := 2;
+        imageDirectory.Text := Path;
+        sgbDirectoryInterval.Value := RefreshInterval;
+        sgbDirectoryHeight.Value := ImageHeight;
+        sgbDirectoryWidth.Value := ImageWidth;
+      end;
     end;
-
     ITheme := GetCurrentTheme;
 
     // assign the theme default values
@@ -183,13 +194,30 @@ begin
     Settings.LoadSettings;
 
     // save the normal settings
-    Size := sgb_size.Value;
-    ftUrl := (spc.TabIndex = 1);
-    if ftUrl then
-    begin
-      UrlRefresh := sgb_refresh.Value;
-      Iconfile := imageurl.Text;
-    end else IconFile := imagefile.Text;
+    case spc.TabIndex of
+      0:
+      begin
+        Size := sgbFileScaling.Value;
+        LocationType := ilFile;
+        Path := imagefile.Text;
+      end;
+      1:
+      begin
+        Size := sgbURLScaling.Value;
+        LocationType := ilURL;
+        RefreshInterval := sgbURLInterval.Value;
+        Path := imageurl.Text;
+      end;
+      2:
+      begin
+        ImageHeight := sgbDirectoryHeight.Value;
+        ImageWidth := sgbDirectoryWidth.Value;
+        LocationType := ilDirectory;
+        RefreshInterval := sgbDirectoryInterval.Value;
+        Path := imageDirectory.Text;
+      end;
+    end;
+
 
     // save which UIC items have changed and should be saved to xml
     Theme[DS_ICONALPHABLEND].isCustom := UIC_AlphaBlend.HasChanged;
@@ -234,167 +262,4 @@ exports
 
 begin;
 end.
-
-//procedure Save;
-//var
-//  Settings : TImageXMLSettings;
-//begin
-//  if frmImage = nil then frmImage := TfrmImage.Create(nil);
-//
-//  uVistaFuncs.SetVistaFonts(frmImage);
-//  frmImage.sObjectID := APluginID;
-//  frmImage.ParentWindow := aowner;
-//  frmImage.Left := 2;
-//  frmImage.Top := 2;
-//  frmImage.BorderStyle := bsNone;
-//  SharpThemeapi.LoadTheme(False,[tpDesktopIcon]);
-//
-//  Settings := TImageXMLSettings.Create(strtoint(APluginID),nil,'Image');
-//  Settings.LoadSettings;
-//
-//  with frmImage, Settings do
-//  begin
-//    sgb_size.Value := Size;
-//    if ftURL then
-//    begin
-//      spc.TabIndex := 1;
-//      sgb_refresh.Value := UrlRefresh;
-//      imageurl.Text := IconFile;
-//    end else
-//    begin
-//      spc.TabIndex := 0;
-//      imagefile.Text := IconFile;
-//    end;
-//
-//    // assign the theme default values
-//    if GetDesktopIconAlphaBlend then
-//      UIC_AlphaBlend.DefaultValue := 'True'
-//      else UIC_AlphaBlend.DefaultValue := 'False';
-//    if GetDesktopIconBlending then
-//      UIC_ColorBlend.DefaultValue := 'True'
-//      else UIC_ColorBlend.DefaultValue := 'False';
-//    UIC_BlendAlpha.DefaultValue := inttostr(GetDesktopIconAlpha);
-//    UIC_ColorAlpha.DefaultValue := inttostr(GetDesktopIconBlendAlpha);
-//    UIC_Colors.DefaultValue := inttostr(GetDesktopIconBlendColor);
-//
-//    // load the actual values
-//    cbalphablend.Checked               := Theme[DS_ICONALPHABLEND].BoolValue;
-//    cbcolorblend.Checked               := Theme[DS_ICONBLENDING].BoolValue;
-//    sgbiconalpha.Value                 := Theme[DS_ICONALPHA].IntValue;
-//    sbgimagencblendalpha.Value         := Theme[DS_ICONBLENDALPHA].IntValue;
-//    IconColors.Items.Item[0].ColorCode := Theme[DS_ICONBLENDCOLOR].IntValue;
-//
-//    // load if settings are changed
-//    UIC_AlphaBlend.HasChanged := Theme[DS_ICONALPHABLEND].isCustom;
-//    UIC_ColorBlend.HasChanged := Theme[DS_ICONBLENDING].isCustom;
-//    UIC_BlendAlpha.Haschanged := Theme[DS_ICONALPHA].isCustom;
-//    UIC_ColorAlpha.HasChanged := Theme[DS_ICONBLENDALPHA].isCustom;
-//    UIC_Colors.HasChanged     := Theme[DS_ICONBLENDCOLOR].isCustom;
-//  end;
-//
-//  Settings.Free;
-//
-//  frmImage.Show;
-//  result := frmImage.Handle;
-//end;
-//
-//function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
-//var
-//  Settings : TImageXMLSettings;
-//begin
-
-//
-//  Settings := TImageXMLSettings.Create(strtoint(APluginID),nil,'Image');
-//  Settings.LoadSettings;
-//
-//  with frmImage, Settings do
-//  begin
-//    sgb_size.Value := Size;
-//    if ftURL then
-//    begin
-//      spc.TabIndex := 1;
-//      sgb_refresh.Value := UrlRefresh;
-//      imageurl.Text := IconFile;
-//    end else
-//    begin
-//      spc.TabIndex := 0;
-//      imagefile.Text := IconFile;
-//    end;
-//
-//    // assign the theme default values
-//    if GetDesktopIconAlphaBlend then
-//      UIC_AlphaBlend.DefaultValue := 'True'
-//      else UIC_AlphaBlend.DefaultValue := 'False';
-//    if GetDesktopIconBlending then
-//      UIC_ColorBlend.DefaultValue := 'True'
-//      else UIC_ColorBlend.DefaultValue := 'False';
-//    UIC_BlendAlpha.DefaultValue := inttostr(GetDesktopIconAlpha);
-//    UIC_ColorAlpha.DefaultValue := inttostr(GetDesktopIconBlendAlpha);
-//    UIC_Colors.DefaultValue := inttostr(GetDesktopIconBlendColor);
-//
-//    // load the actual values
-//    cbalphablend.Checked               := Theme[DS_ICONALPHABLEND].BoolValue;
-//    cbcolorblend.Checked               := Theme[DS_ICONBLENDING].BoolValue;
-//    sgbiconalpha.Value                 := Theme[DS_ICONALPHA].IntValue;
-//    sbgimagencblendalpha.Value         := Theme[DS_ICONBLENDALPHA].IntValue;
-//    IconColors.Items.Item[0].ColorCode := Theme[DS_ICONBLENDCOLOR].IntValue;
-//
-//    // load if settings are changed
-//    UIC_AlphaBlend.HasChanged := Theme[DS_ICONALPHABLEND].isCustom;
-//    UIC_ColorBlend.HasChanged := Theme[DS_ICONBLENDING].isCustom;
-//    UIC_BlendAlpha.Haschanged := Theme[DS_ICONALPHA].isCustom;
-//    UIC_ColorAlpha.HasChanged := Theme[DS_ICONBLENDALPHA].isCustom;
-//    UIC_Colors.HasChanged     := Theme[DS_ICONBLENDCOLOR].isCustom;
-//  end;
-//
-//  Settings.Free;
-//
-//  frmImage.Show;
-//  result := frmImage.Handle;
-//end;
-//
-//function Close : boolean;
-//begin
-//  result := True;
-//  try
-//    frmImage.Close;
-//    frmImage.Free;
-//    frmImage := nil;
-//  except
-//    result := False;
-//  end;
-//end;
-//
-//
-//procedure AddTabs(var ATabs:TStringList);
-//begin
-//  ATabs.AddObject('Image',frmImage.pagImage);
-//  ATabs.AddObject('Display',frmImage.pagDisplay);
-//end;
-//
-//procedure ClickTab(ATab: TStringItem);
-//var
-//  tmpPag: TJvStandardPage;
-//begin
-//  if ATab.FObject <> nil then begin
-//    tmpPag := TJvStandardPage(ATab.FObject);
-//    tmpPag.Show;
-//  end;
-//
-//end;
-//
-
-//
-//
-//exports
-//  Open,
-//  Close,
-//  Save,
-//  ClickTab,
-//  SetText,
-//  GetCenterScheme,
-//  GetMetaData,
-//  AddTabs;
-//
-//end.
 

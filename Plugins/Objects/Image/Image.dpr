@@ -260,7 +260,7 @@ begin
       XML.Root.Items.Add('DefaultSettings');
       Settings := TImageXMLSettings.Create(-1,XML.Root.Items.ItemNamed['DefaultSettings'],'Image');
       Settings.LoadSettings;
-      Settings.IconFile := '{File}';
+      Settings.Path := '{File}';
       Settings.SaveSettings(False);
       Settings.Free;
       XML.SaveToFile(GetSharpeGlobalSettingsPath + 'SharpDesk\DragAndDrop\Image('+Ext+').xml');

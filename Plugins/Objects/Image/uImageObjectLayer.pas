@@ -43,7 +43,8 @@ uses
   IdBaseComponent,
   IdHTTP,
   GR32_Resamplers,
-  JCLStrings;
+  JCLStrings,
+  SharpFileUtils;
 
 type
 
@@ -63,10 +64,12 @@ type
     FBlend       : boolean;
     FPicture     : TBitmap32;
     FSize        : integer;
+    FImageHeight : Integer;
+    FImageWidth  : Integer;
     FParentImage : TImage32;
-    FftURL       : boolean;
-    FURLRefresh  : integer;
     FUpdateTimer : TTimer;
+    FDirectoryImages : TStringList;
+    FDirectoryImageIndex : Integer;
 
   protected
      procedure LoadDefaultImage(var bmp : TBitmap32);
@@ -211,80 +214,108 @@ var
   i : integer;
 begin
   tempBmp := TBitmap32.Create;
-  if not FftURL then SharpImageUtils.LoadImage(FIconFile,tempBmp)
-  else
-  begin
-    MimeList := TStringList.Create;
-    MimeList.Clear;
-    MimeList.Add('image/jpeg');
-    MimeList.Add('image/png');
-    MimeList.Add('image/bmp');
-    Dir := SharpApi.GetSharpeUserSettingsPath+'SharpDesk\Objects\Image\';
-    ForceDirectories(Dir);
-    idHTTP := TidHTTP.Create(nil);
-    idHTTP.ConnectTimeout := 5000;
-    idHTTP.Request.Accept := 'image/jpeg,image/png,image/bmp';
-    idHTTP.HandleRedirects := True;
-    try
-      idHTTP.Head(FIconFile);
-    except
-    end;
-    if MimeList.IndexOf(idHttp.Response.ContentType)<>-1 then
+
+  case FSettings.LocationType of
+    ilFile:
+      SharpImageUtils.LoadImage(FIconFile,tempBmp);
+    ilURL:
     begin
-      i := random(1000000);
+      MimeList := TStringList.Create;
+      MimeList.Clear;
+      MimeList.Add('image/jpeg');
+      MimeList.Add('image/png');
+      MimeList.Add('image/bmp');
+      Dir := SharpApi.GetSharpeUserSettingsPath+'SharpDesk\Objects\Image\';
+      ForceDirectories(Dir);
+      idHTTP := TidHTTP.Create(nil);
+      idHTTP.ConnectTimeout := 5000;
+      idHTTP.Request.Accept := 'image/jpeg,image/png,image/bmp';
+      idHTTP.HandleRedirects := True;
       try
+        idHTTP.Head(FIconFile);
+      except
+      end;
+      if MimeList.IndexOf(idHttp.Response.ContentType)<>-1 then
+      begin
+        i := random(1000000);
         try
-          if idHttp.Response.ContentType = 'image/jpeg' then Ext := '.jpg'
-             else if idHttp.Response.ContentType = 'image/png' then Ext := '.png'
-                  else Ext := '.bmp';
-          FileStream := TFileStream.Create(Dir+'temp'+inttostr(i)+Ext,fmCreate);
           try
-            SharpApi.SendDebugMessage('Image.object','Starting download: '+FIconFile,clblack);
-            idHTTP.Get(FIconFile,FileStream);
-            SharpApi.SendDebugMessage('Image.object','Download finished',clblack);
-          finally
-            FileStream.Free;
+            if idHttp.Response.ContentType = 'image/jpeg' then Ext := '.jpg'
+            else if idHttp.Response.ContentType = 'image/png' then Ext := '.png'
+            else Ext := '.bmp';
+            FileStream := TFileStream.Create(Dir+'temp'+inttostr(i)+Ext,fmCreate);
+            try
+              SharpApi.SendDebugMessage('Image.object','Starting download: '+FIconFile,clblack);
+              idHTTP.Get(FIconFile,FileStream);
+              SharpApi.SendDebugMessage('Image.object','Download finished',clblack);
+            finally
+              FileStream.Free;
+            end;
+            SharpApi.SendDebugMessage('Image.object','Loading downloaded image: '+Dir+'temp'+inttostr(i)+Ext,clblack);
+            SharpImageUtils.LoadImage(Dir+'temp'+inttostr(i)+Ext,tempBmp)
+          except
+            tempBmp.SetSize(128,128);
+            tempBmp.Clear(color32(128,128,128,196));
+            tempBmp.RenderText(
+              tempBmp.Width div 2-tempBmp.TextWidth('Error on image download') div 2,
+              tempBmp.Height div 2-tempBmp.TextHeight('E') div 2,
+              'Error on image download',
+              0,color32(clWhite));
           end;
-          SharpApi.SendDebugMessage('Image.object','Loading downloaded image: '+Dir+'temp'+inttostr(i)+Ext,clblack);
-          SharpImageUtils.LoadImage(Dir+'temp'+inttostr(i)+Ext,tempBmp)
-        except
-          tempBmp.SetSize(128,128);
-          tempBmp.Clear(color32(128,128,128,196));
-          tempBmp.RenderText(tempBmp.Width div 2-tempBmp.TextWidth('Error on image download') div 2,
-                            tempBmp.Height div 2-TempBmp.TextHeight('E') div 2,'Error on image download',0,color32(clWhite));
+        finally
+          try
+            idHttp.Disconnect;
+            idHttp.Free;
+          except
+          end;
+          try
+            DeleteFile(Dir+'temp'+inttostr(i)+Ext);
+          except
+          end;
         end;
-      finally
+      end else
+      begin
         try
           idHttp.Disconnect;
           idHttp.Free;
         except
         end;
-        try
-          DeleteFile(Dir+'temp'+inttostr(i)+Ext);
-        except
-        end;
+        tempBmp.SetSize(128,128);
+        tempBmp.Clear(color32(128,128,128,196));
+        tempBmp.RenderText(
+          tempBmp.Width div 2-tempBmp.TextWidth('Error on image download') div 2,
+          tempBmp.Height div 2-tempBmp.TextHeight('E') div 2,
+          'Error on image download',
+          0,color32(clWhite));
       end;
-    end else
-    begin
-      try
-        idHttp.Disconnect;
-        idHttp.Free;
-      except
-      end;
-      tempBmp.SetSize(128,128);
-      tempBmp.Clear(color32(128,128,128,196));
-      tempBmp.RenderText(tempBmp.Width div 2-tempBmp.TextWidth('Error on image download') div 2,
-                         tempBmp.Height div 2-TempBmp.TextHeight('E') div 2,'Error on image download',0,color32(clWhite));
+      MimeList.Free;
     end;
-    MimeList.Free;    
+    ilDirectory:
+    begin
+      if FDirectoryImages.Count > 0 then
+      begin
+        FDirectoryImageIndex := FDirectoryImageIndex + 1;
+        if FDirectoryImageIndex = FDirectoryImages.Count then
+          FDirectoryImageIndex := 0;
+        LoadImage(FDirectoryImages[FDirectoryImageIndex], tempBmp);
+      end;
+    end;
   end;
 
-  TLinearResampler.Create(TempBmp);
-  FPicture.SetSize(round(tempBmp.Width * (FSize / 100)),round(tempBmp.Height * (FSize / 100)));
-  FPicture.Clear(color32(0,0,0,0));
-  FPicture.Draw(Rect(0,0,FPicture.Width,FPicture.Height),
+  TLinearResampler.Create(tempBmp);
+  if FSettings.LocationType in [ilFile, ilURL] then
+  begin
+    FPicture.SetSize(round(tempBmp.Width * (FSize / 100)),round(tempBmp.Height * (FSize / 100)));
+    FPicture.Clear(color32(0,0,0,0));
+    FPicture.Draw(Rect(0,0,FPicture.Width,FPicture.Height),
                 Rect(0,0,tempBmp.Width,tempBmp.Height),
                 tempBmp);
+  end
+  else
+  begin
+    RescaleImage(tempBmp, FPicture, FImageWidth, FImageHeight, True);
+  end;
+
   DrawBitmap;
   tempBmp.Free;
 end;
@@ -349,16 +380,29 @@ begin
   if ObjectID=0 then exit;
 
   FSettings.LoadSettings;
-  FSettings.IconFile := StrRemoveChars(FSettings.IconFile, ['"']);
-
-  FftURL := FSettings.ftURL;
-  FURLRefresh := FSettings.URLRefresh;
-  if FftURL then
-  begin
-    FUpdateTimer.Enabled := True;
-    FUpdateTimer.Interval := FURLRefresh*60*1000;
-  end else FUpdateTimer.Enabled := False;
+  FSettings.Path := StrRemoveChars(FSettings.Path, ['"']);
+  FIconFile := FSettings.Path;
   FSize := FSettings.Size;
+  FImageHeight := FSettings.ImageHeight;
+  FImageWidth := FSettings.ImageWidth;
+
+  if FSettings.LocationType in [ilUrl, ilDirectory] then
+  begin
+    FUpdateTimer.Interval := FSettings.RefreshInterval * 60 * 1000;
+    FUpdateTimer.Enabled := True;
+  end
+  else
+    FUpdateTimer.Enabled := False;
+
+  if (FSettings.LocationType = ilDirectory) and (DirectoryExists(FIconFile)) then
+  begin
+    FindFiles(FDirectoryImages, FIconFile, '*.gif', True);
+    FindFiles(FDirectoryImages, FIconFile, '*.jpg', True);
+    FindFiles(FDirectoryImages, FIconFile, '*.jpeg', True);
+    FindFiles(FDirectoryImages, FIconFile, '*.png', True);
+    FindFiles(FDirectoryImages, FIconFile, '*.bmp', True);
+    FindFiles(FDirectoryImages, FIconFile, '*.ico', True);
+  end;
 
   with FSettings do
   begin
@@ -369,7 +413,6 @@ begin
     FAlphaBlend := Theme[DS_ICONALPHABLEND].BoolValue;
   end;
 
-  FIconFile := FSettings.IconFile;
   if FAlphaBlend then
   begin
     Bitmap.MasterAlpha := FAlphaValue;
@@ -386,7 +429,7 @@ begin
     FHLTimer.OnTimer(FHLTimer);
 end;
 
-constructor TImageLayer.Create( ParentImage:Timage32; Id : integer);
+constructor TImageLayer.Create(ParentImage:Timage32; Id : integer);
 begin
   Inherited Create(ParentImage.Layers);
   FParentImage := ParentImage;
@@ -403,6 +446,8 @@ begin
   FUpdateTimer.Interval := 10000000;
   FUpdateTimer.Enabled := False;
   FUpdateTimer.OnTimer := OnUpdateTimer;
+  FDirectoryImages := TStringList.Create;
+  FDirectoryImageIndex := -1;
   FSettings := TImageXMLSettings.Create(FObjectId,nil,'Image');
   FAnimSteps       := 5;
   LoadSettings;
@@ -412,9 +457,11 @@ end;
 destructor TImageLayer.Destroy;
 begin
   FHLTimer.Enabled := False;
+  FUpdateTimer.Enabled := False;
   DebugFree(FHLTimer);
   DebugFree(FUpdateTimer);
   DebugFree(FPicture);
+  DebugFree(FDirectoryImages);
   DebugFree(FSettings);
   inherited;
 end;

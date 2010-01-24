@@ -64,7 +64,8 @@ uses
   SharpECenterHeader,
   Buttons,
   PngSpeedButton,
-  pngimage;
+  pngimage,
+  JvBrowseFolder;
 
 type
   TStringObject = class(TObject)
@@ -82,9 +83,9 @@ type
     pagefile: TJvStandardPage;
     pageurl: TJvStandardPage;
     imageurl: TEdit;
-    Panel1: TPanel;
-    Panel2: TPanel;
-    sgb_size: TSharpeGaugeBox;
+    pnlURL: TPanel;
+    pnlFileScaling: TPanel;
+    sgbFileScaling: TSharpeGaugeBox;
     Panel3: TPanel;
     sbgimagencblendalpha: TSharpeGaugeBox;
     UIC_colorblend: TSharpEUIC;
@@ -98,27 +99,42 @@ type
     UIC_Colors: TSharpEUIC;
     IconColors: TSharpEColorEditorEx;
     SharpESwatchManager1: TSharpESwatchManager;
-    SharpECenterHeader1: TSharpECenterHeader;
-    SharpECenterHeader2: TSharpECenterHeader;
-    SharpECenterHeader3: TSharpECenterHeader;
-    SharpECenterHeader4: TSharpECenterHeader;
-    SharpECenterHeader5: TSharpECenterHeader;
+    schImageSource: TSharpECenterHeader;
+    schURLInterval: TSharpECenterHeader;
+    schURL: TSharpECenterHeader;
+    schFile: TSharpECenterHeader;
+    schFileScaling: TSharpECenterHeader;
     SharpECenterHeader6: TSharpECenterHeader;
     SharpECenterHeader7: TSharpECenterHeader;
-    Panel4: TPanel;
-    sgb_refresh: TSharpeGaugeBox;
+    pnlURLInterval: TPanel;
+    sgbURLInterval: TSharpeGaugeBox;
     Panel7: TPanel;
     Image1: TImage;
     Label1: TLabel;
     btnRevert: TPngSpeedButton;
-    Panel8: TPanel;
+    pnlFile: TPanel;
     PngSpeedButton1: TPngSpeedButton;
     imagefile: TEdit;
     OpenDialog1: TOpenDialog;
     pnlDisplay: TPanel;
     pnlImage: TPanel;
+    pageDirectory: TJvStandardPage;
+    pnlDirectory: TPanel;
+    imageDirectory: TEdit;
+    pnlDirectoryInterval: TPanel;
+    sgbDirectoryInterval: TSharpeGaugeBox;
+    schDirectoryInterval: TSharpECenterHeader;
+    schDirectory: TSharpECenterHeader;
+    schDirectoryDimensions: TSharpECenterHeader;
+    pnlDirectoryDimensions: TPanel;
+    sgbDirectoryHeight: TSharpeGaugeBox;
+    sgbDirectoryWidth: TSharpeGaugeBox;
+    psbDirectory: TPngSpeedButton;
+    schURLScaling: TSharpECenterHeader;
+    pnlURLScaling: TPanel;
+    sgbURLScaling: TSharpeGaugeBox;
     procedure FormCreate(Sender: TObject);
-    procedure sgb_sizeChangeValue(Sender: TObject; Value: Integer);
+    procedure sgbFileScalingChangeValue(Sender: TObject; Value: Integer);
     procedure UIC_Reset(Sender: TObject);
     procedure spcTabChange(ASender: TObject; const ATabIndex: Integer;
       var AChange: Boolean);
@@ -132,6 +148,11 @@ type
     procedure btnRevertClick(Sender: TObject);
     procedure PngSpeedButton1Click(Sender: TObject);
     procedure IconColorsResize(Sender: TObject);
+    procedure psbDirectoryClick(Sender: TObject);
+    procedure imageDirectoryChange(Sender: TObject);
+    procedure sgbDirectoryHeightChangeValue(Sender: TObject; Value: Integer);
+    procedure sgbDirectoryWidthChangeValue(Sender: TObject; Value: Integer);
+    procedure sgbDirectoryIntervalChangeValue(Sender: TObject; Value: Integer);
   private
     FPluginHost: ISharpCenterHost;
     function GetChangedControlCount: integer;
@@ -172,7 +193,25 @@ begin
   UpdateSettingsChanged;
 end;
 
-procedure TfrmSettings.sgb_sizeChangeValue(Sender: TObject; Value: Integer);
+procedure TfrmSettings.sgbDirectoryHeightChangeValue(Sender: TObject;
+  Value: Integer);
+begin
+  UpdateSettingsChanged;
+end;
+
+procedure TfrmSettings.sgbDirectoryIntervalChangeValue(Sender: TObject;
+  Value: Integer);
+begin
+ UpdateSettingsChanged;
+end;
+
+procedure TfrmSettings.sgbDirectoryWidthChangeValue(Sender: TObject;
+  Value: Integer);
+begin
+  UpdateSettingsChanged;
+end;
+
+procedure TfrmSettings.sgbFileScalingChangeValue(Sender: TObject; Value: Integer);
 begin
   UpdateSettingsChanged;
 end;
@@ -252,6 +291,11 @@ begin
   UpdateDisplayPage;
 end;
 
+procedure TfrmSettings.imageDirectoryChange(Sender: TObject);
+begin
+  UpdateSettingsChanged;
+end;
+
 procedure TfrmSettings.imagefileChange(Sender: TObject);
 begin
   UpdateSettingsChanged;
@@ -272,6 +316,15 @@ begin
   begin
     imagefile.Text := s;
   end;
+end;
+
+procedure TfrmSettings.psbDirectoryClick(Sender: TObject);
+var
+  directory : string;
+begin
+  directory := imageDirectory.Text;
+  if BrowseForFolder('Browse for image folder...', True, directory) then
+    imageDirectory.Text := directory;
 end;
 
 procedure TfrmSettings.UpdateSettingsChanged;
@@ -304,14 +357,24 @@ procedure TfrmSettings.UpdateImagePage;
 begin
   LockWindowUpdate(self.Handle);
   try
-    if pagImage.Visible then begin
-
-      if pl.ActivePageIndex = 0 then begin
-        spc.Height := 205;
-        pl.Height := 80;
-      end else begin
-        spc.Height := 285;
-        pl.Height := 160;
+    if pagImage.Visible then
+    begin
+      case pl.ActivePageIndex of
+        0:
+        begin
+          pl.Height := 160;
+          spc.Height := pl.Height + 60;
+        end;
+        1:
+        begin
+          pl.Height := 240;
+          spc.Height := pl.Height + 60;
+        end;
+        2:
+        begin
+          pl.Height := 240;
+          spc.Height := pl.Height + 60;
+        end;
       end;
 
       frmSettings.Height := pnlImage.Height + 50;

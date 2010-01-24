@@ -32,12 +32,12 @@ object frmSettings: TfrmSettings
         Left = 0
         Top = 0
         Width = 508
-        Height = 329
+        Height = 332
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
         TabOrder = 0
-        object SharpECenterHeader1: TSharpECenterHeader
+        object schImageSource: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
           Top = 0
@@ -49,8 +49,8 @@ object frmSettings: TfrmSettings
           Margins.Bottom = 10
           Title = 'Image Source'
           Description = 
-            'Select the source the image will be loaded from. Supported image' +
-            ' types: .bmp, .jpg, .png, .ico'
+            'Select the source for the image. Supported image types: .bmp, .g' +
+            'if, .jpg, .jpeg, .png, .ico'
           TitleColor = clWindowText
           DescriptionColor = clRed
           Align = alTop
@@ -60,7 +60,7 @@ object frmSettings: TfrmSettings
           Left = 5
           Top = 47
           Width = 498
-          Height = 282
+          Height = 285
           Margins.Left = 5
           Margins.Top = 0
           Margins.Right = 5
@@ -71,12 +71,17 @@ object frmSettings: TfrmSettings
           ExpandedHeight = 200
           TabItems = <
             item
-              Caption = 'Load locally'
+              Caption = 'Load File'
               ImageIndex = 0
               Visible = True
             end
             item
-              Caption = 'Load from a remote source'
+              Caption = 'Load URL'
+              ImageIndex = 0
+              Visible = True
+            end
+            item
+              Caption = 'Load Directory'
               ImageIndex = 0
               Visible = True
             end>
@@ -104,13 +109,13 @@ object frmSettings: TfrmSettings
           OnTabChange = spcTabChange
           DesignSize = (
             498
-            282)
+            285)
           object pl: TJvPageList
             AlignWithMargins = True
             Left = 8
             Top = 34
             Width = 482
-            Height = 163
+            Height = 240
             Margins.Left = 8
             Margins.Top = 34
             Margins.Right = 8
@@ -123,9 +128,9 @@ object frmSettings: TfrmSettings
               Left = 0
               Top = 0
               Width = 482
-              Height = 163
+              Height = 240
               Caption = 'pagefile'
-              object SharpECenterHeader4: TSharpECenterHeader
+              object schFile: TSharpECenterHeader
                 AlignWithMargins = True
                 Left = 5
                 Top = 10
@@ -141,7 +146,7 @@ object frmSettings: TfrmSettings
                 DescriptionColor = clRed
                 Align = alTop
               end
-              object Panel8: TPanel
+              object pnlFile: TPanel
                 AlignWithMargins = True
                 Left = 5
                 Top = 57
@@ -207,26 +212,93 @@ object frmSettings: TfrmSettings
                   OnChange = imagefileChange
                 end
               end
+              object pnlFileScaling: TPanel
+                AlignWithMargins = True
+                Left = 5
+                Top = 136
+                Width = 472
+                Height = 22
+                Margins.Left = 5
+                Margins.Top = 0
+                Margins.Right = 5
+                Margins.Bottom = 0
+                Align = alTop
+                BevelOuter = bvNone
+                ParentColor = True
+                TabOrder = 2
+                ExplicitLeft = 0
+                ExplicitTop = 159
+                ExplicitWidth = 464
+                object sgbFileScaling: TSharpeGaugeBox
+                  Left = 0
+                  Top = 0
+                  Width = 150
+                  Height = 22
+                  Margins.Left = 5
+                  Margins.Top = 0
+                  Margins.Right = 5
+                  Margins.Bottom = 0
+                  Align = alLeft
+                  Color = clWindow
+                  ParentBackground = False
+                  TabOrder = 0
+                  Min = 5
+                  Max = 500
+                  Value = 100
+                  Suffix = '% scaled'
+                  Description = 'Scale image by'
+                  PopPosition = ppBottom
+                  PercentDisplay = False
+                  Formatting = '%d'
+                  OnChangeValue = sgbFileScalingChangeValue
+                  BackgroundColor = clWindow
+                end
+              end
+              object schFileScaling: TSharpECenterHeader
+                AlignWithMargins = True
+                Left = 5
+                Top = 89
+                Width = 472
+                Height = 37
+                Margins.Left = 5
+                Margins.Top = 10
+                Margins.Right = 5
+                Margins.Bottom = 10
+                Title = 'Image Scaling'
+                Description = 'Changing this option will enlarge or shrink the image'
+                TitleColor = clWindowText
+                DescriptionColor = clRed
+                Align = alTop
+                ExplicitLeft = 13
+                ExplicitTop = 282
+                ExplicitWidth = 480
+              end
             end
             object pageurl: TJvStandardPage
               Left = 0
               Top = 0
               Width = 482
-              Height = 163
+              Height = 240
               Caption = 'pageurl'
               ParentBackground = True
-              object Panel1: TPanel
-                Left = 0
+              object pnlURL: TPanel
+                AlignWithMargins = True
+                Left = 5
                 Top = 57
-                Width = 482
+                Width = 472
                 Height = 21
+                Margins.Left = 5
+                Margins.Top = 0
+                Margins.Right = 5
+                Margins.Bottom = 0
                 Align = alTop
                 BevelOuter = bvNone
                 ParentColor = True
                 TabOrder = 0
+                ExplicitLeft = 0
+                ExplicitWidth = 482
                 object imageurl: TEdit
-                  AlignWithMargins = True
-                  Left = 5
+                  Left = 0
                   Top = 0
                   Width = 472
                   Height = 21
@@ -238,9 +310,10 @@ object frmSettings: TfrmSettings
                   TabOrder = 0
                   Text = 'http://'
                   OnChange = imageurlChange
+                  ExplicitLeft = 5
                 end
               end
-              object SharpECenterHeader2: TSharpECenterHeader
+              object schURLInterval: TSharpECenterHeader
                 AlignWithMargins = True
                 Left = 5
                 Top = 88
@@ -256,7 +329,7 @@ object frmSettings: TfrmSettings
                 DescriptionColor = clRed
                 Align = alTop
               end
-              object SharpECenterHeader3: TSharpECenterHeader
+              object schURL: TSharpECenterHeader
                 AlignWithMargins = True
                 Left = 5
                 Top = 10
@@ -272,20 +345,26 @@ object frmSettings: TfrmSettings
                 DescriptionColor = clRed
                 Align = alTop
               end
-              object Panel4: TPanel
-                Left = 0
+              object pnlURLInterval: TPanel
+                AlignWithMargins = True
+                Left = 5
                 Top = 135
-                Width = 482
+                Width = 472
                 Height = 22
+                Margins.Left = 5
+                Margins.Top = 0
+                Margins.Right = 5
+                Margins.Bottom = 0
                 Align = alTop
                 BevelOuter = bvNone
                 ParentColor = True
                 TabOrder = 1
-                object sgb_refresh: TSharpeGaugeBox
-                  AlignWithMargins = True
-                  Left = 5
+                ExplicitLeft = 0
+                ExplicitWidth = 482
+                object sgbURLInterval: TSharpeGaugeBox
+                  Left = 0
                   Top = 0
-                  Width = 287
+                  Width = 150
                   Height = 22
                   Margins.Left = 5
                   Margins.Top = 0
@@ -304,65 +383,302 @@ object frmSettings: TfrmSettings
                   PopPosition = ppBottom
                   PercentDisplay = False
                   Formatting = '%d'
-                  OnChangeValue = sgb_sizeChangeValue
+                  OnChangeValue = sgbFileScalingChangeValue
+                  BackgroundColor = clWindow
+                end
+              end
+              object schURLScaling: TSharpECenterHeader
+                AlignWithMargins = True
+                Left = 5
+                Top = 167
+                Width = 472
+                Height = 37
+                Margins.Left = 5
+                Margins.Top = 10
+                Margins.Right = 5
+                Margins.Bottom = 10
+                Title = 'Image Scaling'
+                Description = 'Changing this option will enlarge or shrink the image'
+                TitleColor = clWindowText
+                DescriptionColor = clRed
+                Align = alTop
+                ExplicitLeft = 13
+                ExplicitTop = 173
+                ExplicitWidth = 464
+              end
+              object pnlURLScaling: TPanel
+                AlignWithMargins = True
+                Left = 5
+                Top = 214
+                Width = 472
+                Height = 22
+                Margins.Left = 5
+                Margins.Top = 0
+                Margins.Right = 5
+                Margins.Bottom = 0
+                Align = alTop
+                BevelOuter = bvNone
+                ParentColor = True
+                TabOrder = 5
+                ExplicitTop = 218
+                ExplicitWidth = 464
+                object sgbURLScaling: TSharpeGaugeBox
+                  Left = 0
+                  Top = 0
+                  Width = 150
+                  Height = 22
+                  Margins.Left = 5
+                  Margins.Top = 0
+                  Margins.Right = 5
+                  Margins.Bottom = 0
+                  Align = alLeft
+                  Color = clWindow
+                  ParentBackground = False
+                  TabOrder = 0
+                  Min = 5
+                  Max = 500
+                  Value = 100
+                  Suffix = '% scaled'
+                  Description = 'Scale image by'
+                  PopPosition = ppBottom
+                  PercentDisplay = False
+                  Formatting = '%d'
+                  OnChangeValue = sgbFileScalingChangeValue
                   BackgroundColor = clWindow
                 end
               end
             end
-          end
-          object SharpECenterHeader5: TSharpECenterHeader
-            AlignWithMargins = True
-            Left = 13
-            Top = 205
-            Width = 480
-            Height = 37
-            Margins.Left = 13
-            Margins.Top = 0
-            Margins.Right = 5
-            Margins.Bottom = 10
-            Title = 'Image Scaling'
-            Description = 'Changing this option will to enlarge or shrink the image'
-            TitleColor = clWindowText
-            DescriptionColor = clRed
-            Align = alTop
-          end
-          object Panel2: TPanel
-            AlignWithMargins = True
-            Left = 13
-            Top = 252
-            Width = 480
-            Height = 22
-            Margins.Left = 13
-            Margins.Top = 0
-            Margins.Right = 5
-            Margins.Bottom = 0
-            Align = alTop
-            BevelOuter = bvNone
-            ParentColor = True
-            TabOrder = 1
-            object sgb_size: TSharpeGaugeBox
+            object pageDirectory: TJvStandardPage
               Left = 0
               Top = 0
-              Width = 287
-              Height = 22
-              Margins.Left = 5
-              Margins.Top = 0
-              Margins.Right = 5
-              Margins.Bottom = 0
-              Align = alLeft
-              Color = clWindow
-              ParentBackground = False
-              TabOrder = 0
-              Min = 5
-              Max = 500
-              Value = 100
-              Suffix = '% scaled'
-              Description = 'Scale image by'
-              PopPosition = ppBottom
-              PercentDisplay = False
-              Formatting = '%d'
-              OnChangeValue = sgb_sizeChangeValue
-              BackgroundColor = clWindow
+              Width = 482
+              Height = 240
+              object pnlDirectory: TPanel
+                AlignWithMargins = True
+                Left = 5
+                Top = 57
+                Width = 472
+                Height = 21
+                Margins.Left = 5
+                Margins.Top = 0
+                Margins.Right = 5
+                Margins.Bottom = 0
+                Align = alTop
+                BevelOuter = bvNone
+                ParentColor = True
+                TabOrder = 0
+                ExplicitLeft = 0
+                ExplicitWidth = 482
+                object psbDirectory: TPngSpeedButton
+                  AlignWithMargins = True
+                  Left = 443
+                  Top = 0
+                  Width = 29
+                  Height = 21
+                  Margins.Top = 0
+                  Margins.Right = 0
+                  Margins.Bottom = 0
+                  Align = alRight
+                  Flat = True
+                  OnClick = psbDirectoryClick
+                  PngImage.Data = {
+                    89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
+                    610000001974455874536F6674776172650041646F626520496D616765526561
+                    647971C9653C0000020B4944415478DACD933D68144114C7DF6CBCDC26BA67C0
+                    CA8FC290DD5C12D2C5DB20B6A9242A114494580405831830822092C2CA2EA9C4
+                    42B0482416774508069BA82836E1FC20481A737887A8C1F875EBDE9E999DFD78
+                    BE9DDD8BDAD858E8C0DB7933F3FEBFF7E6631922C2DF34F67F005617F62DAB99
+                    9E1EC6945F9610DCDAEBB7816FEDA781FBBB4A7EEBD9432BBE0494EE9A5C1F5C
+                    4A33C6229D1403F93EFF0CEBCB570526B3516B6ACE2006DE4767EDE1A5CE232F
+                    F231602E67E9879F6C171F6E40209A00940CE93550770D909F2279A40FA90F25
+                    9C29DB4469FE40C9182AF6C680BC69770CDDD7F8BB198A4108DDAFE0D5D721A0
+                    2DA5D49DA4F1482F88E313C007ADEB3254EE1D748CA3CFB41850C889F6C18594
+                    532E000A073CFB1368DDC741DDD19D6CB85101C6156C69234D3F378E155B62C0
+                    9D7E619C5C4A45591A8154070DDF836F2D0206DF00FDC86CF21D50F74C4079EE
+                    1437869F268069D3D5871F3787DF5F52804556A3600B42AF2AC54489214104A8
+                    43CBDE492817CE7063A401B869F28E9107E9A0F628CE24335A895F4D32DB9B80
+                    56FD16546647B931DA005CCF6DE8671755AF3A9F08AD9F65CBBEB629C690C3D6
+                    EC2C54A6CF71E37C02589DEA5B6B3F9D6F155F8A1A841B0A22A7A320A31E037A
+                    4318DD802B6F822620BDFB04BEB93D6E775E7CDE2601AFAEF55E008599747203
+                    74E8DA1FDF2ECA8B1110E24CF6CACAD8BFFF997E000DC65AF0F0FE412D000000
+                    0049454E44AE426082}
+                  ExplicitLeft = 332
+                  ExplicitTop = 1
+                  ExplicitHeight = 20
+                end
+                object imageDirectory: TEdit
+                  Left = 0
+                  Top = 0
+                  Width = 440
+                  Height = 21
+                  Margins.Left = 5
+                  Margins.Top = 0
+                  Margins.Right = 5
+                  Margins.Bottom = 0
+                  Align = alClient
+                  TabOrder = 0
+                  OnChange = imageDirectoryChange
+                  ExplicitLeft = 5
+                end
+              end
+              object pnlDirectoryInterval: TPanel
+                AlignWithMargins = True
+                Left = 5
+                Top = 135
+                Width = 472
+                Height = 22
+                Margins.Left = 5
+                Margins.Top = 0
+                Margins.Right = 5
+                Margins.Bottom = 0
+                Align = alTop
+                BevelOuter = bvNone
+                ParentColor = True
+                TabOrder = 1
+                ExplicitLeft = 0
+                ExplicitWidth = 482
+                object sgbDirectoryInterval: TSharpeGaugeBox
+                  Left = 0
+                  Top = 0
+                  Width = 150
+                  Height = 22
+                  Margins.Left = 5
+                  Margins.Top = 0
+                  Margins.Right = 5
+                  Margins.Bottom = 0
+                  Align = alLeft
+                  Color = clWindow
+                  ParentBackground = False
+                  TabOrder = 0
+                  Min = 5
+                  Max = 60
+                  Value = 30
+                  Prefix = 'Every '
+                  Suffix = ' minutes'
+                  Description = 'Scale image by'
+                  PopPosition = ppBottom
+                  PercentDisplay = False
+                  Formatting = '%d'
+                  OnChangeValue = sgbDirectoryIntervalChangeValue
+                  BackgroundColor = clWindow
+                end
+              end
+              object schDirectoryInterval: TSharpECenterHeader
+                AlignWithMargins = True
+                Left = 5
+                Top = 88
+                Width = 472
+                Height = 37
+                Margins.Left = 5
+                Margins.Top = 10
+                Margins.Right = 5
+                Margins.Bottom = 10
+                Title = 'Refresh Interval'
+                Description = 'Change the update interval at which a new image is loaded.'
+                TitleColor = clWindowText
+                DescriptionColor = clRed
+                Align = alTop
+              end
+              object schDirectory: TSharpECenterHeader
+                AlignWithMargins = True
+                Left = 5
+                Top = 10
+                Width = 472
+                Height = 37
+                Margins.Left = 5
+                Margins.Top = 10
+                Margins.Right = 5
+                Margins.Bottom = 10
+                Title = 'Directory location'
+                Description = 'Define the directory where you want to load the images from.'
+                TitleColor = clWindowText
+                DescriptionColor = clRed
+                Align = alTop
+              end
+              object schDirectoryDimensions: TSharpECenterHeader
+                AlignWithMargins = True
+                Left = 5
+                Top = 167
+                Width = 472
+                Height = 37
+                Margins.Left = 5
+                Margins.Top = 10
+                Margins.Right = 5
+                Margins.Bottom = 10
+                Title = 'Image Dimensions'
+                Description = 'Set the height and width to scale the images to.'
+                TitleColor = clWindowText
+                DescriptionColor = clRed
+                Align = alTop
+              end
+              object pnlDirectoryDimensions: TPanel
+                AlignWithMargins = True
+                Left = 5
+                Top = 214
+                Width = 472
+                Height = 21
+                Margins.Left = 5
+                Margins.Top = 0
+                Margins.Right = 5
+                Margins.Bottom = 0
+                Align = alTop
+                BevelOuter = bvNone
+                ParentColor = True
+                TabOrder = 5
+                ExplicitLeft = 0
+                ExplicitWidth = 482
+                object sgbDirectoryHeight: TSharpeGaugeBox
+                  Left = 0
+                  Top = 0
+                  Width = 150
+                  Height = 21
+                  Margins.Left = 5
+                  Margins.Top = 0
+                  Margins.Right = 5
+                  Margins.Bottom = 0
+                  Align = alLeft
+                  Color = clWindow
+                  ParentBackground = False
+                  TabOrder = 0
+                  Min = 0
+                  Max = 500
+                  Value = 100
+                  Prefix = 'Height: '
+                  Suffix = ' px'
+                  Description = 'Set the height for the images.'
+                  PopPosition = ppBottom
+                  PercentDisplay = False
+                  Formatting = '%d'
+                  OnChangeValue = sgbDirectoryHeightChangeValue
+                  BackgroundColor = clWindow
+                end
+                object sgbDirectoryWidth: TSharpeGaugeBox
+                  AlignWithMargins = True
+                  Left = 155
+                  Top = 0
+                  Width = 150
+                  Height = 21
+                  Margins.Left = 5
+                  Margins.Top = 0
+                  Margins.Right = 5
+                  Margins.Bottom = 0
+                  Align = alLeft
+                  Color = clWindow
+                  ParentBackground = False
+                  TabOrder = 1
+                  Min = 0
+                  Max = 500
+                  Value = 100
+                  Prefix = 'Width: '
+                  Suffix = ' px'
+                  Description = 'Set the width for the images.'
+                  PopPosition = ppBottom
+                  PercentDisplay = False
+                  Formatting = '%d'
+                  OnChangeValue = sgbDirectoryWidthChangeValue
+                  BackgroundColor = clWindow
+                end
+              end
             end
           end
         end
