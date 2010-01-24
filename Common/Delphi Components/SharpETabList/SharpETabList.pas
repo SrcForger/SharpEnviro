@@ -9,6 +9,7 @@ uses
   Graphics,
   Controls,
   Forms,
+  Menus,
   GR32,
   GR32_Image,
   GR32_Layers,
@@ -69,7 +70,6 @@ type
     procedure SetCollection(Value: TCollection); override;
 
   published
-
     property ButtonRect: Trect read FButtonRect write FButtonRect;
     property ImageIndex: Integer read FImageIndex write SetImageIndex;
     property Visible: Boolean read FVisible write SetVisible;
@@ -131,10 +131,13 @@ type
     FTextSpacingX: Integer;
     FTextSpacingY: Integer;
     FLeftIndex: Integer;
+    FRightIndex : Integer;
     FLastTabRight: Integer;
     FDisplayedTabs: Integer;
     FScrollLeft: TButtonItem;
     FScrollRight: TButtonItem;
+    FDownArrow : TButtonItem;
+    FTabsMenu : TPopupMenu;
     FScrollButtonImageList: TPngImageList;
 
     function GetCount: Integer;
@@ -178,6 +181,7 @@ type
     procedure DrawTabs;
     function GetTabItem(Index: Integer): TTabItem;
     procedure SetTabItem(Index: Integer; const Value: TTabItem);
+    procedure miClick(Sender: TObject);
 
   protected
     procedure DrawTab(ATabItem: TTabItem);
@@ -189,6 +193,9 @@ type
 
     function ClickTab(ATabItem: TTabItem): Boolean; overload;
     function ClickTab(ATabID: Integer): Boolean; overload;
+    procedure ScrollLeft;
+    procedure ScrollRight;
+    procedure BringTabIntoView(ATabID : Integer);
 
     function Add: TTabItem; overload;
     function Add(ATabCaption: string; ATabImageIndex: Integer = -1;
@@ -259,6 +266,7 @@ const
   cRightArrowIdx = 1;
   cLeftArrowDisabledIdx = 2;
   cRightArrowDisabledIdx = 3;
+  cDownArrowIdx = 4;
 
 procedure Register;
 
@@ -347,8 +355,10 @@ begin
   FImage32.OnMouseUp := MouseDownEvent;
   FImage32.OnMouseMove := MouseMoveEvent;
 
+  FTabsMenu := TPopupMenu.Create(Self);
+  FTabsMenu.Alignment := paRight;
+  
   CreateScrollButtonComponents;
-
 end;
 
 procedure TSharpETabList.Delete(ATabItem: TTabItem);
@@ -477,8 +487,8 @@ begin
   if GetScrollButtonsWidth <> 0 then
     DrawButton(r, FScrollButtonImageList, FScrollLeft);
 
-  r := Rect(AScrollButtonRect.Right - 16, Height div 2 - 6,
-    AScrollButtonRect.Right, Self.ClientHeight);
+  r := Rect(FScrollLeft.ButtonRect.Right, Height div 2 - 6,
+    FScrollLeft.ButtonRect.Right + 16, ClientHeight);
 
   // If the maximum number of visible tabs that we can display
   // is greather than or equal to the number of visible tabs
@@ -491,6 +501,15 @@ begin
 
   if GetScrollButtonsWidth <> 0 then
     DrawButton(r, FScrollButtonImageList, FScrollRight);
+
+  r := Rect(FScrollRight.ButtonRect.Right, Height div 2 - 6,
+    FScrollRight.ButtonRect.Right + 16, ClientHeight);
+
+  FDownArrow.ButtonRect := r;
+  FDownArrow.ImageIndex := cDownArrowIdx;
+  
+  if GetScrollButtonsWidth <> 0 then
+    DrawButton(r, FScrollButtonImageList, FDownArrow);
 end;
 
 procedure TSharpETabList.DrawTab(ATabItem: TTabItem);
@@ -654,7 +673,8 @@ begin
       bScroll := True;
 
     if bScroll then
-      Result := 32;
+      // Left arrow = 16, Right arrown = 16, Down arrow = 16
+      Result := 48;
   end;
 end;
 
@@ -796,44 +816,51 @@ begin
   Invalidate;
 end;
 
+procedure TSharpETabList.miClick(Sender: TObject);
+begin
+  SetTabIndex(TMenuItem(Sender).Tag);
+  BringTabIntoView(TMenuItem(Sender).Tag);
+end;
+
 procedure TSharpETabList.MouseDownEvent(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer; Layer: TCustomLayer);
 var
   i: Integer;
   bChange: Boolean;
+  tabsMenuItem : TMenuItem;
+  downArrowPoint : TPoint;
 begin
   // Check scrollbuttons first
   if (WithinRect(X, Y, FScrollLeft.ButtonRect)) then begin
-
-    if FScrollLeft.ImageIndex <> cLeftArrowDisabledIdx then
-      // If the current left index is 0 then we don't need to
-      // find a new left index.
-      if FLeftIndex > 0 then
-        // Loop until we find a visible tab before the current left index.
-        for i := FLeftIndex downto 1 do
-        begin
-          Dec(FLeftIndex);
-          if FTabList.Item[FLeftIndex].Visible then
-            Break;
-        end;
-
-    Invalidate;
+    ScrollLeft;
     exit;
   end;
 
   if (WithinRect(X, Y, FScrollRight.ButtonRect)) then begin
-
-    if FScrollRight.ImageIndex <> cRightArrowDisabledIdx then
-      // Loop until we find a visible tab after the current left index.
-      for i := FLeftIndex to Pred(Count) do
-      begin
-        Inc(FLeftIndex);
-        if FTabList.Item[FLeftIndex].Visible then
-          Break;
-      end;
-
-    Invalidate;
+    ScrollRight;
     exit;
+  end;
+
+  if (WithinRect(X, Y, FDownArrow.ButtonRect)) then
+  begin
+    FTabsMenu.Items.Clear;
+    for i := 0 to Pred(Count) do
+      if (FTabList.Item[i].Visible) then
+      begin
+        tabsMenuItem := TMenuItem.Create(FTabsMenu);
+        tabsMenuItem.Caption := FTabList.Item[i].Caption;
+        tabsMenuItem.ImageIndex := FTabList.Item[i].ImageIndex;
+        tabsMenuItem.Tag := i;
+        tabsMenuItem.OnClick := miClick;
+        FTabsMenu.Items.Add(tabsMenuItem);
+      end;
+    if Assigned(FPngImageList) then
+      FTabsMenu.Images := FPngImageList;
+      
+    downArrowPoint := ClientToScreen(FDownArrow.ButtonRect.BottomRight);
+    FTabsMenu.Popup(downArrowPoint.X, downArrowPoint.Y);
+    Invalidate;
+    Exit;
   end;
 
   for i := 0 to Pred(FButtons.Count) do
@@ -898,6 +925,12 @@ begin
     exit;
   end;
 
+  if (WithinRect(X, Y, FDownArrow.ButtonRect)) then
+  begin
+    FImage32.Cursor := crHandPoint;
+    Exit;
+  end;
+
   FMouseOverID := -1;
   for i := 0 to Pred(FTabList.Count) do
   begin
@@ -929,6 +962,58 @@ begin
   end;
 end;
 
+procedure TSharpETabList.ScrollLeft;
+var
+  i : Integer;
+begin
+    if FScrollLeft.ImageIndex <> cLeftArrowDisabledIdx then
+    begin
+      // If the current left index is 0 then we don't need to
+      // find a new left index.
+      if FLeftIndex > 0 then
+        // Loop until we find a visible tab before the current left index.
+        for i := FLeftIndex downto 1 do
+        begin
+          Dec(FLeftIndex);
+          if FTabList.Item[FLeftIndex].Visible then
+            Break;
+        end;
+
+      Invalidate;
+    end;
+end;
+
+procedure TSharpETabList.ScrollRight;
+var
+  i : Integer;
+begin
+    if FScrollRight.ImageIndex <> cRightArrowDisabledIdx then
+    begin
+      // Loop until we find a visible tab after the current left index.
+      for i := FLeftIndex to Pred(Count) do
+      begin
+        Inc(FLeftIndex);
+        if FTabList.Item[FLeftIndex].Visible then
+          Break;
+      end;
+
+      Invalidate;
+    end;
+end;
+
+procedure TSharpETabList.BringTabIntoView(ATabID: Integer);
+begin
+  while (FLeftIndex > ATabID) or (FRightIndex < ATabID) do
+  begin
+    if (FLeftIndex > ATabID) then
+      ScrollLeft
+    else
+      ScrollRight;
+    // We need to repaint to have FLeftIndex and FRightIndex reset.
+    Paint;
+  end;
+end;
+
 procedure TSharpETabList.Paint;
 var
   rScrollButtons: TRect;
@@ -956,13 +1041,12 @@ begin
 
 {$REGION 'Draw Scroll buttons'}
   if FTabAlign = taLeftJustify then begin
-    rScrollButtons.Left := Self.ClientWidth - GetScrollButtonsWidth + 4;
+    rScrollButtons.Left := Self.ClientWidth - (GetScrollButtonsWidth + 4);
     rScrollButtons.Right := Self.ClientWidth;
     rScrollButtons.Top := 0;
     rScrollButtons.Bottom := Self.ClientHeight;
     DrawScrollButtons(rScrollButtons);
   end;
-
 {$ENDREGION}
 
 end;
@@ -1176,9 +1260,10 @@ begin
   FScrollButtonImageList.Free;
   FScrollLeft.Free;
   FScrollRight.Free;
-
+  FDownArrow.Free;
+  FTabsMenu.Free;
+  
   inherited;
-
 end;
 
 procedure TSharpETabList.DrawTabs;
@@ -1225,6 +1310,7 @@ begin
             DrawTab(FTabList.Item[i]);
             x := x + iTabWidth + 2;
             Inc(FDisplayedTabs, 1);
+            FRightIndex := i;
           end;
         end
         else
@@ -1273,6 +1359,7 @@ begin
   FScrollButtonImageList := TPngImageList.Create(self);
   FScrollLeft := TButtonItem.Create(nil);
   FScrollRight := TButtonItem.Create(nil);
+  FDownArrow := TButtonItem.Create(nil);
 
   png := FScrollButtonImageList.PngImages.Add;
   png.PngImage.LoadFromResourceName(HInstance, 'SHARPE_TABLIST_ARR_LEFT_PNG');
@@ -1282,6 +1369,8 @@ begin
   png.PngImage.LoadFromResourceName(HInstance, 'SHARPE_TABLIST_ARR_LEFT_D_PNG');
   png := FScrollButtonImageList.PngImages.Add;
   png.PngImage.LoadFromResourceName(HInstance, 'SHARPE_TABLIST_ARR_RIGHT_D_PNG');
+  png := FScrollButtonImageList.PngImages.Add;
+  png.PngImage.LoadFromResourceName(HInstance, 'SHARPE_TABLIST_ARR_DOWN_PNG');
 end;
 
 {$REGION 'TSharpETabListItem'}

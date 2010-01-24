@@ -848,6 +848,7 @@ begin
               if pcNotes.TabItems.Item[i].Visible then
               begin
                 pcNotes.TabIndex := i;
+                pcNotes.TabList.BringTabIntoView(i);
                 changed := True;
                 Break;
               end;
@@ -860,6 +861,7 @@ begin
                 if pcNotes.TabItems.Item[i].Visible then
                 begin
                   pcNotes.TabIndex := i;
+                  pcNotes.TabList.BringTabIntoView(i);
                   Break;
                 end;
           end
@@ -871,6 +873,7 @@ begin
               if pcNotes.TabItems.Item[i].Visible then
               begin
                 pcNotes.TabIndex := i;
+                pcNotes.TabList.BringTabIntoView(i);
                 changed := True;
                 Break;
               end;
@@ -883,6 +886,7 @@ begin
                 if pcNotes.TabItems.Item[i].Visible then
                 begin
                   pcNotes.TabIndex := i;
+                  pcNotes.TabList.BringTabIntoView(i);
                   Break;
                 end;
           end;
