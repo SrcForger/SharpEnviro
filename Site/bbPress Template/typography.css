@@ -1,0 +1,80 @@
+/* Default font settings. 
+-------------------------------------------------------------- */
+body { 
+  font-size: 14px;
+  line-height:20px;
+  color: #292929; 
+  background: #fff;
+  font-family: "Corbel", "Trebuchet MS", "Tahoma", "Arial", sans-serif;
+}
+
+
+/* Headings
+-------------------------------------------------------------- */
+
+h1,h2,h3,h4,h5,h6 { font-weight: normal; color: #111; }
+
+h1 { color: #222; font-size: 30px; line-height:20px; padding-top:38px; margin-bottom:2px;  }
+h2 { font-size: 23px; line-height:20px; padding-top:41px; margin-bottom:-1px }
+h3 { font-size: 18px; line-height:20px; padding-top:31px; margin-bottom:-1px }
+
+h4 { font-size: 16px; line-height: 20px; padding-top:3px; margin-bottom:1px;  }
+
+
+
+/* Text elements
+-------------------------------------------------------------- */
+
+p           { padding-top:24px; margin-bottom:-4px; }
+
+a:focus, 
+a:hover     { color: #000; text-decoration: underline; }
+a           { color: #009; text-decoration: none; }
+
+blockquote  { color: #666; font-style: italic; }
+strong      { font-weight: bold; }
+em,dfn      { font-style: italic; }
+dfn         { font-weight: bold; }
+sup, sub    { line-height: 0; }
+
+abbr, 
+acronym     { }
+address     { }
+del         { }
+
+pre,code    { white-space: pre; }
+pre,code,tt { font-family: 'andale mono', 'lucida console', monospace; } 
+
+
+/* Lists
+-------------------------------------------------------------- */
+
+li ul, 
+li ol       { margin:0 1.5em; }
+ul, ol      { margin: 0 1.5em 1.5em 1.5em; }
+
+ul          { list-style-type: disc; }
+ol          { list-style-type: decimal; }
+
+dl          { margin: 0 0 1.5em 0; }
+dl dt       { font-weight: bold; }
+dd          { margin-left: 1.5em;}
+
+
+/* Misc classes
+-------------------------------------------------------------- */
+
+.small      { font-size: .8em; }
+.large      { font-size: 1.2em; }
+.hide       { display: none; }
+
+.quiet      { color: #666; }
+.loud       { color: #000; }
+.highlight  { background:#ff0; }
+.added      { background:#060; color: #fff; }
+.removed    { background:#900; color: #fff; }
+
+.first      { margin-left:0; padding-left:0; }
+.last       { margin-right:0; padding-right:0; }
+.top        { margin-top:0; padding-top:0; }
+.bottom     { margin-bottom:0; padding-bottom:0; }

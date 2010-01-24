@@ -1,0 +1,416 @@
+/*
+Theme Name: bbOrg
+Theme URI: http://bbpress.org/
+Description: The "revolutionized" new face of bbPress DOT org.
+Version: 0.01 theta-beta
+Author: Bryan Veloso
+Author URI: http://avalonstar.com
+*/
+
+/* Globals 
+=================================== */
+
+* { margin: 0; padding: 0; }
+
+
+a { color: #2e6e15; text-decoration: none; }
+a:hover { color: #006400; }
+
+.alt {
+	background: #fff;
+}
+
+code { font: 1.0em Monaco, 'Courier New', monospace; }
+
+
+p {
+	margin-bottom: 1.0em;
+}
+
+/* Structure
+=================================== */
+
+.bbcrumb {
+	text-transform: uppercase;
+	font-size: 0.9em;
+	letter-spacing: 1px;
+	padding: 5px 0 20px;
+}
+
+#footer { 
+	border-top: 1px solid #ccc;
+	margin: auto;
+	color: #666;
+	font-size: 1.0em;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	padding-top: 10px;
+	clear: both; 
+	text-align: center;
+}
+
+.notice { 
+	border: 2px solid #4c9545; 
+	background: #abd8a2; 
+	color: #4c9545; 
+	font-size: 1.1em; 
+	font-weight: bold;
+	padding: 10px 15px; 
+	margin: 0 0 1.1em; 
+}
+
+.notice p { margin-bottom: 0; }
+
+/* Login Form
+=================================== */
+
+.login { 
+	color: #444;
+	margin-top: 1em;
+	padding: 1em;
+	background: #eee;
+}
+
+
+
+/* Front Page
+=================================== */
+
+#hottags {
+	margin-top: .2em;
+}
+
+#front-page #discussions { 
+	width: 100%;
+}
+
+.frontpageheatmap {
+	font-weight: normal;
+	line-height: 30px;
+	padding-bottom: 10px;
+}
+
+#front-page #main h2, h2.post-form, #userlogin, 
+#currentfavorites, #register {
+	color: #333;
+	border-bottom: 1px solid #ddd;
+	margin: 0 0 10px;
+	padding: 0 0 5px;
+}
+
+#front-page #discussions ul {
+	padding: 0 0 0 14px;
+}
+
+.sticky {
+	background: #e4f3ff;
+}
+
+.sticky a {
+	color: #000;
+}
+
+.sticky a:visited {
+	color: #000;
+}
+
+.recent-sticky {
+	background: #e4f3ff;
+}	
+
+
+/* Topic Page
+=================================== */
+
+.infobox {
+	border: 1px solid #ccc;
+	border-width: 1px 0;
+	padding: 1em;
+}
+
+.infobox ul {
+	margin: 10px 0 10px 12px;
+	padding: 0;
+}
+
+.infobox ul li { 
+	padding-bottom: 3px;
+}
+
+#topic-tags {
+	border-left: 1px solid #ccc;
+	float: right;
+	margin-top: -2em;
+	padding: 0 1em 1em;
+}
+
+.nav {
+	margin: 15px 0;
+	padding: 12px 0;
+}
+
+.nav span {
+	font-weight: bold;
+}
+
+.nav span,.nav a {
+	padding: 6px;
+}
+
+#thread {
+	background: #eee;
+	list-style: none;
+	margin: 0 0 0 100px;
+	padding: 0;
+}
+
+#thread li {
+	padding: 1.5em 1.0em;
+	line-height: 1.5em;
+}
+
+#thread li ol, #thread li ul { 
+	margin-left: 40px;
+}
+
+#thread li ol li, #thread li ul li { 
+	padding: 0;
+}
+
+.threadauthor {
+	margin-left: -110px;
+	overflow: hidden;
+	position: absolute;
+	width: 90px;
+}
+
+.threadauthor small {
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+}
+
+.poststuff {
+	border-top: 1px dotted #ccc;
+	margin: 10px 0 0;
+	padding: 5px 0 0;
+	font: 10px Verdana, Arial, Helvetica, sans-serif;
+	text-transform: uppercase;
+}
+
+.num, #forumlist small, #miniforumlist small {
+	text-align: left;
+}
+
+.postform {
+	background: #f0f0f0;
+	padding: 1em;
+}
+
+.postform textarea {
+	height: 12em;
+	margin: 5px 0;
+	padding: 5px;
+	display: block;
+}
+
+.postform label {
+	display: block;
+}
+
+.admin { 
+	padding: 10px 0 0;
+}
+
+#manage-tags { 
+	margin: 10px 0; 
+	list-style: none; 
+}
+
+#manage-tags li {
+	float: left;
+	width: 200px;
+	padding-bottom: 10px;
+}
+
+.submit {
+	text-align: right;
+}
+
+.topiclink {
+	display: block;
+}
+
+.topictitle {
+	font-size: 26px;
+	font-weight: normal;
+	display: inline;
+}
+
+/* Other
+=================================== */
+
+#content .frontpageheatmap a {
+	font-weight: normal;
+	text-decoration: none;
+}
+
+#content .infobox li {
+	margin-bottom: 2px;
+}
+
+#content .nav a {
+	border: 1px solid #ccc;
+	font-weight: normal;
+}
+
+#content .nav a:hover {
+	border: 1px solid #999;
+}
+
+#content a:visited {
+	font-weight: normal;
+}
+
+#front-search {
+	float: right;
+	margin-top: -8px;
+}
+
+form.search {
+	padding-bottom: 1.2em;
+}
+
+form.search input {
+	float: left;
+}
+
+form.search input.inputButton {
+	margin-top: -3px;
+	float: right;
+	background-color: #eee;
+	border-style: outset;
+	border-width: 2px;
+}
+
+form.search input.inputButton:active {
+	border-style: inset;
+}
+
+#front-page h2 {
+	clear: both;
+}
+
+#latest td, #forumlist td, #miniforumlist td, #favorites td {
+	padding: 5px 0px;
+}
+
+#latest tr:hover, #miniforumlist tr:hover, #forumlist tr:hover, #favorites tr:hover { 
+	background: #e4f3ff;
+}
+
+#latest th, #forumlist th, #miniforumlist th, #favorites th {
+	border-bottom: 1px solid #aaa;
+	background: #ffffff;
+	text-align:left;
+	padding: 5px 0;
+	text-transform: uppercase;
+}
+
+#latest, #forumlist, #miniforumlist, #favorites {
+	background: #f7f7f7;
+	margin-bottom: 2em;
+	width: 100%;
+}
+
+.bozo {
+	background: #eeee88;
+}
+
+
+
+.deleted {
+	background: #ee8888;
+}
+/*
+.deleted.alt {
+	background: #ff9999;
+}
+.bozo.alt {
+	background: #ffff99;
+}
+*/
+
+/* Profile Page
+=================================== */
+
+#profile-menu {
+	list-style: none;
+	position: absolute;
+	right: 0;
+}
+
+#profile-menu li {
+	font-size: 1.1em;
+	background-color: #eee;
+	padding: 4px 7px;
+	display: inline;
+	border-top: 3px double #9e9e9e;
+	position: relative;
+	top: -10px;
+}
+
+#profile-menu li.current {
+	background-color: #ddd;
+	border-top: 1px solid #9e9e9e;
+}
+
+#userinfo { margin-top: 10px; }
+#userinfo dt { font-weight: bold; }
+#userinfo dd { margin: 0 0 5px; } 
+
+#useractivity { margin: 15px 0 5px; }
+
+.user-recent { margin: 0 0 10px; }
+.user-recent ol { margin: 5px 0 0 28px; }
+.user-recent ol li { margin: 0 0 3px; }
+
+/* Profile Edit
+=================================== */
+
+fieldset { 
+	border-top: 3px double #ccc;
+	border-bottom: 1px solid #ccc;
+	border-left: none;
+	border-right: none;
+	padding: 10px 0 10px 10px; 
+	margin-bottom: 15px;
+}
+
+legend { 
+	font-weight: bold;
+	padding: 0 15px;
+}
+
+fieldset table { 
+	text-align: left;
+	margin: 0 15px;
+}
+
+fieldset table td { padding: 2px 0; }
+
+fieldset p { 
+	font-size: 11px;
+	margin: 10px 16px;
+}
+
+
+#post_content {
+	width: 97%;
+}
+
+.post {
+	overflow: hidden;
+}
+
+.post pre {
+	overflow-x: auto;
+}

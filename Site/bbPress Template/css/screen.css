@@ -1,0 +1,41 @@
+@charset "utf-8";
+
+/* Grid extension*/
+.top-1 { margin-top:1.5em}
+.top-2 { margin-top:3em}
+.top-3 { margin-top:4.5em}
+.top-4 { margin-top:6em}
+
+/* Common stuff */
+body{
+	background-image: url(images/topgradient.jpg);
+	background-repeat: repeat-x;
+	background-position: top;
+}
+#header {
+	height:120px; 
+	background-repeat: no-repeat;
+	background-position: 0px 5px;
+}
+#navbar { height:20px; position:relative; top:100px;}
+#navbar a { 
+	padding-left:8px; padding-right:8px; display:block; float:left; line-height:20px; 
+	color:#222; text-decoration:none; font-size:16px;
+}
+#navbar a:hover { text-decoration:underline;}
+.tab { padding:0 10px 0 10px!important;}
+#stripe { height:80px; background-image: url(images/gloss.png); 
+	background-repeat: repeat-x;
+	background-position: top; }
+#content { position:relative; bottom:70px; }
+#footerstripe { background-color:#F2F2F2; color:#808080; padding: 20px 0px 20px 0px; position:relative; bottom:40px; }
+#footerstripe h4 { color:#666; }
+#footerstripe ul { list-style-type: none; margin:0px; }
+
+
+/* Comments */
+.comment_links { padding-bottom:60px; }
+.avatar { height: 90px; margin-top:3px; background-color:#DDD; }
+.comment p.small { padding-top:0px; }
+.comment { min-height:90px; padding-bottom:30px; }
+#commentform textarea { width:590px; }

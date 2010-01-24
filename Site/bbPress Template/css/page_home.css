@@ -1,0 +1,8 @@
+/* top */
+#stripe, #navbar #activetab { background-color:#FFD500; }
+.topcontent { height:340px; }
+#topimage { padding-top:40px; }
+#topgreybox { background-color:#F2F2F2; height:200px; margin-top:30px; padding-top:14px; /* padding-margin based on typography.css p */ }
+#topgreybox span { display:block; padding-left:10px; }
+/* content */
+.img-6-right { float:right; width:270px; height:197px; border: solid 10px #EEE; margin-left:10px; }

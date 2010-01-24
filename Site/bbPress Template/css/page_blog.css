@@ -1,0 +1,21 @@
+	/* Main page */
+#stripe, #navbar #activetab { background-color:#CDF53D; }
+#header {background-image: url(images/logogreen.jpg);}
+.topcontent { height:120px; }
+/* past stories column */
+#pasthead { background-color:#FFFFFF; margin-top:10px; }
+#pasthead h1 { padding-top:30px!important; padding-left:10px; position:relative; z-index:10; }
+#pastbody { background-color:#FFFFFF; padding-bottom:30px; margin-bottom:10px; }
+#pastbody p, #pastbody h2 { padding-left:10px; padding-right:5px; }
+#pastbody a { color: #292929; text-decoration:underline; }
+#pastbody a p:hover { text-decoration:underline; }
+/* the post */
+#thedate { color:#888; } 
+#slash{color:#BBB;}
+#thetitle { padding-top:21px!important; }
+/* Comments */
+.comment_links { padding-bottom:60px; }
+.avatar { height: 90px; margin-top:3px; background-color:#DDD; }
+.comment p.small { padding-top:0px; }
+.comment { min-height:90px; padding-bottom:30px; }
+#commentform textarea { width:590px; }
