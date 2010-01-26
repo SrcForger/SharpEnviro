@@ -778,6 +778,12 @@ begin
         size := round(Monitor.Width / mInterface.SkinInterface.SkinManager.Skin.TaskPreview.Dimension.X);
         GetWindowRect(mInterface.BarInterface.BarWnd,R);
         pos := ClientToScreen(Point(item.Left + item.Width div 2 - size div 2,0));
+        // Do not allow the preview to appear off the left side of the monitor.
+        if pos.X < Monitor.Left then
+          pos.X := Monitor.Left;
+        // Do not allow the preview to appear off the right side of the monitor.
+        if pos.X + size > Monitor.Left + Monitor.Width then
+          pos.X := Monitor.Left + Monitor.Width - size;
         if popupdown then
           pos.y := R.Bottom
         else pos.y := R.Top;
