@@ -1375,8 +1375,12 @@ begin
 
       pos := ClientToScreen(Point(cButton.Left + cButton.Width div 2,0));
       xpos := pos.X - (count * size) / 2;
+      // Do not allow the preview to appear off the left side of the monitor.
       if xpos < Monitor.Left then
         xpos := Monitor.Left;
+      // Do not allow the preview to appear off the right side of the monitor.
+      if xpos + (count * size) > Monitor.Width * (Monitor.MonitorNum + 1) then
+         xpos := Monitor.Width * (Monitor.MonitorNum + 1) - (count * size);
       if popupdown then
         ypos := R.Bottom
       else ypos := R.Top;
