@@ -1379,8 +1379,8 @@ begin
       if xpos < Monitor.Left then
         xpos := Monitor.Left;
       // Do not allow the preview to appear off the right side of the monitor.
-      if xpos + (count * size) > Monitor.Width * (Monitor.MonitorNum + 1) then
-         xpos := Monitor.Width * (Monitor.MonitorNum + 1) - (count * size);
+      if xpos + (count * size) >  Monitor.Left + Monitor.Width then
+         xpos := Monitor.Left + Monitor.Width - (count * size);
       if popupdown then
         ypos := R.Bottom
       else ypos := R.Top;
