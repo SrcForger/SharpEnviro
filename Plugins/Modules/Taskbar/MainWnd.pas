@@ -1128,7 +1128,10 @@ begin
   try
     IconToImage(bmp,pItem.Icon);
     if (bmp.Width <> 0) and (bmp.Height <> 0) then
-       pTaskItem.Glyph32.Assign(bmp);
+    begin
+      pTaskItem.Glyph32.Assign(bmp);
+      pTaskItem.CalculateGlyphColor;
+    end;
   except
   end;
   bmp.Free;
