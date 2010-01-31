@@ -295,12 +295,12 @@ begin
   Reg.OpenKey('\Control Panel\Desktop\',False);
   Reg.WriteString('Wallpaper', winWallPath+'.bmp');
   Reg.WriteString('WallpaperStyle', '0');
-  Reg.WriteString('TileWallpaper', '0');
+  Reg.WriteString('TileWallpaper', '1');
   Reg.OpenKey('\Software\Microsoft\Internet Explorer\Desktop\General',False);
   Reg.WriteString('BackupWallpaper', winWallPath+'.bmp');
   Reg.WriteString('Wallpaper', winWallPath+'.bmp');
   Reg.WriteString('WallpaperStyle', '0');
-  Reg.WriteString('TileWallpaper', '0');
+  Reg.WriteString('TileWallpaper', '1');
   Reg.OpenKey('\Software\Microsoft\Windows\CurrentVersion\Themes\LastTheme',False);
   Reg.WriteString('Wallpaper', winWallPath+'.bmp');
   Reg.Free;
