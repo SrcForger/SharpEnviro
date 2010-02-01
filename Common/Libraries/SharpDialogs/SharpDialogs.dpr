@@ -103,7 +103,7 @@ begin
  if IsWindowsVista then
  begin
    SList.Add('shell:AddNewProgramsFolder=Add New Programs');
-   SList.Add('shell:Administrative Tools=dministrative Tools');
+   SList.Add('shell:Administrative Tools=Administrative Tools');
    SList.Add('shell:AppData=Application Data');
    SList.Add('shell:AppUpdatesFolder=Application Updates');
    SList.Add('shell:Cache=Cache');
