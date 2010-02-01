@@ -158,7 +158,6 @@ object frmSettings: TfrmSettings
       Width = 149
       Height = 21
       ParentBackground = False
-      TabOrder = 0
       Min = 5
       Max = 100
       Value = 25
@@ -198,10 +197,10 @@ object frmSettings: TfrmSettings
     Margins.Top = 10
     Margins.Right = 5
     Margins.Bottom = 10
-    Title = 'Auto-Hide'
+    Title = 'Menu Hide'
     Description = 
-      'Define whether the menu should auto-hide when you leave the wind' +
-      'ow with your mouse.'
+      'Define whether the menu should hide when you leave it with your ' +
+      'mouse.'
     TitleColor = clWindowText
     DescriptionColor = clGrayText
     Align = alTop
@@ -210,7 +209,7 @@ object frmSettings: TfrmSettings
     Left = 0
     Top = 300
     Width = 600
-    Height = 42
+    Height = 46
     Align = alTop
     AutoSize = True
     BevelOuter = bvNone
@@ -218,31 +217,31 @@ object frmSettings: TfrmSettings
     ParentBackground = False
     TabOrder = 4
     object Label2: TLabel
-      Left = 8
+      Left = 5
       Top = 29
-      Width = 80
+      Width = 82
       Height = 13
-      Caption = 'Auto-Hide After:'
+      Caption = 'Hide Menu After:'
     end
     object Label3: TLabel
-      Left = 172
+      Left = 196
       Top = 29
-      Width = 13
+      Width = 39
       Height = 13
-      Caption = 'ms'
+      Caption = 'seconds'
     end
     object chkHideTimeout: TJvXPCheckbox
-      Left = 0
+      Left = 5
       Top = 0
       Width = 161
       Height = 17
-      Caption = 'Enable Auto-Hide'
+      Caption = 'Enable Menu Hiding'
       TabOrder = 0
       OnClick = chkHideTimeoutClick
     end
     object edtHideTimeout: TEdit
-      Left = 112
-      Top = 21
+      Left = 133
+      Top = 25
       Width = 57
       Height = 21
       TabOrder = 1

@@ -111,7 +111,7 @@ begin
            chkUseIcons.Checked := BoolValue('UseIcons',True);
            chkUseGenericIcons.Checked := BoolValue('UseGenericIcons',False);
            chkHideTimeout.Checked := (IntValue('HideTimeout', 0) > 0);
-           edtHideTimeout.Text := Value('HideTimeout','0');
+           edtHideTimeout.Text := FloatToStr(FloatValue('HideTimeout',0.0) / 1000.0);
            UpdateUi;
          end;
     end;
@@ -145,7 +145,14 @@ procedure TSharpCenterPlugin.Save;
 var
   dir : String;
   fileName : String;
+  fHide : Extended;
 begin
+  try
+    fHide := StrToFloat(frmSettings.edtHideTimeout.Text);
+  except
+    exit;
+  end;
+
   dir := SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\Settings\';
   fileName := dir + 'SharpMenu.xml';
 
@@ -160,7 +167,7 @@ begin
       Add('UseIcons',chkUseIcons.Checked);
       Add('UseGenericIcons',chkUseGenericIcons.Checked);
       if chkHideTimeout.Checked then
-        Add('HideTimeout',edtHideTimeout.Text)
+        Add('HideTimeout',Round(fHide*1000.0))
       else
         Add('HideTimeout','0');
     end;

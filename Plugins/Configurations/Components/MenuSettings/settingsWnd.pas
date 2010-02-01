@@ -127,7 +127,7 @@ end;
 procedure TfrmSettings.edtHideTimeoutKeyPress(Sender: TObject; var Key: Char);
 begin
   // #8 is Backspace
-  if not (Key in [#8, '0'..'9']) then
+  if not (Key in [#8, '0'..'9', '.']) then
     Key := #0;
 end;
 
