@@ -305,7 +305,10 @@ begin
   case msg of
     WM_SHOWWINDOW: begin
       result := 0;
-      ShowWindow(wnd, SW_HIDE);
+      if wParam = 1 then
+        ShowWindow(wnd, SW_SHOW)
+      else if wParam = 0 then
+        ShowWindow(wnd, SW_HIDE);
     end;
     WM_STYLECHANGING: begin
       sstruct := PStyleStruct(lParam);
