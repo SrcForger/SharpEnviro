@@ -121,6 +121,7 @@ begin
     cb_wpwatch.Checked := WallpaperWatch;
     cb_autorotate.Checked := ScreenRotAdjust;
     cb_adjustsize.Checked := ScreenSizeAdjust;
+    cb_useexplorer.Checked := UseExplorerDesk;
     BuildMenuList(MenuFile,MenuFileShift);
   end;
 end;
@@ -156,6 +157,7 @@ begin
     ScreenSizeAdjust := cb_adjustsize.Checked;
     MenuFile := cbMenuList.Text;
     MenuFileshift := cbMenuShift.Text;
+    UseExplorerDesk := cb_useexplorer.Checked;
     SaveSettings;
   end;
 end;

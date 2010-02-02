@@ -3,7 +3,7 @@ object frmSettings: TfrmSettings
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmSettings'
-  ClientHeight = 376
+  ClientHeight = 399
   ClientWidth = 428
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -20,8 +20,8 @@ object frmSettings: TfrmSettings
     Left = 0
     Top = 0
     Width = 428
-    Height = 368
-    ActivePage = tabObjects
+    Height = 391
+    ActivePage = tabDesktop
     Align = alTop
     Style = tsFlatButtons
     TabOrder = 0
@@ -29,14 +29,15 @@ object frmSettings: TfrmSettings
       Caption = 'tabDesktop'
       ImageIndex = 1
       TabVisible = False
+      ExplicitHeight = 358
       object SharpECenterHeader1: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
-        Top = 0
+        Top = 84
         Width = 410
         Height = 37
         Margins.Left = 5
-        Margins.Top = 0
+        Margins.Top = 10
         Margins.Right = 5
         Margins.Bottom = 10
         Title = 'Desktop resolution adjustment'
@@ -46,11 +47,12 @@ object frmSettings: TfrmSettings
         TitleColor = clWindowText
         DescriptionColor = clGrayText
         Align = alTop
+        ExplicitTop = 80
       end
       object SharpECenterHeader2: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
-        Top = 74
+        Top = 158
         Width = 410
         Height = 37
         Margins.Left = 5
@@ -66,7 +68,7 @@ object frmSettings: TfrmSettings
       object SharpECenterHeader3: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
-        Top = 148
+        Top = 232
         Width = 410
         Height = 37
         Margins.Left = 5
@@ -80,11 +82,12 @@ object frmSettings: TfrmSettings
         TitleColor = clWindowText
         DescriptionColor = clGrayText
         Align = alTop
+        ExplicitTop = 353
       end
       object SharpECenterHeader4: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
-        Top = 222
+        Top = 306
         Width = 410
         Height = 37
         Margins.Left = 5
@@ -98,71 +101,108 @@ object frmSettings: TfrmSettings
         TitleColor = clWindowText
         DescriptionColor = clGrayText
         Align = alTop
+        ExplicitTop = 312
       end
       object cb_adjustsize: TJvXPCheckbox
         AlignWithMargins = True
         Left = 3
-        Top = 47
+        Top = 131
         Width = 412
         Height = 17
         Margins.Top = 0
         Margins.Right = 5
         Margins.Bottom = 0
         Caption = 'Enable desktop sizing to resolution changes'
-        TabOrder = 0
-        Checked = True
-        State = cbChecked
-        Align = alTop
-        OnClick = cb_ammClick
-      end
-      object cb_autorotate: TJvXPCheckbox
-        AlignWithMargins = True
-        Left = 3
-        Top = 121
-        Width = 412
-        Height = 17
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Caption = 'Enable wallpaper rotation (Advanced)'
         TabOrder = 1
         Checked = True
         State = cbChecked
         Align = alTop
         OnClick = cb_ammClick
       end
+      object cb_useexplorer: TJvXPCheckbox
+        AlignWithMargins = True
+        Left = 3
+        Top = 57
+        Width = 412
+        Height = 17
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 0
+        Caption = 'Enable Explorer desktop'
+        TabOrder = 0
+        Align = alTop
+        OnClick = cb_ammClick
+        ExplicitTop = 64
+      end
       object cb_amm: TJvXPCheckbox
         AlignWithMargins = True
         Left = 3
-        Top = 195
+        Top = 279
         Width = 412
         Height = 17
         Margins.Top = 0
         Margins.Right = 5
         Margins.Bottom = 0
         Caption = 'Enable memory management (Advanced)'
-        TabOrder = 2
+        TabOrder = 3
         Align = alTop
         OnClick = cb_ammClick
+        ExplicitTop = 343
       end
       object cb_wpwatch: TJvXPCheckbox
         AlignWithMargins = True
         Left = 3
-        Top = 269
+        Top = 353
         Width = 412
         Height = 17
         Margins.Top = 0
         Margins.Right = 5
         Margins.Bottom = 0
         Caption = 'Enable wallpaper monitoring (Advanced)'
-        TabOrder = 3
+        TabOrder = 4
         Align = alTop
         OnClick = cb_ammClick
+        ExplicitTop = 359
+      end
+      object SharpECenterHeader9: TSharpECenterHeader
+        AlignWithMargins = True
+        Left = 5
+        Top = 10
+        Width = 410
+        Height = 37
+        Margins.Left = 5
+        Margins.Top = 10
+        Margins.Right = 5
+        Margins.Bottom = 10
+        Title = 'Explorer Desktop'
+        Description = 'Define whether to use Explorer'#39's Desktop'
+        TitleColor = clWindowText
+        DescriptionColor = clGrayText
+        Align = alTop
+        ExplicitTop = 296
+      end
+      object cb_autorotate: TJvXPCheckbox
+        AlignWithMargins = True
+        Left = 3
+        Top = 205
+        Width = 412
+        Height = 17
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 0
+        Caption = 'Enable wallpaper rotation (Advanced)'
+        TabOrder = 2
+        Checked = True
+        State = cbChecked
+        Align = alTop
+        OnClick = cb_ammClick
+        ExplicitTop = 343
       end
     end
     object tabObjects: TTabSheet
       Caption = 'tabObjects'
       TabVisible = False
+      ExplicitHeight = 358
       object cb_dd: TJvXPCheckbox
         AlignWithMargins = True
         Left = 3
@@ -265,7 +305,6 @@ object frmSettings: TfrmSettings
           Width = 120
           Height = 21
           ParentBackground = False
-          TabOrder = 0
           Min = 2
           Max = 128
           Value = 32
@@ -284,7 +323,6 @@ object frmSettings: TfrmSettings
           Width = 120
           Height = 21
           ParentBackground = False
-          TabOrder = 1
           Min = 2
           Max = 128
           Value = 32
@@ -319,6 +357,7 @@ object frmSettings: TfrmSettings
       Caption = 'tbMenu'
       ImageIndex = 2
       TabVisible = False
+      ExplicitHeight = 358
       object SharpECenterHeader8: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5

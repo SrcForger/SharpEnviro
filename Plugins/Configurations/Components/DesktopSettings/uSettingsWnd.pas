@@ -50,7 +50,7 @@ type
     SharpECenterHeader3: TSharpECenterHeader;
     SharpECenterHeader4: TSharpECenterHeader;
     cb_adjustsize: TJvXPCheckbox;
-    cb_autorotate: TJvXPCheckbox;
+    cb_useexplorer: TJvXPCheckbox;
     cb_amm: TJvXPCheckbox;
     cb_wpwatch: TJvXPCheckbox;
     cb_dd: TJvXPCheckbox;
@@ -69,6 +69,8 @@ type
     Panel3: TPanel;
     Label2: TLabel;
     cbMenuShift: TComboBox;
+    SharpECenterHeader9: TSharpECenterHeader;
+    cb_autorotate: TJvXPCheckbox;
     procedure sgb_gridyChangeValue(Sender: TObject; Value: Integer);
     procedure cb_ddClick(Sender: TObject);
     procedure cb_ammClick(Sender: TObject);
