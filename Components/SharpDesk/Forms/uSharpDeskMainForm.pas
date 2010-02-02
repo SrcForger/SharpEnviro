@@ -258,7 +258,7 @@ uses uSharpDeskAlignSettingsForm,
 
 procedure TSharpDeskMainForm.WMSharpTerminate(var Msg : TMessage);
 begin
-  SharpDesk.DeskSettings.SaveSettings;
+  SharpDeskMainForm.Close;
   Application.Terminate;
 end;
 
