@@ -44,7 +44,8 @@ uses
   uSharpDeskObjectFileList,
   uSharpDeskObjectSet,
   uSharpDeskManager,
-  uSharpDeskDesktopObject, PngImageList;
+  uSharpDeskDesktopObject, PngImageList,
+  uSharpWinDesk;
 
 const
     WM_PRIVATE_MESSAGE = WM_USER + 321;
@@ -172,6 +173,7 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure BackgroundReloadTimerTimer(Sender: TObject);
   private
+    procedure WMShowWindow(var Msg : TMessage);          message WM_SHOWWINDOW;
     procedure WMSettingsChange(var Msg : TMessage);       message WM_SETTINGCHANGE;
     procedure WMDisplayChange(var Msg : TMessage);        message WM_DISPLAYCHANGE;
     procedure WMDeskExportBackground(var Msg : TMessage); message WM_DESKEXPORTBACKGROUND;
@@ -219,6 +221,7 @@ var
   SharpDesk : TSharpDeskManager;
   SharpDeskMainForm: TSharpDeskMainForm;
   Background : TBackground;
+  SharpWinDesk : TSharpWinDesk;
 
   TaskTM : boolean = False;
   BarTM  : boolean = False;
@@ -470,9 +473,34 @@ begin
     if SharpDesk.DeskSettings.AdvancedMM then SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));
   finally
     BackgroundImage.ForceFullInvalidate;
-    SharpDesk.BackgroundLayer.Update;
-    SharpDesk.BackgroundLayer.Changed;
+    if SharpDesk.BackgroundLayer <> nil then
+    begin
+      SharpDesk.BackgroundLayer.Update;
+      SharpDesk.BackgroundLayer.Changed;
+    end;
     SharpApi.BroadcastGlobalUpdateMessage(suDesktopBackgroundChanged,-1,True);
+  end;
+end;
+
+procedure TSharpDeskMainForm.WMShowWindow(var Msg : TMessage);
+begin
+  // Check for ShowWindow
+  if Msg.LParam = 0 then
+  begin
+    //SW_SHOW
+    if Msg.WParam = 1 then
+    begin
+      SendDebugMessageEx('SharpDesk', 'SW_SHOW', 0, DMT_TRACE);
+      Background.Reload(False);
+      BackgroundImage.ForceFullInvalidate;
+      SharpDesk.LoadBackgroundLayer;
+    //SW_HIDE
+    end else if Msg.WParam = 0 then    
+    begin
+      SendDebugMessageEx('SharpDesk', 'SW_HIDE', 0, DMT_TRACE);
+      BackgroundImage.Bitmap.SetSize(0, 0);
+      SharpDesk.UnloadBackgroundLayer;
+    end;
   end;
 end;
 
@@ -518,8 +546,11 @@ begin
     GetCurrentTheme.LoadTheme(ALL_THEME_PARTS);
     Background.Reload(msg.Wparam = Integer(suScheme));
     BackgroundImage.ForceFullInvalidate;
-    SharpDesk.BackgroundLayer.Update;
-    SharpDesk.BackgroundLayer.Changed;
+    if SharpDesk.BackgroundLayer <> nil then
+    begin
+      SharpDesk.BackgroundLayer.Update;
+      SharpDesk.BackgroundLayer.Changed;
+    end;
     SharpDesk.SendMessageToAllObjects(SDM_SETTINGS_UPDATE,0,0,0);
     if msg.WParam = Integer(suWallpaper) then
       SharpApi.BroadcastGlobalUpdateMessage(suDesktopBackgroundChanged,-1,True);
@@ -568,6 +599,8 @@ begin
   UpdateSharpEActions;
      SendMessageToConsole('creating main window',COLOR_OK,DMT_STATUS);
      SharpDesk := TSharpDeskManager.Create(SharpDeskMainForm.BackgroundImage);
+     SharpWinDesk := TSharpWinDesk.Create;
+
 
      Randomize;
      SharpDeskMainForm.Caption:='SharpDesk';
@@ -599,6 +632,8 @@ begin
      LoadTheme(True);
      SharpDesk.LoadObjectSet;
      SharpDeskMainForm.BackgroundImage.RepaintMode := rmOptimizer;
+
+     SharpWinDesk.Start;
 end;
 
 
@@ -625,6 +660,8 @@ begin
   SharpDesk.DeskSettings.SaveSettings;
   SharpDesk.UnloadAllObjects;
   SharpDesk.Free;
+  SharpWinDesk.Stop;
+  SharpWinDesk.Free;
   Background.Destroy;
   SharpApi.SharpEBroadCast(WM_DESKCLOSING,0,0);
 end;
@@ -672,8 +709,11 @@ begin
   if oSelect then
   begin
     oSelect:=False;
-    SharpDesk.SelectLayer.Visible := False;
-    SharpDesk.SelectLayer.Location := FloatRect(0,0,0,0);
+    if SharpDesk.SelectLayer <> nil then
+    begin
+      SharpDesk.SelectLayer.Visible := False;
+      SharpDesk.SelectLayer.Location := FloatRect(0,0,0,0);
+    end;
     SharpDesk.Image.Repaint;    
     exit;
   end;
@@ -779,8 +819,11 @@ begin
   SharpDeskMainForm.SendMessageToConsole('loading wallpaper',COLOR_OK,DMT_STATUS);
   Background.Reload(False);
   BackgroundImage.ForceFullInvalidate;
-  SharpDesk.BackgroundLayer.Update;
-  SharpDesk.BackgroundLayer.Changed;
+  if SharpDesk.BackgroundLayer <> nil then
+  begin
+    SharpDesk.BackgroundLayer.Update;
+    SharpDesk.BackgroundLayer.Changed;
+  end;
   SharpApi.BroadcastGlobalUpdateMessage(suDesktopBackgroundChanged,-1,True);
 end;
 
@@ -901,9 +944,12 @@ begin
     oSelect:=True;
     SPos.X := X;
     SPos.Y := Y;
-    SharpDesk.SelectLayer.Location := FloatRect(X,Y,X+1,Y+1);
-    SharpDesk.SelectLayer.BringToFront;
-    SharpDesk.SelectLayer.Visible := True;
+    if SharpDesk.SelectLayer <> nil then
+    begin
+      SharpDesk.SelectLayer.Location := FloatRect(X,Y,X+1,Y+1);
+      SharpDesk.SelectLayer.BringToFront;
+      SharpDesk.SelectLayer.Visible := True;
+    end;
   end;
 
 end;
@@ -960,7 +1006,8 @@ begin
     end;
 
     SharpDesk.UpdateSelection(Rect(X1,Y1,X2,Y2));
-    SharpDesk.SelectLayer.Location := FloatRect(X1,Y1,X2,Y2);
+    if SharpDesk.SelectLayer <> nil then
+      SharpDesk.SelectLayer.Location := FloatRect(X1,Y1,X2,Y2);
 
     exit;
   end;

@@ -57,7 +57,8 @@ uses
   uSharpDeskTDeskSettings in 'Units\uSharpDeskTDeskSettings.pas',
   SharpImageUtils in '..\..\Common\Units\SharpImageUtils\SharpImageUtils.pas',
   SharpIconUtils in '..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas',
-  SharpFileUtils in '..\..\Common\Units\SharpFileUtils\SharpFileUtils.pas';
+  SharpFileUtils in '..\..\Common\Units\SharpFileUtils\SharpFileUtils.pas',
+  uSharpWinDesk in 'Units\uSharpWinDesk.pas';
 
 {$R *.res}
 {$R metadata.res}

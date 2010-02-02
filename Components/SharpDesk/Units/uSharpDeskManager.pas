@@ -113,6 +113,7 @@ type
       function  GetNextGridPoint(Pos : TPoint) : TPoint;
       function  GetUpperLeftMostLayerPos : TPoint;
       procedure LockAllObjects;
+      procedure LoadBackgroundLayer;
       procedure LoadObjectSet;
       procedure LoadPreset(pDesktopObject : TObject; pID : integer; Save : boolean);
       procedure LoadPresetForSelected(pID : integer);
@@ -131,6 +132,7 @@ type
       procedure SendMessageToObject(messageID,ObjectID : integer; P1,P2,P3 : integer);      
       procedure UnloadAllObjects;
       procedure UnLockAllObjects;
+      procedure UnloadBackgroundLayer;
       procedure UnLockSelectedObjects;
       procedure UnselectAll;
       procedure UpdateSelection(Rect : TRect);
@@ -195,37 +197,6 @@ begin
 
   FEnabled := False;
   FDoubleClick := False;
-
-  FBackgroundLayer := TBitmapLayer.Create(FImage.Layers);
-  FBackgroundLayer.Bitmap.MasterAlpha:=0;
-  FBackgroundLayer.Bitmap.DrawMode:=dmBlend;
-  FBackgroundLayer.Bitmap.SetSize(10,10);
-//  FBackgroundLayer.Bitmap.SetSize(FImage.Width,FImage.Height);
-  FBackgroundLayer.Scaled := True;
-  FBackgroundLayer.Bitmap.Clear(Color32(100,100,100,0));
-  FBackgroundLayer.AlphaHit:=False;
-  FBackgroundLayer.Location:=FloatRect(0,0,FImage.Width,FImage.Height);
-  FBackgroundLayer.Tag:=-1;
-  FBackgroundLayer.SendToBack;
-
-  FEffectLayer := TBitmapLayer.Create(FImage.Layers);
-  FEffectLayer.Tag := -1;
-  FEffectLayer.AlphaHit := False;
-  FEffectLayer.BringToFront;
-  FEffectLayer.Bitmap.SetSize(10,10);
-  //FEffectLayer.Bitmap.SetSize(FImage.Width,FImage.Height);
-  FEffectLayer.Bitmap.DrawMode := dmBlend;
-  FEffectLayer.Bitmap.CombineMode := cmBlend;
-  FEffectLayer.Bitmap.Clear(color32(255,255,255,255));
-  FEffectLayer.Bitmap.MasterAlpha := 0;
-  FEffectLayer.Scaled := True;
-  FEffectLayer.Location := FBackgroundLayer.Location;
-
-  FSelectLayer := TSelectionLayer.Create(FImage.Layers);
-  FSelectLayer.Visible := False;
-  FSelectLayer.Location := FloatRect(0,0,1,1);
-  FSelectLayer.Tag:=-3;
-  FSelectLayer.BringToFront;
 
   LastLayer:=-1;
 
@@ -461,8 +432,55 @@ end;
 
 
 
+procedure TSharpDeskManager.LoadBackgroundLayer;
+begin
+  if (FBackgroundLayer <> nil) or (FEffectLayer <> nil) or (FSelectLayer <> nil) then
+    UnloadBackgroundLayer;
+
+  FBackgroundLayer := TBitmapLayer.Create(FImage.Layers);
+  FBackgroundLayer.Bitmap.MasterAlpha:=0;
+  FBackgroundLayer.Bitmap.DrawMode:=dmBlend;
+  FBackgroundLayer.Bitmap.SetSize(10,10);
+//  FBackgroundLayer.Bitmap.SetSize(FImage.Width,FImage.Height);
+  FBackgroundLayer.Scaled := True;
+  FBackgroundLayer.Bitmap.Clear(Color32(100,100,100,0));
+  FBackgroundLayer.AlphaHit:=False;
+  FBackgroundLayer.Location:=FloatRect(0,0,FImage.Width,FImage.Height);
+  FBackgroundLayer.Tag:=-1;
+  FBackgroundLayer.SendToBack;
+
+  FEffectLayer := TBitmapLayer.Create(FImage.Layers);
+  FEffectLayer.Tag := -1;
+  FEffectLayer.AlphaHit := False;
+  FEffectLayer.BringToFront;
+  FEffectLayer.Bitmap.SetSize(10,10);
+  //FEffectLayer.Bitmap.SetSize(FImage.Width,FImage.Height);
+  FEffectLayer.Bitmap.DrawMode := dmBlend;
+  FEffectLayer.Bitmap.CombineMode := cmBlend;
+  FEffectLayer.Bitmap.Clear(color32(255,255,255,255));
+  FEffectLayer.Bitmap.MasterAlpha := 0;
+  FEffectLayer.Scaled := True;
+  FEffectLayer.Location := FloatRect(0,0,FImage.Width,FImage.Height);
+
+  FSelectLayer := TSelectionLayer.Create(FImage.Layers);
+  FSelectLayer.Visible := False;
+  FSelectLayer.Location := FloatRect(0,0,1,1);
+  FSelectLayer.Tag:=-3;
+  FSelectLayer.BringToFront;
+end;
+
+procedure TSharpDeskManager.UnloadBackgroundLayer;
+begin
+  FBackgroundLayer := nil;
+  FEffectLayer := nil;
+  FSelectLayer := nil;
+end;
+
 procedure TSharpDeskManager.ResizeBackgroundLayer;
 begin
+  if (FBackgroundLayer = nil) or (FEffectLayer = nil) then
+    exit;
+
 //  FBackgroundLayer.Bitmap.SetSize(FImage.Width,FImage.Height);
   FBackgroundLayer.Bitmap.SetSize(10,10);
   FBackgroundLayer.Scaled := True;
@@ -670,8 +688,10 @@ begin
         end;
       end;
   FObjectSet.Save;
-  FEffectLayer.SendToBack;
-  FBackgroundLayer.SendToBack;
+  if FEffectLayer <> nil then
+    FEffectLayer.SendToBack;
+  if FBackgroundLayer <> nil then
+    FBackgroundLayer.SendToBack;
 end;
 
 
@@ -1207,6 +1227,9 @@ procedure TSharpDeskManager.DisableAnimation;
 var
   n : integer;
 begin
+  if FEffectLayer = nil then
+   exit;
+
   FEffectLayer.Bitmap.SetSize(FImage.Bitmap.Width,FImage.Bitmap.Height);
   FImage.Bitmap.DrawTo(FEffectLayer.Bitmap);
   if FEffectLayer.Bitmap.MasterAlpha = 255 then exit;
@@ -1226,6 +1249,9 @@ procedure TSharpDeskManager.EnableAnimation;
 var
   n : integer;
 begin
+  if FEffectLayer = nil then
+    exit;
+
   FImage.Bitmap.DrawTo(FEffectLayer.Bitmap);
   if FEffectLayer.Bitmap.MasterAlpha = 0 then exit;
   FEffectLayer.Bitmap.DrawMode := dmBlend;
@@ -1243,6 +1269,9 @@ end;
 
 procedure TSharpDeskManager.UpdateAnimationLayer;
 begin
+  if FEffectLayer = nil then
+    exit;
+
   FImage.Bitmap.DrawTo(FEffectLayer.Bitmap);
 end;
 
