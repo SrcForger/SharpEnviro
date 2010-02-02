@@ -469,7 +469,9 @@ begin
     if WPChange then
     begin
       SharpDeskMainForm.SendMessageToConsole('loading wallpaper',COLOR_OK,DMT_STATUS);
-      if Visible then Background.Reload(False);
+      Background.Reload(False);
+      if not Visible then
+        BackgroundImage.Bitmap.SetSize(0, 0);
     end;
     SharpDesk.UpdateAnimationLayer;
 
@@ -494,9 +496,7 @@ begin
     if Msg.WParam = 1 then
     begin
       SendDebugMessageEx('SharpDesk', 'SW_SHOW', 0, DMT_TRACE);
-      Background.Reload(False);
-      SharpDesk.UpdateAnimationLayer;
-      BackgroundImage.ForceFullInvalidate;
+      LoadTheme(True);
     //SW_HIDE
     end else if Msg.WParam = 0 then    
     begin
@@ -822,7 +822,9 @@ begin
 
   SharpDeskMainForm.SendMessageToConsole('loading wallpaper settings',COLOR_OK,DMT_STATUS);
   SharpDeskMainForm.SendMessageToConsole('loading wallpaper',COLOR_OK,DMT_STATUS);
-  if Visible then Background.Reload(False);
+  Background.Reload(False);
+  if not Visible then
+    BackgroundImage.Bitmap.SetSize(0, 0);
   BackgroundImage.ForceFullInvalidate;
   if SharpDesk.BackgroundLayer <> nil then
   begin
