@@ -96,9 +96,6 @@ type
 var
    LayerList : TLayerList;
    FirstStart : boolean = True;
-   DLLHandle : THandle;
-   SHEmptyRecycleBin : function (hWnd: HWND; pszRootPath: PChar; dwFlags: DWORD): HResult; stdcall;
-   SHQueryRecycleBin : function (pszRootPath: PChar; var pSHQueryRBInfo: TSHQueryRBInfo): HResult; stdcall;
 
 destructor TLayer.Destroy;
 begin
@@ -124,8 +121,6 @@ begin
   Layer.ObjectID := ObjectID;
   Layer.RecycleBinLayer := TRecycleBinLayer.create(Image, ObjectID);
   Layer.RecycleBinLayer.Tag:=ObjectID;
-  Layer.RecycleBinLayer.SHEmptyRecycleBin := @SHEmptyRecycleBin;
-  Layer.RecycleBinLayer.SHQueryRecycleBin := @SHQueryRecycleBin;
   result := Layer.RecycleBinLayer;
 end;
 
@@ -201,11 +196,6 @@ begin
                      LayerList.Free;
                      LayerList := nil;
                      FirstStart := True;
-                     try
-                       FreeLibrary(Dllhandle);
-                     finally
-                       Dllhandle := 0;
-                     end;
                      exit;
                     end;
   end;
@@ -274,30 +264,7 @@ end;
 
 procedure InitSettings();
 begin
-  try
-    SharpApi.SendDebugMessage('RecycleBin.object','Loading shell32.dll',clblack);
-    Dllhandle := LoadLibrary('shell32.dll');
-
-    if Dllhandle <> 0 then
-    begin
-      SharpApi.SendDebugMessage('RecycleBin.object','SHEmptyRecycleBin := GetProcAddress(dllhandle, "SHEmptyRecycleBinA");',clblack);
-      @SHEmptyRecycleBin := GetProcAddress(dllhandle, 'SHEmptyRecycleBinA');
-      SharpApi.SendDebugMessage('RecycleBin.object','SHQueryRecycleBin := GetProcAddress(dllhandle, "SHQueryRecycleBinA");',clblack);
-      @SHQueryRecycleBin := GetProcAddress(dllhandle, 'SHQueryRecycleBinA');
-    end;
-
-    if @SHEmptyRecycleBin = nil then
-       SharpApi.SendDebugMessageEx('RecycleBin.object','Failed to get SHEmptyRecycleBin',clRed,DMT_ERROR);
-    if @SHQueryRecycleBin = nil then
-       SharpApi.SendDebugMessageEx('RecycleBin.object','Failed to get SHQueryRecycleBin',clRed,DMT_ERROR);
-  except
-    SharpApi.SendDebugMessageEx('RecycleBin.object','Failed to load shell32.dll',clRed,DMT_ERROR);
-    try
-      FreeLibrary(Dllhandle);
-    finally
-      Dllhandle := 0;
-    end;
-  end;
+  
 end;
 
 

@@ -63,6 +63,7 @@ type
     FIconFull        : TBitmap32;
     FPicture         : TBitmap32;
     FBinSize         : extended;
+    FBinShowSize     : extended;
     FBinExt          : string;
     FBinItems        : integer;
     FBinTimer        : TTimer;
@@ -76,11 +77,14 @@ type
     FObjectID        : integer;
     FScale           : integer;
     FLocked          : Boolean;
+
+    FDllHandle       : THandle;
+    SHEmptyRecycleBin : function (hWnd: HWND; pszRootPath: PChar; dwFlags: DWORD): HResult; stdcall;
+    SHQueryRecycleBin : function (pszRootPath: PChar; var pSHQueryRBInfo: TSHQueryRBInfo): HResult; stdcall;
+
   protected
   public
      FParentImage : Timage32;
-     SHEmptyRecycleBin : function (hWnd: HWND; pszRootPath: PChar; dwFlags: DWORD): HResult; stdcall;
-     SHQueryRecycleBin : function (pszRootPath: PChar; var pSHQueryRBInfo: TSHQueryRBInfo): HResult; stdcall;
      procedure DoubleClick;
      procedure StartHL;
      procedure EndHL;
@@ -100,7 +104,6 @@ type
      property BinItems  : integer read FBinItems;
   private
   end;
-
 
 var
   SettingsWnd : TSettingsWnd;
@@ -146,7 +149,7 @@ begin
   oldSize := FBinSize;
   oldItems := FBinItems;
   GetRecycleBinStatus;
-  if (oldSize<>FBinSize) or ( oldItems<>FBinItems) then
+  if (oldSize <> FBinSize) or (oldItems <> FBinItems) then
      DrawBitmap;
 end;
 
@@ -158,30 +161,32 @@ begin
   rbinfo.cbSize := sizeof(TSHQUERYRBINFO);
   rbinfo.i64Size := 0;
   rbinfo.i64NumItems := 0;
-  if SHQueryRecycleBin(nil,rbinfo) = s_OK then
+  if SHQueryRecycleBin(nil,rbinfo) = S_OK then
   begin
-    if rbinfo.i64Size < 1024 then
+    FBinSize := rbinfo.i64Size;
+
+    if FBinSize < 1024 then
     begin
-      FBinSize := rbinfo.i64Size;
-      if rbinfo.i64Size = 1 then
+      FBinShowSize := FBinSize;
+      if FBinSize = 1 then
         FBinExt := 'Byte'
       else
         FBinExt := 'Bytes';
-    end else if rbinfo.i64Size < 1024 * 1024 then
+    end else if FBinSize < 1024 * 1024 then
     begin
-      FBinSize := rbinfo.i64Size / 1024;
+      FBinShowSize := FBinSize / 1024;
       FBinExt := 'KB';
-    end else if rbinfo.i64Size < 1024 * 1024 * 1024 then
+    end else if FBinSize < 1024 * 1024 * 1024 then
     begin
-      FBinSize := rbinfo.i64Size / 1024 / 1024;
+      FBinShowSize := FBinSize / 1024 / 1024;
       FBinExt := 'MB';
     end else
     begin
-      FBinSize := rbinfo.i64Size / 1024 / 1024 / 1024;
+      FBinShowSize := FBinSize / 1024 / 1024 / 1024;
       FBinExt := 'GB';
     end;
 
-    FBinItems:=Rbinfo.i64NumItems;
+    FBinItems := Rbinfo.i64NumItems;
     if FBinItems = 0 then
     begin
       FPicture := FIconEmpty;
@@ -287,7 +292,7 @@ begin
   begin
     FCaptionSettings.Caption.Delete(FCaptionSettings.Caption.Count-1);
     FCaptionSettings.Caption.Delete(FCaptionSettings.Caption.Count-1);
-    FCaptionSettings.Caption.Add('Size : '+FloatToStrF(FBinSize,ffFixed,6,2)+' '+FBinExt);
+    FCaptionSettings.Caption.Add('Size : '+FloatToStrF(FBinShowSize,ffFixed,6,2)+' '+FBinExt);
     FCaptionSettings.Caption.Add('Items : '+inttostr(FBinItems));
   end;
 
@@ -431,6 +436,32 @@ constructor TRecycleBinLayer.Create( ParentImage:Timage32; Id : integer);
 
 begin
   Inherited Create(ParentImage.Layers);
+
+  try
+    SharpApi.SendDebugMessage('RecycleBin.object','Loading shell32.dll',clblack);
+    FDllhandle := LoadLibrary('shell32.dll');
+
+    if FDllhandle <> 0 then
+    begin
+      SharpApi.SendDebugMessage('RecycleBin.object','SHEmptyRecycleBin := GetProcAddress(dllhandle, "SHEmptyRecycleBinA");',clblack);
+      @SHEmptyRecycleBin := GetProcAddress(FDllhandle, 'SHEmptyRecycleBinA');
+      SharpApi.SendDebugMessage('RecycleBin.object','SHQueryRecycleBin := GetProcAddress(dllhandle, "SHQueryRecycleBinA");',clblack);
+      @SHQueryRecycleBin := GetProcAddress(FDllhandle, 'SHQueryRecycleBinA');
+    end;
+
+    if @SHEmptyRecycleBin = nil then
+       SharpApi.SendDebugMessageEx('RecycleBin.object','Failed to get SHEmptyRecycleBin',clRed,DMT_ERROR);
+    if @SHQueryRecycleBin = nil then
+       SharpApi.SendDebugMessageEx('RecycleBin.object','Failed to get SHQueryRecycleBin',clRed,DMT_ERROR);
+  except
+    SharpApi.SendDebugMessageEx('RecycleBin.object','Failed to load shell32.dll',clRed,DMT_ERROR);
+    try
+      FreeLibrary(FDllhandle);
+    finally
+      FDllhandle := 0;
+    end;
+  end;
+
   FParentImage := ParentImage;
   Alphahit := False;
   FObjectId := id;
@@ -452,6 +483,9 @@ begin
   FBinTimer.Enabled := True;
   FBinTimer.OnTimer := OnBinTimer;
   FPicture := FIconEmpty;
+  FBinSize := -1;
+  FBinItems := -1;
+  FBinExt := '';
   LoadSettings;
 end;
 
@@ -464,6 +498,12 @@ begin
   DebugFree(FSettings);
   FHLTimer.Enabled := False;
   DebugFree(FHLTimer);
+
+  try
+    FreeLibrary(FDllhandle);
+  finally
+    FDllhandle := 0;
+  end;
 
   inherited Destroy;
 end;
