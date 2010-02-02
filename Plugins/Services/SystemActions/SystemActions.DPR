@@ -58,6 +58,7 @@ var
   WindowToggle: Boolean = false;
   Param: TParam;
 
+  hRunFileDll : THandle;
   RunFileDlgA : TRunFileDlgA;
   RunFileDlgW : TRunFileDlgW;
 
@@ -166,8 +167,6 @@ end;
 // Service is started
 
 function Start(owner: hwnd): hwnd;
-var
-  hDll : THandle;
 begin
   Result := owner;
 
@@ -179,16 +178,9 @@ begin
 
   RegisterActions;
 
-  if not Assigned(RunFileDlgA) or not Assigned(RunFileDlgW) then
-  begin
-    hDll := LoadLibrary('shell32.dll');
-    try
-      @RunFileDlgA := GetProcAddress(hDll, PAnsiChar(MAKELPARAM(61, 0)));
-      @RunFileDlgW := GetProcAddress(hDll, PAnsiChar(MAKELPARAM(61, 0)))
-    finally
-      FreeLibrary(hDll);
-    end;
-  end;
+  hRunFileDll := LoadLibrary('shell32.dll');
+  @RunFileDlgA := GetProcAddress(hRunFileDll, PAnsiChar(MAKELPARAM(61, 0)));
+  @RunFileDlgW := GetProcAddress(hRunFileDll, PAnsiChar(MAKELPARAM(61, 0)));
 
   ServiceDone('System Actions');
 end;
@@ -199,6 +191,8 @@ procedure Stop;
 begin
   DeallocateHWnd(h);
   AE.Free;
+
+  FreeLibrary(hRunFileDll);
 
   UnRegisterKeyBoardLocals;
   UnRegisterAction('!Restart');
