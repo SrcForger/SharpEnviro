@@ -636,6 +636,12 @@ begin
      SharpDeskMainForm.BackgroundImage.RepaintMode := rmOptimizer;
 
      SharpWinDesk.Start;
+
+     // Check if we should use Explorer's desktop
+     if SharpDesk.DeskSettings.UseExplorerDesk then
+       SharpApi.SharpExecute('!DeskExplorer')
+     else
+       SharpApi.SharpExecute('!DeskSharpE');
 end;
 
 

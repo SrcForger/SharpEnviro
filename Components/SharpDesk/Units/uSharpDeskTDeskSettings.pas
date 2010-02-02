@@ -53,6 +53,7 @@ type
                        SetObjectRolledOut  : boolean;
                        MenuFile            : String;
                        MenuFileShift       : String;
+                       UseExplorerDesk     : boolean;
                        constructor Create(pOwner : TObject);
                        destructor Destroy; override;
                        procedure SaveSettings;
@@ -84,6 +85,7 @@ begin
   GridY               := 8;
   MenuFile            := 'Menu';
   MenuFileShift       := 'QuickLaunch';
+  UseExplorerDesk     := False;
   XML := TJvSimpleXML.Create(nil);
   ReloadSettings;
 end;
@@ -134,6 +136,7 @@ begin
     Add('ScreenSizeAdjust',ScreenSizeAdjust);
     Add('MenuFile',MenuFile);
     Add('MenuFileShift',MenuFileShift);
+    Add('UseExplorerDesk',UseExplorerDesk);
   end;
   with XML.Root.Items.ItemNamed['Grid'].Items do
   begin
@@ -179,6 +182,7 @@ begin
     ScreenSizeAdjust    := BoolValue('ScreenSizeAdjust',True);
     MenuFile            := Value('MenuFile','Menu');
     MenuFileShift       := Value('MenuFileShift','QuickLaunch');
+    UseExplorerDesk     := BoolValue('UseExplorerDesk',False);
   end;
   with XML.Root.Items.ItemNamed['Grid'].Items do
   begin
