@@ -441,7 +441,10 @@ end;
 procedure TSharpDeskMainForm.WMSharpEBang(var Msg : TMessage);
 begin
   case msg.LParam of
-   1 : WMCloseDesk(msg);
+   1 : WMCloseDesk(msg); // !CloseSharpDesk
+   2 : Visible := not Visible; // !ToggleDesktop
+   3 : Visible := False; // !DeskExplorer
+   4 : Visible := True; // !DeskSharpE
   end;
 end;
 
@@ -656,6 +659,9 @@ procedure TSharpDeskMainForm.FormClose(Sender: TObject; var Action: TCloseAction
 begin
   SendMessageToConsole('Closing main window',COLOR_OK,DMT_STATUS);
   SharpApi.UnRegisterAction('!CloseSharpDesk');
+  SharpApi.UnRegisterAction('!ToggleDesktop');
+  SharpApi.UnRegisterAction('!DeskExplorer');
+  SharpApi.UnRegisterAction('!DeskSharpE');
   SharpDesk.ObjectSet.Save;
   SharpDesk.DeskSettings.SaveSettings;
   SharpDesk.UnloadAllObjects;
@@ -1770,6 +1776,9 @@ end;
 procedure TSharpDeskMainForm.UpdateSharpEActions;
 begin
   SharpApi.RegisterActionEx('!CloseSharpDesk','SharpDesk',SharpDeskMainForm.Handle,1);
+  SharpApi.RegisterActionEx('!ToggleDesktop','SharpDesk',SharpDeskMainForm.Handle,2);
+  SharpApi.RegisterActionEx('!DeskExplorer','SharpDesk',SharpDeskMainForm.Handle,3);
+  SharpApi.RegisterActionEx('!DeskSharpE','SharpDesk',SharpDeskMainForm.Handle,4);
 end;
 
 procedure TSharpDeskMainForm.All1Click(Sender: TObject);
