@@ -469,7 +469,7 @@ begin
     if WPChange then
     begin
       SharpDeskMainForm.SendMessageToConsole('loading wallpaper',COLOR_OK,DMT_STATUS);
-      Background.Reload(False);
+      if Visible then Background.Reload(False);
     end;
     SharpDesk.UpdateAnimationLayer;
 
@@ -547,7 +547,7 @@ begin
     or (msg.WParam = Integer(suSkin)) then
   begin
     GetCurrentTheme.LoadTheme(ALL_THEME_PARTS);
-    Background.Reload(msg.Wparam = Integer(suScheme));
+    if Visible then Background.Reload(msg.Wparam = Integer(suScheme));
     BackgroundImage.ForceFullInvalidate;
     if SharpDesk.BackgroundLayer <> nil then
     begin
@@ -823,7 +823,7 @@ begin
 
   SharpDeskMainForm.SendMessageToConsole('loading wallpaper settings',COLOR_OK,DMT_STATUS);
   SharpDeskMainForm.SendMessageToConsole('loading wallpaper',COLOR_OK,DMT_STATUS);
-  Background.Reload(False);
+  if Visible then Background.Reload(False);
   BackgroundImage.ForceFullInvalidate;
   if SharpDesk.BackgroundLayer <> nil then
   begin
