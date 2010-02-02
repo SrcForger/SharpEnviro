@@ -524,7 +524,7 @@ begin
   if Created then
      Msg.WindowPos.Flags := Msg.WindowPos.Flags or SWP_NOZORDER;
   if not SizePosChanging then
-    Msg.WindowPos.Flags := Msg.WindowPos.Flags or SWP_NOMOVE or SWP_NOSIZE;     
+    Msg.WindowPos.Flags := Msg.WindowPos.Flags or SWP_NOMOVE or SWP_NOSIZE;
 end;
 
 
@@ -561,6 +561,13 @@ begin
   if (msg.WParam = Integer(suSharpDesk)) then
   begin
     SharpDesk.DeskSettings.ReloadSettings;
+
+    // Check if we should use Explorer's desktop
+    if SharpDesk.Desksettings.UseExplorerDesk then
+      SharpApi.SharpExecute('!DeskExplorer')
+    else
+      SharpApi.SharpExecute('!DeskSharpE');
+
     if SharpDesk.Desksettings.DragAndDrop then SharpDesk.DragAndDrop.RegisterDragAndDrop(SharpDesk.Image.Parent.Handle)
        else SharpDesk.DragAndDrop.UnregisterDragAndDrop(SharpDesk.Image.Parent.Handle);
   end;
@@ -638,10 +645,10 @@ begin
      SharpWinDesk.Start;
 
      // Check if we should use Explorer's desktop
-     if SharpDesk.DeskSettings.UseExplorerDesk then
-       SharpApi.SharpExecute('!DeskExplorer')
-     else
-       SharpApi.SharpExecute('!DeskSharpE');
+    if SharpDesk.Desksettings.UseExplorerDesk then
+      SharpApi.SharpExecute('!DeskExplorer')
+    else
+      SharpApi.SharpExecute('!DeskSharpE');
 end;
 
 
@@ -667,11 +674,14 @@ begin
   SharpApi.UnRegisterAction('!ToggleDesktop');
   SharpApi.UnRegisterAction('!DeskExplorer');
   SharpApi.UnRegisterAction('!DeskSharpE');
+
+  SendMessageToConsole('Stopping Explorer desktop',COLOR_OK,DMT_STATUS);
+  SharpWinDesk.Stop;
+
   SharpDesk.ObjectSet.Save;
   SharpDesk.DeskSettings.SaveSettings;
   SharpDesk.UnloadAllObjects;
   SharpDesk.Free;
-  SharpWinDesk.Stop;
   SharpWinDesk.Free;
   Background.Destroy;
   SharpApi.SharpEBroadCast(WM_DESKCLOSING,0,0);

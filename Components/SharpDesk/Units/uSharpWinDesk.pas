@@ -124,9 +124,13 @@ begin
 end;
 
 procedure TSharpWinDesk.Stop;
+var
+  h : HWND;
 begin
-  SendMessage(FindWindow('Progman', 'Program Manager'), WM_DESTROY, 0, 0);
-  SendMessage(FindWindow('Progman', 'Program Manager'), WM_NCDESTROY, 0, 0);
+  h := FindWindow('Progman', nil);
+
+  SendMessage(h, WM_DESTROY, 0, 0);
+  SendMessage(h, WM_NCDESTROY, 0, 0);
   FMsgThread.WaitFor;
 end;
 
