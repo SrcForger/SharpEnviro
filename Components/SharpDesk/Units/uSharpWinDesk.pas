@@ -13,7 +13,7 @@ type
       function GetState: Integer; stdcall;
       function GetTrayWindow(var o : HWND): Integer; stdcall;
       function RegisterDesktopWindow(d : HWND): Integer; stdcall;
-      function Unknown(p1, p2 : DWORD): Integer; stdcall;
+      function SetVar(p1 : integer; p2 : ULONG): Integer; stdcall;
   end;
 
   TShellDesktopTray = class(TInterfacedObject, IShellDesktopTray)
@@ -21,7 +21,7 @@ type
       function GetState: Integer; stdcall;
       function GetTrayWindow(var o : HWND): Integer; stdcall;
       function RegisterDesktopWindow(d : HWND): Integer; stdcall;
-      function Unknown(p1, p2 : DWORD): Integer; stdcall;
+      function SetVar(p1 : integer; p2 : ULONG): Integer; stdcall;
   end;
 
   TSHDesktopMessageLoop = function(hDesktop : THandle): boolean; stdcall;
@@ -64,7 +64,7 @@ end;
 
 function TShellDesktopTray.GetTrayWindow(var o : HWND): Integer;
 begin
-  o := FindWindow('Shell_TrayWnd', 'Shell_TrayWnd');
+  o := 0;
   Result := 0;
 end;
 
@@ -73,7 +73,7 @@ begin
   Result := 0;
 end;
 
-function TShellDesktopTray.Unknown(p1, p2 : DWORD): Integer;
+function TShellDesktopTray.SetVar(p1 : integer; p2 : ULONG): Integer;
 begin
   Result := 0;
 end;
@@ -128,6 +128,8 @@ var
   h : HWND;
 begin
   h := FindWindow('Progman', nil);
+  if h = 0 then
+    exit;
 
   SendMessage(h, WM_DESTROY, 0, 0);
   SendMessage(h, WM_NCDESTROY, 0, 0);
