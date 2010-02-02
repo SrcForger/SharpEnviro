@@ -441,10 +441,10 @@ end;
 procedure TSharpDeskMainForm.WMSharpEBang(var Msg : TMessage);
 begin
   case msg.LParam of
-   1 : WMCloseDesk(msg); // !CloseSharpDesk
-   2 : Visible := not Visible; // !ToggleDesktop
-   3 : Visible := False; // !DeskExplorer
-   4 : Visible := True; // !DeskSharpE
+   1 : WMCloseDesk(msg);        // !CloseSharpDesk
+   2 : Visible := not Visible;  // !ToggleDesktop
+   3 : Visible := False;        // !DeskExplorer
+   4 : Visible := True;         // !DeskSharpE
   end;
 end;
 
@@ -495,14 +495,13 @@ begin
     begin
       SendDebugMessageEx('SharpDesk', 'SW_SHOW', 0, DMT_TRACE);
       Background.Reload(False);
+      SharpDesk.UpdateAnimationLayer;
       BackgroundImage.ForceFullInvalidate;
-      SharpDesk.LoadBackgroundLayer;
     //SW_HIDE
     end else if Msg.WParam = 0 then    
     begin
       SendDebugMessageEx('SharpDesk', 'SW_HIDE', 0, DMT_TRACE);
       BackgroundImage.Bitmap.SetSize(0, 0);
-      SharpDesk.UnloadBackgroundLayer;
     end;
   end;
 end;
