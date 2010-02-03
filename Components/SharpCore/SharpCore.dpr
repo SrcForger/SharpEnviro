@@ -42,6 +42,9 @@ uses
   uISharpESkin,
   uComponentMan in 'uComponentMan.pas';
 
+type
+  TInitIShell = function : integer; stdcall;
+
 {$R *.res}
 {$R metadata.res}
 
@@ -73,6 +76,9 @@ var
   hndWindow: THandle;
   TaskBarCreated: Integer;
   hndEvent: THandle;
+
+  ExplorerDll : THandle;
+  InitIShell : TInitIShell;
 
 function ProcessMessage(var Msg: TMsg): Boolean;
 var
@@ -552,6 +558,11 @@ begin
   // Initialize COM library (some services might need it);
   CoInitialize(nil);
 
+  // Initialize IShellWindows
+  ExplorerDll := LoadLibrary('explorerframe.dll');
+  @InitIShell := GetProcAddress(ExplorerDll, PAnsiChar(MAKELPARAM(110, 0)));
+  InitIShell;
+
   RunAll;
 
   while GetMessage(wndMsg, 0, 0, 0) do
@@ -559,6 +570,8 @@ begin
     TranslateMessage(wndMsg);
     DispatchMessage(wndMsg);
   end;
+
+  FreeLibrary(ExplorerDll);
 
   ISkinInterface := nil;
 end.
