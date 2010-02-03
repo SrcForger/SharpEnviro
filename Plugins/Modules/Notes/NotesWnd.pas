@@ -969,6 +969,9 @@ begin
   if editFilter.Text <> '' then
     FilterChange(Sender);
 
+  // Make sure that the active tab is viewable.
+  pcNotes.TabList.BringTabIntoView(pcNotes.TabIndex);
+
   FLoading := False;
 end;
 
