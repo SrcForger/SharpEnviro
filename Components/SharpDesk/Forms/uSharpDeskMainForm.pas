@@ -258,7 +258,9 @@ uses uSharpDeskAlignSettingsForm,
 
 procedure TSharpDeskMainForm.WMSharpTerminate(var Msg : TMessage);
 begin
-  SharpDeskMainForm.Close;
+  SharpDesk.DeskSettings.SaveSettings;
+  SendMessageToConsole('Stopping Explorer desktop',COLOR_OK,DMT_STATUS);
+  SharpWinDesk.Stop;
   Application.Terminate;
 end;
 
@@ -495,12 +497,10 @@ begin
     //SW_SHOW
     if Msg.WParam = 1 then
     begin
-      SendDebugMessageEx('SharpDesk', 'SW_SHOW', 0, DMT_TRACE);
       LoadTheme(True);
     //SW_HIDE
     end else if Msg.WParam = 0 then    
     begin
-      SendDebugMessageEx('SharpDesk', 'SW_HIDE', 0, DMT_TRACE);
       BackgroundImage.Bitmap.SetSize(0, 0);
     end;
   end;
