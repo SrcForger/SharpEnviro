@@ -563,7 +563,7 @@ begin
   if ExplorerDll <> 0 then
   begin
     @InitIShell := GetProcAddress(ExplorerDll, PAnsiChar(MAKELPARAM(110, 0)));
-    if InitIShell <> 0 then
+    if Assigned(InitIShell) then
       InitIShell;
   end;
 
