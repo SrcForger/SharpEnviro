@@ -1,1 +1,0 @@
-brcc32 icon.rc
