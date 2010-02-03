@@ -42,10 +42,6 @@ uses
   uISharpESkin,
   uComponentMan in 'uComponentMan.pas';
 
-type
-  TWinList_Init = function : integer; stdcall;
-  TWinList_Terminate = function : integer; stdcall;
-
 {$R *.res}
 {$R metadata.res}
 
@@ -77,10 +73,6 @@ var
   hndWindow: THandle;
   TaskBarCreated: Integer;
   hndEvent: THandle;
-
-  ExplorerDll, WinListDll : THandle;
-  WinList_Init : TWinList_Init;
-  WinList_Terminate : TWinList_Terminate;
 
 function ProcessMessage(var Msg: TMsg): Boolean;
 var
@@ -560,33 +552,6 @@ begin
   // Initialize COM library (some services might need it);
   CoInitialize(nil);
 
-  // Initialize IShellWindows
-
-  // Load explorer.exe (shdocvw fix)
-  ExplorerDll := LoadLibrary('explorer.exe');
-
-  // Try 7 Dll
-  WinListDll := LoadLibrary('ExplorerFrame.dll');
-
-  if ExplorerDll <> 0 then
-  begin
-    if (WinListDll = 0) or (not Assigned(GetProcAddress(WinListDll, PAnsiChar(MAKELPARAM(110, 0))))) then
-    begin
-      if WinListDll <> 0 then
-        FreeLibrary(WinListDll);
-
-      // Use Vista/XP dll
-      WinListDll := LoadLibrary('shdocvw.dll');
-    end;
-
-    if WinListDll <> 0 then
-    begin
-      @WinList_Init := GetProcAddress(WinListDll, PAnsiChar(MAKELPARAM(110, 0)));
-      if Assigned(WinList_Init) then
-        WinList_Init;
-    end;
-  end;
-
   RunAll;
 
   try
@@ -597,20 +562,6 @@ begin
     end;
   finally
     ISkinInterface := nil;
-
-    if ExplorerDll <> 0 then
-    begin
-      if WinListDll <> 0 then
-      begin
-        @WinList_Terminate := GetProcAddress(WinListDll, PAnsiChar(MAKELPARAM(111, 0)));
-        if Assigned(WinList_Terminate) then
-          WinList_Terminate;
-
-        FreeLibrary(WinListDll);
-      end;
-
-      FreeLibrary(ExplorerDll);
-    end;
   end;
   end.
 
