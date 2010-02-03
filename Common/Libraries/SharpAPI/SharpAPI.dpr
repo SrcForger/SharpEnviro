@@ -886,6 +886,12 @@ begin
     setlength(ha,length(ha)+1);
     ha[high(ha)] := wnd;
   end;
+  wnd := FindWindow('TExplorerForm',nil);
+  if wnd <> 0 then
+  begin
+    setlength(ha,length(ha)+1);
+    ha[high(ha)] := wnd;
+  end;
 
   mess := msg;
   wpara := wpar;
@@ -925,7 +931,7 @@ end;
 
 function DirCheck(APath: string; var AResult: string): Boolean;
 var
-  aDirCheck: array[0..6] of string;
+  aDirCheck: array[0..7] of string;
   i: Integer;
 begin
   Result := False;
@@ -936,6 +942,7 @@ begin
   aDirCheck[4] := 'SharpDeskApi.dll';
   aDirCheck[5] := 'SharpThemeApi.dll';
   aDirCheck[6] := 'SharpMenu.exe';
+  aDirCheck[7] := 'Explorer.exe';
 
   for i := Low(aDirCheck) to High(aDirCheck) do
     if FileExists(APath + aDirCheck[i]) then
@@ -1056,6 +1063,8 @@ begin
     result := FindAllWindows('TSharpConsoleWnd')
   else if CompareText(sname, 'sharpmenu') = 0 then
     result := FindAllWindows('TSharpEMenuWnd')
+  else if CompareText(sname, 'explorer') = 0 then
+    result := FindAllWindows('TSharpExplorerForm')
   else
     result := FindAllWindows(sname);
 end;
@@ -1075,6 +1084,8 @@ begin
     result := FindWindow('TSharpConsoleWnd', nil)
   else if CompareText(sname, 'sharpmenu') = 0 then
     result := FindWindow('TSharpEMenuWnd', nil)
+  else if CompareText(sname, 'explorer') = 0 then
+    result := FindWindow('TSharpExplorerForm', nil)
   else
     result := FindWindow(PChar(sname), nil);
 end;
