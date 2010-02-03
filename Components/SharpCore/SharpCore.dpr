@@ -560,8 +560,12 @@ begin
 
   // Initialize IShellWindows
   ExplorerDll := LoadLibrary('explorerframe.dll');
-  @InitIShell := GetProcAddress(ExplorerDll, PAnsiChar(MAKELPARAM(110, 0)));
-  InitIShell;
+  if ExplorerDll <> 0 then
+  begin
+    @InitIShell := GetProcAddress(ExplorerDll, PAnsiChar(MAKELPARAM(110, 0)));
+    if InitIShell <> 0 then
+      InitIShell;
+  end;
 
   RunAll;
 
