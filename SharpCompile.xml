@@ -29,6 +29,7 @@
      <project Name="MenuList" Type="DLL">Plugins\Configurations\MenuList\MenuList.bdsproj</project> 
   </package>
   <package Name="Components">
+	 <project Name="Explorer" Type="Application">Components\Explorer\Explorer.bdsproj</project>
      <project Name="SetShell" Type="Application">Components\SetShell\SetShell.bdsproj</project>
      <project Name="SharpBar" Type="Application">Components\SharpBar\SharpBar.bdsproj</project>  
      <project Name="SharpCenter" Type="Application">Components\SharpCenter\SharpCenter.bdsproj</project>  

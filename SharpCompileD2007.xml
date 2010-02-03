@@ -61,6 +61,7 @@
     <project Name="Recycle Bin Object" Type="DLL">Plugins\Configurations\Objects\RecycleBin\RecycleBin.dproj</project>
   </package>
   <package Name="Components">
+	<project Name="Explorer" Type="Application">Components\Explorer\Explorer.dproj</project>
     <project Name="SetShell" Type="Application">Components\SetShell\SetShell.dproj</project>
     <project Name="SharpAdmin" Type="Application">Components\SharpAdmin\SharpAdmin.dproj</project>
     <project Name="SharpBar" Type="Application">Components\SharpBar\SharpBar.dproj</project>
