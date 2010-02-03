@@ -79,6 +79,7 @@ var
 
   ExplorerDll : THandle;
   InitIShell : TInitIShell;
+  UninitIShell : TInitIShell;
 
 function ProcessMessage(var Msg: TMsg): Boolean;
 var
@@ -350,8 +351,8 @@ begin
         begin
           StopAllServices;
           FreeAndNil(lstComponents);
-          PostQuitMessage(0);
         end;
+        DestroyWindow(hWnd);
       end;
 
     WM_CREATE: begin // Create and display tray icon
@@ -386,7 +387,7 @@ begin
         if HiWord(wParam) = 0 then
           case LoWord(wParam) of
             ID_SHELLSWITCH: SharpExecute('SetShell.exe');
-            ID_EXIT: SendMessage(hWnd, WM_CLOSE, 0, 0);
+            ID_EXIT: PostMessage(hWnd, WM_CLOSE, 0, 0);
             ID_SHUTDOWN: begin
                 StopAll;
               end;
@@ -569,14 +570,23 @@ begin
 
   RunAll;
 
-  while GetMessage(wndMsg, 0, 0, 0) do
-  begin
-    TranslateMessage(wndMsg);
-    DispatchMessage(wndMsg);
+  try
+    while GetMessage(wndMsg, 0, 0, 0) do
+    begin
+      TranslateMessage(wndMsg);
+      DispatchMessage(wndMsg);
+    end;
+  finally
+    if ExplorerDll <> 0 then
+    begin
+      @UninitIShell := GetProcAddress(ExplorerDll, PAnsiChar(MAKELPARAM(111, 0)));
+      if Assigned(UninitIShell) then
+        UninitIShell;
+    end;
+
+    FreeLibrary(ExplorerDll);
+
+    ISkinInterface := nil;
   end;
-
-  FreeLibrary(ExplorerDll);
-
-  ISkinInterface := nil;
-end.
+  end.
 
