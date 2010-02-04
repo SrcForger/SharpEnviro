@@ -44,8 +44,7 @@ uses
   uSharpDeskObjectFileList,
   uSharpDeskObjectSet,
   uSharpDeskManager,
-  uSharpDeskDesktopObject, PngImageList,
-  uSharpWinDesk;
+  uSharpDeskDesktopObject, PngImageList;
 
 const
     WM_PRIVATE_MESSAGE = WM_USER + 321;
@@ -221,7 +220,6 @@ var
   SharpDesk : TSharpDeskManager;
   SharpDeskMainForm: TSharpDeskMainForm;
   Background : TBackground;
-  SharpWinDesk : TSharpWinDesk;
 
   TaskTM : boolean = False;
   BarTM  : boolean = False;
@@ -259,8 +257,6 @@ uses uSharpDeskAlignSettingsForm,
 procedure TSharpDeskMainForm.WMSharpTerminate(var Msg : TMessage);
 begin
   SharpDesk.DeskSettings.SaveSettings;
-  SendMessageToConsole('Stopping Explorer desktop',COLOR_OK,DMT_STATUS);
-  SharpWinDesk.Stop;
   Application.Terminate;
 end;
 
@@ -608,8 +604,6 @@ begin
   UpdateSharpEActions;
      SendMessageToConsole('creating main window',COLOR_OK,DMT_STATUS);
      SharpDesk := TSharpDeskManager.Create(SharpDeskMainForm.BackgroundImage);
-     SharpWinDesk := TSharpWinDesk.Create;
-
 
      Randomize;
      SharpDeskMainForm.Caption:='SharpDesk';
@@ -642,8 +636,6 @@ begin
      SharpDesk.LoadObjectSet;
      SharpDeskMainForm.BackgroundImage.RepaintMode := rmOptimizer;
 
-     SharpWinDesk.Start;
-
      // Check if we should use Explorer's desktop
     if SharpDesk.Desksettings.UseExplorerDesk then
       SharpApi.SharpExecute('!DeskExplorer')
@@ -675,14 +667,10 @@ begin
   SharpApi.UnRegisterAction('!DeskExplorer');
   SharpApi.UnRegisterAction('!DeskSharpE');
 
-  SendMessageToConsole('Stopping Explorer desktop',COLOR_OK,DMT_STATUS);
-  SharpWinDesk.Stop;
-
   SharpDesk.ObjectSet.Save;
   SharpDesk.DeskSettings.SaveSettings;
   SharpDesk.UnloadAllObjects;
   SharpDesk.Free;
-  SharpWinDesk.Free;
   Background.Destroy;
   SharpApi.SharpEBroadCast(WM_DESKCLOSING,0,0);
 end;
