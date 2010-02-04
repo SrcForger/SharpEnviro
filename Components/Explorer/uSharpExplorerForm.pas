@@ -38,7 +38,8 @@ uses
   Forms,
   Dialogs,
   StdCtrls,
-  SharpApi, ExtCtrls;
+  SharpApi, ExtCtrls,
+  uSharpWinDesk;
 
 type
   TWinList_Init = function : integer; stdcall;
@@ -58,6 +59,8 @@ type
 
 var
   SharpExplorerForm : TSharpExplorerForm;
+
+  SharpWinDesk : TSharpWinDesk;
 
 implementation
 
@@ -89,6 +92,9 @@ begin
     if Assigned(WinList_Init) then
       WinList_Init;
   end;
+
+  SharpWinDesk := TSharpWinDesk.Create;
+  SharpWinDesk.Start;
 end;
 
 procedure TSharpExplorerForm.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -101,6 +107,9 @@ begin
 
     FreeLibrary(WinListDll);
   end;
+
+  SharpWinDesk.Stop;
+  SharpWinDesk.Free;
 end;
 
 end.

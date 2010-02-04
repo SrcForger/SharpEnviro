@@ -6,7 +6,8 @@ uses
   Forms,
   SysUtils,
   uSharpExplorerForm in 'uSharpExplorerForm.pas' {ExplorerForm},
-  SharpAPI in '..\..\Common\Libraries\SharpAPI\SharpAPI.pas';
+  SharpAPI in '..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
+  uSharpWinDesk in 'uSharpWinDesk.pas';
 
 {$R *.res}
 {$R metadata.res}
@@ -15,6 +16,7 @@ var
   hMutex: THandle;
   winDir : PAnsiChar;
   cmdToExec : string;
+  I : integer;
 
 begin
   CoInitialize(nil);
@@ -33,7 +35,12 @@ begin
       GetWindowsDirectory(winDir, MAX_PATH);
       cmdToExec := IncludeTrailingBackslash(winDir) + 'explorer.exe';
       if ParamCount > 0 then
-        cmdToExec := cmdToExec + ' ' + CmdLine;
+        cmdToExec := '"' + cmdToExec + '"';
+
+      for I := 1 to ParamCount do
+        cmdToExec := cmdToExec + ' ' + ParamStr(i);
+  
+      SendDebugMessageEx('Explorer', cmdToExec, 0, DMT_TRACE);
       SharpExecute(cmdToExec);
       StrDispose(winDir);
       Exit;
