@@ -529,6 +529,7 @@ begin
     cmd := cmd + '.dpr~'
   else
     cmd := cmd + '.dpr';
+  cmd := cmd + '"';
 
   DC.CommandLine := cmd;
   DC.Execute2;

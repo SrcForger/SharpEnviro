@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, ComCtrls, Contnrs, SharpERoundPanel, StdCtrls, JvExComCtrls,
-  JvgListBox, SharpETabList, ImgList, uVistaFuncs,
+  SharpETabList, ImgList, uVistaFuncs,
   JvSimpleXML, JvComCtrls, JvCheckTreeView, CheckLst, JvExCheckLst,
   JvCheckListBox, JvStatusBar, JvExStdCtrls, JvMemo, uCompiler, SharpEListBoxEx,
   SharpEPageControl, PngImageList, StrUtils, JvExControls, ToolWin;
