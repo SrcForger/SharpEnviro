@@ -77,6 +77,7 @@ type
     AlwaysOnTop1: TMenuItem;
     LaunchSharpCenter1: TMenuItem;
     N7: TMenuItem;
+    FullscreenCheckTimer: TTimer;
     procedure ShowMiniThrobbers1Click(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ThemeHideTimerTimer(Sender: TObject);
@@ -123,6 +124,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure LaunchSharpCenter1Click(Sender: TObject);
     procedure FormPaint(Sender: TObject);
+    procedure FullscreenCheckTimerTimer(Sender: TObject);
   private
     { Private-Deklarationen }
     FUser32DllHandle: THandle;
@@ -210,6 +212,7 @@ var
   BarMove: boolean;
   BarMovePoint: TPoint;
   Closing: boolean;
+  foregroundWindowIsFullscreen : Boolean;
 
 implementation
 
@@ -479,10 +482,17 @@ end;
 procedure TSharpBarMainForm.WMWTSSessionChange(var msg: TMessage);
 begin
   case msg.WParam of
-    WTS_SESSION_UNLOCK:
+    WTS_REMOTE_CONNECT:
     begin
-      ModuleManager.BroadcastPluginMessage('MM_SESSION_UNLOCK');
+      if not SharpEBar.PrimaryMonitor then
+        FSuspended := True;
+      ModuleManager.BroadCastModuleRefresh;
     end;
+    WTS_REMOTE_DISCONNECT:
+      if not SharpEBar.PrimaryMonitor then
+        FSuspended := False;
+    WTS_SESSION_UNLOCK:
+      ModuleManager.BroadcastPluginMessage('MM_SESSION_UNLOCK');
   end;
 end;
 
@@ -1272,6 +1282,45 @@ begin
   SharpApi.SharpEBroadCast(WM_UPDATEBARWIDTH, 0, 0);
   ModuleManager.FixModulePositions;
   SaveBarSettings;
+end;
+
+procedure TSharpBarMainForm.FullscreenCheckTimerTimer(Sender: TObject);
+var
+  wnd : HWND;
+  wndRect : TRect;
+  mon : TMonitorItem;
+begin
+  if (Visible) and ((SharpEBar.AlwaysOnTop) or (foregroundWindowIsFullscreen)) then
+  begin
+    wnd := GetForegroundWindow;
+    if (wnd <> 0) and (wnd <> Handle) then
+    begin
+      GetWindowRect(wnd, wndRect);
+      mon := MonList.Monitors[SharpEBar.MonitorIndex];
+      // If the window is on the same monitor as the bar then check if it is fullscreen.
+      if MonList.MonitorFromRect(wndRect).MonitorNum = mon.MonitorNum then
+      begin
+        if (wndRect.Bottom - wndRect.Top >= mon.Height) and
+          (wndRect.Right - wndRect.Left >= mon.Width) then
+        begin
+          // The window is fullscreen so disable always on top.
+          SharpEBar.AlwaysOnTop := False;
+          foregroundWindowIsFullscreen := True;
+          // Now bring the fullscreen window to the top in front of the bar.
+          //SetWindowPos(SharpEBar.aform.Handle, wnd, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
+          //SetWindowPos(SharpEBar.abackground.Handle, SharpEBar.aform.Handle, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
+          BringWindowToTop(wnd);
+        end
+        else
+        begin
+          // The window is no longer fullscreen so make sure we change our settings back.
+          // If the window was never fullscreen we'll also hit here which is ok.
+          SharpEBar.AlwaysOnTop := True;
+          foregroundWindowIsFullscreen := False;
+        end;
+      end;
+    end;
+  end;
 end;
 
 procedure TSharpBarMainForm.OnQuickAddModuleItemClick(Sender: TObject);

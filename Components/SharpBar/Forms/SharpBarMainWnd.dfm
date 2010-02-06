@@ -628,4 +628,9 @@ object SharpBarMainForm: TSharpBarMainForm
     Left = 312
     Top = 144
   end
+  object FullscreenCheckTimer: TTimer
+    OnTimer = FullscreenCheckTimerTimer
+    Left = 272
+    Top = 144
+  end
 end
