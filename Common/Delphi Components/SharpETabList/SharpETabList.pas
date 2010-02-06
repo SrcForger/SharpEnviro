@@ -1005,7 +1005,7 @@ procedure TSharpETabList.BringTabIntoView(ATabID: Integer);
 begin
   // If the tab we are told to bring into view is out of
   // our range then do nothing.
-  if (ATabID < 0) or (ATabID > Count) then
+  if (ATabID < 0) or (ATabID >= Count) then
     Exit;
   while (FLeftIndex > ATabID) or (FRightIndex < ATabID) do
   begin
