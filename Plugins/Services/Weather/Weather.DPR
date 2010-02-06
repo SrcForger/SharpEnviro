@@ -100,7 +100,7 @@ begin
     Name := 'Weather';
     Description := 'Updates weather information for the bar module';
     Author := 'Lee Green (Pixol@sharpe-shell.org)';
-    Version := '0.7.6.0';
+    Version := '0.7.6.5';
     DataType := tteService;
     ExtraData := 'priority: 90| delay: 0';
   end;

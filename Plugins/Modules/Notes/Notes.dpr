@@ -194,7 +194,7 @@ begin
     Name := 'Notes';
     Author := 'Martin Krämer <Martin@SharpEnviro.com>';
     Description := 'Quick access to an easy to use notes window (with tab support)';
-    Version := '0.7.6.0';
+    Version := '0.7.6.5';
     ExtraData := 'preview: True';
     DataType := tteModule;
 

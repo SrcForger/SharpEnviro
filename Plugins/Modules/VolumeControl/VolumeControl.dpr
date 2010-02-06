@@ -173,7 +173,7 @@ begin
     Name := 'Volume Control';
     Author := 'Martin Krämer <Martin@SharpEnviro.com>';
     Description := 'Controls system volume';
-    Version := '0.7.6.0';
+    Version := '0.7.6.5';
     ExtraData := 'preview: false';
     DataType := tteModule;
   end;

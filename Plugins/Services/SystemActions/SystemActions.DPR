@@ -425,7 +425,7 @@ begin
     Name := 'System Actions';
     Description := 'Adds a set of actions for system use (shutdown, reboot, etc.)';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.7.4.0';
+    Version := '0.7.6.5';
     DataType := tteService;
     ExtraData := 'priority: 40| delay: 0';
   end;

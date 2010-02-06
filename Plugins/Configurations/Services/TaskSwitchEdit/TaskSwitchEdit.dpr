@@ -217,7 +217,7 @@ begin
     Name := 'Taskswitch Edit';
     Description := 'Taskswitch Edit Configuration';
     Author := 'Lee Green (lee@sharpenviro.com)';
-    Version := '0.7.6.0';
+    Version := '0.7.6.5';
     DataType := tteConfig;
 
     ExtraData := format('configmode: %d| configtype: %d', [Integer(scmApply),

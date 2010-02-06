@@ -253,7 +253,7 @@ begin
     Name := 'CPU Monitor';
     Description := 'CPU Monitor Module Configuration';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.7.6.0';
+    Version := '0.7.6.5';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
       Integer(suModule)]);

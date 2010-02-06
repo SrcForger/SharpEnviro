@@ -149,7 +149,7 @@ begin
     Name := 'Module Manager';
     Description := 'Module Manager Configuration';
     Author := 'Lee Green (lee@sharpenviro.com)';
-    Version := '0.7.6.0';
+    Version := '0.7.6.5';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
       Integer(suSharpBar)]);

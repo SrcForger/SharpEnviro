@@ -135,7 +135,7 @@ begin
     Name := 'Exec';
     Description := 'Assists with executing strings, including process elevation and actions';
     Author := 'Lee (lee@sharpenviro.com)';
-    Version := '0.7.6.0';
+    Version := '0.7.6.5';
     DataType := tteService;
     ExtraData := 'priority: 20| delay: 0';
   end;

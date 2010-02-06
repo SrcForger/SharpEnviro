@@ -710,7 +710,7 @@ begin
     Name := 'Shell';
     Description := 'Provides the core shell functionality (Taskbar,Tray,DeskArea)';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.7.4.0';
+    Version := '0.7.6.5';
     DataType := tteService;
     ExtraData := 'priority: 20| delay: 0';
   end;

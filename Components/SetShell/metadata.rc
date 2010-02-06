@@ -6,9 +6,9 @@
 
 STRINGTABLE
 {
-  IDS_NAME "SharpCore"
-  IDS_DESCRIPTION "Runs and maintains all services and components"
-  IDS_AUTHOR "Nathan LaFreniere (mc@sharpe-shell.org)"
+  IDS_NAME "SetShell"
+  IDS_DESCRIPTION "Assists in setting the windows shell"
+  IDS_AUTHOR "Martin Krämer (MartinKraemer@gmx.net)"
   IDS_VERSION "0.7.6.5"
   IDS_EXTRADATA "priority: 0|delay: 0"
 }

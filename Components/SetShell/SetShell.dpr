@@ -34,22 +34,7 @@ uses
   uShutdown in '..\..\Common\Units\Shutdown\uShutdown.pas';
 
 {$R *.res}
-
-function GetMetaData(): TMetaData;
-begin
-  with result do
-  begin
-    Name := 'SetShell';
-    Description := 'Assists in setting the windows shell';
-    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.7.4.0';
-    DataType := tteComponent;
-    ExtraData := 'priority: 0| delay: 0';
-  end;
-end;
-
-exports
-  GetMetaData;
+{$R metadata.res}
 
 begin
   Application.Initialize;

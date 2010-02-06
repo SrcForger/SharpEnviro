@@ -94,7 +94,7 @@ begin
     Name := 'Cursors';
     Description := 'Changes the standard windows cursors to a fancier skinned set';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.7.6.0';
+    Version := '0.7.6.5';
     DataType := tteService;
     ExtraData := 'priority: 110| delay: 0';
   end;

@@ -9,6 +9,6 @@ STRINGTABLE
   IDS_NAME "SharpDesk"
   IDS_DESCRIPTION "The background application, also manages desktop objects and runs SharpMenu when you right click"
   IDS_AUTHOR "Martin Krämer (MartinKraemer@gmx.net)"
-  IDS_VERSION "0.7.6.0"
+  IDS_VERSION "0.7.6.5"
   IDS_EXTRADATA "priority: 130|delay: 0"
 }

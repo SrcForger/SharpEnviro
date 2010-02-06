@@ -309,7 +309,7 @@ begin
     Name := 'Wallpaper';
     Description := 'Wallpaper Theme Configuration';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.7.6.0';
+    Version := '0.7.6.5';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d', [Integer(scmApply),
       Integer(suWallpaper)]);

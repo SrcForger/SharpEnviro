@@ -234,7 +234,7 @@ begin
     Name := 'Taskbar';
     Author := 'Martin Krämer <Martin@SharpEnviro.com>';
     Description := 'Displays a task list';
-    Version := '0.7.6.0';
+    Version := '0.7.6.5';
     ExtraData := 'preview: false';
     DataType := tteModule;
   end;

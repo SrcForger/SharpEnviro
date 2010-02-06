@@ -179,7 +179,7 @@ begin
     Name := 'Alarm Clock';
     Author := 'Mathias Tillman <mathias@sharpenviro.com>';
     Description := 'Adds a configurable Alarm Clock to the bar';
-    Version := '0.7.6.0';
+    Version := '0.7.6.5';
     ExtraData := 'preview: False';
     DataType := tteModule;
   end;

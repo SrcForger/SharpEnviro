@@ -400,7 +400,7 @@ begin
     Name := 'MultimediaInput';
     Description := 'Support for Multimedia Input Devices (Keyboard, Mouse)';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.7.4.0';
+    Version := '0.7.6.5';
     DataType := tteService;
     ExtraData := 'priority: 45| delay: 0';
   end;

@@ -200,7 +200,7 @@ begin
     Name := 'CPU Monitor';
     Author := 'Martin Krämer <Martin@SharpEnviro.com>';
     Description := 'Displays a graph showing CPU usage';
-    Version := '0.7.6.0';
+    Version := '0.7.6.5';
     ExtraData := 'preview: false';
     DataType := tteModule;
   end;

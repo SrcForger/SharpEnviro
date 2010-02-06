@@ -284,7 +284,7 @@ begin
     Name := 'System Tray';
     Author := 'Martin Krämer <Martin@SharpEnviro.com>';
     Description := 'Displays all system tray icons.';
-    Version := '0.7.6.0';
+    Version := '0.7.6.5';
     ExtraData := 'preview: False';
     DataType := tteModule;
   end;

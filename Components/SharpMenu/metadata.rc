@@ -9,6 +9,6 @@ STRINGTABLE
   IDS_NAME "SharpMenu"
   IDS_DESCRIPTION "The start menu replacement"
   IDS_AUTHOR "Martin Krämer (MartinKraemer@gmx.net)"
-  IDS_VERSION "0.7.6.0"
+  IDS_VERSION "0.7.6.5"
   IDS_EXTRADATA "priority: 0|delay: 0"
 }

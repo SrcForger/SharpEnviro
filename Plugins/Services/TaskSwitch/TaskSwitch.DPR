@@ -529,7 +529,7 @@ begin
     Name := 'Task Switch';
     Description := 'Replaces the standard alt-tab dialog';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.7.4.0';
+    Version := '0.7.6.5';
     DataType := tteService;
     ExtraData := 'priority: 150| delay: 0';
   end;

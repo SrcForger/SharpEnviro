@@ -189,7 +189,7 @@ begin
     Name := 'VWM';
     Author := 'Martin Krämer <Martin@SharpEnviro.com>';
     Description := 'Displays a Virtual Window Manager';
-    Version := '0.7.3.3';
+    Version := '0.7.6.5';
     ExtraData := 'preview: false';
     DataType := tteModule;
   end;

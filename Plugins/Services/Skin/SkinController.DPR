@@ -97,7 +97,7 @@ begin
     Name := 'Skin Controller';
     Description := 'Manages skins for all of SharpE';
     Author := 'Malx (Malx@sharpe-shell.org)';
-    Version := '0.7.6.0';
+    Version := '0.7.6.5';
     DataType := tteService;
     ExtraData := 'priority: 100| delay: 0';
   end;

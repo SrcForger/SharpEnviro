@@ -437,7 +437,7 @@ begin
     Name := 'VWM';
     Description := 'Manages the Virtual Window Manager';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.7.6.0';
+    Version := '0.7.6.5';
     DataType := tteService;
     ExtraData := 'priority: 120| delay: 0';
   end;

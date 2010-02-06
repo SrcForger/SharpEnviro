@@ -101,7 +101,7 @@ begin
     Name := 'Actions';
     Description := 'Manages actions, or bang commands';
     Author := 'Lee Green (Pixol@sharpe-shell.org)';
-    Version := '0.7.4.0';
+    Version := '0.7.6.5';
     DataType := tteService;
     ExtraData := 'priority: 30| delay: 0';
   end;
