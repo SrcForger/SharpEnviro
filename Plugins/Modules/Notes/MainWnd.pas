@@ -405,6 +405,12 @@ begin
 
   if NotesForm.Visible then
   begin
+    if NotesForm.WindowState = wsMinimized then
+    begin
+      ShowWindow(NotesForm.Handle, SW_RESTORE);
+      Exit;
+    end;
+
     if NotesForm.FormStyle = fsStayOnTop then
     begin
       NotesForm.Close;
