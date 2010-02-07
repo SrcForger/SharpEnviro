@@ -886,7 +886,7 @@ begin
     setlength(ha,length(ha)+1);
     ha[high(ha)] := wnd;
   end;
-  wnd := FindWindow('TExplorerForm',nil);
+  wnd := FindWindow('TSharpExplorerForm',nil);
   if wnd <> 0 then
   begin
     setlength(ha,length(ha)+1);
@@ -1217,7 +1217,7 @@ begin
   result := 0;
   if FileExists(strFile) then
   begin
-    hndFile := LoadLibrary(PChar(strFile));
+    hndFile := LoadLibraryEx(PChar(strFile), 0, LOAD_LIBRARY_AS_DATAFILE);
     stlData := TStringList.Create;
 
     pcName := StrAlloc(255);
