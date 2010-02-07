@@ -135,7 +135,6 @@ const
 var
   fullscreen: Boolean;
   Handle: THandle;
-  showans: boolean;
 
   SharpExec: TSharpExec;
 
@@ -440,7 +439,6 @@ var
 begin
   // Initialise the local variables
   url := text;
-  showans := False;
   calcanswer := '';
   handle := FindWindow('TSharpCoreMainWnd', nil);
 

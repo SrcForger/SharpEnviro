@@ -117,10 +117,6 @@ begin
   SharpExec.AddProcessString(msg, Not(bNoHist), bElevate, bProperties);
   if SharpExec.Suspended then
     SharpExec.Resume;
-
-  // if the cmd is a calc, return the calc id
-  if ShowAns then
-    Result := 666;
 end;
 
 procedure Reload;
