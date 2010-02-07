@@ -47,7 +47,7 @@ type
 
   TSharpExplorerForm = class(TForm)
     procedure FormCreate(Sender: TObject);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormDestroy(Sender: TObject);
 
   private
     WinListDll : THandle;
@@ -59,7 +59,6 @@ type
 
 var
   SharpExplorerForm : TSharpExplorerForm;
-
   SharpWinDesk : TSharpWinDesk;
 
 implementation
@@ -68,13 +67,12 @@ implementation
 
 procedure TSharpExplorerForm.WMSharpTerminate(var Msg : TMessage);
 begin
-  SendMessage(Handle, WM_CLOSE, 0, 0);
+  Close;
 end;
 
 procedure TSharpExplorerForm.FormCreate(Sender: TObject);
 begin
   // Initialize IShellWindows
-
   // Try 7 Dll
   WinListDll := LoadLibrary('ExplorerFrame.dll');
   if (WinListDll = 0) or (not Assigned(GetProcAddress(WinListDll, PAnsiChar(MAKELPARAM(110, 0))))) then
@@ -97,7 +95,7 @@ begin
   SharpWinDesk.Start;
 end;
 
-procedure TSharpExplorerForm.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TSharpExplorerForm.FormDestroy(Sender: TObject);
 begin
   if WinListDll <> 0 then
   begin

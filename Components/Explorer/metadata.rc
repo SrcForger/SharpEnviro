@@ -6,9 +6,9 @@
 
 STRINGTABLE
 {
-  IDS_NAME "Explorer"
+  IDS_NAME "SharpExplorer"
   IDS_DESCRIPTION "Emulates Explorer shell"
   IDS_AUTHOR "Mathias Tillman (mathias@sharpenviro.com)"
   IDS_VERSION "0.7.6.5"
-  IDS_EXTRADATA "priority: 10|delay: 0"
+  IDS_EXTRADATA "priority: 145|delay: 0"
 }

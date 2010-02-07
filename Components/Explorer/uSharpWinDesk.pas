@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ComCtrls, ActiveX,
-  ComObj, ShlObj, SharpApi;
+  ComObj, ShlObj;
 
 type
   IShellDesktopTray = interface(IUnknown)

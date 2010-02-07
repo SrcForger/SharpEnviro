@@ -33,14 +33,10 @@ begin
       // so that we can launch it instead.
       winDir := StrAlloc(MAX_PATH);
       GetWindowsDirectory(winDir, MAX_PATH);
-      cmdToExec := IncludeTrailingBackslash(winDir) + 'explorer.exe';
-      if ParamCount > 0 then
-        cmdToExec := '"' + cmdToExec + '"';
-
+      cmdToExec := '"' + IncludeTrailingBackslash(winDir) + 'explorer.exe"';
       for I := 1 to ParamCount do
         cmdToExec := cmdToExec + ' ' + ParamStr(i);
-  
-      SendDebugMessageEx('Explorer', cmdToExec, 0, DMT_TRACE);
+
       SharpExecute(cmdToExec);
       StrDispose(winDir);
       Exit;
@@ -54,7 +50,7 @@ begin
                  GetWindowLong(Application.Handle, GWL_EXSTYLE) or
                  WS_EX_TOOLWINDOW and not WS_EX_APPWINDOW);
   Application.CreateForm(TSharpExplorerForm, SharpExplorerForm);
-  ServiceDone('Explorer');
+  ServiceDone('SharpExplorer');
 
   Application.Run;
 end.
