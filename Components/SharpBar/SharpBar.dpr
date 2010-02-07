@@ -152,6 +152,9 @@ var
   lab : boolean;
   n : integer;
   IsInt : boolean;
+  iTimeout : integer;
+  modName : string;
+  modMutex : THandle;
 begin
   Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
 
@@ -187,8 +190,29 @@ begin
                   if SharpApi.SharpExecute('_nohist,' + ExtractFileDir(Application.ExeName)+'\SharpBar.exe '
                      + NO_LOAD_AUTO_START_BARS_PARAM + ' '
                      + NO_REMOVE_EMPTY_BARS_PARAM + ' '
-                     + LOAD_BY_ID_PARAM+sr.Name) = HR_OK then lab := true;
-                  sleep(500);
+                     + LOAD_BY_ID_PARAM+sr.Name) = HR_OK then
+                  begin
+                    lab := true;
+
+                    // Wait for the bar to start
+                    iTimeout := 10000;
+                    modName := 'SharpBar'+sr.Name;
+                    while iTimeout > 0 do
+                    begin
+                      modMutex := OpenMutex(MUTEX_ALL_ACCESS, False, PChar('started_' + modName));
+                      if (modMutex = 0) then
+                      begin
+                        Sleep(100);
+                        iTimeout := iTimeout - 100;
+                        if iTimeout = 0 then
+                          SendDebugMessageEx('SharpBar', 'Timed out waiting for ' + modName, 0, DMT_INFO);
+                      end else
+                      begin
+                        iTimeout := 0;
+                        SendDebugMessageEx('SharpBar', 'Started ' + modName, 0, DMT_TRACE);
+                      end;
+						        end;
+					        end;
                 end else lab := true; // an auto start bar is already running!
                 end;
               end;
@@ -282,7 +306,10 @@ begin
     // autostart = true
     if not noLASB then
        if LoadAutoStartBars then
+       begin
+          ServiceDone('SharpBar');
           halt;
+       end;
     // no Bar was loaded create new one!
     ParamID := -1;
   end;
@@ -308,8 +335,13 @@ begin
     end;
   SharpBarMainForm.Startup := False;
   SharpBarMainForm.Show;
-  ServiceDone('SharpBar');
   SharpApi.SharpEBroadCast(WM_BARSTATUSCHANGED,0,SharpBarMainForm.BarID);
+
+  if ParamID >= 0 then
+    ServiceDone('SharpBar'+IntToStr(ParamID))
+  else
+    ServiceDone('SharpBar');
+    
   Application.Run;
   SharpApi.SharpEBroadCast(WM_BARSTATUSCHANGED,1,SharpBarMainForm.BarID);  
 end.
