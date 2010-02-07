@@ -372,6 +372,29 @@ begin
      else PointInRect:=False;
 end;
 
+function IsFormPartiallyCovered(const form : TForm) : Boolean;
+var
+  wnd : HWND;
+  wndRect, tmpRect : TRect;
+begin
+  Result := False;
+  
+  wnd := GetTopWindow(0);
+  while (wnd <> 0) and (wnd <> form.Handle) do
+  begin
+    if IsWindowVisible(wnd) then
+    begin
+      GetWindowRect(wnd, wndRect);
+      if (Windows.IntersectRect(tmpRect, wndRect, form.BoundsRect)) then
+      begin
+        Result := True;
+        Break;
+      end;
+    end;
+    wnd := GetNextWindow(wnd, GW_HWNDNEXT);
+  end;  
+end;
+
 procedure TMainForm.ButtonClick(Sender: TObject);
 var
   n : integer;
@@ -382,10 +405,20 @@ begin
 
   if NotesForm.Visible then
   begin
-    NotesForm.Close;
+    if NotesForm.FormStyle = fsStayOnTop then
+    begin
+      NotesForm.Close;
+      Exit;
+    end;
+    
+    if IsFormPartiallyCovered(NotesForm) then
+      NotesForm.BringToFront
+    else
+      NotesForm.Close;
+
     Exit;
   end;
-  
+
   // check if the window is in any visible monitor
   b := False;
   for n := 0 to Screen.MonitorCount-1 do
