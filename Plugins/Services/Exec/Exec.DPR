@@ -46,12 +46,16 @@ procedure Stop;
 begin
   SharpExec.Terminate;
   SharpExec.Free;
+
+  DeleteCriticalSection(CritSect);
 end;
 
 //starts the service
 
 function Start(owner: hwnd): hwnd;
 begin
+  InitializeCriticalSection(CritSect);
+
   Result := Application.Handle;
   SharpExec := tSharpExec.create;
   Handle := owner;
@@ -72,51 +76,54 @@ const
   AddAliasParam = '_addalias';
   PropertiesParam = '_properties,';
 begin
-  Result := 0;
-  msg:=trim(msg);
+	Result := 0;
+	msg:=trim(msg);
 
-  Debug(Format('*** New Command: %s ***', [msg]), DMT_INFO);
+	Debug(Format('*** New Command: %s ***', [msg]), DMT_INFO);
 
-  if pos(RefreshParam,LowerCase(msg)) <> 0 then begin
-    SharpExec.ReloadLists;
-    Exit;
-  end;
+	EnterCriticalSection(CritSect);
 
-  // Check if message sent is in Action command
-  if ServiceMsg('actions', pchar('_exists,' + msg)) = 1 then begin
-    SendDebugMessageEx('Exec Service', Pchar('Action Exists: ' + msg), 0, DMT_INFO);
-    ServiceMsg('actions', pchar('_execute,' + msg));
-    Exit;
-  end;
+	try
+		if pos(RefreshParam,LowerCase(msg)) = 0 then
+		begin
+			// Check if message sent is in Action command
+			if ServiceMsg('actions', pchar('_exists,' + msg)) <> 1 then
+			begin
+				// Check if message sent is supposed to add an Alias to the AliasList
+				if pos(AddAliasParam,lowercase(msg)) <> 0 then begin
+					tmpAliasName:= Copy(msg,AnsiPos(' ',msg)+1,
+									  (posex(' ',msg,AnsiPos(' ',msg)+1)-(AnsiPos(' ',msg)+1))
+								  );
+					tmpAliasValue:= Copy(msg,posex(' ',msg,AnsiPos(' ',msg)+1)+1,Length(msg));
+					if (Length(trim(tmpAliasName)) <> 0) and (Length(trim(tmpAliasValue)) <> 0) then
+					begin
+						SharpExec.AliasList.AddItem(tmpAliasName, tmpAliasValue);
+						SharpExec.AliasList.Save;
+					end;
+				end;
 
-  // Check if message sent is supposed to add an Alias to the AliasList
-  if pos(AddAliasParam,lowercase(msg)) <> 0 then begin
-    tmpAliasName:= Copy(msg,AnsiPos(' ',msg)+1,
-                            (posex(' ',msg,AnsiPos(' ',msg)+1)-(AnsiPos(' ',msg)+1))
-                       );
-    tmpAliasValue:= Copy(msg,posex(' ',msg,AnsiPos(' ',msg)+1)+1,Length(msg));
-    if (Length(trim(tmpAliasName)) <> 0) and (Length(trim(tmpAliasValue)) <> 0) then
-    begin
-      SharpExec.AliasList.AddItem(tmpAliasName, tmpAliasValue);
-      SharpExec.AliasList.Save;
-    end;
-  end;
-
-  // Else the command is not an Action, so process it as normal
-  bNoHist := Pos(NoHistoryParam, msg) <> 0;
-  bElevate := Pos(ElevateParam, msg) <> 0;
-  bProperties := Pos(PropertiesParam, msg) <> 0;
-  if bElevate  then
-    msg := Copy(msg, Length(ElevateParam) + 1, Length(msg) - Length(ElevateParam) + 1);
-  if bNoHist then
-    msg := Copy(msg, Length(NoHistoryParam) + 1, Length(msg) - Length(NoHistoryParam) + 1);
-  if bProperties then
-    msg := Copy(msg, Length(PropertiesParam) + 1, Length(msg) - Length(NoHistoryParam) + 1);
+				// Else the command is not an Action, so process it as normal
+				bNoHist := Pos(NoHistoryParam, msg) <> 0;
+				bElevate := Pos(ElevateParam, msg) <> 0;
+				bProperties := Pos(PropertiesParam, msg) <> 0;
+				if bElevate  then
+					msg := Copy(msg, Length(ElevateParam) + 1, Length(msg) - Length(ElevateParam) + 1);
+				if bNoHist then
+					msg := Copy(msg, Length(NoHistoryParam) + 1, Length(msg) - Length(NoHistoryParam) + 1);
+				if bProperties then
+					msg := Copy(msg, Length(PropertiesParam) + 1, Length(msg) - Length(NoHistoryParam) + 1);
 
 
-  SharpExec.AddProcessString(msg, Not(bNoHist), bElevate, bProperties);
-  if SharpExec.Suspended then
-    SharpExec.Resume;
+				SharpExec.AddProcessString(msg, Not(bNoHist), bElevate, bProperties);
+      end else begin
+				SendDebugMessageEx('Exec Service', Pchar('Action Exists: ' + msg), 0, DMT_INFO);
+				ServiceMsg('actions', pchar('_execute,' + msg));
+      end;
+    end else
+      SharpExec.ReloadLists;
+	finally
+		LeaveCriticalSection(CritSect);
+	end;
 end;
 
 procedure Reload;

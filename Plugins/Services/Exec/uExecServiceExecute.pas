@@ -136,6 +136,7 @@ var
   fullscreen: Boolean;
   Handle: THandle;
 
+  CritSect : TRTLCriticalSection;
   SharpExec: TSharpExec;
 
 function AllowSetForegroundWindow(ProcessID : DWORD) : boolean; stdcall; external 'user32.dll' name 'AllowSetForegroundWindow';
@@ -268,6 +269,7 @@ var
 begin
   inherited Create(True);
   FExecList := TObjectList.Create(True);
+  FExecList.OwnsObjects := True;
   FreeOnTerminate := False;
 
   // Create Calculator Component
@@ -309,13 +311,16 @@ var
 begin
   while not Terminated do
   begin
+    EnterCriticalSection(CritSect);
     while FExecList.Count > 0 do
     begin
-      item := TExecItem(FExecList.Items[0]);
+      item := TExecItem(FExecList.First);
       ProcessString(item.Text, item.SaveHistory, item.Elevate, item.Properties);
       FExecList.Remove(item);
     end;
-    Suspend;
+    LeaveCriticalSection(CritSect);
+
+    Sleep(100);
   end;
 end;
 
@@ -445,7 +450,9 @@ begin
   striparray[0] := '"';
   textstripped := StrRemoveChars(text,striparray);
 
+  LeaveCriticalSection(CritSect);
   ForceForegroundWindow(handle, oldhandle);
+  EnterCriticalSection(CritSect);
   try
 
     Debug('Passed Execution Text: ' + text, DMT_TRACE);
