@@ -1134,6 +1134,7 @@ end;
 
 procedure TSharpBarMainForm.FormCreate(Sender: TObject);
 begin
+  foregroundWindowIsFullscreen := False;
   Closing := False;
   DoubleBuffered := True;
   GetCurrentTheme.LoadTheme([tpSkinScheme, tpIconSet, tpSkinFont]);
@@ -1289,12 +1290,20 @@ var
   wnd : HWND;
   wndRect : TRect;
   mon : TMonitorItem;
+  wndClass : array[0..255] of Char;
 begin
   if (Visible) and ((SharpEBar.AlwaysOnTop) or (foregroundWindowIsFullscreen)) then
   begin
     wnd := GetForegroundWindow;
     if (wnd <> 0) and (wnd <> Handle) then
     begin
+      GetClassName(wnd, wndClass, SizeOf(wndClass));
+
+      // The desktops are fullscreen so check for them and exit if it is the foreground window.
+      if (CompareText(wndClass, 'Progman') = 0) or
+        (CompareText(wndClass, 'TSharpDeskMainForm') = 0) then
+        Exit;
+        
       GetWindowRect(wnd, wndRect);
       mon := MonList.Monitors[SharpEBar.MonitorIndex];
       // If the window is on the same monitor as the bar then check if it is fullscreen.
@@ -1311,7 +1320,7 @@ begin
           //SetWindowPos(SharpEBar.abackground.Handle, SharpEBar.aform.Handle, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
           BringWindowToTop(wnd);
         end
-        else
+        else if not SharpEBar.AlwaysOnTop then
         begin
           // The window is no longer fullscreen so make sure we change our settings back.
           // If the window was never fullscreen we'll also hit here which is ok.
