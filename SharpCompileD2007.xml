@@ -61,7 +61,9 @@
     <project Name="Recycle Bin Object" Type="DLL">Plugins\Configurations\Objects\RecycleBin\RecycleBin.dproj</project>
   </package>
   <package Name="Components">
-	<project Name="Explorer" Type="Application">Components\Explorer\Explorer.dproj</project>
+	<project Name="ExplorerNET" Type="Solution">Components\ExplorerNET\Explorer.sln</project>
+	<project Name="ExplorerDLL 32-Bit" Type="Solution" Platform="Win32">Components\ExplorerDLL\ExplorerDll.sln</project>
+	<project Name="ExplorerDLL 64-Bit" Type="Solution" Platform="x64">Components\ExplorerDLL\ExplorerDll.sln</project>
     <project Name="SetShell" Type="Application">Components\SetShell\SetShell.dproj</project>
     <project Name="SharpAdmin" Type="Application">Components\SharpAdmin\SharpAdmin.dproj</project>
     <project Name="SharpBar" Type="Application">Components\SharpBar\SharpBar.dproj</project>
