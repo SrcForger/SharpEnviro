@@ -186,14 +186,15 @@ var
 begin
   FUsers.Clear;
   //AddUser('Bruno', 'Skizo', 'bruno@sharpenviro.com', 'Graphics, New Guy.');
-  AddUser('CoCo', 'Silentpyjamas', 'coco@sharpenviro.com', 'PR, Community + Support.');
-  AddUser('David', 'Glacialfury', 'nathan@sharpenviro.com', 'Lead Tester + Support.');
-  AddUser('Florian', 'Captain Herisson', 'florian@sharpenviro.com', 'Graphics + Design.');
-  AddUser('James', 'brum74', 'james@sharpenviro.com', 'Module Developer.');
-  AddUser('Lee', 'Pixol', 'lee@sharpenviro.com', 'Lead Developer of Components, SharpCenter, Configurations.');
-  AddUser('Martin', 'Billiberserker', 'martin@sharpenviro.com', 'Lead Developer of SharpBar, SharpDesk, SharpMenu, Modules.');
-  AddUser('Nathan', 'Mc', 'nathan@sharpenviro.com', 'Lead Developer of SharpCore, SharpCompile.');
-  AddUser('David', 'Yay', 'davidw@sharpenviro.com', 'Content + Site Moderator.');
+  AddUser('CoCo', 'Silentpyjamas', 'coco@sharpenviro.com', 'PR, Community + Support');
+  //AddUser('David', 'Glacialfury', 'nathan@sharpenviro.com', 'Lead Tester + Support.');
+  //AddUser('Florian', 'Captain Herisson', 'florian@sharpenviro.com', 'Graphics + Design.');
+  AddUser('James', 'brum74', 'james@sharpenviro.com', 'Main Developer');
+  AddUser('Mathias', 'HomerSp', 'mathias@sharpenviro.com', 'Main Developer');
+  AddUser('Lee', 'Pixol', 'lee@sharpenviro.com', 'Main Developer, Website');
+  AddUser('Martin', 'Billiberserker', 'martin@sharpenviro.com', 'Lead Developer');
+  AddUser('Nathan', 'Mc', 'nathan@sharpenviro.com', 'Admin, Developer');
+  //AddUser('David', 'Yay', 'davidw@sharpenviro.com', 'Content + Site Moderator.');
 
   lbUsers.Clear;
   for i := 0 to Pred(FUsers.Count) do begin
