@@ -2,6 +2,9 @@
 #define DLLEXPORT __declspec(dllexport)
 
 // Function definitions
+typedef int (*WINLIST_INIT)();
+typedef int (*WINLIST_TERMINATE)();
+
 typedef void (*SHELLDDEINIT)(bool init);
 typedef void (*RUNINSTALLUNINSTALLSTUBS)(int a);
 typedef bool (*FILEICONINIT)(bool init);
@@ -24,9 +27,6 @@ class ExplorerDll
 	private:
 		HANDLE m_hThread;
 		DWORD m_dwThreadID;
-
-		HMODULE ShellDLL;
-		IShellDesktopTray *iTray;
 };
 
 extern "C"
