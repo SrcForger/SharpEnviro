@@ -3,7 +3,7 @@
 ExplorerDll explorerDll;
 DWORD registerCookie;
 
-DLLEXPORT void __stdcall StartDesktop()
+extern "C" DLLEXPORT void StartDesktop()
 {
 	explorerDll.Start();
 }
@@ -60,7 +60,6 @@ DWORD WINAPI ExplorerDll::ThreadFunc(LPVOID pvParam)
 	SHCREATEDESKTOP SHCreateDesktop = (SHCREATEDESKTOP)GetProcAddress(ShellDLL, MAKEINTRESOURCEA(200));
 	SHDESKTOPMESSAGELOOP SHDesktopMessageLoop = (SHDESKTOPMESSAGELOOP)GetProcAddress(ShellDLL, MAKEINTRESOURCEA(201));
 
-
 	// Create a mutex telling that this is the Explorer shell
 	HANDLE hIsShell = CreateMutex(NULL, false, L"Local\\ExplorerIsShellMutex");
 	WaitForSingleObject(hIsShell, INFINITE);
@@ -70,25 +69,28 @@ DWORD WINAPI ExplorerDll::ThreadFunc(LPVOID pvParam)
 	HMODULE WinListDLL = LoadLibrary(L"ExplorerFrame.dll");
 	if (WinListDLL == NULL || GetProcAddress(WinListDLL, MAKEINTRESOURCEA(110)) == NULL)
 	{
-		if (WinListDLL != NULL)
+		if (WinListDLL)
 			FreeLibrary(WinListDLL);
 
 		// Use Vista/XP dll
 		WinListDLL = LoadLibrary(L"shdocvw.dll");
+		if (!RunInstallUninstallStubs)
+			RunInstallUninstallStubs = (RUNINSTALLUNINSTALLSTUBS)GetProcAddress(WinListDLL, MAKEINTRESOURCEA(130));
 	}
 
 	// Initialize WinList functions
-	if (WinListDLL != NULL)
+	if (WinListDLL)
 	{
 		WINLIST_INIT WinList_Init = (WINLIST_INIT)GetProcAddress(WinListDLL, MAKEINTRESOURCEA(110));
 
 		// Call WinList init
-		if (WinList_Init != NULL)
+		if (WinList_Init)
 			WinList_Init();
 	}
 
 	// Initialize DDE
-	ShellDDEInit(true);
+	if (ShellDDEInit)
+		ShellDDEInit(TRUE);
 
 	// Wait for Scm to be created
 	HANDLE hGScmEvent = OpenEvent(SYNCHRONIZE, false, L"Global\\ScmCreatedEvent");
@@ -99,14 +101,18 @@ DWORD WINAPI ExplorerDll::ThreadFunc(LPVOID pvParam)
 	}
 
 	// Initialize the file icon cache
-	FileIconInit(true);
+	if (FileIconInit)
+		FileIconInit(FALSE);
 
 	// Event
 	HANDLE CanRegisterEvent = CreateEvent(NULL, true, true, L"Local\\_fCanRegisterWithShellService");
-	RunInstallUninstallStubs(0);
+
+	if (RunInstallUninstallStubs)
+		RunInstallUninstallStubs(0);
+
 	CloseHandle(CanRegisterEvent);
 
-	if (SHCreateDesktop != NULL && SHDesktopMessageLoop != NULL)
+	if (SHCreateDesktop && SHDesktopMessageLoop)
 	{
 		// Create the ShellDesktopTray interface
 		IShellDesktopTray *iTray = CreateInstance();
