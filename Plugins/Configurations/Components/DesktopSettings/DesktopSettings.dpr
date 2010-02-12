@@ -123,6 +123,7 @@ begin
     cb_adjustsize.Checked := ScreenSizeAdjust;
     cb_useexplorer.Checked := UseExplorerDesk;
     BuildMenuList(MenuFile,MenuFileShift);
+    UpdateExplorerStatus;
   end;
 end;
 

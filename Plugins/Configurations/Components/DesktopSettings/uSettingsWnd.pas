@@ -79,12 +79,14 @@ type
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure cbMenuListChange(Sender: TObject);
+    procedure cb_useexplorerClick(Sender: TObject);
   private
     FPluginHost: ISharpCenterHost;
     procedure UpdateGridBox;
     procedure SendUpdate;
   public
     procedure BuildMenuList(cMenu,sMenu : String);
+    procedure UpdateExplorerStatus;    
 
     property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
@@ -104,6 +106,21 @@ begin
   Self.DoubleBuffered := true;
 end;
 
+procedure TfrmSettings.UpdateExplorerStatus;
+begin
+  cb_adjustsize.Enabled := not cb_useexplorer.Checked;
+  cb_amm.Enabled := not cb_useexplorer.Checked;
+  cb_grid.Enabled := not cb_useexplorer.Checked;
+  sgb_gridx.Enabled := not cb_useexplorer.Checked;
+  sgb_gridy.Enabled := not cb_useexplorer.Checked;
+  cb_dd.Enabled := not cb_useexplorer.Checked;
+  cb_singleclick.Enabled := not cb_useexplorer.Checked;
+  cbmenulist.Enabled := not cb_useexplorer.Checked;
+  cbmenushift.Enabled := not cb_useexplorer.Checked;
+  Label1.Enabled := not cb_useexplorer.Checked;
+  Label2.Enabled := not cb_useexplorer.Checked;
+end;
+
 procedure TfrmSettings.UpdateGridBox;
 begin
   pnlGrid.Visible := cb_grid.Checked;
@@ -112,6 +129,7 @@ end;
 procedure TfrmSettings.FormShow(Sender: TObject);
 begin
   UpdateGridBox;
+  UpdateExplorerStatus;
 end;
 
 procedure TfrmSettings.cb_gridClick(Sender: TObject);
@@ -128,6 +146,12 @@ end;
 
 procedure TfrmSettings.cb_singleclickClick(Sender: TObject);
 begin
+  SendUpdate;
+end;
+
+procedure TfrmSettings.cb_useexplorerClick(Sender: TObject);
+begin
+  UpdateExplorerStatus;
   SendUpdate;
 end;
 

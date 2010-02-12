@@ -29,13 +29,12 @@ object frmSettings: TfrmSettings
       Caption = 'tabDesktop'
       ImageIndex = 1
       TabVisible = False
-      ExplicitHeight = 358
       object SharpECenterHeader1: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
-        Top = 84
+        Top = 82
         Width = 410
-        Height = 37
+        Height = 35
         Margins.Left = 5
         Margins.Top = 10
         Margins.Right = 5
@@ -47,14 +46,14 @@ object frmSettings: TfrmSettings
         TitleColor = clWindowText
         DescriptionColor = clGrayText
         Align = alTop
-        ExplicitTop = 80
+        ExplicitTop = 84
       end
       object SharpECenterHeader2: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
-        Top = 158
+        Top = 154
         Width = 410
-        Height = 37
+        Height = 35
         Margins.Left = 5
         Margins.Top = 10
         Margins.Right = 5
@@ -64,13 +63,14 @@ object frmSettings: TfrmSettings
         TitleColor = clWindowText
         DescriptionColor = clGrayText
         Align = alTop
+        ExplicitTop = 156
       end
       object SharpECenterHeader3: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
-        Top = 232
+        Top = 226
         Width = 410
-        Height = 37
+        Height = 35
         Margins.Left = 5
         Margins.Top = 10
         Margins.Right = 5
@@ -82,14 +82,14 @@ object frmSettings: TfrmSettings
         TitleColor = clWindowText
         DescriptionColor = clGrayText
         Align = alTop
-        ExplicitTop = 353
+        ExplicitTop = 228
       end
       object SharpECenterHeader4: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
-        Top = 306
+        Top = 298
         Width = 410
-        Height = 37
+        Height = 35
         Margins.Left = 5
         Margins.Top = 10
         Margins.Right = 5
@@ -101,12 +101,12 @@ object frmSettings: TfrmSettings
         TitleColor = clWindowText
         DescriptionColor = clGrayText
         Align = alTop
-        ExplicitTop = 312
+        ExplicitTop = 300
       end
       object cb_adjustsize: TJvXPCheckbox
         AlignWithMargins = True
         Left = 3
-        Top = 131
+        Top = 127
         Width = 412
         Height = 17
         Margins.Top = 0
@@ -118,11 +118,12 @@ object frmSettings: TfrmSettings
         State = cbChecked
         Align = alTop
         OnClick = cb_ammClick
+        ExplicitTop = 129
       end
       object cb_useexplorer: TJvXPCheckbox
         AlignWithMargins = True
         Left = 3
-        Top = 57
+        Top = 55
         Width = 412
         Height = 17
         Margins.Top = 0
@@ -131,13 +132,13 @@ object frmSettings: TfrmSettings
         Caption = 'Enable Explorer desktop'
         TabOrder = 0
         Align = alTop
-        OnClick = cb_ammClick
-        ExplicitTop = 64
+        OnClick = cb_useexplorerClick
+        ExplicitTop = 57
       end
       object cb_amm: TJvXPCheckbox
         AlignWithMargins = True
         Left = 3
-        Top = 279
+        Top = 271
         Width = 412
         Height = 17
         Margins.Top = 0
@@ -147,12 +148,12 @@ object frmSettings: TfrmSettings
         TabOrder = 3
         Align = alTop
         OnClick = cb_ammClick
-        ExplicitTop = 343
+        ExplicitTop = 273
       end
       object cb_wpwatch: TJvXPCheckbox
         AlignWithMargins = True
         Left = 3
-        Top = 353
+        Top = 343
         Width = 412
         Height = 17
         Margins.Top = 0
@@ -162,14 +163,14 @@ object frmSettings: TfrmSettings
         TabOrder = 4
         Align = alTop
         OnClick = cb_ammClick
-        ExplicitTop = 359
+        ExplicitTop = 345
       end
       object SharpECenterHeader9: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
         Top = 10
         Width = 410
-        Height = 37
+        Height = 35
         Margins.Left = 5
         Margins.Top = 10
         Margins.Right = 5
@@ -179,12 +180,11 @@ object frmSettings: TfrmSettings
         TitleColor = clWindowText
         DescriptionColor = clGrayText
         Align = alTop
-        ExplicitTop = 296
       end
       object cb_autorotate: TJvXPCheckbox
         AlignWithMargins = True
         Left = 3
-        Top = 205
+        Top = 199
         Width = 412
         Height = 17
         Margins.Top = 0
@@ -196,17 +196,15 @@ object frmSettings: TfrmSettings
         State = cbChecked
         Align = alTop
         OnClick = cb_ammClick
-        ExplicitTop = 343
       end
     end
     object tabObjects: TTabSheet
       Caption = 'tabObjects'
       TabVisible = False
-      ExplicitHeight = 358
       object cb_dd: TJvXPCheckbox
         AlignWithMargins = True
         Left = 3
-        Top = 152
+        Top = 148
         Width = 412
         Height = 17
         Margins.Top = 0
@@ -218,11 +216,12 @@ object frmSettings: TfrmSettings
         State = cbChecked
         Align = alTop
         OnClick = cb_ddClick
+        ExplicitTop = 152
       end
       object cb_singleclick: TJvXPCheckbox
         AlignWithMargins = True
         Left = 3
-        Top = 226
+        Top = 220
         Width = 412
         Height = 17
         Margins.Top = 0
@@ -232,13 +231,14 @@ object frmSettings: TfrmSettings
         TabOrder = 3
         Align = alTop
         OnClick = cb_singleclickClick
+        ExplicitTop = 226
       end
       object SharpECenterHeader5: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
         Top = 0
         Width = 410
-        Height = 37
+        Height = 35
         Margins.Left = 5
         Margins.Top = 0
         Margins.Right = 5
@@ -252,9 +252,9 @@ object frmSettings: TfrmSettings
       object SharpECenterHeader6: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
-        Top = 105
+        Top = 103
         Width = 410
-        Height = 37
+        Height = 35
         Margins.Left = 5
         Margins.Top = 10
         Margins.Right = 5
@@ -270,9 +270,9 @@ object frmSettings: TfrmSettings
       object SharpECenterHeader7: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
-        Top = 179
+        Top = 175
         Width = 410
-        Height = 37
+        Height = 35
         Margins.Left = 5
         Margins.Top = 10
         Margins.Right = 5
@@ -288,7 +288,7 @@ object frmSettings: TfrmSettings
       object pnlGrid: TPanel
         AlignWithMargins = True
         Left = 5
-        Top = 74
+        Top = 72
         Width = 405
         Height = 21
         Margins.Left = 5
@@ -305,6 +305,7 @@ object frmSettings: TfrmSettings
           Width = 120
           Height = 21
           ParentBackground = False
+          TabOrder = 0
           Min = 2
           Max = 128
           Value = 32
@@ -323,6 +324,7 @@ object frmSettings: TfrmSettings
           Width = 120
           Height = 21
           ParentBackground = False
+          TabOrder = 1
           Min = 2
           Max = 128
           Value = 32
@@ -339,7 +341,7 @@ object frmSettings: TfrmSettings
       object cb_grid: TJvXPCheckbox
         AlignWithMargins = True
         Left = 3
-        Top = 47
+        Top = 45
         Width = 412
         Height = 17
         Margins.Top = 0
@@ -357,13 +359,12 @@ object frmSettings: TfrmSettings
       Caption = 'tbMenu'
       ImageIndex = 2
       TabVisible = False
-      ExplicitHeight = 358
       object SharpECenterHeader8: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
         Top = 0
         Width = 410
-        Height = 37
+        Height = 35
         Margins.Left = 5
         Margins.Top = 0
         Margins.Right = 5
@@ -377,7 +378,7 @@ object frmSettings: TfrmSettings
       object Panel1: TPanel
         AlignWithMargins = True
         Left = 5
-        Top = 47
+        Top = 45
         Width = 405
         Height = 25
         Margins.Left = 5
@@ -420,7 +421,7 @@ object frmSettings: TfrmSettings
       object Panel3: TPanel
         AlignWithMargins = True
         Left = 5
-        Top = 77
+        Top = 75
         Width = 405
         Height = 34
         Margins.Left = 5
