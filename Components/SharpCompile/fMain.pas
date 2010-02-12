@@ -376,7 +376,7 @@ var
   xFile: TJvSimpleXML;
   nProject,nComponent: TTreeNode;
   sPackage: String;
-  sProjectName, sProjectType : string;
+  sProjectName, sProjectType, sPlatform : string;
 begin
     if ctvProjects.Items.Count > 0 then
       // Loop over the items backwards to avoid conflicts
@@ -402,11 +402,12 @@ begin
             begin
               sProjectName := Properties.Value('Name', 'error');
               sProjectType := Properties.Value('Type', 'Application');
+              sPlatform := Properties.Value('Platform', '');
               nComponent := ctvProjects.Items.AddChild(nProject, sProjectName);
 
               if sProjectType = 'Solution' then
               begin
-                nComponent.Data := TCSharpSolution.Create(sPath + Value, sProjectName);
+                nComponent.Data := TCSharpSolution.Create(sPath + Value, sProjectName, sPlatform);
                 TCSharpSolution(nComponent.Data).Package := sPackage;
               end
               else

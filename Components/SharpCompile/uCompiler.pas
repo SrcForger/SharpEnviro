@@ -43,14 +43,16 @@ type
     FPackage : string;
     FSummaryIndex : Integer;
     FDetailIndex : Integer;
+    FPlatform : string;
   public
     property Name : string read FName;
     property Path : string read FPath;
     property Package : string read FPackage write FPackage;
     property SummaryIndex : Integer read FSummaryIndex write FSummaryIndex;
     property DetailIndex : Integer read FDetailIndex write FDetailIndex;
+    property Platform : string read FPlatform;
   published
-    constructor Create(csharpSolutionFile : string; name : string); reintroduce;
+    constructor Create(csharpSolutionFile : string; name, platform : string); reintroduce;
     destructor Destroy; override;
   end;
 
@@ -131,11 +133,12 @@ implementation
 
 {$REGION 'TCSharpSolution'}
 
-constructor TCSharpSolution.Create(csharpSolutionFile: string; name: string);
+constructor TCSharpSolution.Create(csharpSolutionFile: string; name, platform: string);
 begin
   inherited Create;
 
   FName := name;
+  FPlatform := platform;
   FPath := csharpSolutionFile;
 end;
 
@@ -183,6 +186,8 @@ begin
   // MSBuild.exe "solutionFilePath" /t:Rebuild /p:Configuration=Release
   // MSBuild.exe "solutionFilePath" /t:Rebuild /p:Configuration=Debug
   cmd := NETFramework35InstallPath + 'MSBuild.exe "' + Project.Path + '" /t:Rebuild /p:Configuration=' + config;
+  if Project.Platform <> '' then
+    cmd := cmd + ' /p:Platform=' + Project.Platform;
 
   dc := TDosCommand.Create(nil);
   try
@@ -507,6 +512,7 @@ var
   sExt : String;
   iMapSize,iDataSize : Integer;
   iReturn: Integer;
+  iLinkerBugUnit : string;
 begin
   result := False;
 
@@ -555,7 +561,7 @@ begin
     if FileExists(s + '.dpr~') then
       DeleteFile(PChar(s + '.dpr~'));
     s := ChangeFileExt(ExtractFileName(Project.Path), '');
-    result := InsertDebugDataIntoExecutableFile(PChar(Project.OutputDir + s + sExt), PChar(Project.OutputDir + s + '.map'), iMapSize, iDataSize);
+    result := InsertDebugDataIntoExecutableFile(PChar(Project.OutputDir + s + sExt), PChar(Project.OutputDir + s + '.map'), iLinkerBugUnit, iMapSize, iDataSize);
     Project.DataSize := iDataSize;
   end;
 
