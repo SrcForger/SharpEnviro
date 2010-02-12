@@ -11,9 +11,9 @@
     <dimension>w,29</dimension>
     <fsmod>2,2</fsmod>
     <sbmod>0,0</sbmod>
-    <paxoffsets>18,8</paxoffsets>
+    <paxoffsets>14,4</paxoffsets>
     <payoffsets>1,1</payoffsets>
-    <paxoffsetsbottom>18,8</paxoffsetsbottom>
+    <paxoffsetsbottom>14,4</paxoffsetsbottom>
     <payoffsetsbottom>1,1</payoffsetsbottom>
     <ncyoffsets>0,1</ncyoffsets>
     <ncyoffsetsbottom>1,2</ncyoffsetsbottom>
