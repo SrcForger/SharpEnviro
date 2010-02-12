@@ -3,7 +3,7 @@
 ExplorerDll explorerDll;
 DWORD registerCookie;
 
-DLLEXPORT void StartDesktop()
+DLLEXPORT void __stdcall StartDesktop()
 {
 	explorerDll.Start();
 }

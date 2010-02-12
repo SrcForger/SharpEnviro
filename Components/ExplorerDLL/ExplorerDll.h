@@ -31,5 +31,5 @@ class ExplorerDll
 
 extern "C"
 {
-	DLLEXPORT void StartDesktop();
+	DLLEXPORT void __stdcall StartDesktop();
 }
