@@ -29,6 +29,7 @@ uses
   uxtheme,
   math,
   windows,
+  Psapi,
   classes,
   sysutils,
   shellapi,
@@ -642,6 +643,29 @@ begin
   end;
 end;
 
+function GetPidFromProcessNameCase(const ProcessName: string): DWORD;
+var
+  List: TStringList;
+  I: Integer;
+  HasFullPath: Boolean;
+begin
+  Result := INVALID_HANDLE_VALUE;
+  List := TStringList.Create;
+  try
+    HasFullPath := ExtractFilePath(ProcessName) <> '';
+    if RunningProcessesList(List, HasFullPath) then
+    begin
+      for I := 0 to List.Count - 1 do
+      begin
+        if AnsiCompareStr(List[I], Processname) = 0 then
+          Result := DWORD(List.Objects[I]);
+      end;
+    end;
+  finally
+    List.Free;
+  end;
+end;
+
 procedure StartShellServices;
 var
   Dir : String;
@@ -657,10 +681,28 @@ procedure TerminateShellServices;
 var
   PID : DWord;
 begin
-  PID := GetPidFromProcessName('SharpShellServicesNET.exe');
-  if PID = INVALID_HANDLE_VALUE then  
-    PID := GetPidFromProcessName('SharpShellServices.exe');
-  if PID <> INVALID_HANDLE_VALUE then  
+  PID := GetPidFromProcessNameCase('SharpShellServicesNET.exe');
+  if PID = INVALID_HANDLE_VALUE then
+    PID := GetPidFromProcessNameCase('SharpShellServices.exe');
+  if PID <> INVALID_HANDLE_VALUE then
+    TerminateApp(PID,100);
+end;
+
+procedure StartExplorer;
+var
+  Dir : String;
+begin
+  Dir := IncludeTrailingBackslash(SharpAPI.GetSharpeDirectory);
+  if (NETFramework35) and (FileExists(Dir + 'Explorer.exe')) then
+    SharpExecute(Dir + 'Explorer.exe');
+end;
+
+procedure TerminateExplorer;
+var
+  PID : DWord;
+begin
+  PID := GetPidFromProcessNameCase('Explorer.exe');
+  if PID <> INVALID_HANDLE_VALUE then
     TerminateApp(PID,100);
 end;
 
@@ -673,6 +715,7 @@ begin
 
   DesroyWindowStructure;
   TerminateShellServices;
+  TerminateExplorer;
 end;
 
 function Start(owner: hwnd): hwnd;
@@ -698,6 +741,11 @@ begin
   TerminateShellServices;
   sleep(1000);
   StartShellServices;
+
+  TerminateExplorer;
+  sleep(1000);
+  StartExplorer;
+
   ServiceDone('Shell');
   Result := owner;
   SendNotifyMessage(HWND_BROADCAST, RegisterWindowMessage('TaskbarCreated'), 0, 0);  
