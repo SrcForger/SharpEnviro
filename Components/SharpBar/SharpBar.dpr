@@ -316,6 +316,7 @@ begin
 
   Application.Initialize;
   Application.Title := 'SharpBar';
+  Application.ModalPopupMode := pmAuto;
   mfParamID := ParamID;
   Application.CreateForm(TSharpBarMainForm, SharpBarMainForm);
   SharpBarMainForm.InitBar;
