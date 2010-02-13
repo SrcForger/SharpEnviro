@@ -279,6 +279,47 @@ begin
   SharpApi.SendDebugMessage('shell','szTip: ' + pData.szTip,0);
 end;
 
+function GetPidFromProcessNameCase(const ProcessName: string): DWORD;
+var
+  List: TStringList;
+  I: Integer;
+  HasFullPath: Boolean;
+begin
+  Result := INVALID_HANDLE_VALUE;
+  List := TStringList.Create;
+  try
+    HasFullPath := ExtractFilePath(ProcessName) <> '';
+    if RunningProcessesList(List, HasFullPath) then
+    begin
+      for I := 0 to List.Count - 1 do
+      begin
+        if AnsiCompareStr(List[I], Processname) = 0 then
+          Result := DWORD(List.Objects[I]);
+      end;
+    end;
+  finally
+    List.Free;
+  end;
+end;
+
+procedure StartExplorer;
+var
+  Dir : String;
+begin
+  Dir := IncludeTrailingBackslash(SharpAPI.GetSharpeDirectory);
+  if (NETFramework35) and (FileExists(Dir + 'Explorer.exe')) then
+    SharpExecute(Dir + 'Explorer.exe');
+end;
+
+procedure TerminateExplorer;
+var
+  PID : DWord;
+begin
+  PID := GetPidFromProcessNameCase('Explorer.exe');
+  if PID <> INVALID_HANDLE_VALUE then
+    TerminateApp(PID,100);
+end;
+
 function ShellTrayWndProc(wnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall;
 var
   n : integer;
@@ -438,6 +479,12 @@ begin
         TrayManager.WndList.Delete(n);
         result := 1;
       end else result := 0;
+    end;
+    WM_SHARPSTARTEXPLORER: begin
+      TerminateExplorer;
+      sleep(1000);
+      StartExplorer;
+      result := 1;
     end;
     else Result := DefWindowProc(wnd, Msg, wParam, lParam);
   end;
@@ -643,29 +690,6 @@ begin
   end;
 end;
 
-function GetPidFromProcessNameCase(const ProcessName: string): DWORD;
-var
-  List: TStringList;
-  I: Integer;
-  HasFullPath: Boolean;
-begin
-  Result := INVALID_HANDLE_VALUE;
-  List := TStringList.Create;
-  try
-    HasFullPath := ExtractFilePath(ProcessName) <> '';
-    if RunningProcessesList(List, HasFullPath) then
-    begin
-      for I := 0 to List.Count - 1 do
-      begin
-        if AnsiCompareStr(List[I], Processname) = 0 then
-          Result := DWORD(List.Objects[I]);
-      end;
-    end;
-  finally
-    List.Free;
-  end;
-end;
-
 procedure StartShellServices;
 var
   Dir : String;
@@ -684,24 +708,6 @@ begin
   PID := GetPidFromProcessNameCase('SharpShellServicesNET.exe');
   if PID = INVALID_HANDLE_VALUE then
     PID := GetPidFromProcessNameCase('SharpShellServices.exe');
-  if PID <> INVALID_HANDLE_VALUE then
-    TerminateApp(PID,100);
-end;
-
-procedure StartExplorer;
-var
-  Dir : String;
-begin
-  Dir := IncludeTrailingBackslash(SharpAPI.GetSharpeDirectory);
-  if (NETFramework35) and (FileExists(Dir + 'Explorer.exe')) then
-    SharpExecute(Dir + 'Explorer.exe');
-end;
-
-procedure TerminateExplorer;
-var
-  PID : DWord;
-begin
-  PID := GetPidFromProcessNameCase('Explorer.exe');
   if PID <> INVALID_HANDLE_VALUE then
     TerminateApp(PID,100);
 end;
@@ -741,10 +747,6 @@ begin
   TerminateShellServices;
   sleep(1000);
   StartShellServices;
-
-  TerminateExplorer;
-  sleep(1000);
-  StartExplorer;
 
   ServiceDone('Shell');
   Result := owner;
