@@ -307,8 +307,8 @@ var
   Dir : String;
 begin
   Dir := IncludeTrailingBackslash(SharpAPI.GetSharpeDirectory);
-  if (NETFramework35) and (FileExists(Dir + 'Explorer.exe')) then
-    SharpExecute(Dir + 'Explorer.exe');
+  if (NETFramework35) and (FileExists(Dir + 'Addons\Explorer.exe')) then
+    SharpExecute(Dir + 'Addons\Explorer.exe');
 end;
 
 procedure TerminateExplorer;
@@ -750,7 +750,10 @@ begin
 
   ServiceDone('Shell');
   Result := owner;
-  SendNotifyMessage(HWND_BROADCAST, RegisterWindowMessage('TaskbarCreated'), 0, 0);  
+  SendNotifyMessage(HWND_BROADCAST, RegisterWindowMessage('TaskbarCreated'), 0, 0);
+
+  if ShellInitialized then
+    StartExplorer(); 
 end;
 
 function GetMetaData(): TMetaData;
