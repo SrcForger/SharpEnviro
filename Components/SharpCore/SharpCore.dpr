@@ -73,6 +73,7 @@ var
   hndWindow: THandle;
   TaskBarCreated: Integer;
   hndEvent: THandle;
+  shellInit : boolean;
 
 function ProcessMessage(var Msg: TMsg): Boolean;
 var
@@ -376,6 +377,12 @@ begin
         end;
       end;
 
+    WM_SHARPEINITIALIZED: begin
+      if ShellInit then
+        result := 1
+      else result := 0;
+    end;
+
     WM_COMMAND: begin // Menu commands
         if HiWord(wParam) = 0 then
           case LoWord(wParam) of
@@ -470,6 +477,8 @@ begin
 end;
 
 begin
+  shellInit := False;
+
   // Initialize Themes... (for the services)
   GetCurrentTheme.LoadTheme(ALL_THEME_PARTS);
 
@@ -553,6 +562,8 @@ begin
   CoInitialize(nil);
 
   RunAll;
+
+  shellInit := True;
 
   try
     while GetMessage(wndMsg, 0, 0, 0) do
