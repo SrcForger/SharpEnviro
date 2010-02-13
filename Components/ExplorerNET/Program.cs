@@ -104,9 +104,9 @@ namespace SharpEnviro.Explorer
                     {
                         if ((mMsg.msg == WM_ENDSESSION) || (mMsg.msg == WM_CLOSE) || (mMsg.msg == WM_QUIT))
                             break;
-
-                        System.Threading.Thread.Sleep(16);
                     }
+
+                    System.Threading.Thread.Sleep(16);
                 }
 
                 FreeLibrary(hDll);
