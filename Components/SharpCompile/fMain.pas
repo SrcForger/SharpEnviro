@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, ComCtrls, Contnrs, SharpERoundPanel, StdCtrls, JvExComCtrls,
   SharpETabList, ImgList, uVistaFuncs,
-  JvSimpleXML, JvComCtrls, JvCheckTreeView, CheckLst, JvExCheckLst,
+  JclSimpleXML, JvComCtrls, JvCheckTreeView, CheckLst, JvExCheckLst,
   JvCheckListBox, JvStatusBar, JvExStdCtrls, JvMemo, uCompiler, SharpEListBoxEx,
   SharpEPageControl, PngImageList, StrUtils, JvExControls, ToolWin;
 
@@ -75,7 +75,8 @@ var
   sPath: String;
   sSettingsFile: String;
   bDebug: Boolean;
-
+  sXMLPath : string;
+  
 implementation
 
 {$R *.dfm}
@@ -86,11 +87,14 @@ begin
   lbSummary.DoubleBuffered := True;
   sepLog.DoubleBuffered := True;
   panMain.DoubleBuffered := True;
-  if ParamStr(1) <> '' then
-    OpenFile(ParamStr(1));
   ForceDirectories('.\Settings\Global\SharpCompile');
   sSettingsFile := 'Settings\Global\SharpCompile\Settings.xml';
   LoadSettings;
+  
+  if ParamStr(1) <> '' then
+    sXMLPath := ParamStr(1);
+
+  OpenFile(sXMLPath);
 end;
 
 procedure TfrmMain.FormDestroy(Sender: TObject);
@@ -373,19 +377,14 @@ end;
 procedure TfrmMain.OpenFile(sXML: String);
 var
   n,i: integer;
-  xFile: TJvSimpleXML;
+  xFile: TJclSimpleXML;
   nProject,nComponent: TTreeNode;
   sPackage: String;
   sProjectName, sProjectType, sPlatform : string;
 begin
-    if ctvProjects.Items.Count > 0 then
-      // Loop over the items backwards to avoid conflicts
-      // when items are removed for the treeview.
-      for n := ctvProjects.Items.Count - 1 downto 0 do
-      begin
-        ctvProjects.Items[n].Delete;
-      end;
-    xFile := TJvSimpleXML.Create(nil);
+  ctvProjects.Items.Clear;
+  xFile := TJclSimpleXML.Create;
+  try
     if FileExists(sXML) then
     begin
       sPath := IncludeTrailingPathDelimiter(ExtractFileDir(sXML));
@@ -425,28 +424,44 @@ begin
       lbSummary.AddItem('Loaded ' + ExtractFileName(sXML), 2);
 	  end;
     InsertSplitter;
+  finally
+    xFile.Free;
+  end;
 end;
 
 procedure TfrmMain.tbOpenClick(Sender: TObject);
 begin
+  if FileExists(sXMLPath) then
+  begin
+    dlgOpen.InitialDir := ExtractFileDir(sXMLPath);
+    dlgOpen.FileName := ExtractFileName(sXMLPath);
+  end;
   if dlgOpen.Execute then
+  begin
     OpenFile(dlgOpen.FileName);
+    sXMLPath := dlgOpen.FileName;
+  end;
 end;
 
 procedure TfrmMain.LoadSettings();
 var
-  xFile: TJvSimpleXML;
+  xFile: TJclSimpleXML;
 begin
   if FileExists(sSettingsFile) then
   begin
-    xFile := TJvSimpleXML.Create(nil);
-    xFile.LoadFromFile(sSettingsFile);
-    if xFile.Root.Items.ItemNamed['Options'] <> nil then
-      with xFile.Root.Items.ItemNamed['Options'] do
-      begin
-        clbOptions.Checked[0] := StrToBool(Properties.Value('Debug', 'False'));
-      end;
-    xFile.Free;
+    xFile := TJclSimpleXML.Create;
+    try
+      xFile.LoadFromFile(sSettingsFile);
+      if xFile.Root.Items.ItemNamed['Options'] <> nil then
+        with xFile.Root.Items.ItemNamed['Options'] do
+        begin
+          bDebug := StrToBool(Properties.Value('Debug', 'False'));
+          clbOptions.Checked[0] := bDebug;
+          sXMLPath := Properties.Value('XMLPath', '');
+        end;
+    finally
+      xFile.Free;
+    end;
   end
   else
   begin
@@ -486,17 +501,21 @@ end;
 
 procedure TfrmMain.SaveSettings();
 var
-  xFile: TJvSimpleXML;
+  xFile: TJclSimpleXML;
 begin
   SetCurrentDirectory(PChar(ExtractFilePath(ParamStr(0))));
-  xFile := TJvSimpleXML.Create(nil);
-  xFile.Root.Name := 'SharpCompile';
-  with xFile.Root.Items.Add('Options') do
-  begin
-    Properties.Add('Debug', clbOptions.Checked[0]);
-  end;
-  xFile.SaveToFile(sSettingsFile);
-  xFile.Free;
+  xFile := TJclSimpleXML.Create;
+  try
+    xFile.Root.Name := 'SharpCompile';
+    with xFile.Root.Items.Add('Options') do
+    begin
+      Properties.Add('Debug', bDebug);
+      Properties.Add('XMLPath', sXMLPath);
+    end;
+    xFile.SaveToFile(sSettingsFile);
+  finally
+    xFile.Free;
+  end
 end;
 
 end.
