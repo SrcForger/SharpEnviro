@@ -542,7 +542,7 @@ begin
     or (msg.WParam = Integer(suSkin)) then
   begin
     GetCurrentTheme.LoadTheme(ALL_THEME_PARTS);
-    if Visible then Background.Reload(msg.Wparam = Integer(suScheme));
+    Background.Reload(msg.Wparam = Integer(suScheme));
     BackgroundImage.ForceFullInvalidate;
     if SharpDesk.BackgroundLayer <> nil then
     begin
@@ -552,6 +552,8 @@ begin
     SharpDesk.SendMessageToAllObjects(SDM_SETTINGS_UPDATE,0,0,0);
     if msg.WParam = Integer(suWallpaper) then
       SharpApi.BroadcastGlobalUpdateMessage(suDesktopBackgroundChanged,-1,True);
+    if not Visible then
+      BackgroundImage.Bitmap.SetSize(0, 0);      
   end;
 
   if (msg.WParam = Integer(suSharpDesk)) then
