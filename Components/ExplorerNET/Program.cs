@@ -58,10 +58,10 @@ namespace SharpEnviro.Explorer
                     hDll = LoadLibrary("Explorer32.dll");
 
                 // Run the StartDesktop function
-                if (hDll != null)
+                if (hDll != IntPtr.Zero)
                 {
                     IntPtr fptr = GetProcAddress(hDll, "StartDesktop");
-                    if (fptr != null)
+                    if (fptr != IntPtr.Zero)
                     {
                         StartDesktopInvoker sdi = (StartDesktopInvoker)Marshal.GetDelegateForFunctionPointer(fptr, typeof(StartDesktopInvoker));
                         sdi();
