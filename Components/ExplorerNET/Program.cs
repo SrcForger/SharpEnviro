@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
@@ -11,12 +12,25 @@ namespace SharpEnviro.Explorer
 {
     class Explorer
     {
+        static bool bShouldExit = false;
+
         static bool Is64Bit() 
 	    {
             return (IntPtr.Size == 8);
 	    }
 
         internal delegate void StartDesktopInvoker();
+
+        static IntPtr SharpWindowProc(IntPtr hWnd, uint uMsgm, IntPtr wParam, IntPtr lParam)
+        {
+            if (uMsgm == WM_ENDSESSION || uMsgm == WM_CLOSE || uMsgm == WM_QUIT)
+            {
+                bShouldExit = true;
+                return (IntPtr)1;
+            }
+
+            return PInvoke.DefWindowProc(hWnd, uMsgm, wParam, lParam);
+        }
 
         [STAThread]
         static void Main(string[] args)
@@ -54,6 +68,16 @@ namespace SharpEnviro.Explorer
             OperatingSystem osInfo = Environment.OSVersion;
             if (osInfo.Platform == System.PlatformID.Win32NT)
             {
+                ClassParams classParams = new ClassParams();
+                classParams.Name = "TSharpExplorerForm";
+                classParams.WindowProc = SharpWindowProc;
+                CreateParamsEx createParams = new CreateParamsEx();
+                createParams.Caption = "SharpExplorerForm";
+                createParams.ClassName = classParams.Name;
+                createParams.ExStyle = PInvoke.WS_EX_TOOLWINDOW;
+
+                NativeWindowEx explorerWindow = new NativeWindowEx(classParams, createParams);
+
                 IntPtr hDll;
 
                 if (Is64Bit())
@@ -73,25 +97,40 @@ namespace SharpEnviro.Explorer
                 }
 
                 // Loop through message until a quit message is received
-                MSG lpMsg;
-                while (GetMessage(out lpMsg, IntPtr.Zero, 0, 0) == true)
+                while (!bShouldExit)
                 {
-                    if ((lpMsg.message == WM_ENDSESSION) || (lpMsg.message == WM_CLOSE) || (lpMsg.message == WM_QUIT))
-                    {
-                        break;
-                    }
+                    System.Windows.Forms.Application.DoEvents();
+                    System.Threading.Thread.Sleep(16);
                 }
 
                 FreeLibrary(hDll);
             }
+
+            // The process crashes/fails to shutdown if we don't use this
+            Process.GetCurrentProcess().Kill();
         }
 
         #region Win32
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct NativeMessage
+        {
+            public IntPtr handle;
+            public uint msg;
+            public IntPtr wParam;
+            public IntPtr lParam;
+            public uint time;
+            public System.Drawing.Point p;
+        }
 
         // Import GetMessage function from user32.dll
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool GetMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool PeekMessage(out NativeMessage lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg);
 
         [DllImport("kernel32.dll")]
         public static extern IntPtr LoadLibrary(string dllToLoad);
