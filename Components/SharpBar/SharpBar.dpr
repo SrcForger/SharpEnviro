@@ -308,6 +308,10 @@ begin
        if LoadAutoStartBars then
        begin
           ServiceDone('SharpBar');
+
+          // Start Explorer
+          SendMessage(FindWindow('Shell_TrayWnd', nil), WM_SHARPSTARTEXPLORER, 0, 0);
+
           halt;
        end;
     // no Bar was loaded create new one!
