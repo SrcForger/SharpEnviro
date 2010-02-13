@@ -312,12 +312,8 @@ begin
 end;
 
 procedure TerminateExplorer;
-var
-  PID : DWord;
 begin
-  PID := GetPidFromProcessNameCase('Explorer.exe');
-  if PID <> INVALID_HANDLE_VALUE then
-    TerminateApp(PID,100);
+  PostMessage(FindWindow('TSharpExplorerform', nil), WM_CLOSE, 0, 0);
 end;
 
 function ShellTrayWndProc(wnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall;
