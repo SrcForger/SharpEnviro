@@ -97,10 +97,16 @@ namespace SharpEnviro.Explorer
                 }
 
                 // Loop through message until a quit message is received
+                NativeMessage mMsg;
                 while (!bShouldExit)
                 {
-                    System.Windows.Forms.Application.DoEvents();
-                    System.Threading.Thread.Sleep(16);
+                    if (PeekMessage(out mMsg, new HandleRef(null, IntPtr.Zero), 0, 0, 1))
+                    {
+                        if ((mMsg.msg == WM_ENDSESSION) || (mMsg.msg == WM_CLOSE) || (mMsg.msg == WM_QUIT))
+                            break;
+
+                        System.Threading.Thread.Sleep(16);
+                    }
                 }
 
                 FreeLibrary(hDll);
@@ -126,11 +132,7 @@ namespace SharpEnviro.Explorer
         // Import GetMessage function from user32.dll
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool GetMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
-
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool PeekMessage(out NativeMessage lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg);
+        static extern bool PeekMessage(out NativeMessage lpMsg, HandleRef hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg);
 
         [DllImport("kernel32.dll")]
         public static extern IntPtr LoadLibrary(string dllToLoad);
