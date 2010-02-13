@@ -96,6 +96,9 @@ const
   // SharpCenter
   WM_SHARPCENTERMESSAGE = WM_APP + 660;
 
+  // Explorer
+  WM_SHARPSTARTEXPLORER = WM_APP + 661;
+
   // SharpMenu
   WM_MENUID = WM_APP + 661;
 
