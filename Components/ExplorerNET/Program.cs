@@ -32,7 +32,13 @@ namespace SharpEnviro.Explorer
 
                     for (int i = 0; i < args.Length; i++ )
                     {
-                        p.StartInfo.Arguments += "\"" + args[i] + "\"";
+                        if (args[i].Contains(" "))
+                            p.StartInfo.Arguments += "\"";
+
+                        p.StartInfo.Arguments += args[i];
+                        if (args[i].Contains(" "))
+                            p.StartInfo.Arguments += "\"";
+
                         if (i < args.Length - 1)
                             p.StartInfo.Arguments += " ";
                     }
@@ -43,8 +49,6 @@ namespace SharpEnviro.Explorer
                     return;
                 }
             }
-
-            CreateMutex(IntPtr.Zero, false, "started_SharpExplorer");
 
             // check Operating system version
             OperatingSystem osInfo = Environment.OSVersion;
@@ -97,7 +101,6 @@ namespace SharpEnviro.Explorer
 
         [DllImport("kernel32.dll")]
         public static extern bool FreeLibrary(IntPtr hModule);
-
 
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern IntPtr CreateMutex(IntPtr lpMutexAttributes, bool bInitialOwner, string lpName);
