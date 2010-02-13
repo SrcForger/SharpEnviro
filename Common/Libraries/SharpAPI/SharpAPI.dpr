@@ -74,6 +74,7 @@ const
   WM_SHARPELINKLAUNCH     = WM_APP + 540;
 
   WM_SHARPTERMINATE       = WM_APP + 550;
+  WM_SHARPEINITIALIZED    = WM_APP + 551;
 
   // Shell Hooks
   WM_REGISTERSHELLHOOK      = WM_APP + 560;
@@ -370,6 +371,16 @@ begin
 end;
 
 {EXPORTED FUNTIONS}
+
+function ShellInitialized : boolean;
+var
+  wnd : hwnd;
+begin
+  wnd := FindWindow('TSharpCoreMainWnd',nil);
+  if wnd <> 0 then
+    result := (SendMessage(wnd,WM_SHARPEINITIALIZED,0,0) = 1)
+  else result := False;
+end;
 
 function GetCurrentVWM : integer;
 var
@@ -1504,6 +1515,8 @@ begin
 end;
 
 exports
+  ShellInitialized,
+
   SharpEBroadCast,
   BroadcastGlobalUpdateMessage,
   SendDebugMessage, //Sends Message to SharpConsole

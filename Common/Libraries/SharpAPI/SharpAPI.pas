@@ -61,6 +61,7 @@ const
   WM_SHARPELINKLAUNCH     = WM_APP + 540;
 
   WM_SHARPTERMINATE       = WM_APP + 550;
+  WM_SHARPEINITIALIZED    = WM_APP + 551;  
 
   // Shell Hooks
   WM_REGISTERSHELLHOOK      = WM_APP + 560;
@@ -231,6 +232,8 @@ type
     Author: string;
     Website: string;
   end;
+
+function ShellInitialized : boolean; external 'SharpApi.dll' name 'ShellInitialized';
 
 function BroadcastGlobalUpdateMessage(AUpdateType: TSU_UPDATE_ENUM; APluginID: Integer = -1; ASendMessage: boolean = False): boolean; external 'SharpAPI.dll' name 'BroadcastGlobalUpdateMessage';
 
