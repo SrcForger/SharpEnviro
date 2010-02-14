@@ -44,6 +44,13 @@ uses
   uISharpBar in '..\..\Common\Interfaces\uISharpBar.pas',
   uSharpBarInterface in 'uSharpBarInterface.pas';
 
+type
+  TBarMutex = array of record
+    name : string;
+    mutex : THandle;
+    timeout : integer;
+  end;
+
 {$R *.res}
 {$R metadata.res}
 
@@ -141,6 +148,21 @@ begin
      else PointInRect:=False;
 end;
 
+procedure DeleteBarMutex(var A: TBarMutex; const Index: Integer);
+var
+  ALength: Integer;
+  i: Integer;
+begin
+  ALength := Length(A);
+  if ((ALength <= 0) or (Index >= ALength)) then
+    exit;
+
+  for i := Index + 1 to ALength - 1 do
+    A[i - 1] := A[i];
+    
+  SetLength(A, ALength - 1);
+end;
+
 // starts all bars which are set to AutoStart = True;
 function LoadAutoStartBars : boolean;
 var
@@ -152,11 +174,12 @@ var
   lab : boolean;
   n : integer;
   IsInt : boolean;
-  iTimeout : integer;
-  modName : string;
-  modMutex : THandle;
+  i : integer;
+  modMutex : TBarMutex;
 begin
   Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
+
+  i := 1;
 
   xml := TJclSimpleXMl.Create;
   try
@@ -195,27 +218,14 @@ begin
                     lab := true;
 
                     // Wait for the bar to start
-                    iTimeout := 10000;
-                    modName := 'SharpBar'+sr.Name;
-                    while iTimeout > 0 do
-                    begin
-                      modMutex := OpenMutex(MUTEX_ALL_ACCESS, False, PChar('started_' + modName));
-                      if (modMutex = 0) then
-                      begin
-                        Sleep(100);
-                        iTimeout := iTimeout - 100;
-                        if iTimeout = 0 then
-                          SendDebugMessageEx('SharpBar', 'Timed out waiting for ' + modName, 0, DMT_INFO);
-                      end else
-                      begin
-                        iTimeout := 0;
-                        SendDebugMessageEx('SharpBar', 'Started ' + modName, 0, DMT_TRACE);
-                      end;
-						        end;
+                    SetLength(modMutex, i + 1);
+                    modMutex[i].timeout := 10000;
+                    modMutex[i].name := 'SharpBar'+sr.Name;
+                    i := i + 1;
 					        end;
                 end else lab := true; // an auto start bar is already running!
-                end;
               end;
+          end;
         end;
       until FindNext(sr) <> 0;
       FindClose(sr);
@@ -223,6 +233,42 @@ begin
   finally
     xml.Free;
   end;
+
+  // Wait for the bars to start
+  i := 1;
+  while (i < Length(modMutex)) do
+  begin
+    while modMutex[i].timeout > 0 do
+    begin
+      modMutex[i].mutex := OpenMutex(MUTEX_ALL_ACCESS, False, PChar('started_' + modMutex[i].name));
+      if (modMutex[i].mutex = 0) then
+      begin
+        Sleep(100);
+        modMutex[i].timeout := modMutex[i].timeout - 100;
+        if modMutex[i].timeout <= 0 then
+        begin
+          SendDebugMessageEx('SharpBar', 'Timed out waiting for bar #' + IntToStr(i) + ' - ' + modMutex[i].name, 0, DMT_INFO);
+          CloseHandle(modMutex[i].mutex);
+          DeleteBarMutex(modMutex, i);
+
+          i := i - 1;
+          break;
+        end else
+        begin
+          SendDebugMessageEx('SharpBar', 'Started bar #' + IntToStr(i) + ' - ' + modMutex[i].name, 0, DMT_TRACE);
+          CloseHandle(modMutex[i].mutex);
+          DeleteBarMutex(modMutex, i);
+
+          i := i - 1;
+          break;
+        end;
+      end;
+    end;
+
+    i := i + 1;
+  end;
+
+  SetLength(modMutex, 0);
 
   result := lab;
 end;
