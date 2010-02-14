@@ -477,9 +477,12 @@ begin
       end else result := 0;
     end;
     WM_SHARPSTARTEXPLORER: begin
-      TerminateExplorer;
-      sleep(1000);
-      StartExplorer;
+      if (FindWindow('TSharpExplorerform', nil) = 0) then
+      begin
+        TerminateExplorer;
+        sleep(1000);
+        StartExplorer;
+      end;
       result := 1;
     end;
     else Result := DefWindowProc(wnd, Msg, wParam, lParam);
