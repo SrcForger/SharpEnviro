@@ -22,7 +22,9 @@
 #rcolbody #latest .col_poster { width: 75px; text-align:left; }
 #rcolbody #latest .col_freshness { width: 75px; text-align:left; }
 
-.forumIcon { vertical-align:middle; float:left; padding-right:5px; }
+.forumheader { background-color:#FFF !important; }
+.forumIcon { vertical-align:middle; float:left; padding-right:5px; padding-top:2px;  }
+.forumStatusText { vertical-align:text-top; float:left; padding-right:5px; font-size:x-small; font-weight:bold }
 .commentIcon { vertical-align:middle; float:left; padding-right:5px; padding-top:3px; }
 .addIcon { vertical-align:middle; float:right; padding-right:5px; padding-top:3px; }
 .forumTitle { font-weight:bold; color:#1789C6; padding-left:5px; }

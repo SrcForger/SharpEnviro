@@ -80,7 +80,7 @@ p {
 	margin-top: .2em;
 }
 
-#front-page #discussions { 
+#front-page #discussions #topic { 
 	width: 100%;
 }
 
@@ -98,7 +98,7 @@ p {
 	padding: 0 0 5px;
 }
 
-#front-page #discussions ul {
+#front-page #discussions #topic ul {
 	padding: 0 0 0 14px;
 }
 
@@ -308,8 +308,9 @@ form.search input.inputButton:active {
 }
 
 #latest th, #forumlist th, #miniforumlist th, #favorites th {
+	background:#FFFFFF;
+	background-color:#FFF;
 	border-bottom: 1px solid #aaa;
-	background: #ffffff;
 	text-align:left;
 	padding: 5px 0;
 	text-transform: uppercase;
@@ -319,6 +320,11 @@ form.search input.inputButton:active {
 	background: #f7f7f7;
 	margin-bottom: 2em;
 	width: 100%;
+}
+
+#forumlist tr td div.nest {
+	padding-left: 2.5ex;
+	font-style:italic;
 }
 
 .bozo {

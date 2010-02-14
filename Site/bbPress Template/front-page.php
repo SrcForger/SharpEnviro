@@ -113,7 +113,7 @@
         <?php if ( $topics ) : foreach ( $topics as $topic ) : ?>
         <tr<?php topic_class(); ?>>
           <td><?php bb_topic_labels(); ?>
-            <div class="forumTitle" > <div class="commentIcon"><img src="<?php bb_active_theme_uri(); ?>images/forum/comment.png" width="16" height="16" /> </div>  <a href="<?php topic_link(); ?>">
+            <div class="forumTitle" > <a href="<?php topic_link(); ?>">
               <?php topic_title(); ?>
               </a> </div>
             <?php topic_page_links(); ?></td>

@@ -289,7 +289,7 @@ form.login input#remember {
 	overflow: hidden;
 }
 
-#front-page #discussions {
+#front-page #discussions #topic {
 	margin-left: 170px;
 	width: 590px;
 }
@@ -307,7 +307,7 @@ form.login input#remember {
 	padding: 0 0 5px;
 }
 
-#front-page #discussions ul { padding: 0 0 0 14px; }
+#front-page #discussions #topic ul { padding: 0 0 0 14px; }
 
 .sticky { background-color: #a1d29a; }
 
@@ -377,6 +377,7 @@ a.next.page-numbers:hover {
 #topic-info {
 	float: left;
 	padding: 0 1em 0 0;
+	background:#000;
 }
 
 #topic-tags {
@@ -676,26 +677,7 @@ a.rss-link {
 
 #forumlist tr td div.nest {
 	padding-left: 2.5ex;
-}
-
-#latest tr:hover, #forumlist tr:hover, #favorites tr:hover { background-color: #e4f3e1; }
-
-#latest th, #forumlist th, #favorites th {
-	text-align: left;
-	background-color: rgb(102, 102, 102);
-	font: 11px Verdana,Arial,Helvetica,sans-serif;
-	font-weight: normal;
-	padding: 5px 9px;
-	color: rgb(255, 255, 255);
-}
-
-#latest th a, #forumlist th a, #favorites th a {
-	color: rgb(200, 200, 200);
-	font-style: italic;
-}
-
-#latest th a:hover, #forumlist th a:hover, #favorites th a:hover {
-	color: rgb(255, 255, 255);
+	font-style:italic;
 }
 
 tr.bb-category td {
@@ -713,6 +695,11 @@ tr.bb-category td {
 }
 
 #discussions .nav {
+	margin-top: -2em;
+	margin-bottom: 1em;
+}
+
+#topic .nav {
 	margin-top: -2em;
 	margin-bottom: 1em;
 }
