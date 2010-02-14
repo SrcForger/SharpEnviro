@@ -283,7 +283,6 @@ begin
 
         // Create a tab with the default settings and change to it.
         pcNotes.TabIndex := AddTab(frmTabOptions.editName.Text);
-
       end
       else
       begin
@@ -543,6 +542,7 @@ end;
 procedure TSharpENotesForm.btnExportClick(Sender: TObject);
 var
   ext : string;
+  newIndex : Integer;
 begin
   if FIndex = -1 then
     Exit;
@@ -564,14 +564,22 @@ begin
     DeleteTabSettings(TabName(FIndex));
     // Remove the current tab from the list.
     pcNotes.TabList.Delete(pcNotes.TabItems.Item[FIndex]);
+
+    // FIndex will be the next tab after the tab was deleted.
+    // We show the next tab or previous tab if it was the last tab deleted.
+    newIndex := FIndex;
+    if FIndex = pcNotes.TabList.Count then
+      newIndex := FIndex - 1;
+
     // Set the index to -1 so we don't try and save it
     // in the tab change event.
     FIndex := -1;
-    pcNotes.TabIndex := -1;
 
     reNotes.Clear;
     reNotes.ReadOnly := True;
 
+    pcNotes.TabIndex := newIndex;
+    
     // Save the tabs settings and send an update to other notes modules.
     TMainForm(Owner).SaveTabsSettings;
     TMainForm(Owner).SendUpdateNotes;
@@ -848,7 +856,6 @@ begin
               if pcNotes.TabItems.Item[i].Visible then
               begin
                 pcNotes.TabIndex := i;
-                pcNotes.TabList.BringTabIntoView(i);
                 changed := True;
                 Break;
               end;
@@ -861,7 +868,6 @@ begin
                 if pcNotes.TabItems.Item[i].Visible then
                 begin
                   pcNotes.TabIndex := i;
-                  pcNotes.TabList.BringTabIntoView(i);
                   Break;
                 end;
           end
@@ -873,7 +879,6 @@ begin
               if pcNotes.TabItems.Item[i].Visible then
               begin
                 pcNotes.TabIndex := i;
-                pcNotes.TabList.BringTabIntoView(i);
                 changed := True;
                 Break;
               end;
@@ -886,7 +891,6 @@ begin
                 if pcNotes.TabItems.Item[i].Visible then
                 begin
                   pcNotes.TabIndex := i;
-                  pcNotes.TabList.BringTabIntoView(i);
                   Break;
                 end;
           end;
@@ -919,7 +923,6 @@ begin
   FLoading := True;
 
   FIndex := -1;
-  pcNotes.TabIndex := -1;
 
   // Clear the tab settings if there are any before loading.
   for i := 0 to Pred(Settings.Tabs.Count) do
@@ -932,6 +935,7 @@ begin
   // to rtf files in the notes dir for this instance.
   ConvertTxtFilesToRtfFiles;
 
+  // Clear the list as we'll add everything back.
   pcNotes.TabList.Clear;
 
   // Make the richedit readonly and clear it in case there is no tabs.
@@ -968,9 +972,6 @@ begin
   // If there is a filter then reapply it.
   if editFilter.Text <> '' then
     FilterChange(Sender);
-
-  // Make sure that the active tab is viewable.
-  pcNotes.TabList.BringTabIntoView(pcNotes.TabIndex);
 
   FLoading := False;
 end;
@@ -1187,9 +1188,12 @@ begin
 
     // Store the new tab index.
     FIndex := ATabIndex;
-    
+        
     // Indicate that we are no longer loading a new file.
     FLoading := False;
+    
+    // Make sure that the active tab is viewable.
+    pcNotes.TabList.BringTabIntoView(ATabIndex);
   end;
 end;
 
@@ -1298,6 +1302,7 @@ end;
 procedure TSharpENotesForm.DeleteTab;
 var
   empty : Boolean;
+  newIndex : Integer;
 begin
   // If there are no tabs then there is nothing to delete.
   if pcNotes.TabCount = 0 then Exit;
@@ -1326,16 +1331,23 @@ begin
     // Remove the current tab from the list.
     pcNotes.TabList.Delete(pcNotes.TabItems.Item[FIndex]);
 
+    // FIndex will be the next tab after the tab was deleted.
+    // We show the next tab or previous tab if it was the last tab deleted.
+    newIndex := FIndex;
+    if FIndex = pcNotes.TabList.Count then
+      newIndex := FIndex - 1;
+
     // Set the saved index to -1 so that when we change tabs
     // we won't try and save the tab that was deleted.
     FIndex := -1;
-    pcNotes.TabIndex := -1;
 
     // Clear the notes as well.
     reNotes.Lines.Clear;
     // Only allow input when there is a tab.
     reNotes.ReadOnly := True;
 
+    pcNotes.TabIndex := newIndex;
+    
     // Save the tabs settings and send an update to other notes modules.
     TMainForm(Owner).SaveTabsSettings;
     TMainForm(Owner).SendUpdateNotes;

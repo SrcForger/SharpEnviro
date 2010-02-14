@@ -1007,6 +1007,10 @@ begin
   // our range then do nothing.
   if (ATabID < 0) or (ATabID >= Count) then
     Exit;
+
+  if (FLeftIndex = 0) and (ATabID < GetMaxVisibleTabs) then
+    Exit;
+  
   while (FLeftIndex > ATabID) or (FRightIndex < ATabID) do
   begin
     if (FLeftIndex > ATabID) then
@@ -1221,6 +1225,9 @@ begin
     AList.Free;
     Self.Invalidate;
   end;
+  FTabIndex := -1;
+  FLeftIndex := 0;
+  FRightIndex := 0;
 end;
 
 procedure TSharpETabList.SetBorderSelectedColor(const Value: TColor);
