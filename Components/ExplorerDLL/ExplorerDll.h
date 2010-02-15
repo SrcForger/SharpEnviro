@@ -12,8 +12,7 @@ typedef bool (WINAPI *FILEICONINIT)(BOOL init);
 typedef void *(WINAPI *SHCREATEDESKTOP)(void *);
 typedef bool (WINAPI *SHDESKTOPMESSAGELOOP)(void *);
 
-class IShellDesktopTray;
-
+// ExplorerDll (main) Class
 class ExplorerDll
 {
 	public:
@@ -25,8 +24,17 @@ class ExplorerDll
 		void Start();
 
 	private:
+		DWORD registerCookie;
+		TShellDesktopTray explorerFactory;
+
 		HANDLE m_hThread;
 		DWORD m_dwThreadID;
+
+		HMODULE hShellDLL, hWinListDLL;
+		IShellDesktopTray *iTray;
+
+		SHELLDDEINIT ShellDDEInit;
+		FILEICONINIT FileIconInit;
 };
 
 extern "C" DLLEXPORT void StartDesktop();

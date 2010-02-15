@@ -7,5 +7,5 @@
 #include <windows.h>
 #include <objbase.h>
 
-#include "ExplorerDll.h"
 #include "ShellDesktopTray.h"
+#include "ExplorerDll.h"
