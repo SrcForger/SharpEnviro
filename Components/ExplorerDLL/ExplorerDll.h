@@ -25,7 +25,7 @@ class ExplorerDll
 
 	private:
 		DWORD registerCookie;
-		TShellDesktopTray explorerFactory;
+		TShellDesktopTrayFactory explorerFactory;
 
 		HANDLE m_hThread;
 		DWORD m_dwThreadID;

@@ -10,7 +10,7 @@ HRESULT TShellDesktopTray::QueryInterface(IShellDesktopTray * p, REFIID riid, LP
 	if(!ppvObj)
 		return E_POINTER;
 
-	if(riid == IID_IUnknown || riid == IID_IClassFactory)
+	if(riid == IID_IUnknown || riid == IID_IShellDesktopTray)
 		*ppvObj = this;
 	else
 	{
@@ -54,4 +54,64 @@ int TShellDesktopTray::RegisterDesktopWindow(HWND d)
 int TShellDesktopTray::SetVar(int p1, ULONG p2)
 {
 	return 0;
+}
+
+
+TShellDesktopTrayFactory::TShellDesktopTrayFactory()
+{
+
+}
+
+TShellDesktopTrayFactory::~TShellDesktopTrayFactory()
+{
+
+}
+
+ULONG TShellDesktopTrayFactory::AddRef()
+{
+	return 2;
+}
+
+ULONG TShellDesktopTrayFactory::Release()
+{
+	return 1;
+}
+
+HRESULT TShellDesktopTrayFactory::QueryInterface(REFIID riid, void** ppv)
+{
+	if(!ppv)
+		return E_POINTER;
+
+	if(riid == IID_IUnknown || riid == IID_IClassFactory)
+		*ppv = this;
+	else
+	{
+		*ppv = 0;
+		return E_NOINTERFACE;
+	}
+
+	AddRef();
+	return S_OK;
+}
+
+HRESULT TShellDesktopTrayFactory::CreateInstance(IUnknown* pOuter, REFIID riid, void** ppv)
+{
+	if(!ppv)
+		return E_POINTER;
+
+	if(pOuter)
+		return CLASS_E_NOAGGREGATION;
+
+	TShellDesktopTray* pShellDesktopTray = new TShellDesktopTray;
+
+	HRESULT hr = pShellDesktopTray->QueryInterface(NULL, riid, ppv);
+	if(hr)
+		delete pShellDesktopTray;
+
+	return hr;
+}
+
+HRESULT TShellDesktopTrayFactory::LockServer(BOOL fLock)
+{ 
+	return S_OK;
 }

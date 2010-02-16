@@ -9,8 +9,6 @@ extern "C" DLLEXPORT void StartDesktop()
 
 ExplorerDll::ExplorerDll()
 {
-	CoInitialize(NULL);
-
 	hShellDLL = hWinListDLL = NULL;
 	ShellDDEInit = NULL;
 	FileIconInit = NULL;
@@ -61,11 +59,10 @@ ExplorerDll::~ExplorerDll()
 
 void ExplorerDll::Start()
 {
-	CLSID CLSID_IShellDesktopTray;
-	CLSIDFromString(L"{213E2DF9-9A14-4328-99B1-6961F9143CE9}", &CLSID_IShellDesktopTray);
+	CoInitialize(NULL);
 
 	// Register the IShellDesktopTray COM Object
-	HRESULT hr = CoRegisterClassObject(CLSID_IShellDesktopTray, reinterpret_cast<LPUNKNOWN>(&explorerFactory), CLSCTX_LOCAL_SERVER, REGCLS_MULTIPLEUSE, &registerCookie);
+	CoRegisterClassObject(IID_IShellDesktopTray, LPUNKNOWN(&explorerFactory), CLSCTX_LOCAL_SERVER, REGCLS_MULTIPLEUSE, &registerCookie);
 
 	// Create the ShellDesktopTray interface
 	iTray = CreateInstance();
