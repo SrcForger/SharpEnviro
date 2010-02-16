@@ -19,8 +19,6 @@ namespace SharpEnviro.Explorer
             return (IntPtr.Size == 8);
 	    }
 
-        internal delegate void StartDesktopInvoker();
-
         static IntPtr SharpWindowProc(IntPtr hWnd, uint uMsgm, IntPtr wParam, IntPtr lParam)
         {
             if (uMsgm == WM_ENDSESSION || uMsgm == WM_CLOSE || uMsgm == WM_QUIT)
@@ -31,6 +29,8 @@ namespace SharpEnviro.Explorer
 
             return PInvoke.DefWindowProc(hWnd, uMsgm, wParam, lParam);
         }
+
+        internal delegate void StartDesktopInvoker();
 
         [STAThread]
         static void Main(string[] args)
@@ -111,9 +111,6 @@ namespace SharpEnviro.Explorer
 
                 FreeLibrary(hDll);
             }
-
-            // The process crashes/fails to shutdown if we don't use this
-            Process.GetCurrentProcess().Kill();
         }
 
         #region Win32
