@@ -1291,6 +1291,7 @@ var
   wndRect : TRect;
   mon : TMonitorItem;
   wndClass : array[0..255] of Char;
+  style : Integer;
 begin
   if (Visible) and ((SharpEBar.AlwaysOnTop) or (foregroundWindowIsFullscreen)) then
   begin
@@ -1309,8 +1310,10 @@ begin
       // If the window is on the same monitor as the bar then check if it is fullscreen.
       if MonList.MonitorFromRect(wndRect).MonitorNum = mon.MonitorNum then
       begin
+        style := GetWindowLong(wnd, GWL_STYLE);
         if (wndRect.Bottom - wndRect.Top >= mon.Height) and
-          (wndRect.Right - wndRect.Left >= mon.Width) then
+          (wndRect.Right - wndRect.Left >= mon.Width) and
+          ((style and WS_BORDER) <> WS_BORDER) then
         begin
           // The window is fullscreen so disable always on top.
           SharpEBar.AlwaysOnTop := False;
