@@ -37,32 +37,8 @@ namespace SharpEnviro.Explorer
         {
             // Make sure SharpExplorer isn't running already
             IntPtr sharpMutex = CreateMutex(IntPtr.Zero, true, "SharpExplorer");
-            if (sharpMutex != IntPtr.Zero)
-            {
-                if (Marshal.GetLastWin32Error() == ERROR_ALREADY_EXISTS)
-                {
-                    System.Diagnostics.Process p = new System.Diagnostics.Process();
-                    p.StartInfo.FileName = Environment.ExpandEnvironmentVariables("%WinDir%") + "\\explorer.exe";
-
-                    for (int i = 0; i < args.Length; i++ )
-                    {
-                        if (args[i].Contains(" "))
-                            p.StartInfo.Arguments += "\"";
-
-                        p.StartInfo.Arguments += args[i];
-                        if (args[i].Contains(" "))
-                            p.StartInfo.Arguments += "\"";
-
-                        if (i < args.Length - 1)
-                            p.StartInfo.Arguments += " ";
-                    }
-
-                    p.StartInfo.UseShellExecute = true;
-                    p.Start();
-
-                    return;
-                }
-            }
+            if (sharpMutex != IntPtr.Zero && Marshal.GetLastWin32Error() == ERROR_ALREADY_EXISTS)
+				return;
 
             // check Operating system version
             OperatingSystem osInfo = Environment.OSVersion;
