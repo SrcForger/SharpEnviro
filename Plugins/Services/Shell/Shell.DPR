@@ -663,6 +663,13 @@ begin
       Windows.UnregisterClass(PChar('Shell_TrayWnd'),hinstance);
     end;
   end else SendDebugMessageEx('Shell','Failed to register "Shell_TrayWnd" window class',0,0);
+
+  // Set Shell_TrayWnd properties
+  if ShellTrayWnd <> 0 then
+  begin
+    SetProp(ShellTrayWnd, 'AllowConsentToStealFocus', 1);
+    SetProp(ShellTrayWnd, 'TaskBandHWND', ShellTrayWnd);
+  end;
 end;
 
 procedure DesroyWindowStructure;
