@@ -186,6 +186,7 @@ type
     procedure WMUpdateSettings(var msg: TMessage); message WM_SHARPEUPDATESETTINGS;
 
     procedure OnBarPositionUpdate(Sender: TObject; var X, Y: Integer);
+
   public
     procedure LoadBarFromID(ID: integer);
     procedure SaveBarSettings;
@@ -1155,6 +1156,8 @@ begin
 
   // Register for notifications of this session (0), 1 = all sessions.
   FRegisteredSessionNotification := RegisterSessionNotification(Handle, 0);
+
+  ShowWindow(Handle, SW_HIDE);
 end;
 
 procedure TSharpBarMainForm.FormDestroy(Sender: TObject);
@@ -1532,14 +1535,10 @@ procedure TSharpBarMainForm.FormShow(Sender: TObject);
 begin
   if FSuspended then
     exit;
-  if ModuleManager.Modules.Count = 0 then
-    SharpEBar.ShowThrobber := True;
-  if SharpEBar.Throbber.Visible then
-    SharpEBar.Throbber.Repaint;
-  ShowWindow(application.Handle, SW_HIDE);
+    
+  ShowWindow(application.Handle, SW_HIDE);   
   if BarHideForm <> nil then
     BarHideForm.UpdateStatus;
-  RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN or RDW_UPDATENOW);
   ModuleManager.RefreshMiniThrobbers;
 end;
 
@@ -1782,6 +1781,7 @@ begin
       BarHideForm.Width := Width;
       BarHideForm.Height := 1;
       BarHideForm.Top := Top + Height - 1;
+      ShowWindow(SharpEBar.abackground.Handle, SW_HIDE);
       SharpBarMainForm.Hide;
       BarHideForm.Show;
       SharpApi.ServiceMsg('DeskArea', 'Update');
@@ -1940,8 +1940,9 @@ procedure TSharpBarMainForm.FormHide(Sender: TObject);
 begin
   if FSuspended then
     exit;
+
   if BarHideForm <> nil then
-    BarHideForm.UpdateStatus;
+    BarHideForm.UpdateStatus; 
 end;
 
 procedure TSharpBarMainForm.OnBarPositionUpdate(Sender: TObject; var X, Y: Integer);
