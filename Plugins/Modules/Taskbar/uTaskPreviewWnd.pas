@@ -155,8 +155,9 @@ begin
   begin
     if AllowHover then
     begin
-      PostMessage(FTaskWnd, WM_CLOSE, 0, 0);
-      PostThreadMessage(GetWindowThreadProcessID(FTaskWnd, nil), WM_QUIT, 0, 0);
+      //PostMessage(FTaskWnd, WM_CLOSE, 0, 0);
+      //PostThreadMessage(GetWindowThreadProcessID(FTaskWnd, nil), WM_QUIT, 0, 0);
+      SendMessage(FTaskWnd, WM_SYSCOMMAND, SC_CLOSE, 0);
       case FLockKey of
         0: Locked := ((Msg.Wparam and MK_CONTROL) = MK_CONTROL)
         else Locked := ((Msg.Wparam and MK_SHIFT) = MK_SHIFT)

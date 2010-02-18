@@ -916,8 +916,9 @@ begin
       FLastButton.btn.Tag := FLastButton.btn.Tag - 1;
     end else FreeAndNil(FLastMenu);
 
-    PostMessage(wnd, WM_CLOSE, 0, 0);
-    PostThreadMessage(GetWindowThreadProcessID(wnd, nil), WM_QUIT, 0, 0);
+    //PostMessage(wnd, WM_CLOSE, 0, 0);
+    //PostThreadMessage(GetWindowThreadProcessID(wnd, nil), WM_QUIT, 0, 0);
+    SendMessage(wnd, WM_SYSCOMMAND, SC_CLOSE, 0);
 
     if FLastMenu = nil then
       if FLastButton.btn <> nil then
