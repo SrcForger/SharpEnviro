@@ -514,8 +514,8 @@ begin
       begin
         pItem := TaskManager.GetItemByHandle(TaskManager.LastActiveTask);
         GetWindowRect(TaskManager.LastActiveTask,R);
-        if ((R.Left <> TaskManager.LastActiveTaskPos.Left) // Check if Window has moved
-           or (R.Top <> TaskManager.LastActiveTaskPos.Top)) and (pItem <> nil) then
+        if ((R.Left <> TaskManager.LastActiveTaskPos.Left) // Check if Window has moved but exclude minimized windows
+           or (R.Top <> TaskManager.LastActiveTaskPos.Top)) and (pItem <> nil) and (not IsIconic(pItem.Handle)) then
         begin
           vwm := VWMGetWindowVWM(GetCurrentVWM,GetVWMCount,TaskManager.LastActiveTask);
           TaskManager.LastActiveTaskPos := R;
