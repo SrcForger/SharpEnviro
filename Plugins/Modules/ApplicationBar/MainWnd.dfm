@@ -106,7 +106,6 @@ object MainForm: TMainForm
     Bitmap = {}
   end
   object CheckTimer: TTimer
-    Interval = 5000
     OnTimer = CheckTimerTimer
     Left = 176
     Top = 8

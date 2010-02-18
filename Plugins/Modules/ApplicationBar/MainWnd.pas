@@ -1689,7 +1689,16 @@ begin
       MonRect.Top := MonRect.Top + MonRectOffset;
       MonRect.Right := MonRect.Right - MonRectOffset;
       MonRect.Bottom := MonRect.Bottom - MonRectOffset;
-      GetWindowRect(pItem.Handle,R);
+
+      if IsIconic(pItem.Handle) and (pItem.LastVWM = CurrentVWM) then
+      begin
+        // Minimized windows are always moved off screen so check that
+        // the we are in the right VWM and use its restored position.
+        R := pItem.Placement.rcNormalPosition;
+      end
+      else
+        GetWindowRect(pItem.Handle,R);
+
       if not (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), MonRect)
         or PointInRect(Point(R.Left, R.Top), MonRect)
         or PointInRect(Point(R.Left, R.Bottom), MonRect)
