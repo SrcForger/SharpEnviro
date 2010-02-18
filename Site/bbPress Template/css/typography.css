@@ -29,7 +29,7 @@ p           { padding-top:24px; margin-bottom:-4px; }
 
 a:focus, 
 a:hover     { color: #000; text-decoration: underline; }
-a           { color: #009; text-decoration: none; }
+a           { color: #000; text-decoration: none; }
 
 blockquote  { color: #666; font-style: italic; }
 strong      { font-weight: bold; }
@@ -51,9 +51,9 @@ pre,code,tt { font-family: 'andale mono', 'lucida console', monospace; }
 
 li ul, 
 li ol       { margin:0 1.5em; }
-ul, ol      { margin: 0 1.5em 1.5em 1.5em; }
+ul, ol      { margin: 0 1.0em 0em 1.0em; color: #000; }
 
-ul          { list-style-type: disc; }
+ul          { list-style-type: none;  }
 ol          { list-style-type: decimal; }
 
 dl          { margin: 0 0 1.5em 0; }

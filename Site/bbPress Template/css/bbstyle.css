@@ -92,8 +92,6 @@ p {
 
 #front-page #main h2, h2.post-form, #userlogin, 
 #currentfavorites, #register {
-	color: #333;
-	border-bottom: 1px solid #ddd;
 	margin: 0 0 10px;
 	padding: 0 0 5px;
 }
@@ -122,26 +120,24 @@ p {
 /* Topic Page
 =================================== */
 
-.infobox {
-	border: 1px solid #ccc;
-	border-width: 1px 0;
-	padding: 1em;
+.infobox{
 }
 
-.infobox ul {
-	margin: 10px 0 10px 12px;
-	padding: 0;
+.infoboxItem {
+	float:left;
+	font-size:12px;
+	color: #000;
+	margin-right: 2px;
+	padding-top: 2px;
+	padding-right: 2px;
+	padding-bottom: 2px;
+	padding-left: 2px;
 }
 
-.infobox ul li { 
-	padding-bottom: 3px;
-}
 
 #topic-tags {
-	border-left: 1px solid #ccc;
-	float: right;
-	margin-top: -2em;
-	padding: 0 1em 1em;
+	float: left;
+	list-style:none;
 }
 
 .nav {
@@ -158,9 +154,8 @@ p {
 }
 
 #thread {
-	background: #eee;
 	list-style: none;
-	margin: 0 0 0 100px;
+	margin: 0 0 0 60px;
 	padding: 0;
 }
 
@@ -178,10 +173,11 @@ p {
 }
 
 .threadauthor {
-	margin-left: -110px;
+	margin-left: -70px;
 	overflow: hidden;
 	position: absolute;
 	width: 90px;
+	height: 90px;
 }
 
 .threadauthor small {
@@ -192,8 +188,6 @@ p {
 	border-top: 1px dotted #ccc;
 	margin: 10px 0 0;
 	padding: 5px 0 0;
-	font: 10px Verdana, Arial, Helvetica, sans-serif;
-	text-transform: uppercase;
 }
 
 .num, #forumlist small, #miniforumlist small {
@@ -201,19 +195,13 @@ p {
 }
 
 .postform {
-	background: #f0f0f0;
+	background-color: #e4f3ff;
 	padding: 1em;
-}
-
-.postform textarea {
-	height: 12em;
-	margin: 5px 0;
-	padding: 5px;
-	display: block;
-}
-
-.postform label {
-	display: block;
+	margin-bottom: 1em;
+	-moz-border-radius: 10px;
+	-khtml-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
 }
 
 .admin { 
@@ -326,11 +314,6 @@ form.search input.inputButton:active {
 	padding-left: 2.5ex;
 	font-style:italic;
 }
-
-.bozo {
-	background: #eeee88;
-}
-
 
 
 .deleted {

@@ -21,7 +21,7 @@ body {
 a { color: #2e6e15; text-decoration: none; }
 a:hover { color: #006400; }
 
-.alt { background-color: #fff; }
+.alt { background-color: #fff; border:thin }
 
 pre, code { font: 1.0em Monaco, 'Courier New', monospace; }
 
@@ -48,9 +48,7 @@ fieldset {
 
 img.avatar { border: 1px solid #ddd; }
 
-.bozo { background-color: #eeee88; }
 
-.alt.bozo { background-color: #ffff99; }
 
 .deleted { background-color: #ee8888; }
 
@@ -363,7 +361,7 @@ a.next.page-numbers:hover {
 .infobox {
 	border: 1px solid #ccc;
 	border-width: 1px 0;
-	padding: 1em 0;
+	padding: 1px 0;
 }
 
 .infobox ul {
@@ -377,13 +375,6 @@ a.next.page-numbers:hover {
 #topic-info {
 	float: left;
 	padding: 0 1em 0 0;
-	background:#000;
-}
-
-#topic-tags {
-	border-left: 1px solid #ccc;
-	float: right;
-	padding: 0 0 0 1em;
 }
 
 #tag-form p {
@@ -450,7 +441,7 @@ input#tagformsub:active {
 .threadauthor {
 	float: left;
 	padding: 1em 1em 0 1em;
-	width: 120px;
+	width: 100px;
 }
 
 .threadauthor p { margin: 0; }
@@ -460,7 +451,6 @@ input#tagformsub:active {
 .threadpost {
 	padding: 1.5em 1em;
 	margin-left: 140px;
-	background-color: #eee;
 	-moz-border-radius: 6px;
 	-khtml-border-radius: 6px;
 	-webkit-border-radius: 6px;
@@ -497,10 +487,6 @@ input#tagformsub:active {
 
 #thread li.pingback.alt {
 	background-color: #fff;
-}
-
-#thread li.pingback .threadpost {
-	background-color: #e4f3e1;
 }
 
 #thread li.pingback.alt .threadpost {
@@ -547,13 +533,9 @@ input#tagformsub:active {
 #thread .post li { clear:none; }
 
 .poststuff {
-	clear:both;
-	_clear: none; /* Hack to fix broken .alt coloring in IE6 */
 	border-top: 1px dotted #ccc;
 	margin: 10px 0 0;
 	padding: 5px 0 0;
-	font: 10px Verdana, Arial, Helvetica, sans-serif;
-	text-transform: uppercase;
 }
 
 .num, #forumlist small {
@@ -567,15 +549,7 @@ h2.post-form {
 	margin-bottom: 2px;
 }
 
-.postform {
-	background-color: #f0f0f0;
-	padding: 1em;
-	margin-bottom: 1em;
-	-moz-border-radius: 6px;
-	-khtml-border-radius: 6px;
-	-webkit-border-radius: 6px;
-	border-radius: 6px;
-}
+
 
 .postform textarea {
 	height: 12em;
