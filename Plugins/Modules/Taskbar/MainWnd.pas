@@ -105,6 +105,7 @@ type
     FRefreshOnNextMouseMove : boolean;
     FPreviewWnd : TTaskPreviewWnd;
     FPreviewWndHandle : hwnd;
+    function IsOnCurrentMonitor(pItem : TTaskItem) : Boolean;
     procedure WMNotify(var msg: TWMNotify); message WM_NOTIFY;
     procedure WMCommand(var msg: TMessage); message WM_COMMAND;
     procedure WMShellHook(var msg : TMessage); message WM_SHARPSHELLMESSAGE;
@@ -571,7 +572,6 @@ var
   n : integer;
   AppBarMenu : hMenu;
   VWMMenu : hMenu;
-  VWMIndex : integer;
   VWMCount : integer;
   AppBars : THandleArray;
   pItem : TTaskItem;
@@ -678,7 +678,7 @@ begin
    InsertMenuItem(AppMenu, DWORD(0), True, MenuItemInfo);
 
    pItem := TM.GetItemByHandle(pHandle);
-   VWMIndex := SharpApi.GetCurrentVWM;
+
    for n := VWMCount - 1 downto 0 do
    begin
      FillChar(MenuItemInfo, SizeOf(MenuItemInfo), #0);
@@ -691,7 +691,7 @@ begin
      if pItem <> nil then
        if pItem.LastVWM = n + 1 then
          MenuItemInfo.fState := 1;
-    //  if VWMGetWindowVWM(VWMIndex,VWMCount,pHandle) = n + 1 then
+
      InsertMenuItem(VWMMenu, DWORD(0), True, MenuItemInfo);
    end;
   end;
@@ -1205,14 +1205,9 @@ begin
 end;
 
 function TMainForm.CheckFilter(pItem : TTaskItem) : boolean;
-const
-  MonRectOffset = 32;
 var
   n : integer;
-  R : TRect;
-  Mon : TMonitorItem;
-  nm : boolean;
-  MonRect : TRect;
+  include : Boolean;
 begin
   if pItem = nil then
   begin
@@ -1236,83 +1231,90 @@ begin
         exit;
       end;
 
-  result := true;
-  nm := False;
+  Result := True;
+  include := False;
+  
   if sIFilter then
   begin
     for n:=0 to sIFilters.Count - 1 do
     begin
       case sIFilters[n].FilterType of
-        fteSWCmd: if TSWCmdEnum(pItem.Placement.showCmd) in sIFilters[n].SWCmds then
-              nm := True;
-        fteWindow: if CompareText(pItem.WndClass,sIFilters[n].WndClassName) = 0 then
-              nm := True;
-        fteProcess: if CompareText(pItem.FileName,sIFilters[n].FileName) = 0 then
-              nm := True;
-        fteCurrentMonitor: begin
-             Mon := MonList.MonitorFromWindow(mInterface.BarInterface.BarWnd);
-             MonRect := Mon.BoundsRect;
-             MonRect.Left := MonRect.Left + MonRectOffset;
-             MonRect.Top := MonRect.Top + MonRectOffset;
-             MonRect.Right := MonRect.Right - MonRectOffset;
-             MonRect.Bottom := MonRect.Bottom - MonRectOffset;
-             GetWindowRect(pItem.Handle,R);
-             if PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), MonRect)
-                or PointInRect(Point(R.Left, R.Top), MonRect)
-                or PointInRect(Point(R.Left, R.Bottom), MonRect)
-                or PointInRect(Point(R.Right, R.Top), MonRect)
-                or PointInRect(Point(R.Right, R.Bottom), MonRect) then
-               nm := True;
-           end;
-        fteCurrentVWM: begin
-             nm := (CurrentVWM = pItem.LastVWM);
-           end;
-        fteMinimised: begin
-             nm := IsIconic(pItem.Handle);
-           end;
+        fteSWCmd:
+          include := (TSWCmdEnum(pItem.Placement.showCmd) in sIFilters[n].SWCmds);
+        fteWindow:
+          include := (CompareText(pItem.WndClass,sIFilters[n].WndClassName) = 0);
+        fteProcess:
+          include := (CompareText(pItem.FileName,sIFilters[n].FileName) = 0);
+        fteCurrentMonitor:
+          include := IsOnCurrentMonitor(pItem);
+        fteCurrentVWM:
+          include := (CurrentVWM = pItem.LastVWM);
+        fteMinimised:
+          include := IsIconic(pItem.Handle);
       end;
-      if nm then break;
+      if include then break;
     end;
   end;
 
   // task is supposed to be included...
-  if nm then exit;
+  if include then Exit;
 
   if sEFilter then
   begin
     for n:=0 to sEFilters.Count - 1 do
     begin
       case sEFilters[n].FilterType of
-        fteSWCmd: if TSWCmdEnum(pItem.Placement.showCmd) in sEFilters[n].SWCmds then
-              result := False;
-        fteWindow: if CompareText(pItem.WndClass,sEFilters[n].WndClassName) = 0 then
-              result := False;
-        fteProcess: if CompareText(pItem.FileName,sEFilters[n].FileName) = 0 then
-              result := False;
-        fteCurrentMonitor: begin
-             Mon := MonList.MonitorFromWindow(mInterface.BarInterface.BarWnd);
-             MonRect := Mon.BoundsRect;
-             MonRect.Left := MonRect.Left + MonRectOffset;
-             MonRect.Top := MonRect.Top + MonRectOffset;
-             MonRect.Right := MonRect.Right - MonRectOffset;
-             MonRect.Bottom := MonRect.Bottom - MonRectOffset;             
-             GetWindowRect(pItem.Handle,R);
-             if PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), MonRect)
-                or PointInRect(Point(R.Left, R.Top), MonRect)
-                or PointInRect(Point(R.Left, R.Bottom), MonRect)
-                or PointInRect(Point(R.Right, R.Top), MonRect)
-                or PointInRect(Point(R.Right, R.Bottom), MonRect) then
-               result := false;
-           end;
-        fteCurrentVWM: begin
-             result := (CurrentVWM <> pItem.LastVWM)
-           end;
-        fteMinimised: begin
-             result := IsIconic(pItem.Handle);
-           end;
+        fteSWCmd:
+          Result := not (TSWCmdEnum(pItem.Placement.showCmd) in sEFilters[n].SWCmds);
+        fteWindow:
+          Result := not (CompareText(pItem.WndClass,sEFilters[n].WndClassName) = 0);
+        fteProcess:
+          Result := not (CompareText(pItem.FileName,sEFilters[n].FileName) = 0);
+        fteCurrentMonitor:
+          Result := not IsOnCurrentMonitor(pItem);
+        fteCurrentVWM:
+          Result := (CurrentVWM <> pItem.LastVWM);
+        fteMinimised:
+          Result := not IsIconic(pItem.Handle);
       end;
+      if not Result then Break;
     end;
   end;
+end;
+
+function TMainForm.IsOnCurrentMonitor(pItem : TTaskItem) : Boolean;
+const
+  MonRectOffset = 32;
+var
+  R : TRect;
+  Mon : TMonitorItem;
+  MonRect : TRect;
+begin
+  Result := False;
+
+  Mon := MonList.MonitorFromWindow(mInterface.BarInterface.BarWnd);
+
+  MonRect := Mon.BoundsRect;
+  MonRect.Left := MonRect.Left + MonRectOffset;
+  MonRect.Top := MonRect.Top + MonRectOffset;
+  MonRect.Right := MonRect.Right - MonRectOffset;
+  MonRect.Bottom := MonRect.Bottom - MonRectOffset;
+
+  if IsIconic(pItem.Handle) and (pItem.LastVWM = CurrentVWM) then
+  begin
+    // Minimized windows are always moved off screen so check that
+    // the we are in the right VWM and use its restored position.
+    R := pItem.Placement.rcNormalPosition;
+  end
+  else
+    GetWindowRect(pItem.Handle,R);
+
+  if PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), MonRect)
+    or PointInRect(Point(R.Left, R.Top), MonRect)
+    or PointInRect(Point(R.Left, R.Bottom), MonRect)
+    or PointInRect(Point(R.Right, R.Top), MonRect)
+    or PointInRect(Point(R.Right, R.Bottom), MonRect) then
+    Result := True;
 end;
 
 procedure TMainForm.FlashTask(pItem : TTaskItem; Index : integer);
