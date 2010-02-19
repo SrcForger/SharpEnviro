@@ -1,9 +1,9 @@
 object Form1: TForm1
   Left = 0
   Top = 0
-  Width = 434
-  Height = 320
   Caption = 'Form1'
+  ClientHeight = 284
+  ClientWidth = 418
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -38,6 +38,23 @@ object Form1: TForm1
     Height = 25
     Caption = 'BitBtn1'
     TabOrder = 2
+  end
+  object SharpeGaugeBox1: TSharpeGaugeBox
+    Left = 224
+    Top = 48
+    Width = 145
+    Height = 21
+    ParentBackground = False
+    TabOrder = 3
+    Min = 0
+    Max = 100
+    Value = 100
+    Description = 'Adjust to set the transparency'
+    PopPosition = ppBottom
+    PercentDisplay = True
+    Formatting = '%d'
+    OnChangeValue = SharpeGaugeBox1ChangeValue
+    BackgroundColor = clWindow
   end
   object XPManifest1: TXPManifest
     Left = 196

@@ -15,8 +15,10 @@ type
     XPColorMap1: TXPColorMap;
     ComboBox1: TComboBox;
     BitBtn1: TBitBtn;
+    SharpeGaugeBox1: TSharpeGaugeBox;
     procedure Edit1KeyPress(Sender: TObject; var Key: Char);
     procedure Button1Click(Sender: TObject);
+    procedure SharpeGaugeBox1ChangeValue(Sender: TObject; Value: Integer);
   private
     { Private declarations }
   public
@@ -62,6 +64,12 @@ end;
 procedure TForm1.Edit1KeyPress(Sender: TObject; var Key: Char);
 begin
   Key := #0;
+end;
+
+procedure TForm1.SharpeGaugeBox1ChangeValue(Sender: TObject; Value: Integer);
+begin
+  // This should only get called when the actually value gets changed.
+  MessageBox(Handle, 'Value changed', 'GaugeBoxChange', MB_OK);
 end;
 
 procedure TForm1.ChangedValue(Sender: TObject; Value: Integer);

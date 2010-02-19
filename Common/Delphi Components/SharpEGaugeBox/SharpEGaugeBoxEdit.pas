@@ -401,7 +401,9 @@ procedure TSharpeGaugeBox.UpdateValue;
 var
   s: string;
   iVal: Integer;
+  changed : Boolean;
 begin
+  changed := False;
   // Search for Prefix
   s := FValueEdit.Text;
 
@@ -416,26 +418,31 @@ begin
       if FPercentDisplay then
          iVal := round(iVal * FMax / 100); 
 
-      if iVal > FMax then
+      if (iVal > FMax) and (FValue <> FMax) then
       begin
         iVal := FMax;
         FValue := iVal;
         UpdateEditBox;
+        changed := True;
       end;
 
-      if iVal < FMin then
+      if (iVal < FMin) and (FValue <> FMin) then
       begin
         iVal := FMin;
         FValue := iVal;
         UpdateEditBox;
+        changed := True;
       end;
 
+      if (FValue <> iVal) then
+        changed := True;
+        
       FValue := iVal;
     end;
 
   SelectValueText;
 
-  if assigned(FOnChangeValue) then
+  if (changed) and (assigned(FOnChangeValue)) then
     FOnChangeValue(Self, iVal);
 end;
 
