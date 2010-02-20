@@ -53,8 +53,8 @@ type
     procedure FormShow(Sender: TObject);
     procedure cboModulesClick(Sender: TObject);
   private
+    FPluginHost : ISharpCenterHost;
     FModuleItem : TObject;
-    FPluginHost: ISharpCenterHost;
     { Private declarations }
   public
     { Public declarations }
@@ -148,13 +148,13 @@ var
   msg: TSharpE_DataStruct;
   cds: TCopyDataStruct;
 begin
-
   Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
 
-  case FPluginHost.EditMode of
+  case PluginHost.EditMode of
     sceAdd: begin
         wnd := FindWindow(nil, PChar('SharpBar_' + PluginHost.PluginId));
         if wnd <> 0 then begin
+          msg.Handle := frmListWnd.Handle;
           msg.Module := frmEditWnd.cboModules.Text + '.dll';
           msg.LParam := BC_ADD;
           if frmEditWnd.cboPosition.ItemIndex = 0 then
@@ -167,7 +167,7 @@ begin
             lpData := @msg;
           end;
         end;
-        sendmessage(wnd, WM_COPYDATA, WM_BARCOMMAND, Cardinal(@cds));
+        SendMessage(wnd, WM_COPYDATA, WM_BARCOMMAND, Cardinal(@cds));
       end;
   end;
 

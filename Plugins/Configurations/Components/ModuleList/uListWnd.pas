@@ -89,6 +89,9 @@ type
     lblRight: TLabel;
     Shape1: TShape;
     Shape2: TShape;
+
+    procedure WMSharpShellMessage(var Msg: TMessage); message WM_SHARPSHELLMESSAGE;
+
     procedure FormCreate(Sender: TObject);
     procedure lbModulesGetCellCursor(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var ACursor: TCursor);
@@ -144,7 +147,18 @@ uses uEditWnd;
 
 {$R *.dfm}
 
-{ TfrmConfigListWnd }
+{ TfrmListWnd }
+
+procedure TfrmListWnd.WMSharpShellMessage(var Msg: TMessage);
+begin
+  LockWindowUpdate(Self.Handle);
+  try
+    BuildModuleList;
+    FPluginHost.Refresh;
+  finally
+    LockWindowUpdate(0);
+  end;
+end;
 
 function PointInRect(P: TPoint; Rect: TRect): boolean;
 begin
