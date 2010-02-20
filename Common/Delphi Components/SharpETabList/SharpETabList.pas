@@ -359,6 +359,7 @@ begin
   FTabsMenu.Alignment := paRight;
   
   CreateScrollButtonComponents;
+  Screen.Cursors[crHandPoint] := LoadCursor(0, IDC_HAND);
 end;
 
 procedure TSharpETabList.Delete(ATabItem: TTabItem);

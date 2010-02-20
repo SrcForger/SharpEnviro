@@ -397,7 +397,7 @@ begin
 
   ItemHeight := 30;
   FItemOffset := Point(2, 2);
-  Screen.Cursors[crHandPoint] := LoadCursor(HInstance, 'SHARPE_LISTBOXEX_HANDPOINT');
+  Screen.Cursors[crHandPoint] := LoadCursor(0, IDC_HAND);
 end;
 
 procedure TSharpEListBoxEx.DeleteItem(AIndex: Integer);
