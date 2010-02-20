@@ -1046,6 +1046,7 @@ var
   lp : lparam;
   wp : wparam;
   hcount : integer;
+  vpos : uint;
 begin
   result := false;
   hcount := 0;
@@ -1110,23 +1111,32 @@ begin
           CloseVistaInfoTip;
         end;
 
+        vpos := ((gy shl $10) or (gx));
+
         lp := MakeLParam(msg,tempItem.uID);
         case msg of
           WM_MOUSEMOVE: begin
-                          // Tooltip check
-                          if not ((tempItem.Flags and NIF_SHOWTIP) = NIF_SHOWTIP) then
-                          begin
-                            FV4Popup := tempItem;
-                            StartTipTimer(x,y,gx,gy);
-                            if FTipWnd <> 0 then      
-                              ToolTipApi.DisableToolTip(FTipWnd);
-                          end;
-                        end;
+            // Tooltip check
+            if not ((tempItem.Flags and NIF_SHOWTIP) = NIF_SHOWTIP) then
+            begin
+              FV4Popup := tempItem;
+              StartTipTimer(x,y,gx,gy);
+              if FTipWnd <> 0 then
+                ToolTipApi.DisableToolTip(FTipWnd);
+            end;
+          end;
+          WM_LBUTTONDOWN: begin
+            SendNotifyMessage(tempItem.Wnd, $460, vpos, $640201);
+          end;
+          WM_LBUTTONUP: begin
+            SendNotifyMessage(tempItem.Wnd, $460, vpos, $640202);
+            SendNotifyMessage(tempItem.Wnd, $460, vpos, $640400);
+          end;
           WM_RBUTTONUP: begin
-                          lp := MakeLParam(WM_RBUTTONUP,tempItem.uID);
-                          SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,lp);
-                          lp := MakeLParam(WM_CONTEXTMENU,tempItem.uID);
-                        end;
+            lp := MakeLParam(WM_RBUTTONUP,tempItem.uID);
+            SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,lp);
+            lp := MakeLParam(WM_CONTEXTMENU,tempItem.uID);
+          end;
         end;
         SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,lp);
       end else
