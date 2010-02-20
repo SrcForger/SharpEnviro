@@ -29,6 +29,7 @@ interface
 
 uses 
   Windows,
+  Messages,
   SysUtils,
   Forms,
   Classes,
@@ -163,7 +164,7 @@ type
                      procedure Unload(ID : integer); overload;
                      procedure Delete(ID : integer);
                      procedure Clone(ID : integer);
-                     procedure CreateModule(MFID : integer; Position : integer);
+                     procedure CreateModule(MFID : integer; Position : integer; wnd : HWND = 0);
                      function LoadModule(ID : integer; Module : String; Position,Index : integer) : TModule; overload;
                      function LoadModule(ID : integer; FromBar: integer; Position,Index : integer) : TModule; overload;
                      procedure LoadFromDirectory(pDirectory : String);
@@ -633,16 +634,20 @@ begin
   result := strtoint(s);
 end;
 
-procedure TModuleManager.CreateModule(MFID : integer; Position : integer);
+procedure TModuleManager.CreateModule(MFID : integer; Position : integer; wnd : HWND);
 var
   tempModuleFile : TModuleFile;
 begin
   if MFID > FModuleFiles.Count - 1 then exit;
+
+  if InSendMessage then
+    ReplyMessage(0);
+
   if GetFreeBarSpace < 50 then
-     if MessageBox(Application.Handle,
+     if MessageBox(wnd,
                    'There may not be space on your bar for a new module.' + #10#13 +
                    'Adding another module might cause modules to overlap each other.' + #10#13 +
-                   'Do you want to continue?','Confirm: New Module',MB_YESNO or MB_ICONWARNING) = IDNO then exit;
+                   'Do you want to continue?','Confirm: New Module',MB_YESNO or MB_ICONWARNING or MB_APPLMODAL) = IDNO then exit;
   tempModuleFile := TModuleFile(FModuleFiles.Items[MFID]);
   LoadModule(GenerateModuleID,ExtractFileName(tempModuleFile.FFileName),Position,-1);
   ReCalculateModuleSize;

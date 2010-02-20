@@ -673,6 +673,7 @@ var
   msgdata: TMsgData;
   mIndex: integer;
   sedata: TSharpE_DataStruct;
+  wnd : HWND;
 begin
   ModuleManager.DebugOutput('WM_CopyData', 2, 1);
 
@@ -681,9 +682,17 @@ begin
     if sedata.LParam = BC_ADD then begin
       mIndex := ModuleManager.GetModuleFileIndexByFileName(sedata.Module);
       if mIndex <> -1 then begin
-        ModuleManager.CreateModule(mIndex, sedata.RParam);
+        wnd := sedata.Handle;
+        if wnd = 0 then
+          wnd := Application.Handle;
+
+        ModuleManager.CreateModule(mIndex, sedata.RParam, wnd);
         SaveBarSettings;
         msg.Result := BCR_SUCCESS;
+
+        // Send refresh message to the calling window
+        if wnd <> Application.Handle then
+          SendMessage(wnd, WM_SHARPSHELLMESSAGE, 0, 0);
       end;
     end;
   end
