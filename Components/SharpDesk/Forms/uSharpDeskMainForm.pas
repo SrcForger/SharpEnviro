@@ -688,7 +688,6 @@ begin
     Key := 0;
 end;
 
-
 // ######################################
 
 
@@ -713,6 +712,8 @@ var
 begin
   if not SharpDesk.Enabled then exit;
   SharpDesk.MouseDown:=False;
+
+  ForceForegroundWindow(Handle);
 
   if not GetCursorPosSecure(CPos) then
     exit;
@@ -1143,6 +1144,7 @@ var
    DesktopObject : TDesktopObject;
 begin
   if not SharpDesk.Enabled then exit;
+
   DesktopObject := TDesktopObject(SharpDesk.GetDesktopObjectByID(SharpDesk.LastLayer));
   if DesktopObject <> nil then
   begin
