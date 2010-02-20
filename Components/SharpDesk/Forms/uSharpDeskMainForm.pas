@@ -713,8 +713,6 @@ begin
   if not SharpDesk.Enabled then exit;
   SharpDesk.MouseDown:=False;
 
-  ForceForegroundWindow(Handle);
-
   if not GetCursorPosSecure(CPos) then
     exit;
 
@@ -1198,7 +1196,7 @@ begin
   with Params do
   begin
     Params.WinClassName := 'TSharpDeskMainForm';
-    ExStyle := WS_EX_TOOLWINDOW or WS_EX_NOACTIVATE;
+    ExStyle := WS_EX_TOOLWINDOW{ or WS_EX_NOACTIVATE};
     Style := WS_POPUP or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
   end;
 end;
