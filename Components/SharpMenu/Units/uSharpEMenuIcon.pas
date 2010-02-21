@@ -30,7 +30,7 @@ interface
 uses SysUtils,Classes,GR32,GR32_Resamplers;
 
 type
-  TIconType = (itShellIcon,itCustomIcon,itGeneric);
+  TIconType = (itDefaultIcon,itShellIcon,itCustomIcon,itGeneric);
 
   TSharpEMenuIcon = class
   private
@@ -47,8 +47,8 @@ type
     property IconShellHandle : THandle read FIconHandle;
     property Count : integer read FCount write FCount;
     property Cached : boolean read FCached write FCached;
-    constructor Create(pIconSource,pIconData : String; isGeneric: Boolean = False); reintroduce; overload;
-    constructor Create(pIconSource : String; pBmp : TBitmap32); overload;
+    constructor Create(pIconSource,pIconData : String; pIconType : TIconType); reintroduce; overload;
+    constructor Create(pIconSource : String; pBmp : TBitmap32; pIconType : TIconType); overload;
     constructor Create(pIconSource : String; pIconType : TIconType; Stream : TStream); overload;
     destructor Destroy; override;
   end;
@@ -70,7 +70,7 @@ begin
   FIcon.LoadFromStream(Stream);
 end;
 
-constructor TSharpEMenuIcon.Create(pIconSource : String; pBmp : TBitmap32);
+constructor TSharpEMenuIcon.Create(pIconSource : String; pBmp : TBitmap32; pIconType : TIconType);
 begin
   inherited Create;
   FCached := False;
@@ -79,7 +79,7 @@ begin
   FIcon.SetSize(16,16);
   FIcon.Clear(Color32(0,0,0,0));
   FIconHandle := 0;
-  FIconType := itCustomIcon;
+  FIconType := pIconType;
   FIconSource := pIconSource;
   FCount := 1;
 
@@ -92,7 +92,7 @@ begin
   end;
 end;
 
-constructor TSharpEMenuIcon.Create(pIconSource,pIconData : String; isGeneric: Boolean = False);
+constructor TSharpEMenuIcon.Create(pIconSource,pIconData : String; pIconType : TIconType);
 begin
   inherited Create;
   FCached := False;
@@ -104,20 +104,18 @@ begin
   TLinearResampler.Create(FIcon);
   FCount := 1;
 
-  if isGeneric then
-  begin
-    FIconSource := pIconData;
-    FIconType := itGeneric;
-  end else
-  if CompareText(pIconSource,'shell:icon') = 0 then
-  begin
-    FIconSource := pIconData;
-    FIconType := itShellIcon;
-  end else
-  begin
+  if (pIconType = itDefaultIcon) and (CompareText(pIconSource,'shell:icon') = 0) then
+    FIconType := itShellIcon
+  else if (pIconType = itDefaultIcon) then
+    FIconType := itCustomIcon
+  else
+    FIconType := pIconType;
+
+  if (pIconType = itGeneric) or (FIconType = itShellIcon) then
+    FIconSource := pIconData
+  else
     FIconSource := pIconSource;
-    FIconType := itCustomIcon;
-  end;
+
   SharpIconUtils.IconStringToIcon(pIconSource,pIconData,FIcon,16);
 end;
 

@@ -31,6 +31,7 @@ uses SysUtils, Windows, Forms, Contnrs, Menus, Controls, GR32,Classes,Dialogs,
      SharpGraphicsUtils,
      ISharpESkinComponents,
      uSharpEMenuPopups,
+     uSharpEMenuIcon,
      uSharpEMenuIcons,
      uSharpEMenuItem,
      uSharpEMenuActions,
@@ -336,7 +337,7 @@ var
 begin
   item := TSharpEMenuItem.Create(self,pType);
   if FSettings.UseIcons then
-    item.Icon := SharpEMenuIcons.AddIcon(pIconName,pIcon)
+    item.Icon := SharpEMenuIcons.AddIcon(pIconName,pIcon,itCustomIcon)
   else item.Icon := nil;
   item.Caption := pCaption;
   result := item;
@@ -354,7 +355,7 @@ begin
     pTarget := FMenuConsts.ParseString(pTarget);
   item := TSharpEMenuItem.Create(self,mtLink);
   if FSettings.UseIcons then
-    item.Icon := SharpEMenuIcons.AddIcon(pIconName,pIcon)
+    item.Icon := SharpEMenuIcons.AddIcon(pIconName,pIcon,itDefaultIcon)
   else item.Icon := nil;
   item.Caption := pCaption;
   item.PropList.Add('Action',pTarget);
@@ -381,7 +382,7 @@ begin
   item.Caption := s;
   item.OnClick := FMenuActions.OnDesktopObjectClick;
   if FSettings.UseIcons then
-    item.Icon := SharpEMenuIcons.AddIcon('icon.file.config','icon.file.config')
+    item.Icon := SharpEMenuIcons.AddIcon('icon.file.config','icon.file.config',itCustomIcon)
   else item.Icon := nil;
   item.isVisible := True;
   item.isDynamic := pDynamic;
@@ -425,7 +426,7 @@ begin
       if CompareText(pIcon,'shell:icon') = 0 then
         pIcon := FMenuConsts.GetGenericIcon(eTarget);
     end;
-    item.Icon := SharpEMenuIcons.AddIcon(pIcon,eTarget)
+    item.Icon := SharpEMenuIcons.AddIcon(pIcon,eTarget,itDefaultIcon)
   end else item.Icon := nil;
   item.Caption := pCaption;
   item.PropList.Add('Action',pTarget);
@@ -459,7 +460,7 @@ begin
       if CompareText(pIcon,'shell:icon') = 0 then
         pIcon := FMenuConsts.GetGenericIcon(eTarget);
     end;
-    item.Icon := SharpEMenuIcons.AddIcon(pIcon,eTarget)
+    item.Icon := SharpEMenuIcons.AddIcon(pIcon,eTarget,itDefaultIcon)
   end else item.Icon := nil;
   item.Caption := pCaption;
   item.isDynamic := pDynamic;
@@ -771,7 +772,7 @@ begin
       begin
         if FSettings.UseGenericIcons then
           submenuitem.Icon := SharpEMenuIcons.FindIcon('generic.folder','generic.folder')
-        else submenuitem.Icon := SharpEMenuIcons.AddIcon('icon.folder','icon.folder');
+        else submenuitem.Icon := SharpEMenuIcons.AddIcon('icon.folder','icon.folder',itCustomIcon);
       end else submenuitem.Icon := nil;
       submenuitem.Caption := 'Next Page...';
       submenuitem.isDynamic := True;

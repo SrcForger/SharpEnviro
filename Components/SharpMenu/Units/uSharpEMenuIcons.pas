@@ -37,8 +37,8 @@ type
     property Items : TObjectList read FItems;
     constructor Create; reintroduce;
     destructor Destroy; override;
-    function AddIcon(pIconSource,pIconData : String) : TSharpEMenuIcon; overload;
-    function AddIcon(pIconSource : String; pBmp : TBitmap32) : TSharpEMenuIcon; overload;
+    function AddIcon(pIconSource,pIconData : String; pIconType : TIconType) : TSharpEMenuIcon; overload;
+    function AddIcon(pIconSource : String; pBmp : TBitmap32; pIconType : TIconType) : TSharpEMenuIcon; overload;
     function FindIcon(pIconSource,pIconData : String) : TSharpEMenuIcon;
     function FindGenericIcon(pIconData : String) : boolean;
     procedure RemoveIcon(pIconSource : String); overload;
@@ -126,27 +126,27 @@ begin
   end;
 end;
 
-function TSharpEMenuIcons.AddIcon(pIconSource : String; pBmp : TBitmap32) : TSharpEMenuIcon;
+function TSharpEMenuIcons.AddIcon(pIconSource : String; pBmp : TBitmap32; pIconType : TIconType) : TSharpEMenuIcon;
 var
   Item : TSharpEMenuIcon;
 begin
   Item := FindIcon(pIconSource,pIconSource);
   if Item = nil then
   begin
-    Item := TSharpEMenuIcon.Create(pIconSource,pBmp);
+    Item := TSharpEMenuIcon.Create(pIconSource,pBmp,pIconType);
     FItems.Add(Item);
   end else Item.Count := Item.Count + 1;
   result := Item;
 end;
 
-function TSharpEMenuIcons.AddIcon(pIconSource,pIconData : String) : TSharpEMenuIcon;
+function TSharpEMenuIcons.AddIcon(pIconSource,pIconData : String; pIconType : TIconType) : TSharpEMenuIcon;
 var
   Item : TSharpEMenuIcon;
 begin
   Item := FindIcon(pIconSource,pIconData);
   if Item = nil then
   begin
-    Item := TSharpEMenuIcon.Create(pIconSource,pIconData,not (length(trim(pIconData)) = 0));
+    Item := TSharpEMenuIcon.Create(pIconSource,pIconData,pIconType);
     FItems.Add(Item);
   end else Item.Count := Item.Count + 1;
   result := Item;
@@ -221,7 +221,7 @@ begin
       filetag := sr.Name;
       setlength(filetag,length(filetag) - length(ExtractFileExt(filetag)));
       filetag := 'generic.' + filetag;
-      AddIcon(filename,filetag);
+      AddIcon(filename,filetag,itGeneric);
     end;
   until (FindNext(sr) <> 0);
   FindClose(sr);
@@ -236,7 +236,6 @@ var
   IconSource : String;
   IconType : TIconType;
 begin
-  exit;
   Dir := SharpApi.GetSharpeDirectory + 'Cache';
   Fn := Dir + '\' + GetLocalUserName + pFileName;
   if not FileExists(Fn) then exit;
@@ -265,20 +264,24 @@ var
   t : integer;
   Item : TSharpEMenuIcon;
 begin
-  exit;
   Dir := SharpApi.GetSharpeDirectory + 'Cache';
   If not DirectoryExists(Dir) then ForceDirectories(Dir);
 
   Fn := Dir + '\' + GetLocalUserName + pFileName;
-  if not FileExists(Fn) then Stream := TFileStream.Create(Fn,fmCreate)
-     else Stream := TFileStream.Create(Fn,fmOpenReadWrite);
+  if not FileExists(Fn) then
+    Stream := TFileStream.Create(Fn,fmCreate)
+  else
+    Stream := TFileStream.Create(Fn,fmOpenReadWrite);
+
   Stream.Seek(0,soFromEnd);
   for n := 0 to FItems.Count - 1 do
   begin
     Item := TSharpEMenuIcon(FItems.Items[n]);
     if (not Item.Cached) and (length(Item.IconSource) > 0) and
        (Item.Icon.Width > 0) and (Item.Icon.Height > 0)
-       and (not GetCurrentTheme.Icons.IsIconInIconSet(Item.IconSource)) then
+       and (not GetCurrentTheme.Icons.IsIconInIconSet(Item.IconSource)
+       and (Item.IconType <> itGeneric))
+    then
     begin
       StringSaveToStream(Item.IconSource,Stream);
       case Item.IconType of
