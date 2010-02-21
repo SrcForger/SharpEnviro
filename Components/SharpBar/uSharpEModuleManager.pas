@@ -1566,7 +1566,7 @@ constructor TModule.Create(pOwnerForm  : TWinControl; pModuleFile : TModuleFile;
 begin
   Inherited Create;
 
-  Screen.Cursor[crHandPoint] := LoadCursor(0, IDC_HAND);
+  Screen.Cursors[crHandPoint] := LoadCursor(0, IDC_HAND);
 
   FInterface          := nil;
   FModuleInterface    := nil;
