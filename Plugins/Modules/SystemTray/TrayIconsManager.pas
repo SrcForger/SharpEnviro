@@ -1175,6 +1175,17 @@ begin
         SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,lp)
       end else
       begin
+        // Make sure no other tray item is displaying a tooltip
+        for i := 0 to FItems.Count - 1 do
+        begin
+          if (TTrayItem(FItems.Items[i+imod]).IsHovering) then
+          begin
+            StopTipTimer;
+            CloseVistaInfoTip;
+            TTrayItem(FItems.Items[i+imod]).IsHovering := False;
+          end;
+        end;
+
         // NotifyIcon Version < 4
         SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,msg);
       end;
