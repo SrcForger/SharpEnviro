@@ -160,7 +160,7 @@ type
                    procedure SetBackgroundAlpha(Value : integer);
                    procedure SetBlendAlpha(Value : integer);
                    procedure SetIconAlpha(Value : integer);
-                   procedure PositionTrayWindow(x,y : integer; parent : TForm);
+                   procedure PositionTrayWindow(parent, trayParent : HWND);
                    procedure InitToolTips(wnd : TObject);
                    procedure DeleteToolTips;
                    function GetFreeTipIndex : integer;
@@ -1015,25 +1015,32 @@ begin
   end;
 end;
 
-procedure TTrayClient.PositionTrayWindow(x,y : integer; parent : TForm);
+procedure TTrayClient.PositionTrayWindow(parent, trayParent : HWND);
 var
   wnd : hwnd;
   wnd2 : hwnd;
-  p : TPoint;
+  rc, rct : TRect;
 begin
-  p := parent.ClientToScreen(Point(x,y));
+  GetWindowRect(parent, rc);
+  GetWindowRect(trayParent, rct);
+
+  rc.Right := rc.Right - rc.Left;
+  rc.Bottom := rc.Bottom - rc.Top;
+
+  rct.Right := rct.Right - rct.Left;
+  rct.Bottom := rct.Bottom - rct.Top;
 
   wnd := FindWindow('Shell_TrayWnd',nil);
   if wnd <> 0 then
   begin
-    SetWindowPos(wnd,parent.Handle,p.x,p.y,0,0,SWP_NOZORDER or SWP_NOACTIVATE or SWP_HIDEWINDOW);
+    SetWindowPos(wnd,0,rc.Left,rc.Top,rc.Right,rc.Bottom,SWP_NOZORDER or SWP_NOACTIVATE or SWP_HIDEWINDOW);
     if IsWindowVisible(wnd) then
        ShowWindow(wnd,SW_HIDE);
 
     wnd2 := FindWindowEx(wnd,0,'TrayNotifyWnd',nil);
     if wnd2 <> 0 then
     begin
-      SetWindowPos(wnd2,wnd,0,0,parent.Width,parent.Height,SWP_NOZORDER or SWP_NOACTIVATE or SWP_HIDEWINDOW);
+      SetWindowPos(wnd2,0,rct.Left,rct.Top,rct.Right,rct.Bottom,SWP_NOZORDER or SWP_NOACTIVATE or SWP_HIDEWINDOW);
       if IsWindowVisible(wnd2) then
          ShowWindow(wnd2,SW_HIDE);
     end;
@@ -1096,7 +1103,7 @@ begin
 
       // reposition the tray window (some stupid shell services are using
       // it for positioning)
-      PositionTrayWindow(x,0,parent);
+      PositionTrayWindow(parent.ParentWindow,parent.Handle);
 
       FLastTipItem := tempItem;
       if (tempItem.BInfoFlags >= 4) then
@@ -1114,6 +1121,7 @@ begin
         end;
 
         lp := MakeLParam(msg,tempItem.uID);
+
         case msg of
           WM_MOUSEMOVE: begin
             // Tooltip check
@@ -1128,7 +1136,6 @@ begin
             if not tempItem.IsHovering then
             begin
               SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,MakeLParam($406,tempItem.uID));
-
               TTrayItem(FItems.Items[n+imod]).IsHovering := True;
             end;
           end;
@@ -1151,14 +1158,14 @@ begin
         // NotifyIcon Version < 4
         SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,msg);
       end;
-    end else
-      if TTrayItem(FItems.Items[n+imod]).IsHovering then
-      begin
-        tempItem := TTrayItem(FItems.Items[n+imod]);
+    end else if TTrayItem(FItems.Items[n+imod]).IsHovering then
+    begin
+      TTrayItem(FItems.Items[n+imod]).IsHovering := False;
+      tempItem := TTrayItem(FItems.Items[n+imod]);
 
-        if tempItem <> nil then
-          SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,MakeWParam(gx,gy),MakeLParam($407,tempItem.uID));
-      end;
+      if tempItem <> nil then
+        SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,MakeWParam(gx,gy),MakeLParam($407,tempItem.uID));
+    end;
   end;
 end;
 {$ENDREGION}

@@ -206,7 +206,7 @@ begin
     Flastrepaint := -1;
     FUpdateTimer.OnTimer(FUpdateTimer);
 
-    FTrayClient.PositionTrayWindow(0,0,Form);
+    FTrayClient.PositionTrayWindow(Form.ParentWindow,Form.Handle);
   end;
 end;
 
@@ -292,7 +292,7 @@ end;
 
 function CreateModule(ID,BarID : integer; BarWnd : hwnd) : IInterface;
 begin
-  result := TInterfacedSharpBarModule.Create(ID,BarID,BarWnd);
+  Result := TInterfacedSharpBarModule.Create(ID,BarID,BarWnd);
 end;
 
 Exports
