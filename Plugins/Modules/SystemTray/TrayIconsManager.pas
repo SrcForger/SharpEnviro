@@ -73,6 +73,7 @@ type
                    FTipIndex : integer;
                    FHiddenByClient : boolean;
                    FIsSpecial : boolean;
+                   FIsHovering : boolean;
                  public
                    FTip : ArrayWideChar128;
                    FInfo : ArrayWideChar256;
@@ -93,6 +94,7 @@ type
                    property TipIndex : integer read FTipIndex write FTipIndex;
                    property HiddenByClient : boolean read FHiddenByClient write FHiddenByClient;
                    property IsSpecial : boolean read FIsSpecial write FIsSpecial;
+                   property IsHovering : boolean read FIsHovering write FIsHovering;
                  end;
 
   TTrayClient = class
@@ -311,6 +313,7 @@ begin
   FBitmap := TBitmap32.Create;
   FBitmap.SetSize(16,16);
   FHiddenByClient := False;
+  FIsHovering := False;
   TLinearResampler.Create(FBitmap);
   AssignFromNIDv6(NIDv6);
   Inherited Create;
@@ -1046,7 +1049,6 @@ var
   lp : lparam;
   wp : wparam;
   hcount : integer;
-  vpos : uint;
 begin
   result := false;
   hcount := 0;
@@ -1111,8 +1113,6 @@ begin
           CloseVistaInfoTip;
         end;
 
-        vpos := ((gy shl $10) or (gx));
-
         lp := MakeLParam(msg,tempItem.uID);
         case msg of
           WM_MOUSEMOVE: begin
@@ -1124,13 +1124,16 @@ begin
               if FTipWnd <> 0 then
                 ToolTipApi.DisableToolTip(FTipWnd);
             end;
-          end;
-          WM_LBUTTONDOWN: begin
-            SendNotifyMessage(tempItem.Wnd, $460, vpos, $640201);
+
+            if not tempItem.IsHovering then
+            begin
+              SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,MakeLParam($406,tempItem.uID));
+
+              TTrayItem(FItems.Items[n+imod]).IsHovering := True;
+            end;
           end;
           WM_LBUTTONUP: begin
-            SendNotifyMessage(tempItem.Wnd, $460, vpos, $640202);
-            SendNotifyMessage(tempItem.Wnd, $460, vpos, $640400);
+            SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,MakeLParam($400,tempItem.uID));
           end;
           WM_RBUTTONUP: begin
             lp := MakeLParam(WM_RBUTTONUP,tempItem.uID);
@@ -1138,13 +1141,24 @@ begin
             lp := MakeLParam(WM_CONTEXTMENU,tempItem.uID);
           end;
         end;
-        SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,lp);
+
+        if tempItem.BInfoFlags = 4 then
+          SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,lp)
+        else
+          SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,1,msg);
       end else
       begin
         // NotifyIcon Version < 4
         SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,msg);
       end;
-    end;
+    end else
+      if TTrayItem(FItems.Items[n+imod]).IsHovering then
+      begin
+        tempItem := TTrayItem(FItems.Items[n+imod]);
+
+        if tempItem <> nil then
+          SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,MakeWParam(gx,gy),MakeLParam($407,tempItem.uID));
+      end;
   end;
 end;
 {$ENDREGION}
