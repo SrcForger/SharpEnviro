@@ -1049,7 +1049,7 @@ end;
 
 function TTrayClient.PerformIconAction(x,y,gx,gy,imod : integer; msg : uint; parent : TForm) : boolean;
 var
-  n : integer;
+  n, i : integer;
   tempItem : TTrayItem;
   PID: DWORD;
   ix,iy : DWORD;
@@ -1063,6 +1063,15 @@ begin
   begin
     if (n + imod < 0 ) or (n + imod > FItems.Count - 1) then
       exit;
+
+    if ((msg = WM_MOUSELEAVE) and (TTrayItem(FItems.Items[n+imod]).IsHovering)) then
+    begin
+      StopTipTimer;
+      CloseVistaInfoTip;
+      TTrayItem(FItems.Items[n+imod]).IsHovering := False;
+
+      continue;
+    end;
 
     if TTrayItem(FItems.Items[n+imod]).HiddenByClient then
       hcount := hcount + 1
@@ -1082,7 +1091,10 @@ begin
 
       // Check if there was a tray icon which displayed a new Vista tooltip
       if (TempItem <> FV4Popup) and (FV4Popup <> nil) then
+      begin
           CloseVistaInfoTip;
+          TTrayItem(FItems.Items[n+imod]).IsHovering := False;
+      end;
 
       if (not iswindow(tempItem.Wnd)) and (not tempItem.IsSpecial) then
       begin
@@ -1114,28 +1126,39 @@ begin
         wp := MakeWParam(ix,iy);
 
         // Stop the tip timer on any other message
-        if (msg <> WM_MOUSEMOVE) then
+        if ((msg <> WM_MOUSEMOVE) and (TTrayItem(FItems.Items[n+imod]).IsHovering)) then
         begin
           StopTipTimer;
           CloseVistaInfoTip;
+          TTrayItem(FItems.Items[n+imod]).IsHovering := False;
         end;
 
         lp := MakeLParam(msg,tempItem.uID);
 
         case msg of
           WM_MOUSEMOVE: begin
-            // Tooltip check
-            if not ((tempItem.Flags and NIF_SHOWTIP) = NIF_SHOWTIP) then
+            if (not tempItem.IsHovering) then
             begin
-              FV4Popup := tempItem;
-              StartTipTimer(x,y,gx,gy);
-              if FTipWnd <> 0 then
-                ToolTipApi.DisableToolTip(FTipWnd);
-            end;
+              // Make sure no other tray item is displaying a tooltip
+              for i := 0 to FItems.Count - 1 do
+              begin
+                if (TTrayItem(FItems.Items[i+imod]).IsHovering) then
+                begin
+                  StopTipTimer;
+                  CloseVistaInfoTip;
+                  TTrayItem(FItems.Items[i+imod]).IsHovering := False;
+                end;
+              end;
 
-            if not tempItem.IsHovering then
-            begin
-              SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,MakeLParam($406,tempItem.uID));
+              // Tooltip check
+              if not ((tempItem.Flags and NIF_SHOWTIP) = NIF_SHOWTIP) then
+              begin
+                FV4Popup := tempItem;
+                StartTipTimer(x,y,gx,gy);
+                if FTipWnd <> 0 then
+                  ToolTipApi.DisableToolTip(FTipWnd);
+              end;
+
               TTrayItem(FItems.Items[n+imod]).IsHovering := True;
             end;
           end;
@@ -1149,22 +1172,12 @@ begin
           end;
         end;
 
-        if tempItem.BInfoFlags = 4 then
-          SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,lp)
-        else
-          SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,1,msg);
+        SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,lp)
       end else
       begin
         // NotifyIcon Version < 4
         SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,msg);
       end;
-    end else if TTrayItem(FItems.Items[n+imod]).IsHovering then
-    begin
-      TTrayItem(FItems.Items[n+imod]).IsHovering := False;
-      tempItem := TTrayItem(FItems.Items[n+imod]);
-
-      if tempItem <> nil then
-        SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,MakeWParam(gx,gy),MakeLParam($407,tempItem.uID));
     end;
   end;
 end;

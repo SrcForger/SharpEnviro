@@ -340,8 +340,9 @@ end;
 
 procedure TMainForm.CMMOUSELEAVE(var msg : TMessage);
 begin
-  FTrayClient.StopTipTimer;
-  FTrayClient.CloseVistaInfoTip;
+  {FTrayClient.StopTipTimer;
+  FTrayClient.CloseVistaInfoTip;  }
+  FTrayClient.PerformIconAction(0,0,0,0,0,WM_MOUSELEAVE,self);
 end;
 
 procedure TMainForm.WMNotify(var msg : TWMNotify);
