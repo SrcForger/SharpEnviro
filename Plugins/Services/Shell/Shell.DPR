@@ -350,7 +350,7 @@ begin
     end;
     WM_STYLECHANGING: begin
       sstruct := PStyleStruct(lParam);
-      if (sstruct.styleNew and WS_VISIBLE) = WS_VISIBLE then
+      if ((wParam = GWL_STYLE) and ((sstruct.styleNew and WS_VISIBLE) = WS_VISIBLE)) then
       begin
         sstruct.styleNew := sstruct.styleNew and not WS_VISIBLE;
         result := 0;
@@ -620,13 +620,13 @@ begin
   if Windows.RegisterClass(ShellTrayWndClass) <> 0 then
   begin
     // Shell_TrayWnd
-    ShellTrayWnd := CreateWindow(ShellTrayWndClass.lpszClassName, 'Shell_TrayWnd', 0, 0, 0, 0, 0, 0, 0, hInstance, nil);
+    ShellTrayWnd := CreateWindowEx(WS_EX_TOOLWINDOW, ShellTrayWndClass.lpszClassName, 'Shell_TrayWnd', WS_POPUP or WS_CLIPCHILDREN, 0, 0, 0, 0, 0, 0, hInstance, nil);
     if ShellTrayWnd <> 0 then
     begin
       // TrayNotifyWnd
       if Windows.RegisterClass(TrayNotifyWndClass) <> 0 then
       begin
-        TrayNotifyWnd := CreateWindow(TrayNotifyWndClass.lpszClassName, 'TrayNotifyWnd', WS_CHILDWINDOW, 0, 0, 0, 0, ShellTrayWnd, 0, hInstance, nil);
+        TrayNotifyWnd := CreateWindow(TrayNotifyWndClass.lpszClassName, 'TrayNotifyWnd', WS_CHILDWINDOW or WS_CLIPSIBLINGS or WS_CLIPCHILDREN, 0, 0, 0, 0, ShellTrayWnd, 0, hInstance, nil);
         if TrayNotifyWnd = 0 then
         begin
           SendDebugMessageEx('Shell','Failed to create "TrayNotifyWnd" window',0,0);
