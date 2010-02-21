@@ -342,11 +342,11 @@ object frmHome: TfrmHome
         Margins.Bottom = 4
         Align = alTop
         Caption = 
-          'The following wonderfull people helped make this release, and ma' +
-          'ny others possible... Please email us your love by clicking on a' +
-          'ny member below.'
+          'The following wonderful people helped make this release, and man' +
+          'y others possible... Please email us your love by clicking on an' +
+          'y member below.'
         WordWrap = True
-        ExplicitWidth = 491
+        ExplicitWidth = 489
       end
       object lbUsers: TSharpEListBoxEx
         AlignWithMargins = True
@@ -750,7 +750,6 @@ object frmHome: TfrmHome
         AutosizeGrid = True
         Borderstyle = bsNone
         Align = alTop
-        ExplicitTop = 96
       end
     end
   end
