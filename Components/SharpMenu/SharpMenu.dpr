@@ -242,7 +242,8 @@ begin
   DebugTime('ForceForegroundWindow');
   ForceForeGroundWindow(wnd.handle);
 
-  loadCacheThread.WaitFor;
+  if not loadCacheThread.Suspended then
+    loadCacheThread.WaitFor;
   loadCacheThread.Free;
 
   Application.Run;
