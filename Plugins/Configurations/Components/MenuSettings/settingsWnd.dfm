@@ -28,32 +28,15 @@ object frmSettings: TfrmSettings
     Margins.Bottom = 10
     Title = 'Menu Icons'
     Description = 
-      'Define whether to display menu icons. Disabling will improve men' +
-      'u performance.'
+      'Define whether to display menu icons. Disabling icons or enablin' +
+      'g caching will improve menu performance.'
     TitleColor = clWindowText
     DescriptionColor = clGrayText
     Align = alTop
   end
-  object chkUseIcons: TJvXPCheckbox
-    AlignWithMargins = True
-    Left = 5
-    Top = 47
-    Width = 590
-    Height = 17
-    Margins.Left = 5
-    Margins.Top = 0
-    Margins.Right = 5
-    Margins.Bottom = 0
-    Caption = 'Enable menu icons'
-    TabOrder = 0
-    Checked = True
-    State = cbChecked
-    Align = alTop
-    OnClick = chkUseIconsClick
-  end
   object pnlGenericIcons: TPanel
     Left = 0
-    Top = 64
+    Top = 65
     Width = 600
     Height = 74
     Align = alTop
@@ -61,7 +44,8 @@ object frmSettings: TfrmSettings
     BevelOuter = bvNone
     Color = clWindow
     ParentBackground = False
-    TabOrder = 1
+    TabOrder = 0
+    ExplicitTop = 64
     object schGenericIcons: TSharpECenterHeader
       AlignWithMargins = True
       Left = 5
@@ -91,7 +75,7 @@ object frmSettings: TfrmSettings
       Margins.Right = 5
       Margins.Bottom = 0
       Caption = 'Enable generic icons'
-      TabOrder = 1
+      TabOrder = 0
       Align = alTop
       OnClick = chkUseIconsClick
     end
@@ -99,7 +83,7 @@ object frmSettings: TfrmSettings
   object SharpECenterHeader4: TSharpECenterHeader
     AlignWithMargins = True
     Left = 5
-    Top = 148
+    Top = 149
     Width = 590
     Height = 37
     Margins.Left = 5
@@ -113,51 +97,56 @@ object frmSettings: TfrmSettings
     TitleColor = clWindowText
     DescriptionColor = clGrayText
     Align = alTop
+    ExplicitTop = 148
   end
-  object chkMenuWrapping: TJvXPCheckbox
-    AlignWithMargins = True
-    Left = 5
-    Top = 195
-    Width = 590
-    Height = 17
-    Margins.Left = 5
-    Margins.Top = 0
-    Margins.Right = 5
-    Margins.Bottom = 0
-    Caption = 'Enable menu wrapping'
-    TabOrder = 2
-    Checked = True
-    State = cbChecked
-    Align = alTop
-    OnClick = chkMenuWrappingClick
-  end
-  object Panel1: TPanel
+  object pnlWrapping: TPanel
     Left = 0
-    Top = 212
+    Top = 196
     Width = 600
-    Height = 31
+    Height = 51
     Align = alTop
     BevelOuter = bvNone
     Color = clWindow
     ParentBackground = False
-    TabOrder = 3
+    TabOrder = 1
+    ExplicitTop = 198
     object Label1: TLabel
       Left = 176
-      Top = 12
+      Top = 30
       Width = 106
-      Height = 13
+      Height = 16
       AutoSize = False
       Caption = 'Sub-Menu Position:'
       Color = clWindow
       ParentColor = False
       WordWrap = True
     end
+    object chkMenuWrapping: TJvXPCheckbox
+      AlignWithMargins = True
+      Left = 5
+      Top = 0
+      Width = 590
+      Height = 17
+      Margins.Left = 5
+      Margins.Top = 0
+      Margins.Right = 5
+      Margins.Bottom = 0
+      Caption = 'Enable menu wrapping'
+      TabOrder = 0
+      Checked = True
+      State = cbChecked
+      Align = alTop
+      OnClick = chkMenuWrappingClick
+      ExplicitLeft = 10
+      ExplicitTop = 20
+    end
     object sgbWrapCount: TSharpeGaugeBox
       Left = 5
-      Top = 8
+      Top = 27
       Width = 149
       Height = 21
       ParentBackground = False
+      TabOrder = 1
       Min = 5
       Max = 100
       Value = 25
@@ -171,7 +160,7 @@ object frmSettings: TfrmSettings
     end
     object cboWrapPos: TComboBox
       Left = 288
-      Top = 8
+      Top = 27
       Width = 85
       Height = 21
       Style = csDropDownList
@@ -179,7 +168,7 @@ object frmSettings: TfrmSettings
       ItemHeight = 13
       ItemIndex = 0
       ParentCtl3D = False
-      TabOrder = 1
+      TabOrder = 2
       Text = 'Bottom'
       OnChange = cboWrapPosChange
       Items.Strings = (
@@ -190,7 +179,7 @@ object frmSettings: TfrmSettings
   object SharpECenterHeader3: TSharpECenterHeader
     AlignWithMargins = True
     Left = 5
-    Top = 253
+    Top = 257
     Width = 590
     Height = 37
     Margins.Left = 5
@@ -204,10 +193,11 @@ object frmSettings: TfrmSettings
     TitleColor = clWindowText
     DescriptionColor = clGrayText
     Align = alTop
+    ExplicitTop = 253
   end
   object pnlAutoHide: TPanel
     Left = 0
-    Top = 300
+    Top = 304
     Width = 600
     Height = 46
     Align = alTop
@@ -215,7 +205,8 @@ object frmSettings: TfrmSettings
     BevelOuter = bvNone
     Color = clWindow
     ParentBackground = False
-    TabOrder = 4
+    TabOrder = 2
+    ExplicitTop = 300
     object Label2: TLabel
       Left = 5
       Top = 29
@@ -248,6 +239,52 @@ object frmSettings: TfrmSettings
       Text = '0'
       OnKeyPress = edtHideTimeoutKeyPress
       OnKeyUp = edtHideTimeoutKeyUp
+    end
+  end
+  object pnlIcons: TPanel
+    Left = 0
+    Top = 47
+    Width = 600
+    Height = 18
+    Align = alTop
+    AutoSize = True
+    BevelOuter = bvNone
+    Color = clWindow
+    ParentBackground = False
+    TabOrder = 6
+    object chkUseIcons: TJvXPCheckbox
+      AlignWithMargins = True
+      Left = 1
+      Top = 1
+      Width = 136
+      Height = 17
+      Margins.Left = 5
+      Margins.Top = 0
+      Margins.Right = 5
+      Margins.Bottom = 0
+      Caption = 'Enable menu icons'
+      TabOrder = 0
+      Checked = True
+      ParentColor = False
+      State = cbChecked
+      OnClick = chkUseIconsClick
+    end
+    object chkCacheIcons: TJvXPCheckbox
+      AlignWithMargins = True
+      Left = 147
+      Top = 0
+      Width = 136
+      Height = 17
+      Margins.Left = 5
+      Margins.Top = 0
+      Margins.Right = 5
+      Margins.Bottom = 0
+      Caption = 'Enable icon caching'
+      TabOrder = 1
+      Checked = True
+      ParentColor = False
+      State = cbChecked
+      OnClick = chkCacheIconsClick
     end
   end
 end

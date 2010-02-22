@@ -42,7 +42,7 @@ type
 
 type
   TfrmSettings = class(TForm)
-    Panel1: TPanel;
+    pnlWrapping: TPanel;
     Label1: TLabel;
     sgbWrapCount: TSharpeGaugeBox;
     cboWrapPos: TComboBox;
@@ -59,6 +59,8 @@ type
     edtHideTimeout: TEdit;
     Label3: TLabel;
     pnlAutoHide: TPanel;
+    pnlIcons: TPanel;
+    chkCacheIcons: TJvXPCheckbox;
     procedure cboWrapPosChange(Sender: TObject);
     procedure sgbWrapCountChangeValue(Sender: TObject; Value: Integer);
     procedure chkUseIconsClick(Sender: TObject);
@@ -69,6 +71,7 @@ type
     procedure edtHideTimeoutKeyPress(Sender: TObject; var Key: Char);
     procedure edtHideTimeoutKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure chkCacheIconsClick(Sender: TObject);
   private
     FIsUpdating: Boolean;
     FPluginHost: ISharpCenterHost;
@@ -94,12 +97,17 @@ implementation
 procedure TfrmSettings.FormCreate(Sender: TObject);
 begin
   Self.DoubleBuffered := true;
-  Panel1.DoubleBuffered := true;
+  pnlWrapping.DoubleBuffered := true;
 end;
 
 procedure TfrmSettings.FormShow(Sender: TObject);
 begin
   chkUseIconsClick(self);
+end;
+
+procedure TfrmSettings.chkCacheIconsClick(Sender: TObject);
+begin
+  SendUpdate;
 end;
 
 procedure TfrmSettings.chkHideTimeoutClick(Sender: TObject);
@@ -146,6 +154,7 @@ end;
 procedure TfrmSettings.UpdateUi;
 begin
   pnlGenericIcons.Visible := chkUseIcons.Checked;
+  chkCacheIcons.Enabled := chkUseIcons.Checked;
 end;
 
 procedure TfrmSettings.cboWrapPosChange(Sender: TObject);

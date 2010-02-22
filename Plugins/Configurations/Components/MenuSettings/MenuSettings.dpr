@@ -110,6 +110,7 @@ begin
 
            chkUseIcons.Checked := BoolValue('UseIcons',True);
            chkUseGenericIcons.Checked := BoolValue('UseGenericIcons',False);
+           chkCacheIcons.Checked := BoolValue('CacheIcons', True);
            chkHideTimeout.Checked := (IntValue('HideTimeout', 0) > 0);
            edtHideTimeout.Text := FloatToStr(FloatValue('HideTimeout',0.0) / 1000.0);
            UpdateUi;
@@ -166,6 +167,7 @@ begin
       Add('WrapPosition',cboWrapPos.ItemIndex);
       Add('UseIcons',chkUseIcons.Checked);
       Add('UseGenericIcons',chkUseGenericIcons.Checked);
+      Add('CacheIcons', chkCacheIcons.Checked);
       if chkHideTimeout.Checked then
         Add('HideTimeout',Round(fHide*1000.0))
       else
