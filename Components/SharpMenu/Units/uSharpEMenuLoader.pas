@@ -48,6 +48,7 @@ begin
   menu := TSharpEMenu.Create(pParemtItem,pManager,pSettings);
   menu.DesignMode := pDesignMode;
   result := menu;
+  // Load the custom settings
   for n := 0 to pXML.Count - 1 do
       with pXML.Item[n].Items do
       begin
@@ -56,7 +57,13 @@ begin
           // custom Settings for this menu exist...
           menu.CustomSettings := True;
           menu.Settings.LoadFromXML(pXML.Item[n].Items);
-        end else
+        end;
+      end;
+
+  for n := 0 to pXML.Count - 1 do
+      with pXML.Item[n].Items do
+      begin
+        if CompareText(pXML.Item[n].Name,'Settings') <>0 then
         begin
           typestring := Value('type','none');
           if CompareText(typestring,'link') = 0 then

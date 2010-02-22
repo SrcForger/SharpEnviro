@@ -424,9 +424,9 @@ begin
     if FSettings.UseGenericIcons then
     begin
       if CompareText(pIcon,'shell:icon') = 0 then
-        pIcon := FMenuConsts.GetGenericIcon(eTarget);
-    end;
-    item.Icon := SharpEMenuIcons.AddIcon(pIcon,eTarget,itDefaultIcon)
+        item.Icon := SharpEMenuIcons.AddIcon(FMenuConsts.GetGenericIcon(eTarget),eTarget,itGeneric)
+    end else
+      item.Icon := SharpEMenuIcons.AddIcon(pIcon,eTarget,itDefaultIcon);
   end else item.Icon := nil;
   item.Caption := pCaption;
   item.PropList.Add('Action',pTarget);
@@ -458,9 +458,9 @@ begin
     if FSettings.UseGenericIcons then
     begin
       if CompareText(pIcon,'shell:icon') = 0 then
-        pIcon := FMenuConsts.GetGenericIcon(eTarget);
-    end;
-    item.Icon := SharpEMenuIcons.AddIcon(pIcon,eTarget,itDefaultIcon)
+        item.Icon := SharpEMenuIcons.AddIcon(FMenuConsts.GetGenericIcon(eTarget),eTarget,itGeneric)
+    end else
+      item.Icon := SharpEMenuIcons.AddIcon(pIcon,eTarget,itDefaultIcon);
   end else item.Icon := nil;
   item.Caption := pCaption;
   item.isDynamic := pDynamic;

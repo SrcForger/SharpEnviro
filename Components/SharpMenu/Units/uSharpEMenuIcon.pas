@@ -109,7 +109,7 @@ begin
   else if (pIconType = itDefaultIcon) then
     FIconType := itCustomIcon
   else
-    FIconType := pIconType;
+    FIconType := itGeneric;
 
   if (pIconType = itGeneric) or (FIconType = itShellIcon) then
     FIconSource := pIconData

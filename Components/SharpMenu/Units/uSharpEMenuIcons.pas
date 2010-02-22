@@ -249,6 +249,7 @@ begin
       1: IconType := itCustomIcon;
       else IconType := itShellIcon;
     end;
+    //SendDebugMessageEx('SharpMenu', IconSource, 0, DMT_TRACE);
     Item := TSharpEMenuIcon.Create(IconSource,IconType,Stream);
     Item.Cached := True;
     FItems.Add(item);
