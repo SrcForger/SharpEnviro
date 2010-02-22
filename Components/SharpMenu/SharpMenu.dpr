@@ -65,6 +65,17 @@ uses
   SharpIconUtils in '..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas',
   uSharpEMenuSaver in 'Units\uSharpEMenuSaver.pas';
 
+type
+  TLoadCacheThread = class(TThread)
+  private
+    pMenuIcons : ^TSharpEMenuIcons;
+    pIconCacheFile : string;
+  protected
+    procedure Execute; override;
+  public
+    constructor Create(createSuspended: boolean; var menuIcons : TSharpEMenuIcons; iconcachefile : string);
+  end;
+
 {$R *.res}
 {$R metadata.res}
 
@@ -83,6 +94,20 @@ var
   menusettings : TSharpEMenuSettings;
   Mon : TMonitor;
   TimeList : TStringList;
+  loadCacheThread : TLoadCacheThread;
+
+constructor TLoadCacheThread.Create(createSuspended: boolean; var menuIcons : TSharpEMenuIcons; IconCacheFile : string);
+begin
+  inherited Create(createSuspended);
+
+  pMenuIcons := @menuIcons;
+  pIconCacheFile := IconCacheFile;
+end;
+
+procedure TLoadCacheThread.Execute;
+begin
+  pMenuIcons.LoadIconCache(pIconCacheFile);
+end;
 
 function GetCurrentTime : Int64;
 var
@@ -169,8 +194,12 @@ begin
   SharpEMenuIcons := TSharpEMenuIcons.Create;
   SharpEMenuIcons.LoadGenericIcons;
 
+  loadCacheThread := TLoadCacheThread.Create(true, SharpEMenuIcons, iconcachefile);
   if (menusettings.CacheIcons) and (menusettings.UseIcons) then
-     SharpEMenuIcons.LoadIconCache(iconcachefile);
+  begin
+    loadCacheThread.Resume;
+    // SharpEMenuIcons.LoadIconCache(iconcachefile);
+  end;
 
   // init Classes
 
@@ -212,6 +241,9 @@ begin
   DebugTime('ForceForegroundWindow');
   ForceForeGroundWindow(wnd.handle);
 
+  loadCacheThread.WaitFor;
+  loadCacheThread.Free;
+
   Application.Run;
 
   for i := 0 to TimeList.Count - 1 do
@@ -219,7 +251,7 @@ begin
   TimeList.Free;
 
   if (menusettings.CacheIcons) and (menuSettings.UseIcons) then
-     SharpEMenuIcons.SaveIconCache(iconcachefile);  
+     SharpEMenuIcons.SaveIconCache(iconcachefile);
 
   // Free Classes
   //if SharpEMenuPopups <> nil then
