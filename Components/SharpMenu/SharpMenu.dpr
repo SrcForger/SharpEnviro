@@ -192,7 +192,8 @@ begin
   setlength(iconcachefile,length(iconcachefile) - length(ExtractFileExt(iconcachefile)));
   iconcachefile := iconcachefile + '.iconcache';
   SharpEMenuIcons := TSharpEMenuIcons.Create;
-  SharpEMenuIcons.LoadGenericIcons;
+  if menusettings.UseGenericIcons then
+    SharpEMenuIcons.LoadGenericIcons;
 
   loadCacheThread := TLoadCacheThread.Create(true, SharpEMenuIcons, iconcachefile);
   if (menusettings.CacheIcons) and (menusettings.UseIcons) then
