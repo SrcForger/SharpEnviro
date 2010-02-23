@@ -154,7 +154,7 @@ begin
     end;
   end;
 
-  DebugTime('menusettings');
+  DebugTime('global menu options');
   menusettings := TSharpEMenuSettings.Create;
   menusettings.LoadFromXML;
 
@@ -176,6 +176,11 @@ begin
   if not FileExists(mfile) then
      mfile := SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\Menu.xml';
   if not FileExists(mfile) then halt;
+
+  DebugTime('menu specific options');
+  // Open the menu specific options, which may override
+  // settings from the global menu options.
+  menusettings.LoadFromXML(mfile);
 
   DebugTime('CreateForm');
   Application.Title := 'SharpMenu';
