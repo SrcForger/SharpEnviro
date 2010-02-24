@@ -167,7 +167,18 @@ begin
     FTrayClient.UpdateHiddenStatus;
     FTrayClient.UpdateTrayIcons;
     FTrayClient.RenderIcons;
+
+    // If the bar is not full screen then it will resize when you hide/unhide icons
+    // which causes the menu to deactivate and lose focus.
+    menuWnd.IgnoreNextKillFocus := True;
+    menuwnd.IgnoreNextDeactivate := True;
+
     RealignComponents;
+
+    // After the bar is done realigning ensure we set focus back to the menu.
+    menuWnd.SetFocus;
+    // Ensure this is disabled as focus is not lost when the bar is full screen.
+    menuWnd.IgnoreNextKillFocus := False;
 
     menuwnd.IgnoreNextDeactivate := True;
     menu.RenderBackground(menuwnd.Left,menuwnd.Top,menu.SpecialBackgroundSource);
