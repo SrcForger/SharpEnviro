@@ -422,13 +422,12 @@ begin
     pTarget := etarget;
   if FSettings.UseIcons then
   begin
-    if FSettings.UseGenericIcons then
-    begin
-      if CompareText(pIcon,'shell:icon') = 0 then
-        item.Icon := SharpEMenuIcons.AddIcon(FMenuConsts.GetGenericIcon(eTarget),eTarget,itGeneric)
-    end else
+    if (FSettings.UseGenericIcons) and (CompareText(pIcon,'shell:icon') = 0) then
+      item.Icon := SharpEMenuIcons.AddIcon(FMenuConsts.GetGenericIcon(eTarget),eTarget,itGeneric)
+    else
       item.Icon := SharpEMenuIcons.AddIcon(pIcon,eTarget,itDefaultIcon);
-  end else item.Icon := nil;
+  end else
+    item.Icon := nil;
   
   s := pCaption;
   if not FSettings.ShowExtensions then
@@ -461,13 +460,13 @@ begin
     pTarget := etarget;
   if FSettings.UseIcons then
   begin
-    if FSettings.UseGenericIcons then
-    begin
-      if CompareText(pIcon,'shell:icon') = 0 then
-        item.Icon := SharpEMenuIcons.AddIcon(FMenuConsts.GetGenericIcon(eTarget),eTarget,itGeneric)
-    end else
+    if (FSettings.UseGenericIcons) and (CompareText(pIcon,'shell:icon') = 0) then
+      item.Icon := SharpEMenuIcons.AddIcon(FMenuConsts.GetGenericIcon(eTarget),eTarget,itGeneric)
+    else
       item.Icon := SharpEMenuIcons.AddIcon(pIcon,eTarget,itDefaultIcon);
-  end else item.Icon := nil;
+  end else
+    item.Icon := nil;
+
   item.Caption := pCaption;
   item.isDynamic := pDynamic;
   if length(trim(pTarget))>0 then
