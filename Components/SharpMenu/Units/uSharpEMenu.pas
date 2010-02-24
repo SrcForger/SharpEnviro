@@ -412,7 +412,6 @@ function TSharpEMenu.AddLinkItem(pCaption,pTarget,pIcon : String; pDynamic : boo
 var
   item : TSharpEMenuItem;
   etarget : String;
-  s : string;
 begin
   item := TSharpEMenuItem.Create(self,mtLink);
   item.PropList.Add('IconSource',pIcon);
@@ -428,11 +427,8 @@ begin
       item.Icon := SharpEMenuIcons.AddIcon(pIcon,eTarget,itDefaultIcon);
   end else
     item.Icon := nil;
-  
-  s := pCaption;
-  if not FSettings.ShowExtensions then
-    setlength(s,length(s) - length(ExtractFileExt(s)));
-  item.Caption := s;
+
+  item.Caption := pCaption;
 
   item.PropList.Add('Action',pTarget);
   item.OnClick := FMenuActions.OnLinkClick;

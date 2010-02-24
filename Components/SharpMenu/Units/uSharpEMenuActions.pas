@@ -607,6 +607,10 @@ begin
       if not FileExists(SList[i]) then
         Icon := 'icon.file'
       else Icon := 'shell:icon';
+
+      if not pMenu.Settings.ShowExtensions then
+        setlength(s,length(s) - length(ExtractFileExt(s)));
+
       Item := TSharpEMenuItem(pMenu.AddLinkItem(s,SList[i],Icon,true));
       item.PropList.Add('NoSort',True);
     end;
