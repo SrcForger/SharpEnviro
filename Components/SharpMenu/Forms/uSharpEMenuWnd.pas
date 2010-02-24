@@ -88,6 +88,7 @@ type
     FPicture : TBitmap32;
     FIsClosing : boolean;
     FIgnoreNextDeactivate : boolean;
+    FIgnoreNextKillFocus : boolean;
     FRootMenu : boolean;
     FFreeMenuSub : boolean;
     FFreeMenu : boolean; // Set to True if the menu is a single menu without popups
@@ -131,6 +132,7 @@ type
     property RootMenu : boolean read FRootMenu;
     property FreeMenu : boolean read FFreeMenu write FFreeMenu;
     property IgnoreNextDeactivate : boolean read FIgnoreNextDeactivate write FIgnoreNextDeactivate;
+    property IgnoreNextKillFocus : boolean read FIgnoreNextKillFocus write FIgnoreNextKillFocus;
     property MenuID : string read FMenuID write SetMenuID;
     property HideTimeout : integer read GetHideTimeout write SetHideTimeout;
   end;
@@ -197,6 +199,7 @@ begin
   FPicture := TBitmap32.Create;
   FParentMenu := nil;
   FIgnoreNextDeactivate := False;
+  FIgnoreNextKillFocus := False;
   FFreeMenuSub := False;
 
   InitMenu(pMenu,False);
@@ -720,6 +723,12 @@ procedure TSharpEMenuWnd.WMKillFocus(var Msg: TMessage);
 var
   wclass : String;
 begin
+  if FIgnoreNextKillFocus then
+  begin
+    FIgnoreNextKillFocus := False;
+    Exit;
+  end;
+  
   if (FFreeMenu) then
   begin
     if Msg.WParam <> 0 then
