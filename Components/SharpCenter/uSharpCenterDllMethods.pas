@@ -93,8 +93,8 @@ begin
     plugin.GetCenterScheme := nil;
     plugin.GetCenterTheme := nil;
 
-    plugin.DllHandle := 0;
     FreeLibrary(plugin.dllhandle);
+    plugin.DllHandle := 0;
     result := 1;
   except
     SendDebugMessageEx('SharpCenter','UnloadDll failed',clRed,DMT_ERROR);

@@ -35,26 +35,32 @@ type
   PPlugin = ^TPlugin;
 
 function LoadPluginInterface(dll: Pchar): TPlugin;
-function UnloadPluginInterface(plugin: PPlugin): hresult;
+function UnloadPluginInterface(var plugin: TPlugin): hresult;
 
 implementation
 
 uses
   uSharpCenterManager;
 
-function UnloadPluginInterface(plugin: PPlugin): hresult;
+function UnloadPluginInterface(var plugin: TPlugin): hresult;
 begin
   result := 0;
+
+  if plugin.DllHandle = 0 then
+    exit;
+    
   try
+    plugin.PluginInterface.CanDestroy := true;
     plugin.PluginInterface := nil;
     plugin.EditInterface := nil;
     plugin.ValidationInterface := nil;
     plugin.PreviewInterface := nil;
     plugin.TabInterface := nil;
     plugin.InitPluginInterface := nil;
-
-    plugin.DllHandle := 0;
+    
     FreeLibrary(plugin.dllhandle);
+    plugin.DllHandle := 0;
+
     result := MR_OK;
   except
     SendDebugMessageEx('SharpCenter','UnloadPluginInterface failed',clRed,DMT_ERROR);
@@ -74,9 +80,9 @@ begin
     if result.dllhandle <> 0 then begin
 
       @result.InitPluginInterface := GetProcAddress(result.Dllhandle, 'InitPluginInterface');
-
+      
       if (@result.InitPluginInterface = nil) then begin
-        freelibrary(result.dllhandle);
+        FreeLibrary(result.dllhandle);
         result.dllhandle := 0;
         SendDebugMessageEx('SharpCenter','Unable to load plugin, InitPluginInterface does not exist',clRed,DMT_ERROR);
       end;

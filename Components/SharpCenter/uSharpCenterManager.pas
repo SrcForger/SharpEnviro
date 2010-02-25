@@ -15,6 +15,7 @@ uses
   Dialogs,
   ComCtrls,
   ExtCtrls,
+  Contnrs,
   pngimage,
   pngimagelist,
   JvValidators,
@@ -78,7 +79,6 @@ type
 type
   TSharpCenterManager = class
   private
-
     FHistory: TSharpCenterHistoryList;
     FRoot: string;
     FUnloadTimer: TTimer;
@@ -131,9 +131,6 @@ type
     procedure BuildNavFromCommandLine;
     function GetTheme: TCenterThemeInfo;
 
-
-    function GetSharpCenterPlugin: ISharpCenterPlugin;
-    
   public
     constructor Create;
     destructor Destroy; override;
@@ -192,7 +189,6 @@ type
     property Theme: TCenterThemeInfo read GetTheme;
     property PluginVersion: string read FPluginVersion write FPluginVersion;
 
-    property SharpCenterPlugin: ISharpCenterPlugin read GetSharpCenterPlugin;
     property ThemeManager: TCenterThemeManager read FThemeManager write FThemeManager;
     property OnInitNavigation: TNotifyEvent read FOnInitNavigation write FOnInitNavigation;
     property OnUpdateTheme: TNotifyEvent read FOnUpdateTheme write FOnUpdateTheme;
@@ -223,18 +219,15 @@ begin
   FActiveFile := AFile;
 
   try
-
-    // Always ensure the dll is unloaded before loading another
-    Unload;
-
-    if FileExists(AFile) then begin
-
+    if FileExists(AFile) then
+    begin
       FPlugin := LoadPluginInterface(PChar(AFile));
 
-      if ( (FPlugin.Dllhandle <> 0) and (@FPlugin.InitPluginInterface <> nil ) ) then
+      if ((FPlugin.Dllhandle <> 0) and (@FPlugin.InitPluginInterface <> nil)) then
       begin
         FPluginHost.PluginId := APluginID;
-        FPlugin.PluginInterface := FPlugin.InitPluginInterface( FPluginHost );
+        FPlugin.PluginInterface := FPlugin.InitPluginInterface(FPluginHost);
+        FPlugin.PluginInterface.CanDestroy := false;
         FPluginHandle := Plugin.PluginInterface.Open();
         FPluginHost.PluginOwner.ParentWindow := FPluginHandle;
 
@@ -258,7 +251,6 @@ end;
 
 function TSharpCenterManager.Unload: Boolean;
 begin
-
   Result := False;
   if (Plugin.Dllhandle = 0) then
     exit;
@@ -267,10 +259,10 @@ begin
     FOnUnloadPlugin(Self);
 
   // Call the close method on the plugin
-  SharpCenterPlugin.Close;
+  FPlugin.PluginInterface.Close;
 
   // Unload the plugin
-  UnloadPluginInterface(@FPlugin);
+  UnloadPluginInterface(FPlugin);
 
   FEditHandle := 0;
   FPluginHandle := 0;
@@ -351,7 +343,7 @@ end;
 
 procedure TSharpCenterManager.Save;
 begin
-  SharpCenterPlugin.Save;
+  FPlugin.PluginInterface.Save;
 
   UpdateSettingsBroadcast;
 end;
@@ -441,9 +433,10 @@ begin
 
   finally
     if ALoad then begin
+      Unload;
       Load(sFirstNavFile, sFirstPluginID);
-    end else begin
-    
+    end else
+    begin
       // Add the first dll in the con file
       FHistory.AddDll(sFirstNavFile,sFirstPluginID);
     end;
@@ -716,15 +709,15 @@ end;
 
 destructor TSharpCenterManager.Destroy;
 begin
-  FreeAndNil(FHistory);
-  FreeAndNil(FUnloadTimer);
+  FHistory.Free;
+  FUnloadTimer.Free;
   FUnloadCommand.Free;
   FPluginTabs.Free;
   FPngImageList.Free;
 
   // Don't free the interface, set the interface to nil
   FThemeManager.Free;
-  FPluginHost.SelfInterface := nil;
+  FPluginHost := nil;
 
   inherited;
 end;
@@ -732,11 +725,6 @@ end;
 function TSharpCenterManager.GetRoot: string;
 begin
   Result := FRoot;
-end;
-
-function TSharpCenterManager.GetSharpCenterPlugin: ISharpCenterPlugin;
-begin
-  Result := FPlugin.PluginInterface;
 end;
 
 function TSharpCenterManager.GetTheme: TCenterThemeInfo;
@@ -843,13 +831,13 @@ var
 begin
   Result := True;
 
-  if SharpCenterPlugin = nil then begin
+  if FPlugin.PluginInterface = nil then begin
     Result := false;
     exit;
   end;
 
   tmp := nil;
-  if not(SharpCenterPlugin.QueryInterface(IID_ISharpCenterPluginEdit,tmp) = S_OK) then
+  if not(FPlugin.PluginInterface.QueryInterface(IID_ISharpCenterPluginEdit,tmp) = S_OK) then
     Result := False else begin
       with Plugin do begin
         EditInterface := tmp;
@@ -863,13 +851,13 @@ var
 begin
   Result := True;
 
-  if SharpCenterPlugin = nil then begin
+  if FPlugin.PluginInterface = nil then begin
     Result := false;
     exit;
   end;
 
   tmp := nil;
-  if not(SharpCenterPlugin.QueryInterface(IID_ISharpCenterPluginValidation,tmp) = S_OK) then
+  if not(FPlugin.PluginInterface.QueryInterface(IID_ISharpCenterPluginValidation,tmp) = S_OK) then
     Result := False else begin
       with Plugin do begin
         ValidationInterface := tmp;
@@ -883,13 +871,13 @@ var
 begin
   Result := True;
 
-  if SharpCenterPlugin = nil then begin
+  if FPlugin.PluginInterface = nil then begin
     Result := false;
     exit;
   end;
 
   tmp := nil;
-  if not(SharpCenterPlugin.QueryInterface(IID_ISharpCenterPluginPreview,tmp) = S_OK) then
+  if not(FPlugin.PluginInterface.QueryInterface(IID_ISharpCenterPluginPreview,tmp) = S_OK) then
     Result := False else begin
       with Plugin do begin
         PreviewInterface := tmp;
@@ -903,13 +891,13 @@ var
 begin
   Result := True;
 
-  if SharpCenterPlugin = nil then begin
+  if FPlugin.PluginInterface = nil then begin
     Result := false;
     exit;
   end;
 
   tmp := nil;
-  if not(SharpCenterPlugin.QueryInterface(IID_ISharpCenterPluginTabs,tmp) = S_OK) then
+  if not(FPlugin.PluginInterface.QueryInterface(IID_ISharpCenterPluginTabs,tmp) = S_OK) then
     Result := False else begin
       with Plugin do begin
         TabInterface := tmp;
@@ -917,44 +905,44 @@ begin
     end;
 end;
 
-procedure TSharpCenterManager.GetItemText(AFile, APluginID: string; var AName: string;
-  var AStatus: string; var ADescription: string);
+procedure LoadPluginData(var tmpPlugin: TPlugin; FPluginHost : TInterfacedSharpCenterHostBase; var sStatus, sName, sDescription: string);
+begin
+  tmpPlugin.PluginInterface := tmpPlugin.InitPluginInterface(FPluginHost);
+  tmpPlugin.PluginInterface.CanDestroy := false;
+
+  sName := PAnsiChar(tmpPlugin.PluginInterface.GetPluginName);
+  if sName = '' then
+    sName := tmpPlugin.MetaData.Name;
+
+  sStatus := PAnsiChar(tmpPlugin.PluginInterface.GetPluginStatusText);
+
+  sDescription := PAnsiChar(tmpPlugin.PluginInterface.GetPluginDescriptionText);
+  if sDescription = '' then
+    sDescription := tmpPlugin.MetaData.Description;
+end;
+
+procedure TSharpCenterManager.GetItemText(AFile, APluginID: string;
+          var AName, AStatus, ADescription: string);
 var
   tmpPlugin: TPlugin;
-  sStatus, sName, sDescription: string;
 begin
+  try
+    AName := '';
+    AStatus := '';
+    ADescription := '';
+    FPluginHost.PluginId := APluginID;
 
-  AStatus := '';
-  ADescription := '';
-  FPluginHost.PluginId := APluginID;
-
-  if fileexists(AFile) then
-  begin
-    tmpPlugin := LoadPluginInterface(PChar(Afile));
-
-    if ( (tmpPlugin.Dllhandle <> 0) and (@tmpPlugin.InitPluginInterface <> nil ) ) then
+    if fileexists(AFile) then
     begin
-      tmpPlugin.PluginInterface := tmpPlugin.InitPluginInterface( FPluginHost );
+      tmpPlugin := LoadPluginInterface(PChar(Afile));
 
-    try
-      sName := tmpPlugin.PluginInterface.GetPluginName;
-      if sName = '' then sName := tmpPlugin.MetaData.Name;
-
-      sStatus := tmpPlugin.PluginInterface.GetPluginStatusText;
-
-      sDescription := tmpPlugin.PluginInterface.GetPluginDescriptionText;
-      if sDescription = '' then sDescription := tmpPlugin.MetaData.Description;
-      
-
-    finally
-
-      UnloadPluginInterface(@tmpPlugin);
-
-      AStatus := sStatus;
-      AName := sName;
-      ADescription := sDescription;
+      if ( (tmpPlugin.Dllhandle <> 0) and (@tmpPlugin.InitPluginInterface <> nil ) ) then
+      begin
+        LoadPluginData(tmpPlugin, FPluginHost, AStatus, AName, ADescription);
+      end;
     end;
-    end;
+  finally
+    UnloadPluginInterface(tmpPlugin);
   end;
 end;
 
@@ -1010,14 +998,17 @@ begin
       if ( (FPlugin.Dllhandle <> 0) and (@FPlugin.InitPluginInterface <> nil ) ) then begin
 
       FPlugin.PluginInterface := FPlugin.InitPluginInterface( FPluginHost );
+      FPlugin.PluginInterface.CanDestroy := false;
       FPluginHandle := Plugin.PluginInterface.Open();
       FPluginHost.PluginOwner.ParentWindow := FPluginHandle;
 
       LoadPluginTabs;
 
-      if Assigned(FOnSetHomeTitle) then begin
+      if Assigned(FOnSetHomeTitle) then
+      begin
         tmp := FPlugin.PluginInterface.GetPluginDescriptionText;
-        if tmp = '' then tmp := FPlugin.MetaData.Description;
+        if tmp = '' then
+          tmp := FPlugin.MetaData.Description;
 
         FOnSetHomeTitle(tmp);
       end;

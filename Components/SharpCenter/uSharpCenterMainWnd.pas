@@ -867,7 +867,6 @@ begin
       end;
     itmSetting:
       begin
-
         SCM.BuildNavFromFile(tmpItem.Filename);
 
         // Show the history tab
@@ -882,6 +881,7 @@ begin
         tmpHistory.Command := sccLoadDll;
         tmpHistory.PluginID := tmpItem.PluginID;
         tmpHistory.Param := tmpItem.Filename;
+        SCM.Unload;
         SCM.Load(tmpItem.Filename, tmpItem.PluginID);
       end;
   end;
