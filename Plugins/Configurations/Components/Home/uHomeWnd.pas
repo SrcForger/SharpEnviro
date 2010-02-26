@@ -113,14 +113,26 @@ begin
 
   AddUsersToList;
   AddUrlsToList;
-
-
 End;
 
 procedure TfrmHome.FormDestroy(Sender: TObject);
+var
+  I: Integer;
 begin
+  for I := lbUsers.Count - 1 downto 0 do
+    TSharpEListItem(lbUsers[I]).Free;
+    
+  for I := FUsers.Count - 1 downto 0 do
+    TUser(FUsers[I]).Free;
+    
   FUsers.Free;
+
+  for I := FUrls.Count - 1 downto 0 do
+    TUrl(FUrls[I]).Free;
+
   FUrls.Free;
+
+  inherited;
 end;
 
 procedure TfrmHome.Label7Click(Sender: TObject);
@@ -329,8 +341,6 @@ begin
   Url := AUrl;
   Description := ADescription;
   SupportUrl := ASupportUrl;
-
-
 end;
 
 end.
