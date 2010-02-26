@@ -21,13 +21,13 @@ type
 
   ISharpCenterPluginPreview = interface(IInterface)
   ['{C397A7F1-86D1-4E20-AD5C-EA52C51DC306}']
-    procedure UpdatePreview( ABitmap: TBitmap32 ); stdCall;
+    procedure UpdatePreview(ABitmap: TBitmap32); stdCall;
   end;
 
   ISharpCenterPluginEdit = interface(IInterface)
   ['{C7477868-4A58-4EDF-8D81-2C0B1732C116}']
     function OpenEdit: THandle; stdCall;
-    procedure CloseEdit(AApply:Boolean); stdCall;
+    procedure CloseEdit(AApply: Boolean); stdCall;
   end;
 
   ISharpCenterPluginTabs = interface(IInterface)
@@ -68,12 +68,14 @@ type
 
     function GetCanDestroy : boolean; stdcall;
     procedure SetCanDestroy(Value : boolean); stdcall;
+    
   protected
     // IUnknown
     function _AddRef: Integer; virtual; stdcall;
     function _Release: Integer; virtual; stdcall;
     
   public
+    constructor Create;
     destructor Destroy; override;
 
     // IUnknown
@@ -100,6 +102,20 @@ implementation
 
 { TInterfacedSharpCenterPlugin }
 
+constructor TInterfacedSharpCenterPlugin.Create;
+begin
+  inherited;
+
+  FRefCount := 0;
+end;
+
+destructor TInterfacedSharpCenterPlugin.Destroy;
+begin
+  FPluginHost := nil;
+  
+  inherited;
+end;
+
 function TInterfacedSharpCenterPlugin._AddRef: Integer;
 begin
   Result := InterlockedIncrement(FRefCount);
@@ -116,8 +132,6 @@ function TInterfacedSharpCenterPlugin.QueryInterface(const IID: TGUID; out Obj):
 const
   E_NOINTERFACE = HResult($80004002);
 begin
-  FRefCount := 0;
-
   if GetInterface(IID, Obj) then
     Result := 0
   else
@@ -136,13 +150,6 @@ end;
 procedure TInterfacedSharpCenterPlugin.Close;
 begin
 
-end;
-
-destructor TInterfacedSharpCenterPlugin.Destroy;
-begin
-  FPluginHost := nil;
-  
-  inherited;
 end;
 
 function TInterfacedSharpCenterPlugin.GetPluginDescriptionText: string;

@@ -20,60 +20,63 @@ type
 
   ISharpCenterHost = interface(IInterface)
   ['{2277C19F-F87B-4CED-9ADA-8C3467426066}']
+    function GetEditOwner : TWinControl; stdcall;
+    procedure SetEditOwner(Value : TWinControl); stdcall;
+    property EditOwner : TWinControl read GetEditOwner write SetEditOwner;
 
-  function GetEditOwner : TWinControl; stdcall;
-  procedure SetEditOwner(Value : TWinControl); stdcall;
-  property EditOwner : TWinControl read GetEditOwner write SetEditOwner;
+    function GetPluginOwner : TWinControl; stdcall;
+    procedure SetPluginOwner(Value : TWinControl); stdcall;
+    property PluginOwner : TWinControl read GetPluginOwner write SetPluginOwner;
 
-  function GetPluginOwner : TWinControl; stdcall;
-  procedure SetPluginOwner(Value : TWinControl); stdcall;
-  property PluginOwner : TWinControl read GetPluginOwner write SetPluginOwner;
+    function GetPluginId : string; stdcall;
+    procedure SetPluginId(Value : string); stdcall;
+    property PluginId : string read GetPluginId write SetPluginId;
 
-  function GetPluginId : string; stdcall;
-  procedure SetPluginId(Value : string); stdcall;
-  property PluginId : string read GetPluginId write SetPluginId;
+    function GetTheme : TCenterThemeInfo; stdcall;
+    procedure SetTheme(Value : TCenterThemeInfo); stdcall;
+    property Theme: TCenterThemeInfo read GetTheme write SetTheme;
 
-  function GetTheme : TCenterThemeInfo; stdcall;
-  procedure SetTheme(Value : TCenterThemeInfo); stdcall;
-  property Theme: TCenterThemeInfo read GetTheme write SetTheme;
+    function GetEditMode : TSCE_EDITMODE_ENUM; stdcall;
+    procedure SetEditMode(Value : TSCE_EDITMODE_ENUM); stdcall;
+    property EditMode: TSCE_EDITMODE_ENUM read GetEditMode write SetEditMode;
 
-  function GetEditMode : TSCE_EDITMODE_ENUM; stdcall;
-  procedure SetEditMode(Value : TSCE_EDITMODE_ENUM); stdcall;
-  property EditMode: TSCE_EDITMODE_ENUM read GetEditMode write
-    SetEditMode;
+    function GetEditing : Boolean; stdcall;
+    procedure SetEditing(Value : Boolean); stdcall;
+    property Editing: Boolean read GetEditing write SetEditing;
 
-  function GetEditing : Boolean; stdcall;
-  procedure SetEditing(Value : Boolean); stdcall;
-  property Editing: Boolean read GetEditing write SetEditing;
+    function GetWarning : Boolean; stdcall;
+    procedure SetWarning(Value : Boolean); stdcall;
+    property Warning: Boolean read GetWarning write SetWarning;
 
-  function GetWarning : Boolean; stdcall;
-  procedure SetWarning(Value : Boolean); stdcall;
-  property Warning: Boolean read GetWarning write SetWarning;
+    procedure Refresh( ARefreshType: TRefreshTypeEnum = rtAll ); stdCall;
 
-  procedure Refresh( ARefreshType: TRefreshTypeEnum = rtAll ); stdCall;
+    function Open(AForm: TForm) : THandle; stdcall;
+    function OpenEdit(AForm: TForm):THandle; stdCall;
+    procedure Save; stdCall;
 
-  function Open(AForm: TForm) : THandle; stdcall;
-  function OpenEdit(AForm: TForm):THandle; stdCall;
-  procedure Save; stdCall;
+    procedure SetSettingsChanged; stdCall;
 
-  procedure SetSettingsChanged; stdCall;
+    procedure SetEditTab( ATab: TSCB_BUTTON_ENUM ); stdCall;
+    procedure SetEditTabVisibility(  ATab: TSCB_BUTTON_ENUM; Visible: Boolean); stdCall;
+    procedure SetEditTabsVisibility( AItemIndex: Integer; AItemCount: Integer); stdCall;
+    procedure SetButtonVisibility( AButton: TSCB_BUTTON_ENUM; Visible: Boolean); stdCall;
 
-  procedure SetEditTab( ATab: TSCB_BUTTON_ENUM ); stdCall;
-  procedure SetEditTabVisibility(  ATab: TSCB_BUTTON_ENUM; Visible: Boolean); stdCall;
-  procedure SetEditTabsVisibility( AItemIndex: Integer; AItemCount: Integer); stdCall;
-  procedure SetButtonVisibility( AButton: TSCB_BUTTON_ENUM; Visible: Boolean); stdCall;
+    function AddRequiredFieldValidator( controlToValidate: TControl; errorMessage: string; propertyToValidate: string ): TJvRequiredFieldValidator; stdCall;
 
-  function AddRequiredFieldValidator( controlToValidate: TControl;
-    errorMessage: string; propertyToValidate: string ): TJvRequiredFieldValidator; stdCall;
+    function AddCustomValidator( controlToValidate: TControl; errorMessage: string; propertyToValidate: string ): TJvCustomValidator; stdCall;
 
-  function AddCustomValidator( controlToValidate: TControl;
-    errorMessage: string; propertyToValidate: string ): TJvCustomValidator; stdCall;
+    procedure LoadXml;
+    procedure UnloadXml;
 
-  procedure GetBarModuleIdFromPluginId(var barId, moduleId: string); stdcall;    
-  function GetModuleXmlFilename: string; stdcall;
+    procedure GetBarModuleIdFromPluginId(var barId, moduleId: string); stdcall;    
+    function GetModuleXmlFilename: string; stdcall;
 
-  function GetXml : TInterfacedXmlBase; stdcall;
-  property Xml: TInterfacedXmlBase read GetXml;    
+    function GetXml : TInterfacedXmlBase; stdcall;
+    property Xml: TInterfacedXmlBase read GetXml;
+
+    function GetCanDestroy : boolean; stdcall;
+    procedure SetCanDestroy(Value : boolean); stdcall;
+    property CanDestroy: boolean read GetCanDestroy write SetCanDestroy;
 end;
 
 type
@@ -83,9 +86,11 @@ type
   TSetEditingEvent = procedure ( AValue: Boolean ) of object;
   TThemeFormEvent = procedure ( AForm: TForm; AEditing: Boolean ) of object;
 type
-  TInterfacedSharpCenterHostBase = class(TInterfacedObject,ISharpCenterHost)
-
+  TInterfacedSharpCenterHostBase = class(TObject,ISharpCenterHost)
     private
+      FRefCount: integer;
+      FCanDestroy: boolean;
+
       FSelfInterface: ISharpCenterHost;
 
       FEditOwner: TWinControl;
@@ -115,7 +120,7 @@ type
       FErrorIndicator: TJvErrorIndicator;
       FOnThemePluginForm: TThemeFormEvent;
       FOnThemeEditForm: TThemeFormEvent;
-    FOnRefreshValidation: TNotifyEvent;
+      FOnRefreshValidation: TNotifyEvent;
 
       function GetEditOwner : TWinControl; stdCall;
       procedure SetEditOwner(Value : TWinControl); stdCall;
@@ -132,9 +137,21 @@ type
       procedure SetWarning(Value : Boolean); stdcall;
 
       procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+
+      function GetCanDestroy : boolean; stdcall;
+      procedure SetCanDestroy(Value : boolean); stdcall;
+    protected
+      // IUnknown
+      function _AddRef: Integer; virtual; stdcall;
+      function _Release: Integer; virtual; stdcall;
+
     public
       constructor Create;
       destructor Destroy; override;
+
+      // IUnknown
+      function QueryInterface(const IID: TGUID; out Obj): HResult; virtual; stdcall;
+
       function GetTheme : TCenterThemeInfo; virtual; stdCall;
       procedure SetEditing(Value : Boolean); stdCall;
       property EditOwner : TWinControl read GetEditOwner write SetEditOwner;
@@ -145,6 +162,7 @@ type
         SetEditMode;
       property Editing: Boolean read GetEditing write SetEditing;
       property Warning: Boolean read GetWarning write SetWarning;
+      property CanDestroy: boolean read FCanDestroy write FCanDestroy;
 
       procedure Refresh( ARefreshType: TRefreshTypeEnum = rtAll ); stdCall;
       function Open(AForm: TForm) : THandle; stdcall;
@@ -163,6 +181,9 @@ type
       procedure AssignThemeToPluginForm(APluginForm: TForm);
       procedure AssignThemeToEditForm(AEditForm: TForm);
       procedure AssignThemeToForms(AForm, AEditForm: TForm);  
+
+      procedure LoadXml;
+      procedure UnloadXml;
 
       function GetXml : TInterfacedXmlBase; stdcall;
       property Xml: TInterfacedXmlBase read GetXml;
@@ -231,6 +252,76 @@ implementation
 
 { TInterfacedSharpCenterHostBase }
 
+function TInterfacedSharpCenterHostBase._AddRef: Integer;
+begin
+  Result := InterlockedIncrement(FRefCount);
+end;
+
+function TInterfacedSharpCenterHostBase._Release: Integer;
+begin
+  Result := InterlockedDecrement(FRefCount);
+  if (Result = 0) and (FCanDestroy) then
+    Destroy;
+end;
+
+function TInterfacedSharpCenterHostBase.QueryInterface(const IID: TGUID; out Obj): HResult;
+const
+  E_NOINTERFACE = HResult($80004002);
+begin
+  if GetInterface(IID, Obj) then
+    Result := 0
+  else
+    Result := E_NOINTERFACE;
+end;
+
+function TInterfacedSharpCenterHostBase.GetCanDestroy : boolean;
+begin
+  Result := FCanDestroy;
+end;
+
+procedure TInterfacedSharpCenterHostBase.SetCanDestroy(Value : boolean);
+begin
+  FCanDestroy := Value;
+end;
+
+constructor TInterfacedSharpCenterHostBase.Create;
+begin
+  FRefCount := 0;
+
+  FSelfInterface := self;
+
+  FErrorIndicator := TJvErrorIndicator.Create(nil);
+  FValidator := TJvValidators.Create(nil);
+  with FValidator do begin
+    ErrorIndicator := FErrorIndicator;
+  end;
+end;
+
+destructor TInterfacedSharpCenterHostBase.Destroy;
+begin
+  UnloadXml;
+  FValidator.Free;
+  FErrorIndicator.Free;
+end;
+
+procedure TInterfacedSharpCenterHostBase.LoadXml;
+begin
+  if Assigned(FXml) then
+    UnloadXml;
+
+  FXml := TInterfacedXmlBase.Create;
+  FXml.CanDestroy := False;
+end;
+
+procedure TInterfacedSharpCenterHostBase.UnloadXml;
+begin
+  if not Assigned(FXml) then
+    exit;
+
+  FXml.CanDestroy := True;
+  FXml := nil;
+end;
+
 procedure TInterfacedSharpCenterHostBase.GetBarModuleIdFromPluginId(var barId, moduleId: string);
 begin
   if FPluginId = '' then exit;
@@ -287,25 +378,6 @@ procedure TInterfacedSharpCenterHostBase.AssignThemeToForms( AForm, AEditForm: T
 begin
   AssignThemeToPluginForm(AForm);
   AssignThemeToEditForm(AEditForm);
-end;
-
-constructor TInterfacedSharpCenterHostBase.Create;
-begin
-  FXml := TInterfacedXmlBase.Create;
-  FSelfInterface := self;
-
-  FErrorIndicator := TJvErrorIndicator.Create(nil);
-  FValidator := TJvValidators.Create(nil);
-  with FValidator do begin
-    ErrorIndicator := FErrorIndicator;
-  end;
-end;
-
-destructor TInterfacedSharpCenterHostBase.Destroy;
-begin
-  FXml := nil;
-  FValidator.Free;
-  FErrorIndicator.Free;
 end;
 
 procedure TInterfacedSharpCenterHostBase.FormKeyDown(Sender: TObject;

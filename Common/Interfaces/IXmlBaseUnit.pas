@@ -36,22 +36,27 @@ const
 type
   IXmlBase = interface(IInterface)
   ['{2A6E32B6-9DAA-400B-B464-A8EE353BE247}']
+    function GetXmlFilename : string; stdcall;
+    procedure SetXmlFilename(value : string); stdcall;
+    property XmlFilename : string read GetXmlFilename write SetXmlFilename;
 
-  function GetXmlFilename : string; stdcall;
-  procedure SetXmlFilename(value : string); stdcall;
-  property XmlFilename : string read GetXmlFilename write SetXmlFilename;
+    function GetXmlRoot : TJclSimpleXMLElemClassic; stdCall;
+    procedure SetXmlRoot( value: TJclSimpleXMLElemClassic ); stdCall;
+    property XmlRoot: TJclSimpleXMLElemClassic read GetXmlRoot write SetXmlRoot;
 
-  function GetXmlRoot : TJclSimpleXMLElemClassic; stdCall;
-  procedure SetXmlRoot( value: TJclSimpleXMLElemClassic ); stdCall;
-  property XmlRoot: TJclSimpleXMLElemClassic read GetXmlRoot write SetXmlRoot;
+    function GetCanDestroy : boolean; stdcall;
+    procedure SetCanDestroy(Value : boolean); stdcall;
+    property CanDestroy: boolean read GetCanDestroy write SetCanDestroy;
 
-  function Load: boolean; stdCall;
-  function Save: boolean; stdCall;
+    function Load: boolean; stdCall;
+    function Save: boolean; stdCall;
 end;
 
 type
-  TInterfacedXmlBase = class(TInterfacedObject,IXmlBase)
+  TInterfacedXmlBase = class(TObject,IXmlBase)
   private
+    FRefCount: integer;
+    FCanDestroy: boolean;
     FXmlFileName: String;
     FXml: TJclSimpleXML;
     FXmlRoot: TJclSimpleXMLElemClassic;
@@ -64,14 +69,27 @@ type
 
     function LoadFile( fileName: String ): boolean;
     function FileValidPrecheck(fileName:string): boolean;
+
+    function GetCanDestroy : boolean; stdcall;
+    procedure SetCanDestroy(Value : boolean); stdcall;
+    
+  protected
+    // IUnknown
+    function _AddRef: Integer; virtual; stdcall;
+    function _Release: Integer; virtual; stdcall;
+
   public
-    constructor Create(); reintroduce;
+    constructor Create; reintroduce;
     destructor Destroy; override;
+
+    // IUnknown
+    function QueryInterface(const IID: TGUID; out Obj): HResult; virtual; stdcall;
+
     function Load: boolean; stdcall;
     function Save: boolean; stdcall;
     property XmlFilename: string read GetXmlFilename write SetXmlFilename;
     property XmlRoot: TJclSimpleXMLElemClassic read GetXmlRoot;
-
+    property CanDestroy: boolean read FCanDestroy write FCanDestroy;
 end;
 
 type
@@ -89,10 +107,43 @@ implementation
 
 { TInterfacedXmlBase }
 
+function TInterfacedXmlBase._AddRef: Integer;
+begin
+  Result := InterlockedIncrement(FRefCount);
+end;
+
+function TInterfacedXmlBase._Release: Integer;
+begin
+  Result := InterlockedDecrement(FRefCount);
+  if (Result = 0) and (FCanDestroy) then
+    Destroy;
+end;
+
+function TInterfacedXmlBase.QueryInterface(const IID: TGUID; out Obj): HResult;
+const
+  E_NOINTERFACE = HResult($80004002);
+begin
+  if GetInterface(IID, Obj) then
+    Result := 0
+  else
+    Result := E_NOINTERFACE;
+end;
+
+function TInterfacedXmlBase.GetCanDestroy : boolean;
+begin
+  Result := FCanDestroy;
+end;
+
+procedure TInterfacedXmlBase.SetCanDestroy(Value : boolean);
+begin
+  FCanDestroy := Value;
+end;
+
 constructor TInterfacedXmlBase.Create;
 begin
   inherited Create;
-  
+
+  FRefCount := 0;
   FXml := TJclSimpleXML.Create;
 end;
 
@@ -108,7 +159,7 @@ end;
 
 destructor TInterfacedXmlBase.Destroy;
 begin
-  FXml.Free;
+  FreeAndNil(FXml);
 
   inherited;
 end;
@@ -145,28 +196,27 @@ begin
 
   if LoadFile(FXmlFileName) then begin
     FXmlRoot := FXml.Root;
-  end
-  else
+  end else
   begin
-
     // Try loading an earlier backup
     backupFile := ExtractFilePath(FXmlFileName) + ExtractFileName(FXmlFileName)+'_bak';
 
-    if not(fileExists(backupFile)) then begin
-
+    if not(fileExists(backupFile)) then
+    begin
       Debug('Unable to find any backups for this file. Reverting file to defaults.',DMT_INFO);
       result := false;
-
-    end else begin
-
+    end else
+    begin
       // We have daily backups! Let's try to restore one of them. For now one backup is saved.
       // More days could be added later
 
-        if not(LoadFile(backupFile)) then begin
+        if not(LoadFile(backupFile)) then
+        begin
           Debug('Unable to load the backup. Reverting file to defaults.',DMT_INFO);
           DeleteFile(backupFile);
           result := false;
-        end else begin
+        end else
+        begin
           Debug('Successfully loaded the backup file.',DMT_INFO);
           FXmlRoot := FXml.Root;
 
