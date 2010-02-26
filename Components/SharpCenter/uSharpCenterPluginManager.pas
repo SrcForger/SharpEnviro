@@ -50,13 +50,21 @@ begin
     exit;
     
   try
-    plugin.PluginInterface.CanDestroy := true;
-    plugin.PluginInterface := nil;
-    plugin.EditInterface := nil;
-    plugin.ValidationInterface := nil;
-    plugin.PreviewInterface := nil;
-    plugin.TabInterface := nil;
-    plugin.InitPluginInterface := nil;
+    if Assigned(plugin.EditInterface) then
+      plugin.EditInterface := nil;
+    if Assigned(plugin.ValidationInterface) then
+      plugin.ValidationInterface := nil;
+    if Assigned(plugin.PreviewInterface) then
+      plugin.PreviewInterface := nil;
+    if Assigned(plugin.TabInterface) then
+      plugin.TabInterface := nil;
+    if Assigned(plugin.InitPluginInterface) then
+      plugin.InitPluginInterface := nil;
+    if Assigned(plugin.PluginInterface) then
+    begin
+      plugin.PluginInterface.CanDestroy := true;
+      plugin.PluginInterface := nil;
+    end;
     
     FreeLibrary(plugin.dllhandle);
     plugin.DllHandle := 0;

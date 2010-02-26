@@ -907,7 +907,7 @@ begin
     end;
 end;
 
-procedure LoadPluginData(var tmpPlugin: TPlugin; FPluginHost : TInterfacedSharpCenterHostBase; var sStatus, sName, sDescription: string);
+procedure LoadPluginData(var tmpPlugin: TPlugin; var FPluginHost : TInterfacedSharpCenterHostBase; var sStatus, sName, sDescription: string);
 begin
   tmpPlugin.PluginInterface := tmpPlugin.InitPluginInterface(FPluginHost);
   tmpPlugin.PluginInterface.CanDestroy := false;
