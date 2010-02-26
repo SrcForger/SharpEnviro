@@ -221,14 +221,14 @@ begin
   try
     if FileExists(AFile) then
     begin
-      FPlugin := LoadPluginInterface(PChar(AFile));
+      FPlugin := LoadPluginInterface(PChar(AFile), FPluginHost);
 
       if ((FPlugin.Dllhandle <> 0) and (@FPlugin.InitPluginInterface <> nil)) then
       begin
         FPluginHost.PluginId := APluginID;
         FPlugin.PluginInterface := FPlugin.InitPluginInterface(FPluginHost);
         FPlugin.PluginInterface.CanDestroy := false;
-        FPluginHandle := Plugin.PluginInterface.Open();
+        FPluginHandle := Plugin.PluginInterface.Open;
         FPluginHost.PluginOwner.ParentWindow := FPluginHandle;
 
         // load plugin tabs
@@ -264,7 +264,7 @@ begin
   FPluginTabs.Clear;
   
   // Unload the plugin
-  UnloadPluginInterface(FPlugin);
+  UnloadPluginInterface(FPlugin, FPluginHost);
 
   FEditHandle := 0;
   FPluginHandle := 0;
@@ -684,6 +684,7 @@ begin
   FThemeManager := TCenterThemeManager.Create;
 
   FPluginHost := TInterfacedSharpCenterHostBase.Create;
+  FPluginHost.CanDestroy := False;
 
   RefreshTheme;
   FPluginHost.Theme := FThemeManager.Theme;
@@ -719,6 +720,8 @@ begin
 
   // Don't free the interface, set the interface to nil
   FThemeManager.Free;
+
+  FPluginHost.CanDestroy := True;
   FPluginHost := nil;
 
   inherited;
@@ -936,7 +939,7 @@ begin
 
     if fileexists(AFile) then
     begin
-      tmpPlugin := LoadPluginInterface(PChar(Afile));
+      tmpPlugin := LoadPluginInterface(PChar(Afile), FPluginHost);
 
       if ( (tmpPlugin.Dllhandle <> 0) and (@tmpPlugin.InitPluginInterface <> nil ) ) then
       begin
@@ -944,7 +947,7 @@ begin
       end;
     end;
   finally
-    UnloadPluginInterface(tmpPlugin);
+    UnloadPluginInterface(tmpPlugin, FPluginHost);
   end;
 end;
 
@@ -994,26 +997,27 @@ begin
   sFile := GetCenterDirectory + '_home\home.dll';
   try
 
-    if FileExists(sFile) then begin
-      FPlugin := LoadPluginInterface(PChar(sFile));
+    if FileExists(sFile) then
+    begin
+      FPlugin := LoadPluginInterface(PChar(sFile), FPluginHost);
 
-      if ( (FPlugin.Dllhandle <> 0) and (@FPlugin.InitPluginInterface <> nil ) ) then begin
-
-      FPlugin.PluginInterface := FPlugin.InitPluginInterface( FPluginHost );
-      FPlugin.PluginInterface.CanDestroy := false;
-      FPluginHandle := Plugin.PluginInterface.Open();
-      FPluginHost.PluginOwner.ParentWindow := FPluginHandle;
-
-      LoadPluginTabs;
-
-      if Assigned(FOnSetHomeTitle) then
+      if ((FPlugin.Dllhandle <> 0) and (@FPlugin.InitPluginInterface <> nil)) then
       begin
-        tmp := FPlugin.PluginInterface.GetPluginDescriptionText;
-        if tmp = '' then
-          tmp := FPlugin.MetaData.Description;
+        FPlugin.PluginInterface := FPlugin.InitPluginInterface( FPluginHost );
+        FPlugin.PluginInterface.CanDestroy := false;
+        FPluginHandle := Plugin.PluginInterface.Open();
+        FPluginHost.PluginOwner.ParentWindow := FPluginHandle;
 
-        FOnSetHomeTitle(tmp);
-      end;
+        LoadPluginTabs;
+
+        if Assigned(FOnSetHomeTitle) then
+        begin
+          tmp := FPlugin.PluginInterface.GetPluginDescriptionText;
+          if tmp = '' then
+            tmp := FPlugin.MetaData.Description;
+
+          FOnSetHomeTitle(tmp);
+        end;
 
         if Assigned(FOnLoadPlugin) then
           FOnLoadPlugin(Self);
@@ -1025,7 +1029,6 @@ begin
         Result := True;
       end;
     end;
-
   finally
     Xml.Free;
   end;

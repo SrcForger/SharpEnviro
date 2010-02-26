@@ -34,15 +34,15 @@ type
   end;
   PPlugin = ^TPlugin;
 
-function LoadPluginInterface(dll: Pchar): TPlugin;
-function UnloadPluginInterface(var plugin: TPlugin): hresult;
+function LoadPluginInterface(dll: Pchar; var pluginHost: TInterfacedSharpCenterHostBase): TPlugin;
+function UnloadPluginInterface(var plugin: TPlugin; var pluginHost: TInterfacedSharpCenterHostBase): hresult;
 
 implementation
 
 uses
   uSharpCenterManager;
 
-function UnloadPluginInterface(var plugin: TPlugin): hresult;
+function UnloadPluginInterface(var plugin: TPlugin; var pluginHost: TInterfacedSharpCenterHostBase): hresult;
 begin
   result := 0;
 
@@ -65,7 +65,10 @@ begin
       plugin.PluginInterface.CanDestroy := true;
       plugin.PluginInterface := nil;
     end;
-    
+
+    // Unload the XML interface
+    pluginHost.UnloadXml;
+
     FreeLibrary(plugin.dllhandle);
     plugin.DllHandle := 0;
 
@@ -75,27 +78,30 @@ begin
   end;
 end;
 
-function LoadPluginInterface(dll: Pchar): TPlugin;
+function LoadPluginInterface(dll: Pchar; var pluginHost: TInterfacedSharpCenterHostBase): TPlugin;
 begin
-    result.Dll := dll;
+  result.Dll := dll;
 
-    GetConfigMetaData(Dll,Result.MetaData,Result.ConfigMode,Result.ConfigType);
-    if Result.MetaData.Version <> scm.PluginVersion  then begin
-       result.DllHandle := 0;
-    end else begin
+  GetConfigMetaData(Dll,Result.MetaData,Result.ConfigMode,Result.ConfigType);
+  if Result.MetaData.Version <> scm.PluginVersion  then begin
+    result.DllHandle := 0;
+  end else
+  begin
+    // Load the XML interface
+    pluginHost.LoadXml;
 
     result.dllhandle := LoadLibrary(dll);
     if result.dllhandle <> 0 then begin
-
       @result.InitPluginInterface := GetProcAddress(result.Dllhandle, 'InitPluginInterface');
       
-      if (@result.InitPluginInterface = nil) then begin
+      if (@result.InitPluginInterface = nil) then
+      begin
         FreeLibrary(result.dllhandle);
         result.dllhandle := 0;
         SendDebugMessageEx('SharpCenter','Unable to load plugin, InitPluginInterface does not exist',clRed,DMT_ERROR);
       end;
     end;
-    end;
+  end;
 end;
 
 end.
