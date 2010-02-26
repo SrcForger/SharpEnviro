@@ -45,7 +45,6 @@ object frmSettings: TfrmSettings
     Color = clWindow
     ParentBackground = False
     TabOrder = 0
-    ExplicitTop = 64
     object schGenericIcons: TSharpECenterHeader
       AlignWithMargins = True
       Left = 5
@@ -97,7 +96,6 @@ object frmSettings: TfrmSettings
     TitleColor = clWindowText
     DescriptionColor = clGrayText
     Align = alTop
-    ExplicitTop = 148
   end
   object pnlWrapping: TPanel
     Left = 0
@@ -109,7 +107,6 @@ object frmSettings: TfrmSettings
     Color = clWindow
     ParentBackground = False
     TabOrder = 1
-    ExplicitTop = 198
     object Label1: TLabel
       Left = 176
       Top = 30
@@ -137,8 +134,6 @@ object frmSettings: TfrmSettings
       State = cbChecked
       Align = alTop
       OnClick = chkMenuWrappingClick
-      ExplicitLeft = 10
-      ExplicitTop = 20
     end
     object sgbWrapCount: TSharpeGaugeBox
       Left = 5
@@ -193,7 +188,6 @@ object frmSettings: TfrmSettings
     TitleColor = clWindowText
     DescriptionColor = clGrayText
     Align = alTop
-    ExplicitTop = 253
   end
   object pnlAutoHide: TPanel
     Left = 0
@@ -206,7 +200,6 @@ object frmSettings: TfrmSettings
     Color = clWindow
     ParentBackground = False
     TabOrder = 2
-    ExplicitTop = 300
     object Label2: TLabel
       Left = 5
       Top = 29

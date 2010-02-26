@@ -35,12 +35,6 @@ uses
   ISharpCenterHostUnit, ISharpCenterPluginUnit;
 
 type
-  TStringObject = Class(TObject)
-  public
-    Str:String;
-  end;
-
-type
   TfrmSettings = class(TForm)
     pnlWrapping: TPanel;
     Label1: TLabel;

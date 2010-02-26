@@ -52,7 +52,6 @@ uses
 type
   TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin )
   private
-    FXmlDeskSettings: TDeskSettings;
     procedure LoadSettings;
   public
     constructor Create( APluginHost: ISharpCenterHost );
@@ -64,9 +63,6 @@ type
 
     function GetPluginDescriptionText: String; override; stdCall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
-
-    property XmlDeskSettings: TDeskSettings read FXmlDeskSettings write
-      FXmlDeskSettings;
   end;
 
 { TSharpCenterPlugin }
