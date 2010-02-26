@@ -1105,32 +1105,32 @@ begin
 end;
 
 procedure TSharpCenterWnd.RefreshTitleEvent(Sender: TObject);
-var
-  sName, sStatus, sDescription: string;
-  tmpItem: TSharpCenterManagerItem;
+//var
+//  sName, sStatus, sDescription: string;
+//  tmpItem: TSharpCenterManagerItem;
 begin
-  if SCM.Plugin.Dllhandle <> 0 then begin
-
-    if lbTree.SelectedItem = nil then exit;
-    
-    tmpItem := TSharpCenterManagerItem(lbTree.SelectedItem.Data);
-
-    // Name
-    sName := scm.Plugin.PluginInterface.GetPluginName;
-    if sName = '' then sName := scm.Plugin.MetaData.Name;
-    tmpItem.Caption := sName;
-
-    // Status
-    sStatus := scm.Plugin.PluginInterface.GetPluginStatusText;
-    tmpItem.Status := sStatus;
-
-    // Description
-    sDescription := scm.Plugin.PluginInterface.GetPluginDescriptionText;
-    if sDescription = '' then sDescription := scm.Plugin.MetaData.Description;
-    tmpItem.Description := sDescription;
-
-    lbTree.Refresh;
-  end;
+//  if SCM.Plugin.Dllhandle <> 0 then begin
+//
+//    if lbTree.SelectedItem = nil then exit;
+//
+//    tmpItem := TSharpCenterManagerItem(lbTree.SelectedItem.Data);
+//
+//    // Name
+//    sName := PAnsiChar(scm.Plugin.PluginInterface.GetPluginName);
+//    if sName = '' then sName := scm.Plugin.MetaData.Name;
+//    tmpItem.Caption := sName;
+//
+//    // Status
+//    sStatus := PAnsiChar(scm.Plugin.PluginInterface.GetPluginStatusText);
+//    tmpItem.Status := sStatus;
+//
+//    // Description
+//    sDescription := PAnsiChar(scm.Plugin.PluginInterface.GetPluginDescriptionText);
+//    if sDescription = '' then sDescription := scm.Plugin.MetaData.Description;
+//    tmpItem.Description := sDescription;
+//
+//    lbTree.Refresh;
+//  end;
 
   UpdateConfigHeader;
 end;

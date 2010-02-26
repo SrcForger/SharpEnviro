@@ -261,6 +261,8 @@ begin
   // Call the close method on the plugin
   FPlugin.PluginInterface.Close;
 
+  FPluginTabs.Clear;
+  
   // Unload the plugin
   UnloadPluginInterface(FPlugin);
 
