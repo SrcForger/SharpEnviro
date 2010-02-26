@@ -96,7 +96,6 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
-  PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpCore\Services\VWM\VWM.xml';
 end;
 
 function TSharpCenterPlugin.GetPluginDescriptionText: String;
@@ -109,6 +108,8 @@ var
   Settings : TImageXMLSettings;
   ITheme : ISharpETheme;
 begin
+  PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpCore\Services\VWM\VWM.xml';
+  
   Settings := TImageXMLSettings.Create(strtoint(PluginHost.PluginId),nil,'Image');
   Settings.LoadSettings;
 
