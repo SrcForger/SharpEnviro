@@ -68,7 +68,6 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
-  PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpCore\Services\VWM\VWM.xml';
 end;
 
 function TSharpCenterPlugin.GetPluginDescriptionText: String;
@@ -78,6 +77,7 @@ end;
 
 procedure TSharpCenterPlugin.Load;
 begin
+  PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpCore\Services\VWM\VWM.xml';
   if PluginHost.Xml.Load then begin
     with PluginHost.Xml.XmlRoot, frmSettings do begin
       sgbVwmCount.Value := Items.IntValue('VWMCount',4);
