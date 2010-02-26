@@ -50,7 +50,6 @@ type
     procedure Load;
   public
     constructor Create(APluginHost: ISharpCenterHost);
-    destructor Destroy; override;
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
@@ -100,12 +99,6 @@ begin
   PluginHost := APluginHost;
 end;
 
-destructor TSharpCenterPlugin.Destroy;
-begin
-
-  inherited;
-end;
-
 function TSharpCenterPlugin.GetPluginDescriptionText: string;
 begin
   Result := 'Define desktop area constraints.';
@@ -123,7 +116,6 @@ const
 
 begin
   PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpCore\Services\DeskArea\DeskArea.xml';
-  
   if PluginHost.Xml.Load then begin
 
     with PluginHost.Xml.XmlRoot do begin
@@ -171,6 +163,7 @@ begin
       daItem := TDAItem.Create;
       daItem.monId := monId;
       daItem.mon := mon;
+      daItem.AutoMode := True;
       DAList.Add(daItem);
     end;
   end;
@@ -197,7 +190,6 @@ var
   n : integer;
   daItem : TDAItem;
 begin
-  PluginHost.Xml.XmlFilename := SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\DeskArea\DeskArea.xml';
   with PluginHost.Xml.XmlRoot do begin
     Name := 'SharpEDeskArea';
 
@@ -218,9 +210,8 @@ begin
         end;
       end;
     end;
-
-    PluginHost.Xml.Save;
   end;
+  PluginHost.Xml.Save;
 end;
 
 procedure TSharpCenterPlugin.UpdatePreview(ABitmap: TBitmap32);

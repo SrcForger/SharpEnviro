@@ -240,7 +240,7 @@ procedure TfrmSettings.FormDestroy(Sender: TObject);
 var
   I : Integer;
 begin
-  for I := 0 to DAList.Count - 1 do
+  for I := DAList.Count - 1 downto 0 do
     TDAItem(DAList.Items[I]).Free;
 
   DAList.Free;
