@@ -100,8 +100,8 @@ end;
 
 destructor TSharpCenterPlugin.Destroy;
 begin
-  inherited;
   FXmlDeskSettings.Free;
+  inherited;
 end;
 
 function TSharpCenterPlugin.GetPluginDescriptionText: String;
