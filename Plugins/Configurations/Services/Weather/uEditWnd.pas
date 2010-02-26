@@ -38,6 +38,7 @@ type
     procedure UpdateEditState(Sender: TObject);
     procedure btnSearchClick(Sender: TObject);
     procedure Image1Click(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
     FItemEdit: TWeatherItem;
@@ -115,6 +116,16 @@ begin
   end;
 end;
 
+procedure TfrmEditWnd.FormDestroy(Sender: TObject);
+var
+  I: Integer;
+begin
+  for I := mnuSearch.Items.Count - 1 downto 0 do
+    TWeatherLocation(TMenuItem(mnuSearch.Items[I]).Tag).Free;
+
+  inherited;
+end;
+
 procedure TfrmEditWnd.UpdateSearchList(AResults: string);
 var
   xml: TJclSimpleXML;
@@ -124,6 +135,9 @@ var
   sErrType: string;
   cp: TPoint;
 begin
+  for n := mnuSearch.Items.Count - 1 downto 0 do
+    TWeatherLocation(TMenuItem(mnuSearch.Items[n]).Tag).Free;
+    
   mnuSearch.Items.Clear;
 
   xml := TJclSimpleXML.Create;
@@ -159,8 +173,6 @@ begin
         newMi.Tag := Integer(tmpWl);
         newMi.OnClick := ClickItem;
         mnuSearch.Items.Add(newMi);
-
-        tmpWl.Free;
       end;
     end;
 

@@ -14,6 +14,7 @@ object frmEditWnd: TfrmEditWnd
   KeyPreview = True
   OldCreateOrder = False
   Position = poDesigned
+  OnDestroy = FormDestroy
   DesignSize = (
     505
     149)
