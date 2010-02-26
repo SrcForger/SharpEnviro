@@ -131,6 +131,8 @@ function TSharpCenterPlugin.GetPluginStatusText: string;
 var
   tmpList: TComponentList;
 begin
+  Result := '';
+  
   tmpList := TComponentList.Create;
   try
     tmpList.BuildList('.dll', false, false);

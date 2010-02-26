@@ -119,7 +119,11 @@ var
   srFile: TSearchRec;
   cdComponent: TComponentData;
   sPath: string;
+  I : Integer;
 begin
+  for I := Count - 1 downto 0 do
+    TComponentData(Items[I]).Free;
+
   // Clear items first
   Self.Clear;
 
