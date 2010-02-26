@@ -98,7 +98,6 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
-  PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpCore\Services\DeskArea\DeskArea.xml';
 end;
 
 destructor TSharpCenterPlugin.Destroy;
@@ -123,6 +122,8 @@ const
   primaryId = -100;
 
 begin
+  PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpCore\Services\DeskArea\DeskArea.xml';
+  
   if PluginHost.Xml.Load then begin
 
     with PluginHost.Xml.XmlRoot do begin

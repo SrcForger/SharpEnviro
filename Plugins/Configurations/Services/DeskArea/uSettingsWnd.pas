@@ -237,7 +237,12 @@ begin
 end;
 
 procedure TfrmSettings.FormDestroy(Sender: TObject);
+var
+  I : Integer;
 begin
+  for I := 0 to DAList.Count - 1 do
+    TDAItem(DAList.Items[I]).Free;
+
   DAList.Free;
   PreviewBmp.Free;
 end;
