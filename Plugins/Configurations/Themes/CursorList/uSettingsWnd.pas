@@ -80,9 +80,9 @@ type
   TfrmSettingsWnd = class(TForm)
     lbCursorList: TSharpEListBoxEx;
     SharpESwatchManager1: TSharpESwatchManager;
-    ccolors: TSharpEColorEditorEx;
     tmr: TTimer;
     PngImageList1: TPngImageList;
+    ccolors: TSharpEColorEditorEx;
 
     procedure FormDestroy(Sender: TObject);
     procedure FormResize(Sender: TObject);
@@ -147,8 +147,8 @@ begin
   FWidth := 0;
   FHeight := 0;
 
-  FBitmap := TBitmap32.Create();
-  FCurBitmap := TBitmap32.Create();
+  FBitmap := TBitmap32.Create;
+  FCurBitmap := TBitmap32.Create;
 end;
 
 destructor TCursor.Destroy;
@@ -214,7 +214,7 @@ begin
   end;
 end;
 
-function TCursor.GetBitmap(): TBitmap32;
+function TCursor.GetBitmap: TBitmap32;
 var
   sRect: Windows.TRect;
 begin
@@ -641,9 +641,16 @@ begin
 end;
 
 procedure TfrmSettingsWnd.FormDestroy(Sender: TObject);
+var
+  i : integer;
 begin
-  AnimTimer.Enabled := False;
+  AnimTimer.Free;
   FPreview.Free;
+  SetLength(FNames, 0);
+
+  for i := 0 to High(CursorItemArray) do
+    CursorItemArray[i].Free;
+  SetLength(CursorItemArray, 0);
 end;
 
 end.
