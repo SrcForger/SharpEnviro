@@ -75,7 +75,6 @@ constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
   PluginHost.GetBarModuleIdFromPluginId(barID, moduleID);
-  PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
 end;
 
 procedure TSharpCenterPlugin.Save;
@@ -123,6 +122,8 @@ var
   Custom : TSharpECustomSkinSettings;
   Skin : String;
 begin
+  PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
+  
   Custom := TSharpECustomSkinSettings.Create;
   Custom.LoadFromXML('');
   with Custom.xml.Items do

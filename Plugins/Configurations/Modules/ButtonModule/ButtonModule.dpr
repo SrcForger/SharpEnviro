@@ -68,11 +68,11 @@ constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
   PluginHost.GetBarModuleIdFromPluginId(barID, moduleID);
-  PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
 end;
 
 procedure TSharpCenterPlugin.Load;
 begin
+  PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
   if PluginHost.Xml.Load then
   begin
     with PluginHost.Xml.XmlRoot.Items, frmEdit do

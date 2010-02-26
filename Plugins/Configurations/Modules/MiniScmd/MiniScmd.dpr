@@ -66,7 +66,6 @@ constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
   PluginHost.GetBarModuleIdFromPluginId( barID, moduleID);
-  PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
 end;
 
 procedure TSharpCenterPlugin.Save;
@@ -89,6 +88,8 @@ end;
 
 procedure TSharpCenterPlugin.Load;
 begin
+  PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
+  
   frmMiniScmd.moduleID := StrToInt(moduleID);
 
   if PluginHost.Xml.Load then

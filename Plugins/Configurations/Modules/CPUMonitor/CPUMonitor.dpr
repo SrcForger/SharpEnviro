@@ -75,7 +75,6 @@ constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
   PluginHost.GetBarModuleIdFromPluginId(barID, moduleID);
-  PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
 end;
 
 procedure TSharpCenterPlugin.Save;
@@ -144,6 +143,8 @@ var
   i: Integer;
   Theme : ISharpETheme;
 begin
+  PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
+  
   frmCPUMon.Left := 0;
   frmCPUMon.Top := 0;
   frmCPUMon.BorderStyle := bsNone;
