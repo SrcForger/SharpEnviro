@@ -33,6 +33,7 @@ uses
   variants,
   SharpCenterApi,
   SharpAPI,
+  JclSimpleXml,
   jvValidators,
   uVistaFuncs,
   ISharpCenterHostUnit,
@@ -97,16 +98,20 @@ end;
 
 function TSharpCenterPlugin.GetPluginStatusText: String;
 var
+  xml : TJclSimpleXml;
   fn: string;
   itemCount: integer;
 begin
   result := '';
   fn := GetSharpeUserSettingsPath + cSettingsLocation;
-  PluginHost.Xml.XmlFilename := fn;
 
-  if PluginHost.Xml.Load then begin
-    itemCount := PluginHost.Xml.XmlRoot.Items.Count;
-    result := IntToStr(ItemCount);
+  xml := TJclSimpleXml.Create;
+  try
+    xml.LoadFromFile(fn);
+    itemCount := xml.Root.Items.Count;
+    Result := IntToStr(itemCount);
+  finally
+    xml.Free;
   end;
 end;
 

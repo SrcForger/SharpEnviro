@@ -116,9 +116,16 @@ begin
 end;
 
 procedure TfrmItemsWnd.FormDestroy(Sender: TObject);
+var
+  I: Integer;
 begin
   if Assigned(FHotkeyList) then
+  begin
+    for I := 0 to FHotkeyList.Count - 1 do
+      THotKeyItem(FHotkeyList[I]).Free;
+
     FreeAndNil(FHotkeyList);
+  end;
 end;
 
 procedure TfrmItemsWnd.FormShow(Sender: TObject);
