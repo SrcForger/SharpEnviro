@@ -123,7 +123,12 @@ begin
 end;
 
 procedure TfrmItemsWnd.FormDestroy(Sender: TObject);
+var
+  I: Integer;
 begin
+  for I := FAliasItems.Count - 1 downto 0 do
+    TAliasListItem(FAliasItems[I]).Free;
+    
   FAliasItems.Free;
   Classes.DeallocateHWnd(FWinHandle);
 end;
