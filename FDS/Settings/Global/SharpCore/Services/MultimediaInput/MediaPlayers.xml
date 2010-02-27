@@ -65,6 +65,16 @@
     <WndClass>PlayerCanvas</WndClass>
     <WndCaption></WndCaption>
     <Icon>qcd_icon.png</Icon>
+  </item> 
+  <item>
+    <Name>Songbird</Name>
+	<AppCommand>1</AppCommand>
+	<cmdPlay>/hotkey:playback.playpause</cmdPlay>
+	<cmdPause>/hotkey:playback.pause</cmdPause>
+	<cmdStop>/hotkey:playback.stop</cmdStop>
+	<cmdNext>/hotkey:playback.nexttrack</cmdNext>
+	<cmdPrev>/hotkey:playback.previoustrack</cmdPrev>
+	<Icon>Songbird.png</Icon>
   </item>  
   <item>
     <Name>VLC Media Player</Name>
