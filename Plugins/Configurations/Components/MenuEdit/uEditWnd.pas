@@ -102,6 +102,7 @@ type
     procedure rbMruListMostUsedItemsClick(Sender: TObject);
     procedure ChkClick(Sender: TObject);
     procedure edtChange(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
     FUpdating: Boolean;
@@ -441,6 +442,14 @@ begin
     cMruListDescription)));
 
   cbMenuItems.ItemIndex := 0;
+end;
+
+procedure TfrmEdit.FormDestroy(Sender: TObject);
+var
+  i: Integer;
+begin
+  for i := cbMenuItems.Items.Count - 1 downto 0 do
+    TPageData(cbMenuItems.Items.Objects[i]).Free;
 end;
 
 procedure TfrmEdit.FormShow(Sender: TObject);

@@ -13,6 +13,7 @@ object frmEdit: TfrmEdit
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -310,7 +311,7 @@ object frmEdit: TfrmEdit
         Width = 105
         Height = 21
         Style = csDropDownList
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 3
         OnChange = edtChange
         Items.Strings = (
@@ -477,7 +478,7 @@ object frmEdit: TfrmEdit
       Style = csDropDownList
       Anchors = [akLeft, akTop, akRight]
       DropDownCount = 20
-      ItemHeight = 13
+      ItemHeight = 0
       ParentShowHint = False
       ShowHint = True
       Sorted = True
