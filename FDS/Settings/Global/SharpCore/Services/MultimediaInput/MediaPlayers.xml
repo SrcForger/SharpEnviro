@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <MediaPlayers>
   <item>
+    <Name>aTunes</Name>
+	<AppCommand>1</AppCommand>
+	<cmdPlay>command:play</cmdPlay>
+	<cmdPause>command:play</cmdPause>
+	<cmdStop>command:stop</cmdStop>
+	<cmdNext>command:next</cmdNext>
+	<cmdPrev>command:previous</cmdPrev>
+	<Icon>aTunes.png</Icon>
+  </item>
+  <item>
     <Name>Foobar</Name>
     <WndClass>{97E27FAA-C0B3-4b8e-A693-ED7881E99FC1}</WndClass>
     <WndCaption></WndCaption>
