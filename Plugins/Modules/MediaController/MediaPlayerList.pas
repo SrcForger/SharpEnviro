@@ -53,6 +53,14 @@ type
     RegPath : String;
     RegValue : String;
 
+    // Application commands
+    AppCommand : boolean;
+    cmdPlay : string;
+    cmdPause : string;
+    cmdStop : string;
+    cmdNext : string;
+    cmdPrev : string;
+
     constructor Create(pXML : TJclSimpleXMLElems);
     destructor Destroy; override;
   end;
@@ -136,6 +144,13 @@ var
   wnd : hwnd;
 begin
   item := GetItem(pName);
+
+  if item.AppCommand then
+  begin
+    result := 0;
+    exit;
+  end;
+
   wnd := 0;
   if item <> nil then
   begin
@@ -211,6 +226,14 @@ begin
   btnStop     := pXML.IntValue('btnStop',APPCOMMAND_MEDIA_STOP);
   btnNext     := pXML.IntValue('btnNext',APPCOMMAND_MEDIA_NEXTTRACK);
   btnPrev     := pXML.IntValue('btnPrev',APPCOMMAND_MEDIA_PREVIOUSTRACK);
+
+  // Application commands
+  AppCommand := pXML.BoolValue('AppCommand', false);
+  cmdPlay := pXML.Value('cmdPlay', '');
+  cmdPause := pXML.Value('cmdPause', '');
+  cmdStop := pXML.Value('cmdStop', '');
+  cmdNext := pXML.Value('cmdNext', '');
+  cmdPrev := pXML.Value('cmdPrev', '');
 
   Icon := TBitmap32.Create;
   Icon.SetSize(16,16);

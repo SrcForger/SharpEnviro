@@ -404,12 +404,27 @@ var
   wnd : hwnd;
   mitem : TMediaPlayerItem;
   param : word;
+  sparam : string;
 begin
   mitem := FMPlayers.GetItem(sPlayer);
   if mitem <> nil then
   begin
     wnd := FMPlayers.GetPlayerHandle(sPlayer);
-    if wnd <> 0 then
+
+    if (mitem.AppCommand) and (mitem.PlayerPath <> '') then
+    begin
+      case pType of
+        cctPlay  : sparam := mitem.cmdPlay;
+        cctPause : sparam := mitem.cmdPause;
+        cctStop  : sparam := mitem.cmdStop;
+        cctNext  : sparam := mitem.cmdNext;
+        cctPrev  : sparam := mitem.cmdPrev;
+        else sparam := '';
+      end;
+
+      if sparam <> '' then
+        SharpExecute(mitem.PlayerPath + ' ' + sparam);
+    end else if wnd <> 0 then
     begin
       case pType of
         cctPlay  : param := mitem.btnPlay;
