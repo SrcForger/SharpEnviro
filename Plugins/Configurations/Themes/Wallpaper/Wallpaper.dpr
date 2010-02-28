@@ -112,9 +112,9 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
+  gPluginId := PluginHost.PluginId;
   FTheme := GetTheme(PluginHost.PluginID);
   FTheme.LoadTheme([tpWallpaper,tpSkinScheme]);
-  gPluginId := APluginHost.PluginId;
 end;
 
 function TSharpCenterPlugin.Load: Boolean;
@@ -316,9 +316,9 @@ function GetPluginData(): TPluginData;
 begin
   with Result do
   begin
-	Name := 'Wallpaper';
-    Description := Format('Wallpaper Configuration for "%s"', [gPluginId]);
-	Status := '';
+	  Name := 'Wallpaper';
+    Description := Format('Wallpaper Configuration for "%s"',[gPluginId]);
+	  Status := '';
   end;
 end;
 
@@ -329,6 +329,7 @@ end;
 
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData;
 
 begin
