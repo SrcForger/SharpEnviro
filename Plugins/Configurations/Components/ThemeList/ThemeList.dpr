@@ -204,8 +204,8 @@ begin
     try
       dir := SharpApi.GetSharpeUserSettingsPath + 'Themes\';
       SharpFileUtils.FindFiles(files, dir, '*Theme.xml');
+      Status := IntToStr(files.Count);
     finally
-      Status := inttoStr(files.Count);
       files.Free;
     end;
   end;
