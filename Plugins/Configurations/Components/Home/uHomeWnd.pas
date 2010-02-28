@@ -119,9 +119,6 @@ procedure TfrmHome.FormDestroy(Sender: TObject);
 var
   I: Integer;
 begin
-  for I := lbUsers.Count - 1 downto 0 do
-    TSharpEListItem(lbUsers[I]).Free;
-    
   for I := FUsers.Count - 1 downto 0 do
     TUser(FUsers[I]).Free;
     
