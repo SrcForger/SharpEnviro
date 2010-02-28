@@ -239,10 +239,13 @@ type
 
     function GetItemAtCursorPos(ACursorPosition: TPoint): TSharpEListItem;
     function GetColumnAtMouseCursorPos: TSharpEListBoxExColumn;
+
   protected
     procedure Loaded; override;
     procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure CNCommand(var Message: TWMCommand); message CN_COMMAND;
+
+    procedure WMDestroy(var Msg : TMessage); message WM_DESTROY;
 
   published
     property Columns: TSharpEListBoxExColumns read FColumns write SetColumns stored True;
@@ -329,6 +332,23 @@ end;
 
 { TSharpEListBoxEx }
 
+procedure TSharpEListBoxEx.WMDestroy(var Msg : TMessage);
+var
+  i : integer;
+begin
+  if (csDestroying in ComponentState) then
+  begin
+    for i := Self.Items.Count - 1 downto 0 do
+    begin
+      if Self.Items.Objects[i] <> nil then
+      begin
+        TSharpEListItem(Self.Items.Objects[i]).Free;
+        Self.Items.Objects[i] := nil;
+      end;
+    end;
+  end;
+end;
+
 function TSharpEListBoxEx.AddColumn(AText: string): TSharpEListBoxExColumn;
 begin
   Result := FColumns.Add(Self);
@@ -378,12 +398,14 @@ end;
 constructor TSharpEListBoxEx.Create(Sender: TComponent);
 begin
   inherited;
-  Self.DoubleBuffered := False;
-  Self.Style := lbOwnerDrawVariable;
-  Self.OnDrawItem := DrawItemEvent;
-  Self.OnResize := ResizeEvent;
-  Self.OnMouseMove := MouseMoveEvent;
-  Self.Color := clWindow;
+  ParentWindow := TWinControl(Sender).Handle;
+  Parent := TWinControl(Sender);
+  DoubleBuffered := False;
+  Style := lbOwnerDrawVariable;
+  OnDrawItem := DrawItemEvent;
+  OnResize := ResizeEvent;
+  OnMouseMove := MouseMoveEvent;
+  Color := clWindow;
 
   FColors := TSharpEListBoxExColors.Create;
   FColors.ItemColor := clWindow;
