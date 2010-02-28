@@ -111,8 +111,10 @@ type
 
     procedure EditSubFolder(tmp: TItemData; const ACol: Integer);
 
+    procedure SetMenuFile(path: string);
+
   public
-    property MenuFile: string read FMenuFile write FMenuFile;
+    property MenuFile: string read FMenuFile write SetMenuFile;
     property Menu: TSharpEMenu read FMenu write FMenu;
 
     function IsParentMenu: Boolean;
@@ -171,24 +173,26 @@ begin
   lbItems.DoubleBuffered := True;
 
   SharpEMenuIcons := TSharpEMenuIcons.Create;
-  FMenu := uSharpEMenuLoader.LoadMenu(FMenuFile, nil, True);
 end;
 
 procedure TfrmList.FormDestroy(Sender: TObject);
 begin
-  FMenu.Free;
-  FMenu := nil;
-
-  if (SharpEMenuIcons <> nil) then
-  begin
-    SharpEMenuIcons.Free;
-    SharpEMenuIcons := nil;
-  end;  
+  if Assigned(FMenu) then
+    FreeAndNil(FMenu);
 end;
 
 procedure TfrmList.FormShow(Sender: TObject);
 begin
   RenderItemsBuffered(FMenu);
+end;
+
+procedure TfrmList.SetMenuFile(path: string);
+begin
+  FMenuFile := path;
+
+  if Assigned(FMenu) then
+    FMenu.Free;
+  FMenu := uSharpEMenuLoader.LoadMenu(FMenuFile, nil, True);
 end;
 
 function TfrmList.IsParentMenu: Boolean;
