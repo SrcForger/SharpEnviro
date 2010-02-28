@@ -79,6 +79,7 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
+  gPluginId := PluginHost.PluginId;
   FTheme := GetTheme(PluginHost.PluginId);
   FTheme.LoadTheme([tpIconSet]);
 end;
@@ -143,9 +144,9 @@ var
 begin
   with Result do
   begin
-	Name := 'Icon List';
+	  Name := 'Icon List';
     Description := Format('Icon Set Configuration for "%s"',[gPluginId]);
-	Status := '';
+	  Status := '';
 
     files := TStringList.Create;
     try
