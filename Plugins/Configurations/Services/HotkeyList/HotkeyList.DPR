@@ -214,13 +214,14 @@ begin
     Status := '';
 
     xml := TJclSimpleXml.Create;
+    if FileExists(GetSharpeUserSettingsPath + cSettingsLocation) then
     try
       xml.LoadFromFile(GetSharpeUserSettingsPath + cSettingsLocation);
       itemCount := xml.Root.Items.Count;
       Status := IntToStr(itemCount);
-    finally
-      xml.Free;
+    except
     end;
+    xml.Free;
   end;
 end;
 
