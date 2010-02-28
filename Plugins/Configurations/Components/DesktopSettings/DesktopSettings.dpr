@@ -103,11 +103,6 @@ begin
   inherited;
 end;
 
-function TSharpCenterPlugin.GetPluginDescriptionText: String;
-begin
-  Result := 'Define advanced desktop and wallpaper functionality.';
-end;
-
 procedure TSharpCenterPlugin.LoadSettings;
 begin
   with frmSettings, FXmlDeskSettings do begin
