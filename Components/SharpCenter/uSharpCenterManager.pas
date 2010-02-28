@@ -89,6 +89,7 @@ type
     FOnAddNavItem: TSharpCenterManagerAddNavItem;
     FPngImageList: TPngImageList;
 
+    FUnloadTimer: TTimer;
     FPluginHandle: THandle;
     FEditHandle: THandle;
     FOnLoadPlugin: TNotifyEvent;
@@ -111,7 +112,8 @@ type
 
     // Dll Methods
 
-    function UnloadDllTimer(ACommand: TSCC_COMMAND_ENUM; AParam,
+    procedure UnloadTimerEvent(Sender: TObject);
+    function UnloadDllCommand(ACommand: TSCC_COMMAND_ENUM; AParam,
       APluginID: string; APluginTabIndex: Integer): Boolean;
 
     function GetHistory: TSharpCenterHistoryList;
@@ -269,11 +271,9 @@ begin
   Result := True;
 end;
 
-function TSharpCenterManager.UnloadDllTimer(ACommand: TSCC_COMMAND_ENUM; AParam,
-  APluginID: string; APluginTabIndex: Integer): Boolean;
+procedure TSharpCenterManager.UnloadTimerEvent(Sender: TObject);
 begin
-  Result := True;
-  SetUnloadCommand(ACommand, AParam, APluginID, APluginTabIndex);
+  FUnloadTimer.Enabled := False;
 
   SCM.PluginTabIndex := FUnloadCommand.TabIndex;
 
@@ -303,7 +303,6 @@ begin
   end
   else if FUnloadCommand.Command = sccLoadSetting then
   begin
-
     if FPlugin.Dllhandle <> 0 then
       Unload;
 
@@ -315,6 +314,16 @@ begin
       BuildNavFromCommandLine;
     end;
   end;
+end;
+
+function TSharpCenterManager.UnloadDllCommand(ACommand: TSCC_COMMAND_ENUM; AParam,
+  APluginID: string; APluginTabIndex: Integer): Boolean;
+begin
+  Result := True;
+  SetUnloadCommand(ACommand, AParam, APluginID, APluginTabIndex);
+
+  // Set the timer to unload the dll after this function has finished
+  FUnloadTimer.Enabled := True;
 end;
 
 procedure TSharpCenterManager.RefreshTheme;
@@ -574,20 +583,20 @@ begin
   Result := True;
   if ACommand = sccChangeFolder then
   begin
-    UnloadDllTimer(sccChangeFolder, AParam, APluginID, APluginTabIndex);
+    UnloadDllCommand(sccChangeFolder, AParam, APluginID, APluginTabIndex);
   end else
     if ACommand = sccUnloadDll then
     begin
-      UnloadDllTimer(sccUnloadDll, AParam, APluginID, APluginTabIndex);
+      UnloadDllCommand(sccUnloadDll, AParam, APluginID, APluginTabIndex);
     end else
       if ACommand = sccLoadSetting then
       begin
-        UnloadDllTimer(sccLoadSetting, AParam, APluginID, APluginTabIndex);
+        UnloadDllCommand(sccLoadSetting, AParam, APluginID, APluginTabIndex);
 
       end
       else
         if ACommand = sccLoadDll then begin
-          UnloadDllTimer(sccLoadDll, AParam, APluginID, APluginTabIndex);
+          UnloadDllCommand(sccLoadDll, AParam, APluginID, APluginTabIndex);
         end
         else begin
           MessageDlg('Unknown command', mtError, [mbOK], 0);
@@ -693,6 +702,12 @@ begin
 
   FPluginTabs := TStringList.Create;
   FPngImageList := TPngImageList.Create(nil);
+
+  // Create the unload timer
+  FUnloadTimer := TTimer.Create(nil);
+  FUnloadTimer.OnTimer := UnloadTimerEvent;
+  FUnloadTimer.Interval := 1;
+  FUnloadTimer.Enabled := False;
 end;
 
 destructor TSharpCenterManager.Destroy;
@@ -798,7 +813,6 @@ end;
 function TSharpCenterManager.LoadPluginTabs: Boolean;
 var
   tmp : TStringlist;
-  tmpObj : TObject;
   i : integer;
 begin
   Result := True;
@@ -810,11 +824,8 @@ begin
       Plugin.TabInterface.AddPluginTabs(tmp);
       
       PluginTabs.Clear;
-
       for I := 0 to tmp.Count - 1 do
-      begin
         PluginTabs.AddObject(PAnsiChar(tmp[i]), tmp.Objects[i]);
-      end;
 
       if Assigned(FOnAddPluginTabs) then
         FOnAddPluginTabs(Self);
