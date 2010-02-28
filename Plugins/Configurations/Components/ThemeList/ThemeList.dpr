@@ -69,9 +69,6 @@ type
     function OpenEdit: Cardinal; stdcall;
     procedure CloseEdit(AApply: Boolean); stdcall;
 
-    function GetPluginName: string; override; stdcall;
-    function GetPluginStatusText: string; override; stdcall;
-    function GetPluginDescriptionText: string; override; stdcall;
     procedure SetupValidators; stdcall;
 
   end;
@@ -95,32 +92,6 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
-end;
-
-function TSharpCenterPlugin.GetPluginDescriptionText: string;
-begin
-  Result := 'Create and manage themes that customise the appearance of SharpE.';
-end;
-
-function TSharpCenterPlugin.GetPluginName: string;
-begin
-  Result := 'Themes';
-end;
-
-function TSharpCenterPlugin.GetPluginStatusText: string;
-var
-  dir: string;
-  files: TStringList;
-begin
-  files := TStringList.Create;
-  try
-
-    dir := SharpApi.GetSharpeUserSettingsPath + 'Themes\';
-    SharpFileUtils.FindFiles(files, dir, '*Theme.xml');
-  finally
-    result := inttoStr(files.Count);
-    files.Free;
-  end;
 end;
 
 function TSharpCenterPlugin.Open: Cardinal;
@@ -219,6 +190,27 @@ begin
   end;
 end;
 
+function GetPluginData(): TPluginData;
+var
+  dir: string;
+  files: TStringList;
+begin
+  with result do
+  begin
+    Name := 'Themes';
+    Description := 'Create and manage themes that customise the appearance of SharpE.';
+
+    files := TStringList.Create;
+    try
+      dir := SharpApi.GetSharpeUserSettingsPath + 'Themes\';
+      SharpFileUtils.FindFiles(files, dir, '*Theme.xml');
+    finally
+      Status := inttoStr(files.Count);
+      files.Free;
+    end;
+  end;
+end;
+
 function InitPluginInterface(APluginHost: ISharpCenterHost): ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
@@ -226,6 +218,7 @@ end;
 
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData;
 
 begin

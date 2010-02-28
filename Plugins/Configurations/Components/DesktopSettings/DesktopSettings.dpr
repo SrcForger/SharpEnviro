@@ -65,7 +65,6 @@ type
 
     procedure ClickPluginTab(ATab: TStringItem); stdCall;
     procedure AddPluginTabs(ATabItems: TStringList); stdCall;
-    function GetPluginDescriptionText: String; override; stdCall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
     destructor Destroy; override;
 
