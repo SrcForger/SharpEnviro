@@ -731,30 +731,32 @@ begin
   try
     // Build Image List
     Bmp := TBitmap.Create;
-    Bmp.Width := 16;
-    Bmp.Height := 16;
-    Bmp.Canvas.Brush.Color := clRed;
-    Bmp.canvas.FillRect(bmp.canvas.ClipRect);
+    try
+      Bmp.Width := 16;
+      Bmp.Height := 16;
+      Bmp.Canvas.Brush.Color := clRed;
+      Bmp.canvas.FillRect(bmp.canvas.ClipRect);
     
-    iml.Add(bmp,bmp);
+      iml.Add(bmp,bmp);
 
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'recentfile16');
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'open16');
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'drivecdrom16');
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'driveharddisk16');
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'driveremovable16');
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'folder16');
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'specialfolder16');
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'file16');
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'specialfile16');
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'scriptfile16');
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'actions16');
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'actionscategory16');
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'action16');
+      iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'recentfile16');
+      iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'open16');
+      iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'drivecdrom16');
+      iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'driveharddisk16');
+      iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'driveremovable16');
+      iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'folder16');
+      iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'specialfolder16');
+      iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'file16');
+      iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'specialfile16');
+      iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'scriptfile16');
+      iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'actions16');
+      iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'actionscategory16');
+      iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'action16');
 
-    iml.Add(bmp,bmp);
-
-    Bmp.Free;
+      iml.Add(bmp,bmp);
+    finally
+      Bmp.Free;
+    end;
 
     targetmenu.Items.Clear;
     mindex := -1;
@@ -1042,8 +1044,11 @@ begin
   subgenericiml.Height := 16;  
   Iconmenu.Images := iml;
 
+  try
+
   // Build Image Lists
   Bmp := TBitmap.Create;
+  try
   Bmp.Width := 16;
   Bmp.Height := 16;
 
@@ -1168,42 +1173,44 @@ begin
       filename := Dir + sr.Name;
       if FileExists(filename) then
       begin
-        filetag := sr.Name;
-        setlength(filetag,length(filetag) - length(ExtractFileExt(filetag)));
-        filetag := 'generic.' + filetag;
-        subgenericiml.PngImages.Add(False).PngImage.LoadFromFile(filename);
-        menuItem := TMenuItem.Create(Iconmenu);
-        menuItem.Caption := filetag;
-        menuItem.Hint := filetag;
-        menuItem.OnClick := iconmenuclick.OnSharpEIconClick;
-        menuItem.ImageIndex := subgenericiml.Count;
-        if n mod 20  = 0 then menuItem.Break := mbBarBreak;
-        Iconmenu.Items.Items[mindex].Add(menuItem);
-        n := n + 1;                
-      end;
-    until (FindNext(sr) <> 0);
-    FindClose(sr);
+          filetag := sr.Name;
+          setlength(filetag,length(filetag) - length(ExtractFileExt(filetag)));
+          filetag := 'generic.' + filetag;
+          subgenericiml.PngImages.Add(False).PngImage.LoadFromFile(filename);
+          menuItem := TMenuItem.Create(Iconmenu);
+          menuItem.Caption := filetag;
+          menuItem.Hint := filetag;
+          menuItem.OnClick := iconmenuclick.OnSharpEIconClick;
+          menuItem.ImageIndex := subgenericiml.Count;
+          if n mod 20  = 0 then menuItem.Break := mbBarBreak;
+          Iconmenu.Items.Items[mindex].Add(menuItem);
+          n := n + 1;
+        end;
+      until (FindNext(sr) <> 0);
+      FindClose(sr);
+    end;
+
+    if smiCustomIcon in IconItems then
+    begin
+      menuItem := TMenuItem.Create(Iconmenu);
+      menuItem.Caption := 'Custom Icon...';
+      menuItem.ImageIndex := 2;
+      menuItem.OnClick := iconmenuclick.OnCustomIconClick;
+      menuItem.SubMenuImages := subiml;
+      Iconmenu.Items.Add(menuItem);
+      //mindex := mindex + 1;
+    end;
+
+    Bmp.Width := 40;
+    Bmp.Height := 40;
+    subiml.Add(bmp,bmp);
+
+    Bmp.Width := 16;
+    Bmp.Height := 16;
+    subgenericiml.Add(bmp,bmp);
+  finally
+    Bmp.Free;
   end;
-
-  if smiCustomIcon in IconItems then
-  begin
-    menuItem := TMenuItem.Create(Iconmenu);
-    menuItem.Caption := 'Custom Icon...';
-    menuItem.ImageIndex := 2;
-    menuItem.OnClick := iconmenuclick.OnCustomIconClick;
-    menuItem.SubMenuImages := subiml;
-    Iconmenu.Items.Add(menuItem);
-    //mindex := mindex + 1;
-  end;
-
-  Bmp.Width := 40;
-  Bmp.Height := 40;
-  subiml.Add(bmp,bmp);
-
-  Bmp.Width := 16;
-  Bmp.Height := 16;
-  subgenericiml.Add(bmp,bmp);
-  Bmp.Free;
 
   Iconmenu.Popup(PopupPoint.X,PopupPoint.Y);
 
@@ -1213,11 +1220,13 @@ begin
     Application.ProcessMessages;
   end;
 
-  FreeAndNil(IconMenu);
-  FreeAndNil(subiml);
-  FreeAndNil(subgenericiml);
-  FreeAndNil(iml);
-  FreeAndNil(Iconmenuclick);
+  finally
+    FreeAndNil(IconMenu);
+    FreeAndNil(subiml);
+    FreeAndNil(subgenericiml);
+    FreeAndNil(iml);
+    FreeAndNil(Iconmenuclick);
+  end;
 
   result := PChar(Iconmenuresult);
 end;
