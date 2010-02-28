@@ -120,8 +120,7 @@ end;
 
 destructor TCustomSharpeColorPicker.Destroy;
 begin
-  if Assigned(FTimer) then
-    FreeAndNil(FTimer);
+  FTimer.Free;
 
   inherited;
 end;

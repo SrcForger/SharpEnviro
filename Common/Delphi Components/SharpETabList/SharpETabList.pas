@@ -362,6 +362,25 @@ begin
   Screen.Cursors[crHandPoint] := LoadCursor(0, IDC_HAND);
 end;
 
+destructor TSharpETabList.Destroy;
+var
+  i : integer;
+begin
+  for i := FTabsMenu.Items.Count - 1 downto 0 do
+    FTabsMenu.Items[i].Free;
+
+  FTabList.Free;
+  FButtons.Free;
+  FImage32.Free;
+  FTabsMenu.Free;
+  FScrollButtonImageList.Free;
+  FScrollLeft.Free;
+  FScrollRight.Free;
+  FDownArrow.Free;
+  
+  inherited;
+end;
+
 procedure TSharpETabList.Delete(ATabItem: TTabItem);
 var
   i: Integer;
@@ -1262,20 +1281,6 @@ procedure TSharpETabList.SetTabAlign(const Value: TLeftRight);
 begin
   FTabAlign := Value;
   Invalidate;
-end;
-
-destructor TSharpETabList.Destroy;
-begin
-  FTabList.Free;
-  FButtons.Free;
-  FImage32.Free;
-  FScrollButtonImageList.Free;
-  FScrollLeft.Free;
-  FScrollRight.Free;
-  FDownArrow.Free;
-  FTabsMenu.Free;
-  
-  inherited;
 end;
 
 procedure TSharpETabList.DrawTabs;

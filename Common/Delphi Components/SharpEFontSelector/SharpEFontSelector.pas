@@ -204,6 +204,7 @@ end;
 
 destructor TSharpEFontSelector.Destroy;
 begin
+  FSbProperties.Free;
   FFont.Free;
   inherited;
 end;

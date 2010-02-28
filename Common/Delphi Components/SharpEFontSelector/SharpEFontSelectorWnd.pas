@@ -370,8 +370,7 @@ begin
       imgFontPreview.Height div 2 - Bmp.Height div 2);
   finally
     text.Free;
-    if bmp <> nil then
-      bmp.Free;
+    bmp.Free;
   end;
 
 end;
@@ -488,7 +487,6 @@ end;
 
 procedure TfrmFontSelector.FormDestroy(Sender: TObject);
 begin
-  if Assigned(FFontList) Then
   FFontList.Free;
 end;
 

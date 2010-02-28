@@ -95,6 +95,18 @@ begin
   LoadResources;
 end;
 
+destructor TSharpESwatchCollection.Destroy;
+begin
+  FPopupMenu.Free;
+  FOpenDialog.Free;
+  FSaveDialog.Free;
+  FImage32.Free;
+  if Assigned(FImageList) then
+    FImageList.Free;
+
+  inherited Destroy;
+end;
+
 procedure TSharpESwatchCollection.Resize;
 begin
   inherited;
@@ -325,17 +337,6 @@ begin
     FSwatchManager.SortMode := sortName;
 
   Invalidate;
-end;
-
-destructor TSharpESwatchCollection.Destroy;
-begin
-  FPopupMenu.Free;
-  FOpenDialog.Free;
-  FSaveDialog.Free;
-  FImage32.Free;
-  FImageList.Free;
-
-  inherited Destroy;
 end;
 
 procedure TSharpESwatchCollection.LoadResources;

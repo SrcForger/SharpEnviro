@@ -433,7 +433,6 @@ begin
         newItem.ColorName := xml.Root.Items.Item[i].Properties.Value(cXmlColName, '');
         newItem.Color := xml.Root.Items.Item[i].Properties.IntValue(cXmlCol, clWindow);
       end;
-
     finally
       xml.Free;
     end;
@@ -751,7 +750,25 @@ begin
   FSwatches := TSharpESwatchCollectionItems.Create(Self);
   FSwatchTextBorderColor := FBorderColor;
   FCachedBitmap := TBitmap32.Create;
+end;
 
+procedure TSharpESwatchManager.BeforeDestruction;
+var
+  s: string;
+begin
+  inherited BeforeDestruction;
+
+  if not (csDesigning in ComponentState) then begin
+    s := GetSharpeUserSettingsPath + cXmlOptionsFile;
+    SaveOptions(s);
+
+    s := GetSharpeUserSettingsPath + cXmlDefaultSwatchFile;
+    Save(s);
+  end;
+
+  FSwatchFont.Free;
+  FSwatches.Free;
+  FCachedBitmap.Free;
 end;
 
 function TSharpESwatchManager.GetWidth: Integer;
@@ -840,31 +857,16 @@ begin
 
     if tmpColor.schemetype = stColor then begin
       newItem := TSharpESwatchCollectionItem.Create(FSwatches);
-      newItem.System := True;
-      newItem.ColorName := tmpColor.Name;
-      newItem.Color := tmpColor.Color;
-      newItem.ColorCode := 0 - (i+1);
+      try
+        newItem.System := True;
+        newItem.ColorName := tmpColor.Name;
+        newItem.Color := tmpColor.Color;
+        newItem.ColorCode := 0 - (i+1);
+      finally
+        newItem.Free;
+      end;
     end;
   end;
-end;
-
-procedure TSharpESwatchManager.BeforeDestruction;
-var
-  s: string;
-begin
-  inherited BeforeDestruction;
-
-  if not (csDesigning in ComponentState) then begin
-    s := GetSharpeUserSettingsPath + cXmlOptionsFile;
-    SaveOptions(s);
-
-    s := GetSharpeUserSettingsPath + cXmlDefaultSwatchFile;
-    Save(s);
-  end;
-
-  FSwatchFont.Free;
-  FSwatches.Free;
-  FCachedBitmap.Free;
 end;
 
 end.

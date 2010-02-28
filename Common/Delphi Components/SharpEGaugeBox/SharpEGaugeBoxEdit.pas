@@ -178,19 +178,7 @@ begin
   Ctl3D := False;
 
   CreateInitialControls;
-
 end;
-
-procedure TSharpeGaugeBox.SetEnabled(Value: boolean);
-begin
-  FBackPanel.Enabled := Value;
-  FBtnGauge.Enabled := Value;
-  FValueEdit.Enabled := Value;
-
-  if Not(Value) then
-    FValueEdit.Font.Color := clGrayText else
-    FValueEdit.Font.Color := clBtnText;
-end; 
 
 function TSharpeGaugeBox.CreateInitialControls: Boolean;
 var
@@ -252,7 +240,31 @@ begin
     Cursor := crArrow;
     width := 15;
   end;
+end;
 
+procedure TSharpeGaugeBox.BeforeDestruction;
+begin
+  inherited;
+
+  if assigned(FBtnGauge) then
+     FreeAndNil(FBtnGauge);
+  if assigned(FValueEdit) then
+     FreeAndNil(FValueEdit);
+  if assigned(FBackPanel) then
+     FreeAndNil(FBackPanel);
+  if assigned(FFrmSharpeGaugeBox) then
+     FreeAndNil(FFrmSharpeGaugeBox);
+end;
+
+procedure TSharpeGaugeBox.SetEnabled(Value: boolean);
+begin
+  FBackPanel.Enabled := Value;
+  FBtnGauge.Enabled := Value;
+  FValueEdit.Enabled := Value;
+
+  if Not(Value) then
+    FValueEdit.Font.Color := clGrayText else
+    FValueEdit.Font.Color := clBtnText;
 end;
 
 function TSharpeGaugeBox.GetBackgroundColor: TColor;
@@ -473,30 +485,19 @@ begin
 
   // Update glyph
   tmpGlyph := TBitmap32.Create;
-  tmpGlyph.DrawMode := dmBlend;
-  tmpGlyph.LoadFromResourceName(HInstance,'DROPLEFT_GRAY');
-  SharpGraphicsUtils.ReplaceColor32( tmpGlyph, Color32(clBlack), color32(Font.Color) );
-  tmpGlyph.DrawTo(FBtnGauge.Glyph.Canvas.Handle,0,0);
-  tmpGlyph.Free;
+  try
+    tmpGlyph.DrawMode := dmBlend;
+    tmpGlyph.LoadFromResourceName(HInstance,'DROPLEFT_GRAY');
+    SharpGraphicsUtils.ReplaceColor32( tmpGlyph, Color32(clBlack), color32(Font.Color) );
+    tmpGlyph.DrawTo(FBtnGauge.Glyph.Canvas.Handle,0,0);
+  finally
+    tmpGlyph.Free;
+  end;
 end;
 
 procedure TSharpeGaugeBox.SetDescription(const Value: string);
 begin
   FDescription := Value;
-end;
-
-procedure TSharpeGaugeBox.BeforeDestruction;
-begin
-  inherited;
-
-  if assigned(FBtnGauge) then
-     FreeAndNil(FBtnGauge);
-  if assigned(FValueEdit) then
-     FreeAndNil(FValueEdit);
-  if assigned(FBackPanel) then
-     FreeAndNil(FBackPanel);
-  if assigned(FFrmSharpeGaugeBox) then
-     FreeAndNil(FFrmSharpeGaugeBox);
 end;
 
 procedure TSharpeGaugeBox.SelectValueText;

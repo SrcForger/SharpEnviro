@@ -63,16 +63,18 @@ end;
 destructor TFontList.Destroy;
 begin
   ClearList;
+  List.Free;
+  
   inherited Destroy;
 end;
 (*----------------------------------------------------------------------------------*)
 
 procedure TFontList.ClearList;
+var
+  i : integer;
 begin
-  while List.Count > 0 do begin
-    TFontInfo(List.Objects[0]).Free;
-    List.Delete(0);
-  end;
+  for i := List.Count - 1 downto 0 do
+    TFontInfo(List.Objects[i]).Free;
 end;
 (*----------------------------------------------------------------------------------*)
 
