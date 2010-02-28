@@ -1224,7 +1224,7 @@ begin
     if Assigned(PluginDataFunc) then
       PluginData := PluginDataFunc()
     else
-      result := 1; //didn't find GetMetaData function
+      result := 1; //didn't find GetPluginData function
   end else
     result := 1; //couldn't open file
 end;
@@ -1247,62 +1247,59 @@ begin
 
     try
       pcName := StrAlloc(255);
-      LoadString(hndFile, IDS_NAME, pcName, 255);
-      MetaData.Name := String(pcName);
+      if LoadString(hndFile, IDS_NAME, pcName, 255) <> 0 then
+        MetaData.Name := String(pcName);
       StrDispose(pcName);
 
       pcDescription := StrAlloc(255);
-      LoadString(hndFile, IDS_DESCRIPTION, pcDescription, 255);
-      MetaData.Description := String(pcDescription);
+      if LoadString(hndFile, IDS_DESCRIPTION, pcDescription, 255) <> 0 then
+        MetaData.Description := String(pcDescription);
       StrDispose(pcDescription);
 
       pcAuthor := StrAlloc(255);
-      LoadString(hndFile, IDS_AUTHOR, pcAuthor, 255);
-      MetaData.Author := String(pcAuthor);
+      if LoadString(hndFile, IDS_AUTHOR, pcAuthor, 255) <> 0 then
+        MetaData.Author := String(pcAuthor);
       StrDispose(pcAuthor);
 
       pcVersion := StrAlloc(255);
-      LoadString(hndFile, IDS_VERSION, pcVersion, 255);
-      MetaData.Version := String(pcVersion);
+      if LoadString(hndFile, IDS_VERSION, pcVersion, 255) <> 0 then
+        MetaData.Version := String(pcVersion);
       StrDispose(pcVersion);
 
       pcExtraData := StrAlloc(255);
-      LoadString(hndFile, IDS_EXTRADATA, pcExtraData, 255);
-      MetaData.ExtraData := String(pcExtraData);
+      if LoadString(hndFile, IDS_EXTRADATA, pcExtraData, 255) <> 0 then
+        MetaData.ExtraData := String(pcExtraData);
       StrDispose(pcExtraData);
 
       MetaData.DataType := tteComponent;
 
-      if MetaData.Name = '' then
+      if MetaData.Name <> '' then
       begin
-        result := -1;
-        exit;
-      end;
+        StrTokenToStrings(MetaData.ExtraData, '|', stlData);
 
-      StrTokenToStrings(MetaData.ExtraData, '|', stlData);
-
-      for i := 0 to stlData.Count - 1 do
-      begin
-        if Pos('priority:', LowerCase(stlData[i])) > 0 then
+        for i := 0 to stlData.Count - 1 do
         begin
-          s := RightStr(stlData[i], Length(stlData[i]) - Length('priority:'));
-          s := Trim(s);
-          Priority := StrToInt(s);
-        end;
+          if Pos('priority:', LowerCase(stlData[i])) > 0 then
+          begin
+            s := RightStr(stlData[i], Length(stlData[i]) - Length('priority:'));
+            s := Trim(s);
+            Priority := StrToInt(s);
+          end;
 
-        if Pos('delay:', LowerCase(stlData[i])) > 0 then
-        begin
-          stlData[i] := Trim(stlData[i]);
-          s := RightStr(stlData[i], Length(stlData[i]) - Length('delay:'));
-          s := Trim(s);
-          Delay := StrToInt(s);
+          if Pos('delay:', LowerCase(stlData[i])) > 0 then
+          begin
+            stlData[i] := Trim(stlData[i]);
+            s := RightStr(stlData[i], Length(stlData[i]) - Length('delay:'));
+            s := Trim(s);
+            Delay := StrToInt(s);
+          end;
         end;
-      end;
+      end else
+        result := 1;
     finally
       stlData.Free;
     end;
-  end
-  else
+  end else
     result := 1; //couldn't open file
 end;
 
@@ -1325,33 +1322,28 @@ begin
       if Assigned(MetaDataFunc) then
       begin
         MetaData := MetaDataFunc(Preview);
-        if not (MetaData.DataType = tteModule) then
+        if (MetaData.DataType = tteModule) then
         begin
-          result := 1; //wrong data type
-          FreeLibrary(hndFile);
-          exit;
-        end;
+          StrTokenToStrings(MetaData.ExtraData, '|', stlData);
 
-        StrTokenToStrings(MetaData.ExtraData, '|', stlData);
-
-        for i := 0 to stlData.Count - 1 do
-        begin
-          stlData[i] := Trim(stlData[i]);
-          if Pos('preview:', LowerCase(stlData[i])) > 0 then
+          for i := 0 to stlData.Count - 1 do
           begin
-            s := RightStr(stlData[i], Length(stlData[i]) - Length('preview:'));
-            s := Trim(s);
-            HasPreview := StrToBool(s);
+            stlData[i] := Trim(stlData[i]);
+            if Pos('preview:', LowerCase(stlData[i])) > 0 then
+            begin
+              s := RightStr(stlData[i], Length(stlData[i]) - Length('preview:'));
+              s := Trim(s);
+              HasPreview := StrToBool(s);
+            end;
           end;
-        end;
-      end
-      else
+        end else
+          Result := 1;
+      end else
         result := 1; //didn't find GetMetaData function
     finally
       stlData.Free;
     end;
-  end
-  else
+  end else
     result := 1; //couldn't open file
 end;
 
@@ -1374,40 +1366,36 @@ begin
       if Assigned(MetaDataFunc) then
       begin
         MetaData := MetaDataFunc();
-        if not (MetaData.DataType = tteService) then
+        if (MetaData.DataType = tteService) then
         begin
-          result := 1; //wrong data type
-          exit;
-        end;
+          StrTokenToStrings(MetaData.ExtraData, '|', stlData);
 
-        StrTokenToStrings(MetaData.ExtraData, '|', stlData);
-
-        for i := 0 to stlData.Count - 1 do
-        begin
-          if Pos('priority:', LowerCase(stlData[i])) > 0 then
+          for i := 0 to stlData.Count - 1 do
           begin
-            stlData[i] := Trim(stlData[i]);
-            s := RightStr(stlData[i], Length(stlData[i]) - Length('priority:'));
-            s := Trim(s);
-            Priority := StrToInt(s);
-          end;
+            if Pos('priority:', LowerCase(stlData[i])) > 0 then
+            begin
+              stlData[i] := Trim(stlData[i]);
+              s := RightStr(stlData[i], Length(stlData[i]) - Length('priority:'));
+              s := Trim(s);
+              Priority := StrToInt(s);
+            end;
 
-          if Pos('delay:', LowerCase(stlData[i])) > 0 then
-          begin
-            stlData[i] := Trim(stlData[i]);
-            s := RightStr(stlData[i], Length(stlData[i]) - Length('delay:'));
-            s := Trim(s);
-            Delay := StrToInt(s);
+            if Pos('delay:', LowerCase(stlData[i])) > 0 then
+            begin
+              stlData[i] := Trim(stlData[i]);
+              s := RightStr(stlData[i], Length(stlData[i]) - Length('delay:'));
+              s := Trim(s);
+              Delay := StrToInt(s);
+            end;
           end;
-        end;
-      end
-      else
+        end else
+          Result := 1;
+      end else
         result := 1; //didn't find GetMetaData function
     finally
       stlData.Free;
     end;
-  end
-  else
+  end else
     result := 1; //couldn't open file
 end;
 
@@ -1430,40 +1418,36 @@ begin
       if Assigned(MetaDataFunc) then
       begin
         MetaData := MetaDataFunc();
-        if not (MetaData.DataType = tteConfig) then
+        if (MetaData.DataType = tteConfig) then
         begin
-          result := 1; //wrong data type
-          exit;
-        end;
+          StrTokenToStrings(MetaData.ExtraData, '|', stlData);
 
-        StrTokenToStrings(MetaData.ExtraData, '|', stlData);
-
-        for i := 0 to stlData.Count - 1 do
-        begin
-          if Pos('configmode:', LowerCase(stlData[i])) > 0 then
+          for i := 0 to stlData.Count - 1 do
           begin
-            stlData[i] := Trim(stlData[i]);
-            s := RightStr(stlData[i], Length(stlData[i]) - Length('configmode:'));
-            s := Trim(s);
-            ConfigMode := TSC_MODE_ENUM(StrToInt(s));
-          end;
+            if Pos('configmode:', LowerCase(stlData[i])) > 0 then
+            begin
+              stlData[i] := Trim(stlData[i]);
+              s := RightStr(stlData[i], Length(stlData[i]) - Length('configmode:'));
+              s := Trim(s);
+              ConfigMode := TSC_MODE_ENUM(StrToInt(s));
+            end;
 
-          if Pos('configtype:', LowerCase(stlData[i])) > 0 then
-          begin
-            stlData[i] := Trim(stlData[i]);
-            s := RightStr(stlData[i], Length(stlData[i]) - Length('configtype:'));
-            s := Trim(s);
-            ConfigType := TSU_UPDATE_ENUM(StrToInt(s));
+            if Pos('configtype:', LowerCase(stlData[i])) > 0 then
+            begin
+              stlData[i] := Trim(stlData[i]);
+              s := RightStr(stlData[i], Length(stlData[i]) - Length('configtype:'));
+              s := Trim(s);
+              ConfigType := TSU_UPDATE_ENUM(StrToInt(s));
+            end;
           end;
-        end;
-      end
-      else
+        end else
+          Result := 1;
+      end else
         result := 1; //didn't find GetMetaData function
     finally
       stlData.Free;
     end;
-  end
-  else
+  end else
     result := 1; //couldn't open file
 end;
 
