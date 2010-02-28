@@ -66,6 +66,7 @@ type
     procedure RenderMenuItem(Dst : TBitmap32; px,py : integer;
                              pitem : TObject; state : TSharpEMenuItemState);
     function GetCurrentItem : TSharpEMenuItem;
+
   public
     // Create/Destroy
     constructor Create(pParentMenuItem : TSharpEMenuItem; pManager  : ISharpESkinManager; pSettings : TSharpEMenuSettings); reintroduce; overload;
@@ -165,8 +166,7 @@ begin
   FSkinManager := pManager;
   FMouseDown := False;
   FItemIndex := -1;
-  FItems := TObjectList.Create;
-  FItems.Clear;
+  FItems := TObjectList.Create(True);
 
   FWrapMenu := False;
 
@@ -181,26 +181,22 @@ begin
 end;
 
 destructor TSharpEMenu.Destroy;
-var
-  n : integer;
 begin
-  for n := FItems.Count - 1 downto 0 do
-      FItems.Delete(n);
   FreeAndNil(FItems);
+
   FreeAndNil(FMenuActions);
   FreeAndNil(FMenuConsts);
   FreeAndNil(FSettings);
-  if (SharpEMenuIcons <> nil) then
-    if SharpEMenuIcons.Items.Count = 0 then
-      FreeAndNil(SharpEMenuIcons);
-  if FBackground <> nil then
-     FreeAndNil(FBackground);
-  if FNormalMenu <> nil then
-     FreeAndNil(FNormalMenu);
-  if FSpecialBackground <> nil then
-     FreeAndNil(FSpecialBackground);
-  if FSpecialBackgroundSource <> nil then
-    FreeAndNil(FSpecialBackgroundSource);     
+  FreeAndNil(FBackground);
+  FreeAndNil(FNormalMenu);
+  FreeAndNil(FSpecialBackground);
+  FreeAndNil(FSpecialBackgroundSource);
+
+  if FParentMenuItem = nil then
+  begin
+    FreeAndNil(SharpEMenuIcons);
+    FreeAndNil(SharpEMenuPopups);
+  end;
 
   inherited Destroy;
 end;

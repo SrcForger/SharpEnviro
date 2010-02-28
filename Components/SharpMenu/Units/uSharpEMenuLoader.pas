@@ -111,25 +111,28 @@ var
   tempSettings : TSharpEMenuSettings;
 begin
   tempSettings := TSharpEMenuSettings.Create;
-  tempSettings.LoadFromXML; // Load the default settings;
-
-  RootMenu := nil;
-  XML := TJvSimpleXML.Create(nil);
   try
-    if FileExists(pFileName) then
-    begin
-      XML.LoadFromFile(pFileName);
-      RootMenu := LoadMenuFromXML(nil,XML.Root.Items,pManager,tempSettings,pDesignMode);
-    end;
-  finally
-    XML.Free;
-  end;
-  
-  if RootMenu = nil then
-     RootMenu := TSharpEMenu.Create(nil,pManager,tempSettings);
-  result := RootMenu;
+    tempSettings.LoadFromXML; // Load the default settings;
 
-  tempSettings.Free;
+    RootMenu := nil;
+    XML := TJvSimpleXML.Create(nil);
+    try
+      if FileExists(pFileName) then
+      begin
+        XML.LoadFromFile(pFileName);
+        RootMenu := LoadMenuFromXML(nil,XML.Root.Items,pManager,tempSettings,pDesignMode);
+      end;
+    finally
+      XML.Free;
+    end;
+  
+    if RootMenu = nil then
+      RootMenu := TSharpEMenu.Create(nil,pManager,tempSettings);
+    result := RootMenu;
+
+  finally
+    tempSettings.Free;
+  end;
 end;
 
 end.
