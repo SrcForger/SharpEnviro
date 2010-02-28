@@ -351,7 +351,7 @@ var
   sFirstNavFile, sFirstPluginID: string;
   newItem: TSharpCenterManagerItem;
 begin
-  if ( not( fileexists(AFile) ) ) then exit;
+  if not fileexists(AFile) then exit;
 
   LockWindowUpdate(Application.MainForm.Handle);
 
@@ -463,8 +463,6 @@ begin
   if Assigned(FOnInitNavigation) then
     FOnInitNavigation(Self);
 
-  History.AddFolder(APath);
-
   try
     APath := PathAddSeparator(APath);
 
@@ -563,8 +561,10 @@ begin
     end;
     LockWindowUpdate(0);
 
-    if SCM.History.Count = 1 then
+    if SCM.History.Count <= 1 then
       SCM.LoadHome;
+
+    History.AddFolder(APath);
   end;
 end;
 

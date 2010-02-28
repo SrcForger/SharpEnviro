@@ -4,6 +4,7 @@ uses
   Forms,
   Windows,
   SharpApi,
+  JvValidators,
   uSharpCenterMainWnd in 'uSharpCenterMainWnd.pas' {SharpCenterWnd},
   uSharpCenterDllMethods in 'uSharpCenterDllMethods.pas',
   uSharpCenterHelperMethods in 'uSharpCenterHelperMethods.pas',
