@@ -1429,6 +1429,7 @@ object SharpCenterWnd: TSharpCenterWnd
   ScreenSnap = True
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnMouseWheel = FormMouseWheel
   OnResize = FormResize
   OnShow = FormShow

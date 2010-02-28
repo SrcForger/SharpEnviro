@@ -796,21 +796,36 @@ begin
 end;
 
 function TSharpCenterManager.LoadPluginTabs: Boolean;
+var
+  tmp : TStringlist;
+  tmpObj : TObject;
+  i : integer;
 begin
   Result := True;
-  SCM.PluginTabs.Clear;
   
-  if (PluginHasTabSupport) then begin
-    Plugin.TabInterface.AddPluginTabs(PluginTabs);
+  tmp := TStringList.Create;
+  try
+    if (PluginHasTabSupport) then
+    begin
+      Plugin.TabInterface.AddPluginTabs(tmp);
+      
+      PluginTabs.Clear;
 
-    if Assigned(FOnAddPluginTabs) then
-      FOnAddPluginTabs(Self);
-  end else
-    if Assigned(FOnAddPluginTabs) then
-      FOnAddPluginTabs(Self);
+      for I := 0 to tmp.Count - 1 do
+      begin
+        PluginTabs.AddObject(PAnsiChar(tmp[i]), tmp.Objects[i]);
+      end;
 
-  if (PluginTabs.Count > 0) then begin
-    ClickTab(FPluginTabIndex);
+      if Assigned(FOnAddPluginTabs) then
+        FOnAddPluginTabs(Self);
+    end else
+      if Assigned(FOnAddPluginTabs) then
+        FOnAddPluginTabs(Self);
+
+    if (PluginTabs.Count > 0) then
+      ClickTab(FPluginTabIndex);
+  finally
+    tmp.Free;
   end;
 end;
 
