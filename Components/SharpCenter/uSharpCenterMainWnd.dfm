@@ -2489,6 +2489,10 @@ object SharpCenterWnd: TSharpCenterWnd
             Caption = 'tabImport'
             ImageIndex = 1
             TabVisible = False
+            ExplicitLeft = 0
+            ExplicitTop = 0
+            ExplicitWidth = 0
+            ExplicitHeight = 0
             object btnImport: TPngSpeedButton
               Left = 118
               Top = 36
@@ -9718,7 +9722,6 @@ object SharpCenterWnd: TSharpCenterWnd
   object tmrClick: TTimer
     Enabled = False
     Interval = 1
-    OnTimer = tmrClickTimer
     Left = 16
     Top = 208
   end

@@ -81,7 +81,6 @@ type
   private
     FHistory: TSharpCenterHistoryList;
     FRoot: string;
-    FUnloadTimer: TTimer;
 
     FPlugin: TPlugin;
     FUnloadCommand: TSharpCenterHistoryItem;
@@ -109,9 +108,6 @@ type
 
     FPluginTabIndex: Integer;
     FPluginVersion: string;
-
-    // Events
-    procedure UnloadTimerEvent(Sender: TObject);
 
     // Dll Methods
 
@@ -262,7 +258,7 @@ begin
   FPlugin.PluginInterface.Close;
 
   FPluginTabs.Clear;
-  
+
   // Unload the plugin
   UnloadPluginInterface(FPlugin, FPluginHost);
 
@@ -278,12 +274,7 @@ function TSharpCenterManager.UnloadDllTimer(ACommand: TSCC_COMMAND_ENUM; AParam,
 begin
   Result := True;
   SetUnloadCommand(ACommand, AParam, APluginID, APluginTabIndex);
-  FUnloadTimer.Enabled := True;
-end;
 
-procedure TSharpCenterManager.UnloadTimerEvent(Sender: TObject);
-begin
-  FUnloadTimer.Enabled := False;
   SCM.PluginTabIndex := FUnloadCommand.TabIndex;
 
   if FUnloadCommand.Command = sccUnloadDll then
@@ -323,7 +314,6 @@ begin
     else begin
       BuildNavFromCommandLine;
     end;
-
   end;
 end;
 
@@ -385,47 +375,48 @@ begin
         begin
 
           newItem := TSharpCenterManagerItem.Create;
-          newItem.ItemType := itmDll;
+            newItem.ItemType := itmDll;
 
-          sPath := ExtractFilePath(AFile);
-          sDll := '';
-          if Items.Item[i].Items.ItemNamed['Dll'] <> nil then
-            sDll := Items.Item[i].Items.ItemNamed['Dll'].Value;
+            sPath := ExtractFilePath(AFile);
+            sDll := '';
+            if Items.Item[i].Items.ItemNamed['Dll'] <> nil then
+              sDll := Items.Item[i].Items.ItemNamed['Dll'].Value;
 
-          sIcon := '';
-          if Items.Item[i].Items.ItemNamed['Icon'] <> nil then
-            sIcon := Items.Item[i].Items.ItemNamed['Icon'].Value;
+            sIcon := '';
+            if Items.Item[i].Items.ItemNamed['Icon'] <> nil then
+              sIcon := Items.Item[i].Items.ItemNamed['Icon'].Value;
 
-          sName := '';
-          sStatus := '';
-          sTitle := '';
-          sDescription := '';
-          GetItemText(sPath + sDll, SCM.ActivePluginID, sName, sStatus, sDescription);
+            sName := '';
+            sStatus := '';
+            sTitle := '';
+            sDescription := '';
+            GetItemText(sPath + sDll, SCM.ActivePluginID, sName, sStatus, sDescription);
 
-          if Items.Item[i].Items.ItemNamed['Name'] <> nil then
-            sName := Items.Item[i].Items.ItemNamed['Name'].Value;
+            if Items.Item[i].Items.ItemNamed['Name'] <> nil then
+              sName := Items.Item[i].Items.ItemNamed['Name'].Value;
 
-          if sName = '' then
-            newItem.Caption := Items.Item[i].Name
-          else
-            newItem.Caption := sName;
+            if sName = '' then
+              newItem.Caption := Items.Item[i].Name
+            else
+              newItem.Caption := sName;
 
-          newItem.Filename := sPath + sDll;
-          newItem.PluginID := SCM.ActivePluginID;
-          newItem.Description := sDescription;
-          NewItem.Status := sStatus;
+            newItem.Filename := sPath + sDll;
+            newItem.PluginID := SCM.ActivePluginID;
+            newItem.Description := sDescription;
+            NewItem.Status := sStatus;
 
-          pngfile := sPath + sIcon;
-          SCM.AssignIconIndex(pngfile, newItem);
+            pngfile := sPath + sIcon;
+            SCM.AssignIconIndex(pngfile, newItem);
 
-          if Assigned(FOnAddNavItem) then begin
-            FOnAddNavItem(newItem, newItem.IconIndex);
-          end;
+            if Assigned(FOnAddNavItem) then begin
+              FOnAddNavItem(newItem, newItem.IconIndex);
+            end;
 
-          if i = 0 then begin
-            sFirstNavFile := newItem.Filename;
-            sFirstPluginID := newItem.PluginID;
-          end;
+            if i = 0 then
+            begin
+              sFirstNavFile := newItem.Filename;
+              sFirstPluginID := newItem.PluginID;
+            end;
         end;
       end;
 
@@ -522,18 +513,17 @@ begin
           end;
 
           newItem := TSharpCenterManagerItem.Create;
-          newItem.Caption := sName;
-          newItem.Status := sStatus;
-          newItem.ItemType := itmSetting;
-          newItem.Filename := APath + sRec.Name;
-          sPng := sIcon;
-          AssignIconIndex(sPng, newItem);
+            newItem.Caption := sName;
+            newItem.Status := sStatus;
+            newItem.ItemType := itmSetting;
+            newItem.Filename := APath + sRec.Name;
+            sPng := sIcon;
+            AssignIconIndex(sPng, newItem);
 
-          if Assigned(FOnAddNavItem) then begin
-            FOnAddNavItem(newItem, -1);
-            Inc(iCount);
-          end;
-
+            if Assigned(FOnAddNavItem) then begin
+              FOnAddNavItem(newItem, -1);
+              Inc(iCount);
+            end;
         end
         else if IsDirectory(APath + sRec.Name) then
         begin
@@ -542,30 +532,31 @@ begin
           begin
 
             newItem := TSharpCenterManagerItem.Create;
-            newItem.Caption := PathRemoveExtension(sRec.Name);
-            newItem.Path := APath + sRec.Name;
-            newItem.ItemType := itmFolder;
-            sPng := APath + PathRemoveExtension(sRec.Name) + '.png';
-            AssignIconIndex(sPng, newItem);
+              newItem.Caption := PathRemoveExtension(sRec.Name);
+              newItem.Path := APath + sRec.Name;
+              newItem.ItemType := itmFolder;
+              sPng := APath + PathRemoveExtension(sRec.Name) + '.png';
+              AssignIconIndex(sPng, newItem);
 
-            if Assigned(FOnAddNavItem) then begin
-              FOnAddNavItem(newItem, -1);
-              Inc(iCount);
-            end;
+              if Assigned(FOnAddNavItem) then begin
+                FOnAddNavItem(newItem, -1);
+                Inc(iCount);
+              end;
           end;
         end;
       until
         FindNext(SRec) <> 0;
-
   finally
+    FindClose(sRec);
+
     if iCount = 0 then
     begin
-
       newItem := TSharpCenterManagerItem.Create;
       newItem.Caption := 'No items found';
       newItem.ItemType := itmNone;
 
-      if Assigned(FOnAddNavItem) then begin
+      if Assigned(FOnAddNavItem) then
+      begin
         FOnAddNavItem(newItem, 0);
       end;
 
@@ -700,12 +691,6 @@ begin
 
   FUnloadCommand := TSharpCenterHistoryItem.Create;
 
-  // Create the unload timer
-  FUnloadTimer := TTimer.Create(nil);
-  FUnloadTimer.OnTimer := UnloadTimerEvent;
-  FUnloadTimer.Interval := 1;
-  FUnloadTimer.Enabled := False;
-
   FPluginTabs := TStringList.Create;
   FPngImageList := TPngImageList.Create(nil);
 end;
@@ -713,7 +698,6 @@ end;
 destructor TSharpCenterManager.Destroy;
 begin
   FHistory.Free;
-  FUnloadTimer.Free;
   FUnloadCommand.Free;
   FPluginTabs.Free;
   FPngImageList.Free;
@@ -910,22 +894,6 @@ begin
     end;
 end;
 
-procedure LoadPluginData(var tmpPlugin: TPlugin; var FPluginHost : TInterfacedSharpCenterHostBase; var sStatus, sName, sDescription: string);
-begin
-  tmpPlugin.PluginInterface := tmpPlugin.InitPluginInterface(FPluginHost);
-  tmpPlugin.PluginInterface.CanDestroy := false;
-
-  sName := PAnsiChar(tmpPlugin.PluginInterface.GetPluginName);
-  if sName = '' then
-    sName := tmpPlugin.MetaData.Name;
-
-  sStatus := PAnsiChar(tmpPlugin.PluginInterface.GetPluginStatusText);
-
-  sDescription := PAnsiChar(tmpPlugin.PluginInterface.GetPluginDescriptionText);
-  if sDescription = '' then
-    sDescription := tmpPlugin.MetaData.Description;
-end;
-
 procedure TSharpCenterManager.GetItemText(AFile, APluginID: string;
           var AName, AStatus, ADescription: string);
 var
@@ -940,11 +908,9 @@ begin
     if fileexists(AFile) then
     begin
       tmpPlugin := LoadPluginInterface(PChar(Afile), FPluginHost);
-
-      if ( (tmpPlugin.Dllhandle <> 0) and (@tmpPlugin.InitPluginInterface <> nil ) ) then
-      begin
-        LoadPluginData(tmpPlugin, FPluginHost, AStatus, AName, ADescription);
-      end;
+      AName := tmpPlugin.PluginData.Name;
+      AStatus := tmpPlugin.PluginData.Status;
+      ADescription := tmpPlugin.PluginData.Description;
     end;
   finally
     UnloadPluginInterface(tmpPlugin, FPluginHost);
@@ -990,29 +956,25 @@ function TSharpCenterManager.LoadHome: Boolean;
 var
   Xml: TJvSimpleXML;
   sFile, tmp: string;
-
 begin
   Result := False;
   Xml := TJvSimpleXML.Create(nil);
   sFile := GetCenterDirectory + '_home\home.dll';
   try
-
     if FileExists(sFile) then
     begin
       FPlugin := LoadPluginInterface(PChar(sFile), FPluginHost);
 
       if ((FPlugin.Dllhandle <> 0) and (@FPlugin.InitPluginInterface <> nil)) then
       begin
-        FPlugin.PluginInterface := FPlugin.InitPluginInterface( FPluginHost );
-        FPlugin.PluginInterface.CanDestroy := false;
-        FPluginHandle := Plugin.PluginInterface.Open();
+        FPluginHandle := Plugin.PluginInterface.Open;
         FPluginHost.PluginOwner.ParentWindow := FPluginHandle;
 
         LoadPluginTabs;
 
         if Assigned(FOnSetHomeTitle) then
         begin
-          tmp := FPlugin.PluginInterface.GetPluginDescriptionText;
+          tmp := FPlugin.PluginData.Description;
           if tmp = '' then
             tmp := FPlugin.MetaData.Description;
 
@@ -1024,7 +986,6 @@ begin
 
         if Assigned(FOnUpdateTheme) then
           FOnUpdateTheme(Self);
-
 
         Result := True;
       end;
@@ -1130,7 +1091,8 @@ end;
 initialization
   SCM := TSharpCenterManager.Create;
 finalization
-  FreeAndNil(SCM);
+  if Assigned(SCM) then
+    FreeAndNil(SCM);
 
 end.
 

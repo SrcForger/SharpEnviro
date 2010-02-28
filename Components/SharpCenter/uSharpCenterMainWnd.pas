@@ -105,7 +105,6 @@ type
     btnEditApply: TPngSpeedButton;
     Timer1: TTimer;
     pnlTitle: TPanel;
-    tmrClick: TTimer;
     pcToolbar: TPageControl;
     tabHistory: TTabSheet;
     tabImport: TTabSheet;
@@ -145,7 +144,6 @@ type
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     procedure lbTreeGetCellText(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AColText: string);
-    procedure tmrClickTimer(Sender: TObject);
     procedure lbTreeGetCellColor(Sender: TObject; const AItem: TSharpEListItem;
       var AColor: TColor);
     procedure tlToolbarBtnClick(ASender: TObject; const ABtnIndex: Integer);
@@ -453,7 +451,12 @@ begin
   if lbTree.ItemIndex = -1 then
     exit;
 
-  tmrClick.Enabled := True;
+  // If in edit state do not continue
+  if SCM.CheckEditState then
+    exit;
+
+  ClickItem;
+  Application.ProcessMessages;
 end;
 
 procedure TSharpCenterWnd.lbTreeGetCellColor(Sender: TObject;
@@ -751,18 +754,6 @@ begin
    // 4: btnExport.Click  }
   //  end;
   end;
-end;
-
-procedure TSharpCenterWnd.tmrClickTimer(Sender: TObject);
-begin
-  tmrClick.Enabled := False;
-
-  // If in edit state do not continue
-  if SCM.CheckEditState then
-    exit;
-
-  ClickItem;
-  Application.ProcessMessages;
 end;
 
 procedure TSharpCenterWnd.tlEditItemTabChange(ASender: TObject;
@@ -1405,14 +1396,11 @@ begin
       SCM.Unload;
 
     FreeAndNil(SCM);
-
   finally
     CanClose := True;
   end;
-
-//  Application.Terminate;
-//  Halt;  
 end;
+
 
 procedure TSharpCenterWnd.FormCreate(Sender: TObject);
 begin

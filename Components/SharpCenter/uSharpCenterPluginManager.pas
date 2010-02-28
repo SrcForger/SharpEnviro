@@ -12,7 +12,7 @@ uses
   sharpapi,
   GR32,
   SharpCenterApi,
-
+  
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit;
 
@@ -23,6 +23,7 @@ type
     ConfigType: TSU_UPDATE_ENUM;
     ConfigMode: TSC_MODE_ENUM;
     MetaData: TMetaData;
+    PluginData: TPluginData;
 
     PluginInterface: ISharpCenterPlugin;
     EditInterface: ISharpCenterPluginEdit;
@@ -78,29 +79,36 @@ begin
   end;
 end;
 
+procedure LoadPluginData(var plugin: TPlugin; var PluginHost : TInterfacedSharpCenterHostBase);
+begin
+  plugin.PluginInterface := plugin.InitPluginInterface(PluginHost);
+  plugin.PluginInterface.CanDestroy := false;
+end;
+
 function LoadPluginInterface(dll: Pchar; var pluginHost: TInterfacedSharpCenterHostBase): TPlugin;
 begin
   result.Dll := dll;
 
-  GetConfigMetaData(Dll,Result.MetaData,Result.ConfigMode,Result.ConfigType);
-  if Result.MetaData.Version <> scm.PluginVersion  then begin
-    result.DllHandle := 0;
-  end else
-  begin
-    // Load the XML interface
-    pluginHost.LoadXml;
+  // Load the XML interface
+  pluginHost.LoadXml;
 
-    result.dllhandle := LoadLibrary(dll);
-    if result.dllhandle <> 0 then begin
-      @result.InitPluginInterface := GetProcAddress(result.Dllhandle, 'InitPluginInterface');
-      
-      if (@result.InitPluginInterface = nil) then
-      begin
-        FreeLibrary(result.dllhandle);
-        result.dllhandle := 0;
-        SendDebugMessageEx('SharpCenter','Unable to load plugin, InitPluginInterface does not exist',clRed,DMT_ERROR);
-      end;
+  result.dllhandle := LoadLibrary(dll);
+  if result.dllhandle <> 0 then
+  begin
+    @result.InitPluginInterface := GetProcAddress(result.Dllhandle, 'InitPluginInterface');
+
+    if (@result.InitPluginInterface = nil) then
+    begin
+      FreeLibrary(result.dllhandle);
+      result.dllhandle := 0;
+      SendDebugMessageEx('SharpCenter','Unable to load plugin, InitPluginInterface does not exist',clRed,DMT_ERROR);
     end;
+
+    LoadPluginData(result, pluginHost);
+
+    // Get the config's MetaData and PluginData
+    GetConfigMetaDataEx(Result.DllHandle,Result.MetaData,Result.ConfigMode,Result.ConfigType);
+    GetConfigPluginData(Result.DllHandle,Result.PluginData);
   end;
 end;
 
