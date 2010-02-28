@@ -62,7 +62,6 @@ type
     procedure Save; override; stdcall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
 
-    function GetPluginDescriptionText: string; override; stdcall;
     procedure AddPluginTabs(ATabItems: TStringList); stdcall;
     procedure ClickPluginTab(ATab: TStringItem); stdcall;
 end;
@@ -138,11 +137,6 @@ begin
   FreeAndNil(frmVolumeControl);
 end;
 
-function TSharpCenterPlugin.GetPluginDescriptionText: String;
-begin
-  result := 'Configure volume control module';
-end;
-
 procedure TSharpCenterPlugin.ClickPluginTab(ATab: TStringItem);
 begin
   TJvStandardPage(ATab.FObject).Show;
@@ -170,6 +164,14 @@ begin
   end;
 end;
 
+function GetPluginData(): TPluginData;
+begin
+  with Result do
+  begin
+    Description := 'Configure the Volume Control module';
+  end;
+end;
+
 procedure TSharpCenterPlugin.Refresh(Theme : TCenterThemeInfo; AEditing: Boolean);
 begin
   AssignThemeToPluginForm(frmVolumeControl,AEditing,Theme);
@@ -182,6 +184,7 @@ end;
 
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData;
 
 begin

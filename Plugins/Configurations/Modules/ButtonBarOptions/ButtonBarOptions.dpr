@@ -57,9 +57,6 @@ type
     procedure Close; override; stdcall;
     procedure Save; override; stdcall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdCall;
-
-    function GetPluginDescriptionText: String; override; stdCall;
-    function GetPluginName: String; override; stdCall;
 end;
 
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
@@ -118,16 +115,6 @@ begin
   FreeAndNil(frmSettings);
 end;
 
-function TSharpCenterPlugin.GetPluginDescriptionText : String;
-begin
-  result := 'Configure global options for the button bar module';
-end;
-
-function TSharpCenterPlugin.GetPluginName: String;
-begin
-  Result := 'Options';
-end;
-
 function GetMetaData(): TMetaData;
 begin
   with result do
@@ -139,6 +126,15 @@ begin
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
       Integer(suModule)]);
+  end;
+end;
+
+function GetPluginData(): TPluginData;
+begin
+  with Result do
+  begin
+    Name := 'Options';
+    Description := 'Configure the global options for the Button Bar module';
   end;
 end;
 

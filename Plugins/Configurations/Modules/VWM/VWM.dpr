@@ -63,8 +63,6 @@ type
     procedure Close; override; stdcall;
     procedure Save; override; stdcall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdCall;
-
-    function GetPluginDescriptionText: String; override; stdCall;
 end;
 
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
@@ -135,11 +133,6 @@ begin
   FreeAndNil(frmVWM);
 end;
 
-function TSharpCenterPlugin.GetPluginDescriptionText : String;
-begin
-  result := 'Configure virtual window manager module';
-end;
-
 function GetMetaData(): TMetaData;
 begin
   with result do
@@ -151,6 +144,14 @@ begin
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
       Integer(suModule)]);
+  end;
+end;
+
+function GetPluginData(): TPluginData;
+begin
+  with Result do
+  begin
+    Description := 'Configure the Virtual Window Manager module';
   end;
 end;
 
@@ -166,6 +167,7 @@ end;
 
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData;
 
 begin

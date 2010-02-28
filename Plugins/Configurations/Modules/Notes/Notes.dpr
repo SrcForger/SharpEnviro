@@ -58,8 +58,6 @@ type
     procedure Close; override; stdcall;
     procedure Save; override; stdcall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdCall;
-
-    function GetPluginDescriptionText: String; override; stdCall;
 end;
 
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
@@ -154,11 +152,6 @@ begin
   FreeAndNil(frmNotes);
 end;
 
-function TSharpCenterPlugin.GetPluginDescriptionText : String;
-begin
-  result := 'Configure Notes module';
-end;
-
 function GetMetaData(): TMetaData;
 begin
   with result do
@@ -173,6 +166,13 @@ begin
   end;
 end;
 
+function GetPluginData(): TPluginData;
+begin
+  with Result do
+  begin
+    Description := 'Configure the Notes module';
+  end;
+end;
 
 procedure TSharpCenterPlugin.Refresh(Theme : TCenterThemeInfo; AEditing: Boolean);
 begin
@@ -186,6 +186,7 @@ end;
 
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData;
 
 begin

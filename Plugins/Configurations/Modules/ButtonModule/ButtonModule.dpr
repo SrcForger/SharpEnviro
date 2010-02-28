@@ -60,8 +60,6 @@ type
     procedure Close; override; stdcall;
     procedure Save; override; stdcall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdCall;
-
-    function GetPluginDescriptionText: String; override; stdCall;
 end;
 
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
@@ -122,11 +120,6 @@ begin
   PluginHost.Xml.Save;
 end;
 
-function TSharpCenterPlugin.GetPluginDescriptionText : String;
-begin
-  result := 'Configure the button module';
-end;
-
 function GetMetaData(): TMetaData;
 begin
   with result do
@@ -142,6 +135,14 @@ begin
   end;
 end;
 
+function GetPluginData(): TPluginData;
+begin
+  with Result do
+  begin
+    Description := 'Configure the Button module';
+  end;
+end;
+
 procedure TSharpCenterPlugin.Refresh(Theme : TCenterThemeInfo; AEditing: Boolean);
 begin
   AssignThemeToPluginForm(frmEdit, AEditing, Theme);
@@ -154,6 +155,7 @@ end;
 
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData;
 
 begin

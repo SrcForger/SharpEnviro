@@ -67,8 +67,6 @@ type
     procedure Close; override; stdcall;
     procedure Save; override; stdcall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdCall;
-
-    function GetPluginDescriptionText: String; override; stdCall;
 end;
 
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
@@ -193,11 +191,6 @@ begin
   FreeAndNil(frmSysTray);
 end;
 
-function TSharpCenterPlugin.GetPluginDescriptionText : String;
-begin
-  result := 'Configure system tray module';
-end;
-
 function SetBtnState(AButtonID: Integer): Boolean;
 begin
   Result := False;
@@ -217,6 +210,14 @@ begin
   end;
 end;
 
+function GetPluginData(): TPluginData;
+begin
+  with Result do
+  begin
+    Description := 'Configure the System Tray module';
+  end;
+end;
+
 procedure TSharpCenterPlugin.Refresh(Theme : TCenterThemeInfo; AEditing: Boolean);
 begin
   AssignThemeToPluginForm(frmSysTray,AEditing,Theme);
@@ -229,6 +230,7 @@ end;
 
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData,
   SetBtnState;
 

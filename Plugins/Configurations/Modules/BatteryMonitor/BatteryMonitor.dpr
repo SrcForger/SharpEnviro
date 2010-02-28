@@ -55,7 +55,6 @@ type
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
     procedure Save; override; stdcall;
-    function GetPluginDescriptionText: string; override; stdcall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
 end;
 
@@ -110,11 +109,6 @@ begin
   FreeAndNil(frmBMon);
 end;
 
-function TSharpCenterPlugin.GetPluginDescriptionText: String;
-begin
-  result := 'The battery monitor module displays laptop status';
-end;
-
 function GetMetaData(): TMetaData;
 begin
   with result do
@@ -126,6 +120,14 @@ begin
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
       Integer(suModule)]);
+  end;
+end;
+
+function GetPluginData(): TPluginData;
+begin
+  with Result do
+  begin
+    Description := 'The Battery Monitor module displays laptop status';
   end;
 end;
 

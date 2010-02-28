@@ -66,7 +66,6 @@ type
     procedure Save; override; stdcall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdCall;
 
-    function GetPluginDescriptionText: String; override; stdCall;
     procedure AddPluginTabs(ATabItems: TStringList); stdcall;
     procedure ClickPluginTab(ATab: TStringItem); stdcall;
 end;
@@ -226,11 +225,6 @@ begin
   FreeAndNil(frmCPUMon);
 end;
 
-function TSharpCenterPlugin.GetPluginDescriptionText: String;
-begin
-  result := 'The CPU module displays current process activity';
-end;
-
 procedure TSharpCenterPlugin.AddPluginTabs(ATabItems: TStringList);
 begin
   ATabItems.AddObject('General', frmCPUMon.pagMon);
@@ -261,6 +255,14 @@ begin
   end;
 end;
 
+function GetPluginData(): TPluginData;
+begin
+  with Result do
+  begin
+    Description := 'Configure the CPU Monitor module, displays current process activity';
+  end;
+end;
+
 procedure TSharpCenterPlugin.Refresh(Theme : TCenterThemeInfo; AEditing: Boolean);
 begin
   AssignThemeToPluginForm(frmCPUMon,AEditing,Theme);
@@ -273,6 +275,7 @@ end;
 
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData;
 
 begin

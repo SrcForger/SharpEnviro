@@ -62,13 +62,13 @@ type
     function OpenEdit: Cardinal; stdcall;
     procedure Save; override; stdCall;
 
-    function GetPluginDescriptionText: String; override; stdCall;
-    function GetPluginStatusText: String; override; stdCall;
-    function GetPluginName: String; override; stdCall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
     procedure SetupValidators; stdcall;
   end;
 
+var
+  gModuleXmlFilename : string;
+  
 { TSharpCenterPlugin }
 
 procedure TSharpCenterPlugin.Close;
@@ -88,30 +88,7 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
-end;
-
-function TSharpCenterPlugin.GetPluginDescriptionText: String;
-begin
-  Result := 'Create and manage items for the application bar module';
-end;
-
-function TSharpCenterPlugin.GetPluginName: String;
-begin
-  Result := 'Applications';
-end;
-
-function TSharpCenterPlugin.GetPluginStatusText: String;
-var
-  items:  TAppBarList;
-begin
-  items := TAppBarList.Create;
-  items.Filename := PluginHost.GetModuleXmlFilename;
-  try
-    items.load;
-    Result := inttostr(items.Count);
-  finally
-    items.free;
-  end;
+  gModuleXmlFilename := PluginHost.GetModuleXmlFilename;
 end;
 
 function TSharpCenterPlugin.Open: Cardinal;
@@ -166,6 +143,25 @@ begin
   end;
 end;
 
+function GetPluginData(): TPluginData;
+var
+  items:  TAppBarList;
+begin
+  with Result do
+  begin
+    Name := 'Applications';
+    Description := 'Create and manage items for the Application Bar module';
+
+    items := TAppBarList.Create;
+    items.Filename := gModuleXmlFilename;
+    try
+      items.load;
+      Status := inttostr(items.Count);
+    finally
+      items.free;
+    end;
+  end;
+end;
 
 function InitPluginInterface( APluginHost: ISharpCenterHost ) : ISharpCenterPlugin;
 begin
@@ -174,6 +170,7 @@ end;
 
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData;
 
 begin
