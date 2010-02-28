@@ -27,7 +27,8 @@ unit uSharpDeskObjectSettings;
 
 interface
 
-uses JclSimpleXML,
+uses Windows,
+     JclSimpleXML,
      SharpApi,
      SysUtils,
      SharpThemeApiEx,
