@@ -55,7 +55,6 @@ type
     procedure Close; override; stdcall;
 
     procedure Save; override; stdcall;
-    function GetPluginDescriptionText: string; override; stdcall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
     procedure UpdatePreview(ABitmap: TBitmap32); stdcall;
     procedure AddPluginTabs(ATabItems: TStringList); stdcall;
@@ -97,11 +96,6 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
-end;
-
-function TSharpCenterPlugin.GetPluginDescriptionText: string;
-begin
-  Result := 'Define desktop area constraints.';
 end;
 
 procedure TSharpCenterPlugin.Load;
@@ -233,6 +227,16 @@ begin
   end;
 end;
 
+function GetPluginData(): TPluginData;
+begin
+  with result do
+  begin
+    Name := 'Desk Area';
+    Description := 'Define desktop area constraints.';
+    Status := '';
+  end;
+end;
+
 function InitPluginInterface(APluginHost: ISharpCenterHost): ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
@@ -240,6 +244,7 @@ end;
 
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData;
 
 begin

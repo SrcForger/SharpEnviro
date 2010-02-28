@@ -60,8 +60,6 @@ type
     procedure CloseEdit(AApply: Boolean); stdcall;
     function OpenEdit: Cardinal; stdcall;
 
-    function GetPluginDescriptionText: String; override; stdCall;
-    function GetPluginStatusText: String; override; stdCall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
     procedure SetupValidators; stdcall;
 
@@ -89,30 +87,6 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
-end;
-
-function TSharpCenterPlugin.GetPluginDescriptionText: String;
-begin
-  Result := 'Create system wide hotkeys using actions, or commonly used applications.';
-end;
-
-function TSharpCenterPlugin.GetPluginStatusText: String;
-var
-  xml : TJclSimpleXml;
-  fn: string;
-  itemCount: integer;
-begin
-  result := '';
-  fn := GetSharpeUserSettingsPath + cSettingsLocation;
-
-  xml := TJclSimpleXml.Create;
-  try
-    xml.LoadFromFile(fn);
-    itemCount := xml.Root.Items.Count;
-    Result := IntToStr(itemCount);
-  finally
-    xml.Free;
-  end;
 end;
 
 function TSharpCenterPlugin.Open: Cardinal;
@@ -227,6 +201,28 @@ begin
   end;
 end;
 
+function GetPluginData(): TPluginData;
+var
+  xml : TJclSimpleXml;
+  itemCount: integer;
+begin
+  with result do
+  begin
+    Name := 'Hotkeys';
+    Description := 'Create system wide hotkeys using actions, or commonly used applications.';
+
+    Status := '';
+
+    xml := TJclSimpleXml.Create;
+    try
+      xml.LoadFromFile(GetSharpeUserSettingsPath + cSettingsLocation);
+      itemCount := xml.Root.Items.Count;
+      Status := IntToStr(itemCount);
+    finally
+      xml.Free;
+    end;
+  end;
+end;
 
 function InitPluginInterface( APluginHost: ISharpCenterHost ) : ISharpCenterPlugin;
 begin
@@ -235,6 +231,7 @@ end;
 
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData;
 
 begin

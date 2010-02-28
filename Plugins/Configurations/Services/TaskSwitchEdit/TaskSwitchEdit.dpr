@@ -62,13 +62,14 @@ type
     procedure Save; override; stdcall;
     procedure Load;
 
-    function GetPluginDescriptionText: string; override; stdcall;
-    function GetPluginName: string; override; stdcall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
 
   end;
 
-  { TSharpCenterPlugin }
+var
+  gPluginId : string;
+
+{ TSharpCenterPlugin }
 
 procedure TSharpCenterPlugin.Close;
 begin
@@ -78,16 +79,7 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
-end;
-
-function TSharpCenterPlugin.GetPluginDescriptionText: string;
-begin
-  Result := Format('Editing Task Action: "%s"', [PluginHost.PluginId]);
-end;
-
-function TSharpCenterPlugin.GetPluginName: string;
-begin
-  Result := 'Options';
+  gPluginId := PluginHost.PluginId;
 end;
 
 procedure TSharpCenterPlugin.Load;
@@ -225,6 +217,16 @@ begin
   end;
 end;
 
+function GetPluginData(): TPluginData;
+begin
+  with result do
+  begin
+    Name := 'Options';
+    Description := Format('Editing Task Action: "%s"', [gPluginId]);
+    Status := '';
+  end;
+end;
+
 function InitPluginInterface(APluginHost: ISharpCenterHost): ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
@@ -232,6 +234,7 @@ end;
 
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData;
 
 begin

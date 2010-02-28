@@ -41,8 +41,6 @@ type
     function OpenEdit: Cardinal; stdcall;
     procedure Save; override; stdCall;
 
-
-    function GetPluginDescriptionText: String; override; stdCall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
     procedure SetupValidators; stdcall;
   end;
@@ -66,11 +64,6 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
-end;
-
-function TSharpCenterPlugin.GetPluginDescriptionText: String;
-begin
-  Result := 'Configure your weather locations. SOAP Services provided by Weather.com.';
 end;
 
 procedure TSharpCenterPlugin.Load;
@@ -135,6 +128,16 @@ begin
   end;
 end;
 
+function GetPluginData(): TPluginData;
+begin
+  with result do
+  begin
+    Name := 'Weather';
+    Description := 'Configure your weather locations. SOAP Services provided by Weather.com.';
+    Status := '';
+  end;
+end;
+
 function InitPluginInterface( APluginHost: ISharpCenterHost ) : ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
@@ -142,6 +145,7 @@ end;
 
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData;
 
 begin

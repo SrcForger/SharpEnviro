@@ -61,8 +61,6 @@ type
     procedure CloseEdit(AApply: Boolean); stdcall;
     function OpenEdit: Cardinal; stdcall;
 
-    function GetPluginDescriptionText: String; override; stdCall;
-    function GetPluginName: string; override; stdCall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
     procedure SetupValidators; stdcall;
     procedure Save; override; stdCall;
@@ -88,16 +86,6 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
-end;
-
-function TSharpCenterPlugin.GetPluginDescriptionText: String;
-begin
-  Result := 'Create task switch configurations.';
-end;
-
-function TSharpCenterPlugin.GetPluginName: string;
-begin
-  result := 'Tasks';
 end;
 
 function TSharpCenterPlugin.Open: Cardinal;
@@ -218,6 +206,15 @@ begin
   end;
 end;
 
+function GetPluginData(): TPluginData;
+begin
+  with result do
+  begin
+    Name := 'Tasks';
+    Description := 'Create task switch configurations.';
+    Status := '';
+  end;
+end;
 
 function InitPluginInterface( APluginHost: ISharpCenterHost ) : ISharpCenterPlugin;
 begin
@@ -226,6 +223,7 @@ end;
 
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData;
 
 begin

@@ -55,7 +55,6 @@ type
     procedure Close; override; stdcall;
     procedure Save; override; stdCall;
 
-    function GetPluginDescriptionText: String; override; stdCall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
   end;
 
@@ -70,11 +69,6 @@ constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
   PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpCore\Services\MultimediaInput\MultimediaInput.xml';
-end;
-
-function TSharpCenterPlugin.GetPluginDescriptionText: String;
-begin
-  Result := 'Support for Multimedia Input Devices (Keyboard, Mouse)';
 end;
 
 procedure TSharpCenterPlugin.Load;
@@ -133,6 +127,16 @@ begin
   end;
 end;
 
+function GetPluginData(): TPluginData;
+begin
+  with result do
+  begin
+    Name := 'Multimedia Input';
+    Description := 'Support for Multimedia Input Devices (Keyboard, Mouse)';
+    Status := '';
+  end;
+end;
+
 function InitPluginInterface( APluginHost: ISharpCenterHost ) : ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
@@ -140,6 +144,7 @@ end;
 
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData;
 
 begin
