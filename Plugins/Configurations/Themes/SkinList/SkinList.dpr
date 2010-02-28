@@ -62,14 +62,13 @@ type
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
     procedure Save; override; stdCall;
-
-    function GetPluginDescriptionText: String; override; stdCall;
-    function GetPluginStatusText: String; override; stdCall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
-
   end;
 
-{ TSharpCenterPlugin }
+var
+  gPluginId : string;
+
+  { TSharpCenterPlugin }
 
 procedure TSharpCenterPlugin.Close;
 begin
@@ -81,26 +80,7 @@ begin
   PluginHost := APluginHost;
   FTheme := GetTheme(APluginHost.PluginId);
   FTheme.LoadTheme([tpSkinScheme]);
-end;
-
-function TSharpCenterPlugin.GetPluginDescriptionText: String;
-begin
-  result := Format('Skin Configuration for "%s"',[PluginHost.PluginId]);
-end;
-
-function TSharpCenterPlugin.GetPluginStatusText: String;
-var
-  files: TStringList;
-begin
-  result := '';
-
-  files := TStringList.Create;
-  try
-    SharpFileUtils.FindFiles( files, GetSharpeDirectory + 'Skins\', '*Skin.xml' );
-    if files.Count <> 0 then result := IntToStr(files.Count);
-  finally
-    files.Free;
-  end;
+  gPluginId := APluginHost.PluginId;
 end;
 
 procedure TSharpCenterPlugin.Load;
@@ -146,6 +126,24 @@ begin
   end;
 end;
 
+function GetPluginData(): TPluginData;
+var
+  files: TStringList;
+begin
+  with Result do
+  begin
+    Description := Format('Skin Configuration for "%s"',[gPluginId]);
+
+    files := TStringList.Create;
+    try
+      SharpFileUtils.FindFiles( files, GetSharpeDirectory + 'Skins\', '*Skin.xml' );
+      if files.Count <> 0 then
+        Status := IntToStr(files.Count);
+    finally
+      files.Free;
+    end;
+  end;
+end;
 
 function InitPluginInterface( APluginHost: ISharpCenterHost ) : ISharpCenterPlugin;
 begin
@@ -154,6 +152,7 @@ end;
 
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData;
 
 begin

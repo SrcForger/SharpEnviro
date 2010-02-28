@@ -62,13 +62,13 @@ type
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
     procedure Save; override; stdcall;
-
-    function GetPluginDescriptionText: string; override; stdcall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
     procedure AddPluginTabs(ATabItems: TStringList); stdcall;
     procedure ClickPluginTab(ATab: TStringItem); stdcall;
-
   end;
+
+var
+  gPluginId : string;
 
   { TSharpCenterPlugin }
 
@@ -99,11 +99,7 @@ begin
   PluginHost := APluginHost;
   FTheme := GetTheme(APluginHost.PluginID);
   FTheme.LoadTheme([tpDesktop,tpSkinScheme]);
-end;
-
-function TSharpCenterPlugin.GetPluginDescriptionText: string;
-begin
-  result := Format('Desktop Configuration for "%s"', [PluginHost.PluginId]);
+  gPluginId := APluginHost.PluginId;
 end;
 
 procedure TSharpCenterPlugin.Load;
@@ -271,6 +267,14 @@ begin
   end;
 end;
 
+function GetPluginData(): TPluginData;
+begin
+  with Result do
+  begin
+    Description := Format('Desktop Configuration for "%s"', [gPluginId]);
+  end;
+end;
+
 function InitPluginInterface(APluginHost: ISharpCenterHost): ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
@@ -278,6 +282,7 @@ end;
 
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData;
 
 begin

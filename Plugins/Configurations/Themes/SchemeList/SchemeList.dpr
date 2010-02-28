@@ -63,16 +63,16 @@ type
     procedure Close; override; stdcall;
     procedure CloseEdit(AApply: Boolean); stdcall;
     function OpenEdit: Cardinal; stdcall;
-
-    function GetPluginDescriptionText: String; override; stdCall;
-    function GetPluginStatusText: String; override; stdCall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
     procedure SetupValidators; stdcall;
     procedure UpdatePreview(ABitmap: TBitmap32); stdcall;
-
   end;
 
-{ TSharpCenterPlugin }
+var
+  gTheme : ISharpETheme;
+  gPluginId : string;
+
+  { TSharpCenterPlugin }
 
 procedure TSharpCenterPlugin.Close;
 begin
@@ -93,11 +93,8 @@ begin
   PluginHost := APluginHost;
   Theme := GetTheme(PluginHost.PluginID);
   Theme.LoadTheme([tpSkinScheme]);
-end;
-
-function TSharpCenterPlugin.GetPluginDescriptionText: String;
-begin
-  Result := Format('Scheme Configuration for "%s"',[PluginHost.PluginId]);
+  gTheme := Theme;
+  gPluginId := APluginHost.PluginId;
 end;
 
 function XmlGetSchemeListAsCommaText(Theme : ISharpETheme): string;
@@ -114,19 +111,6 @@ begin
     result := tmpStringList.CommaText;
   finally
     tmpStringList.Free;
-  end;
-end;
-
-function TSharpCenterPlugin.GetPluginStatusText: String;
-var
-  sl: TStringList;
-begin
-  sl := TstringList.Create;
-  try
-    sl.CommaText := XmlGetSchemeListAsCommaText(Theme);
-  finally
-    result := IntToStr(sl.count);
-    sl.Free;
   end;
 end;
 
@@ -228,6 +212,23 @@ begin
   end;
 end;
 
+function GetPluginData(): TPluginData;
+var
+  sl: TStringList;
+begin
+  with Result do
+  begin
+    Description := Format('Scheme Configuration for "%s"',[gPluginId]);
+
+    sl := TstringList.Create;
+    try
+      sl.CommaText := XmlGetSchemeListAsCommaText(gTheme);
+      Status := IntToStr(sl.count);
+    finally
+      sl.Free;
+    end;
+  end;
+end;
 
 function InitPluginInterface( APluginHost: ISharpCenterHost ) : ISharpCenterPlugin;
 begin
@@ -236,6 +237,7 @@ end;
 
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData;
 
 begin

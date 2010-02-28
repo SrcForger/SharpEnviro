@@ -56,16 +56,15 @@ type
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
-
-    function GetPluginDescriptionText: String; override; stdCall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
-
     procedure Save; override; stdCall;
     procedure UpdatePreview(ABitmap: TBitmap32); stdcall;
-
   end;
 
-{ TSharpCenterPlugin }
+var
+  gPluginId : string;
+
+  { TSharpCenterPlugin }
 
 procedure TSharpCenterPlugin.Close;
 begin
@@ -74,27 +73,15 @@ end;
 
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 var
-  pluginId, themeId, schemeId: String;
+  themeId : string;
 begin
   PluginHost := APluginHost;
 
-  pluginId := PluginHost.PluginId;
-  themeId := copy(pluginId, 0, pos(':',pluginId)-1);
-  schemeId := copy(pluginId, pos(':',pluginId)+1, length(pluginId) - pos(':',pluginId));
+  gPluginId := APluginHost.PluginId;
+  themeId := copy(gPluginId, 0, pos(':', gPluginId)-1);
 
   FTheme := GetTheme(themeId);
   FTheme.LoadTheme([tpSkinScheme]);
-end;
-
-function TSharpCenterPlugin.GetPluginDescriptionText: String;
-var
-  pluginId, themeId, schemeId: String;
-begin
-  pluginId := PluginHost.PluginId;
-  themeId := copy(pluginId, 0, pos(':',pluginId)-1);
-  schemeId := copy(pluginId, pos(':',pluginId)+1, length(pluginId) - pos(':',pluginId));
-
-  result := Format('Editing Scheme "%s"',[schemeId]);
 end;
 
 procedure TSharpCenterPlugin.Load;
@@ -219,6 +206,18 @@ begin
   end;
 end;
 
+function GetPluginData(): TPluginData;
+var
+  themeId, schemeId: string;
+begin
+  with Result do
+  begin
+    themeId := copy(gPluginId, 0, pos(':', gPluginId)-1);
+    schemeId := copy(gPluginId, pos(':', gPluginId)+1, length(gPluginId) - pos(':', gPluginId));
+
+    Description  := Format('Editing Scheme "%s"',[schemeId]);
+  end;
+end;
 
 function InitPluginInterface( APluginHost: ISharpCenterHost ) : ISharpCenterPlugin;
 begin
@@ -227,6 +226,7 @@ end;
 
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData;
 
 begin

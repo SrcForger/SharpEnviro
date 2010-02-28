@@ -64,14 +64,14 @@ type
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
-
-    function GetPluginDescriptionText: string; override; stdcall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
     procedure AddPluginTabs(ATabItems: TStringList); stdcall;
     procedure ClickPluginTab(ATab: TStringItem); stdcall;
     procedure Save; override; stdcall;
-
   end;
+
+var
+  gPluginId : string;
 
   { TSharpCenterPlugin }
 
@@ -105,11 +105,7 @@ begin
   PluginHost := APluginHost;
   FTheme := GetTheme(PluginHost.PluginID);
   FTheme.LoadTheme([tpSkinFont]);
-end;
-
-function TSharpCenterPlugin.GetPluginDescriptionText: string;
-begin
-  Result := Format('Skin Font Configuration for "%s"', [PluginHost.PluginId]);
+  gPluginId := APluginHost.PluginId;
 end;
 
 procedure TSharpCenterPlugin.Load;
@@ -254,6 +250,14 @@ begin
   end;
 end;
 
+function GetPluginData(): TPluginData;
+begin
+  with Result do
+  begin
+    Description := Format('Skin Font Configuration for "%s"', [gPluginId]);
+  end;
+end;
+
 function InitPluginInterface(APluginHost: ISharpCenterHost): ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
@@ -261,6 +265,7 @@ end;
 
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData;
 
 begin

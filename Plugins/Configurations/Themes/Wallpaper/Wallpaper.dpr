@@ -72,14 +72,14 @@ type
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
     procedure Save; override; stdcall;
-
-    function GetPluginDescriptionText: string; override; stdcall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
     procedure UpdatePreview(ABitmap: TBitmap32); stdcall;
     procedure AddPluginTabs(ATabItems: TStringList); stdcall;
     procedure ClickPluginTab(ATab: TStringItem); stdcall;
-
   end;
+
+var
+  gPluginId : string;
 
   { TSharpCenterPlugin }
 
@@ -114,11 +114,7 @@ begin
   PluginHost := APluginHost;
   FTheme := GetTheme(PluginHost.PluginID);
   FTheme.LoadTheme([tpWallpaper,tpSkinScheme]);
-end;
-
-function TSharpCenterPlugin.GetPluginDescriptionText: string;
-begin
-  Result := Format('Wallpaper Configuration for "%s"', [PluginHost.PluginId]);
+  gPluginId := APluginHost.PluginId;
 end;
 
 function TSharpCenterPlugin.Load: Boolean;
@@ -313,6 +309,14 @@ begin
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d', [Integer(scmApply),
       Integer(suWallpaper)]);
+  end;
+end;
+
+function GetPluginData(): TPluginData;
+begin
+  with Result do
+  begin
+    Description := Format('Wallpaper Configuration for "%s"', [gPluginId]);
   end;
 end;
 

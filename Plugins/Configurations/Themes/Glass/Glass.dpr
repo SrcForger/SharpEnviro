@@ -57,7 +57,6 @@ uses
 type
   TSharpCenterPlugin = class(TInterfacedSharpCenterPlugin)
   private
-    FPluginHost: ISharpCenterHost;
     FTheme : ISharpETheme;
     procedure Load;
   public
@@ -66,14 +65,11 @@ type
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
     procedure Save; override; stdcall;
-
-    function GetPluginDescriptionText: string; override; stdcall;
-    function GetPluginStatusText: string; override; stdcall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
-
-    property PluginHost: ISharpCenterHost read FPluginHost
-      write FPluginHost;
   end;
+
+var
+  gPluginId : string;
 
   { TSharpCenterPlugin }
 
@@ -87,26 +83,7 @@ begin
   PluginHost := APluginHost;
   FTheme := GetTheme(APluginHost.PluginId);
   FTheme.LoadTheme([tpSkinScheme]);
-end;
-
-function TSharpCenterPlugin.GetPluginDescriptionText: string;
-begin
-  result := Format('Glass Skin Configuration for "%s"', [PluginHost.PluginId]);
-end;
-
-function TSharpCenterPlugin.GetPluginStatusText: string;
-var
-  files: TStringList;
-begin
-  result := '';
-
-  files := TStringList.Create;
-  try
-    FindFiles(files, SharpApi.GetSharpeDirectory + 'Icons\', '*Iconset.xml');
-    if files.Count <> 0 then result := IntToStr(files.Count);
-  finally
-    files.Free;
-  end;
+  gPluginId := APluginHost.PluginId;
 end;
 
 procedure TSharpCenterPlugin.Load;
@@ -227,6 +204,25 @@ begin
   end;
 end;
 
+function GetPluginData(): TPluginData;
+var
+  files: TStringList;
+begin
+  with Result do
+  begin
+    Description := Format('Glass Skin Configuration for "%s"', [gPluginId]);
+
+    files := TStringList.Create;
+    try
+      FindFiles(files, SharpApi.GetSharpeDirectory + 'Icons\', '*Iconset.xml');
+      if files.Count <> 0 then
+        Status := IntToStr(files.Count);
+    finally
+      files.Free;
+    end;
+  end;
+end;
+
 function InitPluginInterface(APluginHost: ISharpCenterHost): ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
@@ -234,54 +230,9 @@ end;
 
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData;
 
 begin
 end.
-
-//function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
-//begin
-//  if frmOptions = nil then
-//    frmOptions := TfrmOptions.Create(nil);
-//
-//  uVistaFuncs.SetVistaFonts(frmOptions);
-//  frmOptions.PluginID := APluginID;
-//  frmOptions.ParentWindow := aowner;
-//  frmOptions.Left := 0;
-//  frmOptions.Top := 0;
-//  frmOptions.BorderStyle := bsNone;
-//  frmOptions.Show;
-//
-//  result := frmOptions.Handle;
-//end;
-//
-//function Close: boolean;
-//begin
-//  result := True;
-//  try
-//    frmOptions.Close;
-//    frmOptions.Free;
-//    frmOptions := nil;
-//  except
-//    result := False;
-//  end;
-//end;
-//
-//procedure Save;
-//begin
-//  frmOptions.Save;
-//end;
-//
-//
-
-//
-//exports
-//  Open,
-//  Close,
-//  Save,
-//  SetText,
-//  GetMetaData;
-//
-//begin
-//end.
 
