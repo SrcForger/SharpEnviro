@@ -210,7 +210,6 @@ begin
   begin
     Name := 'Hotkeys';
     Description := 'Create system wide hotkeys using actions, or commonly used applications.';
-
     Status := '';
 
     xml := TJclSimpleXml.Create;

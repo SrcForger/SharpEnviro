@@ -136,7 +136,9 @@ function GetPluginData(): TPluginData;
 begin
   with Result do
   begin
+	Name := 'Quick Script';
     Description := 'Configure the Quick Script module';
+	Status := '';
   end;
 end;
 

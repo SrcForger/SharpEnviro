@@ -152,6 +152,7 @@ begin
   begin
     Name := 'Buttons';
     Description := 'Create and manage items for the Button Bar module';
+	Status := '';
 
     items := TButtonBarList.Create;
     items.Filename := gModuleXmlFilename;

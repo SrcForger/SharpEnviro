@@ -210,7 +210,9 @@ var
 begin
   with Result do
   begin
+	Name := 'Glass';
     Description := Format('Glass Skin Configuration for "%s"', [gPluginId]);
+	Status := '';
 
     files := TStringList.Create;
     try

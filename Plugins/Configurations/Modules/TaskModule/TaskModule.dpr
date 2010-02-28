@@ -254,7 +254,9 @@ function GetPluginData(): TPluginData;
 begin
   with Result do
   begin
-    Description := 'Configure the Task module'
+	Name := 'Task Module';
+    Description := 'Configure the Task module';
+	Status := '';
   end;
 end;
 

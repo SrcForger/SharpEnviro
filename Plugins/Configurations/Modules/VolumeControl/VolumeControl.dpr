@@ -168,7 +168,9 @@ function GetPluginData(): TPluginData;
 begin
   with Result do
   begin
+	Name := 'Volume Control';
     Description := 'Configure the Volume Control module';
+	Status := '';
   end;
 end;
 

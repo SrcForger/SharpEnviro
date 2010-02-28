@@ -316,7 +316,9 @@ function GetPluginData(): TPluginData;
 begin
   with Result do
   begin
+	Name := 'Wallpaper';
     Description := Format('Wallpaper Configuration for "%s"', [gPluginId]);
+	Status := '';
   end;
 end;
 

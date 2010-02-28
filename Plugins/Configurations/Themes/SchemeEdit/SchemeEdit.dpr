@@ -210,12 +210,14 @@ function GetPluginData(): TPluginData;
 var
   themeId, schemeId: string;
 begin
+  themeId := copy(gPluginId, 0, pos(':', gPluginId)-1);
+  schemeId := copy(gPluginId, pos(':', gPluginId)+1, length(gPluginId) - pos(':', gPluginId));
+
   with Result do
   begin
-    themeId := copy(gPluginId, 0, pos(':', gPluginId)-1);
-    schemeId := copy(gPluginId, pos(':', gPluginId)+1, length(gPluginId) - pos(':', gPluginId));
-
-    Description  := Format('Editing Scheme "%s"',[schemeId]);
+	Name := 'Edit Scheme';
+    Description := Format('Editing Scheme "%s"',[schemeId]);
+	Status := '';
   end;
 end;
 

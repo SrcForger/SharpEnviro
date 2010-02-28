@@ -271,7 +271,9 @@ function GetPluginData(): TPluginData;
 begin
   with Result do
   begin
+	Name := 'Desktop';
     Description := Format('Desktop Configuration for "%s"', [gPluginId]);
+	Status := '';
   end;
 end;
 

@@ -135,6 +135,7 @@ begin
   begin
     Name := 'Options';
     Description := 'Configure the global options for the Button Bar module';
+	Status := '';
   end;
 end;
 

@@ -142,6 +142,7 @@ begin
     sBar := ExtractBarName(gPluginId);
     if sBar = '' then sBar := gPluginId;
     Description := Format('Module Configuration for "%s"',[sBar]);
+	Status := '';
 
     tmp := TObjectList.Create;
     try

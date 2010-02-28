@@ -159,6 +159,7 @@ begin
   begin
     Name := 'Options';
     Description := 'Configure the global options for the Application Bar module';
+	Status := '';
   end;
 end;
 

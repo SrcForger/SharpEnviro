@@ -133,6 +133,7 @@ begin
   begin
     Name := '';
     Description := 'Configure the formatting options for the Clock module';
+	Status := '';
   end;
 end;
 

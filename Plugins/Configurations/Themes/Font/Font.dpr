@@ -254,7 +254,9 @@ function GetPluginData(): TPluginData;
 begin
   with Result do
   begin
+	Name := 'Skin Font';
     Description := Format('Skin Font Configuration for "%s"', [gPluginId]);
+	Status := '';
   end;
 end;
 

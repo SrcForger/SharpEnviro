@@ -170,7 +170,9 @@ function GetPluginData(): TPluginData;
 begin
   with Result do
   begin
+	Name := 'Notes';
     Description := 'Configure the Notes module';
+	Status := '';
   end;
 end;
 

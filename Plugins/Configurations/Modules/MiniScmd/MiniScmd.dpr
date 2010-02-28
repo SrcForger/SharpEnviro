@@ -139,7 +139,9 @@ function GetPluginData(): TPluginData;
 begin
   with Result do
   begin
+	Name := 'Mini SCmd';
     Description := 'Configure the Mini SCmd module';
+	Status := '';
   end;
 end;
 

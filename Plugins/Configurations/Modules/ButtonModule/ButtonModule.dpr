@@ -139,7 +139,9 @@ function GetPluginData(): TPluginData;
 begin
   with Result do
   begin
+	Name := 'Button Module';
     Description := 'Configure the Button module';
+	Status := '';
   end;
 end;
 

@@ -170,7 +170,8 @@ begin
   begin
     Name := 'Toolbars';
     Description := 'Create and manage toolbar configurations.';
-
+	Status := '';
+	
     items := TStringList.Create;
     try
       items.CommaText := XmlGetBarListAsCommaText;

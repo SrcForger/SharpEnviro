@@ -185,6 +185,7 @@ begin
   begin
     Name := 'Task Filters';
     Description := 'Create and manage multiple filter configurations';
+	Status := '';
 
     tmp := TFilterItemList.Create;
     try

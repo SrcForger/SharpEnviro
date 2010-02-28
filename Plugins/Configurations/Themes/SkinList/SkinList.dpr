@@ -132,7 +132,9 @@ var
 begin
   with Result do
   begin
+	Name := 'Skins';
     Description := Format('Skin Configuration for "%s"',[gPluginId]);
+	Status := '';
 
     files := TStringList.Create;
     try

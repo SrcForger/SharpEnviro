@@ -170,7 +170,9 @@ var
 begin
   with Result do
   begin
+	Name := 'Cursors';
     Description := Format('Cursor Configuration for "%s"',[gPluginId]);
+	Status := '';
 
     files := TStringList.Create;
     try

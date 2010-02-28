@@ -128,7 +128,9 @@ function GetPluginData(): TPluginData;
 begin
   with Result do
   begin
+	Name := 'Keyboard Layout';
     Description := 'Configure the Keyboard Layout module';
+	Status := '';
   end;
 end;
 

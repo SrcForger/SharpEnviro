@@ -214,7 +214,9 @@ function GetPluginData(): TPluginData;
 begin
   with Result do
   begin
+	Name := 'System Tray';
     Description := 'Configure the System Tray module';
+	Status := '';
   end;
 end;
 

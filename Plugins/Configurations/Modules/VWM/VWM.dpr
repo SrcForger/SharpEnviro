@@ -151,7 +151,9 @@ function GetPluginData(): TPluginData;
 begin
   with Result do
   begin
+	Name := 'VWM';
     Description := 'Configure the Virtual Window Manager module';
+	Status := '';
   end;
 end;
 

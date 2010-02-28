@@ -137,7 +137,9 @@ function GetPluginData(): TPluginData;
 begin
   with Result do
   begin
+	Name := 'RSS Reader';
     Description := 'Configure formatting options for the RSS Reader module';
+	Status := '';
   end;
 end;
 

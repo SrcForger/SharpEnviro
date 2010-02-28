@@ -218,7 +218,9 @@ var
 begin
   with Result do
   begin
+	Name := 'Schemes';
     Description := Format('Scheme Configuration for "%s"',[gPluginId]);
+	Status := '';
 
     sl := TstringList.Create;
     try

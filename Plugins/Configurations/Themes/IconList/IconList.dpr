@@ -143,7 +143,9 @@ var
 begin
   with Result do
   begin
+	Name := 'Icon List';
     Description := Format('Icon Set Configuration for "%s"',[gPluginId]);
+	Status := '';
 
     files := TStringList.Create;
     try

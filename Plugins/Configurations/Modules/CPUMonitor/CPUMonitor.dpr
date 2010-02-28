@@ -259,7 +259,9 @@ function GetPluginData(): TPluginData;
 begin
   with Result do
   begin
+	Name := 'CPU Monitor';
     Description := 'Configure the CPU Monitor module, displays current process activity';
+	Status := '';
   end;
 end;
 

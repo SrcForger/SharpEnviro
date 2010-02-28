@@ -151,6 +151,7 @@ begin
   begin
     Name := 'Applications';
     Description := 'Create and manage items for the Application Bar module';
+	Status := '';
 
     items := TAppBarList.Create;
     items.Filename := gModuleXmlFilename;

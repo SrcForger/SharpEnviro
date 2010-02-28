@@ -193,7 +193,9 @@ function GetPluginData(): TPluginData;
 begin
   with Result do
   begin
+	Name := 'Weather Module';
     Description := 'Configure the Weather module';
+	Status := '';
   end;
 end;
 

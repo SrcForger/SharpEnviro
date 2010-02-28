@@ -191,6 +191,7 @@ begin
   begin
     Name := 'Menus';
     Description := 'Create and manage multiple menu configurations';
+	Status := '';
 
     dir := SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\';
     slMenus := TStringList.Create;

@@ -159,7 +159,9 @@ function GetPluginData(): TPluginData;
 begin
   with Result do
   begin
+	Name := 'Memory Monitor';
     Description := 'Configure the Memory Monitor module';
+	Status := '';
   end;
 end;
 

@@ -127,7 +127,9 @@ function GetPluginData(): TPluginData;
 begin
   with Result do
   begin
+	Name := 'Battery Monitor';
     Description := 'The Battery Monitor module displays laptop status';
+	Status := '';
   end;
 end;
 

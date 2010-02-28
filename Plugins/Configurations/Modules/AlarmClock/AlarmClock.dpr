@@ -175,7 +175,9 @@ function GetPluginData(): TPluginData;
 begin
   with Result do
   begin
+	Name := 'Alarm Clock';
     Description := 'Configure the Alarm Clock';
+	Status := '';
   end;
 end;
 
