@@ -67,11 +67,6 @@ type
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
 
-
-    function GetPluginDescriptionText: String; override; stdCall;
-    function GetPluginName: String; override; stdCall;
-    function GetPluginStatusText: String; override; stdCall;
-
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
     function OpenEdit: Cardinal; stdcall;
     procedure CloseEdit(AApply: Boolean); stdcall;
@@ -84,8 +79,11 @@ type
 
 procedure TSharpCenterPlugin.Close;
 begin
-  FreeAndNil(frmList);
-  FreeAndNil(frmEdit);
+  if Assigned(frmList) then
+    FreeAndNil(frmList);
+
+  if Assigned(frmEdit) then
+    FreeAndNil(frmEdit);
 end;
 
 procedure TSharpCenterPlugin.CloseEdit(AApply: Boolean);
@@ -102,34 +100,10 @@ begin
   PluginHost := APluginHost;
 end;
 
-function TSharpCenterPlugin.GetPluginDescriptionText: String;
-begin
-  Result := 'Create and manage multiple menu configurations';
-end;
-
-function TSharpCenterPlugin.GetPluginStatusText: String;
-var
-  dir: string;
-  slMenus: TStringList;
-begin
-  dir := SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\';
-  slMenus := TStringList.Create;
-  try
-  AdvBuildFileList(dir + '*.xml', faAnyFile, slMenus, amAny, [flFullNames]);
-  finally
-    result := IntToStr(slMenus.Count);
-    slMenus.Free;
-  end;
-end;
-
-function TSharpCenterPlugin.GetPluginName: String;
-begin
-  Result := 'Menus';
-end;
-
 function TSharpCenterPlugin.Open: Cardinal;
 begin
-  if frmList = nil then frmList := TfrmList.Create(nil);
+  if frmList = nil then
+    frmList := TfrmList.Create(nil);
   uVistaFuncs.SetVistaFonts(frmList);
 
   result := PluginHost.Open(frmList);
@@ -138,7 +112,8 @@ end;
 
 function TSharpCenterPlugin.OpenEdit: Cardinal;
 begin
-  if frmEdit = nil then frmEdit := TFrmEdit.Create(nil);
+  if frmEdit = nil then
+    frmEdit := TFrmEdit.Create(nil);
   frmEdit.PluginHost := Self.PluginHost;
   uVistaFuncs.SetVistaFonts(frmEdit);
 
@@ -207,8 +182,32 @@ begin
   end;
 end;
 
+function GetPluginData(): TPluginData;
+var
+  dir: string;
+  slMenus: TStringList;
+begin
+  with result do
+  begin
+    Name := 'Menus';
+    Description := 'Create and manage multiple menu configurations';
+
+    dir := SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\';
+    slMenus := TStringList.Create;
+    try
+      AdvBuildFileList(dir + '*.xml', faAnyFile, slMenus, amAny, [flFullNames]);
+    finally
+      Status := IntToStr(slMenus.Count);
+      slMenus.Free;
+    end;
+
+  end;
+end;
+
+
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData;
 
 begin

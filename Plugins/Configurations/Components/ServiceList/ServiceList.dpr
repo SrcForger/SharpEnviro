@@ -60,9 +60,6 @@ type
     procedure ClickPluginTab(ATab: TStringItem); stdcall;
     procedure AddPluginTabs(ATabItems: TStringList); stdcall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
-
-    function GetPluginStatusText: string; override; stdcall;
-    function GetPluginName: string; override; stdcall;
   end;
 
   { TSharpCenterPlugin }
@@ -122,26 +119,6 @@ begin
   PluginHost := APluginHost;
 end;
 
-function TSharpCenterPlugin.GetPluginName: string;
-begin
-  result := 'Services';
-end;
-
-function TSharpCenterPlugin.GetPluginStatusText: string;
-var
-  tmpList: TComponentList;
-begin
-  Result := '';
-  
-  tmpList := TComponentList.Create;
-  try
-    tmpList.BuildList('.dll', false, false);
-    result := IntToStr(tmpList.Count);
-  finally
-    tmpList.Free;
-  end;
-end;
-
 function TSharpCenterPlugin.Open: Cardinal;
 begin
   if frmList = nil then frmList := TfrmList.Create(nil);
@@ -170,6 +147,26 @@ begin
   end;
 end;
 
+function GetPluginData(): TPluginData;
+var
+  tmpList: TComponentList;
+begin
+  with result do
+  begin
+    Name := 'Services';
+    Description := 'Manage and configure the SharpE Service providers';
+    Status := '';
+
+    tmpList := TComponentList.Create;
+    try
+      tmpList.BuildList('.dll', false, false);
+      Status := IntToStr(tmpList.Count);
+    finally
+      tmpList.Free;
+    end;
+  end;
+end;
+
 function InitPluginInterface(APluginHost: ISharpCenterHost): ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
@@ -177,6 +174,7 @@ end;
 
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData;
 
 begin

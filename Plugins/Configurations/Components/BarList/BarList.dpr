@@ -63,8 +63,6 @@ type
     procedure CloseEdit(AApply: Boolean); stdcall;
     function OpenEdit: Cardinal; stdcall;
 
-    function GetPluginDescriptionText: String; override; stdCall;
-    function GetPluginStatusText: String; override; stdCall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
     procedure SetupValidators; stdcall;
 
@@ -91,11 +89,6 @@ begin
   PluginHost := APluginHost;
 end;
 
-function TSharpCenterPlugin.GetPluginDescriptionText: String;
-begin
-  Result := 'Create and manage toolbar configurations.';
-end;
-
 function XmlGetBarListAsCommaText: string;
 var
   sBarDir: string;
@@ -112,20 +105,6 @@ begin
 
   finally
     tmpStringList.Free;
-  end;
-end;
-
-function TSharpCenterPlugin.GetPluginStatusText: String;
-var
-  items: TStringList;
-begin
-  result := '';
-  items := TStringList.Create;
-  try
-    items.CommaText := XmlGetBarListAsCommaText();
-    result := IntToStr(items.Count);
-  finally
-    items.Free;
   end;
 end;
 
@@ -183,6 +162,25 @@ begin
   end;
 end;
 
+function GetPluginData(): TPluginData;
+var
+  items: TStringList;
+begin
+  with result do
+  begin
+    Name := 'Toolbars';
+    Description := 'Create and manage toolbar configurations.';
+
+    items := TStringList.Create;
+    try
+      items.CommaText := XmlGetBarListAsCommaText;
+      Status := IntToStr(items.Count);
+    finally
+      items.Free;
+    end;
+  end;
+end;
+
 function InitPluginInterface(APluginHost: ISharpCenterHost) : ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
@@ -190,6 +188,7 @@ end;
 
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData;
 
 begin

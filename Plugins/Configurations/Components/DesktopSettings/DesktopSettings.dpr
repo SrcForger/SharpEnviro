@@ -177,6 +177,16 @@ begin
   end;
 end;
 
+function GetPluginData(): TPluginData;
+begin
+  with result do
+  begin
+    Name := 'Desktop';
+    Description := 'Define advanced desktop and wallpaper functionality.';
+    Status := '';
+  end;
+end;
+
 function InitPluginInterface(APluginHost: ISharpCenterHost) : ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
@@ -184,6 +194,7 @@ end;
 
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData;
 
 begin

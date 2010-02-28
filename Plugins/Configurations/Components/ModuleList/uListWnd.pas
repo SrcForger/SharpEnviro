@@ -108,8 +108,6 @@ type
     procedure lbModulesGetCellText(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AColText: string);
   private
-    FEditMode: TSCE_EDITMODE_ENUM;
-  private
     FWinHandle: Thandle;
     FModuleList: TObjectList;
     FPluginHost: ISharpCenterHost;

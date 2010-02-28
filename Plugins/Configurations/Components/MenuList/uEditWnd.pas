@@ -189,8 +189,7 @@ begin
         sMenuDir := GetSharpeUserSettingsPath + 'SharpMenu\';
 
         sOldFile := tmpMenuItem.FileName;
-        sNewFile := sMenuDir + trim(StrRemoveChars(edName.Text,
-          ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']) + '.xml');
+        sNewFile := sMenuDir + trim(StrRemoveChars(edName.Text, ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']) + '.xml');
 
         if CompareText(sOldFile, sNewFile) <> 0 then
           RenameFile(sOldFile, sNewFile);

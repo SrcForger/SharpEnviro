@@ -422,31 +422,22 @@ end;
 procedure TfrmEdit.FormCreate(Sender: TObject);
 begin
   cbMenuItems.Clear;
-  cbMenuItems.AddItem('Link', Pointer(TPageData.Create(pagLink, mtLink, 130,
-    cLinkDescription)));
-  cbMenuItems.AddItem('Separator', Pointer(TPageData.Create(pagBlank, mtSeparator, 70,
-    cSepDescription)));
-  cbMenuItems.AddItem('Drive List', Pointer(TPageData.Create(pagDriveList, mtDriveList, 120,
-    cDriveListDescription)));
-  cbMenuItems.AddItem('Control Panel List', Pointer(TPageData.Create(pagBlank, mtCPLList, 70,
-    cCplDescription)));
-  cbMenuItems.AddItem('Desktop Object List', Pointer(TPageData.Create(pagBlank, mtDesktopObjectList, 70,
-    cDesktopObjectListDescription)));
-  cbMenuItems.AddItem('Label', Pointer(TPageData.Create(pagLabel, mtLabel, 100,
-    cLabelDescription)));
-  cbMenuItems.AddItem('Submenu', Pointer(TPageData.Create(pagSubMenu, mtSubMenu, 190,
-    cSubmenuDescription)));
-  cbMenuItems.AddItem('Dynamic Directory', Pointer(TPageData.Create(pagDynamicDir, mtDynamicDir, 140,
-    cDynamicDirDescription)));
-  cbMenuItems.AddItem('Mru List', Pointer(TPageData.Create(pagMru, mtulist, 140,
-    cMruListDescription)));
+  cbMenuItems.AddItem('Link', Pointer(TPageData.Create(pagLink, mtLink, 130, cLinkDescription)));
+  cbMenuItems.AddItem('Separator', Pointer(TPageData.Create(pagBlank, mtSeparator, 70, cSepDescription)));
+  cbMenuItems.AddItem('Drive List', Pointer(TPageData.Create(pagDriveList, mtDriveList, 120, cDriveListDescription)));
+  cbMenuItems.AddItem('Control Panel List', Pointer(TPageData.Create(pagBlank, mtCPLList, 70, cCplDescription)));
+  cbMenuItems.AddItem('Desktop Object List', Pointer(TPageData.Create(pagBlank, mtDesktopObjectList, 70, cDesktopObjectListDescription)));
+  cbMenuItems.AddItem('Label', Pointer(TPageData.Create(pagLabel, mtLabel, 100, cLabelDescription)));
+  cbMenuItems.AddItem('Submenu', Pointer(TPageData.Create(pagSubMenu, mtSubMenu, 190, cSubmenuDescription)));
+  cbMenuItems.AddItem('Dynamic Directory', Pointer(TPageData.Create(pagDynamicDir, mtDynamicDir, 140, cDynamicDirDescription)));
+  cbMenuItems.AddItem('Mru List', Pointer(TPageData.Create(pagMru, mtulist, 140, cMruListDescription)));
 
   cbMenuItems.ItemIndex := 0;
 end;
 
 procedure TfrmEdit.FormDestroy(Sender: TObject);
 var
-  i: Integer;
+  i : integer;
 begin
   for i := cbMenuItems.Items.Count - 1 downto 0 do
     TPageData(cbMenuItems.Items.Objects[i]).Free;
@@ -505,180 +496,174 @@ begin
 
   case PluginHost.EditMode of
     sceAdd: begin
+      tmpMenuItemType := TPageData(cbMenuItems.Items.Objects[cbMenuItems.ItemIndex]).MenuItemType;
 
-        tmpMenuItemType := TPageData(cbMenuItems.Items.Objects[cbMenuItems.ItemIndex]).MenuItemType;
+      nInsertPos := -1;
+      if frmList.lbItems.ItemIndex <> -1 then
+      begin
+        tmpMenuItem := TSharpEMenuItem(TItemData(frmList.lbItems.SelectedItem.Data).MenuItem);
+        tmpMenu := TSharpEMenu(TSharpEMenuItem(tmpMenuItem).OwnerMenu);
+        n := tmpMenu.Items.IndexOf(tmpMenuItem);
+        nInsertPos := n;
 
-        nInsertPos := -1;
-        if frmList.lbItems.ItemIndex <> -1 then begin
-          tmpMenuItem := TSharpEMenuItem(TItemData(frmList.lbItems.SelectedItem.Data).MenuItem);
-          tmpMenu := TSharpEMenu(TSharpEMenuItem(tmpMenuItem).OwnerMenu);
-          n := tmpMenu.Items.IndexOf(tmpMenuItem);
-          nInsertPos := n;
-
-          case cbItemPosition.ItemIndex of
-            0: if n <> 0 then
-                nInsertPos := n - 1;
-            1: if n <> tmpMenu.Items.Count - 1 then
-                nInsertPos := n + 1;
-            2: nInsertPos := 0;
-            3: nInsertPos := tmpMenu.Items.Count;
-          end;
-        end
+        case cbItemPosition.ItemIndex of
+          0: if n <> 0 then
+            nInsertPos := n - 1;
+          1: if n <> tmpMenu.Items.Count - 1 then
+            nInsertPos := n + 1;
+          2: nInsertPos := 0;
+          3: nInsertPos := tmpMenu.Items.Count;
+        end;
+      end else
+      begin
+        if frmList.lbItems.Count = 0 then
+          tmpMenu := frmList.Menu
         else begin
-          if frmList.lbItems.Count = 0 then
-            tmpMenu := frmList.Menu
-          else begin
-            tmpMenuItem := TSharpEMenuItem(TItemData(frmList.lbItems.item[0].Data).MenuItem);
-            tmpMenu := TSharpEMenu(TSharpEMenuItem(tmpMenuItem).SubMenu);
-          end;
-        end;
-
-        case tmpMenuItemType of
-          mtLink: begin
-              tmpMenuItem := tmpMenu.AddLinkItem(edLinkName.Text, edLinkTarget.Text,
-                edLinkIcon.Text, False, nInsertPos);
-            end;
-          mtCPLList: begin
-              tmpMenuItem := tmpMenu.AddControlPanelItem(False, nInsertPos);
-            end;
-          mtDesktopObjectList: begin
-              tmpMenuItem := tmpMenu.AddObjectListItem(False, nInsertPos);
-            end;
-          mtSeparator: begin
-              tmpMenuItem := tmpMenu.AddSeparatorItem(False, nInsertPos);
-            end;
-          mtDriveList: begin
-              tmpMenuItem := tmpMenu.AddDriveListItem(chkDriveNames.Checked,
-                False, nInsertPos);
-            end;
-          mtLabel: begin
-              tmpMenuItem := tmpMenu.AddLabelItem(edLabelCaption.Text,
-                False, nInsertPos);
-            end;
-          mtSubMenu: begin
-              tmpMenuItem := tmpMenu.AddSubMenuItem(edSubmenuCaption.Text,
-                edSubmenuIcon.Text, edSubmenuTarget.Text, False, nInsertPos);
-
-              TSharpEMenuItem(tmpMenuItem).SubMenu :=
-                TSharpEMenu.Create(TSharpEMenuItem(tmpMenuItem), nil,
-                frmList.Menu.Settings);
-
-                tmp := TSharpEMenu(TSharpEMenuItem(tmpMenuItem).SubMenu);
-                tmp.CustomSettings := chkOverride.Checked;
-
-                if tmp.CustomSettings then begin
-                  tmp.Settings.UseIcons := chkEnableIcons.Checked;
-                  tmp.Settings.UseGenericIcons := chkEnableGeneric.Checked;
-                  tmp.Settings.ShowExtensions := chkDisplayExtensions.Checked;
-                end;
-            end;
-          mtDynamicDir: begin
-
-              case cbDynamicDirSort.ItemIndex of
-                0: nSort := 1;
-                1: nSort := 3;
-                2: nSort := 2;
-              else nSort := 1;
-              end;
-
-              if chkDescending.Checked then
-                nSort := 0 - nSort;
-
-              tmpMenuItem := tmpMenu.AddDynamicDirectoryItem(edDynamicDirTarget.Text,
-                sgbDynamicDirMaxItems.Value, nSort, edDynamicDirFilter.Text, chkRecursive.Checked, False,
-                nInsertPos);
-            end;
-          mtulist: begin
-
-              if rbMruListRecentItems.Checked then
-                n := 0 else n := 1;
-              tmpMenuItem := tmpMenu.AddUListItem(n,sgbMruListCount.Value,
-                 False, nInsertPos);
-            end;
-
-        end;
-
-        nMenuItemIndex := cbMenuItems.ItemIndex;
-
-        if frmList.IsParentMenu then
-          frmList.RenderItems(tmpMenu, True, True)
-        else
-          frmList.RenderItems(tmpMenu);
-
-        frmList.Save;
-
-        for i := 0 to Pred(frmList.lbItems.Count) do begin
-          if TItemData(frmList.lbItems.Item[i].Data).MenuItem = TSharpEMenuItem(tmpMenuItem) then begin
-            frmList.lbItems.ItemIndex := i;
-            Break;
-          end;
+          tmpMenuItem := TSharpEMenuItem(TItemData(frmList.lbItems.item[0].Data).MenuItem);
+          tmpMenu := TSharpEMenu(TSharpEMenuItem(tmpMenuItem).SubMenu);
         end;
       end;
+
+      case tmpMenuItemType of
+        mtLink: begin
+          tmpMenuItem := tmpMenu.AddLinkItem(edLinkName.Text, edLinkTarget.Text, edLinkIcon.Text, False, nInsertPos);
+        end;
+        mtCPLList: begin
+          tmpMenuItem := tmpMenu.AddControlPanelItem(False, nInsertPos);
+        end;
+        mtDesktopObjectList: begin
+          tmpMenuItem := tmpMenu.AddObjectListItem(False, nInsertPos);
+        end;
+        mtSeparator: begin
+          tmpMenuItem := tmpMenu.AddSeparatorItem(False, nInsertPos);
+        end;
+        mtDriveList: begin
+          tmpMenuItem := tmpMenu.AddDriveListItem(chkDriveNames.Checked, False, nInsertPos);
+        end;
+        mtLabel: begin
+          tmpMenuItem := tmpMenu.AddLabelItem(edLabelCaption.Text, False, nInsertPos);
+        end;
+        mtSubMenu: begin
+          tmpMenuItem := tmpMenu.AddSubMenuItem(edSubmenuCaption.Text, edSubmenuIcon.Text, edSubmenuTarget.Text, False, nInsertPos);
+
+          TSharpEMenuItem(tmpMenuItem).SubMenu := TSharpEMenu.Create(TSharpEMenuItem(tmpMenuItem), nil, frmList.Menu.Settings);
+
+          tmp := TSharpEMenu(TSharpEMenuItem(tmpMenuItem).SubMenu);
+          tmp.CustomSettings := chkOverride.Checked;
+
+          if tmp.CustomSettings then
+          begin
+            tmp.Settings.UseIcons := chkEnableIcons.Checked;
+            tmp.Settings.UseGenericIcons := chkEnableGeneric.Checked;
+            tmp.Settings.ShowExtensions := chkDisplayExtensions.Checked;
+          end;
+        end;
+        mtDynamicDir: begin
+          case cbDynamicDirSort.ItemIndex of
+            0: nSort := 1;
+            1: nSort := 3;
+            2: nSort := 2;
+            else nSort := 1;
+          end;
+
+          if chkDescending.Checked then
+            nSort := 0 - nSort;
+
+          tmpMenuItem := tmpMenu.AddDynamicDirectoryItem(edDynamicDirTarget.Text, sgbDynamicDirMaxItems.Value, nSort, edDynamicDirFilter.Text, chkRecursive.Checked, False, nInsertPos);
+        end;
+        mtulist: begin
+          if rbMruListRecentItems.Checked then
+            n := 0
+          else
+            n := 1;
+
+          tmpMenuItem := tmpMenu.AddUListItem(n,sgbMruListCount.Value, False, nInsertPos);
+        end;
+      end;
+
+      nMenuItemIndex := cbMenuItems.ItemIndex;
+
+      if frmList.IsParentMenu then
+        frmList.RenderItems(tmpMenu, True, True)
+      else
+        frmList.RenderItems(tmpMenu);
+
+      frmList.Save;
+
+      for i := 0 to Pred(frmList.lbItems.Count) do
+      begin
+        if TItemData(frmList.lbItems.Item[i].Data).MenuItem = TSharpEMenuItem(tmpMenuItem) then
+        begin
+          frmList.lbItems.ItemIndex := i;
+          Break;
+        end;
+      end;
+    end;
     sceEdit: begin
+      tmpItem := TItemData(frmList.lbItems.SelectedItem.Data);
 
-        tmpItem := TItemData(frmList.lbItems.SelectedItem.Data);
+      case tmpItem.MenuItem.ItemType of
+        mtLink: begin
+          tmpItem.MenuItem.Caption := edLinkName.Text;
+          tmpItem.MenuItem.PropList.Add('IconSource', edLinkIcon.Text);
+          tmpItem.MenuItem.PropList.Add('Action', edLinkTarget.Text);
+        end;
+        mtDriveList: begin
+          tmpItem.MenuItem.PropList.Add('ShowDriveNames', chkDriveNames.Checked);
+          end;
+        mtLabel: begin
+          tmpItem.MenuItem.Caption := edLabelCaption.Text;
+        end;
+        mtSubMenu: begin
+          tmpItem.MenuItem.Caption := edSubmenuCaption.Text;
+          tmpItem.MenuItem.PropList.Add('IconSource', edSubmenuIcon.Text);
+          tmpItem.MenuItem.PropList.Add('Target', edSubmenuTarget.Text);
 
-        case tmpItem.MenuItem.ItemType of
-          mtLink: begin
-              tmpItem.MenuItem.Caption := edLinkName.Text;
-              tmpItem.MenuItem.PropList.Add('IconSource', edLinkIcon.Text);
-              tmpItem.MenuItem.PropList.Add('Action', edLinkTarget.Text);
-            end;
-          mtDriveList: begin
-              tmpItem.MenuItem.PropList.Add('ShowDriveNames', chkDriveNames.Checked);
-            end;
-          mtLabel: begin
-              tmpItem.MenuItem.Caption := edLabelCaption.Text;
-            end;
-          mtSubMenu: begin
-              tmpItem.MenuItem.Caption := edSubmenuCaption.Text;
-              tmpItem.MenuItem.PropList.Add('IconSource', edSubmenuIcon.Text);
-              tmpItem.MenuItem.PropList.Add('Target', edSubmenuTarget.Text);
+          tmpMenu := TSharpEMenu(TSharpEMenuItem(tmpItem.MenuItem).SubMenu);
+          tmpMenu.CustomSettings := chkOverride.Checked;
 
-              tmpMenu := TSharpEMenu(TSharpEMenuItem(tmpItem.MenuItem).SubMenu);
-              tmpMenu.CustomSettings := chkOverride.Checked;
-
-                if tmpMenu.CustomSettings then begin
-                  tmpMenu.Settings.UseIcons := chkEnableIcons.Checked;
-                  tmpMenu.Settings.UseGenericIcons := chkEnableGeneric.Checked;
-                  tmpMenu.Settings.ShowExtensions := chkDisplayExtensions.Checked;
-                end;
+          if tmpMenu.CustomSettings then
+          begin
+            tmpMenu.Settings.UseIcons := chkEnableIcons.Checked;
+            tmpMenu.Settings.UseGenericIcons := chkEnableGeneric.Checked;
+            tmpMenu.Settings.ShowExtensions := chkDisplayExtensions.Checked;
             end;
+          end;
           mtDynamicDir: begin
-              tmpItem.MenuItem.PropList.Add('Action', edDynamicDirTarget.Text);
-              tmpItem.MenuItem.PropList.Add('Filter', edDynamicDirFilter.Text);
+            tmpItem.MenuItem.PropList.Add('Action', edDynamicDirTarget.Text);
+            tmpItem.MenuItem.PropList.Add('Filter', edDynamicDirFilter.Text);
 
-              case cbDynamicDirSort.ItemIndex of
-                0: nSort := 1;
-                1: nSort := 3;
-                2: nSort := 2;
+            case cbDynamicDirSort.ItemIndex of
+              0: nSort := 1;
+              1: nSort := 3;
+              2: nSort := 2;
               else nSort := 1;
-              end;
-
-              if chkDescending.Checked then
-                nSort := 0 - nSort;
-
-              tmpItem.MenuItem.PropList.Add('Recursive', chkRecursive.Checked);
-              tmpItem.MenuItem.PropList.Add('MaxItems', sgbDynamicDirMaxItems.Value);
-              tmpItem.MenuItem.PropList.Add('Sort', nSort);
             end;
-          mtulist: begin
 
+            if chkDescending.Checked then
+              nSort := 0 - nSort;
+
+            tmpItem.MenuItem.PropList.Add('Recursive', chkRecursive.Checked);
+            tmpItem.MenuItem.PropList.Add('MaxItems', sgbDynamicDirMaxItems.Value);
+            tmpItem.MenuItem.PropList.Add('Sort', nSort);
+          end;
+          mtulist: begin
             if rbMruListRecentItems.Checked then
               n := 0 else n := 1;
 
             tmpItem.MenuItem.PropList.Add('ItemType', n);
             tmpItem.MenuItem.PropList.Add('Count', sgbMruListCount.Value);
-
           end;
         end;
 
         frmList.Save;
         nMenuItemIndex := cbMenuItems.ItemIndex;
         frmList.lbItems.Invalidate;
-
+        
       end;
   end;
+
+  FreeAndNil(tmpMenu);
 end;
 
 procedure TfrmEdit.UpdateOverrideState;

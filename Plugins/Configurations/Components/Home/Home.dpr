@@ -131,6 +131,23 @@ begin
   end;
 end;
 
+function GetPluginData(): TPluginData;
+var
+  meta: TMetaData;
+  priority, delay: integer;
+  tmp: string;
+begin
+  SharpAPI.GetComponentMetaData( GetSharpeDirectory + 'SharpCore.exe', meta, priority, delay);
+  tmp := format('Welcome to SharpEnviro (%s)',[meta.Version]);
+
+  with result do
+  begin
+    Name := 'Home';
+    Status := '';
+    Description := tmp;
+  end;
+end;
+
 function InitPluginInterface(APluginHost: ISharpCenterHost) : ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
@@ -138,6 +155,7 @@ end;
 
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData;
 
 begin

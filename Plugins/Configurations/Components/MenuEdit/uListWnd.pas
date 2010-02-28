@@ -120,7 +120,6 @@ type
       AParent: Boolean = False);
 
     procedure Save;
-    procedure LoadMenu;
     property PluginHost: ISharpCenterHost read FPluginHost write FPluginHost;
   end;
 
@@ -170,6 +169,9 @@ begin
 
   Self.DoubleBuffered := True;
   lbItems.DoubleBuffered := True;
+
+  SharpEMenuIcons := TSharpEMenuIcons.Create;
+  FMenu := uSharpEMenuLoader.LoadMenu(FMenuFile, nil, True);
 end;
 
 procedure TfrmList.FormDestroy(Sender: TObject);
@@ -186,7 +188,7 @@ end;
 
 procedure TfrmList.FormShow(Sender: TObject);
 begin
-  LoadMenu;
+  RenderItemsBuffered(FMenu);
 end;
 
 function TfrmList.IsParentMenu: Boolean;
@@ -434,16 +436,6 @@ end;
 procedure TfrmList.lbItemsResize(Sender: TObject);
 begin
   Self.Height := lbItems.Height;
-end;
-
-procedure TfrmList.LoadMenu;
-begin
-  if not Assigned(SharpEMenuIcons) then
-    SharpEMenuIcons := TSharpEMenuIcons.Create;
-  if not Assigned(FMenu) then
-    FMenu := uSharpEMenuLoader.LoadMenu(FMenuFile, nil, True);
-
-  RenderItemsBuffered(FMenu);
 end;
 
 procedure TfrmList.RenderItems(AMenu: TSharpEMenu; AClear: Boolean = True;

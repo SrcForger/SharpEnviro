@@ -69,9 +69,6 @@ type
     function OpenEdit: Cardinal; stdcall;
     procedure Save; override; stdCall;
 
-    function GetPluginDescriptionText: String; override; stdCall;
-    function GetPluginStatusText: String; override; stdCall;
-    function GetPluginName: String; override; stdCall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
     procedure SetupValidators; stdcall;
 
@@ -96,29 +93,6 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
-end;
-
-function TSharpCenterPlugin.GetPluginDescriptionText: String;
-begin
-  Result := 'Create and manage multiple filter configurations';;
-end;
-
-function TSharpCenterPlugin.GetPluginName: String;
-begin
-  Result := 'Task Filters';
-end;
-
-function TSharpCenterPlugin.GetPluginStatusText: String;
-var
-  tmp: TFilterItemList;
-begin
-  tmp := TFilterItemList.Create;
-  try
-    tmp.Load;
-    Result := IntTostr(tmp.Count);
-  finally
-    tmp.Free;
-  end;
 end;
 
 function TSharpCenterPlugin.Open: Cardinal;
@@ -203,6 +177,25 @@ begin
   end;
 end;
 
+function GetPluginData(): TPluginData;
+var
+  tmp: TFilterItemList;
+begin
+  with result do
+  begin
+    Name := 'Task Filters';
+    Description := 'Create and manage multiple filter configurations';
+
+    tmp := TFilterItemList.Create;
+    try
+      tmp.Load;
+      Status := IntTostr(tmp.Count);
+    finally
+      tmp.Free;
+    end;
+  end;
+end;
+
 
 function InitPluginInterface( APluginHost: ISharpCenterHost ) : ISharpCenterPlugin;
 begin
@@ -211,6 +204,7 @@ end;
 
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData;
 
 begin

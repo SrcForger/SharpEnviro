@@ -61,7 +61,6 @@ type
 
     procedure Save; override; stdcall;
 
-    function GetPluginDescriptionText: String; override; stdCall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
   end;
 
@@ -75,11 +74,6 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
-end;
-
-function TSharpCenterPlugin.GetPluginDescriptionText: String;
-begin
-  Result := 'Define global menu options.';
 end;
 
 procedure TSharpCenterPlugin.LoadSettings;
@@ -188,6 +182,16 @@ begin
   end;
 end;
 
+function GetPluginData(): TPluginData;
+begin
+  with result do
+  begin
+    Name := 'Menu Options';
+    Description := 'Define global menu options.';
+    Status := '';
+  end;
+end;
+
 function InitPluginInterface( APluginHost: ISharpCenterHost ) : ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
@@ -195,6 +199,7 @@ end;
 
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData;
 
 begin

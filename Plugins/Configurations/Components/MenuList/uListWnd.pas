@@ -87,6 +87,7 @@ type
       AItem: TSharpEListItem; var AClickable: Boolean);
     procedure lbItemsDblClickItem(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem);
+    procedure FormCreate(Sender: TObject);
   private
     FItems: TObjectList;
     FPluginHost: ISharpCenterHost;
@@ -250,6 +251,12 @@ begin
     + '\_Components\MenuEdit.con'), pchar(name));
 end;
 
+procedure TfrmList.FormCreate(Sender: TObject);
+begin
+  FItems := TObjectList.Create;
+  FItems.OwnsObjects := True;
+end;
+
 procedure TfrmList.FormDestroy(Sender: TObject);
 begin
   FItems.Free;
@@ -260,7 +267,6 @@ begin
   Self.DoubleBuffered := True;
   lbItems.DoubleBuffered := True;
 
-  FItems := TObjectList.Create;
   RenderItems;
 end;
 

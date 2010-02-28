@@ -22,7 +22,7 @@ object frmEdit: TfrmEdit
   object JvLabel1: TJvLabel
     Left = 280
     Top = 12
-    Width = 48
+    Width = 47
     Height = 14
     Caption = 'Template:'
     Anchors = [akTop, akRight]

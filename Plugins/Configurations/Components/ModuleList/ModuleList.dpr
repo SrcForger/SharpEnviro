@@ -59,12 +59,12 @@ type
     procedure CloseEdit(AApply: Boolean); stdcall;
     function OpenEdit: Cardinal; stdcall;
 
-    function GetPluginName: string; override; stdCall;
-    function GetPluginDescriptionText: String; override; stdCall;
-    function GetPluginStatusText: string; override; stdCall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
 
   end;
+
+var
+  gPluginId : string;
 
 { TSharpCenterPlugin }
 
@@ -87,33 +87,7 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
-end;
-
-function TSharpCenterPlugin.GetPluginDescriptionText: String;
-var
-  sBar: String;
-begin
-  sBar := ExtractBarName(PluginHost.PluginId);
-  if sBar = '' then sBar := PluginHost.PluginId;
-  result := Format('Module Configuration for "%s"',[sBar]);
-end;
-
-function TSharpCenterPlugin.GetPluginName: string;
-begin
-  result := 'Modules';
-end;
-
-function TSharpCenterPlugin.GetPluginStatusText: string;
-var
-  tmp:TObjectList;
-begin
-  tmp := TObjectList.Create;
-  try
-    AddItemsToList(PluginHost.PluginId,tmp);
-    result := IntToStr(tmp.Count);
-  finally
-    tmp.Free;
-  end;
+  gPluginId := PluginHost.PluginId;
 end;
 
 function TSharpCenterPlugin.Open: Cardinal;
@@ -156,6 +130,29 @@ begin
   end;
 end;
 
+function GetPluginData(): TPluginData;
+var
+  sBar: String;
+  tmp: TObjectList;
+begin
+  with result do
+  begin
+    Name := 'Modules';
+
+    sBar := ExtractBarName(gPluginId);
+    if sBar = '' then sBar := gPluginId;
+    Description := Format('Module Configuration for "%s"',[sBar]);
+
+    tmp := TObjectList.Create;
+    try
+      AddItemsToList(gPluginId,tmp);
+      Status := IntToStr(tmp.Count);
+    finally
+      tmp.Free;
+    end;
+  end;
+end;
+
 function InitPluginInterface( APluginHost: ISharpCenterHost ) : ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
@@ -163,6 +160,7 @@ end;
 
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData;
 
 begin

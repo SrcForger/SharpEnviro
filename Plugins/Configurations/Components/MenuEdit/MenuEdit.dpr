@@ -62,7 +62,6 @@ type
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
 
-    function GetPluginDescriptionText: String; override; stdCall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
     destructor Destroy; override;
     procedure CloseEdit(AApply: Boolean); stdcall;
@@ -70,11 +69,15 @@ type
     procedure SetupValidators; stdcall;
   end;
 
+var
+  gPluginId : string;
+
 { TSharpCenterPlugin }
 
 procedure TSharpCenterPlugin.Close;
 begin
   FreeAndNil(frmList);
+  FreeAndNil(frmEdit);
 end;
 
 procedure TSharpCenterPlugin.CloseEdit(AApply: Boolean);
@@ -90,6 +93,7 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
+  gPluginId := PluginHost.PluginId;
 end;
 
 destructor TSharpCenterPlugin.Destroy;
@@ -97,14 +101,10 @@ begin
   inherited;
 end;
 
-function TSharpCenterPlugin.GetPluginDescriptionText: String;
-begin
-  Result := format('Menu Configuration for "%s". Drag Items to position them, hold down Ctrl to move an item into a submenu',[PluginHost.PluginId]);
-end;
-
 function TSharpCenterPlugin.Open: Cardinal;
 begin
-  if frmList = nil then frmList := TfrmList.Create(nil);
+  if frmList = nil then
+    frmList := TfrmList.Create(nil);
   uVistaFuncs.SetVistaFonts(frmList);
   frmList.PluginHost := PluginHost;
 
@@ -161,6 +161,16 @@ begin
   end;
 end;
 
+function GetPluginData(): TPluginData;
+begin
+  with result do
+  begin
+    Name := 'Menu Editor';
+    Description := format('Menu Configuration for "%s". Drag Items to position them, hold down Ctrl to move an item into a submenu',[gPluginId]);
+    Status := '';
+  end;
+end;
+
 function InitPluginInterface(APluginHost: ISharpCenterHost) : ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
@@ -168,6 +178,7 @@ end;
 
 exports
   InitPluginInterface,
+  GetPluginData,
   GetMetaData;
 
 begin
