@@ -3,8 +3,8 @@ unit ISharpCenterHostUnit;
 interface
 
 uses
-  Windows, SharpApi,SharpCenterApi, SharpETabList, Controls, Forms, Graphics, Classes, GR32,
-  uVistaFuncs, SysUtils, jclSimpleXml, JvValidators, JvErrorIndicator, IXmlBaseUnit;
+  JvValidators, Windows, SharpApi,SharpCenterApi, SharpETabList, Controls, Forms, Graphics, Classes, GR32,
+  uVistaFuncs, SysUtils, jclSimpleXml, JvErrorIndicator, IXmlBaseUnit;
 
 const
   IID_ISharpCenterHost: TGUID = '{2277C19F-F87B-4CED-9ADA-8C3467426066}';
@@ -88,7 +88,6 @@ type
 type
   TInterfacedSharpCenterHostBase = class(TObject,ISharpCenterHost)
     private
-      FRefCount: integer;
       FCanDestroy: boolean;
 
       FSelfInterface: ISharpCenterHost;
@@ -254,13 +253,13 @@ implementation
 
 function TInterfacedSharpCenterHostBase._AddRef: Integer;
 begin
-  Result := InterlockedIncrement(FRefCount);
+  Result := 2;
 end;
 
 function TInterfacedSharpCenterHostBase._Release: Integer;
 begin
-  Result := InterlockedDecrement(FRefCount);
-  if (Result = 0) and (FCanDestroy) then
+  Result := 1;
+  if (FCanDestroy) then
     Destroy;
 end;
 
@@ -286,8 +285,6 @@ end;
 
 constructor TInterfacedSharpCenterHostBase.Create;
 begin
-  FRefCount := 0;
-
   FSelfInterface := self;
 
   FErrorIndicator := TJvErrorIndicator.Create(nil);

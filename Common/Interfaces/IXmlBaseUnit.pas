@@ -55,7 +55,6 @@ end;
 type
   TInterfacedXmlBase = class(TObject,IXmlBase)
   private
-    FRefCount: integer;
     FCanDestroy: boolean;
     FXmlFileName: String;
     FXml: TJclSimpleXML;
@@ -109,13 +108,13 @@ implementation
 
 function TInterfacedXmlBase._AddRef: Integer;
 begin
-  Result := InterlockedIncrement(FRefCount);
+  Result := 2;
 end;
 
 function TInterfacedXmlBase._Release: Integer;
 begin
-  Result := InterlockedDecrement(FRefCount);
-  if (Result = 0) and (FCanDestroy) then
+  Result := 1;
+  if (FCanDestroy) then
     Destroy;
 end;
 
@@ -143,7 +142,6 @@ constructor TInterfacedXmlBase.Create;
 begin
   inherited Create;
 
-  FRefCount := 0;
   FXml := TJclSimpleXML.Create;
 end;
 
