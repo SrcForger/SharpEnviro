@@ -68,7 +68,6 @@ type
     procedure Close; override; stdcall;
     procedure Save; override; stdcall;
 
-    function GetPluginDescriptionText: string; override; stdcall;
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
     procedure AddPluginTabs(ATabItems: TStringList); stdcall;
     procedure ClickPluginTab(ATab: TStringItem); stdcall;
@@ -104,11 +103,6 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
-end;
-
-function TSharpCenterPlugin.GetPluginDescriptionText: string;
-begin
-  Result := 'The link object allows you to create links to your favourite commands';
 end;
 
 procedure TSharpCenterPlugin.Load;
@@ -424,6 +418,16 @@ begin
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d', [Integer(scmApply),
       Integer(suDesktopObject)]);
+  end;
+end;
+
+function GetPluginData(): TPluginData;
+begin
+  with result do
+  begin
+    Name := 'Link';
+    Description := 'The link object allows you to create links to your favourite commands';
+    Status := '';
   end;
 end;
 
