@@ -316,6 +316,7 @@ begin
     exit;
 
   FXml.CanDestroy := True;
+  FXml.Free;
   FXml := nil;
 end;
 
