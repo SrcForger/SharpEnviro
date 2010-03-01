@@ -1402,9 +1402,13 @@ begin
 end;
 
 procedure TSharpCenterWnd.FormDestroy(Sender: TObject);
+var
+  i : integer;
 begin
-  SCM.Unload;
+  for i := lbTree.Count - 1 downto 0 do
+    TObject(lbTree[i].data).Free;
 
+  SCM.Unload;
   FreeAndNil(SCM);
 end;
 

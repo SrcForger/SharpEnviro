@@ -382,50 +382,49 @@ begin
       begin
         for i := 0 to Pred(Items.Count) do
         begin
-
           newItem := TSharpCenterManagerItem.Create;
-            newItem.ItemType := itmDll;
+          newItem.ItemType := itmDll;
 
-            sPath := ExtractFilePath(AFile);
-            sDll := '';
-            if Items.Item[i].Items.ItemNamed['Dll'] <> nil then
-              sDll := Items.Item[i].Items.ItemNamed['Dll'].Value;
+          sPath := ExtractFilePath(AFile);
+          sDll := '';
+          if Items.Item[i].Items.ItemNamed['Dll'] <> nil then
+            sDll := Items.Item[i].Items.ItemNamed['Dll'].Value;
 
-            sIcon := '';
-            if Items.Item[i].Items.ItemNamed['Icon'] <> nil then
-              sIcon := Items.Item[i].Items.ItemNamed['Icon'].Value;
+          sIcon := '';
+          if Items.Item[i].Items.ItemNamed['Icon'] <> nil then
+            sIcon := Items.Item[i].Items.ItemNamed['Icon'].Value;
 
-            sName := '';
-            sStatus := '';
-            sTitle := '';
-            sDescription := '';
-            GetItemText(sPath + sDll, SCM.ActivePluginID, sName, sStatus, sDescription);
+          sName := '';
+          sStatus := '';
+          sTitle := '';
+          sDescription := '';
+          GetItemText(sPath + sDll, SCM.ActivePluginID, sName, sStatus, sDescription);
 
-            if Items.Item[i].Items.ItemNamed['Name'] <> nil then
-              sName := Items.Item[i].Items.ItemNamed['Name'].Value;
+          if Items.Item[i].Items.ItemNamed['Name'] <> nil then
+            sName := Items.Item[i].Items.ItemNamed['Name'].Value;
 
-            if sName = '' then
-              newItem.Caption := Items.Item[i].Name
-            else
-              newItem.Caption := sName;
+          if sName = '' then
+            newItem.Caption := Items.Item[i].Name
+          else
+            newItem.Caption := sName;
 
-            newItem.Filename := sPath + sDll;
-            newItem.PluginID := SCM.ActivePluginID;
-            newItem.Description := sDescription;
-            NewItem.Status := sStatus;
+          newItem.Filename := sPath + sDll;
+          newItem.PluginID := SCM.ActivePluginID;
+          newItem.Description := sDescription;
+          NewItem.Status := sStatus;
 
-            pngfile := sPath + sIcon;
-            SCM.AssignIconIndex(pngfile, newItem);
+          pngfile := sPath + sIcon;
+          SCM.AssignIconIndex(pngfile, newItem);
 
-            if Assigned(FOnAddNavItem) then begin
-              FOnAddNavItem(newItem, newItem.IconIndex);
-            end;
+          if Assigned(FOnAddNavItem) then begin
+            FOnAddNavItem(newItem, newItem.IconIndex);
+          end;
 
-            if i = 0 then
-            begin
-              sFirstNavFile := newItem.Filename;
-              sFirstPluginID := newItem.PluginID;
-            end;
+          if i = 0 then
+          begin
+            sFirstNavFile := newItem.Filename;
+            sFirstPluginID := newItem.PluginID;
+          end;
         end;
       end;
 
@@ -462,7 +461,7 @@ var
   sDescription: string;
 begin
   // Unload the dll first
-  SCM.Unload;
+  Unload;
 
   iCount := 0;
   LockWindowUpdate(Application.MainForm.Handle);
@@ -514,45 +513,41 @@ begin
             sTitle := '';
             sDescription := '';
             GetItemText(sPath + sDll, SCM.ActivePluginID, sName, sStatus, sDescription);
-
           finally
             Xml.Free;
           end;
 
           newItem := TSharpCenterManagerItem.Create;
-            newItem.Caption := sName;
-            newItem.Status := sStatus;
-            newItem.ItemType := itmSetting;
-            newItem.Filename := APath + sRec.Name;
-            sPng := sIcon;
+          newItem.Caption := sName;
+          newItem.Status := sStatus;
+          newItem.ItemType := itmSetting;
+          newItem.Filename := APath + sRec.Name;
+          sPng := sIcon;
+          AssignIconIndex(sPng, newItem);
+
+          if Assigned(FOnAddNavItem) then begin
+            FOnAddNavItem(newItem, -1);
+            Inc(iCount);
+          end;
+        end
+        else if IsDirectory(APath + sRec.Name) then
+        begin
+          if Copy(sRec.Name, 0, 1) <> '_' then
+          begin
+            newItem := TSharpCenterManagerItem.Create;
+            newItem.Caption := PathRemoveExtension(sRec.Name);
+            newItem.Path := APath + sRec.Name;
+            newItem.ItemType := itmFolder;
+            sPng := APath + PathRemoveExtension(sRec.Name) + '.png';
             AssignIconIndex(sPng, newItem);
 
             if Assigned(FOnAddNavItem) then begin
               FOnAddNavItem(newItem, -1);
               Inc(iCount);
             end;
-        end
-        else if IsDirectory(APath + sRec.Name) then
-        begin
-
-          if Copy(sRec.Name, 0, 1) <> '_' then
-          begin
-
-            newItem := TSharpCenterManagerItem.Create;
-              newItem.Caption := PathRemoveExtension(sRec.Name);
-              newItem.Path := APath + sRec.Name;
-              newItem.ItemType := itmFolder;
-              sPng := APath + PathRemoveExtension(sRec.Name) + '.png';
-              AssignIconIndex(sPng, newItem);
-
-              if Assigned(FOnAddNavItem) then begin
-                FOnAddNavItem(newItem, -1);
-                Inc(iCount);
-              end;
           end;
         end;
-      until
-        FindNext(SRec) <> 0;
+      until FindNext(SRec) <> 0;
   finally
     FindClose(sRec);
 
