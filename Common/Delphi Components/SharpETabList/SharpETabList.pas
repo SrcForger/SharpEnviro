@@ -368,6 +368,8 @@ var
 begin
   for i := FTabsMenu.Items.Count - 1 downto 0 do
     FTabsMenu.Items[i].Free;
+  for i := FTabList.Count - 1 downto 0 do
+    FTabList.Item[i].Free;
 
   FTabList.Free;
   FButtons.Free;
