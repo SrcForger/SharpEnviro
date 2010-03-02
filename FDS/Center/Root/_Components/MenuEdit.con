@@ -3,7 +3,7 @@
   <Sections>
     <MenuEdit>
       <Dll>_ComponentDlls\MenuEdit.dll</Dll>
-      <Icon>ModuleManager.png</Icon>
+      <Icon>_ComponentDlls\MenuEdit.png</Icon>
     </MenuEdit>
   </Sections>
 </SharpCenter>
