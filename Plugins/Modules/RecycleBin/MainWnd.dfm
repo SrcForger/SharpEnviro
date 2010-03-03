@@ -14,6 +14,7 @@ object MainForm: TMainForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnPaint = FormPaint
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object btnRecycle: TSharpEButton
@@ -190,5 +191,10 @@ object MainForm: TMainForm
     Left = 72
     Top = 56
     Bitmap = {}
+  end
+  object DropTarget: TJvDropTarget
+    OnDragDrop = DropTargetDragDrop
+    Left = 112
+    Top = 56
   end
 end

@@ -28,10 +28,10 @@ unit MainWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Forms, Dialogs, CommCtrl,
+  Windows, Messages, SysUtils, Classes, Forms, Dialogs, CommCtrl, ShellApi,
   SharpIconUtils, GR32, uISharpBarModule, ISharpESkinComponents, JclShell,
   SharpApi, Menus, SharpEButton, ExtCtrls, SharpEBaseControls,
-  ToolTipApi, Controls, ImgList, PngImageList;
+  ToolTipApi, Controls, ImgList, PngImageList, JvComponentBase, JvDragDrop;
 
 
 type
@@ -51,6 +51,7 @@ type
     Properties1: TMenuItem;
     Separator1: TMenuItem;
     PngImageList1: TPngImageList;
+    DropTarget: TJvDropTarget;
 
     procedure FormPaint(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -62,6 +63,9 @@ type
     procedure btnRecycleEmpty(Sender: TObject);
     procedure btnRecycleProperties(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure DropTargetDragDrop(Sender: TJvDropTarget;
+      var Effect: TJvDropEffect; Shift: TShiftState; X, Y: Integer);
     
   private
     FTipWnd : HWND;
@@ -226,6 +230,7 @@ begin
   end;
 end;
 
+
 procedure TMainForm.btnRecycleOnClick(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
@@ -270,6 +275,21 @@ end;
 procedure TMainForm.btnRecycleProperties(Sender: TObject);
 begin
   DisplayPropDialog(Application.Handle, 'shell:RecycleBinFolder');
+end;
+
+procedure TMainForm.DropTargetDragDrop(Sender: TJvDropTarget;
+  var Effect: TJvDropEffect; Shift: TShiftState; X, Y: Integer);
+var
+  FileList : TStringList;
+begin
+  FileList := TStringList.Create;
+  try
+    Sender.GetFilenames(FileList);
+    SharpAPI.RecycleFiles(FileList, (ssShift in Shift));
+    UpdateStatus;
+  finally
+    FileList.Free;
+  end;
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
@@ -319,6 +339,11 @@ begin
 
   Bmp.DrawTo(Canvas.Handle,0,0);
   Bmp.Free;
+end;
+
+procedure TMainForm.FormShow(Sender: TObject);
+begin
+  DropTarget.Control := self;
 end;
 
 end.
