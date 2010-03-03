@@ -1517,6 +1517,26 @@ begin
     result := 1; //couldn't open file
 end;
 
+function RecycleFiles(FileList : TStringList; PermDel : boolean): boolean;
+var
+  OpFile: TSHFileOpStruct;
+begin
+  ZeroMemory(@OpFile, SizeOf(OpFile));
+
+  OpFile.wFunc := FO_DELETE;
+
+  // We need to delimit the file list by #0 (file1#0file2#0 etc.)
+  FileList.StrictDelimiter := True;
+  FileList.Delimiter := #0;
+  FileList.QuoteChar := #0;
+  opFile.pFrom := PAnsiChar(FileList.DelimitedText);
+
+  if not PermDel then
+    OpFile.fFlags := FOF_ALLOWUNDO;
+
+  Result := (SHFileOperation(OpFile) = 0);
+end;
+
 function FileCheck(pFileName : String; MustExist : boolean = False) : boolean;
 const
   TimeOut = 2500;
@@ -1643,6 +1663,7 @@ exports
   GetConfigMetaDataEx,
   GetModuleMetaDataEx,
 
+  RecycleFiles,
   FileCheck,
   GetCursorPosSecure;
 begin

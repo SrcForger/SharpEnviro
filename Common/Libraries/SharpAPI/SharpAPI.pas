@@ -32,6 +32,7 @@ interface
 uses
   Messages,
   Windows,
+  Classes,
   gr32;
 
 const
@@ -307,6 +308,7 @@ function GetServiceMetaDataEx(dllHandle: Thandle; var MetaData: TMetaData; var P
 function GetConfigMetaDataEx(dllHandle: Thandle; var MetaData: TMetaData; var ConfigMode: TSC_MODE_ENUM; var ConfigType: TSU_UPDATE_ENUM) : Integer; external 'SharpApi.dll' name 'GetConfigMetaDataEx';
 function GetModuleMetaDataEx(dllHandle: Thandle; Preview: TBitmap32; var MetaData: TMetaData; var HasPreview: Boolean) : Integer; external 'SharpApi.dll' name 'GetModuleMetaDataEx';
 
+function RecycleFiles(FileList : TStringList; PermDel : boolean = False): boolean; external 'SharpApi.dll' name 'RecycleFiles';
 function FileCheck(pFileName : String; MustExists: boolean = False) : boolean; external 'SharpApi.dll' name 'FileCheck';
 function GetCursorPosSecure(out cursorPos: TPoint):boolean; external 'SharpApi.dll' name 'GetCursorPosSecure';
 
