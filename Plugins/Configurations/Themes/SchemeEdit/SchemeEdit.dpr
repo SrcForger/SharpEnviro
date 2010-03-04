@@ -76,8 +76,8 @@ var
   themeId : string;
 begin
   PluginHost := APluginHost;
-
-  gPluginId := APluginHost.PluginId;
+  gPluginId := PAnsiChar(APluginHost.PluginId);
+  
   themeId := copy(gPluginId, 0, pos(':', gPluginId)-1);
 
   FTheme := GetTheme(themeId);

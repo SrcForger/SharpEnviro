@@ -91,10 +91,11 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
+  gPluginId := PAnsiChar(APluginHost.PluginId);
+  
   Theme := GetTheme(PluginHost.PluginID);
   Theme.LoadTheme([tpSkinScheme]);
   gTheme := Theme;
-  gPluginId := APluginHost.PluginId;
 end;
 
 function XmlGetSchemeListAsCommaText(Theme : ISharpETheme): string;

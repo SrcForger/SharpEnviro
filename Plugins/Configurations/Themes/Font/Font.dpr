@@ -103,9 +103,10 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
+  gPluginId := PAnsiChar(APluginHost.PluginId);
+  
   FTheme := GetTheme(PluginHost.PluginID);
   FTheme.LoadTheme([tpSkinFont]);
-  gPluginId := APluginHost.PluginId;
 end;
 
 procedure TSharpCenterPlugin.Load;

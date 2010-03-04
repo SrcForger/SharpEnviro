@@ -79,7 +79,8 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
-  gPluginId := PluginHost.PluginId;
+  gPluginId := PAnsiChar(APluginHost.PluginId);
+  
   FTheme := GetTheme(PluginHost.PluginId);
   FTheme.LoadTheme([tpIconSet]);
 end;

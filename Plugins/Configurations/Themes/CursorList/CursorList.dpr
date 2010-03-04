@@ -75,7 +75,7 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
-  gPluginId := APluginHost.PluginId;
+  gPluginId := PAnsiChar(APluginHost.PluginId);
 end;
 
 procedure TSharpCenterPlugin.Load;
@@ -170,9 +170,9 @@ var
 begin
   with Result do
   begin
-	Name := 'Cursors';
+  	Name := 'Cursors';
     Description := Format('Cursor Configuration for "%s"',[gPluginId]);
-	Status := '';
+	  Status := '';
 
     files := TStringList.Create;
     try

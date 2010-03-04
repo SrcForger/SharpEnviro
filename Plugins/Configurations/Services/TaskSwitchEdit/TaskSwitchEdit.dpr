@@ -79,7 +79,7 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
-  gPluginId := PluginHost.PluginId;
+  gPluginId := PAnsiChar(APluginHost.PluginId);
 end;
 
 procedure TSharpCenterPlugin.Load;

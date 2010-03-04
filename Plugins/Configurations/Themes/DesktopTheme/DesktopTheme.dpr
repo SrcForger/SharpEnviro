@@ -97,9 +97,10 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
+  gPluginId := PAnsiChar(APluginHost.PluginId);
+  
   FTheme := GetTheme(APluginHost.PluginID);
   FTheme.LoadTheme([tpDesktop,tpSkinScheme]);
-  gPluginId := APluginHost.PluginId;
 end;
 
 procedure TSharpCenterPlugin.Load;
