@@ -503,7 +503,7 @@ begin
                 if xml.Root.Items.ItemNamed['Sections'].items.Item[0] <> nil then
                   sDll := xml.Root.Items.ItemNamed['Sections'].items.Item[0].Items.ItemNamed['Dll'].Value;
 
-              sName := PathRemoveExtension(sRec.Name);
+              //sName := PathRemoveExtension(sRec.Name);
               sIcon := APath + PathRemoveExtension(sRec.Name) + '.png';
             end;
 
@@ -684,7 +684,7 @@ begin
   RefreshTheme;
   FPluginHost.Theme := FThemeManager.Theme;
 
-  FHistory := TSharpCenterHistoryList.Create;
+  FHistory := TSharpCenterHistoryList.Create(True);
 
   // Set the active root path
   FRoot := GetCenterDirectory;
@@ -711,7 +711,8 @@ begin
   FUnloadCommand.Free;
   FPluginTabs.Free;
   FPngImageList.Free;
-
+  FUnloadTimer.Free;
+  
   // Don't free the interface, set the interface to nil
   FThemeManager.Free;
 

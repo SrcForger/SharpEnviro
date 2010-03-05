@@ -1147,7 +1147,18 @@ begin
 end;
 
 procedure TSharpCenterWnd.InitNavEvent(Sender: TObject);
+var
+  i: Integer;
 begin
+  for i := lbTree.Items.Count - 1 downto 0 do
+  begin
+    // Free the TSharpCenterManagerItem we added in TSharpCenterWnd.AddItemEvent
+    TSharpCenterManagerItem(TSharpEListItem(lbTree.Items.Objects[i]).Data).Free;
+    // Free the actual TSharpEListItem here as Clear does not handle it but maybe should.
+    TSharpEListItem(lbTree.Items.Objects[i]).Free;
+    lbTree.Items.Objects[i] := nil;
+  end;
+
   lbTree.Clear;
   //PnlButtons.Show;
 end;
@@ -1158,6 +1169,8 @@ var
   s: string;
   tabItem: TTabItem;
 begin
+  for i := pnlPluginContainer.TabList.Count - 1 downto 0 do
+    pnlPluginContainer.TabList.TabItem[i].Free;
   pnlPluginContainer.TabList.Clear;
 
   if SCM.PluginTabs.Count <= 1 then
