@@ -148,21 +148,6 @@ begin
      else PointInRect:=False;
 end;
 
-procedure DeleteBarMutex(var A: TBarMutex; const Index: Integer);
-var
-  ALength: Integer;
-  i: Integer;
-begin
-  ALength := Length(A);
-  if ((ALength <= 0) or (Index >= ALength)) then
-    exit;
-
-  for i := Index + 1 to ALength - 1 do
-    A[i - 1] := A[i];
-    
-  SetLength(A, ALength - 1);
-end;
-
 // starts all bars which are set to AutoStart = True;
 function LoadAutoStartBars : boolean;
 var
@@ -179,7 +164,8 @@ var
 begin
   Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
 
-  i := 1;
+  i := 0;
+  SetLength(modMutex, 0);
 
   xml := TJclSimpleXMl.Create;
   try
@@ -235,8 +221,8 @@ begin
   end;
 
   // Wait for the bars to start
-  i := 1;
-  while (i < Length(modMutex)) do
+  i := 0;
+  for i := 0 to High(modMutex) do
   begin
     while modMutex[i].timeout > 0 do
     begin
@@ -249,23 +235,17 @@ begin
         begin
           SendDebugMessageEx('SharpBar', 'Timed out waiting for bar #' + IntToStr(i) + ' - ' + modMutex[i].name, 0, DMT_INFO);
           CloseHandle(modMutex[i].mutex);
-          DeleteBarMutex(modMutex, i);
 
-          i := i - 1;
-          break;
-        end else
-        begin
-          SendDebugMessageEx('SharpBar', 'Started bar #' + IntToStr(i) + ' - ' + modMutex[i].name, 0, DMT_TRACE);
-          CloseHandle(modMutex[i].mutex);
-          DeleteBarMutex(modMutex, i);
-
-          i := i - 1;
           break;
         end;
+      end else
+      begin
+        SendDebugMessageEx('SharpBar', 'Started bar #' + IntToStr(i) + ' - ' + modMutex[i].name, 0, DMT_TRACE);
+        CloseHandle(modMutex[i].mutex);
+
+        break;
       end;
     end;
-
-    i := i + 1;
   end;
 
   SetLength(modMutex, 0);
