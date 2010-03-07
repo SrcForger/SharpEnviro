@@ -1173,7 +1173,16 @@ procedure TSharpBarMainForm.FormDestroy(Sender: TObject);
 begin
   if FRegisteredSessionNotification then
     UnRegisterSesssionNotification(Handle);
-    
+
+  FreeLibrary(FUser32DllHandle);
+  FUser32DllHandle := 0;
+  @PrintWindow := nil;
+
+  SetLayeredWindowAttributes(Handle, 0, 0, LWA_ALPHA);
+  SharpEBar.abackground.Alpha := 0;
+
+  SharpApi.UnRegisterAction(PChar('!FocusBar (' + inttostr(FBarID) + ')'));  
+
   if BarHideForm <> nil then begin
     if BarHideForm.Visible then
       BarHideForm.Close;
@@ -2031,15 +2040,6 @@ begin
   Closing := True;
 
   SaveBarSettings;
-
-  SetLayeredWindowAttributes(Handle, 0, 0, LWA_ALPHA);
-  SharpEBar.abackground.Alpha := 0;
-
-  FreeLibrary(FUser32DllHandle);
-  FUser32DllHandle := 0;
-  @PrintWindow := nil;
-
-  SharpApi.UnRegisterAction(PChar('!FocusBar (' + inttostr(FBarID) + ')'));
 end;
 
 procedure TSharpBarMainForm.FormCloseQuery(Sender: TObject;
