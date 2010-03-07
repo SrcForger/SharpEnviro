@@ -1,0 +1,5 @@
+Restore16 RCDATA "16-application_cascade.png"
+Restore32 RCDATA "32-application_cascade.png"
+Show16 RCDATA "16-user-desktop.png"
+Show22 RCDATA "22-user-desktop.png"
+Show32 RCDATA "32-user-desktop.png"
