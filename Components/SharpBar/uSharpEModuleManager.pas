@@ -158,10 +158,10 @@ type
                                         pBarInterface : ISharpBar;
                                         pBar         : TSharpEBar); reintroduce;
                      destructor Destroy; override;
-                     procedure Clear;
-                     procedure UnloadModules;
-                     procedure Unload(Item : TModule); overload;
-                     procedure Unload(ID : integer); overload;
+                     procedure Clear(updateBar : boolean = True);
+                     procedure UnloadModules(updateBar : boolean = True);
+                     procedure Unload(Item : TModule; updateBar : boolean = True); overload;
+                     procedure Unload(ID : integer; updateBar : boolean = True); overload;
                      procedure Delete(ID : integer);
                      procedure Clone(ID : integer);
                      procedure CreateModule(MFID : integer; Position : integer; wnd : HWND = 0);
@@ -264,7 +264,7 @@ begin
   FShutdown := True;
   FBarInterface := nil;
   FSkinInterface := nil;
-  Clear;
+  Clear(False);
   FModules.Free;
   FModules := nil;
   FModuleFiles.Free;
@@ -476,13 +476,13 @@ begin
 end;
 
 // Unload all modules
-procedure TModuleManager.UnloadModules;
+procedure TModuleManager.UnloadModules(updateBar : boolean = True);
 begin
   while FModules.Count <> 0 do
-    Unload(TModule(FModules.Items[0]));
+    Unload(TModule(FModules.Items[0]),updateBar);
 end;
 
-procedure TModuleManager.Unload(Item : TModule);
+procedure TModuleManager.Unload(Item : TModule; updateBar : boolean = True);
 var
   MF : TModuleFile;
   hm : boolean;
@@ -508,11 +508,12 @@ begin
   if not hm then
     MF.UnloadDll; // No other modules loaded by that Module File... unload the dll
 
-  FixModulePositions;
+  if updateBar then
+    FixModulePositions;
 end;
 
 // Unload a module
-procedure TModuleManager.Unload(ID : integer);
+procedure TModuleManager.Unload(ID : integer; updateBar : boolean = True);
 var
   n : integer;
   TempModule : TModule;
@@ -522,7 +523,7 @@ begin
     TempModule := TModule(FModules.Items[n]);
     if TempModule.mInterface.ID = ID then
     begin
-      Unload(TempModule);
+      Unload(TempModule, updateBar);
       exit;
     end;
   end;
@@ -606,9 +607,9 @@ begin
 end;
 
 
-procedure TModuleManager.Clear;
+procedure TModuleManager.Clear(updateBar : boolean = True);
 begin
-  UnloadModules;
+  UnloadModules(updateBar);
   while FModuleFiles.Count <> 0 do
         FModuleFiles.Delete(0);
 end;
