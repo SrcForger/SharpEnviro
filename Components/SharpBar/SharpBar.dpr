@@ -221,7 +221,6 @@ begin
   end;
 
   // Wait for the bars to start
-  i := 0;
   for i := 0 to High(modMutex) do
   begin
     while modMutex[i].timeout > 0 do
