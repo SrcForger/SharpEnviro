@@ -198,6 +198,8 @@ begin
     FreeAndNil(SharpEMenuPopups);
   end;
 
+  FSkinManager := nil;
+
   inherited Destroy;
 end;
 
