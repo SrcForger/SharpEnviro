@@ -54,6 +54,7 @@ end;
 destructor TFontList.Destroy;
 begin
   ClearList;
+  List.Free;
   inherited Destroy;
 end;
 
@@ -121,7 +122,9 @@ begin
 
   FI.FTM := TextMetric;
 
-  List.AddObject(FI.FShortName, FI);
+  if List.IndexOf(FI.ShortName) = -1 then
+    List.AddObject(FI.FShortName, FI)
+  else FI.Free; // already in the list, free object since nothing has been added (dupIgnore)
 end;
 
 procedure TFontList.RefreshFontInfo;
