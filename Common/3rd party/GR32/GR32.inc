@@ -1,5 +1,5 @@
 (* ***** BEGIN LICENSE BLOCK *****
- * Version: MPL 1.1
+ * Version: MPL 1.1 or LGPL 2.1 with linking exception
  *
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use this file except in compliance with
@@ -11,27 +11,78 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
+ * Alternatively, the contents of this file may be used under the terms of the
+ * Free Pascal modified version of the GNU Lesser General Public License
+ * Version 2.1 (the "FPC modified LGPL License"), in which case the provisions
+ * of this license are applicable instead of those above.
+ * Please see the file LICENSE.txt for additional information concerning this
+ * license.
+ *
  * The Original Code is Graphics32
  *
  * The Initial Developer of the Original Code is
  * Alex A. Denisov
  *
- * Portions created by the Initial Developer are Copyright (C) 2000-2006
+ * Portions created by the Initial Developer are Copyright (C) 2000-2009
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
  *   Andre Beckedorf <Andre@metaException.de>
+ *   Michael Hansen <dyster_tid@hotmail.com>
  *
  * ***** END LICENSE BLOCK ***** *)
 
-{$IFDEF VER180}
+ {$IFDEF VER210}
   {$DEFINE INLININGSUPPORTED}
+  {$DEFINE COMPILER2010}
+  {$DEFINE COMPILER2009}
+  {$DEFINE COMPILER2007}
   {$DEFINE COMPILER2006}
   {$DEFINE COMPILER2005}
   {$DEFINE COMPILER7}
   {$DEFINE COMPILER6}
-  {$DEFINE COMPILER5}
-  {$DEFINE COMPILER4}
+  {$IFNDEF BCB}
+    {$DEFINE DELPHI2010}
+  {$ELSE}
+    {$DEFINE BCB7}
+  {$ENDIF}
+{$ENDIF}
+
+{$IFDEF VER200}
+  {$DEFINE INLININGSUPPORTED}
+  {$DEFINE COMPILER2009}
+  {$DEFINE COMPILER2007}
+  {$DEFINE COMPILER2006}
+  {$DEFINE COMPILER2005}
+  {$DEFINE COMPILER7}
+  {$DEFINE COMPILER6}
+  {$IFNDEF BCB}
+    {$DEFINE DELPHI2009}
+  {$ELSE}
+    {$DEFINE BCB7}
+  {$ENDIF}
+{$ENDIF}
+
+{$IFDEF VER185}
+  {$DEFINE INLININGSUPPORTED}
+  {$DEFINE COMPILER2007}
+  {$DEFINE COMPILER2006}
+  {$DEFINE COMPILER2005}
+  {$DEFINE COMPILER7}
+  {$DEFINE COMPILER6}
+  {$IFNDEF BCB}
+    {$DEFINE DELPHI2007}
+  {$ELSE}
+    {$DEFINE BCB7}
+  {$ENDIF}
+{$ENDIF}
+
+{$IFDEF VER180}
+  {-$DEFINE INLININGSUPPORTED} // disabled due to a compiler bug (http://qc.embarcadero.com/wc/qcmain.aspx?d=41166)
+  {$DEFINE COMPILER2006}
+  {$DEFINE COMPILER2005}
+  {$DEFINE COMPILER7}
+  {$DEFINE COMPILER6}
   {$IFNDEF BCB}
     {$DEFINE DELPHI2006}
   {$ELSE}
@@ -40,12 +91,10 @@
 {$ENDIF}
 
 {$IFDEF VER170}
-  {$DEFINE INLININGSUPPORTED}
+  {-$DEFINE INLININGSUPPORTED} // disabled due to a compiler bug (http://qc.embarcadero.com/wc/qcmain.aspx?d=41166)
   {$DEFINE COMPILER2005}
   {$DEFINE COMPILER7}
   {$DEFINE COMPILER6}
-  {$DEFINE COMPILER5}
-  {$DEFINE COMPILER4}
   {$IFNDEF BCB}
     {$DEFINE DELPHI2005}
   {$ELSE}
@@ -56,8 +105,6 @@
 {$IFDEF VER150}
   {$DEFINE COMPILER7}
   {$DEFINE COMPILER6}
-  {$DEFINE COMPILER5}
-  {$DEFINE COMPILER4}
   {$IFNDEF BCB}
     {$DEFINE DELPHI7}
   {$ELSE}
@@ -67,8 +114,6 @@
 
 {$IFDEF VER140}
   {$DEFINE COMPILER6}
-  {$DEFINE COMPILER5}
-  {$DEFINE COMPILER4}
   {$IFNDEF BCB}
     {$DEFINE DELPHI6}
   {$ELSE}
@@ -76,46 +121,78 @@
   {$ENDIF}
 {$ENDIF}
 
-{$IFDEF VER130}
-  {$DEFINE COMPILER5}
-  {$DEFINE COMPILER4}
-  {$IFNDEF BCB}
-    {$DEFINE DELPHI5}
-    {$DEFINE DELPHI4}
-  {$ELSE}
-    {$ObjExportAll On}
-    {$DEFINE BCB5}
-    {$DEFINE BCB4}
+
+(* Symbol PUREPASCAL :
+    Forces GR32 into pure pascal mode. Should be used only for testing and
+    debugging purposes.
+
+    Note: don't change this to compile for other targets than x86 - configure
+    FPC/Lazarus correctly instead (GR32 will adapt to those changes). *)
+
+{$IFDEF FPC}
+  {$IFNDEF LCLWin32}
+    {$DEFINE PUREPASCAL}
   {$ENDIF}
 {$ENDIF}
 
-{$IFDEF VER125}
-  {$DEFINE COMPILER4}
-  {$DEFINE BCB4}
+{$IFDEF FPC}
+  {$DEFINE PLATFORM_INDEPENDENT}
+  {$MODE Delphi}
+
+  {$IFNDEF PUREPASCAL}
+    // Set up internal CPU target directives according to FPC directives
+    {$IFDEF CPUI386}
+      // target is an Intel 80386 or later.
+      {$DEFINE TARGET_x86}
+    {$ENDIF}
+    {$IFDEF CPUPOWERPC}
+      // target is a 32-bit PowerPC or compatible.
+      // currently only indirect support, added here as example on how to add
+      // future specific targets
+      {$DEFINE TARGET_POWERPC}
+    {$ENDIF}
+  {$ENDIF}
+
+  // Widgetsets other then Windows will want to implement BITS_GETTER
+  {$IFNDEF LCLWin32}
+    {$DEFINE BITS_GETTER}
+  {$ENDIF}
+
+{$ELSE}
+  {$IFNDEF PUREPASCAL}
+    // define default (delphi etc) target (32 bit Intel 80386 or later)
+    {$DEFINE TARGET_x86}
+  {$ENDIF}
 {$ENDIF}
 
-{$IFDEF VER120}
-  {$DEFINE COMPILER4}
-  {$DEFINE DELPHI4}
-{$ENDIF}
 
-{$IFNDEF COMPILER4}
+{$IFNDEF COMPILER6}
+{$IFNDEF FPC}
 //////////////////////////////////////////////////////////////////////
-'  Graphics32 may only be installed with Delphi 4, Delphi 5,         '
-'  Delphi6, Delphi7, C++ Builder 4, C++ Builder 5, or C++Builder 6 ! '
+'  Graphics32 may only be installed with Delphi/BCB 6 (or higher)    '
+'   or Free Pascal / Lazarus                                         '
 //////////////////////////////////////////////////////////////////////
+{$ENDIF}
 {$ENDIF}
 
 {$IFDEF LINUX}
-  {$DEFINE CLX}
+  {$IFNDEF FPC}
+    {$DEFINE PLATFORM_INDEPENDENT}
+    {$DEFINE BITS_GETTER}
+  {$ENDIF}
+  {$DEFINE UNIX}
 {$ENDIF}
 
-(* Symbol CLX :
-    Defines whether CLX/QT rather than VCL/WinAPI should be used as toolkit on Windows.
-    NOTE:
-    For Kylix/Linux support this symbol is set automatically. *)
+{$IFNDEF FPC}
+  {$IFNDEF LINUX}
+    {$DEFINE Windows}
+  {$ENDIF}
+{$ENDIF}
 
-  {-$DEFINE CLX}
+(* Symbol PUREPASCAL :
+    Forces GR32 into pure pascal mode. Should be used only for testing and
+    debugging purposes. *)
+    {-$DEFINE PUREPASCAL}
 
 
 (* Symbol DEPRECATEDMODE :
@@ -136,11 +213,6 @@
 
   {-$DEFINE CHANGED_IN_PIXELS}
 
-(* Symbol DISABLE_MMX :
-    Defining this symbol will disable any MMX instructions (e.g. for GR32_Blend). *)
-
-  {-$DEFINE DISABLE_MMX}
-
 
 {$IFDEF INLININGSUPPORTED}
 (* Symbol USEINLINING :
@@ -149,7 +221,7 @@
     Enabling this symbol increases executable size but will result in better
     performance in most cases. *)
 
-  {-$DEFINE USEINLINING}
+  {$DEFINE USEINLINING}
 {$ENDIF}
 
 
@@ -158,6 +230,11 @@
 
   {-$DEFINE USEMOVE}
 
+
+(* Symbol USEMULTITHREADING :
+    Use multithreading by default if possible. *)
+
+  {$DEFINE USEMULTITHREADING}
 
 (* FastCode specific symbols:
     Adding these symbols to your project's define list will force use of the
@@ -182,9 +259,9 @@
 {$R-}{$Q-}  // switch off overflow and range checking
 
 {$IFDEF COMPILER5}
-  {$IFNDEF CLX}
-    {$DEFINE EXT_PROP_EDIT}
-  {$ENDIF}
+  {$DEFINE EXT_PROP_EDIT}
 {$ENDIF}
 
-{-$DEFINE XPTHEMES} // enable support for windows xp themes
+{$IFNDEF FPC}
+  {-$DEFINE XPTHEMES} // enable support for windows xp themes
+{$ENDIF}
