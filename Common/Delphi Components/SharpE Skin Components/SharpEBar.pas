@@ -39,7 +39,8 @@ uses
   Graphics,
   Dialogs,
   StdCtrls,
-  gr32,
+  GR32,
+  GR32_Backends,
   Math,
   MonitorList,
   SharpeDefault,
@@ -83,6 +84,8 @@ type
     FAutoPosition: boolean;
     FHorizPos: TSharpEBarHorizPos;
     FVertPos: TSharpEBarVertPos;
+    FFixedWidth: integer;
+    FFixedWidthEnabled: boolean;
     FPrimaryMon: boolean;
     FMonitorIndex: integer;
     FAutoStart: boolean;
@@ -103,6 +106,8 @@ type
     procedure SetAutoStart(Value: boolean);
     procedure SetShowThrobber(Value: boolean);
     procedure SetAlwaysOnTop(Value: boolean);
+    procedure SetFixedWidth(Value : integer);
+    procedure SetFixedWidthEnabled(Value : boolean);
     function GetSpecialHideForm : boolean;
   protected
     procedure DrawDefaultSkin(Scheme: ISharpEScheme); virtual;
@@ -129,6 +134,8 @@ type
     property MonitorIndex: integer read FMonitorIndex write SetMonitorIndex;
     property AutoStart: Boolean read FAutoStart write SetAutoStart;
     property AlwaysOnTop: Boolean read FAlwaysOnTop write SetAlwaysOnTop;
+    property FixedWidthEnabled: Boolean read FFixedWidthEnabled write SetFixedWidthEnabled;
+    property FixedWidth: integer read FFixedWidth write SetFixedWidth;
 
     property ShowThrobber: Boolean read FShowThrobber write SetShowThrobber;
     property DisableHideBar: Boolean read FDisableHideBar write FDisableHideBar;
@@ -415,6 +422,8 @@ begin
   FSkin.CombineMode := cmMerge;
   FSkinSeed := -1;
 
+  FFixedWidth := 50; // percent of screen width
+  FFixedWidthEnabled := False;
   FAutoPosition := False;
   FHorizPos := hpMiddle;
   FVertPos := vpTop;
@@ -705,6 +714,25 @@ begin
   begin
     FBuffer.setsize(max(NewWidth,4), max(form.height,4));
     FSkin.setsize(max(NewWidth,4), max(form.height,4));
+  end;
+end;
+
+procedure TSharpEBar.SetFixedWidth(Value: integer);
+begin
+  if Value <> FFixedWidth then
+  begin
+    FFixedWidth := Value;
+    if FFixedWidthEnabled then   
+      UpdatePosition;
+  end;
+end;
+
+procedure TSharpEBar.SetFixedWidthEnabled(Value: boolean);
+begin
+  if Value <> FFixedWidthEnabled then
+  begin
+    FFixedWidthEnabled := Value;
+    UpdatePosition;
   end;
 end;
 

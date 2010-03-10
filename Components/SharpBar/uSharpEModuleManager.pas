@@ -358,6 +358,8 @@ begin
       Items.Add('StartHidden', not FBar.aform.Visible);
       Items.Add('AlwaysOnTop', FBar.AlwaysOnTop);
       Items.Add('ShowMiniThrobbers', ModuleManager.ShowMiniThrobbers);
+      Items.Add('FixedWidthEnabled', FBar.FixedWidthEnabled);
+      Items.Add('FixedWidth', FBar.FixedWidth);
     end;
 
     // Save the Module List
@@ -373,8 +375,10 @@ begin
     end;
 
     ForceDirectories(Dir);
-    if FileCheck(Dir + 'Bar.xml') then
-      xml.SaveToFile(Dir + 'Bar.xml');
+    if FileCheck(Dir + 'Bar.xml~') then
+      xml.SaveToFile(Dir + 'Bar.xml~'); // Save first into a temporary/backup file, in case save operation fails by any reason
+    if FileCheck(Dir + 'Bar.xml') then // A quick copy operation is less unlikely to fail than saving the whole xml fie
+      CopyFile(PChar(Dir + 'Bar.xml~'),PChar(Dir + 'Bar.xml'),False);
   finally
     xml.Free;
   end;
@@ -880,7 +884,9 @@ begin
   else lo := FBar.Throbber.Left;
   ro := FSkinInterface.SkinManager.Skin.Bar.PAXoffset.Y;
 
-  result := maxsize - ro - lo - FModules.Count * MTWidth;
+  if FBar.FixedWidthEnabled then
+    result := round(FBar.FixedWidth * pMon.Width / 100) + ro + lo + FModules.Count
+  else result := maxsize - ro - lo - FModules.Count * MTWidth;
 end;
 
 function TModuleManager.GetModuleIndex(ID : integer) : integer;
@@ -1194,7 +1200,7 @@ begin
        else RightSize := RightSize + TempModule.mInterface.Form.Width + MTWidth;
   end;
 
-  if not (FBar.HorizPos = hpFull) then
+  if not (FBar.HorizPos = hpFull) and (not FBar.FixedWidthEnabled) then
      if lo + ro + LeftSize + RightSize <> ParentControl.Width then
   begin
     nw := Max(lo + ro + FSkinInterface.SkinManager.Skin.Bar.ThrobberWidth+5,lo + ro + LeftSize + RightSize);
@@ -1406,6 +1412,11 @@ begin
     if msize.Min <> msize.Max then
        i := i + 1;
   end;
+
+  ParentControl := GetControlByHandle(FParent);  
+  pMon := MonList.MonitorFromPoint(Point(ParentControl.Left,ParentControl.Top),mdNearest);
+  if FBar.FixedWidthEnabled then
+    newsize := round(FBar.FixedWidth * pMon.Width / 100);
   UpdateBarSize(newsize,ForceUpdate);
 
   // Send update messages to modules
@@ -1443,12 +1454,10 @@ begin
   setlength(nonminmaxrequest,0);
   FixModulePositions;
 
-  ParentControl := GetControlByHandle(FParent);
   sdif := maxsize - minsize;
 
   // Check if there is no bar space left and if other bars which have
   // free space left should resize
-  pMon := MonList.MonitorFromPoint(Point(ParentControl.Left,ParentControl.Top),mdNearest);
   maxSize := pMon.Width - ParentControl.Width;
 
   setlength(harray,0);

@@ -78,6 +78,15 @@ type
     LaunchSharpCenter1: TMenuItem;
     N7: TMenuItem;
     FullscreenCheckTimer: TTimer;
+    FixedWidth1: TMenuItem;
+    EnabledFixedSize1: TMenuItem;
+    N8: TMenuItem;
+    N501: TMenuItem;
+    N502: TMenuItem;
+    N401: TMenuItem;
+    N301: TMenuItem;
+    N201: TMenuItem;
+    Custom1: TMenuItem;
     procedure ShowMiniThrobbers1Click(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ThemeHideTimerTimer(Sender: TObject);
@@ -125,6 +134,9 @@ type
     procedure LaunchSharpCenter1Click(Sender: TObject);
     procedure FormPaint(Sender: TObject);
     procedure FullscreenCheckTimerTimer(Sender: TObject);
+    procedure EnabledFixedSize1Click(Sender: TObject);
+    procedure N501Click(Sender: TObject);
+    procedure Custom1Click(Sender: TObject);
   private
     { Private-Deklarationen }
     FUser32DllHandle: THandle;
@@ -984,6 +996,14 @@ begin
   UpdateBGZone;
 end;
 
+procedure TSharpBarMainForm.Custom1Click(Sender: TObject);
+var
+  cfile: string;
+begin
+  cfile := SharpApi.GetCenterDirectory + 'Toolbars.con';
+  SharpCenterApi.CenterCommand(sccLoadSetting,PChar(cfile),'');
+end;
+
 procedure TSharpBarMainForm.LoadBarFromID(ID: integer);
 var
   xml: TJclSimpleXML;
@@ -1036,6 +1056,23 @@ begin
     end;
   end;
 
+  if not b then // loading the Bar.xml for any reason failed, this is bad! :(
+  begin
+    try    
+      if FileCheck(Dir + 'Bar.xml~') then // let's try to load the last backup :)
+      begin
+        xml.LoadFromFile(Dir + 'Bar.xml~');
+        b := true;
+      end;
+    except
+      on E: Exception do
+      begin
+        SharpApi.SendDebugMessageEx('SharpBar',PChar('(LoadBarFromID): Error loading Backup file '+ Dir + 'Bar.xml~'), clred, DMT_ERROR);
+        SharpApi.SendDebugMessageEx('SharpBar',PChar(E.Message),clblue, DMT_TRACE);
+      end;    
+    end;
+  end;
+
   if b then begin
     // xml file loaded properlty... use it
     if xml.Root.Items.ItemNamed['Settings'] <> nil then
@@ -1052,6 +1089,8 @@ begin
         SharpEBar.StartHidden := Items.BoolValue('StartHidden', False);
         ModuleManager.ShowMiniThrobbers := Items.BoolValue('ShowMiniThrobbers', True);
         SharpEBar.AlwaysOnTop := Items.BoolValue('AlwaysOnTop', False);
+        SharpEBar.FixedWidthEnabled := Items.BoolValue('FixedWidthEnabled', False);
+        SharpEBar.FixedWidth := Max(10,Min(100,Items.IntValue('FixedWidth', 50)));
 
         ModuleManager.BarName := FBarName;        
         // Set Main Window Title to SharpBar_ID!
@@ -1290,6 +1329,24 @@ begin
   SaveBarSettings;
 end;
 
+procedure TSharpBarMainForm.EnabledFixedSize1Click(Sender: TObject);
+begin
+  EnabledFixedSize1.Checked := not EnabledFixedSize1.Checked;
+  SharpEBar.FixedWidthEnabled := EnabledFixedSize1.Checked;
+  FixedWidth1.Checked := EnabledFixedSize1.Checked;
+  N501.Enabled := EnabledFixedSize1.Checked;
+  N502.Enabled := EnabledFixedSize1.Checked;
+  N401.Enabled := EnabledFixedSize1.Checked;
+  N301.Enabled := EnabledFixedSize1.Checked;
+  N201.Enabled := EnabledFixedSize1.Checked;
+  if EnabledFixedSize1.Checked and (SharpEBar.HorizPos = hpFull) then
+    SharpEBar.HorizPos := hpMiddle;
+  UpdateBGImage;
+  SharpApi.SharpEBroadCast(WM_UPDATEBARWIDTH, 0, 0);
+  ModuleManager.ReCalculateModuleSize(True,True);
+  SaveBarSettings;
+end;
+
 procedure TSharpBarMainForm.ExitMnClick(Sender: TObject);
 begin
   SaveBarSettings;
@@ -1300,6 +1357,7 @@ end;
 procedure TSharpBarMainForm.FullScreen1Click(Sender: TObject);
 begin
   SharpEBar.HorizPos := hpFull;
+  SharpEBar.FixedWidthEnabled := False;
   UpdateBGImage;
   SharpApi.SharpEBroadCast(WM_UPDATEBARWIDTH, 0, 0);
   ModuleManager.FixModulePositions;
@@ -1485,6 +1543,44 @@ begin
     hpRight: Right1.Checked := True;
     hpFull: FullScreen1.Checked := True;
   end;
+
+  FixedWidth1.Checked := False;
+  EnabledFixedSize1.Checked := False;  
+  if SharpEBar.FixedWidthEnabled then
+  begin
+    FixedWidth1.Checked := True;
+    EnabledFixedSize1.Checked := True;
+    FullScreen1.Checked := False;
+    N501.Enabled := True;
+    N502.Enabled := True;
+    N401.Enabled := True;
+    N301.Enabled := True;
+    N201.Enabled := True;
+  end else
+  begin
+    N501.Enabled := False;
+    N502.Enabled := False;
+    N401.Enabled := False;
+    N301.Enabled := False;
+    N201.Enabled := False;
+  end;
+
+  N501.Checked := False;
+  N502.Checked := False;
+  N401.Checked := False;
+  N301.Checked := False;
+  N201.Checked := False;
+  if SharpEBar.FixedWidth = 75 then
+    N501.Checked := True
+  else if SharpEBar.FixedWidth = 50 then
+    N502.Checked := True
+  else if SharpEBar.FixedWidth = 40 then
+    N401.Checked := True
+  else if SharpEBar.FixedWidth = 30 then
+    N301.Checked := True
+  else if SharpEBar.FixedWidth = 20 then
+    N201.Checked := True
+  else Custom1.Checked := True;       
 end;
 
 procedure TSharpBarMainForm.OnSchemeSelectItemClick(Sender: TObject);
@@ -1936,6 +2032,15 @@ begin
   ModuleManager.MoveModule(index, 1);
   ModuleManager.SortModulesByPosition;
   ModuleManager.FixModulePositions;
+  SaveBarSettings;
+end;
+
+procedure TSharpBarMainForm.N501Click(Sender: TObject);
+begin
+  SharpEBar.FixedWidth := TMenuItem(Sender).Tag;
+  UpdateBGImage;
+  SharpApi.SharpEBroadCast(WM_UPDATEBARWIDTH, 0, 0);
+  ModuleManager.ReCalculateModuleSize(True,True);
   SaveBarSettings;
 end;
 

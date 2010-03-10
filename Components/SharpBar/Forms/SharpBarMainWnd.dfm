@@ -101,6 +101,46 @@ object SharpBarMainForm: TSharpBarMainForm
         RadioItem = True
         OnClick = FullScreen1Click
       end
+      object FixedWidth1: TMenuItem
+        Caption = 'Fixed Width'
+        GroupIndex = 2
+        object EnabledFixedSize1: TMenuItem
+          Caption = 'Enabled Fixed Size'
+          OnClick = EnabledFixedSize1Click
+        end
+        object N8: TMenuItem
+          Caption = '-'
+        end
+        object N501: TMenuItem
+          Tag = 75
+          Caption = '75%'
+          OnClick = N501Click
+        end
+        object N502: TMenuItem
+          Tag = 50
+          Caption = '50%'
+          OnClick = N501Click
+        end
+        object N401: TMenuItem
+          Tag = 40
+          Caption = '40%'
+          OnClick = N501Click
+        end
+        object N301: TMenuItem
+          Tag = 30
+          Caption = '30%'
+          OnClick = N501Click
+        end
+        object N201: TMenuItem
+          Tag = 20
+          Caption = '20%'
+          OnClick = N501Click
+        end
+        object Custom1: TMenuItem
+          Caption = 'Custom'
+          OnClick = Custom1Click
+        end
+      end
       object N2: TMenuItem
         Caption = '-'
         GroupIndex = 2
