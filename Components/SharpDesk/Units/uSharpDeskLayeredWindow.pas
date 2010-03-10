@@ -31,7 +31,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs,
   Types,
-  GR32,
+  GR32,GR32_Backends,
   SharpApi,
   SharpDeskApi;
 

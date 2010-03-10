@@ -28,8 +28,9 @@ Unit uSharpDeskBackgroundUnit;
 Interface
 
 uses Windows,Graphics,SysUtils,Forms,SharpApi,Classes,Dialogs,Types,
-     GR32,Math,GR32_blend,GR32_Image, GR32_resamplers,PngImage, Registry,Messages,
-     SharpThemeApiEx, uThemeConsts, GR32_PNG, Jpeg, uISharpETheme, 
+     GR32,Math,GR32_blend,GR32_Image, GR32_resamplers,GR32_Backends,
+     PngImage, Registry,Messages, SharpThemeApiEx, uThemeConsts,
+     GR32_PNG, Jpeg, uISharpETheme, 
      SharpGraphicsUtils,
      SharpImageUtils;
 

@@ -28,6 +28,7 @@ unit uSharpEMenu;
 interface
 
 uses SysUtils, Windows, Forms, Contnrs, Menus, Controls, GR32,Classes,Dialogs,
+     GR32_Backends,
      SharpGraphicsUtils,
      ISharpESkinComponents,
      uSharpEMenuPopups,

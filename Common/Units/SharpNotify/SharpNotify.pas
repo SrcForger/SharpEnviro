@@ -36,6 +36,7 @@ uses
   Types,  
   Graphics,
   GR32,
+  GR32_Backends,
   GR32_PNG,
   GR32Utils,
   StrUtils,
