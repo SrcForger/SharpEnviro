@@ -11,6 +11,7 @@ uses
   Forms,
   Menus,
   GR32,
+  GR32_Backends,
   GR32_Image,
   GR32_Layers,
   ExtCtrls,

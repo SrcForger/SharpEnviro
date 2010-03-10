@@ -65,7 +65,7 @@
     <DCCReference Include="bdertl.dcp" />
     <DCCReference Include="dbrtl.dcp" />
     <DCCReference Include="designide.dcp" />
-    <DCCReference Include="GR32_BDS2006.dcp" />
+    <DCCReference Include="GR32_RS2007.dcp" />
     <DCCReference Include="Jcl.dcp" />
     <DCCReference Include="JclVcl.dcp" />
     <DCCReference Include="JvCoreD11R.dcp" />

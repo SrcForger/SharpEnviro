@@ -68,16 +68,16 @@
     <DCCReference Include="..\..\Libraries\SharpThemeApiEx\SharpThemeApiEx.pas" />
     <DCCReference Include="..\..\Units\SharpFX\PNG_D10.dcp" />
     <DCCReference Include="..\..\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas" />
-    <DCCReference Include="C:\Program Files (x86)\CodeGear\RAD Studio\5.0\bin\designide.dcp" />
-    <DCCReference Include="C:\Program Files (x86)\CodeGear\RAD Studio\5.0\bin\GR32_BDS2006.dcp" />
-    <DCCReference Include="C:\Program Files (x86)\CodeGear\RAD Studio\5.0\bin\Jcl.dcp" />
-    <DCCReference Include="C:\Program Files (x86)\CodeGear\RAD Studio\5.0\bin\JclVcl.dcp" />
-    <DCCReference Include="C:\Program Files (x86)\CodeGear\RAD Studio\5.0\bin\JvCoreD11R.dcp" />
-    <DCCReference Include="C:\Program Files (x86)\CodeGear\RAD Studio\5.0\bin\JvInterpreterD11R.dcp" />
-    <DCCReference Include="C:\Program Files (x86)\CodeGear\RAD Studio\5.0\bin\JvSystemD11R.dcp" />
-    <DCCReference Include="C:\Program Files (x86)\CodeGear\RAD Studio\5.0\bin\PNG_D9.dcp" />
-    <DCCReference Include="C:\Program Files (x86)\CodeGear\RAD Studio\5.0\bin\rtl.dcp" />
-    <DCCReference Include="C:\Program Files (x86)\CodeGear\RAD Studio\5.0\bin\vcl.dcp" />
-    <DCCReference Include="C:\Program Files (x86)\CodeGear\RAD Studio\5.0\bin\xmlrtl.dcp" />
+    <DCCReference Include="designide.dcp" />
+    <DCCReference Include="GR32_RS2007.dcp" />
+    <DCCReference Include="Jcl.dcp" />
+    <DCCReference Include="JclVcl.dcp" />
+    <DCCReference Include="JvCoreD11R.dcp" />
+    <DCCReference Include="JvInterpreterD11R.dcp" />
+    <DCCReference Include="JvSystemD11R.dcp" />
+    <DCCReference Include="PNG_D9.dcp" />
+    <DCCReference Include="rtl.dcp" />
+    <DCCReference Include="vcl.dcp" />
+    <DCCReference Include="xmlrtl.dcp" />
   </ItemGroup>
 </Project>

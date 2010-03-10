@@ -34,10 +34,10 @@ requires
   Jcl,
   JclVcl,
   PNG_D9,
-  GR32_BDS2006,
   JvSystemD11R,
   JvCoreD11R,
-  JvInterpreterD11R;
+  JvInterpreterD11R,
+  GR32_RS2007;
 
 contains
   sharedBitmapList in '..\..\Delphi Components\SharpE Skin Components\sharedBitmapList.pas',

@@ -14,6 +14,7 @@ uses
   GR32_Polygons,
   SharpApi,
   GR32_Image,
+  GR32_Backends,
   GR32_Layers;
 
 const

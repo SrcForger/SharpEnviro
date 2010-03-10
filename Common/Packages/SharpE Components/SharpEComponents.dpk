@@ -41,7 +41,6 @@ requires
   VclSmp,
   PNG_D9,
   PngComponentsD9,
-  GR32_BDS2006,
   JvCoreD11R,
   JvSystemD11R,
   JvStdCtrlsD11R,
