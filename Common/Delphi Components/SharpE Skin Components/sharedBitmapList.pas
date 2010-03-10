@@ -28,7 +28,7 @@ unit SharedBitmapList;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, GR32, Forms,
+  Windows, Messages, SysUtils, Classes, Controls, GR32, GR32_Backends, Forms,
   SharpESkin, SharpTypes, SharpEBitmapList, SharpAPI;
 
 type

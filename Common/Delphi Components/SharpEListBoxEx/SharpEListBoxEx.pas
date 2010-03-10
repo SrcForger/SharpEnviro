@@ -16,7 +16,8 @@ uses
   PngImage,
   Types,
   GR32,
-  GR32_Image;
+  GR32_Image,
+  GR32_Backends;
 
 type
   TSEColumn_WidthType = (cwtPercent, cwtPixel);

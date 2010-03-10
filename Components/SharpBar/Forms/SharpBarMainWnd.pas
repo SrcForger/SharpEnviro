@@ -33,7 +33,7 @@ uses
   GR32, uSharpEModuleManager, PngImageList, SharpEBar,
   SharpEBaseControls, Controls, ExtCtrls, uSkinManagerThreads,
   uSystemFuncs, Types, SharpESkin, Registry, SharpTypes,
-  SharpGraphicsUtils, Math, SharpCenterApi, ImgList,
+  SharpGraphicsUtils, Math, SharpCenterApi, ImgList, GR32_Backends,
   uSharpESkinInterface, uSharpBarInterface, MonitorList;
 
 type
