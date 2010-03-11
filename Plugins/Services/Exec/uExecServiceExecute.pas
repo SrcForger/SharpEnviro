@@ -628,14 +628,14 @@ begin
     // and a command if applicable. Also searches paths for some
     // equivalent values}
 
-    FileCommandl := StrtoFileandCmd(text);
     try
-      if (FileCommandl.Filename <> '') then begin
-        if fileexists(FileCommandl.FileName) then begin
+      if (textstripped <> '') then
+      begin
+        if FileExists(textstripped) then
+        begin
           Debug('ExecuteType: ShellOpenFile:', DMT_TRACE);
 
-          if ShellOpenFile(Handle, FileCommandl.Filename, FileCommandl.Commandline,
-            ExtractFilePath(FileCommandl.Filename), Elevate) = 1 then begin
+          if ShellOpenFile(Handle, textstripped, '', ExtractFilePath(textstripped), Elevate) = 1 then begin
 
             // Save to recent item list
             SaveMostUsedItem(text, SaveHistory);
