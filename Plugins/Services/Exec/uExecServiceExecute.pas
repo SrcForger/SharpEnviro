@@ -631,12 +631,25 @@ begin
     try
       if (textstripped <> '') then
       begin
-        if FileExists(textstripped) then
+        Debug('ExecuteType: ShellOpenFile:', DMT_TRACE);
+        
+        if (FileExists(textstripped)) then
         begin
-          Debug('ExecuteType: ShellOpenFile:', DMT_TRACE);
+          if ShellOpenFile(Handle, textstripped, '', ExtractFilePath(textstripped), Elevate) = 1 then
+          begin
+            // Save to recent item list
+            SaveMostUsedItem(text, SaveHistory);
+            SaveRecentItem(text, SaveHistory);
 
-          if ShellOpenFile(Handle, textstripped, '', ExtractFilePath(textstripped), Elevate) = 1 then begin
+            Result := True;
+            exit;
+          end
+        end else
+        begin
+          FileCommandl := StrtoFileandCmd(text);
 
+          if ShellOpenFile(Handle, FileCommandl.Filename, FileCommandl.Commandline, ExtractFilePath(FileCommandl.Filename), Elevate) = 1 then
+          begin
             // Save to recent item list
             SaveMostUsedItem(text, SaveHistory);
             SaveRecentItem(text, SaveHistory);
@@ -645,6 +658,7 @@ begin
             exit;
           end;
         end;
+
       end;
     except
       on E: Exception do begin
