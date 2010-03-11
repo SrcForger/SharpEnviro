@@ -86,7 +86,6 @@ type
     UsedItemList: TUsedItemsList;
     ExecSettings: TExecSettings;
     slAliases: Tstringlist;
-    calcanswer: string;
     FAppPathList: TStringList;
     constructor Create;
 
@@ -444,7 +443,6 @@ var
 begin
   // Initialise the local variables
   url := text;
-  calcanswer := '';
   handle := FindWindow('TSharpCoreMainWnd', nil);
 
   striparray[0] := '"';
