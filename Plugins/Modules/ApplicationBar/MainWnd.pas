@@ -438,6 +438,7 @@ begin
     FButtonList[n].btn.Special := (count > 0);
     oldcount := FButtonList[n].btn.Tag;
     FButtonList[n].btn.Tag := count;
+
     if count = 0 then
       FButtonList[n].wnd := 0;
     if oldcount <> count then
@@ -456,6 +457,11 @@ begin
     ToolTipApi.DeleteToolTip(FHintWnd,self,n);
   end;
   setlength(FButtonList,0);
+
+  FPreviewWnds.Clear;
+  RealignComponents(True);
+  UpdateGlobalFilterList(True);
+  CheckList;
 end;
 
 procedure TMainForm.mnPopupCloseAllClick(Sender: TObject);
