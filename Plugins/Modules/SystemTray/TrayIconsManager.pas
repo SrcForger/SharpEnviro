@@ -1172,7 +1172,7 @@ begin
           end;
         end;
 
-        SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,lp)
+        SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,lp);
       end else
       begin
         // Make sure no other tray item is displaying a tooltip
@@ -1183,6 +1183,13 @@ begin
             StopTipTimer;
             CloseVistaInfoTip;
             TTrayItem(FItems.Items[i+imod]).IsHovering := False;
+          end;
+        end;
+
+        case msg of
+          WM_RBUTTONUP: begin
+            SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,msg);
+            msg := WM_CONTEXTMENU;
           end;
         end;
 
