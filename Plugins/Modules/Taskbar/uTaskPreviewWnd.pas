@@ -28,7 +28,7 @@ unit uTaskPreviewWnd;
 interface
 
 uses
-  Windows, Classes, Messages, Types, SysUtils, DwmApi, GR32, ISharpESkinComponents;
+  Windows, Classes, Messages, Types, SysUtils, DwmApi, GR32, GR32_Backends, ISharpESkinComponents;
 
 type
 

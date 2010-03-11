@@ -28,7 +28,7 @@ unit MainWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Contnrs,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Contnrs, Types,
   Dialogs, Menus, Math, GR32, ToolTipApi, ShellApi, CommCtrl, dwmapi,
   SharpFileUtils,
   JclSimpleXML,
@@ -75,6 +75,8 @@ type
     mnPopupCloseAll: TMenuItem;
     DropTarget: TJvDropTarget;
     DDHandler: TJvDragDrop;
+    Launch1: TMenuItem;
+    LaunchElevated1: TMenuItem;
     procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -92,6 +94,8 @@ type
     procedure FormShow(Sender: TObject);
     procedure DropTargetDragOver(Sender: TJvDropTarget;
       var Effect: TJvDropEffect);
+    procedure mnuPopupLaunchElevClick(Sender: TObject);
+    procedure mnuPopupLaunchClick(Sender: TObject);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   private
@@ -485,6 +489,28 @@ begin
 
   setlength(wndlist,0);
   FPreviewWnds.Clear;  
+end;
+
+procedure TMainForm.mnuPopupLaunchClick(Sender: TObject);
+var
+  BtnItem : TButtonRecord;
+begin
+  MoveButton := nil;
+  BtnItem := FButtonList[ButtonPopup.Tag];
+  SharpApi.SharpExecute(BtnItem.target);
+  if hasmoved then
+    SaveSettings;
+end;
+
+procedure TMainForm.mnuPopupLaunchElevClick(Sender: TObject);
+var
+  BtnItem : TButtonRecord;
+begin
+  MoveButton := nil;
+  BtnItem := FButtonList[ButtonPopup.Tag];
+  SharpApi.SharpExecute('_elevate,' + BtnItem.target);
+  if hasmoved then
+    SaveSettings;
 end;
 
 procedure TMainForm.AddButton(pTarget,pIcon,pCaption : String; Index : integer = -1);
