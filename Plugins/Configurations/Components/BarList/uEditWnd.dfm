@@ -3,7 +3,7 @@ object frmEditwnd: TfrmEditwnd
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmEditwnd'
-  ClientHeight = 107
+  ClientHeight = 104
   ClientWidth = 475
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -17,12 +17,12 @@ object frmEditwnd: TfrmEditwnd
   OnDestroy = FormDestroy
   DesignSize = (
     475
-    107)
+    104)
   PixelsPerInch = 96
   TextHeight = 13
   object JvLabel1: TLabel
-    Left = 242
-    Top = 12
+    Left = 18
+    Top = 75
     Width = 40
     Height = 13
     Caption = 'Monitor:'
@@ -30,7 +30,7 @@ object frmEditwnd: TfrmEditwnd
   end
   object JvLabel3: TLabel
     Left = 242
-    Top = 76
+    Top = 44
     Width = 78
     Height = 13
     Caption = 'Horizontal Align:'
@@ -38,7 +38,7 @@ object frmEditwnd: TfrmEditwnd
   end
   object JvLabel2: TLabel
     Left = 242
-    Top = 44
+    Top = 12
     Width = 65
     Height = 13
     Caption = 'Vertical Align:'
@@ -51,6 +51,35 @@ object frmEditwnd: TfrmEditwnd
     Height = 13
     Caption = 'Template:'
     Transparent = True
+  end
+  object cbFixedWidth: TJvXPCheckbox
+    Left = 242
+    Top = 72
+    Width = 90
+    Height = 17
+    Caption = 'Fixed Width'
+    TabOrder = 6
+    OnClick = cbFixedWidthClick
+  end
+  object sgbFixedWidth: TSharpeGaugeBox
+    Left = 336
+    Top = 71
+    Width = 131
+    Height = 21
+    Anchors = [akLeft, akTop, akRight]
+    ParentBackground = False
+    TabOrder = 7
+    Min = 10
+    Max = 90
+    Value = 50
+    Prefix = 'Fixed Width: '
+    Suffix = '%'
+    Description = 'Adjust to set the transparency'
+    PopPosition = ppBottom
+    PercentDisplay = False
+    Formatting = '%d'
+    OnChangeValue = sgbFixedWidthChangeValue
+    BackgroundColor = clWindow
   end
   object edName: TLabeledEdit
     Left = 56
@@ -66,13 +95,12 @@ object frmEditwnd: TfrmEditwnd
     OnKeyPress = edThemeNameKeyPress
   end
   object cobo_monitor: TComboBox
-    Left = 296
-    Top = 8
-    Width = 171
+    Left = 76
+    Top = 72
+    Width = 137
     Height = 21
     Style = csDropDownList
-    Anchors = [akLeft, akTop, akRight]
-    ItemHeight = 0
+    ItemHeight = 13
     TabOrder = 1
     OnSelect = cbBasedOnSelect
   end
@@ -82,13 +110,13 @@ object frmEditwnd: TfrmEditwnd
     Width = 137
     Height = 21
     Style = csDropDownList
-    ItemHeight = 0
+    ItemHeight = 13
     TabOrder = 2
     OnSelect = cbBasedOnSelect
   end
   object cobo_valign: TComboBox
     Left = 320
-    Top = 40
+    Top = 8
     Width = 147
     Height = 21
     Style = csDropDownList
@@ -104,7 +132,7 @@ object frmEditwnd: TfrmEditwnd
   end
   object cobo_halign: TComboBox
     Left = 336
-    Top = 72
+    Top = 40
     Width = 131
     Height = 21
     Style = csDropDownList
@@ -124,7 +152,7 @@ object frmEditwnd: TfrmEditwnd
     Left = 8
     Top = 8
     Width = 459
-    Height = 91
+    Height = 88
     Anchors = [akLeft, akTop, akRight, akBottom]
     BevelOuter = bvNone
     ParentBackground = False
@@ -133,7 +161,7 @@ object frmEditwnd: TfrmEditwnd
     object Label1: TLabel
       Left = 0
       Top = 13
-      Width = 431
+      Width = 459
       Height = 26
       Align = alTop
       Caption = 
@@ -141,11 +169,12 @@ object frmEditwnd: TfrmEditwnd
         'pBar to free some screen space. There is no space left to create' +
         ' another SharpBar at any possible position.'
       WordWrap = True
+      ExplicitWidth = 431
     end
     object JvLabel4: TLabel
       Left = 0
       Top = 0
-      Width = 31
+      Width = 459
       Height = 13
       Align = alTop
       Caption = 'Error:'
@@ -156,12 +185,13 @@ object frmEditwnd: TfrmEditwnd
       Font.Style = [fsBold]
       ParentFont = False
       Transparent = True
+      ExplicitWidth = 31
     end
   end
   object vals: TJvValidators
     ErrorIndicator = errorinc
-    Left = 192
-    Top = 72
+    Left = 168
+    Top = 88
     object valBarName: TJvCustomValidator
       ControlToValidate = edName
       PropertyToValidate = 'Text'

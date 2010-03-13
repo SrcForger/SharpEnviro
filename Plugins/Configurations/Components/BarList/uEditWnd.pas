@@ -59,7 +59,7 @@ uses
   uListWnd,
 
   ISharpCenterHostUnit,
-  ISharpCenterPluginUnit;
+  ISharpCenterPluginUnit, SharpEGaugeBoxEdit, JvXPCore, JvXPCheckCtrls;
 
 type
   TfrmEditwnd = class(TForm)
@@ -79,6 +79,8 @@ type
     pnlBarSpace: TPanel;
     Label1: TLabel;
     JvLabel4: TLabel;
+    cbFixedWidth: TJvXPCheckbox;
+    sgbFixedWidth: TSharpeGaugeBox;
     procedure valBarNameValidate(Sender: TObject; ValueToValidate: Variant;
       var Valid: Boolean);
     procedure cbBasedOnSelect(Sender: TObject);
@@ -86,6 +88,8 @@ type
     procedure edThemeNameKeyPress(Sender: TObject; var Key: Char);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure cbFixedWidthClick(Sender: TObject);
+    procedure sgbFixedWidthChangeValue(Sender: TObject; Value: Integer);
   private
     FBarItem: TBarItem;
     FUpdating: Boolean;
@@ -167,15 +171,24 @@ begin
             edName.SetFocus;
 
             if FBarItem = nil then
+            begin
               FBarItem := TBarItem.Create;
 
-            FBarItem.Name := FBarItem.Name;
-            FBarItem.BarID := FBarItem.BarID;
-            FBarItem.Monitor := FBarItem.Monitor;
-            FBarItem.PMonitor := FBarItem.PMonitor;
-            FBarItem.HPos := FBarItem.HPos;
-            FBarItem.VPos := FBarItem.VPos;
-            FBarItem.AutoStart := FBarItem.AutoStart;
+              FBarItem.Name := 'Toolbar';
+              FBarItem.BarID := FBarItem.BarID;
+              FBarItem.Monitor := FBarItem.Monitor;
+              FBarItem.PMonitor := FBarItem.PMonitor;
+              FBarItem.HPos := 1;
+              FBarItem.VPos := 0;
+              FBarItem.AutoStart := True;
+              FBarItem.FixedWidthEnabled := False;
+              FBarItem.FixedWidth := 50;
+              FBarItem.DisableHideBar := True;
+              FBarItem.MiniThrobbers := False;
+              FBarItem.StartHidden := False;
+              FBarItem.ShowThrobber := True;
+              FBarItem.AlwaysOnTop := False;
+            end;
 
             BuildMonList;
             if FBarItem.PMonitor then
@@ -185,6 +198,9 @@ begin
             cobo_valign.ItemIndex := FBarItem.VPos;
             cobo_halign.ItemIndex := FBarItem.HPos;
 
+            sgbFixedWidth.Value := FBarItem.FixedWidth;
+            cbFixedWidth.Checked := FBarITem.FixedWidthEnabled;
+
             cbBasedOn.Items.Clear;
             cbBasedOn.Items.AddObject('Not Applicable', nil);
             cbBasedOn.ItemIndex := 0;
@@ -193,6 +209,7 @@ begin
         end;
     end;
   finally
+    cbFixedWidthClick(nil);
     FUpdating := False;
   end;
 end;
@@ -261,10 +278,16 @@ begin
               Add('DisableHideBar', True);
               Add('AutoStart', True);
               Add('AutoPosition', True);
+              Add('StartHidden', False);
+              Add('MiniThrobbers', False);
               Add('PrimaryMonitor', (cobo_monitor.ItemIndex = 0));
               Add('MonitorIndex', TIntObject(cobo_monitor.Items.Objects[cobo_monitor.ItemIndex]).Value);
               Add('HorizPos', cobo_halign.ItemIndex);
               Add('VertPos', cobo_valign.ItemIndex);
+              Add('FixedWidth', sgbFixedWidth.Value);
+              Add('FixedWidthEnabled', cbFixedWidth.Checked);
+              Add('ShowMiniThrobbers', False);
+              Add('AlwaysOnTop', False);
             end;
   
             if ItemNamed['Modules'] = nil then
@@ -299,14 +322,21 @@ begin
                 Clear;
                 Add('ID', newId);
                 Add('Name', edName.Text);
-                Add('ShowThrobber', True);
-                Add('DisableHideBar', True);
-                Add('AutoStart', True);
                 Add('AutoPosition', True);
+                Add('ShowThrobber', FBarItem.ShowThrobber);
+                Add('DisableHideBar', FBarItem.DisableHideBar);
+                Add('AutoStart', FBarItem.AutoStart);
+                Add('AutoPosition', True);
+                Add('StartHidden', FBarItem.StartHidden);
+                Add('MiniThrobbers', FBarItem.MiniThrobbers);
                 Add('PrimaryMonitor', (cobo_monitor.ItemIndex = 0));
                 Add('MonitorIndex', TIntObject(cobo_monitor.Items.Objects[cobo_monitor.ItemIndex]).Value);
                 Add('HorizPos', cobo_halign.ItemIndex);
                 Add('VertPos', cobo_valign.ItemIndex);
+                Add('FixedWidth', sgbFixedWidth.Value);
+                Add('FixedWidthEnabled', cbFixedWidth.Checked);
+                Add('ShowMiniThrobbers', FBarItem.MiniThrobbers);
+                Add('AlwaysOnTop', FBarItem.AlwaysOnTop);
               end;
             end;
           if FileCheck(dir + inttostr(copyId) + '\Bar.xml') then
@@ -329,6 +359,12 @@ begin
   end;
 
   frmListWnd.tmrUpdate.Enabled := True;
+end;
+
+procedure TfrmEditwnd.sgbFixedWidthChangeValue(Sender: TObject; Value: Integer);
+begin
+  if not (FUpdating) then
+    FPluginHost.Editing := true;
 end;
 
 procedure TfrmEditwnd.BuildMonList;
@@ -386,6 +422,36 @@ procedure TfrmEditwnd.cbBasedOnSelect(Sender: TObject);
 begin
   if not (FUpdating) then
     FPluginHost.Editing := true;
+end;
+
+procedure TfrmEditwnd.cbFixedWidthClick(Sender: TObject);
+var
+  i : integer;
+begin
+  sgbFixedWidth.Enabled := cbFixedWidth.Checked;
+
+  i := cobo_halign.ItemIndex;
+  if cbFixedWidth.Checked then
+  begin
+    cobo_halign.Items.Clear;
+    cobo_halign.Items.Add('Left');
+    cobo_halign.Items.Add('Middle');
+    cobo_halign.Items.Add('Right');
+    if i = 3 then
+      cobo_halign.ItemIndex := 1
+    else cobo_halign.ItemIndex := i;
+  end
+  else begin
+    cobo_halign.Items.Clear;
+    cobo_halign.Items.Add('Left');
+    cobo_halign.Items.Add('Middle');
+    cobo_halign.Items.Add('Right');
+    cobo_halign.Items.Add('Full Screen');
+    cobo_halign.ItemIndex := i;
+  end;
+
+  if not (FUpdating) then
+    FPluginHost.Editing := true;  
 end;
 
 procedure TfrmEditwnd.ClearMonList;

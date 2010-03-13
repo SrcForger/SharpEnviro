@@ -75,6 +75,13 @@ type
     AutoStart: boolean;
     ModuleCount: Integer;
     Modules: string;
+    FixedWidthEnabled: boolean;
+    FixedWidth: integer;
+    MiniThrobbers: boolean;
+    DisableHideBar: boolean;
+    ShowThrobber: boolean;
+    StartHidden: boolean;
+    AlwaysOnTop: boolean;
   end;
 
   TfrmListWnd = class(TForm)
@@ -600,6 +607,13 @@ begin
               HPos := IntValue('HorizPos', 0);
               VPos := IntValue('VertPos', 0);
               AutoStart := BoolValue('AutoStart', True);
+              FixedWidthEnabled := BoolValue('FixedWidthEnabled', False);
+              FixedWidth := Min(90,Max(10,IntValue('FixedWidth', 50)));
+              MiniThrobbers := BoolValue('ShowMiniThrobbers', False);
+              DisableHideBar := BoolValue('DisableHideBar', True);
+              ShowThrobber := BoolValue('ShowThrobber', True);
+              StartHidden := BoolValue('StartHidden', False);
+              AlwaysOnTop := BoolValue('AlwaysOnTop', False);
             end;
           end;
 
