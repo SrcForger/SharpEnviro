@@ -101,9 +101,9 @@ begin
   begin
     if sCustomIcons then
     begin
-      if not IconStringToIcon(sIconShow,'Desktop',FIconShow) then
+      if not IconStringToIcon(sIconShow,sIconShow,FIconShow) then
         FIconShow.SetSize(0,0);
-      if not IconStringToIcon(sIconRestore,'Computer',FIconRestore) then
+      if not IconStringToIcon(sIconRestore,sIconRestore,FIconRestore) then
         FIconRestore.SetSize(0,0);
     end else
     begin
@@ -222,6 +222,7 @@ begin
   if FDoShow then
     btn.Glyph32.Assign(FIconShow)
   else btn.Glyph32.Assign(FIconRestore);
+  btn.Repaint;
 end;
 
 procedure TMainForm.ReAlignComponents;
