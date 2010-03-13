@@ -131,7 +131,7 @@ function GetPluginData(): TPluginData;
 begin
   with Result do
   begin
-    Name := '';
+    Name := 'Clock';
     Description := 'Configure the formatting options for the Clock module';
 	Status := '';
   end;

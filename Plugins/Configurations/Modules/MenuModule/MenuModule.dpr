@@ -140,7 +140,7 @@ function GetPluginData(): TPluginData;
 begin
   with Result do
   begin
-	Name := 'Menu Module';
+	Name := 'Menu';
     Description := 'Configure the Menu module';
 	Status := '';
   end;
