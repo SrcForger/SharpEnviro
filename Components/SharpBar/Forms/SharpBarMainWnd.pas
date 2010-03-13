@@ -287,6 +287,8 @@ var
   xml: TJclSimpleXML;
   Dir: string;
   b: boolean;
+  FixedWidthEnabledTemp : boolean;
+  FixedWidthTemp : integer;
 begin
   Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + inttostr(FBarID) + '\';
 
@@ -307,6 +309,9 @@ begin
     end;
   end;
 
+  FixedWidthEnabledTemp := SharpEBar.FixedWidthEnabled;
+  FixedWidthTemp := SharpEBar.FixedWidth;
+
   if b then begin
     // xml file loaded properlty... use it
     if xml.Root.Items.ItemNamed['Settings'] <> nil then
@@ -323,7 +328,13 @@ begin
         SharpEBar.StartHidden := Items.BoolValue('StartHidden', False);
         ModuleManager.ShowMiniThrobbers := Items.BoolValue('ShowMiniThrobbers', True);
         SharpEBar.AlwaysOnTop := Items.BoolValue('AlwaysOnTop', False);
+        SharpEBar.FixedWidthEnabled := Items.BoolValue('FixedWidthEnabled', False);
+        SharpEBar.FixedWidth := Max(10,Min(90,Items.IntValue('FixedWidth', 50)));
       end;
+
+    if (FixedWidthEnabledTemp <> SharpEBar.FixedWidthEnabled)
+      or (FixedWidthTemp <> SharpEBar.FixedWidth) then
+      ModuleManager.ReCalculateModuleSize(True,True);
 
     ModuleManager.BarName := FBarName;
     SharpEBar.UpdatePosition;
@@ -1090,9 +1101,9 @@ begin
         ModuleManager.ShowMiniThrobbers := Items.BoolValue('ShowMiniThrobbers', True);
         SharpEBar.AlwaysOnTop := Items.BoolValue('AlwaysOnTop', False);
         SharpEBar.FixedWidthEnabled := Items.BoolValue('FixedWidthEnabled', False);
-        SharpEBar.FixedWidth := Max(10,Min(100,Items.IntValue('FixedWidth', 50)));
+        SharpEBar.FixedWidth := Max(10,Min(90,Items.IntValue('FixedWidth', 50)));
 
-        ModuleManager.BarName := FBarName;        
+        ModuleManager.BarName := FBarName;
         // Set Main Window Title to SharpBar_ID!
         // The bar with the given ID is now loaded =)
         Caption := 'SharpBar_' + inttostr(ID);

@@ -1233,7 +1233,7 @@ begin
     end else
     begin
       RCount := RCount + 1;
-      if not (FBar.HorizPos = hpFull) then
+      if not (FBar.HorizPos = hpFull) and (not FBar.FixedWidthEnabled) then
          i := lo + LeftSize + rx + MTWidth*(RCount)
          else i := ParentControl.Width - ro - RightSize + rx + MTWidth*(RCount);
       if (i <> TempModule.mInterface.Form.Left) or (ForceUpdate) then
@@ -1416,7 +1416,7 @@ begin
   ParentControl := GetControlByHandle(FParent);  
   pMon := MonList.MonitorFromPoint(Point(ParentControl.Left,ParentControl.Top),mdNearest);
   if FBar.FixedWidthEnabled then
-    newsize := round(FBar.FixedWidth * pMon.Width / 100);
+    newsize := Max(minsize,round(FBar.FixedWidth * pMon.Width / 100));
   UpdateBarSize(newsize,ForceUpdate);
 
   // Send update messages to modules
