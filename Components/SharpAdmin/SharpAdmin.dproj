@@ -44,5 +44,8 @@
     <DelphiCompile Include="SharpAdmin.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
+    <RcCompile Include="SharpAdmin.rc">
+      <Form>SharpAdmin.res</Form>
+    </RcCompile>
   </ItemGroup>
 </Project>

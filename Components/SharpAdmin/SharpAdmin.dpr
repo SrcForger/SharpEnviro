@@ -27,8 +27,14 @@ program SharpAdmin;
 
 {$APPTYPE CONSOLE}
 
+{$R 'SharpAdmin.res' 'SharpAdmin.rc'}
+
 uses
-  Windows, SysUtils, Classes, JclStrings, uSystemFuncs;
+  Windows,
+  SysUtils,
+  Classes,
+  JclStrings,
+  uSystemFuncs;
 
 {$R VistaElevated.res}
 
