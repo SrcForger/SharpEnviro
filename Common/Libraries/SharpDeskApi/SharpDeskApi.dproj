@@ -4,7 +4,6 @@
     <MainSource>SharpDeskApi.dpr</MainSource>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <DCC_EnabledPackages>true</DCC_EnabledPackages>
     <DCC_UsePackage>vcl;rtl</DCC_UsePackage>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
     <DCC_DependencyCheckOutputName>..\..\..\..\SharpE\SharpDeskApi.dll</DCC_DependencyCheckOutputName>
