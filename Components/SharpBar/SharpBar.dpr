@@ -37,6 +37,7 @@ uses
   JclFileUtils,
   SharpEBar,
   SharpApi,
+  ShellApi,
   MonitorList,
   BarHideWnd in 'Forms\BarHideWnd.pas' {BarHideForm},
   uSharpEModuleManager in 'uSharpEModuleManager.pas',
@@ -196,10 +197,18 @@ begin
                 handle := FindWindow(nil,PChar('SharpBar_'+ sr.Name));
                 if handle = 0 then
                 begin
-                  if SharpApi.SharpExecute('_nohist,' + ExtractFileDir(Application.ExeName)+'\SharpBar.exe '
-                     + NO_LOAD_AUTO_START_BARS_PARAM + ' '
-                     + NO_REMOVE_EMPTY_BARS_PARAM + ' '
-                     + LOAD_BY_ID_PARAM+sr.Name) = HR_OK then
+                  if ShellExecute(0,
+                                  nil,
+                                  PChar(ExtractFileDir(Application.ExeName)+'\SharpBar.exe'),
+                                  PChar(NO_LOAD_AUTO_START_BARS_PARAM + ' '
+                                        + NO_REMOVE_EMPTY_BARS_PARAM + ' '
+                                        + LOAD_BY_ID_PARAM+sr.Name),
+                                  PChar(ExtractFilePath(Application.ExeName)),
+                                  SW_SHOWNORMAL) > 32 then
+                  //if SharpApi.SharpExecute('_nohist,' + ExtractFileDir(Application.ExeName)+'\SharpBar.exe '
+                  //   + NO_LOAD_AUTO_START_BARS_PARAM + ' '
+                  //   + NO_REMOVE_EMPTY_BARS_PARAM + ' '
+                  //   + LOAD_BY_ID_PARAM+sr.Name) = HR_OK then
                   begin
                     lab := true;
 
