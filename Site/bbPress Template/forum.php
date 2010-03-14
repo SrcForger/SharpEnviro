@@ -10,8 +10,12 @@
         </div>
     </div>
     
+    <div class="clear span-18">  	
+         <?php login_form(); ?> <?php if ( is_bb_profile() ) profile_menu(); ?> 
+    </div>
+    
     <div class="span-18">
-        <div id="discussions" class="span-13">
+        <div id="discussions" class="span-12">
 
             <h1>Discussions</h1>
             <p>
@@ -29,7 +33,7 @@
                 
                 <?php if ( $stickies ) : foreach ( $stickies as $topic ) : ?>
                 <tr<?php topic_class(); ?>>
-                    <td <?php bb_topic_labels(); ?>
+                    <td <span class="num"> <?php bb_topic_labels(); ?> </span>
                         <big><a href="<?php topic_link(); ?>">
                         <?php topic_title(); ?>
                         </a></big></td>
@@ -43,9 +47,10 @@
                 
                 <?php if ( $topics ) : foreach ( $topics as $topic ) : ?>
                 <tr<?php topic_class(); ?>>
-                    <td <?php bb_topic_labels(); ?><a href="<?php topic_link(); ?>">
+                    <td <span class="num"> <?php bb_topic_labels(); ?> </span>
+                        <big><a href="<?php topic_link(); ?>">
                         <?php topic_title(); ?>
-                        </a></td>
+                        </a></big></td>
                     <td class="num"><?php topic_posts(); ?></td>
                     <td class="num"><?php topic_last_poster(); ?></td>
                     <td class="num"><small>
@@ -62,7 +67,7 @@
             </p>
         </div>
         <!-- [/ .span 13 ] -->
-        <div class="span-5 last" id="rcolbody">
+        <div class="span-6 last" id="rcolbody">
             <?php if ( bb_forums() ) : ?>
             <div id="forums" class="backg-grey rcolborder rcolspacing">
                 <h1>Forums</h1>
@@ -72,7 +77,7 @@
                         <th class="col_theme"><?php _e('Forum'); ?></th>
                         <th class="col_posts"><?php _e('Posts'); ?></th>
                     </tr>
-                    <?php while ( bb_forum() ) : ?>
+                    <?php while ( bb_forum() ) : ?> 
                     <?php if (bb_get_forum_is_category()) : ?>
                     <tr<?php bb_forum_class('bb-category'); ?>>
                         <td colspan="3"><?php bb_forum_pad( '<div class="nest">' ); ?>
@@ -86,13 +91,10 @@
                     <tr<?php bb_forum_class(); ?>>
                         <td><?php bb_forum_pad( '<div class="nest">' ); ?>
                             <div class="forumTitle" >
-                                <div class="forumIcon"><img src="<?php bb_active_theme_uri(); ?>images/forum/forum.png" width="16" height="16" /> </div>
+                                <span class="ss_sprite ss_folder">&nbsp;</span>
                                 <a href="<?php forum_link(); ?>">
                                 <?php forum_name(); ?>
                                 </a> </div>
-                            <div class="forumDescription" >
-                                <?php forum_description( array( 'before' => '', 'after' => '' ) ); ?>
-                            </div>
                             <?php bb_forum_pad( '</div>' ); ?></td>
                         <td class="num"><?php forum_posts(); ?></td>
                     </tr>
@@ -111,6 +113,8 @@
         <!-- [/ .span 5] -->
     </div>
     <!-- [/ .span 18 ] -->
+    
+    
 </div>
 </div>
 <!-- [/ #content ] -->

@@ -14,6 +14,7 @@
 <link href="<?php bb_active_theme_uri(); ?>css/typography.css" rel="stylesheet" type="text/css" />
 <link href="<?php bb_active_theme_uri(); ?>css/page_forum.css" rel="stylesheet" type="text/css" />
 <link href="<?php bb_active_theme_uri(); ?>css/screen.css" rel="stylesheet" type="text/css" />
+<link href="<?php bb_active_theme_uri(); ?>css/form.css" rel="stylesheet" type="text/css" />
 <?php bb_head(); ?>
 <script src="<?php bb_active_theme_uri(); ?>js/jquery-1.2.6.min.js" type="text/javascript"></script>
 <script src="<?php bb_active_theme_uri(); ?>js/compactform.js" type="text/javascript"></script>
@@ -68,7 +69,6 @@
     
 	<?php endforeach; ?>
   </div>
-</div>
 </div>
 <div id="stripe" class="orange"> </div>
 <div id="content" class="container">

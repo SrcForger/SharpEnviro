@@ -3,7 +3,7 @@
 <p role="main">
   <label><?php _e('Topic:'); ?><br />
 
-  <input name="topic" type="text" id="topic" size="50" maxlength="80"  value="<?php echo esc_attr( get_topic_title() ); ?>" />
+  <input name="topic" type="text" id="topic" size="50" maxlength="40"  value="<?php echo esc_attr( get_topic_title() ); ?>" />
 </label>
 </p>
 <?php endif; do_action( 'edit_form_pre_post' ); ?>

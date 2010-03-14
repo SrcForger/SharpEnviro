@@ -12,7 +12,7 @@
 .rolborder { border-color:#EEEEEE; border-left:1px solid #EEEEEE; }
 .backg-grey { background-color:#FFFFFF;}
 
-#rcolbody { border-color:#EEEEEE; border-left:1px solid #EEEEEE; width:239px; }
+#rcolbody { border-color:#EEEEEE; border-left:1px solid #EEEEEE; margin-left:-1px; }
 #rcolbody p { padding-left:10px }
 #rcolbody h1 { padding-top:18px; padding-left:10px; }
 #rcolbody #latest { margin-left:10px; width:500px; text-align:left;}
@@ -27,16 +27,16 @@
 .forumStatusText { vertical-align:text-top; float:left; padding-right:5px; font-size:x-small; font-weight:bold }
 .commentIcon { vertical-align:middle; float:left; padding-right:5px; padding-top:3px; }
 .addIcon { vertical-align:middle; float:right; padding-right:5px; padding-top:3px; }
-.forumTitle { font-weight:bold; color:#1789C6; padding-left:5px; }
-.forumTitle a { font-weight:bold; color:#1789C6; }
+.forumTitle { color:#1789C6; padding-left:5px; }
+.forumTitle a { color:#1789C6; }
 .forumDescription { color:#444444; font-size:13px; padding-left:5px; }
 
-#rcolbody #forumlist { margin-left:10px; width:500px; text-align:left; }
+#rcolbody #forumlist { margin-left:10px; text-align:left; }
 #rcolbody #forumlist .col_theme { width:375px; text-align:left; }
 #rcolbody #forumlist .col_topics { width: 75px; text-align:left; }
 #rcolbody #forumlist .col_posts { width: 75px; text-align:left; }
 
-#rcolbody #miniforumlist { margin-left:10px; width:400px; text-align:left; }
+#rcolbody #miniforumlist { margin-left:10px; text-align:left; }
 #rcolbody #miniforumlist .col_theme { width:325px; text-align:left; }
 #rcolbody #miniforumlist .col_posts { width: 75px; text-align:left; }
 
@@ -56,9 +56,9 @@
 .thread_infos { text-align:right; font-size:12px; color:#666; } /* evil grey */
 
 /* Reading threads */
-.thedate { color:#888; } 
+.thedate { color:#888; padding-top:10px; } 
 .slash{color:#BBB;}
-.thetitle { padding-top:21px!important; }
+.thetitle a { color: #1789C6; padding-top:21px!important; }
 .avatar { background-color:#EBEBEB; height:90px; position:absolute; }
 .username { font-size: 14px; color:#333; }
 .thethread { padding-top:40px; }

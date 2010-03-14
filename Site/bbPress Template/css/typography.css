@@ -14,9 +14,9 @@ body {
 
 h1,h2,h3,h4,h5,h6 { font-weight: normal; color: #333333; }
 
-h1 { font-size: 30px; line-height:20px; padding-top:38px; margin-bottom:2px;  }
-h2 { font-size: 23px; line-height:20px; padding-top:41px; margin-bottom:-1px }
-h3 { font-size: 18px; line-height:20px; padding-top:31px; margin-bottom:-1px }
+h1 { font-size: 30px; line-height:26px; padding-top:38px; margin-bottom:2px;  }
+h2 { font-size: 24px; line-height:20px; padding-top:24px; margin-bottom:10px; }
+h3 { font-size: 18px; line-height:20px; padding-top:31px; margin-bottom:-1px; }
 
 h4 { font-size: 16px; line-height: 20px; padding-top:3px; margin-bottom:1px;  }
 
@@ -50,7 +50,7 @@ pre,code,tt { font-family: 'andale mono', 'lucida console', monospace; }
 -------------------------------------------------------------- */
 
 li ul, 
-li ol       { margin:0 1.5em; }
+li ol       { margin:0 3em; }
 ul, ol      { margin: 0 1.0em 0em 1.0em; color: #000; }
 
 ul          { list-style-type: none;  }

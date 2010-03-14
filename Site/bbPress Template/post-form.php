@@ -2,14 +2,14 @@
 
 <div id="post-form-title-container" class="">
     <?php _e('Title'); ?>
+	
     <br />
     <label for="topic">
-        <input name="topic" type="text" id="topic" size="50" maxlength="80" tabindex="1" />
+        <input name="topic" type="text" id="topic" size="50" maxlength="40" tabindex="1" />
     </label>
 </div>
 <?php endif; do_action( 'post_form_pre_post' ); ?>
 <div id="post-form-post-container"> <br />
-    <?php _e('Post'); ?>
     <label for="post_content">
         <textarea name="post_content" cols="50" rows="8" id="post_content" tabindex="3"></textarea>
     </label>
@@ -21,7 +21,7 @@
     </label>
     
     <div id="post-form-submit-container" class="submit" style="float:right">
-        <input type="submit" id="postformsub" name="Submit" value="<?php echo esc_attr__( 'Send Post &raquo;' ); ?>" tabindex="4" />
+        <input type="submit" id="postformsub" name="Submit" value="<?php echo esc_attr__( 'Send Post' ); ?>" tabindex="4" />
     </div>
 </div>
 <div style="display:inline">
@@ -34,11 +34,4 @@
     </div>
     <?php endif; ?>
     
-</div>
-<div id="post-form-allowed-container" class="allowed"> <br />
-    <?php _e('Allowed markup:'); ?>
-    <code>
-    <?php allowed_markup(); ?>
-    </code>. <br />
-    <?php _e('You can also put code in between backtick ( <code>`</code> ) characters.'); ?>
 </div>
