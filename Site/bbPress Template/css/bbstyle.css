@@ -428,6 +428,16 @@ form.search input.inputButton:active {
 	border-top: 1px solid #9e9e9e;
 }
 
+#profile #useravatar {
+	clear:both;
+	float:none;
+}
+
+#profile #userlogin {
+	float:none;
+	margin-left: 100px;
+}
+
 #userinfo { margin-top: 10px; }
 #userinfo dt { font-weight: bold; }
 #userinfo dd { margin: 0 0 5px; } 

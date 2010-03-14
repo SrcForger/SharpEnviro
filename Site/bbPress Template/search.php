@@ -31,6 +31,7 @@
                     <?php foreach ( $recent as $bb_post ) : ?>
                     
                     <div<?php alt_class( 'recent' ); ?>>
+                    
                     <li> <a href="<?php post_link(); ?>">
                         <p>
 						<span class="thetitle"><?php topic_title($bb_post->topic_id); ?>
@@ -40,7 +41,7 @@
 						<?php post_text(); ?>
                         </div>
                         
-                        <div class="freshness thedate"><?php printf( __('Posted %s'), bb_datetime_format_i18n( bb_get_post_time( array( 'format' => 'timestamp' ) ) ) ); ?></div>
+                        <div class="freshness thedate"> <span class="ss_sprite ss_date">&nbsp </span> <?php printf( __('Posted %s'), bb_datetime_format_i18n( bb_get_post_time( array( 'format' => 'timestamp' ) ) ) ); ?></div>
 						</p>
                     </li>
                     </div>  
