@@ -656,7 +656,7 @@ object SharpBarMainForm: TSharpBarMainForm
   end
   object DelayTimer3: TTimer
     Enabled = False
-    Interval = 5000
+    Interval = 3000
     OnTimer = DelayTimer3Timer
     Left = 352
     Top = 144

@@ -579,6 +579,14 @@ begin
     exit;
 
   MonList.GetMonitors;
+  if SharpEBar.HorizPos = hpFull then
+  begin
+    // This avoids the bars from becoming overlapped if you have multiple monitors
+    // with 2 full screen bars.  One of the bars crashes once they become overlapped.
+    // These settings are also changed later by DelayTimer3 but that seems to be to late. 
+    Left := MonList.Monitors[SharpEBar.MonitorIndex].Left;
+    Width := MonList.Monitors[SharpEBar.MonitorIndex].Width;
+  end;
   ModuleManager.BroadcastPluginMessage('MM_DISPLAYCHANGE');
   DelayTimer3.Enabled := True;
 end;
