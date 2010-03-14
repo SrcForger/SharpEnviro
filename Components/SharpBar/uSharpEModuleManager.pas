@@ -357,6 +357,7 @@ begin
       Items.Add('DisableHideBar', FBar.DisableHideBar);
       Items.Add('StartHidden', not FBar.aform.Visible);
       Items.Add('AlwaysOnTop', FBar.AlwaysOnTop);
+      Items.Add('ForceAlwaysOnTop', FBar.ForceAlwaysOnTop);
       Items.Add('ShowMiniThrobbers', ModuleManager.ShowMiniThrobbers);
       Items.Add('FixedWidthEnabled', FBar.FixedWidthEnabled);
       Items.Add('FixedWidth', FBar.FixedWidth);

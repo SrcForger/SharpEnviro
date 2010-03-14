@@ -87,6 +87,7 @@ type
     N301: TMenuItem;
     N201: TMenuItem;
     Custom1: TMenuItem;
+    ForceAlwaysOnTop1: TMenuItem;
     procedure ShowMiniThrobbers1Click(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ThemeHideTimerTimer(Sender: TObject);
@@ -137,6 +138,7 @@ type
     procedure EnabledFixedSize1Click(Sender: TObject);
     procedure N501Click(Sender: TObject);
     procedure Custom1Click(Sender: TObject);
+    procedure ForceAlwaysOnTop1Click(Sender: TObject);
   private
     { Private-Deklarationen }
     FUser32DllHandle: THandle;
@@ -328,6 +330,7 @@ begin
         SharpEBar.StartHidden := Items.BoolValue('StartHidden', False);
         ModuleManager.ShowMiniThrobbers := Items.BoolValue('ShowMiniThrobbers', True);
         SharpEBar.AlwaysOnTop := Items.BoolValue('AlwaysOnTop', False);
+        SharpEBar.ForceAlwaysOnTop := Items.BoolValue('ForceAlwaysOnTop', False);
         SharpEBar.FixedWidthEnabled := Items.BoolValue('FixedWidthEnabled', False);
         SharpEBar.FixedWidth := Max(10,Min(90,Items.IntValue('FixedWidth', 50)));
       end;
@@ -1108,6 +1111,7 @@ begin
         SharpEBar.StartHidden := Items.BoolValue('StartHidden', False);
         ModuleManager.ShowMiniThrobbers := Items.BoolValue('ShowMiniThrobbers', True);
         SharpEBar.AlwaysOnTop := Items.BoolValue('AlwaysOnTop', False);
+        SharpEBar.ForceAlwaysOnTop := Items.BoolValue('ForceAlwaysOnTop', False);
         SharpEBar.FixedWidthEnabled := Items.BoolValue('FixedWidthEnabled', False);
         SharpEBar.FixedWidth := Max(10,Min(90,Items.IntValue('FixedWidth', 50)));
 
@@ -1411,7 +1415,8 @@ begin
         style := GetWindowLong(wnd, GWL_STYLE);
         if (wndRect.Bottom - wndRect.Top >= mon.Height) and
           (wndRect.Right - wndRect.Left >= mon.Width) and
-          ((style and WS_BORDER) <> WS_BORDER) then
+          ((style and WS_BORDER) <> WS_BORDER) and
+          (not SharpEBar.ForceAlwaysOnTop) then
         begin
           // The window is fullscreen so disable always on top.
           SharpEBar.AlwaysOnTop := False;
@@ -1498,6 +1503,9 @@ begin
   DisableBarHiding1.Checked := SharpEBar.DisableHideBar;
   ShowMiniThrobbers1.Checked := ModuleManager.ShowMiniThrobbers;
   AlwaysOnTop1.Checked := SharpEBar.AlwaysOnTop;
+  ForceAlwaysOnTop1.Enabled := AlwaysOnTop1.Checked;
+  if AlwaysOnTop1.Checked then
+    ForceAlwaysOnTop1.Checked := SharpEBar.ForceAlwaysOnTop;
 
   // Build Skin List
   Skin1.Clear;
@@ -2152,6 +2160,18 @@ procedure TSharpBarMainForm.AlwaysOnTop1Click(Sender: TObject);
 begin
   AlwaysOnTop1.Checked := not AlwaysOnTop1.Checked;
   SharpEBar.AlwaysOnTop := AlwaysOnTop1.Checked;
+  SaveBarSettings;
+
+  ForceAlwaysOnTop1.Enabled := AlwaysOnTop1.Checked;
+end;
+
+procedure TSharpBarMainForm.ForceAlwaysOnTop1Click(Sender: TObject);
+begin
+  if not AlwaysOnTop1.Checked then
+    exit;
+
+  ForceAlwaysOnTop1.Checked := not ForceAlwaysOnTop1.Checked;
+  SharpEBar.ForceAlwaysOnTop := ForceAlwaysOnTop1.Checked;
   SaveBarSettings;
 end;
 

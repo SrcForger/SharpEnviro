@@ -158,6 +158,10 @@ object SharpBarMainForm: TSharpBarMainForm
         Caption = 'Always On-Top'
         OnClick = AlwaysOnTop1Click
       end
+      object ForceAlwaysOnTop1: TMenuItem
+        Caption = 'Force Always On-Top'
+        OnClick = ForceAlwaysOnTop1Click
+      end
       object AutoStart1: TMenuItem
         Caption = 'Launch At Start-Up'
         OnClick = AutoStart1Click
