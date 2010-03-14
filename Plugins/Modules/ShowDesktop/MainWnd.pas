@@ -30,7 +30,8 @@ interface
 uses
   Windows, SysUtils, Classes, Controls, Forms,
   Dialogs, StdCtrls, Menus, Math, VWMFunctions,
-  JclSimpleXML, GR32, GR32_PNG, Messages,
+  JclSimpleXML, GR32, GR32_PNG, Messages, CommCtrl,
+  ToolTipApi,
   SharpApi,
   SharpEBaseControls,
   SharpEButton,
@@ -65,6 +66,8 @@ type
     FIconRestore : TBitmap32;
     FWndList     : array of TWndItem;
     FDoShow      : boolean;
+    FTipWnd      : hwnd;
+    procedure WMNotify(var msg: TWMNotify); message WM_NOTIFY;
   public
     mInterface : ISharpBarModule;
     procedure LoadIcons;
@@ -172,6 +175,28 @@ end;
 procedure TMainForm.UpdateSize;
 begin
   btn.Width := Width - 4;
+  if btn.Visible then
+  begin
+    if btn.tag = 0 then
+    begin
+      ToolTipApi.AddToolTip(FTipWnd,self,1,btn.BoundsRect,'Show Desktop');
+      btn.tag := 1;
+    end else ToolTipApi.UpdateToolTipRect(FTipWnd,self,1,btn.BoundsRect);
+  end else
+  begin
+    ToolTipApi.DeleteToolTip(FTipWnd,self,1);
+    btn.tag := 0;
+  end;
+end;
+
+procedure TMainForm.WMNotify(var msg: TWMNotify);
+begin
+  if Msg.NMHdr.code = TTN_SHOW then
+  begin
+    SetWindowPos(Msg.NMHdr.hwndFrom, HWND_TOPMOST, 0, 0, 0, 0,SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOSIZE);
+    Msg.result := 1;
+    exit;
+  end else Msg.result := 0;
 end;
 
 procedure TMainForm.LoadSettings;
@@ -186,6 +211,9 @@ begin
   sShowIcon    := True;
   sCustomIcons := False;
   sAllMonitors := False;
+  
+  setlength(FWndList,0);
+  FDoShow := True;
 
   XML := TJclSimpleXML.Create;
   try
@@ -220,8 +248,14 @@ end;
 procedure TMainForm.UpdateIcon;
 begin
   if FDoShow then
-    btn.Glyph32.Assign(FIconShow)
-  else btn.Glyph32.Assign(FIconRestore);
+  begin
+    btn.Glyph32.Assign(FIconShow);
+    ToolTipApi.UpdateToolTipText(FTipWnd,Self,1,'Show Desktop');
+  end else
+  begin
+    btn.Glyph32.Assign(FIconRestore);
+    ToolTipApi.UpdateToolTipText(FTipWnd,Self,1,'Restore Windows');
+  end;
   btn.Repaint;
 end;
 
@@ -256,7 +290,7 @@ begin
   begin
     if FWndList[n].wasIconic <> IsIconic(FWndList[n].wnd) then
      SendMessage(FWndList[n].wnd, WM_SYSCOMMAND, SC_RESTORE, 0); // use Send Message to have it in the right order
-     // SwitchToThisWindow(FWndList[n].wnd,True);     
+     // SwitchToThisWindow(FWndList[n].wnd,True);
   end;
 end;
 
@@ -327,6 +361,9 @@ begin
   setlength(FWndList,0);
 
   FDoShow := True;
+
+  FTipWnd := ToolTipApi.RegisterToolTip(self);
+  ToolTipApi.EnableToolTip(FTipWnd);
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -334,6 +371,12 @@ begin
   setlength(FWndList,0);
   FIconShow.Free;
   FIconRestore.Free;
+
+  if FTipWnd <> 0 then
+  begin
+    DestroyWindow(FTipWnd);
+    ToolTipApi.DisableToolTip(FTipWnd);
+  end;
 end;
 
 procedure TMainForm.FormPaint(Sender: TObject);
