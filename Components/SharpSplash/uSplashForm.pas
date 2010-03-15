@@ -44,6 +44,7 @@ uses
   uISharpETheme,
   ExtCtrls,
   GR32,
+  GR32_Backends,
   GR32_Layers,
   GR32_Image,
   GR32_PNG,
@@ -57,6 +58,7 @@ type
     procedure ClosetimerTimer(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormDestroy(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     FPicture : TBitmap32;
     DC: HDC;
@@ -201,6 +203,8 @@ begin
 
   if SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) or WS_EX_LAYERED or WS_EX_TOOLWINDOW) = 0 then
     SendDebugMessage('SharpSplash', 'Error setting window style.', 0);
+    
+  ShowWindow(Application.Handle, SW_HIDE);
 end;
 
 procedure TSplashForm.FormDestroy(Sender: TObject);
@@ -208,11 +212,18 @@ begin
   FPicture.Free;
 end;
 
+procedure TSplashForm.FormShow(Sender: TObject);
+begin
+  ShowWindow(Application.Handle, SW_HIDE);
+end;
+
 procedure TSplashForm.FormActivate(Sender: TObject);
 var
  n : real;
  ni : real;
 begin
+  ShowWindow(Application.Handle, SW_HIDE);
+
   if ShowSplash then
   begin
     n := 0;
