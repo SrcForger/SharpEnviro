@@ -139,6 +139,7 @@ type
     procedure N501Click(Sender: TObject);
     procedure Custom1Click(Sender: TObject);
     procedure ForceAlwaysOnTop1Click(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
   private
     { Private-Deklarationen }
     FUser32DllHandle: THandle;
@@ -1219,7 +1220,7 @@ begin
   FShellBCInProgress := False;
 
   ModuleManager.DebugOutput('Setting Form properties', 2, 1);
-  Setwindowlong(Application.Handle, GWL_EXSTYLE, WS_EX_TOOLWINDOW);
+  SetWindowLong(Application.Handle, GWL_EXSTYLE, GetWindowLong(Application.Handle, GWL_EXSTYLE) or WS_EX_TOOLWINDOW);
   SetWindowPos(Application.Handle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
   ShowWindow(Application.Handle, SW_HIDE);
 
@@ -1676,7 +1677,7 @@ procedure TSharpBarMainForm.FormShow(Sender: TObject);
 begin
   if FSuspended then
     exit;
-    
+
   ShowWindow(application.Handle, SW_HIDE);   
   if BarHideForm <> nil then
     BarHideForm.UpdateStatus;
@@ -2173,6 +2174,11 @@ begin
   ForceAlwaysOnTop1.Checked := not ForceAlwaysOnTop1.Checked;
   SharpEBar.ForceAlwaysOnTop := ForceAlwaysOnTop1.Checked;
   SaveBarSettings;
+end;
+
+procedure TSharpBarMainForm.FormActivate(Sender: TObject);
+begin
+  ShowWindow(application.Handle, SW_HIDE);  
 end;
 
 procedure TSharpBarMainForm.FormClose(Sender: TObject;

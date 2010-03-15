@@ -14,6 +14,8 @@ type
     procedure FormClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure CreateParams(var Params: TCreateParams); override;
+    procedure FormShow(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
   private
     procedure WMMove(var msg : TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
   public
@@ -51,6 +53,11 @@ begin
        SharpBarMainForm.Repaint;
        SharpApi.ServiceMsg('DeskArea','Update');
      end;
+end;
+
+procedure TBarHideForm.FormActivate(Sender: TObject);
+begin
+  ShowWindow(Application.Handle, SW_HIDE);
 end;
 
 procedure TBarHideForm.FormClick(Sender: TObject);
@@ -126,7 +133,10 @@ begin
   height := 1;
   left := -4096;
   top := -4096;
-  Setwindowlong(handle, GWL_EXSTYLE, WS_EX_TOOLWINDOW or WS_EX_LAYERED);
+  
+  SetWindowLong(Application.Handle, GWL_EXSTYLE, GetWindowLong(Application.Handle, GWL_EXSTYLE) or WS_EX_TOOLWINDOW or WS_EX_LAYERED);
+  SetWindowPos(Application.Handle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
+  ShowWindow(Application.Handle, SW_HIDE);
 end;
 
 procedure TBarHideForm.FormMouseUp(Sender: TObject; Button: TMouseButton;
@@ -156,6 +166,11 @@ begin
        ModuleManager.BroadcastPluginUpdate(suBackground);
      end;
    end;
+end;
+
+procedure TBarHideForm.FormShow(Sender: TObject);
+begin
+  ShowWindow(Application.Handle, SW_HIDE);
 end;
 
 end.
