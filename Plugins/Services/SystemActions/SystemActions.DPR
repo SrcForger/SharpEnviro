@@ -27,6 +27,7 @@ library SystemActions;
 
 uses
   windows,
+  Forms,
   SysUtils,
   Messages,
   Classes,
@@ -35,7 +36,8 @@ uses
   SharpTypes,
   uSystemFuncs,
   dialogs,
-  JCLLocales;
+  JCLLocales,
+  VWMFunctions;
 
 type
   TActionEvent = class(Tobject)
@@ -48,10 +50,18 @@ type
     wndlist: array of hwnd;
   end;
 
+  TWndItem = record
+    wnd : THandle;
+    wasMinimized : boolean;
+  end;
+  TWndItems = array of TWndItem;
+
   TRunFileDlgA = procedure(hWndOwner : HWND; Icon : HICON; Directory,Title,Description : PChar; Flags : UInt); stdcall;
   TRunFileDlgW = procedure(hWndOwner : HWND; Icon : HICON; Directory,Title,Description : PWideChar; Flags : UInt); stdcall;
 
 var
+  FWndList : TWndItems;
+  OwnerWnd : HWND;
   AE: TActionEvent;
   h: THandle;
   LocalsList: TJclKeyboardLayoutList;
@@ -79,12 +89,15 @@ const
   cShutdownEnd = 14;
   cShutdownNonVerbose = 10;
 
-  cMinimiseAllIdx = 20;
+  cMinimizeAllIdx = 20;
   cRestoreAllIdx = 21;
   cToggleAllBarsIdx = 22;
-  cToggleAllWindowsIdx = 23;
+  cToggleAllIdx = 23;
 
   cRunDlgIdx = 24;
+
+  cMinimizeAllMonitorsIdx = 25;
+  cToggleAllMonitorsIdx = 26;
 
   cKeyboardLayoutIdx = 99;
 
@@ -98,22 +111,62 @@ const
 
 function SwitchToThisWindow(Wnd: hwnd; fAltTab: boolean): boolean; stdcall; external 'user32.dll';
 
-procedure MinimiseAll(var EnumParam: TParam);
+procedure BuildWndList(var list : TWndItems; AllMonitors : Boolean = false);
+
+  procedure AddMonitor(var list : TWndArray; Mon : TMonitor);
+  var
+    i : integer;
+    tmp : TWndArray;
+  begin
+    tmp := VWMGetWindowList(Mon.BoundsRect);
+    for i := 0 to High(tmp) do
+    begin
+      setlength(list,length(list)+1);
+      list[high(list)] := tmp[i];
+    end;      
+  end;
 var
-  i: Integer;
+  n : integer;
+  tmpList : TWndArray;
+
 begin
-  for i := 0 to High(EnumParam.Wndlist) do
-    if GetWindowLong(EnumParam.WndList[i], GWL_STYLE) and WS_MINIMIZE = 0 then
-      ShowWindowAsync(EnumParam.WndList[i], SW_MINIMIZE);
+  SetLength(tmpList, 0);
+  if AllMonitors then
+  begin
+    for n := 0 to Screen.MonitorCount - 1 do
+      AddMonitor(tmpList,Screen.Monitors[n]);
+  end else
+    AddMonitor(tmpList,Screen.MonitorFromWindow(OwnerWnd));
+
+  setlength(list, length(tmpList));
+  for n := 0 to High(tmpList) do
+  begin
+    list[n].wnd := tmpList[n];
+    list[n].wasMinimized := ((GetWindowLong(tmpList[n], GWL_STYLE) and WS_MINIMIZE) = WS_MINIMIZE);
+  end;
+  SetLength(tmpList, 0);
 end;
 
-procedure RestoreAll(var EnumParam: TParam);
+procedure MinimizeAll(var WndArray: TWndItems);
 var
   i: Integer;
 begin
-  for i := 0 to High(EnumParam.WndList) do
-    if GetWindowLong(EnumParam.WndList[i], GWL_STYLE) and WS_MINIMIZE <> 0 then
-      ShowWindowAsync(EnumParam.WndList[i], SW_RESTORE);
+  for i := 0 to High(WndArray) do
+  begin
+    if not WndArray[i].wasMinimized then
+      PostMessage(WndArray[i].wnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
+  end;
+end;
+
+procedure RestoreAll(var WndArray: TWndItems);
+var
+  i: Integer;
+begin
+  for i := High(WndArray) downto 0 do
+  begin
+    if (not WndArray[i].wasMinimized) and ((GetWindowLong(WndArray[i].wnd, GWL_STYLE) and WS_MINIMIZE) = WS_MINIMIZE) then
+      SendMessage(WndArray[i].wnd, WM_SYSCOMMAND, SC_RESTORE, 0);
+  end;
 end;
 
 procedure RegisterKeyBoardLocals;
@@ -153,9 +206,12 @@ begin
   RegisterActionEx('!Logout_Quiet', 'Shutdown', h, cLogout_QuietIdx);
   RegisterActionEx('!Hibernate_Quiet', 'Shutdown', h, cHibernate_QuietIdx);
 
-  RegisterActionEx('!MinimizeAll', 'Window Management', h, cMinimiseAllIdx);
+  RegisterActionEx('!MinimizeAll', 'Window Management', h, cMinimizeAllIdx);
   RegisterActionEx('!RestoreAll', 'Window Management', h, cRestoreAllIdx);
-  RegisterActionEx('!ToggleAllWindows', 'Window Management', h, cToggleAllWindowsIdx);
+  RegisterActionEx('!ToggleAll', 'Window Management', h, cToggleAllIdx);
+
+  RegisterActionEx('!MinimizeAllMonitors', 'Window Management', h, cMinimizeAllMonitorsIdx);
+  RegisterActionEx('!ToggleAllMonitors', 'Window Management', h, cToggleAllMonitorsIdx);
 
   RegisterActionEx('!ToggleAllBars', 'SharpBar', h, cToggleAllBarsIdx);
 
@@ -169,6 +225,7 @@ end;
 function Start(owner: hwnd): hwnd;
 begin
   Result := owner;
+  OwnerWnd := Result;
 
   ae := TActionEvent.Create;
   h := allocatehwnd(Ae.MessageHandler);
@@ -189,6 +246,8 @@ end;
 
 procedure Stop;
 begin
+  SetLength(FWndList, 0);
+
   DeallocateHWnd(h);
   AE.Free;
 
@@ -259,32 +318,6 @@ end;
 { TActionEvent }
 
 procedure TActionEvent.MessageHandler(var msg: TMessage);
-
-var
-  EnumParam: TParam;
-
-  function EnumWindowsProc(Wnd: HWND; LParam: LPARAM): BOOL; stdcall;
-  var
-    rc : TRect;
-  begin
-    GetWindowRect(Wnd, rc);
-
-    // The IsIconic call was removed beacuse it caused problems in utorrent when it was minimized to the tray
-    // the main window was not visible (IsWindowVisible = false) but it was iconic (IsIconic = true)
-    // which caused the window to be unminimized when the Restore/Toggle action was called
-    if (GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) and
-      ((IsWindowVisible(Wnd) {or IsIconic(wnd)}) and
-      ((GetWindowLong(Wnd, GWL_HWNDPARENT) = 0) or
-      (GetWindowLong(Wnd, GWL_HWNDPARENT) = Integer(GetDesktopWindow))) and
-      (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0) and
-      (rc.Right-rc.Left > 0) and (rc.Bottom-rc.Top > 0)) then
-      with PParam(LParam)^ do
-      begin
-        setlength(wndlist, length(wndlist) + 1);
-        wndlist[high(wndlist)] := wnd;
-      end;
-    result := True;
-  end;
 
 var
   ShutDown: TSEShutdown;
@@ -369,15 +402,28 @@ begin
             ShutDown.Free;
           end;
         end;
-      cMinimiseAllIdx, cRestoreAllIdx: begin
-          setlength(EnumParam.wndlist, 0);
-          EnumWindows(@EnumWindowsProc, Integer(@EnumParam));
+      cMinimizeAllIdx, cRestoreAllIdx, cMinimizeAllMonitorsIdx: begin
+          if (lParam = cMinimizeAllIdx) or (lParam = cMinimizeAllMonitorsIdx) then
+          begin
+            SetLength(FWndList, 0);
+            
+            BuildWndList(FWndList, (lParam = cMinimizeAllMonitorsIdx));
+            MinimizeAll(FWndList);
+          end else
+            RestoreAll(FWndList);
+        end;
+      cToggleAllIdx, cToggleAllMonitorsIdx: begin
+          if WindowToggle then
+          begin
+            SetLength(FWndList, 0);
 
-          if lParam = cMinimiseAllIdx then
-            MinimiseAll(EnumParam) else
-            RestoreAll(EnumParam);
+            BuildWndList(FWndList, (lParam = cToggleAllMonitorsIdx));
+            MinimizeAll(FWndList);
+          end else
+            RestoreAll(FWndList);
 
-          setlength(EnumParam.wndlist, 0);
+          // Toggle (Show/Hide) all windows
+          WindowToggle := not (WindowToggle);
         end;
       cToggleAllBarsIdx: begin
           // Toggle (Show/Hide) all bars
@@ -389,25 +435,11 @@ begin
               BarHidden := True;
               break;
             end;
-          setlength(BarList, 0);
+          SetLength(BarList, 0);
           if BarHidden then
             SharpApi.SharpEBroadCast(WM_SHOWBAR, 0, 0)
           else SharpApi.SharpEBroadCast(WM_HIDEBAR, 0, 0);
           SharpApi.ServiceMsg('DeskArea', 'Update');
-        end;
-      cToggleAllWindowsIdx: begin
-
-          setlength(EnumParam.wndlist, 0);
-          EnumWindows(@EnumWindowsProc, Integer(@EnumParam));
-
-          if WindowToggle then
-            RestoreAll(EnumParam) else
-            MinimiseAll(EnumParam);
-
-          setlength(EnumParam.wndlist, 0);
-
-          // Toggle (Show/Hide) all windows
-          WindowToggle := not (WindowToggle);
         end;
       cRunDlgIdx: begin
         RunFileDlg(0, nil, nil, nil, 0);
