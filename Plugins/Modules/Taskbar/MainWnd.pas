@@ -1688,7 +1688,7 @@ end;
 
 procedure TMainForm.ses_togallClick(Sender: TObject);
 begin
-  SharpApi.SharpExecute('!ToggleAllWindows');
+  SharpApi.SharpExecute('!ToggleAll');
 end;
 
 procedure TMainForm.ses_maxallClick(Sender: TObject);
