@@ -136,7 +136,7 @@ begin
     for n := 0 to Screen.MonitorCount - 1 do
       AddMonitor(tmpList,Screen.Monitors[n]);
   end else
-    AddMonitor(tmpList,Screen.MonitorFromWindow(OwnerWnd));
+    AddMonitor(tmpList,Screen.MonitorFromWindow(GetForegroundWindow));
 
   setlength(list, length(tmpList));
   for n := 0 to High(tmpList) do
