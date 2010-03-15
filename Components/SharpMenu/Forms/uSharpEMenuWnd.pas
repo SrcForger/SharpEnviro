@@ -344,10 +344,14 @@ begin
     ShowMessage('Operation System is not supporting LayeredWindows!');
     Application.Terminate;
   end;
+
+  ShowWindow(Application.Handle, SW_HIDE);
 end;
 
 procedure TSharpEMenuWnd.FormActivate(Sender: TObject);
 begin
+  ShowWindow(Application.Handle, SW_HIDE);
+
   DrawWindow;
 end;
 
@@ -506,6 +510,8 @@ procedure TSharpEMenuWnd.FormShow(Sender: TObject);
 begin
   if FMenu = nil then
     exit;
+
+  ShowWindow(Application.Handle, SW_HIDE);
 
   FMenu.RenderTo(FPicture,Left,Top);
   PreMul(FPicture);
