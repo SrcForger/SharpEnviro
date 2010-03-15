@@ -724,6 +724,7 @@ begin
          else FModules.Add(pModule);
       pModule.mInterface.InitModule;
       result := pModule;
+      Break;
     end;
   end;
   SortModulesByPosition;
