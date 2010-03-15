@@ -70,6 +70,7 @@ var
 begin
      Application.Initialize;
      Application.Title := 'SharpDesk - Installing';
+     Application.ModalPopupMode := pmAuto;
 
      Parameter:=paramstr(1);
      if length(Parameter)<>0 then
