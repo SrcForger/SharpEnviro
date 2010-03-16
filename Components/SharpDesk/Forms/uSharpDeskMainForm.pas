@@ -171,7 +171,6 @@ type
     procedure MakeWindow1Click(Sender: TObject);
     procedure CreateParams(var Params: TCreateParams); override;
     procedure BackgroundReloadTimerTimer(Sender: TObject);
-    procedure FormActivate(Sender: TObject);
   private
     procedure WMShowWindow(var Msg : TMessage);          message WM_SHOWWINDOW;
     procedure WMSettingsChange(var Msg : TMessage);       message WM_SETTINGCHANGE;
@@ -599,55 +598,46 @@ end;
 
 procedure TSharpDeskMainForm.FormCreate(Sender: TObject);
 begin
+  SetWindowLong(Application.Handle, GWL_EXSTYLE, GetWindowLong(Application.Handle, GWL_EXSTYLE) or WS_EX_TOOLWINDOW and not WS_EX_APPWINDOW);
+
   GetCurrentTheme.LoadTheme(ALL_THEME_PARTS);
 
-     ObjectPopupImageCount := ObjectPopUp.Images.Count;
+  ObjectPopupImageCount := ObjectPopUp.Images.Count;
 
-     startup := True;
+  startup := True;
   UpdateSharpEActions;
-     SendMessageToConsole('creating main window',COLOR_OK,DMT_STATUS);
-     SharpDesk := TSharpDeskManager.Create(SharpDeskMainForm.BackgroundImage);
+  SendMessageToConsole('creating main window',COLOR_OK,DMT_STATUS);
+  SharpDesk := TSharpDeskManager.Create(SharpDeskMainForm.BackgroundImage);
 
-     Randomize;
-     SharpDeskMainForm.Caption:='SharpDesk';
+  Randomize;
+  SharpDeskMainForm.Caption:='SharpDesk';
 
+  SetWindowLong(SharpDeskMainForm.Handle, GWL_USERDATA, magicDWord); //used for vwm
+  setwindowpos(SharpDeskMainForm.Handle, HWND_TOP, Screen.DesktopLeft,Screen.DesktopTop, Screen.DesktopWidth, Screen.DesktopHeight, SWP_NOZORDER);
 
-//   {WND SETTINGS}
-//     MainForm.DisableAlign;
-//     MainForm.EnableAlign;
+  try
+    SharpDeskMainForm.SetZOrder(False);
+    Created := True;
+  except
+  end;
 
+  SharpDeskMainForm.Show;
 
-     SetWindowLong(SharpDeskMainForm.Handle, GWL_USERDATA, magicDWord); //used for vwm
-     setwindowpos(SharpDeskMainForm.Handle, HWND_TOP, Screen.DesktopLeft,Screen.DesktopTop,
-                  Screen.DesktopWidth, Screen.DesktopHeight, SWP_NOZORDER);
+  SizePosChanging := True;
+  SharpDeskMainForm.Left:=Screen.DesktopLeft;
+  SharpDeskMainForm.Top:=Screen.DesktopTop;
+  SharpDeskMainForm.Width:=Screen.DesktopWidth;
+  SharpDeskMainForm.Height:=Screen.DesktopHeight;
+  SizePosChanging := False;
+  LoadTheme(True);
+  SharpDesk.LoadObjectSet;
+  SharpDeskMainForm.BackgroundImage.RepaintMode := rmOptimizer;
 
-     try
-        SharpDeskMainForm.SetZOrder(False);
-        Created := True;
-     except
-     end;
-
-     SharpDeskMainForm.Show;
-
-     SizePosChanging := True;
-     SharpDeskMainForm.Left:=Screen.DesktopLeft;
-     SharpDeskMainForm.Top:=Screen.DesktopTop;
-     SharpDeskMainForm.Width:=Screen.DesktopWidth;
-     SharpDeskMainForm.Height:=Screen.DesktopHeight;
-     SizePosChanging := False;
-     LoadTheme(True);
-     SharpDesk.LoadObjectSet;
-     SharpDeskMainForm.BackgroundImage.RepaintMode := rmOptimizer;
-
-     // Check if we should use Explorer's desktop
-    if SharpDesk.Desksettings.UseExplorerDesk then
-      SharpApi.SharpExecute('!DeskExplorer')
-    else
-      SharpApi.SharpExecute('!DeskSharpE');
-
-    Setwindowlong(Application.Handle, GWL_EXSTYLE, GetWindowLong(Application.Handle, GWL_EXSTYLE) or WS_EX_TOOLWINDOW);
-    SetWindowPos(Application.Handle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
-    ShowWindow(Application.Handle, SW_HIDE);
+  // Check if we should use Explorer's desktop
+  if SharpDesk.Desksettings.UseExplorerDesk then
+    SharpApi.SharpExecute('!DeskExplorer')
+  else
+    SharpApi.SharpExecute('!DeskSharpE');
 end;
 
 
@@ -656,19 +646,12 @@ end;
 
 procedure TSharpDeskMainForm.FormShow(Sender: TObject);
 begin
-  ShowWindow(application.Handle, SW_HIDE);   
-
   if SharpDesk.Desksettings.DragAndDrop then SharpDesk.DragAndDrop.RegisterDragAndDrop(SharpDesk.Image.Parent.Handle)
      else SharpDesk.DragAndDrop.UnregisterDragAndDrop(SharpDesk.Image.Parent.Handle);
 end;
 
 
 // ######################################
-
-procedure TSharpDeskMainForm.FormActivate(Sender: TObject);
-begin
-  ShowWindow(Application.Handle, SW_HIDE);
-end;
 
 procedure TSharpDeskMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
 {var

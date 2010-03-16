@@ -58,7 +58,6 @@ type
     procedure ClosetimerTimer(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormDestroy(Sender: TObject);
-    procedure FormShow(Sender: TObject);
   private
     FPicture : TBitmap32;
     DC: HDC;
@@ -148,6 +147,8 @@ var
   b : boolean;
   Theme : ISharpETheme;
 begin
+  SetWindowLong(Application.Handle, GWL_EXSTYLE, GetWindowLong(Application.Handle, GWL_EXSTYLE) or WS_EX_TOOLWINDOW or WS_EX_LAYERED and not WS_EX_APPWINDOW);
+
   FPicture := TBitmap32.Create;
   ShowSplash := True;
 
@@ -201,9 +202,6 @@ begin
     AlphaFormat := AC_SRC_ALPHA;
   end;
 
-  if SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) or WS_EX_LAYERED or WS_EX_TOOLWINDOW) = 0 then
-    SendDebugMessage('SharpSplash', 'Error setting window style.', 0);
-    
   ShowWindow(Application.Handle, SW_HIDE);
 end;
 
@@ -212,18 +210,11 @@ begin
   FPicture.Free;
 end;
 
-procedure TSplashForm.FormShow(Sender: TObject);
-begin
-  ShowWindow(Application.Handle, SW_HIDE);
-end;
-
 procedure TSplashForm.FormActivate(Sender: TObject);
 var
  n : real;
  ni : real;
 begin
-  ShowWindow(Application.Handle, SW_HIDE);
-
   if ShowSplash then
   begin
     n := 0;
