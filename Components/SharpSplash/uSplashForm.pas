@@ -44,7 +44,6 @@ uses
   uISharpETheme,
   ExtCtrls,
   GR32,
-  GR32_Backends,
   GR32_Layers,
   GR32_Image,
   GR32_PNG,
@@ -147,8 +146,6 @@ var
   b : boolean;
   Theme : ISharpETheme;
 begin
-  SetWindowLong(Application.Handle, GWL_EXSTYLE, GetWindowLong(Application.Handle, GWL_EXSTYLE) or WS_EX_TOOLWINDOW or WS_EX_LAYERED and not WS_EX_APPWINDOW);
-
   FPicture := TBitmap32.Create;
   ShowSplash := True;
 
@@ -202,7 +199,8 @@ begin
     AlphaFormat := AC_SRC_ALPHA;
   end;
 
-  ShowWindow(Application.Handle, SW_HIDE);
+  if SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) or WS_EX_LAYERED or WS_EX_TOOLWINDOW) = 0 then
+    SendDebugMessage('SharpSplash', 'Error setting window style.', 0);
 end;
 
 procedure TSplashForm.FormDestroy(Sender: TObject);
@@ -261,5 +259,6 @@ begin
 end;
 
 end.
+
 
 
