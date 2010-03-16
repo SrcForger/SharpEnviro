@@ -139,6 +139,7 @@ type
     procedure N501Click(Sender: TObject);
     procedure Custom1Click(Sender: TObject);
     procedure ForceAlwaysOnTop1Click(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
   private
     { Private-Deklarationen }
     FUser32DllHandle: THandle;
@@ -1207,7 +1208,8 @@ end;
 procedure TSharpBarMainForm.FormCreate(Sender: TObject);
 begin
   ModuleManager.DebugOutput('Setting Form properties', 2, 1);
-  SetWindowLong(Application.Handle, GWL_EXSTYLE, GetWindowLong(Application.Handle, GWL_EXSTYLE) or WS_EX_TOOLWINDOW);
+  SetWindowLong(Application.Handle, GWL_EXSTYLE,
+    GetWindowLong(Application.Handle, GWL_EXSTYLE) or WS_EX_TOOLWINDOW and not WS_EX_APPWINDOW);
 
   foregroundWindowIsFullscreen := False;
   Closing := False;
@@ -1672,6 +1674,7 @@ end;
 
 procedure TSharpBarMainForm.FormShow(Sender: TObject);
 begin
+  ShowWindow(Application.Handle, SW_HIDE);
   if FSuspended then
     exit;
 
@@ -2170,6 +2173,11 @@ begin
   ForceAlwaysOnTop1.Checked := not ForceAlwaysOnTop1.Checked;
   SharpEBar.ForceAlwaysOnTop := ForceAlwaysOnTop1.Checked;
   SaveBarSettings;
+end;
+
+procedure TSharpBarMainForm.FormActivate(Sender: TObject);
+begin
+  ShowWindow(Application.Handle, SW_HIDE);
 end;
 
 procedure TSharpBarMainForm.FormClose(Sender: TObject;

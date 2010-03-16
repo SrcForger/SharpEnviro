@@ -13,6 +13,7 @@ object SharpDeskMainForm: TSharpDeskMainForm
   Font.Style = []
   OldCreateOrder = False
   Position = poDesktopCenter
+  OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy

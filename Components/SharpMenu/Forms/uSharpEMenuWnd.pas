@@ -349,6 +349,7 @@ end;
 procedure TSharpEMenuWnd.FormActivate(Sender: TObject);
 begin
   DrawWindow;
+  ShowWindow(Application.Handle, SW_HIDE);
 end;
 
 procedure TSharpEMenuWnd.FormMouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -504,6 +505,8 @@ end;
 
 procedure TSharpEMenuWnd.FormShow(Sender: TObject);
 begin
+  ShowWindow(Application.Handle, SW_HIDE);
+  
   if FMenu = nil then
     exit;
 

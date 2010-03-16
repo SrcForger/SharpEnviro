@@ -171,6 +171,7 @@ type
     procedure MakeWindow1Click(Sender: TObject);
     procedure CreateParams(var Params: TCreateParams); override;
     procedure BackgroundReloadTimerTimer(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
   private
     procedure WMShowWindow(var Msg : TMessage);          message WM_SHOWWINDOW;
     procedure WMSettingsChange(var Msg : TMessage);       message WM_SETTINGCHANGE;
@@ -646,12 +647,18 @@ end;
 
 procedure TSharpDeskMainForm.FormShow(Sender: TObject);
 begin
+  ShowWindow(Application.Handle, SW_HIDE);
   if SharpDesk.Desksettings.DragAndDrop then SharpDesk.DragAndDrop.RegisterDragAndDrop(SharpDesk.Image.Parent.Handle)
      else SharpDesk.DragAndDrop.UnregisterDragAndDrop(SharpDesk.Image.Parent.Handle);
 end;
 
 
 // ######################################
+
+procedure TSharpDeskMainForm.FormActivate(Sender: TObject);
+begin
+  ShowWindow(Application.Handle, SW_HIDE); 
+end;
 
 procedure TSharpDeskMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
 {var

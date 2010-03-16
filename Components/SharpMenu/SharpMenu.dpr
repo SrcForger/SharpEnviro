@@ -138,10 +138,9 @@ begin
   DebugTime('Init');
   Application.Initialize;
   Application.ShowMainForm := False;
-  {$IFDEF VER185} Application.MainFormOnTaskBar := True; {$ENDIF}
   SetWindowLong(Application.Handle, GWL_EXSTYLE,
                  GetWindowLong(Application.Handle, GWL_EXSTYLE) or
-                 WS_EX_TOOLWINDOW and not WS_EX_APPWINDOW);  
+                 WS_EX_TOOLWINDOW and not WS_EX_APPWINDOW);
 
   st := GetCurrentTime;
   MutexHandle := CreateMutex(nil, TRUE, 'SharpMenuMutex');
