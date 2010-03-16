@@ -488,18 +488,12 @@ procedure TSharpEBar.UpdateAlwaysOnTop;
 begin
   if (FAlwaysOnTop) then
   begin
-    SetWindowPos(abackground.handle, HWND_TOPMOST, -1, -2, -3, -4,
-                 SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
-    SetWindowPos(aform.handle, HWND_TOPMOST, -1, -2, -3, -4,
-                 SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
+    SetWindowPos(aform.handle, HWND_TOPMOST, 0, 0, 0, 0,
+                 SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_SHOWWINDOW);
   end else
   begin
-    SetWindowPos(aform.handle, HWND_NOTOPMOST, -1, -2, -3, -4,
-                 SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
-    SetWindowPos(abackground.handle, HWND_NOTOPMOST, -1, -2, -3, -4,
-                 SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
-    SetWindowPos(abackground.handle, aform.handle, -1, -2, -3, -4,
-                 SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);                                    
+    SetWindowPos(aform.handle, HWND_NOTOPMOST, 0, 0, 0, 0,
+                 SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_SHOWWINDOW);
   end;
 end;
 
