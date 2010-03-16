@@ -58,6 +58,8 @@ type
                    FSortType       : TSharpeTaskManagerSortType;
                    FLastActiveTask : hwnd;
                    FLastActiveTaskPos : TRect;
+
+                   function CheckTaskWnd(pHandle : hwnd): boolean;
                  public
                    procedure RemoveDeadTasks;
                    procedure AddTask(pHandle : hwnd);
@@ -177,6 +179,18 @@ begin
   end;
 end;
 
+function TTaskManager.CheckTaskWnd(pHandle: HWND): boolean;
+begin
+  Result := ((GetWindowLong(pHandle, GWL_STYLE) and WS_SYSMENU <> 0) or
+              (GetWindowLong(pHandle, GWL_EXSTYLE) and WS_EX_APPWINDOW <> 0)) and
+            (IsWindowVisible(pHandle) or IsIconic(pHandle)) and
+            (GetWindowLong(pHandle, GWL_STYLE) and WS_CHILD = 0) and
+            (GetWindowLong(pHandle, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0) and
+            ((GetWindowLong(pHandle, GWL_STYLE) and DS_3DLOOK = 0) and
+              (GetWindowLong(pHandle, GWL_STYLE) and DS_FIXEDSYS = 0) or
+              (GetWindowLong(pHandle, GWL_STYLE) and WS_VISIBLE <> 0));
+end;
+
 procedure TTaskManager.InitList;
 type
   PParam = ^TParam;
@@ -189,14 +203,7 @@ var
 
   function EnumWindowsProc(Wnd: HWND; LParam: LPARAM): BOOL; stdcall;
   begin
-    if ((GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) or
-       (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_APPWINDOW <> 0)) and
-       ((IsWindowVisible(Wnd) or IsIconic(wnd)) and
-       (GetWindowLong(Wnd, GWL_STYLE) and WS_CHILD = 0) and
-       (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0))
-       and ((GetWindowLong(Wnd, GWL_STYLE) and DS_3DLOOK = 0)
-        and (GetWindowLong(Wnd, GWL_STYLE) and DS_FIXEDSYS = 0)
-        or (GetWindowLong(Wnd, GWL_STYLE) and WS_VISIBLE <> 0)) then
+    if CheckTaskWnd(Wnd) then
       with PParam(LParam)^ do
       begin
        setlength(wndlist,length(wndlist)+1);
@@ -345,12 +352,16 @@ begin
   RemoveDeadTasks;
   if not IsWindow(pHandle) then exit;
   if GetItemByHandle(pHandle) <> nil then exit; // item already exists
-  pItem := TTaskItem.Create(pHandle,FListMode);
-  if not FListMode then 
-    pItem.UpdateCaption;
-  FItems.Add(pItem);
-  if Assigned(OnNewTask) then FOnNewTask(pItem, FItems.Count -1);
-  if FSortTasks then DoSortTasks;
+
+  if CheckTaskWnd(pHandle) then
+  begin
+    pItem := TTaskItem.Create(pHandle,FListMode);
+    if not FListMode then
+      pItem.UpdateCaption;
+    FItems.Add(pItem);
+    if Assigned(OnNewTask) then FOnNewTask(pItem, FItems.Count -1);
+    if FSortTasks then DoSortTasks;
+  end;
 end;
 
 procedure TTaskManager.RemoveTask(pHandle : hwnd);
@@ -420,11 +431,17 @@ begin
     pItem := TTaskItem(FItems.Items[n]);
     if pItem.Handle = pHandle then
     begin
-      if not FListMode then     
-        pItem.UpdateFromHwnd
-      else pItem.UpdateNonCriticalFromHwnd;
-      if FSortTasks then DoSortTasks;      
-      if Assigned(FOnUpdateTask) then FOnUpdateTask(pItem,n);
+      if CheckTaskWnd(pHandle) then
+      begin
+        if not FListMode then
+          pItem.UpdateFromHwnd
+        else pItem.UpdateNonCriticalFromHwnd;
+        if FSortTasks then DoSortTasks;
+        if Assigned(FOnUpdateTask) then FOnUpdateTask(pItem,n);
+      end else
+        RemoveTask(pHandle);
+
+      break;
     end;
   end;
 end;
