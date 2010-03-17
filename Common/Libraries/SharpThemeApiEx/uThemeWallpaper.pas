@@ -149,16 +149,25 @@ begin
   result := FWallpapers;
 end;
 
-procedure FindFiles(FilesList: TStringList; StartDir, FileMask: string; bRecursive : boolean = false);
+procedure FindFiles(FilesList: TStringList; StartDir: String; FileMask: TStringList; bRecursive : boolean = false);
 var
   SR: TSearchRec;
+  SearchMask: String;
   DirList: TStringList;
   i: integer;
 begin
   if StartDir[length(StartDir)] <> '\' then
     StartDir := StartDir + '\';
 
-  if FindFirst(StartDir + FileMask, faAnyFile - faDirectory, SR) = 0 then
+  for i := 0 to FileMask.Count - 1 do
+  begin
+    if i > 0 then
+      SearchMask := SearchMask + '; ';
+      
+    SearchMask := SearchMask + StartDir + FileMask[i];
+  end;
+
+  if FindFirst(SearchMask, faAnyFile - faDirectory, SR) = 0 then
   begin
     repeat
       FilesList.Add(StartDir + SR.Name);
@@ -193,11 +202,23 @@ procedure TThemeWallPaper.GetPicture(path : string; var outImg : string; bRecurs
 var
   WallPics : TStringList;
   RandPic : integer;
+  Mask : TStringList;
 begin
   WallPics := TStringList.Create;
   try
     WallPics.Clear;
-    FindFiles(WallPics, path, '*.bmp;*.jpg;*.jpeg;*.png', bRecursive);
+
+    Mask := TStringList.Create;
+    try
+      Mask.Add('*.bmp');
+      Mask.Add('*.jpg');
+      Mask.Add('*.jpeg');
+      Mask.Add('*.png');
+
+      FindFiles(WallPics, path, Mask, bRecursive);
+    finally
+      Mask.Free;
+    end;
   finally
     // Get a random Wallpaper index
 	  if WallPics.Count > 0 then
