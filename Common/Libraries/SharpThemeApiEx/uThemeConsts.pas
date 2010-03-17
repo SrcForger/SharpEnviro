@@ -179,6 +179,9 @@ type
     GDEndAlpha: integer;
     MirrorHoriz: boolean;
     MirrorVert: boolean;
+    SwitchPath: String;
+    SwitchRecursive: boolean;
+    SwitchRandomize: boolean;
   end;
   TWallpaperMonitor = record
     Name: string;

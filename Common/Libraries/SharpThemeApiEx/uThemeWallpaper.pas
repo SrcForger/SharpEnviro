@@ -27,7 +27,7 @@ unit uThemeWallpaper;
 interface
 
 uses
-  uThemeInfo, uThemeConsts, uIThemeWallpaper, uIThemeScheme;
+  Classes, uThemeInfo, uThemeConsts, uIThemeWallpaper, uIThemeScheme;
 
 type
   TThemeWallpaper = class(TInterfacedObject, IThemeWallpaper)
@@ -35,7 +35,11 @@ type
     FThemeInfo   : TThemeInfo;
     FWallpapers  : TThemeWallpaperItems;
     FMonitors    : TMonitorWallpapers;
+    FAutoCurIndex : integer;
+
     procedure SetDefaults;
+
+    procedure GetPicture(path : string; var outImg : string; bRecursive : boolean = false; bRand : boolean = false);
   public
     LastUpdate : Int64;
     constructor Create(pThemeInfo : TThemeInfo); reintroduce;
@@ -66,7 +70,9 @@ uses
 constructor TThemeWallpaper.Create(pThemeInfo : TThemeInfo);
 begin
   Inherited Create;
-
+  
+  FAutoCurIndex := 0;
+  
   FThemeInfo := pThemeInfo;
 
   LoadFromFile;
@@ -143,6 +149,74 @@ begin
   result := FWallpapers;
 end;
 
+procedure FindFiles(FilesList: TStringList; StartDir, FileMask: string; bRecursive : boolean = false);
+var
+  SR: TSearchRec;
+  DirList: TStringList;
+  i: integer;
+begin
+  if StartDir[length(StartDir)] <> '\' then
+    StartDir := StartDir + '\';
+
+  if FindFirst(StartDir + FileMask, faAnyFile - faDirectory, SR) = 0 then
+  begin
+    repeat
+      FilesList.Add(StartDir + SR.Name);
+    until FindNext(SR) <> 0;
+    FindClose(SR);
+  end;
+
+  // Build a list of subdirectories
+  if bRecursive then
+  begin
+    DirList := TStringList.Create;
+    try
+      if FindFirst(StartDir + '*.*', faAnyFile, SR) = 0 then
+      begin
+        repeat
+          if ((SR.Attr and faDirectory) <> 0) and (SR.Name[1] <> '.') then
+            DirList.Add(StartDir + SR.Name);
+        until FindNext(SR) <> 0;
+        FindClose(SR);
+      end;
+
+      // Scan the list of subdirectories
+      for i := 0 to DirList.Count - 1 do
+        FindFiles(FilesList, DirList[i], FileMask);
+    finally
+      DirList.Free;
+    end;
+  end;
+end;
+
+procedure TThemeWallPaper.GetPicture(path : string; var outImg : string; bRecursive : boolean; bRand : boolean);
+var
+  WallPics : TStringList;
+  RandPic : integer;
+begin
+  WallPics := TStringList.Create;
+  try
+    FindFiles(WallPics, path, '*.bmp;*.jpg;*.jpeg;*.png', bRecursive);
+  finally
+    // Get a random Wallpaper index
+    if bRand then
+      RandPic := Random(WallPics.Count - 1)
+    else
+      RandPic := FAutoCurIndex;
+
+    outImg := WallPics[RandPic];
+
+    if not bRand then
+    begin
+      Inc(FAutoCurIndex);
+      if FAutoCurIndex > WallPics.Count - 1 then
+        FAutoCurIndex := 0;
+    end;
+
+    WallPics.Free;
+  end;
+end;
+
 procedure TThemeWallpaper.LoadFromFile;
 var
   XML : TInterfacedXmlBase;
@@ -166,7 +240,19 @@ begin
          with FWallpapers[High(FWallpapers)] do
          begin
            Name            := Value('Name', Name);
-           Image           := Value('Image', Image);
+           if Value('Image', '') = '' then
+           begin
+             SwitchPath := Value('SwitchPath', 'C:\Users\Homer\Pictures');
+             if DirectoryExists(SwitchPath) then
+             begin
+               SwitchRecursive := BoolValue('SwitchRecursive', True);
+               SwitchRandomize := BoolValue('SwitchRandomize', True);
+               GetPicture(SwitchPath, Image, SwitchRecursive, SwitchRandomize);
+             end else
+               Image := '';
+           end else
+             Image           := Value('Image', Image);
+
            ColorStr        := Value('Color', ColorStr);
            Alpha           := IntValue('Alpha', Alpha);
            Size            := TThemeWallpaperSize(IntValue('Size', 0));
@@ -232,7 +318,15 @@ begin
         with Items.Add('item').Items, FWallpapers[n] do
         begin
           Add('Name', Name);
-          Add('Image', Image);
+
+          if SwitchPath <> '' then
+          begin
+            Add('SwitchPath', SwitchPath);
+            Add('SwitchRecursive', SwitchRecursive);
+            Add('SwitchRandomize', SwitchRandomize);
+          end else
+            Add('Image', Image);
+            
           Add('Color', ColorStr);
           Add('Alpha', Alpha);
           Add('Size', Integer(Size));
@@ -294,6 +388,8 @@ begin
     GDEndAlpha      := 0;
     MirrorHoriz     := False;
     MirrorVert      := False;
+    SwitchPath      := '';
+    SwitchRandomize := True;
   end;
 end;
 
