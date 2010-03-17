@@ -32,7 +32,7 @@ uses
   Dialogs, StdCtrls, SharpEButton, SharpApi, Menus, Math,
   ShellApi, MediaPlayerList, GR32, GR32_PNG, Types, SharpEBaseControls, ExtCtrls,
   Registry, uSharpEMenuWnd, uSharpEMenu, uSharpEMenuSettings, uSharpEMenuItem,
-  uISharpBarModule;
+  uISharpBarModule, SharpIconUtils;
 
 
 type
@@ -62,7 +62,6 @@ type
     procedure WMExecAction(var msg : TMessage); message WM_SHARPEACTIONMESSAGE;
     procedure SendAppCommand(pType : TControlCommandType);
     function GetStartPlayer(Root : HKEY; Key : String; Value : String) : String;
-    procedure LoadIcons;
   public
     sPlayer : String;
     sPSelect : Boolean;
@@ -73,6 +72,7 @@ type
     procedure SaveSettings;
     procedure UpdateSharpEActions;
     procedure UpdateSelectIcon;
+    procedure LoadIcons;
   end;
 
 var
@@ -202,10 +202,7 @@ end;
 
 procedure TMainForm.LoadIcons;
 var
-  ResStream : TResourceStream;
   TempBmp : TBitmap32;
-  b : boolean;
-  ResIDSuffix : String;
 begin
   if mInterface = nil then
     exit;
@@ -214,78 +211,36 @@ begin
 
   TempBmp := TBitmap32.Create;
   if mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y <= 16 then
-  begin
-    TempBmp.SetSize(16,16);
-    ResIDSuffix := '';
-  end else if mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y <= 22 then
-  begin
-    TempBmp.SetSize(22,22);
-    ResIDSuffix := '22';
-  end else
-  begin
+    TempBmp.SetSize(16,16)
+  else if mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y <= 22 then
+    TempBmp.SetSize(22,22)
+  else
     TempBmp.SetSize(32,32);
-    ResIDSuffix := '32';
-  end;
 
   TempBmp.Clear(color32(0,0,0,0));
-  try
-    ResStream := TResourceStream.Create(HInstance, 'mppause'+ResIDSuffix, RT_RCDATA);
-    try
-      LoadBitmap32FromPng(TempBmp,ResStream,b);
-      btn_pause.Glyph32.Assign(tempBmp);
-    finally
-      ResStream.Free;
-    end;
-  except
-  end;
+  IconStringToIcon('icon.mediaplayer.pause', '', TempBmp);
+  btn_pause.Glyph32.Assign(TempBmp);
+  btn_pause.UpdateSkin;
 
   TempBmp.Clear(color32(0,0,0,0));
-  try
-    ResStream := TResourceStream.Create(HInstance, 'mpplay'+ResIDSuffix, RT_RCDATA);
-    try
-      LoadBitmap32FromPng(TempBmp,ResStream,b);
-      btn_play.Glyph32.Assign(tempBmp);
-    finally
-      ResStream.Free;
-    end;
-  except
-  end;
+  IconStringToIcon('icon.mediaplayer.play', '', TempBmp);
+  btn_play.Glyph32.Assign(tempBmp);
+  btn_play.UpdateSkin;
 
   TempBmp.Clear(color32(0,0,0,0));
-  try
-    ResStream := TResourceStream.Create(HInstance, 'mpstop'+ResIDSuffix, RT_RCDATA);
-    try
-      LoadBitmap32FromPng(TempBmp,ResStream,b);
-      btn_stop.Glyph32.Assign(tempBmp);
-    finally
-      ResStream.Free;
-    end;
-  except
-  end;
+  IconStringToIcon('icon.mediaplayer.stop', '', TempBmp);
+  btn_stop.Glyph32.Assign(tempBmp);
+  btn_stop.UpdateSkin;
 
   TempBmp.Clear(color32(0,0,0,0));
-  try
-    ResStream := TResourceStream.Create(HInstance, 'mpprev'+ResIDSuffix, RT_RCDATA);
-    try
-      LoadBitmap32FromPng(TempBmp,ResStream,b);
-      btn_prev.Glyph32.Assign(tempBmp);
-    finally
-      ResStream.Free;
-    end;
-  except
-  end;
+  IconStringToIcon('icon.mediaplayer.previous', '', TempBmp);
+  btn_prev.Glyph32.Assign(tempBmp);
+  btn_prev.UpdateSkin;
 
   TempBmp.Clear(color32(0,0,0,0));
-  try
-    ResStream := TResourceStream.Create(HInstance, 'mpnext'+ResIDSuffix, RT_RCDATA);
-    try
-      LoadBitmap32FromPng(TempBmp,ResStream,b);
-      btn_next.Glyph32.Assign(tempBmp);
-    finally
-      ResStream.Free;
-    end;
-  except
-  end;  
+  IconStringToIcon('icon.mediaplayer.next', '', TempBmp);
+  btn_next.Glyph32.Assign(tempBmp);
+  btn_next.UpdateSkin;
 
   TempBmp.Free;
 end;
@@ -367,9 +322,9 @@ var
   buttonwidth : integer;
 begin
   LoadIcons;
-  buttonwidth := mInterface.SkinInterface.SkinManager.Skin.Button.WidthMod;
-  buttonwidth := buttonwidth + btn_play.GetIconWidth;
-  buttonwidth := buttonwidth - 4;
+  //buttonwidth := mInterface.SkinInterface.SkinManager.Skin.Button.WidthMod;
+  buttonwidth := btn_play.GetIconWidth + 6;
+  //buttonwidth := buttonwidth - 4;
   btn_play.Width    := buttonwidth;
   btn_pause.Width   := buttonwidth;
   btn_stop.Width    := buttonwidth;
@@ -378,16 +333,16 @@ begin
   btn_pselect.Width := buttonwidth;
 
   btn_play.Left := 2;
-  btn_pause.Left := btn_play.Left + btn_play.Width + 1;
-  btn_stop.Left := btn_pause.Left + btn_pause.Width + 1;
-  btn_prev.Left := btn_stop.Left + btn_stop.Width + 3;
-  btn_next.Left := btn_prev.Left + btn_prev.Width + 1;
+  btn_pause.Left := btn_play.Left + btn_play.Width;
+  btn_stop.Left := btn_pause.Left + btn_pause.Width;
+  btn_prev.Left := btn_stop.Left + btn_stop.Width;
+  btn_next.Left := btn_prev.Left + btn_prev.Width;
   i := 0;
 
   if sPSelect then
   begin
-    i := 3 + btn_pselect.Width;
-    btn_pselect.Left := btn_next.Left + btn_next.Width + 3;
+    i := btn_pselect.Width;
+    btn_pselect.Left := btn_next.Left + btn_next.Width;
     btn_pselect.Visible := True;
   end else btn_pselect.Visible := False;
 
