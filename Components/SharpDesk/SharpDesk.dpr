@@ -68,49 +68,55 @@ var
    OtherWnd  : THandle;
 
 begin
-     Application.Initialize;
-     Application.Title := 'SharpDesk - Installing';
-     Application.ModalPopupMode := pmAuto;
+  // Seed random number generator
+  Randomize;
 
-     Parameter:=paramstr(1);
-     if length(Parameter)<>0 then
-        if (FileExists(Parameter)) and (ExtractFileExt(Parameter)='.object') then
+  Application.Initialize;
+  Application.Title := 'SharpDesk - Installing';
+  Application.ModalPopupMode := pmAuto;
+
+  Parameter := paramstr(1);
+  if length(Parameter) <> 0 then
+    if (FileExists(Parameter)) and (ExtractFileExt(Parameter)='.object') then
+    begin
+      FileName := ExtractFileName(Parameter);
+      if ExtractFileDir(Application.ExeName)+'\Objects\'+FileName = Parameter then
+        halt;
+
+      MuteXHandle := OpenMutex(MUTEX_ALL_ACCESS,False,'SharpDeskMutex');
+      if MuteXHandle <> 0 then
+      begin
+        OtherWnd := FindWindow(nil,'SharpDesk');
+        if OtherWnd <> 0 then
+          SendMessage(OtherWnd,WM_Close,0,0);
+      end;
+      CloseHandle(MuteXHandle);
+
+      if FileExists(ExtractFileDir(Application.ExeName)+'\Objects\'+FileName) then
+      begin
+        if MessageDlg ('SharpDesk Object Installer '+#13#10+#13#10+'The selected object is already installed.'+#13#10+'Do you want to continue and overwrite the existing object?',mtConfirmation, [mbYes, mbNo], 0) = mrYes then
         begin
-             FileName := ExtractFileName(Parameter);
-             if ExtractFileDir(Application.ExeName)+'\Objects\'+FileName = Parameter then halt;
-
-             MuteXHandle := OpenMutex(MUTEX_ALL_ACCESS,False,'SharpDeskMutex');
-             if MuteXHandle <>0 then
-             begin
-                  OtherWnd := FindWindow(nil,'SharpDesk');
-                  if OtherWnd<>0 then
-                     SendMessage(OtherWnd,WM_Close,0,0);
-             end;
-             CloseHandle(MuteXHandle);
-
-             if FileExists(ExtractFileDir(Application.ExeName)+'\Objects\'+FileName) then
-             begin
-                  if MessageDlg ('SharpDesk Object Installer '+#13#10+#13#10+'The selected object is already installed.'+#13#10+'Do you want to continue and overwrite the existing object?',mtConfirmation, [mbYes, mbNo], 0) = mrYes then
-                  begin
-                       DeleteFile(pChar(ExtractFileDir(Application.ExeName)+'\Objects\'+FileName));
-                       CopyFile(pChar(Parameter),pChar(ExtractFileDir(Application.ExeName)+'\Objects\'+FileName),True);
-                  end;
-             end else CopyFile(pChar(Parameter),pChar(ExtractFileDir(Application.ExeName)+'\Objects\'+FileName),True);
-             Application.Processmessages;
+          DeleteFile(pChar(ExtractFileDir(Application.ExeName)+'\Objects\'+FileName));
+          CopyFile(pChar(Parameter),pChar(ExtractFileDir(Application.ExeName)+'\Objects\'+FileName),True);
         end;
+      end else
+        CopyFile(pChar(Parameter),pChar(ExtractFileDir(Application.ExeName)+'\Objects\'+FileName),True);
 
-     Application.Title := 'SharpDesk';
+      Application.Processmessages;
+    end;
 
-     MutexHandle := CreateMutex(nil, TRUE, 'SharpDeskMutex');
-     if MutexHandle <> 0 then
-     begin
-          if GetLastError = ERROR_ALREADY_EXISTS then
-          begin
-               CloseHandle(MutexHandle);
-               Application.Terminate;
-               Halt;
-          end;
-     end;
+  Application.Title := 'SharpDesk';
+
+  MutexHandle := CreateMutex(nil, TRUE, 'SharpDeskMutex');
+  if MutexHandle <> 0 then
+  begin
+    if GetLastError = ERROR_ALREADY_EXISTS then
+    begin
+      CloseHandle(MutexHandle);
+      Application.Terminate;
+      Halt;
+    end;
+  end;
 
   Application.CreateForm(TSharpDeskMainForm, SharpDeskMainForm);
   SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));

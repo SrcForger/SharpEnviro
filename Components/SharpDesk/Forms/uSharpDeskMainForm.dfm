@@ -876,4 +876,10 @@ object SharpDeskMainForm: TSharpDeskMainForm
     Left = 64
     Top = 16
   end
+  object WallpaperChangerTimer: TTimer
+    Interval = 10000
+    OnTimer = WallpaperChangerTimerTimer
+    Left = 96
+    Top = 16
+  end
 end

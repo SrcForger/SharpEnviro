@@ -172,6 +172,7 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure BackgroundReloadTimerTimer(Sender: TObject);
     procedure FormActivate(Sender: TObject);
+    procedure WallpaperChangerTimerTimer(Sender: TObject);
   private
     procedure WMShowWindow(var Msg : TMessage);          message WM_SHOWWINDOW;
     procedure WMSettingsChange(var Msg : TMessage);       message WM_SETTINGCHANGE;
@@ -384,6 +385,11 @@ begin
    FreeAndNil(PreviewShot);
    FreeAndNil(SaveBitmap);
    FreeAndNil(SaveJPeg);
+end;
+
+procedure TSharpDeskMainForm.WallpaperChangerTimerTimer(Sender: TObject);
+begin
+  LoadTheme(true);
 end;
 
 procedure TSharpDeskMainForm.WMCloseDesk(var Msg : TMessage);
