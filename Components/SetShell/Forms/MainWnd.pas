@@ -29,12 +29,11 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, uShellSwitcher, uShutdown, uSystemFuncs;
+  Dialogs, StdCtrls, ExtCtrls, uShellSwitcher, uShutdown, uSystemFuncs, GR32_Image;
 
 type
   TMainForm = class(TForm)
     Panel1: TPanel;
-    rg_shell: TRadioGroup;
     Panel2: TPanel;
     btn_cancel: TButton;
     btn_ok: TButton;
@@ -43,6 +42,11 @@ type
     Panel4: TPanel;
     cb_seb: TCheckBox;
     Label2: TLabel;
+    gpShells: TGroupBox;
+    rbSharpE: TRadioButton;
+    rbExplorer: TRadioButton;
+    imgSharpE: TImage32;
+    imgExplorer: TImage32;
     procedure btn_okClick(Sender: TObject);
     procedure btn_cancelClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -69,14 +73,13 @@ var
   dir : string;
   Shutdown : TSEShutDown;
 begin
-  case rg_shell.ItemIndex of
-    0: begin
-         dir := ExtractFileDir(Application.ExeName);
-         dir := IncludeTrailingPathDelimiter(dir);
-         SetNewShell(PChar(dir + 'SharpCore.exe'));
-       end;
+  if rbSharpE.Checked then
+  begin
+    dir := ExtractFileDir(Application.ExeName);
+    dir := IncludeTrailingPathDelimiter(dir);
+    SetNewShell(PChar(dir + 'SharpCore.exe'));
+  end
     else SetNewShell('explorer.exe');
-  end;
 
   // Only apply the separate explorer fix if the use wants it and it is not applied.
   if (cb_seb.Checked) and (not IsSeparateExplorerFixApplied) then
@@ -135,8 +138,6 @@ begin
                 'for SharpE. For example "C:\SharpE\"');
     cb_seb.Enabled := False;
     cb_seb.Checked := False;
-    rg_shell.ItemIndex := 1;
-    rg_shell.Enabled := False;
     Label2.Enabled := False;
   end;
 end;
