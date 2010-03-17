@@ -196,22 +196,27 @@ var
 begin
   WallPics := TStringList.Create;
   try
+    WallPics.Clear;
     FindFiles(WallPics, path, '*.bmp;*.jpg;*.jpeg;*.png', bRecursive);
   finally
     // Get a random Wallpaper index
-    if bRand then
-      RandPic := Random(WallPics.Count - 1)
-    else
-      RandPic := FAutoCurIndex;
+	  if WallPics.Count > 0 then
+	  begin
+	    if bRand then
+	      RandPic := Random(WallPics.Count - 1)
+	    else
+	      RandPic := FAutoCurIndex;
 
-    outImg := WallPics[RandPic];
+      outImg := WallPics[RandPic];
 
-    if not bRand then
-    begin
-      Inc(FAutoCurIndex);
-      if FAutoCurIndex > WallPics.Count - 1 then
-        FAutoCurIndex := 0;
-    end;
+      if not bRand then
+      begin
+        Inc(FAutoCurIndex);
+        if FAutoCurIndex > WallPics.Count - 1 then
+          FAutoCurIndex := 0;
+      end;
+	  end else
+	    outImg := '';
 
     WallPics.Free;
   end;
