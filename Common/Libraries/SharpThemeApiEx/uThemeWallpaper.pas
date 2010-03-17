@@ -27,7 +27,7 @@ unit uThemeWallpaper;
 interface
 
 uses
-  Classes, uThemeInfo, uThemeConsts, uIThemeWallpaper, uIThemeScheme;
+  Classes, Masks, uThemeInfo, uThemeConsts, uIThemeWallpaper, uIThemeScheme;
 
 type
   TThemeWallpaper = class(TInterfacedObject, IThemeWallpaper)
@@ -152,25 +152,24 @@ end;
 procedure FindFiles(FilesList: TStringList; StartDir: String; FileMask: TStringList; bRecursive : boolean = false);
 var
   SR: TSearchRec;
-  SearchMask: String;
   DirList: TStringList;
   i: integer;
 begin
   if StartDir[length(StartDir)] <> '\' then
     StartDir := StartDir + '\';
 
-  for i := 0 to FileMask.Count - 1 do
-  begin
-    if i > 0 then
-      SearchMask := SearchMask + '; ';
-      
-    SearchMask := SearchMask + StartDir + FileMask[i];
-  end;
-
-  if FindFirst(SearchMask, faAnyFile - faDirectory, SR) = 0 then
+  if FindFirst(StartDir + '*.*', faAnyFile - faDirectory, SR) = 0 then
   begin
     repeat
-      FilesList.Add(StartDir + SR.Name);
+      for i := 0 to FileMask.Count - 1 do
+      begin
+        if MatchesMask(SR.Name, FileMask[i]) then
+        begin
+          FilesList.Add(StartDir + SR.Name);
+          break;
+        end;
+      end;
+
     until FindNext(SR) <> 0;
     FindClose(SR);
   end;
