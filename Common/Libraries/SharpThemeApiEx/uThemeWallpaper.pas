@@ -223,7 +223,8 @@ begin
 	  if WallPics.Count > 0 then
 	  begin
 	    if bRand then
-	      RandPic := Random(WallPics.Count - 1)
+        // Random returns a max of ARange - 1 so we use WallPics.Count.
+	      RandPic := Random(WallPics.Count)
 	    else
 	      RandPic := FAutoCurIndex;
 
