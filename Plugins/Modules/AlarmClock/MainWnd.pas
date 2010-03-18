@@ -28,7 +28,7 @@ unit MainWnd;
 interface
 
 uses
-  Windows, SysUtils, Classes, Forms, Dialogs, DateUtils, SharpIconUtils,
+  Windows, SysUtils, Classes, Forms, Dialogs, Types, DateUtils, SharpIconUtils,
   uISharpBarModule, ISharpESkinComponents, JclShell,
   SharpApi, SharpCenterApi, Menus, SharpEButton, ExtCtrls, SharpEBaseControls, Controls,
   GR32, GR32_PNG, GR32_Image, JclSimpleXML, IXmlBaseUnit, cbAudioPlay, DirectShow,
