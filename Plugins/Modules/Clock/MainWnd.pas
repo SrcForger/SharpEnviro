@@ -30,9 +30,9 @@ interface
 uses
   Windows, SysUtils, Classes, Controls, Forms, Messages,
   StdCtrls, SharpEBaseControls, Commctrl, SharpTypes,
-  JclSimpleXML, SharpApi, Menus, Math,
+  JclSimpleXML, SharpApi, SharpCenterApi, Menus, Math,
   SharpESkinLabel, GR32, ExtCtrls, ToolTipApi,
-  uISharpBarModule;
+  uISharpBarModule, ImgList, PngImageList;
 
 
 type
@@ -42,6 +42,9 @@ type
     lb_bottomclock: TSharpESkinLabel;
     lb_clock: TSharpESkinLabel;
     ClockTimer: TTimer;
+    PngImageList1: TPngImageList;
+    N1: TMenuItem;
+    Configure1: TMenuItem;
     procedure FormShow(Sender: TObject);
     procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -49,6 +52,7 @@ type
     procedure lb_clockDblClick(Sender: TObject);
     procedure ClockTimerTimer(Sender: TObject);
     procedure FormDblClick(Sender: TObject);
+    procedure Configure1Click(Sender: TObject);
   protected
   private
     sFormat : String;
@@ -236,6 +240,18 @@ end;
 procedure TMainForm.lb_clockDblClick(Sender: TObject);
 begin
   SharpApi.SharpExecute('timedate.cpl');
+end;
+
+procedure TMainForm.Configure1Click(Sender: TObject);
+var
+  cfile : string;
+begin
+  cfile := SharpApi.GetCenterDirectory + '_Modules\Clock.con';
+
+  if FileExists(cfile) then
+    SharpCenterApi.CenterCommand(sccLoadSetting,
+      PChar(cfile),
+      PChar(inttostr(mInterface.BarInterface.BarID) + ':' + inttostr(mInterface.ID)));
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
