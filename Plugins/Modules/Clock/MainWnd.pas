@@ -244,12 +244,8 @@ procedure TMainForm.lb_clockMouseUp(Sender: TObject; Button: TMouseButton;
 var
   p : TPoint;
 begin
-  SharpApi.SendDebugMessage('Clock', 'FormMouseUp', 0);
-
   if Button = mbRight then
   begin
-    SharpApi.SendDebugMessage('Clock', 'mbRight', 0);
-
     p := ClientToScreen(Point(Self.Left, Self.Top));
 
     // Get the cordinates on the screen where the popup should appear.
