@@ -53,6 +53,8 @@ type
     procedure ClockTimerTimer(Sender: TObject);
     procedure FormDblClick(Sender: TObject);
     procedure Configure1Click(Sender: TObject);
+    procedure lb_clockMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
   protected
   private
     sFormat : String;
@@ -237,6 +239,29 @@ begin
     RealignComponents;
 end;
 
+procedure TMainForm.lb_clockMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  p : TPoint;
+begin
+  SharpApi.SendDebugMessage('Clock', 'FormMouseUp', 0);
+
+  if Button = mbRight then
+  begin
+    SharpApi.SendDebugMessage('Clock', 'mbRight', 0);
+
+    p := ClientToScreen(Point(Self.Left, Self.Top));
+
+    // Get the cordinates on the screen where the popup should appear.
+    p := ClientToScreen(Point(0, Self.Height));
+    if p.Y > Monitor.Top + Monitor.Height div 2 then
+      p.Y := p.Y - Self.Height;
+
+    // Show the menu
+    MenuPopup.Popup(p.X, p.Y);
+  end;
+end;
+
 procedure TMainForm.lb_clockDblClick(Sender: TObject);
 begin
   SharpApi.SharpExecute('timedate.cpl');
@@ -253,6 +278,7 @@ begin
       PChar(cfile),
       PChar(inttostr(mInterface.BarInterface.BarID) + ':' + inttostr(mInterface.ID)));
 end;
+
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
