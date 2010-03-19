@@ -389,7 +389,22 @@ end;
 
 procedure TSharpDeskMainForm.WallpaperChangerTimerTimer(Sender: TObject);
 begin
-  LoadTheme(true);
+  try
+    GetCurrentTheme.LoadTheme([tpWallpaper]);
+
+    SharpDeskMainForm.SendMessageToConsole('loading wallpaper',COLOR_OK,DMT_STATUS);
+    Background.Reload(False);
+    if not Visible then
+      BackgroundImage.Bitmap.SetSize(0, 0);
+  finally
+    BackgroundImage.ForceFullInvalidate;
+    if SharpDesk.BackgroundLayer <> nil then
+    begin
+      SharpDesk.BackgroundLayer.Update;
+      SharpDesk.BackgroundLayer.Changed;
+    end;
+    SharpApi.BroadcastGlobalUpdateMessage(suDesktopBackgroundChanged,-1,True);
+  end;
 end;
 
 procedure TSharpDeskMainForm.WMCloseDesk(var Msg : TMessage);
