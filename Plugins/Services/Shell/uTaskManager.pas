@@ -180,15 +180,25 @@ begin
 end;
 
 function TTaskManager.CheckTaskWnd(pHandle: HWND): boolean;
+var
+  ownerWnd : HWND;
 begin
-  Result := ((GetWindowLong(pHandle, GWL_STYLE) and WS_SYSMENU <> 0) or
-              (GetWindowLong(pHandle, GWL_EXSTYLE) and WS_EX_APPWINDOW <> 0)) and
-            (IsWindowVisible(pHandle) or IsIconic(pHandle)) and
-            (GetWindowLong(pHandle, GWL_STYLE) and WS_CHILD = 0) and
-            (GetWindowLong(pHandle, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0) and
-            ((GetWindowLong(pHandle, GWL_STYLE) and DS_3DLOOK = 0) and
-              (GetWindowLong(pHandle, GWL_STYLE) and DS_FIXEDSYS = 0) or
-              (GetWindowLong(pHandle, GWL_STYLE) and WS_VISIBLE <> 0));
+  Result := False;
+
+	if IsWindowVisible(pHandle) then
+	begin
+		if (GetWindowLong(pHandle, GWL_EXSTYLE) and WS_EX_TOOLWINDOW) = 0 then
+		begin
+			if GetParent(pHandle) = 0 then
+			begin
+				ownerWnd := GetWindow(pHandle, GW_OWNER);
+				if ((ownerWnd = 0) or
+					  ((GetWindowLong(ownerWnd, GWL_STYLE) and (WS_VISIBLE or WS_CLIPCHILDREN)) <> (WS_VISIBLE or WS_CLIPCHILDREN)) or
+					  (GetWindowLong(ownerWnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW <> 0)) then
+          Result := True;
+			end;
+		end;
+	end;
 end;
 
 procedure TTaskManager.InitList;

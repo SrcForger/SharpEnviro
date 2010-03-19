@@ -31,6 +31,7 @@ uses
   Windows,
   Dialogs,
   Messages,
+  ShellApi,
   SysUtils,
   DateUtils,
   JclSysUtils,
@@ -126,6 +127,9 @@ begin
     if (newicon = 0) then SendMessageTimeout(Handle, WM_GETICON, 1, 0, SMTO_ABORTIFHUNG, 1000, DWORD(newicon));
     if (newicon = 0) then newicon := HICON(GetClassLong(Handle, GCL_HICON));
     if (newicon = 0) then SendMessageTimeout(Handle, WM_QUERYDRAGICON, 0, 0, SMTO_ABORTIFHUNG, 1000, DWORD(newicon));
+
+    // Load the icon from the executable
+    if (newicon = 0) then newicon := ExtractIcon(SysInit.HInstance, PAnsiChar(GetProcessNameFromWnd(Handle)), 0);
 
     if (newicon = 0) then newicon := LoadIcon(0, IDI_WINLOGO);
   except
