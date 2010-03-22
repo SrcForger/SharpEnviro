@@ -39,7 +39,6 @@ type
 
     procedure SetDefaults;
 
-    procedure GetPicture(path : string; var outImg : string; bRecursive : boolean = false; bRand : boolean = false);
   public
     LastUpdate : Int64;
     constructor Create(pThemeInfo : TThemeInfo); reintroduce;
@@ -58,6 +57,8 @@ type
     procedure UpdateMonitor(pMonitor : TWallpaperMonitor); stdcall;
     procedure UpdateWallpaper(pWallpaper : TThemeWallpaperItem); stdcall;
 
+    procedure UpdateAutomaticWallpaper(MonID : integer); stdcall;
+
     procedure SaveToFile; stdcall;
     procedure LoadFromFile; stdcall;    
   end;
@@ -70,7 +71,10 @@ uses
 constructor TThemeWallpaper.Create(pThemeInfo : TThemeInfo);
 begin
   Inherited Create;
-  
+
+  setlength(FMonitors, 0);
+  setlength(FWallpapers, 0);
+
   FAutoCurIndex := 0;
   
   FThemeInfo := pThemeInfo;
@@ -197,12 +201,26 @@ begin
   end;
 end;
 
-procedure TThemeWallPaper.GetPicture(path : string; var outImg : string; bRecursive : boolean; bRand : boolean);
+procedure TThemeWallpaper.UpdateAutomaticWallpaper(MonID : integer);
 var
+  i : integer;
+  wallID : integer;
+
   WallPics : TStringList;
   RandPic : integer;
   Mask : TStringList;
 begin
+  wallID := 0;
+  for i := 0 to High(FMonitors) do
+  begin
+    if FMonitors[i].ID = MonID then
+    begin
+      WallID := i;
+      break;
+    end;
+  end;
+    
+
   WallPics := TStringList.Create;
   try
     WallPics.Clear;
@@ -214,7 +232,7 @@ begin
       Mask.Add('*.jpeg');
       Mask.Add('*.png');
 
-      FindFiles(WallPics, path, Mask, bRecursive);
+      FindFiles(WallPics, FWallpapers[wallID].SwitchPath, Mask, FWallpapers[wallID].SwitchRecursive);
     finally
       Mask.Free;
     end;
@@ -222,22 +240,22 @@ begin
     // Get a random Wallpaper index
 	  if WallPics.Count > 0 then
 	  begin
-	    if bRand then
+	    if FWallpapers[wallID].SwitchRandomize then
         // Random returns a max of ARange - 1 so we use WallPics.Count.
 	      RandPic := Random(WallPics.Count)
 	    else
 	      RandPic := FAutoCurIndex;
 
-      outImg := WallPics[RandPic];
+      FWallpapers[wallID].Image := WallPics[RandPic];
 
-      if not bRand then
+      if not FWallpapers[wallID].SwitchRandomize then
       begin
         Inc(FAutoCurIndex);
         if FAutoCurIndex > WallPics.Count - 1 then
           FAutoCurIndex := 0;
       end;
 	  end else
-	    outImg := '';
+	    FWallpapers[wallID].Image := '';
 
     WallPics.Free;
   end;
@@ -274,7 +292,6 @@ begin
                SwitchRecursive := BoolValue('SwitchRecursive', True);
                SwitchRandomize := BoolValue('SwitchRandomize', True);
                SwitchTimer := IntValue('SwitchTimer', 0);
-               GetPicture(SwitchPath, Image, SwitchRecursive, SwitchRandomize);
              end else
                Image := '';
            end else
