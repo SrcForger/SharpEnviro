@@ -27,7 +27,7 @@ Unit uSharpDeskBackgroundUnit;
 
 Interface
 
-uses Windows,Graphics,SysUtils,Forms,SharpApi,Classes,Dialogs,Types,
+uses Windows,Graphics,SysUtils,Forms,SharpApi,Classes,Dialogs,Types,ExtCtrls, StdCtrls,
      GR32,Math,GR32_blend,GR32_Image, GR32_resamplers,GR32_Backends,
      PngImage, Registry,Messages, SharpThemeApiEx, uThemeConsts,
      GR32_PNG, Jpeg, uISharpETheme, 
@@ -35,13 +35,33 @@ uses Windows,Graphics,SysUtils,Forms,SharpApi,Classes,Dialogs,Types,
      SharpImageUtils;
 
 type
-    TBackground = Object
-                  public
-                   procedure Create;
-                   procedure Destroy;
-                   procedure Reload(isSchemeChange : boolean);
-                   procedure ApplyEffects(var Bmp : TBitmap32; Mon : TThemeWallpaperItem);
-                  end;
+  TWallpaperTimer = class
+  private
+    WallTimer : TTimer;
+  public
+    constructor Create(const Interval: integer; Event: TNotifyEvent; const Tag: integer);
+    destructor Destroy; override;
+
+    property Timer: TTimer read WallTimer write WallTimer;
+  end;
+
+  TBackground = Object
+  public
+    procedure Create;
+    procedure Destroy;
+
+    function ReloadMonitor(PMon : TMonitor; monID : integer; isSchemeChange : boolean) : boolean;
+    procedure ReloadWindows;
+    procedure Reload(isSchemeChange : boolean);
+
+    procedure ApplyEffects(var Bmp : TBitmap32; Mon : TThemeWallpaperItem);
+
+    procedure LoadWallpaperChanger(Event: TNotifyEvent);
+
+  private
+    WallpaperTimer : Array of TWallpaperTimer;
+
+  end;
 
 Implementation
 
@@ -49,6 +69,24 @@ Implementation
 uses uSharpDeskMainForm;
 
 
+
+constructor TWallpaperTimer.Create(const Interval: integer; Event: TNotifyEvent; const Tag: integer);
+begin
+  WallTimer := TTimer.Create(nil);
+  WallTimer.Enabled := False;
+  WallTimer.Tag := Tag;
+  WallTimer.Interval := Interval;
+  WallTimer.OnTimer := Event;
+end;
+
+destructor TWallpaperTimer.Destroy;
+begin
+  WallTimer.Enabled := False;
+  WallTimer.Free;
+  WallTimer := nil;
+
+  inherited;
+end;
 
 // ######################################
 
@@ -66,6 +104,7 @@ end;
 
 procedure TBackground.Create;
 begin
+  SetLength(WallpaperTimer, 0);
 //  LaodSettings;
   Reload(False);
 end;
@@ -75,205 +114,265 @@ end;
 
 
 procedure TBackground.Destroy;
+var
+  i : integer;
 begin
-     Disabled:=True;
-     SharpDeskMainForm.BackgroundImage.Layers.Clear;
+  Disabled:=True;
+  SharpDeskMainForm.BackgroundImage.Layers.Clear;
+
+  for i := Length(WallpaperTimer) downto 0 do
+  begin
+    WallpaperTimer[i].Free;
+    WallpaperTimer[i] := nil;
+  end;
+  SetLength(WallpaperTimer, 0);
 end;
 
 
-// ######################################
-
-
-procedure TBackground.Reload(isSchemeChange : boolean);
+procedure TBackground.LoadWallpaperChanger(Event : TNotifyEvent);
 var
-   n,i : integer;
-   PMon : TMonitor;
-   MonID : integer;
-   MonRect : TRect;
-   TempBmp,DrawBmp : TBitmap32;
-   tBmp : TBitmap;
-   x,y,ny,nx : integer;
-   Re : TRect;
-   w,h : integer;
-   winWallPath: string;
-   Reg : TRegistry;
+  i, n : Integer;
 
-   loaded : boolean;
-   WP : TThemeWallpaperItem;
-   img : TBitmap32;
-   SList : TStringList;
-
-   RMode : boolean;
-   WPChanged : boolean;
-
-   Theme : ISharpETheme;
+  Theme : ISharpETheme;
+  PMon : TMonitor;
+  MonID : Integer;
+  WP : TThemeWallpaperItem;
 begin
   SharpDeskMainForm.Monitor; // make it update the TScren Monitor Data
 
   Theme := GetCurrentTheme;
+  for i := 0 to Screen.MonitorCount - 1 do
+  begin
+    PMon := Screen.Monitors[i];
+    if PMon.Primary then
+       MonID := -100
+    else
+      MonID := PMon.MonitorNum;
+    WP := Theme.Wallpaper.GetMonitorWallpaper(MonID);
+
+    if (WP.SwitchTimer > 0) then
+    begin
+      n := Length(WallpaperTimer);
+
+      SetLength(WallpaperTimer, n + 1);
+
+      WallpaperTimer[n] := TWallpaperTimer.Create(WP.SwitchTimer, Event, MonID); 
+    end;
+  end;
+
+  // Enable the timers
+  for i := Length(WallpaperTimer) - 1 downto 0 do
+    WallpaperTimer[i].Timer.Enabled := True;
+end;
+
+// ######################################
+
+
+function TBackground.ReloadMonitor(PMon : TMonitor; MonID : integer; isSchemeChange : boolean) : boolean;
+var
+  Theme : ISharpETheme;
+  WP : TThemeWallpaperItem;
+  
+  img : TBitmap32;
+
+  MonRect : TRect;
+  TempBmp,DrawBmp : TBitmap32;
+
+  loaded : boolean;
+  SList : TStringList;
+
+  i : integer;
+  x,y,ny,nx : integer;
+  w,h : integer;
+  Re : TRect;
+  
+  RMode : boolean;
+begin
+  Result := False;
+
+  Theme := GetCurrentTheme;
+  WP := Theme.Wallpaper.GetMonitorWallpaper(MonID);
 
   img := SharpDesk.Image.Bitmap;
   img.SetSize(Screen.DesktopWidth,Screen.DesktopHeight);
 
-  WPChanged := False;
-  for n := 0 to Screen.MonitorCount - 1 do
-  begin
-    PMon := Screen.Monitors[n];
-    if PMon.Primary then
-       MonID := -100
-       else MonID := PMon.MonitorNum;
-    WP := Theme.Wallpaper.GetMonitorWallpaper(MonID);
+  // only update if scheme color changes and scheme colors are used
+  if (isSchemeChange) and (StrToIntDef(WP.ColorStr,-1) >= 0)
+    and (((StrToIntDef(WP.GDStartColorStr,-1) >= 0)
+    or (StrToIntDef(WP.GDEndColorStr,-1) >= 0)) or (not WP.Gradient)) then
+      exit;
 
-    // only update if scheme color changes and scheme colors are used
-    if (isSchemeChange) and (StrToIntDef(WP.ColorStr,-1) >= 0)
-      and (((StrToIntDef(WP.GDStartColorStr,-1) >= 0)
-           or (StrToIntDef(WP.GDEndColorStr,-1) >= 0)) or (not WP.Gradient)) then
-      Continue;
+  // at least one wallpaper has changed;
+  Result := True;
 
-    // at least one wallpaper has changed;
-    WPChanged := True;
-
-    MonRect.TopLeft := SharpDesk.Image.ScreenToClient(Point(PMon.Left,PMon.Top));
-    MonRect.BottomRight := SharpDesk.Image.ScreenToClient(Point(PMon.Left+PMon.Width,
+  MonRect.TopLeft := SharpDesk.Image.ScreenToClient(Point(PMon.Left,PMon.Top));
+  MonRect.BottomRight := SharpDesk.Image.ScreenToClient(Point(PMon.Left+PMon.Width,
                                                                 PMon.Top+PMon.Height));
+  RMode := (PMon.Width < PMon.Height) and (SharpDesk.DeskSettings.ScreenRotAdjust);
 
-    RMode := (PMon.Width < PMon.Height) and (SharpDesk.DeskSettings.ScreenRotAdjust);    
+  // Background
+  img.FillRect(MonRect.Left,MonRect.Top,MonRect.Right,MonRect.Bottom,color32(WP.Color));
 
-    // Background
-    img.FillRect(MonRect.Left,MonRect.Top,MonRect.Right,MonRect.Bottom,color32(WP.Color));
+  // Image Loading
+  TempBmp := TBitmap32.Create;
+  DrawBmp := TBitmap32.Create;
+  try
+  DrawBmp.DrawMode := dmBlend;
+  DrawBmp.CombineMode := cmMerge;
+  DrawBmp.MasterAlpha := WP.Alpha;
 
-    // Image Loading
-    TempBmp := TBitmap32.Create;
-    DrawBmp := TBitmap32.Create;
-    DrawBmp.DrawMode := dmBlend;
-    DrawBmp.CombineMode := cmMerge;
-    DrawBmp.MasterAlpha := WP.Alpha;
+  TLinearResampler.Create(TempBmp);
+  TLinearResampler.Create(DrawBmp);
 
-    TLinearResampler.Create(TempBmp);
-    TLinearResampler.Create(DrawBmp);
-
-    loaded := False;
-    SList := TStringList.Create;
+  loaded := False;
+  SList := TStringList.Create;
+  try
     SList.Add(Theme.Info.Directory + '\' + WP.Image);
     SList.Add(WP.Image);
     SList.Add(SharpApi.GetSharpeDirectory + WP.Image);
     for i := 0 to SList.Count - 1 do
-        if FileExists(SList[i]) then
+    begin
+      if FileExists(SList[i]) then
+      begin
         try
           TempBmp.LoadFromFile(SList[i]);
           loaded := True;
           break;
         except
         end;
+      end;
+    end;
+  finally
     SList.Free;
-    if not loaded then
+  end;
+
+  if not loaded then
+  begin
+    TempBmp.SetSize(MonRect.Right-MonRect.Left,MonRect.Bottom-MonRect.Top);
+    TempBmp.Clear(Color32(WP.Color));
+  end;
+
+  if RMode then
+  begin
+    h := MonRect.Right - MonRect.Left;
+    w := MonRect.Bottom - MonRect.Top;
+  end else
+  begin
+    w := MonRect.Right - MonRect.Left;
+    h := MonRect.Bottom - MonRect.Top;
+  end;
+
+  // HSL Effects
+  if WP.ColorChange then
+    HSLChangeImage(TempBmp,WP.Hue,WP.Saturation,WP.Lightness);
+
+  // Mirror Image?
+  if WP.MirrorHoriz then
+    TempBmp.Canvas.CopyRect(Rect(TempBmp.Width,0,0,TempBmp.Height),TempBmp.Canvas,Rect(0,0,TempBmp.Width,TempBmp.Height));
+  if WP.MirrorVert then
+    TempBmp.Canvas.CopyRect(Rect(0,TempBmp.Height,TempBmp.Width,0),TempBmp.Canvas,Rect(0,0,TempBmp.Width,TempBmp.Height));
+
+  DrawBmp.SetSize(w,h);
+
+  // Draw Image and Apply Effects
+  case WP.Size of
+    twsStretch :
     begin
-      TempBmp.SetSize(MonRect.Right-MonRect.Left,MonRect.Bottom-MonRect.Top);
-      TempBmp.Clear(Color32(WP.Color));
+      img.BeginUpdate;
+      DrawBmp.Draw(DrawBmp.Canvas.ClipRect,TempBmp.Canvas.ClipRect,TempBmp);
+      ApplyEffects(DrawBmp,WP);
+      if RMode then
+        DrawBmp.Rotate90;
+      img.Draw(MonRect.Left,MonRect.Top,DrawBmp);
+      img.EndUpdate;
     end;
 
-    if RMode then
+    twsTile :
     begin
-      h := MonRect.Right - MonRect.Left;
-      w := MonRect.Bottom - MonRect.Top;
-    end else
-    begin
-      w := MonRect.Right - MonRect.Left;
-      h := MonRect.Bottom - MonRect.Top;
+      if TempBmp.Height = h then
+        y := 1
+      else
+        y := round(Int((h) / TempBmp.Height)) + 1;
+
+      if TempBmp.Width = w then
+        x := 1
+      else
+        x := round(Int((w) / TempBmp.Width)) + 1;
+
+      img.BeginUpdate;
+      for ny := 0 to y - 1 do
+        for nx := 0 to x - 1 do
+          DrawBmp.Draw(nx * TempBmp.Width, ny * TempBmp.Height, TempBmp);
+
+      ApplyEffects(DrawBmp,WP);
+      if RMode then
+        DrawBmp.Rotate90;
+      img.Draw(MonRect.Left,MonRect.Top,DrawBmp);
+      img.EndUpdate;
     end;
 
-    // HSL Effects
-    if WP.ColorChange then
-       HSLChangeImage(TempBmp,WP.Hue,WP.Saturation,WP.Lightness);
+    twsCenter :
+    begin
+      DrawBmp.Clear(color32(WP.Color));
+      img.BeginUpdate;
 
-    // Mirror Image?
-    if WP.MirrorHoriz then
-       TempBmp.Canvas.CopyRect(Rect(TempBmp.Width,0,0,TempBmp.Height),TempBmp.Canvas,Rect(0,0,TempBmp.Width,TempBmp.Height));
-    if WP.MirrorVert then
-       TempBmp.Canvas.CopyRect(Rect(0,TempBmp.Height,TempBmp.Width,0),TempBmp.Canvas,Rect(0,0,TempBmp.Width,TempBmp.Height));
+      DrawBmp.Draw(w div 2 - TempBmp.Width div 2, h div 2 - TempBmp.Height div 2, TempBmp);
+      ApplyEffects(DrawBmp,WP);
+      if RMode then
+        DrawBmp.Rotate90;
 
-    DrawBmp.SetSize(w,h);
-
-    // Draw Image and Apply Effects
-    case WP.Size of
-      twsStretch :
-      begin
-        img.BeginUpdate;
-        DrawBmp.Draw(DrawBmp.Canvas.ClipRect,TempBmp.Canvas.ClipRect,TempBmp);
-        ApplyEffects(DrawBmp,WP);
-        if RMode then
-          DrawBmp.Rotate90;        
-        img.Draw(MonRect.Left,MonRect.Top,DrawBmp);
-        img.EndUpdate;
-      end;
-
-      twsTile :
-      begin
-        if TempBmp.Height=h then y:=1
-           else y:=round(Int((h)/TempBmp.Height))+1;
-        if TempBmp.Width=w then x:=1
-           else x:=round(Int((w)/TempBmp.Width))+1;
-        img.BeginUpdate;
-        for ny:=0 to y-1 do
-            for nx:=0 to x-1 do
-                DrawBmp.Draw(nx*TempBmp.Width,ny*TempBmp.Height,TempBmp);
-        ApplyEffects(DrawBmp,WP);
-        if RMode then
-          DrawBmp.Rotate90;        
-        img.Draw(MonRect.Left,MonRect.Top,DrawBmp);
-        img.EndUpdate;
-      end;
-
-      twsCenter :
-      begin
-        DrawBmp.Clear(color32(WP.Color));
-        img.BeginUpdate;
-        DrawBmp.Draw(w div 2 - TempBmp.Width div 2, h div 2 - TempBmp.Height div 2, TempBmp);
-        ApplyEffects(DrawBmp,WP);
-        if RMode then
-          DrawBmp.Rotate90;        
-        img.Draw(MonRect.Left,MonRect.Top,DrawBmp);
-        img.EndUpdate;
-      end;
-
-      twsScale:
-      begin
-        DrawBmp.Clear(color32(WP.Color));
-        Re := Rect(0,0,0,0);
-        if (TempBmp.Width/TempBmp.Height)=(w/h) then
-        begin
-          Re := Rect(0,0,w,h);
-        end
-        else if (TempBmp.Width/TempBmp.Height)>(w/h) then
-        begin
-          Re.Left := 0;
-          Re.Top := round((h div 2 - ((w/TempBmp.Width)*TempBmp.Height) / 2));
-          Re.Right := w;
-          Re.bottom := round((h div 2 + ((w/TempBmp.Width)*TempBmp.Height) / 2));
-        end else
-        begin
-          Re.Left := round((w div 2 - ((h/TempBmp.Height)*TempBmp.Width) / 2));
-          Re.Top := 0;
-          Re.Right := round((w div 2 + ((h/TempBmp.Height)*TempBmp.Width) / 2));
-          Re.bottom := h;
-        end;
-        img.BeginUpdate;
-        DrawBmp.Draw(Re,TempBmp.Canvas.ClipRect,TempBmp);
-        ApplyEffects(DrawBmp,WP);
-        if RMode then
-          DrawBmp.Rotate90;        
-        img.Draw(MonRect.Left,MonRect.Top,DrawBmp);
-        img.EndUpdate;
-      end;
+      img.Draw(MonRect.Left,MonRect.Top,DrawBmp);
+      img.EndUpdate;
     end;
+
+    twsScale:
+    begin
+      DrawBmp.Clear(color32(WP.Color));
+      Re := Rect(0,0,0,0);
+      if (TempBmp.Width / TempBmp.Height) = (w / h) then
+          Re := Rect(0, 0, w, h)
+      else if (TempBmp.Width / TempBmp.Height) > (w / h) then
+      begin
+        Re.Left := 0;
+        Re.Top := round((h div 2 - ((w / TempBmp.Width) * TempBmp.Height) / 2));
+        Re.Right := w;
+        Re.bottom := round((h div 2 + ((w / TempBmp.Width) * TempBmp.Height) / 2));
+      end else
+      begin
+        Re.Left := round((w div 2 - ((h / TempBmp.Height) * TempBmp.Width) / 2));
+        Re.Top := 0;
+        Re.Right := round((w div 2 + ((h / TempBmp.Height) * TempBmp.Width) / 2));
+        Re.bottom := h;
+      end;
+      img.BeginUpdate;
+
+      DrawBmp.Draw(Re,TempBmp.Canvas.ClipRect,TempBmp);
+      ApplyEffects(DrawBmp,WP);
+      if RMode then
+        DrawBmp.Rotate90;
+
+      img.Draw(MonRect.Left,MonRect.Top,DrawBmp);
+      img.EndUpdate;
+    end;
+  end;
+  finally
     TempBmp.Free;
     DrawBmp.Free;
   end;
+end;
 
-  if not WPChanged then
-    exit;
+procedure TBackground.ReloadWindows;
+var
+  Theme : ISharpETheme;
+  winWallPath: string;
+  Reg : TRegistry;
 
-  SharpApi.SendDebugMessageEx('SharpDesk',PChar(('Background - Export : ') + WP.Name),clblue,DMT_trace);
+  tBmp : TBitmap;
+  TempBmp : TBitmap32;
+begin
+  Theme := GetCurrentTheme;
+
+  //SharpApi.SendDebugMessageEx('SharpDesk',PChar(('Background - Export : ') + WP.Name),clblue,DMT_trace);
   winWallPath := SharpApi.GetSharpeUserSettingsPath + 'SharpDeskbg';
   tBmp := TBitmap.Create;
   tBmp.Assign(SharpDesk.Image.Bitmap);
@@ -290,7 +389,7 @@ begin
     SaveBitmap32ToPNG(TempBmp,Theme.Info.Directory + '\preview.png',False,True,clWhite);
   TempBmp.Free;
 
-  SharpApi.SendDebugMessageEx('SharpDesk',PChar(('Background - Set Win Wallpaper : ') + WP.Name),clblue,DMT_trace);
+  //SharpApi.SendDebugMessageEx('SharpDesk',PChar(('Background - Set Win Wallpaper : ') + WP.Name),clblue,DMT_trace);
   Reg := TRegistry.Create;
   Reg.RootKey := HKEY_CURRENT_USER;
   Reg.OpenKey('\Control Panel\Desktop\',False);
@@ -308,10 +407,37 @@ begin
   try
     SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, nil, SPIF_SENDCHANGE);
   except
-      SharpApi.SendDebugMessageEx('SharpDesk',PChar(('Failed to Send SPI_SETDESKWALLPAPER') + WP.Name),clblue,DMT_ERROR);
+      //SharpApi.SendDebugMessageEx('SharpDesk',PChar(('Failed to Send SPI_SETDESKWALLPAPER') + WP.Name),clblue,DMT_ERROR);
   end;
 
   SendMessage(FindWindow('Progman','Program Manager'),WM_COMMAND,106597, 0);
+end;
+
+procedure TBackground.Reload(isSchemeChange : boolean);
+var
+  n : integer;
+  PMon : TMonitor;
+  MonID : integer;
+
+  WPChanged : boolean;
+begin
+  SharpDeskMainForm.Monitor; // make it update the TScren Monitor Data
+
+  WPChanged := False;
+  for n := 0 to Screen.MonitorCount - 1 do
+  begin
+    PMon := Screen.Monitors[n];
+    if PMon.Primary then
+       MonID := -100
+    else
+      MonID := PMon.MonitorNum;
+
+    if (ReloadMonitor(PMon, MonID, isSchemeChange)) and (not WPChanged) then
+      WPChanged := true;
+  end;
+
+  if WPChanged then
+    ReloadWindows;
 end;
 
 

@@ -172,7 +172,6 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure BackgroundReloadTimerTimer(Sender: TObject);
     procedure FormActivate(Sender: TObject);
-    procedure WallpaperChangerTimerTimer(Sender: TObject);
   private
     procedure WMShowWindow(var Msg : TMessage);          message WM_SHOWWINDOW;
     procedure WMSettingsChange(var Msg : TMessage);       message WM_SETTINGCHANGE;
@@ -203,6 +202,8 @@ type
     procedure SendMessageToConsole(msg : string; color : integer; DebugLevel : integer);
     procedure LoadTheme(WPChange : boolean);
     procedure UpdateSharpEActions;
+
+    procedure WallpaperTimerTimer(Sender: TObject);
   end;
 
 const
@@ -385,26 +386,6 @@ begin
    FreeAndNil(PreviewShot);
    FreeAndNil(SaveBitmap);
    FreeAndNil(SaveJPeg);
-end;
-
-procedure TSharpDeskMainForm.WallpaperChangerTimerTimer(Sender: TObject);
-begin
-  try
-    GetCurrentTheme.LoadTheme([tpWallpaper]);
-
-    SharpDeskMainForm.SendMessageToConsole('loading wallpaper',COLOR_OK,DMT_STATUS);
-    Background.Reload(False);
-    if not Visible then
-      BackgroundImage.Bitmap.SetSize(0, 0);
-  finally
-    BackgroundImage.ForceFullInvalidate;
-    if SharpDesk.BackgroundLayer <> nil then
-    begin
-      SharpDesk.BackgroundLayer.Update;
-      SharpDesk.BackgroundLayer.Changed;
-    end;
-    SharpApi.BroadcastGlobalUpdateMessage(suDesktopBackgroundChanged,-1,True);
-  end;
 end;
 
 procedure TSharpDeskMainForm.WMCloseDesk(var Msg : TMessage);
@@ -660,6 +641,8 @@ begin
     SharpApi.SharpExecute('!DeskExplorer')
   else
     SharpApi.SharpExecute('!DeskSharpE');
+
+  Background.LoadWallpaperChanger(WallpaperTimerTimer);
 end;
 
 
@@ -835,6 +818,46 @@ begin
   end;
 end;
 
+
+procedure TSharpDeskMainForm.WallpaperTimerTimer(Sender: TObject);
+var
+  i : integer;
+  MonID : integer;
+  PMon : TMonitor;
+begin
+  MonID := TTimer(Sender).Tag;
+  PMon := nil;
+
+  for i := 0 to Screen.MonitorCount - 1 do
+  begin
+    if (Screen.Monitors[i].MonitorNum = MonID) or ((Screen.Monitors[i].Primary) and (MonID = -100)) then
+    begin
+      PMon := Screen.Monitors[i];
+      break;
+    end;
+  end;
+
+  if PMon = nil then
+    exit;
+
+  try
+    GetCurrentTheme.LoadTheme([tpWallpaper]);
+
+    //SharpDeskMainForm.SendMessageToConsole('loading wallpaper for monitor ' + IntToStr(MonID),COLOR_OK,DMT_STATUS);
+    if Background.ReloadMonitor(PMon, MonID, false) then
+      Background.ReloadWindows;
+    if not Visible then
+      BackgroundImage.Bitmap.SetSize(0, 0);
+  finally
+    BackgroundImage.ForceFullInvalidate;
+    if SharpDesk.BackgroundLayer <> nil then
+    begin
+      SharpDesk.BackgroundLayer.Update;
+      SharpDesk.BackgroundLayer.Changed;
+    end;
+    SharpApi.BroadcastGlobalUpdateMessage(suDesktopBackgroundChanged,-1,True);
+  end;                                                                         
+end;
 
 procedure TSharpDeskMainForm.BackgroundReloadTimerTimer(Sender: TObject);
 begin
