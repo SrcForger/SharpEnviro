@@ -57,6 +57,7 @@ type
     procedure ApplyEffects(var Bmp : TBitmap32; Mon : TThemeWallpaperItem);
 
     procedure LoadWallpaperChanger(Event: TNotifyEvent);
+    procedure UnloadWallpaperChanger;
 
   private
     WallpaperTimer : Array of TWallpaperTimer;
@@ -114,20 +115,12 @@ end;
 
 
 procedure TBackground.Destroy;
-var
-  i : integer;
 begin
   Disabled:=True;
   SharpDeskMainForm.BackgroundImage.Layers.Clear;
 
-  for i := Length(WallpaperTimer) downto 0 do
-  begin
-    WallpaperTimer[i].Free;
-    WallpaperTimer[i] := nil;
-  end;
-  SetLength(WallpaperTimer, 0);
+  UnloadWallpaperChanger;
 end;
-
 
 procedure TBackground.LoadWallpaperChanger(Event : TNotifyEvent);
 var
@@ -163,6 +156,18 @@ begin
   // Enable the timers
   for i := Length(WallpaperTimer) - 1 downto 0 do
     WallpaperTimer[i].Timer.Enabled := True;
+end;
+
+procedure TBackground.UnloadWallpaperChanger;
+var
+  i : integer;
+begin
+  for i := Length(WallpaperTimer) downto 0 do
+  begin
+    WallpaperTimer[i].Free;
+    WallpaperTimer[i] := nil;
+  end;
+  SetLength(WallpaperTimer, 0);
 end;
 
 // ######################################

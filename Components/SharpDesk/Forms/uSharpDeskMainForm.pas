@@ -173,6 +173,8 @@ type
     procedure BackgroundReloadTimerTimer(Sender: TObject);
     procedure FormActivate(Sender: TObject);
   private
+    oldMonitorCount : integer;
+
     procedure WMShowWindow(var Msg : TMessage);          message WM_SHOWWINDOW;
     procedure WMSettingsChange(var Msg : TMessage);       message WM_SETTINGCHANGE;
     procedure WMDisplayChange(var Msg : TMessage);        message WM_DISPLAYCHANGE;
@@ -452,11 +454,15 @@ end;
 
 
 procedure TSharpDeskMainForm.LoadTheme(WPChange : boolean);
+var
+  i : integer;
+  PMon : TMonitor;
+  MonID : integer;
 begin
   SharpDeskMainForm.SendMessageToConsole('Loading Theme',COLOR_OK,DMT_STATUS);
 
   try
-    GetCurrentTheme.LoadTheme(ALL_THEME_PARTS);    
+    GetCurrentTheme.LoadTheme(ALL_THEME_PARTS);
     SharpDesk.DeskSettings.ReloadSettings;
 
     SharpApi.SendDebugMessageEx('SharpDesk',PChar('Main Resize : ' +
@@ -470,6 +476,22 @@ begin
     if WPChange then
     begin
       SharpDeskMainForm.SendMessageToConsole('loading wallpaper',COLOR_OK,DMT_STATUS);
+
+      // Load the automatic wallpaper changing if it's not loaded already
+      if not GetCurrentTheme.Wallpaper.IsLoaded then
+      begin
+        for i := 0 to Screen.MonitorCount - 1 do
+        begin
+          PMon := Screen.Monitors[i];
+          if PMon.Primary then
+            MonID := -100
+          else
+            MonID := PMon.MonitorNum;
+
+          GetCurrentTheme.Wallpaper.UpdateAutomaticWallpaper(MonID);
+        end;
+      end;
+
       Background.Reload(False);
       if not Visible then
         BackgroundImage.Bitmap.SetSize(0, 0);
@@ -642,6 +664,7 @@ begin
   else
     SharpApi.SharpExecute('!DeskSharpE');
 
+  oldMonitorCount := Screen.MonitorCount;
   Background.LoadWallpaperChanger(WallpaperTimerTimer);
 end;
 
@@ -825,6 +848,14 @@ var
   MonID : integer;
   PMon : TMonitor;
 begin
+  if oldMonitorCount <> Screen.MonitorCount then
+  begin
+    Background.UnloadWallpaperChanger;
+    Background.LoadWallpaperChanger(WallpaperTimerTimer);
+
+    oldMonitorCount := Screen.MonitorCount;
+  end;
+
   MonID := TTimer(Sender).Tag;
   PMon := nil;
 
