@@ -182,6 +182,7 @@ type
     SwitchPath: String;
     SwitchRecursive: boolean;
     SwitchRandomize: boolean;
+    SwitchTimer: integer;
   end;
   TWallpaperMonitor = record
     Name: string;

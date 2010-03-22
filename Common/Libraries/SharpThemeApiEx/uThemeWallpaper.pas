@@ -268,11 +268,12 @@ begin
            Name            := Value('Name', Name);
            if Value('Image', '') = '' then
            begin
-             SwitchPath := Value('SwitchPath', 'C:\Users\Homer\Pictures');
+             SwitchPath := Value('SwitchPath', '');
              if DirectoryExists(SwitchPath) then
              begin
                SwitchRecursive := BoolValue('SwitchRecursive', True);
                SwitchRandomize := BoolValue('SwitchRandomize', True);
+               SwitchTimer := IntValue('SwitchTimer', 0);
                GetPicture(SwitchPath, Image, SwitchRecursive, SwitchRandomize);
              end else
                Image := '';
@@ -350,6 +351,7 @@ begin
             Add('SwitchPath', SwitchPath);
             Add('SwitchRecursive', SwitchRecursive);
             Add('SwitchRandomize', SwitchRandomize);
+            Add('SwitchTimer', SwitchTimer);
           end else
             Add('Image', Image);
             
@@ -415,7 +417,9 @@ begin
     MirrorHoriz     := False;
     MirrorVert      := False;
     SwitchPath      := '';
-    SwitchRandomize := True;
+    SwitchRecursive := False;
+    SwitchRandomize := False;
+    SwitchTimer     := 0;
   end;
 end;
 
