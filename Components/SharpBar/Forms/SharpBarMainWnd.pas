@@ -1896,10 +1896,20 @@ end;
 
 procedure TSharpBarMainForm.SharpEBar1ThrobberMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  p : TPoint;
 begin
   if (Button = mbLeft) and (not BarMove) then
-    PopUpMenu1.Popup(Left, Top)
-  else if BarMove then
+  begin
+    p := ClientToScreen(Point(Left, Top));
+
+    // Get the cordinates on the screen where the popup should appear.
+    p := ClientToScreen(Point(0, Self.Height));
+    if p.Y > Monitor.Top + Monitor.Height div 2 then
+      p.Y := p.Y - Self.Height;
+
+    PopUpMenu1.Popup(p.X, p.Y);
+  end else if BarMove then
     SaveBarSettings;
   BarMove := False;
 end;
