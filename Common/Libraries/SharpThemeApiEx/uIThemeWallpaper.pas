@@ -47,6 +47,9 @@ type
 
     procedure SaveToFile; stdcall;
     procedure LoadFromFile; stdcall;
+
+    function GetIsLoaded: boolean; stdcall;
+    property IsLoaded: boolean read GetIsLoaded;
   end;
 
 implementation

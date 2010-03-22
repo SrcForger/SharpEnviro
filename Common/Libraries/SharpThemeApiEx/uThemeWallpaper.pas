@@ -60,7 +60,10 @@ type
     procedure UpdateAutomaticWallpaper(MonID : integer); stdcall;
 
     procedure SaveToFile; stdcall;
-    procedure LoadFromFile; stdcall;    
+    procedure LoadFromFile; stdcall;
+
+    function GetIsLoaded: boolean; stdcall;
+    property IsLoaded: boolean read GetIsLoaded;    
   end;
 
 implementation
@@ -151,6 +154,19 @@ end;
 function TThemeWallpaper.GetWallpapers : TThemeWallpaperItems;
 begin
   result := FWallpapers;
+end;
+
+function TThemeWallpaper.GetIsLoaded: boolean;
+var
+  i : integer;
+begin
+  Result := True;
+
+  for i := Length(FWallpapers) downto 0 do
+  begin
+    if (FWallpapers[i].SwitchPath <> '') and (FWallpapers[i].Image = '') and (Result = True) then
+      Result := False;
+  end;
 end;
 
 procedure FindFiles(FilesList: TStringList; StartDir: String; FileMask: TStringList; bRecursive : boolean = false);
