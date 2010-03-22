@@ -88,11 +88,11 @@ begin
     exit;
   
 
-  if SharpBarMainForm.SharpEBar.AlwaysOnTop then
+  {if SharpBarMainForm.SharpEBar.AlwaysOnTop then
     SetWindowPos(Handle, HWND_TOPMOST, -1, -2, -3, -4,
                  SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW)
   else SetWindowPos(Handle, HWND_NOTOPMOST, -1, -2, -3, -4,
-                 SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
+                 SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);  }
 
   mon := MonList.MonitorFromWindow(SharpBarMainForm.Handle);
   if mon = nil then mon := MonList.MonitorFromPoint(Point(SharpBarMainForm.Left,SharpBarMainForm.Top));
