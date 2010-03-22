@@ -456,7 +456,7 @@ begin
   SharpDeskMainForm.SendMessageToConsole('Loading Theme',COLOR_OK,DMT_STATUS);
 
   try
-    GetCurrentTheme.LoadTheme(ALL_THEME_PARTS);
+    GetCurrentTheme.LoadTheme(ALL_THEME_PARTS);    
     SharpDesk.DeskSettings.ReloadSettings;
 
     SharpApi.SendDebugMessageEx('SharpDesk',PChar('Main Resize : ' +
@@ -842,10 +842,10 @@ begin
 
   try
     GetCurrentTheme.LoadTheme([tpWallpaper]);
+    GetCurrentTheme.Wallpaper.UpdateAutomaticWallpaper(MonID);
 
     //SharpDeskMainForm.SendMessageToConsole('loading wallpaper for monitor ' + IntToStr(MonID),COLOR_OK,DMT_STATUS);
-    if Background.ReloadMonitor(PMon, MonID, false) then
-      Background.ReloadWindows;
+    Background.Reload(false);
     if not Visible then
       BackgroundImage.Bitmap.SetSize(0, 0);
   finally

@@ -421,7 +421,7 @@ var
 
   WPChanged : boolean;
 begin
-  SharpDeskMainForm.Monitor; // make it update the TScren Monitor Data
+  SharpDeskMainForm.Monitor; // make it update the TScreen Monitor Data
 
   WPChanged := False;
   for n := 0 to Screen.MonitorCount - 1 do
