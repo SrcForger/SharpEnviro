@@ -1008,7 +1008,8 @@ begin
     end;
   end;
 
-  UpdatePosition;
+  // Why is this called?
+  //UpdatePosition;
 end;
 
 // ########################
