@@ -162,7 +162,7 @@ procedure TBackground.UnloadWallpaperChanger;
 var
   i : integer;
 begin
-  for i := Length(WallpaperTimer) downto 0 do
+  for i := Length(WallpaperTimer) - 1 downto 0 do
   begin
     WallpaperTimer[i].Free;
     WallpaperTimer[i] := nil;

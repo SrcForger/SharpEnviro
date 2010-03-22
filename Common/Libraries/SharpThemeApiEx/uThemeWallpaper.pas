@@ -162,7 +162,7 @@ var
 begin
   Result := True;
 
-  for i := Length(FWallpapers) downto 0 do
+  for i := Length(FWallpapers) - 1 downto 0 do
   begin
     if (FWallpapers[i].SwitchPath <> '') and (FWallpapers[i].Image = '') and (Result = True) then
       Result := False;
