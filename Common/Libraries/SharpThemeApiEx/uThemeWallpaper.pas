@@ -175,8 +175,7 @@ var
   DirList: TStringList;
   i: integer;
 begin
-  if StartDir[length(StartDir)] <> '\' then
-    StartDir := StartDir + '\';
+  StartDir := IncludeTrailingBackslash(StartDir);
 
   if FindFirst(StartDir + '*.*', faAnyFile - faDirectory, SR) = 0 then
   begin
