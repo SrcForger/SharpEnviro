@@ -662,8 +662,6 @@ begin
         
       end;
   end;
-
-  FreeAndNil(tmpMenu);
 end;
 
 procedure TfrmEdit.UpdateOverrideState;

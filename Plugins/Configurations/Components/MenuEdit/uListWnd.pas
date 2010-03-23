@@ -617,7 +617,14 @@ begin
     else begin
 
       nTo := TSharpEMenu(tmpDest.MenuItem.OwnerMenu).Items.IndexOf(tmpDest.MenuItem);
-      tmpSrc.MenuItem.MoveToMenu(TSharpEMenu(tmpDest.MenuItem.OwnerMenu), nTo);
+      if (IsParentMenu) then
+        tmpSrc.MenuItem.MoveToMenu(TSharpEMenu(tmpDest.MenuItem.OwnerMenu), nTo)
+      else begin
+        if n < lbItems.ItemIndex then
+          tmpSrc.MenuItem.MoveToMenu(TSharpEMenu(tmpDest.MenuItem.OwnerMenu), nTo - 1)
+        else if n > lbItems.ItemIndex then
+          tmpSrc.MenuItem.MoveToMenu(TSharpEMenu(tmpDest.MenuItem.OwnerMenu), nTo + 1);
+      end;
 
       if IsParentMenu then
         RenderItemsBuffered(tmpSrcMenu, True, True)
