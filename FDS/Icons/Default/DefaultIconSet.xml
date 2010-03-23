@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<IconSet Version="1.0.0.0">
+  <Icons>
+    <0>
+      <name>icon.mediaplayer.play</name>
+      <file>icon.mediaplayer.play.ico</file>
+    </0>
+    <1>
+      <name>icon.mediaplayer.pause</name>
+      <file>icon.mediaplayer.pause.ico</file>
+    </1>
+    <2>
+      <name>icon.mediaplayer.stop</name>
+      <file>icon.mediaplayer.stop.ico</file>
+    </2>
+    <3>
+      <name>icon.mediaplayer.next</name>
+      <file>icon.mediaplayer.next.ico</file>
+    </3>
+    <4>
+      <name>icon.mediaplayer.previous</name>
+      <file>icon.mediaplayer.previous.ico</file>
+    </4>
+  </Icons>
+</IconSet>
