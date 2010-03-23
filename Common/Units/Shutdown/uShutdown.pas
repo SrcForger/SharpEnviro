@@ -163,7 +163,7 @@ function TSEShutDown.ShowConfirmation: Boolean;
 var
   sTitle, sDescription, shutdownType: string;
 begin
-  if ( not(FVerbose) or (FActionType = sdLock)) then begin
+  if not(FVerbose) then begin
     Result := true;
     exit;
   end;

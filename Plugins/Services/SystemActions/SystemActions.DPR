@@ -269,8 +269,12 @@ begin
 
   UnRegisterAction('!MinimizeAll');
   UnRegisterAction('!RestoreAll');
-  UnRegisterAction('!ToggleAllBars');
-  UnRegisterAction('!ToggleAllWindows');
+  UnRegisterAction('!ToggleAll');
+
+  UnRegisterAction('!MinimizeAllMonitors');
+  UnRegisterAction('!ToggleAllMonitors');
+
+  UnRegisterAction('!ToggleAllBars');  
 
   UnRegisterAction('!RunDlg');
 
