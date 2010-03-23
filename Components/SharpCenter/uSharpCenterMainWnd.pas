@@ -912,11 +912,15 @@ begin
   if SCM.EditWndHandle <> 0 then
   begin
     pnlEditContainer.Minimized := False;
+    pnlEditPluginContainer.Visible := True;
     pnlEditContainer.Height := 65 + GetControlByHandle(SCM.EditWndHandle).Height;
     GetControlByHandle(SCM.EditWndHandle).Width := pnlEditPlugin.Width;
   end
   else
+  begin
     pnlEditContainer.Minimized := True;
+    pnlEditPluginContainer.Visible := False;
+  end;
 
 end;
 
@@ -948,6 +952,7 @@ begin
     begin
       pnlEditContainer.Minimized := True;
       pnlEditContainer.Visible := True;
+      pnlEditPluginContainer.Visible := False;
       pnlEditContainer.TabList.TabIndex := -1;
     end
     else
@@ -1358,9 +1363,13 @@ begin
     begin
       pnlEditContainer.TabList.TabIndex := -1;
       pnlEditContainer.Minimized := True;
+      pnlEditPluginContainer.Visible := False;
     end
     else
+    begin
+      pnlEditPluginContainer.Visible := True;
       tlEditItemTabClick(pnlEditContainer.TabList, pnlEditContainer.TabList.TabIndex);
+    end;
   finally
     LockWindowUpdate(0);
   end;
