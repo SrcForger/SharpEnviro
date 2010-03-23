@@ -43,7 +43,8 @@ type
     FThemeInfo : TThemeInfo;
     procedure SetDefaults;
     procedure UpdateDirectory;
-    function GetIconIndexByTag(pTag : String) : integer;    
+    function GetIconIndexByTag(pTag : String) : integer;
+    procedure SortByName;
   public
     LastUpdate : Int64;
     constructor Create(pThemeInfo : TThemeInfo); reintroduce;
@@ -267,6 +268,8 @@ begin
     end
   end;
   XML.Free;
+
+  SortByName;
 end;
 
 procedure TThemeIcons.SaveToFile;
@@ -314,6 +317,26 @@ procedure TThemeIcons.SetName(Value: String);
 begin
   FName := Value;
   UpdateDirectory;
+end;
+
+procedure TThemeIcons.SortByName;
+
+  procedure SwapValues(i,j : integer);
+  var
+    tmp : TSharpEIcon;
+  begin
+    tmp := FIcons[i];
+    FIcons[i] := FIcons[j];
+    FIcons[j] := tmp;
+  end;
+
+var
+  n,k : integer;
+begin
+  for n := High(FIcons) downto 0 do
+    for k := 0 to n - 1 do
+      if CompareText(FIcons[n].Tag,FIcons[k].Tag) < 0 then
+        SwapValues(n,k);
 end;
 
 procedure TThemeIcons.UpdateDirectory;
