@@ -234,8 +234,11 @@ begin
       break;
     end;
   end;
-    
 
+  // The monitor does not have automatic wallpaper changing enabled so exit.
+  if (FWallpapers[wallID].SwitchTimer <= 0) then
+    Exit;
+    
   WallPics := TStringList.Create;
   try
     WallPics.Clear;
@@ -299,7 +302,8 @@ begin
          with FWallpapers[High(FWallpapers)] do
          begin
            Name            := Value('Name', Name);
-           if Value('Image', '') = '' then
+           Image := Value('Image', '');
+           if Image = '' then
            begin
              SwitchPath := Value('SwitchPath', '');
              if DirectoryExists(SwitchPath) then
@@ -307,10 +311,8 @@ begin
                SwitchRecursive := BoolValue('SwitchRecursive', True);
                SwitchRandomize := BoolValue('SwitchRandomize', True);
                SwitchTimer := IntValue('SwitchTimer', 0);
-             end else
-               Image := '';
-           end else
-             Image           := Value('Image', Image);
+             end;
+           end;
 
            ColorStr        := Value('Color', ColorStr);
            Alpha           := IntValue('Alpha', Alpha);
