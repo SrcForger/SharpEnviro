@@ -33,13 +33,17 @@ uses
 type
   TThemeIcons = class(TInterfacedObject, IThemeIcons)
   private
+    FDirectoryDefault : String;
+    FDirectoryIconSet : String;
+    FDirectoryBase    : String;
+
     FName      : String;
-    FDirectory : String;
     FInfo      : TThemeIconSetInfo;
     FIcons     : TSharpEIconSet;
     FThemeInfo : TThemeInfo;
     procedure SetDefaults;
     procedure UpdateDirectory;
+    function GetIconIndexByTag(pTag : String) : integer;    
   public
     LastUpdate : Int64;
     constructor Create(pThemeInfo : TThemeInfo); reintroduce;
@@ -68,7 +72,7 @@ type
     function GetIconCount: integer; stdcall;
     function GetIconByIndex(pIndex: integer): TSharpEIcon; stdcall;
     function GetIconByTag(pTag: String): TSharpEIcon; stdcall;
-    function IsIconInIconSet(pTag: String): boolean; stdcall;    
+    function IsIconInIconSet(pTag: String): boolean; stdcall;
   end;
 
 implementation
@@ -96,7 +100,7 @@ end;
 
 function TThemeIcons.GetDirectory: String;
 begin
-  result := FDirectory;
+  result := FDirectoryBase;
 end;
 
 function TThemeIcons.GetIconByIndex(pIndex: integer): TSharpEIcon;
@@ -131,6 +135,19 @@ end;
 function TThemeIcons.GetIconCount: integer;
 begin
   result := length(FIcons);
+end;
+
+function TThemeIcons.GetIconIndexByTag(pTag: String): integer;
+var
+  n : integer;
+begin
+  result := -1;
+  for n := 0 to GetIconCount - 1 do
+    if CompareText(Icons[n].Tag,pTag) = 0 then
+    begin
+      result := n;
+      exit;
+    end;
 end;
 
 function TThemeIcons.GetIcons: TSharpEIconSet;
@@ -192,11 +209,33 @@ end;
 procedure TThemeIcons.LoadIcons;
 var
   XML : TInterfacedXmlBase;
-  n : integer;
+  n,i: integer;
+  tmpName : String;
 begin
   SetLength(FIcons,0);
+
+  // Load Global Default Icons
   XML := TInterfacedXMLBase.Create;
-  XML.XmlFilename := FDirectory + 'IconSet.xml';
+  XML.XmlFilename := FDirectoryBase + FDirectoryDefault + 'DefaultIconSet.xml';
+  if XML.Load then
+  begin
+    with XML.XmlRoot.Items do
+      if ItemNamed['Icons'] <> nil then
+        with ItemNamed['Icons'].Items do
+        begin
+          for n := 0 to Count - 1 do
+          begin
+            SetLength(FIcons,length(FIcons)+1);
+            FIcons[High(FIcons)].Tag      := Item[n].Items.Value('Name', '');
+            FIcons[High(FIcons)].FileName := FDirectoryDefault + Item[n].Items.Value('File', '');
+          end;
+        end;
+  end;
+  XML.Free;
+
+  // Load the actual icon set
+  XML := TInterfacedXMLBase.Create;
+  XML.XmlFilename := FDirectoryBase + FDirectoryIconSet + 'IconSet.xml';
   if XML.Load then
   begin
     with XML.XmlRoot.Items, FInfo do
@@ -208,9 +247,21 @@ begin
         begin
           for n := 0 to Count - 1 do
           begin
-            SetLength(FIcons,length(FIcons)+1);
-            FIcons[High(FIcons)].Tag      := Item[n].Items.Value('Name', '');
-            FIcons[High(FIcons)].FileNAme := Item[n].Items.Value('File', '');
+            tmpName := Item[n].Items.Value('Name', '');
+            if length(trim(tmpName)) > 0 then
+            begin
+              if IsIconInIconSet(tmpName) then
+              begin
+                i := GetIconIndexByTag(tmpName);
+                if i > -1 then
+                  FIcons[i].FileName := FDirectoryIconSet + Item[n].Items.Value('File', '');
+              end else
+              begin
+                SetLength(FIcons,length(FIcons)+1);
+                FIcons[High(FIcons)].Tag      := tmpName;
+                FIcons[High(FIcons)].FileName := FDirectoryIconSet + Item[n].Items.Value('File', '');
+              end;
+            end;
           end;
         end;
     end
@@ -267,7 +318,9 @@ end;
 
 procedure TThemeIcons.UpdateDirectory;
 begin
-  FDirectory := SharpApi.GetSharpeDirectory + ICONS_DIR + '\' + FName + '\';
+  FDirectoryBase    := SharpApi.GetSharpeDirectory + ICONS_DIR + '\';
+  FDirectoryIconSet := FName + '\';
+  FDirectoryDefault := ICONS_DEFAULT_DIR + '\'
 end;
 
 end.

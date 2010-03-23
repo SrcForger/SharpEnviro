@@ -210,6 +210,8 @@ const
   ICONS_DIR = 'Icons';
   SHARPE_USER_SETTINGS = 'SharpE.xml';
 
+  ICONS_DEFAULT_DIR = 'Default';
+
   THEME_INFO_FILE = 'Theme.xml';
   THEME_SKIN_FILE = 'Skin.xml';
   THEME_SKIN_FONT_FILE = 'Font.xml';
