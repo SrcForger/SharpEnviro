@@ -53,6 +53,9 @@ type
     Panel5: TPanel;
     Label1: TLabel;
     cbLockKey: TComboBox;
+    SharpECenterHeader4: TSharpECenterHeader;
+    Panel6: TPanel;
+    chkDragDrop: TJvXPCheckbox;
     procedure CheckClick(Sender: TObject);
     procedure cbStyleClick(Sender: TObject);
     procedure FormShow(Sender: TObject);

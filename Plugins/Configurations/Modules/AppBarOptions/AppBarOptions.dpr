@@ -71,6 +71,7 @@ procedure TSharpCenterPlugin.Save;
 begin
   PluginHost.Xml.XmlRoot.Name := 'AppBarModuleSettings';
 
+  if PluginHost.Xml.Load then // reload in case buttons have changed via drag and drop
   with PluginHost.Xml.XmlRoot.Items, frmSettings do
   begin
     // Do not clear the list as the AppBarModule also saves to this file.
@@ -102,6 +103,10 @@ begin
       ItemNamed['MonitorOnly'].BoolValue := chkMonitor.Checked
     else
       Add('MonitorOnly', chkMonitor.Checked);
+
+    if ItemNamed['LockDragDrop'] <> nil then
+      ItemNamed['LockDragDrop'].BoolValue := not chkDragDrop.Checked
+    else Add('LockDragDrop', not chkDragDrop.Checked);
   end;
 
   PluginHost.Xml.Save;
@@ -120,6 +125,7 @@ begin
       cbStyle.ItemIndex := IntValue('State', 2);
       chkVWM.Checked := BoolValue('VWMOnly', False);
       chkMonitor.Checked := BoolValue('MonitorOnly',False);
+      chkDragDrop.Checked := not BoolValue('LockDragDrop', True);
     end;
   end;
 end;
