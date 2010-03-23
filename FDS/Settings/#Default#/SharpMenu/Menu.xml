@@ -30,30 +30,6 @@
   </item>
   <item>
     <type>submenu</type>
-    <Caption>Desktop</Caption>
-    <Target/>
-    <Icon>icon.folder</Icon>
-    <Items>
-      <item>
-        <type>dynamicdirectory</type>
-        <Target>{#DesktopDir#}</Target>
-        <MaxItems>-1</MaxItems>
-        <Sort>0</Sort>
-        <Filter/>
-        <Recursive>0</Recursive>
-      </item>
-      <item>
-        <type>dynamicdirectory</type>
-        <Target>{#CommonDesktopDir#}</Target>
-        <MaxItems>-1</MaxItems>
-        <Sort>0</Sort>
-        <Filter/>
-        <Recursive>0</Recursive>
-      </item>
-    </Items>
-  </item>
-  <item>
-    <type>submenu</type>
     <Caption>Startmenu</Caption>
     <Target/>
     <Icon>icon.folder</Icon>
@@ -91,6 +67,15 @@
         <Recursive>0</Recursive>
       </item>
     </Items>
+  </item>
+  <item>
+    <type>separator</type>
+  </item>
+  <item>
+    <type>link</type>
+    <Caption>Run...</Caption>
+    <Target>!RunDlg</Target>
+    <Icon>icon.mycomputer</Icon>
   </item>
   <item>
     <type>separator</type>
