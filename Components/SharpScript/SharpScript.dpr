@@ -7,7 +7,6 @@ uses
   MainWnd in 'Forms\MainWnd.pas' {MainForm},
   CreateInstallScriptWnd in 'Forms\CreateInstallScriptWnd.pas' {CreateInstallScriptForm},
   InstallWnd in 'Forms\InstallWnd.pas' {InstallForm},
-  SharpArchiveUtils_Adapter in '..\..\Common\Units\SharpScript\SharpArchiveUtils_Adapter.pas',
   SharpApi_Adapter in '..\..\Common\Libraries\SharpAPI\SharpApi_Adapter.pas',
   SharpFileUtils_Adapter in '..\..\Common\Units\SharpScript\SharpFileUtils_Adapter.pas',
   SharpAPI in '..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
@@ -32,7 +31,6 @@ begin
   SharpBase_Adapter.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   SharpApi_Adapter.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   SharpFileUtils_Adapter.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
-  //SharpArchiveUtils_Adapter.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   Windows_Adapter.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
 
 

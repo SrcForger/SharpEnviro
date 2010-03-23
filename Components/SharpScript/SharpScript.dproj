@@ -39,7 +39,6 @@
     <DCCReference Include="..\..\Common\Libraries\SharpAPI\SharpAPI.pas" />
     <DCCReference Include="..\..\Common\Libraries\SharpAPI\SharpApi_Adapter.pas" />
     <DCCReference Include="..\..\Common\Libraries\SharpCenterAPI\SharpCenterAPI.pas" />
-    <DCCReference Include="..\..\Common\Units\SharpScript\SharpArchiveUtils_Adapter.pas" />
     <DCCReference Include="..\..\Common\Units\SharpScript\SharpBase_Adapter.pas" />
     <DCCReference Include="..\..\Common\Units\SharpScript\SharpFileUtils_Adapter.pas" />
     <DCCReference Include="..\..\Common\Units\SharpScript\Windows_Adapter.pas" />
