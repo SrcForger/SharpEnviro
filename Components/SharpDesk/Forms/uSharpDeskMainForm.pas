@@ -153,7 +153,6 @@ type
     procedure AlignObjecttoGrid1Click(Sender: TObject);
     procedure BringtoFront1Click(Sender: TObject);
     procedure MovetoBack1Click(Sender: TObject);
-    procedure ClickTopMost1Click(Sender: TObject);
     procedure LockAllObjects1Click(Sender: TObject);
     procedure ObjectPopUpPopup(Sender: TObject);
     procedure UnlockAllObjects1Click(Sender: TObject);
@@ -258,6 +257,17 @@ uses uSharpDeskAlignSettingsForm,
 
 {$R *.dfm}
 
+function IsTopMost(wnd: HWND): Boolean;
+begin
+  Result := (GetWindowLong(wnd, GWL_EXSTYLE) and WS_EX_TOPMOST) <> 0;
+end;
+
+procedure TSharpDeskMainForm.SendMessageToConsole(msg : string; color : integer; DebugLevel : integer);
+begin
+     SendDebugMessageEx(TAG_APP,PChar('<font color='+ColorToString(color)+'>'+msg),color,DebugLevel);
+end;
+
+{$REGION 'Message handlers'}
 
 procedure TSharpDeskMainForm.WMSharpTerminate(var Msg : TMessage);
 begin
@@ -436,11 +446,6 @@ begin
   UpdateSharpEActions;
 end;
 
-function IsTopMost(wnd: HWND): Boolean;
-begin
-  Result := (GetWindowLong(wnd, GWL_EXSTYLE) and WS_EX_TOPMOST) <> 0;
-end;
-
 procedure TSharpDeskMainForm.WMSharpEBang(var Msg : TMessage);
 begin
   case msg.LParam of
@@ -451,7 +456,138 @@ begin
   end;
 end;
 
+procedure TSharpDeskMainForm.WMShowWindow(var Msg : TMessage);
+begin
+  // Check for ShowWindow
+  if Msg.LParam = 0 then
+  begin
+    //SW_SHOW
+    if Msg.WParam = 1 then
+    begin
+      if not GetCurrentTheme.Wallpaper.IsLoaded then
+        LoadTheme(True)
+      else
+        Background.Reload(False);
+    //SW_HIDE
+    end else if Msg.WParam = 0 then    
+    begin
+      BackgroundImage.Bitmap.SetSize(0, 0);
+    end;
+  end;
+end;
 
+procedure TSharpDeskMainForm.WMPosChanging(var Msg: TWMWindowPosMsg);
+begin
+  inherited;
+  if Created then
+     Msg.WindowPos.Flags := Msg.WindowPos.Flags or SWP_NOZORDER;
+  if not SizePosChanging then
+    Msg.WindowPos.Flags := Msg.WindowPos.Flags or SWP_NOMOVE or SWP_NOSIZE;
+end;
+
+procedure TSharpDeskMainForm.WMSharpEUppdateSettings(var msg: TMessage);
+begin
+  if msg.WParam < 0 then exit;
+
+  if (msg.WParam = Integer(suTheme)) then
+  begin
+    LoadTheme(True);
+    SharpDesk.SendMessageToAllObjects(SDM_SETTINGS_UPDATE,0,0,0);
+    exit;
+  end;
+
+  if (msg.WParam = Integer(suWallpaper)) or (msg.WParam = Integer(suScheme))
+    or (msg.WParam = Integer(suSkin)) then
+  begin
+    GetCurrentTheme.LoadTheme(ALL_THEME_PARTS);
+    Background.Reload(msg.Wparam = Integer(suScheme));
+    BackgroundImage.ForceFullInvalidate;
+    if SharpDesk.BackgroundLayer <> nil then
+    begin
+      SharpDesk.BackgroundLayer.Update;
+      SharpDesk.BackgroundLayer.Changed;
+    end;
+    SharpDesk.SendMessageToAllObjects(SDM_SETTINGS_UPDATE,0,0,0);
+    if msg.WParam = Integer(suWallpaper) then
+      SharpApi.BroadcastGlobalUpdateMessage(suDesktopBackgroundChanged,-1,True);
+    if not Visible then
+      BackgroundImage.Bitmap.SetSize(0, 0);      
+  end;
+
+  if (msg.WParam = Integer(suSharpDesk)) then
+  begin
+    SharpDesk.DeskSettings.ReloadSettings;
+
+    // Check if we should use Explorer's desktop
+    if SharpDesk.Desksettings.UseExplorerDesk then
+      SharpApi.SharpExecute('!DeskExplorer')
+    else
+      SharpApi.SharpExecute('!DeskSharpE');
+
+    if SharpDesk.Desksettings.DragAndDrop then SharpDesk.DragAndDrop.RegisterDragAndDrop(SharpDesk.Image.Parent.Handle)
+       else SharpDesk.DragAndDrop.UnregisterDragAndDrop(SharpDesk.Image.Parent.Handle);
+  end;
+
+  if (msg.WParam = Integer(suDesktopIcon)) or (msg.WParam = Integer(suIconSet)) then
+  begin
+    GetCurrentTheme.LoadTheme(ALL_THEME_PARTS);
+    SharpDesk.SendMessageToAllObjects(SDM_SETTINGS_UPDATE,0,0,0);
+  end;
+
+  if (msg.WParam = Integer(suDesktopObject)) then
+  begin
+    SharpDesk.SendMessageToObject(SDM_SETTINGS_UPDATE,msg.LParam,0,0,0);
+  end;
+
+end;
+
+procedure TSharpDeskMainForm.WMDropFiles(var Message: TWMDropFiles);
+var
+   aFile: array [0..255] of Char;
+   n,cnt: Integer;
+   CPos,CursorPos : TPoint;
+begin
+  inherited;
+  cnt := DragQueryFile(Message.drop, $FFFFFFFF, nil, 0);
+
+  if GetCursorPosSecure(cursorPos) then
+    CPos := SharpDesk.Image.ScreenToClient(cursorPos)
+  else begin
+    DragFinish(Message.Drop);
+    exit;    
+  end;
+
+  if CPos.X>Screen.DesktopWidth-CLONE_MOVE_X then
+  begin
+    CPos.X:=64;
+    CPos.Y:=CPos.Y+CLONE_MOVE_X;
+    if CPos.Y>Screen.DesktopHeight-CLONE_MOVE_Y then CPos.Y:=64;
+  end;
+
+  for n := 0 to cnt - 1 do // for all the file in the list
+  begin
+    DragQueryFile(Message.drop, n, aFile, 256); // get the FileName (max characters 255 + #0)
+    if SharpDesk.DragAndDrop.IsExtRegistered(ExtractFileExt(aFile)) then
+    begin
+      SharpDesk.DragAndDrop.DoDragAndDrop(aFile,CPos.X,CPos.Y);
+      CPos.X:=CPos.X + CLONE_MOVE_X;
+      if CPos.X>Screen.DesktopWidth-CLONE_MOVE_X then
+      begin
+        CPos.X:=64;
+        CPos.Y:=CPos.Y+CLONE_MOVE_X;
+        if CPos.Y>Screen.DesktopHeight-CLONE_MOVE_Y then CPos.Y:=64;
+      end;
+    end;
+  end;
+  DragFinish(Message.Drop);
+end;
+
+procedure TSharpDeskMainForm.WMWeatherUpdate(var msg : TMessage);
+begin
+  SharpDesk.SendMessageToAllObjects(SDM_WEATHER_UPDATE,0,0,0);
+end;
+
+{$ENDREGION 'Message handlers'}
 
 procedure TSharpDeskMainForm.LoadTheme(WPChange : boolean);
 var
@@ -510,116 +646,10 @@ begin
   end;
 end;
 
-procedure TSharpDeskMainForm.WMShowWindow(var Msg : TMessage);
-begin
-  // Check for ShowWindow
-  if Msg.LParam = 0 then
-  begin
-    //SW_SHOW
-    if Msg.WParam = 1 then
-    begin
-      LoadTheme(True);
-    //SW_HIDE
-    end else if Msg.WParam = 0 then    
-    begin
-      BackgroundImage.Bitmap.SetSize(0, 0);
-    end;
-  end;
-end;
-
-// ######################################
-
-
-procedure TSharpDeskMainForm.SendMessageToConsole(msg : string; color : integer; DebugLevel : integer);
-begin
-     SendDebugMessageEx(TAG_APP,PChar('<font color='+ColorToString(color)+'>'+msg),color,DebugLevel);
-end;
-
-
-// ######################################
-
-
-procedure TSharpDeskMainForm.WMPosChanging(var Msg: TWMWindowPosMsg);
-begin
-  inherited;
-  if Created then
-     Msg.WindowPos.Flags := Msg.WindowPos.Flags or SWP_NOZORDER;
-  if not SizePosChanging then
-    Msg.WindowPos.Flags := Msg.WindowPos.Flags or SWP_NOMOVE or SWP_NOSIZE;
-end;
-
-
-// #################################################
-// a setting has changed
-
-procedure TSharpDeskMainForm.WMSharpEUppdateSettings(var msg: TMessage);
-begin
-  if msg.WParam < 0 then exit;
-
-  if (msg.WParam = Integer(suTheme)) then
-  begin
-    LoadTheme(True);
-    SharpDesk.SendMessageToAllObjects(SDM_SETTINGS_UPDATE,0,0,0);
-    exit;
-  end;
-
-  if (msg.WParam = Integer(suWallpaper)) or (msg.WParam = Integer(suScheme))
-    or (msg.WParam = Integer(suSkin)) then
-  begin
-    GetCurrentTheme.LoadTheme(ALL_THEME_PARTS);
-    Background.Reload(msg.Wparam = Integer(suScheme));
-    BackgroundImage.ForceFullInvalidate;
-    if SharpDesk.BackgroundLayer <> nil then
-    begin
-      SharpDesk.BackgroundLayer.Update;
-      SharpDesk.BackgroundLayer.Changed;
-    end;
-    SharpDesk.SendMessageToAllObjects(SDM_SETTINGS_UPDATE,0,0,0);
-    if msg.WParam = Integer(suWallpaper) then
-      SharpApi.BroadcastGlobalUpdateMessage(suDesktopBackgroundChanged,-1,True);
-    if not Visible then
-      BackgroundImage.Bitmap.SetSize(0, 0);      
-  end;
-
-  if (msg.WParam = Integer(suSharpDesk)) then
-  begin
-    SharpDesk.DeskSettings.ReloadSettings;
-
-    // Check if we should use Explorer's desktop
-    if SharpDesk.Desksettings.UseExplorerDesk then
-      SharpApi.SharpExecute('!DeskExplorer')
-    else
-      SharpApi.SharpExecute('!DeskSharpE');
-
-    if SharpDesk.Desksettings.DragAndDrop then SharpDesk.DragAndDrop.RegisterDragAndDrop(SharpDesk.Image.Parent.Handle)
-       else SharpDesk.DragAndDrop.UnregisterDragAndDrop(SharpDesk.Image.Parent.Handle);
-  end;
-
-  if (msg.WParam = Integer(suDesktopIcon)) or (msg.WParam = Integer(suIconSet)) then
-  begin
-    GetCurrentTheme.LoadTheme(ALL_THEME_PARTS);
-    SharpDesk.SendMessageToAllObjects(SDM_SETTINGS_UPDATE,0,0,0);
-  end;
-
-  if (msg.WParam = Integer(suDesktopObject)) then
-  begin
-    SharpDesk.SendMessageToObject(SDM_SETTINGS_UPDATE,msg.LParam,0,0,0);
-  end;
-
-end;
-
-
-// ######################################
-
-
 procedure TSharpDeskMainForm.msg_EraseBkgnd(var msg : Tmessage);
 begin
   msg.Result := 0;
 end;
-
-
-// ######################################
-
 
 procedure TSharpDeskMainForm.FormCreate(Sender: TObject);
 begin
@@ -668,19 +698,12 @@ begin
   Background.LoadWallpaperChanger(WallpaperTimerTimer);
 end;
 
-
-// ######################################
-
-
 procedure TSharpDeskMainForm.FormShow(Sender: TObject);
 begin
   ShowWindow(Application.Handle, SW_HIDE);
   if SharpDesk.Desksettings.DragAndDrop then SharpDesk.DragAndDrop.RegisterDragAndDrop(SharpDesk.Image.Parent.Handle)
      else SharpDesk.DragAndDrop.UnregisterDragAndDrop(SharpDesk.Image.Parent.Handle);
 end;
-
-
-// ######################################
 
 procedure TSharpDeskMainForm.FormActivate(Sender: TObject);
 begin
@@ -705,10 +728,6 @@ begin
   SharpApi.SharpEBroadCast(WM_DESKCLOSING,0,0);
 end;
 
-
-// ######################################
-
-
 procedure TSharpDeskMainForm.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -716,18 +735,11 @@ begin
     Key := 0;
 end;
 
-// ######################################
-
-
 procedure TSharpDeskMainForm.BackgroundImageKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if ((SSALT in Shift) and (Key = VK_F4)) then Key := 0;
 end;
-
-
-// ######################################
-
 
 procedure TSharpDeskMainForm.BackgroundImageMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer;
@@ -841,7 +853,6 @@ begin
   end;
 end;
 
-
 procedure TSharpDeskMainForm.WallpaperTimerTimer(Sender: TObject);
 var
   i : integer;
@@ -914,9 +925,6 @@ begin
   end;
   SharpApi.BroadcastGlobalUpdateMessage(suDesktopBackgroundChanged,-1,True);
 end;
-
-// ######################################
-
 
 procedure TSharpDeskMainForm.BackgroundImageMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer;
@@ -1042,10 +1050,6 @@ begin
 
 end;
 
-
-// ######################################
-
-
 procedure TSharpDeskMainForm.BackgroundImageMouseMove(Sender: TObject;
   Shift: TShiftState; X, Y: Integer; Layer: TCustomLayer);
 var
@@ -1160,10 +1164,6 @@ begin
   SharpDesk.LastLayer := Layer.Tag;
 end;
 
-
-// ######################################
-
-
 procedure TSharpDeskMainForm.OpenObjectSettings1Click(Sender: TObject);
 var
   obj : TDesktopObject;
@@ -1177,10 +1177,6 @@ begin
                                PChar(inttostr(obj.Settings.ObjectID)));
   SharpDesk.UnselectAll;
 end;
-
-
-// ######################################
-
 
 procedure TSharpDeskMainForm.BackgroundImageDblClick(Sender: TObject);
 var
@@ -1207,10 +1203,6 @@ begin
   oSelect := False;
   SharpDesk.DoubleClick := True;
 end;
-
-
-// ######################################
-
 
 procedure TSharpDeskMainForm.BackgroundImageClick(Sender: TObject);
 var
@@ -1243,10 +1235,6 @@ begin
 //  SharpDesk.ObjectsMoved := False;  
 end;
 
-
-// ######################################
-
-
 procedure TSharpDeskMainForm.LockObjec1Click(Sender: TObject);
 begin
   if LockObjec1.Checked then SharpDesk.UnLockSelectedObjects
@@ -1256,15 +1244,10 @@ begin
 //     else SharpDesk.UnLockSelectedObjects;
 End;
 
-
-// ######################################
-
-
 procedure TSharpDeskMainForm.CloneObject1Click(Sender: TObject);
 begin
   SharpDesk.CloneSelectedObjects;
 end;
-
 
 procedure TSharpDeskMainForm.CreateParams(var Params: TCreateParams);
 begin
@@ -1276,9 +1259,6 @@ begin
     Style := WS_POPUP or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
   end;
 end;
-
-// ######################################
-
 
 procedure TSharpDeskMainForm.RepaintObject2Click(Sender: TObject);
 var
@@ -1292,10 +1272,6 @@ begin
                                              0,0,0);
 end;
 
-
-// ######################################
-
-
 procedure TSharpDeskMainForm.SingleClickAction1Click(Sender: TObject);
 var
    DesktopObject : TDesktopObject;
@@ -1307,10 +1283,6 @@ begin
                                              SDM_CLICK,
                                              0,0,0);
 end;
-
-
-// ######################################
-
 
 procedure TSharpDeskMainForm.DoubleClickAction1Click(Sender: TObject);
 var
@@ -1324,10 +1296,6 @@ begin
                                              0,0,0);
 end;
 
-
-// ######################################
-
-
 procedure TSharpDeskMainForm.PerformDebugAction1Click(Sender: TObject);
 var
    DesktopObject : TDesktopObject;
@@ -1340,100 +1308,26 @@ begin
                                              0,0,0);
 end;
 
-
-// ######################################
-
-
-procedure TSharpDeskMainForm.WMDropFiles(var Message: TWMDropFiles);
-var
-   aFile: array [0..255] of Char;
-   n,cnt: Integer;
-   CPos,CursorPos : TPoint;
-begin
-  inherited;
-  cnt := DragQueryFile(Message.drop, $FFFFFFFF, nil, 0);
-
-  if GetCursorPosSecure(cursorPos) then
-    CPos := SharpDesk.Image.ScreenToClient(cursorPos)
-  else begin
-    DragFinish(Message.Drop);
-    exit;    
-  end;
-
-  if CPos.X>Screen.DesktopWidth-CLONE_MOVE_X then
-  begin
-    CPos.X:=64;
-    CPos.Y:=CPos.Y+CLONE_MOVE_X;
-    if CPos.Y>Screen.DesktopHeight-CLONE_MOVE_Y then CPos.Y:=64;
-  end;
-
-  for n := 0 to cnt - 1 do // for all the file in the list
-  begin
-    DragQueryFile(Message.drop, n, aFile, 256); // get the FileName (max characters 255 + #0)
-    if SharpDesk.DragAndDrop.IsExtRegistered(ExtractFileExt(aFile)) then
-    begin
-      SharpDesk.DragAndDrop.DoDragAndDrop(aFile,CPos.X,CPos.Y);
-      CPos.X:=CPos.X + CLONE_MOVE_X;
-      if CPos.X>Screen.DesktopWidth-CLONE_MOVE_X then
-      begin
-        CPos.X:=64;
-        CPos.Y:=CPos.Y+CLONE_MOVE_X;
-        if CPos.Y>Screen.DesktopHeight-CLONE_MOVE_Y then CPos.Y:=64;
-      end;
-    end;
-  end;
-  DragFinish(Message.Drop);
-end;
-
-
-// ######################################
-
-
 procedure TSharpDeskMainForm.AlignObjecttoGrid1Click(Sender: TObject);
 begin
   SharpDesk.AlignSelectedObjectsToGrid;
   SharpDesk.ObjectSet.Save;
 end;
 
-
-// ######################################
-
-
 procedure TSharpDeskMainForm.BringtoFront1Click(Sender: TObject);
 begin
   SharpDesk.BringSelectedObjectsToFront;
 end;
-
-
-// ######################################
-
 
 procedure TSharpDeskMainForm.MovetoBack1Click(Sender: TObject);
 begin
   SharpDesk.SendSelectedObjectsToBack;
 end;
 
-
-// ######################################
-
-
-procedure TSharpDeskMainForm.ClickTopMost1Click(Sender: TObject);
-begin
-
-end;
-
-
-// ######################################
-
-
 procedure TSharpDeskMainForm.LockAllObjects1Click(Sender: TObject);
 begin
   SharpDesk.LockAllObjects;
 end;
-
-
-// ######################################
-
 
 procedure TSharpDeskMainForm.OnCreateNewPresetClick(Sender : TObject);
 var
@@ -1451,10 +1345,6 @@ begin
   SharpDesk.CreatePreset(DesktopObject,NewPreSet);
 end;
 
-
-// ######################################
-
-
 procedure TSharpDeskMainForm.OnSaveAsPresetClick(Sender : TObject);
 var
    pID : integer;
@@ -1466,10 +1356,6 @@ begin
   SharpDesk.SavePresetAs(DesktopObject,pID);
 end;
 
-
-// ######################################
-
-
 procedure TSharpDeskMainForm.OnLoadPresetClickSelected(Sender : TObject);
 var
    pID : integer;
@@ -1479,10 +1365,6 @@ begin
   pID := TMenuItem(Sender).Tag;
   SharpDesk.LoadPresetForSelected(pID);
 end;
-
-
-// ######################################
-
 
 procedure TSharpDeskMainForm.OnLoadPresetClick(Sender : TObject);
 var
@@ -1494,10 +1376,6 @@ begin
   DesktopObject := TDesktopObject(SharpDesk.GetDesktopObjectByID(SharpDesk.LastLayer));
   SharpDesk.LoadPreset(DesktopObject,pID,True);
 end;
-
-
-// ######################################
-
 
 procedure TSharpDeskMainForm.OnDeletePresetClick(Sender : TObject);
 var
@@ -1514,10 +1392,6 @@ begin
   XML.Free;
 end;
 
-
-// ######################################
-
-
 procedure TSharpDeskMainForm.OnLoadPresetAllClick(Sender : TObject);
 var
    pID : integer;
@@ -1528,10 +1402,6 @@ begin
   DesktopObject := TDesktopObject(SharpDesk.GetDesktopObjectByID(SharpDesk.LastLayer));
   SharpDesk.LoadPresetForAll(DesktopObject.Owner,pID);
 end;
-
-
-// ######################################
-
 
 procedure TSharpDeskMainForm.ObjectPopUpPopup(Sender: TObject);
 var
@@ -1620,18 +1490,10 @@ begin
      XML.Free;
 end;
 
-
-// ######################################
-
-
 procedure TSharpDeskMainForm.UnlockAllObjects1Click(Sender: TObject);
 begin
   SharpDesk.UnLockAllObjects;
 end;
-
-
-// ######################################
-
 
 procedure TSharpDeskMainForm.ApplicationEvents1Deactivate(Sender: TObject);
 begin
@@ -1650,7 +1512,6 @@ begin
   SharpDesk.DeleteSelectedLayers;
   SharpDesk.LastLayer := - 1;
 end;
-
 
 procedure TSharpDeskMainForm.Clone1Click(Sender: TObject);
 begin
@@ -1776,7 +1637,6 @@ begin
   end;
 end;
 
-
 procedure TSharpDeskMainForm.OnObjectAlignClick(Sender : TObject);
 begin
   if not (Sender is TMenuItem) then exit;
@@ -1867,12 +1727,6 @@ end;
 procedure TSharpDeskMainForm.All1Click(Sender: TObject);
 begin
   SharpDesk.SelectAll;
-end;
-
-
-procedure TSharpDeskMainForm.WMWeatherUpdate(var msg : TMessage);
-begin
-  SharpDesk.SendMessageToAllObjects(SDM_WEATHER_UPDATE,0,0,0);
 end;
 
 procedure TSharpDeskMainForm.MakeWindow1Click(Sender: TObject);
