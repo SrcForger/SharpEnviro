@@ -27,7 +27,7 @@ unit uSharpEMenuItem;
 
 interface
 
-uses GR32,SysUtils,Controls,Classes,uSharpEMenuIcon,uPropertyList;
+uses GR32,SysUtils,Math,Controls,Classes,uSharpEMenuIcon,uPropertyList;
 
 type
   TSharpEMenuItem = class;
@@ -64,7 +64,7 @@ type
   public
     constructor Create(pOwnerMenu : TObject; pItemType : TSharpEMenuItemType); reintroduce;
     destructor Destroy; override;
-    procedure MoveToMenu(Dst : TObject; pIndex : integer = -1);
+    procedure MoveToMenu(Dst : TObject; pIndex : integer = -2);
     property PropList  : TPropertyList read FPropList;
     property Caption   : String read FCaption write FCaption;
     property Icon      : TSharpEMenuIcon read FIcon write FIcon;
@@ -129,7 +129,7 @@ begin
   result := TSharpEMenu(FOwnerMenu).Items.IndexOf(self);
 end;
 
-procedure TSharpEMenuItem.MoveToMenu(Dst: TObject; pIndex : integer = -1);
+procedure TSharpEMenuItem.MoveToMenu(Dst: TObject; pIndex : integer = - 2);
 var
   SrcMenu,DstMenu : TSharpEMenu;
 begin
@@ -141,9 +141,12 @@ begin
   DstMenu := TSharpEMenu(Dst);
 
   SrcMenu.Items.Extract(self);
-  if pIndex = -1 then
+  if (pIndex = -2) or (pIndex > DstMenu.Items.Count - 1) then
     DstMenu.Items.Add(self)
-  else DstMenu.Items.Insert(pIndex,self);
+  else begin
+    pIndex := Max(0,Min(DstMenu.Items.Count - 1, pIndex));
+    DstMenu.Items.Insert(pIndex,self);
+  end;
        
   FOwnerMenu := Dst;
 end;
