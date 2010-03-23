@@ -108,6 +108,7 @@ type
     sTPLockKey   : integer;
     FButtonSpacing : integer;
     sCountOverlay : boolean;
+    sLockDragDrop : boolean;
     FButtonList  : array of TButtonRecord;
     FHintWnd     : hwnd; 
     movebutton   : TSharpETaskItem;
@@ -127,7 +128,7 @@ type
     procedure OnFlaskTask(pItem : TTaskItem; Index : integer);
     procedure OnActivateTask(pItem : TTaskItem; Index : integer);
     procedure OnPreviewClick(Sender : TObject);
-    procedure ClearButtons;
+    procedure ClearButtons(Update: boolean = True);
     procedure UpdateButtonIcon(Btn : TButtonRecord);
     function GetButtonIndex(pButton : TSharpETaskItem) : integer;
     function GetButtonItem(pButton : TSharpETaskItem) : TButtonRecord;
@@ -446,7 +447,7 @@ begin
   end;
 end;
 
-procedure TMainForm.ClearButtons;
+procedure TMainForm.ClearButtons(Update : boolean = True);
 var
   n : integer;
 begin
@@ -459,7 +460,7 @@ begin
   setlength(FButtonList,0);
 
   FPreviewWnds.Clear;
-  RealignComponents(True);
+  RealignComponents(Update);
   UpdateGlobalFilterList(True);
   CheckList;
 end;
@@ -610,6 +611,9 @@ begin
       Add('CountOverlay',sCountOverlay);
       Add('VWMOnly',sVWMOnly);
       Add('MonitorOnly',sMonitorOnly);
+      Add('LockDragDrop',sLockDragDrop);
+      Add('TPLockKey',sTPLockKey);
+      Add('TaskPreview',sTaskPreview);
       with Add('Apps').Items do
       begin
         for n := 0 to High(FButtonList) do
@@ -737,7 +741,7 @@ var
   fileloaded : boolean;
   n : integer;
 begin
-  ClearButtons;
+  ClearButtons(False);
 
   FButtonSpacing := 2;
   sState       := tisCompact;
@@ -745,6 +749,7 @@ begin
   sVWMOnly     := False;
   sMonitorOnly := False;
   sTaskPreview := True;
+  sLockDragDrop := False;
   sTPLockKey := 1; // (Shift)
 
   XML := TJclSimpleXML.Create;
@@ -763,6 +768,7 @@ begin
       sMonitorOnly := BoolValue('MonitorOnly',sMonitorOnly);
       sTaskPreview := BoolValue('TaskPreview',sTaskPreview);
       sTPLockKey   := IntValue('TPLockKey',sTPLockKey);
+      sLockDragDrop := BoolValue('LockDragDrop',sLockDragDrop);
       if ItemNamed['Apps'] <> nil then
       with ItemNamed['Apps'].Items do
            for n := 0 to Count - 1 do
@@ -772,6 +778,8 @@ begin
     end;
   
   XML.Free;
+
+  RealignComponents(True);
 end;
 
 procedure TMainForm.DisplaySystemMenu(pBtn : TButtonRecord);
@@ -1232,7 +1240,7 @@ begin
 
   mInterface.MinSize := NewWidth;
   mInterface.MaxSize := NewWidth;
-  if newWidth <> Width then
+  if (newWidth <> Width) and (Broadcast) then
     mInterface.BarInterface.UpdateModuleSize
   else UpdateSize;
 end;
@@ -1299,8 +1307,11 @@ end;
 procedure TMainForm.btnMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  MoveButton := TSharpETaskItem(Sender);
   hasmoved := False;
+  if sLockDragDrop and not (ssShift in Shift) then
+    exit;
+
+  MoveButton := TSharpETaskItem(Sender);
 end;
 
 procedure TMainForm.btnMouseMove(Sender: TObject; Shift: TShiftState; X,
