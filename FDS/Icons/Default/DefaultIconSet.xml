@@ -33,9 +33,17 @@
       <name>icon.shutdown.reboot</name>
       <file>icon.shutdown.reboot.ico</file>
     </7>
-    <8>
+	<8>
+      <name>icon.shutdown.shutdown</name>
+      <file>icon.shutdown.shutdown.ico</file>
+    </8>
+	<9>
+      <name>icon.shutdown.hibernate</name>
+      <file>icon.shutdown.hibernate.ico</file>
+    </9>
+    <10>
       <name>icon.desktop</name>
       <file>icon.desktop.ico</file>
-    </8>
+    </10>
   </Icons>
 </IconSet>
