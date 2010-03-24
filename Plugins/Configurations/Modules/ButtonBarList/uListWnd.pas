@@ -349,8 +349,13 @@ procedure TfrmList.tmrUpdatePositionTimer(Sender: TObject);
 var
   pt: TPoint;
   n: Integer;
+  CPos : TPoint;
 begin
-  pt := lbItems.ScreenToClient(Mouse.CursorPos);
+  if not GetCursorPosSecure(CPos) then
+    exit;
+
+  pt := lbItems.ScreenToClient(CPos);
+
   tmrUpdatePosition.Enabled := False;
 
   n := lbItems.ItemAtPos(point(pt.x, pt.y), True);

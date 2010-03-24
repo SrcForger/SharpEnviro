@@ -1440,8 +1440,12 @@ var
   msg: Cardinal;
   code: Cardinal;
   i, n: Integer;
+  CPos : TPoint;
 begin
-  if WindowFromPoint(mouse.Cursorpos) = sbPlugin.Handle then
+  if not GetCursorPosSecure(CPos) then
+    exit;  
+
+  if WindowFromPoint(CPos) = sbPlugin.Handle then
   begin
     Handled := true;
     if ssShift in Shift then

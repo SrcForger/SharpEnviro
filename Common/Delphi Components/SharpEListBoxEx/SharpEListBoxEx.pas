@@ -15,6 +15,7 @@ uses
   PngImageList,
   PngImage,
   Types,
+  SharpApi,
   GR32,
   GR32_Image,
   GR32_Backends;
@@ -361,6 +362,7 @@ var
   tmpItem: TSharpEListItem;
   tmpCol: TSharpEListBoxExColumn;
   p: TPoint;
+  CPos : TPoint;
 begin
   case Message.NotifyCode of
     LBN_SELCHANGE:
@@ -370,7 +372,11 @@ begin
     LBN_DBLCLK: begin
 
         if Assigned(FOnDblClickItem) then begin
-          p := Self.ScreenToClient(mouse.CursorPos);
+
+          if not GetCursorPosSecure(CPos) then
+            exit;
+
+          p := Self.ScreenToClient(CPos);
           ItemNo := ItemAtPos(p, True);
 
           if ItemNo <> -1 then begin
@@ -699,15 +705,19 @@ var
   R: TRect;
   n: Integer;
   pt: TPoint;
+  CPos : TPoint;
 begin
   result := nil;
 
-  n := ItemAtPos(Self.ScreenToClient(Mouse.CursorPos), True);
+  if not GetCursorPosSecure(CPos) then
+    exit;  
+
+  n := ItemAtPos(Self.ScreenToClient(CPos), True);
   if n = -1 then begin
     exit;
   end;
 
-  pt := Self.ScreenToClient(Mouse.CursorPos);
+  pt := Self.ScreenToClient(CPos);
   X := pt.X;
   Y := pt.Y;
 
@@ -1184,10 +1194,14 @@ var
   cur: TCursor;
   tmpItem: TSharpEListItem;
   b: Boolean;
+  CPos : TPoint;
 begin
   UpdateColumnSizes;
 
-  n := ItemAtPos(Self.ScreenToClient(Mouse.CursorPos), True);
+  if not GetCursorPosSecure(CPos) then
+    exit;    
+
+  n := ItemAtPos(Self.ScreenToClient(CPos), True);
   if n = -1 then begin
     Self.Cursor := crDefault;
     exit;

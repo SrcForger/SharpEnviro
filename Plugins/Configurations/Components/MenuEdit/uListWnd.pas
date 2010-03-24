@@ -451,6 +451,7 @@ var
   newItem: TSharpEListItem;
   png: TPngImageCollectionItem;
   pt: TPoint;
+  CPos : TPoint;
 begin
 
   if AClear then begin
@@ -537,7 +538,10 @@ begin
         lbItems.ItemIndex := -1
       else begin
 
-        pt := lbItems.ScreenToClient(Mouse.CursorPos);
+        if not GetCursorPosSecure(CPos) then
+          exit;
+
+        pt := lbItems.ScreenToClient(CPos);
         n := lbItems.ItemAtPos(point(pt.x, pt.y), True);
         if n <> -1 then
 
