@@ -332,8 +332,8 @@ function GetNearestIconSize(Height : integer) : integer;
 begin
   if Height <= 16 then
     result := 16
-  else if Height <= 22 then
-    result := 22
+//  else if Height <= 22 then
+//    result := 22
   else if Height <= 32 then
     result := 32
   else if Height <= 48 then
