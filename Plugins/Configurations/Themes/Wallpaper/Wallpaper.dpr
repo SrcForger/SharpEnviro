@@ -164,6 +164,7 @@ begin
       wpItem.SwitchRecursive := SwitchRecursive;
       wpItem.SwitchRandomize := SwitchRandomize;
       wpItem.SwitchTimeout := SwitchTimer;
+      wpItem.Switch := Switch;
     end;
     wpItem.LoadFromFile;
   end;
@@ -266,6 +267,7 @@ begin
       SwitchRecursive := wpItem.SwitchRecursive;
       SwitchRandomize := wpItem.SwitchRandomize;
       SwitchTimer     := wpItem.SwitchTimeout;
+      Switch          := wpItem.Switch;
     end;
     FTheme.Wallpaper.UpdateWallpaper(MonWall);
   end;

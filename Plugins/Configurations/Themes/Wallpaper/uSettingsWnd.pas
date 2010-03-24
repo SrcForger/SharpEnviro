@@ -98,6 +98,7 @@ type
     GDEndAlpha: integer;
     MirrorHoriz: boolean;
     MirrorVert: boolean;
+    Switch : Boolean;
     SwitchPath : string;
     SwitchRecursive : Boolean;
     SwitchRandomize : Boolean;
@@ -464,6 +465,7 @@ procedure TfrmSettingsWnd.chkAutoWallpaperClick(Sender: TObject);
 begin
   pnlWallpaperFilePath.Visible := not chkAutoWallpaper.Checked;
   pnlWallpaperDirectoryPath.Visible := chkAutoWallpaper.Checked;
+  UpdateWpItem;  
 end;
 
 procedure TfrmSettingsWnd.chkWpRandomizeClick(Sender: TObject);
@@ -498,20 +500,13 @@ begin
 
   FCurrentWP.MirrorHoriz := chkWpMirrorHoriz.Checked;
   FCurrentWP.MirrorVert := chkWpMirrorVert.Checked;
-  
-  if chkAutoWallpaper.Checked then
-  begin
-    FCurrentWP.SwitchPath := edtWpDirectory.Text;
-    FCurrentWP.SwitchRecursive := chkWpRecursive.Checked;
-    FCurrentWP.SwitchRandomize := chkWpRandomize.Checked;
-    FCurrentWP.SwitchTimeout := sgbWpChangeInterval.Value * 1000 * 60;
-    FCurrentWP.FileName := '';
-  end
-  else
-  begin
-    FCurrentWP.FileName := edtWpFile.Text;
-    FCurrentWP.SwitchPath := '';
-  end;
+
+  FCurrentWP.Switch := chkAutoWallpaper.Checked;
+  FCurrentWP.SwitchPath := edtWpDirectory.Text;
+  FCurrentWP.SwitchRecursive := chkWpRecursive.Checked;
+  FCurrentWP.SwitchRandomize := chkWpRandomize.Checked;
+  FCurrentWP.SwitchTimeout := sgbWpChangeInterval.Value * 1000 * 60;
+  FCurrentWP.FileName := edtWpFile.Text;
 
   FCurrentWP.Alpha := sgbWpTrans.Value;
   FCurrentWP.ColorChange := chkApplyColor.checked;
@@ -573,7 +568,7 @@ begin
     edtWpFile.Text := AWPItem.FileName;
     edtWpDirectory.DoubleBuffered := True;
     edtWpDirectory.Text := AWPItem.SwitchPath;
-    chkAutoWallpaper.Checked := (AWPItem.FileName = '');
+    chkAutoWallpaper.Checked := AWPItem.Switch;
     pnlWallpaperFilePath.Visible := not chkAutoWallpaper.Checked;
     pnlWallpaperDirectoryPath.Visible := chkAutoWallpaper.Checked;
     chkWpRecursive.Checked := AWPItem.SwitchRecursive;
