@@ -565,6 +565,8 @@ begin
 
   shellInit := True;
 
+  Application.Initialize;
+
   try
     while GetMessage(wndMsg, 0, 0, 0) do
     begin
