@@ -58,7 +58,7 @@ type
     procedure UpdateMonitor(pMonitor : TWallpaperMonitor); stdcall;
     procedure UpdateWallpaper(pWallpaper : TThemeWallpaperItem); stdcall;
 
-    procedure UpdateAutomaticWallpaper(MonID : integer); stdcall;
+    function UpdateAutomaticWallpaper(MonID : integer) : boolean; stdcall;
 
     procedure SaveToFile; stdcall;
     procedure LoadFromFile; stdcall;
@@ -217,7 +217,7 @@ begin
   end;
 end;
 
-procedure TThemeWallpaper.UpdateAutomaticWallpaper(MonID : integer);
+function TThemeWallpaper.UpdateAutomaticWallpaper(MonID : integer) : boolean;
 var
   i : integer;
   wallID : integer;
@@ -237,8 +237,11 @@ begin
   end;
 
   // The monitor does not have automatic wallpaper changing enabled so exit.
-  if (FWallpapers[wallID].SwitchTimer <= 0) then
+  if (FWallpapers[wallID].SwitchTimer <= 0) or (not FWallpapers[wallID].Switch) then
+  begin
+    result := False;
     Exit;
+  end;
     
   WallPics := TStringList.Create;
   try
@@ -278,6 +281,8 @@ begin
 
     WallPics.Free;
   end;
+
+  result := True;
 end;
 
 procedure TThemeWallpaper.LoadFromFile;
@@ -304,18 +309,16 @@ begin
           begin
             SetWallpaperDefaults(High(FWallpapers));
 
-            Name            := Value('Name', Name);
+            Name  := Value('Name', Name);
             Image := Value('Image', '');
-            if Image = '' then
+            SwitchPath := Value('SwitchPath', '');
+            Switch := BoolValue('Switch', Switch);
+            if DirectoryExists(SwitchPath) then
             begin
-              SwitchPath := Value('SwitchPath', '');
-              if DirectoryExists(SwitchPath) then
-              begin
-                SwitchRecursive := BoolValue('SwitchRecursive', SwitchRecursive);
-                SwitchRandomize := BoolValue('SwitchRandomize', SwitchRandomize);
-                SwitchTimer := IntValue('SwitchTimer', SwitchTimer);
-              end;
-            end;
+              SwitchRecursive := BoolValue('SwitchRecursive', SwitchRecursive);
+              SwitchRandomize := BoolValue('SwitchRandomize', SwitchRandomize);
+              SwitchTimer := IntValue('SwitchTimer', SwitchTimer);
+            end else Switch := False;
 
             ColorStr        := Value('Color', ColorStr);
             Alpha           := IntValue('Alpha', Alpha);
@@ -383,15 +386,13 @@ begin
         with Items.Add('item').Items, FWallpapers[n] do
         begin
           Add('Name', Name);
+          Add('Image', Image);          
 
-          if SwitchPath <> '' then
-          begin
-            Add('SwitchPath', SwitchPath);
-            Add('SwitchRecursive', SwitchRecursive);
-            Add('SwitchRandomize', SwitchRandomize);
-            Add('SwitchTimer', SwitchTimer);
-          end else
-            Add('Image', Image);
+          Add('Switch', Switch);
+          Add('SwitchPath', SwitchPath);
+          Add('SwitchRecursive', SwitchRecursive);
+          Add('SwitchRandomize', SwitchRandomize);
+          Add('SwitchTimer', SwitchTimer);
             
           Add('Color', ColorStr);
           Add('Alpha', Alpha);
@@ -462,7 +463,8 @@ begin
     SwitchPath      := '';
     SwitchRecursive := False;
     SwitchRandomize := True;
-    SwitchTimer     := 0;
+    SwitchTimer     := 5000 * 60;
+    Switch          := False;
   end;
 end;
 

@@ -43,7 +43,7 @@ type
     function GetMonitor(MonitorID : integer): TWallpaperMonitor; stdcall;
     procedure UpdateMonitor(pMonitor : TWallpaperMonitor); stdcall;
     procedure UpdateWallpaper(pWallpaper : TThemeWallpaperItem); stdcall;
-    procedure UpdateAutomaticWallpaper(MonID : integer); stdcall;
+    function UpdateAutomaticWallpaper(MonID : integer) : boolean; stdcall;
 
     procedure SaveToFile; stdcall;
     procedure LoadFromFile; stdcall;
