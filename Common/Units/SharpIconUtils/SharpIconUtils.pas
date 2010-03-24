@@ -51,6 +51,7 @@ function LoadIco(Bmp : TBitmap32; IconFile : string; Size : integer) : boolean;
 function LoadPng(Bmp : TBitmap32; PngFile:string) : boolean;
 function IconStringToIcon(Icon,Target : String; Bmp : TBitmap32) : boolean; overload;
 function IconStringToIcon(Icon,Target : String; Bmp : TBitmap32; Size : integer) : boolean; overload;
+function GetNearestIconSize(Height : integer) : integer;
 
 implementation
 
@@ -325,6 +326,23 @@ begin
       end else result := False;
     end;
   end;
+end;
+
+function GetNearestIconSize(Height : integer) : integer;
+begin
+  if Height <= 16 then
+    result := 16
+  else if Height <= 22 then
+    result := 22
+  else if Height <= 32 then
+    result := 32
+  else if Height <= 48 then
+    result := 48
+  else if Height <= 64 then
+    result := 64
+  else if Height <= 128 then
+    result := 128
+  else result := 256;
 end;
 
 end.
