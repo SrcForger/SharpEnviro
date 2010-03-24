@@ -143,7 +143,7 @@ begin
       MonID := PMon.MonitorNum;
     WP := Theme.Wallpaper.GetMonitorWallpaper(MonID);
 
-    if (WP.SwitchTimer > 0) then
+    if (WP.SwitchTimer > 0) and (WP.Switch) then
     begin
       n := Length(WallpaperTimer);
 
