@@ -45,8 +45,7 @@ uses
   math,
   StrTools,
   ShlIntf,
-  ActiveX, ShlObj, ComObj,
-  TranComp;
+  ActiveX, ShlObj, ComObj;
 
 const
   IID_IAutoComplete: TGUID = '{00bb2762-6a77-11d0-a535-00c04fd7d062}';
@@ -97,7 +96,38 @@ type
   TSearchListChangeEvent = procedure of object;
   TParentControl = class(TWinControl);
 
-  TSharpEEditText = class(TZ9Edit)
+  TTransparentEdit = class(TEdit)
+  private 
+    { Private declarations }
+    FAlignText: TAlignment; 
+    FTransparent: Boolean; 
+    FPainting: Boolean; 
+    procedure SetAlignText(Value: TAlignment); 
+    procedure SetTransparent(Value: Boolean); 
+  protected 
+    { Protected declarations }
+    procedure CreateParams(var Params: TCreateParams); override; 
+    procedure Change; override; 
+    procedure SetParent(AParent: TWinControl); override;
+    procedure WMEraseBkGnd(var Message: TWMEraseBkGnd); message WM_ERASEBKGND;
+    procedure CNCtlColorEdit(var Message: TWMCtlColorEdit); message CN_CTLCOLOREDIT;
+    procedure CNCtlColorStatic(var Message: TWMCtlColorStatic); message CN_CTLCOLORSTATIC;
+    procedure CMParentColorChanged(var Message: TMessage); message CM_PARENTCOLORCHANGED;
+    procedure WMSize(var Message: TWMSize); message WM_SIZE; 
+    procedure WMMove(var Message: TWMMove); message WM_MOVE;
+  public
+    { Public declarations } 
+    constructor Create(AOwner: TComponent); override; 
+    destructor Destroy; override; 
+  published 
+    { Published declarations } 
+    property Align; 
+    property AlignText: TAlignment read FAlignText write SetAlignText default taLeftJustify; 
+    property Transparent: Boolean read FTransparent write SetTransparent default false; 
+
+  end;
+
+  TSharpEEditText = class(TTransparentEdit)
   private
     FStringList: TStringList;
     FSearchListChange: TSearchListChangeEvent;
@@ -285,6 +315,112 @@ begin
     FCurrIndex := FStrings.Count;
     Result := S_FALSE;
   end;
+end;
+
+{ TTransparentEdit}
+constructor TTransparentEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FAlignText := taLeftJustify;
+  FTransparent := false;
+  FPainting := false;
+end;
+
+destructor TTransparentEdit.Destroy;
+begin
+  inherited Destroy;
+end;
+
+
+
+procedure TTransparentEdit.SetAlignText(Value: TAlignment);
+begin
+  if FAlignText <> Value then
+  begin 
+    FAlignText := Value; 
+    RecreateWnd; 
+    Invalidate; 
+  end; 
+end; 
+
+
+procedure TTransparentEdit.SetTransparent(Value: Boolean);
+begin
+  if FTransparent <> Value then
+  begin 
+    FTransparent := Value; 
+    Invalidate; 
+  end; 
+end; 
+
+procedure TTransparentEdit.WMEraseBkGnd(var Message: TWMEraseBkGnd);
+begin
+  // Don't allow it to erase the background
+end; 
+
+procedure TTransparentEdit.CNCtlColorEdit(var Message: TWMCtlColorEdit);
+begin
+  inherited;
+  if FTransparent then
+    SetBkMode(Message.ChildDC, 1);
+
+  Message.Result := GetStockObject(NULL_BRUSH);
+end;
+
+procedure TTransparentEdit.CNCtlColorStatic(var Message: TWMCtlColorStatic);
+begin
+  inherited;
+  if FTransparent then
+    SetBkMode(Message.ChildDC, 1);
+
+  Message.Result := GetStockObject(NULL_BRUSH);
+end;
+
+procedure TTransparentEdit.CMParentColorChanged(var Message: TMessage);
+begin
+  inherited;
+  if FTransparent then
+    Invalidate;
+end;
+
+procedure TTransparentEdit.WMSize(var Message: TWMSize);
+var 
+  r : TRect;
+begin
+  inherited;
+  r := ClientRect;
+  InvalidateRect(handle,@r,false);
+end; 
+
+
+procedure TTransparentEdit.WMMove(var Message: TWMMove);
+var 
+  r : TRect;
+begin
+  inherited;
+  Invalidate;
+  r := ClientRect; 
+  InvalidateRect(handle,@r,false);
+end;
+
+procedure TTransparentEdit.CreateParams(var Params: TCreateParams);
+const
+  Alignments: array [TAlignment] of DWord = (ES_LEFT, ES_RIGHT, ES_CENTER); 
+begin
+  inherited CreateParams(Params);
+  Params.Style := Params.Style or ES_MULTILINE or ES_AUTOHSCROLL;
+end;
+
+procedure TTransparentEdit.Change;
+begin
+  TControl(Self.Parent).Invalidate;
+  TControl(Self.Parent).Update;
+  inherited Change; 
+end; 
+
+procedure TTransparentEdit.SetParent(AParent: TWinControl); 
+begin
+  inherited SetParent(AParent);
 end;
 
 { TSharpEEditText }
