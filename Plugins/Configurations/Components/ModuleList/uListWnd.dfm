@@ -20,7 +20,7 @@ object frmListWnd: TfrmListWnd
   TextHeight = 13
   object Shape1: TShape
     Left = 0
-    Top = 30
+    Top = 31
     Width = 434
     Height = 1
     Align = alTop

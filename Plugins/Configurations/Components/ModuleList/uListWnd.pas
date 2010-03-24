@@ -298,7 +298,7 @@ end;
 
 procedure TfrmListWnd.FormResize(Sender: TObject);
 begin
-  Self.Height := lbModulesRight.Height + lbModulesLeft.Height + 80;
+  Self.Height := lbModulesRight.Height + lbModulesLeft.Height + 100;
 end;
 
 procedure TfrmListWnd.FormShow(Sender: TObject);
