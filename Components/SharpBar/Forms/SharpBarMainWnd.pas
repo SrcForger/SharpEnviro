@@ -661,6 +661,7 @@ begin
     SkinInterface.SkinManager.UpdateScheme;
     SkinInterface.SkinManager.UpdateSkin;
     SharpEBar.UpdateSkin;
+    SharpEBar.UpdatePosition;
     if h < Height then
       UpdateBGZone
     else
