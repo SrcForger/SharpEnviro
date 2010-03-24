@@ -134,7 +134,7 @@ type
 implementation
 
 {$R *.dfm}
-{$R AlarmGlyphs.res}
+{$R alarmglyphs.res}
 
 
 {TAlarmTime}
@@ -261,32 +261,38 @@ end;
 procedure TMainForm.LoadIcons;
 var
   TempBmp : TBitmap32;
-  ResStream : TResourceStream;
-  Alpha : boolean;
+  size : integer;
+  IconName : string;
 begin
   TempBmp := TBitmap32.Create;
-
-  TempBmp.Clear(color32(0,0,0,0));
   try
-    if alarmSettings.IsAlarming then
-      ResStream := TResourceStream.Create(HInstance, 'alarmactive', RT_RCDATA)
-    else if not alarmSettings.IsOn then
-      ResStream := TResourceStream.Create(HInstance, 'alarmoff', RT_RCDATA)
-    else
-      ResStream := TResourceStream.Create(HInstance, 'alarmon', RT_RCDATA);
-      
+    TempBmp.Clear(color32(0,0,0,0));
     try
-      LoadBitmap32FromPng(TempBmp,ResStream,Alpha);
+      size := GetNearestIconSize(mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y);
+
+      TempBmp.DrawMode := dmBlend;
+      TempBmp.CombineMode := cmMerge;
+      TempBmp.SetSize(size, size);
+
+      TempBmp.Clear(color32(0,0,0,0));
+
+      if alarmSettings.IsAlarming then
+        IconName := 'icon.alarm.active'
+      else if not alarmSettings.IsOn then
+        IconName := 'icon.alarm.off'
+      else
+        IconName := 'icon.alarm.on';
+
+      IconStringToIcon(IconName, '', TempBmp, size);
       btnAlarm.Glyph32.Assign(tempBmp);
-    finally
-      ResStream.Free;
+    except
     end;
-  except
+
+    btnAlarm.UpdateSkin;
+
+  finally
+    TempBmp.Free;
   end;
-
-  btnAlarm.UpdateSkin;
-
-  TempBmp.Free;
 end;
 
 procedure TMainForm.LoadSettings;

@@ -1,2 +1,2 @@
-brc32 alarmglyphs.rc -fo ..\alarmglyphs.res -v
+brcc32 alarmglyphs.rc -fo ..\alarmglyphs.res -v
 PAUSE

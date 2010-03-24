@@ -1,4 +1,1 @@
-alarmon RCDATA "alarm-on.png"
-alarmoff RCDATA "alarm-off.png"
-alarmactive RCDATA "alarm-active.png"
 wavdefault RCDATA "alarm-default.wav"
