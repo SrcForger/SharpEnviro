@@ -520,7 +520,10 @@ begin
       if not SharpEBar.PrimaryMonitor then
         FSuspended := False;
     WTS_SESSION_UNLOCK:
+    begin
       ModuleManager.BroadcastPluginMessage('MM_SESSION_UNLOCK');
+      SharpEBar.UpdateAlwaysOnTop;
+    end;
   end;
 end;
 
