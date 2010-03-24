@@ -125,7 +125,7 @@ begin
       cbStyle.ItemIndex := IntValue('State', 2);
       chkVWM.Checked := BoolValue('VWMOnly', False);
       chkMonitor.Checked := BoolValue('MonitorOnly',False);
-      chkDragDrop.Checked := not BoolValue('LockDragDrop', True);
+      chkDragDrop.Checked := not BoolValue('LockDragDrop', False);
     end;
   end;
 end;

@@ -3,7 +3,7 @@ object frmSettings: TfrmSettings
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmSettings'
-  ClientHeight = 485
+  ClientHeight = 451
   ClientWidth = 579
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -18,8 +18,8 @@ object frmSettings: TfrmSettings
   object pnlStyleAndSort: TPanel
     AlignWithMargins = True
     Left = 5
-    Top = 47
-    Width = 433
+    Top = 45
+    Width = 569
     Height = 31
     Margins.Left = 5
     Margins.Top = 0
@@ -29,6 +29,7 @@ object frmSettings: TfrmSettings
     BevelOuter = bvNone
     ParentColor = True
     TabOrder = 0
+    ExplicitTop = 47
     object lblStyle: TLabel
       Left = 0
       Top = 4
@@ -63,8 +64,8 @@ object frmSettings: TfrmSettings
     AlignWithMargins = True
     Left = 5
     Top = 0
-    Width = 433
-    Height = 37
+    Width = 569
+    Height = 35
     Margins.Left = 5
     Margins.Top = 0
     Margins.Right = 5
@@ -79,9 +80,9 @@ object frmSettings: TfrmSettings
   object SharpECenterHeader1: TSharpECenterHeader
     AlignWithMargins = True
     Left = 5
-    Top = 187
-    Width = 433
-    Height = 37
+    Top = 183
+    Width = 569
+    Height = 35
     Margins.Left = 5
     Margins.Top = 0
     Margins.Right = 5
@@ -94,12 +95,13 @@ object frmSettings: TfrmSettings
     DescriptionColor = clRed
     Align = alTop
     Color = clWindow
+    ExplicitTop = 185
   end
   object Panel1: TPanel
     AlignWithMargins = True
     Left = 5
-    Top = 234
-    Width = 433
+    Top = 228
+    Width = 569
     Height = 21
     Margins.Left = 5
     Margins.Top = 0
@@ -110,6 +112,7 @@ object frmSettings: TfrmSettings
     Color = clWindow
     ParentBackground = False
     TabOrder = 3
+    ExplicitTop = 230
     object chkOverlay: TJvXPCheckbox
       Left = 0
       Top = 0
@@ -130,8 +133,8 @@ object frmSettings: TfrmSettings
   object Panel2: TPanel
     AlignWithMargins = True
     Left = 5
-    Top = 312
-    Width = 433
+    Top = 304
+    Width = 569
     Height = 21
     Margins.Left = 5
     Margins.Top = 0
@@ -142,6 +145,7 @@ object frmSettings: TfrmSettings
     Color = clWindow
     ParentBackground = False
     TabOrder = 4
+    ExplicitTop = 308
     object chkVWM: TJvXPCheckbox
       Left = 0
       Top = 0
@@ -160,9 +164,9 @@ object frmSettings: TfrmSettings
   object SharpECenterHeader2: TSharpECenterHeader
     AlignWithMargins = True
     Left = 5
-    Top = 265
-    Width = 433
-    Height = 37
+    Top = 259
+    Width = 569
+    Height = 35
     Margins.Left = 5
     Margins.Top = 0
     Margins.Right = 5
@@ -173,12 +177,13 @@ object frmSettings: TfrmSettings
     DescriptionColor = clRed
     Align = alTop
     Color = clWindow
+    ExplicitTop = 261
   end
   object Panel3: TPanel
     AlignWithMargins = True
     Left = 5
-    Top = 343
-    Width = 433
+    Top = 335
+    Width = 569
     Height = 21
     Margins.Left = 5
     Margins.Top = 0
@@ -189,6 +194,7 @@ object frmSettings: TfrmSettings
     Color = clWindow
     ParentBackground = False
     TabOrder = 5
+    ExplicitTop = 337
     object chkMonitor: TJvXPCheckbox
       Left = 0
       Top = 0
@@ -209,9 +215,9 @@ object frmSettings: TfrmSettings
   object SharpECenterHeader3: TSharpECenterHeader
     AlignWithMargins = True
     Left = 5
-    Top = 78
-    Width = 433
-    Height = 37
+    Top = 76
+    Width = 569
+    Height = 35
     Margins.Left = 5
     Margins.Top = 0
     Margins.Right = 5
@@ -226,8 +232,8 @@ object frmSettings: TfrmSettings
   object Panel4: TPanel
     AlignWithMargins = True
     Left = 5
-    Top = 125
-    Width = 433
+    Top = 121
+    Width = 569
     Height = 21
     Margins.Left = 5
     Margins.Top = 0
@@ -258,8 +264,8 @@ object frmSettings: TfrmSettings
   object Panel5: TPanel
     AlignWithMargins = True
     Left = 5
-    Top = 156
-    Width = 433
+    Top = 152
+    Width = 569
     Height = 31
     Hint = 
       'Holding down this key while task previews are open will make the' +
@@ -308,7 +314,7 @@ object frmSettings: TfrmSettings
       Margins.Bottom = 0
       Style = csDropDownList
       Constraints.MaxWidth = 262
-      ItemHeight = 17
+      ItemHeight = 13
       ItemIndex = 1
       TabOrder = 0
       Text = 'Shift'
@@ -321,9 +327,9 @@ object frmSettings: TfrmSettings
   object SharpECenterHeader4: TSharpECenterHeader
     AlignWithMargins = True
     Left = 5
-    Top = 491
-    Width = 433
-    Height = 37
+    Top = 366
+    Width = 569
+    Height = 35
     Margins.Left = 5
     Margins.Top = 0
     Margins.Right = 5
@@ -336,14 +342,12 @@ object frmSettings: TfrmSettings
     DescriptionColor = clRed
     Align = alTop
     Color = clWindow
-    ExplicitLeft = 0
-    ExplicitTop = 518
   end
   object Panel6: TPanel
     AlignWithMargins = True
     Left = 5
-    Top = 543
-    Width = 433
+    Top = 411
+    Width = 569
     Height = 21
     Margins.Left = 5
     Margins.Top = 0
@@ -354,8 +358,6 @@ object frmSettings: TfrmSettings
     Color = clWindow
     ParentBackground = False
     TabOrder = 11
-    ExplicitLeft = 10
-    ExplicitTop = 617
     object chkDragDrop: TJvXPCheckbox
       Left = 0
       Top = 0
