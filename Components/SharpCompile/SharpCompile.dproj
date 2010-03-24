@@ -52,6 +52,5 @@
       <Form>frmMain</Form>
     </DCCReference>
     <DCCReference Include="uCompiler.pas" />
-    <DCCReference Include="VistaTheme.pas" />
   </ItemGroup>
 </Project>
