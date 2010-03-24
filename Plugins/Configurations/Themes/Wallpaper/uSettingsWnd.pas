@@ -70,7 +70,7 @@ uses
   SharpERoundPanel,
   SharpEPageControl, SharpECenterHeader, JvXPCore, JvXPCheckCtrls,
   ISharpCenterHostUnit,
-  ISharpCenterPluginUnit;
+  ISharpCenterPluginUnit, JvBrowseFolder;
 
 type
   TWPItem = class
@@ -98,6 +98,10 @@ type
     GDEndAlpha: integer;
     MirrorHoriz: boolean;
     MirrorVert: boolean;
+    SwitchPath : string;
+    SwitchRecursive : Boolean;
+    SwitchRandomize : Boolean;
+    SwitchTimeout : Integer;
 
     constructor Create; reintroduce;
     destructor Destroy; override;
@@ -113,7 +117,7 @@ type
     pagWallpaper: TJvStandardPage;
     pagColor: TJvStandardPage;
     pagGradient: TJvStandardPage;
-    Panel6: TPanel;
+    pnlWallpaperFilePath: TPanel;
     edtWpFile: TEdit;
     btnWpBrowse: TButton;
     Panel7: TPanel;
@@ -156,6 +160,14 @@ type
     chkWpMirrorHoriz: TJvXPCheckbox;
     SharpECenterHeader9: TSharpECenterHeader;
     SharpECenterHeader10: TSharpECenterHeader;
+    chkAutoWallpaper: TJvXPCheckbox;
+    pnlWallpaperDirectoryPath: TPanel;
+    edtWpDirectory: TEdit;
+    btnWpDirectoryBrowse: TButton;
+    chkWpRecursive: TJvXPCheckbox;
+    sgbWpChangeInterval: TSharpeGaugeBox;
+    chkWpRandomize: TJvXPCheckbox;
+    pnlWallpaperOptions: TPanel;
     procedure fedit_image_KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
 
@@ -172,6 +184,12 @@ type
     procedure MonitorChangeEvent(Sender: TObject);
     procedure HSLColorChangeEvent(Sender: TObject; Value: Integer);
     procedure cboGradTypeSelect(Sender: TObject);
+    procedure chkAutoWallpaperClick(Sender: TObject);
+    procedure btnWpDirectoryBrowseClick(Sender: TObject);
+    procedure chkWpRecursiveClick(Sender: TObject);
+    procedure chkWpRandomizeClick(Sender: TObject);
+    procedure sgbWpChangeIntervalChangeValue(Sender: TObject; Value: Integer);
+    procedure edtWpDirectoryChange(Sender: TObject);
   private
     FPluginHost: ISharpCenterHost;
     FCurrentWP: TWPItem;
@@ -179,7 +197,7 @@ type
     procedure UpdateWpItem;
   public
     procedure UpdateGUIFromWPItem(AWPItem: TWPItem);
-    procedure UpdateWPItemFromGuid;
+    procedure UpdateWPItemFromGUI;
     procedure RenderPreview;
 
     procedure UpdateWallpaperPage;
@@ -227,6 +245,9 @@ begin
   GDEndAlpha := 255;
   MirrorHoriz := False;
   MirrorVert := False;
+  SwitchRecursive := False;
+  SwitchRandomize := True;
+  SwitchTimeout := 0;
 
   //TLinearResampler.Create(Bmp);
 end;
@@ -271,7 +292,7 @@ end;
 
 procedure TfrmSettingsWnd.UpdateWpItem;
 begin
-  UpdateWPItemFromGuid;
+  UpdateWPItemFromGUI;
   FPluginHost.SetSettingsChanged;
 end;
 
@@ -439,7 +460,29 @@ begin
   UpdateWpItem;
 end;
 
-procedure TfrmSettingsWnd.UpdateWPItemFromGuid;
+procedure TfrmSettingsWnd.chkAutoWallpaperClick(Sender: TObject);
+begin
+  pnlWallpaperFilePath.Visible := not chkAutoWallpaper.Checked;
+  pnlWallpaperDirectoryPath.Visible := chkAutoWallpaper.Checked;
+end;
+
+procedure TfrmSettingsWnd.chkWpRandomizeClick(Sender: TObject);
+begin
+  UpdateWpItem;
+end;
+
+procedure TfrmSettingsWnd.chkWpRecursiveClick(Sender: TObject);
+begin
+  UpdateWpItem;
+end;
+
+procedure TfrmSettingsWnd.sgbWpChangeIntervalChangeValue(Sender: TObject;
+  Value: Integer);
+begin
+  UpdateWpItem;
+end;
+
+procedure TfrmSettingsWnd.UpdateWPItemFromGUI;
 begin
   if FCurrentWP = nil then
     exit;
@@ -455,7 +498,21 @@ begin
 
   FCurrentWP.MirrorHoriz := chkWpMirrorHoriz.Checked;
   FCurrentWP.MirrorVert := chkWpMirrorVert.Checked;
-  FCurrentWP.FileName := edtWpFile.Text;
+  
+  if chkAutoWallpaper.Checked then
+  begin
+    FCurrentWP.SwitchPath := edtWpDirectory.Text;
+    FCurrentWP.SwitchRecursive := chkWpRecursive.Checked;
+    FCurrentWP.SwitchRandomize := chkWpRandomize.Checked;
+    FCurrentWP.SwitchTimeout := sgbWpChangeInterval.Value * 1000 * 60;
+    FCurrentWP.FileName := '';
+  end
+  else
+  begin
+    FCurrentWP.FileName := edtWpFile.Text;
+    FCurrentWP.SwitchPath := '';
+  end;
+
   FCurrentWP.Alpha := sgbWpTrans.Value;
   FCurrentWP.ColorChange := chkApplyColor.checked;
   FCurrentWP.Hue := sgbHue.Value;
@@ -493,6 +550,7 @@ begin
   rdoWpAlignCenter.OnClick := nil;
   rdoWpAlignTile.OnClick := nil;
   edtWpFile.OnChange := nil;
+  edtWpDirectory.OnChange := nil;
   secWpColor.OnUiChange := nil;
   secGradColor.OnUiChange := nil;
   try
@@ -513,6 +571,14 @@ begin
     chkWpMirrorVert.Checked := AWPItem.MirrorVert;
     edtWpFile.DoubleBuffered := true;
     edtWpFile.Text := AWPItem.FileName;
+    edtWpDirectory.DoubleBuffered := True;
+    edtWpDirectory.Text := AWPItem.SwitchPath;
+    chkAutoWallpaper.Checked := (AWPItem.FileName = '');
+    pnlWallpaperFilePath.Visible := not chkAutoWallpaper.Checked;
+    pnlWallpaperDirectoryPath.Visible := chkAutoWallpaper.Checked;
+    chkWpRecursive.Checked := AWPItem.SwitchRecursive;
+    chkWpRandomize.Checked := AWPItem.SwitchRandomize;
+    sgbWpChangeInterval.Value := AWPItem.SwitchTimeout div 1000 div 60;
     sgbWpTrans.Value := AWPItem.Alpha;
     chkApplyColor.checked := AWPItem.ColorChange;
     sgbHue.Value := AWPItem.Hue;
@@ -537,7 +603,7 @@ begin
       secGradColor.Items.Item[0].ColorCode := i
     else secGradColor.Items.Item[0].ColorCode := FTheme.Scheme.ParseColor(AWPItem.GDEndColorStr);
 
-    UpdateWPItemFromGuid;
+    UpdateWPItemFromGUI;
     RenderPreview;
     FPluginHost.Refresh(rtPreview);
   finally
@@ -550,6 +616,7 @@ begin
     rdoWpAlignCenter.OnClick := AlignmentChangeEvent;
     rdoWpAlignTile.OnClick := AlignmentChangeEvent;
     edtWpFile.OnChange := edtWallpaperChange;
+    edtWpDirectory.OnChange := edtWallpaperChange;
     secWpColor.OnUiChange := WallpaperColorUiChangeEvent;
     secGradColor.OnUiChange := WallpaperColorUiChangeEvent;    
   end;
@@ -603,7 +670,12 @@ begin
 
   RenderPreview;
   FPluginHost.Refresh(rtPreview);
-  FPluginHost.SetSettingsChanged;
+  UpdateWpItem;
+end;
+
+procedure TfrmSettingsWnd.edtWpDirectoryChange(Sender: TObject);
+begin
+  UpdateWpItem;
 end;
 
 procedure TfrmSettingsWnd.WallpaperTransChangeEvent(Sender: TObject;
@@ -619,7 +691,7 @@ end;
 
 procedure TfrmSettingsWnd.MonitorChangeEvent(Sender: TObject);
 begin
-  UpdateWPItemFromGuid;
+  UpdateWPItemFromGUI;
   FCurrentWP := TWPItem(cboMonitor.Items.Objects[cboMonitor.ItemIndex]);
   UpdateGUIFromWPItem(FCurrentWP);
 
@@ -653,6 +725,15 @@ begin
   end;
 end;
 
+procedure TfrmSettingsWnd.btnWpDirectoryBrowseClick(Sender: TObject);
+var
+  newDirectory : string;
+begin
+  newDirectory := edtWpDirectory.Text;
+  if BrowseForFolder('Browse for wallpaper directory...', True, newDirectory) then
+    edtWpDirectory.Text := newDirectory;
+end;
+
 procedure TfrmSettingsWnd.AlignmentChangeEvent(Sender: TObject);
 begin
   rdoWpAlignStretch.Checked := false;
@@ -661,8 +742,8 @@ begin
   rdoWpAlignTile.Checked := false;
   TJvXPCheckbox(sender).Checked := true;
 
-  UpdateWPItemFromGuid;
-  FPluginHost.SetSettingsChanged;;
+  UpdateWPItemFromGUI;
+  FPluginHost.SetSettingsChanged;
 end;
 
 procedure TfrmSettingsWnd.MirrorChangeEvent(Sender: TObject);

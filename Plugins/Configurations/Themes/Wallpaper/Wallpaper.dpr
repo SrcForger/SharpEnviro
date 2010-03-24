@@ -164,6 +164,10 @@ begin
       wpItem.GDEndAlpha := GDEndAlpha;
       wpItem.MirrorHoriz := MirrorHoriz;
       wpItem.MirrorVert := MirrorVert;
+      wpItem.SwitchPath := SwitchPath;
+      wpItem.SwitchRecursive := SwitchRecursive;
+      wpItem.SwitchRandomize := SwitchRandomize;
+      wpItem.SwitchTimeout := SwitchTimer;
     end;
     wpItem.LoadFromFile;
   end;
@@ -262,6 +266,10 @@ begin
       GDEndAlpha      := wpItem.GDEndAlpha;
       MirrorHoriz     := wpItem.MirrorHoriz;
       MirrorVert      := wpItem.MirrorVert;
+      SwitchPath      := wpItem.SwitchPath;
+      SwitchRecursive := wpItem.SwitchRecursive;
+      SwitchRandomize := wpItem.SwitchRandomize;
+      SwitchTimer     := wpItem.SwitchTimeout;
     end;
     FTheme.Wallpaper.UpdateWallpaper(MonWall);
   end;

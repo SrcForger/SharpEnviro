@@ -36,55 +36,10 @@ object frmSettingsWnd: TfrmSettingsWnd
       Width = 491
       Height = 490
       Caption = 'pagWallpaper'
-      object Panel6: TPanel
-        AlignWithMargins = True
-        Left = 5
-        Top = 57
-        Width = 481
-        Height = 22
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Align = alTop
-        BevelOuter = bvNone
-        ParentBackground = False
-        ParentColor = True
-        TabOrder = 0
-        object edtWpFile: TEdit
-          Left = 0
-          Top = 0
-          Width = 403
-          Height = 22
-          Margins.Left = 28
-          Margins.Top = 8
-          Margins.Right = 8
-          Margins.Bottom = 0
-          Align = alClient
-          TabOrder = 0
-          Text = 'edtWpFile'
-          OnChange = edtWallpaperChange
-          ExplicitHeight = 21
-        end
-        object btnWpBrowse: TButton
-          AlignWithMargins = True
-          Left = 406
-          Top = 0
-          Width = 75
-          Height = 22
-          Margins.Top = 0
-          Margins.Right = 0
-          Margins.Bottom = 0
-          Align = alRight
-          Caption = 'Browse'
-          TabOrder = 1
-          OnClick = btnWpBrowseClick
-        end
-      end
       object Panel7: TPanel
         AlignWithMargins = True
         Left = 5
-        Top = 136
+        Top = 223
         Width = 481
         Height = 23
         Margins.Left = 5
@@ -142,7 +97,7 @@ object frmSettingsWnd: TfrmSettingsWnd
       object Panel8: TPanel
         AlignWithMargins = True
         Left = 5
-        Top = 216
+        Top = 303
         Width = 481
         Height = 23
         Margins.Left = 5
@@ -190,7 +145,7 @@ object frmSettingsWnd: TfrmSettingsWnd
       object Panel9: TPanel
         AlignWithMargins = True
         Left = 5
-        Top = 296
+        Top = 383
         Width = 481
         Height = 22
         Margins.Left = 5
@@ -230,7 +185,7 @@ object frmSettingsWnd: TfrmSettingsWnd
       object secWpColor: TSharpEColorEditorEx
         AlignWithMargins = True
         Left = 1
-        Top = 375
+        Top = 462
         Width = 485
         Height = 32
         Margins.Left = 1
@@ -280,8 +235,10 @@ object frmSettingsWnd: TfrmSettingsWnd
         Margins.Top = 10
         Margins.Right = 5
         Margins.Bottom = 0
-        Title = 'Wallpaper filename'
-        Description = 'Define the wallpaper filename for the selected monitor'
+        Title = 'Wallpaper options'
+        Description = 
+          'Define the wallpaper filename or directory for the selected moni' +
+          'tor'
         TitleColor = clWindowText
         DescriptionColor = clRed
         Align = alTop
@@ -289,7 +246,7 @@ object frmSettingsWnd: TfrmSettingsWnd
       object SharpECenterHeader7: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
-        Top = 89
+        Top = 176
         Width = 481
         Height = 37
         Margins.Left = 5
@@ -305,7 +262,7 @@ object frmSettingsWnd: TfrmSettingsWnd
       object SharpECenterHeader8: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
-        Top = 169
+        Top = 256
         Width = 481
         Height = 37
         Margins.Left = 5
@@ -321,7 +278,7 @@ object frmSettingsWnd: TfrmSettingsWnd
       object SharpECenterHeader9: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
-        Top = 249
+        Top = 336
         Width = 481
         Height = 37
         Margins.Left = 5
@@ -339,7 +296,7 @@ object frmSettingsWnd: TfrmSettingsWnd
       object SharpECenterHeader10: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
-        Top = 328
+        Top = 415
         Width = 481
         Height = 37
         Margins.Left = 5
@@ -351,6 +308,152 @@ object frmSettingsWnd: TfrmSettingsWnd
         TitleColor = clWindowText
         DescriptionColor = clRed
         Align = alTop
+      end
+      object chkAutoWallpaper: TJvXPCheckbox
+        AlignWithMargins = True
+        Left = 5
+        Top = 57
+        Width = 481
+        Height = 17
+        Margins.Left = 5
+        Margins.Top = 10
+        Margins.Right = 5
+        Caption = 'Enable automatic wallpaper changing'
+        TabOrder = 0
+        Align = alTop
+        OnClick = chkAutoWallpaperClick
+      end
+      object pnlWallpaperOptions: TPanel
+        AlignWithMargins = True
+        Left = 5
+        Top = 87
+        Width = 481
+        Height = 79
+        Margins.Left = 5
+        Margins.Top = 10
+        Margins.Right = 5
+        Margins.Bottom = 0
+        Align = alTop
+        AutoSize = True
+        BevelOuter = bvNone
+        ParentBackground = False
+        ParentColor = True
+        TabOrder = 11
+        object pnlWallpaperDirectoryPath: TPanel
+          Left = 0
+          Top = 0
+          Width = 481
+          Height = 57
+          Margins.Left = 5
+          Margins.Top = 10
+          Margins.Right = 5
+          Margins.Bottom = 0
+          Align = alTop
+          BevelOuter = bvNone
+          ParentColor = True
+          TabOrder = 0
+          object edtWpDirectory: TEdit
+            Left = 0
+            Top = 0
+            Width = 403
+            Height = 21
+            Margins.Left = 28
+            Margins.Top = 8
+            Margins.Right = 8
+            Margins.Bottom = 0
+            TabOrder = 0
+            OnChange = edtWpDirectoryChange
+          end
+          object btnWpDirectoryBrowse: TButton
+            AlignWithMargins = True
+            Left = 406
+            Top = 0
+            Width = 75
+            Height = 22
+            Margins.Top = 0
+            Margins.Right = 0
+            Margins.Bottom = 0
+            Caption = 'Browse'
+            TabOrder = 1
+            OnClick = btnWpDirectoryBrowseClick
+          end
+          object chkWpRecursive: TJvXPCheckbox
+            Left = 3
+            Top = 31
+            Width = 138
+            Height = 17
+            Caption = 'Include Subdirectories'
+            TabOrder = 2
+            OnClick = chkWpRecursiveClick
+          end
+          object sgbWpChangeInterval: TSharpeGaugeBox
+            Left = 258
+            Top = 30
+            Width = 145
+            Height = 21
+            ParentBackground = False
+            TabOrder = 3
+            Min = 1
+            Max = 60
+            Value = 30
+            Prefix = 'Interval: '
+            Suffix = ' minutes'
+            Description = 'Set how often the wallpaper should change.'
+            PopPosition = ppBottom
+            PercentDisplay = False
+            Formatting = '%d'
+            OnChangeValue = sgbWpChangeIntervalChangeValue
+            BackgroundColor = clWindow
+          end
+          object chkWpRandomize: TJvXPCheckbox
+            Left = 155
+            Top = 31
+            Width = 86
+            Height = 17
+            Caption = 'Randomize'
+            TabOrder = 4
+            OnClick = chkWpRandomizeClick
+          end
+        end
+        object pnlWallpaperFilePath: TPanel
+          Left = 0
+          Top = 57
+          Width = 481
+          Height = 22
+          Margins.Left = 5
+          Margins.Top = 10
+          Margins.Right = 5
+          Margins.Bottom = 0
+          Align = alTop
+          BevelOuter = bvNone
+          ParentColor = True
+          TabOrder = 1
+          object edtWpFile: TEdit
+            Left = 0
+            Top = 0
+            Width = 403
+            Height = 21
+            Margins.Left = 28
+            Margins.Top = 8
+            Margins.Right = 8
+            Margins.Bottom = 0
+            TabOrder = 0
+            OnChange = edtWallpaperChange
+          end
+          object btnWpBrowse: TButton
+            AlignWithMargins = True
+            Left = 406
+            Top = 0
+            Width = 75
+            Height = 22
+            Margins.Top = 0
+            Margins.Right = 0
+            Margins.Bottom = 0
+            Caption = 'Browse'
+            TabOrder = 1
+            OnClick = btnWpBrowseClick
+          end
+        end
       end
     end
     object pagColor: TJvStandardPage
@@ -549,7 +652,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Height = 21
             Align = alLeft
             Style = csDropDownList
-            ItemHeight = 0
+            ItemHeight = 13
             TabOrder = 0
             OnSelect = cboGradTypeSelect
             Items.Strings = (
@@ -593,8 +696,6 @@ object frmSettingsWnd: TfrmSettingsWnd
             Formatting = '%d'
             OnChangeValue = WallpaperTransChangeEvent
             BackgroundColor = clWindow
-            ExplicitLeft = -3
-            ExplicitTop = -3
           end
           object sgbGradEndTrans: TSharpeGaugeBox
             AlignWithMargins = True
