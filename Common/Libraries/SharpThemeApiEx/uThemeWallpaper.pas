@@ -38,6 +38,7 @@ type
     FAutoCurIndex : integer;
 
     procedure SetDefaults;
+    procedure SetWallpaperDefaults(wallpaperItemIndex : Smallint);
 
   public
     LastUpdate : Int64;
@@ -295,42 +296,45 @@ begin
     // Load Wallpaper list
     if XML.XmlRoot.Items.ItemNamed['Wallpapers'] <> nil then
       for n := 0 to XML.XmlRoot.Items.ItemNamed['Wallpapers'].Items.Count - 1 do
-       with XML.XmlRoot.Items.ItemNamed['Wallpapers'].Items.Item[n].Items do
-       begin
-         if n <> 0 then // (There always is a default wallpaper at [0], overwrite this)
-           setlength(FWallpapers, length(FWallpapers) + 1);
-         with FWallpapers[High(FWallpapers)] do
-         begin
-           Name            := Value('Name', Name);
-           Image := Value('Image', '');
-           if Image = '' then
-           begin
-             SwitchPath := Value('SwitchPath', '');
-             if DirectoryExists(SwitchPath) then
-             begin
-               SwitchRecursive := BoolValue('SwitchRecursive', True);
-               SwitchRandomize := BoolValue('SwitchRandomize', True);
-               SwitchTimer := IntValue('SwitchTimer', 0);
-             end;
-           end;
+        with XML.XmlRoot.Items.ItemNamed['Wallpapers'].Items.Item[n].Items do
+        begin
+          if n <> 0 then // (There always is a default wallpaper at [0], overwrite this)
+            setlength(FWallpapers, length(FWallpapers) + 1);
+          with FWallpapers[High(FWallpapers)] do
+          begin
+            SetWallpaperDefaults(High(FWallpapers));
 
-           ColorStr        := Value('Color', ColorStr);
-           Alpha           := IntValue('Alpha', Alpha);
-           Size            := TThemeWallpaperSize(IntValue('Size', 0));
-           ColorChange     := BoolValue('ColorChange', ColorChange);
-           Hue             := IntValue('Hue', Hue);
-           Saturation      := IntValue('Saturation', Saturation);
-           Lightness       := IntValue('Lightness', Lightness);
-           Gradient        := BoolValue('Gradient', Gradient);
-           GradientType    := TThemeWallpaperGradientType(IntValue('GradientType', 0));
-           GDStartColorStr := Value('GDStartColor', GDStartColorStr);
-           GDStartAlpha    := IntValue('GDStartAlpha', GDStartAlpha);
-           GDEndColorStr   := Value('GDEndColor', GDEndColorStr);
-           GDEndAlpha      := IntValue('GDEndAlpha', GDEndAlpha);
-           MirrorHoriz     := BoolValue('MirrorHoriz', MirrorHoriz);
-           MirrorVert      := BoolValue('MirrorVert', MirrorVert);
-         end;
-       end;
+            Name            := Value('Name', Name);
+            Image := Value('Image', '');
+            if Image = '' then
+            begin
+              SwitchPath := Value('SwitchPath', '');
+              if DirectoryExists(SwitchPath) then
+              begin
+                SwitchRecursive := BoolValue('SwitchRecursive', SwitchRecursive);
+                SwitchRandomize := BoolValue('SwitchRandomize', SwitchRandomize);
+                SwitchTimer := IntValue('SwitchTimer', SwitchTimer);
+              end;
+            end;
+
+            ColorStr        := Value('Color', ColorStr);
+            Alpha           := IntValue('Alpha', Alpha);
+            Size            := TThemeWallpaperSize(IntValue('Size', 0));
+            ColorChange     := BoolValue('ColorChange', ColorChange);
+            Hue             := IntValue('Hue', Hue);
+            Saturation      := IntValue('Saturation', Saturation);
+            Lightness       := IntValue('Lightness', Lightness);
+            Gradient        := BoolValue('Gradient', Gradient);
+            GradientType    := TThemeWallpaperGradientType(IntValue('GradientType', 0));
+            GDStartColorStr := Value('GDStartColor', GDStartColorStr);
+            GDStartAlpha    := IntValue('GDStartAlpha', GDStartAlpha);
+            GDEndColorStr   := Value('GDEndColor', GDEndColorStr);
+            GDEndAlpha      := IntValue('GDEndAlpha', GDEndAlpha);
+            MirrorHoriz     := BoolValue('MirrorHoriz', MirrorHoriz);
+            MirrorVert      := BoolValue('MirrorVert', MirrorVert);
+          end;
+        end;
+
     if XML.XmlRoot.Items.ItemNamed['Monitors'] <> nil then
       for n := 0 to XML.XmlRoot.Items.ItemNamed['Monitors'].Items.Count - 1 do
         with XML.XmlRoot.Items.ItemNamed['Monitors'].Items.Item[n].Items do
@@ -428,9 +432,14 @@ begin
   setlength(FMonitors, 1);
   FMonitors[0].Name := 'Default';
   FMonitors[0].ID := -100;
-  with FWallpapers[0] do
+  SetWallpaperDefaults(0);
+end;
+
+procedure TThemeWallpaper.SetWallpaperDefaults(wallpaperItemIndex: Smallint);
+begin
+  with FWallpapers[wallpaperItemIndex] do
   begin
-    Name             := 'Default';
+    Name            := 'Default';
     Image           := '';
     Color           := 0;
     ColorStr        := '0';
@@ -452,7 +461,7 @@ begin
     MirrorVert      := False;
     SwitchPath      := '';
     SwitchRecursive := False;
-    SwitchRandomize := False;
+    SwitchRandomize := True;
     SwitchTimer     := 0;
   end;
 end;
