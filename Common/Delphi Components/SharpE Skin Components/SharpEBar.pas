@@ -1007,9 +1007,6 @@ begin
      (Owner as TForm).Color := DefaultSharpEScheme.GetColorByName('WorkAreaback');
     end;
   end;
-
-  // Why is this called?
-  //UpdatePosition;
 end;
 
 // ########################
