@@ -1,2 +1,2 @@
-brc32 SharpEUICIcons.rc
+brcc32 SharpEUICIcons.rc
 PAUSE
