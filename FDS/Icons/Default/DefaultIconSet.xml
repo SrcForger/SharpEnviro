@@ -1,49 +1,49 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <IconSet Version="1.0.0.0">
   <Icons>
-    <0>
+    <Icon>
       <name>icon.mediaplayer.play</name>
       <file>icon.mediaplayer.play.ico</file>
-    </0>
-    <1>
+    </Icon>
+    <Icon>
       <name>icon.mediaplayer.pause</name>
       <file>icon.mediaplayer.pause.ico</file>
-    </1>
-    <2>
+    </Icon>
+    <Icon>
       <name>icon.mediaplayer.stop</name>
       <file>icon.mediaplayer.stop.ico</file>
-    </2>
-    <3>
+    </Icon>
+    <Icon>
       <name>icon.mediaplayer.next</name>
       <file>icon.mediaplayer.next.ico</file>
-    </3>
-    <4>
+    </Icon>
+    <Icon>
       <name>icon.mediaplayer.previous</name>
       <file>icon.mediaplayer.previous.ico</file>
-    </4>
-    <5>
+    </Icon>
+    <Icon>
       <name>icon.shutdown.lock</name>
       <file>icon.shutdown.lock.ico</file>
-    </5>
-    <6>
+    </Icon>
+    <Icon>
       <name>icon.shutdown.logout</name>
       <file>icon.shutdown.logout.ico</file>
-    </6>
-    <7>
+    </Icon>
+    <Icon>
       <name>icon.shutdown.reboot</name>
       <file>icon.shutdown.reboot.ico</file>
-    </7>
-	<8>
+    </Icon>
+	<Icon>
       <name>icon.shutdown.shutdown</name>
       <file>icon.shutdown.shutdown.ico</file>
-    </8>
-	<9>
+    </Icon>
+	<Icon>
       <name>icon.shutdown.hibernate</name>
       <file>icon.shutdown.hibernate.ico</file>
-    </9>
-    <10>
+    </Icon>
+    <Icon>
       <name>icon.desktop</name>
       <file>icon.desktop.ico</file>
-    </10>
+    </Icon>
   </Icons>
 </IconSet>

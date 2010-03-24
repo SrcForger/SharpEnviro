@@ -1,152 +1,132 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <IconSet Version="1.0.0.0">
-  <name>Crystal</name>
-  <author>deadtronic</author>
-  <website></website>
+  <name>CubeIX 2 White</name>
+  <author>captain_herisson</author>
+  <website>none yet</website>
   <Icons>
     <Icon>
       <name>icon.application</name>
-      <file>icon.application.ico</file>
+      <file>SharpE.ico</file>
     </Icon>
     <Icon>
       <name>icon.clock</name>
-      <file>icon.clock.ico</file>
+      <file>folder_clock.ico</file>
     </Icon>
     <Icon>
       <name>icon.drive.floppy</name>
-      <file>icon.drive.floppy.ico</file>
+      <file>DriveFloppy.ico</file>
     </Icon>
     <Icon>
       <name>icon.drive.cdrom</name>
-      <file>icon.drive.cdrom.ico</file>
+      <file>DriveCD.ico</file>
     </Icon>
     <Icon>
       <name>icon.drive.hd</name>
-      <file>icon.drive.hd.ico</file>
+      <file>Drive.ico</file>
     </Icon>
     <Icon>
       <name>icon.drive.networkon</name>
-      <file>icon.drive.networkon.ico</file>
+      <file>DriveNet.ico</file>
     </Icon>
     <Icon>
       <name>icon.drive.networkoff</name>
-      <file>icon.drive.networkoff.ico</file>
+      <file>DriveNet_Off.ico</file>
     </Icon>
     <Icon>
       <name>icon.file</name>
-      <file>icon.file.ico</file>
+      <file>fileDocument.ico</file>
     </Icon>
     <Icon>
       <name>icon.file.config</name>
-      <file>icon.file.config.ico</file>
+      <file>fileSettings.ico</file>
     </Icon>
     <Icon>
       <name>icon.file.document</name>
-      <file>icon.file.document.ico</file>
+      <file>fileDocument.ico</file>
     </Icon>
     <Icon>
       <name>icon.file.documents</name>
-      <file>icon.file.documents.ico</file>
+      <file>fileDocument.ico</file>
     </Icon>
     <Icon>
       <name>icon.file.music</name>
-      <file>icon.file.music.ico</file>
+      <file>fileMusic.ico</file>
     </Icon>
     <Icon>
       <name>icon.file.url</name>
-      <file>icon.file.url.ico</file>
+      <file>fileNet.ico</file>
     </Icon>
     <Icon>
       <name>icon.folder</name>
-      <file>icon.folder.ico</file>
+      <file>folder_open.ico</file>
     </Icon>
     <Icon>
       <name>icon.folder.documents</name>
-      <file>icon.folder.documents.ico</file>
+      <file>folder_document.ico</file>
     </Icon>
     <Icon>
       <name>icon.folder.movies</name>
-      <file>icon.folder.movies.ico</file>
+      <file>folder_movie.ico</file>
     </Icon>
     <Icon>
       <name>icon.folder.pictures</name>
-      <file>icon.folder.pictures.ico</file>
+      <file>folder_image.ico</file>
     </Icon>
     <Icon>
       <name>icon.folder.sound</name>
-      <file>icon.folder.sound.ico</file>
+      <file>folder_music.ico</file>
     </Icon>
     <Icon>
       <name>icon.folder.web</name>
-      <file>icon.folder.web.ico</file>
+      <file>folder_net.ico</file>
     </Icon>
     <Icon>
       <name>icon.mail</name>
-      <file>icon.mail.ico</file>
+      <file>Mail.ico</file>
     </Icon>
     <Icon>
       <name>icon.mycomputer</name>
-      <file>icon.mycomputer.ico</file>
+      <file>panel.ico</file>
     </Icon>
     <Icon>
       <name>icon.network</name>
-      <file>icon.network.ico</file>
+      <file>panelNet.ico</file>
     </Icon>
     <Icon>
       <name>icon.printer</name>
-      <file>icon.printer.ico</file>
+      <file>printer.ico</file>
     </Icon>
     <Icon>
       <name>icon.recyclebin.empty</name>
-      <file>icon.recyclebin.empty.ico</file>
+      <file>trash_empty.ico</file>
     </Icon>
     <Icon>
       <name>icon.recyclebin.full</name>
-      <file>icon.recyclebin.full.ico</file>
+      <file>trash_full.ico</file>
     </Icon>
     <Icon>
       <name>icon.settings</name>
-      <file>icon.settings.ico</file>
+      <file>fileSettings.ico</file>
     </Icon>
     <Icon>
       <name>icon.controlpanel</name>
-      <file>icon.controlpanel.ico</file>
+      <file>panelSettings.ico</file>
     </Icon>
     <Icon>
       <name>icon.config</name>
-      <file>icon.config.ico</file>
+      <file>panelSettings.ico</file>
     </Icon>
     <Icon>
       <name>icon.file.movie</name>
-      <file>icon.file.movie.ico</file>
+      <file>fileMusic.ico</file>
     </Icon>
     <Icon>
       <name>icon.file.picture</name>
-      <file>icon.file.picture.ico</file>
+      <file>fileSettings.ico</file>
     </Icon>
     <Icon>
       <name>icon.file.application</name>
-      <file>icon.file.application.ico</file>
-    </Icon>
-    <Icon>
-      <name>icon.mediaplayer.play</name>
-      <file>icon.mediaplayer.play.ico</file>
-    </Icon>
-    <Icon>
-      <name>icon.mediaplayer.pause</name>
-      <file>icon.mediaplayer.pause.ico</file>
-    </Icon>
-    <Icon>
-      <name>icon.mediaplayer.stop</name>
-      <file>icon.mediaplayer.stop.ico</file>
-    </Icon>
-    <Icon>
-      <name>icon.mediaplayer.next</name>
-      <file>icon.mediaplayer.next.ico</file>
-    </Icon>
-    <Icon>
-      <name>icon.mediaplayer.previous</name>
-      <file>icon.mediaplayer.previous.ico</file>
+      <file>fileDocument.ico</file>
     </Icon>
   </Icons>
 </IconSet>
