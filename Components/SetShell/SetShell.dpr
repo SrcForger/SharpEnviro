@@ -31,7 +31,8 @@ uses
   MainWnd in 'Forms\MainWnd.pas' {MainForm},
   uShellSwitcher in 'Units\uShellSwitcher.pas',
   VistaTheme in 'VistaTheme.pas',
-  uShutdown in '..\..\Common\Units\Shutdown\uShutdown.pas';
+  uShutdown in '..\..\Common\Units\Shutdown\uShutdown.pas',
+  uShutdownConfirm in '..\..\Common\Units\Shutdown\uShutdownConfirm.pas';
 
 {$R *.res}
 {$R metadata.res}

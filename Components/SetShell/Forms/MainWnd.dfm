@@ -25,13 +25,13 @@ object MainForm: TMainForm
     BevelOuter = bvNone
     BorderWidth = 8
     TabOrder = 0
-    ExplicitHeight = 107
     object gpShells: TGroupBox
       Left = 50
       Top = 4
       Width = 150
       Height = 100
       Caption = 'New Default Shell'
+      Color = clBtnFace
       ParentColor = False
       TabOrder = 0
       object rbSharpE: TRadioButton
@@ -41,6 +41,7 @@ object MainForm: TMainForm
         Height = 17
         Caption = 'SharpE'
         Checked = True
+        Color = clBtnFace
         ParentColor = False
         TabOrder = 0
         TabStop = True
@@ -51,6 +52,7 @@ object MainForm: TMainForm
         Width = 75
         Height = 17
         Caption = 'Explorer'
+        Color = clBtnFace
         ParentColor = False
         TabOrder = 1
       end
@@ -347,8 +349,6 @@ object MainForm: TMainForm
     BevelOuter = bvNone
     BorderWidth = 8
     TabOrder = 1
-    ExplicitTop = 131
-    ExplicitWidth = 252
     object Label2: TLabel
       AlignWithMargins = True
       Left = 28
@@ -398,9 +398,6 @@ object MainForm: TMainForm
       Align = alTop
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitLeft = 8
-      ExplicitTop = 8
-      ExplicitWidth = 236
       object cb_seb: TCheckBox
         Left = 0
         Top = 0
@@ -424,7 +421,6 @@ object MainForm: TMainForm
     BevelOuter = bvNone
     BorderWidth = 8
     TabOrder = 2
-    ExplicitWidth = 252
     object Label1: TLabel
       AlignWithMargins = True
       Left = 11
@@ -436,8 +432,6 @@ object MainForm: TMainForm
         'To change your default windows shell select a shell below and cl' +
         'ick '#39'Ok'#39'.'
       WordWrap = True
-      ExplicitLeft = 8
-      ExplicitTop = 8
       ExplicitWidth = 223
     end
   end

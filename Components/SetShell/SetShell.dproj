@@ -1,4 +1,5 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>{b7f2168c-b2e6-45a8-a28e-e307ac6d1fcb}</ProjectGuid>
     <MainSource>SetShell.dpr</MainSource>
@@ -36,6 +37,7 @@
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
     <DCCReference Include="..\..\Common\Units\Shutdown\uShutdown.pas" />
+    <DCCReference Include="..\..\Common\Units\Shutdown\uShutdownConfirm.pas" />
     <DCCReference Include="Forms\MainWnd.pas">
       <Form>MainForm</Form>
     </DCCReference>
