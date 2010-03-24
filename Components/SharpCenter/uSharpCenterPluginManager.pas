@@ -35,7 +35,7 @@ type
   end;
   PPlugin = ^TPlugin;
 
-function LoadPluginInterface(dll: Pchar; var pluginHost: TInterfacedSharpCenterHostBase): TPlugin;
+function LoadPluginInterface(dll: Pchar; var pluginHost: TInterfacedSharpCenterHostBase; pluginID : String): TPlugin;
 function UnloadPluginInterface(var plugin: TPlugin; var pluginHost: TInterfacedSharpCenterHostBase): hresult;
 
 implementation
@@ -85,7 +85,7 @@ begin
   plugin.PluginInterface.CanDestroy := false;
 end;
 
-function LoadPluginInterface(dll: Pchar; var pluginHost: TInterfacedSharpCenterHostBase): TPlugin;
+function LoadPluginInterface(dll: Pchar; var pluginHost: TInterfacedSharpCenterHostBase; pluginID : String): TPlugin;
 begin
   result.Dll := dll;
 
@@ -108,7 +108,7 @@ begin
 
     // Get the config's MetaData and PluginData
     GetConfigMetaDataEx(Result.DllHandle,Result.MetaData,Result.ConfigMode,Result.ConfigType);
-    GetConfigPluginData(Result.DllHandle,Result.PluginData);
+    GetConfigPluginData(Result.DllHandle,Result.PluginData, pluginID);
   end;
 end;
 

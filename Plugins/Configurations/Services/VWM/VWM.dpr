@@ -130,7 +130,7 @@ begin
   end;
 end;
 
-function GetPluginData(): TPluginData;
+function GetPluginData(pluginID : String): TPluginData;
 begin
   with result do
   begin

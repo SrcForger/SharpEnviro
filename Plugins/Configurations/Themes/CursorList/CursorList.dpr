@@ -62,9 +62,6 @@ type
     procedure UpdatePreview(ABitmap: TBitmap32); stdcall;
   end;
 
-var
-  gPluginId : string;
-
 { TSharpCenterPlugin }
 
 procedure TSharpCenterPlugin.Close;
@@ -75,7 +72,6 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
-  gPluginId := PAnsiChar(APluginHost.PluginId);
 end;
 
 procedure TSharpCenterPlugin.Load;
@@ -164,14 +160,14 @@ begin
   end;
 end;
 
-function GetPluginData(): TPluginData;
+function GetPluginData(pluginID : String): TPluginData;
 var
   files: TStringList;
 begin
   with Result do
   begin
   	Name := 'Cursors';
-    Description := Format('Cursor Configuration for "%s"',[gPluginId]);
+    Description := Format('Cursor Configuration for "%s"',[pluginID]);
 	  Status := '';
 
     files := TStringList.Create;

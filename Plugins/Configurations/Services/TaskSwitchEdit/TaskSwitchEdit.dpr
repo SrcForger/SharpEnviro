@@ -66,9 +66,6 @@ type
 
   end;
 
-var
-  gPluginId : string;
-
 { TSharpCenterPlugin }
 
 procedure TSharpCenterPlugin.Close;
@@ -79,7 +76,6 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
-  gPluginId := PAnsiChar(APluginHost.PluginId);
 end;
 
 procedure TSharpCenterPlugin.Load;
@@ -217,12 +213,12 @@ begin
   end;
 end;
 
-function GetPluginData(): TPluginData;
+function GetPluginData(pluginID : String): TPluginData;
 begin
   with result do
   begin
     Name := 'Options';
-    Description := Format('Editing Task Action: "%s"', [gPluginId]);
+    Description := Format('Editing Task Action: "%s"', [PluginID]);
     Status := '';
   end;
 end;

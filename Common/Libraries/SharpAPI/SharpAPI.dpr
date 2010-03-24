@@ -1211,9 +1211,9 @@ begin
   result := (swnd <> 0);
 end;
 
-function GetConfigPluginData(dllHandle: Thandle; var PluginData: TPluginData) : Integer;
+function GetConfigPluginData(dllHandle: Thandle; var PluginData: TPluginData; pluginID : String) : Integer;
 type
-  TPluginDataFunc = function(): TPluginData;
+  TPluginDataFunc = function(pluginID : String): TPluginData;
 const
   PluginDataFunc: TPluginDataFunc = nil;
 begin
@@ -1222,7 +1222,7 @@ begin
   begin
     @PluginDataFunc := GetProcAddress(dllHandle, 'GetPluginData');
     if Assigned(PluginDataFunc) then
-      PluginData := PluginDataFunc()
+      PluginData := PluginDataFunc(pluginID)
     else
       result := 1; //didn't find GetPluginData function
   end else

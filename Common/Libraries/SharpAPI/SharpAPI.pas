@@ -295,7 +295,7 @@ function GetVWMMoveToolWindows : boolean; external 'SharpApi.dll' name 'GetVWMMo
 function SwitchToVWM(Index : integer; ExceptWnd : hwnd = 0) : boolean; external 'SharpApi.dll' name 'SwitchToVWM';
 
 // Plugin Data
-function GetConfigPluginData(dllHandle: Thandle; var PluginData: TPluginData) : Integer; external 'SharpApi.dll' name 'GetConfigPluginData';
+function GetConfigPluginData(dllHandle: Thandle; var PluginData: TPluginData; pluginID : String) : Integer; external 'SharpApi.dll' name 'GetConfigPluginData';
 
 //meta data functions
 function GetComponentMetaData(strFile: String; var MetaData: TMetaData; var Priority: Integer; var Delay: Integer) : Integer; external 'SharpApi.dll' name 'GetComponentMetaData';

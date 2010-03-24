@@ -63,8 +63,6 @@ type
 
   end;
 
-var
-  gPluginId : string;
 
 { TSharpCenterPlugin }
 
@@ -87,7 +85,6 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
-  gPluginId := PAnsiChar(APluginHost.PluginId);
 end;
 
 function TSharpCenterPlugin.Open: Cardinal;
@@ -130,7 +127,7 @@ begin
   end;
 end;
 
-function GetPluginData(): TPluginData;
+function GetPluginData(pluginID : String): TPluginData;
 var
   sBar: String;
   tmp: TObjectList;
@@ -139,14 +136,14 @@ begin
   begin
     Name := 'Modules';
 
-    sBar := ExtractBarName(gPluginId);
-    if sBar = '' then sBar := gPluginId;
+    sBar := ExtractBarName(pluginID);
+    if sBar = '' then sBar := pluginID;
     Description := Format('Module Configuration for "%s"',[sBar]);
 	Status := '';
 
     tmp := TObjectList.Create;
     try
-      AddItemsToList(gPluginId,tmp);
+      AddItemsToList(pluginID,tmp);
       Status := IntToStr(tmp.Count);
     finally
       tmp.Free;

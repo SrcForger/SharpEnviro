@@ -70,7 +70,6 @@ type
 
 var
   gTheme : ISharpETheme;
-  gPluginId : string;
 
   { TSharpCenterPlugin }
 
@@ -91,7 +90,6 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
-  gPluginId := PAnsiChar(APluginHost.PluginId);
   
   Theme := GetTheme(PluginHost.PluginID);
   Theme.LoadTheme([tpSkinScheme]);
@@ -213,15 +211,15 @@ begin
   end;
 end;
 
-function GetPluginData(): TPluginData;
+function GetPluginData(pluginID : String): TPluginData;
 var
   sl: TStringList;
 begin
   with Result do
   begin
-	Name := 'Schemes';
-    Description := Format('Scheme Configuration for "%s"',[gPluginId]);
-	Status := '';
+	  Name := 'Schemes';
+    Description := Format('Scheme Configuration for "%s"',[pluginID]);
+   	Status := '';
 
     sl := TstringList.Create;
     try

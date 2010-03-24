@@ -147,7 +147,7 @@ begin
   end;
 end;
 
-function GetPluginData(): TPluginData;
+function GetPluginData(pluginID : integer): TPluginData;
 var
   tmpList: TComponentList;
 begin

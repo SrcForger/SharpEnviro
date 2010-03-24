@@ -219,7 +219,7 @@ begin
   try
     if FileExists(AFile) then
     begin
-      FPlugin := LoadPluginInterface(PChar(AFile), FPluginHost);
+      FPlugin := LoadPluginInterface(PChar(AFile), FPluginHost, APluginID);
 
       if ((FPlugin.Dllhandle <> 0) and (@FPlugin.InitPluginInterface <> nil)) then
       begin
@@ -929,7 +929,7 @@ begin
 
     if fileexists(AFile) then
     begin
-      tmpPlugin := LoadPluginInterface(PChar(Afile), FPluginHost);
+      tmpPlugin := LoadPluginInterface(PChar(Afile), FPluginHost, APluginID);
       AName := tmpPlugin.PluginData.Name;
       AStatus := tmpPlugin.PluginData.Status;
       ADescription := tmpPlugin.PluginData.Description;
@@ -985,7 +985,7 @@ begin
   try
     if FileExists(sFile) then
     begin
-      FPlugin := LoadPluginInterface(PChar(sFile), FPluginHost);
+      FPlugin := LoadPluginInterface(PChar(sFile), FPluginHost, '');
 
       if ((FPlugin.Dllhandle <> 0) and (@FPlugin.InitPluginInterface <> nil)) then
       begin

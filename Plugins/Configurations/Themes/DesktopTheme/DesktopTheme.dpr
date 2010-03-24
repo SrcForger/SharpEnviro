@@ -67,9 +67,6 @@ type
     procedure ClickPluginTab(ATab: TStringItem); stdcall;
   end;
 
-var
-  gPluginId : string;
-
   { TSharpCenterPlugin }
 
 procedure TSharpCenterPlugin.AddPluginTabs(ATabItems: TStringList);
@@ -97,7 +94,6 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
-  gPluginId := PAnsiChar(APluginHost.PluginId);
   
   FTheme := GetTheme(APluginHost.PluginID);
   FTheme.LoadTheme([tpDesktop,tpSkinScheme]);
@@ -268,12 +264,12 @@ begin
   end;
 end;
 
-function GetPluginData(): TPluginData;
+function GetPluginData(pluginID : String): TPluginData;
 begin
   with Result do
   begin
 	Name := 'Desktop';
-    Description := Format('Desktop Configuration for "%s"', [gPluginId]);
+    Description := Format('Desktop Configuration for "%s"', [pluginID]);
 	Status := '';
   end;
 end;

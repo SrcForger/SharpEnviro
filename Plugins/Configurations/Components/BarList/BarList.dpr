@@ -162,7 +162,7 @@ begin
   end;
 end;
 
-function GetPluginData(): TPluginData;
+function GetPluginData(pluginID : String): TPluginData;
 var
   items: TStringList;
 begin

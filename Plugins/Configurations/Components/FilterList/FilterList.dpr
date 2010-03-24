@@ -177,7 +177,7 @@ begin
   end;
 end;
 
-function GetPluginData(): TPluginData;
+function GetPluginData(pluginID : String): TPluginData;
 var
   tmp: TFilterItemList;
 begin

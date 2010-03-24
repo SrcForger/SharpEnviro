@@ -61,9 +61,6 @@ type
     procedure UpdatePreview(ABitmap: TBitmap32); stdcall;
   end;
 
-var
-  gPluginId : string;
-
   { TSharpCenterPlugin }
 
 procedure TSharpCenterPlugin.Close;
@@ -76,9 +73,8 @@ var
   themeId : string;
 begin
   PluginHost := APluginHost;
-  gPluginId := PAnsiChar(APluginHost.PluginId);
-  
-  themeId := copy(gPluginId, 0, pos(':', gPluginId)-1);
+
+  themeId := copy(APluginHost.PluginId, 0, pos(':', APluginHost.PluginId)-1);
 
   FTheme := GetTheme(themeId);
   FTheme.LoadTheme([tpSkinScheme]);
@@ -206,12 +202,12 @@ begin
   end;
 end;
 
-function GetPluginData(): TPluginData;
+function GetPluginData(pluginID : String): TPluginData;
 var
   themeId, schemeId: string;
 begin
-  themeId := copy(gPluginId, 0, pos(':', gPluginId)-1);
-  schemeId := copy(gPluginId, pos(':', gPluginId)+1, length(gPluginId) - pos(':', gPluginId));
+  themeId := copy(pluginID, 0, pos(':', pluginID)-1);
+  schemeId := copy(pluginID, pos(':', pluginID)+1, length(pluginID) - pos(':', pluginID));
 
   with Result do
   begin

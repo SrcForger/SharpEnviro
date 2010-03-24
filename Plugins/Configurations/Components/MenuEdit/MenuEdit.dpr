@@ -69,9 +69,6 @@ type
     procedure SetupValidators; stdcall;
   end;
 
-var
-  gPluginId : string;
-
 { TSharpCenterPlugin }
 
 procedure TSharpCenterPlugin.Close;
@@ -93,7 +90,6 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
-  gPluginId := PAnsiChar(APluginHost.PluginId);
 end;
 
 destructor TSharpCenterPlugin.Destroy;
@@ -161,12 +157,12 @@ begin
   end;
 end;
 
-function GetPluginData(): TPluginData;
+function GetPluginData(pluginID : String): TPluginData;
 begin
   with result do
   begin
     Name := 'Menu Editor';
-    Description := format('Menu Configuration for "%s". Drag Items to position them, hold down Ctrl to move an item into a submenu',[gPluginId]);
+    Description := format('Menu Configuration for "%s". Drag Items to position them, hold down Ctrl to move an item into a submenu',[pluginID]);
     Status := '';
   end;
 end;

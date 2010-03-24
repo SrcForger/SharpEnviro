@@ -65,9 +65,6 @@ type
     procedure Refresh(Theme : TCenterThemeInfo; AEditing: Boolean); override; stdcall;
   end;
 
-var
-  gPluginId : string;
-
   { TSharpCenterPlugin }
 
 procedure TSharpCenterPlugin.Close;
@@ -78,7 +75,6 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
-  gPluginId := PAnsiChar(APluginHost.PluginId);
   
   FTheme := GetTheme(APluginHost.PluginId);
   FTheme.LoadTheme([tpSkinScheme]);
@@ -127,15 +123,15 @@ begin
   end;
 end;
 
-function GetPluginData(): TPluginData;
+function GetPluginData(pluginID : String): TPluginData;
 var
   files: TStringList;
 begin
   with Result do
   begin
-	Name := 'Skins';
-    Description := Format('Skin Configuration for "%s"',[gPluginId]);
-	Status := '';
+  	Name := 'Skins';
+    Description := Format('Skin Configuration for "%s"',[pluginID]);
+  	Status := '';
 
     files := TStringList.Create;
     try

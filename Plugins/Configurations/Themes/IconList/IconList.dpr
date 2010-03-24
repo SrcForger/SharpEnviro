@@ -66,9 +66,6 @@ type
     procedure UpdatePreview(ABitmap: TBitmap32); stdcall;
   end;
 
-var
-  gPluginId : string;
-
   { TSharpCenterPlugin }
 
 procedure TSharpCenterPlugin.Close;
@@ -79,7 +76,6 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
-  gPluginId := PAnsiChar(APluginHost.PluginId);
   
   FTheme := GetTheme(PluginHost.PluginId);
   FTheme.LoadTheme([tpIconSet]);
@@ -139,21 +135,21 @@ begin
   end;
 end;
 
-function GetPluginData(): TPluginData;
+function GetPluginData(pluginID : String): TPluginData;
 var
   files: TStringList;
 begin
   with Result do
   begin
 	  Name := 'Icon List';
-    Description := Format('Icon Set Configuration for "%s"',[gPluginId]);
+    Description := Format('Icon Set Configuration for "%s"',[pluginID]);
 	  Status := '';
 
     files := TStringList.Create;
     try
       FindFiles( files, SharpApi.GetSharpeDirectory + 'Icons\', '*Iconset.xml' );
       if files.Count <> 0 then
-        Status := IntToStr(files.Count);
+        Status := IntToStr(files.Count - 1); // -1 to exlude the default icons directory
     finally
       files.Free;
     end;

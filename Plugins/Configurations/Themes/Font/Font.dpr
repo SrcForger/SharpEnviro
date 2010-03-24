@@ -70,9 +70,6 @@ type
     procedure Save; override; stdcall;
   end;
 
-var
-  gPluginId : string;
-
   { TSharpCenterPlugin }
 
 procedure TSharpCenterPlugin.AddPluginTabs(ATabItems: TStringList);
@@ -103,7 +100,6 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
-  gPluginId := PAnsiChar(APluginHost.PluginId);
   
   FTheme := GetTheme(PluginHost.PluginID);
   FTheme.LoadTheme([tpSkinFont]);
@@ -251,12 +247,12 @@ begin
   end;
 end;
 
-function GetPluginData(): TPluginData;
+function GetPluginData(pluginID: String): TPluginData;
 begin
   with Result do
   begin
 	Name := 'Skin Font';
-    Description := Format('Skin Font Configuration for "%s"', [gPluginId]);
+    Description := Format('Skin Font Configuration for "%s"', [pluginID]);
 	Status := '';
   end;
 end;
