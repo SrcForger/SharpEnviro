@@ -706,7 +706,6 @@ begin
     SharpApi.SharpExecute('!DeskSharpE');
 
   oldMonitorCount := Screen.MonitorCount;
-  Background.LoadWallpaperChanger(WallpaperTimerTimer);
 end;
 
 procedure TSharpDeskMainForm.FormShow(Sender: TObject);
