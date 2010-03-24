@@ -32,12 +32,12 @@ uses
   Messages,
   Classes,
   SharpApi,
-  uShutdown,
   SharpTypes,
   uSystemFuncs,
   dialogs,
   JCLLocales,
-  VWMFunctions;
+  VWMFunctions,
+  uShutdown in '..\..\..\Common\Units\Shutdown\uShutdown.pas';
 
 type
   TActionEvent = class(Tobject)
@@ -107,7 +107,7 @@ const
   RFF_NOLABEL = 8; // Removes the edit box label.
   RFF_NOSEPARATEMEM = 14; // Removes the Separate Memory Space check box (Windows NT only)
 
-  {$R *.RES}
+{$R *.RES}
 
 function SwitchToThisWindow(Wnd: hwnd; fAltTab: boolean): boolean; stdcall; external 'user32.dll';
 
