@@ -42,6 +42,5 @@
       <Form>MainForm</Form>
     </DCCReference>
     <DCCReference Include="Units\uShellSwitcher.pas" />
-    <DCCReference Include="VistaTheme.pas" />
   </ItemGroup>
 </Project>
