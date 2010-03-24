@@ -171,7 +171,7 @@ begin
   if [part] <= [suTheme,suSkinFileChanged] then
     TMainForm(Form).ReAlignComponents;
 
-  if [part] <= [suTheme,suIconSet] then
+  if [part] <= [suTheme,suIconSet,suSkinFileChanged] then
     TMainForm(Form).UpdateIcon;
 
 end;

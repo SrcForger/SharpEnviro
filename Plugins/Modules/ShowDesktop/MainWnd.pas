@@ -94,6 +94,7 @@ var
   TempBmp : TBitmap32;
   b : boolean;
   ResID : String;
+  size : integer;
 begin
   if mInterface = nil then
     exit;
@@ -104,9 +105,11 @@ begin
   begin
     if sCustomIcons then
     begin
-      if not IconStringToIcon(sIconShow,sIconShow,FIconShow) then
+      size := GetNearestIconSize(mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y);
+
+      if not IconStringToIcon(sIconShow,sIconShow,FIconShow,size) then
         FIconShow.SetSize(0,0);
-      if not IconStringToIcon(sIconRestore,sIconRestore,FIconRestore) then
+      if not IconStringToIcon(sIconRestore,sIconRestore,FIconRestore,size) then
         FIconRestore.SetSize(0,0);
     end else
     begin

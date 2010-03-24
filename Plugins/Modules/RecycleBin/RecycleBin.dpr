@@ -107,6 +107,7 @@ begin
 
   if Form <> nil then
   begin
+    TMainForm(Form).LoadIcons;  
     TMainForm(Form).LoadSettings;
     TMainForm(Form).RealignComponents;
   end;
@@ -169,7 +170,7 @@ begin
   if [part] <= [suTheme,suSkinFileChanged] then
     TMainForm(Form).ReAlignComponents;
 
-  if [part] <= [suTheme,suIconSet] then
+  if [part] <= [suTheme,suIconSet,suSkinFileChanged] then
     TMainForm(Form).LoadIcons;
 end;
 

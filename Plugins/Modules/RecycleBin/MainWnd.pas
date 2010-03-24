@@ -108,6 +108,7 @@ procedure TMainForm.LoadIcons;
 var
   TempBmp : TBitmap32;
   Icon : string;
+  size : integer;
 begin
   TempBmp := TBitmap32.Create;
 
@@ -115,9 +116,11 @@ begin
   if IsEmpty then
     Icon := 'icon.recyclebin.empty';
 
-  TempBmp.SetSize(32, 32);
-  TempBmp.Clear(color32(0,0,0,0));  
-  IconStringToIcon(Icon, '', TempBmp);
+  size := GetNearestIconSize(mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y);
+
+  TempBmp.SetSize(size, size);
+  TempBmp.Clear(color32(0,0,0,0));
+  IconStringToIcon(Icon, '', TempBmp,size);
 
 
   btnRecycle.Glyph32.Assign(tempBmp);
@@ -318,9 +321,6 @@ begin
                         btnRecycle.Left + btnRecycle.Width,
                         btnRecycle.Top + btnRecycle.Height),
                         '');
-
-  UpdateStatus;
-  LoadIcons;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);

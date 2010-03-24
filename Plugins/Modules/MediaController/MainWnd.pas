@@ -203,42 +203,39 @@ end;
 procedure TMainForm.LoadIcons;
 var
   TempBmp : TBitmap32;
+  size : integer;
 begin
   if mInterface = nil then
     exit;
   if mInterface.SkinInterface = nil then
     exit;
 
+  size := GetNearestIconSize(mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y);
   TempBmp := TBitmap32.Create;
-  if mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y <= 16 then
-    TempBmp.SetSize(16,16)
-  else if mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y <= 22 then
-    TempBmp.SetSize(22,22)
-  else
-    TempBmp.SetSize(32,32);
+  TempBmp.SetSize(size,size);
 
   TempBmp.Clear(color32(0,0,0,0));
-  IconStringToIcon('icon.mediaplayer.pause', '', TempBmp);
+  IconStringToIcon('icon.mediaplayer.pause', '', TempBmp, size);
   btn_pause.Glyph32.Assign(TempBmp);
   btn_pause.UpdateSkin;
 
   TempBmp.Clear(color32(0,0,0,0));
-  IconStringToIcon('icon.mediaplayer.play', '', TempBmp);
+  IconStringToIcon('icon.mediaplayer.play', '', TempBmp, size);
   btn_play.Glyph32.Assign(tempBmp);
   btn_play.UpdateSkin;
 
   TempBmp.Clear(color32(0,0,0,0));
-  IconStringToIcon('icon.mediaplayer.stop', '', TempBmp);
+  IconStringToIcon('icon.mediaplayer.stop', '', TempBmp, size);
   btn_stop.Glyph32.Assign(tempBmp);
   btn_stop.UpdateSkin;
 
   TempBmp.Clear(color32(0,0,0,0));
-  IconStringToIcon('icon.mediaplayer.previous', '', TempBmp);
+  IconStringToIcon('icon.mediaplayer.previous', '', TempBmp, size);
   btn_prev.Glyph32.Assign(tempBmp);
   btn_prev.UpdateSkin;
 
   TempBmp.Clear(color32(0,0,0,0));
-  IconStringToIcon('icon.mediaplayer.next', '', TempBmp);
+  IconStringToIcon('icon.mediaplayer.next', '', TempBmp, size);
   btn_next.Glyph32.Assign(tempBmp);
   btn_next.UpdateSkin;
 
