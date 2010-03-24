@@ -66,9 +66,6 @@ type
     procedure SetupValidators; stdcall;
   end;
 
-var
-  gModuleXmlFilename : string;
-  
 { TSharpCenterPlugin }
 
 procedure TSharpCenterPlugin.Close;
@@ -88,7 +85,6 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
-  gModuleXmlFilename := PluginHost.GetModuleXmlFilename;
 end;
 
 function TSharpCenterPlugin.Open: Cardinal;
@@ -143,18 +139,23 @@ begin
   end;
 end;
 
-function GetPluginData(): TPluginData;
+
+function GetPluginData(pluginID : String): TPluginData;
 var
   items:  TAppBarList;
+  barID, moduleID : String;
 begin
   with Result do
   begin
     Name := 'Applications';
     Description := 'Create and manage items for the Application Bar module';
-	Status := '';
+  	Status := '';
+
+    barID := copy(pluginID, 0, pos(':',pluginID)-1);
+    moduleID := copy(pluginID, pos(':',pluginID)+1, length(pluginID) - pos(':',pluginID));
 
     items := TAppBarList.Create;
-    items.Filename := gModuleXmlFilename;
+    items.Filename := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
     try
       items.load;
       Status := inttostr(items.Count);

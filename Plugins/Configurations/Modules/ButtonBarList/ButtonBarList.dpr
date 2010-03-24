@@ -66,9 +66,6 @@ type
     procedure SetupValidators; stdcall;
   end;
 
-var
-  gModuleXmlFilename : string;
-
 { TSharpCenterPlugin }
 
 procedure TSharpCenterPlugin.Close;
@@ -144,18 +141,22 @@ begin
   end;
 end;
 
-function GetPluginData(): TPluginData;
+function GetPluginData(pluginID : String): TPluginData;
 var
   items : TButtonBarList;
+  barID, moduleID : String;
 begin
   with Result do
   begin
     Name := 'Buttons';
     Description := 'Create and manage items for the Button Bar module';
-	Status := '';
+  	Status := '';
+
+    barID := copy(pluginID, 0, pos(':',pluginID)-1);
+    moduleID := copy(pluginID, pos(':',pluginID)+1, length(pluginID) - pos(':',pluginID));
 
     items := TButtonBarList.Create;
-    items.Filename := gModuleXmlFilename;
+    items.Filename := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
     try
       items.load;
       Status := inttostr(items.Count);
