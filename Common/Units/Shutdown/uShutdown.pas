@@ -28,9 +28,11 @@ unit uShutdown;
 interface
 
 uses
+  Controls,
   Windows,
   Messages,
-  SysUtils;
+  SysUtils,
+  uShutdownConfirm;
 
 type
   TShutdownActionType = (sdPowerOff, sdShutdown, sdReboot, sdLogOff,
@@ -50,7 +52,6 @@ type
     FParentHandle: THandle;
     function ShowConfirmation: Boolean;
     function GetParentHandle: THandle;
-    function GetShutdownTypeAsString: string;
   protected
     procedure DoQueryShutdown(var CanShutdown: Boolean); virtual;
 
@@ -70,6 +71,20 @@ type
   end;
 
 implementation
+
+const
+  ShutdownTypes : Array[0..5] of string =
+  (
+    'Shut Down', 'Shut Down',
+    'Reboot', 'Log Out',
+    'Lock', 'Hibernate'
+  );
+  ShutdownIcons : Array[0..5] of string =
+  (
+    'icon.shutdown.shutdown', 'icon.shutdown.shutdown',
+    'icon.shutdown.reboot', 'icon.shutdown.logout',
+    'icon.shutdown.lock', 'icon.shutdown.hibernate'
+  );
 
 { TScShutDown }
 
@@ -147,35 +162,30 @@ begin
   Result := FParentHandle;
 end;
 
-function TSEShutDown.GetShutdownTypeAsString: string;
-begin
-  case FActionType of
-    sdPowerOff: result := 'Shut Down';
-    sdShutdown: result := 'Shut Down' ;
-    sdReboot: result := 'Reboot';
-    sdLogOff: result := 'Log Off';
-    sdLock: result := 'Lock' ;
-    sdHibernate: result := 'Hibernate';
-  end;
-end;
-
 function TSEShutDown.ShowConfirmation: Boolean;
 var
-  sTitle, sDescription, shutdownType: string;
+  shutdownType : string;
+  aForm : TShutdownConfirmForm;
+  aFormRet : integer;
 begin
-  if not(FVerbose) then begin
+  if not(FVerbose) then
+  begin
     Result := true;
     exit;
   end;
 
-  result := false;
-  shutdownType := GetShutdownTypeAsString;
-  sTitle := format('Do you really want to %s your computer?',[shutdownType]);
-  sDescription := format('Confirm %s',[shutdownType]);
+  aForm := TShutdownConfirmForm.Create(nil);
+  try
+    shutdownType := ShutdownTypes[Integer(FActionType)];
+    aForm.MsgText := PAnsiChar(format('Do you really want to %s your computer?',[shutdownType]));
+    aForm.MsgCaption := PAnsiChar(format('Confirm %s',[shutdownType]));
+    aForm.MsgIcon := ShutdownIcons[Integer(FActionType)];
 
-  if windows.MessageBox(FParentHandle, PChar(sTitle),
-          PChar(sDescription), MB_YESNO or MB_ICONQUESTION or MB_APPLMODAL or MB_SETFOREGROUND or MB_TOPMOST) = IDYES then
-            result := true;
+    aFormRet := aForm.ShowModal;
+    Result := (aFormRet = mrYes);
+  finally
+    aForm.Free;
+  end;
 end;
 
 end.
