@@ -523,6 +523,7 @@ begin
     begin
       ModuleManager.BroadcastPluginMessage('MM_SESSION_UNLOCK');
       SharpEBar.UpdateAlwaysOnTop;
+      ModuleManager.BroadCastModuleRefresh;      
     end;
   end;
 end;
