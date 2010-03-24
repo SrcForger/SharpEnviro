@@ -33,5 +33,9 @@
       <name>icon.shutdown.reboot</name>
       <file>icon.shutdown.reboot.ico</file>
     </7>
+    <8>
+      <name>icon.desktop</name>
+      <file>icon.desktop.ico</file>
+    </8>
   </Icons>
 </IconSet>
