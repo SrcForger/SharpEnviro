@@ -1,4 +1,58 @@
 <SharpCompile>
+  <package Name="Resources - Common">
+	<project Name="SharpEColorEditor" Type="Resource">Common\Delphi Components\SharpEColorEditor\compilerc.bat</project>
+	<project Name="SharpEColorPicker" Type="Resource">Common\Delphi Components\SharpEColorPicker\build.bat</project>
+	<project Name="SharpEFontSelector" Type="Resource">Common\Delphi Components\SharpEFontSelector\build.bat</project>
+	<project Name="SharpEListBoxEx" Type="Resource">Common\Delphi Components\SharpEListBoxEx\compilerc.bat</project>
+	<project Name="SharpESwatchCollection" Type="Resource">Common\Delphi Components\SharpESwatchCollection\compilerc.bat</project>
+	<project Name="SharpETabList" Type="Resource">Common\Delphi Components\SharpETabList\compilerc.bat</project>
+	<project Name="SharpEUIC" Type="Resource">Common\Delphi Components\SharpEUIC\res\buildressource.bat</project>
+	<project Name="SharpDeskApi" Type="Resource">Common\Libraries\SharpDeskApi\res\buildressource.bat</project>
+	<project Name="SharpDialogs" Type="Resource">Common\Libraries\SharpDialogs\res\buildressource.bat</project>
+	<project Name="SharpNotify" Type="Resource">Common\Units\SharpNotify\res\buildressource.bat</project>
+  </package>
+  <package Name="Resources - Components">
+	<project Name="Explorer Metadata" Type="Resource">Components\Explorer\metadata.bat</project>
+	<project Name="ExplorerNET Metadata" Type="Resource">Components\ExplorerNET\metadata.bat</project>
+	<project Name="SharpAdmin" Type="Resource">Components\SharpAdmin\VistaElevated.bat</project>
+	<project Name="SharpBar" Type="Resource">Components\SharpBar\buildres.bat</project>
+	<project Name="SharpBar Metadata" Type="Resource">Components\SharpBar\metadata.bat</project>
+	<project Name="SharpCenter Metadata" Type="Resource">Components\SharpCenter\metadata.bat</project>
+	<project Name="SharpCompile Metadata" Type="Resource">Components\SharpCompile\metadata.bat</project>
+	<project Name="SharpConsole Metadata" Type="Resource">Components\SharpConsole\metadata.bat</project>
+	<project Name="SharpCore  Metadata" Type="Resource">Components\SharpCore\metadata.bat</project>
+	<project Name="SharpDesk  Metadata" Type="Resource">Components\SharpDesk\metadata.bat</project>
+	<project Name="SharpMenu" Type="Resource">Components\SharpMenu\Res\buildressource.bat</project>
+	<project Name="SharpMenu Metadata" Type="Resource">Components\SharpMenu\metadata.bat</project>
+	<project Name="SharpScript Metadata" Type="Resource">Components\SharpScript\metadata.bat</project>
+	<project Name="SharpShellServices" Type="Resource">Components\SharpShellServices\buildres.bat</project>
+	<project Name="SharpShellServices Metadata" Type="Resource">Components\SharpShellServices\metadata.bat</project>
+	<project Name="SharpSplash" Type="Resource">Components\SharpSplash\metadata.bat</project>
+  </package>
+  <package Name="Resources - Plugins">
+    <project Name="ThemeList" Type="Resource">Plugins\Configurations\Components\ThemeList\compilerc.bat</project>
+	<project Name="Link" Type="Resource">Plugins\Configurations\Objects\Link\res\buildressource.bat</project>
+	<project Name="RecycleBin" Type="Resource">Plugins\Configurations\Objects\RecycleBin\res\buildressource.bat</project>
+	<project Name="DesktopTheme" Type="Resource">Plugins\Configurations\Themes\DesktopTheme\res\buildressource.bat</project>
+	<project Name="AlarmClock" Type="Resource">Plugins\Modules\AlarmClock\res\buildressource.bat</project>
+	<project Name="ApplicationBar" Type="Resource">Plugins\Modules\ApplicationBar\res\buildressource.bat</project>
+	<project Name="Battery Monitor" Type="Resource">Plugins\Modules\Battery Monitor\res\buildressource.bat</project>
+	<project Name="Button" Type="Resource">Plugins\Modules\Button\res\buildressource.bat</project>
+	<project Name="ButtonBar" Type="Resource">Plugins\Modules\ButtonBar\res\buildressource.bat</project>
+	<project Name="Keyboard Layout" Type="Resource">Plugins\Modules\Keyboard Layout\res\buildressource.bat</project>
+	<project Name="MediaController" Type="Resource">Plugins\Modules\MediaController\res\buildressource.bat</project>
+	<project Name="MiniScmd" Type="Resource">Plugins\Modules\MiniScmd\res\buildressource.bat</project>
+	<project Name="Notes" Type="Resource">Plugins\Modules\Notes\res\buildressource.bat</project>
+	<project Name="QuickScript" Type="Resource">Plugins\Modules\QuickScript\res\buildressource.bat</project>
+	<project Name="RSS Reader" Type="Resource">Plugins\Modules\RSS Reader\res\buildressource.bat</project>
+	<project Name="ShowDesktop" Type="Resource">Plugins\Modules\ShowDesktop\res\buildressource.bat</project>
+	<project Name="SystemTray" Type="Resource">Plugins\Modules\SystemTray\res\buildressource.bat</project>
+	<project Name="Taskbar" Type="Resource">Plugins\Modules\Taskbar\res\buildressource.bat</project>
+	<project Name="VolumeControl" Type="Resource">Plugins\Modules\VolumeControl\res\buildressource.bat</project>
+	<project Name="Weather" Type="Resource">Plugins\Objects\Weather\res\buildressource.bat</project>
+	<project Name="StartupApps" Type="Resource">Plugins\Services\StartupApps\build.bat</project>
+	<project Name="TaskSwitch" Type="Resource">Plugins\Services\TaskSwitch\res\buildressource.bat</project>
+   </package>
   <package Name="Configurations - Components">
     <project Name="Toolbar List" Type="DLL">Plugins\Configurations\Components\Barlist\BarList.dproj</project>
     <project Name="Desktop" Type="DLL">Plugins\Configurations\Components\DesktopSettings\DesktopSettings.dproj</project>
@@ -11,7 +65,7 @@
     <project Name="Service List" Type="DLL">Plugins\Configurations\Components\ServiceList\ServiceList.dproj</project>
     <project Name="Theme List" Type="DLL">Plugins\Configurations\Components\ThemeList\ThemeList.dproj</project>
   </package>
-    <package Name="Configurations - Modules">
+  <package Name="Configurations - Modules">
     <project Name="AlarmClock" Type="DLL">Plugins\Configurations\Modules\AlarmClock\AlarmClock.dproj</project>
     <project Name="AppBar List" Type="DLL">Plugins\Configurations\Modules\AppBarList\AppBarList.dproj</project> 
     <project Name="AppBar Options" Type="DLL">Plugins\Configurations\Modules\AppBarOptions\AppBarOptions.dproj</project>
