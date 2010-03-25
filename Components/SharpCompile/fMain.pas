@@ -11,6 +11,13 @@ uses
   SharpEPageControl, PngImageList, StrUtils, JvExControls, ToolWin;
 
 type
+  TCompileThread = class(TThread)
+  protected
+    procedure Execute; override;
+  public
+    constructor Create(CreateSuspended: Boolean);
+  end;
+
   TfrmMain = class(TForm)
     panMain: TPanel;
     panLeft: TPanel;
@@ -57,8 +64,8 @@ type
     procedure lbSummaryGetCellCursor(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var ACursor: TCursor);
   private
-    procedure InsertSplitter();
-    procedure Log(msg : string);
+    FCompileThread : TCompileThread;
+
     procedure CompilerNewLine(Sender: TObject; CmdOutput: string);
     procedure CompileProject(Project: TCSharpSolution; bDebug : Boolean; iPercent : Integer); overload;
     procedure CompileProject(Project: TDelphiProject; bDebug: Boolean; iPercent: Integer); overload;
@@ -82,6 +89,128 @@ implementation
 
 {$R *.dfm}
 
+function IsClassName(pData : Pointer; name : string) : Boolean;
+var
+  ClassRef : TClass;
+begin
+  ClassRef := TObject(pData).ClassType;
+  Result := ClassRef.ClassNameIs(name);
+end;
+
+function GetDetailIndex(pData : Pointer) : Integer;
+begin
+  if IsClassName(pData, 'TCSharpSolution') then
+    Result := TCSharpSolution(pData).DetailIndex
+  else if IsClassName(pData, 'TResourceBat') then
+    Result := TResourceBat(pData).DetailIndex
+  else
+    Result := TDelphiProject(pData).DIndex;
+end;
+
+procedure Log(msg : string);
+begin
+  frmMain.mDetailed.Lines.Add(FormatDateTime('hh:nn:ss', Now) + ' ' + msg);
+end;
+
+procedure InsertSplitter();
+var
+  i, c : Integer;
+  sSplitter : string;
+begin
+  c := Trunc(frmMain.mDetailed.ClientWidth / Abs(frmMain.Canvas.TextWidth('-')));
+  sSplitter := '';
+  for i := 0 to c - 3 do
+    sSplitter := sSplitter + '-';
+
+  frmMain.mDetailed.Lines.Add(sSplitter);
+end;
+
+constructor TCompileThread.Create(CreateSuspended: Boolean);
+begin
+  inherited Create(CreateSuspended);
+end;
+
+procedure TCompileThread.Execute;
+var
+  i,iProjCount,iStatus: integer;
+  iPercent: integer;
+  sPackage: String;
+  buildStart, buildEnd : TDateTime;
+begin
+  frmMain.tbCompile.Caption := 'Cancel';
+  frmMain.tbCompile.ImageIndex := 4;
+
+  iProjCount := 0;
+  iStatus := 0;
+  sPackage := '';
+  buildStart := Now;
+
+  for i := 0 to frmMain.ctvProjects.Items.Count - 1 do
+  begin
+    if frmMain.ctvProjects.Checked[frmMain.ctvProjects.Items[i]] then
+      if not frmMain.ctvProjects.Items[i].HasChildren then
+        iProjCount := iProjCount + 1;
+  end;
+
+  Log('Building ' + IntToStr(iProjCount) + ' projects/solutions.');
+  InsertSplitter;
+  
+  for i := 0 to frmMain.ctvProjects.Items.Count - 1 do
+  begin
+    if Terminated then
+      break;
+
+    if frmMain.ctvProjects.Checked[frmMain.ctvProjects.Items[i]] then
+    begin
+      if frmMain.ctvProjects.Items[i].Data <> nil then
+      begin
+        iStatus := iStatus + 1;
+        iPercent := Round(iStatus * 100 / iProjCount);
+
+        if IsClassName(frmMain.ctvProjects.Items[i].Data, 'TCSharpSolution') then
+        begin
+          if sPackage <> TCSharpSolution(frmMain.ctvProjects.Items[i].Data).Package then
+          begin
+            sPackage := TCSharpSolution(frmMain.ctvProjects.Items[i].Data).Package;
+            frmMain.lbSummary.AddItem(sPackage);
+          end;
+          frmMain.CompileProject(TCSharpSolution(frmMain.ctvProjects.Items[i].Data), frmMain.clbOptions.Checked[0], iPercent);
+        end
+        else if IsClassName(frmMain.ctvProjects.Items[i].Data, 'TDelphiProject') then
+        begin
+          if sPackage <> TDelphiProject(frmMain.ctvProjects.Items[i].Data).Package then
+          begin
+            sPackage := TDelphiProject(frmMain.ctvProjects.Items[i].Data).Package;
+            frmMain.lbSummary.AddItem(sPackage);
+          end;
+          frmMain.CompileProject(TDelphiProject(frmMain.ctvProjects.Items[i].Data), frmMain.clbOptions.Checked[0], iPercent);
+        end
+        else if IsClassName(frmMain.ctvProjects.Items[i].Data, 'TResourceBat') then
+        begin
+          if sPackage <> TResourceBat(frmMain.ctvProjects.Items[i].Data).Package then
+          begin
+            sPackage := TResourceBat(frmMain.ctvProjects.Items[i].Data).Package;
+            frmMain.lbSummary.AddItem(sPackage);
+          end;
+          frmMain.CompileProject(TResourceBat(frmMain.ctvProjects.Items[i].Data), frmMain.clbOptions.Checked[0], iPercent);
+        end;
+      end;
+    end;
+  end;
+  
+  buildEnd := Now;
+  if Terminated then
+    Log('Build canceled.')
+  else
+    Log('Build finished.');
+  Log('Total build time was ' + FormatDateTime('hh:nn:ss', Frac(buildEnd) - Frac(buildStart)));
+
+  frmMain.tbCompile.Caption := 'Compile';
+  frmMain.tbCompile.ImageIndex := 3;
+
+  Self.Terminate;
+end;
+
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   uVistaFuncs.SetVistaFonts(frmMain);
@@ -100,6 +229,13 @@ end;
 
 procedure TfrmMain.FormDestroy(Sender: TObject);
 begin
+  if FCompileThread <> nil then
+  begin
+    FCompileThread.Terminate;
+    FCompileThread.WaitFor;
+    FreeAndNil(FCompileThread);
+  end;
+
   SaveSettings;
 end;
 
@@ -173,94 +309,25 @@ begin
   mDetailed.Clear;
 end;
 
-function IsClassName(pData : Pointer; name : string) : Boolean;
-var
-  ClassRef : TClass;
-begin
-  ClassRef := TObject(pData).ClassType;
-  Result := ClassRef.ClassNameIs(name);
-end;
-
-function GetDetailIndex(pData : Pointer) : Integer;
-begin
-  if IsClassName(pData, 'TCSharpSolution') then
-    Result := TCSharpSolution(pData).DetailIndex
-  else if IsClassName(pData, 'TResourceBat') then
-    Result := TResourceBat(pData).DetailIndex
-  else
-    Result := TDelphiProject(pData).DIndex;
-end;
-
-procedure TfrmMain.Log(msg : string);
-begin
-  mDetailed.Lines.Add(FormatDateTime('hh:nn:ss', Now) + ' ' + msg);
-end;
-
 procedure TfrmMain.tbCompileClick(Sender: TObject);
-var
-  i,iProjCount,iStatus: integer;
-  iPercent: integer;
-  sPackage: String;
-  buildStart, buildEnd : TDateTime;
 begin
-  iProjCount := 0;
-  iStatus := 0;
-  sPackage := '';
-  buildStart := Now;
-
-  for i := 0 to ctvProjects.Items.Count - 1 do
+  if (FCompileThread <> nil) and (not FCompileThread.Terminated) then
   begin
-    if ctvProjects.Checked[ctvProjects.Items[i]] then
-      if not ctvProjects.Items[i].HasChildren then
-        iProjCount := iProjCount + 1;
-  end;
-
-  Log('Building ' + IntToStr(iProjCount) + ' projects/solutions.');
-  InsertSplitter;
-  
-  for i := 0 to ctvProjects.Items.Count - 1 do
+    FCompileThread.Terminate;
+    FCompileThread.WaitFor;
+    FreeAndNil(FCompileThread);
+  end else
   begin
-    if ctvProjects.Checked[ctvProjects.Items[i]] then
+    if FCompileThread <> nil then
     begin
-      if ctvProjects.Items[i].Data <> nil then
-      begin
-        iStatus := iStatus + 1;
-        iPercent := Round(iStatus * 100 / iProjCount);
-
-        if IsClassName(ctvProjects.Items[i].Data, 'TCSharpSolution') then
-        begin
-          if sPackage <> TCSharpSolution(ctvProjects.Items[i].Data).Package then
-          begin
-            sPackage := TCSharpSolution(ctvProjects.Items[i].Data).Package;
-            lbSummary.AddItem(sPackage);
-          end;
-          CompileProject(TCSharpSolution(ctvProjects.Items[i].Data), clbOptions.Checked[0], iPercent);
-        end
-        else if IsClassName(ctvProjects.Items[i].Data, 'TDelphiProject') then
-        begin
-          if sPackage <> TDelphiProject(ctvProjects.Items[i].Data).Package then
-          begin
-            sPackage := TDelphiProject(ctvProjects.Items[i].Data).Package;
-            lbSummary.AddItem(sPackage);
-          end;
-          CompileProject(TDelphiProject(ctvProjects.Items[i].Data), clbOptions.Checked[0], iPercent);
-        end
-        else if IsClassName(ctvProjects.Items[i].Data, 'TResourceBat') then
-        begin
-          if sPackage <> TResourceBat(ctvProjects.Items[i].Data).Package then
-          begin
-            sPackage := TResourceBat(ctvProjects.Items[i].Data).Package;
-            lbSummary.AddItem(sPackage);
-          end;
-          CompileProject(TResourceBat(ctvProjects.Items[i].Data), clbOptions.Checked[0], iPercent);
-        end;
-      end;
+      FreeAndNil(FCompileThread);
     end;
+
+    if FCompileThread = nil then
+      FCompileThread := TCompileThread.Create(True);
+
+    FCompileThread.Resume;
   end;
-  
-  buildEnd := Now;
-  Log('Build finished.');
-  Log('Total build time was ' + FormatDateTime('hh:nn:ss', Frac(buildEnd) - Frac(buildStart)));
 end;
 
 procedure TfrmMain.CompileProject(Project: TCSharpSolution; bDebug: Boolean; iPercent: Integer);
@@ -398,19 +465,6 @@ begin
   newItem.Caption := newItem.Caption + status;
 
   InsertSplitter;
-end;
-
-procedure TfrmMain.InsertSplitter();
-var
-  i, c : Integer;
-  sSplitter : string;
-begin
-  c := Trunc(mDetailed.ClientWidth / Abs(Canvas.TextWidth('-')));
-  sSplitter := '';
-  for i := 0 to c - 3 do
-    sSplitter := sSplitter + '-';
-
-  mDetailed.Lines.Add(sSplitter);
 end;
 
 procedure TfrmMain.CompilerNewLine(Sender: TObject; CmdOutput: string);
