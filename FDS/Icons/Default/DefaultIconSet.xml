@@ -45,5 +45,17 @@
       <name>icon.desktop</name>
       <file>icon.desktop.ico</file>
     </Icon>
+	<Icon>
+      <name>icon.alarm.on</name>
+      <file>icon.alarm.on.ico</file>
+    </Icon>
+	<Icon>
+      <name>icon.alarm.off</name>
+      <file>icon.alarm.off.ico</file>
+    </Icon>
+	<Icon>
+      <name>icon.alarm.active</name>
+      <file>icon.alarm.active.ico</file>
+    </Icon>
   </Icons>
 </IconSet>
