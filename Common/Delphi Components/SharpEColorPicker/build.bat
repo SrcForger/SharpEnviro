@@ -3,5 +3,3 @@
 del Resources.res
 
 brcc32 Resources.rc
-
-pause

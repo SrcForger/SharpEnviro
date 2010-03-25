@@ -4,4 +4,3 @@ del SharpEColorEditorRes.res
 
 "brcc32" SharpEColorEditorRes.rc
 
-pause
