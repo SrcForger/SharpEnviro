@@ -13,7 +13,7 @@
   </package>
   <package Name="Resources - Components">
 	<project Name="Explorer Metadata" Type="Resource">Components\Explorer\metadata.bat</project>
-	<project Name="ExplorerNET Metadata" Type="Resource">Components\ExplorerNET\metadata.bat</project>
+	<project Name="SetShell Metadata" Type="Resource">Components\SetShell\metadata.bat</project>
 	<project Name="SharpAdmin" Type="Resource">Components\SharpAdmin\VistaElevated.bat</project>
 	<project Name="SharpBar" Type="Resource">Components\SharpBar\buildres.bat</project>
 	<project Name="SharpBar Metadata" Type="Resource">Components\SharpBar\metadata.bat</project>
