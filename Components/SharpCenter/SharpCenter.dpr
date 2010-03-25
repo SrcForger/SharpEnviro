@@ -50,6 +50,7 @@ begin
   end else
   begin
     Application.CreateForm(TSharpCenterWnd, SharpCenterWnd);
+    SharpCenterWnd.Icon := Application.Icon;
     Application.Run;
   end;
  end.
