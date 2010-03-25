@@ -63,6 +63,7 @@ type
       AItem: TSharpEListItem);
     procedure lbSummaryGetCellCursor(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var ACursor: TCursor);
+    procedure clbOptionsClick(Sender: TObject);
   private
     FCompileThread : TCompileThread;
 
@@ -422,6 +423,11 @@ begin
   InsertSplitter;
 end;
 
+procedure TfrmMain.clbOptionsClick(Sender: TObject);
+begin
+  bDebug := clbOptions.Checked[0];
+end;
+
 procedure TfrmMain.CompileProject(Project: TResourceBat; bDebug: Boolean; iPercent: Integer);
 var
   compiler : TResourceCompiler;
@@ -571,7 +577,7 @@ begin
       if xFile.Root.Items.ItemNamed['Options'] <> nil then
         with xFile.Root.Items.ItemNamed['Options'] do
         begin
-          bDebug := StrToBool(Properties.Value('Debug', 'False'));
+          bDebug := Properties.BoolValue('Debug', False);
           clbOptions.Checked[0] := bDebug;
           sXMLPath := Properties.Value('XMLPath', '');
         end;
