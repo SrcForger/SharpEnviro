@@ -62,6 +62,7 @@ type
     procedure CompilerNewLine(Sender: TObject; CmdOutput: string);
     procedure CompileProject(Project: TCSharpSolution; bDebug : Boolean; iPercent : Integer); overload;
     procedure CompileProject(Project: TDelphiProject; bDebug: Boolean; iPercent: Integer); overload;
+    procedure CompileProject(Project: TResourceBat; bDebug: Boolean; iPercent: Integer); overload;
     procedure OpenFile(sXML: String);
     procedure SaveSettings();
     procedure LoadSettings();
@@ -184,6 +185,8 @@ function GetDetailIndex(pData : Pointer) : Integer;
 begin
   if IsClassName(pData, 'TCSharpSolution') then
     Result := TCSharpSolution(pData).DetailIndex
+  else if IsClassName(pData, 'TResourceBat') then
+    Result := TResourceBat(pData).DetailIndex
   else
     Result := TDelphiProject(pData).DIndex;
 end;
@@ -241,6 +244,15 @@ begin
             lbSummary.AddItem(sPackage);
           end;
           CompileProject(TDelphiProject(ctvProjects.Items[i].Data), clbOptions.Checked[0], iPercent);
+        end
+        else if IsClassName(ctvProjects.Items[i].Data, 'TResourceBat') then
+        begin
+          if sPackage <> TResourceBat(ctvProjects.Items[i].Data).Package then
+          begin
+            sPackage := TResourceBat(ctvProjects.Items[i].Data).Package;
+            lbSummary.AddItem(sPackage);
+          end;
+          CompileProject(TResourceBat(ctvProjects.Items[i].Data), clbOptions.Checked[0], iPercent);
         end;
       end;
     end;
@@ -343,6 +355,51 @@ begin
   InsertSplitter;
 end;
 
+procedure TfrmMain.CompileProject(Project: TResourceBat; bDebug: Boolean; iPercent: Integer);
+var
+  compiler : TResourceCompiler;
+  status : string;
+  newItem: TSharpEListItem;
+  succeeded : Boolean;
+  buildStart, buildEnd : TDateTime;
+begin
+  newItem := lbSummary.AddItem('Compiling ' + Project.Name + '...',2);
+  newItem.AddSubItem('');
+
+  lbSummary.ItemIndex := lbSummary.Count - 1;
+  Project.SummaryIndex := lbSummary.Count - 1;
+  
+  compiler := TResourceCompiler.Create;
+  compiler.OnCompilerCmdOutput := CompilerNewLine;
+  
+  buildStart := Now;
+  Log('Build for ' + Project.Name + ' started at ' + FormatDateTime('hh:nn:ss', buildStart));
+
+  Project.DetailIndex := mDetailed.Lines.Count - 1;
+  
+  succeeded := compiler.CompileBat(Project);
+  buildEnd := Now;
+
+  if succeeded then
+  begin
+    status := 'Success! (' + IntToStr(iPercent) + '%)';
+    newItem.ImageIndex := 1;
+    Log('Build for ' + Project.Name + ' finished at ' + FormatDateTime('hh:nn:ss', buildEnd));
+    Log('Build took ' + FormatDateTime('hh:nn:ss', Frac(buildEnd) - Frac(buildStart)));
+  end
+  else
+  begin
+    status := 'Failed! (' + IntToStr(iPercent) + '%)';
+    newItem.ImageIndex := 0;
+    Log('Build for ' + Project.Name + ' Failed!');
+  end;
+
+  Project.DetailIndex := mDetailed.Lines.Count - 1;
+  newItem.Caption := newItem.Caption + status;
+
+  InsertSplitter;
+end;
+
 procedure TfrmMain.InsertSplitter();
 var
   i, c : Integer;
@@ -407,6 +464,11 @@ begin
               if sProjectType = 'Solution' then
               begin
                 nComponent.Data := TCSharpSolution.Create(sPath + Value, sProjectName, sPlatform);
+                TCSharpSolution(nComponent.Data).Package := sPackage;
+              end
+              else if sProjectType = 'Resource' then
+              begin
+                nComponent.Data := TResourceBat.Create(sPath + Value, sProjectName);
                 TCSharpSolution(nComponent.Data).Package := sPackage;
               end
               else

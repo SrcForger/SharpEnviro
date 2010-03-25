@@ -94,6 +94,24 @@ type
 
   end;
 
+  TResourceBat = class
+  private
+    FName : string;
+    FPath : string;
+    FPackage : string;
+    FSummaryIndex : Integer;
+    FDetailIndex : Integer;
+  public
+    property Name : string read FName;
+    property Path : string read FPath;
+    property Package : string read FPackage write FPackage;
+    property SummaryIndex : Integer read FSummaryIndex write FSummaryIndex;
+    property DetailIndex : Integer read FDetailIndex write FDetailIndex;
+  published
+    constructor Create(path, name : string); reintroduce;
+    destructor Destroy; override;
+  end;
+
   TCSharpCompiler = class
   private
     FOnCompilerCmdOutput : TCompileEvent;
@@ -125,6 +143,19 @@ type
 
     function CompileProject(Project: TDelphiProject; bDebug : boolean = False) : boolean;
     procedure UpdateBDSData;
+  published
+    property OnCompilerCmdOutput : TCompileEvent read FOnCompilerCmdOutput write FOnCompilerCmdOutput;
+  end;
+
+  TResourceCompiler = class
+  private
+    FOnCompilerCmdOutput : TCompileEvent;
+
+    procedure OnCompilerNewLine(Sender: TObject; NewLine: string; OutputType: TOutputType);
+  public
+    constructor Create; reintroduce;
+    destructor Destroy; override;
+    function CompileBat(Project : TResourceBat) : Boolean;
   published
     property OnCompilerCmdOutput : TCompileEvent read FOnCompilerCmdOutput write FOnCompilerCmdOutput;
   end;
@@ -576,5 +607,65 @@ begin
 end;
 
 {$ENDREGION 'TDelphiCompiler'}
+
+{$Region 'TResourceBat'}
+constructor TResourceBat.Create(path, name: string);
+begin
+  inherited Create;
+
+  FName := name;
+  FPath := path;
+end;
+
+destructor TResourceBat.Destroy;
+begin
+  inherited Destroy;
+end;
+{$endregion}
+
+{$Region 'TResourceCompiler'}
+constructor TResourceCompiler.Create;
+begin
+  inherited Create;
+end;
+
+destructor TResourceCompiler.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TResourceCompiler.OnCompilerNewLine(Sender: TObject; NewLine: string; OutputType: TOutputType);
+begin
+  if Assigned(FOnCompilerCmdOutput) then
+     FOnCompilerCmdOutput(Sender,NewLine);
+end;
+
+function TResourceCompiler.CompileBat(Project: TResourceBat) : Boolean;
+var
+  dc : TDosCommand;
+  Dir : string;
+begin
+  Result := False;
+
+  if not FileExists(Project.Path) then
+    Exit;
+
+  Dir := IncludeTrailingPathDelimiter(ExtractFilePath(Project.Path));
+  SetCurrentDirectory(PChar(Dir));
+
+  dc := TDosCommand.Create(nil);
+  try
+    dc.OnNewLine := OnCompilerNewLine;
+
+    dc.CommandLine := Project.Path;
+    dc.Execute2;
+    exitCode := dc.ExitCode;
+  finally
+    dc.Free;
+  end;
+
+  Result := (exitCode = 0);
+end;
+{$endregion}
 
 end.
