@@ -71,6 +71,7 @@ type
     procedure CompileProject(Project: TCSharpSolution; bDebug : Boolean; iPercent : Integer); overload;
     procedure CompileProject(Project: TDelphiProject; bDebug: Boolean; iPercent: Integer); overload;
     procedure CompileProject(Project: TResourceBat; bDebug: Boolean; iPercent: Integer); overload;
+    procedure ExecuteCommand(cmd: TCommand; iPercent: Integer);
     procedure OpenFile(sXML: String);
     procedure SaveSettings();
     procedure LoadSettings();
@@ -194,6 +195,15 @@ begin
             frmMain.lbSummary.AddItem(sPackage);
           end;
           frmMain.CompileProject(TResourceBat(frmMain.ctvProjects.Items[i].Data), frmMain.clbOptions.Checked[0], iPercent);
+        end
+        else if IsClassName(frmMain.ctvProjects.Items[i].Data, 'TCommand') then
+        begin
+          if sPackage <> TCommand(frmMain.ctvProjects.Items[i].Data).Package then
+          begin
+            sPackage := TCommand(frmMain.ctvProjects.Items[i].Data).Package;
+            frmMain.lbSummary.AddItem(sPackage);
+          end;
+          frmMain.ExecuteCommand(TCommand(frmMain.ctvProjects.Items[i].Data), iPercent);
         end;
       end;
     end;
@@ -423,11 +433,6 @@ begin
   InsertSplitter;
 end;
 
-procedure TfrmMain.clbOptionsClick(Sender: TObject);
-begin
-  bDebug := clbOptions.Checked[0];
-end;
-
 procedure TfrmMain.CompileProject(Project: TResourceBat; bDebug: Boolean; iPercent: Integer);
 var
   compiler : TResourceCompiler;
@@ -473,6 +478,51 @@ begin
   InsertSplitter;
 end;
 
+procedure TfrmMain.ExecuteCommand(cmd: TCommand; iPercent: Integer);
+var
+  compiler : TCommandRunner;
+  status : string;
+  newItem: TSharpEListItem;
+  succeeded : Boolean;
+  buildStart, buildEnd : TDateTime;
+begin
+  newItem := lbSummary.AddItem('Compiling ' + cmd.Name + '...',2);
+  newItem.AddSubItem('');
+
+  lbSummary.ItemIndex := lbSummary.Count - 1;
+  cmd.SummaryIndex := lbSummary.Count - 1;
+  
+  compiler := TCommandRunner.Create;
+  compiler.OnCompilerCmdOutput := CompilerNewLine;
+  
+  buildStart := Now;
+  Log('Build for ' + cmd.Name + ' started at ' + FormatDateTime('hh:nn:ss', buildStart));
+
+  cmd.DetailIndex := mDetailed.Lines.Count - 1;
+  
+  succeeded := compiler.Execute(cmd);
+  buildEnd := Now;
+
+  if succeeded then
+  begin
+    status := 'Success! (' + IntToStr(iPercent) + '%)';
+    newItem.ImageIndex := 1;
+    Log('Build for ' + cmd.Name + ' finished at ' + FormatDateTime('hh:nn:ss', buildEnd));
+    Log('Build took ' + FormatDateTime('hh:nn:ss', Frac(buildEnd) - Frac(buildStart)));
+  end
+  else
+  begin
+    status := 'Failed! (' + IntToStr(iPercent) + '%)';
+    newItem.ImageIndex := 0;
+    Log('Build for ' + cmd.Name + ' Failed!');
+  end;
+
+  cmd.DetailIndex := mDetailed.Lines.Count - 1;
+  newItem.Caption := newItem.Caption + status;
+
+  InsertSplitter;
+end;
+
 procedure TfrmMain.CompilerNewLine(Sender: TObject; CmdOutput: string);
 var
   sTemp: String;
@@ -480,6 +530,11 @@ begin
   sTemp := mDetailed.Lines[mDetailed.Lines.Count - 1];
   if (RightStr(sTemp, Length(sTemp) - 9) <> CmdOutput) and (CmdOutput <> '') then
     Log(CmdOutput);
+end;
+
+procedure TfrmMain.clbOptionsClick(Sender: TObject);
+begin
+  bDebug := clbOptions.Checked[0];
 end;
 
 procedure TfrmMain.ctvProjectsSelectionChange(Sender: TObject);
@@ -509,6 +564,7 @@ begin
       for n := 0 to xFile.Root.Items.Count - 1 do
         with xFile.Root.Items.Item[n] do
         begin
+          sPackage := Items.Item[0].Name;
           sPackage := Properties.Value('Name', 'error');
           nProject := ctvProjects.Items.Add(nil, sPackage);
           nProject.Data := nil;
@@ -516,6 +572,10 @@ begin
           for i := 0 to Items.Count - 1 do
             with Items.Item[i] do
             begin
+              // Skip lines that are comments.
+              if Name = '' then
+                Continue;
+
               sProjectName := Properties.Value('Name', 'error');
               sProjectType := Properties.Value('Type', 'Application');
               sPlatform := Properties.Value('Platform', '');
@@ -529,7 +589,12 @@ begin
               else if sProjectType = 'Resource' then
               begin
                 nComponent.Data := TResourceBat.Create(sPath + Value, sProjectName);
-                TCSharpSolution(nComponent.Data).Package := sPackage;
+                TResourceBat(nComponent.Data).Package := sPackage;
+              end
+              else if sProjectType = 'CommandLine' then
+              begin
+                nComponent.Data := TCommand.Create(sPath, sProjectName, Value);
+                TCommand(nComponent.Data).Package := sPackage;
               end
               else
               begin

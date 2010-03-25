@@ -112,6 +112,26 @@ type
     destructor Destroy; override;
   end;
 
+  TCommand = class
+  private
+    FName : string;
+    FPath : string;
+    FCommand : string;
+    FPackage : string;
+    FSummaryIndex : Integer;
+    FDetailIndex : Integer;
+  public
+    property Name : string read FName;
+    property Path : string read FPath;
+    property Command : string read FCommand;
+    property Package : string read FPackage write FPackage;
+    property SummaryIndex : Integer read FSummaryIndex write FSummaryIndex;
+    property DetailIndex : Integer read FDetailIndex write FDetailIndex;
+  published
+    constructor Create(path, name, command : string); reintroduce;
+    destructor Destroy; override;
+  end;
+
   TCSharpCompiler = class
   private
     FOnCompilerCmdOutput : TCompileEvent;
@@ -156,6 +176,19 @@ type
     constructor Create; reintroduce;
     destructor Destroy; override;
     function CompileBat(Project : TResourceBat) : Boolean;
+  published
+    property OnCompilerCmdOutput : TCompileEvent read FOnCompilerCmdOutput write FOnCompilerCmdOutput;
+  end;
+
+  TCommandRunner = class
+  private
+    FOnCompilerCmdOutput : TCompileEvent;
+
+    procedure OnCompilerNewLine(Sender: TObject; NewLine: string; OutputType: TOutputType);
+  public
+    constructor Create; reintroduce;
+    destructor Destroy; override;
+    function Execute(Project : TCommand) : Boolean;
   published
     property OnCompilerCmdOutput : TCompileEvent read FOnCompilerCmdOutput write FOnCompilerCmdOutput;
   end;
@@ -666,6 +699,66 @@ begin
 
   Result := (exitCode = 0);
 end;
+{$endregion}
+
+{$Region 'TCommand'}
+
+constructor TCommand.Create(path, name, command: string);
+begin
+  inherited Create;
+
+  FName := name;
+  FPath := path;
+  FCommand := command;
+end;
+
+destructor TCommand.Destroy;
+begin
+  inherited Destroy;
+end;
+
+{$endregion}
+
+{$Region 'TCommandRunner'}
+
+constructor TCommandRunner.Create;
+begin
+  inherited Create;
+end;
+
+destructor TCommandRunner.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TCommandRunner.OnCompilerNewLine(Sender: TObject; NewLine: string; OutputType: TOutputType);
+begin
+  if Assigned(FOnCompilerCmdOutput) then
+     FOnCompilerCmdOutput(Sender,NewLine);
+end;
+
+function TCommandRunner.Execute(Project: TCommand) : Boolean;
+var
+  dc : TDosCommand;
+  Dir : string;
+begin
+  Dir := IncludeTrailingPathDelimiter(ExtractFilePath(Project.Path));
+  SetCurrentDirectory(PChar(Dir));
+
+  dc := TDosCommand.Create(nil);
+  try
+    dc.OnNewLine := OnCompilerNewLine;
+
+    dc.CommandLine := Project.Command;
+    dc.Execute2;
+    exitCode := dc.ExitCode;
+  finally
+    dc.Free;
+  end;
+
+  Result := (exitCode = 0);
+end;
+
 {$endregion}
 
 end.
