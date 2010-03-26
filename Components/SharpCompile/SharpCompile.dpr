@@ -14,5 +14,7 @@ begin
   Application.Initialize;
   Application.Title := 'SharpCompile';
   Application.CreateForm(TfrmMain, frmMain);
+  Application.MainFormOnTaskBar := True;
+  frmMain.Icon := Application.Icon;
   Application.Run;
 end.
