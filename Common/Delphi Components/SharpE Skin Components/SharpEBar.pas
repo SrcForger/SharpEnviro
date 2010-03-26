@@ -495,6 +495,7 @@ begin
     SetWindowPos(aform.handle, HWND_NOTOPMOST, 0, 0, 0, 0,
                  SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
   end;
+  abackground.SetZOrder;  
 end;
 
 procedure TSharpEBar.UpdatePosition(NewWidth : integer = -1);
@@ -927,7 +928,11 @@ begin
       begin
         if msg.WParam > 0 then
         begin
-          ShowWindow(FBackGround.Handle, sw_ShowNormal);
+//          ShowWindow(FBackGround.Handle, sw_ShowNormal);
+          SetWindowPos(aBackground.handle,
+                       aform.handle,
+                       -1, -2, -3, -4,
+                       SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_SHOWWINDOW);
           UpdateAlwaysOnTop;
         end
         else
