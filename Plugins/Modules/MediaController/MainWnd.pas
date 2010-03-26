@@ -91,7 +91,8 @@ function TMainForm.GetStartPlayer(Root : HKEY; Key : String; Value : String) : S
 var
   Reg : TRegistry;
   PlayerPath : String;
-  PlayerSelectForm: TPlayerSelectForm;
+//  PlayerSelectForm: TPlayerSelectForm;
+  selectedFile : String;
 begin
   Reg := TRegistry.Create;
   Reg.RootKey := Root;
@@ -104,11 +105,15 @@ begin
   end;
   if not FileExists(PlayerPath) then
   begin
-    PlayerSelectForm := TPlayerSelectForm.Create(self);
-    if PlayerSelectForm.ShowModal = mrOk then
-       PlayerPath := PlayerSelectForm.edit_player.Text
-       else PlayerPath := '';
-    PlayerSelectForm.Free;
+    if PromptForFileName(selectedFile,'Applications (*.exe)|*.exe','','Select the location of the media player', '', False) then
+      PlayerPath := selectedFile
+    else PlayerPath := '';
+//    PlayerSelectForm := TPlayerSelectForm.Create(self);
+//    if PlayerSelectForm.ShowModal = mrOk then
+    //   PlayerPath := PlayerSelectForm.edit_player.Text
+  //     else PlayerPath := '';
+//    PlayerSelectForm.Show;
+//    PlayerSelectForm.Free;
   end;
   result := PlayerPath;
   SharpApi.SharpExecute('_nohist,' + PlayerPath);
