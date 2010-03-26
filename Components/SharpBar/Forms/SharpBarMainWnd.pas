@@ -522,8 +522,11 @@ begin
     WTS_SESSION_UNLOCK:
     begin
       ModuleManager.BroadcastPluginMessage('MM_SESSION_UNLOCK');
+      UpdateBGZone;
+      SharpEBar.UpdateSkin;
       SharpEBar.UpdateAlwaysOnTop;
-      ModuleManager.BroadCastModuleRefresh;      
+      ModuleManager.BroadCastModuleRefresh;
+      ModuleManager.BroadcastPluginUpdate(suBackground);
     end;
   end;
 end;
