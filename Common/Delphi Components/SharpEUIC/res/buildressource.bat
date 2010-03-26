@@ -1,1 +1,1 @@
-brcc32 SharpEUICIcons.rc
+brcc32 SharpEUICIcons.rc -fo ..\SharpEUICIcons.res -v
