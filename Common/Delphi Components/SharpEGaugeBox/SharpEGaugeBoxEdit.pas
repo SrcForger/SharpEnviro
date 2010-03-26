@@ -46,6 +46,8 @@ uses
 
   SharpGraphicsUtils;
 
+  {$R SharpEGaugeBoxBitmaps.res}
+
 type
   TChangeValueEvent = procedure(Sender: TObject; Value: Integer) of object;
   TArrowColor = (acBlue, acCyan, acGray, acGreen, acOrange, acPurple, acRed, acYellow, acDefault);
