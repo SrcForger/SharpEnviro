@@ -180,6 +180,8 @@ begin
     aForm.MsgText := PAnsiChar(format('Do you really want to %s your computer?',[shutdownType]));
     aForm.MsgCaption := PAnsiChar(format('Confirm %s',[shutdownType]));
     aForm.MsgIcon := ShutdownIcons[Integer(FActionType)];
+    aForm.MsgTimeout := PAnsiChar(format('Computer will %s in',[shutdownType]));
+    aForm.DoTimeout := True;
 
     aFormRet := aForm.ShowModal;
     Result := (aFormRet = mrYes);
