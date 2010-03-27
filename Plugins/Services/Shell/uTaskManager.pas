@@ -185,7 +185,7 @@ var
 begin
   Result := False;
 
-	if IsWindowVisible(pHandle) then
+	// if IsWindowVisible(pHandle) then
 	begin
 		if (GetWindowLong(pHandle, GWL_EXSTYLE) and WS_EX_TOOLWINDOW) = 0 then
 		begin
