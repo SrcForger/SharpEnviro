@@ -59,7 +59,7 @@ type
                    FLastActiveTask : hwnd;
                    FLastActiveTaskPos : TRect;
 
-                   function CheckTaskWnd(pHandle : hwnd): boolean;
+                   function CheckTaskWnd(pHandle : hwnd; IncludeInvisible : boolean): boolean;
                  public
                    procedure RemoveDeadTasks;
                    procedure AddTask(pHandle : hwnd);
@@ -179,13 +179,13 @@ begin
   end;
 end;
 
-function TTaskManager.CheckTaskWnd(pHandle: HWND): boolean;
+function TTaskManager.CheckTaskWnd(pHandle: HWND; IncludeInvisible : boolean): boolean;
 var
   ownerWnd : HWND;
 begin
   Result := False;
 
-	// if IsWindowVisible(pHandle) then
+  if IsWindowVisible(pHandle) or (IncludeInvisible) then
 	begin
 		if (GetWindowLong(pHandle, GWL_EXSTYLE) and WS_EX_TOOLWINDOW) = 0 then
 		begin
@@ -213,7 +213,7 @@ var
 
   function EnumWindowsProc(Wnd: HWND; LParam: LPARAM): BOOL; stdcall;
   begin
-    if CheckTaskWnd(Wnd) then
+    if CheckTaskWnd(Wnd, False) then
       with PParam(LParam)^ do
       begin
        setlength(wndlist,length(wndlist)+1);
@@ -363,7 +363,7 @@ begin
   if not IsWindow(pHandle) then exit;
   if GetItemByHandle(pHandle) <> nil then exit; // item already exists
 
-  if CheckTaskWnd(pHandle) then
+  if CheckTaskWnd(pHandle,True) then
   begin
     pItem := TTaskItem.Create(pHandle,FListMode);
     if not FListMode then
@@ -441,7 +441,7 @@ begin
     pItem := TTaskItem(FItems.Items[n]);
     if pItem.Handle = pHandle then
     begin
-      if CheckTaskWnd(pHandle) then
+      if CheckTaskWnd(pHandle, True) then
       begin
         if not FListMode then
           pItem.UpdateFromHwnd
