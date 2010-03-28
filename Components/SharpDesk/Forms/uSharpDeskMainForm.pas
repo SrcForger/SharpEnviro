@@ -695,7 +695,7 @@ begin
   SharpDeskMainForm.Width:=Screen.DesktopWidth;
   SharpDeskMainForm.Height:=Screen.DesktopHeight;
   SizePosChanging := False;
-  LoadTheme(True);
+  //LoadTheme(True);
   SharpDesk.LoadObjectSet;
   SharpDeskMainForm.BackgroundImage.RepaintMode := rmOptimizer;
 
