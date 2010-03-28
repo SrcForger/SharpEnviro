@@ -490,12 +490,16 @@ begin
   begin
     SetWindowPos(aform.handle, HWND_TOPMOST, 0, 0, 0, 0,
                  SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
+    abackground.SetZOrder;                 
   end else
   begin
-    SetWindowPos(aform.handle, HWND_NOTOPMOST, 0, 0, 0, 0,
-                 SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
+    if (GetWindowLong(aform.handle, GWL_EXSTYLE) and WS_EX_TOOLWINDOW) = WS_EX_TOOLWINDOW then
+    begin
+      SetWindowPos(aform.handle, HWND_NOTOPMOST, 0, 0, 0, 0,
+                   SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
+      abackground.SetZOrder;
+    end;
   end;
-  abackground.SetZOrder;  
 end;
 
 procedure TSharpEBar.UpdatePosition(NewWidth : integer = -1);
