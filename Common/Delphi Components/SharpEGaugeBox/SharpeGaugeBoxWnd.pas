@@ -51,7 +51,7 @@ implementation
 procedure TFrmSharpeGaugeBox.FormDeactivate(Sender: TObject);
 begin
   if GaugeBoxEdit <> nil then begin
-    GaugeBoxEdit.UpdateValue;
+    GaugeBoxEdit.UpdateValue(GaugeBar.Position);
   end;
 
   Self.Close;
@@ -111,8 +111,7 @@ begin
   if NoUpdate then exit;
 
   if GaugeBoxEdit <> nil then begin
-    GaugeBoxEdit.Value := GaugeBar.Position;
-    GaugeBoxEdit.UpdateValue;
+    GaugeBoxEdit.UpdateValue(GaugeBar.Position);
     GaugeBoxEdit.UpdateEditBox;
   end;
   //BorderPanel.SetFocus;

@@ -98,11 +98,12 @@ type
     function GetBackgroundColor: TColor;
     procedure SetBackgroundColor(const Value: TColor);
     procedure SelectValueText;
+    function GetNewValue: integer;
   protected
     procedure SetEnabled(Value: boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure UpdateValue;
+    procedure UpdateValue(newValue: integer);
     procedure UpdateEditBox;
     procedure BeforeDestruction; override;
 
@@ -272,11 +273,29 @@ begin
   result := FValueEdit.Color;
 end;
 
+function TSharpeGaugeBox.GetNewValue: integer;
+var
+  s : string;
+begin
+  Result := 0;
+
+  // Search for Prefix
+  s := FValueEdit.Text;
+
+  if (FPrefix <> '') and (Pos(fPrefix, s) = 1) then
+    delete(s, 1, Length(fPrefix));
+  if (fSuffix <> '') and (Pos(Fsuffix, s) > 0) then
+    delete(s, Length(s) - Length(fSuffix) + 1, Length(fSuffix));
+
+  if (length(s) <> 0) then
+    TryStrToInt(S, Result);
+end;
+
 procedure TSharpeGaugeBox.BtnGaugeClick(Sender: TObject);
 var
   tmpGaugeBar: TJvTrackBar;
 begin
-  UpdateValue;
+  UpdateValue(GetNewValue);
   UpdateEditBox;
 
   if not (assigned(FFrmSharpeGaugeBox)) then
@@ -351,7 +370,7 @@ end;
 
 procedure TSharpeGaugeBox.ValueEditExit(Sender: TObject);
 begin
-  UpdateValue;
+  UpdateValue(GetNewValue);
   UpdateEditBox;
   SelectValueText;
 end;
@@ -409,53 +428,45 @@ begin
   BtnGaugeClick(Sender);
 end;
 
-procedure TSharpeGaugeBox.UpdateValue;
+procedure TSharpeGaugeBox.UpdateValue(newValue: integer);
 var
   s: string;
-  iVal: Integer;
   changed : Boolean;
 begin
   changed := False;
-  // Search for Prefix
-  s := FValueEdit.Text;
 
-  if (FPrefix <> '') and (Pos(fPrefix, s) = 1) then
-    delete(s, 1, Length(fPrefix));
-  if (fSuffix <> '') and (Pos(Fsuffix, s) > 0) then
-    delete(s, Length(s) - Length(fSuffix) + 1, Length(fSuffix));
+  // Value has not changed, don't update
+  if FValue = newValue then
+    exit;
 
-  if (length(s) <> 0) then
-    if TryStrToInt(S, iVal) then
-    begin
-      if FPercentDisplay then
-         iVal := round(iVal * FMax / 100); 
+  if FPercentDisplay then
+    newValue := round(newValue * FMax / 100);
 
-      if (iVal > FMax) and (FValue <> FMax) then
-      begin
-        iVal := FMax;
-        FValue := iVal;
-        UpdateEditBox;
-        changed := True;
-      end;
+  if (newValue > FMax) and (newValue <> FMax) then
+  begin
+    newValue := FMax;
+    FValue := newValue;
+    UpdateEditBox;
+    changed := True;
+  end;
 
-      if (iVal < FMin) and (FValue <> FMin) then
-      begin
-        iVal := FMin;
-        FValue := iVal;
-        UpdateEditBox;
-        changed := True;
-      end;
+  if (newValue < FMin) and (newValue <> FMin) then
+  begin
+    newValue := FMin;
+    FValue := newValue;
+    UpdateEditBox;
+    changed := True;
+  end;
 
-      if (FValue <> iVal) then
-        changed := True;
+  if (newValue <> FValue) then
+    changed := True;
         
-      FValue := iVal;
-    end;
+  FValue := newValue;
 
   SelectValueText;
 
   if (changed) and (assigned(FOnChangeValue)) then
-    FOnChangeValue(Self, iVal);
+    FOnChangeValue(Self, newValue);
 end;
 
 procedure TSharpeGaugeBox.ValueEditKeyDown(Sender: TObject; var Key: Word;
@@ -463,7 +474,7 @@ procedure TSharpeGaugeBox.ValueEditKeyDown(Sender: TObject; var Key: Word;
 begin
   if (Key = VK_RETURN) then
   begin
-    UpdateValue;
+    UpdateValue(GetNewValue);
     UpdateEditBox;
     Self.SetFocus;
   end
