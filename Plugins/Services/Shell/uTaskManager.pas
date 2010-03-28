@@ -59,7 +59,6 @@ type
                    FLastActiveTask : hwnd;
                    FLastActiveTaskPos : TRect;
 
-                   function CheckTaskWnd(pHandle : hwnd; IncludeInvisible : boolean): boolean;
                  public
                    procedure RemoveDeadTasks;
                    procedure AddTask(pHandle : hwnd);
@@ -98,6 +97,28 @@ type
                  end;
 
 implementation
+
+function CheckTaskWnd(pHandle : hwnd; IncludeInvisible : boolean): boolean;
+var
+  ownerWnd : HWND;
+begin
+  Result := False;
+
+  if IsWindowVisible(pHandle) or (IncludeInvisible) then
+	begin
+		if (GetWindowLong(pHandle, GWL_EXSTYLE) and WS_EX_TOOLWINDOW) = 0 then
+		begin
+			if GetParent(pHandle) = 0 then
+			begin
+				ownerWnd := GetWindow(pHandle, GW_OWNER);
+				if ((ownerWnd = 0) or
+					  ((GetWindowLong(ownerWnd, GWL_STYLE) and (WS_VISIBLE or WS_CLIPCHILDREN)) <> (WS_VISIBLE or WS_CLIPCHILDREN)) or
+					  (GetWindowLong(ownerWnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW <> 0)) then
+          Result := True;
+			end;
+		end;
+	end;
+end;
 
 function GetWndClass(pHandle : hwnd) : String;
 var
@@ -177,28 +198,6 @@ begin
    HSHELL_WINDOWACTIVATED + 32768 : ActivateTask(LParam);
    HSHELL_GETMINRECT      : GetMinRect;
   end;
-end;
-
-function TTaskManager.CheckTaskWnd(pHandle: HWND; IncludeInvisible : boolean): boolean;
-var
-  ownerWnd : HWND;
-begin
-  Result := False;
-
-  if IsWindowVisible(pHandle) or (IncludeInvisible) then
-	begin
-		if (GetWindowLong(pHandle, GWL_EXSTYLE) and WS_EX_TOOLWINDOW) = 0 then
-		begin
-			if GetParent(pHandle) = 0 then
-			begin
-				ownerWnd := GetWindow(pHandle, GW_OWNER);
-				if ((ownerWnd = 0) or
-					  ((GetWindowLong(ownerWnd, GWL_STYLE) and (WS_VISIBLE or WS_CLIPCHILDREN)) <> (WS_VISIBLE or WS_CLIPCHILDREN)) or
-					  (GetWindowLong(ownerWnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW <> 0)) then
-          Result := True;
-			end;
-		end;
-	end;
 end;
 
 procedure TTaskManager.InitList;
@@ -309,7 +308,7 @@ begin
       begin
         FLastActiveTask := pHandle;
         GetWindowRect(FLastActiveTask,FLastActiveTaskPos);
-        if not FListMode then        
+        if not FListMode then
           pItem.UpdateFromHwnd
         else pItem.UpdateNonCriticalFromHwnd;
         if Assigned(OnActivateTask) then FOnActivateTask(pItem,n);
@@ -363,15 +362,12 @@ begin
   if not IsWindow(pHandle) then exit;
   if GetItemByHandle(pHandle) <> nil then exit; // item already exists
 
-  if CheckTaskWnd(pHandle,True) then
-  begin
-    pItem := TTaskItem.Create(pHandle,FListMode);
-    if not FListMode then
-      pItem.UpdateCaption;
-    FItems.Add(pItem);
-    if Assigned(OnNewTask) then FOnNewTask(pItem, FItems.Count -1);
-    if FSortTasks then DoSortTasks;
-  end;
+  pItem := TTaskItem.Create(pHandle,FListMode);
+  if not FListMode then
+    pItem.UpdateCaption;
+  FItems.Add(pItem);
+  if Assigned(OnNewTask) then FOnNewTask(pItem, FItems.Count -1);
+  if FSortTasks then DoSortTasks;
 end;
 
 procedure TTaskManager.RemoveTask(pHandle : hwnd);
@@ -441,15 +437,11 @@ begin
     pItem := TTaskItem(FItems.Items[n]);
     if pItem.Handle = pHandle then
     begin
-      if CheckTaskWnd(pHandle, True) then
-      begin
-        if not FListMode then
-          pItem.UpdateFromHwnd
-        else pItem.UpdateNonCriticalFromHwnd;
-        if FSortTasks then DoSortTasks;
-        if Assigned(FOnUpdateTask) then FOnUpdateTask(pItem,n);
-      end else
-        RemoveTask(pHandle);
+      if not FListMode then
+        pItem.UpdateFromHwnd
+      else pItem.UpdateNonCriticalFromHwnd;
+      if FSortTasks then DoSortTasks;
+      if Assigned(FOnUpdateTask) then FOnUpdateTask(pItem,n);
 
       break;
     end;
