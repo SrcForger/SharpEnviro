@@ -3,7 +3,7 @@ object ShutdownConfirmForm: TShutdownConfirmForm
   Top = 0
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsDialog
-  ClientHeight = 81
+  ClientHeight = 85
   ClientWidth = 406
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -24,19 +24,19 @@ object ShutdownConfirmForm: TShutdownConfirmForm
     Left = 86
     Top = 10
     Width = 312
-    Height = 13
+    Height = 16
     AutoSize = False
   end
   object TimeoutText: TLabel
     Left = 86
-    Top = 26
+    Top = 30
     Width = 312
-    Height = 13
+    Height = 16
     AutoSize = False
   end
   object btnYes: TButton
     Left = 216
-    Top = 46
+    Top = 52
     Width = 78
     Height = 25
     Caption = 'Yes'
@@ -47,7 +47,7 @@ object ShutdownConfirmForm: TShutdownConfirmForm
   end
   object btnNo: TButton
     Left = 308
-    Top = 46
+    Top = 52
     Width = 78
     Height = 25
     Cancel = True
