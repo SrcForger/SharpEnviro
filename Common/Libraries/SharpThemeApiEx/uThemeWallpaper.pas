@@ -36,6 +36,7 @@ type
     FWallpapers  : TThemeWallpaperItems;
     FMonitors    : TMonitorWallpapers;
     FAutoCurIndex : integer;
+    FIsLoaded : boolean;
 
     procedure SetDefaults;
     procedure SetWallpaperDefaults(wallpaperItemIndex : Smallint);
@@ -80,6 +81,7 @@ begin
   setlength(FWallpapers, 0);
 
   FAutoCurIndex := 0;
+  FIsLoaded := False;
   
   FThemeInfo := pThemeInfo;
 
@@ -165,7 +167,7 @@ begin
 
   for i := Length(FWallpapers) - 1 downto 0 do
   begin
-    if (FWallpapers[i].SwitchPath <> '') and (FWallpapers[i].Image = '') and (Result = True) then
+    if (not FIsLoaded) and (FWallpapers[i].Switch) and (Result = True) then
       Result := False;
   end;
 end;
@@ -282,6 +284,8 @@ begin
     WallPics.Free;
   end;
 
+  FIsLoaded := True;
+
   result := True;
 end;
 
@@ -310,15 +314,18 @@ begin
             SetWallpaperDefaults(High(FWallpapers));
 
             Name  := Value('Name', Name);
-            Image := Value('Image', '');
             SwitchPath := Value('SwitchPath', '');
             Switch := BoolValue('Switch', Switch);
-            if DirectoryExists(SwitchPath) then
+            if (Switch) and (DirectoryExists(SwitchPath)) then
             begin
               SwitchRecursive := BoolValue('SwitchRecursive', SwitchRecursive);
               SwitchRandomize := BoolValue('SwitchRandomize', SwitchRandomize);
               SwitchTimer := IntValue('SwitchTimer', SwitchTimer);
-            end else Switch := False;
+            end else
+            begin
+              Image := Value('Image', '');
+              Switch := False;
+            end;
 
             ColorStr        := Value('Color', ColorStr);
             Alpha           := IntValue('Alpha', Alpha);
