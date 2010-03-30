@@ -13,8 +13,8 @@ uses
 begin
   Application.Initialize;
   Application.Title := 'SharpCompile';
-  Application.CreateForm(TfrmMain, frmMain);
   Application.MainFormOnTaskBar := True;
+  Application.CreateForm(TfrmMain, frmMain);
   frmMain.Icon := Application.Icon;
   Application.Run;
 end.
