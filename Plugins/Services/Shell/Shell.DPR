@@ -697,23 +697,16 @@ begin
 end;
 
 procedure StartShellServices;
-var
-  Dir : String;
 begin
-  Dir := IncludeTrailingBackslash(SharpAPI.GetSharpeDirectory);
-  //ShellExecute(Application.Handle, nil, pChar(Dir + 'SharpShellServices.exe'),nil,nil,SW_SHOWNORMAL);
-  if (NETFramework35) and (FileExists(Dir + 'SharpShellServicesNET.exe')) then
-    SharpExecute(Dir + 'SharpShellServicesNET.exe')
-  else SharpExecute(Dir + 'SharpShellServices.exe');
+  if not NETFramework35 then
+    SharpExecute(IncludeTrailingBackslash(SharpAPI.GetSharpeDirectory) + 'SharpShellServices.exe');
 end;
 
 procedure TerminateShellServices;
 var
   PID : DWord;
 begin
-  PID := GetPidFromProcessNameCase('SharpShellServicesNET.exe');
-  if PID = INVALID_HANDLE_VALUE then
-    PID := GetPidFromProcessNameCase('SharpShellServices.exe');
+  PID := GetPidFromProcessNameCase('SharpShellServices.exe');
   if PID <> INVALID_HANDLE_VALUE then
     TerminateApp(PID,100);
 end;
