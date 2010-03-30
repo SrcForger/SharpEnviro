@@ -116,9 +116,16 @@ begin
     if hr <> MR_STARTED then
     begin
       FTrayClient.ClearTrayIcons;
+      if FServiceRunning then
+        Flastrepaint := -1;      
       FServiceRunning := False;
-      Flastrepaint := -1;
-    end else FServiceRunning := True;
+    end
+    else
+    begin
+      if not FServiceRunning then
+        Flastrepaint := -1;
+      FServiceRunning := True;
+    end;
     FServiceCheck := 0;
   end;
 
@@ -128,14 +135,10 @@ begin
     FServiceCheck := 15;
   end;
 
-  if FTrayClient.RepaintHash = Flastrepaint then exit;
-
-  tempForm := TMainForm(Form);
   if FTrayClient.RepaintHash <> Flastrepaint then
   begin
-    if FServiceRunning then
-      tempForm.lb_servicenotrunning.Visible := False
-    else tempForm.lb_servicenotrunning.Visible := True;
+    tempForm := TMainForm(Form);
+    tempForm.lb_servicenotrunning.Visible := not FServiceRunning;
     tempForm.ReAlignComponents;
     if FServiceRunning then
       tempForm.RepaintIcons;
