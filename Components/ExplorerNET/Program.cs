@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using System.Windows.Forms;
 using Microsoft.Win32;
+using Explorer.ShellServices;
 
 namespace SharpEnviro.Explorer
 {
@@ -72,6 +73,8 @@ namespace SharpEnviro.Explorer
                     }
                 }
 
+				ShellServices.Start();
+
                 // Loop through message until a quit message is received
                 NativeMessage mMsg;
                 while (!bShouldExit)
@@ -85,6 +88,7 @@ namespace SharpEnviro.Explorer
                     System.Threading.Thread.Sleep(16);
                 }
 
+				ShellServices.Stop();
                 FreeLibrary(hDll);
             }
         }

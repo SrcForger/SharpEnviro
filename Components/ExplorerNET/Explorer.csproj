@@ -54,6 +54,10 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NLog, Version=1.0.0.505, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Common\3rd party\NLog\NLog-1.0-NET-2.0\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -80,6 +84,11 @@
     <Compile Include="Program.cs">
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShellServices\IOleCommandTarget.cs" />
+    <Compile Include="ShellServices\OleCommandExecOption.cs" />
+    <Compile Include="ShellServices\OleCommandID.cs" />
+    <Compile Include="ShellServices\ShellServiceObject.cs" />
+    <Compile Include="ShellServices\ShellServices.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="black.ico" />
@@ -117,6 +126,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="Explorer.manifest" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
