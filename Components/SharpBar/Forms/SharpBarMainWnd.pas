@@ -1950,6 +1950,7 @@ begin
       BarHideForm.Width := Width;
       BarHideForm.Height := 1;
       BarHideForm.Top := Top;
+      ShowWindow(SharpEBar.abackground.Handle, SW_HIDE);
       SharpBarMainForm.Hide;
       BarHideForm.Show;
       SharpApi.ServiceMsg('DeskArea', 'Update');
