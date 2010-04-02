@@ -141,7 +141,7 @@ procedure TfrmEdit.btnIconBrowseClick(Sender: TObject);
 var
   s: string;
 begin
-  s := SharpDialogs.IconDialog(edIcon.Text,
+  s := SharpDialogs.IconDialog(edCommand.Text,
     SMI_ALL_ICONS,
     ClientToScreen(point(btnIconBrowse.Left, btnIconBrowse.Top)));
   if length(trim(s)) > 0 then

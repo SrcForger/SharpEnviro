@@ -31,6 +31,7 @@ uses
   Windows,
   Messages,
   SysUtils,
+  Types,
   Variants,
   Classes,
   Contnrs,

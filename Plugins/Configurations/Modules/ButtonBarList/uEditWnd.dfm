@@ -3,7 +3,7 @@ object frmEdit: TfrmEdit
   Top = 363
   BorderStyle = bsNone
   Caption = 'Hotkey Configuration'
-  ClientHeight = 113
+  ClientHeight = 102
   ClientWidth = 485
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
@@ -17,33 +17,31 @@ object frmEdit: TfrmEdit
   OnShow = FormShow
   DesignSize = (
     485
-    113)
+    102)
   PixelsPerInch = 96
   TextHeight = 14
   object btnCommandBrowse: TPngSpeedButton
     Left = 376
-    Top = 76
+    Top = 67
     Width = 75
     Height = 25
     Anchors = [akTop, akRight]
     Caption = 'Browse'
     OnClick = btnCommandBrowseClick
-    ExplicitLeft = 390
   end
   object btnIconBrowse: TPngSpeedButton
     Left = 376
-    Top = 40
+    Top = 36
     Width = 75
     Height = 25
     Anchors = [akTop, akRight]
     Caption = 'Browse'
     OnClick = btnIconBrowseClick
-    ExplicitLeft = 390
   end
   object edName: TLabeledEdit
-    Left = 56
+    Left = 72
     Top = 8
-    Width = 395
+    Width = 379
     Height = 22
     Anchors = [akLeft, akTop, akRight]
     EditLabel.Width = 30
@@ -55,9 +53,9 @@ object frmEdit: TfrmEdit
     OnChange = UpdateEditState
   end
   object edCommand: TLabeledEdit
-    Left = 80
-    Top = 76
-    Width = 275
+    Left = 72
+    Top = 67
+    Width = 283
     Height = 22
     Anchors = [akLeft, akTop, akRight]
     EditLabel.Width = 50
@@ -69,9 +67,9 @@ object frmEdit: TfrmEdit
     OnChange = UpdateEditState
   end
   object edIcon: TLabeledEdit
-    Left = 56
+    Left = 72
     Top = 36
-    Width = 299
+    Width = 283
     Height = 22
     Anchors = [akLeft, akTop, akRight]
     EditLabel.Width = 23
