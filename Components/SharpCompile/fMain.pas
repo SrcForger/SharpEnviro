@@ -117,9 +117,16 @@ end;
 procedure InsertSplitter();
 var
   i, c : Integer;
+  w : integer;
   sSplitter : string;
 begin
-  c := Trunc(frmMain.mDetailed.ClientWidth / Abs(frmMain.Canvas.TextWidth('-')));
+  w := Abs(frmMain.Canvas.TextWidth('-'));
+  if w <= 0 then
+    w := 200;
+  c := Trunc(frmMain.mDetailed.ClientWidth / w);
+  if c < 3 then
+    c := 3;
+
   sSplitter := '';
   for i := 0 to c - 3 do
     sSplitter := sSplitter + '-';
