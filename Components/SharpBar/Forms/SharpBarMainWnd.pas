@@ -140,6 +140,7 @@ type
     procedure Custom1Click(Sender: TObject);
     procedure ForceAlwaysOnTop1Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
+    procedure CreateParams(var Params: TCreateParams); override;
   private
     { Private-Deklarationen }
     FUser32DllHandle: THandle;
@@ -1213,11 +1214,20 @@ begin
   SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));
 end;
 
+procedure TSharpBarMainForm.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  with Params do
+  begin
+    Params.WinClassName := 'TSharpBarMainForm';
+    ExStyle := WS_EX_TOOLWINDOW and not WS_EX_APPWINDOW;
+    Style := WS_POPUP or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
+  end;
+end;
+
 procedure TSharpBarMainForm.FormCreate(Sender: TObject);
 begin
   ModuleManager.DebugOutput('Setting Form properties', 2, 1);
-  SetWindowLong(Application.Handle, GWL_EXSTYLE,
-    GetWindowLong(Application.Handle, GWL_EXSTYLE) or WS_EX_TOOLWINDOW and not WS_EX_APPWINDOW);
 
   foregroundWindowIsFullscreen := False;
   Closing := False;

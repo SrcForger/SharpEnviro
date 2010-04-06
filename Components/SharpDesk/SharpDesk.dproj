@@ -49,8 +49,96 @@
       
       
       
-      <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
-      <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      <Excluded_Packages Name="C:\Users\Homer\Documents\RAD Studio\Bpl\DIBRuntime.bpl">File C:\Users\Homer\Documents\RAD Studio\Bpl\DIBRuntime.bpl not found</Excluded_Packages>
+      <Excluded_Packages Name="C:\Users\Homer\Documents\RAD Studio\Bpl\DIBPNGSupport.bpl">File C:\Users\Homer\Documents\RAD Studio\Bpl\DIBPNGSupport.bpl not found</Excluded_Packages>
+      <Excluded_Packages Name="C:\Users\Homer\Documents\RAD Studio\Bpl\DIBInstall.bpl">File C:\Users\Homer\Documents\RAD Studio\Bpl\DIBInstall.bpl not found</Excluded_Packages>
     </Excluded_Packages></Delphi.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
   <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />

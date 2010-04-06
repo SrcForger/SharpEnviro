@@ -59,6 +59,7 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure CreateParams(var Params: TCreateParams); override;
   private
     FPicture : TBitmap32;
     DC: HDC;
@@ -142,6 +143,16 @@ begin
   UpdateWndLayer;
 end;
 
+procedure TSplashForm.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  with Params do
+  begin
+    Params.WinClassName := 'TSplashForm';
+    ExStyle := WS_EX_LAYERED or WS_EX_TOOLWINDOW and not WS_EX_APPWINDOW;
+  end;
+end;
+
 procedure TSplashForm.FormCreate(Sender: TObject);
 var
   FullFileName, PassedFileName : string;
@@ -207,8 +218,7 @@ begin
     AlphaFormat := AC_SRC_ALPHA;
   end;
 
-  if SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) or WS_EX_LAYERED or WS_EX_TOOLWINDOW) = 0 then
-    SendDebugMessage('SharpSplash', 'Error setting window style.', 0);
+  SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) or WS_EX_LAYERED); 
 end;
 
 procedure TSplashForm.FormDestroy(Sender: TObject);

@@ -137,6 +137,7 @@ begin
 
   DebugTime('Init');
   Application.Initialize;
+  Application.MainFormOnTaskbar := True; 
   Application.ShowMainForm := False;
   SetWindowLong(Application.Handle, GWL_EXSTYLE,
                  GetWindowLong(Application.Handle, GWL_EXSTYLE) or

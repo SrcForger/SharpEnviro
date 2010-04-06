@@ -80,6 +80,7 @@ type
     procedure HideTimerOnTimer(Sender: TObject);
     procedure FormMouseLeave(Sender: TObject);
     procedure FormMouseEnter(Sender: TObject);
+    procedure CreateParams(var Params: TCreateParams); override;
   private
     FMenu : TSharpEMenu;
     FParentMenu : TSharpeMenuWnd;
@@ -316,10 +317,19 @@ begin
   UpdateWndLayer;
 end;
 
+procedure TSharpEMenuWnd.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  with Params do
+  begin
+    Params.WinClassName := 'TSharpEMenuWnd';
+    ExStyle := WS_EX_TOOLWINDOW and not WS_EX_APPWINDOW;
+    Style := WS_POPUP or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
+  end;
+end;
+
 procedure TSharpEMenuWnd.FormCreate(Sender: TObject);
 begin
-  SetWindowLong(Application.Handle, GWL_EXSTYLE, GetWindowLong(Application.Handle, GWL_EXSTYLE) or WS_EX_TOOLWINDOW and not WS_EX_APPWINDOW);
-
   FOffset := 0;
   FRootMenu := False;
   FFreeMenu := False;
@@ -348,8 +358,8 @@ end;
 
 procedure TSharpEMenuWnd.FormActivate(Sender: TObject);
 begin
-  DrawWindow;
   ShowWindow(Application.Handle, SW_HIDE);
+  DrawWindow;
 end;
 
 procedure TSharpEMenuWnd.FormMouseMove(Sender: TObject; Shift: TShiftState; X,

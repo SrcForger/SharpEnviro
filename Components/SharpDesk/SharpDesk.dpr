@@ -72,6 +72,7 @@ begin
   Randomize;
 
   Application.Initialize;
+  Application.MainFormOnTaskbar := True; 
   Application.Title := 'SharpDesk - Installing';
   Application.ModalPopupMode := pmAuto;
 
@@ -121,5 +122,6 @@ begin
   Application.CreateForm(TSharpDeskMainForm, SharpDeskMainForm);
   SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));
   ServiceDone('SharpDesk');
+
   Application.Run;
 end.

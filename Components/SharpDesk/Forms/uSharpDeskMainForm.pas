@@ -664,8 +664,6 @@ end;
 
 procedure TSharpDeskMainForm.FormCreate(Sender: TObject);
 begin
-  SetWindowLong(Application.Handle, GWL_EXSTYLE, GetWindowLong(Application.Handle, GWL_EXSTYLE) or WS_EX_TOOLWINDOW and not WS_EX_APPWINDOW);
-
   GetCurrentTheme.LoadTheme(ALL_THEME_PARTS);
 
   ObjectPopupImageCount := ObjectPopUp.Images.Count;
@@ -711,13 +709,14 @@ end;
 procedure TSharpDeskMainForm.FormShow(Sender: TObject);
 begin
   ShowWindow(Application.Handle, SW_HIDE);
+
   if SharpDesk.Desksettings.DragAndDrop then SharpDesk.DragAndDrop.RegisterDragAndDrop(SharpDesk.Image.Parent.Handle)
      else SharpDesk.DragAndDrop.UnregisterDragAndDrop(SharpDesk.Image.Parent.Handle);
 end;
 
 procedure TSharpDeskMainForm.FormActivate(Sender: TObject);
 begin
-  ShowWindow(Application.Handle, SW_HIDE); 
+  ShowWindow(Application.Handle, SW_HIDE);
 end;
 
 procedure TSharpDeskMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -1266,7 +1265,7 @@ begin
   with Params do
   begin
     Params.WinClassName := 'TSharpDeskMainForm';
-    ExStyle := WS_EX_TOOLWINDOW{ or WS_EX_NOACTIVATE};
+    ExStyle := WS_EX_TOOLWINDOW and not WS_EX_APPWINDOW;
     Style := WS_POPUP or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
   end;
 end;

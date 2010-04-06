@@ -353,6 +353,7 @@ begin
   end;
 
   Application.Initialize;
+  Application.MainFormOnTaskbar := True; 
   Application.Title := 'SharpBar';
   Application.ModalPopupMode := pmAuto;
   mfParamID := ParamID;
