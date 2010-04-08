@@ -26,6 +26,11 @@
     <Command>!RunDlg</Command>
   </Hotkey>
   <Hotkey>
+    <Name>Show Desktop</Name>
+    <Hotkey>WIN + VK_D</Hotkey>
+    <Command>!MinimizeAll</Command>
+  </Hotkey>
+  <Hotkey>
     <Name>Show Explorer</Name>
     <Hotkey>WIN + VK_E</Hotkey>
     <Command>explorer.exe</Command>
@@ -59,5 +64,10 @@
     <Name>Switch to VWM 4</Name>
     <Hotkey>WIN + VK_F4</Hotkey>
     <Command>!SwitchToVWM(4)</Command>
+  </Hotkey>
+  <Hotkey>
+    <Name>Toggle Notes</Name>
+    <Hotkey>WIN + VK_N</Hotkey>
+    <Command>!ToggleNotes</Command>
   </Hotkey>
 </Hotkeys>
