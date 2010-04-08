@@ -1047,6 +1047,8 @@ begin
   end;
 end;
 
+// Documentation on the topic under the remarks section of
+// http://msdn.microsoft.com/en-us/library/bb762159.aspx
 function TTrayClient.PerformIconAction(x,y,gx,gy,imod : integer; msg : uint; parent : TForm) : boolean;
 var
   n, i : integer;
@@ -1118,7 +1120,7 @@ begin
       PositionTrayWindow(parent.ParentWindow,parent.Handle);
 
       FLastTipItem := tempItem;
-      if (tempItem.BInfoFlags >= 4) then
+      if (tempItem.BInfoFlags >= NOTIFYICON_VERSION_4) then
       begin
         // NotifyIcon Version > 4
         ix := gx;
@@ -1186,6 +1188,7 @@ begin
           end;
         end;
 
+        if tempItem.BInfoFlags >= NOTIFYICON_VERSION then
         case msg of
           WM_RBUTTONUP: begin
             SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,msg);
@@ -1193,7 +1196,6 @@ begin
           end;
         end;
 
-        // NotifyIcon Version < 4
         SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,msg);
       end;
     end;
