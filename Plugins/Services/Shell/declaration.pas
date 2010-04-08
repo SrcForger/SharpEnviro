@@ -211,6 +211,9 @@ const
   SH_LOADPROC_DATA   = 2;
   SH_ICON_IDENTIFIER = 3;
 
+  NOTIFYICON_VERSION = 3;
+  NOTIFYICON_VERSION_4 = 4;
+
   //version >= 5.00
   NIN_SELECT = ($0400 + 0);
   NINF_KEY = $1;
