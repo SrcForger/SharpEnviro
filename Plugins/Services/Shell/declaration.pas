@@ -23,9 +23,19 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 unit declaration;
+
 interface
-uses Windows,
+
+uses
+  Windows,
   commctrl;
+
+{
+Informations on the whole structure and handling of the Shell_NotifyIcon
+messgages (flags, etc.) can be found here:
+http://msdn.microsoft.com/en-us/library/ms538121.aspx
+http://msdn.microsoft.com/en-us/library/bb762159.aspx
+}
 
 type
   ArrayWideChar64 = array[0..63] of WideChar;
