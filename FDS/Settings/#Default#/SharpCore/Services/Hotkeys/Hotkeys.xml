@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Hotkeys>
+  <Hotkey>
+    <Name>Minimize All</Name>
+    <Hotkey>WIN + VK_M</Hotkey>
+    <Command>!ToggleAll</Command>
+  </Hotkey>
+  <Hotkey>
+    <Name>Open Menu</Name>
+    <Hotkey>CTRL + VK_ESCAPE</Hotkey>
+    <Command>!OpenMenu: Menu</Command>
+  </Hotkey>
+  <Hotkey>
+    <Name>Restore All</Name>
+    <Hotkey>SHIFT + WIN + VK_M</Hotkey>
+    <Command>!ToggleAll</Command>
+  </Hotkey>
+  <Hotkey>
+    <Name>Run (MiniScmd)</Name>
+    <Hotkey>ALT + WIN + VK_R</Hotkey>
+    <Command>!FocusMiniScmd (849795)</Command>
+  </Hotkey>
+  <Hotkey>
+    <Name>Run Dialog</Name>
+    <Hotkey>WIN + VK_R</Hotkey>
+    <Command>!RunDlg</Command>
+  </Hotkey>
+  <Hotkey>
+    <Name>Show Explorer</Name>
+    <Hotkey>WIN + VK_E</Hotkey>
+    <Command>explorer.exe</Command>
+  </Hotkey>
+  <Hotkey>
+    <Name>Switch to Next VWM</Name>
+    <Hotkey>WIN + VK_RIGHT</Hotkey>
+    <Command>!NextVWM</Command>
+  </Hotkey>
+  <Hotkey>
+    <Name>Switch to Previous VWM</Name>
+    <Hotkey>WIN + VK_LEFT</Hotkey>
+    <Command>!PreviousVWM</Command>
+  </Hotkey>
+  <Hotkey>
+    <Name>Switch to VWM 1</Name>
+    <Hotkey>WIN + VK_F1</Hotkey>
+    <Command>!SwitchToVWM(1)</Command>
+  </Hotkey>
+  <Hotkey>
+    <Name>Switch to VWM 2</Name>
+    <Hotkey>WIN + VK_F2</Hotkey>
+    <Command>!SwitchToVWM(2)</Command>
+  </Hotkey>
+  <Hotkey>
+    <Name>Switch to VWM 3</Name>
+    <Hotkey>WIN + VK_F3</Hotkey>
+    <Command>!SwitchToVWM(3)</Command>
+  </Hotkey>
+  <Hotkey>
+    <Name>Switch to VWM 4</Name>
+    <Hotkey>WIN + VK_F4</Hotkey>
+    <Command>!SwitchToVWM(4)</Command>
+  </Hotkey>
+</Hotkeys>
