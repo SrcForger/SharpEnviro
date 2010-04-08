@@ -35,10 +35,12 @@ uses
   messages,
   SysUtils,
   shellAPI,
+  jclfileutils,
   jclsysinfo,
   jclstrings,
   classes,
   strutils,
+  registry,
   gr32,
   types,
   SimpleForms in '..\..\Units\SimpleUnits\SimpleForms.pas',
@@ -138,14 +140,9 @@ const
   DMT_TRACE = 4;
   DMT_NONE = -1;
 
-  OLD_REGPATH = 'Software\ldi\sharpe\';
-  REGPATH = 'Software\SharpE-Shell\';
-  SKINPATH = 'Skin';
-  THEMEPATH = 'Theme';
-  SCHEMEPATH = 'Scheme';
-  SKINDIR = 'Skins';
+  REGPATH = 'Software\SharpEnviro\';
+  APPDATASUBDIR = 'SharpEnviro';
   CENTERDIR = 'Center\Root';
-  ICONSDIR = 'Icons';
   DEFAULTSETTINGSDIR = '#Default#';
 
   // SharpCenter constants
@@ -287,6 +284,10 @@ type
   end;
 
 var
+  // Global Vars
+  UseAppData : boolean = False;
+
+  // temp stuff
   i: integer;
   wpara: wparam;
   mess: integer;
@@ -997,6 +998,20 @@ begin
   end;
 end;
 
+function GetSharpEAppDataPath : String;
+begin
+  result := IncludeTrailingBackSlash(JclSysInfo.GetAppdataFolder);
+  result := result + AppDataSubDir;
+  result := IncludeTrailingBackSlash(result);
+end;
+
+function GetSharpECommonAppDataPath : String;
+begin
+  result := IncludeTrailingBackSlash(JclSysInfo.GetCommonAppdataFolder);
+  result := result + AppDataSubDir;
+  result := IncludeTrailingBackSlash(result);
+end;
+
 function GetSharpeUserSettingsPath: String;
 var
   Path: string;
@@ -1004,34 +1019,49 @@ var
   user: string;
   sRes: String;
 begin
-
-  // Check current directory
-  User := GetLocalUserName;
-  Fn := GetSharpeDirectory;
-  Path := IncludeTrailingBackslash(Fn + 'Settings\User') + User;
-
-  if not (DirectoryExists(Path)) then
+  if UseAppData then
   begin
-    // check if the default settings dir exists
-    if DirectoryExists(Fn + 'Settings\'+DEFAULTSETTINGSDIR) then
-    begin
-      if DirectoryExists(Fn + 'Settings\User\'+DEFAULTSETTINGSDIR) then
-        DeleteDir(Fn + 'Settings\User\'+DEFAULTSETTINGSDIR);
-      SysUtils.ForceDirectories(Fn + 'Settings\User\');
-      CopyDir(Fn + 'Settings\'+DEFAULTSETTINGSDIR,Fn + 'Settings\User');
-      RenameDir(Fn + 'Settings\User\'+DEFAULTSETTINGSDIR,Fn + 'Settings\User\'+User);
-    end else
-    begin
-      DirCheck(Fn,sRes);
+    Fn := GetSharpEAppDataPath;
+    Path := Fn + 'Settings\User\';
 
-      if sRes <> '' then
-         Sysutils.ForceDirectories(Path);
+    if not (DirectoryExists(Path)) then
+    begin
+      // check if the default settings dir exists
+      if DirectoryExists(GetSharpeDirectory + 'Settings\'+DEFAULTSETTINGSDIR) then
+      begin
+        SysUtils.ForceDirectories(Fn + 'Settings');
+        CopyDir(GetSharpeDirectory + 'Settings\'+DEFAULTSETTINGSDIR, Fn + 'Settings');
+        RenameDir(Fn + 'Settings\'+DEFAULTSETTINGSDIR, Fn + 'Settings\User');
+      end else Sysutils.ForceDirectories(Path);
+    end;
+  end else
+  begin
+    Fn := GetSharpeDirectory;
+    User := GetLocalUserName;
+    Path := IncludeTrailingBackslash(Fn + 'Settings\User') + User;
+
+    if not (DirectoryExists(Path)) then
+    begin
+      // check if the default settings dir exists
+      if DirectoryExists(Fn + 'Settings\'+DEFAULTSETTINGSDIR) then
+      begin
+        if DirectoryExists(Fn + 'Settings\User\'+DEFAULTSETTINGSDIR) then
+          DeleteDir(Fn + 'Settings\User\'+DEFAULTSETTINGSDIR);
+        SysUtils.ForceDirectories(Fn + 'Settings\User\');
+        CopyDir(Fn + 'Settings\'+DEFAULTSETTINGSDIR,Fn + 'Settings\User');
+        RenameDir(Fn + 'Settings\User\'+DEFAULTSETTINGSDIR,Fn + 'Settings\User\'+User);
+      end else
+      begin
+        DirCheck(Fn,sRes);
+
+        if sRes <> '' then
+           Sysutils.ForceDirectories(Path);
+      end;
     end;
   end;
 
   stemp := IncludeTrailingBackslash(Path);
   Result := stemp;
-  //SendDebugMessage('SharpApi', Result, clblack);
 end;
 
 function GetSharpeGlobalSettingsPath: String;
@@ -1040,25 +1070,29 @@ var
   Fn: String;
   sRes: String;
 begin
-  // Check current directory
-  Fn := GetSharpeDirectory;
-  //SendDebugMessage('SharpApi Fn',Fn,clblack);
+  if UseAppData then
+  begin
+    Fn := GetSharpECommonAppDataPath;
+    Path := Fn + 'Settings\Global\';
 
-  Path := IncludeTrailingBackslash(Fn + 'Settings\Global');
-  //SendDebugMessage('SharpApi Path',pchar(Path),clblack);
-
-  if not (DirectoryExists(Path)) then begin
-    DirCheck(Fn,sRes);
-
-    if sRes <> '' then
+    if not (DirectoryExists(Path)) then
       Sysutils.ForceDirectories(Path);
+  end else
+  begin
+    Fn := GetSharpeDirectory;
+    Path := IncludeTrailingBackslash(Fn + 'Settings\Global');
+
+    if not (DirectoryExists(Path)) then
+    begin
+      DirCheck(Fn,sRes);
+
+      if sRes <> '' then
+        Sysutils.ForceDirectories(Path);
+    end;
   end;
 
   stemp := IncludeTrailingBackslash(Path);
-  //SendDebugMessage('SharpApi stemp',pchar(stemp),clblack);
-
   Result := stemp;
-  //SendDebugMessage('SharpApi Result',Result,clblack);
 end;
 
 function FindAllComponents(Component: String): THandleArray;
@@ -1597,6 +1631,60 @@ begin
   SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(AUpdateType), APluginID, ASendMessage);
 end;
 
+procedure InitGlobals;
+var
+  Reg : TRegistry;
+  valid : boolean;
+  AppDataDir,CommonAppDataDir : String;
+begin
+  // Load Registry Settings
+  Reg := TRegistry.Create;
+  Reg.Access := KEY_READ; // read only
+  try
+    Reg.RootKey := HKEY_LOCAL_MACHINE;
+    valid := Reg.OpenKey(REGPATH,False);
+    if valid then
+      valid := Reg.ReadBool('UseAppData')
+  except
+    valid := False;
+  end;
+  Reg.Free;
+
+  // Validate AppData Directory
+  if valid then
+  begin
+    AppDataDir       := JclSysInfo.GetAppdataFolder;
+    CommonAppDataDir := JclSysInfo.GetCommonAppdataFolder;
+    valid := DirectoryExists(AppDataDir) and DirectoryExists(CommonAppDataDir);
+  end;
+
+  // Check if SharpE Directory exists and/or create it
+  try
+    if valid and (not DirectoryExists(GetSharpEAppDataPath)) then
+      valid := ForceDirectories(GetSharpEAppDataPath);
+    if valid and (not DirectoryExists(GetSharpECommonAppDataPath)) then
+      valid := ForceDirectories(GetSharpECommonAppDataPath);
+  except
+    valid := False;
+  end;
+
+  UseAppData := valid;
+end;
+
+procedure EntryPointProc(Reason: Integer);
+begin
+    case reason of
+        DLL_PROCESS_ATTACH:
+            begin
+              InitGlobals;
+            end;
+
+        DLL_PROCESS_DETACH:
+            begin
+            end;
+    end;
+end;
+
 exports
   ShellInitialized,
 
@@ -1666,7 +1754,10 @@ exports
   RecycleFiles,
   FileCheck,
   GetCursorPosSecure;
-begin
 
+
+begin
+  DllProc := @EntryPointProc;
+  EntryPointProc(DLL_PROCESS_ATTACH);
 end.
 
