@@ -28,6 +28,7 @@ RequestExecutionLevel highest
 # Included files
 !include Sections.nsh
 !include MUI2.nsh
+!include LogicLib.nsh
 
 # Variables
 Var StartMenuGroup
@@ -48,14 +49,14 @@ Page custom getSettingsSelect
 # Installer languages
 !insertmacro MUI_LANGUAGE German
 
+Var UseAppDir
+
 Function getSettingsSelect
   Push $R0
   InstallOptions::dialog $PLUGINSDIR\SettingsSelect.ini
   Pop $R0
-;  ReadINIStr $UserName "$PLUGINSDIR\namecompany.ini" "Field 2" "state"
-;  ReadINIStr $Company "$PLUGINSDIR\namecompany.ini" "Field 4" "state"
-;  MessageBox MB_OK "$UserName$\r$\n$Company"
-;  Pop $R0
+  ReadINIStr $UseAppDir "$PLUGINSDIR\SettingsSelect.ini" "Field 3" "state"
+  Pop $R0
 FunctionEnd
 
 # Installer attributes
@@ -85,6 +86,13 @@ SectionEnd
 
 Section -post SEC0001
     WriteRegStr HKLM "${REGKEY}" Path $INSTDIR
+    
+    ${If} $UseAppDir == "1"
+          WriteRegDWORD HKLM "${REGKEY}" UseAppData 1
+    ${Else}
+          WriteRegDWORD HKLM "${REGKEY}" UseAppData 0
+    ${EndIf}
+    
     SetOutPath $INSTDIR
     WriteUninstaller $INSTDIR\uninstall.exe
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
