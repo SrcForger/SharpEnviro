@@ -162,6 +162,7 @@ var
   IsInt : boolean;
   i : integer;
   modMutex : TBarMutex;
+  monitorIndex : Integer;
 begin
   Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
 
@@ -193,6 +194,11 @@ begin
             if xml.Root.Items.ItemNamed['Settings'] <> nil then
               if xml.Root.Items.ItemNamed['Settings'].Items.BoolValue('AutoStart',True) then
               begin
+                // Do not start bars for monitors that are not present.
+                monitorIndex := xml.Root.Items.ItemNamed['Settings'].Items.IntValue('MonitorIndex', -1);
+                if (monitorIndex < 0) or (monitorIndex > MonList.MonitorCount - 1) then
+                  Continue;
+                
                 // check if this is bar is already running before deleting it
                 handle := FindWindow(nil,PChar('SharpBar_'+ sr.Name));
                 if handle = 0 then
@@ -259,6 +265,49 @@ begin
   SetLength(modMutex, 0);
 
   result := lab;
+end;
+
+function MonitorForBarExists(ID : Integer) : Boolean;
+var
+  filename : string;
+  xml : TJclSimpleXML;
+  fileloaded : Boolean;
+  monitorIndex : Integer;
+begin
+  Result := False;
+  filename := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + IntToStr(ID) + '\Bar.xml';
+
+  if not FileCheck(filename, True) then
+    Exit;
+    
+  xml := TJclSimpleXMl.Create;
+  try
+    fileloaded := False;
+    try
+      xml.LoadFromFile(filename);
+      fileloaded := True;
+    except
+      on E: Exception do
+      begin
+        SendDebugMessageEx('SharpBar',PChar('(MonitorForBarExists): Error loading '+ filename), clRed, DMT_ERROR);
+        SendDebugMessageEx('SharpBar',PChar(E.Message),clBlue, DMT_TRACE);
+      end;
+    end;
+    if fileloaded then
+    begin
+      with xml.Root.Items do
+      begin
+        if ItemNamed['Settings'] <> nil then
+        begin
+          monitorIndex := ItemNamed['Settings'].Items.IntValue('MonitorIndex', -1);
+          if (monitorIndex > -1) and (monitorIndex < MonList.MonitorCount) then
+            Result := True;
+        end;
+      end;
+    end;
+  finally
+    xml.Free;
+  end;
 end;
 
 var
@@ -352,6 +401,10 @@ begin
     ParamID := -1;
   end;
 
+  // Do not start bars for monitors that are not present.
+  if (ParamID > -1) and (not MonitorForBarExists(ParamID)) then
+    Halt;
+
   Application.Initialize;
   Application.MainFormOnTaskbar := True; 
   Application.Title := 'SharpBar';
@@ -359,6 +412,7 @@ begin
   mfParamID := ParamID;
   Application.CreateForm(TSharpBarMainForm, SharpBarMainForm);
   SharpBarMainForm.InitBar;
+
   if (x <> - 1) and (y <> - 1) then
      for n := 0 to MonList.MonitorCount - 1 do
      begin
@@ -373,6 +427,7 @@ begin
          break;
        end;
     end;
+
   SharpBarMainForm.Startup := False;
   SharpBarMainForm.Show;
   SharpApi.SharpEBroadCast(WM_BARSTATUSCHANGED,0,SharpBarMainForm.BarID);
@@ -383,5 +438,5 @@ begin
     ServiceDone('SharpBar');
     
   Application.Run;
-  SharpApi.SharpEBroadCast(WM_BARSTATUSCHANGED,1,SharpBarMainForm.BarID);  
+  SharpApi.SharpEBroadCast(WM_BARSTATUSCHANGED,1,SharpBarMainForm.BarID);
 end.

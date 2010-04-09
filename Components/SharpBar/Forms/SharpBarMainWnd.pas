@@ -510,15 +510,16 @@ end;
 
 procedure TSharpBarMainForm.WMWTSSessionChange(var msg: TMessage);
 begin
+  MonList.GetMonitors;
+  
   case msg.WParam of
     WTS_REMOTE_CONNECT:
     begin
-      if not SharpEBar.PrimaryMonitor then
+      if SharpEBar.MonitorIndex > MonList.MonitorCount - 1 then
         FSuspended := True;
-      ModuleManager.BroadCastModuleRefresh;
     end;
     WTS_REMOTE_DISCONNECT:
-      if not SharpEBar.PrimaryMonitor then
+      if SharpEBar.MonitorIndex < MonList.MonitorCount then
         FSuspended := False;
     WTS_SESSION_UNLOCK:
     begin
@@ -591,6 +592,12 @@ begin
     exit;
 
   MonList.GetMonitors;
+  // Suspend the bar if the monitor is not present.
+  FSuspended := SharpEBar.MonitorIndex > MonList.MonitorCount - 1;
+
+  if FSuspended then
+    Exit;
+
   if SharpEBar.HorizPos = hpFull then
   begin
     // This avoids the bars from becoming overlapped if you have multiple monitors
@@ -1413,6 +1420,9 @@ var
   wndClass : array[0..255] of Char;
   style : Integer;
 begin
+  if FSuspended then
+    Exit;
+    
   if (Visible) and ((SharpEBar.AlwaysOnTop) or (foregroundWindowIsFullscreen)) then
   begin
     wnd := GetForegroundWindow;
