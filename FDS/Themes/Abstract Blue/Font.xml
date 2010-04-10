@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpEThemeFontSettings>
+  <ModSize>0</ModSize>
+  <ModName>-1</ModName>
+  <ModAlpha>-1</ModAlpha>
+  <ModUseShadow>-1</ModUseShadow>
+  <ModShadowType>-1</ModShadowType>
+  <ModShadowAlpha>-1</ModShadowAlpha>
+  <ModBold>0</ModBold>
+  <ModItalic>0</ModItalic>
+  <ModUnderline>0</ModUnderline>
+  <ModClearType>-1</ModClearType>
+  <ValueSize>0</ValueSize>
+  <ValueName>Trebuchet MS</ValueName>
+  <ValueAlpha>255</ValueAlpha>
+  <ValueUseShadow>-1</ValueUseShadow>
+  <ValueShadowType>1</ValueShadowType>
+  <ValueShadowAlpha>110</ValueShadowAlpha>
+  <ValueBold>0</ValueBold>
+  <ValueItalic>0</ValueItalic>
+  <ValueUnderline>0</ValueUnderline>
+  <ValueClearType>-1</ValueClearType>
+</SharpEThemeFontSettings>

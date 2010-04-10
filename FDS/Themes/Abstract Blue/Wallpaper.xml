@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpEThemeWallpapers>
+  <Wallpapers>
+    <item>
+      <Name>Default</Name>
+      <Image>Trudge_by_tonare.jpg</Image>
+      <Color>-2</Color>
+      <Alpha>255</Alpha>
+      <Size>2</Size>
+      <ColorChange>-1</ColorChange>
+      <Hue>138</Hue>
+      <Saturation>0</Saturation>
+      <Lightness>0</Lightness>
+      <Gradient>-1</Gradient>
+      <GradientType>3</GradientType>
+      <GDStartColor>0</GDStartColor>
+      <GDStartAlpha>79</GDStartAlpha>
+      <GDEndColor>0</GDEndColor>
+      <GDEndAlpha>255</GDEndAlpha>
+      <MirrorHoriz>0</MirrorHoriz>
+      <MirrorVert>0</MirrorVert>
+    </item>
+  </Wallpapers>
+  <Monitors>
+    <item>
+      <Name>Default</Name>
+      <ID>-100</ID>
+    </item>
+  </Monitors>
+</SharpEThemeWallpapers>

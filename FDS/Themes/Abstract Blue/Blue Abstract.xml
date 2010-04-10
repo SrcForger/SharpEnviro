@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpESkinScheme>
+  <Info>
+    <Name>Blue Abstract</Name>
+    <Author>Lee Green</Author>
+  </Info>
+  <Item>
+    <Tag>$Border</Tag>
+    <Color>13865825</Color>
+  </Item>
+  <Item>
+    <Tag>$Background</Tag>
+    <Color>14330492</Color>
+  </Item>
+  <Item>
+    <Tag>$Special</Tag>
+    <Color>13737823</Color>
+  </Item>
+  <Item>
+    <Tag>$Text</Tag>
+    <Color>16777215</Color>
+  </Item>
+  <Item>
+    <Tag>$TextShadow</Tag>
+    <Color>3810066</Color>
+  </Item>
+  <Item>
+    <Tag>$Alpha</Tag>
+    <Color>48</Color>
+  </Item>
+  <Item>
+    <Tag>$MAlpha</Tag>
+    <Color>43</Color>
+  </Item>
+  <Item>
+    <Tag>$BAlpha</Tag>
+    <Color>120</Color>
+  </Item>
+  <Item>
+    <Tag>$SAlpha</Tag>
+    <Color>200</Color>
+  </Item>
+</SharpESkinScheme>

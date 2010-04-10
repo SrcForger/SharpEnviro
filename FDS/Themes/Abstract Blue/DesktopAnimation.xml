@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpEThemeDesktopAnimation>
+  <UseAnimations>-1</UseAnimations>
+  <Scale>0</Scale>
+  <ScaleValue>64</ScaleValue>
+  <Alpha>-1</Alpha>
+  <AlphaValue>255</AlphaValue>
+  <Blend>-1</Blend>
+  <BlendValue>255</BlendValue>
+  <BlendColor>66047</BlendColor>
+  <Brightness>-1</Brightness>
+  <BrightnessValue>38</BrightnessValue>
+</SharpEThemeDesktopAnimation>

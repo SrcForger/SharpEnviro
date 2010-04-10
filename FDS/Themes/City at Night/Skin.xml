@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpEThemeSkin>
+  <Skin>Minimal 2</Skin>
+  <GEBlurRadius>2</GEBlurRadius>
+  <GEBlurIterations>2</GEBlurIterations>
+  <GEBlend>0</GEBlend>
+  <GEBlendColor>16777215</GEBlendColor>
+  <GEBlendAlpha>32</GEBlendAlpha>
+  <GELighten>-1</GELighten>
+  <GELightenAmount>32</GELightenAmount>
+</SharpEThemeSkin>
