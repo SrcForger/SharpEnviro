@@ -37,12 +37,12 @@
   </Hotkey>
   <Hotkey>
     <Name>Switch to Next VWM</Name>
-    <Hotkey>WIN + VK_RIGHT</Hotkey>
+    <Hotkey>ALT + WIN + VK_RIGHT</Hotkey>
     <Command>!NextVWM</Command>
   </Hotkey>
   <Hotkey>
     <Name>Switch to Previous VWM</Name>
-    <Hotkey>WIN + VK_LEFT</Hotkey>
+    <Hotkey>ALT + WIN + VK_LEFT</Hotkey>
     <Command>!PreviousVWM</Command>
   </Hotkey>
   <Hotkey>
@@ -69,5 +69,15 @@
     <Name>Toggle Notes</Name>
     <Hotkey>WIN + VK_N</Hotkey>
     <Command>!ToggleNotes</Command>
+  </Hotkey>
+  <Hotkey>
+    <Name>Volume Down</Name>
+    <Hotkey>ALT + WIN + VK_DOWN</Hotkey>
+    <Command>!VolumeDown</Command>
+  </Hotkey>
+  <Hotkey>
+    <Name>Volume Up</Name>
+    <Hotkey>ALT + WIN + VK_UP</Hotkey>
+    <Command>!VolumeUp</Command>
   </Hotkey>
 </Hotkeys>
