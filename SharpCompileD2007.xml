@@ -190,8 +190,6 @@
   <package Name="Files">
     <!-- Export FDS first otherwise subsequent commands may fail due to directories not existing -->
     <project Name="FDS" Type="CommandLine">svn export --force .\FDS ..\SharpE</project>
-    <project Name="Cursors" Type="CommandLine">svn export --force .\Graphics\Cursors ..\SharpE\Cursors</project>
     <project Name="Weather" Type="CommandLine">svn export --force .\Graphics\Weather\Icons ..\SharpE\Icons\Weather</project>
-    <project Name="Skins" Type="CommandLine">svn export --force .\Graphics\Skins ..\SharpE\Skins</project>
   </package>
 </SharpCompile>
