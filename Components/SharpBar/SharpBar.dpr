@@ -163,6 +163,7 @@ var
   i : integer;
   modMutex : TBarMutex;
   monitorIndex : Integer;
+  primarymon : boolean;
 begin
   Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
 
@@ -196,7 +197,8 @@ begin
               begin
                 // Do not start bars for monitors that are not present.
                 monitorIndex := xml.Root.Items.ItemNamed['Settings'].Items.IntValue('MonitorIndex', -1);
-                if (monitorIndex < 0) or (monitorIndex > MonList.MonitorCount - 1) then
+                primarymon := xml.Root.Items.ItemNamed['Settings'].Items.BoolValue('PrimaryMonitor', True);
+                if ((monitorIndex < 0) or (monitorIndex > MonList.MonitorCount - 1))  and (not primarymon) then
                   Continue;
                 
                 // check if this is bar is already running before deleting it
@@ -273,6 +275,7 @@ var
   xml : TJclSimpleXML;
   fileloaded : Boolean;
   monitorIndex : Integer;
+  primarymon : boolean;
 begin
   Result := False;
   filename := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + IntToStr(ID) + '\Bar.xml';
@@ -300,7 +303,8 @@ begin
         if ItemNamed['Settings'] <> nil then
         begin
           monitorIndex := ItemNamed['Settings'].Items.IntValue('MonitorIndex', -1);
-          if (monitorIndex > -1) and (monitorIndex < MonList.MonitorCount) then
+          primarymon := ItemNamed['Settings'].Items.BoolValue('PrimaryMonitor', True);
+          if ((monitorIndex > -1) and (monitorIndex < MonList.MonitorCount)) or primarymon then
             Result := True;
         end;
       end;
