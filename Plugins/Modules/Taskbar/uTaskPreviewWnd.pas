@@ -47,6 +47,7 @@ type
       FCaption : String;
       FOnPreviewClick : TTaskPreviewClickEvent;
       FLockKey : integer;
+      FWidth : integer;
 
       fproc: TFarproc;
 
@@ -70,6 +71,7 @@ type
       property AllowHover : boolean read FAllowHover;
       property OnPreviewClick : TTaskPreviewClickEvent read FOnPreviewClick write FOnPreviewClick;
       property LockKey : integer read FLockKey write FLockKey;
+      property Width : integer read FWidth;
   end;
 
 function PlainWinProc(hWnd : hwnd; Msg, wParam, lParam: Integer): Cardinal; export; stdcall; forward;
@@ -241,6 +243,7 @@ begin
   FCaption := pCaption;
   FAllowHover := pAllowHover;
   FLockKey := 1; // Shift;
+  Fwidth := 256;
 
   // set dwm thumnail properties
   with FdwmThumbProps do
@@ -272,10 +275,11 @@ begin
       h := round(Size.cy * (w - TPS.CALROffset.X - TPS.CALROffset.Y) / Size.cx)
            + TPS.CATBOffset.X + TPS.CATBOffset.Y;
 
-      if (w > 1024) or (h > 1024) then
+      if (w > 768) or (h > 512) then
       begin
-        w := 256;
-        h := 256;
+        h := 512;
+        w := round((h - TPS.CATBOffset.X - TPS.CATBOffset.Y) * Size.cx / size.cy)
+             + TPS.CALROffset.X + TPS.CALROffset.Y;
       end;
 
       // Render Notify Skin as background/Border of the window
@@ -283,6 +287,7 @@ begin
       YMod := TPS.Location.Y;
       FBitmap := TBitmap32.Create;
       FBitmap.SetSize(w,h);
+      FWidth := w;
       FBitmap.Clear(color32(0,0,0,0));
 
       RenderImage;      

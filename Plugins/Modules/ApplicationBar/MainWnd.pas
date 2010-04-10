@@ -1447,6 +1447,7 @@ begin
         item.LockKey := sTPLockKey;
         item.OnPreviewClick := OnPreviewClick;                                                
         FPreviewWnds.Add(item);
+        xpos := xpos - (size - item.Width);
       end;
       if count < wndlist.Count then
         for n := count to wndlist.Count - 1 do
@@ -1457,6 +1458,7 @@ begin
           if popupdown then
             ypos := R.Bottom
           else ypos := R.Top;
+          size := R.Right - R.Left; // adjust width to preview window below
 
           item := TTaskPreviewWnd.Create(TaskItem.handle,
                                          popupdown,
