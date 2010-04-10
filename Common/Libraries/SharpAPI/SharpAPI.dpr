@@ -144,6 +144,7 @@ const
   APPDATASUBDIR = 'SharpEnviro';
   CENTERDIR = 'Center\Root';
   DEFAULTSETTINGSDIR = '#Default#';
+  DEFAULTSETTINGSDIRGLOBAL = '#DefaultGlobal#';
 
   // SharpCenter constants
   SCM_SET_EDIT_STATE = 1;
@@ -1076,7 +1077,15 @@ begin
     Path := Fn + 'Settings\Global\';
 
     if not (DirectoryExists(Path)) then
-      Sysutils.ForceDirectories(Path);
+    begin
+      // check if the default global settings directory exists in the SharpE Dir
+      if DirectoryExists(GetSharpeDirectory + 'Settings\' + DEFAULTSETTINGSDIRGLOBAL) then
+      begin
+        SysUtils.ForceDirectories(Fn + 'Settings');
+        CopyDir(GetSharpeDirectory + 'Settings\' + DEFAULTSETTINGSDIRGLOBAL, Fn + 'Settings');
+        RenameDir(Fn + 'Settings\' + DEFAULTSETTINGSDIRGLOBAL, Fn + 'Settings\Global');
+      end else Sysutils.ForceDirectories(Path);
+    end;
   end else
   begin
     Fn := GetSharpeDirectory;
@@ -1084,10 +1093,17 @@ begin
 
     if not (DirectoryExists(Path)) then
     begin
-      DirCheck(Fn,sRes);
+      // check if the default settings dir exists
+      if DirectoryExists(Fn + 'Settings\' + DEFAULTSETTINGSDIRGLOBAL) then
+      begin
+        CopyDir(Fn + 'Settings\' + DEFAULTSETTINGSDIRGLOBAL,Fn + 'Settings\Global');
+      end else
+      begin
+        DirCheck(Fn,sRes);
 
-      if sRes <> '' then
-        Sysutils.ForceDirectories(Path);
+        if sRes <> '' then
+          Sysutils.ForceDirectories(Path);
+      end;
     end;
   end;
 
