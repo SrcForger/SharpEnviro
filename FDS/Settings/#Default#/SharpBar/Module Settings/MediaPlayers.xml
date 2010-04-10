@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<MediaControllerPlayers>
+  <Item>
+    <Name>Foobar</Name>
+    <Path/>
+  </Item>
+  <Item>
+    <Name>Foobar (ColumnsUi)</Name>
+    <Path/>
+  </Item>
+  <Item>
+    <Name>iTunes</Name>
+    <Path/>
+  </Item>
+  <Item>
+    <Name>Media Monkey</Name>
+    <Path/>
+  </Item>
+  <Item>
+    <Name>Media Player Classic</Name>
+    <Path/>
+  </Item>
+  <Item>
+    <Name>Quintessential Player</Name>
+    <Path/>
+  </Item>
+  <Item>
+    <Name>VLC Media Player</Name>
+    <Path/>
+  </Item>
+  <Item>
+    <Name>Winamp</Name>
+    <Path/>
+  </Item>
+  <Item>
+    <Name>Windows Media Player</Name>
+    <Path/>
+  </Item>
+  <Item>
+    <Name>Billy</Name>
+    <Path/>
+  </Item>
+</MediaControllerPlayers>

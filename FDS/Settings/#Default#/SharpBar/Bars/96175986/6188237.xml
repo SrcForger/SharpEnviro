@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<MemoryMonitorModuleSettings>
+  <ITC>0</ITC>
+  <ShowRAMBar>-1</ShowRAMBar>
+  <ShowRAMInfo>-1</ShowRAMInfo>
+  <ShowRAMPC>-1</ShowRAMPC>
+  <ShowSWPBar>-1</ShowSWPBar>
+  <ShowSWPInfo>-1</ShowSWPInfo>
+  <ShowSWPPC>-1</ShowSWPPC>
+  <ItemAlign>2</ItemAlign>
+  <Width>60</Width>
+</MemoryMonitorModuleSettings>

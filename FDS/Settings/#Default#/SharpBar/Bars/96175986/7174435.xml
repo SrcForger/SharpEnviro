@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<ButtonModuleSettings>
+  <ShowLabel>-1</ShowLabel>
+  <ShowIcon>-1</ShowIcon>
+  <Icon>icon.controlpanel</Icon>
+  <ActionStr>SharpCenter.exe</ActionStr>
+  <ActionStrR>SharpCenter.exe</ActionStrR>
+  <Caption>Configure</Caption>
+</ButtonModuleSettings>

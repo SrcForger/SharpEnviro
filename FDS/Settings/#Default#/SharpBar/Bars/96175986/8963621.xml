@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<ButtonBarModuleSettings>
+  <Buttons>
+    <Item>
+      <Target>%windir%\System32\mspaint.exe</Target>
+      <Icon>shell:icon</Icon>
+      <Caption>Paint</Caption>
+    </Item>
+    <Item>
+      <Target>%windir%\System32\calc.exe</Target>
+      <Icon>shell:icon</Icon>
+      <Caption>Calculator</Caption>
+    </Item>
+    <Item>
+      <Target>%windir%\System32\cmd.exe</Target>
+      <Icon>shell:icon</Icon>
+      <Caption>Command Line</Caption>
+    </Item>
+    <Item>
+      <Target>%windir%\System32\taskmgr.exe</Target>
+      <Icon>shell:icon</Icon>
+      <Caption>Task Manager</Caption>
+    </Item>
+    <Item>
+      <Target>%windir%\System32\write.exe</Target>
+      <Icon>shell:icon</Icon>
+      <Caption>WordPad</Caption>
+    </Item>
+  </Buttons>
+  <ShowCaption>0</ShowCaption>
+  <ShowIcon>-1</ShowIcon>
+  <Width>45</Width>
+</ButtonBarModuleSettings>

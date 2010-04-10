@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<LinkObjectSettings>
+  <Target>shell:ControlPanelFolder</Target>
+  <Icon>icon.controlpanel</Icon>
+  <Caption SortValue="-1">Control Panel</Caption>
+  <CaptionAlign>2</CaptionAlign>
+  <MLineCaption>0</MLineCaption>
+  <ShowCaption>-1</ShowCaption>
+</LinkObjectSettings>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<AppBarModuleSettings>
+  <State>2</State>
+  <CountOverlay>-1</CountOverlay>
+  <Apps>
+    <Item>
+      <Target>Notepad.exe</Target>
+      <Icon>shell:icon</Icon>
+      <Caption>Notepad</Caption>
+    </Item>
+    <Item>
+      <Target>Explorer.exe</Target>
+      <Icon>shell:icon</Icon>
+      <Caption>Explorer</Caption>
+    </Item>
+  </Apps>
+</AppBarModuleSettings>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<LinkObjectSettings>
+  <Target>SharpCenter.exe</Target>
+  <Icon>icon.file.config</Icon>
+  <Caption SortValue="-1">&quot;Configure SharpE&quot; (SharpCenter)</Caption>
+  <CaptionAlign>1</CaptionAlign>
+  <MLineCaption>-1</MLineCaption>
+  <ShowCaption>-1</ShowCaption>
+</LinkObjectSettings>

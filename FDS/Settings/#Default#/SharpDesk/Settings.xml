@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpDesk>
+  <Settings>
+    <DragAndDrop>-1</DragAndDrop>
+    <AdvancedCommands>-1</AdvancedCommands>
+    <AdvancedMemoryManagement>-1</AdvancedMemoryManagement>
+    <SingleClick>0</SingleClick>
+    <CheckObjectPosition>-1</CheckObjectPosition>
+    <SetObjectRolledOut>-1</SetObjectRolledOut>
+    <WallpaperWatch>-1</WallpaperWatch>
+    <ScreenRotAdjust>-1</ScreenRotAdjust>
+    <ScreenSizeAdjust>-1</ScreenSizeAdjust>
+    <MenuFile>Menu</MenuFile>
+    <MenuFileShift>QuickLaunch</MenuFileShift>
+  </Settings>
+  <Grid>
+    <UseGrid>-1</UseGrid>
+    <GridX>8</GridX>
+    <GridY>8</GridY>
+  </Grid>
+</SharpDesk>

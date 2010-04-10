@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<TaskBarModuleSettings>
+  <State>1</State>
+  <Sort>0</Sort>
+  <TaskPreview>-1</TaskPreview>
+  <AppBarWindow>0</AppBarWindow>
+  <MinAllButton>0</MinAllButton>
+  <MaxAllButton>0</MaxAllButton>
+  <FilterTasks>-1</FilterTasks>
+  <MiddleClose>-1</MiddleClose>
+  <IFilters>&quot;Current VWM&quot;</IFilters>
+  <EFilters>&quot;All Windows&quot;</EFilters>
+</TaskBarModuleSettings>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<CPUMonitorModuleSettings>
+  <Global>
+    <Width>75</Width>
+    <Update>250</Update>
+    <CPU>0</CPU>
+    <DrawMode>1</DrawMode>
+  </Global>
+  <skin>
+    <Minimal_2>
+      <BGColor>-2</BGColor>
+      <FGColor>-1</FGColor>
+      <BorderColor>-1</BorderColor>
+      <BGAlpha>0</BGAlpha>
+      <FGAlpha>178</FGAlpha>
+      <BorderAlpha>154</BorderAlpha>
+    </Minimal_2>
+    <Sunken>
+      <BGColor>-1</BGColor>
+      <FGColor>-3</FGColor>
+      <BorderColor>-3</BorderColor>
+      <BGAlpha>63</BGAlpha>
+      <FGAlpha>255</FGAlpha>
+      <BorderAlpha>139</BorderAlpha>
+    </Sunken>
+  </skin>
+</CPUMonitorModuleSettings>

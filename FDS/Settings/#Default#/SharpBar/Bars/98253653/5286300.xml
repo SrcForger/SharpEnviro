@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SysTrayModuleSettings>
+  <skin>
+    <Minimal_2>
+      <ShowBackground>0</ShowBackground>
+      <BackgroundColor>-1</BackgroundColor>
+      <BackgroundAlpha>0</BackgroundAlpha>
+      <ShowBorder>0</ShowBorder>
+      <BorderColor>-1</BorderColor>
+      <BorderAlpha>153</BorderAlpha>
+      <ColorBlend>0</ColorBlend>
+      <BlendColor>16777215</BlendColor>
+      <BlendAlpha>255</BlendAlpha>
+      <IconAlpha>255</IconAlpha>
+    </Minimal_2>
+    <Sunken>
+      <ShowBackground>-1</ShowBackground>
+      <BackgroundColor>-1</BackgroundColor>
+      <BackgroundAlpha>64</BackgroundAlpha>
+      <ShowBorder>-1</ShowBorder>
+      <BorderColor>-3</BorderColor>
+      <BorderAlpha>140</BorderAlpha>
+      <ColorBlend>0</ColorBlend>
+      <BlendColor>-3</BlendColor>
+      <BlendAlpha>255</BlendAlpha>
+      <IconAlpha>255</IconAlpha>
+    </Sunken>
+    <Number_7>
+      <ShowBackground>0</ShowBackground>
+      <BackgroundColor>-1</BackgroundColor>
+      <BackgroundAlpha>0</BackgroundAlpha>
+      <ShowBorder>0</ShowBorder>
+      <BorderColor>-1</BorderColor>
+      <BorderAlpha>142</BorderAlpha>
+      <ColorBlend>0</ColorBlend>
+      <BlendColor>16777215</BlendColor>
+      <BlendAlpha>255</BlendAlpha>
+      <IconAlpha>255</IconAlpha>
+    </Number_7>
+  </skin>
+  <iconhiding>-1</iconhiding>
+</SysTrayModuleSettings>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<LinkObjectSettings>
+  <Target>shell:drivefolder</Target>
+  <Icon>icon.mycomputer</Icon>
+  <Caption SortValue="-1">My Computer</Caption>
+  <CaptionAlign>2</CaptionAlign>
+  <MLineCaption>0</MLineCaption>
+  <ShowCaption>-1</ShowCaption>
+</LinkObjectSettings>

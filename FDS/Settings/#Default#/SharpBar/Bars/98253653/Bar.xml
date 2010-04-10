@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpBar>
+  <Settings>
+    <Name>Taskbar</Name>
+    <AutoPosition>-1</AutoPosition>
+    <PrimaryMonitor>-1</PrimaryMonitor>
+    <MonitorIndex>0</MonitorIndex>
+    <HorizPos>3</HorizPos>
+    <VertPos>1</VertPos>
+    <AutoStart>-1</AutoStart>
+    <ShowThrobber>0</ShowThrobber>
+    <DisableHideBar>-1</DisableHideBar>
+    <AlwaysOnTop>0</AlwaysOnTop>
+    <ShowMiniThrobbers>0</ShowMiniThrobbers>
+  </Settings>
+  <Modules>
+    <Item>
+      <ID>4062950</ID>
+      <Position>-1</Position>
+      <Module>VWM.dll</Module>
+    </Item>
+    <Item>
+      <ID>113151</ID>
+      <Position>-1</Position>
+      <Module>ApplicationBar.dll</Module>
+    </Item>
+    <Item>
+      <ID>2583232</ID>
+      <Position>-1</Position>
+      <Module>Taskbar.dll</Module>
+    </Item>
+    <Item>
+      <ID>5286300</ID>
+      <Position>1</Position>
+      <Module>SystemTray.dll</Module>
+    </Item>
+    <Item>
+      <ID>1932801</ID>
+      <Position>1</Position>
+      <Module>Clock.dll</Module>
+    </Item>
+  </Modules>
+</SharpBar>
