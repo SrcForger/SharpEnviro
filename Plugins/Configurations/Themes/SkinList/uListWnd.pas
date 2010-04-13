@@ -159,6 +159,7 @@ begin
         tokens.Free;
       end;
 
+      path := IncludeTrailingBackSlash(path);
       // get preview and add to pngimagelists
       bmp32 := TBitmap32.Create;
       try
