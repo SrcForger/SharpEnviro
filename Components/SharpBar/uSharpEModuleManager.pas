@@ -151,6 +151,7 @@ type
                      FShutdown          : Boolean;
                      FBarID             : integer;
                      FBarName           : string;
+                     FUpdateLock        : Boolean;
                      procedure SetShowMiniThrobbers(Value : Boolean);
                    public
                      constructor Create(pParent : hwnd;
@@ -240,6 +241,7 @@ constructor TModuleManager.Create(pParent : hwnd;
                                   pBar         : TSharpEBar);
 begin
   inherited Create;
+  FUpdateLock   := False;
   FShutdown     := False;
   FDragLastBar  := 0;
   FDragForm     := nil;
@@ -1362,141 +1364,165 @@ var
   newsize : integer;
   csize : integer;
   sdif : integer;
+  isZeroBar : boolean;
 begin
+  if FUpdateLock then exit;
   if FShutdown then exit;
   if FModules = nil then exit;
 
-  minsize := 0;
-  maxsize := 0;
-  smod    := 0;
-  setlength(nonminmaxrequest,0);
-  maxbarsize := GetMaxBarSpace;
-  for n := 0 to FModules.Count - 1 do
-  begin
-    temp := TModule(FModules.Items[n]);
-    msize.Min := temp.mInterface.MinSize;
-    msize.Max := temp.mInterface.MaxSize;
-    minsize := minsize + mSize.Min;
-    maxsize := maxsize + mSize.Max;
-    smod := smod + FModuleSpacing;
-    if msize.Min <> msize.Max then
-    begin
-      setlength(nonminmaxrequest,length(nonminmaxrequest)+1);
-      nonminmaxrequest[High(nonminmaxrequest)] := abs(msize.Max - msize.Min);
-    end;
-  end;
+  FUpdateLock := True;
+  try
+    minsize := 0;
+    maxsize := 0;
+    smod    := 0;
+    setlength(nonminmaxrequest,0);
 
-  FreeMinSpace := Max(0,maxbarsize - minsize - smod);
-  if (length(nonminmaxrequest) > 0) and (FreeMinSpace > 0) and (maxsize > maxbarsize - smod)then
-  begin
-    for n := 0 to High(nonminmaxrequest) do
-        nonminmaxrequest[n] := round(Int(((nonminmaxrequest[n])/(maxsize - minsize))*FreeMinSpace));
-  end;
-
-  newsize := 0;
-  // Calculate new bar size
-  i := 0;
-  csize := 0;
-  for n := 0 to FModules.Count - 1 do
-  begin
-    temp := TModule(FModules.Items[n]);
-    msize.Min := temp.mInterface.MinSize;
-    msize.Max := temp.mInterface.MaxSize;
-    csize := csize + msize.Min;
-    if csize > maxbarsize - smod then
-       newsize := newsize + 1
-    else
+    maxbarsize := GetMaxBarSpace;
+    if maxbarsize <= 0 then
     begin
+      maxbarsize := 0;
+      isZeroBar := True;
+    end else isZeroBar := False;
+
+    for n := 0 to FModules.Count - 1 do
+    begin
+      temp := TModule(FModules.Items[n]);
+      msize.Min := temp.mInterface.MinSize;
+      msize.Max := temp.mInterface.MaxSize;
+      minsize := minsize + mSize.Min;
+      maxsize := maxsize + mSize.Max;
+      smod := smod + FModuleSpacing;
       if msize.Min <> msize.Max then
-         newsize := newsize + msize.Min + nonminmaxrequest[i]
-      else newsize := newsize + msize.Min;
-    end;
-    if msize.Min <> msize.Max then
-       i := i + 1;
-  end;
-
-  ParentControl := GetControlByHandle(FParent);  
-  pMon := MonList.MonitorFromPoint(Point(ParentControl.Left,ParentControl.Top),mdNearest);
-  if FBar.FixedWidthEnabled then
-    newsize := Max(minsize,round(FBar.FixedWidth * pMon.Width / 100));
-  UpdateBarSize(newsize,ForceUpdate);
-
-  // Send update messages to modules
-  i := 0;
-  csize := 0;
-  for n := 0 to FModules.Count - 1 do
-  begin
-    temp := TModule(FModules.Items[n]);
-    msize.Min := temp.mInterface.MinSize;
-    msize.Max := temp.mInterface.MaxSize;
-    csize := csize + msize.Min;
-    if csize > maxbarsize - smod then
-    begin
-      // module out of bar area... hide it and make it small...
-      // Check if the module is too big...
-      temp.mInterface.Form.Visible := False;
-      temp.mInterface.Size := 1;
-    end else
-    begin
-      if not temp.mInterface.Form.Visible then
-         temp.mInterface.Form.Visible := True;
-      if msize.Min <> msize.Max then
-        newsize := msize.Min + nonminmaxrequest[i]
-      else newsize := msize.Min;
-      if temp.mInterface.Size <> newsize then
       begin
-        temp.UpdateBackgroundW(newsize);
-        temp.mInterface.Size := newsize;
+        setlength(nonminmaxrequest,length(nonminmaxrequest)+1);
+        nonminmaxrequest[High(nonminmaxrequest)] := abs(msize.Max - msize.Min);
       end;
     end;
-    if msize.Min <> msize.Max then
-       i := i + 1;
-  end;
 
-  setlength(nonminmaxrequest,0);
-  FixModulePositions;
+    FreeMinSpace := Max(0,maxbarsize - minsize - smod);
+    if (length(nonminmaxrequest) > 0) and (FreeMinSpace > 0) and (maxsize > maxbarsize - smod)then
+    begin
+      for n := 0 to High(nonminmaxrequest) do
+          nonminmaxrequest[n] := round(Int(((nonminmaxrequest[n])/(maxsize - minsize))*FreeMinSpace));
+    end;
 
-  sdif := maxsize - minsize;
-
-  // Check if there is no bar space left and if other bars which have
-  // free space left should resize
-  maxSize := pMon.Width - ParentControl.Width;
-
-  setlength(harray,0);
-
-  if Broadcast then
-  begin
-    SetWindowLong(ParentControl.Handle,GWL_USERDATA,0);
-    // find all SharpBar windows and store their handle in harray
-    harray := FindAllWindows('TSharpBarMainForm');
-    for n := 0 to High(harray) do
-      if harray[n] <> ParentControl.Handle then
+    newsize := 0;
+    // Calculate new bar size
+    i := 0;
+    csize := 0;
+    for n := 0 to FModules.Count - 1 do
+    begin
+      temp := TModule(FModules.Items[n]);
+      msize.Min := temp.mInterface.MinSize;
+      msize.Max := temp.mInterface.MaxSize;
+      csize := csize + msize.Min;
+      if csize > maxbarsize - smod then
+        newsize := newsize + 1
+      else
       begin
-        GetWindowRect(harray[n],R);
-        // another bar on the same monitor with the same top position?
-        if (R.Top = ParentControl.Top) and (MonList.MonitorFromPoint(R.TopLeft,mdNearest) = pMon) then
-            MaxSize := MaxSize - (R.Right - R.Left);
+        if msize.Min <> msize.Max then
+          newsize := newsize + msize.Min + nonminmaxrequest[i]
+        else newsize := newsize + msize.Min;
       end;
-  //  if MaxSize < 0 then
+      if msize.Min <> msize.Max then
+        i := i + 1;
+    end;
+
+    ParentControl := GetControlByHandle(FParent);
+    pMon := MonList.MonitorFromPoint(Point(ParentControl.Left,ParentControl.Top),mdNearest);
+    if FBar.FixedWidthEnabled then
+      newsize := Max(minsize,round(FBar.FixedWidth * pMon.Width / 100));
+    UpdateBarSize(newsize,ForceUpdate);
+
+    // Send update messages to modules
+    i := 0;
+    csize := 0;
+    for n := 0 to FModules.Count - 1 do
+    begin
+      temp := TModule(FModules.Items[n]);
+      msize.Min := temp.mInterface.MinSize;
+      msize.Max := temp.mInterface.MaxSize;
+      csize := csize + msize.Min;
+      if csize > maxbarsize - smod then
+      begin
+        // module out of bar area... hide it and make it small...
+        // Check if the module is too big...
+        temp.mInterface.Form.Visible := False;
+        temp.mInterface.Size := 1;
+      end else
+      begin
+        if not temp.mInterface.Form.Visible then
+          temp.mInterface.Form.Visible := True;
+        if msize.Min <> msize.Max then
+          newsize := msize.Min + nonminmaxrequest[i]
+        else newsize := msize.Min;
+        if temp.mInterface.Size <> newsize then
+        begin
+          if newsize < 1 then
+          begin
+            temp.mInterface.Form.Visible := False;
+            temp.mInterface.Size := 1;
+          end else
+          begin
+            temp.UpdateBackgroundW(newsize);
+            temp.mInterface.Size := newsize;
+          end;
+        end;
+      end;
+      if msize.Min <> msize.Max then
+        i := i + 1;
+    end;
+
+    setlength(nonminmaxrequest,0);
+    FixModulePositions;
+
+    sdif := maxsize - minsize;
+
+    // Check if there is no bar space left and if other bars which have
+    // free space left should resize
+    maxSize := pMon.Width - ParentControl.Width;
+
+    setlength(harray,0);
+
+    if Broadcast then
+    begin
+      SetWindowLong(ParentControl.Handle,GWL_USERDATA,0);
+      // find all SharpBar windows and store their handle in harray
+      harray := FindAllWindows('TSharpBarMainForm');
       for n := 0 to High(harray) do
         if harray[n] <> ParentControl.Handle then
         begin
           GetWindowRect(harray[n],R);
           // another bar on the same monitor with the same top position?
           if (R.Top = ParentControl.Top) and (MonList.MonitorFromPoint(R.TopLeft,mdNearest) = pMon) then
+            MaxSize := MaxSize - (R.Right - R.Left);
+        end;
+    //  if MaxSize < 0 then
+        for n := 0 to High(harray) do
+          if harray[n] <> ParentControl.Handle then
           begin
-            //freespace := GetWindowLong(harray[n],GWL_USERDATA);
-            //if (MaxSize < 0) and (FreeSpace > 0) then
+            GetWindowRect(harray[n],R);
+            // another bar on the same monitor with the same top position?
+            if (R.Top = ParentControl.Top) and (MonList.MonitorFromPoint(R.TopLeft,mdNearest) = pMon) then
             begin
-               PostMessage(harray[n],WM_UPDATEBARWIDTH,1,0);
-               break;
+              //freespace := GetWindowLong(harray[n],GWL_USERDATA);
+              //if (MaxSize < 0) and (FreeSpace > 0) then
+              if not isZeroBar then
+              begin
+                 PostMessage(harray[n],WM_UPDATEBARWIDTH,1,0);
+                 break;
+              end;
             end;
           end;
-        end;
-    setlength(harray,0);
+      setlength(harray,0);
+    end;
+    SetWindowLong(ParentControl.Handle,GWL_USERDATA,abs(sdif));
+    RefreshMiniThrobbers;
+  finally
+    FUpdateLock := False;
   end;
-  SetWindowLong(ParentControl.Handle,GWL_USERDATA,abs(sdif));
-  RefreshMiniThrobbers;
+
+  FBar.UpdatePosition;
 end;
 
 
