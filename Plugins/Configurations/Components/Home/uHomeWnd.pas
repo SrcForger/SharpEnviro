@@ -165,9 +165,9 @@ begin
     AddUrl('Tango','http://tango.freedesktop.org','Icon Collection');
   end else begin
     // Support Urls
-    AddUrl('Trac','http://trac.sharpe-shell.org','Wiki, Tickets, Roadmap',true);
     AddUrl('Homepage','http://www.sharpe-shell.org','SharpE Homepage',true);
-    AddUrl('Sourceforge','http://sourceforge.net/projects/sharpe/','SVN Repositry',true);
+    AddUrl('Sourceforge','http://sourceforge.net/projects/sharpe/','Project Page, SVN Repositry,...',true);
+    AddUrl('Sourceforge','http://sourceforge.net/projects/sharpe/support','Tickets',true);
   end;
 
   lbUrls.Clear;
