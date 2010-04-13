@@ -8,6 +8,7 @@
     <DCC_DependencyCheckOutputName>..\..\..\..\SharpE\SharpThemeApiEx.dll</DCC_DependencyCheckOutputName>
     <MainSource>SharpThemeApiEx.dpr</MainSource>
     <DCC_UsePackage>vcl;rtl</DCC_UsePackage>
+    <DCC_EnabledPackages>true</DCC_EnabledPackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Version>7.0</Version>
