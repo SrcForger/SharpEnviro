@@ -718,6 +718,7 @@ var
   Info: TSHFileInfo;
   P: PChar;
   SC : String;
+  iScriptFiles : integer;
 begin
   targetmenuresult := '';
   targetmenu := TPopupMenu.Create(nil);
@@ -948,6 +949,7 @@ begin
       mindex := mindex + 1;
 
       Dir := SharpApi.GetSharpeUserSettingsPath + 'Scripts\';
+      iScriptFiles := 0;
       if FindFirst(Dir + '*.sescript',FAAnyFile,sr) = 0 then
       repeat
         menuItem := TMenuItem.Create(targetmenu);
@@ -958,8 +960,12 @@ begin
         menuItem.Hint := Dir + sr.Name;
         menuItem.OnClick := targetmenuclick.OnScriptClick;
         targetmenu.Items.Items[mindex].Add(menuItem);
+        iScriptFiles := iScriptFiles + 1;
       until FindNext(sr) <> 0;
       FindClose(sr);
+
+      if iScriptFiles = 0 then // Remove Scripts menu if there are no items
+        targetmenu.Items.Items[mindex].Visible := False;
     end;
 
     if stiAction in TargetItems then
