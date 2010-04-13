@@ -217,7 +217,7 @@ function GetMetaData(): TMetaData;
 begin
   with result do
   begin
-    Name := 'Desk Area';
+    Name := 'Desktop Area';
     Description := 'Desk Area Service Configuration';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
     Version := '0.7.6.5';
