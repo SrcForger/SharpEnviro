@@ -52,6 +52,8 @@ Page custom getSettingsSelect
 !define MUI_PAGE_CUSTOMFUNCTION_LEAVE "DirectoryLeave"
 !insertmacro MUI_PAGE_DIRECTORY
 
+!insertmacro MUI_PAGE_COMPONENTS
+
 !insertmacro MUI_PAGE_STARTMENU Application $StartMenuGroup
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
@@ -60,6 +62,7 @@ Page custom getSettingsSelect
 
 # Installer languages
 !insertmacro MUI_LANGUAGE English
+
 
 Var UseAppDir
 
@@ -133,6 +136,88 @@ Section -Main SEC0000
     WriteRegStr HKLM "${REGKEY}\Components" Main 1
 SectionEnd
 
+Section "!Core Files" SEC01
+  SectionIn RO # Section can't be disabled
+  
+  # Services
+  SetOutPath "$INSTDIR\Services\"
+  File "..\..\SharpE\Services\Actions.dll"
+  File "..\..\SharpE\Services\Cursors.dll"
+  File "..\..\SharpE\Services\DDEServer.dll"
+  File "..\..\SharpE\Services\Exec.dll"
+  File "..\..\SharpE\Services\Hotkeys.dll"
+  File "..\..\SharpE\Services\MultimediaInput.dll"
+  File "..\..\SharpE\Services\Shell.dll"
+  File "..\..\SharpE\Services\SkinController.dll"
+  File "..\..\SharpE\Services\Startup.dll"
+  File "..\..\SharpE\Services\SystemActions.dll"
+  File "..\..\SharpE\Services\TaskSwitch.dll"
+  File "..\..\SharpE\Services\VWM.dll"
+  File "..\..\SharpE\Services\Weather.dll"
+
+  # Objects
+  SetOutPath "$INSTDIR\Objects\"
+  File "..\..\SharpE\Objects\RecycleBin.dll"
+  File "..\..\SharpE\Objects\Image.dll"
+  File "..\..\SharpE\Objects\Link.dll"
+  
+  # Modules
+  SetOutPath "$INSTDIR\Modules\"
+  File "..\..\SharpE\Modules\AlarmClock.dll"
+  File "..\..\SharpE\Modules\ApplicationBar.dll"
+  File "..\..\SharpE\Modules\BatteryMonitor.dll"
+  File "..\..\SharpE\Modules\Button.dll"
+  File "..\..\SharpE\Modules\ButtonBar.dll"
+  File "..\..\SharpE\Modules\Clock.dll"
+  File "..\..\SharpE\Modules\CPUMonitor.dll"
+  File "..\..\SharpE\Modules\KeyboardLayout.dll"
+  File "..\..\SharpE\Modules\MediaController.dll"
+  File "..\..\SharpE\Modules\MemoryMonitor.dll"
+  File "..\..\SharpE\Modules\Menu.dll"
+  File "..\..\SharpE\Modules\MiniScmd.dll"
+  File "..\..\SharpE\Modules\Notes.dll"
+  File "..\..\SharpE\Modules\QuickScript.dll"
+  File "..\..\SharpE\Modules\RecycleBin.dll"
+  File "..\..\SharpE\Modules\RSSReader.dll"
+  File "..\..\SharpE\Modules\ShowDesktop.dll"
+  File "..\..\SharpE\Modules\SystemTray.dll"
+  File "..\..\SharpE\Modules\Taskbar.dll"
+  File "..\..\SharpE\Modules\VolumeControl.dll"
+  File "..\..\SharpE\Modules\VWM.dll"
+  File "..\..\SharpE\Modules\Weather.dll"
+  
+  SetOutPath "$INSTDIR"
+  # Libraries
+  File "..\..\SharpE\SharpApi.dll"
+  File "..\..\SharpE\SharpApiEx.dll"
+  File "..\..\SharpE\SharpCenterApi.dll"
+  File "..\..\SharpE\SharpDeskApi.dll"
+  File "..\..\SharpE\SharpDialogs.dll"
+  File "..\..\SharpE\SharpThemeApiEx.dll"
+  # Components
+  FILE "..\..\SharpE\SetShell.exe"
+  File "..\..\SharpE\SharpAdmin.exe"
+  File "..\..\SharpE\SharpBar.exe"
+  File "..\..\SharpE\SharpCenter.exe"
+  File "..\..\SharpE\SharpConsole.exe"
+  File "..\..\SharpE\SharpCore.exe"
+  File "..\..\SharpE\SharpDesk.exe"
+  File "..\..\SharpE\SharpLinkLauncherNET.exe"
+  File "..\..\SharpE\SharpMenu.exe"
+  File "..\..\SharpE\SharpScript.exe"
+  File "..\..\SharpE\SharpShellServices.exe"
+  File "..\..\SharpE\SharpShellServicesNET.exe"
+  File "..\..\SharpE\SharpSplash.exe"
+SectionEnd
+
+Section "Additional Icons" SEC02
+SectionEnd
+
+!insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "Necessary Files for the shell to work."
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "Install additional icon sets."
+!insertmacro MUI_FUNCTION_DESCRIPTION_END
+
 Section -post SEC0001
     WriteRegStr HKLM "${REGKEY}" Path $INSTDIR
     
@@ -174,6 +259,78 @@ done${UNSECTION_ID}:
 # Uninstaller sections
 Section /o -un.Main UNSEC0000
     Delete /REBOOTOK $INSTDIR\gpl-3.0.txt
+    
+    # Services
+    Delete "$INSTDIR\Services\Weather.dll"
+    Delete "$INSTDIR\Services\VWM.dll"
+    Delete "$INSTDIR\Services\TaskSwitch.dll"
+    Delete "$INSTDIR\Services\SystemActions.dll"
+    Delete "$INSTDIR\Services\Startup.dll"
+    Delete "$INSTDIR\Services\SkinController.dll"
+    Delete "$INSTDIR\Services\Shell.dll"
+    Delete "$INSTDIR\Services\MultimediaInput.dll"
+    Delete "$INSTDIR\Services\Hotkeys.dll"
+    Delete "$INSTDIR\Services\Exec.dll"
+    Delete "$INSTDIR\Services\DDEServer.dll"
+    Delete "$INSTDIR\Services\Cursors.dll"
+    Delete "$INSTDIR\Services\Actions.dll"
+    
+    # Objects
+    Delete "$INSTDIR\Objects\RecycleBin.dll"
+    Delete "$INSTDIR\Objects\Image.dll"
+    Delete "$INSTDIR\Objects\Link.dll"
+    
+    # Modules
+    Delete "$INSTDIR\Modules\AlarmClock.dll"
+    Delete "$INSTDIR\Modules\ApplicationBar.dll"
+    Delete "$INSTDIR\Modules\BatteryMonitor.dll"
+    Delete "$INSTDIR\Modules\Button.dll"
+    Delete "$INSTDIR\Modules\ButtonBar.dll"
+    Delete "$INSTDIR\Modules\Clock.dll"
+    Delete "$INSTDIR\Modules\CPUMonitor.dll"
+    Delete "$INSTDIR\Modules\KeyboardLayout.dll"
+    Delete "$INSTDIR\Modules\MediaController.dll"
+    Delete "$INSTDIR\Modules\MemoryMonitor.dll"
+    Delete "$INSTDIR\Modules\Menu.dll"
+    Delete "$INSTDIR\Modules\MiniScmd.dll"
+    Delete "$INSTDIR\Modules\Notes.dll"
+    Delete "$INSTDIR\Modules\QuickScript.dll"
+    Delete "$INSTDIR\Modules\RecycleBin.dll"
+    Delete "$INSTDIR\Modules\RSSReader.dll"
+    Delete "$INSTDIR\Modules\ShowDesktop.dll"
+    Delete "$INSTDIR\Modules\SystemTray.dll"
+    Delete "$INSTDIR\Modules\Taskbar.dll"
+    Delete "$INSTDIR\Modules\VolumeControl.dll"
+    Delete "$INSTDIR\Modules\VWM.dll"
+    Delete "$INSTDIR\Modules\Weather.dll"
+    
+    # Libraries
+    Delete "$INSTDIR\SharpApi.dll"
+    Delete "$INSTDIR\SharpApiEx.dll"
+    Delete "$INSTDIR\SharpCenterApi.dll"
+    Delete "$INSTDIR\SharpDeskApi.dll"
+    Delete "$INSTDIR\SharpDialogs.dll"
+    Delete "$INSTDIR\SharpThemeApiEx.dll"
+
+    # Components
+    Delete "$INSTDIR\SetShell.exe"
+    Delete "$INSTDIR\SharpAdmin.exe"
+    Delete "$INSTDIR\SharpBar.exe"
+    Delete "$INSTDIR\SharpCenter.exe"
+    Delete "$INSTDIR\SharpConsole.exe"
+    Delete "$INSTDIR\SharpCore.exe"
+    Delete "$INSTDIR\SharpDesk.exe"
+    Delete "$INSTDIR\SharpLinkLauncherNET.exe"
+    Delete "$INSTDIR\SharpMenu.exe"
+    Delete "$INSTDIR\SharpScript.exe"
+    Delete "$INSTDIR\SharpShellServices.exe"
+    Delete "$INSTDIR\SharpShellServicesNET.exe"
+    Delete "$INSTDIR\SharpSplash.exe"
+
+    RmDir "$INSTDIR\Services"
+    RmDir "$INSTDIR\Objects"
+    RmDir "$INSTDIR\Modules"
+    
     DeleteRegValue HKLM "${REGKEY}\Components" Main
 SectionEnd
 
