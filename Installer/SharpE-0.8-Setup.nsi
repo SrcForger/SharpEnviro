@@ -7,6 +7,16 @@ SetCompressor zlib
 
 RequestExecutionLevel highest
 
+!define StrLoc "!insertmacro StrLoc"
+
+!macro StrLoc ResultVar String SubString StartPoint
+  Push "${String}"
+  Push "${SubString}"
+  Push "${StartPoint}"
+  Call StrLoc
+  Pop "${ResultVar}"
+!macroend
+
 # General Symbol Definitions
 !define REGKEY "SOFTWARE\$(^Name)"
 !define VERSION 0.8
@@ -39,7 +49,9 @@ Var StartMenuGroup
 
 Page custom getSettingsSelect
 
+!define MUI_PAGE_CUSTOMFUNCTION_LEAVE "DirectoryLeave"
 !insertmacro MUI_PAGE_DIRECTORY
+
 !insertmacro MUI_PAGE_STARTMENU Application $StartMenuGroup
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
@@ -47,11 +59,48 @@ Page custom getSettingsSelect
 !insertmacro MUI_UNPAGE_INSTFILES
 
 # Installer languages
-!insertmacro MUI_LANGUAGE German
+!insertmacro MUI_LANGUAGE English
 
 Var UseAppDir
 
+Function DirectoryLeave
+  # Call the CheckForSpaces function.
+  IntCmp $UseAppDir 1 ValidDir
+  Push $INSTDIR # Input string (install path).
+  
+  ${StrLoc} $0 $INSTDIR $PROGRAMFILES ">"
+  ${StrLoc} $1 $INSTDIR $SYSDIR ">"
+  ${StrLoc} $2 $INSTDIR $COMMONFILES ">"
+  ${StrLoc} $3 $INSTDIR $WINDIR ">"
+  ${StrLoc} $4 $INSTDIR $STARTMENU ">"
+  ${StrLoc} $5 $INSTDIR $TEMP ">"
+  ${StrLoc} $6 $INSTDIR $APPDATA ">"
+  ${StrLoc} $7 $INSTDIR $PROGRAMFILES64 ">"
+  ${StrLoc} $8 $INSTDIR $COMMONFILES64 ">"
+  StrCmp $0 "0" InvalidDir
+  StrCmp $1 "0" InvalidDir
+  StrCmp $2 "0" InvalidDir
+  StrCmp $3 "0" InvalidDir
+  StrCmp $4 "0" InvalidDir
+  StrCmp $5 "0" InvalidDir
+  StrCmp $6 "0" InvalidDir
+  StrCmp $7 "0" InvalidDir
+  StrCmp $8 "0" InvalidDir
+  
+  Goto ValidDir
+  InvalidDir:
+  # Show message box then take the user back to the Directory page.
+  MessageBox MB_OK|MB_ICONEXCLAMATION "Error: You choose to have SharpE store the user settings within the SharpE directory.$\n\
+  Installing into a protected directory like '$INSTDIR' is not possible in this case.$\n\
+  Please select another directory or choose to store the user settings globaly in the windows application data directory."
+  Abort
+
+  ValidDir:
+
+FunctionEnd
+
 Function getSettingsSelect
+  !insertmacro MUI_HEADER_TEXT "Choose Settings Location" "Select where SharpE should store your user settings"
   Push $R0
   InstallOptions::dialog $PLUGINSDIR\SettingsSelect.ini
   Pop $R0
@@ -158,3 +207,65 @@ Function un.onInit
     !insertmacro SELECT_UNSECTION Main ${UNSEC0000}
 FunctionEnd
 
+Function StrLoc
+/*After this point:
+  ------------------------------------------
+   $R0 = StartPoint (input)
+   $R1 = SubString (input)
+   $R2 = String (input)
+   $R3 = SubStringLen (temp)
+   $R4 = StrLen (temp)
+   $R5 = StartCharPos (temp)
+   $R6 = TempStr (temp)*/
+
+  ;Get input from user
+  Exch $R0
+  Exch
+  Exch $R1
+  Exch 2
+  Exch $R2
+  Push $R3
+  Push $R4
+  Push $R5
+  Push $R6
+
+  ;Get "String" and "SubString" length
+  StrLen $R3 $R1
+  StrLen $R4 $R2
+  ;Start "StartCharPos" counter
+  StrCpy $R5 0
+
+  ;Loop until "SubString" is found or "String" reaches its end
+  ${Do}
+    ;Remove everything before and after the searched part ("TempStr")
+    StrCpy $R6 $R2 $R3 $R5
+
+    ;Compare "TempStr" with "SubString"
+    ${If} $R6 == $R1
+      ${If} $R0 == `<`
+        IntOp $R6 $R3 + $R5
+        IntOp $R0 $R4 - $R6
+      ${Else}
+        StrCpy $R0 $R5
+      ${EndIf}
+      ${ExitDo}
+    ${EndIf}
+    ;If not "SubString", this could be "String"'s end
+    ${If} $R5 >= $R4
+      StrCpy $R0 ``
+      ${ExitDo}
+    ${EndIf}
+    ;If not, continue the loop
+    IntOp $R5 $R5 + 1
+  ${Loop}
+
+  ;Return output to user
+  Pop $R6
+  Pop $R5
+  Pop $R4
+  Pop $R3
+  Pop $R2
+  Exch
+  Pop $R1
+  Exch $R0
+FunctionEnd
