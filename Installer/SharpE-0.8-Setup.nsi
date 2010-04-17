@@ -58,6 +58,7 @@ Page custom getSettingsSelect
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
 !insertmacro MUI_UNPAGE_CONFIRM
+UninstPage custom un.getRunningComponents un.getRunningComponentsLeave
 !insertmacro MUI_UNPAGE_INSTFILES
 
 # Installer languages
@@ -213,9 +214,14 @@ SectionEnd
 Section "Additional Icons" SEC02
 SectionEnd
 
+Section "Development Tools" SEC03
+  File "..\..\SharpE\SharpCompile.exe"
+SectionEnd
+
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "Necessary Files for the shell to work."
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "Install additional icon sets."
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "Install tools to compile the SharpE source code."
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 Section -post SEC0001
@@ -255,6 +261,143 @@ next${UNSECTION_ID}:
 done${UNSECTION_ID}:
     Pop $R0
 !macroend
+
+Var ComponentsRunning
+Var RunningComponentsHWND
+
+Function un.getRunningComponentsRefresh
+   GetDlgItem $1 $RunningComponentsHWND 1201
+
+   StrCpy $ComponentsRunning "False"
+   # Check if any SharpE Components are still running
+   FindWindow $0 "TSharpBarMainForm" ""
+   StrCmp $0 0 barNotRunning
+   StrCpy $2 "SharpBar"
+   SendMessage $1 ${LB_ADDSTRING} 1 "STR:$2"
+   StrCpy $ComponentsRunning "True"
+   barNotRunning:
+
+   FindWindow $0 "TSharpCoreMainWnd" ""
+   StrCmp $0 0 coreNotRunning
+   StrCpy $2 "SharpCore"
+   SendMessage $1 ${LB_ADDSTRING} 1 "STR:$2"
+   StrCpy $ComponentsRunning "True"
+   coreNotRunning:
+
+   FindWindow $0 "TSharpDeskMainForm" ""
+   StrCmp $0 0 deskNotRunning
+   StrCpy $2 "SharpDesk"
+   SendMessage $1 ${LB_ADDSTRING} 1 "STR:$2"
+   StrCpy $ComponentsRunning "True"
+   deskNotRunning:
+
+   FindWindow $0 "TSharpExplorerForm" "SharpExplorerForm"
+   StrCmp $0 0 explorerdeskNotRunning
+   StrCpy $2 "Explorer Desktop"
+   SendMessage $1 ${LB_ADDSTRING} 1 "STR:$2"
+   StrCpy $ComponentsRunning "True"
+   explorerdeskNotRunning:
+
+   FindWindow $0 "TSharpConsoleWnd" ""
+   StrCmp $0 0 consoleNotRunning
+   StrCpy $2 "SharpConsole"
+   SendMessage $1 ${LB_ADDSTRING} 1 "STR:$2"
+   StrCpy $ComponentsRunning "True"
+   consoleNotRunning:
+
+   FindWindow $0 "TSharpEMenuWnd" ""
+   StrCmp $0 0 menuNotRunning
+   StrCpy $2 "SharpMenu"
+   SendMessage $1 ${LB_ADDSTRING} 1 "STR:$2"
+   StrCpy $ComponentsRunning "True"
+   menuNotRunning:
+
+   FindWindow $0 "TSharpCenterWnd" ""
+   StrCmp $0 0 centerNotRunning
+   StrCpy $2 "SharpCenter"
+   SendMessage $1 ${LB_ADDSTRING} 1 "STR:$2"
+   StrCpy $ComponentsRunning "True"
+   centerNotRunning:
+
+   FindWindow $0 "TSharpCompileMainWnd" ""
+   StrCmp $0 0 compileNotRunning
+   StrCpy $2 "SharpCompile"
+   SendMessage $1 ${LB_ADDSTRING} 1 "STR:$2"
+   StrCpy $ComponentsRunning "True"
+   compileNotRunning:
+
+   FindWindow $0 "TSharpECreateGenericScriptForm" ""
+   StrCmp $0 0 scriptNotRunning
+   StrCpy $2 "SharpScript"
+   SendMessage $1 ${LB_ADDSTRING} 1 "STR:$2"
+   StrCpy $ComponentsRunning "True"
+   scriptNotRunning:
+
+   FindWindow $0 "TSharpSplashWnd" ""
+   StrCmp $0 0 splashNotRunning
+   StrCpy $2 "SharpSplash"
+   SendMessage $1 ${LB_ADDSTRING} 1 "STR:$2"
+   StrCpy $ComponentsRunning "True"
+   splashNotRunning:
+FunctionEnd
+
+Function un.getRunningComponentsLeave
+   ReadINIStr $R0 "$PLUGINSDIR\RunningComponents.ini" "Settings" "State"
+   Pop $R1
+   GetDlgItem $1 $RunningComponentsHWND 1201
+
+   ${If} $R0 == 4 # Field 1.
+     GoTo CheckNext
+     DeleteNext:
+       SendMessage $1 ${LB_DELETESTRING} 0 0
+     CheckNext:
+       SendMessage $1 ${LB_GETCOUNT} 0 0 $0
+       StrCmp $0 "0" ContinueUpdate DeleteNext
+     ContinueUpdate:
+     Call un.getRunningComponentsRefresh
+
+     StrCmp $ComponentsRunning "False" EnableNext DisableNext
+     EnableNext:
+       GetDlgItem $0 $HWNDPARENT 1
+       EnableWindow $0 1
+       GetDlgItem $1 $RunningComponentsHWND 1201
+       SendMessage $1 ${LB_ADDSTRING} 1 "STR:No SharpE Components Running"
+       GoTo AfterNext
+     DisableNext:
+       GetDlgItem $0 $HWNDPARENT 1
+       EnableWindow $0 0
+     AfterNext:
+     
+     Abort
+   ${EndIf}
+FunctionEnd
+
+Function un.getRunningComponents
+  !insertmacro MUI_HEADER_TEXT "Running SharpE Components" "Setup has to check if any SharpE components are still running."
+   Push $R0
+   InstallOptions::initDialog /NOUNLOAD $PLUGINSDIR\RunningComponents.ini
+   Pop $RunningComponentsHWND
+
+   Call un.getRunningComponentsRefresh
+   
+   StrCmp $ComponentsRunning "False" EnableNext DisableNext
+   EnableNext:
+     GetDlgItem $0 $HWNDPARENT 1
+     EnableWindow $0 1
+     GetDlgItem $1 $RunningComponentsHWND 1201
+     SendMessage $1 ${LB_ADDSTRING} 1 "STR:No SharpE Components Running"
+     
+     GoTo AfterNext
+   DisableNext:
+     GetDlgItem $0 $HWNDPARENT 1
+     EnableWindow $0 0
+   AfterNext:
+
+   InstallOptions::show
+   Pop $R0
+   ReadINIStr $R0 "$PLUGINSDIR\RunningComponents.ini" "Settings" "State"
+   Pop $R0
+FunctionEnd
 
 # Uninstaller sections
 Section /o -un.Main UNSEC0000
@@ -326,10 +469,12 @@ Section /o -un.Main UNSEC0000
     Delete "$INSTDIR\SharpShellServices.exe"
     Delete "$INSTDIR\SharpShellServicesNET.exe"
     Delete "$INSTDIR\SharpSplash.exe"
+    Delete "$INSTDIR\SharpCompile.exe"
 
     RmDir "$INSTDIR\Services"
     RmDir "$INSTDIR\Objects"
     RmDir "$INSTDIR\Modules"
+    RmDir "$INSTDIR\Logs"
     
     DeleteRegValue HKLM "${REGKEY}\Components" Main
 SectionEnd
@@ -359,6 +504,8 @@ FunctionEnd
 
 # Uninstaller functions
 Function un.onInit
+    InitPluginsDir
+    File /oname=$PLUGINSDIR\RunningComponents.ini "RunningComponents.ini"
     ReadRegStr $INSTDIR HKLM "${REGKEY}" Path
     !insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuGroup
     !insertmacro SELECT_UNSECTION Main ${UNSEC0000}
