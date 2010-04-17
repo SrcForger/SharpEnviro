@@ -41,7 +41,7 @@
     <DCCReference Include="..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas" />
     <DCCReference Include="..\..\Common\Libraries\SharpAPI\SharpAPI.pas" />
     <DCCReference Include="uSplashForm.pas">
-      <Form>SplashForm</Form>
+      <Form>SharpSplashWnd</Form>
     </DCCReference>
   </ItemGroup>
 </Project>

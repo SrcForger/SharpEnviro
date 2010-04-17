@@ -51,7 +51,7 @@ uses
   GR32_Blend;
 
 type
-  TSplashForm = class(TForm)
+  TSharpSplashWnd = class(TForm)
     Closetimer: TTimer;
     procedure FormCreate(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -75,8 +75,8 @@ type
   end;
 
 var
-  SplashForm : TSplashForm;
-  temp : TSplashForm;
+  SharpSplashWnd : TSharpSplashWnd;
+  temp : TSharpSplashWnd;
 
 implementation
 
@@ -103,7 +103,7 @@ begin
   end;
 end;
 
-procedure TSplashForm.UpdateWndLayer;
+procedure TSharpSplashWnd.UpdateWndLayer;
 var
   TopLeft, BmpTopLeft: TPoint;
   BmpSize: TSize;
@@ -138,12 +138,12 @@ begin
   end;
 end;
 
-procedure TSplashForm.DrawWindow;
+procedure TSharpSplashWnd.DrawWindow;
 begin
   UpdateWndLayer;
 end;
 
-procedure TSplashForm.CreateParams(var Params: TCreateParams);
+procedure TSharpSplashWnd.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   with Params do
@@ -153,7 +153,7 @@ begin
   end;
 end;
 
-procedure TSplashForm.FormCreate(Sender: TObject);
+procedure TSharpSplashWnd.FormCreate(Sender: TObject);
 var
   FullFileName, PassedFileName : string;
   b : boolean;
@@ -221,17 +221,17 @@ begin
   SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) or WS_EX_LAYERED); 
 end;
 
-procedure TSplashForm.FormDestroy(Sender: TObject);
+procedure TSharpSplashWnd.FormDestroy(Sender: TObject);
 begin
   FPicture.Free;
 end;
 
-procedure TSplashForm.FormShow(Sender: TObject);
+procedure TSharpSplashWnd.FormShow(Sender: TObject);
 begin
   ShowWindow(Application.Handle, SW_HIDE);
 end;
 
-procedure TSplashForm.FormActivate(Sender: TObject);
+procedure TSharpSplashWnd.FormActivate(Sender: TObject);
 var
  n : real;
  ni : real;
@@ -256,13 +256,13 @@ begin
   end;
 end;
 
-procedure TSplashForm.ClosetimerTimer(Sender: TObject);
+procedure TSharpSplashWnd.ClosetimerTimer(Sender: TObject);
 begin
    CloseTimer.Enabled := False;
    Close;
 end;
 
-procedure TSplashForm.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TSharpSplashWnd.FormClose(Sender: TObject; var Action: TCloseAction);
 var
  n : real;
  ni : real;

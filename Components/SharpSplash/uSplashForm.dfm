@@ -1,4 +1,4 @@
-object SplashForm: TSplashForm
+object SharpSplashWnd: TSharpSplashWnd
   Left = 468
   Top = 173
   HorzScrollBar.Visible = False
