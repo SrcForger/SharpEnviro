@@ -1,4 +1,4 @@
-object frmMain: TfrmMain
+object SharpCompileMainWnd: TSharpCompileMainWnd
   Left = 0
   Top = 0
   Caption = 'SharpCompile'

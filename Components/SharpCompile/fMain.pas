@@ -18,7 +18,7 @@ type
     constructor Create(CreateSuspended: Boolean);
   end;
 
-  TfrmMain = class(TForm)
+  TSharpCompileMainWnd = class(TForm)
     panMain: TPanel;
     panLeft: TPanel;
     sepProjects: TSharpERoundPanel;
@@ -81,7 +81,7 @@ type
   end;
 
 var
-  frmMain: TfrmMain;
+  SharpCompileMainWnd: TSharpCompileMainWnd;
   sPath: String;
   sSettingsFile: String;
   bDebug: Boolean;
@@ -111,7 +111,7 @@ end;
 
 procedure Log(msg : string);
 begin
-  frmMain.mDetailed.Lines.Add(FormatDateTime('hh:nn:ss', Now) + ' ' + msg);
+  SharpCompileMainWnd.mDetailed.Lines.Add(FormatDateTime('hh:nn:ss', Now) + ' ' + msg);
 end;
 
 procedure InsertSplitter();
@@ -120,10 +120,10 @@ var
   w : integer;
   sSplitter : string;
 begin
-  w := Abs(frmMain.Canvas.TextWidth('-'));
+  w := Abs(SharpCompileMainWnd.Canvas.TextWidth('-'));
   if w <= 0 then
     w := 200;
-  c := Trunc(frmMain.mDetailed.ClientWidth / w);
+  c := Trunc(SharpCompileMainWnd.mDetailed.ClientWidth / w);
   if c < 3 then
     c := 3;
 
@@ -131,7 +131,7 @@ begin
   for i := 0 to c - 3 do
     sSplitter := sSplitter + '-';
 
-  frmMain.mDetailed.Lines.Add(sSplitter);
+  SharpCompileMainWnd.mDetailed.Lines.Add(sSplitter);
 end;
 
 constructor TCompileThread.Create(CreateSuspended: Boolean);
@@ -146,71 +146,71 @@ var
   sPackage: String;
   buildStart, buildEnd : TDateTime;
 begin
-  frmMain.tbCompile.Caption := 'Cancel';
-  frmMain.tbCompile.ImageIndex := 4;
+  SharpCompileMainWnd.tbCompile.Caption := 'Cancel';
+  SharpCompileMainWnd.tbCompile.ImageIndex := 4;
 
   iProjCount := 0;
   iStatus := 0;
   sPackage := '';
   buildStart := Now;
 
-  for i := 0 to frmMain.ctvProjects.Items.Count - 1 do
+  for i := 0 to SharpCompileMainWnd.ctvProjects.Items.Count - 1 do
   begin
-    if frmMain.ctvProjects.Checked[frmMain.ctvProjects.Items[i]] then
-      if not frmMain.ctvProjects.Items[i].HasChildren then
+    if SharpCompileMainWnd.ctvProjects.Checked[SharpCompileMainWnd.ctvProjects.Items[i]] then
+      if not SharpCompileMainWnd.ctvProjects.Items[i].HasChildren then
         iProjCount := iProjCount + 1;
   end;
 
   Log('Building ' + IntToStr(iProjCount) + ' projects/solutions.');
   InsertSplitter;
   
-  for i := 0 to frmMain.ctvProjects.Items.Count - 1 do
+  for i := 0 to SharpCompileMainWnd.ctvProjects.Items.Count - 1 do
   begin
     if Terminated then
       break;
 
-    if frmMain.ctvProjects.Checked[frmMain.ctvProjects.Items[i]] then
+    if SharpCompileMainWnd.ctvProjects.Checked[SharpCompileMainWnd.ctvProjects.Items[i]] then
     begin
-      if frmMain.ctvProjects.Items[i].Data <> nil then
+      if SharpCompileMainWnd.ctvProjects.Items[i].Data <> nil then
       begin
         iStatus := iStatus + 1;
         iPercent := Round(iStatus * 100 / iProjCount);
 
-        if IsClassName(frmMain.ctvProjects.Items[i].Data, 'TCSharpSolution') then
+        if IsClassName(SharpCompileMainWnd.ctvProjects.Items[i].Data, 'TCSharpSolution') then
         begin
-          if sPackage <> TCSharpSolution(frmMain.ctvProjects.Items[i].Data).Package then
+          if sPackage <> TCSharpSolution(SharpCompileMainWnd.ctvProjects.Items[i].Data).Package then
           begin
-            sPackage := TCSharpSolution(frmMain.ctvProjects.Items[i].Data).Package;
-            frmMain.lbSummary.AddItem(sPackage);
+            sPackage := TCSharpSolution(SharpCompileMainWnd.ctvProjects.Items[i].Data).Package;
+            SharpCompileMainWnd.lbSummary.AddItem(sPackage);
           end;
-          frmMain.CompileProject(TCSharpSolution(frmMain.ctvProjects.Items[i].Data), frmMain.clbOptions.Checked[0], iPercent);
+          SharpCompileMainWnd.CompileProject(TCSharpSolution(SharpCompileMainWnd.ctvProjects.Items[i].Data), SharpCompileMainWnd.clbOptions.Checked[0], iPercent);
         end
-        else if IsClassName(frmMain.ctvProjects.Items[i].Data, 'TDelphiProject') then
+        else if IsClassName(SharpCompileMainWnd.ctvProjects.Items[i].Data, 'TDelphiProject') then
         begin
-          if sPackage <> TDelphiProject(frmMain.ctvProjects.Items[i].Data).Package then
+          if sPackage <> TDelphiProject(SharpCompileMainWnd.ctvProjects.Items[i].Data).Package then
           begin
-            sPackage := TDelphiProject(frmMain.ctvProjects.Items[i].Data).Package;
-            frmMain.lbSummary.AddItem(sPackage);
+            sPackage := TDelphiProject(SharpCompileMainWnd.ctvProjects.Items[i].Data).Package;
+            SharpCompileMainWnd.lbSummary.AddItem(sPackage);
           end;
-          frmMain.CompileProject(TDelphiProject(frmMain.ctvProjects.Items[i].Data), frmMain.clbOptions.Checked[0], iPercent);
+          SharpCompileMainWnd.CompileProject(TDelphiProject(SharpCompileMainWnd.ctvProjects.Items[i].Data), SharpCompileMainWnd.clbOptions.Checked[0], iPercent);
         end
-        else if IsClassName(frmMain.ctvProjects.Items[i].Data, 'TResourceBat') then
+        else if IsClassName(SharpCompileMainWnd.ctvProjects.Items[i].Data, 'TResourceBat') then
         begin
-          if sPackage <> TResourceBat(frmMain.ctvProjects.Items[i].Data).Package then
+          if sPackage <> TResourceBat(SharpCompileMainWnd.ctvProjects.Items[i].Data).Package then
           begin
-            sPackage := TResourceBat(frmMain.ctvProjects.Items[i].Data).Package;
-            frmMain.lbSummary.AddItem(sPackage);
+            sPackage := TResourceBat(SharpCompileMainWnd.ctvProjects.Items[i].Data).Package;
+            SharpCompileMainWnd.lbSummary.AddItem(sPackage);
           end;
-          frmMain.CompileProject(TResourceBat(frmMain.ctvProjects.Items[i].Data), frmMain.clbOptions.Checked[0], iPercent);
+          SharpCompileMainWnd.CompileProject(TResourceBat(SharpCompileMainWnd.ctvProjects.Items[i].Data), SharpCompileMainWnd.clbOptions.Checked[0], iPercent);
         end
-        else if IsClassName(frmMain.ctvProjects.Items[i].Data, 'TCommand') then
+        else if IsClassName(SharpCompileMainWnd.ctvProjects.Items[i].Data, 'TCommand') then
         begin
-          if sPackage <> TCommand(frmMain.ctvProjects.Items[i].Data).Package then
+          if sPackage <> TCommand(SharpCompileMainWnd.ctvProjects.Items[i].Data).Package then
           begin
-            sPackage := TCommand(frmMain.ctvProjects.Items[i].Data).Package;
-            frmMain.lbSummary.AddItem(sPackage);
+            sPackage := TCommand(SharpCompileMainWnd.ctvProjects.Items[i].Data).Package;
+            SharpCompileMainWnd.lbSummary.AddItem(sPackage);
           end;
-          frmMain.ExecuteCommand(TCommand(frmMain.ctvProjects.Items[i].Data), iPercent);
+          SharpCompileMainWnd.ExecuteCommand(TCommand(SharpCompileMainWnd.ctvProjects.Items[i].Data), iPercent);
         end;
       end;
     end;
@@ -223,15 +223,15 @@ begin
     Log('Build finished.');
   Log('Total build time was ' + FormatDateTime('hh:nn:ss', Frac(buildEnd) - Frac(buildStart)));
 
-  frmMain.tbCompile.Caption := 'Compile';
-  frmMain.tbCompile.ImageIndex := 3;
+  SharpCompileMainWnd.tbCompile.Caption := 'Compile';
+  SharpCompileMainWnd.tbCompile.ImageIndex := 3;
 
   Self.Terminate;
 end;
 
-procedure TfrmMain.FormCreate(Sender: TObject);
+procedure TSharpCompileMainWnd.FormCreate(Sender: TObject);
 begin
-  uVistaFuncs.SetVistaFonts(frmMain);
+  uVistaFuncs.SetVistaFonts(SharpCompileMainWnd);
   lbSummary.DoubleBuffered := True;
   sepLog.DoubleBuffered := True;
   panMain.DoubleBuffered := True;
@@ -245,7 +245,7 @@ begin
   OpenFile(sXMLPath);
 end;
 
-procedure TfrmMain.FormDestroy(Sender: TObject);
+procedure TSharpCompileMainWnd.FormDestroy(Sender: TObject);
 begin
   if FCompileThread <> nil then
   begin
@@ -257,7 +257,7 @@ begin
   SaveSettings;
 end;
 
-procedure TfrmMain.lbSummaryClickItem(Sender: TObject; const ACol: Integer;
+procedure TSharpCompileMainWnd.lbSummaryClickItem(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem);
 begin
   if ACol = 1 then
@@ -265,13 +265,13 @@ begin
       ShowErrorDetail(AItem);
 end;
 
-procedure TfrmMain.lbSummaryDblClickItem(Sender: Tobject; const ACol: Integer;
+procedure TSharpCompileMainWnd.lbSummaryDblClickItem(Sender: Tobject; const ACol: Integer;
   AItem: TSharpEListItem);
 begin
   ShowErrorDetail(AItem);
 end;
 
-procedure TfrmMain.lbSummaryGetCellColor(Sender: TObject;
+procedure TSharpCompileMainWnd.lbSummaryGetCellColor(Sender: TObject;
   const AItem: TSharpEListItem; var AColor: TColor);
 begin
   if AItem.ImageIndex = 0 then
@@ -280,7 +280,7 @@ begin
     AColor := $00FBEFE3;
 end;
 
-procedure TfrmMain.lbSummaryGetCellCursor(Sender: TObject; const ACol: Integer;
+procedure TSharpCompileMainWnd.lbSummaryGetCellCursor(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var ACursor: TCursor);
 begin
   if ACol = 1 then
@@ -288,7 +288,7 @@ begin
       ACursor := crHandPoint;
 end;
 
-procedure TfrmMain.lbSummaryGetCellImageIndex(Sender: TObject;
+procedure TSharpCompileMainWnd.lbSummaryGetCellImageIndex(Sender: TObject;
   const ACol: Integer; AItem: TSharpEListItem; var AImageIndex: Integer;
   const ASelected: Boolean);
 begin
@@ -297,17 +297,17 @@ begin
       AImageIndex := 3;
 end;
 
-procedure TfrmMain.mDetailedChange(Sender: TObject);
+procedure TSharpCompileMainWnd.mDetailedChange(Sender: TObject);
 begin
   mDetailed.Perform(EM_LINESCROLL, 0, mDetailed.Lines.Count);
 end;
 
-procedure TfrmMain.mSummary_Change(Sender: TObject);
+procedure TSharpCompileMainWnd.mSummary_Change(Sender: TObject);
 begin
   lbSummary.Perform(EM_LINESCROLL, 0, lbSummary.Count);
 end;
 
-procedure TfrmMain.stlMainTabClick(ASender: TObject; const ATabIndex: Integer);
+procedure TSharpCompileMainWnd.stlMainTabClick(ASender: TObject; const ATabIndex: Integer);
 begin
   if ATabIndex = 0 then
   begin
@@ -321,13 +321,13 @@ begin
   end;
 end;
 
-procedure TfrmMain.tbClearClick(Sender: TObject);
+procedure TSharpCompileMainWnd.tbClearClick(Sender: TObject);
 begin
   lbSummary.Clear;
   mDetailed.Clear;
 end;
 
-procedure TfrmMain.tbCompileClick(Sender: TObject);
+procedure TSharpCompileMainWnd.tbCompileClick(Sender: TObject);
 begin
   if (FCompileThread <> nil) and (not FCompileThread.Terminated) then
   begin
@@ -348,7 +348,7 @@ begin
   end;
 end;
 
-procedure TfrmMain.CompileProject(Project: TCSharpSolution; bDebug: Boolean; iPercent: Integer);
+procedure TSharpCompileMainWnd.CompileProject(Project: TCSharpSolution; bDebug: Boolean; iPercent: Integer);
 var
   compiler : TCSharpCompiler;
   status : string;
@@ -393,7 +393,7 @@ begin
   InsertSplitter;
 end;
 
-procedure TfrmMain.CompileProject(Project: TDelphiProject; bDebug: Boolean; iPercent: Integer);
+procedure TSharpCompileMainWnd.CompileProject(Project: TDelphiProject; bDebug: Boolean; iPercent: Integer);
 var
   dCompiler: TDelphiCompiler;
   sStatus: String;
@@ -440,7 +440,7 @@ begin
   InsertSplitter;
 end;
 
-procedure TfrmMain.CompileProject(Project: TResourceBat; bDebug: Boolean; iPercent: Integer);
+procedure TSharpCompileMainWnd.CompileProject(Project: TResourceBat; bDebug: Boolean; iPercent: Integer);
 var
   compiler : TResourceCompiler;
   status : string;
@@ -485,7 +485,7 @@ begin
   InsertSplitter;
 end;
 
-procedure TfrmMain.ExecuteCommand(cmd: TCommand; iPercent: Integer);
+procedure TSharpCompileMainWnd.ExecuteCommand(cmd: TCommand; iPercent: Integer);
 var
   compiler : TCommandRunner;
   status : string;
@@ -530,7 +530,7 @@ begin
   InsertSplitter;
 end;
 
-procedure TfrmMain.CompilerNewLine(Sender: TObject; CmdOutput: string);
+procedure TSharpCompileMainWnd.CompilerNewLine(Sender: TObject; CmdOutput: string);
 var
   sTemp: String;
 begin
@@ -539,12 +539,12 @@ begin
     Log(CmdOutput);
 end;
 
-procedure TfrmMain.clbOptionsClick(Sender: TObject);
+procedure TSharpCompileMainWnd.clbOptionsClick(Sender: TObject);
 begin
   bDebug := clbOptions.Checked[0];
 end;
 
-procedure TfrmMain.ctvProjectsSelectionChange(Sender: TObject);
+procedure TSharpCompileMainWnd.ctvProjectsSelectionChange(Sender: TObject);
 begin
   if ctvProjects.Selected.Data <> nil then
   begin
@@ -553,7 +553,7 @@ begin
   end;
 end;
 
-procedure TfrmMain.OpenFile(sXML: String);
+procedure TSharpCompileMainWnd.OpenFile(sXML: String);
 var
   n,i: integer;
   xFile: TJclSimpleXML;
@@ -623,7 +623,7 @@ begin
   end;
 end;
 
-procedure TfrmMain.tbOpenClick(Sender: TObject);
+procedure TSharpCompileMainWnd.tbOpenClick(Sender: TObject);
 begin
   if FileExists(sXMLPath) then
   begin
@@ -637,7 +637,7 @@ begin
   end;
 end;
 
-procedure TfrmMain.LoadSettings();
+procedure TSharpCompileMainWnd.LoadSettings();
 var
   xFile: TJclSimpleXML;
 begin
@@ -664,7 +664,7 @@ begin
   end;
 end;
 
-procedure TfrmMain.ShowErrorDetail(AItem: TSharpEListItem);
+procedure TSharpCompileMainWnd.ShowErrorDetail(AItem: TSharpEListItem);
 var
   iPos: Integer;
   i: Integer;
@@ -693,7 +693,7 @@ begin
   end;
 end;
 
-procedure TfrmMain.SaveSettings();
+procedure TSharpCompileMainWnd.SaveSettings();
 var
   xFile: TJclSimpleXML;
 begin

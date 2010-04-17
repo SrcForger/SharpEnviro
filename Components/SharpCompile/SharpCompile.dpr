@@ -3,7 +3,7 @@ program SharpCompile;
 uses
   Forms,
   SharpApi,
-  fMain in 'fMain.pas' {frmMain},
+  fMain in 'fMain.pas' {SharpCompileMainWnd},
   uCompiler in 'uCompiler.pas',
   DebugDialog in '..\..\Common\Units\DebugDialog\DebugDialog.pas';
 
@@ -14,7 +14,7 @@ begin
   Application.Initialize;
   Application.Title := 'SharpCompile';
   Application.MainFormOnTaskBar := True;
-  Application.CreateForm(TfrmMain, frmMain);
-  frmMain.Icon := Application.Icon;
+  Application.CreateForm(TSharpCompileMainWnd, SharpCompileMainWnd);
+  SharpCompileMainWnd.Icon := Application.Icon;
   Application.Run;
 end.
