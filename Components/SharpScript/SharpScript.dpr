@@ -4,7 +4,7 @@ uses
   Forms,
   SysUtils,
   JvInterpreter,
-  MainWnd in 'Forms\MainWnd.pas' {MainForm},
+  MainWnd in 'Forms\MainWnd.pas' {SharpScriptMainWnd},
   CreateInstallScriptWnd in 'Forms\CreateInstallScriptWnd.pas' {CreateInstallScriptForm},
   InstallWnd in 'Forms\InstallWnd.pas' {InstallForm},
   SharpApi_Adapter in '..\..\Common\Libraries\SharpAPI\SharpApi_Adapter.pas',
@@ -12,7 +12,7 @@ uses
   SharpAPI in '..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   SharpCenterAPI in '..\..\Common\Libraries\SharpCenterAPI\SharpCenterAPI.pas',
   SharpBase_Adapter in '..\..\Common\Units\SharpScript\SharpBase_Adapter.pas',
-  CreateGenericScriptWnd in 'Forms\CreateGenericScriptWnd.pas' {CreateGenericScriptForm},
+  CreateGenericScriptWnd in 'Forms\CreateGenericScriptWnd.pas' {SharpECreateGenericScriptForm},
   ScriptControls in 'ScriptControls.pas',
   LogWnd in 'Forms\LogWnd.pas' {LogForm},
   Windows_Adapter in '..\..\Common\Units\SharpScript\Windows_Adapter.pas';
@@ -70,7 +70,7 @@ begin
   end;
 
   Application.Initialize;
-  Application.CreateForm(TCreateGenericScriptForm, CreateGenericScriptForm);
+  Application.CreateForm(TSharpECreateGenericScriptForm, SharpECreateGenericScriptForm);
   //if newgeneric then
   //   CreateGenericScriptForm.show;
   Application.Run;

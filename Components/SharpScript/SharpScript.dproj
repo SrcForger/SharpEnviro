@@ -43,7 +43,7 @@
     <DCCReference Include="..\..\Common\Units\SharpScript\SharpFileUtils_Adapter.pas" />
     <DCCReference Include="..\..\Common\Units\SharpScript\Windows_Adapter.pas" />
     <DCCReference Include="Forms\CreateGenericScriptWnd.pas">
-      <Form>CreateGenericScriptForm</Form>
+      <Form>SharpECreateGenericScriptForm</Form>
     </DCCReference>
     <DCCReference Include="Forms\CreateInstallScriptWnd.pas">
       <Form>CreateInstallScriptForm</Form>
@@ -55,7 +55,7 @@
       <Form>LogForm</Form>
     </DCCReference>
     <DCCReference Include="Forms\MainWnd.pas">
-      <Form>MainForm</Form>
+      <Form>SharpScriptMainWnd</Form>
     </DCCReference>
     <DCCReference Include="ScriptControls.pas" />
   </ItemGroup>

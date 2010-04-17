@@ -1,4 +1,4 @@
-object CreateGenericScriptForm: TCreateGenericScriptForm
+object SharpECreateGenericScriptForm: TSharpECreateGenericScriptForm
   Left = 0
   Top = 0
   Caption = 'Create SharpE Script'
@@ -18,9 +18,9 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
   TextHeight = 13
   object ed_script: TJvHLEditor
     Left = 0
-    Top = 36
+    Top = 44
     Width = 862
-    Height = 388
+    Height = 380
     Cursor = crIBeam
     Lines.Strings = (
       'begin'
@@ -74,17 +74,17 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
     Colors.Statement.BackColor = clWindow
     Colors.PlainText.ForeColor = clWindowText
     Colors.PlainText.BackColor = clWindow
-    ExplicitTop = 38
-    ExplicitHeight = 404
+    ExplicitTop = 36
+    ExplicitHeight = 388
   end
   object ToolBar2: TToolBar
     Left = 0
     Top = 0
     Width = 862
-    Height = 36
+    Height = 44
     AutoSize = True
-    ButtonHeight = 36
-    ButtonWidth = 58
+    ButtonHeight = 44
+    ButtonWidth = 64
     Caption = 'ToolBar2'
     Images = PngImageList1
     ShowCaptions = True
@@ -97,28 +97,28 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
       OnClick = ToolButton7Click
     end
     object ToolButton1: TToolButton
-      Left = 58
+      Left = 64
       Top = 0
       Caption = 'Open'
       ImageIndex = 4
       OnClick = ToolButton1Click
     end
     object ToolButton6: TToolButton
-      Left = 116
+      Left = 128
       Top = 0
       Caption = 'Save'
       ImageIndex = 6
       OnClick = ToolButton6Click
     end
     object tb_saveas: TToolButton
-      Left = 174
+      Left = 192
       Top = 0
       Caption = 'Save As...'
       ImageIndex = 2
       OnClick = tb_saveasClick
     end
     object ToolButton3: TToolButton
-      Left = 232
+      Left = 256
       Top = 0
       Width = 8
       Caption = 'ToolButton3'
@@ -126,14 +126,14 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
       Style = tbsSeparator
     end
     object ToolButton2: TToolButton
-      Left = 240
+      Left = 264
       Top = 0
       Caption = 'Run'
       ImageIndex = 3
       OnClick = ToolButton2Click
     end
     object ToolButton5: TToolButton
-      Left = 298
+      Left = 328
       Top = 0
       Width = 8
       Caption = 'ToolButton5'
@@ -141,7 +141,7 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
       Style = tbsSeparator
     end
     object btn_insert: TToolButton
-      Left = 306
+      Left = 336
       Top = 0
       AutoSize = True
       Caption = 'Insert'
@@ -358,6 +358,7 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
       end>
     Left = 384
     Top = 184
+    Bitmap = {}
   end
   object JvInterpreter: TJvInterpreterProgram
     OnStatement = JvInterpreterStatement

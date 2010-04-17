@@ -58,7 +58,7 @@ uses MainWnd;
 procedure TCreateInstallScriptForm.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
-  MainForm.Show;
+  SharpScriptMainWnd.Show;
 end;
 
 procedure TCreateInstallScriptForm.btn_addfileClick(Sender: TObject);

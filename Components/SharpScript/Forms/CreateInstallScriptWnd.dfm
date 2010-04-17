@@ -372,6 +372,7 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
       end>
     Left = 216
     Top = 184
+    Bitmap = {}
   end
   object AddFileDialog: TOpenDialog
     Filter = 'Any File (*.*)|*.*'

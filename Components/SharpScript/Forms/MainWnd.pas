@@ -8,7 +8,7 @@ uses
   JvComponentBase, JvInterpreter;
 
 type
-  TMainForm = class(TForm)
+  TSharpScriptMainWnd = class(TForm)
     Label1: TLabel;
     Label2: TLabel;
     MainMenu1: TMainMenu;
@@ -36,7 +36,7 @@ type
   end;
 
 var
-  MainForm: TMainForm;
+  SharpScriptMainWnd: TSharpScriptMainWnd;
 
 implementation
 
@@ -49,23 +49,23 @@ uses DateUtils,
 {$R *.dfm}
 
 
-procedure TMainForm.WMSharpTerminate(var msg : TMessage);
+procedure TSharpScriptMainWnd.WMSharpTerminate(var msg : TMessage);
 begin
   Application.Terminate;
 end;
 
-procedure TMainForm.Exit1Click(Sender: TObject);
+procedure TSharpScriptMainWnd.Exit1Click(Sender: TObject);
 begin
   Application.Terminate;
 end;
 
-procedure TMainForm.Install1Click(Sender: TObject);
+procedure TSharpScriptMainWnd.Install1Click(Sender: TObject);
 begin
   CreateInstallScriptForm.show;
   self.hide;
 end;
 
-procedure TMainForm.Execute1Click(Sender: TObject);
+procedure TSharpScriptMainWnd.Execute1Click(Sender: TObject);
 var
   Ext,Dir : String;
   //installscript : TSharpEInstallerScript;
@@ -101,15 +101,15 @@ begin
   end;
 end;
 
-procedure TMainForm.Generic1Click(Sender: TObject);
+procedure TSharpScriptMainWnd.Generic1Click(Sender: TObject);
 begin
-  CreateGenericScriptForm.show;
+  SharpECreateGenericScriptForm.show;
   self.hide;
 end;
 
-procedure TMainForm.FormPaint(Sender: TObject);
+procedure TSharpScriptMainWnd.FormPaint(Sender: TObject);
 begin
-    if CreateGenericScriptForm.Visible then Hide;
+    if SharpECreateGenericScriptForm.Visible then Hide;
 end;
 
 end.

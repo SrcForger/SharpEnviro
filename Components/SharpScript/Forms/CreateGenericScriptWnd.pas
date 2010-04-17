@@ -9,7 +9,7 @@ uses
   JvEditor, JvHLEditor, Menus, JcLSysUtils;
 
 type
-  TCreateGenericScriptForm = class(TForm)
+  TSharpECreateGenericScriptForm = class(TForm)
     ed_script: TJvHLEditor;
     ToolBar2: TToolBar;
     ToolButton1: TToolButton;
@@ -135,7 +135,7 @@ type
   end;
 
 var
-  CreateGenericScriptForm: TCreateGenericScriptForm;
+  SharpECreateGenericScriptForm: TSharpECreateGenericScriptForm;
 
 implementation
 
@@ -146,7 +146,7 @@ uses SharpApi,
 
 {$R *.dfm}
 
-procedure TCreateGenericScriptForm.ed_scriptPaintGutter(Sender: TObject;
+procedure TSharpECreateGenericScriptForm.ed_scriptPaintGutter(Sender: TObject;
   Canvas: TCanvas);
 var
   i: Integer;
@@ -169,7 +169,7 @@ begin
   end;
 end;
 
-procedure TCreateGenericScriptForm.ToolButton2Click(Sender: TObject);
+procedure TSharpECreateGenericScriptForm.ToolButton2Click(Sender: TObject);
 var
   errors : boolean;
 begin
@@ -197,14 +197,14 @@ begin
   SharpFileUtils_Adapter.UnRegisterFileUtilsLog;
 end;
 
-procedure TCreateGenericScriptForm.ToolButton6Click(Sender: TObject);
+procedure TSharpECreateGenericScriptForm.ToolButton6Click(Sender: TObject);
 begin
   if length(CFile) > 0 then
      ed_script.Lines.SaveToFile(CFile)
      else tb_saveas.OnClick(tb_saveas);
 end;
 
-procedure TCreateGenericScriptForm.ToolButton7Click(Sender: TObject);
+procedure TSharpECreateGenericScriptForm.ToolButton7Click(Sender: TObject);
 begin
   ed_script.Lines.Clear;
   ed_script.Lines.Add('begin');
@@ -214,7 +214,7 @@ begin
   Caption := 'Create SharpE Script (' + CFile +')';
 end;
 
-procedure TCreateGenericScriptForm.ToolButton1Click(Sender: TObject);
+procedure TSharpECreateGenericScriptForm.ToolButton1Click(Sender: TObject);
 var
   Dir : String;
 begin
@@ -233,7 +233,7 @@ begin
   end;
 end;
 
-procedure TCreateGenericScriptForm.tb_saveasClick(Sender: TObject);
+procedure TSharpECreateGenericScriptForm.tb_saveasClick(Sender: TObject);
 var
   Dir : String;
 begin
@@ -260,7 +260,7 @@ begin
   end;
 end;
 
-procedure TCreateGenericScriptForm.GenericPopupClick(Sender: TObject);
+procedure TSharpECreateGenericScriptForm.GenericPopupClick(Sender: TObject);
 begin
   if not (Sender is TMenuItem) then exit;
 
@@ -268,18 +268,18 @@ begin
   ed_script.Refresh;
 end;
 
-procedure TCreateGenericScriptForm.FormClose(Sender: TObject;
+procedure TSharpECreateGenericScriptForm.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
 //  MainForm.Show;
 end;
 
-procedure TCreateGenericScriptForm.FormCreate(Sender: TObject);
+procedure TSharpECreateGenericScriptForm.FormCreate(Sender: TObject);
 begin
   CFile := '';;
 end;
 
-procedure TCreateGenericScriptForm.btn_insertClick(Sender: TObject);
+procedure TSharpECreateGenericScriptForm.btn_insertClick(Sender: TObject);
 var
   p : TPoint;
 begin
@@ -287,12 +287,12 @@ begin
   btn_insert.DropdownMenu.Popup(p.X,p.y+btn_insert.Height);
 end;
 
-procedure TCreateGenericScriptForm.JvInterpreterStatement(Sender: TObject);
+procedure TSharpECreateGenericScriptForm.JvInterpreterStatement(Sender: TObject);
 begin
   Application.ProcessMessages;
 end;
 
-procedure TCreateGenericScriptForm.LOGWINDOWOFF1Click(Sender: TObject);
+procedure TSharpECreateGenericScriptForm.LOGWINDOWOFF1Click(Sender: TObject);
 begin
   if not (Sender is TMenuItem) then exit;
 
