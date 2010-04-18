@@ -40,6 +40,12 @@ RequestExecutionLevel highest
 !include MUI2.nsh
 !include LogicLib.nsh
 
+;Required .NET framework
+!define MIN_FRA_MAJOR "3"
+!define MIN_FRA_MINOR "5"
+!define MIN_FRA_BUILD "*"
+Var InstallDotNET
+
 # Variables
 Var StartMenuGroup
 
@@ -51,9 +57,8 @@ Page custom getSettingsSelect
 
 !define MUI_PAGE_CUSTOMFUNCTION_LEAVE "DirectoryLeave"
 !insertmacro MUI_PAGE_DIRECTORY
-
 !insertmacro MUI_PAGE_COMPONENTS
-
+Page custom checkNETFramework checkNETFrameworkLeave
 !insertmacro MUI_PAGE_STARTMENU Application $StartMenuGroup
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
@@ -67,6 +72,22 @@ UninstPage custom un.getRunningComponents un.getRunningComponentsLeave
 
 Var UseAppDir
 Var InstallDevelopmentFiles
+
+Function checkNETFrameworkLeave
+  ExecWait "$PLUGINSDIR\dotNetFx35setup.exe"
+FunctionEnd
+
+Function checkNETFramework
+  !insertmacro MUI_HEADER_TEXT ".NET Framework 3.5 Setup" "SharpEnviro requires that the .NET Framework 3.5 is installed."
+
+  StrCpy $InstallDotNET "No"
+  Call CheckFramework
+  StrCmp $0 "1" DontInstallNET
+    StrCpy $InstallDotNET "Yes"
+    InstallOptions::dialog $PLUGINSDIR\DotNETCheck.ini
+  DontInstallNET:
+  Pop $0
+FunctionEnd
 
 Function DirectoryLeave
   # Call the CheckForSpaces function.
@@ -582,6 +603,8 @@ SectionEnd
 Function .onInit
     InitPluginsDir
     File /oname=$PLUGINSDIR\SettingsSelect.ini "SettingsSelect.ini"
+    File /oname=$PLUGINSDIR\DotNETCheck.ini "DotNETCheck.ini"
+    File /oname=$PLUGINSDIR\dotNetFx35setup.exe "dotNetFx35setup.exe"
 FunctionEnd
 
 # Uninstaller functions
@@ -654,4 +677,138 @@ Function StrLoc
   Exch
   Pop $R1
   Exch $R0
+FunctionEnd
+
+;Check for .NET framework
+Function CheckFrameWork
+
+   ;Save the variables in case something else is using them
+  Push $0
+  Push $1
+  Push $2
+  Push $3
+  Push $4
+  Push $R1
+  Push $R2
+  Push $R3
+  Push $R4
+  Push $R5
+  Push $R6
+  Push $R7
+  Push $R8
+
+  StrCpy $R5 "0"
+  StrCpy $R6 "0"
+  StrCpy $R7 "0"
+  StrCpy $R8 "0.0.0"
+  StrCpy $0 0
+
+  loop:
+
+  ;Get each sub key under "SOFTWARE\Microsoft\NET Framework Setup\NDP"
+  EnumRegKey $1 HKLM "SOFTWARE\Microsoft\NET Framework Setup\NDP" $0
+  StrCmp $1 "" done ;jump to end if no more registry keys
+  IntOp $0 $0 + 1
+  StrCpy $2 $1 1 ;Cut off the first character
+  StrCpy $3 $1 "" 1 ;Remainder of string
+
+  ;Loop if first character is not a 'v'
+  StrCmpS $2 "v" start_parse loop
+
+  ;Parse the string
+  start_parse:
+  StrCpy $R1 ""
+  StrCpy $R2 ""
+  StrCpy $R3 ""
+  StrCpy $R4 $3
+
+  StrCpy $4 1
+
+  parse:
+  StrCmp $3 "" parse_done ;If string is empty, we are finished
+  StrCpy $2 $3 1 ;Cut off the first character
+  StrCpy $3 $3 "" 1 ;Remainder of string
+  StrCmp $2 "." is_dot not_dot ;Move to next part if it's a dot
+
+  is_dot:
+  IntOp $4 $4 + 1 ; Move to the next section
+  goto parse ;Carry on parsing
+
+  not_dot:
+  IntCmp $4 1 major_ver
+  IntCmp $4 2 minor_ver
+  IntCmp $4 3 build_ver
+  IntCmp $4 4 parse_done
+
+  major_ver:
+  StrCpy $R1 $R1$2
+  goto parse ;Carry on parsing
+
+  minor_ver:
+  StrCpy $R2 $R2$2
+  goto parse ;Carry on parsing
+
+  build_ver:
+  StrCpy $R3 $R3$2
+  goto parse ;Carry on parsing
+
+  parse_done:
+
+  IntCmp $R1 $R5 this_major_same loop this_major_more
+  this_major_more:
+  StrCpy $R5 $R1
+  StrCpy $R6 $R2
+  StrCpy $R7 $R3
+  StrCpy $R8 $R4
+
+  goto loop
+
+  this_major_same:
+  IntCmp $R2 $R6 this_minor_same loop this_minor_more
+  this_minor_more:
+  StrCpy $R6 $R2
+  StrCpy $R7 R3
+  StrCpy $R8 $R4
+  goto loop
+
+  this_minor_same:
+  IntCmp $R3 $R7 loop loop this_build_more
+  this_build_more:
+  StrCpy $R7 $R3
+  StrCpy $R8 $R4
+  goto loop
+
+  done:
+
+  ;Have we got the framework we need?
+  IntCmp $R5 ${MIN_FRA_MAJOR} max_major_same fail OK
+  max_major_same:
+  IntCmp $R6 ${MIN_FRA_MINOR} max_minor_same fail OK
+  max_minor_same:
+  IntCmp $R7 ${MIN_FRA_BUILD} OK fail OK
+
+  ;Version on machine is greater than what we need
+  OK:
+  StrCpy $0 "1"
+  goto end
+
+  fail:
+  StrCmp $R8 "0.0.0" end
+
+
+  end:
+
+  ;Pop the variables we pushed earlier
+  Pop $R8
+  Pop $R7
+  Pop $R6
+  Pop $R5
+  Pop $R4
+  Pop $R3
+  Pop $R2
+  Pop $R1
+  Pop $4
+  Pop $3
+  Pop $2
+  Pop $1
 FunctionEnd
