@@ -1062,7 +1062,7 @@ object SharpCompileMainWnd: TSharpCompileMainWnd
         Left = 4
         Top = 4
         Width = 255
-        Height = 401
+        Height = 391
         Margins.Left = 4
         Margins.Top = 4
         Margins.Right = 0
@@ -1114,7 +1114,7 @@ object SharpCompileMainWnd: TSharpCompileMainWnd
           Left = 9
           Top = 31
           Width = 237
-          Height = 361
+          Height = 351
           Align = alClient
           BevelInner = bvNone
           BevelOuter = bvNone
@@ -1132,9 +1132,9 @@ object SharpCompileMainWnd: TSharpCompileMainWnd
       object sepOptions: TSharpERoundPanel
         AlignWithMargins = True
         Left = 4
-        Top = 414
+        Top = 404
         Width = 255
-        Height = 63
+        Height = 73
         Margins.Left = 4
         Margins.Top = 0
         Margins.Right = 0
@@ -1186,14 +1186,17 @@ object SharpCompileMainWnd: TSharpCompileMainWnd
           Left = 9
           Top = 34
           Width = 237
-          Height = 20
+          Height = 30
           Margins.Top = 6
           Align = alClient
           BorderStyle = bsNone
           Color = 14875898
+          Columns = 2
           ItemHeight = 13
           Items.Strings = (
-            'Debug Build')
+            'Debug Build'
+            'Package - Zip'
+            'Clean')
           TabOrder = 1
           OnClick = clbOptionsClick
         end
@@ -1381,7 +1384,7 @@ object SharpCompileMainWnd: TSharpCompileMainWnd
     Left = 496
     Top = 416
     Bitmap = {
-      494C010105001400180010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010105001400200010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
