@@ -22,7 +22,7 @@ namespace SharpEnviro.Explorer
 
         static IntPtr SharpWindowProc(IntPtr hWnd, uint uMsgm, IntPtr wParam, IntPtr lParam)
         {
-            if (uMsgm == WM_ENDSESSION || uMsgm == WM_CLOSE || uMsgm == WM_QUIT)
+            if (uMsgm == WM_ENDSESSION || uMsgm == WM_CLOSE || uMsgm == WM_QUIT || uMsgm == WM_SHARPTERMINATE)
             {
                 bShouldExit = true;
                 return (IntPtr)1;
@@ -130,6 +130,7 @@ namespace SharpEnviro.Explorer
         public const int WM_ENDSESSION = 0x0016;
         public const int WM_CLOSE = 0x0010;
         public const int WM_QUIT = 0x0012;
+        public const int WM_SHARPTERMINATE = 0x8226;
 
         // Error codes
         public const int ERROR_ALREADY_EXISTS = 0x00B7;

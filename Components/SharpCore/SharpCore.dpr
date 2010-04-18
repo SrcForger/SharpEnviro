@@ -339,7 +339,7 @@ begin
 
     WM_DESTROY: PostQuitMessage(0);
 
-    WM_CLOSE: begin
+    WM_CLOSE, WM_SHARPTERMINATE: begin
         Shell_NotifyIcon(NIM_DELETE, @nidTray); // Make sure we remove tray icon
         DestroyMenu(menPopup);
         if lstComponents <> nil then
