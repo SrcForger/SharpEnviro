@@ -3,7 +3,7 @@
 
 Name SharpEnviro
 
-SetCompressor zlib
+SetCompressor /solid zlib
 
 RequestExecutionLevel highest
 
@@ -39,6 +39,7 @@ RequestExecutionLevel highest
 !include Sections.nsh
 !include MUI2.nsh
 !include LogicLib.nsh
+!include x64.nsh
 
 ;Required .NET framework
 !define MIN_FRA_MAJOR "3"
@@ -52,15 +53,14 @@ Var StartMenuGroup
 # Installer pages
 !insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_LICENSE ..\License\gpl-3.0.txt
-
-Page custom getSettingsSelect
-
+Page custom getSettingsSelect getSettingsLeave
 !define MUI_PAGE_CUSTOMFUNCTION_LEAVE "DirectoryLeave"
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_COMPONENTS
 Page custom checkNETFramework checkNETFrameworkLeave
 !insertmacro MUI_PAGE_STARTMENU Application $StartMenuGroup
 !insertmacro MUI_PAGE_INSTFILES
+Page custom setShell setShellLeave
 !insertmacro MUI_PAGE_FINISH
 !insertmacro MUI_UNPAGE_CONFIRM
 UninstPage custom un.getRunningComponents un.getRunningComponentsLeave
@@ -71,7 +71,34 @@ UninstPage custom un.getRunningComponents un.getRunningComponentsLeave
 
 
 Var UseAppDir
+Var SetupSetShell
 Var InstallDevelopmentFiles
+
+Function setShellLeave
+  ReadINIStr $SetupSetShell "$PLUGINSDIR\SetShell.ini" "Field 3" "state"
+  IntCmp $SetupSetShell 0 DontSetShell
+    # Seperate Explorer Fix
+    WriteRegDWORD HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" DesktopProcess 1
+    # Set Shell
+    WriteRegStr HKCU "Software\Microsoft\Windows NT\CurrentVersion\winlogon" Shell "$INSTDIR\SharpCore.exe"
+    # Ini File Mapping Change
+    ${If} ${RunningX64}
+      SetRegView 64
+    ${EndIf}
+    WriteRegStr HKLM "Software\Microsoft\Windows NT\CurrentVersion\IniFileMapping\system.ini\boot" Shell "USR:Software\Microsoft\Windows NT\CurrentVersion\Winlogon"
+    ${If} ${RunningX64}
+      SetRegView 32
+    ${EndIf}
+  DontSetShell:
+  Pop $R0
+FunctionEnd
+
+Function setShell
+  !insertmacro MUI_HEADER_TEXT "Change Windows Default Shell" "Select if to change the shell now or do it manually later"
+  Push $R0
+  InstallOptions::dialog $PLUGINSDIR\SetShell.ini
+  Pop $R0
+FunctionEnd
 
 Function checkNETFrameworkLeave
   ExecWait "$PLUGINSDIR\dotNetFx35setup.exe"
@@ -123,6 +150,15 @@ Function DirectoryLeave
 
   ValidDir:
 
+FunctionEnd
+
+Function getSettingsLeave
+  ReadINIStr $UseAppDir "$PLUGINSDIR\SettingsSelect.ini" "Field 3" "state"
+  IntCmp $UseAppDir 1 DontChange
+  StrCmp $INSTDIR "$PROGRAMFILES\SharpEnviro" Change DontChange
+  Change:
+    StrCpy $INSTDIR "C:\SharpEnviro"
+  DontChange:
 FunctionEnd
 
 Function getSettingsSelect
@@ -570,6 +606,9 @@ Section /o -un.Main UNSEC0000
     Delete "$INSTDIR\SharpShellServicesNET.exe"
     Delete "$INSTDIR\SharpSplash.exe"
     Delete "$INSTDIR\SharpCompile.exe"
+    Delete "$INSTDIR\rtl100.bpl"
+    Delete "$INSTDIR\vcl100.bpl"
+    Delete "$INSTDIR\splash.png"
 
     RmDir "$INSTDIR\Services"
     RmDir "$INSTDIR\Objects"
@@ -604,6 +643,7 @@ Function .onInit
     InitPluginsDir
     File /oname=$PLUGINSDIR\SettingsSelect.ini "SettingsSelect.ini"
     File /oname=$PLUGINSDIR\DotNETCheck.ini "DotNETCheck.ini"
+    File /oname=$PLUGINSDIR\SetShell.ini "SetShell.ini"
     File /oname=$PLUGINSDIR\dotNetFx35setup.exe "dotNetFx35setup.exe"
 FunctionEnd
 
