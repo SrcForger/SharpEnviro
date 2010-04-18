@@ -1,4 +1,4 @@
-<SharpCompile>
+<SharpCompile OutputPath="..\SharpE">
   <package Name="Resources - Common">
 	<project Name="SharpEColorEditor" Type="Resource">Common\Delphi Components\SharpEColorEditor\compilerc.bat</project>
 	<project Name="SharpEColorPicker" Type="Resource">Common\Delphi Components\SharpEColorPicker\build.bat</project>
@@ -12,7 +12,6 @@
 	<project Name="SharpNotify" Type="Resource">Common\Units\SharpNotify\res\buildressource.bat</project>
   </package>
   <package Name="Resources - Components">
-	<project Name="Explorer Metadata" Type="Resource">Components\Explorer\metadata.bat</project>
 	<project Name="SetShell Metadata" Type="Resource">Components\SetShell\metadata.bat</project>
 	<project Name="SharpAdmin" Type="Resource">Components\SharpAdmin\VistaElevated.bat</project>
 	<project Name="SharpBar" Type="Resource">Components\SharpBar\buildres.bat</project>
@@ -132,7 +131,6 @@
     <project Name="SharpSearchNET" Type="Solution" requ="Microsoft Visual C# 2008 Express">Components\SharpSearchNET\SharpSearchNET.sln</project>
     <project Name="SharpShellServices" Type="Application">Components\SharpShellServices\SharpShellServices.dproj</project>
     <project Name="SharpShellServicesNET" Type="Solution" requ="Microsoft Visual C# 2008 Express">Components\SharpShellServicesNET\SharpShellServicesNET.sln</project>
-    <project Name="SharpShutdown" Type="Application">Components\SharpShutdown\SharpShutdown.dproj</project>
     <project Name="SharpSplash" Type="Application">Components\SharpSplash\SharpSplash.dproj</project>
   </package>
   <package Name="Libraries">
