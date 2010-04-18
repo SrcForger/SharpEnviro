@@ -8,7 +8,7 @@
     <HorizPos>3</HorizPos>
     <VertPos>0</VertPos>
     <AutoStart>-1</AutoStart>
-    <ShowThrobber>0</ShowThrobber>
+    <ShowThrobber>-1</ShowThrobber>
     <DisableHideBar>-1</DisableHideBar>
     <StartHidden>0</StartHidden>
     <AlwaysOnTop>0</AlwaysOnTop>
