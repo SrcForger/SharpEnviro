@@ -66,6 +66,7 @@ UninstPage custom un.getRunningComponents un.getRunningComponentsLeave
 
 
 Var UseAppDir
+Var InstallDevelopmentFiles
 
 Function DirectoryLeave
   # Call the CheckForSpaces function.
@@ -209,12 +210,17 @@ Section "!Core Files" SEC01
   File "..\..\SharpE\SharpShellServices.exe"
   File "..\..\SharpE\SharpShellServicesNET.exe"
   File "..\..\SharpE\SharpSplash.exe"
+  # Other Files
+  File "..\FDS\rtl100.bpl"
+  File "..\FDS\vcl100.bpl"
+  File "..\FDS\splash.png"
 SectionEnd
 
 Section "Additional Icons" SEC02
 SectionEnd
 
 Section "Development Tools" SEC03
+  StrCpy $InstallDevelopmentFiles "True"
   File "..\..\SharpE\SharpCompile.exe"
 SectionEnd
 
@@ -237,7 +243,13 @@ Section -post SEC0001
     WriteUninstaller $INSTDIR\uninstall.exe
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
     SetOutPath $SMPROGRAMS\$StartMenuGroup
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Change Shell.lnk" $INSTDIR\setshell.exe
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk" $INSTDIR\uninstall.exe
+    StrCmp $InstallDevelopmentFiles "True" InstallDevelopmentShortcuts ContinueSection
+    InstallDevelopmentShortcuts:
+      SetOutPath "$SMPROGRAMS\$StartMenuGroup\Development"
+      CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Development\SharpCompile.lnk" $INSTDIR\SharpCompile.exe
+    ContinueSection:
     !insertmacro MUI_STARTMENU_WRITE_END
     WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayName "$(^Name)"
     WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayVersion "${VERSION}"
@@ -468,7 +480,7 @@ FunctionEnd
 
 # Uninstaller sections
 Section /o -un.Main UNSEC0000
-    Delete /REBOOTOK $INSTDIR\gpl-3.0.txt
+    Delete "$INSTDIR\gpl-3.0.txt"
     
     # Services
     Delete "$INSTDIR\Services\Weather.dll"
@@ -549,12 +561,15 @@ SectionEnd
 Section -un.post UNSEC0001
     DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk"
+    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Change Shell.lnk"
+    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Development\SharpCompile.lnk"
     Delete /REBOOTOK $INSTDIR\uninstall.exe
     DeleteRegValue HKLM "${REGKEY}" StartMenuGroup
     DeleteRegValue HKLM "${REGKEY}" Path
     DeleteRegKey /IfEmpty HKLM "${REGKEY}\Components"
     DeleteRegKey /IfEmpty HKLM "${REGKEY}"
     RmDir /REBOOTOK $SMPROGRAMS\$StartMenuGroup
+    RmDir /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Development"
     RmDir /REBOOTOK $INSTDIR
     Push $R0
     StrCpy $R0 $StartMenuGroup 1
