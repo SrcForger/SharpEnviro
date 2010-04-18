@@ -79,7 +79,6 @@ end;
 procedure TSharpCenterPlugin.LoadSettings;
 var
   dir, fileName: string;
-  i:integer;
 begin
   dir := SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\Settings\';
   fileName := dir + 'SharpMenu.xml';
@@ -94,10 +93,7 @@ begin
          begin
            chkMenuWrapping.Checked := BoolValue('WrapMenu',True);
            sgbWrapCount.Value := IntValue('WrapCount',25);
-
-           i := Max(0,Min(1,IntValue('WrapPosition',0)));
-           cboWrapPos.ItemIndex := i;
-
+           cboWrapPos.ItemIndex := IntValue('WrapPosition',1);
            chkUseIcons.Checked := BoolValue('UseIcons',True);
            chkUseGenericIcons.Checked := BoolValue('UseGenericIcons',False);
            chkCacheIcons.Checked := BoolValue('CacheIcons', True);

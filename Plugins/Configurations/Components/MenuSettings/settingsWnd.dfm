@@ -161,10 +161,10 @@ object frmSettings: TfrmSettings
       Style = csDropDownList
       Ctl3D = True
       ItemHeight = 13
-      ItemIndex = 0
+      ItemIndex = 1
       ParentCtl3D = False
       TabOrder = 2
-      Text = 'Bottom'
+      Text = 'Top'
       OnChange = cboWrapPosChange
       Items.Strings = (
         'Bottom'

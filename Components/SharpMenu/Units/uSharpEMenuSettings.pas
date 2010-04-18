@@ -61,8 +61,8 @@ begin
   inherited Create;
 
   // Default settings
-  WrapMenu := False;
-  WrapCount := 20;
+  WrapMenu := True;
+  WrapCount := 25;
   WrapPosition := 1;
   CacheIcons := True;
   UseIcons := True;
