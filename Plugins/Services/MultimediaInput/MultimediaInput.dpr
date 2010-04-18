@@ -110,7 +110,7 @@ var
     edge := neBottomCenter
   else edge := neBottomRight;
 
-  SharpNotify.CraeteNotifyText(0,nil,x,y,pCaption,edge,SkinManager,2000,moninfo.rcMonitor,True);
+  SharpNotify.CreateNotifyText(0,nil,x,y,pCaption,edge,SkinManager,2000,moninfo.rcMonitor,True);
 end;
 
 procedure LoadSettings;

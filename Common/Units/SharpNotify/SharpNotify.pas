@@ -99,7 +99,7 @@ var
 
 {$R SharpNotifyIcons.res}
 
-procedure CraeteNotifyText(pID : Cardinal; pData : TObject; px,py : integer; pCaption : WideString;
+procedure CreateNotifyText(pID : Cardinal; pData : TObject; px,py : integer; pCaption : WideString;
                            pEdge : TSharpNotifyEdge; pSM : ISharpESkinManager; pTimeout : integer;
                            pAreaRect : TRect; Replace: boolean);
 
@@ -173,7 +173,7 @@ begin
   Result := DefWindowProc(hWnd, Msg, wParam, lParam);
 end;
 
-procedure CraeteNotifyText(pID : Cardinal; pData : TObject; px,py : integer; pCaption : WideString;
+procedure CreateNotifyText(pID : Cardinal; pData : TObject; px,py : integer; pCaption : WideString;
                            pEdge : TSharpNotifyEdge; pSM : ISharpESkinManager; pTimeout : integer;
                            pAreaRect : TRect; Replace: boolean);
 var

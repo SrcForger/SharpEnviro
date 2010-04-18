@@ -128,7 +128,7 @@ begin
   x := moninfo.rcMonitor.Left + (moninfo.rcMonitor.Right - moninfo.rcMonitor.Left) div 2;
   y := moninfo.rcMonitor.Bottom - 30;
 
-  SharpNotify.CraeteNotifyText(0, nil, x, y, inttostr(CurrentDEsktop), neBottomCenter, SkinManager, 2000, moninfo.rcMonitor, True);
+  SharpNotify.CreateNotifyText(0, nil, x, y, inttostr(CurrentDEsktop), neBottomCenter, SkinManager, 2000, moninfo.rcMonitor, True);
 end;
 
 procedure LoadVWMSettings;
