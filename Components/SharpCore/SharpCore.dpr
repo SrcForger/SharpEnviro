@@ -281,7 +281,7 @@ begin
     if (modData.Running) and (modData.MetaData.DataType = tteService) then
       StopService(modData)
     else if (modData.MetaData.DataType = tteComponent) then begin
-      if bReboot and (modData.MetaData.Name = 'SharpCore') then Continue;      
+      if (modData.MetaData.Name = 'SharpCore') then Continue;      
       sName := modData.MetaData.Name;
       CloseComponent(PChar(sName));
       modData.Running := False;
@@ -391,6 +391,7 @@ begin
             ID_EXIT: PostMessage(hWnd, WM_CLOSE, 0, 0);
             ID_SHUTDOWN: begin
                 StopAll;
+                PostMessage(hWnd, WM_CLOSE, 0, 0);
               end;
             ID_REBOOT: begin
                 StopAll(True);
