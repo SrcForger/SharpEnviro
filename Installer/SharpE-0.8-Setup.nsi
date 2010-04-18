@@ -264,6 +264,55 @@ done${UNSECTION_ID}:
 
 Var ComponentsRunning
 Var RunningComponentsHWND
+!define WM_SHARPTERMINATE 33318 # (WM_APP + 550)
+
+Function un.killRunningComponents
+   FindWindow $0 "TSharpBarMainForm" ""
+   SendMessage $0 ${WM_SHARPTERMINATE} 0 0
+   
+   FindWindow $0 "TSharpCoreMainWnd" ""
+   SendMessage $0 ${WM_SHARPTERMINATE} 0 0
+   
+   FindWindow $0 "TSharpDeskMainForm" ""
+   SendMessage $0 ${WM_SHARPTERMINATE} 0 0
+   
+   FindWindow $0 "TSharpExplorerForm" "SharpExplorerForm"
+   SendMessage $0 ${WM_SHARPTERMINATE} 0 0
+   
+   FindWindow $0 "TSharpConsoleWnd" ""
+   SendMessage $0 ${WM_SHARPTERMINATE} 0 0
+   
+   FindWindow $0 "TSharpEMenuWnd" ""
+   SendMessage $0 ${WM_SHARPTERMINATE} 0 0
+   
+   FindWindow $0 "TSharpCenterWnd" ""
+   SendMessage $0 ${WM_SHARPTERMINATE} 0 0
+
+   sleep 500
+   FindWindow $0 "TSharpBarMainForm" "" # do SharpBar again in case of multiple bars
+   SendMessage $0 ${WM_SHARPTERMINATE} 0 0
+   
+   FindWindow $0 "TSharpCompileMainWnd" ""
+   SendMessage $0 ${WM_SHARPTERMINATE} 0 0
+
+   FindWindow $0 "TSharpECreateGenericScriptForm" ""
+   SendMessage $0 ${WM_SHARPTERMINATE} 0 0
+   
+   FindWindow $0 "TSharpSplashWnd" ""
+   SendMessage $0 ${WM_SHARPTERMINATE} 0 0
+
+   sleep 500
+   FindWindow $0 "TSharpBarMainForm" "" # and again ...
+   SendMessage $0 ${WM_SHARPTERMINATE} 0 0
+   
+   sleep 500
+   FindWindow $0 "TSharpBarMainForm" "" # again ...
+   SendMessage $0 ${WM_SHARPTERMINATE} 0 0
+   
+   sleep 500
+   FindWindow $0 "TSharpBarMainForm" "" # wohooo ...
+   SendMessage $0 ${WM_SHARPTERMINATE} 0 0
+FunctionEnd
 
 Function un.getRunningComponentsRefresh
    GetDlgItem $1 $RunningComponentsHWND 1201
@@ -341,32 +390,62 @@ Function un.getRunningComponentsRefresh
    splashNotRunning:
 FunctionEnd
 
+Function un.updateRunningComponentsButtons
+   StrCmp $ComponentsRunning "False" EnableNext DisableNext
+   EnableNext:
+     GetDlgItem $0 $HWNDPARENT 1
+     EnableWindow $0 1
+     GetDlgItem $1 $RunningComponentsHWND 1201
+     SendMessage $1 ${LB_ADDSTRING} 1 "STR:No SharpE Components Running"
+
+     GetDlgItem $1 $RunningComponentsHWND 1202 # Close All Button
+     EnableWindow $1 0
+
+     GoTo AfterNext
+   DisableNext:
+     GetDlgItem $0 $HWNDPARENT 1
+     EnableWindow $0 0
+
+     GetDlgItem $1 $RunningComponentsHWND 1202 # Close All Button
+     EnableWindow $1 1
+   AfterNext:
+FunctionEnd
+
+Function un.clearRunningComponents
+   GetDlgItem $1 $RunningComponentsHWND 1201
+   GoTo CheckNext
+   DeleteNext:
+     SendMessage $1 ${LB_DELETESTRING} 0 0
+   CheckNext:
+     SendMessage $1 ${LB_GETCOUNT} 0 0 $0
+     StrCmp $0 "0" ContinueUpdate DeleteNext
+   ContinueUpdate:
+FunctionEnd
+
 Function un.getRunningComponentsLeave
    ReadINIStr $R0 "$PLUGINSDIR\RunningComponents.ini" "Settings" "State"
    Pop $R1
    GetDlgItem $1 $RunningComponentsHWND 1201
 
-   ${If} $R0 == 4 # Field 1.
-     GoTo CheckNext
-     DeleteNext:
-       SendMessage $1 ${LB_DELETESTRING} 0 0
-     CheckNext:
-       SendMessage $1 ${LB_GETCOUNT} 0 0 $0
-       StrCmp $0 "0" ContinueUpdate DeleteNext
-     ContinueUpdate:
+   ${If} $R0 == 4 # Refresh
+     Call un.clearRunningComponents
      Call un.getRunningComponentsRefresh
+     Call un.updateRunningComponentsButtons
+     
+     Abort
+   ${EndIf}
+   ${If} $R0 == 3 # Close All
+     Call un.killRunningComponents
+     Call un.clearRunningComponents
+     sleep 500
+     Call un.getRunningComponentsRefresh
+     Call un.updateRunningComponentsButtons
 
-     StrCmp $ComponentsRunning "False" EnableNext DisableNext
-     EnableNext:
-       GetDlgItem $0 $HWNDPARENT 1
-       EnableWindow $0 1
-       GetDlgItem $1 $RunningComponentsHWND 1201
-       SendMessage $1 ${LB_ADDSTRING} 1 "STR:No SharpE Components Running"
-       GoTo AfterNext
-     DisableNext:
-       GetDlgItem $0 $HWNDPARENT 1
-       EnableWindow $0 0
-     AfterNext:
+     SendMessage $1 ${LB_GETCOUNT} 0 0 $0
+     StrCmp $0 "0" ContinueCloseAll
+     MessageBox MB_OK|MB_ICONEXCLAMATION "Setup was unable to close some of the remaining running SharpE Components.$\n\
+     Please try to close the components again or reboot the computer after setting the shell back to explorer.$\n"
+     ContinueCloseAll:
      
      Abort
    ${EndIf}
@@ -379,19 +458,7 @@ Function un.getRunningComponents
    Pop $RunningComponentsHWND
 
    Call un.getRunningComponentsRefresh
-   
-   StrCmp $ComponentsRunning "False" EnableNext DisableNext
-   EnableNext:
-     GetDlgItem $0 $HWNDPARENT 1
-     EnableWindow $0 1
-     GetDlgItem $1 $RunningComponentsHWND 1201
-     SendMessage $1 ${LB_ADDSTRING} 1 "STR:No SharpE Components Running"
-     
-     GoTo AfterNext
-   DisableNext:
-     GetDlgItem $0 $HWNDPARENT 1
-     EnableWindow $0 0
-   AfterNext:
+   Call un.updateRunningComponentsButtons
 
    InstallOptions::show
    Pop $R0
