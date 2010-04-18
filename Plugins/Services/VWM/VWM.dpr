@@ -126,7 +126,7 @@ begin
   moninfo.cbSize := SizeOf(moninfo);
   GetMonitorInfo(mon, @moninfo);
   x := moninfo.rcMonitor.Left + (moninfo.rcMonitor.Right - moninfo.rcMonitor.Left) div 2;
-  y := moninfo.rcMonitor.Bottom;
+  y := moninfo.rcMonitor.Bottom - 30;
 
   SharpNotify.CraeteNotifyText(0, nil, x, y, inttostr(CurrentDEsktop), neBottomCenter, SkinManager, 2000, moninfo.rcMonitor, True);
 end;
