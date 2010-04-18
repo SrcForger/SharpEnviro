@@ -3,7 +3,7 @@
   <Hotkey>
     <Name>Minimize All</Name>
     <Hotkey>WIN + VK_M</Hotkey>
-    <Command>!ToggleAll</Command>
+    <Command>!MinimizeAllMonitors</Command>
   </Hotkey>
   <Hotkey>
     <Name>Open Menu</Name>
@@ -13,7 +13,7 @@
   <Hotkey>
     <Name>Restore All</Name>
     <Hotkey>SHIFT + WIN + VK_M</Hotkey>
-    <Command>!ToggleAll</Command>
+    <Command>!RestoreAll</Command>
   </Hotkey>
   <Hotkey>
     <Name>Run (MiniScmd)</Name>
@@ -28,7 +28,7 @@
   <Hotkey>
     <Name>Show Desktop</Name>
     <Hotkey>WIN + VK_D</Hotkey>
-    <Command>!MinimizeAll</Command>
+    <Command>!ToggleAllMonitors</Command>
   </Hotkey>
   <Hotkey>
     <Name>Show Explorer</Name>
