@@ -43,6 +43,11 @@
     </Excluded_Packages><Source><Source Name="MainSource">SharpCompile.dpr</Source></Source></Delphi.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
   <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "..\..\Common\3rd Party\7z\7z.dll" $(OUTPUTDIR)
+copy "..\..\..\SharpE\SharpAPI.dll" $(OUTPUTDIR)
+copy "..\..\..\SharpE\SharpThemeApiEx.dll" $(OUTPUTDIR)</PostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <DelphiCompile Include="SharpCompile.dpr">
       <MainSource>MainSource</MainSource>
@@ -53,7 +58,4 @@
     </DCCReference>
     <DCCReference Include="uCompiler.pas" />
   </ItemGroup>
-  <PropertyGroup>
-    <PostBuildEvent>copy "..\..\Common\3rd Party\7z\7z.dll" $(OUTPUTDIR)</PostBuildEvent>
-  </PropertyGroup>
 </Project>

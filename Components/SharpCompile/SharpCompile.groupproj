@@ -1,0 +1,56 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{5affa578-1ec6-41e1-9e11-7243c208f2d6}</ProjectGuid>
+  </PropertyGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Projects Include="..\..\Common\Libraries\SharpAPI\SharpAPI.dproj" />
+    <Projects Include="..\..\Common\Libraries\SharpThemeApiEx\SharpThemeApiEx.dproj" />
+    <Projects Include="SharpCompile.dproj">
+      <Dependencies>..\..\Common\Libraries\SharpThemeApiEx\SharpThemeApiEx.dproj;..\..\Common\Libraries\SharpAPI\SharpAPI.dproj</Dependencies>
+    </Projects>
+  </ItemGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Default.Personality</Borland.Personality>
+    <Borland.ProjectType />
+    <BorlandProject>
+  <BorlandProject xmlns=""> <Default.Personality> </Default.Personality> </BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Target Name="SharpCompile" DependsOnTargets="SharpThemeApiEx;SharpAPI">
+    <MSBuild Projects="SharpCompile.dproj" Targets="" />
+  </Target>
+  <Target Name="SharpCompile:Clean" DependsOnTargets="SharpThemeApiEx:Clean;SharpAPI:Clean">
+    <MSBuild Projects="SharpCompile.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="SharpCompile:Make" DependsOnTargets="SharpThemeApiEx:Make;SharpAPI:Make">
+    <MSBuild Projects="SharpCompile.dproj" Targets="Make" />
+  </Target>
+  <Target Name="SharpAPI">
+    <MSBuild Projects="..\..\Common\Libraries\SharpAPI\SharpAPI.dproj" Targets="" />
+  </Target>
+  <Target Name="SharpAPI:Clean">
+    <MSBuild Projects="..\..\Common\Libraries\SharpAPI\SharpAPI.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="SharpAPI:Make">
+    <MSBuild Projects="..\..\Common\Libraries\SharpAPI\SharpAPI.dproj" Targets="Make" />
+  </Target>
+  <Target Name="SharpThemeApiEx">
+    <MSBuild Projects="..\..\Common\Libraries\SharpThemeApiEx\SharpThemeApiEx.dproj" Targets="" />
+  </Target>
+  <Target Name="SharpThemeApiEx:Clean">
+    <MSBuild Projects="..\..\Common\Libraries\SharpThemeApiEx\SharpThemeApiEx.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="SharpThemeApiEx:Make">
+    <MSBuild Projects="..\..\Common\Libraries\SharpThemeApiEx\SharpThemeApiEx.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Build">
+    <CallTarget Targets="SharpCompile;SharpAPI;SharpThemeApiEx" />
+  </Target>
+  <Target Name="Clean">
+    <CallTarget Targets="SharpCompile:Clean;SharpAPI:Clean;SharpThemeApiEx:Clean" />
+  </Target>
+  <Target Name="Make">
+    <CallTarget Targets="SharpCompile:Make;SharpAPI:Make;SharpThemeApiEx:Make" />
+  </Target>
+  <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
+</Project>
