@@ -8,7 +8,8 @@ uses
   SharpETabList, ImgList, uVistaFuncs,
   JclSimpleXML, JvComCtrls, JvCheckTreeView, CheckLst, JvExCheckLst,
   JvCheckListBox, JvStatusBar, JvExStdCtrls, JvMemo, uCompiler, SharpEListBoxEx,
-  SharpEPageControl, PngImageList, StrUtils, JvExControls, ToolWin;
+  SharpEPageControl, PngImageList, StrUtils, JvExControls, ToolWin,
+  JclFileUtils, JclCompression;
 
 type
   TCompileThread = class(TThread)
@@ -85,6 +86,9 @@ var
   sPath: String;
   sSettingsFile: String;
   bDebug: Boolean;
+  bClean : Boolean;
+  bZip : Boolean;
+  sOutputPath : string;
   sXMLPath : string;
   
 implementation
@@ -134,6 +138,36 @@ begin
   SharpCompileMainWnd.mDetailed.Lines.Add(sSplitter);
 end;
 
+procedure ZipDirectory(directory : string; filePath : string);
+var
+  archive: TJcl7zCompressArchive;
+  sr : TSearchRec;
+begin
+  directory := IncludeTrailingBackslash(directory);
+
+  archive := TJcl7zCompressArchive.Create(filepath);
+  try
+    if FindFirst(directory + '*.*', faAnyFile, sr) = 0 then
+    begin
+      repeat
+        if (sr.Name <> '.') and (sr.Name <> '..') then
+        begin
+          if (sr.Attr and faDirectory) <> 0 then
+            archive.AddDirectory(sr.Name, directory + sr.Name, True, True)
+          else
+            archive.AddFile(sr.Name, directory + sr.Name);
+        end;
+      until FindNext(sr) <> 0;
+      
+      FindClose(sr);
+    end;
+
+    archive.Compress;
+  finally
+    archive.Free;
+  end;
+end;
+
 constructor TCompileThread.Create(CreateSuspended: Boolean);
 begin
   inherited Create(CreateSuspended);
@@ -163,7 +197,13 @@ begin
 
   Log('Building ' + IntToStr(iProjCount) + ' projects/solutions.');
   InsertSplitter;
-  
+
+  if (bClean) and (not Terminated) then
+  begin
+    Log('Cleaning output directory "' + sOutputPath + '"');
+    DelTree(sOutputPath);
+  end;
+
   for i := 0 to SharpCompileMainWnd.ctvProjects.Items.Count - 1 do
   begin
     if Terminated then
@@ -215,6 +255,12 @@ begin
       end;
     end;
   end;
+
+  if (bZip) and (not Terminated) then
+  begin
+    Log('Zipping contents of output directory.');
+    ZipDirectory(sOutputPath, '..\SharpE_Builds\SharpE.7z');
+  end;
   
   buildEnd := Now;
   if Terminated then
@@ -235,8 +281,7 @@ begin
   lbSummary.DoubleBuffered := True;
   sepLog.DoubleBuffered := True;
   panMain.DoubleBuffered := True;
-  ForceDirectories('.\Settings\Global\SharpCompile');
-  sSettingsFile := 'Settings\Global\SharpCompile\Settings.xml';
+  sSettingsFile := ExpandFileName('SharpCompile-Settings.xml');
   LoadSettings;
   
   if ParamStr(1) <> '' then
@@ -542,6 +587,8 @@ end;
 procedure TSharpCompileMainWnd.clbOptionsClick(Sender: TObject);
 begin
   bDebug := clbOptions.Checked[0];
+  bZip := clbOptions.Checked[1];
+  bClean := clbOptions.Checked[2];
 end;
 
 procedure TSharpCompileMainWnd.ctvProjectsSelectionChange(Sender: TObject);
@@ -567,8 +614,11 @@ begin
     if FileExists(sXML) then
     begin
       sPath := IncludeTrailingPathDelimiter(ExtractFileDir(sXML));
+      SetCurrentDirectory(PChar(sPath));
       xFile.LoadFromFile(sXML);
       for n := 0 to xFile.Root.Items.Count - 1 do
+      begin
+        sOutputPath := xFile.Root.Properties.Value('OutputPath', '..\SharpE');
         with xFile.Root.Items.Item[n] do
         begin
           sPackage := Items.Item[0].Name;
@@ -608,13 +658,14 @@ begin
                 nComponent.Data := TDelphiProject.Create(sPath + Value, sProjectName);
                 TDelphiProject(nComponent.Data).Package := sPackage;
               end;
-              
+
               ctvProjects.SetChecked(nComponent, True);
               Log('Loaded "' + sProjectName
                 + '" of type ' + sProjectType + ' which requires '
                 + Properties.Value('Requ', 'Delphi 2007'));
             end;
         end;
+      end;
       lbSummary.AddItem('Loaded ' + ExtractFileName(sXML), 2);
 	  end;
     InsertSplitter;
@@ -641,26 +692,25 @@ procedure TSharpCompileMainWnd.LoadSettings();
 var
   xFile: TJclSimpleXML;
 begin
-  if FileExists(sSettingsFile) then
-  begin
-    xFile := TJclSimpleXML.Create;
-    try
-      xFile.LoadFromFile(sSettingsFile);
-      if xFile.Root.Items.ItemNamed['Options'] <> nil then
-        with xFile.Root.Items.ItemNamed['Options'] do
-        begin
-          bDebug := Properties.BoolValue('Debug', False);
-          clbOptions.Checked[0] := bDebug;
-          sXMLPath := Properties.Value('XMLPath', '');
-        end;
-    finally
-      xFile.Free;
-    end;
-  end
-  else
-  begin
-    bDebug := False;
-    SaveSettings;
+  if not FileExists(sSettingsFile) then
+    Exit;
+
+  xFile := TJclSimpleXML.Create;
+  try
+    xFile.LoadFromFile(sSettingsFile);
+    if xFile.Root.Items.ItemNamed['Options'] <> nil then
+      with xFile.Root.Items.ItemNamed['Options'] do
+      begin
+        bDebug := Properties.BoolValue('Debug', False);
+        clbOptions.Checked[0] := bDebug;
+        bZip := Properties.BoolValue('Zip', False);
+        clbOptions.Checked[1] := bZip;
+        bClean := Properties.BoolValue('Clean', False);
+        clbOptions.Checked[2] := bClean;
+        sXMLPath := Properties.Value('XMLPath', '');
+      end;
+  finally
+    xFile.Free;
   end;
 end;
 
@@ -697,13 +747,17 @@ procedure TSharpCompileMainWnd.SaveSettings();
 var
   xFile: TJclSimpleXML;
 begin
-  SetCurrentDirectory(PChar(ExtractFilePath(ParamStr(0))));
+  if not ForceDirectories(ExtractFileDir(sSettingsFile)) then
+    Exit;
+    
   xFile := TJclSimpleXML.Create;
   try
     xFile.Root.Name := 'SharpCompile';
     with xFile.Root.Items.Add('Options') do
     begin
       Properties.Add('Debug', bDebug);
+      Properties.Add('Zip', bZip);
+      Properties.Add('Clean', bClean);
       Properties.Add('XMLPath', sXMLPath);
     end;
     xFile.SaveToFile(sSettingsFile);
