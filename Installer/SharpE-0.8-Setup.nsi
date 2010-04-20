@@ -171,7 +171,7 @@ Function getSettingsSelect
 FunctionEnd
 
 # Installer attributes
-OutFile SharpE-0.8-Setup.exe
+OutFile SharpE-${VERSION}-Setup.exe
 InstallDir $PROGRAMFILES\SharpEnviro
 CRCCheck on
 XPStyle on
@@ -278,7 +278,8 @@ SectionEnd
 
 Section "Development Tools" SEC03
   StrCpy $InstallDevelopmentFiles "True"
-  File "..\..\SharpE\SharpCompile.exe"
+  File "..\..\SharpE_BuildTools\SharpCompile.exe"
+  File "..\..\SharpE_BuildTools\7z.dll"
 SectionEnd
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
@@ -609,7 +610,8 @@ Section /o -un.Main UNSEC0000
     Delete "$INSTDIR\rtl100.bpl"
     Delete "$INSTDIR\vcl100.bpl"
     Delete "$INSTDIR\splash.png"
-
+    Delete "$INSTDIR\7z.dll"
+  
     RmDir "$INSTDIR\Services"
     RmDir "$INSTDIR\Objects"
     RmDir "$INSTDIR\Modules"
@@ -628,8 +630,8 @@ Section -un.post UNSEC0001
     DeleteRegValue HKLM "${REGKEY}" Path
     DeleteRegKey /IfEmpty HKLM "${REGKEY}\Components"
     DeleteRegKey /IfEmpty HKLM "${REGKEY}"
-    RmDir /REBOOTOK $SMPROGRAMS\$StartMenuGroup
     RmDir /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Development"
+    RmDir /REBOOTOK $SMPROGRAMS\$StartMenuGroup
     RmDir /REBOOTOK $INSTDIR
     Push $R0
     StrCpy $R0 $StartMenuGroup 1
