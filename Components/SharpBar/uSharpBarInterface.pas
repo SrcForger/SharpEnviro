@@ -92,8 +92,13 @@ end;
 
 procedure TSharpBarInterface.UpdateModuleSize;
 begin
-  if ModuleManager <> nil then
-    ModuleManager.ReCalculateModuleSize(True);
+  // try/except to prevent "not enough storage is available to process this command"
+  // error message which can happen when bringin the computer back from hibernation
+  try
+    if ModuleManager <> nil then
+      ModuleManager.ReCalculateModuleSize(True);
+  except
+  end;
 end;
 
 end.
