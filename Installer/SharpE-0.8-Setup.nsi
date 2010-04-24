@@ -4,7 +4,7 @@
 Name SharpEnviro
 
 SetCompressor /solid lzma
-# SetCompressor lzma
+# SetCompressor bzip2
 
 RequestExecutionLevel highest
 
@@ -20,7 +20,7 @@ RequestExecutionLevel highest
 
 # General Symbol Definitions
 !define REGKEY "SOFTWARE\$(^Name)"
-!define VERSION 0.8
+!define VERSION 0.8-RC1
 !define COMPANY "SharpE Development Team"
 !define URL www.sharpenviro.com
 
@@ -32,9 +32,9 @@ RequestExecutionLevel highest
 !define MUI_STARTMENUPAGE_REGISTRY_KEY ${REGKEY}
 !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME StartMenuGroup
 !define MUI_STARTMENUPAGE_DEFAULTFOLDER SharpEnviro
-!define MUI_FINISHPAGE_RUN $INSTDIR\SetShell.exe
 !define MUI_UNICON "..\Graphics\Application Icons\white.ico"
 !define MUI_UNFINISHPAGE_NOAUTOCLOSE
+!define MUI_WELCOMEFINISHPAGE_BITMAP "InstallBanner.bmp"
 
 # Included files
 !include Sections.nsh
@@ -54,16 +54,17 @@ Var StartMenuGroup
 # Installer pages
 !insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_LICENSE ..\License\gpl-3.0.txt
+!insertmacro MUI_PAGE_COMPONENTS
 Page custom getSettingsSelect getSettingsLeave
 !define MUI_PAGE_CUSTOMFUNCTION_LEAVE "DirectoryLeave"
 !insertmacro MUI_PAGE_DIRECTORY
-!insertmacro MUI_PAGE_COMPONENTS
 Page custom checkNETFramework checkNETFrameworkLeave
 !insertmacro MUI_PAGE_STARTMENU Application $StartMenuGroup
 !insertmacro MUI_PAGE_INSTFILES
 Page custom setShell setShellLeave
 !insertmacro MUI_PAGE_FINISH
 !insertmacro MUI_UNPAGE_CONFIRM
+UninstPage custom un.unsetShell un.unsetShellLeave
 UninstPage custom un.getRunningComponents un.getRunningComponentsLeave
 !insertmacro MUI_UNPAGE_INSTFILES
 
@@ -90,14 +91,20 @@ Function setShellLeave
     ${If} ${RunningX64}
       SetRegView 32
     ${EndIf}
+    GoTo DoneShellLeave
   DontSetShell:
+  DoneShellLeave:
   Pop $R0
 FunctionEnd
 
 Function setShell
   !insertmacro MUI_HEADER_TEXT "Change Windows Default Shell" "Select if to change the shell now or do it manually later"
-  Push $R0
-  InstallOptions::dialog $PLUGINSDIR\SetShell.ini
+  InstallOptions::initDialog /NOUNLOAD $PLUGINSDIR\SetShell.ini
+  GetDlgItem $0 $HWNDPARENT 2
+  EnableWindow $0 0
+  GetDlgItem $0 $HWNDPARENT 0
+  EnableWindow $0 0
+  InstallOptions::show
   Pop $R0
 FunctionEnd
 
@@ -118,7 +125,6 @@ Function checkNETFramework
 FunctionEnd
 
 Function DirectoryLeave
-  # Call the CheckForSpaces function.
   IntCmp $UseAppDir 1 ValidDir
   Push $INSTDIR # Input string (install path).
   
@@ -1213,6 +1219,7 @@ SectionEnd
 
 Section "Development Tools" SEC03
   StrCpy $InstallDevelopmentFiles "True"
+  SetOutPath "$INSTDIR"
   File "..\..\SharpE_BuildTools\SharpCompile.exe"
   File "..\..\SharpE_BuildTools\7z.dll"
 SectionEnd
@@ -1469,6 +1476,22 @@ Function un.getRunningComponents
    Pop $R0
    ReadINIStr $R0 "$PLUGINSDIR\RunningComponents.ini" "Settings" "State"
    Pop $R0
+FunctionEnd
+
+Function un.unsetShellLeave
+  # Seperate Explorer Fix
+  WriteRegDWORD HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" DesktopProcess 0
+  # Set Shell
+  WriteRegStr HKCU "Software\Microsoft\Windows NT\CurrentVersion\winlogon" Shell "explorer.exe"
+  # Launch Explorer.exe to start the windows shell
+  Exec "explorer.exe"
+FunctionEnd
+
+Function un.unsetShell
+  !insertmacro MUI_HEADER_TEXT "Change Windows Default Shell" "Changing the shell back to Explorer"
+  Push $R0
+  InstallOptions::dialog $PLUGINSDIR\UnsetShell.ini
+  Pop $R0
 FunctionEnd
 
 # Uninstaller sections
@@ -2536,6 +2559,7 @@ FunctionEnd
 Function un.onInit
     InitPluginsDir
     File /oname=$PLUGINSDIR\RunningComponents.ini "RunningComponents.ini"
+    File /oname=$PLUGINSDIR\UnsetShell.ini "UnsetShell.ini"
     ReadRegStr $INSTDIR HKLM "${REGKEY}" Path
     !insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuGroup
     !insertmacro SELECT_UNSECTION Main ${UNSEC0000}
