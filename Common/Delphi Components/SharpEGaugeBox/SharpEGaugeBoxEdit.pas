@@ -430,7 +430,6 @@ end;
 
 procedure TSharpeGaugeBox.UpdateValue(newValue: integer);
 var
-  s: string;
   changed : Boolean;
 begin
   changed := False;
