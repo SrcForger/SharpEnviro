@@ -62,6 +62,8 @@ Page custom checkNETFramework checkNETFrameworkLeave
 !insertmacro MUI_PAGE_STARTMENU Application $StartMenuGroup
 !insertmacro MUI_PAGE_INSTFILES
 Page custom setShell setShellLeave
+!define MUI_PAGE_CUSTOMFUNCTION_SHOW "FinishPageShow"
+!define MUI_PAGE_CUSTOMFUNCTION_LEAVE "FinishPageLeave"
 !insertmacro MUI_PAGE_FINISH
 !insertmacro MUI_UNPAGE_CONFIRM
 UninstPage custom un.unsetShell un.unsetShellLeave
@@ -74,6 +76,7 @@ UninstPage custom un.getRunningComponents un.getRunningComponentsLeave
 
 Var UseAppDir
 Var SetupSetShell
+Var DoReboot
 Var InstallDevelopmentFiles
 
 Function setShellLeave
@@ -91,8 +94,10 @@ Function setShellLeave
     ${If} ${RunningX64}
       SetRegView 32
     ${EndIf}
+    StrCpy $DoReboot "True"
     GoTo DoneShellLeave
   DontSetShell:
+    StrCpy $DoReboot "False"
   DoneShellLeave:
   Pop $R0
 FunctionEnd
@@ -122,6 +127,22 @@ Function checkNETFramework
     InstallOptions::dialog $PLUGINSDIR\DotNETCheck.ini
   DontInstallNET:
   Pop $0
+FunctionEnd
+
+Function FinishPageShow
+  # Disable back button
+  GetDlGItem $0 $HWNDPARENT 3
+  EnableWindow $0 0
+FunctionEnd
+
+Function FinishPageLeave
+  StrCmp $DoReboot "False" DontReboot
+    MessageBox MB_YESNO|MB_ICONEXCLAMATION "A reboot of the computer is necessary for the changes to take effect$\n\
+    Do you want to reboot your computer now?" \
+    IDYES RebootNow IDNO DontReboot
+    RebootNow:
+      Reboot
+  DontReboot:
 FunctionEnd
 
 Function DirectoryLeave
