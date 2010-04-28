@@ -100,7 +100,7 @@ procedure BuildShellFolderList(Slist : TStringList);
 begin
  SList.Clear;
 
- if IsWindowsVista then
+ if (IsWindowsVista or IsWindows7) then
  begin
    SList.Add('shell:AddNewProgramsFolder=Add New Programs');
    SList.Add('shell:Administrative Tools=Administrative Tools');
@@ -113,13 +113,15 @@ begin
    SList.Add('shell:Common AppData=Common Application Data');
    SList.Add('shell:Common Desktop=Common Desktop');
    SList.Add('shell:Common Documents=Common Documents');
+   SList.Add('shell:CommonDownloads=Common Downloads');
+   SList.Add('shell:CommonMusic=Common Music');
+   SList.Add('shell:CommonPictures=Common Pictures');   
    SList.Add('shell:Common Programs=Common Programs');
+   if IsWindows7 then SList.Add('shell:CommonRingtones=Common Ringtones');
    SList.Add('shell:Common Start Menu=Common Start Menu');
    SList.Add('shell:Common Startup=Common Startup');
    SList.Add('shell:Common Templates=Common Templates');
-   SList.Add('shell:CommonDownloads=Common Downloads');
-   SList.Add('shell:CommonMusic=Common Music');
-   SList.Add('shell:CommonPictures=Common Pictures');
+   if IsWindows7 then SList.Add('shell:UserProgramFilesCommon=Common User Program Files');
    SList.Add('shell:CommonVideo=Common Video');
    SList.Add('shell:ConflictFolder=Conflicts');
    SList.Add('shell:ConnectionsFolder=Connections');
@@ -132,6 +134,8 @@ begin
    SList.Add('shell:CSCFolder=CSC Folder');
    SList.Add('shell:Default Gadgets=Default Gadgets');
    SList.Add('shell:Desktop=Desktop');
+   if IsWindows7 then SList.Add('shell:Device Metadata Store=Device Metadata Store');
+   if IsWindows7 then SList.Add('shell:DocumentsLibrary=Documents Library');
    SList.Add('shell:Downloads=Downloads');
    SList.Add('shell:DpapiKeys=Dpapi Keys');
    SList.Add('shell:Favorites=Favorites');
@@ -140,12 +144,15 @@ begin
    SList.Add('shell:Games=Games');
    SList.Add('shell:GameTasks=Game Tasks');
    SList.Add('shell:History=History');
+   if IsWindows7 then SList.Add('shell:ImplicitAppShortcuts=Implicit App Shortcuts');
    SList.Add('shell:InternetFolder=Internet');
+   if IsWindows7 then SList.Add('shell:Libraries=Libraries');
    SList.Add('shell:Links=Links');
    SList.Add('shell:Local AppData=Local Application Data');
    SList.Add('shell:LocalAppDataLow=Local Application Data Low');
    SList.Add('shell:LocalizedResourcesDir=Localized Resources Directory');
    SList.Add('shell:MAPIFolder=MAPI Folder');
+   if IsWindows7 then SList.Add('shell:MusicLibrary=Music Library');   
    SList.Add('shell:My Music=My Music');
    SList.Add('shell:My Pictures=My Pictures');
    SList.Add('shell:My Video=My Video');
@@ -153,10 +160,14 @@ begin
    SList.Add('shell:NetHood=Network Shortcuts');
    SList.Add('shell:NetworkPlacesFolder=Network');
    SList.Add('shell:OEM Links=OEM Links');
+   if IsWindows7 then SList.Add('shell:OtherUsersFolder=Other Users Folder');
    SList.Add('shell:Original Images=Original Images');
    SList.Add('shell:Personal=Personal');
    SList.Add('shell:PhotoAlbums=Photo Albums');
+   if IsWindows7 then SList.Add('shell:PicturesLibrary=Pictures Library');
+   if IsWindows7 then SList.Add('shell:User Pinned=Pinned Taskbar Items');
    SList.Add('shell:Playlists=Playlists');
+   if IsWindows7 then SList.Add('shell:PublicSuggestedLocations=Public Suggested Locations');   
    SList.Add('shell:PrintersFolder=Printers');
    SList.Add('shell:PrintHood=PrintHood');
    SList.Add('shell:Profile=Profile');
@@ -170,7 +181,9 @@ begin
    SList.Add('shell:Quick Launch=Quick Launch');
    SList.Add('shell:Recent=Recent');
    SList.Add('shell:RecycleBinFolder=Recycle Bin');
+   if IsWindows7 then SList.Add('shell:RecordedTVLibrary=Recorded TV Library');
    SList.Add('shell:ResourceDir=Resource Dir');
+   if IsWindows7 then SList.Add('shell:Ringtones=Ringtones');   
    SList.Add('shell:SampleMusic=Sample Music');
    SList.Add('shell:SamplePictures=Sample Pictures');
    SList.Add('shell:SamplePlaylists=Sample Playlists');
@@ -178,6 +191,7 @@ begin
    SList.Add('shell:SavedGames=Saved Games');
    SList.Add('shell:Searches=Searches');
    SList.Add('shell:SendTo=Send To');
+   if IsWindows7 then SList.Add('shell:SuggestedLocations=Suggested Locations');
    SList.Add('shell:Start Menu=Start Menu');
    SList.Add('shell:Startup=Startup');
    SList.Add('shell:SyncCenterFolder=SyncCenter');
@@ -188,8 +202,11 @@ begin
    SList.Add('shell:SystemX86=System X86');
    SList.Add('shell:Templates=Templates');
    SList.Add('shell:TreePropertiesFolder=Tree Properties');
-   SList.Add('shell:UserProfiles=User Profiles');
    SList.Add('shell:UsersFilesFolder=Users Files');
+   SList.Add('shell:UserProfiles=User Profiles');
+   if IsWindows7 then SList.Add('shell:UserProgramFiles=User Program Files');
+   if IsWindows7 then SList.Add('shell:UsersLibrariesFolder=Users Libraries Folder');
+   if IsWindows7 then SList.Add('shell:VideosLibrary=Videos Library');     
    SList.Add('shell:Windows=Windows');
  end
  else
