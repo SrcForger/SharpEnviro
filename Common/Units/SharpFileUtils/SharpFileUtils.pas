@@ -31,6 +31,8 @@ uses
   Classes,
   windows,
   SysUtils,
+  JclShell,
+  JclFileUtils,
   JclStrings;
 
 procedure FindFiles(var FilesList: TStringList; StartDir, FileMask: string); overload;
@@ -39,6 +41,8 @@ function GetFileNameWithoutParams(pTarget : String) : String;
 function FindFilePath(pTarget : String) : String;
 
 Function PathFindOnPath(pszPath, ppszOtherDirs: PChar): BOOL; stdcall; external 'shlwapi.dll' Name 'PathFindOnPathA';
+
+procedure GetExecuteableFilesFromDir(var FileList: TStringList; Dir : String);
 
 implementation
 
@@ -130,6 +134,36 @@ begin
   result := LastValid;
 
   tokens.Free;
+end;
+
+procedure GetExecuteableFilesFromDir(var FileList: TStringList; Dir : String);
+var
+  sr : TSearchRec;
+  link: TShellLink;
+  lnkpath : string;
+  filepath : string;
+  longpath : string;
+begin
+  Dir := IncludeTrailingBackSlash(Dir);
+  FileList.Clear;
+  if FindFirst(Dir + '*.lnk',FAAnyFile,sr) = 0 then
+  repeat
+    lnkpath := Dir + sr.Name;
+    // CoInitialize(nil);
+    if JclShell.ShellLinkResolve(lnkpath, link) = S_OK then
+    begin
+      filepath := link.Target;
+      if (FileExists(filepath)) and (CompareText(ExtractFileExt(filepath),'.exe') = 0) then // Valid File
+      begin
+        longpath := JclFileUtils.PathGetLongName(filepath);
+        if FileExists(longpath) then // only use long path if retrieving it worked
+          filepath := longpath;
+        FileList.Add(filepath);
+      end;
+    end;
+    // CoUninitialize;
+  until FindNext(sr) <> 0;
+  FindClose(sr);
 end;
 
 begin
