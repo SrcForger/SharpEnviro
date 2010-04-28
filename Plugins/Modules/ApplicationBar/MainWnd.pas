@@ -49,6 +49,8 @@ uses
   uTaskManager,
   uTaskItem,
   uTaskPreviewWnd,
+  uKnownFolders,
+  uVistaFuncs,
   VWMFunctions,
   MonitorList,
   SharpIconUtils, ImgList, PngImageList, ExtCtrls, JvDragDrop, JvComponentBase;
@@ -109,6 +111,7 @@ type
     FButtonSpacing : integer;
     sCountOverlay : boolean;
     sLockDragDrop : boolean;
+    sFirstLaunch  : boolean;
     FButtonList  : array of TButtonRecord;
     FHintWnd     : hwnd; 
     movebutton   : TSharpETaskItem;
@@ -155,6 +158,7 @@ type
     procedure SaveSettings;
     procedure CheckList;
     procedure UpdateGlobalFilterList(Broadcast : Boolean);
+    function ImportWin7PinnedTaskBarItems : boolean;
     property TaskManager : TTaskManager read FTM;
   end;
 
@@ -614,6 +618,7 @@ begin
       Add('LockDragDrop',sLockDragDrop);
       Add('TPLockKey',sTPLockKey);
       Add('TaskPreview',sTaskPreview);
+      Add('FirstLaunch',sFirstLaunch);
       with Add('Apps').Items do
       begin
         for n := 0 to High(FButtonList) do
@@ -750,6 +755,7 @@ begin
   sMonitorOnly := False;
   sTaskPreview := True;
   sLockDragDrop := False;
+  sFirstLaunch := True;
   sTPLockKey := 1; // (Shift)
 
   XML := TJclSimpleXML.Create;
@@ -769,6 +775,7 @@ begin
       sTaskPreview := BoolValue('TaskPreview',sTaskPreview);
       sTPLockKey   := IntValue('TPLockKey',sTPLockKey);
       sLockDragDrop := BoolValue('LockDragDrop',sLockDragDrop);
+      sFirstLaunch := BoolValue('FirstLaunch',sFirstLaunch);
       if ItemNamed['Apps'] <> nil then
       with ItemNamed['Apps'].Items do
            for n := 0 to Count - 1 do
@@ -778,6 +785,18 @@ begin
     end;
   
   XML.Free;
+
+  if sFirstLaunch then
+  begin
+    if not ImportWin7PinnedTaskBarItems then
+      if length(FButtonList) = 0 then
+        begin // add default items
+          AddButton('notepad.exe','shell:icon','Notepad');
+          AddButton('explorer.exe','shell:icon','Explorer');
+        end;
+    sFirstLaunch := False;    
+    SaveSettings;
+  end;
 
   RealignComponents(True);
 end;
@@ -1701,6 +1720,48 @@ begin
     end;
 
   result.btn := nil;
+end;
+
+function TMainForm.ImportWin7PinnedTaskBarItems : boolean;
+var
+  Dir : String;
+  SList : TStringList;
+  n,i : integer;
+  found : boolean;
+  caption : String;
+  addcount : integer;
+begin
+  if not IsWindows7 then
+  begin
+    result := False;
+    exit;
+  end;
+    
+  Dir := uKnownFolders.GetKnownFolderPath(FOLDERID_UserPinned);
+  Dir := IncludeTrailingBackSlash(Dir) + 'TaskBar';
+  SList := TStringList.Create;
+  SList.Clear;
+  GetExecuteableFilesFromDir(SList,Dir);
+  addcount := 0;
+  for n := 0 to SList.Count - 1 do
+  begin
+    found := False;
+    for i := 0 to High(FButtonList) do // Check if it already is added
+      if CompareText(FButtonList[i].target,SList[n]) = 0 then
+      begin
+        found := True;
+        break;
+      end;
+    if not found then // Add It
+    begin
+      caption := ExtractFileName(SList[n]);
+      setlength(caption,length(caption) - length(ExtractFileExt(caption))); // remove file extension from filename
+      AddButton(SList[n],'shell:icon',caption);
+      addcount := addcount + 1;
+    end;
+  end;
+  SList.Free;
+  result := (addcount > 0);
 end;
 
 procedure TMainForm.CheckTimerTimer(Sender: TObject);

@@ -48,7 +48,8 @@ uses
   MainWnd in 'MainWnd.pas' {MainForm},
   ToolTipApi in '..\..\..\Common\Units\ToolTipApi\ToolTipApi.pas',
   SharpFileUtils in '..\..\..\Common\Units\SharpFileUtils\SharpFileUtils.pas',
-  uTaskPreviewWnd in '..\Taskbar\uTaskPreviewWnd.pas';
+  uTaskPreviewWnd in '..\Taskbar\uTaskPreviewWnd.pas',
+  uKnownFolders in '..\..\..\Common\Units\SystemFuncs\uKnownFolders.pas';
 
 type
   TInterfacedSharpBarModule = class(TInterfacedSharpBarModuleBase)
