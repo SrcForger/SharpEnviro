@@ -78,7 +78,8 @@ type
 procedure TSharpCenterPlugin.Close;
 begin
   FreeAndNil(frmList);
-  FreeAndNil(frmEdit);
+  if frmEdit <> nil then
+    FreeAndNil(frmEdit);
 end;
 
 procedure TSharpCenterPlugin.CloseEdit(AApply: Boolean);
@@ -86,7 +87,8 @@ begin
   if AApply then
     frmEdit.Save;
 
-  FreeAndNil(frmEdit);
+  if frmEdit <> nil then
+    FreeAndNil(frmEdit);
 end;
 
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);

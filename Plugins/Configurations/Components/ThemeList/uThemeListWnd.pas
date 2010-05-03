@@ -128,7 +128,6 @@ uses uThemeListEditWnd;
 
 procedure TfrmList.FormShow(Sender: TObject);
 begin
-  
   FPngMissing.LoadFromResourceName(HInstance,'THEMELIST_MISSING_PNG');
 
   GenerateMask;
@@ -258,6 +257,7 @@ begin
 
     bmp.Free;
     bmp32.Free;
+    ThemeList := nil
   end;
 
   FPluginHost.SetEditTabsVisibility(lbThemeList.ItemIndex,lbThemeList.Count);

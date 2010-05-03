@@ -117,7 +117,7 @@ begin
 
     XmlRoot.Clear;
     XmlRoot.Name := 'SharpEThemeSkin';
-    xmlRoot.Items.Add('Skin', 'BB2-Glass');
+    xmlRoot.Items.Add('Skin', 'Simple');
 
     XmlFilename := sThemeDir + AName + '\' + 'Skin.xml';
     Save;

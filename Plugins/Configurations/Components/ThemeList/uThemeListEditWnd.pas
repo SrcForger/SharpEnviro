@@ -56,6 +56,7 @@ uses
   JvHtControls,
   GR32_Image,
 
+  uIThemeList,
   ISharpCenterHostUnit;
 
 type
@@ -100,9 +101,11 @@ end;
 
 procedure TfrmEdit.Init;
 var
+  ThemeList : IThemeList;
   df: TSC_DEFAULT_FIELDS;
   tmpItem: TSharpEListItem;
   tmpThemeItem: TThemeListItemClass;
+  n : integer;
 begin
   case FPluginHost.EditMode of
     sceAdd: begin
@@ -116,7 +119,10 @@ begin
         cbBasedOn.Items.Clear;
         cbBasedOn.Items.AddObject('New Theme', nil);
 
-        //XmlGetThemeList(TStringList(cbBasedOn.Items));
+        ThemeList := GetThemeList;
+        for n := 0 to ThemeList.GetThemeCount - 1 do
+          cbBasedOn.Items.Add(ThemeList.Themes[n].Name);
+        ThemeList := nil;
 
         cbBasedOn.ItemIndex := 0;
         cbBasedOn.Enabled := True;
