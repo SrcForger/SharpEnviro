@@ -144,7 +144,7 @@ var
   filepath : string;
   longpath : string;
 begin
-  Dir := IncludeTrailingBackSlash(Dir);
+  {$WARNINGS OFF} Dir := IncludeTrailingBackSlash(Dir); {$WARNINGS ON}
   FileList.Clear;
   if FindFirst(Dir + '*.lnk',FAAnyFile,sr) = 0 then
   repeat
