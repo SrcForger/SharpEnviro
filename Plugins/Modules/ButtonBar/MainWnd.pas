@@ -31,11 +31,15 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, Menus, Math, GR32, ToolTipApi, ShellApi, CommCtrl,
   JclSimpleXML,
+  JclSysInfo,
   SharpCenterApi,
   SharpApi,
   SharpEBaseControls,
   SharpEButton,
+  SharpFileUtils,
   uISharpBarModule,
+  uVistaFuncs,
+  uKnownFolders,
   SharpIconUtils, ImgList, PngImageList;
 
 
@@ -69,6 +73,7 @@ type
     sShowLabel   : boolean;
     FButtonSpacing : integer;
     sShowIcon    : boolean;
+    sFirstLaunch : boolean;
     FButtonList  : array of TButtonRecord;
     FHintWnd     : hwnd; 
     movebutton   : TSharpEButton;
@@ -87,6 +92,7 @@ type
     procedure UpdateSize;
     procedure RefreshIcons;
     procedure SaveSettings;
+    function ImportQuickLaunchItems : boolean;
   end;
 
 
@@ -201,7 +207,7 @@ begin
     exit;
   end else Msg.result := 0;
 end;
- 
+
 procedure TMainForm.WMDropFiles(var msg: TMessage);
 var
   pcFileName: PChar;
@@ -352,6 +358,7 @@ begin
     begin
       Add('ShowCaption',sShowLabel);
       Add('ShowIcon',sShowIcon);
+      Add('FirstLaunch',sFirstLaunch);
       with Add('Buttons').Items do
       begin
         for n := 0 to High(FButtonList) do
@@ -434,8 +441,9 @@ begin
 
   sShowLabel   := False;
   sShowIcon    := True;
+  sFirstLaunch := True;
   FButtonSpacing := 2;
-  
+
   XML := TJclSimpleXML.Create;
   try
     XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
@@ -448,6 +456,7 @@ begin
     begin
       sShowLabel   := BoolValue('ShowCaption',False);
       sShowIcon    := BoolValue('ShowIcon',sShowIcon);
+      sFirstLaunch := BoolValue('FirstLaunch',sFirstLaunch);
       if ItemNamed['Buttons'] <> nil then
       with ItemNamed['Buttons'].Items do
            for n := 0 to Count - 1 do
@@ -456,6 +465,14 @@ begin
                          Item[n].Items.Value('Caption','C:\'));
     end;
   XML.Free;
+
+  if sFirstLaunch then
+  begin
+    ImportQuickLaunchItems;
+    sFirstLaunch := False;
+    SaveSettings;
+    RealignComponents(True);
+  end;
 end;
 
 procedure TMainForm.UpdateSize;
@@ -598,5 +615,52 @@ begin
   if mInterface <> nil then
      mInterface.Background.DrawTo(Canvas.Handle,0,0);
 end;
+
+function TMainForm.ImportQuickLaunchItems : boolean;
+var
+  Dir : String;
+  SList : TStringList;
+  n,i : integer;
+  found : boolean;
+  caption : String;
+  addcount : integer;
+begin
+  {$WARNINGS OFF}
+  if IsWindows7 or IsWindowsVista then
+  begin
+    Dir := uKnownFolders.GetKnownFolderPath(FOLDERID_Quicklaunch);
+    Dir := IncludeTrailingBackSlash(Dir);
+  end
+  else begin
+    Dir := JclSysInfo.GetAppdataFolder;
+    Dir := IncludeTrailingBackSlash(Dir);
+    Dir := Dir + 'Microsoft\Internet Explorer\Quick Launch\';
+  end;
+  {$WARNINGS ON}
+  SList := TStringList.Create;
+  SList.Clear;
+  GetExecuteableFilesFromDir(SList,Dir);
+  addcount := 0;
+  for n := 0 to SList.Count - 1 do
+  begin
+    found := False;
+    for i := 0 to High(FButtonList) do // Check if it already is added
+      if CompareText(FButtonList[i].target,SList[n]) = 0 then
+      begin
+        found := True;
+        break;
+      end;
+    if not found then // Add It
+    begin
+      caption := ExtractFileName(SList[n]);
+      setlength(caption,length(caption) - length(ExtractFileExt(caption))); // remove file extension from filename
+      AddButton(SList[n],'shell:icon',caption);
+      addcount := addcount + 1;
+    end;
+  end;
+  SList.Free;
+  result := (addcount > 0);
+end;
+
 
 end.
