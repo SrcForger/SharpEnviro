@@ -62,6 +62,14 @@ begin
     if not SharpBarMainForm.SharpEBar.DisableHideBar then
     begin
       SharpBarMainForm.Hide;
+      // Display a Tooltop if bar was hidden for the first time
+      if SharpBarMainForm.FirstHide then
+      begin
+        SharpBarMainForm.ShowNotify('The SharpBar is now invisible because you left clicked the screen border. You can show the SharpBar again by left clicking the screen border another time.',True);
+        SharpBarMainForm.FirstHide := False;
+        SharpBarMainForm.SaveBarTooltipSettings;
+      end;
+      
       SharpApi.ServiceMsg('DeskArea','Update');
     end;
   end
@@ -155,6 +163,14 @@ begin
        ModuleManager.ReCalculateModuleSize;
        if SharpBarMainForm.SharpEBar.ShowThrobber then SharpBarMainForm.SharpEBar.Throbber.Repaint;
        ModuleManager.BroadcastPluginUpdate(suBackground);
+
+       // Display a tooltip if throbber was hidden for the first time
+       if not SharpBarMainForm.SharpEBar.ShowThrobber and SharpBarMainForm.FirstThrobberHide then
+       begin
+         SharpBarMainForm.ShowNotify('The Main Button of the SharpBar was disabled because you right clicked the screen border. You can show the Button again by right clicking the screen border another time.',False);
+         SharpBarMainForm.FirstThrobberHide := False;
+         SharpBarMainForm.SaveBarTooltipSettings;
+       end;
      end;
    end;
 end;

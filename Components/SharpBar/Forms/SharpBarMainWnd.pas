@@ -32,7 +32,7 @@ uses
   Dialogs, SharpESkinManager, Menus, JclSimpleXML, SharpApi,
   GR32, uSharpEModuleManager, PngImageList, SharpEBar,
   SharpEBaseControls, Controls, ExtCtrls, uSkinManagerThreads,
-  uSystemFuncs, Types, SharpESkin, Registry, SharpTypes,
+  uSystemFuncs, Types, SharpESkin, Registry, SharpTypes, SharpNotify,
   SharpGraphicsUtils, Math, SharpCenterApi, ImgList, GR32_Backends,
   uSharpESkinInterface, uSharpBarInterface, MonitorList;
 
@@ -158,6 +158,10 @@ type
     FBarName: string;
     FRegisteredSessionNotification : Boolean;
 
+    // Info Tooltips
+    FFirstHide : Boolean;
+    FFirstThrobberHide : Boolean;
+
     procedure CreateNewBar;
     procedure LoadBarModules(XMLElem: TJclSimpleXMlElem);
 
@@ -205,17 +209,24 @@ type
 
   public
     procedure LoadBarFromID(ID: integer);
+    procedure LoadBarTooltipSettings;
     procedure SaveBarSettings;
+    procedure SaveBarTooltipSettings;
     procedure UpdateBGZone;
     procedure UpdateBGImage(NewWidth: integer = -1);
     procedure InitBar;
     procedure HideBar;
+    procedure ShowNotify(pCaption : String; pScreenBorder : boolean = False);
     property BGImage: TBitmap32 read FBGImage;
     property SharpEBar: TSharpEBar read FSharpEBar;
     property ShellBCInProgress: boolean read FShellBCInProgress;
     property BarID: integer read FBarID;
     property Startup: boolean read FStartup write FStartup;
     property SkinInterface: TSharpESkinInterface read FSkinInterface;
+
+    // Tooltips
+    property FirstHide: boolean read FFirstHide write FFirstHide;
+    property FirstThrobberHide: boolean read FFirstThrobberHide write FFirstThrobberHide;
   end;
 
 const
@@ -626,7 +637,7 @@ begin
     exit;
 
   if [TSU_UPDATE_ENUM(msg.WParam)] <= [suSkinFont,suSkinFileChanged,suTheme,suIconSet,
-                      suScheme] then
+                                       suScheme,suHelpTooltips] then
     Theme := GetCurrentTheme;
 
   // Step1: Update settings and prepare modules for updating
@@ -663,6 +674,7 @@ begin
         SkinInterface.SkinManager.UpdateScheme;
       end;
     Integer(suIconSet): Theme.LoadTheme([tpIconSet]);
+    Integer(suHelpTooltips) : LoadBarTooltipSettings;
   end;
 
   h := Height;
@@ -994,6 +1006,35 @@ begin
   ModuleManager.SaveBarSettings;
 end;
 
+procedure TSharpBarMainForm.SaveBarTooltipSettings;
+var
+  xml: TJclSimpleXML;
+  Dir: string;
+begin
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\';
+  xml := TJclSimpleXMl.Create;
+  try
+    xml.Root.Name := 'SharpBar-Tooltips';
+
+    // Save Bar Settings
+    with xml.Root.Items.Add('Tooltips').Items do
+    begin
+      Add('FirstHide', FFirstHide);
+      Add('FirstThrobberHide', FFirstThrobberHide);
+    end;
+
+    ForceDirectories(Dir);
+    if FileCheck(Dir + 'Tooltips.xml~') then
+      xml.SaveToFile(Dir + 'Tooltips.xml~'); // Save first into a temporary/backup file, in case save operation fails by any reason
+    if FileCheck(Dir + 'Tooltips.xml') then // A quick copy operation is less unlikely to fail than saving the whole xml fie
+      CopyFile(PChar(Dir + 'Tooltips.xml~'),PChar(Dir + 'Tooltips.xml'),False);
+  finally
+    xml.Free;
+  end;
+
+  SharpApi.BroadcastGlobalUpdateMessage(suHelpTooltips);
+end;
+
 procedure TSharpBarMainForm.CreateNewBar;
 var
   xml: TJclSimpleXML;
@@ -1041,6 +1082,45 @@ var
 begin
   cfile := SharpApi.GetCenterDirectory + 'Toolbars.con';
   SharpCenterApi.CenterCommand(sccLoadSetting,PChar(cfile),'');
+end;
+
+procedure TSharpBarMainForm.LoadBarTooltipSettings;
+var
+  xml : TJclSimpleXML;
+  Dir : string;
+  fileloaded : boolean;
+begin
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\';
+
+  // Check if the settings file exists
+  if not FileExists(Dir + 'Tooltips.xml') then
+    exit;
+
+  xml := TJclSimpleXML.Create;
+  fileloaded := False;
+  try
+    if FileCheck(Dir + 'Tooltips.xml') then
+    begin
+      xml.LoadFromFile(Dir + 'Tooltips.xml');
+      fileloaded := true;
+    end;
+  except
+    on E: Exception do
+    begin
+      SharpApi.SendDebugMessageEx('SharpBar',PChar('(LoadBarTooltipSettings): Error loading '+ Dir + 'Tooltips.xml'), clred, DMT_ERROR);
+      SharpApi.SendDebugMessageEx('SharpBar',PChar(E.Message),clblue, DMT_TRACE);
+    end;
+  end;
+
+  if fileloaded then
+    with xml.root.Items do
+      if ItemNamed['Tooltips'] <> nil then
+        with ItemNamed['Tooltips'].Items do
+        begin
+          FFirstHide := BoolValue('FirstHide',True);
+          FFirstThrobberHide := BoolValue('FirstThrobberHide', True);
+        end;
+  xml.Free;
 end;
 
 procedure TSharpBarMainForm.LoadBarFromID(ID: integer);
@@ -1117,6 +1197,7 @@ begin
     if xml.Root.Items.ItemNamed['Settings'] <> nil then
       with xml.Root.Items.ItemNamed['Settings'] do begin
         FBarName := Items.Value('Name', 'Toolbar');
+        FFirstHide := Items.BoolValue('FirstHide',FFirstHide);
         SharpEBar.AutoPosition := Items.BoolValue('AutoPosition', True);
         SharpEBar.PrimaryMonitor := Items.BoolValue('PrimaryMonitor', True);
         SharpEBar.MonitorIndex := Items.IntValue('MonitorIndex', 0);
@@ -1179,6 +1260,10 @@ begin
   //  SharpEBar.Throbber.SpecialBackground := FBGImage;
 
   FStartup := True;
+
+  FFirstHide := True;
+  FFirstThrobberHide := True;
+  LoadBarTooltipSettings;
 
   randomize;
 
@@ -1976,6 +2061,14 @@ begin
       SharpApi.ServiceMsg('DeskArea', 'Update');
     end;
   end;
+
+  // Display a Tooltop if bar was hidden for the first time
+  if FFirstHide then
+  begin
+    ShowNotify('The SharpBar is now invisible because you left clicked the screen border. You can show the SharpBar again by left clicking the screen border another time.',True);
+    FFirstHide := False;
+    SaveBarTooltipSettings;
+  end;
 end;
 
 procedure TSharpBarMainForm.FormMouseUp(Sender: TObject; Button: TMouseButton;
@@ -2000,6 +2093,14 @@ begin
         ModuleManager.ReCalculateModuleSize;
         if SharpEBar.ShowThrobber then
           SharpEBar.Throbber.Repaint;
+
+        // Display a tooltip if throbber was hidden for the first time
+        if not SharpEBar.ShowThrobber and FirstThrobberHide then
+        begin
+          ShowNotify('The Main Button of the SharpBar was disabled because you right clicked the screen border. You can show the Button again by right clicking the screen border another time.',False);
+          FirstThrobberHide := False;
+          SaveBarTooltipSettings;
+        end;
       end;
     end;
   if (Button = mbLeft) and ((Y = 0) or (Y = Height - 1)) then
@@ -2258,6 +2359,38 @@ begin
   SaveBarSettings;
   ModuleManager.ReCalculateModuleSize;
   SharpEBar.Throbber.Repaint;
+end;
+
+procedure TSharpBarMainForm.ShowNotify(pCaption : String; pScreenBorder : boolean = False);
+var
+  edge : TSharpNotifyEdge;
+  ypos : integer;
+begin
+  if Top < Monitor.Top + Monitor.Height div 2 then
+  begin
+    edge := neTopLeft;
+    if pScreenBorder then
+      ypos := Monitor.Top + 1
+    else ypos := Monitor.Top + Height - 1;
+  end else
+  begin
+    edge := neBottomLeft;
+    if pScreenBorder then
+      ypos := Monitor.Top + Monitor.Height
+    else ypos := Monitor.Top + Monitor.Height - Height;
+  end;
+
+  SharpNotify.CreateNotifyWindow(
+    0,
+    nil,
+    Left,
+    ypos,
+    pCaption,
+    niInfo,
+    edge,
+    SkinInterface.SkinManager,
+    10000,
+    Monitor.BoundsRect);
 end;
 
 end.
