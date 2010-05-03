@@ -392,11 +392,10 @@ var
   loadfile : String;
   Stream : TMemoryStream;
 begin
-  FSkin.Clear;
-
   loadfile := SharpApi.GetSharpeUserSettingsPath + 'SharpE.skin';
-  if FileExists(loadfile) then
+  if SharpApi.FileCheck(loadfile, true) then
   begin
+    FSkin.Clear;  
     Stream := TMemoryStream.Create;
     Stream.LoadFromFile(loadfile);
     try
