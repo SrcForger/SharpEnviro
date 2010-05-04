@@ -175,7 +175,7 @@ begin
             APPCOMMAND_MEDIA_STOP  : param := mitem.btnStop;
             APPCOMMAND_MEDIA_NEXTTRACK  : param := mitem.btnNext;
             APPCOMMAND_MEDIA_PREVIOUSTRACK  : param := mitem.btnPrev;
-          else param := 0;
+            else param := 0;
           end;
           if(mitem.Command <> -1) then
           begin
@@ -352,6 +352,8 @@ begin
 end;
 
 procedure TActionEvent.MessageHandler(var msg: TMessage);
+var
+  cmd : integer;
 begin
   if msg.MSg = WM_SHELLHOOKWINDOWCREATED then
     RegisterShellHookReceiver(h)
@@ -360,7 +362,8 @@ begin
     if msg.WParam = HSHELL_APPCOMMAND then
     begin
       msg.result := 1;
-      case msg.LParamHi of
+      cmd := GET_APPCOMMAND_LPARAM(msg.lParam);
+      case cmd of
         APPCOMMAND_BROWSER_HOME: ExecDefaultApp('HTTP');
         APPCOMMAND_LAUNCH_MAIL: ExecDefaultApp('mailto');
         APPCOMMAND_VOLUME_UP: VolumeUp(MIXERLINE_COMPONENTTYPE_DST_SPEAKERS);
@@ -371,7 +374,7 @@ begin
         APPCOMMAND_MICROPHONE_VOLUME_MUTE,APPCOMMAND_MIC_ON_OFF_TOGGLE: VolumeMute(MIXERLINE_COMPONENTTYPE_SRC_FIRST);
         APPCOMMAND_MEDIA_NEXTTRACK,APPCOMMAND_MEDIA_PREVIOUSTRACK,
         APPCOMMAND_MEDIA_STOP,APPCOMMAND_MEDIA_PLAY_PAUSE,
-        APPCOMMAND_MEDIA_PLAY,APPCOMMAND_MEDIA_PAUSE: BroadCastMediaAppCommand(msg.LParamHi);
+        APPCOMMAND_MEDIA_PLAY,APPCOMMAND_MEDIA_PAUSE: BroadCastMediaAppCommand(cmd);
         else msg.result := 0;
       end;
     end;
