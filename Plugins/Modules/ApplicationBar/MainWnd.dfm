@@ -33,6 +33,7 @@ object MainForm: TMainForm
   end
   object ButtonPopup: TPopupMenu
     Images = PngImageList1
+    OnPopup = ButtonPopupPopup
     Left = 208
     Top = 8
     object Delete1: TMenuItem

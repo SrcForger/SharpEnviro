@@ -98,6 +98,7 @@ type
       var Effect: TJvDropEffect);
     procedure mnuPopupLaunchElevClick(Sender: TObject);
     procedure mnuPopupLaunchClick(Sender: TObject);
+    procedure ButtonPopupPopup(Sender: TObject);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   private
@@ -336,7 +337,7 @@ var
   TaskItem : TTaskItem;
   n : integer;
   startindex : integer;
-  dbtnwidth : integer;  
+  dbtnwidth : integer;
 begin
   if SysMenuButton.btn = nil then
     exit;
@@ -344,6 +345,26 @@ begin
   PostMessage(SysMenuButton.wnd, WM_SYSCOMMAND, msg.wparam, msg.lparam);
 
   VWMCount := GetVWMCount;
+  if msg.WParam = $EFFE then // Launch message
+  begin
+    MoveButton := nil;
+    for n := 0 to High(FButtonList) do
+      if FButtonList[n].wnd = SysMenuButton.wnd then
+      begin
+        SharpApi.SharpExecute(FButtonList[n].target);
+        break;
+      end;
+  end else
+  if msg.WParam = $EFFD then // Launch Elevated message
+  begin
+    MoveButton := nil;
+    for n := 0 to High(FButtonList) do
+      if FButtonList[n].wnd = SysMenuButton.wnd then
+      begin
+        SharpApi.SharpExecute('_elevate,' + FButtonList[n].target);
+        break;
+      end;
+  end else
   if msg.WParam = $EFFF then // Remove From Appbar message
   begin
     startindex := -1;
@@ -814,6 +835,10 @@ begin
   if not (isWindow(pBtn.wnd)) then
     exit;
 
+  // Close all preview windows
+  FPreviewWnds.Clear;
+  FPreviewButton := nil;      
+
   SysMenuButton := pBtn;
   GetCursorPos(cp);
   AppMenu := GetSystemMenu(pBtn.wnd, False);
@@ -851,6 +876,26 @@ begin
     MIIM_ID or MIIM_STATE or MIIM_SUBMENU or MIIM_TYPE;
   MenuItemInfo.fType := MFT_SEPARATOR;
   MenuItemInfo.wID := $EFFF;
+  InsertMenuItem(AppMenu, DWORD(0), True, MenuItemInfo);
+
+  { Add Launch Item}
+  FillChar(MenuItemInfo, SizeOf(MenuItemInfo), #0);
+  MenuItemInfo.cbSize := 44; //SizeOf(MenuItemInfo);
+  MenuItemInfo.fMask := MIIM_DATA or
+    MIIM_ID or MIIM_STATE or MIIM_SUBMENU or MIIM_TYPE;
+  MenuItemInfo.fType := MFT_STRING;
+  MenuItemInfo.dwTypeData := 'Launch';
+  MenuItemInfo.wID := $EFFE;
+  InsertMenuItem(AppMenu, DWORD(0), True, MenuItemInfo);
+
+  { Add Launch Item}
+  FillChar(MenuItemInfo, SizeOf(MenuItemInfo), #0);
+  MenuItemInfo.cbSize := 44; //SizeOf(MenuItemInfo);
+  MenuItemInfo.fMask := MIIM_DATA or
+    MIIM_ID or MIIM_STATE or MIIM_SUBMENU or MIIM_TYPE;
+  MenuItemInfo.fType := MFT_STRING;
+  MenuItemInfo.dwTypeData := 'Launch Elevated';
+  MenuItemInfo.wID := $EFFD;
   InsertMenuItem(AppMenu, DWORD(0), True, MenuItemInfo);
 
   { Add Remove From App Bar Item}
@@ -903,6 +948,7 @@ begin
   
   if VWMMenu <> 0 then
     DeleteMenu(AppMenu,0,MF_BYPOSITION);
+  DeleteMenu(AppMenu,0,MF_BYPOSITION);    
   DeleteMenu(AppMenu,0,MF_BYPOSITION);
   DeleteMenu(AppMenu,0,MF_BYPOSITION);
 end;
@@ -1652,6 +1698,13 @@ begin
   wnd.Show;
 end;
 
+procedure TMainForm.ButtonPopupPopup(Sender: TObject);
+begin
+  // Close all preview windows
+  FPreviewWnds.Clear;
+  FPreviewButton := nil;  
+end;
+
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   CurrentVWM := SharpApi.GetCurrentVWM;
@@ -1738,7 +1791,7 @@ begin
   end;
     
   Dir := uKnownFolders.GetKnownFolderPath(FOLDERID_UserPinned);
-  Dir := IncludeTrailingBackSlash(Dir) + 'TaskBar';
+  {$WARNINGS OFF} Dir := IncludeTrailingBackSlash(Dir) + 'TaskBar'; {$WARNINGS ON}
   SList := TStringList.Create;
   SList.Clear;
   GetExecuteableFilesFromDir(SList,Dir);
