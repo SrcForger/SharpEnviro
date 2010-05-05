@@ -78,7 +78,8 @@ type
     function _Release: Integer; virtual; stdcall;
 
   public
-    constructor Create; reintroduce;
+    constructor Create; reintroduce; overload;
+    constructor Create(pCanDestroy : boolean); overload;
     destructor Destroy; override;
 
     // IUnknown
@@ -140,14 +141,20 @@ end;
 
 constructor TInterfacedXmlBase.Create;
 begin
-  inherited Create;
-
-  FXml := TJclSimpleXML.Create;
+  Create(False);
 end;
 
 procedure TInterfacedXmlBase.Debug(msg: string; msgType: integer);
 begin
   SharpApi.SendDebugMessageEx( 'XmlBase', pchar(msg), clBlack, msgType );
+end;
+
+constructor TInterfacedXmlBase.Create(pCanDestroy: boolean);
+begin
+  inherited Create;
+
+  FCanDestroy := pCanDestroy;
+  FXml := TJclSimpleXML.Create;
 end;
 
 procedure TInterfacedXmlBase.Debug(msg: string );
