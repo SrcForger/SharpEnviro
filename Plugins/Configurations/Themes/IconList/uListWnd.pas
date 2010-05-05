@@ -71,11 +71,13 @@ type
       const ASelected: Boolean);
     procedure tmrTimer(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     FPluginHost: ISharpCenterHost;
     FIconSet: string;
 
   public
+    procedure ClearList;
     procedure BuildIconList;
     procedure BuildIconPreview(var ABmp: TBitmap32);
 
@@ -104,6 +106,11 @@ procedure TfrmListWnd.FormCreate(Sender: TObject);
 begin
   DoubleBuffered := true;
   lbIcons.DoubleBuffered := True;
+end;
+
+procedure TfrmListWnd.FormDestroy(Sender: TObject);
+begin
+  ClearList;
 end;
 
 procedure TfrmListWnd.FormShow(Sender: TObject);
@@ -163,6 +170,17 @@ begin
   XML.Free;
 end;
 
+procedure TfrmListWnd.ClearList;
+var
+  n : integer;
+begin
+  for n := lbIcons.Count - 1 downto 0 do
+  begin
+    TIconItem(lbIcons.Item[n].Data).Free;
+    lbIcons.DeleteItem(n);
+  end;
+end;
+
 procedure TfrmListWnd.BuildIconList;
 var
   newItem: TSharpEListItem;
@@ -171,7 +189,7 @@ var
   XML: TJclSimpleXML;
   tmp: TIconItem;
 begin
-  lbIcons.Clear;
+  ClearList;
 
   XML := TJclSimpleXML.Create;
   try
