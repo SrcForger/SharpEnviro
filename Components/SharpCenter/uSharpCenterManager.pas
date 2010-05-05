@@ -989,7 +989,9 @@ begin
 
       if ((FPlugin.Dllhandle <> 0) and (@FPlugin.InitPluginInterface <> nil)) then
       begin
-        FPluginHandle := Plugin.PluginInterface.Open;
+        FPlugin.PluginInterface := FPlugin.InitPluginInterface(FPluginHost);
+        FPlugin.PluginInterface.CanDestroy := false;
+        FPluginHandle := FPlugin.PluginInterface.Open;
         FPluginHost.PluginOwner.ParentWindow := FPluginHandle;
 
         LoadPluginTabs;

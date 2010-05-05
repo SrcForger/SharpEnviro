@@ -79,12 +79,6 @@ begin
   end;
 end;
 
-procedure LoadPluginData(var plugin: TPlugin; var PluginHost : TInterfacedSharpCenterHostBase);
-begin
-  plugin.PluginInterface := plugin.InitPluginInterface(PluginHost);
-  plugin.PluginInterface.CanDestroy := false;
-end;
-
 function LoadPluginInterface(dll: Pchar; var pluginHost: TInterfacedSharpCenterHostBase; pluginID : String): TPlugin;
 begin
   result.Dll := dll;
@@ -103,8 +97,6 @@ begin
       result.dllhandle := 0;
       SendDebugMessageEx('SharpCenter','Unable to load plugin, InitPluginInterface does not exist',clRed,DMT_ERROR);
     end;
-
-    LoadPluginData(result, pluginHost);
 
     // Get the config's MetaData and PluginData
     GetConfigMetaDataEx(Result.DllHandle,Result.MetaData,Result.ConfigMode,Result.ConfigType);

@@ -298,6 +298,7 @@ var
   sPluginID: string;
   sCmd: string;
 begin
+  {$WARNINGS OFF}
   SendDebugMessage('SharpCenter',cmdline,0);
 
   n := Pos('-api', CmdLine);
@@ -318,6 +319,7 @@ begin
   end
   else
     SCM.BuildNavRoot;
+  {$WARNINGS ON}    
 end;
 
 procedure TSharpCenterWnd.btnBackClick(Sender: TObject);
