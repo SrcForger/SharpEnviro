@@ -6,6 +6,7 @@
   <ItemGroup>
     <Projects Include="..\Plugins\Services\Actions\Actions.dproj" />
     <Projects Include="..\Plugins\Services\Cursors\cursors.dproj" />
+    <Projects Include="..\Plugins\Services\DDEServer\DDEServer.dproj" />
     <Projects Include="..\Plugins\Services\Exec\Exec.dproj" />
     <Projects Include="..\Plugins\Services\Hotkeys\Hotkeys.dproj" />
     <Projects Include="..\Plugins\Services\MultimediaInput\MultimediaInput.dproj" />
@@ -131,14 +132,23 @@
   <Target Name="Shell:Make">
     <MSBuild Projects="..\Plugins\Services\Shell\Shell.dproj" Targets="Make" />
   </Target>
+  <Target Name="DDEServer">
+    <MSBuild Projects="..\Plugins\Services\DDEServer\DDEServer.dproj" Targets="" />
+  </Target>
+  <Target Name="DDEServer:Clean">
+    <MSBuild Projects="..\Plugins\Services\DDEServer\DDEServer.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="DDEServer:Make">
+    <MSBuild Projects="..\Plugins\Services\DDEServer\DDEServer.dproj" Targets="Make" />
+  </Target>
   <Target Name="Build">
-    <CallTarget Targets="Exec;Hotkeys;SkinController;Startup;Weather;Actions;cursors;TaskSwitch;SystemActions;VWM;MultimediaInput;Shell" />
+    <CallTarget Targets="Exec;Hotkeys;SkinController;Startup;Weather;Actions;cursors;TaskSwitch;SystemActions;VWM;MultimediaInput;Shell;DDEServer" />
   </Target>
   <Target Name="Clean">
-    <CallTarget Targets="Exec:Clean;Hotkeys:Clean;SkinController:Clean;Startup:Clean;Weather:Clean;Actions:Clean;cursors:Clean;TaskSwitch:Clean;SystemActions:Clean;VWM:Clean;MultimediaInput:Clean;Shell:Clean" />
+    <CallTarget Targets="Exec:Clean;Hotkeys:Clean;SkinController:Clean;Startup:Clean;Weather:Clean;Actions:Clean;cursors:Clean;TaskSwitch:Clean;SystemActions:Clean;VWM:Clean;MultimediaInput:Clean;Shell:Clean;DDEServer:Clean" />
   </Target>
   <Target Name="Make">
-    <CallTarget Targets="Exec:Make;Hotkeys:Make;SkinController:Make;Startup:Make;Weather:Make;Actions:Make;cursors:Make;TaskSwitch:Make;SystemActions:Make;VWM:Make;MultimediaInput:Make;Shell:Make" />
+    <CallTarget Targets="Exec:Make;Hotkeys:Make;SkinController:Make;Startup:Make;Weather:Make;Actions:Make;cursors:Make;TaskSwitch:Make;SystemActions:Make;VWM:Make;MultimediaInput:Make;Shell:Make;DDEServer:Make" />
   </Target>
   <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
 </Project>
