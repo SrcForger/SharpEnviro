@@ -552,7 +552,7 @@
       <text>
         <draw>1</draw>
         <location>25,ch-0</location>
-	<dimension>w-24,h</dimension>
+	<dimension>w-26,h</dimension>
         <name>Calibri</name>
         <size>10</size>
         <cleartype>1</cleartype>
@@ -759,7 +759,7 @@
       <text>
         <draw>1</draw>
         <location>25,ch-0</location>
-	<dimension>w-24,h</dimension>
+	<dimension>w-26,h</dimension>
         <name>Calibri</name>
         <size>10</size>
         <cleartype>1</cleartype>
