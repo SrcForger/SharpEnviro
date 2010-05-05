@@ -291,13 +291,13 @@ end;
 
 procedure TThemeWallpaper.LoadFromFile;
 var
-  XML : TInterfacedXmlBase;
+  XML : IXmlBase;
   fileloaded : boolean;
   n : integer;
 begin
   SetDefaults;
 
-  XML := TInterfacedXMLBase.Create;
+  XML := TInterfacedXMLBase.Create(True);
   XML.XmlFilename := FThemeInfo.Directory + '\' + THEME_WALLPAPER_FILE;
   if XML.Load then
   begin
@@ -353,14 +353,14 @@ begin
             setlength(FMonitors, length(FMonitors) + 1);
           FMonitors[High(FMonitors)].Name := Value('Name', 'Default');
           FMonitors[High(FMonitors)].ID := IntValue('ID', -100);
-        end;       
+        end;
   end else fileloaded := False;
-  XML.Free;
+  XML := nil;
 
   if not fileloaded then
     SaveToFile;
 
-  LastUpdate := DateTimeToUnix(Now());  
+  LastUpdate := DateTimeToUnix(Now());
 end;
 
 procedure TThemeWallpaper.ParseColors(pScheme: IThemeScheme);
@@ -378,10 +378,10 @@ end;
 
 procedure TThemeWallpaper.SaveToFile;
 var
-  XML : TInterfacedXmlBase;
+  XML : IXmlBase;
   n : integer;
 begin
-  XML := TInterfacedXMLBase.Create;
+  XML := TInterfacedXMLBase.Create(True);
   XML.XmlFilename := FThemeInfo.Directory + '\' + THEME_WALLPAPER_FILE;
 
   XML.XmlRoot.Name := 'SharpEThemeWallpapers';
@@ -393,14 +393,14 @@ begin
         with Items.Add('item').Items, FWallpapers[n] do
         begin
           Add('Name', Name);
-          Add('Image', Image);          
+          Add('Image', Image);
 
           Add('Switch', Switch);
           Add('SwitchPath', SwitchPath);
           Add('SwitchRecursive', SwitchRecursive);
           Add('SwitchRandomize', SwitchRandomize);
           Add('SwitchTimer', SwitchTimer);
-            
+
           Add('Color', ColorStr);
           Add('Alpha', Alpha);
           Add('Size', Integer(Size));
@@ -431,7 +431,7 @@ begin
   end;
   XML.Save;
 
-  XML.Free;
+  XML := nil;
 end;
 
 procedure TThemeWallpaper.SetDefaults;

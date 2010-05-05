@@ -174,15 +174,15 @@ end;
 
 procedure TThemeScheme.LoadCustomScheme;
 var
-  XML : TInterfacedXmlBase;
+  XML : IXmlBase;
   n : integer;
   s : String;
   tempColor : String;
   Index : integer;
 begin
   // Load custom Scheme
-  XML := TInterfacedXMLBase.Create;
-  FDirectory := FThemeSkin.Directory + SKINS_SCHEME_DIRECTORY + '\';  
+  XML := TInterfacedXMLBase.Create(True);
+  FDirectory := FThemeSkin.Directory + SKINS_SCHEME_DIRECTORY + '\';
   XML.XmlFilename := FDirectory + FName + '.xml';
   if XML.Load then
   begin
@@ -198,7 +198,7 @@ begin
         end;
       end;
   end;
-  XML.Free;
+  XML := nil;
 end;
 
 procedure TThemeScheme.LoadFromFile;
@@ -211,13 +211,13 @@ end;
 
 procedure TThemeScheme.LoadNameAndDefaults;
 var
-  XML : TInterfacedXmlBase;
+  XML : IXmlBase;
   fileloaded : boolean;
   n : integer;
   s : String;
 begin
   // Get the Scheme Name
-  XML := TInterfacedXMLBase.Create;
+  XML := TInterfacedXMLBase.Create(True);
   XML.XmlFilename := FThemeInfo.Directory + '\' + THEME_SCHEME_FILE;
   if XML.Load then
   begin
@@ -227,14 +227,14 @@ begin
       FName := Value('Scheme', 'Default');
     end
   end else fileloaded := False;
-  XML.Free;
+  XML := nil;
 
   if not fileloaded then
     SaveToFile;
 
   // Load Colors, Tags and Default colors of the Skins Scheme
   SetLength(FColors,0);
-  XML := TInterfacedXMLBase.Create;
+  XML := TInterfacedXMLBase.Create(True);
   XML.XmlFilename := FThemeSkin.Directory + SKINS_SCHEME_FILE;
   if XML.Load then
   begin
@@ -257,7 +257,7 @@ begin
           FColors[High(FColors)].SchemeType := stColor;
       end;
   end;
-  XML.Free;
+  XML := nil;
 end;
 
 function TThemeScheme.SchemeCodeToColor(pCode: integer): integer;
@@ -483,9 +483,9 @@ end;
 
 procedure TThemeScheme.SaveToFile;
 var
-  XML : TInterfacedXmlBase;
+  XML : IXMlBase;
 begin
-  XML := TInterfacedXMLBase.Create;
+  XML := TInterfacedXMLBase.Create(True);
   XML.XmlFilename := FThemeInfo.Directory + '\' + THEME_SCHEME_FILE;
 
   XML.XmlRoot.Name := 'SharpEThemeScheme';
@@ -495,7 +495,7 @@ begin
   end;
   XML.Save;
 
-  XML.Free;
+  XML := nil;
 end;
 
 procedure TThemeScheme.SetDefaults;

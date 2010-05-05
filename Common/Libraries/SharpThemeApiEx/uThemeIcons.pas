@@ -181,22 +181,22 @@ end;
 
 procedure TThemeIcons.LoadFromFile;
 var
-  XML : TInterfacedXmlBase;
+  XMLI : IXmlBase;
   fileloaded : boolean;
 begin
   SetDefaults;
 
-  XML := TInterfacedXMLBase.Create;
-  XML.XmlFilename := FThemeInfo.Directory + '\' + THEME_ICONSET_FILE;
-  if XML.Load then
+  XMLI := TInterfacedXMLBase.Create(True);
+  XMLI.XmlFilename := FThemeInfo.Directory + '\' + THEME_ICONSET_FILE;
+  if XMLI.Load then
   begin
     fileloaded := True;
-    with XML.XmlRoot.Items do
+    with XMLI.XmlRoot.Items do
     begin
       FName := Value('Name',DEFAULT_ICONSET);
     end
   end else fileloaded := False;
-  XML.Free;
+  XMLI := nil;
 
   if not fileloaded then
     SaveToFile;
@@ -209,14 +209,14 @@ end;
 
 procedure TThemeIcons.LoadIcons;
 var
-  XML : TInterfacedXmlBase;
+  XML : IXmlBase;
   n,i: integer;
   tmpName : String;
 begin
   SetLength(FIcons,0);
 
   // Load Global Default Icons
-  XML := TInterfacedXMLBase.Create;
+  XML := TInterfacedXMLBase.Create(True);
   XML.XmlFilename := FDirectoryBase + FDirectoryDefault + 'DefaultIconSet.xml';
   if XML.Load then
   begin
@@ -232,10 +232,10 @@ begin
           end;
         end;
   end;
-  XML.Free;
+  XML := nil;
 
   // Load the actual icon set
-  XML := TInterfacedXMLBase.Create;
+  XML := TInterfacedXMLBase.Create(True);
   XML.XmlFilename := FDirectoryBase + FDirectoryIconSet + 'IconSet.xml';
   if XML.Load then
   begin
@@ -267,18 +267,18 @@ begin
         end;
     end
   end;
-  XML.Free;
+  XML := nil;
 
   SortByName;
 end;
 
 procedure TThemeIcons.SaveToFile;
 var
-  XML : TInterfacedXmlBase;
+  XML : IXmlBase;
 begin
   UpdateDirectory;
 
-  XML := TInterfacedXMLBase.Create;
+  XML := TInterfacedXMLBase.Create(True);
   XML.XmlFilename := FThemeInfo.Directory + '\' + THEME_ICONSET_FILE;
 
   XML.XmlRoot.Name := 'SharpEThemeIconSet';
@@ -288,7 +288,7 @@ begin
   end;
   XML.Save;
 
-  XML.Free;
+  XML := nil;
 end;
 
 procedure TThemeIcons.SetDefaults;

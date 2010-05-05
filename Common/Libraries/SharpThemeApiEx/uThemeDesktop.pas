@@ -96,10 +96,10 @@ end;
 
 procedure TThemeDesktop.LoadFromFileAnimation;
 var
-  XML : TInterfacedXmlBase;
+  XML : IXmlBase;
   fileloaded : boolean;
 begin
-  XML := TInterfacedXMLBase.Create;
+  XML := TInterfacedXMLBase.Create(True);
   XML.XmlFilename := FThemeInfo.Directory + '\' + THEME_DESKTOP_ANIM_FILE;
   if XML.Load then
   begin
@@ -118,7 +118,7 @@ begin
       BrightnessValue := IntValue('BrightnessValue', BrightnessValue);
     end
   end else fileloaded := False;
-  XML.Free;
+  XML := nil;
 
   if not fileloaded then
     SaveToFileAnimation;
@@ -126,10 +126,10 @@ end;
 
 procedure TThemeDesktop.LoadFromFileIcon;
 var
-  XML : TInterfacedXmlBase;
+  XML : IXmlBase;
   fileloaded : boolean;
 begin
-  XML := TInterfacedXMLBase.Create;
+  XML := TInterfacedXMLBase.Create(True);
   XML.XmlFilename := FThemeInfo.Directory + '\' + THEME_DESKTOP_ICON_FILE;
   if XML.Load then
   begin
@@ -161,7 +161,7 @@ begin
       DisplayText        := BoolValue('DisplayText', DisplayText);
     end
   end else fileloaded := False;
-  XML.Free;
+  XML := nil;
 
   if not fileloaded then
     SaveToFileIcon;
@@ -191,9 +191,9 @@ end;
 
 procedure TThemeDesktop.SaveToFileAnimation;
 var
-  XML : TInterfacedXmlBase;
+  XML : IXmlBase;
 begin
-  XML := TInterfacedXMLBase.Create;
+  XML := TInterfacedXMLBase.Create(True);
   XML.XmlFilename := FThemeInfo.Directory + '\' + THEME_DESKTOP_ANIM_FILE;
 
   XML.XmlRoot.Name := 'SharpEThemeDesktopAnimation';
@@ -212,14 +212,14 @@ begin
   end;
   XML.Save;
 
-  XML.Free;
+  XML := nil;
 end;
 
 procedure TThemeDesktop.SaveToFileIcon;
 var
-  XML : TInterfacedXmlBase;
+  XML : IXmlBase;
 begin
-  XML := TInterfacedXMLBase.Create;
+  XML := TInterfacedXMLBase.Create(True);
   XML.XmlFilename := FThemeInfo.Directory + '\' + THEME_DESKTOP_ICON_FILE;
 
   XML.XmlRoot.Name := 'SharpEThemeDesktopIcon';
@@ -251,7 +251,7 @@ begin
   end;
   XML.Save;
 
-  XML.Free;
+  XML := nil;
 end;
 
 procedure TThemeDesktop.SetAnimation(Value: TThemeDesktopAnim);

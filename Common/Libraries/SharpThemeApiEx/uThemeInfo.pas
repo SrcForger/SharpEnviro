@@ -101,13 +101,13 @@ end;
 
 procedure TThemeInfo.LoadFromFile;
 var
-  XML : TInterfacedXmlBase;
+  XML : IXmlBase;
   fileloaded : boolean;
 begin
   SetDefaults;
   UpdateDirectory;
 
-  XML := TInterfacedXMLBase.Create;
+  XML := TInterfacedXMLBase.Create(True);
   XML.XmlFilename := FDirectory + '\' + THEME_INFO_FILE;
   if XML.Load then
   begin
@@ -119,7 +119,7 @@ begin
       Comment := Value('Comment',Comment);
     end
   end else fileloaded := False;
-  XML.Free;
+  XML := nil;
 
   if not fileloaded then
     SaveToFile;
@@ -129,11 +129,11 @@ end;
 
 procedure TThemeInfo.SaveToFile;
 var
-  XML : TInterfacedXmlBase;
+  XML : IXmlBase;
 begin
   UpdateDirectory;
 
-  XML := TInterfacedXMLBase.Create;
+  XML := TInterfacedXMLBase.Create(True);
   XML.XmlFilename := FDirectory + '\' + THEME_INFO_FILE;
 
   XML.XmlRoot.Name := 'SharpETheme';
@@ -146,7 +146,7 @@ begin
   end;
   XML.Save;
 
-  XML.Free;
+  XML := nil;
 end;
 
 procedure TThemeInfo.SetDefaults;

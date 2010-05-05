@@ -127,10 +127,10 @@ end;
 
 procedure TThemeSkin.LoadFromFileFont;
 var
-  XML : TInterfacedXmlBase;
+  XML : IXmlBase;
   fileloaded : boolean;
 begin
-  XML := TInterfacedXMLBase.Create;
+  XML := TInterfacedXMLBase.Create(True);
   XML.XmlFilename := FThemeInfo.Directory + '\' + THEME_SKIN_FONT_FILE;
   if XML.Load then
   begin
@@ -159,6 +159,7 @@ begin
       ValueClearType := BoolValue('ValueClearType', ValueClearType);
     end;
   end else fileloaded := False;
+  XML := nil;
 
   if not fileloaded then
     SaveToFileFont;
@@ -166,10 +167,10 @@ end;
 
 procedure TThemeSkin.LoadFromFileSkinAndGlass;
 var
-  XML : TInterfacedXmlBase;
+  XML : IXmlBase;
   fileloaded : boolean;
 begin
-  XML := TInterfacedXMLBase.Create;
+  XML := TInterfacedXMLBase.Create(True);
   XML.XmlFilename := FThemeInfo.Directory + '\' + THEME_SKIN_FILE;
   if XML.Load then
   begin
@@ -186,10 +187,10 @@ begin
       LightenAmount  := IntValue('GELightenAmount', LightenAmount);
     end
   end else fileloaded := False;
-  XML.Free;
+  XML := nil;
 
   if not fileloaded then
-    SaveToFileSkinAndGlass;  
+    SaveToFileSkinAndGlass;
 
   UpdateDirectory;
 end;
@@ -207,9 +208,9 @@ end;
 
 procedure TThemeSkin.SaveToFileFont;
 var
-  XML : TInterfacedXmlBase;
+  XML : IXmlBase;
 begin
-  XML := TInterfacedXMLBase.Create;
+  XML := TInterfacedXMLBase.Create(True);
   XML.XmlFilename := FThemeInfo.Directory + '\' + THEME_SKIN_FONT_FILE;
   XML.XmlRoot.Name := 'SharpEThemeFontSettings';
   with XML.XmlRoot.Items, FSkinFont do
@@ -236,15 +237,14 @@ begin
     Add('ValueClearType', ValueClearType);
   end;
   XML.Save;
-  XML.Free;
-
+  XML := nil;
 end;
 
 procedure TThemeSkin.SaveToFileSkinAndGlass;
 var
-  XML : TInterfacedXmlBase;
+  XML : IXmlBase;
 begin
-  XML := TInterfacedXMLBase.Create;
+  XML := TInterfacedXMLBase.Create(True);
   XML.XmlFilename := FThemeInfo.Directory + '\' + THEME_SKIN_FILE;
   XML.XmlRoot.Name := 'SharpEThemeSkin';
   with XML.XmlRoot.Items, FGlassEffect do
@@ -259,7 +259,7 @@ begin
     Add('GELightenAmount',LightenAmount);
   end;
   XML.Save;
-  XML.Free;
+  XML := nil;
 end;
 
 procedure TThemeSkin.SetDefaults;

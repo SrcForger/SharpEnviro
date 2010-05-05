@@ -157,14 +157,14 @@ end;
 
 function TSharpETheme.GetCurrentTheme : String;
 var
-  XML : TInterfacedXmlBase;
+  XML : IXmlBase;
   fileloaded : boolean;
 begin
   if not CheckSharpEUserSettings then
     CreateDefaultSharpEUserSettings;
 
-  result := 'Default';    
-  XML := TInterfacedXMLBase.Create;
+  result := 'Default';
+  XML := TInterfacedXMLBase.Create(True);
   XML.XmlFilename := SharpApi.GetSharpeUserSettingsPath + SHARPE_USER_SETTINGS;
   if XML.Load then
   begin
@@ -172,7 +172,7 @@ begin
     with XML.XmlRoot.Items do
       result := Value('Theme', 'Default');
   end else fileloaded := False;
-  XML.Free;
+  XML := nil;
 
   if not fileloaded then
     CreateDefaultSharpEUserSettings;
