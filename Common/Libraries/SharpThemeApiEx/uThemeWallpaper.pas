@@ -178,7 +178,7 @@ var
   DirList: TStringList;
   i: integer;
 begin
-  StartDir := IncludeTrailingBackslash(StartDir);
+  {$WARNINGS OFF} StartDir := IncludeTrailingBackslash(StartDir); {$WARNINGS ON}
 
   if FindFirst(StartDir + '*.*', faAnyFile - faDirectory, SR) = 0 then
   begin
