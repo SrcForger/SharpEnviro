@@ -139,6 +139,9 @@ type
     property HideTimeout : integer read GetHideTimeout write SetHideTimeout;
   end;
 
+const
+  SUBMENUTIMER_INTERVAL = 250;
+
 implementation
 
 {$R *.dfm}
@@ -330,6 +333,7 @@ end;
 
 procedure TSharpEMenuWnd.FormCreate(Sender: TObject);
 begin
+  SubMenuTimer.Interval := SUBMENUTIMER_INTERVAL;
   FOffset := 0;
   FRootMenu := False;
   FFreeMenu := False;
@@ -397,7 +401,11 @@ begin
   begin
     SubMenuTimer.Enabled := False;
     if submenu then
+    begin
+      if FSubMenu = nil then // no sub menu, open instantly
+        SubMenuTimer.Interval := 25;
       SubMenuTimer.Enabled := True;
+    end;
     FMenu.RenderTo(FPicture,FOffset);
     PreMul(FPicture);
     DrawWindow;
@@ -570,6 +578,7 @@ begin
   if FIsClosing then exit;
   if FMenu = nil then exit;
 
+  SubMenuTimer.Interval := SUBMENUTIMER_INTERVAL;
   SubMenuTimer.Enabled := False;
   item := FMenu.CurrentItem;
   if item <> nil then
