@@ -200,16 +200,14 @@ begin
     FIsValid := true;
 
     try
-      LoadBitmap32FromPng(FBitmap, path, HasAlpha);
+      FHasAlpha := false;
+      if CompareText(ExtractFileExt(path),'.bmp') = 0 then
+        FBitmap.LoadFromFile(path)
+      else LoadBitmap32FromPng(FBitmap, path, HasAlpha);
       if (FHasAlpha <> true) and (HasAlpha = true) then
         FHasAlpha := true;
-        
     except
-      try
-        FBitmap.LoadFromFile(path);
-      except
-        FIsValid := false;
-      end;
+      FIsValid := false;
     end;
   end;
 end;
