@@ -115,7 +115,7 @@ begin
     w := round(Mon.Width * F);
 
     PreviewBmp.SetSize(w,h);
-    PreviewBmp.Clear(PluginHost.Theme.ContainerColor);
+    PreviewBmp.Clear(clWhite);
 
     monBoundsRect := Mon.BoundsRect;
     for  n := 0 to GetSharpBarCount - 1 do
@@ -134,7 +134,7 @@ begin
         PreviewBmp.FillRect(round((barBoundsRect.R.Left - Mon.Left) * F),
                             round((barBoundsRect.R.Top - Mon.Top) * F),
                             round((barBoundsRect.R.Right - Mon.Left) * F),
-                            round((barBoundsRect.R.Bottom - Mon.Top)* F),color32(PluginHost.Theme.ContainerTextColor));
+                            round((barBoundsRect.R.Bottom - Mon.Top)* F),color32(clBlue));
         if AutoMode then
         begin
           if barBoundsRect.R.Top < Mon.Top + Mon.Height div 2 then
@@ -149,7 +149,7 @@ begin
     monBoundsRect.Right := monBoundsRect.Right - OffSets.Right - Mon.BoundsRect.Left;
     monBoundsRect.Bottom := monBoundsRect.Bottom - OffSets.Bottom - Mon.BoundsRect.Top;
 
-    color := AlterColor(PluginHost.Theme.ContainerColor, 100 );
+    color := clBlack;
     PreviewBmp.FrameRectS(round(monBoundsRect.Left * F),
                           round(monBoundsRect.Top * F),
                           round(monBoundsRect.Right * F),
