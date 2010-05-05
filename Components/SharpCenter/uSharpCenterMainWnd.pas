@@ -1394,6 +1394,10 @@ procedure TSharpCenterWnd.WMSettingsUpdate(var Msg: TMessage);
 var
   Theme : ISharpETheme;
 begin
+  exit; // Disabled because it would cause Problems with theme configs
+  // Now the theme configs use a local instance of TSharpETheme, so it's
+  // no longer necessary for SharpCenter to update the theme
+
   if [TSU_UPDATE_ENUM(msg.WParam)] <= [suSkinFont,suSkinFileChanged,suTheme,
                                        suIconSet,suScheme] then
   begin
