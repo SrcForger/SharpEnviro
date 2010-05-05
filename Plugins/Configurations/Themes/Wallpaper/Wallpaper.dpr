@@ -43,6 +43,7 @@ uses
   SharpThemeApiEx,
   uThemeConsts,
   uISharpETheme,
+  uSharpETheme,
   SharpApi,
   JvPageList,
   JclSimpleXml,
@@ -68,6 +69,7 @@ type
     procedure PopulateAvailableMonitors;
   public
     constructor Create(APluginHost: ISharpCenterHost);
+    destructor Destroy; override;
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
@@ -110,8 +112,15 @@ constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
   
-  FTheme := GetTheme(PluginHost.PluginID);
+  FTheme := TSharpETheme.Create(PluginHost.PluginID);
   FTheme.LoadTheme([tpWallpaper,tpSkinScheme]);
+end;
+
+destructor TSharpCenterPlugin.Destroy;
+begin
+  FTheme := nil;
+
+  inherited Destroy;
 end;
 
 function TSharpCenterPlugin.Load: Boolean;

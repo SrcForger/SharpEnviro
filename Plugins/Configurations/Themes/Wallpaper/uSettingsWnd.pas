@@ -52,6 +52,7 @@ uses
   Buttons,
   PngBitBtn,
   GR32_Image,
+  GR32_Backends,
   SharpEColorEditorEx,
   Mask,
   JvExMask,

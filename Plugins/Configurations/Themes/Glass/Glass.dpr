@@ -45,6 +45,7 @@ uses
   SharpEColorEditorEx,
   SharpEColorEditor,
   SharpThemeApiEx,
+  uSharpETheme,
   uISharpETheme,
   uThemeConsts,
   uSharpCenterPluginScheme,
@@ -61,6 +62,7 @@ type
     procedure Load;
   public
     constructor Create(APluginHost: ISharpCenterHost);
+    destructor Destroy; override;
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
@@ -79,8 +81,15 @@ constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
   
-  FTheme := GetTheme(APluginHost.PluginId);
+  FTheme := TSharpETheme.Create(APluginHost.PluginId);
   FTheme.LoadTheme([tpSkinScheme]);
+end;
+
+destructor TSharpCenterPlugin.Destroy;
+begin
+  FTheme := nil;
+
+  inherited Destroy;
 end;
 
 procedure TSharpCenterPlugin.Load;

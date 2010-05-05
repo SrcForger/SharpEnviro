@@ -270,6 +270,7 @@ end;
 
 procedure TfrmListWnd.FormDestroy(Sender: TObject);
 begin
+  FSchemeManager.Theme := nil;
   FSchemeManager.Free;
 end;
 

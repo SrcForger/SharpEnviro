@@ -38,6 +38,7 @@ uses
   uVistaFuncs,
   uThemeConsts,
   uISharpETheme,
+  uSharpETheme,
   uSharpCenterPluginScheme,
   BarPreview,
   forms,
@@ -52,7 +53,8 @@ type
     FTheme : ISharpETheme;
     procedure Load;
   public
-    constructor Create( APluginHost: ISharpCenterHost );
+    constructor Create(APluginHost: ISharpCenterHost);
+    destructor Destroy; override;
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
@@ -76,8 +78,15 @@ begin
 
   themeId := copy(APluginHost.PluginId, 0, pos(':', APluginHost.PluginId)-1);
 
-  FTheme := GetTheme(themeId);
+  FTheme := TSharpETheme.Create(themeId);
   FTheme.LoadTheme([tpSkinScheme]);
+end;
+
+destructor TSharpCenterPlugin.Destroy;
+begin
+  FTheme := nil;
+
+  inherited Destroy;
 end;
 
 procedure TSharpCenterPlugin.Load;

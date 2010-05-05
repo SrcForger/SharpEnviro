@@ -41,6 +41,7 @@ uses
   SharpThemeApiEx,
   uThemeConsts,
   uISharpETheme,
+  uSharpETheme,
   SharpApi,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
@@ -57,7 +58,8 @@ type
     FTheme : ISharpETheme;
     procedure Load;
   public
-    constructor Create( APluginHost: ISharpCenterHost );
+    constructor Create(APluginHost: ISharpCenterHost);
+    destructor Destroy; override;
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
@@ -76,9 +78,16 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
-  
-  FTheme := GetTheme(PluginHost.PluginId);
+
+  FTheme := TSharpETheme.Create(PluginHost.PluginId);
   FTheme.LoadTheme([tpIconSet]);
+end;
+
+destructor TSharpCenterPlugin.Destroy;
+begin
+  FTheme := nil;
+
+  inherited Destroy;
 end;
 
 procedure TSharpCenterPlugin.Load;

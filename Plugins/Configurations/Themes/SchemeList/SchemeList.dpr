@@ -39,6 +39,7 @@ uses
   SharpThemeApiEx,
   SharpFileUtils,
   uISharpETheme,
+  uSharpETheme,
   uThemeConsts,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
@@ -57,7 +58,8 @@ type
     procedure ValidateInvalidChars(Sender: TObject; ValueToValidate: Variant; var Valid: Boolean);
   public
     Theme : ISharpETheme;
-    constructor Create( APluginHost: ISharpCenterHost );
+    constructor Create(APluginHost: ISharpCenterHost);
+    destructor Destroy; override;
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
@@ -67,9 +69,6 @@ type
     procedure SetupValidators; stdcall;
     procedure UpdatePreview(ABitmap: TBitmap32); stdcall;
   end;
-
-var
-  gTheme : ISharpETheme;
 
   { TSharpCenterPlugin }
 
@@ -90,10 +89,16 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
-  
-  Theme := GetTheme(PluginHost.PluginID);
+
+  Theme := TSharpETheme.Create(PluginHost.PluginID);
   Theme.LoadTheme([tpSkinScheme]);
-  gTheme := Theme;
+end;
+
+destructor TSharpCenterPlugin.Destroy;
+begin
+  Theme := nil;
+
+  inherited Destroy;
 end;
 
 function XmlGetSchemeListAsCommaText(Theme : ISharpETheme): string;
@@ -214,6 +219,7 @@ end;
 function GetPluginData(pluginID : String): TPluginData;
 var
   sl: TStringList;
+  gTheme : ISharpETheme;
 begin
   with Result do
   begin
@@ -223,9 +229,12 @@ begin
 
     sl := TstringList.Create;
     try
+      gTheme := TSharpETheme.Create(PluginID);
+      gTheme.LoadTheme([tpSkinScheme]);
       sl.CommaText := XmlGetSchemeListAsCommaText(gTheme);
+    except
       Status := IntToStr(sl.count);
-    finally
+      gTheme := nil;
       sl.Free;
     end;
   end;

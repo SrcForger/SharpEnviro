@@ -41,6 +41,8 @@
       
       
       
+      
+      
       <Excluded_Packages Name="C:\Users\Public\Documents\RAD Studio\5.0\Bpl\Graphics32.bpl">Datei C:\Users\Public\Documents\RAD Studio\5.0\Bpl\Graphics32.bpl nicht gefunden</Excluded_Packages>
     </Excluded_Packages><Source><Source Name="MainSource">SchemeList.dpr</Source></Source></Delphi.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
