@@ -64,10 +64,12 @@ Page custom checkNETFramework checkNETFrameworkLeave
 Page custom setShell setShellLeave
 !define MUI_PAGE_CUSTOMFUNCTION_SHOW "FinishPageShow"
 !define MUI_PAGE_CUSTOMFUNCTION_LEAVE "FinishPageLeave"
+!define MUI_FINISHPAGE_RUN "$INSTDIR\setshell.exe"
+!define MUI_FINISHPAGE_RUN_TEXT "Run SetShell.exe to manually change the shell"
 !insertmacro MUI_PAGE_FINISH
 !insertmacro MUI_UNPAGE_CONFIRM
-UninstPage custom un.unsetShell un.unsetShellLeave
 UninstPage custom un.getRunningComponents un.getRunningComponentsLeave
+UninstPage custom un.unsetShell un.unsetShellLeave
 !insertmacro MUI_UNPAGE_INSTFILES
 
 # Installer languages
@@ -133,6 +135,13 @@ Function FinishPageShow
   # Disable back button
   GetDlGItem $0 $HWNDPARENT 3
   EnableWindow $0 0
+  
+  IntCmp $SetupSetShell 0 DontHideSetShell
+    FindWindow $2 "#32770" "" $HWNDPARENT ; Get inner dialog inside main window (the "white part" of the dialog)
+    GetDlgItem $2 $2 1203 ; Item 1203 -> "Run Setshell.exe" Checkbock)
+    SendMessage $2 ${BM_CLICK} 0 0 ; uncheck it
+    ShowWindow $2 ${SW_HIDE} ; Hide it
+  DontHideSetShell:
 FunctionEnd
 
 Function FinishPageLeave
