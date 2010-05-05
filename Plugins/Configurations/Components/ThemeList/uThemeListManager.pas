@@ -14,7 +14,6 @@ uses
   Dialogs,
   StdCtrls,
   JclSimpleXml,
-  JvSimpleXml,
   shellapi,
   JclFileUtils,
   JclStrings,
@@ -214,7 +213,7 @@ end;
 
 procedure TThemeManager.SetTheme(AName: string);
 var
-  elem: TJvSimpleXMLElem;
+  elem: TJclSimpleXMLElem;
   s, sDest, sThemeDir: string;
 begin
   sThemeDir := GetSharpeUserSettingsPath + 'Themes\';

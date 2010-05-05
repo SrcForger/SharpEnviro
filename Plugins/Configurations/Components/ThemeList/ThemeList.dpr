@@ -201,7 +201,7 @@ begin
   begin
     Name := 'Themes';
     Description := 'Create and manage themes that customise the appearance of SharpE.';
-	Status := '';
+   	Status := '';
 
     files := TStringList.Create;
     try

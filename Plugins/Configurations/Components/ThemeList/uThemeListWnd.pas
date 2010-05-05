@@ -38,7 +38,7 @@ uses
   Forms,
   Dialogs,
   StdCtrls,
-  JvSimpleXml,
+  JclSimpleXml,
   JclFileUtils,
   ImgList,
   PngImageList,
@@ -95,9 +95,10 @@ type
 
     procedure GenerateMask;
 
-    
+
   public
     ThemeManager: TThemeManager;
+    procedure ClearList;
     procedure BuildThemeList;
     procedure ConfigureItem;
 
@@ -145,13 +146,8 @@ begin
 end;
 
 procedure TfrmList.FormDestroy(Sender: TObject);
-var
-  i: Integer;
 begin
-  for i := pred(lbThemeList.Count) downto 0 do begin
-    TThemeListItemClass(lbThemeList.Item[i].Data).Free;
-    lbThemeList.DeleteItem(i);
-  end;
+  ClearList;
 
   ThemeManager.Free;
   FPngMissing.Free;
@@ -168,7 +164,7 @@ var
   tmpThemeInfo: TThemeListItem;
   ThemeList : IThemeList;
 begin
-  lbThemeList.Clear;
+  ClearList;
   LockWindowUpdate(Self.Handle);
 
   bmp := TBitmap.Create;
@@ -449,7 +445,17 @@ begin
       end;
     end;
   end;
+end;
 
+procedure TfrmList.ClearList;
+var
+  n : integer;
+begin
+  for n := lbThemeList.Count - 1 downto 0 do
+  begin
+    TThemeListItemClass(lbThemeList.Item[n].Data).Free;
+    lbThemeList.DeleteItem(n);
+  end;
 end;
 
 procedure TfrmList.ConfigureItem;
