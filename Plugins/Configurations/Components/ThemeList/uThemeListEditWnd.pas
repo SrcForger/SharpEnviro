@@ -47,8 +47,8 @@ uses
   JvPageList,
   SharpApi,
   SharpCenterApi,
-  SharpThemeApiEx,
   uThemeListManager,
+  uThemeList,
   SharpEListBoxEx,
   JclStrings,
   JvComponentBase,
@@ -119,7 +119,7 @@ begin
         cbBasedOn.Items.Clear;
         cbBasedOn.Items.AddObject('New Theme', nil);
 
-        ThemeList := GetThemeList;
+        ThemeList := TThemeList.Create;
         for n := 0 to ThemeList.GetThemeCount - 1 do
           cbBasedOn.Items.Add(ThemeList.Themes[n].Name);
         ThemeList := nil;

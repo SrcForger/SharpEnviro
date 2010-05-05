@@ -40,7 +40,6 @@ uses
   SharpApi,
   JvValidators,
   JclStrings,
-  SharpThemeApiEx,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uSharpCenterPluginScheme,

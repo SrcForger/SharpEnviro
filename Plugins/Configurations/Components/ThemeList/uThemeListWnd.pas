@@ -52,7 +52,7 @@ uses
   JclStrings,
   JclInifiles,
   SharpCenterApi,
-  SharpThemeApiEx,
+  uThemeList,
   uThemeConsts,
   uIThemeList,
   SharpGraphicsUtils,
@@ -175,7 +175,7 @@ begin
     bmp.Height := ThemeImages.Height;
     SetBkMode(Bmp.Handle, TRANSPARENT);
 
-    ThemeList := GetThemeList;
+    ThemeList := TThemeList.Create;
     for i := 0 to ThemeList.GetThemeCount - 1 do begin
       tmpThemeInfo := ThemeList.Themes[i];
 
