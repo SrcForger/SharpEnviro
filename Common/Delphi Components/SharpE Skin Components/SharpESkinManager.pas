@@ -46,7 +46,8 @@ uses
   SharedBitmapList,
   SharpEScheme,
   SharpApi,
-  SharpTypes;
+  SharpTypes,
+  SharpSharedFileAccess;
 
 type
   TSkinSource = (ssDefault, ssSystem, ssComponent);
@@ -393,17 +394,13 @@ var
   Stream : TMemoryStream;
 begin
   loadfile := SharpApi.GetSharpeUserSettingsPath + 'SharpE.skin';
-  if SharpApi.FileCheck(loadfile, true) then
+  Stream := TMemoryStream.Create;
+  if OpenMemoryStreamShared(Stream,sfaRead,loadfile,true) = sfeSuccess then
   begin
-    FSkin.Clear;  
-    Stream := TMemoryStream.Create;
-    Stream.LoadFromFile(loadfile);
-    try
-      FSkin.LoadFromStream(Stream);
-    finally
-      Stream.Free;
-    end;
+    FSkin.Clear;
+    FSkin.LoadFromStream(Stream);
   end;
+  Stream.Free;
 end;
 
 //***********************************
