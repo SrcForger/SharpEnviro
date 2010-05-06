@@ -56,8 +56,8 @@ function OpenMemoryStreamShared(var Stream : TMemoryStream; Access : TSharedFile
 
 implementation
 
-// Check if input params are valid
-function CheckFileShared(Stream : TStream; Access : TSharedFileAccess; FileName : String) : TSharedFileError;
+// Check if Stream is valid
+function CheckStreamValid(Stream : TStream) : TSharedFileError;
 begin
   // Check if stream is valid
   if (Stream = nil) then
@@ -66,6 +66,12 @@ begin
     exit;
   end;
 
+  result := sfeSuccess;  
+end;
+
+// Check if input params are valid
+function CheckFileValid(FileName : String) : TSharedFileError;
+begin
   // Check if file exists
   if (not FileExists(FileName)) then
   begin
@@ -82,7 +88,7 @@ begin
   case Access of
     sfaRead: result := fmOpenRead or fmShareDenyWrite;
     sfaWrite: result := fmOpenReadWrite or fmShareExclusive;
-    sfaCreate: result := fmCreate;
+    sfaCreate: result := fmCreate or fmShareExclusive;
     else result := fmOpenRead or fmShareDenyWrite;
   end;
 end;
@@ -93,7 +99,7 @@ var
   StartTime : Cardinal;
 begin
   // Initial check of valid input data
-  result := CheckFileShared(Stream,Access,FileName);
+  result := CheckFileValid(FileName);
   if result <> sfeSuccess then exit;
 
   mode := CreateAccessMode(Access);
@@ -132,11 +138,13 @@ function OpenMemoryStreamShared(var Stream : TMemoryStream; Access : TSharedFile
 var
   FileStream : TSharedFileStream;
   mode : Word;
- StartTime : Cardinal;
+  StartTime : Cardinal;
 begin
   // Initial check of valid input data
-  result := CheckFileShared(Stream,Access,FileName);
+  result := CheckFileValid(FileName);
   if result <> sfeSuccess then exit;
+  result := CheckStreamValid(Stream);
+  if result <> sfeSuccess then exit;  
 
   mode := CreateAccessMode(Access);
 
