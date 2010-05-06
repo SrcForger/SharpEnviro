@@ -1,0 +1,195 @@
+{
+Source Name: SharpSharedFileAccess.pas
+Description: Functions for open file with shared read or write access 
+Copyright (C) Martin Krämer <MartinKraemer@gmx.net>
+
+Source Forge Site
+https://sourceforge.net/projects/sharpe/
+
+SharpE Site
+http://www.sharpenviro.com
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+}
+
+unit SharpSharedFileAccess;
+
+interface
+
+uses
+  Windows, Classes, SysUtils, RTLconsts;
+
+type
+  TSharedFileError = (sfeSuccess,sfeInvalidStream,sfeInvalidFilePath, sfeErrorOpeningStream, sfeTimeoutWaitingForAccess);
+  TSharedFileAccess = (sfaRead,sfaWrite,sfaCreate);
+
+  // Like TFileStream only that it doesn't throw an exception when it fails to load the file
+  // instead it sets the Loaded property to false
+  TSharedFileStream = class(THandleStream)
+  strict private
+    FFileName: string;
+    FLoaded: boolean;
+  public
+    constructor Create(const AFileName: string; Mode: Word);
+    destructor Destroy; override;
+    property FileName: string read FFileName;
+    property Loaded: boolean read FLoaded;
+  end;
+
+const
+  SHARED_ACCESS_WAIT_TIME = 25000; // (ms)
+  SHARED_ACCESS_CHECK_INTERVAL = 100; // (ms)
+
+function OpenFileStreamShared(var Stream : TSharedFileStream; Access : TSharedFileAccess; FileName : String; WaitForAccess : boolean) : TSharedFileError;
+function OpenMemoryStreamShared(var Stream : TMemoryStream; Access : TSharedFileAccess; FileName : String; WaitForAccess : boolean) : TSharedFileError;
+
+implementation
+
+// Check if input params are valid
+function CheckFileShared(Stream : TStream; Access : TSharedFileAccess; FileName : String) : TSharedFileError;
+begin
+  // Check if stream is valid
+  if (Stream = nil) then
+  begin
+    result := sfeInvalidStream;
+    exit;
+  end;
+
+  // Check if file exists
+  if (not FileExists(FileName)) then
+  begin
+    result := sfeInvalidFilePath;
+    exit;
+  end;
+
+  result := sfeSuccess;
+end;
+
+// Setup Access Modes
+function CreateAccessMode(Access : TSharedFileAccess) : Word;
+begin
+  case Access of
+    sfaRead: result := fmOpenRead or fmShareDenyWrite;
+    sfaWrite: result := fmOpenReadWrite or fmShareExclusive;
+    sfaCreate: result := fmCreate;
+    else result := fmOpenRead or fmShareDenyWrite;
+  end;
+end;
+
+function OpenFileStreamShared(var Stream : TSharedFileStream; Access : TSharedFileAccess; FileName : String; WaitForAccess : boolean) : TSharedFileError;
+var
+  mode : Word;
+  StartTime : Cardinal;
+begin
+  // Initial check of valid input data
+  result := CheckFileShared(Stream,Access,FileName);
+  if result <> sfeSuccess then exit;
+
+  mode := CreateAccessMode(Access);
+
+  if WaitForAccess then
+  begin
+    StartTime := GetTickCount;
+    // Create SharedFileStream until access is gained or until timeout is reached
+    repeat
+      Stream := TSharedFileStream.Create(FileName,mode);
+      if not Stream.Loaded then
+      begin
+        Sleep(SHARED_ACCESS_CHECK_INTERVAL);
+        Stream.Free;
+        Stream := nil;
+      end;
+    until (Stream <> nil) or (GetTickCount - StartTime >= SHARED_ACCESS_WAIT_TIME);
+    if (Stream <> nil) then
+      result := sfeSuccess;
+  end;
+
+  if (Stream = nil) then
+  begin
+    // Create SharedFileStream and return
+    Stream := TSharedFileStream.Create(FileName,mode);
+    if not Stream.Loaded then
+    begin
+      if WaitForAccess then
+        result := sfeTimeoutWaitingForAccess
+      else result := sfeErrorOpeningStream
+    end else result := sfeSuccess;
+  end;
+end;
+
+function OpenMemoryStreamShared(var Stream : TMemoryStream; Access : TSharedFileAccess; FileName : String; WaitForAccess : boolean) : TSharedFileError;
+var
+  FileStream : TSharedFileStream;
+  mode : Word;
+ StartTime : Cardinal;
+begin
+  // Initial check of valid input data
+  result := CheckFileShared(Stream,Access,FileName);
+  if result <> sfeSuccess then exit;
+
+  mode := CreateAccessMode(Access);
+
+  FileStream := nil;
+  if WaitForAccess then
+  begin
+    StartTime := GetTickCount;
+    // Create SharedFileStream until access is gained or until timeout is reached
+    repeat
+      FileStream := TSharedFileStream.Create(FileName,mode);
+      if not FileStream.Loaded then
+      begin
+        Sleep(SHARED_ACCESS_CHECK_INTERVAL);
+        FileStream.Free;
+        FileStream := nil;
+      end;
+    until (FileStream <> nil) or (GetTickCount - StartTime >= SHARED_ACCESS_WAIT_TIME);
+  end;
+
+  if (FileStream = nil) then
+  begin
+    // Create FileStream and fully load it into the memory stream
+    FileStream := TSharedFileStream.Create(FileName,mode);
+  end;
+
+  if FileStream.Loaded then
+  begin
+    Stream.LoadFromStream(FileStream);
+    result := sfeSuccess;
+  end else
+  begin
+    if WaitForAccess then
+      result := sfeTimeoutWaitingForAccess
+    else result := sfeErrorOpeningStream;
+  end;
+  FileStream.Free;
+end;
+
+{ TSharedFileStream }
+
+constructor TSharedFileStream.Create(const AFileName: string; Mode: Word);
+begin
+  if Mode = fmCreate then
+    inherited Create(FileCreate(AFileName))
+  else inherited Create(FileOpen(AFileName, Mode));
+  FLoaded := (FHandle >= 0);
+  FFileName := AFileName;  
+end;
+
+destructor TSharedFileStream.Destroy;
+begin
+  if FHandle >= 0 then FileClose(FHandle);
+  inherited Destroy;
+end;
+
+end.
