@@ -49,18 +49,19 @@ type
     FPaintEvent   : TSharpEMenuItemPaintEvent;
     FMouseUpEvent : TSharpEMenuItemMouseEvent;
     // #############
-    FIcon      : TSharpEMenuIcon; // only a pointer to the icon list!
-    FSubMenu   : TObject;
-    FOwnerMenu : TObject;
-    FCaption   : String;
-    FIndex     : Integer;
-    FItemType  : TSharpEMenuItemType;
-    FDynamic   : boolean;
-    FVisible   : boolean;
-    FWrapMenu  : boolean;
-    FPropList  : TPropertyList;
-    FPopup     : TObject;
-    function GetItemIndex: integer;
+    FIcon                  : TSharpEMenuIcon; // only a pointer to the icon list!
+    FSubMenu               : TObject;
+    FOwnerMenu             : TObject;
+    FCaption               : String;
+    FIndex                 : Integer;
+    FItemType              : TSharpEMenuItemType;
+    FDynamic               : boolean;
+    FDynamicSubInitialized : boolean;
+    FVisible               : boolean;
+    FWrapMenu              : boolean;
+    FPropList              : TPropertyList;
+    FPopup                 : TObject;
+    function GetItemIndex : integer;
   public
     constructor Create(pOwnerMenu : TObject; pItemType : TSharpEMenuItemType); reintroduce;
     destructor Destroy; override;
@@ -74,6 +75,7 @@ type
     property isDynamic : boolean read FDynamic write FDynamic;
     property isVisible : boolean read FVisible write FVisible;
     property isWrapMenu : boolean read FWrapMenu write FWrapMenu;
+    property isDynamicSubMenuInitialized : boolean read FDynamicSubInitialized write FDynamicSubInitialized;
     property ListIndex : integer read FIndex write FIndex; // only used and updated before sorting!
     property Popup     : TObject read FPopup write FPopup;
     property ItemIndex : integer read GetItemIndex;
@@ -95,6 +97,7 @@ begin
 
   FVisible := True;
   FDynamic := False;
+  FDynamicSubInitialized := False;
   FWrapMenu := False;
 
   FSubMenu      := nil;

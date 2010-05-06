@@ -64,7 +64,9 @@ uses
   uSharpEMenuSettings in 'Units\uSharpEMenuSettings.pas',
   uControlPanelItems in '..\..\Common\Units\ControlPanelItems\uControlPanelItems.pas',
   SharpIconUtils in '..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas',
-  uSharpEMenuSaver in 'Units\uSharpEMenuSaver.pas';
+  uSharpEMenuSaver in 'Units\uSharpEMenuSaver.pas',
+  uSharpEMenuDynamicContentThread in 'Units\uSharpEMenuDynamicContentThread.pas',
+  uSharpEMenuRenderThread in 'Units\uSharpEMenuRenderThread.pas';
 
 type
   TLoadCacheThread = class(TThread)
@@ -217,6 +219,7 @@ begin
 
   DebugTime('InitMenu');
   wnd.InitMenu(mn,true);
+  mn.InitializeDynamicSubMenus;
   DebugTime('ScreenPos');
   Mon := Screen.MonitorFromPoint(Pos);
   if Mon = nil then

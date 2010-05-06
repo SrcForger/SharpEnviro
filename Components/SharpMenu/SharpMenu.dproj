@@ -38,14 +38,13 @@
   </ProjectExtensions>
   <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
   <PropertyGroup>
-    <PostBuildEvent>if $(Configuration)==Debug "..\..\Common\3rd party\Jedi\MakeJclDbg.exe" -E $(OUTPUTDIR)$(OUTPUTNAME).map
-if $(Configuration)==Debug del $(OUTPUTDIR)$(OUTPUTNAME).map</PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <DelphiCompile Include="SharpMenu.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
     <DCCReference Include="..\..\Common\Units\ControlPanelItems\uControlPanelItems.pas" />
+    <DCCReference Include="..\..\Common\Units\DebugDialog\DebugDialog.pas" />
     <DCCReference Include="..\..\Common\Units\PropertyList\uPropertyList.pas" />
     <DCCReference Include="..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas" />
     <DCCReference Include="Forms\uSharpEMenuWnd.pas">
@@ -54,11 +53,13 @@ if $(Configuration)==Debug del $(OUTPUTDIR)$(OUTPUTNAME).map</PostBuildEvent>
     <DCCReference Include="Units\uSharpEMenu.pas" />
     <DCCReference Include="Units\uSharpEMenuActions.pas" />
     <DCCReference Include="Units\uSharpEMenuConsts.pas" />
+    <DCCReference Include="Units\uSharpEMenuDynamicContentThread.pas" />
     <DCCReference Include="Units\uSharpEMenuIcon.pas" />
     <DCCReference Include="Units\uSharpEMenuIcons.pas" />
     <DCCReference Include="Units\uSharpEMenuItem.pas" />
     <DCCReference Include="Units\uSharpEMenuLoader.pas" />
     <DCCReference Include="Units\uSharpEMenuPopups.pas" />
+    <DCCReference Include="Units\uSharpEMenuRenderThread.pas" />
     <DCCReference Include="Units\uSharpEMenuSaver.pas" />
     <DCCReference Include="Units\uSharpEMenuSettings.pas" />
   </ItemGroup>

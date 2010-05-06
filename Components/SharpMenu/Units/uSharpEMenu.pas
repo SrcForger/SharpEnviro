@@ -28,6 +28,7 @@ unit uSharpEMenu;
 interface
 
 uses SysUtils, Windows, Forms, Contnrs, Menus, Controls, GR32,Classes,Dialogs,
+     SharpApi,
      GR32_Backends,
      SharpGraphicsUtils,
      ISharpESkinComponents,
@@ -37,7 +38,9 @@ uses SysUtils, Windows, Forms, Contnrs, Menus, Controls, GR32,Classes,Dialogs,
      uSharpEMenuItem,
      uSharpEMenuActions,
      uSharpEMenuConsts,
-     uSharpEMenuSettings;
+     uSharpEMenuSettings,
+     uSharpEMenuDynamicContentThread,
+     uSharpEMenuRenderThread;
 
 type
   TIntArray = array of integer;
@@ -61,6 +64,7 @@ type
     FWrapMenu  : boolean;
     FCustomSettings : boolean;
     FDesignMode : boolean;
+    FDynamicContentThread : TSharpEMenuDynamicContentThread;
     procedure UpdateItemWidth;
     procedure UpdateItemsHeight;
     procedure ImageCheck(var pbmp : TBitmap32; pSize : TPoint);
@@ -90,7 +94,7 @@ type
     function AddUListItem(pType,pCount : integer; pDynamic : boolean; pInsertPos: Integer=-1) : TObject;
 
     // Rendering
-    procedure RenderBackground(pLeft, pTop : integer; BGBmp : TBitmap32 = nil);
+    procedure RenderBackground(pLeft, pTop : integer; isRunThreaded : boolean = False; BGBmp : TBitmap32 = nil);
     procedure RenderNormalMenu;
     procedure RenderTo(Dst : TBitmap32); overload;
     procedure RenderTo(Dst : TBitmap32; pLeft,pTop : integer); overload;
@@ -113,6 +117,8 @@ type
 
     // Refresh Content
     procedure RefreshDynamicContent;
+    procedure InitializeDynamicSubMenus;
+    procedure CheckAndAbortDynamicContentThread;
 
     // Wrap
     procedure WrapMenu(pMaxItems : integer);
@@ -183,6 +189,8 @@ end;
 
 destructor TSharpEMenu.Destroy;
 begin
+  CheckAndAbortDynamicContentThread;
+
   FreeAndNil(FItems);
 
   FreeAndNil(FMenuActions);
@@ -243,7 +251,53 @@ begin
      else result := I1.ListIndex - I2.ListIndex;
 end;
 
+procedure TSharpEMenu.InitializeDynamicSubMenus;
+var
+  FSubList : TObjectList;
+  item : TSharpEMenuItem;
+  n : integer;
+begin
+  CheckAndAbortDynamicContentThread;
+
+  FSubList := TObjectList.Create;
+  FSubList.OwnsObjects := False;
+  FSubList.Clear;
+
+  // Build a list of all items with sub menus
+  for n := 0 to FItems.Count - 1 do
+  begin
+    item := TSharpEMenuItem(FItems.Items[n]);
+    if (item.SubMenu <> nil) and (not item.isDynamicSubMenuInitialized) then
+      FSubList.Add(item.SubMenu);
+  end;
+
+  FDynamicContentThread := TSharpEMenuDynamicContentThread.Create(FSubList);
+  FDynamicContentThread.Resume;
+
+  FSubList.Free;
+end;
+
 procedure TSharpEMenu.RefreshDynamicContent;
+
+  procedure AddDynamicItems(var list : TObjectList; pMenu : TSharpEMenu);
+  var
+    i : integer;
+    item : TSharpEMenuItem;
+  begin
+    for i := 0 to pMenu.Items.Count - 1 do
+    begin
+      item := TSharpEMenuItem(pMenu.Items[i]);
+
+      // include wrapped sub menus
+//      if (item.isDynamic) and (item.isWrapMenu) and (item.SubMenu <> nil) then
+  //      AddDynamicItems(list,TSharpEMenu(item.SubMenu))
+    //  else if (item.isDynamic) and (not item.isWrapMenu) then
+      //  list.Add(item);
+      if (item.isDynamic) then
+        list.add(pMenu.Items[i]);
+    end;
+  end;
+
 var
   FDynList : TObjectList;
   item : TSharpEMenuItem;
@@ -256,12 +310,7 @@ begin
   FDynList.Clear;
 
   // Build a list of all dynamic items
-  for n := 0 to FItems.Count - 1 do
-  begin
-    item := TSharpEMenuItem(FItems.Items[n]);
-    if item.isDynamic then
-       FDynList.Add(item);
-  end;
+  AddDynamicItems(FDynList,self);
 
   // Find all items which are creating dynamic items
   for n := 0 to FItems.Count - 1 do
@@ -494,6 +543,19 @@ begin
   if pInsertPos = -1 then
   FItems.Add(item) else
   FItems.Insert(pInsertPos,item);
+end;
+
+procedure TSharpEMenu.CheckAndAbortDynamicContentThread;
+begin
+  if (FDynamicContentThread <> nil) then
+  begin
+    if not FDynamicContentThread.Suspended then
+    begin
+      FDynamicContentThread.Terminate;
+      FDynamicContentThread.WaitFor;
+    end;
+    FreeAndNil(FDynamicContentThread);
+  end;
 end;
 
 constructor TSharpEMenu.Create(pManager: ISharpESkinManager; pSettings: TSharpEMenuSettings);
@@ -809,7 +871,7 @@ begin
 
 end;
 
-procedure TSharpEMenu.RenderBackground(pLeft,pTop : integer; BGBmp : TBitmap32 = nil);
+procedure TSharpEMenu.RenderBackground(pLeft,pTop : integer; isRunThreaded : boolean = False; BGBmp : TBitmap32 = nil);
 const
   CAPTUREBLT = $40000000;
 var
@@ -821,8 +883,11 @@ begin
   ImageCheck(FBackground,Point(255,32));
   if FSkinManager = nil then exit;
 
-  UpdateItemWidth;
-  UpdateItemsHeight;
+  if not isRunThreaded then // Do not run this when executed threaded
+  begin
+    UpdateItemWidth;
+    UpdateItemsHeight;
+  end;
 
   menuskin := FSkinManager.Skin.Menu;
 
@@ -1093,10 +1158,31 @@ var
   temp : TBitmap32;
   n : integer;
   y : integer;
+  backgroundThread : TSharpEMenuRenderThread;
+  normalItemsThread : TSharpEMenuRenderThread;
 begin
   if (FSkinManager = nil) then exit;
-  if (FBackground = nil) then RenderBackground(0,0);
-  if (FNormalMenu = nil) then RenderNormalMenu;
+
+  backgroundThread := nil;
+  normalItemsThread := nil;
+  if (FBackground = nil) then
+  begin
+    UpdateItemWidth;
+    UpdateItemsHeight;
+    backgroundThread := TSharpEMenuRenderThread.Create(self,riBackground);
+    backgroundThread.Resume;
+  end;
+  if (FNormalMenu = nil) then
+  begin
+    normalItemsThread := TSharpEMenuRenderThread.Create(self,riNormalItems);
+    normalItemsThread.Resume;
+  end;
+
+  if backgroundThread <> nil then
+  begin
+    backgroundThread.WaitFor();
+    backgroundThread.Free;
+  end;
 
   menuskin := FSkinManager.Skin.Menu;
 
@@ -1109,6 +1195,12 @@ begin
     FSpecialBackground.DrawTo(Dst,0,Offset);
 
   FBackground.DrawTo(Dst);
+
+  if normalItemsThread <> nil then
+  begin
+    normalItemsThread.WaitFor();
+    normalItemsThread.Free;
+  end;
 
   temp := TBitmap32.Create;
   temp.assign(FNormalMenu);
@@ -1136,7 +1228,7 @@ end;
 procedure TSharpEMenu.RenderTo(Dst: TBitmap32; pLeft, pTop: integer; BGBmp: TBitmap32);
 begin
   if (FSkinManager = nil) then exit;
-  RenderBackground(pLeft,pTop,BGBmp);
+  RenderBackground(pLeft,pTop,False,BGBmp);
 
   RenderTo(Dst);
 end;

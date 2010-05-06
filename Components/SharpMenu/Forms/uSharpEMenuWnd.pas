@@ -176,7 +176,13 @@ begin
   FRootMenu := pRootMenu;
   FMenu := pMenu;
 
-  FMenu.RefreshDynamicContent;
+  if FMenu.ParentMenuItem <> nil then
+  begin
+    TSharpEMenu(FMenu.ParentMenuItem.OwnerMenu).CheckAndAbortDynamicContentThread;
+    if not FMenu.ParentMenuItem.isDynamicSubMenuInitialized then
+      FMenu.RefreshDynamicContent;
+  end else FMenu.RefreshDynamicContent;
+
   FMenu.RenderTo(FPicture,FOffset);
   PreMul(FPicture);
 
@@ -187,6 +193,8 @@ begin
 
   FMouseLeave := False;
   HideTimer.Enabled := False;
+  if not pRootMenu then
+    FMenu.InitializeDynamicSubMenus;  
 end;
 
 constructor TSharpEMenuWnd.Create(AOwner: TComponent);
@@ -539,6 +547,7 @@ begin
 
   if FMenu <> nil then
   begin
+    FMenu.CheckAndAbortDynamicContentThread;
     FMenu.ItemIndex := -1;
     FMenu.RecycleBitmaps;
     if FSubMenu <> nil then
@@ -834,8 +843,9 @@ procedure TSharpEMenuWnd.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   FIsClosing := True;
   if FMenu = nil then exit;
-  if not FMenu.isWrapMenu then
-     FMenu.UnWrapMenu(FMenu);
+  FMenu.CheckAndAbortDynamicContentThread;
+//  if not FMenu.isWrapMenu then
+//     FMenu.UnWrapMenu(FMenu);  // Doesn't make sense, doesn't work, necessary at all?
 end;
 
 procedure TSharpEMenuWnd.FormMouseWheelDown(Sender: TObject; Shift: TShiftState;
