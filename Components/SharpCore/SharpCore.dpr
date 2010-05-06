@@ -41,6 +41,7 @@ uses
   uVistaFuncs,
   uSharpESkinInterface,
   uISharpESkin,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uComponentMan in 'uComponentMan.pas';
 
 {$R *.res}

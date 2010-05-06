@@ -5,6 +5,7 @@ uses
   Windows,
   SharpApi,
   JvValidators,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uSharpCenterMainWnd in 'uSharpCenterMainWnd.pas' {SharpCenterWnd},
   uSharpCenterDllMethods in 'uSharpCenterDllMethods.pas',
   uSharpCenterHelperMethods in 'uSharpCenterHelperMethods.pas',

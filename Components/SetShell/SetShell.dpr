@@ -28,6 +28,7 @@ program SetShell;
 uses
   Forms,
   SharpApi,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   MainWnd in 'Forms\MainWnd.pas' {MainForm},
   uShellSwitcher in 'Units\uShellSwitcher.pas',
   uShutdown in '..\..\Common\Units\Shutdown\uShutdown.pas',

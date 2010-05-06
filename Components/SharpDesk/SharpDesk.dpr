@@ -40,6 +40,7 @@ uses
   Dialogs,
   Controls,
   SharpApi,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uSharpDeskMainForm in 'Forms\uSharpDeskMainForm.pas' {SharpDeskMainForm},
   uSharpDeskBackgroundUnit in 'Units\uSharpDeskBackgroundUnit.pas',
   uSharpDeskFunctions in 'Units\uSharpDeskFunctions.pas',

@@ -38,6 +38,7 @@ uses
   SysUtils,
   Classes,
   SharpApi,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uVistaFuncs in '..\..\Common\Units\VistaFuncs\uVistaFuncs.pas';
 
 type

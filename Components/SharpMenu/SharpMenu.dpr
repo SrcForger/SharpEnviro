@@ -50,6 +50,7 @@ uses
   ISharpESkinComponents,
   uSystemFuncs,
   SharpTypes,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uSharpEMenuWnd in 'Forms\uSharpEMenuWnd.pas' {SharpEMenuWnd},
   uSharpEMenuLoader in 'Units\uSharpEMenuLoader.pas',
   uSharpEMenu in 'Units\uSharpEMenu.pas',

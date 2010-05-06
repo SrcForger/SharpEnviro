@@ -4,6 +4,7 @@ uses
   Forms,
   SysUtils,
   JvInterpreter,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   MainWnd in 'Forms\MainWnd.pas' {SharpScriptMainWnd},
   CreateInstallScriptWnd in 'Forms\CreateInstallScriptWnd.pas' {CreateInstallScriptForm},
   InstallWnd in 'Forms\InstallWnd.pas' {InstallForm},

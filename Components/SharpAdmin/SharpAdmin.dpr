@@ -34,6 +34,7 @@ uses
   SysUtils,
   Classes,
   JclStrings,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uSystemFuncs;
 
 {$R VistaElevated.res}

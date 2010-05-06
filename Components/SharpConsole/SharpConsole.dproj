@@ -15,20 +15,21 @@
     <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
     <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
     <DCC_ExeOutput>..\..\..\SharpE\</DCC_ExeOutput>
-    <DCC_UnitSearchPath>..\..\Common\Libraries\SharpAPI;..\..\Common\Libraries\SharpThemeAPI;..\..\Common\Units\VersInfo;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\Units\SharpFX;..\..\Common\Units\VistaFuncs;..\..\Common\Delphi Components\SharpEPageControl</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\Common\Libraries\SharpAPI;..\..\Common\Libraries\SharpThemeAPI;..\..\Common\Units\VersInfo;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\Units\SharpFX;..\..\Common\Units\VistaFuncs;..\..\Common\Delphi Components\SharpEPageControl</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\Common\Libraries\SharpAPI;..\..\Common\Libraries\SharpThemeAPI;..\..\Common\Units\VersInfo;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\Units\SharpFX;..\..\Common\Units\VistaFuncs;..\..\Common\Delphi Components\SharpEPageControl</DCC_ObjPath>
-    <DCC_IncludePath>..\..\Common\Libraries\SharpAPI;..\..\Common\Libraries\SharpThemeAPI;..\..\Common\Units\VersInfo;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\Units\SharpFX;..\..\Common\Units\VistaFuncs;..\..\Common\Delphi Components\SharpEPageControl</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\..\Common\Libraries\SharpAPI;..\..\Common\Libraries\SharpThemeAPI;..\..\Common\Units\VersInfo;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\Units\SharpFX;..\..\Common\Units\VistaFuncs;..\..\Common\Delphi Components\SharpEPageControl;..\..\Common\Units\DebugDialog</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\Common\Libraries\SharpAPI;..\..\Common\Libraries\SharpThemeAPI;..\..\Common\Units\VersInfo;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\Units\SharpFX;..\..\Common\Units\VistaFuncs;..\..\Common\Delphi Components\SharpEPageControl;..\..\Common\Units\DebugDialog</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\Common\Libraries\SharpAPI;..\..\Common\Libraries\SharpThemeAPI;..\..\Common\Units\VersInfo;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\Units\SharpFX;..\..\Common\Units\VistaFuncs;..\..\Common\Delphi Components\SharpEPageControl;..\..\Common\Units\DebugDialog</DCC_ObjPath>
+    <DCC_IncludePath>..\..\Common\Libraries\SharpAPI;..\..\Common\Libraries\SharpThemeAPI;..\..\Common\Units\VersInfo;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\Units\SharpFX;..\..\Common\Units\VistaFuncs;..\..\Common\Delphi Components\SharpEPageControl;..\..\Common\Units\DebugDialog</DCC_IncludePath>
     <DCC_Define>RELEASE</DCC_Define>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
     <DCC_ExeOutput>..\..\..\SharpE\</DCC_ExeOutput>
-    <DCC_UnitSearchPath>..\..\Common\Libraries\SharpAPI;..\..\Common\Libraries\SharpThemeAPI;..\..\Common\Units\VersInfo;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\Units\SharpFX;..\..\Common\Units\VistaFuncs;..\..\Common\Delphi Components\SharpEPageControl</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\Common\Libraries\SharpAPI;..\..\Common\Libraries\SharpThemeAPI;..\..\Common\Units\VersInfo;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\Units\SharpFX;..\..\Common\Units\VistaFuncs;..\..\Common\Delphi Components\SharpEPageControl</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\Common\Libraries\SharpAPI;..\..\Common\Libraries\SharpThemeAPI;..\..\Common\Units\VersInfo;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\Units\SharpFX;..\..\Common\Units\VistaFuncs;..\..\Common\Delphi Components\SharpEPageControl</DCC_ObjPath>
-    <DCC_IncludePath>..\..\Common\Libraries\SharpAPI;..\..\Common\Libraries\SharpThemeAPI;..\..\Common\Units\VersInfo;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\Units\SharpFX;..\..\Common\Units\VistaFuncs;..\..\Common\Delphi Components\SharpEPageControl</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\..\Common\Libraries\SharpAPI;..\..\Common\Libraries\SharpThemeAPI;..\..\Common\Units\VersInfo;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\Units\SharpFX;..\..\Common\Units\VistaFuncs;..\..\Common\Delphi Components\SharpEPageControl;..\..\Common\Units\DebugDialog</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\Common\Libraries\SharpAPI;..\..\Common\Libraries\SharpThemeAPI;..\..\Common\Units\VersInfo;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\Units\SharpFX;..\..\Common\Units\VistaFuncs;..\..\Common\Delphi Components\SharpEPageControl;..\..\Common\Units\DebugDialog</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\Common\Libraries\SharpAPI;..\..\Common\Libraries\SharpThemeAPI;..\..\Common\Units\VersInfo;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\Units\SharpFX;..\..\Common\Units\VistaFuncs;..\..\Common\Delphi Components\SharpEPageControl;..\..\Common\Units\DebugDialog</DCC_ObjPath>
+    <DCC_IncludePath>..\..\Common\Libraries\SharpAPI;..\..\Common\Libraries\SharpThemeAPI;..\..\Common\Units\VersInfo;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\Units\SharpFX;..\..\Common\Units\VistaFuncs;..\..\Common\Delphi Components\SharpEPageControl;..\..\Common\Units\DebugDialog</DCC_IncludePath>
     <DCC_Define>DEBUG</DCC_Define>
+    <DCC_MapFile>3</DCC_MapFile>
   </PropertyGroup>
   <ProjectExtensions>
     <Borland.Personality>Delphi.Personality</Borland.Personality>
@@ -39,6 +40,10 @@
     </Excluded_Packages><Source><Source Name="MainSource">SharpConsole.dpr</Source></Source></Delphi.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
   <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if $(Configuration)==Debug "..\..\Common\3rd party\Jedi\MakeJclDbg.exe" -E $(OUTPUTDIR)$(OUTPUTNAME).map
+if $(Configuration)==Debug del $(OUTPUTDIR)$(OUTPUTNAME).map</PostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <DelphiCompile Include="SharpConsole.dpr">
       <MainSource>MainSource</MainSource>
