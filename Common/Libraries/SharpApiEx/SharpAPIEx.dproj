@@ -14,20 +14,21 @@
     <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
     <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
     <DCC_ExeOutput>..\..\..\..\SharpE\</DCC_ExeOutput>
-    <DCC_UnitSearchPath>..\..\Libraries\SharpAPI</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\Libraries\SharpAPI</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\Libraries\SharpAPI</DCC_ObjPath>
-    <DCC_IncludePath>..\..\Libraries\SharpAPI</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\SharpAPI;..\..\Units\DebugDialog</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\SharpAPI;..\..\Units\DebugDialog</DCC_ResourcePath>
+    <DCC_ObjPath>..\SharpAPI;..\..\Units\DebugDialog</DCC_ObjPath>
+    <DCC_IncludePath>..\SharpAPI;..\..\Units\DebugDialog</DCC_IncludePath>
     <DCC_Define>RELEASE</DCC_Define>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
     <DCC_ExeOutput>..\..\..\..\SharpE\</DCC_ExeOutput>
-    <DCC_UnitSearchPath>..\..\Libraries\SharpAPI</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\Libraries\SharpAPI</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\Libraries\SharpAPI</DCC_ObjPath>
-    <DCC_IncludePath>..\..\Libraries\SharpAPI</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\SharpAPI;..\..\Units\DebugDialog</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\SharpAPI;..\..\Units\DebugDialog</DCC_ResourcePath>
+    <DCC_ObjPath>..\SharpAPI;..\..\Units\DebugDialog</DCC_ObjPath>
+    <DCC_IncludePath>..\SharpAPI;..\..\Units\DebugDialog</DCC_IncludePath>
     <DCC_Define>DEBUG</DCC_Define>
+    <DCC_MapFile>3</DCC_MapFile>
   </PropertyGroup>
   <ProjectExtensions>
     <Borland.Personality>Delphi.Personality</Borland.Personality>
@@ -44,4 +45,8 @@
     <DCCReference Include="..\..\..\Plugins\Services\Exec\uExecServiceUsedItemList.pas" />
     <DCCReference Include="..\..\Units\SimpleUnits\SimpleForms.pas" />
   </ItemGroup>
+  <PropertyGroup>
+    <PostBuildEvent>if $(Configuration)==Debug "..\..\..\Common\3rd party\Jedi\MakeJclDbg.exe" -E $(OUTPUTDIR)$(OUTPUTNAME).map
+if $(Configuration)==Debug del $(OUTPUTDIR)$(OUTPUTNAME).map</PostBuildEvent>
+  </PropertyGroup>
 </Project>

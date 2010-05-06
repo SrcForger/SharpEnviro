@@ -1,8 +1,9 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>{ec40489e-c314-4235-a218-521aca0c84d6}</ProjectGuid>
     <MainSource>SharpDeskApi.dpr</MainSource>
-    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_UsePackage>vcl;rtl</DCC_UsePackage>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
@@ -15,19 +16,20 @@
     <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
     <DCC_ExeOutput>..\..\..\..\SharpE\</DCC_ExeOutput>
     <DCC_Define>RELEASE</DCC_Define>
-    <DCC_UnitSearchPath>..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpThemeApiEx</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpThemeApiEx</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpThemeApiEx</DCC_ObjPath>
-    <DCC_IncludePath>..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpThemeApiEx</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\SharpApi;..\SharpThemeApiEx;..\..\Units\DebugDialog</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\SharpApi;..\SharpThemeApiEx;..\..\Units\DebugDialog</DCC_ResourcePath>
+    <DCC_ObjPath>..\SharpApi;..\SharpThemeApiEx;..\..\Units\DebugDialog</DCC_ObjPath>
+    <DCC_IncludePath>..\SharpApi;..\SharpThemeApiEx;..\..\Units\DebugDialog</DCC_IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
     <DCC_ExeOutput>..\..\..\..\SharpE\</DCC_ExeOutput>
     <DCC_Define>DEBUG</DCC_Define>
-    <DCC_UnitSearchPath>..\..\..\Common\Libraries\SharpApi</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\..\Common\Libraries\SharpApi</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\..\Common\Libraries\SharpApi</DCC_ObjPath>
-    <DCC_IncludePath>..\..\..\Common\Libraries\SharpApi</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\SharpApi;..\SharpThemeApiEx;..\..\Units\DebugDialog</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\SharpApi;..\SharpThemeApiEx;..\..\Units\DebugDialog</DCC_ResourcePath>
+    <DCC_ObjPath>..\SharpApi;..\SharpThemeApiEx;..\..\Units\DebugDialog</DCC_ObjPath>
+    <DCC_IncludePath>..\SharpApi;..\SharpThemeApiEx;..\..\Units\DebugDialog</DCC_IncludePath>
+    <DCC_MapFile>3</DCC_MapFile>
   </PropertyGroup>
   <ProjectExtensions>
     <Borland.Personality>Delphi.Personality</Borland.Personality>
@@ -43,4 +45,8 @@
     <DCCReference Include="..\..\3rd party\GR32 Addons\GR32_PNG.pas" />
     <DCCReference Include="..\..\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas" />
   </ItemGroup>
+  <PropertyGroup>
+    <PostBuildEvent>if $(Configuration)==Debug "..\..\..\Common\3rd party\Jedi\MakeJclDbg.exe" -E $(OUTPUTDIR)$(OUTPUTNAME).map
+if $(Configuration)==Debug del $(OUTPUTDIR)$(OUTPUTNAME).map</PostBuildEvent>
+  </PropertyGroup>
 </Project>

@@ -47,6 +47,7 @@ uses
   uISharpETheme,
   ExPopupList,
   SharpThemeApiEx,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   SharpIconUtils in '..\..\Units\SharpIconUtils\SharpIconUtils.pas',
   GR32_PNG in '..\..\3rd party\GR32 Addons\GR32_PNG.pas',
   uVistaFuncs in '..\..\Units\VistaFuncs\uVistaFuncs.pas',

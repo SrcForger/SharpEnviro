@@ -16,11 +16,20 @@
     <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
     <DCC_ExeOutput>..\..\..\..\SharpE\</DCC_ExeOutput>
     <DCC_Define>RELEASE</DCC_Define>
+    <DCC_UnitSearchPath>..\..\Units\DebugDialog</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\Units\DebugDialog</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\Units\DebugDialog</DCC_ObjPath>
+    <DCC_IncludePath>..\..\Units\DebugDialog</DCC_IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
     <DCC_ExeOutput>..\..\..\..\SharpE\</DCC_ExeOutput>
     <DCC_Define>DEBUG</DCC_Define>
+    <DCC_UnitSearchPath>..\..\Units\DebugDialog</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\Units\DebugDialog</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\Units\DebugDialog</DCC_ObjPath>
+    <DCC_IncludePath>..\..\Units\DebugDialog</DCC_IncludePath>
+    <DCC_MapFile>3</DCC_MapFile>
   </PropertyGroup>
   <ProjectExtensions>
     <Borland.Personality>Delphi.Personality</Borland.Personality>
@@ -37,4 +46,8 @@
     <DCCReference Include="..\..\Units\SimpleUnits\SimpleForms.pas" />
     <DCCReference Include="..\..\Units\SystemFuncs\uSystemFuncs.pas" />
   </ItemGroup>
+  <PropertyGroup>
+    <PostBuildEvent>if $(Configuration)==Debug "..\..\..\Common\3rd party\Jedi\MakeJclDbg.exe" -E $(OUTPUTDIR)$(OUTPUTNAME).map
+if $(Configuration)==Debug del $(OUTPUTDIR)$(OUTPUTNAME).map</PostBuildEvent>
+  </PropertyGroup>
 </Project>
