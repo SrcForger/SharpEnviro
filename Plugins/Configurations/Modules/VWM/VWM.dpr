@@ -44,6 +44,7 @@ uses
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uSharpCenterPluginScheme,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uVWMsWnd in 'uVWMsWnd.pas' {frmVWM};
 
 {$E .dll}

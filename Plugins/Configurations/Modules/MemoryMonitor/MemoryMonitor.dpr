@@ -40,6 +40,7 @@ uses
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uSharpCenterPluginScheme,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uMMWnd in 'uMMWnd.pas' {frmMM};
 
 {$E .dll}

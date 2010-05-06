@@ -38,6 +38,7 @@ uses
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uSharpCenterPluginScheme,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uClockWnd in 'uClockWnd.pas' {frmClock};
 
 {$E .dll}

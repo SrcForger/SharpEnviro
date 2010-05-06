@@ -38,6 +38,7 @@ uses
   SharpThemeApiEx,
   uVistaFuncs,
   uSharpCenterPluginScheme,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uSettingsWnd in 'uSettingsWnd.pas' {frmSettings};
 
 {$E .dll}

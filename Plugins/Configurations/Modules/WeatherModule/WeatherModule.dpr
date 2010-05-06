@@ -40,6 +40,7 @@ uses
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uSharpCenterPluginScheme,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uEditWnd in 'uEditWnd.pas' {frmEdit};
 
 {$E .dll}

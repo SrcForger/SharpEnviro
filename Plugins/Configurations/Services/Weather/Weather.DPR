@@ -11,6 +11,7 @@ uses
   SharpApi,
   SharpCenterApi,
   uVistaFuncs,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uListWnd in 'uListWnd.pas' {frmItemswnd},
   uEditWnd in 'uEditWnd.pas' {frmEditWnd},
   uWeatherList in '..\..\..\Services\Weather\uWeatherList.pas',

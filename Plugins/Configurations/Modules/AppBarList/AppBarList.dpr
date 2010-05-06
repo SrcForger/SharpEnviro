@@ -41,6 +41,7 @@ uses
   SharpApi,
   jvValidators,
   uSharpCenterPluginScheme,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uListWnd in 'uListWnd.pas' {frmList},
   uEditWnd in 'uEditWnd.pas' {frmEdit},
   uAppBarList in 'uAppBarList.pas';

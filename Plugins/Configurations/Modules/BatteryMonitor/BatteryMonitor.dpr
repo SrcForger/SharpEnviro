@@ -37,6 +37,7 @@ uses
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uSharpCenterPluginScheme,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uBatteryMonitorWnd in 'uBatteryMonitorWnd.pas' {frmBMon};
 
 {$E .dll}

@@ -40,6 +40,7 @@ uses
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uSharpCenterPluginScheme,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uQuickScriptWnd in 'uQuickScriptWnd.pas' {frmQuickScript};
 
 {$E .dll}

@@ -38,6 +38,7 @@ uses
   SharpCenterApi,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uSettingsWnd in 'uSettingsWnd.pas' {frmSettings};
 
 {$E .dll}

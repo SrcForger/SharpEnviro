@@ -42,6 +42,7 @@ uses
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uSharpCenterPluginScheme,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uVolumeControlWnd in 'uVolumeControlWnd.pas' {frmVolumeControl};
 
 {$E .dll}

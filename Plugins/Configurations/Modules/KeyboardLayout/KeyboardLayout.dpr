@@ -39,6 +39,7 @@ uses
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uSharpCenterPluginScheme,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uKLayoutWnd in 'uKLayoutWnd.pas' {frmKLayout};
 
 {$E .dll}

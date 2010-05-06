@@ -39,6 +39,7 @@ uses
   uVistaFuncs,
   SysUtils,
   Graphics,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uListWnd in 'uListWnd.pas' {frmList},
   uEditWnd in 'uEditWnd.pas' {$E .dll},
   SharpETabList,

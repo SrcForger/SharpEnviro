@@ -42,6 +42,7 @@ uses
   SharpApi,
   SharpCenterApi,
   uSharpEMenuItem,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uListWnd in 'uListWnd.pas' {frmList},
   uEditWnd in 'uEditWnd.pas' {frmEdit},
   ISharpCenterHostUnit,

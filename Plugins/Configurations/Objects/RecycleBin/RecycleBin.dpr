@@ -40,6 +40,7 @@ uses
   uVistaFuncs,
   SysUtils,
   Graphics,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uSettingsWnd in 'uSettingsWnd.pas' {frmSettings},
   SharpCenterApi,
   SharpApi,

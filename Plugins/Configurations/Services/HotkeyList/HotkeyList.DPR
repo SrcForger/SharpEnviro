@@ -39,6 +39,7 @@ uses
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uSharpCenterPluginScheme,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uHotkeyServiceList in 'uHotkeyServiceList.pas',
   uItemsWnd in 'uItemsWnd.pas' {frmItemsWnd},
   uEditWnd in 'uEditWnd.pas' {frmEditWnd},

@@ -44,6 +44,7 @@ uses
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uSharpCenterPluginScheme,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uListWnd in 'uListWnd.pas' {frmListWnd},
   uEditWnd in 'uEditWnd.pas' {frmEditWnd},
   uSchemeList in 'uSchemeList.pas';

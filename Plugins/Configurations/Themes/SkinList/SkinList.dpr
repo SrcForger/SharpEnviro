@@ -44,6 +44,7 @@ uses
   ISharpCenterPluginUnit,
   uSharpCenterPluginScheme,
   uVistaFuncs,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uListWnd in 'uListWnd.pas' {frmListWnd},
   BarPreview in '..\..\..\..\Common\Units\BarPreview\BarPreview.pas',
   BarForm in '..\..\..\..\Common\Units\BarPreview\BarForm.pas' {BarWnd};

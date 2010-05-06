@@ -38,6 +38,7 @@ uses
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uSharpCenterPluginScheme,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uRSSReaderWnd in 'uRSSReaderWnd.pas' {frmRSSReader};
 
 {$E .dll}

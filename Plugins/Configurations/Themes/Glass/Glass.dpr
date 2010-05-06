@@ -49,6 +49,7 @@ uses
   uISharpETheme,
   uThemeConsts,
   uSharpCenterPluginScheme,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uSettingsWnd in 'uSettingsWnd.pas' {frmSettingsWnd};
 
 {$E .dll}

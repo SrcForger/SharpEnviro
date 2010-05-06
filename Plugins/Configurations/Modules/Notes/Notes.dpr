@@ -39,6 +39,7 @@ uses
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uSharpCenterPluginScheme,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uNotesWnd in 'uNotesWnd.pas' {frmNotes};
 
 {$E .dll}

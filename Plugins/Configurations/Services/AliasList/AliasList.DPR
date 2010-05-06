@@ -41,6 +41,7 @@ uses
   SharpCenterApi,
   SharpApi,
   uSharpCenterPluginScheme,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   ItemsWnd in 'ItemsWnd.pas' {frmItemsWnd},
   EditWnd in 'EditWnd.pas' {frmEditWnd};
 

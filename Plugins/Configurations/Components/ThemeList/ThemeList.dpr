@@ -43,6 +43,7 @@ uses
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uSharpCenterPluginScheme,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uThemeListWnd in 'uThemeListWnd.pas' {frmList},
   uThemeListEditWnd in 'uThemeListEditWnd.pas' {frmEdit},
   uThemeListManager in 'uThemeListManager.pas';

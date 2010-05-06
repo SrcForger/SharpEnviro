@@ -44,6 +44,7 @@ uses
   uSettingsWnd,
   SharpCenterApi,
   SharpApi,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uSharpCenterPluginScheme in '..\..\..\..\Components\SharpCenter\uSharpCenterPluginScheme.pas';
 
 {$E .dll}

@@ -37,6 +37,7 @@ uses
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uSharpCenterPluginScheme,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uSettingsWnd in 'uSettingsWnd.pas' {frmSettings};
 
 {$E .dll}

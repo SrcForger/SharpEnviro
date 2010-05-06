@@ -40,6 +40,7 @@ uses
   SharpApi,
   SharpCenterApi,
   uSharpCenterPluginScheme,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uSettingsWnd in 'uSettingsWnd.pas' {frmSettingsWnd},
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit;

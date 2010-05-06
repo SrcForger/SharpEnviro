@@ -48,6 +48,7 @@ uses
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uSharpCenterPluginScheme,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uSysTrayWnd in 'uSysTrayWnd.pas' {frmSysTray};
 
 {$E .dll}

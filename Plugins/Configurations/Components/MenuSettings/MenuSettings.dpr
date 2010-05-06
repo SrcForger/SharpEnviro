@@ -43,6 +43,7 @@ uses
   ISharpCenterPluginUnit,
   uSharpDeskTDeskSettings,
   uSharpCenterPluginScheme,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   settingsWnd in 'settingsWnd.pas' {frmSettings};
 
 {$E .dll}

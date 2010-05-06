@@ -43,6 +43,7 @@ uses
   uSharpDeskObjectSettings,
   uVistaFuncs,
   uSharpCenterPluginScheme,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uSettingsWnd in 'uSettingsWnd.pas' {frmSettings},
   ImageObjectXMLSettings in '..\..\..\Objects\Image\ImageObjectXMLSettings.pas';
 

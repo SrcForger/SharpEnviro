@@ -39,6 +39,7 @@ uses
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uSharpCenterPluginScheme,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uMiniScmdWnd in 'uMiniScmdWnd.pas' {frmMiniScmd};
 
 {$E .dll}

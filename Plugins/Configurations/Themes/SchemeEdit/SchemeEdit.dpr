@@ -43,6 +43,7 @@ uses
   BarPreview,
   forms,
   GR32,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uEditWnd in 'uEditWnd.pas' {frmEditWnd};
 
 {$R *.RES}
