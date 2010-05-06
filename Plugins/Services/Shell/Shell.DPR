@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 library Shell;
+
 uses
   MultiMon,
   uxtheme,
@@ -39,6 +40,7 @@ uses
   JclSysInfo,
   JclSimpleXML,
   MonitorList,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   winver in 'winver.pas',
   declaration in 'declaration.pas',
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',

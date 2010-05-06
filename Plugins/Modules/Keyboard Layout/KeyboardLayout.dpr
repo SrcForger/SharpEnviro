@@ -25,8 +25,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library KeyboardLayout;
 
-
-
 uses
   Windows,
   Controls,
@@ -41,7 +39,8 @@ uses
   uISharpBarModule,
   uISharpESkin,
   uISharpBar,
-  uInterfacedSharpBarModuleBase,  
+  uInterfacedSharpBarModuleBase,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}  
   MainWnd in 'MainWnd.pas' {MainForm};
 
 type

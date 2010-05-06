@@ -35,6 +35,7 @@ uses
   SysUtils,
   windows,
   SharpApi,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uCursorsServiceManager in 'uCursorsServiceManager.pas',
   uCursorsServiceSettings in 'uCursorsServiceSettings.pas';
 

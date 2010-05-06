@@ -25,8 +25,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library VWM;
 
-
-
 uses
   Windows,
   Controls,
@@ -42,6 +40,7 @@ uses
   uISharpBar,
   uInterfacedSharpBarModuleBase,
   gr32,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   MainWnd in 'MainWnd.pas' {MainForm},
   VWMFunctions in '..\..\..\Common\Units\VWM\VWMFunctions.pas',
   SharpGraphicsUtils in '..\..\..\Common\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas',

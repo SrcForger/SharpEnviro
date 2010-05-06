@@ -32,6 +32,7 @@ uses
   graphics,
   sysutils,
   SharpApi,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uStartup in 'uStartup.pas',
   FileUtils in '..\Exec\FileUtils.pas';
 

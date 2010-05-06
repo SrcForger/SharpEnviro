@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 library Exec;
+
 uses
   Forms,
   windows,
@@ -31,6 +32,7 @@ uses
   SysUtils,
   StrUtils,
   sharpapi,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uExecServiceExecute in 'uExecServiceExecute.pas',
   uExecServicePathIncludeList in 'uExecServicePathIncludeList.pas',
   uExecServiceSettings in 'uExecServiceSettings.pas',

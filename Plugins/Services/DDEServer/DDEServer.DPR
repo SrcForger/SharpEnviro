@@ -27,6 +27,7 @@ library DDEServer;
 
 uses
   windows,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   SharpApi;
 
 type

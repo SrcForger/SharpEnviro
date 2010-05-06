@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 library link;
+
 uses
   Forms,
   windows,
@@ -45,6 +46,7 @@ uses
   uSharpDeskFunctions,
   SharpApi,
   SharpDeskApi,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uLinkObjectLayer in 'uLinkObjectLayer.pas',
   LinkObjectXMLSettings in 'LinkObjectXMLSettings.pas',
   uSharpDeskObjectSettings in '..\..\..\Common\Units\XML\uSharpDeskObjectSettings.pas',

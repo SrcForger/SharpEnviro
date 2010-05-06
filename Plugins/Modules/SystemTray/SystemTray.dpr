@@ -25,9 +25,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library SystemTray;
 
-
-
-
 uses
   Windows,
   Controls,
@@ -38,6 +35,7 @@ uses
   Contnrs,
   Types,
   GR32,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   MainWnd in 'MainWnd.pas' {MainForm},
   TrayIconsManager in 'TrayIconsManager.pas',
   winver in 'winver.pas',

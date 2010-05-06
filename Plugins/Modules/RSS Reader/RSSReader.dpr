@@ -25,8 +25,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library RSSReader;
 
-
-
 uses
   Windows,
   Controls,
@@ -42,6 +40,7 @@ uses
   uInterfacedSharpBarModuleBase,
   GR32,
   GR32_PNG,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   MainWnd in 'MainWnd.pas' {MainForm},
   uImageDownloadThread in '..\..\..\Common\Units\Threads\uImageDownloadThread.pas',
   uFeedDownloadThread in 'uFeedDownloadThread.pas';

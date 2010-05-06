@@ -25,8 +25,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library ApplicationBar;
 
-
-
 uses
   Windows,
   Controls,
@@ -45,11 +43,11 @@ uses
   uISharpBar,
   uInterfacedSharpBarModuleBase,
   MonitorList,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   MainWnd in 'MainWnd.pas' {MainForm},
   ToolTipApi in '..\..\..\Common\Units\ToolTipApi\ToolTipApi.pas',
   SharpFileUtils in '..\..\..\Common\Units\SharpFileUtils\SharpFileUtils.pas',
-  uTaskPreviewWnd in '..\Taskbar\uTaskPreviewWnd.pas',
-  uKnownFolders in '..\..\..\Common\Units\SystemFuncs\uKnownFolders.pas';
+  uTaskPreviewWnd in '..\Taskbar\uTaskPreviewWnd.pas';
 
 type
   TInterfacedSharpBarModule = class(TInterfacedSharpBarModuleBase)

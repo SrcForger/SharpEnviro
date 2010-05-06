@@ -38,6 +38,7 @@ uses
   IXMLBaseUnit,
   uISharpESkin,
   Dialogs,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uTaskSwitchGUI in 'uTaskSwitchGUI.pas',
   uTaskSwitchWnd in 'Forms\uTaskSwitchWnd.pas' {TaskSwitchWnd},
   uTaskItem in '..\Shell\uTaskItem.pas',

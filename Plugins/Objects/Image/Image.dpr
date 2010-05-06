@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 library Image;
+
 uses
   windows,
   graphics,
@@ -37,6 +38,7 @@ uses
   gr32,
   GR32_Image,
   GR32_Layers,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   ImageObjectXMLSettings in 'ImageObjectXMLSettings.pas',
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   SharpDeskApi in '..\..\..\Common\Libraries\SharpDeskApi\SharpDeskApi.pas',

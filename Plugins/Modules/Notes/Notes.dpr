@@ -25,8 +25,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library Notes;
 
-
-
 uses
   Windows,
   Controls,
@@ -40,6 +38,7 @@ uses
   uISharpBarModule,
   uISharpESkin,
   uISharpBar,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   MainWnd in 'MainWnd.pas' {MainForm},
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',

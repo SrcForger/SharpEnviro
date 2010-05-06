@@ -40,6 +40,7 @@ uses
   uISharpESkin,
   uISharpBar,
   uInterfacedSharpBarModuleBase,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   MainWnd in 'MainWnd.pas' {MainForm},
   uWeatherParser in '..\..\Objects\Weather\uWeatherParser.pas',
   SharpNotify in '..\..\..\Common\Units\SharpNotify\SharpNotify.pas';

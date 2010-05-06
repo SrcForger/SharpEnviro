@@ -25,8 +25,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library MediaController;
 
-
-
 uses
   Windows,
   Controls,
@@ -39,7 +37,8 @@ uses
   uISharpBarModule,
   uISharpESkin,
   uISharpBar,
-  Graphics,  
+  Graphics,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}  
   MainWnd in 'MainWnd.pas' {MainForm},
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',

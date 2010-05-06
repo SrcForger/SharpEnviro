@@ -7,7 +7,7 @@
     <DCC_EnabledPackages>true</DCC_EnabledPackages>
     <DCC_UsePackage>vcl;rtl</DCC_UsePackage>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-    <DCC_DependencyCheckOutputName>F:\SharpE\Services\Hotkeys.ser</DCC_DependencyCheckOutputName>
+    <DCC_DependencyCheckOutputName>..\..\..\..\SharpE\Services\Hotkeys.dll</DCC_DependencyCheckOutputName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Version>7.0</Version>
@@ -15,31 +15,27 @@
     <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
     <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
     <DCC_ExeOutput>..\..\..\..\SharpE\Services\</DCC_ExeOutput>
-    <DCC_UnitSearchPath>..\..\..\Common\Units\SCHotkeyManager\;..\..\..\Common\Units\SEListboxPainter\;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Delphi Components\SCHotkeyEdit</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\..\Common\Units\SCHotkeyManager\;..\..\..\Common\Units\SEListboxPainter\;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Delphi Components\SCHotkeyEdit</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\..\Common\Units\SCHotkeyManager\;..\..\..\Common\Units\SEListboxPainter\;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Delphi Components\SCHotkeyEdit</DCC_ObjPath>
-    <DCC_IncludePath>..\..\..\Common\Units\SCHotkeyManager\;..\..\..\Common\Units\SEListboxPainter\;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Delphi Components\SCHotkeyEdit</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\..\..\Common\Units\SCHotkeyManager\;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Interfaces;..\..\..\Common\Units\DebugDialog</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\..\Common\Units\SCHotkeyManager\;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Interfaces;..\..\..\Common\Units\DebugDialog</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\..\Common\Units\SCHotkeyManager\;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Interfaces;..\..\..\Common\Units\DebugDialog</DCC_ObjPath>
+    <DCC_IncludePath>..\..\..\Common\Units\SCHotkeyManager\;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Interfaces;..\..\..\Common\Units\DebugDialog</DCC_IncludePath>
     <DCC_Define>RELEASE</DCC_Define>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
     <DCC_ExeOutput>..\..\..\..\SharpE\Services\</DCC_ExeOutput>
-    <DCC_UnitSearchPath>..\..\..\Common\Units\SCHotkeyManager\;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Interfaces</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\..\Common\Units\SCHotkeyManager\;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Interfaces</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\..\Common\Units\SCHotkeyManager\;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Interfaces</DCC_ObjPath>
-    <DCC_IncludePath>..\..\..\Common\Units\SCHotkeyManager\;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Interfaces</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\..\..\Common\Units\SCHotkeyManager\;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Interfaces;..\..\..\Common\Units\DebugDialog</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\..\Common\Units\SCHotkeyManager\;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Interfaces;..\..\..\Common\Units\DebugDialog</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\..\Common\Units\SCHotkeyManager\;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Interfaces;..\..\..\Common\Units\DebugDialog</DCC_ObjPath>
+    <DCC_IncludePath>..\..\..\Common\Units\SCHotkeyManager\;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Interfaces;..\..\..\Common\Units\DebugDialog</DCC_IncludePath>
     <DCC_Define>DEBUG</DCC_Define>
+    <DCC_MapFile>3</DCC_MapFile>
   </PropertyGroup>
   <ProjectExtensions>
     <Borland.Personality>Delphi.Personality</Borland.Personality>
     <Borland.ProjectType>VCLApplication</Borland.ProjectType>
     <BorlandProject>
 <BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">0</VersionInfo><VersionInfo Name="MinorVer">5</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">1</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">True</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">True</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">2057</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName">Actia (UK) Ltd</VersionInfoKeys><VersionInfoKeys Name="FileDescription"></VersionInfoKeys><VersionInfoKeys Name="FileVersion">0.5.0.1</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright">Copyright Actia (UK) Ltd 2002</VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName"></VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys><VersionInfoKeys Name="PrivateBuild"></VersionInfoKeys></VersionInfoKeys><Excluded_Packages>
-      
-      
-      
-      
-      
       <Excluded_Packages Name="C:\Users\Lee Green\Documents\Borland Studio Projects\Bpl\PngComponentsD9.bpl">Png components</Excluded_Packages>
     </Excluded_Packages><Source><Source Name="MainSource">Hotkeys.DPR</Source></Source></Delphi.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
@@ -52,4 +48,8 @@
     <DCCReference Include="uHotkeyServiceGeneral.pas" />
     <DCCReference Include="uHotkeyServiceMain.pas" />
   </ItemGroup>
+  <PropertyGroup>
+    <PostBuildEvent>if $(Configuration)==Debug "..\..\Common\3rd party\Jedi\MakeJclDbg.exe" -E $(OUTPUTDIR)$(OUTPUTNAME).map
+if $(Configuration)==Debug del $(OUTPUTDIR)$(OUTPUTNAME).map</PostBuildEvent>
+  </PropertyGroup>
 </Project>

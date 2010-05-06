@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 library Hotkeys;
+
 uses
   Classes,
   Forms,
@@ -32,6 +33,7 @@ uses
   graphics,
   sysutils,
   SharpAPI,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uHotkeyServiceGeneral in 'uHotkeyServiceGeneral.pas',
   uHotkeyServiceMain in 'uHotkeyServiceMain.pas',
   uHotkeyServiceList in '..\..\Configurations\Services\HotkeyList\uHotkeyServiceList.pas';

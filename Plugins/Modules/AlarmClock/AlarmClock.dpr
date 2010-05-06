@@ -25,8 +25,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library AlarmClock;
 
-
-
 {$R 'res\alarmglyphs.res' 'res\alarmglyphs.rc'}
 
 uses
@@ -44,6 +42,7 @@ uses
   uInterfacedSharpBarModuleBase,
   GR32,
   GR32_PNG,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   MainWnd in 'MainWnd.pas' {MainForm};
 
 type

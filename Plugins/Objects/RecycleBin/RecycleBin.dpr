@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 library RecycleBin;
+
 uses
   Forms,
   windows,
@@ -46,6 +47,7 @@ uses
   PngImageList,
   SharpApi,
   SharpDeskApi,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uRecycleBinObjectLayer in 'uRecycleBinObjectLayer.pas',
   RecylceBinObjectSettingsWnd in 'RecylceBinObjectSettingsWnd.pas' {SettingsWnd},
   RecycleBinObjectXMLSettings in 'RecycleBinObjectXMLSettings.pas',

@@ -39,6 +39,7 @@ uses
   JclSimpleXML,
   ISharpESkinComponents,
   SharpTypes,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   VWMFunctions in '..\..\..\Common\Units\VWM\VWMFunctions.pas',
   uSystemFuncs in '..\..\..\Common\Units\SystemFuncs\uSystemFuncs.pas',
   SharpNotify in '..\..\..\Common\Units\SharpNotify\SharpNotify.pas';

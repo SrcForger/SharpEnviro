@@ -37,6 +37,7 @@ uses
   dialogs,
   JCLLocales,
   VWMFunctions,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   uShutdown in '..\..\..\Common\Units\Shutdown\uShutdown.pas';
 
 type

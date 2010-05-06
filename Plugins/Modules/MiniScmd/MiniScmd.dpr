@@ -25,8 +25,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library MiniScmd;
 
-
-
 uses
   Windows,
   Controls,
@@ -40,6 +38,7 @@ uses
   uISharpESkin,
   uISharpBar,
   uInterfacedSharpBarModuleBase,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   MainWnd in 'MainWnd.pas' {MainForm},
   uAliasList in '..\..\..\Common\Units\AliasList\uAliasList.pas';
 

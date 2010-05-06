@@ -40,7 +40,7 @@ uses
 
   // Common
   SharpApi,
-
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   // Project
   uActionServiceList in 'uActionServiceList.pas',
   uActionServiceManager in 'uActionServiceManager.pas';

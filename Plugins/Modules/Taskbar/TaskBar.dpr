@@ -25,8 +25,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library TaskBar;
 
-
-
 uses
   Windows,
   Controls,
@@ -42,6 +40,7 @@ uses
   uISharpBarModule,
   uISharpESkin,
   uISharpBar,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   MainWnd in 'MainWnd.pas' {MainForm},
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',

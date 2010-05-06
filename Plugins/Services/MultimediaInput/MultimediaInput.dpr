@@ -40,6 +40,7 @@ uses
   MMSystem,
   Math,
   SharpTypes,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   SharpNotify in '..\..\..\Common\Units\SharpNotify\SharpNotify.pas',
   SoundControls in '..\..\Modules\VolumeControl\SoundControls.pas',
   MediaPlayerList in '..\..\Modules\MediaController\MediaPlayerList.pas',
