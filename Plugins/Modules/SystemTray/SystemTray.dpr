@@ -35,7 +35,7 @@ uses
   Contnrs,
   Types,
   GR32,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   MainWnd in 'MainWnd.pas' {MainForm},
   TrayIconsManager in 'TrayIconsManager.pas',
   winver in 'winver.pas',

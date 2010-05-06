@@ -37,7 +37,7 @@ uses
   shellAPI,
   JvSimpleXml,
   JclSysInfo,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   SharpApi;
 
 {$R *.RES}

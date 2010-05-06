@@ -37,7 +37,7 @@ uses
   uISharpESkin,
   uISharpBar,
   Graphics,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   MainWnd in 'MainWnd.pas' {MainForm},
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',

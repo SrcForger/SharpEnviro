@@ -4,7 +4,7 @@ uses
   Forms,
   SysUtils,
   JvInterpreter,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   MainWnd in 'Forms\MainWnd.pas' {SharpScriptMainWnd},
   CreateInstallScriptWnd in 'Forms\CreateInstallScriptWnd.pas' {CreateInstallScriptForm},
   InstallWnd in 'Forms\InstallWnd.pas' {InstallForm},

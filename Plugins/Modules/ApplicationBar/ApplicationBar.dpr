@@ -43,7 +43,7 @@ uses
   uISharpBar,
   uInterfacedSharpBarModuleBase,
   MonitorList,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   MainWnd in 'MainWnd.pas' {MainForm},
   ToolTipApi in '..\..\..\Common\Units\ToolTipApi\ToolTipApi.pas',
   SharpFileUtils in '..\..\..\Common\Units\SharpFileUtils\SharpFileUtils.pas',

@@ -32,7 +32,7 @@ uses
   SysUtils,
   StrUtils,
   sharpapi,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   uExecServiceExecute in 'uExecServiceExecute.pas',
   uExecServicePathIncludeList in 'uExecServicePathIncludeList.pas',
   uExecServiceSettings in 'uExecServiceSettings.pas',

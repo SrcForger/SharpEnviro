@@ -40,7 +40,7 @@ uses
   uVistaFuncs,
   SysUtils,
   Graphics,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   uSettingsWnd in 'uSettingsWnd.pas' {frmSettings},
   SharpCenterApi,
   SharpApi,

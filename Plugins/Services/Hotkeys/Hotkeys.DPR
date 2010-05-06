@@ -33,7 +33,7 @@ uses
   graphics,
   sysutils,
   SharpAPI,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   uHotkeyServiceGeneral in 'uHotkeyServiceGeneral.pas',
   uHotkeyServiceMain in 'uHotkeyServiceMain.pas',
   uHotkeyServiceList in '..\..\Configurations\Services\HotkeyList\uHotkeyServiceList.pas';

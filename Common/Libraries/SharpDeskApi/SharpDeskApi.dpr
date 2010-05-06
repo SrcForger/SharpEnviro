@@ -33,7 +33,7 @@ uses
   GR32_Resamplers,
   Math,
   Classes,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   GR32_PNG in '..\..\3rd party\GR32 Addons\GR32_PNG.pas',
   SharpGraphicsUtils in '..\..\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas';
 

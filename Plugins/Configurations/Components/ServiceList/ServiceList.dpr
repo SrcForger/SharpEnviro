@@ -43,7 +43,7 @@ uses
   ISharpCenterPluginUnit,
   uSharpCenterPluginScheme,
   uComponentMan,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   listWnd in 'listWnd.pas' {frmList};
 
 {$E .dll}

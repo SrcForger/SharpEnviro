@@ -35,7 +35,7 @@ uses
   SysUtils,
   classes,
   SharpApi,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   uExecServiceRecentItemList in '..\..\..\Plugins\Services\Exec\uExecServiceRecentItemList.pas',
   uExecServiceUsedItemList in '..\..\..\Plugins\Services\Exec\uExecServiceUsedItemList.pas',
   SimpleForms in '..\..\Units\SimpleUnits\SimpleForms.pas';

@@ -27,7 +27,7 @@ library SharpThemeApiEx;
 
 uses
   Windows,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   uThemeInfo in 'uThemeInfo.pas',
   uThemeConsts in 'uThemeConsts.pas',
   uThemeSkin in 'uThemeSkin.pas',

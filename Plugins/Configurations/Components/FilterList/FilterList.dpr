@@ -47,7 +47,7 @@ uses
   uSharpCenterPluginScheme,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   uListWnd in 'uListWnd.pas' {frmList},
   uEditWnd in 'uEditWnd.pas' {frmEdit};
 

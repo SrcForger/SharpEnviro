@@ -40,7 +40,7 @@ uses
   uISharpBar,
   uInterfacedSharpBarModuleBase,
   gr32,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   MainWnd in 'MainWnd.pas' {MainForm},
   VWMFunctions in '..\..\..\Common\Units\VWM\VWMFunctions.pas',
   SharpGraphicsUtils in '..\..\..\Common\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas',

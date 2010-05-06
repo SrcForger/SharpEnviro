@@ -46,7 +46,7 @@ uses
   uISharpETheme,
   adCpuUsage,
   uSharpCenterPluginScheme,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   uCPUMonitorWnd in 'uCPUMonitorWnd.pas' {frmCPUMon};
 
 {$E .dll}

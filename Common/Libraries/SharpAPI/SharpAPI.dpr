@@ -43,7 +43,7 @@ uses
   registry,
   gr32,
   types,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   SimpleForms in '..\..\Units\SimpleUnits\SimpleForms.pas',
   uSystemFuncs in '..\..\Units\SystemFuncs\uSystemFuncs.pas',
   SharpTypes in '..\..\Units\SharpTypes\SharpTypes.pas';

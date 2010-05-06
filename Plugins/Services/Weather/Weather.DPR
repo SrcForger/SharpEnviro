@@ -35,7 +35,7 @@ uses
   Jclstrings,
   forms,
   SharpApi,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   uWeatherList in 'uWeatherList.pas',
   uWeatherOptions in 'uWeatherOptions.pas',
   uWeatherMgr in 'uWeatherMgr.pas';

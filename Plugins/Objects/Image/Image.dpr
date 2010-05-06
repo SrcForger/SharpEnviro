@@ -38,7 +38,7 @@ uses
   gr32,
   GR32_Image,
   GR32_Layers,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   ImageObjectXMLSettings in 'ImageObjectXMLSettings.pas',
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   SharpDeskApi in '..\..\..\Common\Libraries\SharpDeskApi\SharpDeskApi.pas',

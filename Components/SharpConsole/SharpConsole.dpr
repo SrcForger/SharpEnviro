@@ -3,7 +3,7 @@ program SharpConsole;
 uses
   Forms,
   uVistaFuncs,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   Main in 'Main.pas' {SharpConsoleWnd},
   uDebugging,
   uTDebugging,

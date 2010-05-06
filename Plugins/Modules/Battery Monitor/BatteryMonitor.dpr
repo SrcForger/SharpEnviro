@@ -40,7 +40,7 @@ uses
   uInterfacedSharpBarModuleBase,
   GR32,
   GR32_PNG,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   MainWnd in 'MainWnd.pas' {MainForm};
 
 

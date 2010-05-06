@@ -40,7 +40,7 @@ uses
   uISharpBarModule,
   uISharpESkin,
   uISharpBar,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   MainWnd in 'MainWnd.pas' {MainForm},
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',

@@ -47,7 +47,7 @@ uses
   PngImageList,
   SharpApi,
   SharpDeskApi,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   uRecycleBinObjectLayer in 'uRecycleBinObjectLayer.pas',
   RecylceBinObjectSettingsWnd in 'RecylceBinObjectSettingsWnd.pas' {SettingsWnd},
   RecycleBinObjectXMLSettings in 'RecycleBinObjectXMLSettings.pas',

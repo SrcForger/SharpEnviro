@@ -32,7 +32,7 @@ uses
   Types,
   StrUtils,
   Graphics,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   SharpBarMainWnd in 'Forms\SharpBarMainWnd.pas' {SharpBarMainForm},
   JclSimpleXML,
   JclFileUtils,

@@ -38,7 +38,7 @@ uses
   SysUtils,
   Classes,
   SharpApi,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   uVistaFuncs in '..\..\Common\Units\VistaFuncs\uVistaFuncs.pas';
 
 type

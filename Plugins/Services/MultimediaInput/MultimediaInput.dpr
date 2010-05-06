@@ -40,7 +40,7 @@ uses
   MMSystem,
   Math,
   SharpTypes,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   SharpNotify in '..\..\..\Common\Units\SharpNotify\SharpNotify.pas',
   SoundControls in '..\..\Modules\VolumeControl\SoundControls.pas',
   MediaPlayerList in '..\..\Modules\MediaController\MediaPlayerList.pas',
@@ -70,13 +70,20 @@ var
 
 procedure ShowOSD(pCaption : String);
 var
-  x,y : integer;
-  mon : HMonitor;
-  moninfo : TMonitorInfo;
-  p : TPoint;
-  edge: TSharpNotifyEdge;
-begin
-  if not sShowOSD then
+
+  x,y : integer;
+
+  mon : HMonitor;
+
+  moninfo : TMonitorInfo;
+
+  p : TPoint;
+
+  edge: TSharpNotifyEdge;
+
+begin
+
+  if not sShowOSD then
     exit;
 
   GetCursorPos(p);

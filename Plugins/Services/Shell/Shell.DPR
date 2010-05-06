@@ -40,7 +40,7 @@ uses
   JclSysInfo,
   JclSimpleXML,
   MonitorList,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   winver in 'winver.pas',
   declaration in 'declaration.pas',
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',

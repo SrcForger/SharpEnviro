@@ -46,7 +46,7 @@ uses
   uSharpDeskFunctions,
   SharpApi,
   SharpDeskApi,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   uLinkObjectLayer in 'uLinkObjectLayer.pas',
   LinkObjectXMLSettings in 'LinkObjectXMLSettings.pas',
   uSharpDeskObjectSettings in '..\..\..\Common\Units\XML\uSharpDeskObjectSettings.pas',

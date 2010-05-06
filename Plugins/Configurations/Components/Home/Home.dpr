@@ -34,7 +34,7 @@ uses
   uVistaFuncs,
   SysUtils,
   Graphics,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   uHomeWnd in 'uHomeWnd.pas' {frmHome},
   SharpCenterApi,
   SharpApi,

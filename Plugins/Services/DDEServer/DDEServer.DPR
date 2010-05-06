@@ -27,7 +27,7 @@ library DDEServer;
 
 uses
   windows,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   SharpApi;
 
 type

@@ -29,7 +29,7 @@ uses
   windows,
   Classes,
   Messages,
-  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
+  {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   uSkinServer in 'uSkinServer.pas' {SkinServer},
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
