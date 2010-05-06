@@ -30,7 +30,8 @@ Interface
 uses Windows,Graphics,SysUtils,Forms,SharpApi,Classes,Dialogs,Types,ExtCtrls, StdCtrls,
      GR32,Math,GR32_blend,GR32_Image, GR32_resamplers,GR32_Backends,
      PngImage, Registry,Messages, SharpThemeApiEx, uThemeConsts,
-     GR32_PNG, Jpeg, uISharpETheme, 
+     GR32_PNG, Jpeg, uISharpETheme,
+     SharpSharedFileAccess,
      SharpGraphicsUtils,
      SharpImageUtils;
 
@@ -374,6 +375,8 @@ var
 
   tBmp : TBitmap;
   TempBmp : TBitmap32;
+
+  Stream : TSharedFileStream;
 begin
   Theme := GetCurrentTheme;
 
@@ -381,8 +384,9 @@ begin
   winWallPath := SharpApi.GetSharpeUserSettingsPath + 'SharpDeskbg';
   tBmp := TBitmap.Create;
   tBmp.Assign(SharpDesk.Image.Bitmap);
-  if FileCheck(winWallPath+'.bmp') then
-    tBmp.SaveToFile(winWallPath+'.bmp');
+  if OpenFileStreamShared(Stream, sfaCreate, winWallPath+'.bmp', True) = sfeSuccess then
+    tBmp.SaveToStream(Stream);
+  Stream.Free;
   tBmp.Free;
 
   // save the preview bitmap
@@ -390,8 +394,9 @@ begin
   RescaleImage(SharpDesk.Image.Bitmap,TempBmp,62,48,True);
   if not DirectoryExists(Theme.Info.Directory) then
     ForceDirectories(Theme.Info.Directory);
-  if FileCheck(Theme.Info.Directory + '\preview.png') then
-    SaveBitmap32ToPNG(TempBmp,Theme.Info.Directory + '\preview.png',False,True,clWhite);
+  if OpenFileStreamShared(Stream, sfaCreate, Theme.Info.Directory + '\preview.png', True) = sfeSuccess then
+    SaveBitmap32ToPNG(TempBmp,Stream,False,True,clWhite);
+  Stream.Free;
   TempBmp.Free;
 
   //SharpApi.SendDebugMessageEx('SharpDesk',PChar(('Background - Set Win Wallpaper : ') + WP.Name),clblue,DMT_trace);
