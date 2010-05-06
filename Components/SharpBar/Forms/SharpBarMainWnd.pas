@@ -34,7 +34,8 @@ uses
   SharpEBaseControls, Controls, ExtCtrls, uSkinManagerThreads,
   uSystemFuncs, Types, SharpESkin, Registry, SharpTypes, SharpNotify,
   SharpGraphicsUtils, Math, SharpCenterApi, ImgList, GR32_Backends,
-  uSharpESkinInterface, uSharpBarInterface, MonitorList;
+  uSharpESkinInterface, uSharpBarInterface, MonitorList,
+  SharpSharedFileAccess, GR32Utils;
 
 type
   TSharpBarMainForm = class(TForm)
@@ -868,7 +869,7 @@ begin
       // First try to load the SharpDesk background image
       // if this fails then try to use PrintWindow on SharpDesk
       if FileCheck(SharpApi.GetSharpeUserSettingsPath + 'SharpDeskbg.bmp', True) then
-        BGBmp.LoadFromFile(SharpApi.GetSharpeUserSettingsPath + 'SharpDeskbg.bmp')
+        LoadBitmap32Shared(BGBmp,SharpApi.GetSharpeUserSettingsPath + 'SharpDeskbg.bmp',True)
       else if @PrintWindow <> nil then begin
         // try 3 times... :)
         if not PrintWindow(wnd, BGBmp.Handle, 0) then begin
@@ -923,7 +924,7 @@ begin
       BGBmp.Clear(color32(R, G, B, 255));
       TempBmp := TBitmap32.Create;
       if FileExists(WinWallPath) then
-        TempBmp.LoadFromFile(WinWallPath);
+        LoadBitmap32Shared(TempBmp,WinWallPath,True);
       if WinWallTile = '1' then {// Tile Wallpaper} begin
         for x := 0 to BGBmp.Width div TempBmp.Width + 1 do
           for y := 0 to BGBmp.Height div TempBmp.Height + 1 do
