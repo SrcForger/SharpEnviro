@@ -3,9 +3,9 @@ program SharpCompile;
 uses
   Forms,
   SharpApi,
+  {$IFDEF DEBUG}DebugDialog,{$ENDIF}
   fMain in 'fMain.pas' {SharpCompileMainWnd},
-  uCompiler in 'uCompiler.pas',
-  DebugDialog in '..\..\Common\Units\DebugDialog\DebugDialog.pas';
+  uCompiler in 'uCompiler.pas';
 
 {$R *.res}
 {$R metadata.res}

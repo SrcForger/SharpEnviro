@@ -17,10 +17,10 @@
     <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
     <DCC_MapFile>3</DCC_MapFile>
     <DCC_ExeOutput>..\..\..\SharpE_BuildTools\</DCC_ExeOutput>
-    <DCC_UnitSearchPath>..\..\Common\Units\SharpFX;..\..\Common\Units\VistaFuncs;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\3rd Party\DosCommand;..\..\Common\Delphi Components\SharpEListBoxEx;..\..\Common\Delphi Components\SharpEPageControl</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\Common\Units\SharpFX;..\..\Common\Units\VistaFuncs;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\3rd Party\DosCommand;..\..\Common\Delphi Components\SharpEListBoxEx;..\..\Common\Delphi Components\SharpEPageControl</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\Common\Units\SharpFX;..\..\Common\Units\VistaFuncs;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\3rd Party\DosCommand;..\..\Common\Delphi Components\SharpEListBoxEx;..\..\Common\Delphi Components\SharpEPageControl</DCC_ObjPath>
-    <DCC_IncludePath>..\..\Common\Units\SharpFX;..\..\Common\Units\VistaFuncs;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\3rd Party\DosCommand;..\..\Common\Delphi Components\SharpEListBoxEx;..\..\Common\Delphi Components\SharpEPageControl</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\..\Common\Units\SharpFX;..\..\Common\Units\VistaFuncs;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\3rd Party\DosCommand;..\..\Common\Delphi Components\SharpEListBoxEx;..\..\Common\Delphi Components\SharpEPageControl;..\..\Common\Libraries\SharpApi;..\..\Common\Units\DebugDialog</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\Common\Units\SharpFX;..\..\Common\Units\VistaFuncs;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\3rd Party\DosCommand;..\..\Common\Delphi Components\SharpEListBoxEx;..\..\Common\Delphi Components\SharpEPageControl;..\..\Common\Libraries\SharpApi;..\..\Common\Units\DebugDialog</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\Common\Units\SharpFX;..\..\Common\Units\VistaFuncs;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\3rd Party\DosCommand;..\..\Common\Delphi Components\SharpEListBoxEx;..\..\Common\Delphi Components\SharpEPageControl;..\..\Common\Libraries\SharpApi;..\..\Common\Units\DebugDialog</DCC_ObjPath>
+    <DCC_IncludePath>..\..\Common\Units\SharpFX;..\..\Common\Units\VistaFuncs;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\3rd Party\DosCommand;..\..\Common\Delphi Components\SharpEListBoxEx;..\..\Common\Delphi Components\SharpEPageControl;..\..\Common\Libraries\SharpApi;..\..\Common\Units\DebugDialog</DCC_IncludePath>
     <DCC_Define>RELEASE</DCC_Define>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -46,13 +46,14 @@
   <PropertyGroup>
     <PostBuildEvent>copy "..\..\Common\3rd Party\7z\7z.dll" $(OUTPUTDIR)
 copy "..\..\..\SharpE\SharpAPI.dll" $(OUTPUTDIR)
-copy "..\..\..\SharpE\SharpThemeApiEx.dll" $(OUTPUTDIR)</PostBuildEvent>
+copy "..\..\..\SharpE\SharpThemeApiEx.dll" $(OUTPUTDIR)
+if $(Configuration)==Debug "..\..\Common\3rd party\Jedi\MakeJclDbg.exe" -E $(OUTPUTDIR)$(OUTPUTNAME).map
+if $(Configuration)==Debug del $(OUTPUTDIR)$(OUTPUTNAME).map</PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <DelphiCompile Include="SharpCompile.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
-    <DCCReference Include="..\..\Common\Units\DebugDialog\DebugDialog.pas" />
     <DCCReference Include="fMain.pas">
       <Form>SharpCompileMainWnd</Form>
     </DCCReference>

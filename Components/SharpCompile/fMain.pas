@@ -259,7 +259,7 @@ begin
   if (bZip) and (not Terminated) then
   begin
     Log('Zipping contents of output directory.');
-    ZipDirectory(sOutputPath, '..\SharpE_Builds\SharpE.7z');
+    ZipDirectory(sOutputPath, '..\SharpE_Builds\SharpE-' + FormatDateTime('yyyymmddhhnnss', Now) + '.7z');
   end;
   
   buildEnd := Now;

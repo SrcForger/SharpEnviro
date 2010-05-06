@@ -139,7 +139,6 @@ type
   public
     constructor Create; reintroduce;
     destructor Destroy; override;
-    function NETFramework35InstallPath() : string;
     function CompileSolution(Project : TCSharpSolution; bDebug : Boolean = False) : Boolean;
   published
     property OnCompilerCmdOutput : TCompileEvent read FOnCompilerCmdOutput write FOnCompilerCmdOutput;
@@ -194,6 +193,20 @@ type
   end;
 
 implementation
+
+function NETFramework35InstallPath: string;
+var
+  Reg: TRegistry;
+begin
+  Reg := TRegistry.Create(KEY_READ);
+  try
+    Reg.RootKey := HKEY_LOCAL_MACHINE;
+    if Reg.OpenKey('SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5', False) then
+      Result := Reg.ReadString('InstallPath');
+  finally
+    Reg.Free
+  end;
+end;
 
 {$REGION 'TCSharpSolution'}
 
@@ -265,20 +278,6 @@ begin
   end;
 
   Result := (exitCode = 0);
-end;
-
-function TCSharpCompiler.NETFramework35InstallPath: string;
-var
-  Reg: TRegistry;
-begin
-  Reg := TRegistry.Create(KEY_READ);
-  try
-    Reg.RootKey := HKEY_LOCAL_MACHINE;
-    if Reg.OpenKey('SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5', False) then
-      Result := Reg.ReadString('InstallPath');
-  finally
-    Reg.Free
-  end;
 end;
 
 {$ENDREGION 'TCSharpCompiler'}
@@ -392,7 +391,7 @@ constructor TDelphiCompiler.Create;
 begin
   inherited Create;
 
-  UpdateBDSData;
+//  UpdateBDSData;
 end;
 
 destructor TDelphiCompiler.Destroy;
@@ -570,73 +569,39 @@ end;
 function TDelphiCompiler.CompileProject(Project: TDelphiProject; bDebug : boolean = False) : boolean;
 var
   DC : TDosCommand;
-  Dir : String;
   cmd : String;
-  s : String;
-  sExt : String;
-  iMapSize,iDataSize : Integer;
-  iReturn: Integer;
-  iLinkerBugUnit : string;
+  config : string;
 begin
-  result := False;
+  Result := False;
 
   if not FileExists(Project.Path) then
-     exit;
+    Exit;
 
-  Dir := IncludeTrailingPathDelimiter(ExtractFilePath(Project.Path));
-  SetCurrentDirectory(PChar(Dir));
-  ForceDirectories(Project.OutputDir);
-
+  config := 'Release';
   if bDebug then
-    AddDebugUnit(Project);
+    config := 'Debug';
 
-  DC := TDosCommand.Create(nil);
-  DC.OnNewLine := OnCompilerNewLine;
-  MakeCFG(Project, bDebug);
+  // This sets up the environment to build the delphi projects.
+  // We also chain the commands with & because each call to TDosCommand.Execute
+  // creates a new process which is not what we want.
+  cmd := 'rsvars.bat & ';
 
-  cmd := 'dcc32 "' + ExtractFilePath(Project.Path) + ChangeFileExt(ExtractFileName(Project.Path), '');
-  if bDebug then
-    cmd := cmd + '.dpr~'
-  else
-    cmd := cmd + '.dpr';
-  cmd := cmd + '"';
+  // MSBuild.exe "projectFilePath" /t:Rebuild /p:Configuration=Release
+  // MSBuild.exe "projectFilePath" /t:Rebuild /p:Configuration=Debug
+  cmd := cmd + 'MSBuild.exe "' + Project.Path + '" /t:Rebuild /p:Configuration=' + config;
 
-  DC.CommandLine := cmd;
-  DC.Execute2;
-  iReturn := DC.ExitCode;
-  DC.Free;
+  dc := TDosCommand.Create(nil);
+  try
+    dc.OnNewLine := OnCompilerNewLine;
 
-  SetCurrentDirectory(PChar(Dir));
-  DeleteFile(PChar(Dir + 'Dcc32.cfg'));
-
-  s := ChangeFileExt(ExtractFileName(Project.Path), '');
-  if (FileExists(Project.OutputDir + s + '.dll')) then
-    sExt := '.dll';
-  if (FileExists(Project.OutputDir + s + '.exe')) then
-    sExt := '.exe';
-  if (FileExists(Project.OutputDir + s + '.ser')) then
-    sExt := '.ser';
-
-  result := (iReturn = 0);
-
-  if bDebug then
-  begin
-    s := ChangeFileExt(Project.Path, '');
-    if FileExists(s + '.dpr~') then
-      DeleteFile(PChar(s + '.dpr~'));
-    s := ChangeFileExt(ExtractFileName(Project.Path), '');
-    result := InsertDebugDataIntoExecutableFile(PChar(Project.OutputDir + s + sExt), PChar(Project.OutputDir + s + '.map'), iLinkerBugUnit, iMapSize, iDataSize);
-    Project.DataSize := iDataSize;
+    dc.CommandLine := cmd;
+    dc.Execute2;
+    exitCode := dc.ExitCode;
+  finally
+    dc.Free;
   end;
 
-  if FileExists(Project.OutputDir + s + '.ser') then
-    if FileExists(Project.OutputDir + s + '.service') then
-      DeleteFile(PChar(Project.OutputDir + s + '.service'));
-    MoveFile(PChar(Project.OutputDir + s + '.ser'), PChar(Project.OutputDir + s + '.service'));
-
-  if FileExists(Project.OutputDir + s + '.map') then
-    DeleteFile(PChar(Project.OutputDir + s + '.map'));
-
+  Result := (exitCode = 0);
 end;
 
 {$ENDREGION 'TDelphiCompiler'}
