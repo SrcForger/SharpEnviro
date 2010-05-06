@@ -1647,6 +1647,7 @@ var
 begin
   ms := TSharpEMenuSettings.Create;
   ms.LoadFromXML;
+  ms.MultiThreading := False;
 
   mn := TSharpEMenu.Create(mInterface.SkinInterface.SkinManager,ms);
   ms.Free;

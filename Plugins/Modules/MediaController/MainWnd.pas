@@ -480,6 +480,7 @@ begin
     ms.LoadFromXML;
     ms.CacheIcons := False;
     ms.WrapMenu := False;
+    ms.MultiThreading := False;
 
     mn := TSharpEMenu.Create(mInterface.SkinInterface.SkinManager,ms);
     ms.Free;

@@ -249,6 +249,7 @@ begin
   ms.WrapMenu := False;
   ms.UseGenericIcons := False;
   ms.CacheIcons := False;
+  ms.MultiThreading := False;
 
   mn := TSharpEMenu.Create(mInterface.SkinInterface.SkinManager,ms);
   ms.Free;
