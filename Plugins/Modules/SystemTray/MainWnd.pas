@@ -181,7 +181,7 @@ begin
     menuWnd.IgnoreNextKillFocus := False;
 
     menuwnd.IgnoreNextDeactivate := True;
-    menu.RenderBackground(menuwnd.Left,menuwnd.Top,menu.SpecialBackgroundSource);
+    menu.RenderBackground(menuwnd.Left,menuwnd.Top,false,menu.SpecialBackgroundSource);
     menu.RenderNormalMenu;
     menu.RenderTo(menuwnd.Picture);
     menuwnd.PreMul(menuwnd.Picture);
