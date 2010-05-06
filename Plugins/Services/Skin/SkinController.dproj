@@ -52,6 +52,7 @@ if $(Configuration)==Debug del $(OUTPUTDIR)$(OUTPUTNAME).map</PostBuildEvent>
     </DelphiCompile>
     <DCCReference Include="..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas" />
     <DCCReference Include="..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas" />
+    <DCCReference Include="..\..\..\Common\Units\DebugDialog\DebugDialog.pas" />
     <DCCReference Include="..\..\..\Common\Units\SharpFX\graphicsFX.pas" />
     <DCCReference Include="uSkinServer.pas">
       <Form>SkinServer</Form>

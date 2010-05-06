@@ -67,7 +67,6 @@ begin
   DeallocateHWnd(h);
   AE.Free;
   UnRegisterAction('!RefreshSkin');
-
 end;
 
 exports

@@ -36,19 +36,17 @@ uses Windows, Dialogs, SysUtils, Classes,
      uISharpETheme,
      uThemeConsts,
      SharpESkin,
-     SharpTypes;
+     SharpTypes,
+     SharpSharedFileAccess;
 
 Type
 
     TSkinServer = class(TForm)
-      procedure FormDestroy(Sender: TObject);
       procedure CreateParams(var Params: TCreateParams); override;
       procedure FormCreate(Sender: TObject);
     private
       FSkin      : TSharpESkin;
-
       FFileName  : string;
-      FStream    : TFileStream;
 
       procedure UpdateSkin(var Msg: TMessage); message WM_SHARPEUPDATESETTINGS;
     public
@@ -67,14 +65,10 @@ begin
   SharpApi.BroadcastGlobalUpdateMessage(suSkinFileChanged,-1,True);
 end;
 
-procedure TSkinServer.FormDestroy(Sender: TObject);
-begin
-  if FStream <> nil then FreeAndNil(FStream);
-end;
-
 procedure TSkinServer.UpdateStreamFile(ByUpdateMessage : Boolean = False);
 var
   Theme : ISharpETheme;
+  Stream : TSharedFileStream;
 begin
   //Load new skin
   Theme := GetCurrentTheme;
@@ -82,16 +76,10 @@ begin
     Theme.LoadTheme([tpSkinScheme]);
   FFileName := Theme.Skin.Directory + 'Skin.xml';
   FSkin.LoadFromXmlFile(FFileName);
-  if FStream <> nil then
-    FreeAndNil(FStream);
 
-  try
-    DeleteFile(SharpApi.GetSharpeUserSettingsPath + 'SharpE.skin');
-  finally
-    FStream := TFileStream.Create(SharpApi.GetSharpeUserSettingsPath + 'SharpE.skin',fmCreate or fmShareDenyWrite);
-  end;
-  FSkin.SaveToStream(FStream,true);
-  FreeAndNil(FStream);
+  if OpenFileStreamShared(Stream,sfaCreate,SharpApi.GetSharpeUserSettingsPath + 'SharpE.skin',True) = sfeSuccess then
+    FSkin.SaveToStream(Stream,true);
+  FreeAndNil(Stream);
   FSkin.Clear;
 end;
 
