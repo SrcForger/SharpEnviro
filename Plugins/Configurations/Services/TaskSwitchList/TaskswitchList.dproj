@@ -42,6 +42,10 @@
     </Excluded_Packages><Source><Source Name="MainSource">TaskswitchList.dpr</Source></Source></Delphi.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
   <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if $(Configuration)==Debug "..\..\..\..\Common\3rd party\Jedi\MakeJclDbg.exe" -E $(OUTPUTDIR)$(OUTPUTNAME).map
+if $(Configuration)==Debug del $(OUTPUTDIR)$(OUTPUTNAME).map</PostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <DelphiCompile Include="TaskswitchList.dpr">
       <MainSource>MainSource</MainSource>
@@ -55,8 +59,4 @@
     <DCCReference Include="uTaskswitchUtility.pas" />
     <None Include="centerscheme.inc" />
   </ItemGroup>
-  <PropertyGroup>
-    <PostBuildEvent>if $(Configuration)==Debug "..\..\..\Common\3rd party\Jedi\MakeJclDbg.exe" -E $(OUTPUTDIR)$(OUTPUTNAME).map
-if $(Configuration)==Debug del $(OUTPUTDIR)$(OUTPUTNAME).map</PostBuildEvent>
-  </PropertyGroup>
 </Project>
