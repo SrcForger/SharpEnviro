@@ -1165,17 +1165,24 @@ begin
 
   backgroundThread := nil;
   normalItemsThread := nil;
-  if (FBackground = nil) then
+  if Settings.MultiThreading then
   begin
-    UpdateItemWidth;
-    UpdateItemsHeight;
-    backgroundThread := TSharpEMenuRenderThread.Create(self,riBackground);
-    backgroundThread.Resume;
-  end;
-  if (FNormalMenu = nil) then
+    if (FBackground = nil) then
+    begin
+      UpdateItemWidth;
+      UpdateItemsHeight;
+      backgroundThread := TSharpEMenuRenderThread.Create(self,riBackground);
+      backgroundThread.Resume;
+    end;
+    if (FNormalMenu = nil) then
+    begin
+      normalItemsThread := TSharpEMenuRenderThread.Create(self,riNormalItems);
+      normalItemsThread.Resume;
+    end;
+  end else
   begin
-    normalItemsThread := TSharpEMenuRenderThread.Create(self,riNormalItems);
-    normalItemsThread.Resume;
+    if (FBackground = nil) then RenderBackground(0,0);
+    if (FNormalMenu = nil) then RenderNormalMenu();
   end;
 
   if backgroundThread <> nil then

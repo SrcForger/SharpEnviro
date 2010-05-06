@@ -34,6 +34,7 @@ type
   TSharpEMenuSettings = class
   private
   public
+    MultiThreading : boolean;
     WrapMenu : boolean;
     WrapCount : integer;
     WrapPosition : integer;
@@ -61,6 +62,7 @@ begin
   inherited Create;
 
   // Default settings
+  MultiThreading := True;
   WrapMenu := True;
   WrapCount := 25;
   WrapPosition := 1;
@@ -73,6 +75,7 @@ end;
 
 procedure TSharpEMenuSettings.Assign(from : TSharpeMenuSettings);
 begin
+  MultiThreading := from.MultiThreading;
   WrapMenu := from.WrapMenu;
   WrapCount := from.WrapCount;
   WrapPosition := from.WrapPosition;
@@ -92,6 +95,7 @@ procedure TSharpEMenuSettings.LoadFromXML(pXML : TJclSimpleXMLElems);
 begin
   with pXML do
   begin
+    MultiThreading := BoolValue('MultiThreading',MultiThreading);
     WrapMenu := BoolValue('WrapMenu',WrapMenu);
     WrapCount := IntValue('WrapCount',WrapCount);
     WrapPosition := IntValue('WrapPosition',WrapPosition);
@@ -107,6 +111,7 @@ procedure TSharpEMenuSettings.SaveToXML(pXML: TJclSimpleXMLElems);
 begin
   with pXML do
   begin
+    Add('MultiThreading',MultiThreading);
     Add('WrapMenu',WrapMenu);
     Add('WrapCount',WrapCount);
     Add('WrapPosition',WrapPosition);
