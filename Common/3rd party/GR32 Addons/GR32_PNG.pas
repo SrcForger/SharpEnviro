@@ -79,7 +79,7 @@ procedure LoadBitmap32FromPNG(DestBitmap: TBitmap32; Filename: String; out Alpha
 var
   FileStream: TFileStream;
 begin
-  FileStream := TFileStream.Create(Filename, fmOpenRead);
+  FileStream := TFileStream.Create(Filename, fmOpenRead or fmShareDenyWrite);
   try
     LoadBitmap32FromPNG(DestBitmap, FileStream, AlphaChannelAvailable);
   finally
@@ -147,7 +147,7 @@ procedure SaveBitmap32ToPNG(SrcBitmap: TBitmap32; Filename: String; Paletted, Tr
 var
   FileStream: TFileStream;
 begin
-  FileStream := TFileStream.Create(Filename, fmCreate);
+  FileStream := TFileStream.Create(Filename, fmCreate or fmShareExclusive);
   try
     SaveBitmap32ToPNG(SrcBitmap, FileStream, Paletted, Transparent, BackgroundColor);
   finally
