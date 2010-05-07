@@ -32,6 +32,7 @@ interface
 {$WARN UNIT_PLATFORM OFF}
 
 uses
+  Types,
   Windows,
   Messages,
   SysUtils, StrUtils,

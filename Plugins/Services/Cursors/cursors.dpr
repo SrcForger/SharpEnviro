@@ -31,6 +31,7 @@ library cursors;
 
 uses
   Forms,
+  Classes,
   StrUtils,
   SysUtils,
   windows,
