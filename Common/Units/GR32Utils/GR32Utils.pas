@@ -54,7 +54,7 @@ begin
   end else
   begin
     MemoryStream := TMemoryStream.Create;
-    if OpenMemoryStreamShared(MemoryStream, sfaRead, FileName, true) = sfeSuccess then
+    if OpenMemoryStreamShared(MemoryStream, FileName, true) = sfeSuccess then
     begin
       if (CompareText(Ext,'.jpeg') = 0) or (CompareText(Ext,'.jpg') = 0) then
         AssignJpeg(Dst,MemoryStream)

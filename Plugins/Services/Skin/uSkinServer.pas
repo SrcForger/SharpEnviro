@@ -78,8 +78,10 @@ begin
   FSkin.LoadFromXmlFile(FFileName);
 
   if OpenFileStreamShared(Stream,sfaCreate,SharpApi.GetSharpeUserSettingsPath + 'SharpE.skin',True) = sfeSuccess then
+  begin
     FSkin.SaveToStream(Stream,true);
-  FreeAndNil(Stream);
+    FreeAndNil(Stream);
+  end;
   FSkin.Clear;
 end;
 

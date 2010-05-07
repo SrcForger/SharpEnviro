@@ -385,8 +385,10 @@ begin
   tBmp := TBitmap.Create;
   tBmp.Assign(SharpDesk.Image.Bitmap);
   if OpenFileStreamShared(Stream, sfaCreate, winWallPath+'.bmp', True) = sfeSuccess then
+  begin
     tBmp.SaveToStream(Stream);
-  Stream.Free;
+    Stream.Free;
+  end;
   tBmp.Free;
 
   // save the preview bitmap
@@ -395,8 +397,10 @@ begin
   if not DirectoryExists(Theme.Info.Directory) then
     ForceDirectories(Theme.Info.Directory);
   if OpenFileStreamShared(Stream, sfaCreate, Theme.Info.Directory + '\preview.png', True) = sfeSuccess then
+  begin
     SaveBitmap32ToPNG(TempBmp,Stream,False,True,clWhite);
-  Stream.Free;
+    Stream.Free;
+  end;
   TempBmp.Free;
 
   //SharpApi.SendDebugMessageEx('SharpDesk',PChar(('Background - Set Win Wallpaper : ') + WP.Name),clblue,DMT_trace);

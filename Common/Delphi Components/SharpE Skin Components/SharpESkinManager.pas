@@ -395,7 +395,7 @@ var
 begin
   loadfile := SharpApi.GetSharpeUserSettingsPath + 'SharpE.skin';
   Stream := TMemoryStream.Create;
-  if OpenMemoryStreamShared(Stream,sfaRead,loadfile,true) = sfeSuccess then
+  if OpenMemoryStreamShared(Stream,loadfile,true) = sfeSuccess then
   begin
     FSkin.Clear;
     FSkin.LoadFromStream(Stream);
