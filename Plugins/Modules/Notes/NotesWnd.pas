@@ -182,7 +182,6 @@ type
     procedure ConvertTxtFilesToRtfFiles;
     procedure LoadDefaultTab;
     procedure WMUpdateNotes(var Msg : TMessage); message WM_UPDATENOTES;
-    function IsReadOnly(FilePath : string) : Boolean;
   public
     { Public declarations }
     function TabFilePath(Name: string) : string; overload;
@@ -259,7 +258,7 @@ begin
       tabSettings := GetTabSettings(TabName(FIndex));
       frmTabOptions.editTags.Text := tabSettings.Tags;
       frmTabOptions.ilvIcon.SelectedIndex := tabSettings.IconIndex;
-      frmTabOptions.chkReadOnly.Checked := IsReadOnly(TabFilePath(FIndex));
+      frmTabOptions.chkReadOnly.Checked := FileIsReadOnly(TabFilePath(FIndex));
     end;
 
     if frmTabOptions.ShowModal = mrOk then
@@ -279,7 +278,7 @@ begin
 
         // Set the file to be read only if the checkbox is checked.
         if frmTabOptions.chkReadOnly.Checked then
-          FileSetAttr(TabFilePath(frmTabOptions.editName.Text), faReadOnly);
+          FileSetReadOnly(TabFilePath(frmTabOptions.editName.Text), True);
 
         // Create a tab with the default settings and change to it.
         pcNotes.TabIndex := AddTab(frmTabOptions.editName.Text);
@@ -305,9 +304,9 @@ begin
         // if read only is checked then set the file to be as such
         // otherwise set the file to have normal access.
         if frmTabOptions.chkReadOnly.Checked then
-          FileSetAttr(TabFilePath(FIndex), faReadOnly)
+          FileSetReadOnly(TabFilePath(FIndex), True)
         else
-          FileSetAttr(TabFilePath(FIndex), faNormalFile);
+          FileSetReadOnly(TabFilePath(FIndex), False);
       end;
       // Get the tab settings for with the new or old tab name.
       // set the tags and icon index.
@@ -344,7 +343,7 @@ begin
 
   // Only save the tab if we are not loading a tab
   // and the file is not read only.
-  if not (FLoading or IsReadOnly(TabFilePath(FIndex))) then
+  if not (FLoading or FileIsReadOnly(TabFilePath(FIndex))) then
     reNotes.Lines.SaveToFile(TabFilePath(FIndex));
 end;
 
@@ -1396,14 +1395,6 @@ begin
   finally
     Free;
   end;
-end;
-
-function TSharpENotesForm.IsReadOnly(FilePath: string) : Boolean;
-var
-  Attributes : Integer;
-begin
-  Attributes := FileGetAttr(FilePath);
-  Result := (Attributes and faReadOnly > 0);
 end;
 
 {$ENDREGION 'Helper Methods'}
