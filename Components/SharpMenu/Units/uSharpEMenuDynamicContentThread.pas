@@ -51,7 +51,7 @@ uses
 
 constructor TSharpEMenuDynamicContentThread.Create(pList : TObjectList);
 begin
-  inherited Create(False);
+  inherited Create(True);
   FreeOnTerminate := False;
 
   FList := TObjectList.Create;

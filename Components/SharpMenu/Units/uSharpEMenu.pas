@@ -1187,7 +1187,8 @@ begin
 
   if backgroundThread <> nil then
   begin
-    backgroundThread.WaitFor();
+    if not backgroundThread.Suspended then
+      backgroundThread.WaitFor();
     backgroundThread.Free;
   end;
 
@@ -1205,7 +1206,8 @@ begin
 
   if normalItemsThread <> nil then
   begin
-    normalItemsThread.WaitFor();
+    if not normalItemsThread.Suspended then
+      normalItemsThread.WaitFor();
     normalItemsThread.Free;
   end;
 

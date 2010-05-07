@@ -58,6 +58,7 @@ if $(Configuration)==Debug del $(OUTPUTDIR)$(OUTPUTNAME).map</PostBuildEvent>
     <DCCReference Include="Units\uSharpEMenuDynamicContentThread.pas" />
     <DCCReference Include="Units\uSharpEMenuIcon.pas" />
     <DCCReference Include="Units\uSharpEMenuIcons.pas" />
+    <DCCReference Include="Units\uSharpEMenuIconThreads.pas" />
     <DCCReference Include="Units\uSharpEMenuItem.pas" />
     <DCCReference Include="Units\uSharpEMenuLoader.pas" />
     <DCCReference Include="Units\uSharpEMenuPopups.pas" />

@@ -50,7 +50,7 @@ uses
   ISharpESkinComponents,
   uSystemFuncs,
   SharpTypes,
-  {$IFDEF DEBUG}DebugDialog in '..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
+  DebugDialog in '..\..\Common\Units\DebugDialog\DebugDialog.pas',
   uSharpEMenuWnd in 'Forms\uSharpEMenuWnd.pas' {SharpEMenuWnd},
   uSharpEMenuLoader in 'Units\uSharpEMenuLoader.pas',
   uSharpEMenu in 'Units\uSharpEMenu.pas',
@@ -66,21 +66,19 @@ uses
   SharpIconUtils in '..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas',
   uSharpEMenuSaver in 'Units\uSharpEMenuSaver.pas',
   uSharpEMenuDynamicContentThread in 'Units\uSharpEMenuDynamicContentThread.pas',
-  uSharpEMenuRenderThread in 'Units\uSharpEMenuRenderThread.pas';
-
-type
-  TLoadCacheThread = class(TThread)
-  private
-    pMenuIcons : ^TSharpEMenuIcons;
-    pIconCacheFile : string;
-  protected
-    procedure Execute; override;
-  public
-    constructor Create(createSuspended: boolean; var menuIcons : TSharpEMenuIcons; iconcachefile : string);
-  end;
+  uSharpEMenuRenderThread in 'Units\uSharpEMenuRenderThread.pas',
+  uSharpEMenuIconThreads in 'Units\uSharpEMenuIconThreads.pas';
 
 {$R *.res}
 {$R metadata.res}
+
+type
+  TSkinManagerLoadThread = class(TThread)
+  private
+  protected
+    procedure Execute; override;
+  public
+  end;
 
 var
   SkinManager : TSharpESkinManager;
@@ -97,20 +95,9 @@ var
   menusettings : TSharpEMenuSettings;
   Mon : TMonitor;
   TimeList : TStringList;
-  loadCacheThread : TLoadCacheThread;
-
-constructor TLoadCacheThread.Create(createSuspended: boolean; var menuIcons : TSharpEMenuIcons; IconCacheFile : string);
-begin
-  inherited Create(createSuspended);
-
-  pMenuIcons := @menuIcons;
-  pIconCacheFile := IconCacheFile;
-end;
-
-procedure TLoadCacheThread.Execute;
-begin
-  pMenuIcons.LoadIconCache(pIconCacheFile);
-end;
+  loadIconCacheThread : TLoadIconCacheThread;
+  loadGenericIconsThread : TLoadGenericIconsThread;
+  skinManagerLoadThread : TSkinManagerLoadThread;
 
 function GetCurrentTime : Int64;
 var
@@ -131,6 +118,13 @@ begin
   st := i;
 end;
 
+{ TSkinManagerLoadThread }
+
+procedure TSkinManagerLoadThread.Execute;
+begin
+  SkinManager := TSharpESkinManager.Create(nil,[scBar,scMenu,scMenuItem]);
+end;
+
 begin
   st := GetCurrentTime;  
   TimeList := TStringList.Create;
@@ -140,7 +134,7 @@ begin
 
   DebugTime('Init');
   Application.Initialize;
-  Application.MainFormOnTaskbar := True; 
+  Application.MainFormOnTaskbar := True;
   Application.ShowMainForm := False;
   SetWindowLong(Application.Handle, GWL_EXSTYLE,
                  GetWindowLong(Application.Handle, GWL_EXSTYLE) or
@@ -157,10 +151,34 @@ begin
     end;
   end;
 
-  DebugTime('global menu options');
+  // Init Theme
+  GetCurrentTheme.LoadTheme([tpSkinScheme,tpIconSet,tpSkinFont]);
+
+  // Start the thread that will Init and load the Skin Manager
+  skinManagerLoadThread := TSkinManagerLoadThread.Create(True);
+  skinManagerLoadThread.Resume();
+
+  // Load Global Menu Options
   menusettings := TSharpEMenuSettings.Create;
   menusettings.LoadFromXML;
 
+  // Init Icon Variables and Classes
+  iconcachefile := ExtractFileName(mfile);
+  setlength(iconcachefile,length(iconcachefile) - length(ExtractFileExt(iconcachefile)));
+  iconcachefile := iconcachefile + '.iconcache';
+
+  SharpEMenuIcons := TSharpEMenuIcons.Create;
+  // Start Thread which loads the generic icons
+  loadGenericIconsThread := TLoadGenericIconsThread.Create(true, SharpEMenuIcons);
+  if menusettings.UseGenericIcons then
+    loadGenericIconsThread.Resume;
+
+  // Start thread which loads the icon cache
+  loadIconCacheThread := TloadIconCacheThread.Create(true, SharpEMenuIcons, iconcachefile);
+  if (menusettings.CacheIcons) and (menusettings.UseIcons) then
+    loadIconCacheThread.Resume;
+
+  // Parse possible params (which define the position and custom menus)
   Pos := Mouse.CursorPos;
   popupdir := 1;
   // Check Params
@@ -180,47 +198,45 @@ begin
      mfile := SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\Menu.xml';
   if not FileExists(mfile) then halt;
 
-  DebugTime('menu specific options');
   // Open the menu specific options, which may override
   // settings from the global menu options.
   menusettings.LoadFromXML(mfile);
 
-  DebugTime('CreateForm');
+  // Setup application Class
   Application.Title := 'SharpMenu';
   Application.CreateForm(TSharpEMenuWnd, wnd);
-  DebugTime('LoadTheme');
-  GetCurrentTheme.LoadTheme([tpSkinScheme,tpIconSet,tpSkinFont]);
-
+  // MuteX and Timeout settings of the main window
   wnd.MuteXHandle := MutexHandle;
   wnd.MenuID := mfile;
   wnd.HideTimeout := menusettings.HideTimeout;
 
-  DebugTime('IconStuff');
-  iconcachefile := ExtractFileName(mfile);
-  setlength(iconcachefile,length(iconcachefile) - length(ExtractFileExt(iconcachefile)));
-  iconcachefile := iconcachefile + '.iconcache';
-  SharpEMenuIcons := TSharpEMenuIcons.Create;
-  if menusettings.UseGenericIcons then
-    SharpEMenuIcons.LoadGenericIcons;
+  // Wait for icon loading threads to be finished
+  if not loadIconCacheThread.Suspended then
+    loadIconCacheThread.WaitFor;
+  if not loadGenericIconsThread.Suspended then
+    loadGenericIconsThread.WaitFor;
+  loadIconCacheThread.Free;    
+  loadGenericIconsThread.Free;
 
-  loadCacheThread := TLoadCacheThread.Create(true, SharpEMenuIcons, iconcachefile);
-  if (menusettings.CacheIcons) and (menusettings.UseIcons) then
-  begin
-    loadCacheThread.Resume;
-    // SharpEMenuIcons.LoadIconCache(iconcachefile);
-  end;
-
-  // init Classes
-
-  DebugTime('SkinManager and Menu XML');
-  SkinManager := TSharpESkinManager.Create(nil,[scBar,scMenu,scMenuItem]);
+  // Wait for skin manager loading thread to be finished
+  if not skinManagerLoadThread.Suspended then
+    skinManagerLoadThread.WaitFor;
+  skinManagerLoadThread.Free;
   SkinManagerInterface := SkinManager;
+
+  // Load menu xml file, but don't load the icons (yet)
+  SharpEMenuIcons.OnlyAdd := True;
   mn := uSharpEMenuLoader.LoadMenu(mfile,SkinManagerInterface,False);
 
-  DebugTime('InitMenu');
+  // All cached icons are now loaded, load all icons which aren't cached
+  SharpEMenuIcons.OnlyAdd := False;
+  SharpEMenuIcons.LoadNotLoadedIcons;
+
+  // Initialize the menu
   wnd.InitMenu(mn,true);
   mn.InitializeDynamicSubMenus;
-  DebugTime('ScreenPos');
+
+  // Setup Final screen Position
   Mon := Screen.MonitorFromPoint(Pos);
   if Mon = nil then
     Mon := wnd.Monitor;
@@ -246,14 +262,9 @@ begin
   // Register Shell Hook
   SharpApi.RegisterShellHookReceiver(wnd.Handle);
 
-  DebugTime('wnd show');
+  // Show the Window
   wnd.Show;
-  DebugTime('ForceForegroundWindow');
   ForceForeGroundWindow(wnd.handle);
-
-  if not loadCacheThread.Suspended then
-    loadCacheThread.WaitFor;
-  loadCacheThread.Free;
 
   Application.Run;
 
@@ -261,12 +272,10 @@ begin
     SharpApi.SendDebugMessage('SharpMenu',TimeList[i],0);
   TimeList.Free;
 
+  // Save new menu cache
   if (menusettings.CacheIcons) and (menuSettings.UseIcons) then
      SharpEMenuIcons.SaveIconCache(iconcachefile);
 
-  // Free Classes
-  //if SharpEMenuPopups <> nil then
-  //   SharpEMenuPopups.Free;
   SharpEMenuIcons.Free;     
 
   SkinManagerInterface := nil;

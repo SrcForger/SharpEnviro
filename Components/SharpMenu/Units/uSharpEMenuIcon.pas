@@ -40,6 +40,10 @@ type
     FIconType : TIconType;
     FCount : integer;
     FCached : Boolean;
+    FLoaded : Boolean;
+
+    FOrigIconSource : String;
+    FOrigIconData : String;
   public
     property Icon : TBitmap32 read FIcon;
     property IconSource : String read FIconSource;
@@ -47,10 +51,14 @@ type
     property IconShellHandle : THandle read FIconHandle;
     property Count : integer read FCount write FCount;
     property Cached : boolean read FCached write FCached;
-    constructor Create(pIconSource,pIconData : String; pIconType : TIconType); reintroduce; overload;
+    property OrigIconSource : String read FOrigIconSource;
+    property OrigIconData : String read FOrigIconData;
+    property isLoaded : boolean read FLoaded;
+    constructor Create(pIconSource,pIconData : String; pIconType : TIconType; LoadIcon : boolean = True); reintroduce; overload;
     constructor Create(pIconSource : String; pBmp : TBitmap32; pIconType : TIconType); overload;
     constructor Create(pIconSource : String; pIconType : TIconType; Stream : TStream); overload;
     destructor Destroy; override;
+    procedure LoadFromFile;
   end;
 
 implementation
@@ -61,6 +69,7 @@ constructor TSharpEMenuIcon.Create(pIconSource : String; pIconType : TIconType; 
 begin
   inherited Create;
   FCached := False;
+  FLoaded := True;
 
   FIcon := TBitmap32.Create;
   FIconHandle := 0;
@@ -74,6 +83,7 @@ constructor TSharpEMenuIcon.Create(pIconSource : String; pBmp : TBitmap32; pIcon
 begin
   inherited Create;
   FCached := False;
+  FLoaded := True;  
   
   FIcon := TBitmap32.Create;
   FIcon.SetSize(16,16);
@@ -92,10 +102,14 @@ begin
   end;
 end;
 
-constructor TSharpEMenuIcon.Create(pIconSource,pIconData : String; pIconType : TIconType);
+constructor TSharpEMenuIcon.Create(pIconSource,pIconData : String; pIconType : TIconType; LoadIcon : boolean = True);
 begin
   inherited Create;
+
   FCached := False;
+
+  FOrigIconSource := pIconSource;
+  FOrigIconData := pIconData;
 
   FIcon := TBitmap32.Create;
   FIcon.DrawMode := dmBlend;
@@ -116,12 +130,20 @@ begin
   else
     FIconSource := pIconSource;
 
-  SharpIconUtils.IconStringToIcon(pIconSource,pIconData,FIcon,16);
+  if LoadIcon then
+    SharpIconUtils.IconStringToIcon(pIconSource,pIconData,FIcon,16);
+  FLoaded := LoadIcon;
 end;
 
 destructor TSharpEMenuIcon.Destroy;
 begin
   FreeAndNil(FIcon);
+end;
+
+procedure TSharpEMenuIcon.LoadFromFile;
+begin
+  SharpIconUtils.IconStringToIcon(FOrigIconSource,FOrigIconData,FIcon,16);
+  FLoaded := True;  
 end;
 
 end.

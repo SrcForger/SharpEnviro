@@ -33,8 +33,10 @@ type
   TSharpEMenuIcons = class
   private
     FItems : TObjectList;
+    FOnlyAdd : boolean;
   public
     property Items : TObjectList read FItems;
+    property OnlyAdd : boolean read FOnlyAdd write FOnlyAdd;
     constructor Create; reintroduce;
     destructor Destroy; override;
     function AddIcon(pIconSource,pIconData : String; pIconType : TIconType) : TSharpEMenuIcon; overload;
@@ -46,6 +48,7 @@ type
     procedure SaveIconCache(pFileName : String);
     procedure LoadIconCache(pFileName : String);
     procedure LoadGenericIcons;
+    procedure LoadNotLoadedIcons;
   end;
 
 implementation
@@ -55,6 +58,7 @@ uses
   SharpApi,
   SharpThemeApiEx,
   SharpSharedFileAccess,
+  uSharpEMenuIconThreads,
   uISharpETheme,
   uThemeConsts;
 
@@ -64,6 +68,7 @@ begin
 
   FItems := TObjectList.Create;
   FItems.Clear;
+  FOnlyAdd := False;
 end;
 
 destructor TSharpEMenuIcons.Destroy;
@@ -147,7 +152,7 @@ begin
   Item := FindIcon(pIconSource,pIconData);
   if Item = nil then
   begin
-    Item := TSharpEMenuIcon.Create(pIconSource,pIconData,pIconType);
+    Item := TSharpEMenuIcon.Create(pIconSource,pIconData,pIconType,not OnlyAdd);
     FItems.Add(Item);
   end else Item.Count := Item.Count + 1;
   result := Item;
@@ -258,6 +263,62 @@ begin
     end;
     Stream.Free;    
   end;
+end;
+
+procedure TSharpEMenuIcons.LoadNotLoadedIcons;
+const
+  N_THREADS = 4;
+
+var
+  n : integer;
+  item : TSharpEMenuIcon;
+  NotLoaded : TObjectList;
+  LoadThreads : array of TLoadNotLoadedIconsThread;
+  threadNumber : integer;
+  thread : TLoadNotLoadedIconsThread;
+begin
+  NotLoaded := TObjecTList.Create;
+  NotLoaded.OwnsObjects := False;
+
+  // build list of not loaded icons
+  for n := 0 to FItems.Count - 1 do
+  begin
+    item := TSharpEMenuIcon(FItems.Items[n]);
+    if (not item.isLoaded) then
+      NotLoaded.Add(item);
+  end;
+
+  // Create threads for loading the icons
+  setlength(LoadThreads,N_THREADS);
+  threadNumber := 0;
+  for n := 0 to N_THREADS - 1 do
+    LoadThreads[n] := TLoadNotLoadedIconsThread.Create();
+
+  // Fill threads with icons that still have to be loaded
+  for n := 0 to NotLoaded.Count - 1 do
+  begin
+    TLoadNotLoadedIconsThread(LoadThreads[threadNumber]).Icons.Add(NotLoaded.Items[n]);
+    threadNumber := threadNumber + 1;
+    if threadNumber > N_THREADS - 1 then
+      threadNumber := 0;
+  end;
+
+  // Start threads
+  for n := 0 to N_THREADS - 1 do
+    TLoadNotLoadedIconsThread(LoadThreads[n]).Resume;
+
+  // Wait for threads
+  for n := 0 to N_THREADS - 1 do
+  begin
+    thread := TLoadNotLoadedIconsThread(LoadThreads[n]);
+    if (not thread.Suspended) then
+      thread.WaitFor;
+    thread.Free;
+  end;
+  setlength(LoadThreads,0);
+
+  NotLoaded.Clear;
+  NotLoaded.Free;
 end;
 
 procedure TSharpEMenuIcons.SaveIconCache(pFileName : String);

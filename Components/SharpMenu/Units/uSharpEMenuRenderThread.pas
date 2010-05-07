@@ -54,7 +54,7 @@ uses
 
 constructor TSharpEMenuRenderThread.Create(pMenu : TObject; pRenderItems: TSharpEMenuRenderItems);
 begin
-  inherited Create(False);
+  inherited Create(True);
   FreeOnTerminate := False;
 
   FMenu := pMenu;
