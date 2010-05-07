@@ -54,6 +54,7 @@ uses
   JCLSysInfo,
   SharpApi,
   SharpThemeApiEx,
+  SharpSharedFileAccess,
   uISharpETheme,
   uThemeConsts;
 
@@ -229,7 +230,7 @@ end;
 
 procedure TSharpEMenuIcons.LoadIconCache(pFileName : String);
 var
-  Stream : TFileStream;
+  Stream : TSharedFileStream;
   Dir,Fn : String;
   t : integer;
   Item : TSharpEMenuIcon;
@@ -240,60 +241,66 @@ begin
   Fn := Dir + '\' + GetLocalUserName + pFileName;
   if not FileExists(Fn) then exit;
 
-  Stream := TFileStream.Create(Fn,fmOpenRead);
-  while (Stream.Position < Stream.Size) do
+  if OpenFileStreamShared(Stream,sfaRead,Fn,True) = sfeSuccess then
   begin
-    IconSource := StringLoadFromStream(Stream);
-    Stream.ReadBuffer(t,sizeof(t));
-    case t of
-      1: IconType := itCustomIcon;
-      else IconType := itShellIcon;
+    while (Stream.Position < Stream.Size) do
+    begin
+      IconSource := StringLoadFromStream(Stream);
+      Stream.ReadBuffer(t,sizeof(t));
+      case t of
+        1: IconType := itCustomIcon;
+        else IconType := itShellIcon;
+      end;
+      //SendDebugMessageEx('SharpMenu', IconSource, 0, DMT_TRACE);
+      Item := TSharpEMenuIcon.Create(IconSource,IconType,Stream);
+      Item.Cached := True;
+      FItems.Add(item);
     end;
-    //SendDebugMessageEx('SharpMenu', IconSource, 0, DMT_TRACE);
-    Item := TSharpEMenuIcon.Create(IconSource,IconType,Stream);
-    Item.Cached := True;
-    FItems.Add(item);
+    Stream.Free;    
   end;
-  Stream.Free;
 end;
 
 procedure TSharpEMenuIcons.SaveIconCache(pFileName : String);
 var
-  Stream : TFileStream;
+  Stream : TSharedFileStream;
   n : integer;
   Dir,Fn : String;
   t : integer;
   Item : TSharpEMenuIcon;
+  res : TSharedFileError;
 begin
   Dir := SharpApi.GetSharpeDirectory + 'Cache';
   If not DirectoryExists(Dir) then ForceDirectories(Dir);
 
   Fn := Dir + '\' + GetLocalUserName + pFileName;
   if not FileExists(Fn) then
-    Stream := TFileStream.Create(Fn,fmCreate)
+    res := OpenFileStreamShared(Stream,sfaCreate,Fn,True)
   else
-    Stream := TFileStream.Create(Fn,fmOpenReadWrite);
+    res := OpenFileStreamShared(Stream,sfaWrite,Fn,True);
 
-  Stream.Seek(0,soFromEnd);
-  for n := 0 to FItems.Count - 1 do
+  if res = sfeSuccess then
   begin
-    Item := TSharpEMenuIcon(FItems.Items[n]);
-    if (not Item.Cached) and (length(Item.IconSource) > 0) and
-       (Item.Icon.Width > 0) and (Item.Icon.Height > 0)
-       and (not GetCurrentTheme.Icons.IsIconInIconSet(Item.IconSource)
-       and (Item.IconType <> itGeneric))
-    then
+    Stream.Seek(0,soFromEnd);
+    for n := 0 to FItems.Count - 1 do
     begin
-      StringSaveToStream(Item.IconSource,Stream);
-      case Item.IconType of
-        itCustomIcon : t := 1;
-        else t := 0;
+      Item := TSharpEMenuIcon(FItems.Items[n]);
+      if (not Item.Cached) and (length(Item.IconSource) > 0) and
+         (Item.Icon.Width > 0) and (Item.Icon.Height > 0)
+         and (not GetCurrentTheme.Icons.IsIconInIconSet(Item.IconSource)
+         and (Item.IconType <> itGeneric))
+      then
+      begin
+        StringSaveToStream(Item.IconSource,Stream);
+        case Item.IconType of
+          itCustomIcon : t := 1;
+          else t := 0;
+        end;
+        Stream.WriteBuffer(t,sizeof(t));
+        Item.Icon.SaveToStream(Stream);
       end;
-      Stream.WriteBuffer(t,sizeof(t));
-      Item.Icon.SaveToStream(Stream);
     end;
+    Stream.Free;    
   end;
-  Stream.Free;
 end;
 
 end.
