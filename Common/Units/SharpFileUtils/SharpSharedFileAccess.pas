@@ -52,7 +52,7 @@ const
   SHARED_ACCESS_CHECK_INTERVAL = 100; // (ms)
 
 function OpenFileStreamShared(var Stream : TSharedFileStream; Access : TSharedFileAccess; FileName : String; WaitForAccess : boolean) : TSharedFileError;
-function OpenMemoryStreamShared(var Stream : TMemoryStream; Access : TSharedFileAccess; FileName : String; WaitForAccess : boolean) : TSharedFileError;
+function OpenMemoryStreamShared(var Stream : TMemoryStream; FileName : String; WaitForAccess : boolean) : TSharedFileError;
 
 implementation
 
@@ -99,8 +99,11 @@ var
   StartTime : Cardinal;
 begin
   // Initial check of valid input data
-  result := CheckFileValid(FileName);
-  if result <> sfeSuccess then exit;
+  if (Access <> sfaCreate) then
+  begin
+    result := CheckFileValid(FileName);
+    if result <> sfeSuccess then exit;
+  end;
 
   mode := CreateAccessMode(Access);
 
@@ -117,8 +120,6 @@ begin
         Stream := nil;
       end;
     until (Stream <> nil) or (GetTickCount - StartTime >= SHARED_ACCESS_WAIT_TIME);
-    if (Stream <> nil) then
-      result := sfeSuccess;
   end;
 
   if (Stream = nil) then
@@ -129,14 +130,17 @@ begin
     begin
       if WaitForAccess then
         result := sfeTimeoutWaitingForAccess
-      else result := sfeErrorOpeningStream
+      else result := sfeErrorOpeningStream;
+      Stream.Free;
+      Stream := nil;
     end else result := sfeSuccess;
-  end;
+  end else result := sfeSuccess;
 end;
 
-function OpenMemoryStreamShared(var Stream : TMemoryStream; Access : TSharedFileAccess; FileName : String; WaitForAccess : boolean) : TSharedFileError;
+function OpenMemoryStreamShared(var Stream : TMemoryStream; FileName : String; WaitForAccess : boolean) : TSharedFileError;
 var
   FileStream : TSharedFileStream;
+  Access : TSharedFileAccess;
   mode : Word;
   StartTime : Cardinal;
 begin
@@ -144,8 +148,9 @@ begin
   result := CheckFileValid(FileName);
   if result <> sfeSuccess then exit;
   result := CheckStreamValid(Stream);
-  if result <> sfeSuccess then exit;  
+  if result <> sfeSuccess then exit;
 
+  Access := sfaRead;
   mode := CreateAccessMode(Access);
 
   FileStream := nil;
