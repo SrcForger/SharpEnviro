@@ -97,6 +97,7 @@ function OpenFileStreamShared(var Stream : TSharedFileStream; Access : TSharedFi
 var
   mode : Word;
   StartTime : Cardinal;
+  resetSize : boolean;
 begin
   // Initial check of valid input data
   if (Access <> sfaCreate) then
@@ -105,6 +106,11 @@ begin
     if result <> sfeSuccess then exit;
   end;
 
+  if FileExists(filename) and (Access = sfaCreate) then
+  begin
+    Access := sfaWrite;
+    resetSize := True;
+  end else resetSize := False;
   mode := CreateAccessMode(Access);
 
   if WaitForAccess then
@@ -135,6 +141,9 @@ begin
       Stream := nil;
     end else result := sfeSuccess;
   end else result := sfeSuccess;
+
+  if (Stream <> nil) and (resetSize) then
+    Stream.Size := 0;
 end;
 
 function OpenMemoryStreamShared(var Stream : TMemoryStream; FileName : String; WaitForAccess : boolean) : TSharedFileError;
