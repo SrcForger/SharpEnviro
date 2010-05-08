@@ -249,6 +249,7 @@ uses
   SharpEMiniThrobber,
   BarHideWnd,
   uISharpETheme,
+  uSharpXMLUtils,
   SharpThemeApiEx,
   uThemeConsts;
 
@@ -302,7 +303,6 @@ procedure TSharpBarMainForm.WMBarReposition(var msg: TMessage);
 var
   xml: TJclSimpleXML;
   Dir: string;
-  b: boolean;
   FixedWidthEnabledTemp : boolean;
   FixedWidthTemp : integer;
 begin
@@ -310,25 +310,12 @@ begin
 
   // Find and load settings file!
   xml := TJclSimpleXML.Create;
-  b := False;
-  try
-    if FileCheck(Dir + 'Bar.xml') then
-    begin
-      xml.LoadFromFile(Dir + 'Bar.xml');
-      b := true;
-    end;
-  except
-    on E: Exception do
-    begin
-      SharpApi.SendDebugMessageEx('SharpBar',PChar('(WMBarReposition): Error loading '+ Dir + 'Bar.xml'), clred, DMT_ERROR);
-      SharpApi.SendDebugMessageEx('SharpBar',PChar(E.Message),clblue, DMT_TRACE);
-    end;
-  end;
 
   FixedWidthEnabledTemp := SharpEBar.FixedWidthEnabled;
   FixedWidthTemp := SharpEBar.FixedWidth;
 
-  if b then begin
+  if LoadXMLFromSharedFile(xml,Dir + 'Bar.xml') then
+  begin
     // xml file loaded properlty... use it
     if xml.Root.Items.ItemNamed['Settings'] <> nil then
       with xml.Root.Items.ItemNamed['Settings'] do begin
@@ -356,7 +343,7 @@ begin
     ModuleManager.BarName := FBarName;
     SharpEBar.UpdatePosition;
     UpdateBGZone;
-  end;
+  end else SharpApi.SendDebugMessageEx('SharpBar',PChar('(WMBarReposition): Error loading '+ Dir + 'Bar.xml'), clred, DMT_ERROR);
 
   xml.Free;
 end;
@@ -868,19 +855,19 @@ begin
     if wnd <> 0 then begin
       // First try to load the SharpDesk background image
       // if this fails then try to use PrintWindow on SharpDesk
-      if FileCheck(SharpApi.GetSharpeUserSettingsPath + 'SharpDeskbg.bmp', True) then
-        LoadBitmap32Shared(BGBmp,SharpApi.GetSharpeUserSettingsPath + 'SharpDeskbg.bmp',True)
-      else if @PrintWindow <> nil then begin
-        // try 3 times... :)
-        if not PrintWindow(wnd, BGBmp.Handle, 0) then begin
-          sleep(750);
+      if not LoadBitmap32Shared(BGBmp,SharpApi.GetSharpeUserSettingsPath + 'SharpDeskbg.bmp',True) then 
+        if @PrintWindow <> nil then
+        begin
+          // try 3 times... :)
           if not PrintWindow(wnd, BGBmp.Handle, 0) then begin
-            sleep(1500);
+            sleep(750);
             if not PrintWindow(wnd, BGBmp.Handle, 0) then begin
+              sleep(1500);
+              if not PrintWindow(wnd, BGBmp.Handle, 0) then begin
+              end;
             end;
           end;
-        end;
-      end
+        end
     end
     else begin
       // SharpDesk isn't running, load the windows background
@@ -1025,10 +1012,10 @@ begin
     end;
 
     ForceDirectories(Dir);
-    if FileCheck(Dir + 'Tooltips.xml~') then
-      xml.SaveToFile(Dir + 'Tooltips.xml~'); // Save first into a temporary/backup file, in case save operation fails by any reason
-    if FileCheck(Dir + 'Tooltips.xml') then // A quick copy operation is less unlikely to fail than saving the whole xml fie
-      CopyFile(PChar(Dir + 'Tooltips.xml~'),PChar(Dir + 'Tooltips.xml'),False);
+    if SaveXMLToSharedFile(XML,Dir + 'Tooltips.xml~') then
+      CopyFile(PChar(Dir + 'Tooltips.xml~'),PChar(Dir + 'Tooltips.xml'),False)
+    else if not SaveXMLToSharedFile(XML,Dir + 'Tooltips.xml') then
+      SharpApi.SendDebugMessageEx('SharpBar',PChar('(SaveBarTooltipSettings): Error Saving Settings to ' + Dir + 'Tooltips.xml'), clred, DMT_ERROR);
   finally
     xml.Free;
   end;

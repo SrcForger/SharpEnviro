@@ -32,7 +32,7 @@ uses
   Types,
   StrUtils,
   Graphics,
-  {$IFDEF DEBUG}DebugDialog in '..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
+  DebugDialog in '..\..\Common\Units\DebugDialog\DebugDialog.pas',
   SharpBarMainWnd in 'Forms\SharpBarMainWnd.pas' {SharpBarMainForm},
   JclSimpleXML,
   JclFileUtils,
@@ -44,7 +44,8 @@ uses
   uSharpEModuleManager in 'uSharpEModuleManager.pas',
   uISharpESkin in '..\..\Common\Interfaces\uISharpESkin.pas',
   uISharpBar in '..\..\Common\Interfaces\uISharpBar.pas',
-  uSharpBarInterface in 'uSharpBarInterface.pas';
+  uSharpBarInterface in 'uSharpBarInterface.pas',
+  uSharpXMLUtils in '..\..\Common\Units\XML\uSharpXMLUtils.pas';
 
 type
   TBarMutex = array of record
@@ -72,7 +73,6 @@ var
   xml : TJclSimpleXML;
   handle  : THandle;
   sr : TSearchRec;
-  fileloaded : boolean;
   delbar : boolean;
 begin
   Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
@@ -82,34 +82,20 @@ begin
     if FindFirst(Dir + '*',FADirectory,sr) = 0 then
     begin
       repeat
-        if FileCheck(Dir + sr.Name + '\Bar.xml',True) then
+        delbar := False;
+        if LoadXMLFromSharedFile(XML, Dir + sr.Name + '\Bar.xml') then
         begin
-          fileloaded := False;
-          try
-            xml.LoadFromFile(Dir + sr.Name + '\Bar.xml');
-            fileloaded := True;
-          except
-            on E: Exception do
-            begin
-              SharpApi.SendDebugMessageEx('SharpBar',PChar('(RemoveEmptyBars): Error loading '+Dir + sr.Name + '\Bar.xml'), clred, DMT_ERROR);
-              SharpApi.SendDebugMessageEx('SharpBar',PChar(E.Message),clblue, DMT_TRACE);
-            end;
-          end;
-          delbar := False;
-          if fileloaded then
+          if xml.Root.Items.ItemNamed['Modules'] <> nil then
           begin
-            if xml.Root.Items.ItemNamed['Modules'] <> nil then
-            begin
-              if xml.Root.Items.ItemNamed['Modules'].Items.Count = 0 then
-                delbar := True
-            end else delbar := True;
-            if delbar then
-            begin
-              // check if this is bar is already running before deleting it
-              handle := FindWindow(nil,PChar('SharpBar_'+sr.Name));
-              if handle = 0 then
-                DeleteDirectory(Dir + sr.Name,True);
-            end;
+            if xml.Root.Items.ItemNamed['Modules'].Items.Count = 0 then
+              delbar := True
+          end else delbar := True;
+          if delbar then
+          begin
+            // check if this is bar is already running before deleting it
+            handle := FindWindow(nil,PChar('SharpBar_'+sr.Name));
+            if handle = 0 then
+              DeleteDirectory(Dir + sr.Name,True);
           end;
         end;
       until FindNext(sr) <> 0;
@@ -157,7 +143,6 @@ var
   xml : TJclSimpleXML;
   handle  : THandle;
   sr : TSearchRec;
-  fileloaded : boolean;
   lab : boolean;
   n : integer;
   IsInt : boolean;
@@ -178,20 +163,9 @@ begin
     begin
       repeat
         IsInt := TryStrToInt(sr.Name,n);
-        if (FileCheck(Dir + sr.Name + '\Bar.xml',True)) and (IsInt) then
+        if IsInt then
         begin
-          fileloaded := False;
-          try
-            xml.LoadFromFile(Dir + sr.Name + '\Bar.xml');
-            fileloaded := True;
-          except
-            on E: Exception do
-            begin
-              SharpApi.SendDebugMessageEx('SharpBar',PChar('(LoadAutoStartBars): Error loading '+Dir + sr.Name + '\Bar.xml'), clred, DMT_ERROR);
-              SharpApi.SendDebugMessageEx('SharpBar',PChar(E.Message),clblue, DMT_TRACE);
-            end;
-          end;
-          if fileloaded then
+          if LoadXMLFromSharedFile(xml,Dir + sr.Name + '\Bar.xml') then
           begin
             if xml.Root.Items.ItemNamed['Settings'] <> nil then
               if xml.Root.Items.ItemNamed['Settings'].Items.BoolValue('AutoStart',True) then
@@ -229,7 +203,7 @@ begin
 					        end;
                 end else lab := true; // an auto start bar is already running!
               end;
-          end;
+          end else SharpApi.SendDebugMessageEx('SharpBar',PChar('(LoadAutoStartBars): Error loading '+Dir + sr.Name + '\Bar.xml'), clred, DMT_ERROR);
         end;
       until FindNext(sr) <> 0;
       FindClose(sr);
@@ -274,30 +248,15 @@ function MonitorForBarExists(ID : Integer) : Boolean;
 var
   filename : string;
   xml : TJclSimpleXML;
-  fileloaded : Boolean;
   monitorIndex : Integer;
   primarymon : boolean;
 begin
   Result := False;
   filename := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + IntToStr(ID) + '\Bar.xml';
 
-  if not FileCheck(filename, True) then
-    Exit;
-    
   xml := TJclSimpleXMl.Create;
   try
-    fileloaded := False;
-    try
-      xml.LoadFromFile(filename);
-      fileloaded := True;
-    except
-      on E: Exception do
-      begin
-        SendDebugMessageEx('SharpBar',PChar('(MonitorForBarExists): Error loading '+ filename), clRed, DMT_ERROR);
-        SendDebugMessageEx('SharpBar',PChar(E.Message),clBlue, DMT_TRACE);
-      end;
-    end;
-    if fileloaded then
+    if LoadXMLFromSharedFile(xml,filename) then
     begin
       with xml.Root.Items do
       begin
