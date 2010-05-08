@@ -917,7 +917,12 @@ var
 begin
   f := GetFont(cs);
   try
-    pFont.Assign(f);
+    pFont.Name := f.Name;
+    pFont.Size := f.Size;
+    pFont.Style := f.Style;
+    pFont.Color := f.Color;
+    // pFont.Assign(f); <-- sometimes fails out of no reason due to runtime packages
+    // Can't assign TFont to TFont error
   except
   end;
   f.free;
