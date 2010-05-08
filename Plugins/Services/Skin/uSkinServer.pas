@@ -79,6 +79,7 @@ begin
 
   if OpenFileStreamShared(Stream,sfaCreate,SharpApi.GetSharpeUserSettingsPath + 'SharpE.skin',True) = sfeSuccess then
   begin
+    Stream.Size := 0;
     FSkin.SaveToStream(Stream,true);
     FreeAndNil(Stream);
   end;
