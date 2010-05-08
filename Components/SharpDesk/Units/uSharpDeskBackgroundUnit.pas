@@ -386,6 +386,7 @@ begin
   tBmp.Assign(SharpDesk.Image.Bitmap);
   if OpenFileStreamShared(Stream, sfaCreate, winWallPath+'.bmp', True) = sfeSuccess then
   begin
+    Stream.Size := 0;
     tBmp.SaveToStream(Stream);
     Stream.Free;
   end;
@@ -398,6 +399,7 @@ begin
     ForceDirectories(Theme.Info.Directory);
   if OpenFileStreamShared(Stream, sfaCreate, Theme.Info.Directory + '\preview.png', True) = sfeSuccess then
   begin
+    Stream.Size := 0;
     SaveBitmap32ToPNG(TempBmp,Stream,False,True,clWhite);
     Stream.Free;
   end;
