@@ -36,6 +36,7 @@ uses
   Forms,
   StdCtrls,
   gr32,
+  GR32_Backends,
   Graphics,
   SharpEBase,
   SharpEBaseControls,
