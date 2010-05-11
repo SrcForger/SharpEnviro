@@ -3,15 +3,25 @@ unit uSharpXMLUtils;
 interface
 
 uses
+  Windows,
   Classes,
   SysUtils,
   JclSimpleXML,
   SharpSharedFileAccess;
 
-function LoadXMLFromSharedFile(var XML : TJclSimpleXML; filename : string) : boolean;
-function SaveXMLToSharedFile(var XML : TJclSimpleXML; filename : string) : boolean;
+function LoadXMLFromSharedFile(var XML : TJclSimpleXML; filename : string) : boolean; overload;
+function LoadXMLFromSharedFile(var XML : TJclSimpleXML; filename : string; BackupIfFailed : boolean) : boolean; overload;
+function SaveXMLToSharedFile(var XML : TJclSimpleXML; filename : string) : boolean; overload;
+function SaveXMLToSharedFile(var XML : TJclSimpleXML; filename : string; Backup : boolean) : boolean; overload;
 
 implementation
+
+function LoadXMLFromSharedFile(var XML : TJclSimpleXML; filename : string; BackupIfFailed : boolean) : boolean; overload;
+begin
+  result := LoadXMLFromSharedFile(XML,filename);
+  if (BackupIfFailed) and (not result) then
+    result := LoadXMLFromSharedFile(XML,filename + '~');
+end;
 
 function LoadXMLFromSharedFile(var XML : TJclSimpleXML; filename : string) : boolean;
 var
@@ -33,6 +43,19 @@ begin
     end;
   end;
   Stream.Free;
+end;
+
+function SaveXMLToSharedFile(var XML : TJclSimpleXML; filename : string; Backup : boolean) : boolean;
+begin
+  result := False;
+  if Backup then
+  begin
+    if SaveXMLToSharedFile(XMl,filename + '~') then
+    begin
+      if CopyFile(PChar(filename + '~'), PChar(filename), false) then
+        result := True;
+    end else result := SaveXMLToSharedFile(XMl,filename);
+  end else result := SaveXMLToSharedFile(XML,filename);
 end;
 
 function SaveXMLToSharedFile(var XML : TJclSimpleXML; filename : string) : boolean;
