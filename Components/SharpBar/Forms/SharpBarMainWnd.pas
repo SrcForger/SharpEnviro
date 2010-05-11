@@ -314,7 +314,7 @@ begin
   FixedWidthEnabledTemp := SharpEBar.FixedWidthEnabled;
   FixedWidthTemp := SharpEBar.FixedWidth;
 
-  if LoadXMLFromSharedFile(xml,Dir + 'Bar.xml') then
+  if LoadXMLFromSharedFile(xml,Dir + 'Bar.xml',True) then
   begin
     // xml file loaded properlty... use it
     if xml.Root.Items.ItemNamed['Settings'] <> nil then
@@ -1012,9 +1012,7 @@ begin
     end;
 
     ForceDirectories(Dir);
-    if SaveXMLToSharedFile(XML,Dir + 'Tooltips.xml~') then
-      CopyFile(PChar(Dir + 'Tooltips.xml~'),PChar(Dir + 'Tooltips.xml'),False)
-    else if not SaveXMLToSharedFile(XML,Dir + 'Tooltips.xml') then
+    if not SaveXMLToSharedFile(XMl, Dir + 'Tooltips.xml',True) then
       SharpApi.SendDebugMessageEx('SharpBar',PChar('(SaveBarTooltipSettings): Error Saving Settings to ' + Dir + 'Tooltips.xml'), clred, DMT_ERROR);
   finally
     xml.Free;
@@ -1052,7 +1050,8 @@ begin
     xml.Root.Items.Add('Settings');
     xml.Root.Items.Add('Modules');
 
-    xml.SaveToFile(Dir + NewID + '\Bar.xml');
+    if not SaveXMLToSharedFile(xml,Dir + NewID + '\Bar.xml',True) then
+      SharpApi.SendDebugMessageEx('SharpBar',PChar('(CreateNewBar): Error Saving Settings to ' + Dir + NewID + '\Bar.xml'), clred, DMT_ERROR);
   finally
     xml.Free;
   end;
@@ -1076,7 +1075,6 @@ procedure TSharpBarMainForm.LoadBarTooltipSettings;
 var
   xml : TJclSimpleXML;
   Dir : string;
-  fileloaded : boolean;
 begin
   Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\';
 
@@ -1085,22 +1083,8 @@ begin
     exit;
 
   xml := TJclSimpleXML.Create;
-  fileloaded := False;
-  try
-    if FileCheck(Dir + 'Tooltips.xml') then
-    begin
-      xml.LoadFromFile(Dir + 'Tooltips.xml');
-      fileloaded := true;
-    end;
-  except
-    on E: Exception do
-    begin
-      SharpApi.SendDebugMessageEx('SharpBar',PChar('(LoadBarTooltipSettings): Error loading '+ Dir + 'Tooltips.xml'), clred, DMT_ERROR);
-      SharpApi.SendDebugMessageEx('SharpBar',PChar(E.Message),clblue, DMT_TRACE);
-    end;
-  end;
-
-  if fileloaded then
+  if LoadXMLFromSharedFile(xml,Dir + 'Tooltips.xml',True) then
+  begin
     with xml.root.Items do
       if ItemNamed['Tooltips'] <> nil then
         with ItemNamed['Tooltips'].Items do
@@ -1108,6 +1092,7 @@ begin
           FFirstHide := BoolValue('FirstHide',True);
           FFirstThrobberHide := BoolValue('FirstThrobberHide', True);
         end;
+  end else SharpApi.SendDebugMessageEx('SharpBar',PChar('(LoadBarTooltipSettings): Error loading '+ Dir + 'Tooltips.xml'), clred, DMT_ERROR);
   xml.Free;
 end;
 
@@ -1116,7 +1101,6 @@ var
   xml: TJclSimpleXML;
   Dir: string;
   handle: THandle;
-  b: boolean;
 begin
   Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + inttostr(ID) + '\';
 
@@ -1148,42 +1132,12 @@ begin
 
   // Find and load settings file!
   xml := TJclSimpleXML.Create;
-  b := False;
-  try
-    if FileCheck(Dir + 'Bar.xml') then
-    begin
-      xml.LoadFromFile(Dir + 'Bar.xml');
-      b := true;
-    end;
-  except
-    on E: Exception do
-    begin
-      SharpApi.SendDebugMessageEx('SharpBar',PChar('(LoadBarFromID): Error loading '+ Dir + 'Bar.xml'), clred, DMT_ERROR);
-      SharpApi.SendDebugMessageEx('SharpBar',PChar(E.Message),clblue, DMT_TRACE);
-    end;
-  end;
-
-  if not b then // loading the Bar.xml for any reason failed, this is bad! :(
+  if LoadXMLFromSharedFile(xml,Dir + 'Bar.xml') then
   begin
-    try    
-      if FileCheck(Dir + 'Bar.xml~') then // let's try to load the last backup :)
-      begin
-        xml.LoadFromFile(Dir + 'Bar.xml~');
-        b := true;
-      end;
-    except
-      on E: Exception do
-      begin
-        SharpApi.SendDebugMessageEx('SharpBar',PChar('(LoadBarFromID): Error loading Backup file '+ Dir + 'Bar.xml~'), clred, DMT_ERROR);
-        SharpApi.SendDebugMessageEx('SharpBar',PChar(E.Message),clblue, DMT_TRACE);
-      end;    
-    end;
-  end;
-
-  if b then begin
     // xml file loaded properlty... use it
     if xml.Root.Items.ItemNamed['Settings'] <> nil then
-      with xml.Root.Items.ItemNamed['Settings'] do begin
+      with xml.Root.Items.ItemNamed['Settings'] do
+      begin
         FBarName := Items.Value('Name', 'Toolbar');
         FFirstHide := Items.BoolValue('FirstHide',FFirstHide);
         SharpEBar.AutoPosition := Items.BoolValue('AutoPosition', True);

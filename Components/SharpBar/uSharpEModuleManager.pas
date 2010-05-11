@@ -40,6 +40,7 @@ uses
   Math,
   Controls,
   MonitorList,
+  uSharpXMlUtils,
   uSystemFuncs,
   SharpTypes,
   SharpESkinManager,
@@ -378,10 +379,8 @@ begin
     end;
 
     ForceDirectories(Dir);
-    if FileCheck(Dir + 'Bar.xml~') then
-      xml.SaveToFile(Dir + 'Bar.xml~'); // Save first into a temporary/backup file, in case save operation fails by any reason
-    if FileCheck(Dir + 'Bar.xml') then // A quick copy operation is less unlikely to fail than saving the whole xml fie
-      CopyFile(PChar(Dir + 'Bar.xml~'),PChar(Dir + 'Bar.xml'),False);
+    if not SaveXMLToSharedFile(xml,Dir + 'Bar.xml',True) then
+      SharpApi.SendDebugMessageEx('SharpBar',PChar('(SaveBarSettings): Error Saving Settings to ' + Dir + 'Bar.xml'), clred, DMT_ERROR);
   finally
     xml.Free;
   end;
@@ -667,7 +666,6 @@ var
   DirA,DirB,Module : String;
   XML : TJclSimpleXML;
   n : integer;
-  fileloaded : boolean;
 begin
   // Import the module settings from the temporary file
   DirA := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + inttostr(FromBar) + '\';
@@ -677,21 +675,8 @@ begin
 
   // find what module it is
   XML := TJclSimpleXML.Create;
-  fileloaded := False;
-  try
-    if FileCheck(DirA + 'Bar.xml',True) then
-    begin
-      XML.LoadFromFile(DirA + 'Bar.xml');
-      fileloaded := True;
-    end;
-  except
-    on E: Exception do
-    begin
-      SharpApi.SendDebugMessageEx('SharpBar',PChar('(LoadModuleSpecial): Error loading '+ DirA + 'Bar.xml'), clred, DMT_ERROR);
-      SharpApi.SendDebugMessageEx('SharpBar',PChar(E.Message),clblue, DMT_TRACE);
-    end;
-  end;
-  if fileloaded then
+  if LoadXMLFromSharedFile(XML,DirA + 'Bar.xml',True) then
+  begin
     if XML.Root.Items.ItemNamed['Modules'] <> nil then
       with XML.Root.Items.ItemNamed['Modules'].Items do
         for n := 0 to Count - 1 do
@@ -700,6 +685,7 @@ begin
             Module := Item[n].Items.Value('Module','');
             break;
           end;
+  end else SharpApi.SendDebugMessageEx('SharpBar',PChar('(LoadModuleSpecial): Error loading '+ DirA + 'Bar.xml'), clred, DMT_ERROR);
   XML.Free;
 
   if length(Module) > 0 then

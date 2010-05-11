@@ -83,7 +83,7 @@ begin
     begin
       repeat
         delbar := False;
-        if LoadXMLFromSharedFile(XML, Dir + sr.Name + '\Bar.xml') then
+        if LoadXMLFromSharedFile(XML, Dir + sr.Name + '\Bar.xml',True) then
         begin
           if xml.Root.Items.ItemNamed['Modules'] <> nil then
           begin
@@ -165,7 +165,7 @@ begin
         IsInt := TryStrToInt(sr.Name,n);
         if IsInt then
         begin
-          if LoadXMLFromSharedFile(xml,Dir + sr.Name + '\Bar.xml') then
+          if LoadXMLFromSharedFile(xml,Dir + sr.Name + '\Bar.xml',True) then
           begin
             if xml.Root.Items.ItemNamed['Settings'] <> nil then
               if xml.Root.Items.ItemNamed['Settings'].Items.BoolValue('AutoStart',True) then
@@ -256,7 +256,7 @@ begin
 
   xml := TJclSimpleXMl.Create;
   try
-    if LoadXMLFromSharedFile(xml,filename) then
+    if LoadXMLFromSharedFile(xml,filename,true) then
     begin
       with xml.Root.Items do
       begin
