@@ -124,18 +124,21 @@ var
   w : integer;
   sSplitter : string;
 begin
-  w := Abs(SharpCompileMainWnd.Canvas.TextWidth('-'));
-  if w <= 0 then
-    w := 200;
-  c := Trunc(SharpCompileMainWnd.mDetailed.ClientWidth / w);
-  if c < 3 then
-    c := 3;
+  try
+    w := Abs(SharpCompileMainWnd.Canvas.TextWidth('-'));
+    if w <= 0 then
+      w := 200;
+    c := Trunc(SharpCompileMainWnd.mDetailed.ClientWidth / w);
+    if c < 3 then
+      c := 3;
 
-  sSplitter := '';
-  for i := 0 to c - 3 do
-    sSplitter := sSplitter + '-';
+    sSplitter := '';
+    for i := 0 to c - 3 do
+      sSplitter := sSplitter + '-';
 
-  SharpCompileMainWnd.mDetailed.Lines.Add(sSplitter);
+    SharpCompileMainWnd.mDetailed.Lines.Add(sSplitter);
+  except
+  end;
 end;
 
 procedure ZipDirectory(directory : string; filePath : string);
@@ -143,7 +146,7 @@ var
   archive: TJcl7zCompressArchive;
   sr : TSearchRec;
 begin
-  directory := IncludeTrailingBackslash(directory);
+  {$WARNINGS OFF} directory := IncludeTrailingBackslash(directory); {$WARNINGS ON}
 
   archive := TJcl7zCompressArchive.Create(filepath);
   try
@@ -208,6 +211,7 @@ begin
   begin
     if Terminated then
       break;
+    sleep(50); // give a little time between projects
 
     if SharpCompileMainWnd.ctvProjects.Checked[SharpCompileMainWnd.ctvProjects.Items[i]] then
     begin

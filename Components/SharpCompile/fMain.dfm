@@ -1062,7 +1062,7 @@ object SharpCompileMainWnd: TSharpCompileMainWnd
         Left = 4
         Top = 4
         Width = 255
-        Height = 391
+        Height = 376
         Margins.Left = 4
         Margins.Top = 4
         Margins.Right = 0
@@ -1114,7 +1114,7 @@ object SharpCompileMainWnd: TSharpCompileMainWnd
           Left = 9
           Top = 31
           Width = 237
-          Height = 351
+          Height = 336
           Align = alClient
           BevelInner = bvNone
           BevelOuter = bvNone
@@ -1132,9 +1132,9 @@ object SharpCompileMainWnd: TSharpCompileMainWnd
       object sepOptions: TSharpERoundPanel
         AlignWithMargins = True
         Left = 4
-        Top = 404
+        Top = 389
         Width = 255
-        Height = 73
+        Height = 88
         Margins.Left = 4
         Margins.Top = 0
         Margins.Right = 0
@@ -1186,7 +1186,7 @@ object SharpCompileMainWnd: TSharpCompileMainWnd
           Left = 9
           Top = 34
           Width = 237
-          Height = 30
+          Height = 45
           Margins.Top = 6
           Align = alClient
           BorderStyle = bsNone
