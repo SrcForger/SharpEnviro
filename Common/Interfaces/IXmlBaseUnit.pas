@@ -66,7 +66,6 @@ type
     procedure Debug( msg: string; msgType: integer ); overload;
     procedure Debug( msg: string ); overload;
 
-    function LoadFile( fileName: String ): boolean;
     function FileValidPrecheck(fileName:string): boolean;
 
     function GetCanDestroy : boolean; stdcall;
@@ -104,6 +103,9 @@ type
 end;
 
 implementation
+
+uses
+  uSharpXMLUtils;
 
 { TInterfacedXmlBase }
 
@@ -183,8 +185,6 @@ begin
 end;
 
 function TInterfacedXmlBase.Load : boolean;
-var
-  backupFile: string;
 begin
   result := true;
 
@@ -194,100 +194,33 @@ begin
   end else
     FXml.Root.Clear;
 
-  if not (FileValidPrecheck(FXmlFileName)) then begin
-    result := false;
-    exit;
-  end;
-
-  if LoadFile(FXmlFileName) then begin
-    FXmlRoot := FXml.Root;
-  end else
+  if not (FileValidPrecheck(FXmlFileName)) then
   begin
-    // Try loading an earlier backup
-    backupFile := ExtractFilePath(FXmlFileName) + ExtractFileName(FXmlFileName)+'_bak';
-
-    if not(fileExists(backupFile)) then
-    begin
-      Debug('Unable to find any backups for this file. Reverting file to defaults.',DMT_INFO);
-      result := false;
-    end else
-    begin
-      // We have daily backups! Let's try to restore one of them. For now one backup is saved.
-      // More days could be added later
-
-        if not(LoadFile(backupFile)) then
-        begin
-          Debug('Unable to load the backup. Reverting file to defaults.',DMT_INFO);
-          DeleteFile(backupFile);
-          result := false;
-        end else
-        begin
-          Debug('Successfully loaded the backup file.',DMT_INFO);
-          FXmlRoot := FXml.Root;
-
-          // Delete the old file as it is invalid
-          if not(DeleteFile(FXmlFileName)) then begin
-            Debug('Unable to delete the old file, maybe you don''t have access rights?',DMT_ERROR);
-            result := false;
-            exit;
-          end;
-
-          // Save the backup file into it
-          FXml.SaveToFile(FXmlFileName);
-        end;
-
-      end;
-
-    end;
-end;
-
-function TInterfacedXmlBase.LoadFile(fileName: String): boolean;
-begin
-  Result := true;
-
-  if not (FileValidPrecheck(fileName)) then begin
     result := false;
     exit;
   end;
 
-  Try
-    FXml.LoadFromFile(fileName);
-
-    // Check for empty file, as sometimes the file can get wiped.
-    if Length(FXml.XMLData) = 0 then
-      result := false;
-  Except
-    on E: Exception do begin
-      Debug(format('Error loading file: %s',[fileName]),DMT_ERROR);
-      Debug(E.Message, DMT_TRACE);
-      result := false;
-    end;
+  if LoadXMLFromSharedFile(FXml,FXmlFileName,True) then
+    FXmlRoot := FXml.Root
+  else begin
+    result := False;
+    Debug('Unable to load xml file: ' + FXmlFileName, DMT_ERROR);
   end;
 end;
 
 function TInterfacedXmlBase.Save : boolean;
-var
-  backupFile:string;
 begin
   Result := true;
 
-  try
-    if not DirectoryExists(ExtractFilePath(FXmlFileName)) then
-      ForceDirectories(ExtractFilePath(FXmlFileName));
+  if not DirectoryExists(ExtractFilePath(FXmlFileName)) then
+    ForceDirectories(ExtractFilePath(FXmlFileName));
 
-    FXml.SaveToFile(FXmlFileName);
-  except
-    on E: Exception do begin
-      Debug(format('Error saving file: %s',[FXmlFileName]),DMT_ERROR);
-      Debug(E.Message, DMT_TRACE);
-      Result := false;
-      Exit;
-    end;
+  if not SaveXMLToSharedFile(FXml, FXmlFileName, True) then
+  begin
+    Debug(format('Error saving file: %s',[FXmlFileName]),DMT_ERROR);
+    Result := false;
+    Exit;
   end;
-
-  backupFile := ExtractFilePath(FXmlFileName) + ExtractFileName(FXmlFileName)+'_bak';
-  DeleteFile(backupFile);
-  FXml.SaveToFile(backupFile);
 end;
 
 function TInterfacedXmlBase.FileValidPrecheck(fileName:string): boolean;
