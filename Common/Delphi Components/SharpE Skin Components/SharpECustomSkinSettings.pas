@@ -27,7 +27,7 @@ unit SharpECustomSkinSettings;
 
 interface
 
-uses JclSimpleXML, SysUtils, SharpApi, SharpThemeApiEx;
+uses JclSimpleXML, SysUtils, SharpApi, SharpThemeApiEx, uSharpXMLUtils;
 
 type
    TSharpECustomSkinSettings = class
@@ -69,12 +69,9 @@ begin
           else exit;
      end;
 
-  try
-    FXML.LoadFromFile(fn);
-    FPath := dir;
-  except
-    Clear;
-  end;
+  if LoadXMLFromSharedFile(FXML,fn,True) then
+    FPath := dir
+  else Clear;
 end;
 
 procedure TSharpECustomSkinSettings.Clear;
