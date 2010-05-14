@@ -30,13 +30,13 @@ interface
 uses Graphics,
      Windows,
      Sysutils,
-     JvSimpleXML,
+     JclSimpleXML,
      SharpApi;
 
 type
     TDeskSettings = class
                      private
-                       XML : TJvSimpleXML;
+                       XML : TJclSimpleXML;
                      public
                        Owner               : TObject;
                        CheckObjectPosition : boolean;
@@ -86,7 +86,7 @@ begin
   MenuFile            := 'Menu';
   MenuFileShift       := 'QuickLaunch';
   UseExplorerDesk     := False;
-  XML := TJvSimpleXML.Create(nil);
+  XML := TJclSimpleXML.Create;
   ReloadSettings;
 end;
 
