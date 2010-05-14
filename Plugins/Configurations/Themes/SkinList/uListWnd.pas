@@ -121,6 +121,9 @@ type
 
 implementation
 
+uses
+  uSharpXMLUtils;
+
 {$R *.dfm}
 
 { TfrmConfigListWnd }
@@ -140,7 +143,7 @@ var
   path : string;
   tmp: TPNGObject;
 begin
-  pilNormal.Clear;
+  pilNormal.Clear;        
   pilSelected.Clear;
   dir := SharpApi.GetSharpeDirectory + 'Skins\';
   files := TStringList.Create;
@@ -449,15 +452,17 @@ var
 begin
   FName := ASkin;
 
-  s := GetSharpeDirectory+'skins\' + ASkin + '\' + 'skin.xml';
+  s := GetSharpeDirectory+'skins\' + ASkin + '\' + 'info.xml';
   if Not(FileExists(s)) then
     exit;
 
   xml := TJclSimpleXML.Create;
-  Try
-    xml.LoadFromFile(s);
-    if xml.Root.Items.ItemNamed['header'] <> nil then begin
-      with xml.Root.Items.ItemNamed['header'] do begin
+  if LoadXMLFromSharedFile(xml,s) then
+  begin
+    if xml.Root.Items.ItemNamed['header'] <> nil then
+    begin
+      with xml.Root.Items.ItemNamed['header'] do
+      begin
         FName := ASkin;
         FAuthor := Items.Value('author');
         FWebsite := Items.Value('url');
@@ -465,10 +470,8 @@ begin
         FVersion := Items.Value('version');
       end;
     end;
-
-  Finally
-    xml.Free;
-  End;
+  end;
+  xml.Free;
 end;
 
 end.
