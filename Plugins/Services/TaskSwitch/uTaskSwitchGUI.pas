@@ -6,7 +6,7 @@ uses
   Windows, Messages, Graphics, SysUtils, Math, Classes, ExtCtrls, Forms,
   SharpThemeApiEx, uISharpETheme, ISharpESkinComponents,
   uTaskSwitchWnd, SharpIconUtils, SharpGraphicsUtils, SharpTypes, uISharpESkin,
-   GR32, GR32_PNG, GR32_Resamplers, Types;
+  GR32_Backends, GR32, GR32_PNG, GR32_Resamplers, Types;
 
 type
 
