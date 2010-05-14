@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <sharpESkin>
-  <header>
-    <name>Number 7</name>
-    <author>Martin Krämer</author>
-    <url>http://www.sharpenviro.com</url>
-    <info>Big skin similiar to Windows 7</info>
-    <version>0.8</version>
-  </header>
   <sharpbar>
     <dimension>w,40</dimension>
     <fsmod>2,2</fsmod>

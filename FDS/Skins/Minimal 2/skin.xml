@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <sharpESkin>
-  <header>
-    <name>Sunken</name>
-    <author>Martin Krämer</author>
-    <url>http://www.sharpe-shell.org</url>
-    <info>Another Minimal skin</info>
-    <version>0.76</version>
-  </header>
   <sharpbar>
     <dimension>w,26</dimension>
     <fsmod>0,0</fsmod>

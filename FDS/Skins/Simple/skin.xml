@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <sharpESkin>
-  <header>
-    <name>Simple</name>
-    <author>Martin Krämer</author>
-    <url>http://www.sharpenviro.com</url>
-    <info>Something Simple!</info>
-    <version>0.8</version>
-  </header>
   <sharpbar>
     <dimension>w,29</dimension>
     <fsmod>2,2</fsmod>
