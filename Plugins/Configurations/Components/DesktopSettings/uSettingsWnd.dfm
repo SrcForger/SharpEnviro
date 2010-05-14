@@ -172,7 +172,7 @@ object frmSettings: TfrmSettings
         Width = 410
         Height = 35
         Margins.Left = 5
-        Margins.Top = 10
+        Margins.Top = 0
         Margins.Right = 5
         Margins.Bottom = 10
         Title = 'Explorer Desktop'
@@ -243,7 +243,7 @@ object frmSettings: TfrmSettings
         Margins.Top = 0
         Margins.Right = 5
         Margins.Bottom = 10
-        Title = 'Object grid allignment'
+        Title = 'Object grid alignment'
         Description = 'Define whether to allow snap to grid functionality for objects'
         TitleColor = clWindowText
         DescriptionColor = clGrayText
