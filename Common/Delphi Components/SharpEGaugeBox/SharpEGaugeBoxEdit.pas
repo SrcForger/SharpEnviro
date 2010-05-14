@@ -41,7 +41,6 @@ uses
   SharpApi,
   Types,
   GR32,
-  JvExComCtrls,
   JvComCtrls,
 
   SharpGraphicsUtils;

@@ -31,7 +31,6 @@ uses
   Windows,
   Messages,
   SysUtils,
-  Variants,
   Classes,
   Graphics,
   Controls,
@@ -39,22 +38,14 @@ uses
   Dialogs,
   StdCtrls,
   JclSimpleXML,
-  JclFileUtils,
   Contnrs,
-  jvSimpleXml,
-  ImgList,
   SharpEListBox,
   SharpEListBoxEx,
-  GR32,
-  GR32_PNG,
   SharpApi,
-  ExtCtrls,
-  JclStrings,
-  GR32_Image,
   Types,
   PngImageList,
   SWCmdList, TaskFilterList, ISharpCenterHostUnit,
-  ISharpCenterPluginUnit;
+  ISharpCenterPluginUnit, ImgList;
 
 type
   TfrmList = class(TForm)

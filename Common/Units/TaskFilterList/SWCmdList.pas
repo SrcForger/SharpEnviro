@@ -3,18 +3,10 @@ unit SWCmdList;
 interface
 
 uses
-  Windows,
   Messages,
   SysUtils,
-  Variants,
   Classes,
-  Graphics,
-  Controls,
-  Contnrs,
-  Forms,
-  Dialogs,
-  ExtCtrls,
-  StdCtrls;
+  Contnrs;
 
 type
   TSWCmdEnum = (wscSW_Hide, wscSW_ShowNormal, wscSW_ShowMinimized,

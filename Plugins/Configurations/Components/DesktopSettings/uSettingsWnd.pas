@@ -28,10 +28,10 @@ unit uSettingsWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls,  Menus, ComCtrls, SharpApi, SharpCenterApi,
-  SharpEGaugeBoxEdit, ImgList, PngImageList, JvExControls, ExtCtrls,
-  ISharpCenterHostUnit, SharpECenterHeader, JvXPCore, JvXPCheckCtrls;
+  Windows, Messages, SysUtils, Classes, Controls, Forms,
+  StdCtrls, ComCtrls, SharpApi, SharpCenterApi,
+  SharpEGaugeBoxEdit, ExtCtrls, JvExControls,
+  ISharpCenterHostUnit, SharpECenterHeader, JvXPCheckCtrls, JvXPCore;
 
 type
   TStringObject = Class(TObject)

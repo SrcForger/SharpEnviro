@@ -6,13 +6,8 @@ uses
   Windows,
   Messages,
   SysUtils,
-  Variants,
   Classes,
-  Graphics,
-  Controls,
   Contnrs,
-  Forms,
-  Dialogs,
 
   JclSimpleXml,
 

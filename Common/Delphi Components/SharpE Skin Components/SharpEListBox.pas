@@ -3,8 +3,7 @@ unit SharpEListBox;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ComCtrls, ExtCtrls, CategoryButtons, Menus, StdCtrls, ShellApi;
+  Windows, Messages, SysUtils, Classes, Controls, StdCtrls;
 
 type
 TSharpEListBox = class(TListBox)

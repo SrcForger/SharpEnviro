@@ -9,7 +9,6 @@ uses
   Classes,
   Graphics,
   Controls,
-  ComCtrls,
   Forms,
   StdCtrls,
   PngImageList,
