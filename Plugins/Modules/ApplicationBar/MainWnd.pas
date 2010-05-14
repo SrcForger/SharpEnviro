@@ -168,7 +168,9 @@ function SwitchToThisWindow(Wnd : hwnd; fAltTab : boolean) : boolean; stdcall; e
 implementation
 
 uses
-  IXmlBaseUnit, SharpESkinPart, GR32_PNG;
+  SharpESkinPart,
+  GR32_PNG,
+  uSharpXMLUtils;
 
 
 var
@@ -628,34 +630,32 @@ var
   n : integer;
 begin
   XML := TJclSimpleXMl.Create;
-  try
-    XML.Root.Name := 'AppBarModuleSettings';
-    with XML.Root.Items do
+  XML.Root.Name := 'AppBarModuleSettings';
+  with XML.Root.Items do
+  begin
+    Add('State',Integer(sState));
+    Add('CountOverlay',sCountOverlay);
+    Add('VWMOnly',sVWMOnly);
+    Add('MonitorOnly',sMonitorOnly);
+    Add('LockDragDrop',sLockDragDrop);
+    Add('TPLockKey',sTPLockKey);
+    Add('TaskPreview',sTaskPreview);
+    Add('FirstLaunch',sFirstLaunch);
+    with Add('Apps').Items do
     begin
-      Add('State',Integer(sState));
-      Add('CountOverlay',sCountOverlay);
-      Add('VWMOnly',sVWMOnly);
-      Add('MonitorOnly',sMonitorOnly);
-      Add('LockDragDrop',sLockDragDrop);
-      Add('TPLockKey',sTPLockKey);
-      Add('TaskPreview',sTaskPreview);
-      Add('FirstLaunch',sFirstLaunch);
-      with Add('Apps').Items do
-      begin
-        for n := 0 to High(FButtonList) do
-          with FButtonList[n] do
-            with Add('item').Items do
-            begin
-              Add('Target',Target);
-              Add('Icon',Icon);
-              Add('Caption',Caption);
-            end;
-      end;
+      for n := 0 to High(FButtonList) do
+        with FButtonList[n] do
+          with Add('item').Items do
+          begin
+            Add('Target',Target);
+            Add('Icon',Icon);
+            Add('Caption',Caption);
+          end;
     end;
-    XML.SaveToFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
-  finally
-    XML.Free;
   end;
+  if not SaveXMLToSharedFile(XML, mInterface.BarInterface.GetModuleXMLFile(mInterface.ID), True) then
+    SharpApi.SendDebugMessageEx('ApplicationBar',PChar('Failed to save settings to File: ' + mInterface.BarInterface.GetModuleXMLFile(mInterface.ID)),clred,DMT_ERROR);
+  XML.Free;
 end;
 
 procedure TMainForm.sb_configClick(Sender: TObject);
@@ -764,7 +764,6 @@ end;
 procedure TMainForm.LoadSettings;
 var
   XML : TJclSimpleXML;
-  fileloaded : boolean;
   n : integer;
 begin
   ClearButtons(False);
@@ -780,13 +779,7 @@ begin
   sTPLockKey := 1; // (Shift)
 
   XML := TJclSimpleXML.Create;
-  try
-    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
-    fileloaded := True;
-  except
-    fileloaded := False;
-  end;
-  if fileloaded then
+  if LoadXMLFromSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
     with xml.Root.Items do
     begin
       sState := TSharpETaskItemStates(IntValue('State',2));
@@ -1333,35 +1326,35 @@ end;
 
 procedure TMainForm.UpdateGlobalFilterList(Broadcast : Boolean);
 var
-  XML : TInterfacedXmlBase;
+  XML : TJclSimpleXML;
   XMLItem : TJclSimpleXMLElem;
   n : integer;
 begin
-  XML := TInterfacedXMLBase.Create;
-  XML.XmlFilename := SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\ApplicationBar\Apps.xml';
+  XML := TJclSimpleXML.Create;
 
   XMLItem := nil;
-  if XML.Load then
-    for n := 0 to XML.XmlRoot.Items.Count - 1 do
-      if XML.XmlRoot.Items.Item[n].Properties.IntValue('ID',-1) = mInterface.ID then
+  if LoadXMLFromSharedFile(XML, SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\ApplicationBar\Apps.xml', True) then
+    for n := 0 to XML.Root.Items.Count - 1 do
+      if XML.Root.Items.Item[n].Properties.IntValue('ID',-1) = mInterface.ID then
       begin
-        XMLItem := XML.XmlRoot.Items.Item[n];
+        XMLItem := XML.Root.Items.Item[n];
         break;
       end;
   if XMLItem = nil then
   begin
-    XMLItem := XML.XmlRoot.Items.Add('Module');
+    XMLItem := XML.Root.Items.Add('Module');
     XMLItem.Properties.Add('ID',mInterface.ID);
   end;
 
-  XML.XmlRoot.Name := 'ApplicationBarItems';
+  XML.Root.Name := 'ApplicationBarItems';
   XMLItem.Items.Clear;
   for n := 0 to High(FButtonList) do
     with XMLItem.Items do
     begin
       Add('Application',FButtonList[n].target);
     end;
-  XML.Save;
+  if not SaveXMLToSharedFile(XML, SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\ApplicationBar\Apps.xml', True) then
+    SharpApi.SendDebugMessageEx('ApplicationBar',PChar('Failed to Update global filter settings to File: ' + SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\ApplicationBar\Apps.xml'),clred,DMT_ERROR);
 
   XML.Free;
 

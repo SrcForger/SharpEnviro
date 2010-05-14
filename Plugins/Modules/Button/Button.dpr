@@ -173,7 +173,7 @@ begin
   begin
     Name := 'Button';
     Author := 'Martin Krämer <Martin@SharpEnviro.com>';
-    Description := 'Displays a Button to which links can be assigned';
+    Description := 'Displays a Button to which links and various actions can be assigned.';
     Version := '0.7.6.5';
     ExtraData := 'preview: True';
     DataType := tteModule;

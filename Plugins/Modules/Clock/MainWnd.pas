@@ -29,7 +29,7 @@ interface
 
 uses
   Windows, SysUtils, Classes, Controls, Forms, Messages,
-  StdCtrls, SharpEBaseControls, Commctrl, SharpTypes,
+  Types, StdCtrls, SharpEBaseControls, Commctrl, SharpTypes,
   JclSimpleXML, SharpApi, SharpCenterApi, Menus, Math,
   SharpESkinLabel, GR32, ExtCtrls, ToolTipApi,
   uISharpBarModule, ImgList, PngImageList;
@@ -76,6 +76,9 @@ type
 
 implementation
 
+uses
+  uSharpXMLUtils;
+
 {$R *.dfm}
 
 procedure TMainForm.WMNotify(var msg: TWMNotify);
@@ -91,7 +94,6 @@ end;
 procedure TMainForm.LoadSettings;
 var
   XML : TJclSimpleXML;
-  fileloaded : boolean;
 begin
   // Default some values each time the settings are loaded.
   sFormat := '';
@@ -103,13 +105,7 @@ begin
   lb_bottomclock.Visible := False;
 
   XML := TJclSimpleXML.Create;
-  try
-    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
-    fileloaded := True;
-  except
-    fileloaded := False;
-  end;                                      
-  if fileloaded then
+  if LoadXMLFromSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
     with xml.Root.Items do
     begin
       // There should always be a Format element no matter which style is used.

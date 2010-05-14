@@ -29,7 +29,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms, Types,
-  StdCtrls, GR32, GR32_PNG, SharpEButton,
+  StdCtrls, GR32, GR32_PNG, SharpEButton, Graphics,
   JclSimpleXML, SharpApi, Menus, Math, NotesWnd, SharpTypes,
   SharpEBaseControls,uISharpBarModule, uNotesSettings;
 
@@ -65,7 +65,8 @@ type
 
 implementation
 
-uses uSystemFuncs;
+uses uSystemFuncs,
+     uSharpXMLUtils;
 
 {$R *.dfm}
 {$R glyphs.res}
@@ -157,28 +158,26 @@ var
   XML : TJclSimpleXML;
 begin
   XML := TJclSimpleXML.Create;
-  try
-    XML.Root.Name := 'NotesModuleSettings';
-    with xml.Root.Items do
-    begin
-      Add('Directory', StringReplace(Settings.Directory, SharpApi.GetSharpeUserSettingsPath, '{#SharpEUserSettingsDir#}', [rfReplaceAll,rfIgnoreCase]));
-      Add('CaptionText', Settings.Caption);
-      Add('Caption', Settings.ShowCaption);
-      Add('Icon', Settings.ShowIcon);
-      Add('AlwaysOnTop', Settings.AlwaysOnTop);
-      Add('Left', Settings.Left);
-      Add('Top', Settings.Top);
-      Add('Height', Settings.Height);
-      Add('Width', Settings.Width);
-      Add('LineWrap', Settings.WordWrap);
-      Add('Filter', Settings.Filter);
-      Add('FilterIndex', Settings.FilterIndex);
-      Add('LastTab', Settings.LastTab);
-    end;
-    XML.SaveToFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
-  finally
-    XML.Free;
+  XML.Root.Name := 'NotesModuleSettings';
+  with xml.Root.Items do
+  begin
+    Add('Directory', StringReplace(Settings.Directory, SharpApi.GetSharpeUserSettingsPath, '{#SharpEUserSettingsDir#}', [rfReplaceAll,rfIgnoreCase]));
+    Add('CaptionText', Settings.Caption);
+    Add('Caption', Settings.ShowCaption);
+    Add('Icon', Settings.ShowIcon);
+    Add('AlwaysOnTop', Settings.AlwaysOnTop);
+    Add('Left', Settings.Left);
+    Add('Top', Settings.Top);
+    Add('Height', Settings.Height);
+    Add('Width', Settings.Width);
+    Add('LineWrap', Settings.WordWrap);
+    Add('Filter', Settings.Filter);
+    Add('FilterIndex', Settings.FilterIndex);
+    Add('LastTab', Settings.LastTab);
   end;
+  if not SaveXMLToSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
+    SharpApi.SendDebugMessageEx('Notes',PChar('Failed to Save Settings to File: ' + mInterface.BarInterface.GetModuleXMLFile(mInterface.ID)),clred,DMT_ERROR);
+  XML.Free;
 end;
 
 procedure TMainForm.SaveTabsSettings;
@@ -187,34 +186,30 @@ var
   i : Integer;
 begin
   XML := TJclSimpleXML.Create;
-  try
-    XML.Root.Name := 'NotesModuleTabsSettings';
-    with xml.Root.Items do
-    begin
-      with Add('Tabs').Items do
-        for i := 0 to Pred(Settings.Tabs.Count) do
-          with Add('Tab').Items do
-          begin
-            Add('Name', NotesTabSettings(Settings.Tabs.Objects[i]).Name);
-            Add('Tags', NotesTabSettings(Settings.Tabs.Objects[i]).Tags);
-            Add('IconIndex', NotesTabSettings(Settings.Tabs.Objects[i]).IconIndex);
-            Add('SelStart', NotesTabSettings(Settings.Tabs.Objects[i]).SelStart);
-            Add('SelLength', NotesTabSettings(Settings.Tabs.Objects[i]).SelLength);
-          end;
-    end;
-    if not DirectoryExists(Settings.Directory) then
-      ForceDirectories(Settings.Directory);
-    XML.SaveToFile(Settings.Directory + '\NotesModuleTabsSettings.xml');
-  except
-    // Squash any except when trying to save
+  XML.Root.Name := 'NotesModuleTabsSettings';
+  with xml.Root.Items do
+  begin
+    with Add('Tabs').Items do
+      for i := 0 to Pred(Settings.Tabs.Count) do
+        with Add('Tab').Items do
+        begin
+          Add('Name', NotesTabSettings(Settings.Tabs.Objects[i]).Name);
+          Add('Tags', NotesTabSettings(Settings.Tabs.Objects[i]).Tags);
+          Add('IconIndex', NotesTabSettings(Settings.Tabs.Objects[i]).IconIndex);
+          Add('SelStart', NotesTabSettings(Settings.Tabs.Objects[i]).SelStart);
+          Add('SelLength', NotesTabSettings(Settings.Tabs.Objects[i]).SelLength);
+        end;
   end;
+  if not DirectoryExists(Settings.Directory) then
+    ForceDirectories(Settings.Directory);
+  if not SaveXMLToSharedFile(XML,Settings.Directory + '\NotesModuleTabsSettings.xml',True) then
+    SharpApi.SendDebugMessageEx('Notes',PChar('Failed to Save Tab Settings to File: ' + Settings.Directory + '\NotesModuleTabsSettings.xml'),clred,DMT_ERROR);
   XML.Free;
 end;
 
 procedure TMainForm.LoadSettings;
 var
   XML : TJclSimpleXML;
-  fileloaded : boolean;
   Mon : TMonitor;
   notesDirectory : string;
   notesDirectoryChanged : Boolean;
@@ -228,13 +223,7 @@ begin
   Settings.Top := Mon.Top + Mon.Height div 2 - Settings.Height div 2;
 
   XML := TJclSimpleXML.Create;
-  try
-    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
-    fileloaded := True;
-  except
-    fileloaded := False;
-  end;
-  if fileloaded then
+  if LoadXMLFromSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
     with xml.Root.Items do
     begin
       // Get the directory the module should use to store and display tabs.
@@ -298,7 +287,6 @@ end;
 procedure TMainForm.LoadTabsSettings;
 var
   XML : TJclSimpleXML;
-  fileloaded : boolean;
   tabName : string;
   tabSettings : NotesTabSettings;
   i : Integer;
@@ -306,13 +294,7 @@ begin
   // We store the settings for the tabs in the directory the
   // module uses for storing and displaying tabs.
   XML := TJclSimpleXML.Create;
-  try
-    XML.LoadFromFile(Settings.Directory + '\NotesModuleTabsSettings.xml');
-    fileloaded := True;
-  except
-    fileloaded := False;
-  end;
-  if fileloaded then
+  if LoadXMLFromSharedFile(XML,Settings.Directory + '\NotesModuleTabsSettings.xml',True) then
     with xml.Root.Items do
     begin
       if ItemNamed['Tabs'] <> nil then

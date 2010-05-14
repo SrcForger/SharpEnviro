@@ -85,6 +85,9 @@ function SwitchToThisWindow(Wnd : hwnd; fAltTab : boolean) : boolean; stdcall; e
 
 implementation
 
+uses
+  uSharpXMLUtils;
+
 //{$R ShowDesktop.res}
 {$R *.dfm}
 
@@ -205,7 +208,6 @@ end;
 procedure TMainForm.LoadSettings;
 var
   XML : TJclSimpleXML;
-  fileloaded : boolean;
 begin
   sShowCaption := False;
   sCaption     := 'Show Desktop';
@@ -214,19 +216,12 @@ begin
   sShowIcon    := True;
   sCustomIcons := False;
   sAllMonitors := False;
-  
+
   setlength(FWndList,0);
   FDoShow := True;
 
   XML := TJclSimpleXML.Create;
-  try
-    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
-    fileloaded := True;
-  except
-    fileloaded := False;
-  end;
-
-  if fileloaded then
+  if LoadXMLFromSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
     with xml.Root.Items do
     begin
       sShowCaption := BoolValue('ShowCaption',sShowCaption);

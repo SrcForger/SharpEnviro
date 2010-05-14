@@ -67,7 +67,9 @@ type
 
 implementation
 
-uses GR32_PNG;
+uses
+  GR32_PNG,
+  uSharpXMLUtils;
 
 {$R *.dfm}
 {$R glyphs.res}
@@ -174,16 +176,9 @@ end;
 procedure TMainForm.LoadSettings;
 var
   XML : TJclSimpleXML;
-  fileloaded : boolean;
 begin
   XML := TJclSimpleXML.Create;
-  try
-    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
-    fileloaded := True;
-  except
-    fileloaded := False;
-  end;
-  if fileloaded then
+  if LoadXMLFromSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
     with xml.Root.Items do
     begin
       sShowIcon := BoolValue('showicon',sShowIcon);

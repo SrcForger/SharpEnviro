@@ -98,7 +98,9 @@ type
 
 implementation
 
-uses GR32_PNG;
+uses
+  GR32_PNG,
+  uSharpXMLUtils;
 
 {$R *.dfm}
 {$R glyphs.res}
@@ -352,29 +354,27 @@ var
   n : integer;
 begin
   XML := TJclSimpleXMl.Create;
-  try
-    XML.Root.Name := 'ButtonBarModuleSettings';
-    with XML.Root.Items do
+  XML.Root.Name := 'ButtonBarModuleSettings';
+  with XML.Root.Items do
+  begin
+    Add('ShowCaption',sShowLabel);
+    Add('ShowIcon',sShowIcon);
+    Add('FirstLaunch',sFirstLaunch);
+    with Add('Buttons').Items do
     begin
-      Add('ShowCaption',sShowLabel);
-      Add('ShowIcon',sShowIcon);
-      Add('FirstLaunch',sFirstLaunch);
-      with Add('Buttons').Items do
-      begin
-        for n := 0 to High(FButtonList) do
-          with FButtonList[n] do
-            with Add('item').Items do
-            begin
-              Add('Target',Target);
-              Add('Icon',Icon);
-              Add('Caption',Caption);
-            end;
-      end;
+      for n := 0 to High(FButtonList) do
+        with FButtonList[n] do
+          with Add('item').Items do
+          begin
+            Add('Target',Target);
+            Add('Icon',Icon);
+            Add('Caption',Caption);
+          end;
     end;
-    XML.SaveToFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
-  finally
-    XML.Free;
   end;
+  if not SaveXMLToSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
+    SharpApi.SendDebugMessageEx('ButtonBar',PChar('Failed to save settings to File: ' + mInterface.BarInterface.GetModuleXMLFile(mInterface.ID)),clred,DMT_ERROR);
+  XML.Free;
 end;
 
 procedure TMainForm.sb_configClick(Sender: TObject);
@@ -434,7 +434,6 @@ end;
 procedure TMainForm.LoadSettings;
 var
   XML : TJclSimpleXML;
-  fileloaded : boolean;
   n : integer;
 begin
   ClearButtons;
@@ -445,13 +444,7 @@ begin
   FButtonSpacing := 2;
 
   XML := TJclSimpleXML.Create;
-  try
-    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
-    fileloaded := True;
-  except
-    fileloaded := False;
-  end;
-  if fileloaded then
+  if LoadXMLFromSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
     with xml.Root.Items do
     begin
       sShowLabel   := BoolValue('ShowCaption',False);

@@ -155,7 +155,10 @@ type
 implementation
 
 uses
-  ToolTipApi,IXMLBaseUnit,GR32Utils;
+  ToolTipApi,
+  IXMLBaseUnit,
+  GR32Utils,
+  uSharpXMLUtils;
 
 var
   SysMenuHandle : hwnd;
@@ -879,19 +882,17 @@ end;
 procedure TMainForm.LoadGlobalFilters;
 var
   n,i : integer;
-  XML : TInterfacedXmlBase;
+  XML : TJclSimpleXML;
 begin
   setlength(sIGlobalFilters,0);
 
-  XML := TInterfacedXMLBase.Create;
-  XML.XmlFilename := SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\ApplicationBar\Apps.xml';
-
-  if XML.Load then
-    for n := 0 to XML.XmlRoot.Items.Count - 1 do
-      for i := 0 to XML.XmlRoot.Items.Item[n].Items.Count - 1 do
+  XML := TJclSimpleXML.Create;
+  if LoadXMLFromSharedFile(XML,SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\ApplicationBar\Apps.xml',True) then
+    for n := 0 to XML.Root.Items.Count - 1 do
+      for i := 0 to XML.Root.Items.Item[n].Items.Count - 1 do
       begin
         setlength(sIGlobalFilters,length(sIGlobalFilters) + 1);
-        sIGlobalFilters[High(sIGlobalFilters)] := ExtractFileName(XML.XmlRoot.Items.Item[n].Items.Item[i].Value);
+        sIGlobalFilters[High(sIGlobalFilters)] := ExtractFileName(XML.Root.Items.Item[n].Items.Item[i].Value);
       end;
 
   XML.Free;
@@ -900,7 +901,6 @@ end;
 procedure TMainForm.LoadSettings;
 var
   XML : TJclSimpleXML;
-  fileloaded : boolean;
   n,i : integer;
   newitem : TFilterItem;
   SList : TStringList;
@@ -922,13 +922,7 @@ begin
 
   XML := TJclSimpleXML.Create;
   SList := TSTringList.Create;
-  try
-    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
-    fileloaded := True;
-  except
-    fileloaded := False;
-  end;
-  if fileloaded then
+  if LoadXMLFromSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
     with xml.Root.Items do
     begin
       sState := TSharpETaskItemStates(IntValue('State',0));
@@ -961,7 +955,7 @@ begin
       end;
       if ItemNamed['EFilters'] <> nil then
       begin
-        SList.Clear;      
+        SList.Clear;
         SList.CommaText := ItemNamed['EFilters'].Value;
         for n := 0 to SList.Count - 1 do
         begin

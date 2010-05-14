@@ -1,7 +1,7 @@
 {
 Source Name: MainWnd.pas
 Description: SharpE VWM Module - Main Window
-Copyright (C) Author <E-Mail>
+Copyright (C) Author Martin Krämer <MartinKraemer@gmx.net>
 
 Source Forge Site
 https://sourceforge.net/projects/sharpe/
@@ -85,14 +85,14 @@ type
 implementation
 
 uses JclSimpleXML,
-     SharpGraphicsUtils;
+     SharpGraphicsUtils,
+     uSharpXMLUtils;
 
 {$R *.dfm}
 
 procedure TMainForm.LoadSettings;
 var
   XML : TJclSimpleXML;
-  fileloaded : boolean;
 begin
   sBackgroundColor := clWhite;
   sBackgroundColorSetting := 'clWhite';
@@ -113,13 +113,7 @@ begin
   sDisplayVWMNumbers := True;
 
   XML := TJclSimpleXML.Create;
-  try
-    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
-    fileloaded := True;
-  except
-    fileloaded := False;
-  end;
-  if fileloaded then
+  if LoadXMLFromSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
     with XML.Root.Items do
     begin
       sDisplayVWMNumbers := BoolValue('Numbers',sDisplayVWMNumbers);

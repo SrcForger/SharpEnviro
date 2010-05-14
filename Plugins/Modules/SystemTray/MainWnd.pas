@@ -88,6 +88,7 @@ type
 implementation
 
 uses SharpThemeApiEx,
+     uSharpXMLUtils,
      declaration;
 
 type
@@ -195,16 +196,9 @@ procedure TMainForm.SaveSettings;
 var
   XML : TJclSimpleXML;
   n : integer;
-  fileloaded : boolean;
 begin
   XML := TJclSimpleXML.Create;
-  try
-    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
-    fileloaded := True;
-  except
-    fileloaded := False;
-  end;
-  if not fileloaded then
+  if not LoadXMLFromSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
   begin
     XML.Root.Clear;
     XML.Root.Name := 'SystemTrayModuleSettings';
@@ -220,12 +214,8 @@ begin
         Add('item',FTrayClient.HiddenList[n]);
     end;
   end;
-  try
-    XML.SaveToFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
-  finally
-    XML.Free;
-  end;
-
+  if not SaveXMLToSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
+    SharpApi.SendDebugMessageEx('SystemTray',PChar('Failed to Save Settings to File: ' + mInterface.BarInterface.GetModuleXMLFile(mInterface.ID)), clred, DMT_ERROR);
 end;
 
 procedure TMainForm.ShowHideMenu;
@@ -412,7 +402,6 @@ end;
 procedure TMainForm.LoadSettings;
 var
   XML : TJclSimpleXML;
-  fileloaded : boolean;
   skin : String;
   n : integer;
 begin
@@ -454,13 +443,8 @@ begin
   end;
 
   XML := TJclSimpleXML.Create;
-  try
-    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
-    fileloaded := True;
-  except
-    fileloaded := False;
-  end;
-  if fileloaded then
+  if LoadXMLFromSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
+  begin  
     with xml.Root.Items do
     begin
       skin := GetCurrentTheme.Skin.Name;
@@ -491,6 +475,7 @@ begin
               sIconAlpha          := IntValue('IconAlpha',sIconAlpha);
             end;
     end;
+  end;
   XML.Free;
   if not sEnableIconHiding then
   begin
@@ -499,7 +484,7 @@ begin
       if TTrayItem(FTrayClient.Items.Items[0]).IsSpecial then
         FTrayClient.DeleteTrayIconByIndex(0);
   end;
-      
+
   FTrayClient.UpdateTrayIcons;
 end;
 

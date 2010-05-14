@@ -76,7 +76,8 @@ implementation
 
 uses
   uISharpETheme,
-  SharpThemeApiEx;
+  SharpThemeApiEx,
+  uSharpXMLUtils;
 
 {$R *.dfm}
 
@@ -85,7 +86,6 @@ procedure TMainForm.LoadSettings;
 var
   XML : TJclSimpleXML;
   skin : String;
-  fileloaded : boolean;
   Theme : ISharpETheme;
 begin
   sWidth    := 100;
@@ -117,13 +117,7 @@ begin
   end;
 
   XML := TJclSimpleXML.Create;
-  try
-    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
-    fileloaded := True;
-  except
-    fileloaded := False;
-  end;
-  if fileloaded then
+  if LoadXMLFromSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
     with xml.Root.Items do
     begin
       if ItemNamed['global'] <> nil then

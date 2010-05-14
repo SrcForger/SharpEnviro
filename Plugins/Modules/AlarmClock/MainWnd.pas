@@ -29,11 +29,10 @@ interface
 
 uses
   Windows, SysUtils, Classes, Forms, Dialogs, Types, DateUtils, SharpIconUtils,
-  uISharpBarModule, ISharpESkinComponents, JclShell,
+  uISharpBarModule, ISharpESkinComponents, JclShell, Graphics,
   SharpApi, SharpCenterApi, Menus, SharpEButton, ExtCtrls, SharpEBaseControls, Controls,
   GR32, GR32_PNG, GR32_Image, JclSimpleXML, IXmlBaseUnit, cbAudioPlay, DirectShow,
   ImgList, PngImageList;
-
 
 type
   TAlarmTime = class
@@ -132,6 +131,9 @@ type
 
 
 implementation
+
+uses
+  uSharpXMLUtils;
 
 {$R *.dfm}
 {$R alarmglyphs.res}
@@ -298,8 +300,6 @@ end;
 procedure TMainForm.LoadSettings;
 var
   XML : TJclSimpleXML;
-  Loaded : boolean;
-
   n : integer;
 begin
   alarmSettings.IsAlarming := False;
@@ -309,13 +309,7 @@ begin
   alarmSettings.Sound := 'Default';
 
   XML := TJclSimpleXML.Create;
-  try
-    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
-    Loaded := True;
-  except
-    Loaded := False;
-  end;
-  if Loaded then
+  if LoadXMLFromSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
     with XML.Root.Items do
     begin
       for n := 0 to Count - 1 do
@@ -350,12 +344,10 @@ end;
 
 procedure TMainForm.SaveSettings;
 var
-  XML : TInterfacedXmlBase;
+  XML : TJclSimpleXML;
 begin
-  XML := TInterfacedXmlBase.Create;
-  XML.XmlFilename := mInterface.BarInterface.GetModuleXMLFile(mInterface.ID);
-
-  with XML.XmlRoot do
+  XML := TJclSimpleXML.Create;
+  with XML.Root do
   begin
     Name := 'AlarmClockModuleSettings';
 
@@ -383,8 +375,9 @@ begin
       Add('Year', alarmSettings.Alarm.Yea);
     end;
   end;
-  
-  XML.Save;
+
+  if not SaveXMLToSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
+    SharpApi.SendDebugMessageEx('AlarmClock',PChar('Failed to Save settings to File: ' + mInterface.BarInterface.GetModuleXMLFile(mInterface.ID)),clred,DMT_ERROR);
   XML.Free;
 end;
 

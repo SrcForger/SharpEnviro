@@ -30,7 +30,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms, Types, StrUtils, ShellApi,
   Dialogs, StdCtrls, GR32, GR32_PNG, SharpEBaseControls, SharpEButton, Graphics,
-  JvSimpleXML, SharpApi, Math, SharpEEdit, Menus,
+  JclSimpleXML, SharpApi, Math, SharpEEdit, Menus,
   uISharpBarModule, uAliasList;
 
 
@@ -79,7 +79,8 @@ var
 implementation
 
 uses SharpDialogs,
-     uSystemFuncs;
+     uSystemFuncs,
+     uSharpXMLUtils;
 
 {$R *.dfm}
 
@@ -124,8 +125,7 @@ end;
 
 procedure TMainForm.LoadSettings;
 var
-  XML : TJvSimpleXML;
-  fileloaded : boolean;
+  XML : TJclSimpleXML;
 begin
   UpdateBangs;
 
@@ -133,17 +133,11 @@ begin
   sButton      := True;
   sButtonRight := True;
   sEnableAC    := True;
-  
+
   rightbutton  := False;
 
-  XML := TJvSimpleXML.Create(nil);
-  try
-    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
-    fileloaded := True;
-  except
-    fileloaded := False;
-  end;
-  if fileloaded then
+  XML := TJclSimpleXML.Create;
+  if LoadXMLFromSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then  
     with xml.Root.Items do
     begin
       sWidth  := IntValue('Width',100);
@@ -161,17 +155,16 @@ end;
 
 procedure TMainForm.LoadAutoComplete;
 var
-  XML : TJvSimpleXML;
+  XML : TJclSimpleXML;
   n, n1 : integer;
   AliasList : TAliasList;
 begin
   sItems.Clear;
 
   // Load the auto-complete words from the Xml file
-  XML := TJvSimpleXML.Create(nil);
-  try
-    XML.LoadFromFile(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\MiniScmd\AutoComplete.xml');
-
+  XML := TJclSimpleXML.Create;
+  if LoadXMLFromSharedFile(XML,SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\MiniScmd\AutoComplete.xml',True) then
+  begin
     for n := 0 to XML.Root.Items.Count - 1 do
     begin
       with XML.Root.Items.Item[n].Items do
@@ -179,10 +172,7 @@ begin
         sItems.Add(Value('Name', ''));
       end;
     end;
-  except
-    // Failed to load the xml
   end;
-
   XML.Free;
 
   // Add the Alias-List items
@@ -203,14 +193,14 @@ end;
 
 procedure TMainForm.SaveAutoComplete(Item : string);
 var
-  XML : TJvSimpleXML;
+  XML : TJclSimpleXML;
   n : Integer;
   i: Integer;
 
   tFound : boolean;
 begin
   tFound := false;
-  
+
   for i := 0 to sItems.Count - 1 do
   begin
     if sItems[i] = Item then
@@ -222,7 +212,7 @@ begin
   if not tFound then
     sItems.Add(Item);
 
-  XML := TJvSimpleXML.Create(nil);
+  XML := TJclSimpleXML.Create;
   try
     XML.Root.Name := 'AutoComplete';
     for n := 0 to sItems.Count - 1 do
@@ -232,9 +222,10 @@ begin
         Add('Name', sItems[n]);
       end;
     end;
-  
+
     ForceDirectories(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\MiniScmd');
-    XML.SaveToFile(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\MiniScmd\AutoComplete.xml');
+    if not SaveXMLToSharedFile(XML,SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\MiniScmd\AutoComplete.xml',True) then
+      SharpApi.SendDebugMessageEx('MiniScmd',PChar('Failed to Save Auto Complete List to file' + SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\MiniScmd\AutoComplete.xml'),clred,DMT_ERROR);
   finally
     XML.Free;
   end;

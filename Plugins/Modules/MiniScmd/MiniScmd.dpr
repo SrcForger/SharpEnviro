@@ -198,7 +198,7 @@ begin
   begin
     Name := 'Mini SCmd';
     Author := 'Martin Krämer <Martin@SharpEnviro.com>';
-    Description := 'Displays a small command bar';
+    Description := 'Displays a small input box in which commands can be executed.';
     Version := '0.7.6.5';
     ExtraData := 'preview: false';
     DataType := tteModule;

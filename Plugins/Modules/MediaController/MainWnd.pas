@@ -28,7 +28,7 @@ unit MainWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Controls, Forms, Graphics,
   Dialogs, StdCtrls, SharpEButton, SharpApi, Menus, Math,
   ShellApi, MediaPlayerList, GR32, GR32_PNG, Types, SharpEBaseControls, ExtCtrls,
   Registry, uSharpEMenuWnd, uSharpEMenu, uSharpEMenuSettings, uSharpEMenuItem,
@@ -82,7 +82,9 @@ implementation
 
 
 uses
-  JclSimpleXML,PlayerSelectWnd;
+  JclSimpleXML,
+  PlayerSelectWnd,
+  uSharpXMLUtils;
 
 {$R *.dfm}
 {$R MPGlyphs.res}
@@ -170,39 +172,32 @@ var
   mitem : TMediaPlayerItem;
 begin
   XML := TJclSimpleXML.Create;
-  try
-    XML.Root.Name := 'MediaControllerModuleSettings';
-    with XML.Root.Items do
-    begin
-      Add('Player',sPlayer);
-      AdD('PSelect',sPSelect);
-    end;
-    XML.SaveToFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
-  finally
-    XML.Free;
+  XML.Root.Name := 'MediaControllerModuleSettings';
+  with XML.Root.Items do
+  begin
+    Add('Player',sPlayer);
+    AdD('PSelect',sPSelect);
   end;
+  if not SaveXMLToSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
+    SharpApi.SendDebugMessageEx('MediaController',PChar('Failed to Save Settings to File: '+ mInterface.BarInterface.GetModuleXMLFile(mInterface.ID)),clred,DMT_ERROR);
+  XML.Free;
 
   XML := TJclSimpleXML.Create;
-  try
-    XML.Root.Name := 'MediaControllerPlayers';
-    for n := 0 to FMPlayers.Items.Count - 1 do
-      with XML.Root.Items.Add('Item').Items do
-      begin
-        mitem := TMediaPlayerItem(FMPlayers.Items[n]);
-        Add('Name',mitem.Name);
-        Add('Path',mitem.PlayerPath);
-      end;
-    Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\';
-    FName := Dir + 'MediaPlayers.xml';
-    if not DirectoryExists(Dir) then
-      ForceDirectories(Dir);
-    XML.SaveToFile(FName + '~');
-    if FileExists(FName) then
-      DeleteFile(FName);
-    RenameFile(FName + '~',FName);
-  finally
-    XML.Free;
-  end;
+  XML.Root.Name := 'MediaControllerPlayers';
+  for n := 0 to FMPlayers.Items.Count - 1 do
+    with XML.Root.Items.Add('Item').Items do
+    begin
+      mitem := TMediaPlayerItem(FMPlayers.Items[n]);
+      Add('Name',mitem.Name);
+      Add('Path',mitem.PlayerPath);
+    end;
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\';
+  FName := Dir + 'MediaPlayers.xml';
+  if not DirectoryExists(Dir) then
+    ForceDirectories(Dir);
+  if not SaveXMLToSharedFile(XML,FName,True) then
+    SharpApi.SendDebugMessageEx('MediaController',PChar('Failed to save Media Player Settings to File: ' + FName),clred,DMT_ERROR);
+  XML.Free;
 end;
 
 procedure TMainForm.LoadIcons;
@@ -250,7 +245,6 @@ end;
 procedure TMainForm.LoadSettings;
 var
   XML : TJclSimpleXML;
-  fileloaded : boolean;
   mitem : TMediaPlayerItem;
   n : integer;
 begin
@@ -258,13 +252,7 @@ begin
   sPSelect := True;
 
   XML := TJclSimpleXML.Create;
-  try
-    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
-    fileloaded := True;
-  except
-    fileloaded := False;
-  end;
-  if fileloaded then
+  if LoadXMLFromSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
     with XML.Root.Items do
     begin
       sPlayer := Value('Player',sPlayer);
@@ -276,13 +264,7 @@ begin
   sPSelect := True;
 
   XML := TJclSimpleXML.Create;
-  try
-    XML.LoadFromFile(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\MediaPlayers.xml');
-    fileloaded := True;
-  except
-    fileloaded := False;
-  end;
-  if fileloaded then
+  if LoadXMLFromSharedFile(XML,SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\MediaPlayers.xml',True) then
     with XML.Root.Items do
     begin
       for n := 0 to Count - 1 do

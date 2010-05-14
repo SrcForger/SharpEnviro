@@ -31,7 +31,7 @@ uses
   Windows, Messages, SysUtils, Classes, Controls, Forms,
   Dialogs, StdCtrls, SharpEBaseControls, GR32,
   SharpTypes, ExtCtrls, SharpEProgressBar,
-  JvSimpleXML, SharpApi, Menus, Math, SharpESkinLabel, uISharpBarModule;
+  JclSimpleXML, SharpApi, Menus, Math, SharpESkinLabel, uISharpBarModule;
 
 
 type
@@ -84,12 +84,14 @@ function GlobalMemoryStatusEx(var lpBuffer: TMemoryStatusEx): BOOL; stdcall; ext
 
 implementation
 
+uses
+  uSharpXMLUtils;
+
 {$R *.dfm}
 
 procedure TMainForm.LoadSettings;
 var
-  XML : TJvSimpleXML;
-  fileloaded : boolean;
+  XML : TJclSimpleXML;
 begin
   BarWidth := 50;
   ShowRAMBar  := True;
@@ -101,14 +103,8 @@ begin
   sITC        := 0;
   ItemAlign   := 3;
 
-  XML := TJvSimpleXML.Create(nil);
-  try
-    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
-    fileloaded := True;
-  except
-    fileloaded := False;
-  end;
-  if fileloaded then
+  XML := TJclSimpleXML.Create;
+  if LoadXMLFromSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then  
     with xml.Root.Items do
     begin
       BarWidth := IntValue('Width',BarWidth);

@@ -28,7 +28,7 @@ unit MainWnd;
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls, Forms, Contnrs, Types,
+  Windows, SysUtils, Classes, Controls, Forms, Contnrs, Types, Graphics,
   Dialogs, StdCtrls, SharpEBaseControls, GR32_Resamplers, SharpNotify,
   ExtCtrls, GR32, uISharpBarModule, SharpTypes, ISharpESkinComponents,
   JclStrings, JclSimpleXML, SharpApi, Menus, Math, SharpESkinLabel,
@@ -122,7 +122,11 @@ type
 
 implementation
 
-uses GR32_PNG, IdHTTP, uFeedDownloadThread;
+uses
+  GR32_PNG,
+  IdHTTP,
+  uFeedDownloadThread,
+  uSharpXMLUtils;
 
 {$R *.dfm}
 {$R rssglyphs.res}
@@ -171,7 +175,6 @@ end;
 procedure TMainForm.LoadSettings;
 var
   XML : TJclSimpleXML;
-  fileloaded : boolean;
 begin
   sURL := 'http://rss.cnn.com/rss/cnn_world.rss';
   sShowNotification := True;
@@ -182,13 +185,7 @@ begin
   sCustomIcon := True;
 
   XML := TJclSimpleXML.Create;
-  try
-    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
-    fileloaded := True;
-  except
-    fileloaded := False;
-  end;
-  if fileloaded then
+  if LoadXMLFromSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
     with xml.Root.Items do
     begin
       sShowIcon := BoolValue('showicon',sShowIcon);

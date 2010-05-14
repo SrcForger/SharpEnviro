@@ -66,6 +66,9 @@ type
 
 implementation
 
+uses
+  uSharpXMLUtils;
+
 {$R *.dfm}
 {$R Icons.res}
 
@@ -120,19 +123,12 @@ end;
 procedure TMainForm.LoadSettings;
 var
   XML : TJclSimpleXML;
-  fileloaded : boolean;
 begin
   sShowIcon := True;
   sThreeLetterCode := False;
   XML := TJclSimpleXML.Create;
-  try
-    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
-    fileloaded := True;
-  except
-    fileloaded := False;
-  end;
-  if fileloaded then
-    with xml.Root.Items do
+  if LoadXMLFromSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
+    with XML.Root.Items do
     begin
       sShowIcon := BoolValue('ShowIcon',sShowIcon);
       sThreeLetterCode := BoolValue('ThreeLetterCode',sThreeLetterCode);

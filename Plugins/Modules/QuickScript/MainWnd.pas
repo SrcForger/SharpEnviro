@@ -70,25 +70,21 @@ type
 
 implementation
 
+uses
+  uSharpXMLUtils;
+
 {$R *.dfm}
 {$R icons.res}
 
 procedure TMainForm.LoadSettings;
 var
   XML : TJclSimpleXML;
-  fileloaded : boolean;
 begin
   sCaption := True;
   sIcon    := True;
 
   XML := TJclSimpleXML.Create;
-  try
-    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
-    fileloaded := True;
-  except
-    fileloaded := False;
-  end;
-  if fileloaded then
+  if LoadXMLFromSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
     with xml.Root.Items do
     begin
       sCaption := BoolValue('Caption',True);

@@ -29,7 +29,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, SharpEBaseControls,
+  Dialogs, StdCtrls, SharpEBaseControls, Types,
   SharpEScheme, SharpTypes, ExtCtrls, GR32,
   JclSimpleXML, SharpApi, Menus, Math, SharpESkinLabel,
   uWeatherParser, GR32_Image, uISharpBarModule, SharpNotify, ISharpESkinComponents;
@@ -75,7 +75,9 @@ type
 
 implementation
 
-uses GR32_PNG;
+uses
+  GR32_PNG,
+  uSharpXMLUtils;
 
 const
   TemperatureTitle = 'Temperature : ';
@@ -166,7 +168,6 @@ end;
 procedure TMainForm.LoadSettings;
 var
   XML : TJclSimpleXML;
-  fileloaded : boolean;
 begin
   bShowIcon    := True;
   bShowLabels  := True;
@@ -176,13 +177,7 @@ begin
   sLocation    := '0';
 
   XML := TJclSimpleXML.Create;
-  try
-    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
-    fileloaded := True;
-  except
-    fileloaded := False;
-  end;
-  if fileloaded then
+  if LoadXMLFromSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
     with xml.Root.Items do
     begin
       bShowIcon    := BoolValue('showicon',True);
@@ -197,12 +192,9 @@ begin
   if not DirectoryExists(GetSharpeUserSettingsPath + spath + 'Data\' + sLocation) then
   begin
     XML := TJclSimpleXML.Create;
-    try
-      XML.LoadFromFile(GetSharpEUserSettingsPath+'SharpCore\Services\Weather\weatherlist.xml');
+    if LoadXMLFromSharedFile(XML,GetSharpEUserSettingsPath+'SharpCore\Services\Weather\weatherlist.xml',True) then
       if XML.Root.Items.Count > 0 then
          sLocation := XML.Root.Items.Item[0].Properties.Value('LocationID');
-    except
-    end;
     XML.Free;
   end;
   FWeatherParser.Update(sLocation);
