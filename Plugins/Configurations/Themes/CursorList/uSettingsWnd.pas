@@ -1,7 +1,7 @@
 ﻿{
 Source Name: uIconeListWnd.pas
 Description: Icon List Window
-Copyright (C) Martin KrÃ¤mer (MartinKraemer@gmx.net)
+Copyright (C) Martin Krämer (MartinKraemer@gmx.net)
 
 Source Forge Site
 https://sourceforge.net/projects/sharpe/
@@ -128,7 +128,8 @@ var
 implementation
 
 uses SharpThemeApiEx,
-     SharpCenterApi;
+     SharpCenterApi,
+     SharpCenterThemeApi;
 
 {$R *.dfm}
 

@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, SharpEListBoxEx, ImgList, PngImageList, uAliasList,
-  SharpAPI, SharpCenterApi, EditWnd, ISharpCenterHostUnit;
+  SharpAPI, SharpCenterApi, SharpCenterThemeApi, EditWnd, ISharpCenterHostUnit;
 
 type
   TfrmItemsWnd = class(TForm)

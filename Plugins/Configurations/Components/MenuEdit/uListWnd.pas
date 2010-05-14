@@ -151,6 +151,7 @@ implementation
 
 uses 
   SharpCenterApi,
+  SharpCenterThemeApi,
   SharpIconUtils,
   uEditWnd;
 

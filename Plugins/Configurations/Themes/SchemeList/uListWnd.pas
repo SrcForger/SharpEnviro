@@ -46,6 +46,7 @@ uses
   uEditWnd,
   SharpApi,
   SharpCenterApi,
+  SharpCenterThemeApi,
   SharpThemeApiEx,
   SharpEListBoxEx,
   PngImageList,

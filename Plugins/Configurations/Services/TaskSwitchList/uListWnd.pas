@@ -41,6 +41,7 @@ uses
   pngimage,
   SharpApi,
   SharpCenterApi,
+  SharpCenterThemeApi,
   SharpThemeApiEx,
   SharpEListBoxEx,
   PngImageList,

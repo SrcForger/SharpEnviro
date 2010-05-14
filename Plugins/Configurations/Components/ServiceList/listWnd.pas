@@ -49,6 +49,7 @@ uses
   GR32_PNG,
   SharpApi,
   SharpCenterApi,
+  SharpCenterThemeApi,
   ExtCtrls,
   Menus,
   Contnrs,

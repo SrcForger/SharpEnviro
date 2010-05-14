@@ -40,13 +40,20 @@ uses
   Forms,
   Dialogs,
   StdCtrls,
+  GR32,
   ImgList,
   PngImageList,
+  ExtCtrls,
 
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
 
-  SharpEListBoxEx, uButtonBarList, SharpIconUtils, GR32, ExtCtrls, SharpApi, SharpCenterApi;
+  SharpEListBoxEx,
+  uButtonBarList,
+  SharpIconUtils,
+  SharpApi,
+  SharpCenterApi,
+  SharpCenterThemeApi;
 
 type
 

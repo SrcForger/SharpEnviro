@@ -29,8 +29,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, pngimage, ExtCtrls, SharpCenterApi, StdCtrls, SharpEListBoxEx,
- ImgList, PngImageList, SharpApi, ComCtrls, ISharpCenterHostUnit;
+  Dialogs, pngimage, ExtCtrls, SharpCenterApi, SharpCenterThemeApi, StdCtrls,
+  SharpEListBoxEx, ImgList, PngImageList, SharpApi, ComCtrls,
+  ISharpCenterHostUnit;
 
 type
   TUser = Class

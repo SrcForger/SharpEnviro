@@ -123,6 +123,7 @@ implementation
 uses
   SharpFileUtils,
   SharpCenterApi,
+  SharpCenterThemeApi,
   SharpIconUtils,
   uEditWnd;
 

@@ -41,11 +41,19 @@ uses
   StdCtrls,
   ImgList,
   PngImageList,
+  GR32,
+  Types,
+  ExtCtrls,
 
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
 
-  SharpEListBoxEx, uAppBarList, SharpIconUtils, GR32, ExtCtrls, SharpApi, SharpCenterApi;
+  SharpEListBoxEx,
+  uAppBarList,
+  SharpIconUtils,
+  SharpApi,
+  SharpCenterApi,
+  SharpCenterThemeApi;
 
 type
 

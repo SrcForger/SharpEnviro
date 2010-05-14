@@ -43,7 +43,7 @@ uses
   Menus,
 
   // Project
-  uHotkeyServiceList, PngImageList, SharpEHotkeyEdit, 
+  uHotkeyServiceList, PngImageList, SharpEHotkeyEdit, SharpCenterThemeApi, 
   SharpEListBoxEx, SharpApi, SharpCenterApi, ImgList, ISharpCenterHostUnit,
   ISharpCenterPluginUnit;
 

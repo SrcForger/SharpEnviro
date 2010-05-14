@@ -52,6 +52,7 @@ uses
   JclStrings,
   JclInifiles,
   SharpCenterApi,
+  SharpCenterThemeApi,
   uThemeList,
   uThemeConsts,
   uIThemeList,

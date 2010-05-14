@@ -32,7 +32,7 @@ uses
   Dialogs, StdCtrls, JclSimpleXml, SharpApi, JclFileUtils,
   ImgList, PngImageList, uISharpETheme, uThemeConsts,
   graphicsfx, SharpThemeApiEx, SharpEListBoxEx, BarPreview, GR32, GR32_PNG, pngimage,
-  ExtCtrls, SharpCenterApi, JclStrings,
+  ExtCtrls, SharpCenterApi, SharpCenterThemeApi, JclStrings,
 
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit;

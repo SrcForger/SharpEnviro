@@ -19,7 +19,12 @@ uses
   PngImageList,
   uWeatherList,
   uWeatherOptions,
-  SharpEListBoxEx, SharpApi, SharpCenterApi, ISharpCenterHostUnit, ImgList;
+  SharpEListBoxEx,
+  SharpApi,
+  SharpCenterApi,
+  SharpCenterThemeApi,
+  ISharpCenterHostUnit,
+  ImgList;
 
 type
   TfrmItemswnd = class(TForm)

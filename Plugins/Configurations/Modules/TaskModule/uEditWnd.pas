@@ -43,7 +43,7 @@ uses
   PngImageList,
   SharpTypes,
   SharpEListBoxEx, TaskFilterList, ExtCtrls, JclSimpleXml, JclStrings,
-  ISharpCenterHostUnit, SharpCenterApi, SharpESkin,
+  ISharpCenterHostUnit, SharpCenterApi, SharpCenterThemeApi,SharpESkin,
   SharpECenterHeader, JvExControls, JvXPCore, JvXPCheckCtrls;
 
 type
