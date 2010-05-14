@@ -42,6 +42,7 @@ uses
   ExtCtrls,
   Types,
   GR32,
+  GR32_Backends,
   GR32_Layers,
   GR32_Image,
   GR32_PNG,
