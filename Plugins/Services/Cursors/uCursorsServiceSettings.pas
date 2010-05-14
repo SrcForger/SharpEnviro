@@ -62,6 +62,7 @@ type
 implementation
 
 uses
+  uSharpXMLUtils,
   uCursorsServiceManager,
   SharpApi;
 
@@ -103,28 +104,19 @@ begin
   
   // Create and load XML file
   xml := TJclSimpleXml.Create;
-  try
-    try
-      xml.LoadFromFile(FFileName);
+  if LoadXMLFromSharedFile(xml,FFileName,True) then
+  begin
+    xml.LoadFromFile(FFileName);
 
-      // Get the properties from the XML file
-      with xml.Root.Items do
-      begin
-        FCurrentSkin := Value('CurrentSkin');
-        for n := 0 to High(FColors) do
-            FColors[n] := IntValue('Color' + inttostr(n),FColors[n]);
-      end;
-
-    except
-      on E: Exception do begin
-        Debug('Error While Loading settings', DMT_ERROR);
-        Debug(E.Message, DMT_TRACE);
-      end;
+    // Get the properties from the XML file
+    with xml.Root.Items do
+    begin
+      FCurrentSkin := Value('CurrentSkin');
+      for n := 0 to High(FColors) do
+        FColors[n] := IntValue('Color' + inttostr(n),FColors[n]);
     end;
-  finally
-    xml.Free;
-  end;
-
+  end else Debug('Error While Loading settings', DMT_ERROR);
+  xml.Free;
 end;
 
 procedure TCursorsSettings.Save;
@@ -132,31 +124,22 @@ var
   xml: TJclSimpleXml;
   n : integer;
 begin
-  // Create and load XML file
+  // Create XML file
   xml := TJclSimpleXml.Create;
-  try
-    try
-      xml.Root.Name := 'SharpEThemeCursor';
+  xml.Root.Name := 'SharpEThemeCursor';
 
-      // Add the properties to the root node
-      with xml.Root.Items do
-      begin
-        Add('CurrentSkin', FCurrentSkin);
-        for n := 0 to High(FColors) do
-            Add('Color' + inttostr(n),FColors[n]);
-      end;
-
-      xml.SaveToFile(FFileName);
-    except
-      on E: Exception do begin
-        Debug('Error While Saving settings', DMT_ERROR);
-        Debug(E.Message, DMT_TRACE);
-      end;
-    end;
-  finally
-    xml.Free;
+  // Add the properties to the root node
+  with xml.Root.Items do
+  begin
+    Add('CurrentSkin', FCurrentSkin);
+    for n := 0 to High(FColors) do
+      Add('Color' + inttostr(n),FColors[n]);
   end;
 
+  if not SaveXMlToSharedFile(xml,FFileName,True) then
+    Debug('Error While Saving settings', DMT_ERROR);
+  xml.Free;
 end;
+
 end.
 

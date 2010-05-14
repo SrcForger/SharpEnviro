@@ -38,6 +38,7 @@ uses
   SysUtils,
   JclSimpleXML,
   ISharpESkinComponents,
+  uSharpXMLUtils,
   SharpTypes,
   {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   VWMFunctions in '..\..\..\Common\Units\VWM\VWMFunctions.pas',
@@ -137,7 +138,6 @@ var
   XML: TJclSimpleXML;
   Dir: string;
   FName: string;
-  fileloaded: boolean;
   movetw : boolean;
 begin
   VWMCount := 4;
@@ -152,13 +152,7 @@ begin
   if FileExists(FName) then
   begin
     XML := TJclSimpleXML.Create;
-    try
-      XML.LoadFromFile(FName);
-      fileloaded := True;
-    except
-      fileloaded := False;
-    end;
-    if FileLoaded then
+    if LoadXMLFromSharedFile(XML,FName,True) then    
     begin
       VWMCount := XML.Root.Items.IntValue('VWMCount', VWMCount);
       VWMCount := Max(2, Min(VWMCount, 12));

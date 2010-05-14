@@ -34,7 +34,7 @@ uses
   windows,
 
   // JVCL
-  JvSimpleXml,
+  JclSimpleXml,
 
   // Common
   SharpApi;
@@ -61,6 +61,9 @@ type
   procedure Debug(Text: string; DebugType: Integer);
 
 implementation
+
+uses
+  uSharpXMLUtils;
 
 procedure Debug(Text: string; DebugType: Integer);
 begin
@@ -96,97 +99,61 @@ end;
 
 procedure TExecSettings.Load(filename: string);
 var
-  xml: TjvSimpleXml;
+  xml: TJclSimpleXML;
 begin
   // Create and load XML file
-  xml := TJvSimpleXml.Create(nil);
-  try
-    try
-      Debug('Load Exec Settings ' + filename, DMT_INFO);
-      xml.LoadFromFile(filename);
-
-      // Get the properties from the XML file
-      with xml.Root.Items.ItemNamed['Main'].Items do begin
-        FAltExplorer := Value('AltExplorer');
-      end;
-
-    except
-      on E: Exception do begin
-        Debug(Format('Error While Loading "%s"', [FileName]), DMT_ERROR);
-        Debug(E.Message, DMT_TRACE);
-      end;
+  xml := TJclSimpleXML.Create;
+  Debug('Load Exec Settings ' + filename, DMT_INFO);
+  if LoadXMLFromSharedFile(xml,filename,true) then
+  begin
+    // Get the properties from the XML file
+    with xml.Root.Items.ItemNamed['Main'].Items do begin
+      FAltExplorer := Value('AltExplorer');
     end;
-  finally
-    xml.Free;
-  end;
-
+  end else Debug(Format('Error While Loading "%s"', [FileName]), DMT_ERROR);
+  xml.Free;
 end;
 
 procedure TExecSettings.New(filename: string);
 var
-  xml: TjvSimpleXml;
+  xml: TJclSimpleXML;
 begin
-  xml := TJvSimpleXml.Create(nil);
-  try
-    try
-      // Delete file and set up XML
-      Debug('Create Exec Settings ' + filename, DMT_INFO);
-      DeleteFile(pchar(filename));
-      
-      xml.Root.Name := 'ExecService';
+  xml := TJclSimpleXML.Create;
 
-      // Add the properties to the root node
-      xml.root.Items.Add('Main');
-      with xml.Root.Items.ItemNamed['Main'].items do begin
-        Add('AltExplorer', '');
-      end;
+  Debug('Create Exec Settings ' + filename, DMT_INFO);
+  xml.Root.Name := 'ExecService';
 
-      // Save and Free
-      xml.SaveToFile(filename);
-    except
-      on E: Exception do begin
-        Debug('Error While Creating Xml File', DMT_ERROR);
-        Debug(E.Message, DMT_TRACE);
-      end;
-    end;
-  finally
-    xml.free;
+  // Add the properties to the root node
+  xml.root.Items.Add('Main');
+  with xml.Root.Items.ItemNamed['Main'].items do begin
+    Add('AltExplorer', '');
   end;
+
+  // Save and Free
+  if not SaveXMLToSharedFile(xml,filename,true) then
+    Debug('Error While Creating Xml File', DMT_ERROR);
+  xml.free;
 end;
 
 procedure TExecSettings.Save(filename: string);
 var
-  xml: TjvSimpleXml;
+  xml: TJclSimpleXML;
 begin
-  xml := TJvSimpleXml.Create(nil);
-  try
-    try
+  xml := TJclSimpleXML.Create;
 
-      // Delete file and set up XML
-      Debug('Save Exec Settings ' + filename, DMT_INFO);
-      DeleteFile(pchar(filename));
+  Debug('Save Exec Settings ' + filename, DMT_INFO);
 
-      xml.Root.Name := 'SharpCore';
-      xml.Root.Properties.Add('Version', '0.5.0.0');
+  xml.Root.Name := 'SharpCore';
 
-      // Add the properties to the root node
-      xml.root.Items.Add('Main');
-      with xml.Root.Items.ItemNamed['Main'].items do begin
-        Add('AltExplorer', '-1');
-      end;
-
-      // Save and Free
-      xml.SaveToFile(filename);
-
-    except
-      on E: Exception do begin
-        Debug('Error While Saving Xml File', DMT_ERROR);
-        Debug(E.Message, DMT_TRACE);
-      end;
-    end;
-  finally
-    xml.free;
+  // Add the properties to the root node
+  xml.root.Items.Add('Main');
+  with xml.Root.Items.ItemNamed['Main'].items do begin
+    Add('AltExplorer', '-1');
   end;
+
+  if not SaveXMLToSharedFile(xml,filename,true) then
+    Debug('Error While Saving Xml File', DMT_ERROR);
+  xml.free;
 end;
 
 procedure TExecSettings.Save;
