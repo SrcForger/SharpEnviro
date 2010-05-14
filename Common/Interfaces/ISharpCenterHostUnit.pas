@@ -3,8 +3,8 @@ unit ISharpCenterHostUnit;
 interface
 
 uses
-  JvValidators, Windows, SharpApi,SharpCenterApi, SharpETabList, Controls, Forms, Graphics, Classes, GR32,
-  uVistaFuncs, SysUtils, jclSimpleXml, JvErrorIndicator, IXmlBaseUnit;
+  JvValidators, Windows, SharpApi, SharpCenterApi, Controls, Forms, Graphics, Classes,
+  uVistaFuncs, SysUtils, JclSimpleXml, JvErrorIndicator, IXmlBaseUnit;
 
 const
   IID_ISharpCenterHost: TGUID = '{2277C19F-F87B-4CED-9ADA-8C3467426066}';

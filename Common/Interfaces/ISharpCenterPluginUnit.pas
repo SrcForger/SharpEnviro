@@ -3,8 +3,8 @@ unit ISharpCenterPluginUnit;
 interface
 
 uses
-  Windows, SharpApi,SharpCenterApi, SharpETabList, Controls, Forms, Classes, GR32,
-  ISharpCenterHostUnit;
+  Windows, SharpApi, SharpCenterApi, Controls, Forms, Classes,
+  ISharpCenterHostUnit, GR32;
 
 const
   IID_ISharpCenterPluginEdit: TGUID = '{C7477868-4A58-4EDF-8D81-2C0B1732C116}';
