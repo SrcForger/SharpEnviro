@@ -31,7 +31,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JclSimpleXml, SharpApi, JclFileUtils,
   ImgList, PngImageList, uISharpETheme, uThemeConsts,
-  graphicsfx, SharpThemeApiEx, SharpEListBoxEx, BarPreview, GR32, GR32_PNG, pngimage,
+  SharpThemeApiEx, SharpEListBoxEx, BarPreview, GR32, pngimage,
   ExtCtrls, SharpCenterApi, SharpCenterThemeApi, JclStrings,
 
   ISharpCenterHostUnit,
@@ -68,7 +68,6 @@ type
     tmrRefreshItems: TTimer;
     pilSelected: TPngImageList;
     pilNormal: TPngImageList;
-    tmrSetSkin: TTimer;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure lbSkinListClickItem(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem);
@@ -81,7 +80,6 @@ type
       AItem: TSharpEListItem; var ACursor: TCursor);
     procedure lbSkinListResize(Sender: TObject);
     procedure tmrRefreshItemsTimer(Sender: TObject);
-    procedure tmrSetSkinTimer(Sender: TObject);
 
   private
     FSkin: string;
@@ -313,19 +311,6 @@ begin
   lbSkinList.Refresh;
 end;
 
-procedure TfrmListWnd.tmrSetSkinTimer(Sender: TObject);
-var
-  tmp: TSkinItem;
-begin
-  tmrSetSkin.Enabled := false;
-
-  tmp := TSkinItem(lbSkinList.SelectedItem.Data);
-  FSkin := tmp.Name;
-  FPluginHost.Save;
-
-  SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(suSkin), 0);
-end;
-
 procedure TfrmListWnd.lbSkinListClickItem(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem);
 var
@@ -337,17 +322,21 @@ begin
   if (tmp <> nil) then begin
 
     case ACol of
-      cItem: begin
-          tmrSetSkin.Enabled := true;
+      cItem:
+        begin
+          tmp := TSkinItem(lbSkinList.SelectedItem.Data);
+          FSkin := tmp.Name;
+          FPluginHost.SetSettingsChanged;
         end;
-        cUrl: begin
+      cUrl:
+        begin
           if tmp.Website <> '' then
             SharpExecute(tmp.Website);
         end;
-        cInfo: begin
+      cInfo:
+        begin
           if tmp.Info <> '' then
             ShowMessage(tmp.Info);
-
         end;
     end;
 

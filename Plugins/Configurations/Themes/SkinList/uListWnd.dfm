@@ -146,11 +146,4 @@ object frmListWnd: TfrmListWnd
     Left = 72
     Top = 280
   end
-  object tmrSetSkin: TTimer
-    Enabled = False
-    Interval = 1
-    OnTimer = tmrSetSkinTimer
-    Left = 244
-    Top = 268
-  end
 end

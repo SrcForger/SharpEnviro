@@ -30,9 +30,6 @@ uses
   Classes,
   Windows,
   Forms,
-  Dialogs,
-  graphics,
-  PngSpeedButton,
   SharpCenterApi,
   SharpThemeApiEx,
   uThemeConsts,
@@ -128,8 +125,7 @@ begin
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
     Version := '0.7.6.5';
     DataType := tteConfig;
-    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
-      Integer(suSkin)]);
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply), Integer(suSkin)]);
   end;
 end;
 
