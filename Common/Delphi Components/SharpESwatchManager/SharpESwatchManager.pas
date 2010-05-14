@@ -10,7 +10,7 @@ uses
   ExtCtrls,
   SharpFX,
   Gr32,
-  JvSimpleXml,
+  JclSimpleXml,
   GR32_Polygons,
   SharpApi,
   GR32_Image,
@@ -404,7 +404,7 @@ end;
 
 procedure TSharpESwatchManager.Load(AFileName: string);
 var
-  xml: TJvSimpleXml;
+  xml: TJclSimpleXml;
   i: Integer;
   newItem: TSharpESwatchCollectionItem;
 begin
@@ -421,7 +421,7 @@ begin
     if (FPopulateThemeColors) then
       AddThemeDefaults;
 
-    xml := TJvSimpleXML.Create(nil);
+    xml := TJclSimpleXML.Create;
     try
       xml.LoadFromFile(AFileName);
 
@@ -445,9 +445,9 @@ end;
 
 procedure TSharpESwatchManager.SaveOptions(AFileName: string);
 var
-  xml: TJvSimpleXML;
+  xml: TJclSimpleXML;
 begin
-  xml := TJvSimpleXML.Create(nil);
+  xml := TJclSimpleXML.Create;
   try
     xml.Root.Name := 'SharpESwatchCollectionOptions';
     with xml.Root.Items.Add('Options') do begin
@@ -473,12 +473,12 @@ end;
 
 procedure TSharpESwatchManager.Save(AFileName: string; ASelectedOnly: Boolean);
 var
-  xml: TJvSimpleXml;
+  xml: TJclSimpleXml;
   i: Integer;
   bAdd: Boolean;
 begin
 
-  xml := TJvSimpleXML.Create(nil);
+  xml := TJclSimpleXML.Create;
   try
     xml.Root.Name := cXmlHeader;
 
@@ -591,10 +591,10 @@ end;
 
 procedure TSharpESwatchManager.LoadOptions(AFileName: string);
 var
-  xml: TJvSimpleXML;
+  xml: TJclSimpleXML;
 begin
   if FileExists(AFileName) then begin
-    xml := TJvSimpleXML.Create(nil);
+    xml := TJclSimpleXML.Create;
     try
       xml.LoadFromFile(AFileName);
       if xml.Root.Name <> 'SharpESwatchCollectionOptions' then
