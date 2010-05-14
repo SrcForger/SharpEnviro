@@ -212,8 +212,6 @@ begin
 end;
 
 function GetPluginData(pluginID : String): TPluginData;
-var
-  files: TStringList;
 begin
   with Result do
   begin

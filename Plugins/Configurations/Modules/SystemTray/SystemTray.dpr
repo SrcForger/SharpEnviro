@@ -30,15 +30,7 @@ uses
   Windows,
   Forms,
   Math,
-  Dialogs,
-  JvSimpleXml,
-  GR32,
-  GR32_Image,
-  PngSpeedButton,
-  JvPageList,
   uVistaFuncs,
-  SharpESkinManager,
-  SharpESkinPart,
   SysUtils,
   Graphics,
   SharpAPI,
@@ -49,7 +41,8 @@ uses
   ISharpCenterPluginUnit,
   uSharpCenterPluginScheme,
   {$IFDEF DEBUG}DebugDialog in '..\..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
-  uSysTrayWnd in 'uSysTrayWnd.pas' {frmSysTray};
+  uSysTrayWnd in 'uSysTrayWnd.pas' {frmSysTray},
+  SharpCenterThemeAPI in '..\..\..\..\Common\Libraries\SharpCenterApi\SharpCenterThemeAPI.pas';
 
 {$E .dll}
 
