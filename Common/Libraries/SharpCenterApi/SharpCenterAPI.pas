@@ -30,23 +30,16 @@ unit SharpCenterAPI;
 interface
 
 uses
+  Windows,
   Messages,
   SharpApi,
   Classes,
   SysUtils,
   Graphics,
-  JvSimpleXml,
-  JclSimpleXml,
   SharpThemeApiEx,
+  JclSimpleXml,
   uThemeConsts,
-  uISharpETheme,
-  ExtCtrls,
-  StdCtrls,
-  ComCtrls,
-  Forms,
-  Windows,
-
-  SharpEListBoxEx;
+  uISharpETheme;
 
 Type
  TCenterThemeInfo = record
@@ -133,11 +126,6 @@ procedure AssignSystemDefaultTheme2( var ATheme: TCenterThemeInfo );
 procedure GetThemeValuesFromElems( var ATheme: TCenterThemeInfo ; AElems: TJclSimpleXMLElems ; AFileName: String  );
 procedure XmlSetCenterTheme(AThemeName: String);
 
-procedure AssignThemeToListBoxItemText( ATheme: TCenterThemeInfo; AItem: TSharpEListItem;
-  var colItemTxt:tcolor; var colDescTxt:tcolor; var colBtnTxt: TColor); overload;
-procedure AssignThemeToListBoxItemText( ATheme: TCenterThemeInfo; AItem: TSharpEListItem;
-  var colItemTxt:tcolor; var colDescTxt:tcolor; var colBtnTxt: TColor; var colBtnDisabledTxt: TColor); overload;
-
 implementation
 
 procedure FindFiles(var FilesList: TStringList; StartDir, FileMask: string);
@@ -184,11 +172,11 @@ end;
 
 function XmlGetCenterTheme: string;
 var
-  xml: TJvSimpleXML;
+  xml: TJclSimpleXML;
   s: string;
 begin
   Result := 'Default';
-  xml := TJvSimpleXML.Create(nil);
+  xml := TJclSimpleXML.Create;
   try
     s := GetSharpeUserSettingsPath + 'SharpCenter\Global.xml';
 
@@ -203,10 +191,10 @@ end;
 
 procedure XmlSetCenterTheme(AThemeName: String);
 var
-  xml: TJvSimpleXML;
+  xml: TJclSimpleXML;
   s: string;
 begin
-  xml := TJvSimpleXML.Create(nil);
+  xml := TJclSimpleXML.Create;
   try
     s := GetSharpeUserSettingsPath + 'SharpCenter\Global.xml';
     forcedirectories(ExtractFilePath(s));
@@ -304,7 +292,7 @@ end;
 procedure XmlGetCenterThemeList(var AThemeList: TCenterThemeInfoSet);
 var
   themeDir: string;
-  xml: TJvSimpleXml;
+  xml: TJclSimpleXml;
   i: Integer;
   itm: TCenterThemeInfo;
   tmpStringList: TStringList;
@@ -319,7 +307,7 @@ begin
 
     Setlength(AThemeList, 0);
     for i := 0 to Pred(tmpStringList.Count) do begin
-      xml := TJvSimpleXML.Create(nil);
+      xml := TJclSimpleXML.Create;
       try
         xml.LoadFromFile(tmpStringList[i]);
         GetThemeValuesFromElems(itm,xml.Root.Items,tmpStringList[i]);
@@ -495,36 +483,9 @@ begin
   ATheme.ContainerTextColor := cEditBackgroundText;
 end;
 
-procedure AssignThemeToListBoxItemText( ATheme: TCenterThemeInfo; AItem: TSharpEListItem;
-  var colItemTxt:tcolor; var colDescTxt:tcolor; var colBtnTxt: TColor );
-var
-  colBtnDisabledTxt: TColor;
-begin
-  AssignThemeToListBoxItemText( ATheme, AItem, colItemTxt, colDescTxt, colBtnTxt, colBtnDisabledTxt );
-end;
-
-procedure AssignThemeToListBoxItemText( ATheme: TCenterThemeInfo; AItem: TSharpEListItem;
-  var colItemTxt:tcolor; var colDescTxt:tcolor; var colBtnTxt: TColor; var colBtnDisabledTxt: TColor);
-begin
-  if AItem.Selected then
-  begin
-    colItemTxt := ATheme.PluginSelectedItemText;
-    colDescTxt := ATheme.PluginSelectedItemDescriptionText;
-    colBtnTxt := ATheme.PluginSelectedItemButtonText;
-    colBtnDisabledTxt := ATheme.PluginSelectedItemButtonDisabledText;
-  end
-  else
-  begin
-    colItemTxt := ATheme.PluginItemText;
-    colDescTxt := ATheme.PluginItemDescriptionText;
-    colBtnTxt := ATheme.PluginItemButtonText;
-    colBtnDisabledTxt := ATheme.PluginItemButtonDisabledText;
-  end;
-end;
-
 procedure XmlGetCenterTheme(AThemeName: string; var ATheme: TCenterThemeInfo); overload;
 var
-  xml: TJvSimpleXML;
+  xml: TJclSimpleXML;
 
   theme, themeDir, themeFile: string;
 begin
@@ -534,11 +495,11 @@ begin
 
   if ( (theme = '') or ( not(FileExists(themeFile))))  then begin
     //SharpApi.SendDebugMessageEx('SharpCenterApi', 'Some parameters were invalid for XmlGetCenterTheme', 0, DMT_ERROR);
-    AssignSystemDefaultTheme2( ATheme );
+    AssignSystemDefaultTheme2(ATheme);
     Exit;
   end;
 
-  xml := TJvSimpleXML.Create(nil);
+  xml := TJclSimpleXML.Create;
   try
     xml.LoadFromFile(themeFile);
     GetThemeValuesFromElems(ATheme,xml.Root.Items,themeFile);
