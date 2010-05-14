@@ -42,6 +42,7 @@ uses
   uISharpETheme,
   uSharpETheme,
   SharpCenterApi,
+  uSharpDeskTDeskSettings,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uSharpCenterPluginScheme,
@@ -57,6 +58,7 @@ type
       ISharpCenterPluginTabs)
   private
     FTheme : ISharpETheme;
+    FXmlDeskSettings : TDeskSettings;
     procedure Load;
   public
     constructor Create(APluginHost: ISharpCenterHost);
@@ -74,6 +76,9 @@ type
 
 procedure TSharpCenterPlugin.AddPluginTabs(ATabItems: TStringList);
 begin
+  if FXmlDeskSettings.UseExplorerDesk then
+    exit;
+    
   if frmSettingsWnd <> nil then
   begin
     ATabItems.AddObject('Icon', frmSettingsWnd.pagIcon);
@@ -98,12 +103,14 @@ constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
 
+  FXmlDeskSettings := TDeskSettings.Create(nil);
   FTheme := TSharpETheme.Create(APluginHost.PluginID);
   FTheme.LoadTheme([tpDesktop,tpSkinScheme]);
 end;
 
 destructor TSharpCenterPlugin.Destroy;
 begin
+  FXmlDeskSettings.Free;
   FTheme := nil;
 
   inherited Destroy;
@@ -118,6 +125,8 @@ begin
 
   with frmSettingsWnd, FTheme.Desktop.Icon do
   begin
+    frmSettingsWnd.FExplorerDesktop := FXmlDeskSettings.UseExplorerDesk;
+
     // Icon Tab
     rdoIcon32.Checked := false;
     rdoIcon48.Checked := false;

@@ -25,6 +25,29 @@ object frmSettingsWnd: TfrmSettingsWnd
     ActivePage = pagFont
     PropagateEnable = False
     Align = alClient
+    object pagExplorerDesktop: TJvStandardPage
+      Left = 0
+      Top = 0
+      Width = 595
+      Height = 591
+      Caption = 'pagExplorerDesktop'
+      object SharpECenterHeader123: TSharpECenterHeader
+        AlignWithMargins = True
+        Left = 5
+        Top = 0
+        Width = 585
+        Height = 37
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 0
+        Title = 'SharpDesk not running'
+        Description = 'You are using the explorer desktop. Settings for SharpDesk are not available in this case.'
+        TitleColor = clWindowText
+        DescriptionColor = clRed
+        Align = alTop
+      end
+    end
     object pagIcon: TJvStandardPage
       Left = 0
       Top = 0

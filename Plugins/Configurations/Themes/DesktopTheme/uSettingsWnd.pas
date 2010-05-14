@@ -70,6 +70,7 @@ type
 type
   TfrmSettingsWnd = class(TForm)
     plMain: TJvPageList;
+    pagExplorerDesktop: TJvStandardPage;
     pagIcon: TJvStandardPage;
     pagFont: TJvStandardPage;
     pagAnimation: TJvStandardPage;
@@ -190,6 +191,7 @@ type
     procedure LoadResources;
   public
     FFontName: string;
+    FExplorerDesktop: boolean;
     procedure UpdatePageUi;
 
     property PluginHost: ISharpCenterHost read FPluginHost write
@@ -446,6 +448,13 @@ end;
 
 procedure TfrmSettingsWnd.UpdatePageUi;
 begin
+  if FExplorerDesktop then
+  begin
+    pagExplorerDesktop.Show;
+    Self.Height := 300;
+    exit;
+  end;
+
   if pagIcon.Visible then
     UpdateIconPage
   else if pagFont.Visible then
@@ -454,7 +463,6 @@ begin
     UpdateFontShadowPage
   else if pagAnimation.Visible then
     UpdateAnimationPage;
-
 end;
 
 procedure TfrmSettingsWnd.RefreshFontList;
