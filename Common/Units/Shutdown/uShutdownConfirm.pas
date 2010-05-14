@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, pngimage, ExtCtrls, uVistaFuncs,
-  SharpThemeApiEx, uThemeConsts,
+  SharpThemeApiEx, uThemeConsts, uSystemFuncs,
   GR32, GR32_Png, SharpIconUtils, GR32_Image;
 
 type
@@ -105,6 +105,7 @@ end;
 procedure TShutdownConfirmForm.FormShow(Sender: TObject);
 begin
   ShowWindow(Application.Handle, SW_HIDE);
+  ForceForegroundWindow(Handle);
 
   TimeoutTimer.Tag := 20;
   TimeoutTimer.Enabled :=  FDoTimeout;
