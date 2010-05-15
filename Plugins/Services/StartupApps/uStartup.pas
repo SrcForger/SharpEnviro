@@ -28,12 +28,10 @@ unit uStartup;
 interface
 
 uses
-
+  windows,
   classes,
-  activex,
   messages,
   controls,
-  comobj,
   shlobj,
   registry,
   dialogs,
@@ -49,9 +47,7 @@ uses
   jclshell,
   jclfileutils,
   sharpapi,
-  uSystemFuncs,
-
-  windows;
+  uSystemFuncs;
 
 type
   TStartupItem = class
@@ -486,31 +482,29 @@ end;
 
 procedure TStartup.RunDir(dir: string);
 var
-  a: integer;
-  Data: TWin32FindData;
+  sr: TSearchRec;
   lpShortcut: TShellLink;
 begin
-  a := FindFirstFile(PChar(dir + '\*.*'), Data);
+  if not DirectoryExists(dir) then
+    exit;
+
+  {$WARNINGS OFF} dir := IncludeTrailingBackSlash(dir); {$WARNINGS ON}
+  if FindFirst(dir + '*.*',FAAnyFile,sr) = 0 then
   repeat
-    if not (((Data.cFileName[0] = '.') and (Data.cFileName[1] = '')) or
-            ((Data.cFileName[0] = '.') and (Data.cFileName[1] = '.') and
-            (Data.cFileName[2] = ''))) or
-            ((Data.cFileName[0] = 'd')) then
+    if (CompareText(sr.Name,'..') <> 0)
+      and (CompareText(sr.Name,'.') <> 0)
+      and (CompareText(sr.Name,'desktop.ini') <> 0) then
     begin
-      if (PChar(string(lowercase(Data.cFileName)))) = 'desktop.ini' then
-        outputdebugstring('not loading')
-      else
-      begin
-        JclShell.ShellLinkResolve(dir + '\' + Data.cFileName,lpShortcut);
+      if assigned(FOnAddDirEvent) then
+        FOnAddDirEvent(dir + sr.Name);
 
-        if assigned(FOnAddDirEvent) then
-          FOnAddDirEvent(dir + '\' + Data.cFileName);
+      JclShell.ShellLinkResolve(dir + sr.Name,lpShortcut);
 
-        if (not FindTask(lpShortcut.Target)) and (not Debug) then
-          ServiceMsg('exec',pchar('_nohist,' + dir + '\' + Data.cFileName));
-      end;
+      if (not FindTask(lpShortcut.Target)) and (not Debug) then
+        ServiceMsg('exec',pchar('_nohist,' + dir + '\' + sr.Name));
     end;
-  until not FindNextFile(a, Data);
+  until FindNext(sr) <> 0;
+  FindClose(sr);
 end;
 
 function TStartup.RunEntriesIn(reg: TRegistryStartupItem; process64: boolean): integer;
