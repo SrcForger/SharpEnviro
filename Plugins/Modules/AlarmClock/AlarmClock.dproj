@@ -47,9 +47,6 @@ if $(Configuration)==Debug del $(OUTPUTDIR)$(OUTPUTNAME).map</PostBuildEvent>
     <DelphiCompile Include="AlarmClock.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
-    <RcCompile Include="res\alarmglyphs.rc">
-      <Form>res\alarmglyphs.res</Form>
-    </RcCompile>
     <DCCReference Include="..\..\..\Common\Units\DebugDialog\DebugDialog.pas" />
     <DCCReference Include="cbaudioplay\cbAudioPlay.pas" />
     <DCCReference Include="cbaudioplay\DirectShow.pas" />
