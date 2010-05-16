@@ -40,12 +40,13 @@ uses
   MMSystem,
   Math,
   SharpTypes,
-  {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
+  DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',
   SharpNotify in '..\..\..\Common\Units\SharpNotify\SharpNotify.pas',
   SoundControls in '..\..\Modules\VolumeControl\SoundControls.pas',
   MediaPlayerList in '..\..\Modules\MediaController\MediaPlayerList.pas',
   uVistaFuncs in '..\..\..\Common\Units\VistaFuncs\uVistaFuncs.pas',
-  MMDevApi_tlb in '..\..\Modules\VolumeControl\MMDevApi_tlb.pas';
+  MMDevApi_tlb in '..\..\Modules\VolumeControl\MMDevApi_tlb.pas',
+  uAppCommandList in 'uAppCommandList.pas';
 
 type
   TActionEvent = Class(Tobject)
@@ -65,6 +66,7 @@ var
   sOSDVertPos : TVerticalPos;
   sOSDHorizPos : THorizontalPos;
   MPlayers : TMediaPlayerList;
+  AppCmdList : TAppCommandList;
 
 {$R *.RES}
 
@@ -243,6 +245,7 @@ function StartEx(owner: hwnd; pSkinInterface : ISharpESkinInterface): hwnd;
 begin
   SkinInterface := pSkinInterface;
 
+  AppCmdList := TAppCommandList.Create;
   SkinManager := SkinInterface.SkinManager;
 
   Result := owner;
@@ -271,6 +274,7 @@ begin
   UnRegisterAction('!VolumeMute');
 
   MPlayers.Free;
+  AppCmdList.Free;
 end;
 
 { TActionEvent }
@@ -362,6 +366,7 @@ end;
 procedure TActionEvent.MessageHandler(var msg: TMessage);
 var
   cmd : integer;
+  item : TAppCommandItem;
 begin
   if msg.MSg = WM_SHELLHOOKWINDOWCREATED then
     RegisterShellHookReceiver(h)
@@ -371,20 +376,23 @@ begin
     begin
       msg.result := 1;
       cmd := GET_APPCOMMAND_LPARAM(msg.lParam);
-      case cmd of
-        APPCOMMAND_BROWSER_HOME: ExecDefaultApp('HTTP');
-        APPCOMMAND_LAUNCH_MAIL: ExecDefaultApp('mailto');
-        APPCOMMAND_VOLUME_UP: VolumeUp(MIXERLINE_COMPONENTTYPE_DST_SPEAKERS);
-        APPCOMMAND_VOLUME_DOWN: VolumeDown(MIXERLINE_COMPONENTTYPE_DST_SPEAKERS);
-        APPCOMMAND_VOLUME_MUTE: VolumeMute(MIXERLINE_COMPONENTTYPE_DST_SPEAKERS);
-        APPCOMMAND_MICROPHONE_VOLUME_UP: VolumeUp(MIXERLINE_COMPONENTTYPE_SRC_FIRST);
-        APPCOMMAND_MICROPHONE_VOLUME_DOWN: VolumeDown(MIXERLINE_COMPONENTTYPE_SRC_FIRST);
-        APPCOMMAND_MICROPHONE_VOLUME_MUTE,APPCOMMAND_MIC_ON_OFF_TOGGLE: VolumeMute(MIXERLINE_COMPONENTTYPE_SRC_FIRST);
-        APPCOMMAND_MEDIA_NEXTTRACK,APPCOMMAND_MEDIA_PREVIOUSTRACK,
-        APPCOMMAND_MEDIA_STOP,APPCOMMAND_MEDIA_PLAY_PAUSE,
-        APPCOMMAND_MEDIA_PLAY,APPCOMMAND_MEDIA_PAUSE: BroadCastMediaAppCommand(cmd);
-        else msg.result := 0;
-      end;
+      item := AppCmdList.FindItem(cmd);
+      if item <> nil then
+      begin
+        case item.Action of
+          acaSharpExecute: SharpExecute(item.ActionStr);
+          acaExecuteBrowser: ExecDefaultApp('HTTP');
+          acaExecuteMail: ExecDefaultApp('mailto');
+          acaVolumeSpeakerUp: VolumeUp(MIXERLINE_COMPONENTTYPE_DST_SPEAKERS);
+          acaVolumeSpeakerDown: VolumeDown(MIXERLINE_COMPONENTTYPE_DST_SPEAKERS);
+          acaVolumeSpeakerMute: VolumeMute(MIXERLINE_COMPONENTTYPE_DST_SPEAKERS);
+          acaVolumeMicUp: VolumeUp(MIXERLINE_COMPONENTTYPE_SRC_FIRST);
+          acaVolumeMicDown: VolumeDown(MIXERLINE_COMPONENTTYPE_SRC_FIRST);
+          acaVolumeMicMute: VolumeMute(MIXERLINE_COMPONENTTYPE_SRC_FIRST);
+          acaBroadcastMediaCommand: BroadCastMediaAppCommand(item.MessageID);
+          else msg.result := 0;
+        end;
+      end else msg.result := 0;
     end;
   end
   else if msg.Msg = WM_SHARPEUPDATEACTIONS then
@@ -400,7 +408,11 @@ begin
   else if msg.Msg = WM_SHARPEUPDATESETTINGS then
   begin
     if msg.WParam = Integer(suMMInput) then
+    begin
       LoadSettings;
+      AppCmdList.InitList;
+      AppCmdList.LoadSettings;
+    end;
   end else msg.Result := DefWindowProc(h,msg.Msg,Msg.WParam,msg.LParam);
 end;
 
