@@ -72,17 +72,11 @@ var
 
 procedure ShowOSD(pCaption : String);
 var
-
   x,y : integer;
-
   mon : HMonitor;
-
   moninfo : TMonitorInfo;
-
   p : TPoint;
-
   edge: TSharpNotifyEdge;
-
 begin
 
   if not sShowOSD then
@@ -363,6 +357,16 @@ begin
   end;
 end;
 
+function IsWMCRunning : boolean;
+var
+  wnd : THandle;
+begin
+  wnd := FindWindow('eHome Host Window','Windows Media Center');
+  if wnd <> 0 then
+    wnd := FindWindow('eHome Render Window','Windows Media Center');
+  result := ((GetForegroundWindow = wnd) and (wnd <> 0));
+end;
+
 procedure TActionEvent.MessageHandler(var msg: TMessage);
 var
   cmd : integer;
@@ -379,20 +383,28 @@ begin
       item := AppCmdList.FindItem(cmd);
       if item <> nil then
       begin
-        case item.Action of
-          acaSharpExecute: SharpExecute(item.ActionStr);
-          acaExecuteBrowser: ExecDefaultApp('HTTP');
-          acaExecuteMail: ExecDefaultApp('mailto');
-          acaVolumeSpeakerUp: VolumeUp(MIXERLINE_COMPONENTTYPE_DST_SPEAKERS);
-          acaVolumeSpeakerDown: VolumeDown(MIXERLINE_COMPONENTTYPE_DST_SPEAKERS);
-          acaVolumeSpeakerMute: VolumeMute(MIXERLINE_COMPONENTTYPE_DST_SPEAKERS);
-          acaVolumeMicUp: VolumeUp(MIXERLINE_COMPONENTTYPE_SRC_FIRST);
-          acaVolumeMicDown: VolumeDown(MIXERLINE_COMPONENTTYPE_SRC_FIRST);
-          acaVolumeMicMute: VolumeMute(MIXERLINE_COMPONENTTYPE_SRC_FIRST);
-          acaBroadcastMediaCommand: BroadCastMediaAppCommand(item.MessageID);
-          else msg.result := 0;
-        end;
-      end else msg.result := 0;
+        SharpApi.SendDebugMessageEx('MultimediaInput',PChar('HSHELL_APPCOMMAND: cmd=' + inttostr(cmd) + ', item=' + TAppCommandList.ActionToString(item.Action) + '(' + item.ActionStr + ')'),0,DMT_INFO);      
+        if not ((item.DisableWMC) and (IsWMCRunning)) then
+        begin
+          case item.Action of
+            acaSharpExecute: SharpExecute(item.ActionStr);
+            acaExecuteBrowser: ExecDefaultApp('HTTP');
+            acaExecuteMail: ExecDefaultApp('mailto');
+            acaVolumeSpeakerUp: VolumeUp(MIXERLINE_COMPONENTTYPE_DST_SPEAKERS);
+            acaVolumeSpeakerDown: VolumeDown(MIXERLINE_COMPONENTTYPE_DST_SPEAKERS);
+            acaVolumeSpeakerMute: VolumeMute(MIXERLINE_COMPONENTTYPE_DST_SPEAKERS);
+            acaVolumeMicUp: VolumeUp(MIXERLINE_COMPONENTTYPE_SRC_FIRST);
+            acaVolumeMicDown: VolumeDown(MIXERLINE_COMPONENTTYPE_SRC_FIRST);
+            acaVolumeMicMute: VolumeMute(MIXERLINE_COMPONENTTYPE_SRC_FIRST);
+            acaBroadcastMediaCommand: BroadCastMediaAppCommand(item.MessageID);
+            else msg.result := 0;
+          end;
+        end else msg.result := 0;
+      end else
+      begin
+        msg.result := 0;
+        SharpApi.SendDebugMessageEx('MultimediaInput','HSHELL_APPCOMMAND: cmd=' + inttostr(cmd) + ', item=Uknown Type' ,0,DMT_INFO)        
+      end;
     end;
   end
   else if msg.Msg = WM_SHARPEUPDATEACTIONS then

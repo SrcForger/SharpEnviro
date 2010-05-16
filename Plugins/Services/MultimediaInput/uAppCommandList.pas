@@ -200,9 +200,9 @@ begin
   AddItem('TREBLE_DOWN',APPCOMMAND_TREBLE_DOWN);
   AddItem('TREBLE_UP',APPCOMMAND_TREBLE_UP);
   AddItem('UNDO',APPCOMMAND_UNDO);
-  AddItem('VOLUME_DOWN',APPCOMMAND_VOLUME_DOWN,acaVolumeSpeakerDown,'',True);
-  AddItem('VOLUME_MUTE',APPCOMMAND_VOLUME_MUTE,acaVolumeSpeakerMute,'',True);
-  AddItem('VOLUME_UP',APPCOMMAND_VOLUME_UP,acaVolumeSpeakerUp,'',True);
+  AddItem('VOLUME_DOWN',APPCOMMAND_VOLUME_DOWN,acaVolumeSpeakerDown,'',False);
+  AddItem('VOLUME_MUTE',APPCOMMAND_VOLUME_MUTE,acaVolumeSpeakerMute,'',False);
+  AddItem('VOLUME_UP',APPCOMMAND_VOLUME_UP,acaVolumeSpeakerUp,'',False);
 end;
 
 procedure TAppCommandList.LoadSettings;
