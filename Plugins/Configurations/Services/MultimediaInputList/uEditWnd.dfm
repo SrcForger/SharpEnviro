@@ -3,7 +3,7 @@ object frmEditWnd: TfrmEditWnd
   Top = 363
   BorderStyle = bsNone
   Caption = 'Hotkey Configuration'
-  ClientHeight = 110
+  ClientHeight = 130
   ClientWidth = 487
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
