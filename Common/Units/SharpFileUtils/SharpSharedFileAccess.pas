@@ -48,8 +48,8 @@ type
   end;
 
 const
-  SHARED_ACCESS_WAIT_TIME = 25000; // (ms)
-  SHARED_ACCESS_CHECK_INTERVAL = 100; // (ms)
+  SHARED_ACCESS_WAIT_TIME = 2500; // (ms)
+  SHARED_ACCESS_CHECK_INTERVAL = 50; // (ms)
 
 function OpenFileStreamShared(var Stream : TSharedFileStream; Access : TSharedFileAccess; FileName : String; WaitForAccess : boolean) : TSharedFileError;
 function OpenMemoryStreamShared(var Stream : TMemoryStream; FileName : String; WaitForAccess : boolean) : TSharedFileError;
@@ -97,6 +97,7 @@ function OpenFileStreamShared(var Stream : TSharedFileStream; Access : TSharedFi
 var
   mode : Word;
   StartTime : Cardinal;
+  CTime : Cardinal;
   resetSize : boolean;
 begin
   // Initial check of valid input data
@@ -119,13 +120,14 @@ begin
     // Create SharedFileStream until access is gained or until timeout is reached
     repeat
       Stream := TSharedFileStream.Create(FileName,mode);
+      CTime := GetTickCount;
       if not Stream.Loaded then
       begin
         Sleep(SHARED_ACCESS_CHECK_INTERVAL);
         Stream.Free;
         Stream := nil;
       end;
-    until (Stream <> nil) or (GetTickCount - StartTime >= SHARED_ACCESS_WAIT_TIME);
+    until (Stream <> nil) or (CTime - StartTime >= SHARED_ACCESS_WAIT_TIME);
   end;
 
   if (Stream = nil) then
