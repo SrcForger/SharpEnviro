@@ -29,7 +29,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms, Graphics,
-  Dialogs, StdCtrls, SharpEButton, SharpApi, Menus, Math,
+  Dialogs, StdCtrls, SharpEButton, SharpApi, Menus, Math, 
   ShellApi, MediaPlayerList, GR32, GR32_PNG, Types, SharpEBaseControls, ExtCtrls,
   Registry, uSharpEMenuWnd, uSharpEMenu, uSharpEMenuSettings, uSharpEMenuItem,
   uISharpBarModule, SharpIconUtils;
@@ -65,6 +65,7 @@ type
   public
     sPlayer : String;
     sPSelect : Boolean;
+    sPlayerList : TStringList;
     mInterface : ISharpBarModule;
     procedure ReAlignComponents;
     procedure UpdateComponentSkins;
@@ -150,9 +151,13 @@ begin
   SharpApi.RegisterActionEx('!MC-Stop','Modules',Handle,3);
   SharpApi.RegisterActionEx('!MC-Prev','Modules',Handle,4);
   SharpApi.RegisterActionEx('!MC-Next','Modules',Handle,5);
+  SharpApi.RegisterActionEx('!MC-NextPlayer','Modules',Handle,6);
+  SharpApi.RegisterActionEx('!MC-PrevPlayer','Modules',Handle,7);
 end;
 
 procedure TMainForm.WMExecAction(var msg : TMessage);
+var
+  index,n : integer;
 begin
   case msg.LParam of
     1: btn_play.OnClick(btn_play);
@@ -160,6 +165,28 @@ begin
     3: btn_stop.OnClick(btn_stop);
     4: btn_prev.OnClick(btn_prev);
     5: btn_next.OnClick(btn_next);
+    6,7:
+      begin
+        index := -1;
+        for n := 0 to sPlayerList.Count - 1 do
+          if CompareText(sPlayerList[n],sPlayer) = 0 then
+          begin
+            index := n;
+            break;
+          end;
+
+        if msg.LParam = 6 then
+          index := index + 1
+        else index := index - 1;
+        if index >= sPlayerList.Count then
+          index := 0
+        else if index < 0 then
+          index := sPlayerList.Count - 1;
+
+        sPlayer := sPlayerList[index];
+        UpdateSelectIcon;
+        SaveSettings;
+      end;
   end;
 end;
 
@@ -173,13 +200,20 @@ var
 begin
   XML := TJclSimpleXML.Create;
   XML.Root.Name := 'MediaControllerModuleSettings';
-  with XML.Root.Items do
+  if LoadXMLFromSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
   begin
-    Add('Player',sPlayer);
-    AdD('PSelect',sPSelect);
+    with XML.Root.Items do
+    begin
+      if ItemNamed['Player'] <> nil then
+        ItemNamed['Player'].Value := sPlayer
+      else Add('Player',sPlayer);
+      if ItemNamed['PSelect'] <> nil then
+        ItemNamed['PSelect'].BoolValue := sPSelect
+      else Add('PSelect',sPSelect);
+    end;
+    if not SaveXMLToSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
+      SharpApi.SendDebugMessageEx('MediaController',PChar('Failed to Save Settings to File: '+ mInterface.BarInterface.GetModuleXMLFile(mInterface.ID)),clred,DMT_ERROR);
   end;
-  if not SaveXMLToSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
-    SharpApi.SendDebugMessageEx('MediaController',PChar('Failed to Save Settings to File: '+ mInterface.BarInterface.GetModuleXMLFile(mInterface.ID)),clred,DMT_ERROR);
   XML.Free;
 
   XML := TJclSimpleXML.Create;
@@ -246,10 +280,14 @@ procedure TMainForm.LoadSettings;
 var
   XML : TJclSimpleXML;
   mitem : TMediaPlayerItem;
-  n : integer;
+  n,i : integer;
 begin
   sPlayer := 'Windows Media Player';
   sPSelect := True;
+
+  sPlayerList.Clear;
+  for n := 0 to FMPlayers.Items.Count - 1 do
+    sPlayerList.Add(TMediaPlayerItem(FMPlayers.Items.Items[n]).Name);
 
   XML := TJclSimpleXML.Create;
   if LoadXMLFromSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
@@ -257,8 +295,24 @@ begin
     begin
       sPlayer := Value('Player',sPlayer);
       sPSelect := BoolValue('PSelect',sPSelect);
+      if ItemNamed['Players'] <> nil then
+        with ItemNamed['Players'].Items do
+          for n := 0 to Count - 1 do
+          begin
+            for i := 0 to sPlayerList.Count - 1 do
+              if CompareText(sPlayerList[i],Item[n].Properties.Value('Name','')) = 0 then
+                if not Item[n].Properties.BoolValue('Show',True) then
+                begin
+                  sPlayerList.Delete(i);
+                  break;
+                end;
+          end;
     end;
   XML.Free;
+
+  if sPlayerList.Count = 0 then // fail safe
+    for n := 0 to FMPlayers.Items.Count - 1 do
+      sPlayerList.Add(TMediaPlayerItem(FMPlayers.Items.Items[n]).Name);
 
   // temporary override... remove when settings window is done!
   sPSelect := True;
@@ -449,7 +503,7 @@ var
   mn : TSharpEMenu;
   ms : TSharpEMenuSettings;
   wnd : TSharpEMenuWnd;
-  n : integer;
+  n,i : integer;
   R : TRect;
   mitem : TMediaPlayerItem;
 begin
@@ -470,7 +524,12 @@ begin
     for n := 0 to FMPlayers.Items.Count - 1 do
     begin
       mitem := TMediaPlayerItem(FMPlayers.Items[n]);
-      TSharpEMenuItem(mn.AddCustomItem(mitem.Name,mitem.Name,mitem.Icon)).OnClick := mnOnClick;
+      for i := 0 to sPlayerList.Count - 1 do
+        if CompareText(sPlayerList[i],mItem.Name) = 0 then
+        begin
+          TSharpEMenuItem(mn.AddCustomItem(mitem.Name,mitem.Name,mitem.Icon)).OnClick := mnOnClick;
+          break;
+        end;
     end;
 
     //mn.AddSeparatorItem(False);
@@ -500,20 +559,26 @@ end;
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   FMPlayers := TMediaPlayerList.Create;
+  sPlayerList := TStringList.Create;
 
   WM_SHELLHOOK := RegisterWindowMessage('SHELLHOOK');
   DoubleBuffered := True;
+
+  UpdateSharpEActions;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   FMPlayers.Free;
+  sPlayerList.Free;
 
   SharpApi.UnRegisterAction('!MC-Play');
   SharpApi.UnRegisterAction('!MC-Pause');
   SharpApi.UnRegisterAction('!MC-Stop');
   SharpApi.UnRegisterAction('!MC-Prev');
   SharpApi.UnRegisterAction('!MC-Next');
+  SharpApi.UnRegisterAction('!MC-NextPlayer');
+  SharpApi.UnRegisterAction('!MC-PrevPlayer');
 
   if SharpEMenuPopups <> nil then
     FreeAndNil(SharpEMenuPopups);
