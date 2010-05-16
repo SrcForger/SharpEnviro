@@ -47,7 +47,9 @@ uses
   GR32_Image,
   GR32_PNG,
   GR32_Blend,
-  uSharpEMenu, Menus, AppEvnts;
+  uSharpEMenu,
+  Menus,
+  AppEvnts;
 
 type
   TSharpEMenuWnd = class(TForm)
@@ -95,7 +97,7 @@ type
     FFreeMenuSub : boolean;
     FFreeMenu : boolean; // Set to True if the menu is a single menu without popups
                          // and if you want it to free itself OnDeactivate
-
+    FIsVisible : boolean;
     FMenuID : string;
     FMouseLeave : boolean;
 
@@ -201,6 +203,7 @@ constructor TSharpEMenuWnd.Create(AOwner: TComponent);
 begin
   Create(AOwner,nil);
   FParentMenu := nil;
+  FIsVisible := False;  
 end;
 
 
@@ -214,6 +217,7 @@ begin
   FIgnoreNextDeactivate := False;
   FIgnoreNextKillFocus := False;
   FFreeMenuSub := False;
+  FIsVisible := False;  
 
   InitMenu(pMenu,False);
 end;
@@ -313,10 +317,11 @@ begin
     if not Win32Check(LongBool(DC)) then
       RaiseLastWin32Error;
 
-     if not Win32Check(UpdateLayeredWindow(Handle, DC, @TopLeft, @BmpSize,
+    if not Win32Check(UpdateLayeredWindow(Handle, DC, @TopLeft, @BmpSize,
       Bmp.Handle, @BmpTopLeft, clNone, @Blend, ULW_ALPHA)) then
       RaiseLastWin32Error;
     {$WARNINGS ON}
+    FIsVisible := True;
   finally
     ReleaseDC(Handle, DC);
     Bmp.Free;
@@ -370,6 +375,12 @@ end;
 
 procedure TSharpEMenuWnd.FormActivate(Sender: TObject);
 begin
+  if FIsVisible then
+  begin
+    IgnoreNextKillFocus := False;
+    exit;
+  end;
+    
   ShowWindow(Application.Handle, SW_HIDE);
   DrawWindow;
 end;
@@ -693,6 +704,9 @@ begin
   OffsetTimer.Enabled := False;
   SubMenuTimer.Enabled := False;
 
+  if (not FIsVisible) then
+    exit;  
+
   if FIgnoreNextDeactivate then
   begin
     FIgnoreNextDeactivate := False;
@@ -725,24 +739,30 @@ begin
 end;
 
 procedure TSharpEMenuWnd.WMActivate(var Msg: TMessage);
-var
-  s : String;
 begin
   Msg.Result := 0;
   if (not FFreeMenu) and (not FFreeMenuSub) then
     exit;
+  if (not FIsVisible) then
+  begin
+    FIgnoreNextKillFocus := True;
+    ShowWindow(Application.Handle, SW_HIDE);    
+    DrawWindow;
+    exit;
+  end;
 
   if msg.WParam = WA_INACTIVE then
   begin
-    s := '';
+{    s := '';
     if IsWindow(msg.LParam) then
       s := GetWndClass(msg.LParam);
   //  if (CompareText(s,'TSharpEMenuWnd') = 0) then// or (CompareText(s,'TSharpBarMainForm') = 0) then
     //  exit;
     if not (CompareText(s,'TSharpBarMainForm') = 0) then
+      exit; }
+    if not FFreeMenu then
       exit;
-
-    exit;
+      
     FFreeMenu := False;
     Tag := -1;
     if FMenu <> nil then
@@ -755,6 +775,9 @@ procedure TSharpEMenuWnd.WMKillFocus(var Msg: TMessage);
 var
   wclass : String;
 begin
+  if (not FIsVisible) then
+    exit;
+
   if FIgnoreNextKillFocus then
   begin
     FIgnoreNextKillFocus := False;
@@ -913,7 +936,10 @@ begin
   if msg.message = WM_SHARPSHELLMESSAGE then
   begin
     Handled := True;
-    if (msg.lParam = Integer(Handle)) or (msg.lparam = Integer(Application.Handle)) then exit;
+    if (msg.lParam = Integer(Handle)) or (msg.lparam = Integer(Application.Handle)) then
+      exit;
+    if (not FIsVisible) then
+      exit;
 
     GetClassName(GetForegroundWindow(), buf, SizeOf(buf));
     cname := buf;
