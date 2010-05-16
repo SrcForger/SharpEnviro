@@ -28,7 +28,7 @@ unit MediaPlayerList;
 interface
 
 uses
-  Windows,SysUtils,GR32,Contnrs,Dialogs,JclSimpleXML;
+  Windows,SysUtils,GR32,Contnrs,Dialogs,JclSimpleXML,Graphics;
 
 type
   TSendMessageType = (smtAppCommand, smtCommand, smtKey);
@@ -70,11 +70,12 @@ type
     FItems : TObjectList;
   public
     procedure Load;
+    function GetItemIndex(pName : String) : integer;
     function GetItem(pName : String) : TMediaPlayerItem; overload;
     function GetItem(pWndClass,pWndCaption : String) : TMediaPlayerItem; overload;    
     function GetPlayerHandle(pName : String) : hwnd;
 
-    constructor Create;
+    constructor Create; reintroduce;
     destructor Destroy; override;
 
     property Items : TObjectList read FItems;
@@ -83,7 +84,9 @@ type
 implementation
 
 uses
-  SharpApi,GR32_PNG,Graphics;
+  SharpApi,
+  GR32_PNG,
+  uSharpXMLUtils;
 
 { FMediaPlayerList }
 
@@ -138,6 +141,23 @@ begin
   end;
 end;
 
+function TMediaPlayerList.GetItemIndex(pName: String): integer;
+var
+  n : integer;
+  item : TMediaPlayerItem;
+begin
+  result := -1;
+  for n := 0 to FItems.Count - 1 do
+  begin
+    item := TMediaPlayerItem(FItems[n]);
+    if CompareText(item.Name,pName) = 0 then
+    begin
+      result := n;
+      exit;
+    end;
+  end;
+end;
+
 function TMediaPlayerList.GetPlayerHandle(pName: String): hwnd;
 var
   item : TMediaPlayerItem;
@@ -171,38 +191,23 @@ procedure TMediaPlayerList.Load;
 var
   XML : TJclSimpleXML;
   src : String;
-  fileloaded : boolean;
   n : integer;
   newitem : TMediaPlayerItem;
 begin
   FItems.Clear;
 
   src := SharpApi.GetSharpeGlobalSettingsPath + 'SharpCore\Services\MultimediaInput\MediaPlayers.xml';
-  if FileExists(src) then
+  XML := TJclSimpleXML.Create;
+  if LoadXMLFromSharedFile(XML,src) then
   begin
-    XML := TJclSimpleXML.Create;
-    fileloaded := False;
-    try
-      XML.LoadFromFile(src);
-      fileloaded := True;
-    except
-      on E: Exception do
-      begin
-        SharpApi.SendDebugMessageEx('TMediaPlayerList',PChar('Failed to Load Settings File ' + src),clred,DMT_ERROR);
-        SharpApi.SendDebugMessageEx('SharpBar',PChar(E.Message),clblue, DMT_TRACE);
-      end;
-    end;
-    if fileloaded then
+    for n := 0 to XML.Root.Items.Count - 1 do
+    with XML.Root.Items.Item[n].Items do
     begin
-      for n := 0 to XML.Root.Items.Count - 1 do
-      with XML.Root.Items.Item[n].Items do
-      begin
-        newitem := TMediaPlayerItem.Create(XML.Root.Items.Item[n].Items);
-        FItems.Add(newitem);
-      end;
+      newitem := TMediaPlayerItem.Create(XML.Root.Items.Item[n].Items);
+      FItems.Add(newitem);
     end;
-    XML.Free;
-  end;
+  end else SharpApi.SendDebugMessageEx('TMediaPlayerList',PChar('Failed to Load Settings File ' + src),clred,DMT_ERROR);
+  XML.Free;
 end;
 
 { TMediaPlayer }
@@ -244,9 +249,9 @@ end;
 
 destructor TMediaPlayerItem.Destroy;
 begin
-  Icon := TBitmap32.Create;
+  Icon.Free;
 
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TMediaPlayerItem.LoadIcon(pIconFile : String);
