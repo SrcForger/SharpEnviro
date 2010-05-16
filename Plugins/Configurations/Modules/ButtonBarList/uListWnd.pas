@@ -391,17 +391,16 @@ begin
   for i := 0 to Pred(lbItems.Count) do begin
 
       tmpItemData := TButtonBarItem(lbItems[i].Data);
-      if tmpItemData <> nil then begin
+      if tmpItemData <> nil then
+      begin
         // Add the icon
-        bmp := TBitmap.Create;
-        try
-          bmp := GetImage(tmpItemData.Command,tmpItemData.Icon,false);
-          lbItems[i].ImageIndex := pilUnselected.Add(bmp,bmpMask);
-          bmp := GetImage(tmpItemData.Command,tmpItemData.Icon,true);
-          lbItems[i].SubItemSelectedImageIndex[0] := pilSelected.Add(bmp,bmpMask);
-        finally
-          bmp.Free;
-        end;
+        bmp := GetImage(tmpItemData.Command,tmpItemData.Icon,false);
+        lbItems[i].ImageIndex := pilUnselected.Add(bmp,bmpMask);
+        bmp.Free;
+
+        bmp := GetImage(tmpItemData.Command,tmpItemData.Icon,true);
+        lbItems[i].SubItemSelectedImageIndex[0] := pilSelected.Add(bmp,bmpMask);
+        bmp.Free;
       end;
     end;
 
