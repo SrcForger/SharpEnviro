@@ -300,7 +300,7 @@ end;
 
 procedure TfrmEdit.UpdateSize;
 begin
-  Self.Height := lbItems.Height + 50
+  Self.Height := lbItems.Height + lbItems.Top;
 end;
 
 end.
