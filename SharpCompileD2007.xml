@@ -75,6 +75,7 @@
     <project Name="Clock" Type="DLL">Plugins\Configurations\Modules\Clock\Clock.dproj</project>
     <project Name="CPU Monitor" Type="DLL">Plugins\Configurations\Modules\CPUMonitor\CPUMonitor.dproj</project>
     <project Name="Keyboard Layout" Type="DLL">Plugins\Configurations\Modules\KeyboardLayout\KeyboardLayout.dproj</project>
+    <project Name="Media Controller" Type="DLL">Plugins\Configurations\Modules\MediaController\MediaController.dproj</project>
     <project Name="Memory Monitor" Type="DLL">Plugins\Configurations\Modules\MemoryMonitor\MemoryMonitor.dproj</project>
     <project Name="Menu" Type="DLL">Plugins\Configurations\Modules\MenuModule\MenuModule.dproj</project>
     <project Name="Mini Scmd" Type="DLL">Plugins\Configurations\Modules\MiniScmd\MiniScmd.dproj</project>
@@ -93,6 +94,7 @@
     <project Name="DeskArea" Type="DLL">Plugins\Configurations\Services\DeskArea\DeskArea.dproj</project>
     <project Name="Hotkey List" Type="DLL">Plugins\Configurations\Services\HotkeyList\HotkeyList.dproj</project>
     <project Name="Multimedia Input" Type="DLL">Plugins\Configurations\Services\MultimediaInput\MultimediaInput.dproj</project>
+    <project Name="Multimedia Input List" Type="DLL">Plugins\Configurations\Services\MultimediaInputList\MultimediaInputList.dproj</project>
     <project Name="VWM" Type="DLL">Plugins\Configurations\Services\VWM\VWM.dproj</project>
     <project Name="Weather" Type="DLL">Plugins\Configurations\Services\Weather\Weather.dproj</project>
     <project Name="TaskSwitch Edit" Type="DLL">Plugins\Configurations\Services\TaskSwitchEdit\TaskSwitchEdit.dproj</project>
