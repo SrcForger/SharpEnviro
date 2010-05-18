@@ -188,6 +188,7 @@ begin
 
         frmItemsWnd.RefreshAppCommandList;
         frmItemsWnd.AppCmdList.SaveSettings;
+        FPluginHost.Save;
       end;
     sceEdit:
       begin
@@ -200,7 +201,8 @@ begin
         end;
 
         frmItemsWnd.RefreshAppCommandList;
-        frmItemsWnd.AppCmdList.SaveSettings;        
+        frmItemsWnd.AppCmdList.SaveSettings;
+        FPluginHost.Save;
       end;
   end;
 

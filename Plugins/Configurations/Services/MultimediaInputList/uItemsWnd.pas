@@ -184,6 +184,7 @@ begin
           tmp.Action := acaNothing;
           RefreshAppCommandList;
           FAppCmdList.SaveSettings;
+          FPluginHost.Save;
         end;
 
       end;
