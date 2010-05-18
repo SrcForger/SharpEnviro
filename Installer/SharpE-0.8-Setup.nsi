@@ -1252,6 +1252,23 @@ Section "Additional Icons" SEC02
   File "..\..\SharpE\Icons\Cubeix 2 white\SharpE.ico"
   File "..\..\SharpE\Icons\Cubeix 2 white\trash_empty.ico"
   File "..\..\SharpE\Icons\Cubeix 2 white\trash_full.ico"
+  
+  # Settings - Default Global
+  SetOutPath "$INSTDIR\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons"
+  File "..\..\SharpE\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons\aTunes.png"
+  File "..\..\SharpE\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons\Billy.png"
+  File "..\..\SharpE\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons\foobar_icon.png"
+  File "..\..\SharpE\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons\iTunes.png"
+  File "..\..\SharpE\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons\JRiverMediaCenter.png"
+  File "..\..\SharpE\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons\MediaMonkey.png"
+  File "..\..\SharpE\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons\mpc_icon.png"
+  File "..\..\SharpE\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons\qcd_icon.png"
+  File "..\..\SharpE\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons\Songbird.png"
+  File "..\..\SharpE\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons\vlc_icon.png"
+  File "..\..\SharpE\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons\winamp_icon.png"
+  File "..\..\SharpE\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons\wmp_icon.png"
+  SetOutPath "$INSTDIR\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput"
+  File "..\..\SharpE\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\MediaPlayers.xml"
 SectionEnd
 
 Section "Development Tools" SEC03
@@ -2472,6 +2489,28 @@ Section /o -un.Main UNSEC0000
     Delete "$INSTDIR\vcl100.bpl"
     Delete "$INSTDIR\splash.png"
     Delete "$INSTDIR\7z.dll"
+    
+    # Settings - Default Global
+    Delete "$INSTDIR\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\MediaPlayers.xml"
+    Delete "$INSTDIR\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons\wmp_icon.png"
+    Delete "$INSTDIR\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons\winamp_icon.png"
+    Delete "$INSTDIR\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons\vlc_icon.png"
+    Delete "$INSTDIR\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons\Songbird.png"
+    Delete "$INSTDIR\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons\qcd_icon.png"
+    Delete "$INSTDIR\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons\mpc_icon.png"
+    Delete "$INSTDIR\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons\MediaMonkey.png"
+    Delete "$INSTDIR\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons\JRiverMediaCenter.png"
+    Delete "$INSTDIR\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons\iTunes.png"
+    Delete "$INSTDIR\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons\foobar_icon.png"
+    Delete "$INSTDIR\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons\Billy.png"
+    Delete "$INSTDIR\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons\aTunes.png"
+    
+    RMDir "$INSTDIR\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons"
+    RMDir "$INSTDIR\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput"
+    RMDir "$INSTDIR\Settings\#DefaultGlobal#\SharpCore\Services"
+    RMDir "$INSTDIR\Settings\#DefaultGlobal#\SharpCore"
+    RMDir "$INSTDIR\Settings\#DefaultGlobal#"
+    RMDir "$INSTDIR\Settings"
     
     RmDir "$INSTDIR\Addons"
     
