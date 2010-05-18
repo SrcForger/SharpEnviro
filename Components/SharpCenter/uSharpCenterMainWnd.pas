@@ -451,6 +451,8 @@ end;
 procedure TSharpCenterWnd.lbTreeClickItem(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem);
 begin
+  lbTree.Repaint;
+
   if lbTree.ItemIndex = -1 then
     exit;
 
