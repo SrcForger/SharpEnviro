@@ -48,7 +48,7 @@
     <DCCReference Include="..\..\Units\VistaFuncs\uVistaFuncs.pas" />
   </ItemGroup>
   <PropertyGroup>
-    <PostBuildEvent>if $(Configuration)==Debug "..\..\..\Common\3rd party\Jedi\MakeJclDbg.exe" -E $(OUTPUTDIR)$(OUTPUTNAME).map
-if $(Configuration)==Debug del $(OUTPUTDIR)$(OUTPUTNAME).map</PostBuildEvent>
+    <PostBuildEvent>if $(Configuration)==Debug "..\..\..\Common\3rd party\Jedi\MakeJclDbg.exe" -E "$(OUTPUTDIR)$(OUTPUTNAME).map"
+if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
   </PropertyGroup>
 </Project>
