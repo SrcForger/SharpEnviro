@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Win32;
-using NLog;
+//using NLog;
 
 namespace Explorer.ShellServices
 {
@@ -12,7 +12,7 @@ namespace Explorer.ShellServices
 		private static Guid CGID_ShellServiceObject = new Guid("000214D2-0000-0000-C000-000000000046");
 		private static List<IOleCommandTarget> _shellServiceObjects = new List<IOleCommandTarget>();
 		private static bool _isRunning = false;
-		private static Logger _logger = LogManager.GetCurrentClassLogger();
+		//private static Logger _logger = LogManager.GetCurrentClassLogger();
 
 		public static void Start()
 		{
@@ -109,7 +109,7 @@ namespace Explorer.ShellServices
 				}
 				catch(Exception e)
 				{
-					_logger.LogException(LogLevel.Error, "Exception trying to unload the shell service objects.", e);
+					//_logger.LogException(LogLevel.Error, "Exception trying to unload the shell service objects.", e);
 				}
 			}
 			_shellServiceObjects.Clear();
