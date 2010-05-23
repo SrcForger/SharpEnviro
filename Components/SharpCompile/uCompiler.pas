@@ -194,14 +194,14 @@ type
 
 implementation
 
-function NETFramework35InstallPath: string;
+function NETFramework4InstallPath: string;
 var
   Reg: TRegistry;
 begin
   Reg := TRegistry.Create(KEY_READ);
   try
     Reg.RootKey := HKEY_LOCAL_MACHINE;
-    if Reg.OpenKey('SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5', False) then
+    if Reg.OpenKey('SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full', False) then
       Result := Reg.ReadString('InstallPath');
   finally
     Reg.Free
@@ -262,7 +262,7 @@ begin
 
   // MSBuild.exe "solutionFilePath" /t:Rebuild /p:Configuration=Release
   // MSBuild.exe "solutionFilePath" /t:Rebuild /p:Configuration=Debug
-  cmd := NETFramework35InstallPath + 'MSBuild.exe "' + Project.Path + '" /t:Rebuild /p:Configuration=' + config;
+  cmd := NETFramework4InstallPath + 'MSBuild.exe "' + Project.Path + '" /t:Rebuild /p:Configuration=' + config;
   if Project.Platform <> '' then
     cmd := cmd + ' /p:Platform=' + Project.Platform;
 
