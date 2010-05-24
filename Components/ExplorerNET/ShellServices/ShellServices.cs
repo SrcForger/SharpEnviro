@@ -14,6 +14,9 @@ namespace Explorer.ShellServices
 		private static bool _isRunning = false;
 		//private static Logger _logger = LogManager.GetCurrentClassLogger();
 
+		private const string SSORegKey = "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\ShellServiceObjects";
+		private const string SSODelayLoadRegKey = "Software\\Microsoft\\Windows\\CurrentVersion\\ShellServiceObjectDelayLoad";
+
 		public static void Start()
 		{
 			if (_isRunning)
@@ -64,14 +67,26 @@ namespace Explorer.ShellServices
 		private static void LoadShellServiceObjectsXP()
 		{
 			using (RegistryKey keyLM = Registry.LocalMachine)
-			using (RegistryKey key = keyLM.OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\ShellServiceObjectDelayLoad"))
+			using (RegistryKey keySSO = keyLM.OpenSubKey(SSORegKey))
+			using (RegistryKey keySSODelayLoad = keyLM.OpenSubKey(SSODelayLoadRegKey))
 			{
-				if (key == null)
+				if (keySSODelayLoad == null)
 					return;
 
-				foreach (string valueName in key.GetValueNames())
+				string[] vistaKeys = null;
+				// Get a list of the GUIDs for Vista style SSOs.
+				if (keySSO != null && Environment.OSVersion.Version.Major > 5)
+					vistaKeys = keySSO.GetSubKeyNames();
+
+				foreach (string valueName in keySSODelayLoad.GetValueNames())
 				{
-					string value = (string)key.GetValue(valueName);
+					string value = (string)keySSODelayLoad.GetValue(valueName);
+
+					// If the XP style key is also listed as a Vista style key then we
+					// will let the vista loading handle the key and continue.
+					if (vistaKeys != null && vistaKeys.Contains<string>(value))
+						continue;
+
 					Guid ssoGuid = new Guid(value.Replace("{", "").Replace("}", ""));
 					Type ssoType = Type.GetTypeFromCLSID(ssoGuid);
 
