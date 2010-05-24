@@ -1090,7 +1090,7 @@ procedure TSharpESkin.RemoveNotUsedBitmaps;
       end;
     end;
 
-    if sp.BitmapID >= 0 then
+    if (sp.BitmapID >= 0) and (sp.BitmapID <= FBitmapList.Count - 1)then
     begin
       for k := List.Count - 1 downto 0 do
       begin
