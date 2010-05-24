@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<TaskFilters>
+  <TaskFilter Name="All Windows" Type="0">
+    <SW>SW_HIDE,SW_SHOWNORMAL,SW_SHOWMINIMIZED,SW_MAXIMIZED,SW_SHOWNOACTIVATE,SW_SHOW,SW_MINIMIZE,SW_SHOWMINNOACTIVE,SW_SHOWNA,SW_RESTORE,SW_SHOWDEFAULT</SW>
+  </TaskFilter>
+  <TaskFilter Name="Current Monitor" Type="3">
+    <CurrentMonitor>-1</CurrentMonitor>
+  </TaskFilter>
+  <TaskFilter Name="Current VWM" Type="4">
+    <CurrentVWM>-1</CurrentVWM>
+  </TaskFilter>
+  <TaskFilter Name="Explorer Windows" Type="2">
+    <FileName>Explorer.exe</FileName>
+  </TaskFilter>
+  <TaskFilter Name="Minimized" Type="5">
+    <Minimised>-1</Minimised>
+  </TaskFilter>
+  <TaskFilter Name="Visible" Type="0">
+    <SW>SW_SHOWNORMAL,SW_MAXIMIZED,SW_SHOW,SW_SHOWNA,SW_RESTORE,SW_SHOWDEFAULT</SW>
+  </TaskFilter>
+</TaskFilters>
