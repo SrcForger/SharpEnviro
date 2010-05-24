@@ -838,7 +838,7 @@ begin
     exit;
 
   if not (Sender is TSharpETaskItem) then exit;
-  
+
   case Button of
     mbRight: DisplaySystemMenu(TSharpETaskItem(Sender).Handle);
     mbMiddle: if sMiddleClose then
@@ -856,7 +856,7 @@ var
 begin
   if GetCursorPosSecure(cursorPos) then
     CPos := ScreenToClient(cursorPos)
-  else exit;  
+  else exit;
 
   if not PointInRect(CPos,Rect(-10,-10,Width+10,Height+10)) then
   begin
@@ -1532,6 +1532,7 @@ begin
     pItem.UpdateVisibleState;
     if (not pItem.Visible) or (TM.LastActiveTask <> TSharpETaskItem(Sender).Handle) then
     begin
+      TSharpETaskItem(Sender).Down := True;
       pItem.Restore;
     end else
     begin
