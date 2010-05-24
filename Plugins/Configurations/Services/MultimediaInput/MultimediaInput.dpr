@@ -102,16 +102,15 @@ end;
 
 procedure TSharpCenterPlugin.Save;
 begin
+  PluginHost.Xml.XmlRoot.Name := 'MultimediaInputServiceSettings';
   with PluginHost.Xml.XmlRoot.Items, frmSettings do
   begin
-    Name := 'MultimediaInputServiceSettings';
     Clear;
     Add('ShowOSD',chkShowOSD.Checked);
     Add('OSDVertPos',cboVertPos.ItemIndex);
     Add('OSDHorizPos',cboHorizPos.ItemIndex);
-
-    PluginHost.Xml.Save;
   end;
+  PluginHost.Xml.Save;
 end;
 
 function GetMetaData(): TMetaData;
