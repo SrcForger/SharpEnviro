@@ -102,19 +102,18 @@ end;
 
 procedure TSharpCenterPlugin.Save;
 begin
-  with PluginHost.Xml.XmlRoot, frmSettings do
+  PluginHost.Xml.XmlRoot.Name := 'VWMServiceSettings';
+  with PluginHost.Xml.XmlRoot.Items, frmSettings do
   begin
-    Name := 'VWMServiceSettings';
-    Items.Clear;
-    Items.Add('VWMCount',sgbVwmCount.Value);
-    Items.Add('FocusTopMost',chkFocusTopMost.Checked);
-    Items.Add('MoveToolWindows',chkToolWindows.Checked);
-    Items.Add('FollowFocus',chkFollowFocus.Checked);
-    Items.Add('ShowOCD',chkNotifications.Checked);
-    Items.Add('ResetOnDisplayChange',chkResetOnDisplayChange.Checked);
-
-    PluginHost.Xml.Save;
+    Clear;
+    Add('VWMCount',sgbVwmCount.Value);
+    Add('FocusTopMost',chkFocusTopMost.Checked);
+    Add('MoveToolWindows',chkToolWindows.Checked);
+    Add('FollowFocus',chkFollowFocus.Checked);
+    Add('ShowOCD',chkNotifications.Checked);
+    Add('ResetOnDisplayChange',chkResetOnDisplayChange.Checked);
   end;
+  PluginHost.Xml.Save;
 end;
 
 function GetMetaData(): TMetaData;
