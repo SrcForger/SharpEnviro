@@ -29,6 +29,7 @@ interface
 
 uses
   Windows,
+  Classes,
   Dialogs,
   Messages,
   ShellApi,
@@ -54,7 +55,8 @@ type
                 FUsed     : boolean;
               private
               public
-                constructor Create(pHandle : hwnd; pListMode : Boolean = False); reintroduce;
+                constructor Create(pHandle : hwnd; pListMode : Boolean = False); reintroduce; overload;
+                constructor Create(pItem : TTaskItem); overload; 
                 destructor Destroy; override;
                 procedure UpdateFromHwnd;
                 procedure UpdateNonCriticalFromHwnd;
@@ -97,6 +99,21 @@ begin
   FLastVWM := SharpApi.GetCurrentVWM;
 end;
 
+constructor TTaskItem.Create(pItem: TTaskItem);
+begin
+  FTimeAdded := pItem.TimeAdded;
+  FHandle := pItem.Handle;
+  FIcon := pItem.Icon;
+  FCaption := pItem.Caption;
+  FWndClass := pItem.WndClass;
+  FFilePath := pItem.FilePath;
+  FFileName := pItem.FileName;
+  FVisible := pItem.Visible;
+  FLastVWM := pItem.LastVWM;
+  FPlacement := pItem.Placement;
+  FUsed := pItem.Used;
+end;
+
 destructor TTaskItem.Destroy;
 begin
   if FIcon <> 0 then
@@ -111,31 +128,41 @@ begin
   FFileName := LowerCase(ExtractFileName(FFilePath));
 end;
 
-procedure TTaskItem.UpdateIcon;
+function GetWndIcon(wnd : hwnd) : hicon;
 const
   ICON_SMALL2 = 2;
 var
-  newicon : hicon;
+  icon : hicon;
 begin
-  newicon := 0;
-  if FIcon <> 0 then DestroyIcon(FIcon);
+  icon := 0;
   try
-    SendMessageTimeout(Handle, WM_GETICON, ICON_BIG, 0, SMTO_ABORTIFHUNG, 1000, DWORD(newicon));
+    SendMessageTimeout(wnd, WM_GETICON, ICON_BIG, 0, SMTO_ABORTIFHUNG, 1000, DWORD(icon));
 
-    if (newicon = 0) then newicon := HICON(GetClassLong(Handle, GCL_HICON));
+    if (icon = 0) then icon := HICON(GetClassLong(wnd, GCL_HICON));
 
-    if (newicon = 0) then SendMessageTimeout(Handle, WM_GETICON, 1, 0, SMTO_ABORTIFHUNG, 1000, DWORD(newicon));
-    if (newicon = 0) then newicon := HICON(GetClassLong(Handle, GCL_HICON));
-    if (newicon = 0) then SendMessageTimeout(Handle, WM_QUERYDRAGICON, 0, 0, SMTO_ABORTIFHUNG, 1000, DWORD(newicon));
+    if (icon = 0) then SendMessageTimeout(wnd, WM_GETICON, 1, 0, SMTO_ABORTIFHUNG, 1000, DWORD(icon));
+    if (icon = 0) then icon := HICON(GetClassLong(wnd, GCL_HICON));
+    if (icon = 0) then SendMessageTimeout(wnd, WM_QUERYDRAGICON, 0, 0, SMTO_ABORTIFHUNG, 1000, DWORD(icon));
 
     // Load the icon from the executable
-    if (newicon = 0) then newicon := ExtractIcon(SysInit.HInstance, PAnsiChar(GetProcessNameFromWnd(Handle)), 0);
+    if (icon = 0) then icon := ExtractIcon(SysInit.HInstance, PAnsiChar(GetProcessNameFromWnd(wnd)), 0);
 
-    if (newicon = 0) then newicon := LoadIcon(0, IDI_WINLOGO);
+    if (icon = 0) then icon := LoadIcon(0, IDI_WINLOGO);
   except
   end;
-  
-  if newicon <> 0 then FIcon := newicon;
+  result := icon;
+end;
+
+procedure TTaskItem.UpdateIcon;
+var
+  newicon : hicon;
+begin
+  newicon := GetWndIcon(Handle);
+  if newicon <> 0 then
+  begin
+    if FIcon <> 0 then DestroyIcon(FIcon);  
+    FIcon := newicon;
+  end;
 end;
 
 procedure TTaskItem.UpdateNonCriticalFromHwnd;

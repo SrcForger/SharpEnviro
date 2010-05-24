@@ -58,7 +58,8 @@ type
                    FSortType       : TSharpeTaskManagerSortType;
                    FLastActiveTask : hwnd;
                    FLastActiveTaskPos : TRect;
-
+                   FMultiThreading : boolean;
+                   FThreadList     : TObjectList;
                  public
                    procedure RemoveDeadTasks;
                    procedure AddTask(pHandle : hwnd);
@@ -74,13 +75,14 @@ type
                    procedure HandleShellMessage(wparam,lparam : Cardinal);
                    procedure SaveToStream(Stream : TStream);
                    procedure LoadFromStream(Stream : TStream; pCount : integer);
-                   procedure InitList;                   
+                   procedure InitList;
                    function GetCount : integer;
                    function GetItemByHandle(pHandle : hwnd) : TTaskItem;
                    function GetItemByIndex(Index : integer) : TTaskItem;
                    constructor Create; reintroduce;
                    destructor Destroy; override;
 
+                   property MultiThreading : boolean          read FMultiThreading write FMultiThreading;
                    property Enabled        : boolean          read FEnabled write FEnabled;
                    property ListMode       : boolean          read FListMode write FListMode;
                    property SortTasks      : boolean          read FSortTasks write FSortTasks;
@@ -95,6 +97,20 @@ type
                    property LastActiveTask : hwnd             read FLastActiveTask write FLastActiveTask;
                    property LastActiveTaskPos : TRect         read FLastActiveTaskPos write FLastActiveTaskPos;
                  end;
+
+  TTaskItemUpdateThread = class(TThread)
+  protected
+    procedure Execute; override;
+  private
+    FItem :  TTaskItem;
+    FUpdateEvent: TTaskChangeEvent;
+    procedure DoUpdate;
+  public
+    constructor Create(pItem : TTaskItem); reintroduce;
+    destructor Destroy; override;
+    property Item : TTaskItem read FItem;
+    property UpdateEvent : TTaskChangeEvent read FUpdateEvent write FUpdateEvent;
+  end;                 
 
 implementation
 
@@ -139,11 +155,28 @@ begin
   FLastActiveTaskPos := Rect(0,0,0,0);
   FEnabled := False;
   FListMode := False;
+  FThreadList := TObjectList.Create(True);
+  FMultiThreading := False;
 end;
 
 destructor TTaskManager.Destroy;
+var
+  n : integer;
+  item : TThread;
 begin
   FItems.Free;
+
+  // Wait for all update threads which might still be running
+  for n := 0 to FThreadList.Count - 1 do
+  begin
+    if (FThreadList.Items[n] <> nil) then
+    begin
+      item := TThread(FThreadList.Items[n]);
+      if not item.Suspended then
+        item.WaitFor;
+    end;
+  end;
+
   inherited Destroy;
 end;
 
@@ -167,7 +200,9 @@ end;
 procedure TTaskManager.GetMinRect;
 var
   pItem : TTaskItem;
+  pThread : TTaskItemUpdateThread;
   n : integer;
+  bUsingThread : boolean;
 begin
   if FItems.Count = 0 then exit;
   if not FEnabled then exit;
@@ -178,10 +213,20 @@ begin
     pItem := TTaskItem(FItems.Items[n]);
     if pItem.Handle = FLastActiveTask then
     begin
+      bUsingThread := False;
       if not FListMode then
-        pItem.UpdateFromHwnd
-      else pItem.UpdateNonCriticalFromHwnd;
-      if Assigned(FOnUpdateTask) then FOnUpdateTask(pItem,n);
+      begin
+        if (FMultiThreading and Assigned(FOnUpdateTask)) then
+        begin
+          pThread := TTaskItemUpdateThread.Create(pItem);
+          pThread.UpdateEvent := FOnUpdateTask;
+          FThreadList.Add(pThread);
+          pThread.Resume();
+          bUsingThread := True;
+        end else pItem.UpdateFromHwnd;
+      end else pItem.UpdateNonCriticalFromHwnd;
+      if Assigned(FOnUpdateTask) and (not bUsingThread) then
+        FOnUpdateTask(pItem,n);
     end;
   end;
   if FSortTasks then DoSortTasks;
@@ -294,8 +339,10 @@ end;
 procedure TTaskManager.ActivateTask(pHandle : hwnd);
 var
   pItem : TTaskItem;
+  pThread : TTaskItemUpdateThread;
   n : integer;
   wndclass : String;
+  bUsingThread : boolean;
 begin
   if not FEnabled then exit;
 
@@ -308,10 +355,20 @@ begin
       begin
         FLastActiveTask := pHandle;
         GetWindowRect(FLastActiveTask,FLastActiveTaskPos);
+        bUsingThread := False;
         if not FListMode then
-          pItem.UpdateFromHwnd
-        else pItem.UpdateNonCriticalFromHwnd;
-        if Assigned(OnActivateTask) then FOnActivateTask(pItem,n);
+        begin
+          if (FMultiThreading and Assigned(FOnUpdateTask)) then
+          begin
+            pThread := TTaskItemUpdateThread.Create(pItem);
+            pThread.UpdateEvent := FOnUpdateTask;
+            FThreadList.Add(pThread);
+            pThread.Resume();
+            bUsingThread := True;
+          end else pItem.UpdateFromHwnd;
+        end else pItem.UpdateNonCriticalFromHwnd;
+        if Assigned(OnActivateTask) and (not bUsingThread) then
+          FOnActivateTask(pItem,n);
         exit;
       end;
     end;
@@ -426,7 +483,9 @@ end;
 procedure TTaskManager.UpdateTask(pHandle : hwnd);
 var
   pItem : TTaskItem;
+  pThread : TTaskItemUpdateThread;
   n : integer;
+  bUsingThread : boolean;
 begin
   if FItems.Count = 0 then exit;
   if not FEnabled then exit;
@@ -437,11 +496,22 @@ begin
     pItem := TTaskItem(FItems.Items[n]);
     if pItem.Handle = pHandle then
     begin
+      bUsingThread := False;
       if not FListMode then
-        pItem.UpdateFromHwnd
-      else pItem.UpdateNonCriticalFromHwnd;
-      if FSortTasks then DoSortTasks;
-      if Assigned(FOnUpdateTask) then FOnUpdateTask(pItem,n);
+      begin
+        if (FMultiThreading and Assigned(FOnUpdateTask)) then
+        begin
+          pThread := TTaskItemUpdateThread.Create(pItem);
+          pThread.UpdateEvent := FOnUpdateTask;
+          FThreadList.Add(pThread);
+          pThread.Resume();
+          bUsingThread := True;
+        end else pItem.UpdateFromHwnd;
+      end else pItem.UpdateNonCriticalFromHwnd;
+      if FSortTasks then
+        DoSortTasks;
+      if Assigned(FOnUpdateTask) and (not bUsingThread) then
+        FOnUpdateTask(pItem,n);
 
       break;
     end;
@@ -531,6 +601,36 @@ begin
         SList.Free;
       end;
     end;
+end;
+
+{ TTaskItemUpdateThread }
+
+constructor TTaskItemUpdateThread.Create(pItem: TTaskItem);
+begin
+  inherited Create(True);
+  FreeOnTerminate := True;  
+  FItem := TTaskItem.Create(pItem); // creates a copy of the original task item
+end;
+
+destructor TTaskItemUpdateThread.Destroy;
+begin
+  FItem.Free;
+  FItem := nil;
+
+  inherited Destroy;
+end;
+
+procedure TTaskItemUpdateThread.DoUpdate;
+begin
+  if Assigned(FUpdateEvent) then
+    UpdateEvent(FItem,-1);
+end;
+
+procedure TTaskItemUpdateThread.Execute;
+begin
+  FItem.UpdateFromHwnd;
+  if Assigned(FUpdateEvent) then
+    Synchronize(DoUpdate);
 end;
 
 end.
