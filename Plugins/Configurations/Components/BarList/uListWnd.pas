@@ -38,7 +38,7 @@ uses
   Forms,
   Dialogs,
   StdCtrls,
-  JvSimpleXml,
+  JclSimpleXml,
   JclFileUtils,
   Math,
   ImgList,
@@ -140,8 +140,10 @@ const
 
 implementation
 
-uses uEditWnd,
-  SharpThemeApiEx;
+uses
+  uEditWnd,
+  SharpThemeApiEx,
+  uSharpXMLUtils;
 
 {$R *.dfm}
 
@@ -171,8 +173,7 @@ var
   Dir: string;
   FName: string;
   iBarID: Integer;
-  XML: TJvSimpleXML;
-  fileloaded: boolean;
+  XML: TJclSimpleXML;
   tmpBar: TBarItem;
   bDelete: Boolean;
 
@@ -235,9 +236,10 @@ begin
           tmrUpdate.Enabled := True;
         end;
       end;
-    colEnableDisable: begin
-
-        if tmpBar.AutoStart then begin
+    colEnableDisable:
+      begin
+        if tmpBar.AutoStart then
+        begin
           wnd := FindWindow(nil, PChar('SharpBar_' + inttostr(tmpBar.BarID)));
           if wnd <> 0 then
             SendMessage(wnd, WM_SHARPTERMINATE, 0, 0);
@@ -247,32 +249,23 @@ begin
         Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + inttostr(tmpBar.BarID) + '\';
         FName := Dir + 'bar.xml';
 
-        XML := TJvSimpleXML.Create(nil);
-        try
-          if FileCheck(FName, True) then begin
-            try
-              XML.LoadFromFile(FName);
-              fileloaded := True;
-            except
-              fileloaded := False;
+        XML := TJclSimpleXML.Create;
+        if LoadXMLFromSharedFile(XML,FName,False) then // don't load outdated backup!
+        begin
+          with XML.Root.Items do
+          begin
+            if ItemNamed['Settings'] = nil then
+              Add('Settings');
+            with ItemNamed['Settings'].Items do
+            begin
+              if ItemNamed['AutoStart'] <> nil then
+                ItemNamed['AutoStart'].BoolValue := tmpBar.AutoStart
+              else Add('AutoStart', tmpBar.AutoStart);
             end;
-            if fileloaded then
-              with XML.Root.Items do begin
-                if ItemNamed['Settings'] = nil then
-                  Add('Settings');
-                with ItemNamed['Settings'].Items do begin
-                  if ItemNamed['AutoStart'] <> nil then
-                    ItemNamed['AutoStart'].BoolValue := tmpBar.AutoStart
-                  else
-                    Add('AutoStart', tmpBar.AutoStart);
-                end;
-              end;
           end;
-          if FileCheck(FName) then
-            XML.SaveToFile(FName);
-        finally
-          XML.Free;
+          SaveXMLToSharedFile(XML,FName,True);
         end;
+        XML.Free;
 
         tmrUpdate.Enabled := True;
       end;
@@ -561,7 +554,7 @@ end;
 
 procedure AddItemsToList(AList: TObjectList);
 var
-  xml: TJvSimpleXML;
+  xml: TJclSimpleXML;
   newItem: TBarItem;
   dir: string;
   slBars, slModules: TStringList;
@@ -585,9 +578,8 @@ begin
   newItem := nil;
   slBars := TStringList.Create;
   slModules := TStringList.Create;
-  xml := TJvSimpleXML.Create(nil);
+  xml := TJclSimpleXML.Create;
   try
-
     // build list of bar.xml files
     AdvBuildFileList(dir + '*bar.xml', faAnyFile, slBars, amAny, [flFullNames, flRecursive]);
     for i := 0 to Pred(slBars.Count) do

@@ -51,7 +51,7 @@ uses
   JvErrorIndicator,
   ExtCtrls,
   JvPageList,
-  JvSimpleXml,
+  JclSimpleXml,
   SharpApi,
   JclStrings,
   SharpCenterApi,
@@ -120,6 +120,9 @@ var
   frmEditwnd: TfrmEditwnd;
 
 implementation
+
+uses
+  uSharpXMLUtils;
 
 {$R *.dfm}
 
@@ -216,7 +219,7 @@ end;
 
 procedure TfrmEditwnd.Save();
 var
-  xml: TJvSimpleXML;
+  xml: TJclSimpleXML;
   dir: string;
   newId: string;
   copyId: integer;
@@ -250,7 +253,7 @@ begin
           FindClose(sr);
         end;
 
-        xml := TJvSimpleXML.Create(nil);
+        xml := TJclSimpleXML.Create;
         try
           if FileCheck(dir + newId + '\Bar.xml', True) then begin
             try
@@ -300,50 +303,42 @@ begin
           xml.Free;
         end;
       end;
-    sceEdit: begin
+    sceEdit:
+      begin
         copyId := TBarItem(FBarItem).BarID;
-        xml := TJvSimpleXML.Create(nil);
-        fileLoaded := False;
-        try
-          if FileCheck(dir + inttostr(copyId) + '\Bar.xml', True) then
+        xml := TJclSimpleXML.Create;
+        if LoadXMLFromSharedFile(XML,dir + inttostr(copyId) + '\Bar.xml',False) then
+        begin
+          with xml.Root.Items do
           begin
-            try
-              xml.LoadFromFile(dir + inttostr(copyId) + '\Bar.xml');
-              fileLoaded := True;
-            except
+            if ItemNamed['Settings'] = nil then
+              Add('Settings');
+
+            with ItemNamed['Settings'].Items do
+            begin
+              Clear;
+              Add('ID', newId);
+              Add('Name', edName.Text);
+              Add('AutoPosition', True);
+              Add('ShowThrobber', FBarItem.ShowThrobber);
+              Add('DisableHideBar', FBarItem.DisableHideBar);
+              Add('AutoStart', FBarItem.AutoStart);
+              Add('AutoPosition', True);
+              Add('StartHidden', FBarItem.StartHidden);
+              Add('MiniThrobbers', FBarItem.MiniThrobbers);
+              Add('PrimaryMonitor', (cobo_monitor.ItemIndex = 0));
+              Add('MonitorIndex', TIntObject(cobo_monitor.Items.Objects[cobo_monitor.ItemIndex]).Value);
+              Add('HorizPos', cobo_halign.ItemIndex);
+              Add('VertPos', cobo_valign.ItemIndex);
+              Add('FixedWidth', sgbFixedWidth.Value);
+              Add('FixedWidthEnabled', cbFixedWidth.Checked);
+              Add('ShowMiniThrobbers', FBarItem.MiniThrobbers);
+              Add('AlwaysOnTop', FBarItem.AlwaysOnTop);
             end;
           end;
-          if fileLoaded then
-            with xml.Root.Items do begin
-              if ItemNamed['Settings'] = nil then
-                Add('Settings');
-
-              with ItemNamed['Settings'].Items do begin
-                Clear;
-                Add('ID', newId);
-                Add('Name', edName.Text);
-                Add('AutoPosition', True);
-                Add('ShowThrobber', FBarItem.ShowThrobber);
-                Add('DisableHideBar', FBarItem.DisableHideBar);
-                Add('AutoStart', FBarItem.AutoStart);
-                Add('AutoPosition', True);
-                Add('StartHidden', FBarItem.StartHidden);
-                Add('MiniThrobbers', FBarItem.MiniThrobbers);
-                Add('PrimaryMonitor', (cobo_monitor.ItemIndex = 0));
-                Add('MonitorIndex', TIntObject(cobo_monitor.Items.Objects[cobo_monitor.ItemIndex]).Value);
-                Add('HorizPos', cobo_halign.ItemIndex);
-                Add('VertPos', cobo_valign.ItemIndex);
-                Add('FixedWidth', sgbFixedWidth.Value);
-                Add('FixedWidthEnabled', cbFixedWidth.Checked);
-                Add('ShowMiniThrobbers', FBarItem.MiniThrobbers);
-                Add('AlwaysOnTop', FBarItem.AlwaysOnTop);
-              end;
-            end;
-          if FileCheck(dir + inttostr(copyId) + '\Bar.xml') then
-            xml.SaveToFile(dir + inttostr(copyId) + '\Bar.xml');
-        finally
-          xml.Free;
+          SaveXMLToSharedFile(XML,dir + inttostr(copyId) + '\Bar.xml',True);
         end;
+        xml.Free;        
       end;
   end;
 
