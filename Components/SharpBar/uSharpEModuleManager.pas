@@ -705,7 +705,7 @@ begin
   for n := 0 to FModuleFiles.Count -1 do
   begin
     pFile := TModuleFile(FModuleFiles.Items[n]);
-    if ExtractFileName(pFile.FileName) = Module then
+    if CompareText(ExtractFileName(pFile.FileName),Module) = 0 then
     begin
       pModule := TModule.Create(FBar.aform,pFile,ID,FBarID,FParent,Position,self);
       if Index <> -1 then FModules.Insert(Index,pModule)

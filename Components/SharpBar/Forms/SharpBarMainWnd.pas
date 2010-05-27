@@ -911,12 +911,15 @@ begin
       BGBmp.Clear(color32(R, G, B, 255));
       TempBmp := TBitmap32.Create;
       if FileExists(WinWallPath) then
-        LoadBitmap32Shared(TempBmp,WinWallPath,True);
-      if WinWallTile = '1' then {// Tile Wallpaper} begin
-        for x := 0 to BGBmp.Width div TempBmp.Width + 1 do
-          for y := 0 to BGBmp.Height div TempBmp.Height + 1 do
-            TempBmp.DrawTo(BGBmp, x * TempBmp.Width, y * TempBmp.Height);
-      end
+        if LoadBitmap32Shared(TempBmp,WinWallPath,True) then
+        begin
+          if WinWallTile = '1' then {// Tile Wallpaper}
+          begin
+            for x := 0 to BGBmp.Width div TempBmp.Width + 1 do
+              for y := 0 to BGBmp.Height div TempBmp.Height + 1 do
+                TempBmp.DrawTo(BGBmp, x * TempBmp.Width, y * TempBmp.Height);
+          end;
+        end
       else if WinWallStyle = '0' then // Center the Wallpaper
         TempBmp.DrawTo(BGBmp,
           BGBmp.Width div 2 - TempBmp.Width div 2,
