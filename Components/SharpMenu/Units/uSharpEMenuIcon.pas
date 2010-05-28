@@ -27,7 +27,7 @@ unit uSharpEMenuIcon;
 
 interface
 
-uses SysUtils,Classes,GR32,GR32_Resamplers;
+uses SysUtils,Classes,GR32,GR32_Resamplers,GR32Utils;
 
 type
   TIconType = (itDefaultIcon,itShellIcon,itCustomIcon,itGeneric);
@@ -95,7 +95,7 @@ begin
 
   if pBmp <> nil then
   begin
-    FIcon.Assign(pBmp);
+    SaveAssign(pBmp,FIcon);
     FIcon.DrawMode := dmBlend;
     FIcon.CombineMode := cmMerge;
     TLinearResampler.Create(FIcon);
