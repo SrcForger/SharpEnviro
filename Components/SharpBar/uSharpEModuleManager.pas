@@ -1357,6 +1357,7 @@ begin
   if FModules = nil then exit;
 
   FUpdateLock := True;
+  LockWindowUpdate(FBar.aform.Handle);
   try
     minsize := 0;
     maxsize := 0;
@@ -1506,6 +1507,7 @@ begin
     RefreshMiniThrobbers;
   finally
     FUpdateLock := False;
+    LockWindowUpdate(0);
   end;
 
   FBar.UpdatePosition;
