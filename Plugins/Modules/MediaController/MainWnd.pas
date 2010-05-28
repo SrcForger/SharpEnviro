@@ -29,14 +29,15 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms, Graphics,
-  Dialogs, StdCtrls, SharpEButton, SharpApi, Menus, Math, 
+  Dialogs, StdCtrls, SharpEButton, SharpApi, Menus, Math, MultiMon,
   ShellApi, MediaPlayerList, GR32, GR32_PNG, Types, SharpEBaseControls, ExtCtrls,
   Registry, uSharpEMenuWnd, uSharpEMenu, uSharpEMenuSettings, uSharpEMenuItem,
   uISharpBarModule, SharpIconUtils;
 
-
 type
   TControlCommandType = (cctPlay,cctPause,cctStop,cctNext,cctPrev);
+  TVerticalPos = (vpTop,vpCenter,vpBottom);
+  THorizontalPos = (hpLeft,hpCenter,hpRight);  
 
   TMainForm = class(TForm)
     btn_next: TSharpEButton;
@@ -66,6 +67,9 @@ type
     sPlayer : String;
     sPSelect : Boolean;
     sPlayerList : TStringList;
+    sShowOSD : boolean;
+    sOSDVertPos : TVerticalPos;
+    sOSDHorizPos : THorizontalPos;
     mInterface : ISharpBarModule;
     procedure ReAlignComponents;
     procedure UpdateComponentSkins;
@@ -74,6 +78,7 @@ type
     procedure UpdateSharpEActions;
     procedure UpdateSelectIcon;
     procedure LoadIcons;
+    procedure ShowOSD(pCaption : String);
   end;
 
 var
@@ -85,10 +90,58 @@ implementation
 uses
   JclSimpleXML,
   PlayerSelectWnd,
-  uSharpXMLUtils;
+  uSharpXMLUtils,
+  SharpNotify;
 
 {$R *.dfm}
 {$R MPGlyphs.res}
+
+procedure TMainForm.ShowOSD(pCaption : String);
+var
+  x,y : integer;
+  mon : HMonitor;
+  moninfo : TMonitorInfo;
+  p : TPoint;
+  edge: TSharpNotifyEdge;
+begin
+
+  if not sShowOSD then
+    exit;
+
+  GetCursorPos(p);
+  mon := MonitorFromPoint(p, MONITOR_DEFAULTTOPRIMARY);
+  moninfo.cbSize := SizeOf(moninfo);
+  GetMonitorInfo(mon, @moninfo);
+  case sOSDVertPos of
+    vpTop:    y := moninfo.rcMonitor.Top + 32;
+    vpCenter: y := moninfo.rcMonitor.Top + (moninfo.rcmonitor.Bottom - moninfo.rcmonitor.Top ) div 2;
+    else y := moninfo.rcMonitor.Bottom - 32;
+  end;
+  case sOSDHorizPos of
+    hpLeft:   x := moninfo.rcMonitor.Left + 32;
+    hpCenter: x := moninfo.rcMonitor.Left + (moninfo.rcMonitor.Right - moninfo.rcMonitor.Left) div 2;
+    else x := moninfo.rcMonitor.Right - 32;
+  end;
+  if (sOSDVertPos = vpTop) and (sOSDHorizPos = hpLeft) then
+    edge := neTopLeft
+  else if (sOSDVertPos = vpTop) and (sOSDHorizPos = hpCenter) then
+    edge := neTopCenter
+  else if (sOSDVertPos = vpTop) and (sOSDHorizPos = hpRight) then
+    edge := neTopRight
+  else if (sOSDVertPos = vpCenter) and (sOSDHorizPos = hpLeft) then
+    edge := neCenterLeft
+  else if (sOSDVertPos = vpCenter) and (sOSDHorizPos = hpCenter) then
+    edge := neCenterCenter
+  else if (sOSDVertPos = vpCenter) and (sOSDHorizPos = hpRight) then
+    edge := neCenterRight
+  else if (sOSDVertPos = vpBottom) and (sOSDHorizPos = hpLeft) then
+    edge := neBottomLeft
+  else if (sOSDVertPos = vpBottom) and (sOSDHorizPos = hpCenter) then
+    edge := neBottomCenter
+  else edge := neBottomRight;
+
+  SharpNotify.CreateNotifyText(0,nil,x,y,pCaption,edge,mInterface.SkinInterface.SkinManager,2000,moninfo.rcMonitor,True);
+end;
 
 function TMainForm.GetStartPlayer(Root : HKEY; Key : String; Value : String) : String;
 var
@@ -186,6 +239,7 @@ begin
         sPlayer := sPlayerList[index];
         UpdateSelectIcon;
         SaveSettings;
+        ShowOSD(sPlayer);
       end;
   end;
 end;
@@ -333,6 +387,21 @@ begin
 
   UpdateActions;
   UpdateSelectIcon;
+
+  // Load OSD Settings
+  sShowOSD := True;
+  sOSDVertPos := vpBottom;
+  sOSDHorizPos := hpCenter;
+
+  XML := TJclSimpleXML.Create;
+  if LoadXMLFromSharedFile(XML,SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\MultimediaInput\MultimediaInput.xml',True) then
+    with XML.Root.Items do
+    begin
+      sShowOSD := BoolValue('ShowOSD',True);
+      sOSDVertPos := TVerticalPos(IntValue('OSDVertPos',Integer(sOSDVertPos)));
+      sOSDHorizPos := THorizontalPos(IntValue('OSDHorizPos',Integer(sOSDHorizPos)));
+    end;
+  XML.Free;
 end;
 
 procedure TMainForm.mnOnClick(pItem: TSharpEMenuItem; pMenuWnd : TObject; var CanClose: boolean);
