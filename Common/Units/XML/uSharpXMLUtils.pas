@@ -95,11 +95,16 @@ end;
 function SaveXMLToSharedFile(var XML : TJclSimpleXML; filename : string) : boolean;
 var
   Stream : TSharedFileStream;
+  Dir : String;
 begin
   result := False;
   if XML = nil then
     exit;
 
+  Dir := ExtractFileDir(filename);
+  if not DirectoryExists(Dir) then
+    ForceDirectories(Dir);
+    
   if OpenFileStreamShared(Stream,sfaCreate,filename,True) = sfeSuccess then
   begin
     Stream.Size := 0;
