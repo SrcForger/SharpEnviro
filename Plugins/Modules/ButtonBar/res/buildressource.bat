@@ -1,1 +1,1 @@
-brcc32 glyphs.rc -fo ..\glyphs.res -v
+brcc32 ButtonBarGlyphs.rc -fo ..\ButtonBarGlyphs.res -v

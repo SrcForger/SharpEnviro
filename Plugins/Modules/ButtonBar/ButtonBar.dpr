@@ -114,9 +114,9 @@ end;
 
 procedure TInterfacedSharpBarModule.SetSize(Value: integer);
 begin
-  inherited SetSize(Value);
+//  inherited SetSize(Value);
 
-  TMainForm(Form).UpdateSize;
+  TMainForm(Form).UpdateSize(Value);
 end;
 
 procedure TInterfacedSharpBarModule.SetSkinInterface(Value: ISharpESkinInterface);

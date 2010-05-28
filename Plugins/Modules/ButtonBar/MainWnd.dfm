@@ -27,7 +27,19 @@ object MainForm: TMainForm
     Glyph32.CombineMode = cmMerge
     Glyph32.ResamplerClassName = 'TNearestResampler'
     Layout = blGlyphLeft
-    Caption = 'Click to Add Buttons'
+    AutoPosition = True
+  end
+  object sb_btnlist: TSharpEButton
+    Left = 2
+    Top = 24
+    Width = 127
+    Height = 25
+    AutoSize = True
+    OnMouseUp = sb_btnlistMouseUp
+    Glyph32.DrawMode = dmBlend
+    Glyph32.CombineMode = cmMerge
+    Glyph32.ResamplerClassName = 'TNearestResampler'
+    Layout = blGlyphLeft
     AutoPosition = True
   end
   object ButtonPopup: TPopupMenu
