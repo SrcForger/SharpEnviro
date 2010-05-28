@@ -2,25 +2,31 @@
 <MediaPlayers>
   <item>
     <Name>aTunes</Name>
-	<AppCommand>1</AppCommand>
-	<cmdPlay>command:play</cmdPlay>
-	<cmdPause>command:play</cmdPause>
-	<cmdStop>command:stop</cmdStop>
-	<cmdNext>command:next</cmdNext>
-	<cmdPrev>command:previous</cmdPrev>
-	<Icon>aTunes.png</Icon>
+    <AppCommand>1</AppCommand>
+    <cmdPlay>command:play</cmdPlay>
+    <cmdPause>command:play</cmdPause>
+    <cmdStop>command:stop</cmdStop>
+    <cmdNext>command:next</cmdNext>
+    <cmdPrev>command:previous</cmdPrev>
+    <Icon>aTunes.png</Icon>
   </item>
   <item>
     <Name>Foobar</Name>
     <WndClass>{97E27FAA-C0B3-4b8e-A693-ED7881E99FC1}</WndClass>
     <WndCaption></WndCaption>
     <Icon>foobar_icon.png</Icon>
+    <RegPath>SOFTWARE\foobar2000</RegPath>
+    <RegValue>InstallDir</RegValue>
+    <RegFile>\foobar2000.exe</RegFile>
   </item> 
   <item>
     <Name>Foobar (ColumnsUi)</Name>
     <WndClass>{E7076D1C-A7BF-4f39-B771-BCBE88F2A2A8}</WndClass>
     <WndCaption></WndCaption>
     <Icon>foobar_icon.png</Icon>
+    <RegPath>SOFTWARE\foobar2000</RegPath>
+    <RegValue>InstallDir</RegValue>
+    <RegFile>\foobar2000.exe</RegFile>
   </item> 
   <item>
     <Name>iTunes</Name>
@@ -33,7 +39,7 @@
     <WndClass>MJFrame</WndClass>
     <Icon>JRiverMediaCenter.png</Icon>
     <MessageType>1</MessageType>
-	<Command>33768</Command>
+    <Command>33768</Command>
     <btnPlay>10001</btnPlay>
     <btnPause>10000</btnPause>
     <btnStop>10002</btnStop>
@@ -68,13 +74,13 @@
   </item> 
   <item>
     <Name>Songbird</Name>
-	<AppCommand>1</AppCommand>
-	<cmdPlay>/hotkey:playback.playpause</cmdPlay>
-	<cmdPause>/hotkey:playback.pause</cmdPause>
-	<cmdStop>/hotkey:playback.stop</cmdStop>
-	<cmdNext>/hotkey:playback.nexttrack</cmdNext>
-	<cmdPrev>/hotkey:playback.previoustrack</cmdPrev>
-	<Icon>Songbird.png</Icon>
+    <AppCommand>1</AppCommand>
+    <cmdPlay>/hotkey:playback.playpause</cmdPlay>
+    <cmdPause>/hotkey:playback.pause</cmdPause>
+    <cmdStop>/hotkey:playback.stop</cmdStop>
+    <cmdNext>/hotkey:playback.nexttrack</cmdNext>
+    <cmdPrev>/hotkey:playback.previoustrack</cmdPrev>
+    <Icon>Songbird.png</Icon>
   </item>  
   <item>
     <Name>VLC Media Player</Name>
