@@ -1031,9 +1031,8 @@ begin
       // check if the default settings dir exists
       if DirectoryExists(GetSharpeDirectory + 'Settings\'+DEFAULTSETTINGSDIR) then
       begin
-        SysUtils.ForceDirectories(Fn + 'Settings');
-        CopyDir(GetSharpeDirectory + 'Settings\'+DEFAULTSETTINGSDIR, Fn + 'Settings');
-        RenameDir(Fn + 'Settings\'+DEFAULTSETTINGSDIR, Fn + 'Settings\User');
+        SysUtils.ForceDirectories(Fn + 'Settings\User');
+        CopyDir(GetSharpeDirectory + 'Settings\'+DEFAULTSETTINGSDIR + '\*', Fn + 'Settings\User\');
       end else Sysutils.ForceDirectories(Path);
     end;
   end else
@@ -1047,11 +1046,8 @@ begin
       // check if the default settings dir exists
       if DirectoryExists(Fn + 'Settings\'+DEFAULTSETTINGSDIR) then
       begin
-        if DirectoryExists(Fn + 'Settings\User\'+DEFAULTSETTINGSDIR) then
-          DeleteDir(Fn + 'Settings\User\'+DEFAULTSETTINGSDIR);
-        SysUtils.ForceDirectories(Fn + 'Settings\User\');
-        CopyDir(Fn + 'Settings\'+DEFAULTSETTINGSDIR,Fn + 'Settings\User');
-        RenameDir(Fn + 'Settings\User\'+DEFAULTSETTINGSDIR,Fn + 'Settings\User\'+User);
+        SysUtils.ForceDirectories(Fn + 'Settings\User\' + User);
+        CopyDir(Fn + 'Settings\' + DEFAULTSETTINGSDIR + '\*',Fn + 'Settings\User\' + User + '\');
       end else
       begin
         DirCheck(Fn,sRes);
@@ -1082,9 +1078,8 @@ begin
       // check if the default global settings directory exists in the SharpE Dir
       if DirectoryExists(GetSharpeDirectory + 'Settings\' + DEFAULTSETTINGSDIRGLOBAL) then
       begin
-        SysUtils.ForceDirectories(Fn + 'Settings');
-        CopyDir(GetSharpeDirectory + 'Settings\' + DEFAULTSETTINGSDIRGLOBAL, Fn + 'Settings');
-        RenameDir(Fn + 'Settings\' + DEFAULTSETTINGSDIRGLOBAL, Fn + 'Settings\Global');
+        SysUtils.ForceDirectories(Fn + 'Settings\Global');
+        CopyDir(GetSharpeDirectory + 'Settings\' + DEFAULTSETTINGSDIRGLOBAL + '\*', Fn + 'Settings\Global\');
       end else Sysutils.ForceDirectories(Path);
     end;
   end else
@@ -1097,7 +1092,8 @@ begin
       // check if the default settings dir exists
       if DirectoryExists(Fn + 'Settings\' + DEFAULTSETTINGSDIRGLOBAL) then
       begin
-        CopyDir(Fn + 'Settings\' + DEFAULTSETTINGSDIRGLOBAL,Fn + 'Settings\Global');
+        SysUtils.ForceDirectories(Fn + 'Settings\Global');
+        CopyDir(Fn + 'Settings\' + DEFAULTSETTINGSDIRGLOBAL + '\*',Fn + 'Settings\Global\');
       end else
       begin
         DirCheck(Fn,sRes);
