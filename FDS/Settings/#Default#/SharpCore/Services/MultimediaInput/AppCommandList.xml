@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<AppCommandList>
+  <AppCommand ID="7" Action="9" ActionStr="" DisableWMC="0"/>
+  <AppCommand ID="15" Action="10" ActionStr="" DisableWMC="0"/>
+  <AppCommand ID="52" Action="2" ActionStr="!MC-PrevPlayer" DisableWMC="-1"/>
+  <AppCommand ID="51" Action="2" ActionStr="!MC-NextPlayer" DisableWMC="-1"/>
+  <AppCommand ID="11" Action="2" ActionStr="!MC-Next" DisableWMC="-1"/>
+  <AppCommand ID="47" Action="2" ActionStr="!MC-Pause" DisableWMC="-1"/>
+  <AppCommand ID="46" Action="2" ActionStr="!MC-Play" DisableWMC="-1"/>
+  <AppCommand ID="14" Action="1" ActionStr="" DisableWMC="-1"/>
+  <AppCommand ID="12" Action="2" ActionStr="!MC-Prev" DisableWMC="-1"/>
+  <AppCommand ID="13" Action="2" ActionStr="!MC-Stop" DisableWMC="-1"/>
+  <AppCommand ID="44" Action="8" ActionStr="" DisableWMC="0"/>
+  <AppCommand ID="25" Action="7" ActionStr="" DisableWMC="0"/>
+  <AppCommand ID="24" Action="8" ActionStr="" DisableWMC="0"/>
+  <AppCommand ID="26" Action="6" ActionStr="" DisableWMC="0"/>
+  <AppCommand ID="9" Action="4" ActionStr="" DisableWMC="0"/>
+  <AppCommand ID="8" Action="5" ActionStr="" DisableWMC="0"/>
+  <AppCommand ID="10" Action="3" ActionStr="" DisableWMC="0"/>
+</AppCommandList>
