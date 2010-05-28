@@ -6,6 +6,7 @@ uses
   Classes,
   GR32,
   GR32_PNG,
+  GR32_LowLevel,
   JPeg,
   SysUtils,
   SharpSharedFileAccess;
@@ -71,7 +72,8 @@ procedure SaveAssign(Src,Dst : TBitmap32);
 begin
   Dst.SetSize(Src.Width,Src.Height);
   Dst.Clear(color32(0,0,0,0));
-  Dst.Draw(0,0,Src);
+  if not Src.Empty then
+    GR32_LowLevel.MoveLongword(Src.Bits[0], Dst.Bits[0], Src.Width * Src.Height);
 
   Dst.DrawMode := Src.DrawMode;
   Dst.CombineMode := Src.CombineMode;
