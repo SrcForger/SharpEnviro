@@ -28,8 +28,7 @@ unit BarPreview;
 interface
 
 uses SharpApi, Types, SharpThemeApiEx, uThemeConsts, Math, GR32, JclSimpleXML,
-  BarForm, SharpEBar, Windows, SysUtils, Dialogs, Graphics, uISharpETheme,
-  uSharpEMenu, uSharpEMenuSettings;
+  BarForm, SharpEBar, Windows, SysUtils, Dialogs, Graphics, uISharpETheme;
 
 procedure CreateBarPreview(srcBitmap: TBitmap32; theme, skin, scheme: string; barWidth: integer;
   var colors: TSharpEColorSet; drawGlass: boolean = false); overload;
