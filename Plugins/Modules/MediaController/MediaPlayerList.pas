@@ -52,6 +52,7 @@ type
     PlayerPath : String;
     RegPath : String;
     RegValue : String;
+    RegFile : String;
 
     // Application commands
     AppCommand : boolean;
@@ -223,6 +224,7 @@ begin
 
   RegPath := pXML.Value('RegPath','');
   RegValue := pXML.Value('RegValue','');
+  RegFile := pXML.Value('RegFile','');
 
   MessageType := TSendMessageType(pXML.IntValue('MessageType', Integer(smtAppCommand)));
   Command     := pXML.IntValue('Command',-1);

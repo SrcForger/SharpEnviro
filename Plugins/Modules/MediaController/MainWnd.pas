@@ -62,7 +62,7 @@ type
     FMPlayers : TMediaPlayerList;
     procedure WMExecAction(var msg : TMessage); message WM_SHARPEACTIONMESSAGE;
     procedure SendAppCommand(pType : TControlCommandType);
-    function GetStartPlayer(Root : HKEY; Key : String; Value : String) : String;
+    function GetStartPlayer(Root : HKEY; Key : String; Value : String; FileSuffix : String) : String;
   public
     sPlayer : String;
     sPSelect : Boolean;
@@ -143,7 +143,7 @@ begin
   SharpNotify.CreateNotifyText(0,nil,x,y,pCaption,edge,mInterface.SkinInterface.SkinManager,2000,moninfo.rcMonitor,True);
 end;
 
-function TMainForm.GetStartPlayer(Root : HKEY; Key : String; Value : String) : String;
+function TMainForm.GetStartPlayer(Root : HKEY; Key : String; Value : String; FileSuffix : String) : String;
 var
   Reg : TRegistry;
   PlayerPath : String;
@@ -156,7 +156,7 @@ begin
   PlayerPath := '';
   if Reg.OpenKey(Key,False) then
   begin
-    PlayerPath := Reg.ReadString(Value);
+    PlayerPath := Reg.ReadString(Value) + FileSuffix;
     Reg.CloseKey;
   end;
   if not FileExists(PlayerPath) then
@@ -518,7 +518,7 @@ begin
       if FileExists(mitem.PlayerPath) then
         SharpApi.SharpExecute('_nohist,' + mitem.PlayerPath)
       else begin
-        mitem.PlayerPath := GetStartPlayer(HKEY_LOCAL_MACHINE,mItem.RegPath,mItem.RegValue);
+        mitem.PlayerPath := GetStartPlayer(HKEY_LOCAL_MACHINE,mItem.RegPath,mItem.RegValue,mItem.RegFile);
         SaveSettings;
       end;
     end;
