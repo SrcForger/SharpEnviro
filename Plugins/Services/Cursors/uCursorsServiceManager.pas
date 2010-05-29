@@ -257,18 +257,12 @@ begin
       end;
 
       // Assign Bitmaps
+      FIsValid := true;
+      FHasAlpha := false;
       try
-        FIsValid := true;
-        try
-          LoadBitmap32FromPng(FBitmap, path, FHasAlpha);
-        except
-          try
-            FBitmap.LoadFromFile(path);
-          except
-            FIsValid := false;
-          end;
-        end;
-
+        if CompareText(ExtractFileExt(path),'.bmp') = 0 then
+          FBitmap.LoadFromFile(path)
+        else LoadBitmap32FromPng(FBitmap, path, FHasAlpha);
         ReplaceColors(clist);
       except
         FIsValid := false;
