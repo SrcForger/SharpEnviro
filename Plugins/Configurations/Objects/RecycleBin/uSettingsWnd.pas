@@ -474,6 +474,8 @@ begin
   FWhite48 := TBitmap32.Create;
   FWhite64 := TBitmap32.Create;
   LoadResources;
+
+  RefreshFontList;
 end;
 
 procedure TfrmSettings.FormDestroy(Sender: TObject);
@@ -491,8 +493,6 @@ procedure TfrmSettings.FormShow(Sender: TObject);
 begin
   UpdateIcon;
   UpdateCaptionPanelState;
-
-  RefreshFontList;
 end;
 
 procedure TfrmSettings.edtIconBeforeDialog(Sender: TObject; var AName: string;
