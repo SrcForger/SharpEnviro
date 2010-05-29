@@ -493,7 +493,7 @@ begin
 
   bDebug := False;
   bReboot := False;
-  bDoStartup := True;
+  bDoStartup := False;
   strExtension := '.dll';
   wndDebug := 0;
   stlCmdLine.DelimitedText := GetCommandLine;
@@ -502,8 +502,8 @@ begin
       bDebug := True;
     if LowerCase(stlCmdLine[i]) = '-reboot' then
       bReboot := True;
-    if LowerCase(stlCmdLine[i]) = '-nostartup' then
-      bDoStartup := False;
+    if LowerCase(stlCmdLine[i]) = '-startup' then
+      bDoStartup := True;
     if (LowerCase(stlCmdLine[i]) = '-ext') then
       if (i + 1) <= (stlCmdLine.Count - 1) then
         strExtension := stlCmdLine[i + 1]
@@ -579,5 +579,8 @@ begin
   finally
     ISkinInterface := nil;
   end;
+
+  CoUninitialize;
+  
   end.
 

@@ -77,7 +77,7 @@ begin
   begin
     dir := ExtractFileDir(Application.ExeName);
     dir := IncludeTrailingPathDelimiter(dir);
-    SetNewShell(PChar(dir + 'SharpCore.exe'));
+    SetNewShell(PChar(dir + 'SharpCore.exe -startup'));
   end
     else SetNewShell('explorer.exe');
 

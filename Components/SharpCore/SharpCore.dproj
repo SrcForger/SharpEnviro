@@ -50,6 +50,7 @@ if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
     <DelphiCompile Include="SharpCore.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
+    <DCCReference Include="..\..\Common\Units\DebugDialog\DebugDialog.pas" />
     <DCCReference Include="uComponentMan.pas" />
   </ItemGroup>
 </Project>

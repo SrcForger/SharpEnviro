@@ -88,7 +88,7 @@ Function setShellLeave
     # Seperate Explorer Fix
     WriteRegDWORD HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" DesktopProcess 1
     # Set Shell
-    WriteRegStr HKCU "Software\Microsoft\Windows NT\CurrentVersion\winlogon" Shell "$INSTDIR\SharpCore.exe"
+    WriteRegStr HKCU "Software\Microsoft\Windows NT\CurrentVersion\winlogon" Shell "$INSTDIR\SharpCore.exe -startup"
     # Ini File Mapping Change
     ${If} ${RunningX64}
       SetRegView 64
