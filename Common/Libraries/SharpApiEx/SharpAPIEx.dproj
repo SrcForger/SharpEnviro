@@ -14,19 +14,19 @@
     <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
     <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
     <DCC_ExeOutput>..\..\..\..\SharpE\</DCC_ExeOutput>
-    <DCC_UnitSearchPath>..\SharpAPI;..\..\Units\DebugDialog</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\SharpAPI;..\..\Units\DebugDialog</DCC_ResourcePath>
-    <DCC_ObjPath>..\SharpAPI;..\..\Units\DebugDialog</DCC_ObjPath>
-    <DCC_IncludePath>..\SharpAPI;..\..\Units\DebugDialog</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\SharpAPI;..\..\Units\DebugDialog;..\..\Units\SharpFileUtils;..\..\Units\XML</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\SharpAPI;..\..\Units\DebugDialog;..\..\Units\SharpFileUtils;..\..\Units\XML</DCC_ResourcePath>
+    <DCC_ObjPath>..\SharpAPI;..\..\Units\DebugDialog;..\..\Units\SharpFileUtils;..\..\Units\XML</DCC_ObjPath>
+    <DCC_IncludePath>..\SharpAPI;..\..\Units\DebugDialog;..\..\Units\SharpFileUtils;..\..\Units\XML</DCC_IncludePath>
     <DCC_Define>RELEASE</DCC_Define>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
     <DCC_ExeOutput>..\..\..\..\SharpE\</DCC_ExeOutput>
-    <DCC_UnitSearchPath>..\SharpAPI;..\..\Units\DebugDialog</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\SharpAPI;..\..\Units\DebugDialog</DCC_ResourcePath>
-    <DCC_ObjPath>..\SharpAPI;..\..\Units\DebugDialog</DCC_ObjPath>
-    <DCC_IncludePath>..\SharpAPI;..\..\Units\DebugDialog</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\SharpAPI;..\..\Units\DebugDialog;..\..\Units\XML;..\..\Units\SharpFileUtils</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\SharpAPI;..\..\Units\DebugDialog;..\..\Units\XML;..\..\Units\SharpFileUtils</DCC_ResourcePath>
+    <DCC_ObjPath>..\SharpAPI;..\..\Units\DebugDialog;..\..\Units\XML;..\..\Units\SharpFileUtils</DCC_ObjPath>
+    <DCC_IncludePath>..\SharpAPI;..\..\Units\DebugDialog;..\..\Units\XML;..\..\Units\SharpFileUtils</DCC_IncludePath>
     <DCC_Define>DEBUG</DCC_Define>
     <DCC_MapFile>3</DCC_MapFile>
   </PropertyGroup>
@@ -37,16 +37,17 @@
 <BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">True</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">0</VersionInfo><VersionInfo Name="MinorVer">7</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1031</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription">SharpAPI</VersionInfoKeys><VersionInfoKeys Name="FileVersion">0.7.0.0</VersionInfoKeys><VersionInfoKeys Name="InternalName">SharpAPI</VersionInfoKeys><VersionInfoKeys Name="LegalCopyright">SharpE Development Team</VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename">SharpAPI.dll</VersionInfoKeys><VersionInfoKeys Name="ProductName"></VersionInfoKeys><VersionInfoKeys Name="ProductVersion">0.7.0.0</VersionInfoKeys><VersionInfoKeys Name="Author">Malx@techie.com</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Excluded_Packages /><Source><Source Name="MainSource">SharpAPIEx.dpr</Source></Source></Delphi.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
   <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if $(Configuration)==Debug "..\..\..\Common\3rd party\Jedi\MakeJclDbg.exe" -E "$(OUTPUTDIR)$(OUTPUTNAME).map"
+if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <DelphiCompile Include="SharpAPIEx.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
     <DCCReference Include="..\..\..\Plugins\Services\Exec\uExecServiceRecentItemList.pas" />
     <DCCReference Include="..\..\..\Plugins\Services\Exec\uExecServiceUsedItemList.pas" />
+    <DCCReference Include="..\..\Units\DebugDialog\DebugDialog.pas" />
     <DCCReference Include="..\..\Units\SimpleUnits\SimpleForms.pas" />
   </ItemGroup>
-  <PropertyGroup>
-    <PostBuildEvent>if $(Configuration)==Debug "..\..\..\Common\3rd party\Jedi\MakeJclDbg.exe" -E "$(OUTPUTDIR)$(OUTPUTNAME).map"
-if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
-  </PropertyGroup>
 </Project>

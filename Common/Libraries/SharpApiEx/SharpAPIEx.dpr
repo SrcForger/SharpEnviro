@@ -77,14 +77,9 @@ var
 const
   xmlfile = 'SharpCore\Services\Exec\RiList.xml';
 begin
-
   // Check if greater than recent items capacity
   if ReturnCount > 50 then
-  begin
-    //ShowMessage('Must not exceed recent item count of 50');
-    // why display this error message? useless for any normal user...  BB
-    exit;
-  end;
+    ReturnCount := 50;
 
   TmpRI := TRecentItemsList.Create(GetSharpeUserSettingsPath + xmlfile);
   strl := TStringList.Create;
