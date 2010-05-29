@@ -180,14 +180,13 @@ Function DirectoryLeave
   
   Goto ValidDir
   InvalidDir:
-  # Show message box then take the user back to the Directory page.
-  MessageBox MB_OK|MB_ICONEXCLAMATION "Error: You choose to have SharpE store the user settings within the SharpE directory.$\n\
-  Installing into a protected directory like '$INSTDIR' is not possible in this case.$\n\
-  Please select another directory or choose to store the user settings globaly in the windows application data directory."
-  Abort
+    # Show message box then take the user back to the Directory page.
+    MessageBox MB_OK|MB_ICONEXCLAMATION "Error: You choose to have SharpE store the user settings within the SharpE directory.$\n\
+      Installing into a protected directory like '$INSTDIR' is not possible in this case.$\n\
+      Please select another directory or choose to store the user settings globaly in the windows application data directory."
+    Abort
 
   ValidDir:
-
 FunctionEnd
 
 Function getSettingsLeave
@@ -2730,6 +2729,9 @@ Section /o -un.Main UNSEC0000
     Delete "$INSTDIR\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons\Billy.png"
     Delete "$INSTDIR\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons\aTunes.png"
     
+    # SharpCompile settings file
+    Delete "$INSTDIR\SharpCompile-Settings.xml"
+    
     RMDir "$INSTDIR\Settings\#Default#\Themes\Sunrise"
     RMDir "$INSTDIR\Settings\#Default#\Themes\Open View"
     RMDir "$INSTDIR\Settings\#Default#\Themes\Forest"
@@ -2745,17 +2747,19 @@ Section /o -un.Main UNSEC0000
     RMDir "$INSTDIR\Settings\#Default#\SharpBar\Module Settings"
     RMDir "$INSTDIR\Settings\#Default#\SharpBar\Bars\98253653"
     RMDir "$INSTDIR\Settings\#Default#\SharpBar\Bars\96175986"
-    RMDir "$INSTDIR\Settings\#Default#"
+    RMDir /r "$INSTDIR\Settings\#Default#"
     
     RMDir "$INSTDIR\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons"
     RMDir "$INSTDIR\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput"
     RMDir "$INSTDIR\Settings\#DefaultGlobal#\SharpCore\Services"
     RMDir "$INSTDIR\Settings\#DefaultGlobal#\SharpCore"
-    RMDir "$INSTDIR\Settings\#DefaultGlobal#"
+    RMDir /r "$INSTDIR\Settings\#DefaultGlobal#"
     RMDir "$INSTDIR\Settings"
     
-    RmDir "$INSTDIR\Addons"
-    
+    RmDir /r "$INSTDIR\Addons"
+    RmDir /r "$INSTDIR\Cache"
+    RmDir /r "$INSTDIR\Logs"
+
     RmDir "$INSTDIR\Center\Root\_Components\_ComponentDlls"
     RmDir "$INSTDIR\Center\Root\_Components"
     RmDir "$INSTDIR\Center\Root\_Home"
@@ -2794,7 +2798,7 @@ Section /o -un.Main UNSEC0000
     RmDir "$INSTDIR\Icons"
     
     RmDir "$INSTDIR\Modules"
-    RmDir "$INSTDIR\Objects"
+    RmDir /r "$INSTDIR\Objects"
     RmDir "$INSTDIR\Services"
     
     RmDir "$INSTDIR\Skins\BB2\images\Modules\Taskbar"
