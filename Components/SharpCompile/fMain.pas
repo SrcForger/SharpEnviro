@@ -285,7 +285,7 @@ begin
   lbSummary.DoubleBuffered := True;
   sepLog.DoubleBuffered := True;
   panMain.DoubleBuffered := True;
-  sSettingsFile := ExpandFileName('SharpCompile-Settings.xml');
+  sSettingsFile := IncludeTrailingBackSlash(ExtractFileDir(Application.ExeName)) + 'SharpCompile-Settings.xml';
   LoadSettings;
   
   if ParamStr(1) <> '' then
