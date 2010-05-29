@@ -73,7 +73,7 @@ object frmEdit: TfrmEdit
       object edLinkTarget: TLabeledEdit
         Left = 60
         Top = 29
-        Width = 361
+        Width = 377
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         EditLabel.Width = 36
@@ -183,7 +183,7 @@ object frmEdit: TfrmEdit
       object edSubmenuTarget: TLabeledEdit
         Left = 60
         Top = 29
-        Width = 357
+        Width = 377
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         EditLabel.Width = 36
@@ -358,9 +358,9 @@ object frmEdit: TfrmEdit
       Caption = 'pagBlank'
       object Label4: TLabel
         AlignWithMargins = True
-        Left = 8
-        Top = 0
-        Width = 166
+        Left = 9
+        Top = 1
+        Width = 486
         Height = 13
         Margins.Left = 8
         Margins.Top = 0
@@ -369,6 +369,9 @@ object frmEdit: TfrmEdit
         Align = alTop
         Caption = 'There are no configuration options'
         Enabled = False
+        ExplicitLeft = 8
+        ExplicitTop = 0
+        ExplicitWidth = 166
       end
     end
     object pagMru: TJvStandardPage
@@ -478,7 +481,7 @@ object frmEdit: TfrmEdit
       Style = csDropDownList
       Anchors = [akLeft, akTop, akRight]
       DropDownCount = 20
-      ItemHeight = 0
+      ItemHeight = 13
       ParentShowHint = False
       ShowHint = True
       Sorted = True

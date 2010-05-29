@@ -345,6 +345,10 @@ begin
   if s <> '' then begin
     edLinkTarget.Text := s;
 
+    if (length(trim(edLinkIcon.Text)) = 0)
+      and (FileExists(s) or DirectoryExists(s)) then
+      edLinkIcon.Text := 'shell:icon';    
+
     if edLinkName.Text = '' then
       edLinkName.Text := ExtractFileName(s);
   end;
@@ -367,10 +371,14 @@ var
 begin
   s := SharpDialogs.TargetDialog(STI_ALL_TARGETS, Mouse.CursorPos);
 
-  if s <> '' then begin
+  if s <> '' then
+  begin
     edSubmenuTarget.Text := s;
 
-    if edSubmenuCaption.Text = '' then
+    if (length(trim(edSubMenuIcon.Text)) = 0) and (FileExists(s)) then
+      edSubMenuIcon.Text := 'shell:icon';
+
+    if length(trim(edSubmenuCaption.Text)) = 0 then
       edSubmenuCaption.Text := ExtractFileName(s);
   end;
 end;
