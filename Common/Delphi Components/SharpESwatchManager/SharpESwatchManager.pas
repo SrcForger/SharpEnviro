@@ -853,19 +853,17 @@ var
 begin
   Theme := GetCurrentTheme;
 
-  For i := 0 to Theme.Scheme.GetColorCount - 1 do begin
+  for i := 0 to Theme.Scheme.GetColorCount - 1 do
+  begin
     tmpColor := Theme.Scheme.GetColorByIndex(i);
 
-    if tmpColor.schemetype = stColor then begin
+    if tmpColor.schemetype = stColor then
+    begin
       newItem := TSharpESwatchCollectionItem.Create(FSwatches);
-      try
-        newItem.System := True;
-        newItem.ColorName := tmpColor.Name;
-        newItem.Color := tmpColor.Color;
-        newItem.ColorCode := 0 - (i+1);
-      finally
-        newItem.Free;
-      end;
+      newItem.System := True;
+      newItem.ColorName := tmpColor.Name;
+      newItem.Color := tmpColor.Color;
+      newItem.ColorCode := 0 - (i+1);
     end;
   end;
 end;
