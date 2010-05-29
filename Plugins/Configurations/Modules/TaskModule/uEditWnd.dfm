@@ -181,7 +181,7 @@ object frmEdit: TfrmEdit
         Top = -1
         Width = 129
         Height = 17
-        Caption = 'Minimise Tasks'
+        Caption = 'Minimize Tasks'
         TabOrder = 0
         OnClick = SettingsChange
       end
