@@ -55,6 +55,9 @@ function GetNearestIconSize(Height : integer) : integer;
 
 implementation
 
+var
+  ShellIconAccess : TRTLCriticalSection;
+
 
 type
   TColorRec = packed record
@@ -235,7 +238,7 @@ begin
   else
     Attr := FILE_ATTRIBUTE_NORMAL;
 
-  
+
   ImageListHandle := SHGetFileInfo( pChar(FileName),
                                     Attr,
                                     FileInfo, sizeof( SHFILEINFO ),
@@ -305,8 +308,11 @@ var
 begin
   Target := GetFileNameWithoutParams(Target);
   if CompareText(Icon,'shell:icon') = 0 then
-     result := (extrShellIcon(Bmp,Target,Size) <> 0)
-  else
+  begin
+    EnterCriticalSection(ShellIconAccess);
+    result := (extrShellIcon(Bmp,Target,Size) <> 0);
+    LeaveCriticalSection(ShellIconAccess);
+  end else
   begin
     Theme := GetCurrentTheme;
     if Theme.Icons.IsIconInIconSet(Icon) then
@@ -344,5 +350,11 @@ begin
     result := 128
   else result := 256;
 end;
+
+initialization
+  InitializeCriticalSection(ShellIconAccess);
+
+finalization
+  DeleteCriticalSection(ShellIconAccess);
 
 end.
