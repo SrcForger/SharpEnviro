@@ -135,6 +135,7 @@ begin
 
   finally
     list.Free;
+    tokens.Free;
   end;
 end;
 
@@ -163,11 +164,13 @@ begin
       if IniFileMappingFix then
         Writeln('Applying IniFileMapping fix... Success')
       else Writeln('Applying IniFileMapping fix... Failed');
-    end else if CompareText(par,'DeleteKeyValue') = 0 then begin
-
+    end else if CompareText(par,'DeleteKeyValue') = 0 then
+    begin
+      {$WARNINGS OFF}
       if DeleteKeyValue(CmdLine) then
         Writeln('Deleting RunOnce Key... Success')
       else Writeln('Deleting RunOnce Key... Failed');
+      {$WARNINGS ON}
     end;
   end;
 end.
