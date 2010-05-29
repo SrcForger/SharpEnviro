@@ -29,6 +29,7 @@ interface
 uses
   // Standard
   Classes,
+  Graphics,
   ContNrs,
   SysUtils,
   math,
@@ -39,7 +40,9 @@ uses
   jclIniFiles,
 
   // JVCL
-  JvSimpleXml;
+  JclSimpleXml,
+  SharpApi,
+  uSharpXMLUtils;
 
 type
   // "Private" Object, TAliasList needs it...
@@ -82,18 +85,10 @@ type
 var
   TmpMui: TUsedItemsList;
 
-procedure Debug(Text: string; DebugType: Integer);
 function CompareNames(Item1, Item2: Pointer): Integer;
 
 implementation
 
-{uses
-  SharpApi;}
-
-procedure Debug(Text: string; DebugType: Integer);
-begin
-  //SendDebugMessageEx('Exec Service', Pchar(Text), 0, DebugType);
-end;
 { TUsedItemsList }
 
 {$WARNINGS OFF}
@@ -179,92 +174,43 @@ end;
 
 procedure TUsedItemsList.Load(FileName: string);
 var
-  ItemCount, Loop: Integer;
-  xml: TjvSimpleXml;
-  prop: string;
-  sMsg: String;
+  n: Integer;
+  xml: TJclSimpleXml;
 begin
-
-  xml := TJvSimpleXml.Create(nil);
-
-  try
-    try
-      xml.LoadFromFile(FileName);
-
-      if xml.Root.Name <> 'MUItemList' then begin
-        sMsg := 'Invalid MUItemList File' + #13;
-        //Debug(sMsg, DMT_ERROR);
-
-        //sMsg := sMsg + Format('Expected "%s" found "%s"',['MUItemList',xml.Root.Name]);
-        //MessageDlg(sMsg, mtError, [mbOK], 0);
-
-        // Save empty and reload
-        exit;
+  xml := TJclSimpleXml.Create;
+  if LoadXMLFromSharedFile(Xml,FileName,true) then
+  begin
+    for n := 0 to xml.Root.Items.Count - 1 do
+      with xml.Root.Items.item[n] do
+      begin
+        self.Add(Properties.Value('Value',''),
+                 StrtoDateTime(Properties.Value('LastUsed', '')),
+                 StrToInt(Properties.Value('Count', '')));
       end;
-
-      Itemcount := xml.Root.Properties.Item[0].IntValue;
-      for Loop := 0 to itemcount - 1 do begin
-        prop := 'MUI' + inttostr(loop);
-
-        with xml.Root.Items do begin
-
-          self.Add(ItemNamed['MUI' + inttostr(loop)].Properties.Value('Value',
-            ''),
-            StrtoDateTime(ItemNamed['MUI' +
-            inttostr(loop)].Properties.Value('LastUsed', '')),
-              StrToInt(ItemNamed['MUI' +
-            inttostr(loop)].Properties.Value('Count', '')
-              ));
-        end;
-      end;
-    except
-
-      on E: Exception do begin
-        //Debug('Error While Loading Xml File', DMT_ERROR);
-        //Debug(E.Message, DMT_TRACE);
-
-        // Create new file
-        Save;
-      end;
-    end;
-  finally
-    xml.Free;
-  end;
+  end else SharpApi.SendDebugMessageEx('Exec Service',PChar('Error Loading Most Used Item List from ' + Filename), clred, DMT_ERROR);
+  xml.Free;
 end;
 
 procedure TUsedItemsList.Save(FileName: string);
 var
   i: Integer;
-  Xml: TjvSimpleXml;
+  Xml: TJclSimpleXml;
 begin
   DeleteFile(pchar(FileName));
-  Xml := TJvSimpleXml.Create(nil);
+  Xml := TJclSimpleXml.Create;
+  Xml.Root.Name := 'MUItemList';
 
-  try
-    try
-      Xml.Root.Name := 'MUItemList';
-      xml.Root.Properties.Add('ItemCount', Items.count);
-
-      for i := 0 to Items.Count - 1 do begin
-        Xml.Root.Items.Add(Format('MUI%d', [i]));
-        Xml.Root.Items.Item[i].Properties.Add('Value', Self[i].Value);
-        Xml.Root.Items.Item[i].Properties.Add('LastUsed',
-          FormatDateTime('dd/mm/yyyy hh:nn:ss', Self[i].LastUsed));
-        Xml.Root.Items.Item[i].Properties.Add('Count',
-          IntToStr(Self[i].OpenCount));
-      end;
-
-      Xml.SaveToFile(FileName);
-    except
-      on E: Exception do begin
-        //Debug('Error While Saving Xml File', DMT_ERROR);
-        //Debug(E.Message, DMT_TRACE);
-      end;
+  for i := 0 to Items.Count - 1 do
+    with Xml.Root.Items.Add(Format('MUI%d', [i])) do
+    begin
+      Properties.Add('Value', Self[i].Value);
+      Properties.Add('LastUsed', FormatDateTime('dd/mm/yyyy hh:nn:ss', Self[i].LastUsed));
+      Properties.Add('Count', IntToStr(Self[i].OpenCount));
     end;
 
-  finally
-    Xml.Free;
-  end;
+  if not SaveXMLToSharedFile(Xml,FileName,True) then
+    SharpApi.SendDebugMessageEx('Exec Service',PChar('Error Saving Most Used Item List to ' + Filename), clred, DMT_ERROR);
+  Xml.Free;
 end;
 
 procedure TUsedItemsList.Save;

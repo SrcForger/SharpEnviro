@@ -28,6 +28,7 @@ interface
 uses
   // Standard
   Classes,
+  Graphics,
   ContNrs,
   SysUtils,
   dialogs,
@@ -38,7 +39,8 @@ uses
   JclSysInfo,
 
   // JVCL
-  JvSimpleXml;
+  JclSimpleXml,
+  uSharpXMLUtils;
 
 type
 
@@ -193,45 +195,24 @@ end;
 procedure TPathIncludeList.Save(AFileName: string);
 var
   i: Integer;
-  Xml: TjvSimpleXml;
+  Xml: TJclSimpleXml;
 begin
-  DeleteFile(Pchar(AFileName));
-  Xml := TJvSimpleXml.Create(nil);
-
-  try
-    try
-      Xml.Root.Name := 'PathInclude';
-      xml.Root.Properties.Add('ItemCount', FItems.Count);
-
-      for i := 0 to FItems.Count - 1 do
+  Xml := TJclSimpleXml.Create;
+  Xml.Root.Name := 'PathInclude';
+  for i := 0 to FItems.Count - 1 do
+    if Item[i].Internal = False then
+      with Xml.Root.Items.Add('PathIncludeItem') do
       begin
-        if Item[i].Internal = False then
-        begin
-
-          Xml.Root.Items.Add(Format('PathInclude%d', [i]));
-          Xml.Root.Items.Item[i].Items.Add('Path',
-            Item[i].Path);
-          Xml.Root.Items.Item[i].Items.Add('WildCard',
-            Item[i].WildCard);
-          Xml.Root.Items.Item[i].Items.Add('RemoveExtension',
-            Item[i].RemoveExtension);
-          Xml.Root.Items.Item[i].Items.Add('RemovePath',
-            Item[i].RemovePath);
-        end;
+        Items.Add('Path', Item[i].Path);
+        Items.Add('WildCard', Item[i].WildCard);
+        Items.Add('RemoveExtension', Item[i].RemoveExtension);
+        Items.Add('RemovePath', Item[i].RemovePath);
       end;
 
-      Xml.SaveToFile(FileName);
-    except
-      on E: Exception do
-      begin
-        Debug('Error While Saving Xml File', DMT_ERROR);
-        Debug(E.Message, DMT_TRACE);
-      end;
-    end;
+  if not SaveXMLToSharedFile(Xml,AFilename,True) then
+    SharpApi.SendDebugMessageEx('Exec Service',PChar('Error Saving Path Inlcude List to ' + AFilename), clred, DMT_ERROR);
 
-  finally
-    Xml.Free;
-  end;
+  Xml.Free;
 end;
 
 procedure TPathIncludeList.Save;
@@ -246,61 +227,25 @@ end;
 
 procedure TPathIncludeList.Load(AFileName: string);
 var
-  ItemCount, Loop: Integer;
-  xml: TjvSimpleXml;
-  prop: string;
-  sMsg: string;
+  n: Integer;
+  xml: TJclSimpleXml;
 begin
-
   AddInternals;
-  xml := TJvSimpleXml.Create(nil);
+  xml := TJclSimpleXml.Create;
 
-  try
-    try
-      xml.LoadFromFile(FileName);
-
-      if xml.Root.Name <> 'PathInclude' then
-      begin
-        sMsg := 'Invalid Path Inclusion File' + #13;
-        Debug(sMsg, DMT_ERROR);
-
-        sMsg := sMsg + Format('Expected "%s" found "%s"', ['PathInclude',
-          xml.Root.Name]);
-        MessageDlg(sMsg, mtError, [mbOK], 0);
-
-        exit;
-      end;
-
-      Itemcount := xml.Root.Properties.Item[0].IntValue;
-      for Loop := 0 to itemcount - 1 do
-      begin
-        prop := 'PathInclude' + inttostr(loop);
-
-        if xml.Root.Items.ItemNamed[prop] <> nil then
-
-          with xml.Root.Items.ItemNamed[prop].Items do
-          begin
-
-            Self.Add(
-              Value('Path', ''),
-              Value('WildCard', ''),
-              BoolValue('RemoveExtension', false),
-              BoolValue('RemovePath', false));
-          end;
-      end;
-    except
-
-      on E: Exception do
-      begin
-        Debug('Error While Loading Xml File', DMT_ERROR);
-        Debug(E.Message, DMT_TRACE);
-
-        Save;
-      end;
-    end;
-  finally
-    xml.Free;
-  end;
+  if LoadXMLFromSharedFile(XML,FileName,true) then
+  begin
+    xml.LoadFromFile(FileName);
+    for n := 0 to xml.Root.Items.count - 1 do
+      with xml.Root.Items.Item[n].Items do
+        begin
+          Self.Add(Value('Path', ''),
+                   Value('WildCard', ''),
+                   BoolValue('RemoveExtension', false),
+                   BoolValue('RemovePath', false));
+        end;
+  end else SharpApi.SendDebugMessageEx('Exec Service',PChar('Error Loading Path Inlcude List from ' + AFilename), clred, DMT_ERROR);
+  xml.Free;
 end;
 
 procedure TPathIncludeList.AddInternals;

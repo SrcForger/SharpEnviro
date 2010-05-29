@@ -29,6 +29,7 @@ interface
 uses
   // Standard
   Classes,
+  Graphics,
   ContNrs,
   SysUtils,
   windows,
@@ -37,7 +38,11 @@ uses
   jclIniFiles,
 
   // JVCL
-  JvSimpleXml;
+  JclSimpleXml,
+
+  // SharpE
+  uSharpXMLUtils,
+  SharpApi;
 
 type
   // "Private" Object, TAliasList needs it...
@@ -71,7 +76,6 @@ type
 var
   TmpRI: TRecentItemsList;
 
-procedure Debug(Text: string; DebugType: Integer);
 
 implementation
 
@@ -80,11 +84,6 @@ implementation
 
 const
   RecentItemCount = 50;
-
-procedure Debug(Text: string; DebugType: Integer);
-begin
-  //SendDebugMessageEx('Exec Service', Pchar(Text), 0, DebugType);
-end;
 
 {$WARNINGS OFF}
 function TRecentItemsList.Add(Value: string): TRecentItemsItem;
@@ -144,78 +143,33 @@ end;
 
 procedure TRecentItemsList.Load(FileName: string);
 var
-  ItemCount, Loop: Integer;
-  xml: TjvSimpleXml;
-  prop: string;
-  sMsg: String;
+  n: Integer;
+  xml: TJclSimpleXml;
 begin
-
-  xml := TJvSimpleXml.Create(nil);
-
-  try
-    try
-      xml.LoadFromFile(FileName);
-
-      if xml.Root.Name <> 'RecentItemList' then begin
-        sMsg := 'Invalid RecentItemList File' + #13;
-        exit;
-      end;
-
-      Itemcount := xml.Root.Properties.Item[0].IntValue;
-      for Loop := 0 to itemcount - 1 do begin
-        prop := 'RI' + inttostr(loop);
-
-        with xml.Root.Items do begin
-
-          if ItemNamed[prop] <> nil then
-            self.Add(
-              ItemNamed[prop].Items.Value('Value', ''));
-        end;
-      end;
-    except
-
-      on E: Exception do begin
-        //Debug('Error While Loading Xml File', DMT_ERROR);
-        //Debug(E.Message, DMT_TRACE);
-
-        // Create New
-        Save;
-      end;
-    end;
-  finally
-    xml.Free;
-  end;
+  xml := TJclSimpleXml.Create;
+  if LoadXMLFromSharedFile(xml,filename,true) then
+  begin
+    for n := 0 to xml.root.items.count - 1 do
+      self.Add(xml.root.Items.item[n].Value);
+  end else SharpApi.SendDebugMessageEx('Exec Service',PChar('Error Loading Recent Item List from ' + Filename), clred, DMT_ERROR);
+  xml.Free;
 end;
 
 procedure TRecentItemsList.Save(FileName: string);
 var
   i: Integer;
-  Xml: TjvSimpleXml;
+  Xml: TJclSimpleXml;
 begin
-  DeleteFile(pchar(FileName));
-  Xml := TJvSimpleXml.Create(nil);
+  Xml := TJclSimpleXml.Create;
+  Xml.Root.Name := 'RecentItemList';
 
-  try
-    try
-      Xml.Root.Name := 'RecentItemList';
-      xml.Root.Properties.Add('ItemCount', Items.count);
+  for i := 0 to Items.Count - 1 do
+    Xml.Root.Items.Add('RecentItem',Self[i].Value);
 
-      for i := 0 to Items.Count - 1 do begin
-        Xml.Root.Items.Add(Format('RI%d', [i]));
-        Xml.Root.Items.Item[i].Items.Add('Value', Self[i].Value);
-      end;
+  if not SaveXMLToSharedFile(Xml,Filename,True) then
+    SharpApi.SendDebugMessageEx('Exec Service',PChar('Error Saving Recent Item List to ' + Filename), clred, DMT_ERROR);
 
-      Xml.SaveToFile(FileName);
-    except
-      on E: Exception do begin
-        //Debug('Error While Saving Xml File', DMT_ERROR);
-        //Debug(E.Message, DMT_TRACE);
-      end;
-    end;
-
-  finally
-    Xml.Free;
-  end;
+  Xml.Free;
 end;
 
 procedure TRecentItemsList.Save;
