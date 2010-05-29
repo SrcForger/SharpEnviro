@@ -75,7 +75,6 @@ type
   TfrmEdit = class(TForm)
     edName: TLabeledEdit;
     cbFilterBy: TComboBox;
-    pnlContainer: TSharpERoundPanel;
     pcEdit: TPageControl;
     tabEditSearch: TTabSheet;
     btnSubmenuTargetBrowse: TButton;
@@ -91,6 +90,7 @@ type
     rbWindow: TJvXPCheckbox;
     JvLabel1: TLabel;
     ilWndClass: TPngImageList;
+    pnlContainer: TSharpERoundPanel;
 
     procedure valNameExistsValidate(Sender: TObject;
       ValueToValidate: Variant; var Valid: Boolean);
@@ -156,9 +156,9 @@ begin
             cbFilterBy.ItemIndex := 0;
             
             rbWindow.Checked := false;
-            rbMinimisedTasks.Checked := false;
+            rbMinimisedTasks.Checked := true;
             rbCurrentMonitor.Checked := false;
-            rbProcess.Checked := false;
+            rbProcess.Checked := true;
             rbCurrentVWM.Checked := false;
           finally
             FUpdating := false;
@@ -193,6 +193,9 @@ begin
                     tmpItem.Checked := True;
                 end;
 
+                rbProcess.Checked := true;
+                rbCurrentMonitor.Checked := true;                
+
                 cbFilterBy.ItemIndex := 0;
                 tabWindowCommand.Show;
               end;
@@ -201,6 +204,9 @@ begin
                 rbWindow.Checked := True;
                 edSubmenuTarget.Text := tmpFilter.WndClassName;
                 cbFilterBy.ItemIndex := 1;
+
+                rbCurrentMonitor.Checked := true;
+
                 tabEditSearch.Show;
               end;
             fteProcess: begin
@@ -208,6 +214,9 @@ begin
                 rbProcess.Checked := True;
                 edSubmenuTarget.Text := tmpFilter.FileName;
                 cbFilterBy.ItemIndex := 1;
+
+                rbCurrentMonitor.Checked := true;
+
                 tabEditSearch.Show;
               end;
             fteCurrentMonitor,
@@ -218,6 +227,10 @@ begin
                 else if tmpFilter.CurrentVWM then rbCurrentVWM.Checked := True
                 else if tmpFilter.Minimised then rbMinimisedTasks.Checked := True;
                 cbFilterBy.ItemIndex := 2;
+
+                rbProcess.Checked := true;
+                rbCurrentVWM.Checked := false;                
+
                 tabSelect.Show;
               end;
           end;

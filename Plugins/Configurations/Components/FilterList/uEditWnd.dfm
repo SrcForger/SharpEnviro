@@ -3,7 +3,7 @@ object frmEdit: TfrmEdit
   Top = 363
   BorderStyle = bsNone
   Caption = 'Hotkey Configuration'
-  ClientHeight = 165
+  ClientHeight = 162
   ClientWidth = 552
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
@@ -16,7 +16,7 @@ object frmEdit: TfrmEdit
   OnShow = FormShow
   DesignSize = (
     552
-    165)
+    162)
   PixelsPerInch = 96
   TextHeight = 14
   object JvLabel1: TLabel
@@ -29,7 +29,7 @@ object frmEdit: TfrmEdit
     Transparent = True
   end
   object edName: TLabeledEdit
-    Left = 56
+    Left = 60
     Top = 8
     Width = 254
     Height = 22
@@ -57,138 +57,171 @@ object frmEdit: TfrmEdit
       'Window or Process'
       'System Options')
   end
-  object pnlContainer: TSharpERoundPanel
-    Left = 8
-    Top = 39
-    Width = 536
-    Height = 119
-    Anchors = [akLeft, akTop, akRight, akBottom]
-    BevelOuter = bvNone
-    Caption = 'pnlContainer'
-    ParentBackground = False
-    ParentColor = True
+  object pcEdit: TPageControl
+    AlignWithMargins = True
+    Left = 4
+    Top = 38
+    Width = 544
+    Height = 120
+    Margins.Left = 4
+    Margins.Top = 38
+    Margins.Right = 4
+    Margins.Bottom = 4
+    ActivePage = tabWindowCommand
+    Align = alClient
+    Style = tsFlatButtons
     TabOrder = 2
-    DrawMode = srpNormal
-    NoTopBorder = False
-    RoundValue = 10
-    BorderColor = clBtnFace
-    Border = False
-    BackgroundColor = clWindow
-    object pcEdit: TPageControl
-      AlignWithMargins = True
-      Left = 4
-      Top = 4
-      Width = 528
-      Height = 111
-      Margins.Left = 4
-      Margins.Top = 4
-      Margins.Right = 4
-      Margins.Bottom = 4
-      ActivePage = tabEditSearch
-      Align = alClient
-      Style = tsFlatButtons
-      TabOrder = 0
-      TabStop = False
-      object tabEditSearch: TTabSheet
-        Caption = 'tabEditSearch'
-        TabVisible = False
-        DesignSize = (
-          520
-          101)
-        object btnSubmenuTargetBrowse: TButton
-          Left = 463
-          Top = 0
-          Width = 54
-          Height = 22
-          Anchors = [akTop, akRight]
-          Caption = 'Browse'
-          TabOrder = 1
-          OnClick = btnSubmenuTargetBrowseClick
-        end
-        object edSubmenuTarget: TLabeledEdit
-          Left = 52
-          Top = 0
-          Width = 400
-          Height = 22
-          Anchors = [akLeft, akTop, akRight]
-          EditLabel.Tag = -1
-          EditLabel.Width = 34
-          EditLabel.Height = 14
-          EditLabel.Caption = 'Target:'
-          LabelPosition = lpLeft
-          LabelSpacing = 6
-          TabOrder = 0
-          OnChange = UpdateEditState
-        end
-        object rbProcess: TJvXPCheckbox
-          Left = 52
-          Top = 32
-          Width = 93
-          Height = 17
-          Caption = 'Process'
-          TabOrder = 2
-          Checked = True
-          State = cbChecked
-          OnClick = rbProcessClick
-        end
-        object rbWindow: TJvXPCheckbox
-          Left = 151
-          Top = 32
-          Width = 113
-          Height = 17
-          Caption = 'Window'
-          TabOrder = 3
-          OnClick = rbProcessClick
-        end
+    TabStop = False
+    ExplicitLeft = -1
+    ExplicitTop = 33
+    ExplicitHeight = 123
+    object tabEditSearch: TTabSheet
+      Caption = 'tabEditSearch'
+      TabVisible = False
+      ExplicitWidth = 520
+      ExplicitHeight = 101
+      DesignSize = (
+        536
+        110)
+      object btnSubmenuTargetBrowse: TButton
+        Left = 479
+        Top = 0
+        Width = 54
+        Height = 22
+        Anchors = [akTop, akRight]
+        Caption = 'Browse'
+        TabOrder = 1
+        OnClick = btnSubmenuTargetBrowseClick
+        ExplicitLeft = 463
       end
-      object tabSelect: TTabSheet
-        Caption = 'tabSelect'
-        ImageIndex = 1
-        TabVisible = False
-        object rbMinimisedTasks: TJvXPCheckbox
-          AlignWithMargins = True
-          Left = 3
-          Top = 46
-          Width = 514
-          Height = 17
-          Caption = 'Minimised Tasks'
-          TabOrder = 2
-          Align = alTop
-          OnClick = SystemOptionsClick
-        end
-        object rbCurrentMonitor: TJvXPCheckbox
-          AlignWithMargins = True
-          Left = 3
-          Top = 23
-          Width = 514
-          Height = 17
-          Caption = 'Current Monitor'
-          TabOrder = 1
-          Align = alTop
-          OnClick = SystemOptionsClick
-        end
-        object rbCurrentVWM: TJvXPCheckbox
-          AlignWithMargins = True
-          Left = 3
-          Top = 0
-          Width = 514
-          Height = 17
-          Margins.Top = 0
-          Caption = 'Current VWM'
-          TabOrder = 0
-          Align = alTop
-          OnClick = SystemOptionsClick
-        end
+      object edSubmenuTarget: TLabeledEdit
+        Left = 52
+        Top = 0
+        Width = 416
+        Height = 22
+        Anchors = [akLeft, akTop, akRight]
+        EditLabel.Tag = -1
+        EditLabel.Width = 34
+        EditLabel.Height = 14
+        EditLabel.Caption = 'Target:'
+        LabelPosition = lpLeft
+        LabelSpacing = 6
+        TabOrder = 0
+        OnChange = UpdateEditState
+        ExplicitWidth = 400
       end
-      object tabWindowCommand: TTabSheet
-        Caption = 'tabWindowCommand'
-        ImageIndex = 2
-        TabVisible = False
+      object rbProcess: TJvXPCheckbox
+        Left = 52
+        Top = 32
+        Width = 93
+        Height = 17
+        Caption = 'Process'
+        TabOrder = 2
+        Checked = True
+        State = cbChecked
+        OnClick = rbProcessClick
+      end
+      object rbWindow: TJvXPCheckbox
+        Left = 151
+        Top = 32
+        Width = 113
+        Height = 17
+        Caption = 'Window'
+        TabOrder = 3
+        OnClick = rbProcessClick
+      end
+    end
+    object tabSelect: TTabSheet
+      Caption = 'tabSelect'
+      ImageIndex = 1
+      TabVisible = False
+      ExplicitHeight = 113
+      object rbMinimisedTasks: TJvXPCheckbox
+        AlignWithMargins = True
+        Left = 51
+        Top = 46
+        Width = 482
+        Height = 17
+        Margins.Left = 51
+        Caption = 'Minimized Tasks'
+        TabOrder = 2
+        Align = alTop
+        OnClick = SystemOptionsClick
+        ExplicitLeft = 3
+        ExplicitWidth = 530
+      end
+      object rbCurrentMonitor: TJvXPCheckbox
+        AlignWithMargins = True
+        Left = 51
+        Top = 23
+        Width = 482
+        Height = 17
+        Margins.Left = 51
+        Caption = 'Current Monitor'
+        TabOrder = 1
+        Align = alTop
+        OnClick = SystemOptionsClick
+        ExplicitLeft = 3
+        ExplicitWidth = 530
+      end
+      object rbCurrentVWM: TJvXPCheckbox
+        AlignWithMargins = True
+        Left = 51
+        Top = 0
+        Width = 482
+        Height = 17
+        Margins.Left = 51
+        Margins.Top = 0
+        Caption = 'Current VWM'
+        TabOrder = 0
+        Align = alTop
+        OnClick = SystemOptionsClick
+        ExplicitLeft = 52
+        ExplicitWidth = 486
+      end
+    end
+    object tabWindowCommand: TTabSheet
+      Caption = 'tabWindowCommand'
+      ImageIndex = 2
+      TabVisible = False
+      ExplicitHeight = 113
+      DesignSize = (
+        536
+        110)
+      object pnlContainer: TSharpERoundPanel
+        AlignWithMargins = True
+        Left = 0
+        Top = 0
+        Width = 528
+        Height = 108
+        Margins.Left = 4
+        Margins.Top = 4
+        Margins.Right = 4
+        Margins.Bottom = 4
+        Anchors = [akLeft, akTop, akRight, akBottom]
+        BevelOuter = bvNone
+        Caption = 'pnlContainer'
+        ParentBackground = False
+        ParentColor = True
+        TabOrder = 0
+        DrawMode = srpNormal
+        NoTopBorder = False
+        RoundValue = 10
+        BorderColor = clBtnFace
+        Border = False
+        BackgroundColor = clWindow
+        ExplicitWidth = 536
+        ExplicitHeight = 119
         object lbSwCommands: TSharpEListBoxEx
-          Left = 0
-          Top = 0
+          AlignWithMargins = True
+          Left = 4
+          Top = 4
           Width = 520
-          Height = 101
+          Height = 100
+          Margins.Left = 4
+          Margins.Top = 4
+          Margins.Right = 4
+          Margins.Bottom = 4
           Columns = <
             item
               Width = 20
@@ -214,6 +247,8 @@ object frmEdit: TfrmEdit
           AutosizeGrid = False
           Borderstyle = bsNone
           Align = alClient
+          ExplicitTop = 8
+          ExplicitHeight = 103
         end
       end
     end
