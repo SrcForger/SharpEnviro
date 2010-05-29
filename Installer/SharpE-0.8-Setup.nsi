@@ -70,6 +70,7 @@ Page custom setShell setShellLeave
 !insertmacro MUI_UNPAGE_CONFIRM
 UninstPage custom un.getRunningComponents un.getRunningComponentsLeave
 UninstPage custom un.unsetShell un.unsetShellLeave
+!define MUI_PAGE_CUSTOMFUNCTION_LEAVE "un.FinishPageLeave"
 !insertmacro MUI_UNPAGE_INSTFILES
 
 # Installer languages
@@ -1418,6 +1419,8 @@ Section -post SEC0001
       SetOutPath "$SMPROGRAMS\$StartMenuGroup\Development"
       CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Development\SharpCompile.lnk" $INSTDIR\SharpCompile.exe
     ContinueSection:
+    SetOutPath "$SMPROGRAMS\$StartMenuGroup\Debug"
+    CreateShortCut "$SMPROGRAMS\$StartMenuGroup\Debug\SharpConsole.lnk" "$INSTDIR\SharpConsole.exe"
     !insertmacro MUI_STARTMENU_WRITE_END
     WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayName "$(^Name)"
     WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayVersion "${VERSION}"
@@ -1660,6 +1663,15 @@ Function un.unsetShell
   Push $R0
   InstallOptions::dialog $PLUGINSDIR\UnsetShell.ini
   Pop $R0
+FunctionEnd
+
+Function un.FinishPageLeave
+  MessageBox MB_YESNO|MB_ICONEXCLAMATION "A reboot of the computer is necessary for the changes to take effect$\n\
+    Do you want to reboot your computer now?" \
+    IDYES RebootNow IDNO DontReboot
+  RebootNow:
+    Reboot
+  DontReboot:
 FunctionEnd
 
 # Uninstaller sections
@@ -2388,6 +2400,9 @@ Section /o -un.Main UNSEC0000
     Delete "$INSTDIR\Objects\RecycleBin.dll"
     Delete "$INSTDIR\Objects\Image.dll"
     Delete "$INSTDIR\Objects\Link.dll"
+    Delete "$INSTDIR\Objects\RecycleBin.object"
+    Delete "$INSTDIR\Objects\Image.object"
+    Delete "$INSTDIR\Objects\Link.object"
     
     # Services
     Delete "$INSTDIR\Services\Weather.dll"
@@ -2841,11 +2856,13 @@ Section -un.post UNSEC0001
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Change Shell.lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Development\SharpCompile.lnk"
+    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Debug\SharpConsole.lnk"
     Delete /REBOOTOK $INSTDIR\uninstall.exe
     DeleteRegValue HKLM "${REGKEY}" StartMenuGroup
     DeleteRegValue HKLM "${REGKEY}" Path
     DeleteRegKey /IfEmpty HKLM "${REGKEY}\Components"
     DeleteRegKey /IfEmpty HKLM "${REGKEY}"
+    RmDir /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Debug"
     RmDir /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Development"
     RmDir /REBOOTOK $SMPROGRAMS\$StartMenuGroup
     RmDir /REBOOTOK $INSTDIR
