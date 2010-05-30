@@ -875,8 +875,8 @@ begin
   except
     on E: Exception do
     begin
-      SharpApi.SendDebugMessageEx('SharpSkin','Error loading script from file: ' + FileName,clred,DMT_ERROR);
-      SharpApi.SendDebugMessageEx('SharpSkin',E.Message,clred,DMT_ERROR);
+      SharpApi.SendDebugMessageEx('SharpESkin','Error loading script from file: ' + FileName,clred,DMT_ERROR);
+      SharpApi.SendDebugMessageEx('SharpESkin',E.Message,clred,DMT_ERROR);
     end;
   end;
   SList.Free;
@@ -1447,8 +1447,8 @@ begin
   except
     on E: Exception do
     begin
-      SharpApi.SendDebugMessageEx('SharpSkin','Error loading skin from stream',clred,DMT_ERROR);
-      SharpApi.SendDebugMessageEx('SharpSkin',E.Message,clred,DMT_ERROR);
+      SharpApi.SendDebugMessageEx('SharpESkin','Error loading skin from stream',clred,DMT_ERROR);
+      SharpApi.SendDebugMessageEx('SharpESkin',E.Message,clred,DMT_ERROR);
     end;
   end;
   
@@ -1533,8 +1533,8 @@ begin
   except
     on E: Exception do
     begin
-      SharpApi.SendDebugMessageEx('SharpSkin','Error loading skin from file: ' + filename,clred,DMT_ERROR);
-      SharpApi.SendDebugMessageEx('SharpSkin',E.Message,clred,DMT_ERROR);
+      SharpApi.SendDebugMessageEx('SharpESkin','Error loading skin from file: ' + filename,clred,DMT_ERROR);
+      SharpApi.SendDebugMessageEx('SharpESkin',E.Message,clred,DMT_ERROR);
       Clear;
       if FBarSkin <> nil then
          BarSkin.CheckValid;
