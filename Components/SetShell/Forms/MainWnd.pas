@@ -125,7 +125,7 @@ procedure TMainForm.FormCreate(Sender: TObject);
 var
   s : String;
 begin
-  s := IncludeTrailingBackSlash(ExtractFileDir(Application.ExeName))+'Temp.Temp';
+  {$WARNINGS OFF} s := IncludeTrailingBackSlash(ExtractFileDir(Application.ExeName))+'Temp.Temp'; {$WARNINGS ON}
   if not HasWriteAccess(s) then
   begin
     ShowMessage('SetShell.exe has detected that it is executed from a directory ' +
