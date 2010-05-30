@@ -176,6 +176,8 @@ procedure TUsedItemsList.Load(FileName: string);
 var
   n: Integer;
   xml: TJclSimpleXml;
+  i : int64;
+  s : String;
 begin
   xml := TJclSimpleXml.Create;
   if LoadXMLFromSharedFile(Xml,FileName,true) then
@@ -186,8 +188,12 @@ begin
     for n := 0 to xml.Root.Items.Count - 1 do
       with xml.Root.Items.item[n] do
       begin
+        s := Properties.Value('LastUsed', inttostr(DateTimeToUnix(now)));
+        if not TryStrToInt64(s,i) then
+          i := DateTimeToUnix(now);
+
         self.Add(Properties.Value('Value',''),
-                 StrtoDateTime(Properties.Value('LastUsed', '')),
+                 UnixToDateTime(i),
                  StrToInt(Properties.Value('Count', '')));
       end;
   end else SharpApi.SendDebugMessageEx('Exec Service',PChar('Error Loading Most Used Item List from ' + Filename), clred, DMT_ERROR);
@@ -207,7 +213,7 @@ begin
     with Xml.Root.Items.Add(Format('MUI%d', [i])) do
     begin
       Properties.Add('Value', Self[i].Value);
-      Properties.Add('LastUsed', FormatDateTime('dd/mm/yyyy hh:nn:ss', Self[i].LastUsed));
+      Properties.Add('LastUsed', DateTimeToUnix(Self[i].LastUsed));
       Properties.Add('Count', IntToStr(Self[i].OpenCount));
     end;
 
