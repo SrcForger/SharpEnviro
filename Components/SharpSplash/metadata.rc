@@ -9,6 +9,6 @@ STRINGTABLE
   IDS_NAME "SharpSplash"
   IDS_DESCRIPTION "Displays a splash screen"
   IDS_AUTHOR "Martin Krämer (MartinKraemer@gmx.net)"
-  IDS_VERSION "0.7.6.5"
+  IDS_VERSION "0.8.0.0"
   IDS_EXTRADATA "priority: 10|delay: 0"
 }

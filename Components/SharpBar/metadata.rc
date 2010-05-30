@@ -9,6 +9,6 @@ STRINGTABLE
   IDS_NAME "SharpBar"
   IDS_DESCRIPTION "The toolbars displayed on screen"
   IDS_AUTHOR "Martin Krämer (MartinKraemer@gmx.net)"
-  IDS_VERSION "0.7.6.5"
+  IDS_VERSION "0.8.0.0"
   IDS_EXTRADATA "priority: 140|delay: 0"
 }
