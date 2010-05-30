@@ -942,9 +942,9 @@ procedure TSharpDeskMainForm.BackgroundImageMouseDown(Sender: TObject;
 var
    CPos,cursorPos : TPoint;
    DesktopObject : TDesktopObject;
-   R : TRect;
-   n : integer;
-   HA : THandleArray;
+//   R : TRect;
+//   n : integer;
+//   HA : THandleArray;
 begin
   if not SharpDesk.Enabled then exit;
 
@@ -953,7 +953,7 @@ begin
     exit;
 
   // Check if the click was in an area of visible SharpE Menu
-  HA := FindAllWindows('TSharpEMenuWnd');
+{  HA := FindAllWindows('TSharpEMenuWnd');
   if length(HA) > 0 then
   begin
     for n := 0 to High(HA) do
@@ -964,7 +964,7 @@ begin
     end;
     SendMessage(HA[0],WM_SHARPTERMINATE,0,0);
   end;
-  setlength(HA,0);
+  setlength(HA,0);}
 
   if SharpDesk.DoubleClick then
   begin
