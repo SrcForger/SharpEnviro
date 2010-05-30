@@ -176,16 +176,29 @@ procedure TUsedItemsList.Load(FileName: string);
 var
   n: Integer;
   xml: TJclSimpleXml;
+
+  Val: string;
+  str: string;
+  Last: TDateTime;
+  Count: integer;
 begin
   xml := TJclSimpleXml.Create;
   if LoadXMLFromSharedFile(Xml,FileName,true) then
   begin
+    ShortDateFormat := 'dd/mm/yyyy';
+    DateSeparator := '/';
+
     for n := 0 to xml.Root.Items.Count - 1 do
       with xml.Root.Items.item[n] do
       begin
-        self.Add(Properties.Value('Value',''),
-                 StrtoDateTime(Properties.Value('LastUsed', '')),
-                 StrToInt(Properties.Value('Count', '')));
+        Val := Properties.Value('Value','');
+        str := Properties.Value('LastUsed', '');
+        Last := StrtoDateTime(str);
+        Count := StrToInt(Properties.Value('Count', ''));
+
+        self.Add(Val,
+                 Last,
+                 Count);
       end;
   end else SharpApi.SendDebugMessageEx('Exec Service',PChar('Error Loading Most Used Item List from ' + Filename), clred, DMT_ERROR);
   xml.Free;
