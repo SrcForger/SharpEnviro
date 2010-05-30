@@ -452,15 +452,14 @@ begin
   ForceForegroundWindow(handle, oldhandle);
   EnterCriticalSection(CritSect);
   try
-
     Debug('Passed Execution Text: ' + text, DMT_TRACE);
 
     // *** PROCESS THE TEXT BASED ON THE FOLLOWING CONDITIONS ***
 
     // First try create process
     if not(Elevate) then
-      if CreateProcessExecute(text) then begin
-
+      if CreateProcessExecute(text) then
+      begin
         SaveMostUsedItem(text, SaveHistory);
         SaveRecentItem(text, SaveHistory);
 
@@ -469,159 +468,172 @@ begin
       end;
 
     // New Vista control panel
-    if (Pos('microsoft.', LowerCase(text)) = 1) then begin
+    if (Pos('microsoft.', LowerCase(text)) = 1) then
+    begin
       Debug('Execute CPL:', DMT_TRACE);
 
-      if ShellOpenFile(Handle, GetWindowsSystemFolder + '/control.exe', '/name ' + text, '', Elevate) = 1 then begin
-
+      if ShellOpenFile(Handle, GetWindowsSystemFolder + '/control.exe', '/name ' + text, '', Elevate) = 1 then
+      begin
         // Save to recent item list
         SaveMostUsedItem(text, SaveHistory);
         SaveRecentItem(text, SaveHistory);
-
         Result := True;
         Exit;
       end;
-    end
-    else
-      // LNK files
-      if (ExtractFileExt(textstripped) = '.lnk') then
+    end else
+    // LNK files
+    if (ExtractFileExt(textstripped) = '.lnk') then
+    begin
+      failed := True;
+      forceshelllinkopen := False;
+      CoInitialize(nil);
+      if JclShell.ShellLinkResolve(textstripped, link) = S_OK then
       begin
-        failed := True;
-        forceshelllinkopen := False;
-        CoInitialize(nil);
-        if JclShell.ShellLinkResolve(textstripped, link) = S_OK then
+        if (length(trim(link.Target)) = 0) and (length(trim(link.IconLocation)) = 0) then
         begin
-          if (length(trim(link.Target)) = 0) and (length(trim(link.IconLocation)) = 0) then
-          begin
-            link.Target := text;
-            forceshelllinkopen := true;
-          end;
-
-          if (uSystemFuncs.NETFramework35)
-            and (SysUtils.FileExists(GetSharpeDirectory + 'SharpLinkLauncherNET.exe'))
-            and (not forceshelllinkopen) then
-          begin
-            result := NETLinkLaunch(textstripped, Elevate);
-            SaveMostUsedItem(text, SaveHistory);
-            SaveRecentItem(text, SaveHistory);            
-            exit;
-          end;
-
-          if ShellOpenFile(Handle, link.Target, link.Arguments, link.WorkingDirectory, Elevate) = 1 then
-          begin
-            // Save to recent item list
-            SaveMostUsedItem(text, SaveHistory);
-            SaveRecentItem(text, SaveHistory);
-
-            Result := True;
-            Exit;
-          end;
+          link.Target := text;
+          forceshelllinkopen := true;
         end;
-        CoUninitialize;
-        if Failed then
-          if (uSystemFuncs.NETFramework35) //and IsWow64()
-            and (SysUtils.FileExists(GetSharpeDirectory + 'SharpLinkLauncherNET.exe')) then
-          begin
-            result := NETLinkLaunch(textstripped, Elevate);
-            SaveMostUsedItem(text, SaveHistory);
-            SaveRecentItem(text, SaveHistory);            
-            exit;
-          end
-      end
-      else
-        if ((ExtractFileExt(textstripped) = '.sip') or (ExtractFileExt(textstripped) = '.sescript')) then begin
-          if ShellOpenFile(Handle, GetSharpeDirectory + 'SharpScript.exe', '"' + textstripped + '"', GetSharpeDirectory, Elevate) = 1 then begin
-            Result := True;
-            Exit;
-          end;
+        if (uSystemFuncs.NETFramework35)
+          and (SysUtils.FileExists(GetSharpeDirectory + 'SharpLinkLauncherNET.exe'))
+          and (not forceshelllinkopen) then
+        begin
+          result := NETLinkLaunch(textstripped, Elevate);
+          SaveMostUsedItem(text, SaveHistory);
+          SaveRecentItem(text, SaveHistory);
+          exit;
+        end;
 
+        if ShellOpenFile(Handle, link.Target, link.Arguments, link.WorkingDirectory, Elevate) = 1 then
+        begin
+          // Save to recent item list
+          SaveMostUsedItem(text, SaveHistory);
+          SaveRecentItem(text, SaveHistory);
+          Result := True;
+          Exit;
+        end;
+      end;
+
+      CoUninitialize;
+      if Failed then
+        if (uSystemFuncs.NETFramework35) //and IsWow64()
+          and (SysUtils.FileExists(GetSharpeDirectory + 'SharpLinkLauncherNET.exe')) then
+        begin
+          result := NETLinkLaunch(textstripped, Elevate);
+          SaveMostUsedItem(text, SaveHistory);
+          SaveRecentItem(text, SaveHistory);
+          exit;
         end
-        else
+    end else
+    if ((ExtractFileExt(textstripped) = '.sip') or (ExtractFileExt(textstripped) = '.sescript')) then
+    begin
+      if ShellOpenFile(Handle, GetSharpeDirectory + 'SharpScript.exe', '"' + textstripped + '"', GetSharpeDirectory, Elevate) = 1 then
+      begin
+        Result := True;
+        Exit;
+      end;
+    end  else
+    // ** Sharpe Directory **
+    if (Pos('sharpe:', LowerCase(text)) = 1) then
+    begin
+      Debug('Execute: SHARPE:', DMT_TRACE);
 
-          // ** SHELL: PATHS **
-          if (Pos('shell:', LowerCase(text)) = 1) then begin
-            Debug('Execute: SHELL:', DMT_TRACE);
+      if CompareText(text,'sharpe:directory') = 0 then
+        text := SharpApi.GetSharpeDirectory
+      else if CompareText(text,'sharpe:usersettings') = 0 then
+        text := SharpApi.GetSharpeUserSettingsPath
+      else if CompareText(text,'sharpe:globalsettings') = 0 then
+        text := SharpApi.GetSharpeGlobalSettingsPath;
 
-            if CompareText(text, 'shell:ControlPanel') = 0 then
-            begin
-              if ShellOpenFile(Handle, 'Control', '', '', Elevate) = 1 then begin
-                // Save to recent item list
-                SaveMostUsedItem(text, SaveHistory);
-                SaveRecentItem(text, SaveHistory);
+      if ShellOpenFile(Handle, GetAltExplorer, text, '', Elevate) = 1 then
+      begin
+        // Save to recent item list
+        SaveMostUsedItem(text, SaveHistory);
+        SaveRecentItem(text, SaveHistory);
+        Result := True;
+        Exit;
+      end;
+    end else
+    // ** SHELL: PATHS **
+    if (Pos('shell:', LowerCase(text)) = 1) then
+    begin
+      Debug('Execute: SHELL:', DMT_TRACE);
 
-                Result := True;
-                Exit;
-              end;
-            end;
+      if CompareText(text, 'shell:ControlPanel') = 0 then
+      begin
+        if ShellOpenFile(Handle, 'Control', '', '', Elevate) = 1 then
+        begin
+          // Save to recent item list
+          SaveMostUsedItem(text, SaveHistory);
+          SaveRecentItem(text, SaveHistory);
 
-            if IsWindowsVista then
-            begin
-              if CompareText(text,'shell:drivefolder') = 0 then
-                text := 'shell:MyComputerFolder';
-            end else
-              if CompareText(text,'shell:MyComputerFolder') = 0 then
-                text := 'shell:drivefolder';
+          Result := True;
+          Exit;
+        end;
+      end;
 
-            if ShellOpenFile(Handle, GetAltExplorer, text, '', Elevate) = 1 then begin
+      if IsWindowsVista then
+      begin
+        if CompareText(text,'shell:drivefolder') = 0 then
+          text := 'shell:MyComputerFolder';
+      end else
+      begin
+        if CompareText(text,'shell:MyComputerFolder') = 0 then
+          text := 'shell:drivefolder';
+      end;
 
-              // Save to recent item list
-              SaveMostUsedItem(text, SaveHistory);
-              SaveRecentItem(text, SaveHistory);
+      if ShellOpenFile(Handle, GetAltExplorer, text, '', Elevate) = 1 then
+      begin
+        // Save to recent item list
+        SaveMostUsedItem(text, SaveHistory);
+        SaveRecentItem(text, SaveHistory);
+        Result := True;
+        Exit;
+      end;
+    end else
+    if PathIsUNC(PathAddSeparator(textstripped)) or (isdirectory(textstripped)) then
+    begin
+      Debug('ExecuteType: Path', DMT_TRACE);
+      iResult := ShellOpenFile(Handle, GetAltExplorer, text, '', Elevate);
 
-              Result := True;
-              Exit;
-            end;
-          end
-          else if PathIsUNC(PathAddSeparator(textstripped)) or (isdirectory(textstripped)) then begin
-            Debug('ExecuteType: Path', DMT_TRACE);
-            iResult := ShellOpenFile(Handle, GetAltExplorer, text, '', Elevate);
+      if (iResult = 1) or (iResult = SE_ERR_ACCESSDENIED) then
+      begin
+        // Save to recent item list
+        SaveMostUsedItem(text, SaveHistory);
+        SaveRecentItem(text, SaveHistory);
+        Result := True;
+        Exit;
+      end;
+    end else
+    if (Pos('http', LowerCase(text)) = 1) or (Pos('www', LowerCase(text)) = 1)
+      or (Pos('irc', LowerCase(text)) = 1) or (Pos('ftp', LowerCase(text)) = 1)
+      or (Pos('news', LowerCase(text)) = 1) or (Pos('telnet', LowerCase(text)) = 1) then
+    begin
+      Debug('ExecuteType: Internet Protocol', DMT_TRACE);
 
-            if (iResult = 1) or (iResult = SE_ERR_ACCESSDENIED) then begin
+      //if ShellExecute(Handle, 'open', pchar(text), nil, nil, SW_SHOWNORMAL);
+      if ShellOpenFile(handle, text, '', '', Elevate) = 1 then
+      begin
+        // Save to recent/used item list
+        SaveMostUsedItem(text, SaveHistory);
+        SaveRecentItem(text, SaveHistory);
+        Result := True;
+        Exit;
+      end;
+    end else
+    if ((ExtractFileExt(textstripped) = '.msc') and (Pos('mmc', lowercase(text)) <> 0)) then
+    begin
+      Debug('ExecuteType: MSC Console', DMT_TRACE);
 
-              // Save to recent item list
-              SaveMostUsedItem(text, SaveHistory);
-              SaveRecentItem(text, SaveHistory);
-
-              Result := True;
-              Exit;
-            end;
-          end
-          else if (Pos('http',
-            LowerCase(text)) = 1) or (Pos('www', LowerCase(text)) =
-            1)
-            or (Pos('irc', LowerCase(text)) = 1) or (Pos('ftp', LowerCase(text)) =
-            1)
-            or
-            (Pos('news', LowerCase(text)) = 1) or (Pos('telnet', LowerCase(text))
-            =
-            1) then begin
-            Debug('ExecuteType: Internet Protocol', DMT_TRACE);
-
-            //if ShellExecute(Handle, 'open', pchar(text), nil, nil, SW_SHOWNORMAL);
-            if ShellOpenFile(handle, text, '', '', Elevate) = 1 then begin
-
-              // Save to recent/used item list
-              SaveMostUsedItem(text, SaveHistory);
-              SaveRecentItem(text, SaveHistory);
-
-              Result := True;
-              Exit;
-            end;
-          end
-          else if ((ExtractFileExt(textstripped) = '.msc') and (Pos('mmc', lowercase(text)) <> 0)) then begin
-            Debug('ExecuteType: MSC Console', DMT_TRACE);
-
-            if ShellOpenFile(Handle, GetWindowsSystemFolder + '\mmc.exe',
-              GetWindowsSystemFolder + '\' + ExtractFileName(text), '', Elevate) = 1 then begin
-
-              SaveMostUsedItem(text, SaveHistory);
-              SaveRecentItem(text, SaveHistory);
-
-              Result := True;
-              Exit;
-            end;
-          end;
-
+      if ShellOpenFile(Handle, GetWindowsSystemFolder + '\mmc.exe',
+                      GetWindowsSystemFolder + '\' + ExtractFileName(text), '', Elevate) = 1 then
+      begin
+        SaveMostUsedItem(text, SaveHistory);
+        SaveRecentItem(text, SaveHistory);
+        Result := True;
+        Exit;
+      end;
+    end;
     // Create a temp string to try and split the text into a file
     // and a command if applicable. Also searches paths for some
     // equivalent values}
