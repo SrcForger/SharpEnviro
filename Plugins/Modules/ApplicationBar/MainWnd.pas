@@ -1653,7 +1653,7 @@ begin
     TaskItem := TTaskItem(FTM.GetItemByIndex(n));
     if TaskItem <> nil then
     begin
-      if CompareText(TaskItem.FileName,btn.exename) = 0 then
+      if (CompareText(TaskItem.FileName,btn.exename) = 0) and (CheckWindow(TaskItem.Handle)) then
       begin
         Bmp := TBitmap32.Create;
         if TaskItem.Icon = 0 then
