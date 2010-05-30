@@ -47,13 +47,6 @@ uses
   JvComponentBase, SharpEPageControl, JvTrayIcon;
 
 type
-  PConsoleMsg = ^TConsoleMsg;
-  TConsoleMsg = record
-    module: string[255];
-    msg: string[255];
-  end;
-
-type
   TSharpConsoleWnd = class(TForm)
     bug: TImage;
     notSmile: TImage;
