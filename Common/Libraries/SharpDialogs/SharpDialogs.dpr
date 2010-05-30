@@ -55,13 +55,15 @@ uses
 
 type
   TTargetDialogSelectItem = (stiFile,stiRecentFiles,stiMostUsedFiles,stiDrive,
-                             stiDirectory,stiShellFolders,stiScript,stiAction);
+                             stiDirectory,stiShellFolders,stiScript,stiAction,
+                             stiSharpEFolders);
   TTargetDialogSelectItems = Set of TTargetDialogSelectItem;
   TTargetDialogClickHandler = class
                                 procedure OnFileOpenClick(Sender : TObject);
                                 procedure OnMRClick(Sender : TObject);
                                 procedure OnDriveClick(Sender : TObject);
                                 procedure OnShellFolderClick(Sender : TObject);
+                                procedure OnSharpEFolderClick(Sender : TObject);
                                 procedure OnDirOpenClick(Sender : TObject);
                                 procedure OnScriptClick(Sender : TObject);
                                 procedure OnActionClick(Sender : TObject);
@@ -86,7 +88,8 @@ type
 const
   SMI_ALL_ICONS = [smiShellIcon,smiCustomIcon,smiSharpEIcon]; // do not add smiGenericIcon
   STI_ALL_TARGETS = [stiFile,stiRecentFiles,stiMostUsedFiles,stiDrive,
-                     stiDirectory,stiShellFolders,stiScript,stiAction];
+                     stiDirectory,stiShellFolders,stiScript,stiAction,
+                     stiSharpEFolders];
 
 var
   targetmenuresult : String;
@@ -371,6 +374,15 @@ begin
     CoTaskMemFree(pidl);
   end;
   nrevent := False;
+end;
+
+procedure TTargetDialogClickHandler.OnSharpEFolderClick(Sender : TObject);
+begin
+  try
+    targetmenuresult := TMenuItem(Sender).Hint;
+  finally
+    nrevent := False;
+  end;
 end;
 
 procedure TTargetDialogClickHandler.OnShellFolderClick(Sender : TObject);
@@ -954,6 +966,33 @@ begin
           menuItem.OnClick := targetmenuclick.OnShellFolderClick;
           targetmenu.Items.Items[mindex].Items[targetmenu.Items.Items[mindex].Count-1].Add(menuItem);
         end;
+      end;
+      if stiSharpEFolders in TargetItems then
+      begin
+        SList.Clear;
+        SList.Add('sharpe:globalsettings=Global Settings');
+        SList.Add('sharpe:directory=SharpE Directory');
+        SList.Add('sharpe:usersettings=User Settings');
+        if not (stiShellFolders in TargetItems) then
+        begin
+          menuItem := TMenuItem.Create(targetmenu);
+          menuItem.Caption := '-';
+          targetmenu.Items.Items[mindex].Add(menuItem);
+        end;
+        menuItem := TMenuItem.Create(targetmenu);
+        menuItem.Caption := 'SharpE Folder';
+        menuItem.ImageIndex := 7;
+        targetmenu.Items.Items[mindex].Add(menuItem);
+
+        for n := 0 to SList.Count -1 do
+        begin
+          menuItem := TMenuItem.Create(targetmenu);
+          menuItem.Caption := SList.ValueFromIndex[n];
+          menuItem.Hint := SList.Names[n];
+          menuItem.ImageIndex := 6;
+          menuItem.OnClick := targetmenuclick.OnSharpEFolderClick;
+          targetmenu.Items.Items[mindex].Items[targetmenu.Items.Items[mindex].Count-1].Add(menuItem);
+        end;        
       end;
     end;
 

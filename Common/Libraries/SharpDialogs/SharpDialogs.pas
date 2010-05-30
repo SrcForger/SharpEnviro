@@ -31,7 +31,8 @@ uses Types;
 
 type
   TTargetDialogSelectItem = (stiFile,stiRecentFiles,stiMostUsedFiles,stiDrive,
-                             stiDirectory,stiShellFolders,stiScript,stiAction);
+                             stiDirectory,stiShellFolders,stiScript,stiAction,
+                             stiSharpEFolder);
   TTargetDialogSelectItems = Set of TTargetDialogSelectItem;
 
   TIconMenuSelectItem = (smiShellIcon,smiCustomIcon,smiSharpEIcon,smiGenericIcon);
@@ -41,9 +42,10 @@ type
 const
   SMI_ALL_ICONS = [smiShellIcon,smiCustomIcon,smiSharpEIcon]; // do not add smiGenericIcon
   STI_ALL_TARGETS = [stiFile,stiRecentFiles,stiMostUsedFiles,stiDrive,
-                     stiDirectory,stiShellFolders,stiScript,stiAction];
+                     stiDirectory,stiShellFolders,stiScript,stiAction,
+                     stiSharpEFolder];
 
-function TargetDialogSkin(TargetItems : TTargetDialogSelectItems; PopupPoint : TPoint) : PChar; external 'SharpDialogs.dll';                     
+function TargetDialogSkin(TargetItems : TTargetDialogSelectItems; PopupPoint : TPoint) : PChar; external 'SharpDialogs.dll';
 function TargetDialog(TargetItems : TTargetDialogSelectItems; PopupPoint : TPoint) : PChar; external 'SharpDialogs.dll';
 function IconDialog(pTarget : String; IconItems : TIconMenuSelectItems; PopupPoint : TPoint) : PChar; external 'SharpDialogs.dll';
 
