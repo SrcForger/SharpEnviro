@@ -148,8 +148,8 @@ FunctionEnd
 Function FinishPageLeave
   StrCmp $DoReboot "False" DontReboot
     MessageBox MB_YESNO|MB_ICONEXCLAMATION "A reboot of the computer is necessary for the changes to take effect$\n\
-    Do you want to reboot your computer now?" \
-    IDYES RebootNow IDNO DontReboot
+      Do you want to reboot your computer now?" \
+      IDYES RebootNow IDNO DontReboot
     RebootNow:
       Reboot
   DontReboot:
@@ -2760,6 +2760,25 @@ Section /o -un.Main UNSEC0000
     RMDir "$INSTDIR\Settings\#DefaultGlobal#\SharpCore\Disabled"
     RMDir "$INSTDIR\Settings\#DefaultGlobal#\SharpCore"
     RMDir /r "$INSTDIR\Settings\#DefaultGlobal#"
+    
+    MessageBox MB_YESNO|MB_ICONEXCLAMATION "Do you want to also delete your SharpEnviro user settings?" \
+      IDYES DeleteSettings IDNO DontDeleteSettings
+    DeleteSettings:
+      RMDir /r "$INSTDIR\Settings\Global"
+      RMDir /r "$INSTDIR\Settings\User"
+      RMDir /r "$INSTDIR\Settings"
+      SetShellVarContext all
+      IfFileExists "$APPDATA\SharpEnviro\*.*" DeleteGlobalSettings DontDeleteGlobalSettings
+      DeleteGlobalSettings:
+        RMDIR /r "$APPDATA\SharpEnviro\*.*"
+      DontDeleteGlobalSettings:
+      SetShellVarContext current
+      IfFileExists "$APPDATA\SharpEnviro\*.*" DeleteUserSettings DontDeleteUserSettings
+      DeleteUserSettings:
+        RMDIR /r "$APPDATA\SharpEnviro\*.*"
+      DontDeleteUserSettings:
+    DontDeleteSettings:
+    
     RMDir "$INSTDIR\Settings"
     
     RmDir /r "$INSTDIR\Addons"
