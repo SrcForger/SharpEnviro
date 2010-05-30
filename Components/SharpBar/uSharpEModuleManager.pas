@@ -1556,8 +1556,8 @@ begin
   except
     on E: Exception do
     begin
-      SharpApi.SendDebugMessageEx('SharpBar',PChar('Error loading ' + FileName), clred, DMT_ERROR);
-      SharpApi.SendDebugMessageEx('SharpBar',PChar(E.Message),clblue, DMT_TRACE);
+      SharpApi.SendDebugMessageEx('SharpBar','Error loading ' + FileName, clred, DMT_ERROR);
+      SharpApi.SendDebugMessageEx('SharpBar',E.Message,clred, DMT_ERROR);
       try
         FreeLibrary(FDllhandle);
       finally

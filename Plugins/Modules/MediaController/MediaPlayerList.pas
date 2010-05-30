@@ -273,7 +273,7 @@ begin
       on E: Exception do
       begin
         SharpApi.SendDebugMessageEx('TMediaPlayerList',PChar('Failed to Load Icon ' + src),clred,DMT_ERROR);
-        SharpApi.SendDebugMessageEx('SharpBar',PChar(E.Message),clblue, DMT_TRACE);
+        SharpApi.SendDebugMessageEx('SharpBar',PChar(E.Message),clred, DMT_ERROR);
       end;
     end;
   end;

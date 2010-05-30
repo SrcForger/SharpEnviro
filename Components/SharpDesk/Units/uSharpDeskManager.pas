@@ -1101,7 +1101,7 @@ begin
     on E: Exception do
     begin
       SharpApi.SendDebugMessageEx('SharpDesk',PChar(Format('Error While Loading "%s"', [FileName])), clred, DMT_ERROR);
-      SharpApi.SendDebugMessageEx('SharpDesk',PChar(E.Message),clblue, DMT_TRACE);
+      SharpApi.SendDebugMessageEx('SharpDesk',PChar(E.Message),clred, DMT_ERROR);
       if FileExists(FileName) then
       begin
         n := 1;
@@ -1138,7 +1138,7 @@ begin
     on E: Exception do
     begin
       SharpApi.SendDebugMessageEx('SharpDesk',PChar(Format('Error While Loading "%s"', [FileName])), clred, DMT_ERROR);
-      SharpApi.SendDebugMessageEx('SharpDesk',PChar(E.Message),clblue, DMT_TRACE);
+      SharpApi.SendDebugMessageEx('SharpDesk',PChar(E.Message),clred, DMT_ERROR);
       if FileExists(FileName) then
       begin
         n := 1;

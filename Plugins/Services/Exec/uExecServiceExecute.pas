@@ -674,7 +674,7 @@ begin
       on E: Exception do begin
         Debug(Format('Error Executing: %s - %s', [FileCommandl.Filename,
           FileCommandl.Commandline]), DMT_WARN);
-        Debug(E.Message, DMT_TRACE);
+        Debug(E.Message, DMT_ERROR);
       end;
     end;
 

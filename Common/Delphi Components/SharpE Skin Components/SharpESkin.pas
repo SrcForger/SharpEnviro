@@ -31,6 +31,7 @@ interface
 
 uses
   Classes,
+  Graphics,
   Forms,
   SysUtils,
   Dialogs,
@@ -856,6 +857,7 @@ var
 implementation
 
 uses SharpESkinManager,
+     SharpApi,
      gr32_png;
 
 
@@ -871,7 +873,11 @@ begin
     SList.LoadFromFile(FileName);
     result := SList.CommaText;
   except
-    result := '';
+    on E: Exception do
+    begin
+      SharpApi.SendDebugMessageEx('SharpSkin','Error loading script from file: ' + FileName,clred,DMT_ERROR);
+      SharpApi.SendDebugMessageEx('SharpSkin',E.Message,clred,DMT_ERROR);
+    end;
   end;
   SList.Free;
 end;
@@ -1439,6 +1445,11 @@ begin
       temp := StringLoadFromStream(Stream);
     end;
   except
+    on E: Exception do
+    begin
+      SharpApi.SendDebugMessageEx('SharpSkin','Error loading skin from stream',clred,DMT_ERROR);
+      SharpApi.SendDebugMessageEx('SharpSkin',E.Message,clred,DMT_ERROR);
+    end;
   end;
   
   if FBarskin <> nil then
@@ -1520,10 +1531,15 @@ begin
     if FXml.Root.Items.Count = 0 then
       exit;
   except
-    Clear;
-    if FBarSkin <> nil then
-       BarSkin.CheckValid;
-    exit;
+    on E: Exception do
+    begin
+      SharpApi.SendDebugMessageEx('SharpSkin','Error loading skin from file: ' + filename,clred,DMT_ERROR);
+      SharpApi.SendDebugMessageEx('SharpSkin',E.Message,clred,DMT_ERROR);
+      Clear;
+      if FBarSkin <> nil then
+         BarSkin.CheckValid;
+      exit;
+    end;
   end;
   Clear;
 

@@ -1838,8 +1838,12 @@ begin
     end;
     sp.Free;
   except
-    sp.Free;
-    raise;
+    on E: Exception do
+    begin
+      SharpApi.SendDebugMessageEx('SharpESkinPart','Error loading skin part from stream',clred,DMT_ERROR);
+      SharpApi.SendDebugMessageEx('SharpESkinPart',E.Message,clred,DMT_ERROR);
+      sp.Free;
+    end;
   end;
 end;
 
@@ -2077,7 +2081,12 @@ begin
       end;
     end;
   except
-    result := false;
+    on E: Exception do
+    begin
+      SharpApi.SendDebugMessageEx('SharpESkinPart','Error loading skin part from xml',clred,DMT_ERROR);
+      SharpApi.SendDebugMessageEx('SharpESkinPart',E.Message,clred,DMT_ERROR);
+      result := false;
+    end;
   end;
   sp.free;
 end;

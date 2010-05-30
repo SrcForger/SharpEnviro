@@ -805,7 +805,7 @@ begin
       on E: Exception do
       begin
         SharpApi.SendDebugMessageEx('SharpDesk',PChar('Error while sending SDM_MOUSE_UP to ' + inttostr(DesktopObject.Settings.ObjectID) + '('+DesktopObject.Owner.FileName+')'), clred, DMT_ERROR);
-        SharpApi.SendDebugMessageEx('SharpDesk',PChar(E.Message),clblue, DMT_TRACE);
+        SharpApi.SendDebugMessageEx('SharpDesk',PChar(E.Message),clred, DMT_ERROR);
       end;
     end;
     if (Button = mbright) and not (ssAlt in Shift) then
@@ -825,7 +825,7 @@ begin
         on E: Exception do
         begin
          SharpApi.SendDebugMessageEx('SharpDesk',PChar('Error while sending SDM_MENU_POPUP to ' + inttostr(DesktopObject.Settings.ObjectID) + '('+DesktopObject.Owner.FileName+')'), clred, DMT_ERROR);
-         SharpApi.SendDebugMessageEx('SharpDesk',PChar(E.Message),clblue, DMT_TRACE);
+         SharpApi.SendDebugMessageEx('SharpDesk',PChar(E.Message),clred, DMT_ERROR);
         end;
       end;
       //i := ObjectPopUp.Images.Count;
@@ -1020,7 +1020,7 @@ begin
         on E: Exception do
         begin
          SharpApi.SendDebugMessageEx('SharpDesk',PChar('Error while sending SDM_MOUSE_ENTER to ' + inttostr(DesktopObject.Settings.ObjectID) + '('+DesktopObject.Owner.FileName+')'), clred, DMT_ERROR);
-         SharpApi.SendDebugMessageEx('SharpDesk',PChar(E.Message),clblue, DMT_TRACE);
+         SharpApi.SendDebugMessageEx('SharpDesk',PChar(E.Message),clred, DMT_ERROR);
         end;
       end;
       exit;
@@ -1145,7 +1145,7 @@ begin
         on E: Exception do
         begin
          SharpApi.SendDebugMessageEx('SharpDesk',PChar('Error while sending SDM_MOUSE_LEAVE to ' + inttostr(DesktopObject.Settings.ObjectID) + '('+DesktopObject.Owner.FileName+')'), clred, DMT_ERROR);
-         SharpApi.SendDebugMessageEx('SharpDesk',PChar(E.Message),clblue, DMT_TRACE);
+         SharpApi.SendDebugMessageEx('SharpDesk',PChar(E.Message),clred, DMT_ERROR);
         end;
       end;
       DesktopObject.Selected := False;
@@ -1164,7 +1164,7 @@ begin
         on E: Exception do
         begin
          SharpApi.SendDebugMessageEx('SharpDesk',PChar('Error while sending SDM_MOUSE_ENTER to ' + inttostr(DesktopObject.Settings.ObjectID) + '('+DesktopObject.Owner.FileName+')'), clred, DMT_ERROR);
-         SharpApi.SendDebugMessageEx('SharpDesk',PChar(E.Message),clblue, DMT_TRACE);
+         SharpApi.SendDebugMessageEx('SharpDesk',PChar(E.Message),clred, DMT_ERROR);
         end;
       end;
       DesktopObject.Selected := True;

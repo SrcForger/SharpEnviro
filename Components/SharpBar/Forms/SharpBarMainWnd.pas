@@ -959,8 +959,8 @@ begin
   except
     on E: Exception do
     begin
-      SharpApi.SendDebugMessageEx('SharpBar',PChar('Failed to Update BG Zone'), clred, DMT_ERROR);
-      SharpApi.SendDebugMessageEx('SharpBar',PChar(E.Message),clblue, DMT_TRACE);
+      SharpApi.SendDebugMessageEx('SharpBar','Failed to Update BG Zone', clred, DMT_ERROR);
+      SharpApi.SendDebugMessageEx('SharpBar',E.Message,clred, DMT_ERROR);
     end;
   end;
   BGBmp.Free;

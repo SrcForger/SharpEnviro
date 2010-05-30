@@ -130,7 +130,7 @@ begin
   except
     on E: Exception do begin
       Debug('Error Freeing FHotkeyList', DMT_ERROR);
-      Debug(E.Message, DMT_TRACE);
+      Debug(E.Message, DMT_ERROR);
     end;
   end;
 
@@ -141,7 +141,7 @@ begin
   except
     on E: Exception do begin
       Debug('Error Freeing FHotkeyManager', DMT_ERROR);
-      Debug(E.Message, DMT_TRACE);
+      Debug(E.Message, DMT_ERROR);
     end;
   end;
 end;

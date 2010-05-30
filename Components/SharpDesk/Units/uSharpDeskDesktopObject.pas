@@ -315,7 +315,7 @@ begin
     on E: Exception do
     begin
       SharpApi.SendDebugMessageEx('SharpDesk',PChar('Error while sending SDM_SELECT/SDM_DESELECT to ' + inttostr(Settings.ObjectID) + '('+Owner.FileName+')'), clred, DMT_ERROR);
-      SharpApi.SendDebugMessageEx('SharpDesk',PChar(E.Message),clblue, DMT_TRACE);
+      SharpApi.SendDebugMessageEx('SharpDesk',PChar(E.Message),clred, DMT_ERROR);
     end;
   end;
   FSelected := Value;

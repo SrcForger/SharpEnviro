@@ -132,7 +132,7 @@ begin
     on E: Exception do
     begin
       SharpApi.SendDebugMessageEx('SharpDesk',PChar('Error while sending SDM_MOUSE_LEAVE to ' + inttostr(pDesktopObject.Settings.ObjectID) + '('+pDesktopObject.Owner.FileName+')'), clred, DMT_ERROR);
-      SharpApi.SendDebugMessageEx('SharpDesk',PChar(E.Message),clblue, DMT_TRACE);
+      SharpApi.SendDebugMessageEx('SharpDesk',PChar(E.Message),clred, DMT_ERROR);
     end;
   end;
 
@@ -262,7 +262,7 @@ begin
     on E: Exception do
     begin
       SharpApi.SendDebugMessageEx('SharpDesk',PChar('Error while sending SDM_MOUSE_UP to ' + inttostr(pDesktopObject.Settings.ObjectID) + '('+pDesktopObject.Owner.FileName+')'), clred, DMT_ERROR);
-      SharpApi.SendDebugMessageEx('SharpDesk',PChar(E.Message),clblue, DMT_TRACE);
+      SharpApi.SendDebugMessageEx('SharpDesk',PChar(E.Message),clred, DMT_ERROR);
     end;
   end;
 
@@ -283,7 +283,7 @@ begin
         on E: Exception do
         begin
          SharpApi.SendDebugMessageEx('SharpDesk',PChar('Error while sending SDM_MENU_POPUP to ' + inttostr(pDesktopObject.Settings.ObjectID) + '('+pDesktopObject.Owner.FileName+')'), clred, DMT_ERROR);
-         SharpApi.SendDebugMessageEx('SharpDesk',PChar(E.Message),clblue, DMT_TRACE);
+         SharpApi.SendDebugMessageEx('SharpDesk',PChar(E.Message),clred, DMT_ERROR);
         end;
       end;
 

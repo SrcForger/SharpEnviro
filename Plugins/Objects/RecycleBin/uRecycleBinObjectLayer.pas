@@ -121,7 +121,7 @@ begin
     on E: Exception do
     begin
       SharpApi.SendDebugMessageEx('RecycleBin.Object',PChar('Error in OnEmptyBinClick'),0,DMT_Error);
-      SharpApi.SendDebugMessageEx('RecycleBin.Object',PChar(E.Message),clblue, DMT_TRACE);
+      SharpApi.SendDebugMessageEx('RecycleBin.Object',PChar(E.Message),clred, DMT_ERROR);
     end;
   end;
 end;

@@ -47,7 +47,8 @@ uses
   ISharpESkinComponents,
   SharpGraphicsUtils,
   SharpEBase,
-  SharpEBaseControls;
+  SharpEBaseControls,
+  SharpApi;
 
 type
   TSharpEThrobber = class;
@@ -337,8 +338,11 @@ begin
       end;
     end;
   except
-    MessageBox(0, 'Problem when creating Window', 'SharpEBarBackGroundWindow',
-      MB_OK)
+    on E: Exception do
+    begin
+      SharpApi.SendDebugMessageEx('SharpBar','Error when creating SharpEBarBackGroundWindow',clred,DMT_ERROR);
+      SharpApi.SendDebugMessageEx('SharpBar',E.Message,clred,DMT_ERROR);
+    end;
   end;
 end;
 
@@ -348,6 +352,11 @@ begin
     DestroyWindow(WindowHandle);
     Windows.UnregisterClass(PChar('SharpEBarBackGround'),hInstance);
   except
+    on E: Exception do
+    begin
+      SharpApi.SendDebugMessageEx('SharpBar','Error on destroying SharpEBarBackGroundWindow',0,DMT_ERROR);
+      SharpApi.SendDebugMessageEx('SharpBar',E.Message,clred,DMT_ERROR);
+    end;
   end;
   FBmp.free;
   inherited;

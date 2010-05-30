@@ -277,7 +277,7 @@ begin
     on E: Exception do
     begin
       Debug(Format('Error While Loading Cursor: %s', [path]),DMT_ERROR);
-      Debug(E.Message, DMT_TRACE);
+      Debug(E.Message, DMT_ERROR);
     end;
   end;
 end;
@@ -306,7 +306,7 @@ begin
     on E: Exception do
     begin
       Debug('Error While Getting Bitmap',DMT_ERROR);
-      Debug(E.Message, DMT_TRACE);
+      Debug(E.Message, DMT_ERROR);
 
       Result := nil;
     end;
@@ -374,7 +374,7 @@ begin
     on E: Exception do
     begin
       Debug('Error In OnTimer function, stopping the timer. Please restart the Cursor service.', DMT_ERROR);
-      Debug(E.Message, DMT_TRACE);
+      Debug(E.Message, DMT_ERROR);
 
       UpdTimer.Enabled := false;
     end;
@@ -580,7 +580,7 @@ begin
                  on E: Exception do
                  begin
                    Debug(Format('Error While Loading Cursors Skin: %s', [xmlfile]),DMT_ERROR);
-                   Debug(E.Message, DMT_TRACE);
+                   Debug(E.Message, DMT_ERROR);
                  end;
              end;
            end;
