@@ -897,6 +897,7 @@ Section "!Core Files" SEC01
   SetOutPath "$INSTDIR\Services\"
   File "..\..\SharpE\Services\Actions.dll"
   File "..\..\SharpE\Services\Cursors.dll"
+  File "..\..\SharpE\Services\Debug.dll"
   File "..\..\SharpE\Services\DDEServer.dll"
   File "..\..\SharpE\Services\Exec.dll"
   File "..\..\SharpE\Services\Hotkeys.dll"
@@ -2417,6 +2418,7 @@ Section /o -un.Main UNSEC0000
     Delete "$INSTDIR\Services\Hotkeys.dll"
     Delete "$INSTDIR\Services\Exec.dll"
     Delete "$INSTDIR\Services\DDEServer.dll"
+    Delete "$INSTDIR\Services\Debug.dll"
     Delete "$INSTDIR\Services\Cursors.dll"
     Delete "$INSTDIR\Services\Actions.dll"
     
