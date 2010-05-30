@@ -681,6 +681,26 @@ begin
   end;
 end;
 
+procedure SendDebugServiceMessage(module: String; msg: String; MessageType: integer);
+var
+  wnd: hwnd;
+  cds: TCopyDataStruct;
+  cmsg: TConsoleMsg;
+begin
+  cmsg.module := module;
+  cmsg.msg := msg;
+  with cds do
+  begin
+    dwData := 0;
+    cbData := SizeOf(TConsoleMsg);
+    lpData := @cmsg;
+  end;
+
+  wnd := FindWindow('TSharpEDebugWnd', nil);
+  if wnd <> 0 then
+    SendMessage(wnd, WM_COPYDATA, MessageType, cardinal(@cds));
+end;
+
 function SendDebugMessageEx(module: String; msg: String; Color: TColor;
   MessageType: integer): hresult;
 var
@@ -688,6 +708,9 @@ var
   cds: TCopyDataStruct;
   cmsg: TConsoleMsg;
 begin
+  if (MessageType = DMT_Error) then
+    SendDebugServiceMessage(module,msg,messagetype);
+
   try
     if module <> '' then
       module := module + ': '
@@ -710,12 +733,9 @@ begin
     begin
       SendMessage(wnd, WM_COPYDATA, MessageType, cardinal(@cds));
       Result := HR_OK;
-    end
-    else
-      result := HR_NORECIEVERWINDOW;
+    end else result := HR_NORECIEVERWINDOW;
   except
     result := HR_UNKNOWNERROR;
-    ;
   end;
 end;
 
