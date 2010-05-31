@@ -9,6 +9,6 @@ STRINGTABLE
   IDS_NAME "SharpCore"
   IDS_DESCRIPTION "Runs and maintains all services and components"
   IDS_AUTHOR "Nathan LaFreniere (mc@sharpe-shell.org)"
-  IDS_VERSION "0.7.6.5"
+  IDS_VERSION "0.8.0.0"
   IDS_EXTRADATA "priority: 0|delay: 0"
 }
