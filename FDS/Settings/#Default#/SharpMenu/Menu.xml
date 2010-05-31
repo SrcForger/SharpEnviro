@@ -102,38 +102,6 @@
         <type>separator</type>
       </item>
       <item>
-        <type>submenu</type>
-        <Caption>Components</Caption>
-        <Target/>
-        <Icon>icon.folder</Icon>
-        <Items>
-          <item>
-            <type>link</type>
-            <Caption>SharpBar</Caption>
-            <Target>{#SHARPEDIR#}SharpBar.exe</Target>
-            <Icon>shell:icon</Icon>
-          </item>
-          <item>
-            <type>link</type>
-            <Caption>SharpCompile (Admin)</Caption>
-            <Target>{#SHARPEDIR#}SharpCompile.exe</Target>
-            <Icon>shell:icon</Icon>
-          </item>
-          <item>
-            <type>link</type>
-            <Caption>SharpCore</Caption>
-            <Target>{#SHARPEDIR#}SharpCore.exe</Target>
-            <Icon>shell:icon</Icon>
-          </item>
-          <item>
-            <type>link</type>
-            <Caption>SharpDesk</Caption>
-            <Target>{#SHARPEDIR#}SharpDesk.exe</Target>
-            <Icon>shell:icon</Icon>
-          </item>
-        </Items>
-      </item>
-      <item>
         <type>link</type>
         <Caption>Debug Console</Caption>
         <Target>{#SHARPEDIR#}SharpConsole.exe</Target>
