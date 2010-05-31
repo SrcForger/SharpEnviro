@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpEMenuFile>
+  <item>
+    <type>link</type>
+    <Caption>Hibernate</Caption>
+    <Target>!Hibernate_Quiet</Target>
+    <Icon>icon.shutdown.hibernate</Icon>
+  </item>
+  <item>
+    <type>link</type>
+    <Caption>Logout</Caption>
+    <Target>!Logout_Quiet</Target>
+    <Icon>icon.shutdown.logout</Icon>
+  </item>
+  <item>
+    <type>link</type>
+    <Caption>Restart</Caption>
+    <Target>!Restart_Quiet</Target>
+    <Icon>icon.shutdown.reboot</Icon>
+  </item>
+  <item>
+    <type>link</type>
+    <Caption>Shutdown</Caption>
+    <Target>!Shutdown_Quiet</Target>
+    <Icon>icon.shutdown.shutdown</Icon>
+  </item>
+  <item>
+    <type>link</type>
+    <Caption>Switch User</Caption>
+    <Target>!SwitchUser/LockStation_Quiet</Target>
+    <Icon>icon.shutdown.lock</Icon>
+  </item>
+</SharpEMenuFile>

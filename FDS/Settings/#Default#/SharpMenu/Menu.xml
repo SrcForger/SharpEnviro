@@ -182,45 +182,4 @@
       </item>
     </Items>
   </item>
-  <item>
-    <type>separator</type>
-  </item>
-  <item>
-    <type>submenu</type>
-    <Caption>Shutdown</Caption>
-    <Target/>
-    <Icon>icon.controlpanel</Icon>
-    <Items>
-      <item>
-        <type>link</type>
-        <Caption>Hibernate</Caption>
-        <Target>!Hibernate</Target>
-        <Icon>icon.shutdown.hibernate</Icon>
-      </item>
-      <item>
-        <type>link</type>
-        <Caption>Logout</Caption>
-        <Target>!Logout</Target>
-        <Icon>icon.shutdown.logout</Icon>
-      </item>
-      <item>
-        <type>link</type>
-        <Caption>Restart</Caption>
-        <Target>!Restart</Target>
-        <Icon>icon.shutdown.reboot</Icon>
-      </item>
-      <item>
-        <type>link</type>
-        <Caption>Shutdown</Caption>
-        <Target>!Shutdown</Target>
-        <Icon>icon.shutdown.shutdown</Icon>
-      </item>
-      <item>
-        <type>link</type>
-        <Caption>Switch User</Caption>
-        <Target>!SwitchUser/LockStation</Target>
-        <Icon>icon.shutdown.lock</Icon>
-      </item>
-    </Items>
-  </item>
 </SharpEMenuFile>

@@ -12,7 +12,10 @@
     <DisableHideBar>-1</DisableHideBar>
     <StartHidden>0</StartHidden>
     <AlwaysOnTop>0</AlwaysOnTop>
+    <ForceAlwaysOnTop>0</ForceAlwaysOnTop>
     <ShowMiniThrobbers>-1</ShowMiniThrobbers>
+    <FixedWidthEnabled>0</FixedWidthEnabled>
+    <FixedWidth>50</FixedWidth>
   </Settings>
   <Modules>
     <Item>
@@ -59,6 +62,11 @@
       <ID>8963621</ID>
       <Position>1</Position>
       <Module>ButtonBar.dll</Module>
+    </Item>
+    <Item>
+      <ID>5201217</ID>
+      <Position>1</Position>
+      <Module>Menu.dll</Module>
     </Item>
   </Modules>
 </SharpBar>
