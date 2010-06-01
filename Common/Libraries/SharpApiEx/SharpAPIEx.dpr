@@ -51,7 +51,7 @@ var
 begin
   try
     strl := TStringList.Create;
-    fn := ExtractFilePath(Application_GetExeName) + 'tmp';
+    fn := GetSharpeUserSettingsPath + 'tmp';
     ServiceMsg('actions', pchar('_buildactionlist,' + fn));
 
     if FileExists(fn) then
