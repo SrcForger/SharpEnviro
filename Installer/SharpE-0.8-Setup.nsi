@@ -1264,7 +1264,6 @@ Section "!Core Files" SEC01
   File "..\..\SharpE\SharpMenu.exe"
   File "..\..\SharpE\SharpScript.exe"
   File "..\..\SharpE\SharpShellServices.exe"
-  File "..\..\SharpE\SharpShellServicesNET.exe"
   File "..\..\SharpE\SharpSplash.exe"
   # Other Files
   File "..\FDS\rtl100.bpl"
@@ -2620,7 +2619,6 @@ Section /o -un.Main UNSEC0000
     Delete "$INSTDIR\SharpMenu.exe"
     Delete "$INSTDIR\SharpScript.exe"
     Delete "$INSTDIR\SharpShellServices.exe"
-    Delete "$INSTDIR\SharpShellServicesNET.exe"
     Delete "$INSTDIR\SharpSplash.exe"
     Delete "$INSTDIR\SharpCompile.exe"
     Delete "$INSTDIR\rtl100.bpl"

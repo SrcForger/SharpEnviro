@@ -127,12 +127,11 @@
     <project Name="SharpConsole" Type="Application">Components\SharpConsole\SharpConsole.dproj</project>
     <project Name="SharpCore" Type="Application">Components\SharpCore\SharpCore.dproj</project>
     <project Name="SharpDesk" Type="Application">Components\SharpDesk\SharpDesk.dproj</project>
-    <project Name="SharpLinkLauncherNET" Type="Solution" requ="Microsoft Visual C# 2008 Express">Components\SharpLinkLauncherNET\SharpLinkLauncherNET.sln</project>
+    <project Name="SharpLinkLauncherNET" Type="Solution" requ="Microsoft Visual C# 2010 Express">Components\SharpLinkLauncherNET\SharpLinkLauncherNET.sln</project>
     <project Name="SharpMenu" Type="Application">Components\SharpMenu\SharpMenu.dproj</project>
     <project Name="SharpScript" Type="Application">Components\SharpScript\SharpScript.dproj</project>
-    <project Name="SharpSearchNET" Type="Solution" requ="Microsoft Visual C# 2008 Express">Components\SharpSearchNET\SharpSearchNET.sln</project>
+    <project Name="SharpSearchNET" Type="Solution" requ="Microsoft Visual C# 2010 Express">Components\SharpSearchNET\SharpSearchNET.sln</project>
     <project Name="SharpShellServices" Type="Application">Components\SharpShellServices\SharpShellServices.dproj</project>
-    <project Name="SharpShellServicesNET" Type="Solution" requ="Microsoft Visual C# 2008 Express">Components\SharpShellServicesNET\SharpShellServicesNET.sln</project>
     <project Name="SharpSplash" Type="Application">Components\SharpSplash\SharpSplash.dproj</project>
   </package>
   <package Name="Libraries">
