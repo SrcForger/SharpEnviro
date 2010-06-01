@@ -162,6 +162,28 @@ begin
   menusettings := TSharpEMenuSettings.Create;
   menusettings.LoadFromXML;
 
+  // Parse possible params (which define the position and custom menus)
+  Pos := Mouse.CursorPos;
+  popupdir := 1;
+  // Check Params
+  if ParamCount >= 2 then
+  begin
+    if TryStrToInt(ParamStr(1),i) then
+       Pos.X := i;
+    if TryStrToInt(ParamStr(2),i) then
+       Pos.Y := i;
+    if TryStrToInt(ParamStr(3),i) then
+       popupdir := i;
+  end;
+
+  // Parse the menu file param before setting iconcachefile
+  // so that we load the appropriate icon cache file
+  if (ParamCount = 1) or (ParamCount >=2) then
+     mfile := ParamStr(ParamCount);
+  if not FileExists(mfile) then
+     mfile := SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\Menu.xml';
+  if not FileExists(mfile) then halt;
+
   // Init Icon Variables and Classes
   iconcachefile := ExtractFileName(mfile);
   setlength(iconcachefile,length(iconcachefile) - length(ExtractFileExt(iconcachefile)));
@@ -177,26 +199,6 @@ begin
   loadIconCacheThread := TloadIconCacheThread.Create(true, SharpEMenuIcons, iconcachefile);
   if (menusettings.CacheIcons) and (menusettings.UseIcons) then
     loadIconCacheThread.Resume;
-
-  // Parse possible params (which define the position and custom menus)
-  Pos := Mouse.CursorPos;
-  popupdir := 1;
-  // Check Params
-  if ParamCount >= 2 then
-  begin
-    if TryStrToInt(ParamStr(1),i) then
-       Pos.X := i;
-    if TryStrToInt(ParamStr(2),i) then
-       Pos.Y := i;
-    if TryStrToInt(ParamStr(3),i) then
-       popupdir := i;
-  end;
-
-  if (ParamCount = 1) or (ParamCount >=2) then
-     mfile := ParamStr(ParamCount);
-  if not FileExists(mfile) then
-     mfile := SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\Menu.xml';
-  if not FileExists(mfile) then halt;
 
   // Open the menu specific options, which may override
   // settings from the global menu options.

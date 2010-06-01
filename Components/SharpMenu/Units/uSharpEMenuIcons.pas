@@ -242,8 +242,8 @@ var
   IconSource : String;
   IconType : TIconType;
 begin
-  Dir := SharpApi.GetSharpeDirectory + 'Cache';
-  Fn := Dir + '\' + GetLocalUserName + pFileName;
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'Cache';
+  Fn := Dir + '\' + pFileName;
   if not FileExists(Fn) then exit;
 
   if OpenFileStreamShared(Stream,sfaRead,Fn,True) = sfeSuccess then
@@ -330,10 +330,10 @@ var
   Item : TSharpEMenuIcon;
   res : TSharedFileError;
 begin
-  Dir := SharpApi.GetSharpeDirectory + 'Cache';
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'Cache';
   If not DirectoryExists(Dir) then ForceDirectories(Dir);
 
-  Fn := Dir + '\' + GetLocalUserName + pFileName;
+  Fn := Dir + '\' + pFileName;
   if not FileExists(Fn) then
     res := OpenFileStreamShared(Stream,sfaCreate,Fn,True)
   else
