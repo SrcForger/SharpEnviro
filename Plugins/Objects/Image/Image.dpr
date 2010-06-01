@@ -255,7 +255,7 @@ begin
       XML.Root.Items.Add('Settings');
       with XML.Root.Items.ItemNamed['Settings'].Items do
       begin
-        Add('Object','Image.object');
+        Add('Object','Image.dll');
         Add('FileExt','.'+Ext);
         Add('MaxLength',0);
       end;

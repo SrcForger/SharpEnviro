@@ -546,7 +546,7 @@ begin
   pMenu := TSharpEMenu(FOwner);
 
   Dir := SharpApi.GetSharpeDirectory + '\Objects\';
-  if FindFirst(Dir + '*.object',faAnyFile,sr) = 0 then
+  if FindFirst(Dir + '*.dll',faAnyFile,sr) = 0 then
   repeat
     if (CompareText(sr.Name,'.') <> 0) and (CompareText(sr.Name,'..') <> 0) then
     begin

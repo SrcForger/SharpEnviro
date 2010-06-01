@@ -247,7 +247,7 @@ begin
     XML.Root.Items.Add('Settings');
     with XML.Root.Items.ItemNamed['Settings'].Items do
     begin
-      Add('Object','Link.object');
+      Add('Object','Link.dll');
       Add('FileExt','*.*');
       Add('MaxLength',0);
     end;

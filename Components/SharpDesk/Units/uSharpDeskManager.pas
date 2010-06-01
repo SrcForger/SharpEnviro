@@ -186,10 +186,10 @@ begin
   begin
     if (lowercase(ParamStr(1)) = '-ext') then
         FObjectExt := ParamStr(2);
-  end else FObjectExt := '.object';
+  end else FObjectExt := '.dll';
   SharpApi.SendDebugMessage('SharpDesk','Using "'+FObjectExt+'" as object extension',clblue);
 
-  ConvertOldObjectFormat;
+  //ConvertOldObjectFormat;
 
   FImage := pImage32;
 
