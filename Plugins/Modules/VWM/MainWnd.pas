@@ -220,7 +220,7 @@ var
   DstRect,SrcRect : TRect;
   c : TColor32;
   smod : integer;
-  w : integer;
+  w,h : integer;
   tw,th : integer;
   found : boolean;
 begin
@@ -262,10 +262,15 @@ begin
         end;
       if not found then
       begin
-        setlength(dlist,length(dlist) + 1);
-        dlist[High(dlist)] := wndlist[i];
         GetWindowRect(wndlist[i],wndrect);
         w := wndRect.Right - wndRect.Left;
+        h := wndRect.Bottom - wndRect.Top;
+        if (w < 50) or (h < 50) then
+          continue;
+
+        setlength(dlist,length(dlist) + 1);
+        dlist[High(dlist)] := wndlist[i];
+
         if index + 1 = VWMIndex then
           wndrect.Left := (index + 1)*VWMWidth + round((wndRect.Left - MonList.DesktopLeft) * scale)
         else
