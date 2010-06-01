@@ -155,10 +155,7 @@ begin
     setitem := TObjectSetItem(Items[n]);
     with XML.Root.Items.Add('Item').Items do
     begin
-      if Length(ExtractFileExt(setitem.ObjectFile)) > 0 then
-        ObjName := AnsiLeftStr(setitem.ObjectFile, Length(setitem.ObjectFile) - Length(ExtractFileExt(setitem.ObjectFile)) - 1)
-      else
-        ObjName := setitem.ObjectFile;
+      ObjName := AnsiLeftStr(setitem.ObjectFile, Length(setitem.ObjectFile) - Length(ExtractFileExt(setitem.ObjectFile)));
 
       Add('ID',setitem.ObjectID);
       Add('Object',ObjName);
