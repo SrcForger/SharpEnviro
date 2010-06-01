@@ -1596,7 +1596,7 @@ begin
   item.Caption := '-';
   ColorScheme1.Add(item);
 
-  Dir := SharpApi.GetSharpeDirectory + 'Skins\' + Theme.Skin.Name + '\Schemes\';
+  Dir := SharpApi.GetSharpeUserSettingsPath + uThemeConsts.SKINS_SCHEME_DIRECTORY + '\' + Theme.Skin.Name + '\';
   if FindFirst(Dir + '*.xml', FAAnyFile, sr) = 0 then
     repeat
       s := sr.Name;

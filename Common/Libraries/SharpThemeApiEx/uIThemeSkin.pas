@@ -45,6 +45,9 @@ type
     function GetDirectory : String; stdcall;
     property Directory : String read GetDirectory;
 
+    function GetSchemesDirectory : String; stdcall;
+    property SchemesDirectory : string read GetSchemesDirectory;    
+
     function GetSkinFont: TThemeSkinFont; stdcall;
     procedure SetSkinFont(Value : TThemeSkinFont); stdcall;
     property SkinFont : TThemeSkinFont read GetSkinFont write SetSkinFont;

@@ -122,12 +122,11 @@ end;
 function XmlGetSchemeAuthor(ATheme: string; AScheme: string; ITheme : ISharpETheme): string;
 var
   xml: TJclSimpleXML;
-  sSkinDir, sSchemeDir, sSkin: string;
+  sSchemeDir, sSkin: string;
 begin
   Result := '';
   sSkin := ITheme.Skin.Name;
-  sSkinDir := GetSharpeDirectory + SKINS_DIRECTORY + '\' + sSkin + '\';
-  sSchemeDir := sSkinDir + SKINS_SCHEME_DIRECTORY + '\';
+  sSchemeDir := SharpApi.GetSharpeUserSettingsPath + SKINS_SCHEME_DIRECTORY + '\' + sSkin + '\';
 
   xml := TJclSimpleXML.Create;
   try
@@ -144,7 +143,7 @@ procedure XmlSetThemeScheme(ATheme: string; AScheme: string; ASkin: string;
 var
   xml: TJclSimpleXML;
   i: Integer;
-  sFileName, sSkinDir, sSchemeDir, sSkin, sAuthor: string;
+  sFileName, sSchemeDir, sSkin, sAuthor: string;
 begin
   xml := TJclSimpleXML.Create;
 
@@ -168,8 +167,7 @@ begin
       end;
     end;
     sSkin := ASkin;
-    sSkinDir := GetSharpeDirectory + SKINS_DIRECTORY + '\' + sSkin + '\';
-    sSchemeDir := sSkinDir + SKINS_SCHEME_DIRECTORY + '\';
+    sSchemeDir := SharpApi.GetSharpeUserSettingsPath + SKINS_SCHEME_DIRECTORY + '\' + sSkin + '\';
     sFileName := sSchemeDir + AScheme + '.xml';
     xml.SaveToFile(sFileName);
   finally

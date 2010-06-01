@@ -182,7 +182,7 @@ var
 begin
   // Load custom Scheme
   XML := TInterfacedXMLBase.Create(True);
-  FDirectory := FThemeSkin.Directory + SKINS_SCHEME_DIRECTORY + '\';
+  FDirectory := FThemeSkin.SchemesDirectory + '\';
   XML.XmlFilename := FDirectory + FName + '.xml';
   if XML.Load then
   begin
@@ -501,7 +501,7 @@ end;
 procedure TThemeScheme.SetDefaults;
 begin
   FName := 'Default';
-  FDirectory := FThemeSkin.Directory + SKINS_SCHEME_DIRECTORY + '\';
+  FDirectory := FThemeSkin.SchemesDirectory + '\' ;
   LastUpdate := 0;
   SetLength(FColors,0);
 end;

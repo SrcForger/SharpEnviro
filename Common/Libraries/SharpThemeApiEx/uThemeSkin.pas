@@ -33,11 +33,12 @@ uses
 type
   TThemeSkin = class(TInterfacedObject, IThemeSkin)
   private
-    FThemeInfo   : TThemeInfo;
-    FName        : String;
-    FDirectory   : String;
-    FGlassEffect : TThemeSkinGlassEffect;
-    FSkinFont    : TThemeSkinFont; 
+    FThemeInfo        : TThemeInfo;
+    FName             : String;
+    FDirectory        : String;
+    FSchemesDirectory : String;
+    FGlassEffect      : TThemeSkinGlassEffect;
+    FSkinFont         : TThemeSkinFont;
     procedure SetDefaults;
     procedure UpdateDirectory;
     procedure LoadFromFileSkinAndGlass;
@@ -55,6 +56,9 @@ type
 
     function GetDirectory : String; stdcall;
     property Directory : String read GetDirectory;
+
+    function GetSchemesDirectory : String; stdcall;
+    property SchemesDirectory : string read GetSchemesDirectory;
 
     function GetGlassEffect: TThemeSkinGlassEffect; stdcall;
     procedure SetGlassEffect(Value: TThemeSkinGlassEffect); stdcall;
@@ -108,6 +112,11 @@ end;
 function TThemeSkin.GetName: String;
 begin
   result := FName;
+end;
+
+function TThemeSkin.GetSchemesDirectory: String;
+begin
+  result := FSchemesDirectory;
 end;
 
 function TThemeSkin.GetSkinFont: TThemeSkinFont;
@@ -325,7 +334,11 @@ procedure TThemeSkin.UpdateDirectory;
 begin
   FDirectory := SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\' + FName + '\';
   if not DirectoryExists(FDirectory) then
-    FDirectory := SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\Sunken\';
+    FDirectory := SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\Simple\';
+
+  FSchemesDirectory := SharpApi.GetSharpeUserSettingsPath + SKINS_SCHEME_DIRECTORY + '\' + FName + '\';
+  if not DirectoryExists(FDirectory) then
+    FSchemesDirectory := SharpApi.GetSharpeUserSettingsPath + SKINS_SCHEME_DIRECTORY + '\Simple\';  
 end;
 
 end.

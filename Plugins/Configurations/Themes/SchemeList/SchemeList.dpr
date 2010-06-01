@@ -233,7 +233,7 @@ begin
       gTheme := TSharpETheme.Create(PluginID);
       gTheme.LoadTheme([tpSkinScheme]);
       sl.CommaText := XmlGetSchemeListAsCommaText(gTheme);
-    except
+    finally
       Status := IntToStr(sl.count);
       gTheme := nil;
       sl.Free;
