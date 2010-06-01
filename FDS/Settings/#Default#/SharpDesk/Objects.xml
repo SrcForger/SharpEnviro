@@ -2,7 +2,7 @@
 <SharpDeskObjectSet>
   <Item>
     <ID>5236359</ID>
-    <Object>Link.object</Object>
+    <Object>Link.dll</Object>
     <PosX>64</PosX>
     <PosY>112</PosY>
     <Locked>0</Locked>
@@ -10,7 +10,7 @@
   </Item>
   <Item>
     <ID>1485347</ID>
-    <Object>Link.object</Object>
+    <Object>Link.dll</Object>
     <PosX>64</PosX>
     <PosY>216</PosY>
     <Locked>0</Locked>
@@ -18,7 +18,7 @@
   </Item>
   <Item>
     <ID>2654167</ID>
-    <Object>RecycleBin.object</Object>
+    <Object>RecycleBin.dll</Object>
     <PosX>64</PosX>
     <PosY>328</PosY>
     <Locked>0</Locked>
@@ -26,7 +26,7 @@
   </Item>
   <Item>
     <ID>1934269</ID>
-    <Object>Link.object</Object>
+    <Object>Link.dll</Object>
     <PosX>120</PosX>
     <PosY>728</PosY>
     <Locked>0</Locked>
