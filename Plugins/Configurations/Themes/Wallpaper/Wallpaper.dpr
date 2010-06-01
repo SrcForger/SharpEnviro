@@ -231,12 +231,8 @@ end;
 
 procedure TSharpCenterPlugin.Save;
 var
-  filename: string;
-  pngFile: string;
   iWpItem: integer;
   wpItem: TWPItem;
-  bmp: TBitmap32;
-  r: Trect;
 
   Mon : TWallpaperMonitor;
   MonWall : TThemeWallpaperItem;
@@ -283,23 +279,6 @@ begin
   end;
 
   FTheme.Wallpaper.SaveToFile;
-  
-  pngFile := ExtractFilePath(filename) + 'preview.png';
-  bmp := TBitmap32.Create;
-  try
-    bmp.Width := 62;
-    bmp.Height := 48;
-    bmp.Clear(clWhite32);
-    r := frmSettingsWnd.CurrentWP.BmpPreview.ClipRect;
-    InflateRect(r, -1, -1);
-
-    frmSettingsWnd.CurrentWP.BmpPreview.DrawTo(bmp, Rect(0, 0, 62, 48), frmSettingsWnd.CurrentWP.BmpPreview.ClipRect);
-
-    if FileCheck(pngFile) then
-      SaveBitmap32ToPNG(bmp, pngFile, False, False, clBlack);
-  finally
-    bmp.Free;
-  end;
 end;
 
 procedure TSharpCenterPlugin.UpdatePreview(ABitmap: TBitmap32);
