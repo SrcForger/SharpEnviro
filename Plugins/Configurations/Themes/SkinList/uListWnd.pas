@@ -169,13 +169,7 @@ begin
         bmp32.Clear( color32( PluginHost.Theme.PluginSelectedItem ) );
 
         scheme := 'DEFAULT';
-        if FileExists(path + 'preview.bmp') then
-          bmp32.LoadFromFile(path + 'preview.bmp')
-        else
-        begin
-          CreateBarPreview(Bmp32, PluginHost.PluginId, skin, scheme, 120, FTheme);
-          bmp32.SaveToFile(path + 'preview.bmp');
-        end;
+        CreateBarPreview(Bmp32, PluginHost.PluginId, skin, scheme, 120, FTheme);
 
         pilNormal.BkColor := FPluginHost.Theme.PluginItem;
         pilSelected.BkColor := FPluginHost.Theme.PluginSelectedItem;
