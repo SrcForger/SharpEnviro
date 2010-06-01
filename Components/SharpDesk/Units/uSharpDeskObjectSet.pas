@@ -32,6 +32,7 @@ uses Windows,
      Classes,
 		 Types,
      Dialogs,
+     StrUtils,
      SysUtils,
      JvSimpleXML,
 		 SharpApi,
@@ -126,7 +127,7 @@ begin
         with XML.Root.Items.Item[n].Items do
         begin
           AddDesktopObject(IntValue('ID'),
-                           Value('Object'),
+                           Value('Object') + '.dll',
                            Point(IntValue('PosX'),IntValue('PosY')),
                            BoolValue('Locked'),
                            BoolValue('isWindow',False));
@@ -144,6 +145,7 @@ var
   XML : TJvSimpleXML;
   FName : String;
   setitem : TObjectSetItem;
+  ObjName : String;
 begin
   FName := SharpApi.GetSharpeUserSettingsPath + 'SharpDesk\Objects.xml';
   XML := TJvSimpleXML.Create(nil);
@@ -153,8 +155,13 @@ begin
     setitem := TObjectSetItem(Items[n]);
     with XML.Root.Items.Add('Item').Items do
     begin
+      if Length(ExtractFileExt(setitem.ObjectFile)) > 0 then
+        ObjName := AnsiLeftStr(setitem.ObjectFile, Length(setitem.ObjectFile) - Length(ExtractFileExt(setitem.ObjectFile)) - 1)
+      else
+        ObjName := setitem.ObjectFile;
+
       Add('ID',setitem.ObjectID);
-      Add('Object',setitem.ObjectFile);
+      Add('Object',ObjName);
       Add('PosX',setitem.Pos.X);
       Add('PosY',setitem.Pos.Y);
       Add('Locked',setitem.Locked);

@@ -259,10 +259,10 @@ begin
     try
       
       XML.LoadFromFile(IncludeTrailingBackSlash(pDirectory)+SR.Name);
-      if TSharpDeskManager(FOwner).ObjectFileList.GetByObjectFile(XML.Root.Items.ItemNamed['Settings'].Items.Value('Object','none')) <> nil then
+      if TSharpDeskManager(FOwner).ObjectFileList.GetByObjectFile(XML.Root.Items.ItemNamed['Settings'].Items.Value('Object','none') + '.dll') <> nil then
       begin
         DragAndDropItem := TDragAndDropItem.Create;
-        DragAndDropItem.ObjectFile := XML.Root.Items.ItemNamed['Settings'].Items.Value('Object','none');
+        DragAndDropItem.ObjectFile := XML.Root.Items.ItemNamed['Settings'].Items.Value('Object','none') + '.dll';
         DragAndDropItem.XMLFile    := IncludeTrailingBackSlash(pDirectory)+SR.Name;
         DragAndDropItem.Extension  := LowerCase(XML.Root.Items.ItemNamed['Settings'].Items.Value('FileExt','.'));
         DragAndDropItem.MaxLength  := XML.Root.Items.ItemNamed['Settings'].Items.IntValue('MaxLength',0);

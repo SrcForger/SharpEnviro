@@ -103,7 +103,7 @@ type
       procedure CheckGhostLayers;
       procedure CheckInvisibleLayers;
       procedure CloneSelectedObjects;
-      procedure ConvertOldObjectFormat;
+      //procedure ConvertOldObjectFormat;
       procedure CreatePreset(pDesktopObject : TObject; pName : String);
       procedure DeleteSelectedLayers;
       procedure DisableAnimation;
@@ -1056,7 +1056,7 @@ end;
 // ######################################
 
 
-procedure TSharpDeskManager.ConvertOldObjectFormat;
+{procedure TSharpDeskManager.ConvertOldObjectFormat;
 var
    sr : TSearchRec;
    ObjTitle : String;
@@ -1074,7 +1074,7 @@ begin
     until FindNext(sr) <> 0;
     FindClose(sr);
   end;
-end;
+end;  }
 
 
 
