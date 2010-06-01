@@ -180,7 +180,7 @@ var
 begin
   Inherited Create;
 
-  Dir := SharpApi.GetSharpeDirectory + 'Logs\';
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'Logs\';
   ForceDirectories(Dir);
 
   LogErrorFile := Dir + 'Error.txt';
