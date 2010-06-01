@@ -19,6 +19,7 @@ begin
   Application.Title := 'SharpConsole';
   Application.CreateForm(TSharpConsoleWnd, SharpConsoleWnd);
   uVistaFuncs.SetVistaFonts(SharpConsoleWnd);
+  Debugging.LogDirectory := SharpApi.GetSharpeUserSettingsPath + 'Logs\';
   Debugging.PrintBanners := True;
   Debugging.Comment := 'SharpCore Logging System';
   Debugging.FileNaming := dfnDaily;

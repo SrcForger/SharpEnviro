@@ -32,6 +32,7 @@ type
     FEnabled: Boolean;
     FFile: Textfile;
     FFilename: string;
+    FLogDirectory: string;
     FLevel: TDebuggingLevel;
     FFileDate: TDateTime;
     FUseLogFile: Boolean;
@@ -99,6 +100,7 @@ type
     property Level: TDebuggingLevel read FLevel write SetLevel;
     property UseLogFile: Boolean read FUseLogFile write FUseLogFile;
     property Filename: string read FFilename;
+    property LogDirectory: string read FLogDirectory write FLogDirectory;
     property FileNaming: TDebugFileNaming read FFileNaming write FFileNaming;
     property PrintBanners: Boolean read FPrintBanners write FPrintBanners;
     property PrintMillisec: Boolean read FPrintMillisec write FPrintMillisec;
@@ -373,6 +375,8 @@ begin
     // Set up default logfile --------------------------------------------------
     BaseFileName := ChangeFileExt(ExtractFileName(ParamStr(0)), NOEXT);
     FilePath := LeftStr(ParamStr(0), LastDelimiter(PathDelim, ParamStr(0))) + LOGPATH;
+    if LogDirectory <> '' then
+      FilePath := LogDirectory;
     DateStr := FormatDateTime(rsLogFileDateStr, FFileDate);
 
     case FFileNaming of

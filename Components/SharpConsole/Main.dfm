@@ -3721,6 +3721,7 @@ object SharpConsoleWnd: TSharpConsoleWnd
           TabStatusSelColor = clGreen
           TabCaptionColor = clBlack
           TabStatusColor = clGreen
+          PageBackgroundColor = clWindow
           OnTabChange = tlLogTabChange
           DesignSize = (
             422
