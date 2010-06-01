@@ -340,6 +340,7 @@ object frmEdit: TfrmEdit
         Height = 17
         Caption = 'Include Subdirectories'
         TabOrder = 5
+        OnClick = ChkClick
       end
       object chkDescending: TJvXPCheckbox
         Left = 158
@@ -348,6 +349,7 @@ object frmEdit: TfrmEdit
         Height = 17
         Caption = 'Sort Descending'
         TabOrder = 6
+        OnClick = ChkClick
       end
     end
     object pagBlank: TJvStandardPage
@@ -358,9 +360,9 @@ object frmEdit: TfrmEdit
       Caption = 'pagBlank'
       object Label4: TLabel
         AlignWithMargins = True
-        Left = 9
-        Top = 1
-        Width = 486
+        Left = 8
+        Top = 0
+        Width = 488
         Height = 13
         Margins.Left = 8
         Margins.Top = 0
@@ -369,8 +371,6 @@ object frmEdit: TfrmEdit
         Align = alTop
         Caption = 'There are no configuration options'
         Enabled = False
-        ExplicitLeft = 8
-        ExplicitTop = 0
         ExplicitWidth = 166
       end
     end
