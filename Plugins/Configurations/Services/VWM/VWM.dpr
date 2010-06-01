@@ -120,7 +120,7 @@ function GetMetaData(): TMetaData;
 begin
   with result do
   begin
-    Name := 'Virtual Destops';
+    Name := 'Virtual Desktops';
     Description := 'VWM Service Configuration';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
     Version := '0.7.6.5';
@@ -134,7 +134,7 @@ function GetPluginData(pluginID : String): TPluginData;
 begin
   with result do
   begin
-    Name := 'Virtual Destops';
+    Name := 'Virtual Desktops';
     Description := 'Manage application windows across multiple workspaces.';
     Status := '';
   end;
