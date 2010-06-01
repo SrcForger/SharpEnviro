@@ -1265,10 +1265,13 @@ Section "!Core Files" SEC01
   File "..\..\SharpE\SharpScript.exe"
   File "..\..\SharpE\SharpShellServices.exe"
   File "..\..\SharpE\SharpSplash.exe"
+  
   # Other Files
   File "..\FDS\rtl100.bpl"
   File "..\FDS\vcl100.bpl"
   File "..\FDS\splash.png"
+  
+  CreateDirectory "$INSTDIR\Logs"
 SectionEnd
 
 Section "Additional Icons" SEC02
