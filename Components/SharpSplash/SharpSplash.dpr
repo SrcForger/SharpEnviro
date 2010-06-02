@@ -1,6 +1,7 @@
 program SharpSplash;
 
 uses
+  VCLFixPack,
   Forms,
   {$IFDEF DEBUG}DebugDialog in '..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   uSplashForm in 'uSplashForm.pas' {SharpSplashWnd},

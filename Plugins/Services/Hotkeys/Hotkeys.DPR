@@ -26,6 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 library Hotkeys;
 
 uses
+  VCLFixPack,
   Classes,
   Forms,
   windows,

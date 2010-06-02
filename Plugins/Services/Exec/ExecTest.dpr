@@ -1,6 +1,7 @@
 program ExecTest;
 
 uses
+  VCLFixPack,
   Forms,
   uExecTest in 'uExecTest.pas' {Form1},
   uExecServiceAliasList in 'uExecServiceAliasList.pas',

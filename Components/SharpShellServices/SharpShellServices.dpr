@@ -31,6 +31,7 @@ program SharpShellServices;
 {$R metadata.res}
 
 uses
+  VCLFixPack,
   Registry,
   ActiveX,
   Messages,

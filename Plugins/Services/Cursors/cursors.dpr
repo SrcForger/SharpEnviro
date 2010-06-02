@@ -30,6 +30,7 @@ library cursors;
 {$WARN SYMBOL_DEPRECATED OFF}
 
 uses
+  VCLFixPack,
   Forms,
   Classes,
   StrUtils,

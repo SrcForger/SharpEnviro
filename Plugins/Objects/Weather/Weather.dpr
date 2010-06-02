@@ -25,6 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library Weather;
 uses
+  VCLFixPack,
   Forms,
   windows,
   graphics,
@@ -128,6 +129,7 @@ begin
   if Layer = nil then exit;
 
   case DeskMessage of
+    SDM_SETTINGS_UPDATE : Layer.WeatherLayer.LoadSettings;
     SDM_SELECT : begin
                    if P1 = 0 then Layer.WeatherLayer.Locked := False
                       else Layer.WeatherLayer.Locked := True;

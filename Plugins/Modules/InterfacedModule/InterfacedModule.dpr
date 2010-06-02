@@ -1,6 +1,7 @@
 library InterfacedModule;
 
 uses
+  VCLFixPack,
   SysUtils,
   Classes,
   Windows,

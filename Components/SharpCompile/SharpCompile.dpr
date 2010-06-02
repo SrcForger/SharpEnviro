@@ -1,6 +1,7 @@
 program SharpCompile;
 
 uses
+  VCLFixPack,
   Forms,
   SharpApi,
   {$IFDEF DEBUG}DebugDialog in '..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}

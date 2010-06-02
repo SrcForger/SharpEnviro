@@ -28,6 +28,7 @@ library Screenshot;
 
 
 uses
+  VCLFixPack,
   // Default Units
   Windows, Controls, SysUtils, Forms, Classes, Contnrs, StdCtrls,
   // Custom Units

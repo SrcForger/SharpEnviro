@@ -1,6 +1,7 @@
 program SharpScript;
 
 uses
+  VCLFixPack,
   Forms,
   SysUtils,
   JvInterpreter,

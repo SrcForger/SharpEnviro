@@ -1,6 +1,7 @@
 program SharpConsole;
 
 uses
+  VCLFixPack,
   Forms,
   uVistaFuncs,
   {$IFDEF DEBUG}DebugDialog in '..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}

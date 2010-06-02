@@ -25,6 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library Text;
 uses
+  VCLFixPack,
   Forms,
   windows,
   graphics,
@@ -40,7 +41,6 @@ uses
   GR32_Layers,
   GR32_Transforms,
   uTextObjectLayer in 'uTextObjectLayer.pas',
-  TextObjectSettingsWnd in 'TextObjectSettingsWnd.pas' {SettingsWnd},
   uSharpDeskTDeskSettings,
   uSharpDeskTObjectSettings,
   uSharpDeskTThemeSettings,

@@ -31,6 +31,7 @@ library SharpAPI;
 {$WARN SYMBOL_PLATFORM OFF}
 
 uses
+  VCLFixPack,
   windows,
   messages,
   SysUtils,

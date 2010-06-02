@@ -26,6 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 library SharpThemeApiEx;
 
 uses
+  VCLFixPack,
   Windows,
   {$IFDEF DEBUG}DebugDialog in '..\..\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   uThemeInfo in 'uThemeInfo.pas',

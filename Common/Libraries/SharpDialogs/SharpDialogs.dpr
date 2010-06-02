@@ -27,6 +27,7 @@ library SharpDialogs;
 
 
 uses
+  VCLFixPack,
   Windows,
   Messages,
   Graphics,

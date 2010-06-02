@@ -26,6 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 library SystemActions;
 
 uses
+  VCLFixPack,
   windows,
   Forms,
   SysUtils,

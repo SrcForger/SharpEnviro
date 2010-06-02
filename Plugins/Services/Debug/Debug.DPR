@@ -26,6 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 library Debug;
 
 uses
+  VCLFixPack,
   Windows,
   Messages,
   Classes,

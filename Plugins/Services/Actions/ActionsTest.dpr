@@ -1,6 +1,7 @@
 program ActionsTest;
 
 uses
+  VCLFixPack,
   Forms,
   uActionsServiceTestWnd in 'uActionsServiceTestWnd.pas' {Form4},
   uActionServiceList in 'uActionServiceList.pas',
