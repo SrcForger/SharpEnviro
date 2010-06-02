@@ -1156,11 +1156,6 @@ begin
   end;
 end;
 
-
-
-
-
-
 constructor TFatLine.Create(ALines: TFatLines);
 begin
   inherited Create;
@@ -1460,10 +1455,6 @@ begin
       end;
 end;
 
-
-
-
-
 constructor TFatLines.Create(AMemo: TFatMemo);
 begin
   inherited Create;
@@ -1655,10 +1646,6 @@ begin
   Result := R;
 end;
 
-
-
-
-
 constructor TFatMemo.Create(AOwner: TComponent);
 begin
   inherited;
@@ -1705,8 +1692,6 @@ end;
 
 destructor TFatMemo.Destroy;
 begin
-  FBarVert.Free;
-  FBarHoriz.Free;
   FLines.Free;
 
   inherited;
