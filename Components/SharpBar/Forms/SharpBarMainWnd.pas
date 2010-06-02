@@ -2008,7 +2008,7 @@ begin
   end;
 
   // Display a Tooltop if bar was hidden for the first time
-  if FFirstHide then
+  if (FFirstHide) and not(SharpEBar.DisableHideBar)  then
   begin
     ShowNotify('The SharpBar is now invisible because you left clicked the screen border. You can show the SharpBar again by left clicking the screen border another time.',True);
     FFirstHide := False;
