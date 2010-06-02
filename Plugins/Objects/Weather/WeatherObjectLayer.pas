@@ -27,16 +27,21 @@ unit WeatherObjectLayer;
 
 interface
 uses
-  Windows, StdCtrls, Classes, Controls, ExtCtrls, Dialogs,Math,
+  Windows, Types, StdCtrls, Classes, Controls, ExtCtrls, Dialogs,Math,
   Messages, JPeg, SharpApi, SysUtils, ShellApi, Graphics, Menus,
   gr32_png,gr32,pngimage,GR32_Image, GR32_Layers, GR32_BLEND,GR32_Transforms, GR32_Filters,
-  JvSimpleXML, Forms, JCLShell,StrUtils,registry,
-  SharpDeskApi, Contnrs,
-  WeatherObjectSettingsWnd,
+  JclSimpleXML, Forms, JCLShell,StrUtils,registry,
+  SharpTypes,
+  SharpDeskApi,
+  SharpThemeApiEx,
+  SharpGraphicsUtils,
+  SharpESkinManager,
+  Contnrs,
+  uSharpESkinInterface,
+  uISharpETheme,
   uSharpDeskTDeskSettings,
-  uSharpDeskTThemeSettings,
-  uSharpDeskTObjectSettings,
   uSharpDeskFunctions,
+  uSharpDeskObjectSettings,
   uSharpDeskDebugging,
   WeatherObjectXMLSettings,
   uWeatherParser;
@@ -61,7 +66,7 @@ type
                        BlendB  : boolean;
                        BlendColorB : integer;
                        BlendValueB : integer;
-                       destructor destroy; override;
+                       destructor Destroy; override;
                      end;
 
   TWeatherLayer = class(TBitmapLayer)
@@ -77,16 +82,11 @@ type
     FShadowAlpha    : integer;
     FObjectID       : integer;
     FSettings       : TXMLSettings;
-    FDeskSettings   : TDeskSettings;
-    FThemeSettings  : TThemeSettings;
-    FObjectSettings : TObjectSettings;
     FWeatherParser  : TWeatherParser;
     FParentImage    : TImage32;
     FFontSettings   : TDeskFont;
     FWeatherSkinItems : TObjectList;
 
-    procedure doLoadImage(var Bmp : TBitmap32; IconFile: string);
-    procedure LoadDefaultImage(var bmp : TBitmap32);
   protected
      procedure OnTimer(Sender: TObject);  
   public
@@ -103,10 +103,7 @@ type
      function  GetSize(var pSList : TStringList) : TPoint;
      procedure LoadSettings;
      procedure OnLocationClick(Sender : TObject);
-     constructor Create(ParentImage : Timage32; Id : integer;
-                        DeskSettings : TDeskSettings;
-                        ThemeSettings : TThemeSettings;
-                        ObjectSettings : TObjectSettings); reintroduce;
+     constructor Create(ParentImage : Timage32; Id : integer); reintroduce;
      destructor Destroy; override;
      property ObjectID: Integer read FObjectId write FObjectId;
      property Locked : boolean read FLocked write FLocked;
@@ -136,13 +133,13 @@ end;
 procedure TWeatherLayer.OnLocationClick(Sender : TObject);
 var
   ID : integer;
-  XML : TJvSimpleXML;
+  XML : TJclSimpleXML;
   NewL : String;
 begin
   if not (Sender is TMenuItem) then exit;
   ID := TMenuItem(Sender).Tag;
 
-  XML := TJvSimpleXML.Create(nil);
+  XML := TJclSimpleXML.Create;
   try
     XML.LoadFromFile(GetSharpEUserSettingsPath+'SharpCore\Services\Weather\weatherlist.xml');
     if ID < XML.Root.Items.Count  then
@@ -160,20 +157,20 @@ end;
 
 procedure TWeatherLayer.StartHL;
 begin
-  if (FDeskSettings.Theme.DeskHoverAnimation) and (not FLocked) then
+  if (GetCurrentTheme.Desktop.Animation.UseAnimations) and (not FLocked) then
   begin
     FHLTimerI := 1;
     FHLTimer.Enabled := True;
   end else
   begin
     DrawBitmap;
-    if (not FLocked) then SharpDeskApi.LightenBitmap(Bitmap,50);
+    if (not FLocked) then SharpGraphicsUtils.LightenBitmap(Bitmap,50);
   end;
 end;
 
 procedure TWeatherLayer.EndHL;
 begin
-  if (FDeskSettings.Theme.DeskHoverAnimation) and (not FLocked) then
+  if (GetCurrentTheme.Desktop.Animation.UseAnimations) and (not FLocked) then
   begin
     FHLTimerI := -1;
     FHLTimer.Enabled := True;
@@ -186,17 +183,21 @@ end;
 procedure TWeatherLayer.OnTimer(Sender: TObject);
 var
   i : integer;
+
+  Theme : ISharpETheme;
 begin
   FParentImage.BeginUpdate;
   BeginUpdate;
+
+  Theme := GetCurrentTheme;
 
   FHLTimer.Tag := FHLTimer.Tag + FHLTimerI;
   if FHLTimer.Tag <= 0 then
   begin
     FHLTimer.Enabled := False;
     FHLTimer.Tag := 0;
-    if (FSettings.UseThemeSettings) and (FDeskSettings.Theme.DeskUseAlphaBlend) then
-       i := FDeskSettings.Theme.DeskAlphaBlend
+    if (FSettings.UseThemeSettings) and (FSettings.Theme[DS_ICONALPHABLEND].BoolValue) then
+       i := FSettings.Theme[DS_ICONALPHA].IntValue
         else if FSettings.AlphaBlend then i := FSettings.AlphaValue
              else i := 255;
     if i > 255 then i := 255
@@ -208,13 +209,13 @@ begin
     Changed;
     exit;
   end;
-  if FDeskSettings.Theme.AnimAlpha then
+  if Theme.Desktop.Animation.Alpha then
   begin
-    if (FSettings.UseThemeSettings) and (FDeskSettings.Theme.DeskUseAlphaBlend) then
-       i := FDeskSettings.Theme.DeskAlphaBlend
+    if (FSettings.UseThemeSettings) and (FSettings.Theme[DS_ICONALPHABLEND].BoolValue) then
+       i := FSettings.Theme[DS_ICONALPHA].IntValue
         else if FSettings.AlphaBlend then i := FSettings.AlphaValue
              else i := 255;
-    i := i + round(((FDeskSettings.Theme.AnimAlphaValue/FAnimSteps)*FHLTimer.Tag));
+    i := i + round(((Theme.Desktop.Animation.AlphaValue/FAnimSteps)*FHLTimer.Tag));
     if i > 255 then i := 255
        else if i<32 then i := 32;
     Bitmap.MasterAlpha := i;
@@ -225,10 +226,10 @@ begin
     FHLTimer.Tag := FAnimSteps;
   end;
   DrawBitmap;
-  if FDeskSettings.Theme.AnimBB then
-     SharpDeskApi.LightenBitmap(Bitmap,round(FHLTimer.Tag*(FDeskSettings.Theme.AnimBBValue/FAnimSteps)));
-  if FDeskSettings.Theme.AnimBlend then
-     SharpDeskApi.BlendImage(Bitmap,FDeskSettings.Theme.AnimBlendColor,round(FHLTimer.Tag*(FDeskSettings.Theme.AnimBlendValue/FAnimSteps)));
+  if Theme.Desktop.Animation.Brightness then
+     LightenBitmap(Bitmap,round(FHLTimer.Tag*(Theme.Desktop.Animation.BrightnessValue/FAnimSteps)));
+  if Theme.Desktop.Animation.Blend then
+     BlendImageA(Bitmap,Theme.Desktop.Animation.BlendColor,round(FHLTimer.Tag*(Theme.Desktop.Animation.BlendValue/FAnimSteps)));
   FParentImage.EndUpdate;
   EndUpdate;
   Changed;
@@ -274,9 +275,9 @@ begin
       Bmp.DrawMode := dmBlend;
       Bmp.CombineMode := cmMerge;
       if pItem.BlendA then
-         SharpDeskApi.BlendImage(Bmp,pItem.BlendColorA,pItem.BlendValueA);
+         BlendImageA(Bmp,pItem.BlendColorA,pItem.BlendValueA);
       if pItem.BlendB then
-         SharpDeskApi.BlendImage(Bmp,pItem.BlendColorB,pItem.BlendValueB);
+         BlendImageA(Bmp,pItem.BlendColorB,pItem.BlendValueB);
       Bmp.MasterAlpha := pItem.alpha;
       Bmp.DrawTo(Bitmap,pItem.x,pItem.y);
     end else
@@ -290,42 +291,57 @@ begin
 
 end;
 
-function ParseColor(s : String; cs : TColorschemeEx; failurecolor : integer) : integer;
+function ParseColor(s : String; failurecolor : integer) : integer;
+var
+  Theme : ISharpETheme;
+  SkinInterface : TSharpESkinInterface;
 begin
-  s := StringReplace(s,'Throbberback',inttostr(cs.Throbberback),[rfIgnoreCase]);
-  s := StringReplace(s,'Throbberdark',inttostr(cs.Throbberdark),[rfIgnoreCase]);
-  s := StringReplace(s,'Throbberlight',inttostr(cs.Throbberlight),[rfIgnoreCase]);
-  s := StringReplace(s,'Throbbetext',inttostr(cs.ThrobberText),[rfIgnoreCase]);
-  s := StringReplace(s,'WorkAreaback',inttostr(cs.WorkAreaback),[rfIgnoreCase]);
-  s := StringReplace(s,'WorkAreadark',inttostr(cs.WorkAreadark),[rfIgnoreCase]);
-  s := StringReplace(s,'WorkArealight',inttostr(cs.WorkArealight),[rfIgnoreCase]);
-  s := StringReplace(s,'WorkAreatext',inttostr(cs.WorkAreaText),[rfIgnoreCase]);
+  Theme := GetCurrentTheme;
+
+  result := 0;
+
+  SkinInterface := TSharpESkinInterface.Create(nil, ALL_SHARPE_SKINS);
   try
-    result := strtoint(s);
+    s := StringReplace(s,'Throbberback',inttostr(SkinInterface.SkinManager.Scheme.GetColorByName('Throbberback')),[rfIgnoreCase]);
+    s := StringReplace(s,'Throbberdark',inttostr(SkinInterface.SkinManager.Scheme.GetColorByName('Throbberdark')),[rfIgnoreCase]);
+    s := StringReplace(s,'Throbberlight',inttostr(SkinInterface.SkinManager.Scheme.GetColorByName('Throbberlight')),[rfIgnoreCase]);
+    s := StringReplace(s,'Throbbetext',inttostr(SkinInterface.SkinManager.Scheme.GetColorByName('ThrobberText')),[rfIgnoreCase]);
+    s := StringReplace(s,'WorkAreaback',inttostr(SkinInterface.SkinManager.Scheme.GetColorByName('WorkAreaback')),[rfIgnoreCase]);
+    s := StringReplace(s,'WorkAreadark',inttostr(SkinInterface.SkinManager.Scheme.GetColorByName('WorkAreadark')),[rfIgnoreCase]);
+    s := StringReplace(s,'WorkArealight',inttostr(SkinInterface.SkinManager.Scheme.GetColorByName('WorkArealight')),[rfIgnoreCase]);
+    s := StringReplace(s,'WorkAreatext',inttostr(SkinInterface.SkinManager.Scheme.GetColorByName('WorkAreaText')),[rfIgnoreCase]);
+    try
+      result := strtoint(s);
+    except
+      result := failurecolor;
+    end;
   except
-    result := failurecolor;
   end;
 end;
 
 procedure TWeatherLayer.LoadWeatherSkin(filename : string);
 var
-  XML : TJvSimpleXML;
+  XML : TJclSimpleXML;
   pItem : TWeatherSkinItem;
   n : integer;
   s : string;
+  a : boolean;
 begin
   FWeatherSkinItems.Clear;
-  XML := TJvSimpleXML.Create(nil);
+  XML := TJclSimpleXML.Create;
   try
     XML.LoadFromFile(filename);
   except
     FSettings.CustomFormat := False;
-    FSettings.WeatherSkin  := False;
+    FSettings.WeatherSkin  := '';
     XML.Free;
     exit;
   end;
-  for n := 0 to XML.Root.Items.ItemNamed['items'].Items.Count - 1 do
-      with XML.Root.Items.ItemNamed['items'].Items.Item[n].Items do
+  
+  for n := 0 to XML.Root.Items.Count - 1 do
+    if XML.Root.Items.Item[n].Name = 'Item' then
+    begin
+      with XML.Root.Items.Item[n].Items do
       begin
         pItem := TWeatherSkinItem.Create;
         pItem.x := IntValue('x',0);
@@ -334,19 +350,18 @@ begin
         pItem.data  := Value('data','');
         pItem.data := ReplaceDataInString(pItem.data);
         pItem.alpha := IntValue('alpha',255);
-        cs := FDeskSettings.Theme.Scheme;
 
         s := Value('fontcolor',inttostr(FFontSettings.Color));
-        pItem.Font.Color := ParseColor(s,cs,FFontsettings.Color);
+        pItem.Font.Color := ParseColor(s,FFontsettings.Color);
 
         s := Value('shadowcolor',inttostr(FFontSettings.ShadowColor));
-        pItem.Font.ShadowColor := ParseColor(s,cs,FFontsettings.Color);
+        pItem.Font.ShadowColor := ParseColor(s,FFontsettings.Color);
 
         s := Value('blendcolorA',inttostr(FFontSettings.ShadowColor));
-        pItem.BlendColorA := ParseColor(s,cs,FFontsettings.Color);
+        pItem.BlendColorA := ParseColor(s,FFontsettings.Color);
 
         s := Value('blendcolorB',inttostr(FFontSettings.ShadowColor));
-        pItem.BlendColorB := ParseColor(s,cs,FFontsettings.Color);
+        pItem.BlendColorB := ParseColor(s,FFontsettings.Color);
 
         pItem.Font.Name             := Value('fontname',FFontSettings.Name);
         pItem.Font.Bold             := BoolValue('fontbold',FFontSettings.Bold);
@@ -355,7 +370,6 @@ begin
         pItem.Font.AALevel          := IntValue('fontaa',FFontSettings.AALevel);
         pItem.Font.Alpha            := IntValue('fontalpha',FFontSettings.Alpha);
         pItem.Font.Size             := IntValue('fontsize',FFontSettings.Size);
-        pItem.Font.ShadowAlpha      := BoolValue('shadowalpha',FFontsettings.ShadowAlpha);
         pItem.Font.ShadowAlphaValue := IntValue('shadowalphavalue',FFontSettings.ShadowAlphaValue);
         pItem.Font.Shadow           := BoolValue('fontshadow',FFontSettings.Shadow);
         pItem.BlendA                := BoolValue('blendA',False);
@@ -365,11 +379,12 @@ begin
         if pItem.itype = 'image' then
         begin
           pItem.Bitmap := TBitmap32.Create;
-          if not SharpDeskApi.LoadPng(pItem.Bitmap,IncludeTrailingBackslash(ExtractFileDir(filename))+pItem.data) then
-             pItem.Bitmap.Clear(color32(0,0,0,0));
+          LoadBitmap32FromPNG(pItem.Bitmap,IncludeTrailingBackslash(ExtractFileDir(filename))+pItem.data, a);
+          pItem.Bitmap.Clear(color32(0,0,0,0));
         end;
         FWeatherSkinItems.Add(pItem);
       end;
+    end;
   XML.Free;
 end;
 
@@ -402,7 +417,7 @@ begin
         iBitmap := TBitmap32.Create;
         iBitmap.DrawMode := dmBlend;
         FileName := SharpApi.GetSharpeDirectory
-                    + 'Icons\Weather\64x64\'
+                    + 'Icons\Weather\61x61\'
                     + inttostr(strtoint(FWeatherParser.wxml.CurrentCondition.Moon.IconCode)+1)
                     + '.png';                   
         if FileExists(FileName) then
@@ -431,7 +446,7 @@ begin
         iBitmap := TBitmap32.Create;
         iBitmap.DrawMode := dmBlend;
         FileName := SharpApi.GetSharpeDirectory
-                    + 'Icons\Weather\64x64\'
+                    + 'Icons\Weather\61x61\'
                     + inttostr(strtoint(FWeatherParser.wxml.CurrentCondition.IconCode))
                     + '.png';
         if FileExists(FileName) then
@@ -456,14 +471,15 @@ var
 begin
   try
     FOutput.Clear;
-    if FSettings.WeatherSkin then
+    if FSettings.WeatherSkin <> '' then
     begin
-      if FileExists(SharpApi.GetSharpeGlobalSettingsPath + 'SharpDesk\Objects\Weather\' + FSettings.WeatkerSkinFile+'.xml') then
-         LoadWeatherSkin(SharpApi.GetSharpeGlobalSettingsPath + 'SharpDesk\Objects\Weather\' + FSettings.WeatkerSkinFile+'.xml')
-         else begin
-                FSettings.CustomFormat := False;
-                FSettings.WeatherSkin := False;
-              end;
+      if FileExists(SharpApi.GetSharpeDirectory + 'Skins\Objects\Weather\' + FSettings.WeatherSkin + 'Skin.xml') then
+         LoadWeatherSkin(SharpApi.GetSharpeDirectory + 'Skins\Objects\Weather\' + FSettings.WeatherSkin + 'Skin.xml')
+      else
+      begin
+        FSettings.CustomFormat := False;
+        FSettings.WeatherSkin := '';
+      end;
     end else
     if FSettings.CustomFormat then
     begin
@@ -489,7 +505,8 @@ begin
          FOutput.Add(IconSpacer +  'Condition : {#CONDITION#}');
     end;
 
-    if FOutput.Count = 0 then FOutput.Add('No data selected');
+    if FOutput.Count = 0 then
+      FOutput.Add('No data selected');
     ReplaceIcons(FOutput);
     ReplaceData(FOutput);
     ReplaceSpacer(FOutput);
@@ -500,11 +517,12 @@ end;
 
 procedure TWeatherLayer.ReplaceSpacer(var pSList : TStringList);
 var
-  n , i , k : integer;
+  n , k : integer;
   sb,sa : String;
   maxpos : integer;
   maxwidth : integer;
 begin
+  maxwidth := 0;
   maxpos := 0;
   for n := 0 to pSList.Count - 1 do
       if length(pSList[n]) = 0 then
@@ -625,7 +643,6 @@ end;
 procedure TWeatherLayer.ReplaceData(var pSList : TStringList);
 var
    n : integer;
-   s : String;
 begin
   for n := 0 to pSList.Count - 1 do
       pSList[n] := ReplaceDataInString(pSList[n]);
@@ -644,31 +661,18 @@ begin
   FParentImage.BeginUpdate;
   BeginUpdate;
 
-  //Seems like it must be said sometimes
-
-  //Decide size
-//  w := FPicture.Width;
-//  h := FPicture.Height;
-
-  if FSettings.WeatherSkin then
+  if FSettings.WeatherSkin <> '' then
   begin
     RenderWeatherSkin;
     if FSettings.ColorBlend then
-       SharpDeskApi.BlendImage(Bitmap,FSettings.BlendColor,FSettings.BlendValue);
+       BlendImageA(Bitmap,FSettings.BlendColor,FSettings.BlendValue);
     w := Bitmap.Width;
     h := Bitmap.Height;
   end else
   begin
     Size := GetSize(FOutput);
-    w := Size.X + 16;
-    h := Size.Y + 16 + FSettings.Spacing * (FOutput.Count - 1);
-//  Bitmap.SetSize(w,h);
 
-  //Draw image centered
     Bitmap.Clear(color32(0,0,0,0));
-
-
-//           iBitmap.DrawTo(Bitmap,x,yn*eh - iBitmap.Height div 2);
 
     bmp := TBitmap32.Create;
     bmp.DrawMode := dmBlend;
@@ -676,7 +680,7 @@ begin
     try
       SharpDeskApi.RenderText(bmp,FFontSettings,FOutput,-1,FSettings.Spacing);
     except
-      SharpApi.SendDebugMessageEx('Weather.object','Failed to render output',clred,DMT_ERROR);
+      SharpApi.SendDebugMessageEx('Weather.dll','Failed to render output',clred,DMT_ERROR);
     end;
 
     w := Bmp.Width;
@@ -693,11 +697,11 @@ begin
 
     for n := 0 to High(FIconList) do
       with FIconList[n] do
-           iBitmap.DrawTo(Bitmap,x,yn*eh);
+           iBitmap.DrawTo(Bitmap, x, yn * eh);
 
     if ((FSettings.ColorBlend) and (not FSettings.UseThemeSettings))
-       or ((FSettings.UseThemeSettings) and (FDeskSettings.Theme.DeskUseColorBlend)) then
-       SharpDeskAPI.BlendImage(Bitmap,FSettings.BlendColor,FSettings.BlendValue);
+       or ((FSettings.UseThemeSettings) and (GetCurrentTheme.Desktop.Animation.Blend)) then
+       BlendImageA(Bitmap,FSettings.BlendColor,FSettings.BlendValue);
   end;
 
   //Set the right size of the layer
@@ -731,37 +735,6 @@ begin
   Changed;
 end;
 
-
-
-procedure TWeatherLayer.LoadDefaultImage(var bmp : TBitmap32);
-begin
-  try
-    bmp.SetSize(128,128);
-    bmp.Clear(color32(128,128,128,128));
-  finally
-  end;
-
-end;
-
-
-procedure TWeatherLayer.doLoadImage(var Bmp : TBitmap32; IconFile: string);
-var
-   FileExt : String;
-begin
-  if FileExists(IconFile) = True then
-  begin
-       FileExt := ExtractFileExt(IconFile);
-       if (lowercase(FileExt) = '.jpeg') or (lowercase(FileExt) = '.jpg') then loadjpg(bmp,IconFile)
-          else if (lowercase(FileExt) = '.ico') then loadIco(bmp,IconFile,32)
-               else if (lowercase(FileExt) = '.png') then loadPng(bmp,IconFile)
-                    else if (lowercase(FileExt) = '.bmp') then LoadBmp(bmp,IconFile)
-                        else Bitmap.Clear(color32(130,130,130,0)); 
-  end
-  else LoadDefaultImage(bmp);
-end;
-
-
-
 procedure TWeatherLayer.LoadSettings;
 begin
   if ObjectID=0 then exit;
@@ -771,64 +744,69 @@ begin
   FWeatherParser.Update(FSettings.WeatherLocation);  
 
   if FSettings.UseThemeSettings then
-     FShadow := FDeskSettings.Theme.DeskTextShadow
+     FShadow := GetCurrentTheme.Desktop.Icon.IconShadow
      else FShadow := FSettings.TextShadow;
-  FShadowAlpha := FDeskSettings.Theme.ShadowAlpha;
-  FShadowColor := FDeskSettings.Theme.ShadowColor;
-  CodeToColorEx(FShadowColor,FDeskSettings.Theme.Scheme);
+  FShadowAlpha := GetCurrentTheme.Desktop.Icon.IconShadowAlpha;
+  FShadowColor := GetCurrentTheme.Desktop.Icon.IconShadowColor;
 
   if FSettings.UseThemeSettings then
   begin
-    FSettings.BlendValue := FDeskSettings.Theme.DeskColorBlend;
-    FSettings.BlendColor := CodeToColorEx(FDeskSettings.Theme.DeskColorBlendColor,FDeskSettings.Theme.Scheme);
+    FSettings.BlendValue := GetCurrentTheme.Desktop.Icon.IconBlendAlpha;
+    FSettings.BlendColor := GetCurrentTheme.Desktop.Icon.IconBlendColor;
   end else
   begin
-    FSettings.BlendColor  := CodeToColorEx(FSettings.BlendColor,FDeskSettings.Theme.Scheme);
+    FSettings.BlendColor  := FSettings.BlendColor;
   end;
 
-  if (FSettings.CustomFont) and not(Fsettings.UseThemeSettings) then
+  if not (Fsettings.UseThemeSettings) then
   begin
     FFontSettings.Name      := FSettings.FontName;
     FFontSettings.Size      := FSettings.FontSize;
-    FFontSettings.Color     := CodeToColorEx(FSettings.FontColor,FDeskSettings.Theme.Scheme);
+    FFontSettings.Color     := FSettings.FontColor;
     FFontSettings.Bold      := FSettings.FontBold;
     FFontSettings.Italic    := FSettings.FontItalic;
     FFontSettings.Underline := FSettings.FontUnderline;
     FFontSettings.AALevel   := 0;
-    if FSettings.FontAlpha then FFontSettings.Alpha := FSettings.FontAlphaValue
-       else FFontSettings.Alpha := 255;
-    FFontSettings.ShadowColor := CodeToColorEx(FSettings.FontShadowColor,FDeskSettings.Theme.Scheme);
+    if FSettings.FontAlpha then
+      FFontSettings.Alpha := FSettings.FontAlphaValue
+    else
+      FFontSettings.Alpha := 255;
+    FFontSettings.ShadowColor := FSettings.FontShadowColor;
     FFontSettings.ShadowAlphaValue := FSettings.FontShadowValue;
     FFontSettings.Shadow    := FSettings.FontShadow;
-    FFontSettings.ShadowAlpha := True;
   end else
   begin
     if FSettings.UseThemeSettings then
     begin
-      FSettings.AlphaBlend    := FDeskSettings.Theme.DeskUseAlphaBlend;
-      FSettings.AlphaValue    := FDeskSettings.Theme.DeskAlphaBlend;
+      FSettings.AlphaBlend    := GetCurrentTheme.Desktop.Icon.IconBlending;
+      FSettings.AlphaValue    := GetCurrentTheme.Desktop.Icon.IconBlendAlpha;
     end;
-    FFontSettings.Name      := FDeskSettings.Theme.TextFont.Name;
-    FFontSettings.Color     := CodeToColorEx(FDeskSettings.Theme.TextFont.Color,FDeskSettings.Theme.Scheme);
-    FFontSettings.Bold      := fsBold in FDeskSettings.Theme.TextFont.Style;
-    FFontSettings.Italic    := fsItalic in FDeskSettings.Theme.TextFont.Style;
-    FFontSettings.Underline := fsUnderline in FDeskSettings.Theme.TextFont.Style;
+    FFontSettings.Name      := GetCurrentTheme.Desktop.Icon.FontName;
+    FFontSettings.Color     := GetCurrentTheme.Desktop.Icon.TextColor;
+    FFontSettings.Bold      := GetCurrentTheme.Desktop.Icon.TextBold;
+    FFontSettings.Italic    := GetCurrentTheme.Desktop.Icon.TextItalic;
+    FFontSettings.Underline := GetCurrentTheme.Desktop.Icon.TextUnderline;
     FFontSettings.AALevel   := 0;
-    if FDeskSettings.Theme.DeskFontAlpha then FFontSettings.Alpha := FDeskSettings.Theme.DeskFontAlphaValue
-       else FFontSettings.Alpha := 255;
-    FFontSettings.Size      := FDeskSettings.Theme.TextFont.Size;
-    FFontSettings.ShadowColor := CodeToColorEx(FDeskSettings.Theme.ShadowColor,FDeskSettings.Theme.Scheme);
-    FFontSettings.ShadowAlphaValue := FDeskSettings.Theme.ShadowAlpha;
-    FFontSettings.ShadowAlpha := True;
-    if FSettings.UseThemeSettings then FFontSettings.Shadow := FDeskSettings.Theme.DeskTextShadow
-       else FFontSettings.Shadow := FSettings.TextShadow;
+    if GetCurrentTheme.Desktop.Icon.TextAlpha then
+      FFontSettings.Alpha := GetCurrentTheme.Desktop.Icon.TextAlphaValue
+    else
+      FFontSettings.Alpha := 255;
+    FFontSettings.Size      := GetCurrentTheme.Desktop.Icon.TextSize;
+    FFontSettings.ShadowColor := GetCurrentTheme.Desktop.Icon.TextShadowColor;
+    FFontSettings.ShadowAlphaValue := GetCurrentTheme.Desktop.Icon.IconShadowAlpha;
+    if FSettings.UseThemeSettings then
+      FFontSettings.Shadow := GetCurrentTheme.Desktop.Icon.TextShadow
+    else
+      FFontSettings.Shadow := FSettings.TextShadow;
   end;   
 
   if FSettings.AlphaBlend then
   begin
     Bitmap.MasterAlpha := FSettings.AlphaValue;
-    if Bitmap.MasterAlpha<16 then Bitmap.MasterAlpha:=16;
-  end else Bitmap.MasterAlpha := 255;
+    if Bitmap.MasterAlpha < 16 then
+      Bitmap.MasterAlpha := 16;
+  end else
+    Bitmap.MasterAlpha := 255;
 
   BuildOutput;
 
@@ -840,10 +818,7 @@ end;
 
 
 
-constructor TWeatherLayer.Create( ParentImage:Timage32; Id : integer;
-                                DeskSettings : TDeskSettings;
-                                ThemeSettings : TThemeSettings;
-                                ObjectSettings : TObjectSettings);
+constructor TWeatherLayer.Create( ParentImage:Timage32; Id : integer);
 begin
   Inherited Create(ParentImage.Layers);
   FHLTimer := TTimer.Create(nil);
@@ -852,9 +827,6 @@ begin
   FHLTimer.Enabled := False;
   FHLTimer.OnTimer := OnTimer;
   FAnimSteps      := 5;
-  FDeskSettings   := DeskSettings;
-  FThemeSettings  := ThemeSettings;
-  FObjectSettings := ObjectSettings;
   FOutput         := TStringList.Create;
   FWeatherSkinItems := TObjectList.Create;
   FParentImage := ParentImage;
@@ -862,7 +834,7 @@ begin
   FObjectId := id;
   scaled := False;
   FWeatherParser := TWeatherParser.Create;
-  FSettings := TXMLSettings.Create(FObjectId,nil);
+  FSettings := TXMLSettings.Create(FObjectId, nil, 'Weather');
   LoadSettings;
 end;
 

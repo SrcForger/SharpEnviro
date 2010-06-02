@@ -33,8 +33,6 @@ uses
   pngimage, ExtCtrls, GR32, GR32_Image, JvSimpleXML, Tabs,
   Menus, Buttons, ToolWin, StdActns, ImgList,
   uSharpDeskTDeskSettings,
-  uSharpDeskTThemeSettings,
-  uSharpDeskTObjectSettings,
   WeatherObjectXMLSettings, uSharpeColorBox, uSharpEFontSelector;
 
 type

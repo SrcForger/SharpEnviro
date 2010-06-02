@@ -24,10 +24,10 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
     <DCC_ExeOutput>..\..\..\..\SharpE\Objects</DCC_ExeOutput>
-    <DCC_UnitSearchPath>..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms\;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\SharpFX</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms\;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\SharpFX</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms\;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\SharpFX</DCC_ObjPath>
-    <DCC_IncludePath>..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms\;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\SharpFX</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms\;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\SharpFX;..\..\..\Common\Units\XML;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\Units\SharpTypes;..\..\..\Common\Units\SystemFuncs;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Units\SharpImageUtils;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Libraries\SharpCenterApi;..\..\..\Common\Interfaces;..\..\..\Common\Delphi Components\SharpE Skin Components</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms\;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\SharpFX;..\..\..\Common\Units\XML;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\Units\SharpTypes;..\..\..\Common\Units\SystemFuncs;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Units\SharpImageUtils;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Libraries\SharpCenterApi;..\..\..\Common\Interfaces;..\..\..\Common\Delphi Components\SharpE Skin Components</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms\;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\SharpFX;..\..\..\Common\Units\XML;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\Units\SharpTypes;..\..\..\Common\Units\SystemFuncs;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Units\SharpImageUtils;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Libraries\SharpCenterApi;..\..\..\Common\Interfaces;..\..\..\Common\Delphi Components\SharpE Skin Components</DCC_ObjPath>
+    <DCC_IncludePath>..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms\;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\SharpFX;..\..\..\Common\Units\XML;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\Units\SharpTypes;..\..\..\Common\Units\SystemFuncs;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Units\SharpImageUtils;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Libraries\SharpCenterApi;..\..\..\Common\Interfaces;..\..\..\Common\Delphi Components\SharpE Skin Components</DCC_IncludePath>
     <DCC_Define>DEBUG</DCC_Define>
   </PropertyGroup>
   <ProjectExtensions>
@@ -52,9 +52,6 @@
     <DCCReference Include="..\..\SharpDesk\Units\uSharpDeskDesktopPanelList.pas" />
     <DCCReference Include="uWeatherParser.pas" />
     <DCCReference Include="WeatherObjectLayer.pas" />
-    <DCCReference Include="WeatherObjectSettingsWnd.pas">
-      <Form>SettingsWnd</Form>
-    </DCCReference>
     <DCCReference Include="WeatherObjectXMLSettings.pas" />
   </ItemGroup>
 </Project>

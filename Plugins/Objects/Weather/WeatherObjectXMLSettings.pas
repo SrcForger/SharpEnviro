@@ -31,19 +31,11 @@ uses JvSimpleXML,
      SysUtils,
      SharpAPI,
      uSharpDeskTDeskSettings,
-     uSharpDeskTThemeSettings,
-     uSharpDeskTObjectSettings,
-     uSharpDeskFunctions;
+     uSharpDeskFunctions,
+     uSharpDeskObjectSettings;
 
 type
-    TXMLSettings = class
-    private
-      FXML : TJvSimpleXML;
-      FXMLRoot : TJvSimpleXMLElem;
-      FObjectID : integer;
-      procedure SaveSetting(pXMLElems : TJvSimpleXMLElem; pName,pValue : String; copy : boolean); overload;
-      procedure SaveSetting(pXMLElems : TJvSimpleXMLElem; pName : String; pValue : Integer; copy : boolean); overload;
-      procedure SaveSetting(pXMLElems : TJvSimpleXMLElem; pName : String; pValue : Boolean; copy : boolean); overload;
+    TXMLSettings = class(TDesktopXMLSettings)
     public
       {Settings Block}
       UseThemeSettings : boolean;
@@ -62,7 +54,6 @@ type
       AlphaValue       : integer;
       Spacing          : integer;
       CustomData       : String;
-      CustomFont       : boolean;
       FontName         : String;
       FontSize         : integer;
       FontColor        : integer;
@@ -74,73 +65,23 @@ type
       FontShadowColor  : integer;
       FontAlpha        : boolean;
       FontAlphaValue   : integer;
-      WeatherSkin      : boolean;
-      WeatkerSkinFile  : String;
+      WeatherSkin      : string;
       WeatherLocation  : String;
 
       {End Settings Block}
-      constructor Create(pObjectID : integer; pXMLRoot: TJvSimpleXMLElem); reintroduce;
-      destructor Destroy;
-      procedure LoadSettings;
-      procedure SaveSettings(SaveToFile : boolean);
-      function GetSettingsFile : String;
-    published
-      property XML : TJvSimpleXML read FXML;
+      procedure LoadSettings; override;
+      procedure SaveSettings(SaveToFile : boolean); reintroduce;
+
+      property theme : TThemeSettingsArray read ts;
     end;
 
 
 implementation
 
-constructor TXMLSettings.Create(pObjectID : integer; pXMLRoot: TJvSimpleXMLElem);
-begin
-  Inherited Create;
-  FObjectID := pObjectID;
-  FXMLRoot := pXMLRoot;
-  FXML := TJvSimpleXML.Create(nil);
-  FXML.Root.Name := 'WeatherObjectSettings';
-  if FXMLRoot = nil then
-     FXMLRoot := FXML.Root;
-end;
-
-
-destructor TXMLSettings.Destroy;
-begin
-  FXML.Free;
-  FXML := nil;
-  Inherited Destroy;
-end;
-
-
-function TXMLSettings.GetSettingsFile : string;
-var
-  UserDir,Dir : String;
-begin
-  UserDir := SharpApi.GetSharpeUserSettingsPath;
-  Dir := UserDir + 'SharpDesk\Objects\Weather\';
-  result := Dir + inttostr(FObjectID) + '.xml';
-end;
-
 procedure TXMLSettings.LoadSettings;
-var
-  n : integer;
-  SettingsFile : String;
-  csX : TColorSchemeEX;
 begin
-  if FXML = nil then exit;
-  SettingsFile := GetSettingsFile;
-  if (not FileExists(SettingsFile)) and (FObjectID <> -1) then
-  begin
-    SharpApi.SendDebugMessageEx('Weather.object','Settings File does not exist',0,DMT_INFO);
-  end;
-
-  try
-    if FObjectID <> -1 then
-       FXML.LoadFromFile(SettingsFile);
-  except
-    SharpApi.SendDebugMessageEx('Weather.object',PChar('Failed to load Settings File: '+Settingsfile),0,DMT_ERROR);
-  end;
-
-  csX := SharpApi.LoadColorSchemeEx;
+  inherited InitLoadSettings;
+  inherited LoadSettings;
 
   with FXMLRoot.Items do
   begin
@@ -153,17 +94,16 @@ begin
     Wind             := BoolValue('Wind',True);
     Condition        := BoolValue('Condition',True);
     
-    CustomFormat     := BoolValue('CustomFormat',True);
+    CustomFormat     := BoolValue('CustomFormat',False);
     CustomData       := Value('CustomData','');
     WeatherLocation  := Value('WeatherLocation','');
 
-    BlendColor       := CodeToColorEx(IntValue('BlendColor',-1),csX);
+    BlendColor       := IntValue('BlendColor',0);
     BlendValue       := IntValue('BlendValue',0);
     AlphaValue       := IntValue('AlphaValue',255);
     Spacing          := IntValue('Spacing',0);
     TextShadow       := BoolValue('TextShadow',False);
     DisplayIcon      := BoolValue('DisplayIcon',True);
-    CustomFont       := BoolValue('CustomFont',False);    
     FontName         := Value('FontName','Verdana');
     FontSize         := IntValue('FontSize',10);
     FontColor        := IntValue('FontColor',0);
@@ -175,90 +115,53 @@ begin
     FontShadowColor  := IntValue('FontShadowColor',0);
     FontAlpha        := BoolValue('FontAlpha',False);
     FontAlphaValue   := IntValue('FontAlphaValue',255);
-    WeatherSkin      := BoolValue('WeatherSkin',False);
-    WeatkerSkinFile  := Value('WeatherSkinFile','');
+    WeatherSkin      := Value('WeatherSkin','');
   end;
 end;
 
 procedure TXMLSettings.SaveSettings(SaveToFile : boolean);
-var
-  csX : TColorSchemeEx;
-  SettingsFile,SettingsDir : String;
 begin
-  if FXML = nil then exit;
+  if FXMLRoot = nil then exit;
 
-  FXML.Options := FXML.Options + [sxoAutoCreate];
-  FXMLRoot.Clear;
+  inherited InitSaveSettings;
+  inherited SaveSettings;
 
-  csX := SharpApi.LoadColorSchemeEx;
-
-  SaveSetting(FXMLRoot,'Spacing',Spacing,True);
-  SaveSetting(FXMLRoot,'TextShadow',TextShadow,True);
-  SaveSetting(FXMLRoot,'DisplayIcon',DisplayIcon,True);
-  SaveSetting(FXMLRoot,'ColorBlend',ColorBlend,True);
-  SaveSetting(FXMLRoot,'AlphaBlend',AlphaBlend,True);
-  SaveSetting(FXMLRoot,'UseThemeSettings',UseThemeSettings,True);
-  SaveSetting(FXMLRoot,'Temperature',Temperature,True);
-  SaveSetting(FXMLRoot,'Condition',Condition,True);
-  SaveSetting(FXMLRoot,'Location',Location,True);
-  SaveSetting(FXMLRoot,'DetailedLocation',DetailedLocation,True);
-  SaveSetting(FXMLRoot,'Wind',Wind,True);
-
-  SaveSetting(FXMLRoot,'CustomFormat',CustomFormat,True);
-  SaveSetting(FXMLRoot,'CustomData',CustomData,True);
-  SaveSetting(FXMLRoot,'WeatherLocation',WeatherLocation,False);
-
-  SaveSetting(FXMLRoot,'BlendColor',ColorToCodeEx(BlendColor,csX),True);
-  SaveSetting(FXMLRoot,'BlendValue',BlendValue,True);
-  SaveSetting(FXMLRoot,'AlphaValue',AlphaValue,True);
-  SaveSetting(FXMLRoot,'CustomFont',CustomFont,True);
-  SaveSetting(FXMLRoot,'FontName',FontName,True);
-  SaveSetting(FXMLRoot,'FontSize',FontSize,True);
-  SaveSetting(FXMLRoot,'FontColor',FontColor,True);
-  SaveSetting(FXMLRoot,'FontBold',FontBold,True);
-  SaveSetting(FXMLRoot,'FontItalic',FontItalic,True);
-  SaveSetting(FXMLRoot,'FontUnderline',FontUnderline,True);
-  SaveSetting(FXMLRoot,'FontShadow',FontShadow,True);
-  SaveSetting(FXMLRoot,'FontShadowValue',FontShadowValue,True);
-  SaveSetting(FXMLRoot,'FontShadowColor',FontShadowColor,True);
-  SaveSetting(FXMLRoot,'FontAlpha',FontAlpha,True);
-  SaveSetting(FXMLRoot,'FontAlphaValue',FontAlphaValue,True);
-  SaveSetting(FXMLRoot,'WeatherSkin',WeatherSkin,True);
-  SaveSetting(FXMLRoot,'WeatherSkinFile',WeatkerSkinFile,True);
-
-  if SaveToFile then
+  with FXMLRoot.Items do
   begin
-    SettingsFile := GetSettingsFile;
-    SettingsDir  := ExtractFileDir(SettingsFile);
-    ForceDirectories(SettingsDir);
-    try
-      FXML.SaveToFile(SettingsDir+'~temp.xml');
-    except
-      SharpApi.SendDebugMessageEx('Weather.object',PChar('Failed to save Settings to: '+SettingsDir+'~temp.xml'),0,DMT_ERROR);
-      DeleteFile(SettingsDir+'~temp.xml');
-      exit;
-    end;
-    if FileExists(SettingsFile) then
-       DeleteFile(SettingsFile);
-    if not RenameFile(SettingsDir+'~temp.xml',SettingsFile) then
-       SharpApi.SendDebugMessageEx('Weather.object','Failed to Rename Settings File',0,DMT_ERROR);
+    Add('Spacing', Spacing);
+    Add('TextShadow', TextShadow);
+    Add('DisplayIcon', DisplayIcon);
+    Add('ColorBlend', ColorBlend);
+    Add('AlphaBlend', AlphaBlend);
+    Add('UseThemeSettings', UseThemeSettings);
+    Add('Temperature', Temperature);
+    Add('Condition', Condition);
+    Add('Location', Location);
+    Add('DetailedLocation', DetailedLocation);
+    Add('Wind', Wind);
+
+    Add('CustomFormat', CustomFormat);
+    Add('CustomData', CustomData);
+    Add('WeatherLocation', WeatherLocation);
+
+    Add('BlendColor', BlendColor);
+    Add('BlendValue', BlendValue);
+    Add('AlphaValue', AlphaValue);
+    Add('FontName', FontName);
+    Add('FontSize', FontSize);
+    Add('FontColor', FontColor);
+    Add('FontBold', FontBold);
+    Add('FontItalic', FontItalic);
+    Add('FontUnderline', FontUnderline);
+    Add('FontShadow', FontShadow);
+    Add('FontShadowValue', FontShadowValue);
+    Add('FontShadowColor', FontShadowColor);
+    Add('FontAlpha', FontAlpha);
+    Add('FontAlphaValue', FontAlphaValue);
+    Add('WeatherSkin', WeatherSkin);
   end;
-end;
 
-procedure TXMLSettings.SaveSetting(pXMLElems : TJvSimpleXMLElem; pName,pValue : String; copy : boolean);
-begin
-  pXMLElems.Items.Add(pName,pValue).Properties.Add('CopyValue',copy);
+  inherited FinishSaveSettings(SaveToFile);
 end;
-
-procedure TXMLSettings.SaveSetting(pXMLElems : TJvSimpleXMLElem; pName : String; pValue : Integer; copy : boolean);
-begin
-  pXMLElems.Items.Add(pName,pValue).Properties.Add('CopyValue',copy);
-end;
-
-procedure TXMLSettings.SaveSetting(pXMLElems : TJvSimpleXMLElem; pName : String; pValue : Boolean; copy : boolean);
-begin
-  pXMLElems.Items.Add(pName,pValue).Properties.Add('CopyValue',copy);
-end;
-
 
 end.
