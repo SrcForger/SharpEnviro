@@ -520,6 +520,7 @@ end;
 
 procedure TSharpConsoleWnd.FormDestroy(Sender: TObject);
 begin
+  TextMemo.Free;
   FDebugList.Free;
   UpdateTimer.Enabled := False;
   UpdateTimer.Free;

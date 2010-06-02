@@ -135,7 +135,6 @@ type
   public
     constructor Create(ALine: TFatLine);
     destructor Destroy; override;
-    procedure Free;
     procedure Assign(Source: TFatPart);
     procedure Delete;
 
@@ -203,7 +202,6 @@ type
   public
     constructor Create(ALines: TFatLines);
     destructor Destroy; override;
-    procedure Free;
     procedure Assign(Source: TFatLine);
     procedure Clear;
 
@@ -253,7 +251,6 @@ type
   public
     constructor Create(AMemo: TFatMemo);
     destructor Destroy; override;
-    procedure Free;
     procedure Assign(Source: TFatLines);
     procedure Clear;
     procedure Delete(Index: Integer);
@@ -332,7 +329,6 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure Paint; override;
     procedure PaintTo(Canvas: TCanvas; const BlindDraw, OverDraw: Boolean);
-    procedure Free;
     destructor Destroy; override;
 
 
@@ -449,11 +445,6 @@ begin
   FLink := '';
   FFontColor := clNone;
   FBackColor := clNone;
-end;
-
-procedure TFatPart.Free;
-begin
-  inherited;
 end;
 
 destructor TFatPart.Destroy;
@@ -1179,16 +1170,10 @@ begin
   FLines := ALines;
 end;
 
-procedure TFatLine.Free;
-begin
-  Clear;
-  FParts.Free;
-end;
-
 destructor TFatLine.Destroy;
 begin
   Clear;
-  FParts.Destroy;
+  FParts.Free;
 
   inherited;
 end;
@@ -1487,14 +1472,6 @@ begin
   FMemo := AMemo;
 end;
 
-procedure TFatLines.Free;
-begin
-  Clear;
-  FItems.Free;
-
-  inherited;
-end;
-
 destructor TFatLines.Destroy;
 begin
   Clear;
@@ -1726,17 +1703,12 @@ begin
   ParentFont := True;
 end;
 
-procedure TFatMemo.Free;
+destructor TFatMemo.Destroy;
 begin
   FBarVert.Free;
   FBarHoriz.Free;
   FLines.Free;
 
-  inherited;
-end;
-
-destructor TFatMemo.Destroy;
-begin
   inherited;
 end;
 

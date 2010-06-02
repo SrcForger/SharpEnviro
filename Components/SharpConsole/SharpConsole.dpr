@@ -9,7 +9,8 @@ uses
   uTDebugging,
   SharpApi,
   TextConverterUnit in 'TextConverterUnit.pas',
-  uDebugList in 'uDebugList.pas';
+  uDebugList in 'uDebugList.pas',
+  FatThings in 'FatThings.pas';
 
 {$R *.RES}
 {$R metadata.res}
