@@ -35,10 +35,7 @@ uses
   GR32_PNG,
   GR32_Transforms,
   GR32_Resamplers,
-  uSharpDeskTDeskSettings,
-  uSharpDeskTThemeSettings,
-  uSharpDeskTObjectSettings,
-  uSharpDeskSharpETheme;
+  uSharpDeskTDeskSettings;
 
 type
   TSettingsWnd = class(TForm)
@@ -72,8 +69,6 @@ type
   private
   public
     DeskSettings   : TDeskSettings;
-    ObjectSettings : TObjectSettings;
-    ThemeSettings  : TThemeSettings;
     ObjectID : integer;
     StartX : Integer;
     function GetSettingsFile : String;
@@ -82,7 +77,6 @@ type
   end;
 
 var
-  cs : TColorScheme;
   FontName : String;
   FontColor : TColor;
   FontSize : integer;

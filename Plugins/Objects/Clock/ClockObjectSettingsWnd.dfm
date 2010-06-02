@@ -182,7 +182,7 @@ object SettingsWnd: TSettingsWnd
       object lb_author: TLabel
         Left = 152
         Top = 16
-        Width = 65
+        Width = 64
         Height = 14
         Caption = 'Skin Author : '
         Font.Charset = ANSI_CHARSET
@@ -213,9 +213,11 @@ object SettingsWnd: TSettingsWnd
         Width = 193
         Height = 193
         Bitmap.ResamplerClassName = 'TNearestResampler'
+        BitmapAlign = baCustom
         Color = clBlack
         ParentColor = False
         Scale = 1.000000000000000000
+        ScaleMode = smScale
         ScrollBars.ShowHandleGrip = True
         ScrollBars.Style = rbsDefault
         OverSize = 0

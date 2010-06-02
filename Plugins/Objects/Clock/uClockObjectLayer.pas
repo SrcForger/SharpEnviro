@@ -29,7 +29,7 @@ unit uClockObjectLayer;
 interface
 uses
   Windows, StdCtrls, Classes, Controls, ExtCtrls, Dialogs,Math,
-  Messages, JPeg, SharpApi, SysUtils, ShellApi, Graphics,
+  Messages, JPeg, SharpApi, SysUtils, ShellApi, Graphics, StrUtils,
   gr32,
   pngimage,
   GR32_Image,
@@ -39,13 +39,14 @@ uses
   GR32_Filters,
   GR32_Resamplers,
   DateUtils, Forms,
+  SharpThemeApiEx,
+  uISharpETheme,
   uSharpDeskDebugging,
   uSharpDeskTDeskSettings,
-  uSharpDeskTThemeSettings,
-  uSharpDeskTObjectSettings,
-  uSharpDeskSharpETheme,
+  uSharpDeskObjectSettings,
   ClockObjectSettingsWnd,
-  SharpDeskApi, GR32_PNG, JvSimpleXML;
+  ClockObjectXMLSettings,
+  SharpDeskApi, GR32_PNG, JclSimpleXML;
 
 type
   TColorRec = packed record
@@ -54,47 +55,58 @@ type
   TColorArray = array[0..MaxInt div SizeOf(TColorRec)-1] of TColorRec;
   PColorArray = ^TColorArray;
 
+  TClockText = record
+    FontName : string;
+    FontSize : integer;
+    FontColor : TColor;
+    FontAlpha : integer;
+    FontStyle : string;
+
+    XMod : integer;
+    YMod : integer;
+    Caption : string;
+    AALevel : integer;
+
+    Overlay : boolean;
+  end;
+
+  TClockTexts = array of TClockText;
+
   TClockLayer = class(TBitmapLayer)
   private
-    FDrawGlass   : boolean;
-    FDrawSpecial : boolean;
-    FShadow      : boolean;
     FLocked      : boolean;
-    FSkinType    : boolean;
     FHighlight   : boolean;
-    FLastHour    : integer;
-    FLastMinute  : integer;
     FShadowAlpha : integer;
     FShadowColor : integer;
-    FColor       : TColor;
     FObjectId    : integer;
     FParentImage : TImage32;
     FClockBack   : TBitmap32;
-    FClockGlas   : TBitmap32;
+    FClockOverlay   : TBitmap32;
     FHArrow      : TBitmap32;
     FMArrow      : TBitmap32;
+    FSArrow      : TBitmap32;
     FPicture     : TBitmap32;
-    FAnalogSkin  : String;
-    FXML         : TJvSimpleXML;
     FDeskSettings   : TDeskSettings;
-    FThemeSettings  : TThemeSettings;
-    FObjectSettings : TObjectSettings;    
+    FSettings : TClockXMLSettings;
+
+    FClockTexts : TClockTexts;
+
+    FLastHour, FLastMinute, FLastSecond : integer;
 
     fTimer : TTimer;
     strTime, strDate : string;
 
   protected
-     procedure fTimer1TimerFirst(Sender: TObject);
+    procedure LoadSkin;
+
      procedure fTimer1TimerNormal(Sender: TObject);
+     
   public
      procedure DrawClock;
-//     procedure createdropshadow(startx,starty,sAlpha:integer);  
      procedure DrawBitmap;
      procedure LoadSettings;
      constructor Create( ParentImage:Timage32; Id : integer;
-                         DeskSettings : TDeskSettings;
-                         ThemeSettings : TThemeSettings;
-                         ObjectSettings : TObjectSettings); reintroduce;
+                         DeskSettings : TDeskSettings); reintroduce;
      destructor Destroy; override;
      property ObjectId: Integer read FObjectId write FObjectId;
      property Highlight : boolean read FHighlight write FHighlight;
@@ -108,12 +120,12 @@ var
 implementation
 
 
-procedure RotateBitmap(Src,Dst : TBitmap32; Alpha: Single);
+procedure RotateBitmap(Src, Dst : TBitmap32; Alpha: Single);
 var
   SrcR: Integer;
   SrcB: Integer;
   T: TAffineTransformation;
-  Sx, Sy, Scale: Single;
+  Scale: Single;
 begin
   SrcR := Src.Width - 1;
   SrcB := Src.Height - 1;
@@ -125,10 +137,6 @@ begin
 
     T.Translate(-SrcR / 2, -SrcB / 2);
     T.Rotate(0, 0, Alpha);
-    Alpha := Alpha * 3.14159265358979 / 180;
-
-    Sx := Abs(SrcR * Cos(Alpha)) + Abs(SrcB * Sin(Alpha));
-    Sy := Abs(SrcR * Sin(Alpha)) + Abs(SrcB * Cos(Alpha));
 
     scale := 1;
 
@@ -144,125 +152,201 @@ begin
   end;
 end;
 
-{procedure TClockLayer.createdropshadow(startx,starty,sAlpha:integer);
+function FormatCaption(str : string) : string;
 var
-  P: PColor32;
-  X,Y,alpha : integer;
-     pass : Array of Array of integer;
-
+  tmp1, tmp2 : string;
+  n, e : integer;
 begin
-  with Bitmap do begin
-    setlength(pass,width,height);
+  n := 1;
 
-    P := PixelPtr[0, 0];
-    inc(P,(starty-1)*width+startx);
-    for Y := starty to Height - 1 do begin
-         for X := startx to Width- 1 do begin
-             alpha := (P^ shr 24);
-             if (alpha <> 0) then
-                pass[X,Y] := sAlpha
-             else if (X>1) and (Y>1) then begin
-                pass[X,Y] := round((pass[X-1,Y] + pass[X,Y-1])/2) - 20;
-                if pass[X,Y] > sAlpha-1 then pass[X,Y] := sAlpha;
-                if pass[X,Y] < 0 then pass[X,Y] := 0;
-                P^ := color32(GetRValue(FShadowColor),GetGValue(FShadowColor),GetBValue(FShadowColor),pass[X,Y]);
-             end;
-           inc(P); // proceed to the next pixel
-         end;
-         inc(P,startx);
-      end
+  while n < Length(str) do
+  begin
+    if PosEx('{', str, n) <= 0 then
+      break;
+
+    n := PosEx('{', str, n);
+    e := PosEx('}', str, n + 1);
+    if e <= 0 then
+      break;
+
+    tmp1 := Copy(str, n + 1, e - n - 1);
+    DateTimeToString(tmp2, tmp1, Now);
+
+    Delete(str, n, e - n + 1);
+    Insert(tmp2, str, n);
   end;
-end;            }
+
+  Result := str;
+end;
+
+procedure TClockLayer.LoadSkin;
+var
+  SkinDir : String;
+
+  b : boolean;
+  n, n1 : integer;
+
+  SkinXml: TJclSimpleXML;
+
+  SkinStr : string;
+begin
+  SkinDir := ExtractFileDir(Application.ExeName) + '\Skins\Objects\Clock\' + FSettings.AnalogSkin + '\';
+  if (FSettings.DrawText) and (not FileExists(SkinDir + 'Skin.xml')) then
+  begin
+    FSettings.DrawText := False;
+  end;
+
+  SkinXml := TJclSimpleXML.Create;
+    
+  try
+    SkinXml.LoadFromFile(SkinDir + 'Skin.xml');
+
+    if SkinXml.Root.Items.ItemNamed['Skin'] <> nil then
+    begin
+      with SkinXml.Root.Items.ItemNamed['Skin'].Items do
+      begin
+        SkinStr := Value('Background','');
+        if (SkinStr <> '') and (FileExists(SkinDir + SkinStr)) then
+          LoadBitmap32FromPNG(FClockBack, SkinDir + SkinStr, b);
+        
+        SkinStr := Value('Overlay','');
+        if (SkinStr <> '') and (FileExists(SkinDir + SkinStr)) then
+          LoadBitmap32FromPNG(FClockOverlay, SkinDir + SkinStr, b);
+
+        SkinStr := Value('HandHour','');
+        if (SkinStr <> '') and (FileExists(SkinDir + SkinStr)) then
+          LoadBitmap32FromPNG(FHArrow, SkinDir + SkinStr, b);
+
+        SkinStr := Value('HandMinute','');
+        if (SkinStr <> '') and (FileExists(SkinDir + SkinStr)) then
+          LoadBitmap32FromPNG(FMArrow, SkinDir + SkinStr, b);
+
+        SkinStr := Value('HandSecond','');
+        if (SkinStr <> '') and (FileExists(SkinDir + SkinStr)) then
+          LoadBitmap32FromPNG(FSArrow, SkinDir + SkinStr, b);
+      end;
+    end;
+
+    if FSettings.DrawText then
+    begin
+      for n := 0 to SkinXml.Root.Items.Count - 1 do
+        if SkinXml.Root.Items.Item[n].Name = 'Text' then
+        begin
+          n1 := Length(FClockTexts);
+          SetLength(FClockTexts, Length(FClockTexts) + 1);
+
+          with SkinXml.Root.Items.Item[n].Items do
+          begin
+            FClockTexts[n1].FontName := Value('FontName','Arial');
+            FClockTexts[n1].FontSize := IntValue('FontSize',8);
+            FClockTexts[n1].FontColor := IntValue('FontColor',0);
+            FClockTexts[n1].FontAlpha := IntValue('FontAlpha',0);
+            FClockTexts[n1].FontStyle := Value('FontStyle', '');
+
+            FClockTexts[n1].XMod := IntValue('XMod', 0);
+            FClockTexts[n1].YMod := IntValue('YMod', 0);
+            FClockTexts[n1].Caption := Value('Caption', 'none');
+            FClockTexts[n1].AALevel := IntValue('FontAALevel', 0);
+        end;
+      end;
+    end;
+  except
+  end;
+
+  DebugFree(SkinXml);
+end;
 
 procedure TClockLayer.DrawClock;
 var
-   dir : String;
-   b : boolean;
-   Day,Month,Year : string;
-   n : integer;
-   FCaption : String;
-   XMod,YMod : integer;
-   AALevel : integer;
-   FAlpha : integer;
-   TempBmp : TBitmap32;
+  n : integer;
+  TempBmp : TBitmap32;
 begin
-     dir := ExtractFileDir(Application.ExeName)+'\Objects\Clock\watchfaces\'+FAnalogSkin+'\';
-     if not FileExists(dir+'skin.xml') then
-     begin
-          FSkinType := False;
-          exit;
-     end;
-     FXML.Free;
-     FXML := TJvSimpleXML.Create(nil);
-     FXML.LoadFromFile(dir+'skin.xml');
+  FClockBack.DrawMode := dmBlend;
+  FClockBack.CombineMode := cmMerge;
+  FClockOverlay.DrawMode := dmBlend;
+  FClockOverlay.CombineMode := cmMerge;
+  FHArrow.DrawMode := dmBlend;
+  FHArrow.CombineMode := cmMerge;
+  FMArrow.DrawMode := dmBlend;
+  FMArrow.CombineMode := cmMerge;
+  FSArrow.DrawMode := dmBlend;
+  FSArrow.CombineMode := cmMerge;
 
-     FClockBack.DrawMode := dmBlend;
-     FClockBack.CombineMode := cmMerge;
-     FClockGlas.DrawMode := dmBlend;
-     FClockGlas.CombineMode := cmMerge;
-     FHArrow.DrawMode := dmBlend;
-     FHArrow.CombineMode := cmMerge;
-     FMArrow.DrawMode := dmBlend;
-     FMArrow.CombineMode := cmMerge;
+  FPicture.SetSize(FClockBack.Width,FClockBack.Height);
+  FPicture.Clear(color32(0,0,0,0));
 
-     LoadBitmap32FromPNG(FClockBack,dir+'watch_face.png',b);
-     LoadBitmap32FromPNG(FClockGlas,dir+'watch_glass.png',b);
-     LoadBitmap32FromPNG(FHArrow,dir+'hand_hour.png',b);
-     LoadBitmap32FromPNG(FMArrow,dir+'hand_minute.png',b);
+  //Draw background
+  FClockBack.DrawTo(FPicture);
 
-     FPicture.SetSize(FClockBack.Width,FClockBack.Height);
-     FPicture.Clear(color32(0,0,0,0));
+  // Draw texts
+  for n := 0 to Length(FClockTexts) - 1 do
+  begin
+    if FClockTexts[n].Overlay then
+      continue;
 
-     FClockBack.DrawTo(FPicture);
+    FPicture.Font.Name := FClockTexts[n].FontName;
+    FPicture.Font.Size := FClockTexts[n].FontSize;
 
-     if FDrawSpecial then
-     begin
-          try
-             Day := inttostr(DayOf(Now));
-             if length(Day) = 1 then Day := '0'+Day;
-             Month := inttostr(MonthOf(Now));
-             if length(Month) = 1 then Month := '0'+Month;
-             Year := inttostr(YearOf(Now));
-             for n:=0 to FXML.Root.Items.ItemNamed['text'].Items.Count -1 do
-                 with FXML.Root.Items.ItemNamed['text'].Items.Item[n].Items do
-                 begin
-                      FPicture.Font.Name := Value('FontName','Arial');
-                      FPicture.Font.Size := IntValue('FontSize',8);
-                      FColor := IntValue('FontColor',0);
-                      FAlpha := IntValue('FontAlpha',0);
-                      if BoolValue('FontBold',False) then FPicture.Font.Style := [fsBold]
-                         else FPicture.Font.Style := [];
-                      XMod := IntValue('XMod',0);
-                      YMod := IntValue('YMod',0);
-                      FCaption := Value('Caption','none');
-                      AALevel := IntValue('FontAALevel',0);
-                      FCaption := StringReplace(FCaption,'{Day}',Day,[rfReplaceAll, rfIgnoreCase]);
-                      FCaption := StringReplace(FCaption,'{Month}',Month,[rfReplaceAll, rfIgnoreCase]);
-                      FCaption := StringReplace(FCaption,'{Year}',Year,[rfReplaceAll, rfIgnoreCase]);
-                      FCaption := StringReplace(FCaption,'{Month2}',FormatDateTime('mmm',now),[rfReplaceAll, rfIgnoreCase]);
-                      FPicture.RenderText(XMod,YMod,FCaption,AALevel,color32(GetRValue(FColor),GetGValue(FColor),GetBValue(FColor),FAlpha));
-                 end;
-          except
-          end;
-     end;
+    FPicture.Font.Style := [];
+    if AnsiContainsText(FClockTexts[n].FontStyle, 'Bold') then
+      FPicture.Font.Style := FPicture.Font.Style + [fsBold];
+    if AnsiContainsText(FClockTexts[n].FontStyle, 'Italic') then
+      FPicture.Font.Style := FPicture.Font.Style + [fsItalic];
+    if AnsiContainsText(FClockTexts[n].FontStyle, 'Underline') then
+      FPicture.Font.Style := FPicture.Font.Style + [fsUnderline];
+    if AnsiContainsText(FClockTexts[n].FontStyle, 'Strikeout') then
+      FPicture.Font.Style := FPicture.Font.Style + [fsStrikeout];
 
-     TempBmp := TBitmap32.Create;
-     TempBmp.DrawMode := dmBlend;
-     TempBmp.CombineMode := cmMerge;
-     TempBmp.SetSize(FClockBack.Width,FClockBack.Height);
+    FPicture.RenderText(FClockTexts[n].XMod, FClockTexts[n].YMod, FormatCaption(FClockTexts[n].Caption), FClockTexts[n].AALevel, color32(GetRValue(FClockTexts[n].FontColor), GetGValue(FClockTexts[n].FontColor), GetBValue(FClockTexts[n].FontColor), FClockTexts[n].FontAlpha));
+  end;
 
-     TempBmp.Clear(color32(0,0,0,0));
-     RotateBitmap(FHArrow,TempBmp,-HourOf(Now)*30-MinuteOf(Now)*0.5);
-     TempBmp.DrawTo(FPicture);
+  TempBmp := TBitmap32.Create;
+  TempBmp.DrawMode := dmBlend;
+  TempBmp.CombineMode := cmMerge;
+  TempBmp.SetSize(FClockBack.Width,FClockBack.Height);
 
-     TempBmp.Clear(color32(0,0,0,0));
-     RotateBitmap(FMArrow,TempBmp,-MinuteOf(Now)*6);
-     TempBmp.DrawTo(FPicture);
+  TempBmp.Clear(color32(0,0,0,0));
+  RotateBitmap(FHArrow,TempBmp,-HourOf(Now)*30-MinuteOf(Now)*0.5);
+  TempBmp.DrawTo(FPicture);
 
-     TempBmp.Free;
+  TempBmp.Clear(color32(0,0,0,0));
+  RotateBitmap(FMArrow,TempBmp,-MinuteOf(Now)*6);
+  TempBmp.DrawTo(FPicture);
 
-     FLastHour := HourOf(Now);
-     FLastMinute := MinuteOf(Now);
+  TempBmp.Clear(color32(0,0,0,0));
+  RotateBitmap(FSArrow,TempBmp,-SecondOf(Now)*6);
+  TempBmp.DrawTo(FPicture);
+
+  TempBmp.Free;
+
+  if FSettings.DrawOverlay then
+    FClockOverlay.DrawTo(FPicture);
+
+  // Draw overlay texts
+  for n := 0 to Length(FClockTexts) - 1 do
+  begin
+    if not FClockTexts[n].Overlay then
+      continue;
+
+    FPicture.Font.Name := FClockTexts[n].FontName;
+    FPicture.Font.Size := FClockTexts[n].FontSize;
+
+    FPicture.Font.Style := [];
+    if AnsiContainsText(FClockTexts[n].FontStyle, 'Bold') then
+      FPicture.Font.Style := FPicture.Font.Style + [fsBold];
+    if AnsiContainsText(FClockTexts[n].FontStyle, 'Italic') then
+      FPicture.Font.Style := FPicture.Font.Style + [fsItalic];
+    if AnsiContainsText(FClockTexts[n].FontStyle, 'Underline') then
+      FPicture.Font.Style := FPicture.Font.Style + [fsUnderline];
+    if AnsiContainsText(FClockTexts[n].FontStyle, 'Strikeout') then
+      FPicture.Font.Style := FPicture.Font.Style + [fsStrikeout];
+
+    FPicture.RenderText(FClockTexts[n].XMod, FClockTexts[n].YMod, FClockTexts[n].Caption, FClockTexts[n].AALevel, color32(GetRValue(FClockTexts[n].FontColor), GetGValue(FClockTexts[n].FontColor), GetBValue(FClockTexts[n].FontColor), FClockTexts[n].FontAlpha));
+  end;
+
+  FLastHour := HourOf(Now);
+  FLastMinute := MinuteOf(Now);
+  FLastSecond := SecondOf(Now);
 end;
 
 procedure TClockLayer.DrawBitmap;
@@ -270,186 +354,163 @@ var
    R : TFloatrect;
    w, h : integer;
 begin
-    DateTimeToString(strTime, 'hh:mm', Now());
+  DateTimeToString(strTime, 'hh:mm', Now);
 
-    //Say to Image that we will update
-    FParentImage.BeginUpdate;
-    BeginUpdate;
+  //Say to Image that we will update
+  FParentImage.BeginUpdate;
+  BeginUpdate;
 
-    //Draw image centered
+  //Draw image centered
+  Bitmap.Clear(color32(0,0,0,0));
+
+  if FSettings.SkinType then
+  begin
+    Bitmap.SetSize(FPicture.Width,FPicture.Height);
     Bitmap.Clear(color32(0,0,0,0));
+    if (FLastHour <> HourOf(Now)) or (FLastMinute <> MinuteOf(Now)) or (FLastSecond <> SecondOf(Now)) then
+      DrawClock;
 
-    if FSkinType then
-    begin
-         Bitmap.SetSize(FPicture.Width,FPicture.Height);
-         Bitmap.Clear(color32(0,0,0,0));
-         if (FLastHour<>HourOf(Now)) or (FLastMinute<>MinuteOf(Now)) then
-            DrawClock;
-         Bitmap.Draw(0,0,FPicture);
-         if FDrawGlass then Bitmap.Draw(0,0,FClockGlas);
-    end
+    Bitmap.Draw(0,0,FPicture);
+  end else
+  begin
+    if not FSettings.Shadow then
+      Bitmap.RenderText(0, 0, strTime, 2, color32(FSettings.Color))
     else
     begin
-         if not FShadow then Bitmap.RenderText(0, 0, strTime, 2, color32(FColor))
-            else
-            begin
-              Bitmap.RenderText(0, 0, strTime, 0 , color32(FColor));
-              createdropshadow(Bitmap,0,1,FShadowAlpha,0);
-            end;
+      Bitmap.RenderText(0, 0, strTime, 0 , color32(FSettings.Color));
+      createdropshadow(Bitmap,0,1,FShadowAlpha,0);
     end;
+  end;
 
-    Bitmap.DrawMode := dmBlend;
-    if (FHighlight) and (not FLocked) then LightenBitmap(Bitmap,50);
+  Bitmap.DrawMode := dmBlend;
+  //if (FHighlight) and (not FLocked) then LightenBitmap(Bitmap,50);
 
-    w := Bitmap.Width;
-    h := Bitmap.Height;
-    R := getAdjustedLocation();
-    if (w <> (R.Right-R.left)) then   //dont move image if resize
-       R.Left := R.left + round(((R.Right-R.left)- w)/2);
-    if (h <> (R.Bottom-R.Top)) then   //dont move image if resize
-       R.Top := R.Top + round(((R.Bottom-R.Top)-h)/2);
-    R.Right := r.Left + w;
-    R.Bottom := r.Top + h;
-    location := R;
+  w := Bitmap.Width;
+  h := Bitmap.Height;
+  R := getAdjustedLocation;
+  if (w <> (R.Right-R.left)) then   //dont move image if resize
+    R.Left := R.left + round(((R.Right-R.left)- w)/2);
+  if (h <> (R.Bottom-R.Top)) then   //dont move image if resize
+    R.Top := R.Top + round(((R.Bottom-R.Top)-h)/2);
+  R.Right := r.Left + w;
+  R.Bottom := r.Top + h;
+  location := R;
 
-    FParentImage.EndUpdate;
-    EndUpdate;
-
-    Changed;
+  FParentImage.EndUpdate;
+    
+  EndUpdate;
+  Changed;
 end;
-
 
 procedure TClockLayer.LoadSettings;
 var
-   sTheme : String;
-   alphablend : boolean;
-   w,h : integer;
-   sxml : TJvSimpleXML;
-   sfile : String;
+  ITheme : ISharpETheme;
+  w,h : integer;
 begin
-  FLastHour:=-1;
-  FLastMinute:=-1;
-  if ObjectID=0 then exit;
+  if ObjectID = 0 then
+    exit;
 
-  sxml := TJvSimpleXML.Create(nil);
-  sfile := SharpApi.GetSharpeUserSettingsPath + 'SharpDesk\Objects\Clock\'+ inttostr(ObjectID) + '.xml';
+  FLastHour := -1;
+  FLastMinute := -1;
+  FLastSecond := -1;
 
-  try
-    sxml.LoadFromFile(sfile);
-    with sxml.Root.Items do
+  FSettings.LoadSettings;
+
+  ITheme := GetCurrentTheme;
+  with FSettings do
+  begin
+    if AlphaBlend then
+      Bitmap.MasterAlpha := BitmapMasterAlpha
+    else
+      Bitmap.MasterAlpha := 255;
+
+    if Bitmap.MasterAlpha < 16 then
+      Bitmap.MasterAlpha := 16;
+
+    with Bitmap.Font do
     begin
-      AlphaBlend := BoolValue('AlphaBlend',False);
-      if AlphaBlend then Bitmap.MasterAlpha := IntValue('AlphaValue',255)
-         else Bitmap.MasterAlpha := 255;
-      FColor := StringToColor(Value('FontColor','0'));
-      FShadow := BoolValue('DrawShadow',false);
-      FSkinType := BoolValue('ClockType',False);
-      FAnalogSkin := Value('AnalogSkin','');
-      FDrawSpecial := BoolValue('DrawSpecial',True);
-      FDrawGlass := BoolValue('DrawGlass',True);
-
-      if Bitmap.MasterAlpha<16 then Bitmap.MasterAlpha:=16;
-      with Bitmap.Font do
-      begin
-        Name := Value('FontName','Arial');
-        Size := IntValue('FontSize',32);
-      end;
-     end;
-  finally
-    sxml.Free;
+      Name := BitmapName;
+      Size := BitmapSize;
+    end;
   end;
 
-     FShadowColor := FDeskSettings.Theme.ShadowColor;
-     FShadowAlpha := FDeskSettings.Theme.ShadowAlpha;
-     if FShadowAlpha<32 then FShadowAlpha:=32;
+  FShadowColor := ITheme.Scheme.SchemeCodeToColor(FSettings.Theme[DS_TEXTSHADOWCOLOR].IntValue);
+  FShadowAlpha := FSettings.Theme[DS_TEXTSHADOWALPHA].IntValue;
+  if FShadowAlpha < 32 then
+    FShadowAlpha := 32;
 
-    { Get the initial time }
-    fTimer1TimerNormal(Self);
+  { Get the initial time }
+  fTimer1TimerNormal(Self);
 
-    { Start timer off with seconds to next minute. Set to 60000 on first tick }
-    fTimer.Interval := (60 - SecondOfTheMinute(Now())) * 1000;
+  { Start timer off with seconds to next minute. Set to 60000 on first tick }
+  fTimer.Interval := (60 - SecondOfTheMinute(Now));
 
-    { Decide size }
-    if not FSkinType then
-    begin
-         w := Bitmap.textwidth('00:00') + 2;        // 00:00 likely to be wide
-         h := Bitmap.textHeight('1234567890') + 4;  // use all numbers!
-         Bitmap.SetSize(w+4, h+4);
-    end;
+  { Decide size }
+  if not FSettings.SkinType then
+  begin
+    w := Bitmap.textwidth('00:00') + 2;        // 00:00 likely to be wide
+    h := Bitmap.textHeight('1234567890') + 4;  // use all numbers!
+    Bitmap.SetSize(w+4, h+4);
+  end;
 
-    { Refresh the drawn version }
-    DrawBitmap();
- end;
+  LoadSkin;
+end;
 
 constructor TClockLayer.Create( ParentImage:Timage32; Id : integer;
-                                 DeskSettings : TDeskSettings;
-                                 ThemeSettings : TThemeSettings;
-                                 ObjectSettings : TObjectSettings);
+                                 DeskSettings : TDeskSettings);
 begin
   Inherited Create(ParentImage.Layers);
   FDeskSettings   := DeskSettings;
-  FThemeSettings  := ThemeSettings;
-  FObjectSettings := ObjectSettings;
   FParentImage := ParentImage;
   FHighlight := False;
   Alphahit := False;
   FObjectId := id;
   scaled := false;
   FClockBack := TBitmap32.Create;
-  FClockGlas := TBitmap32.Create;
+  FClockOverlay := TBitmap32.Create;
   FHArrow := TBitmap32.Create;
   FMArrow := TBitmap32.Create;
+  FSArrow := TBitmap32.Create;
 
   FPicture := TBitmap32.Create;
   FPicture.DrawMode := dmBlend;
   FPicture.CombineMode := cmMerge;
-  FXML := TJvSimpleXML.Create(nil);
   fTimer := TTimer.Create(nil);
-  fTimer.OnTimer := fTimer1TimerFirst;
+  fTimer.Interval := 60;
+  fTimer.OnTimer := fTimer1TimerNormal;
 
-  LoadSettings();
+  DateTimeToString(strDate, 'dddd d mmmm, yyyy', Date);
+  DateTimeToString(strTime, 'hh:mm', Now);
+
+  FSettings := TClockXMLSettings.Create(FObjectID, nil, 'Clock');
+
+  SetLength(FClockTexts, 0);
+
+  LoadSettings;
+
+  DrawBitmap;
 end;
 
 destructor TClockLayer.Destroy;
 begin
   fTimer.Enabled:=False;
   fTimer.Destroy;
-  DebugFree(FXML);
   DebugFree(FPicture);
   DebugFree(FClockBack);
-  DebugFree(FClockGlas);
+  DebugFree(FClockOverlay);
   DebugFree(FHArrow);
   DebugFree(FMArrow);
+  DebugFree(FSArrow);
 
   inherited;
 end;
 
-
-procedure TClockLayer.fTimer1TimerFirst(Sender: TObject);
-begin
-    fTimer.Interval := 60000;
-    fTimer.OnTimer := fTimer1TimerNormal;
-
-    DateTimeToString(strDate, 'dddd d mmmm, yyyy', Date());
-
-    //if (bShowDate) then
-    //    DateTimeToString(strTime, 'hh:mm, dd/mm/yy', Now())
-    //else
-        DateTimeToString(strTime, 'hh:mm', Now());
-
-    DrawBitmap();
-end;
-
 procedure TClockLayer.fTimer1TimerNormal(Sender: TObject);
 begin
-    DateTimeToString(strDate, 'dddd d mmmm, yyyy', Date());
+  DateTimeToString(strDate, 'dddd d mmmm, yyyy', Date);
+  DateTimeToString(strTime, 'hh:mm', Now);
 
-    //if (bShowDate) then
-    //    DateTimeToString(strTime, 'hh:mm, dd/mm/yy', Now())
-    //else
-        DateTimeToString(strTime, 'hh:mm', Now());
-
-    DrawBitmap();
+  DrawBitmap;
 end;
 
 end.

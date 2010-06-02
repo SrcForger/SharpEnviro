@@ -40,16 +40,15 @@ uses
   GR32_Layers,
   GR32_Transforms,
   uSharpDeskTDeskSettings,
-  uSharpDeskTObjectSettings,
-  uSharpDeskTThemeSettings,
   uSharpDeskFunctions,
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   SharpDeskApi in '..\..\..\Common\Libraries\SharpDeskApi\SharpDeskApi.pas',
   SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
-  uSharpeColorBox in '..\..\..\Common\Delphi Components\SharpEColorBox\uSharpeColorBox.pas',
-  uSharpEFontSelector in '..\..\..\Common\Delphi Components\SharpEFontSelector\uSharpEFontSelector.pas',
-  graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas';
+  SharpeColorPicker in '..\..\..\Common\Delphi Components\SharpeColorPicker\SharpeColorPicker.pas',
+  SharpEFontSelector in '..\..\..\Common\Delphi Components\SharpEFontSelector\SharpEFontSelector.pas',
+  graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
+  ClockObjectXMLSettings in 'ClockObjectXMLSettings.pas';
 
 {$R *.RES}
 
@@ -76,7 +75,6 @@ type
     TLayerList = class (TObjectList)
                  private
                  public
-                 published
                  end;
 
     TLayer = class
@@ -85,7 +83,7 @@ type
               FLayer : TClockLayer;
              public
               destructor Destroy; override;
-             published
+
               property ObjectID : integer read FObjectID write FObjectID;
               property ClockLayer : TClockLayer read FLayer write FLayer;
              end;
@@ -93,8 +91,6 @@ type
 var
   LayerList : TLayerList;
   DeskSettings   : TDeskSettings;
-  ObjectSettings : TObjectSettings;
-  ThemeSettings  : TThemeSettings;
   FirstStart : boolean = True;
   SettingsWnd : TSettingsWnd;
 
@@ -122,22 +118,22 @@ begin
   LayerList.Add(TLayer.Create);
   Layer := TLayer(LayerList.Items[LayerList.Count-1]);
   Layer.ObjectID := ObjectID;
-  Layer.ClockLayer := TClockLayer.create(Image, ObjectID, DeskSettings,ThemeSettings,ObjectSettings);
+  Layer.ClockLayer := TClockLayer.create(Image, ObjectID, DeskSettings);
   Layer.ClockLayer.Tag:=ObjectID;
   result := Layer.ClockLayer;
 end;
 
 function StartSettingsWnd(ObjectID : integer; Handle : hwnd) : hwnd;
 begin
-  if SettingsWnd=nil then SettingsWnd := TSettingsWnd.Create(nil);
+  if SettingsWnd = nil then
+    SettingsWnd := TSettingsWnd.Create(nil);
+    
   SettingsWnd.ParentWindow:=Handle;
   SettingsWnd.Left:=2;
   SettingsWnd.Top:=2;
   SettingsWnd.BorderStyle:=bsNone;
   SettingsWnd.ObjectID:=ObjectID;
   SettingsWnd.DeskSettings := DeskSettings;
-  SettingsWnd.ThemeSettings := ThemeSettings;
-  SettingsWnd.ObjectSettings := ObjectSettings;
   SettingsWnd.LoadSettings;
   SettingsWnd.Show;
   result:=SettingsWnd.Handle;
@@ -163,11 +159,8 @@ end;
 
 procedure SharpDeskMessage(pObjectID : integer; pLayer : TBitmapLayer; DeskMessage,P1,P2,P3 : integer);
 var
-   bmp : TBitmap;
    n : integer;
    Layer : TLayer;
-   b : boolean;
-   i : integer;
 begin
   if FirstStart then exit;
   Layer := nil;
@@ -197,7 +190,6 @@ begin
                       SharpApi.SendDebugMessageEx('Clock.Object',PChar('Removing : ' + inttostr(Layer.ObjectID)),0,DMT_INFO);
                       LayerList.Remove(Layer);
                       SharpApi.SendDebugMessageEx('Clock.Object',PChar('Freeing : ' + inttostr(Layer.ObjectID)),0,DMT_INFO);
-                      Layer := nil;
                       SharpApi.SendDebugMessageEx('Clock.Object',PChar('Object removed'),0,DMT_INFO);
                     end;
   SDM_SHUTDOWN : begin
@@ -209,13 +201,9 @@ begin
   end;
 end;
 
-procedure GetSettings( pDeskSettings   : TDeskSettings;
-                       pThemeSettings  : TThemeSettings;
-                       pObjectSettings : TObjectSettings);
+procedure InitSettings();
 begin
-     DeskSettings   := pDeskSettings;
-     ThemeSettings  := pThemeSettings;
-     ObjectSettings := pObjectSettings;
+  
 end;
 
 
@@ -224,7 +212,7 @@ exports
   CreateLayer,
   StartSettingsWnd,
   SharpDeskMessage,
-  GetSettings;
+  InitSettings;
 
 begin
 end.
