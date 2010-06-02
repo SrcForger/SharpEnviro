@@ -38,6 +38,7 @@ uses
   GR32_Transforms,
   GR32_Filters,
   GR32_Resamplers,
+  GR32_Backends,
   DateUtils, Forms,
   SharpThemeApiEx,
   uISharpETheme,
@@ -223,7 +224,7 @@ begin
 
         SkinStr := Value('HandSecond','');
         if (SkinStr <> '') and (FileExists(SkinDir + SkinStr)) then
-          LoadBitmap32FromPNG(FSArrow, SkinDir + SkinStr, b);
+          LoadBitmap32FromPNG(FSArrow, SkinDir + SkinStr, b)
       end;
     end;
 
@@ -305,18 +306,26 @@ begin
   TempBmp.CombineMode := cmMerge;
   TempBmp.SetSize(FClockBack.Width,FClockBack.Height);
 
-  TempBmp.Clear(color32(0,0,0,0));
-  RotateBitmap(FHArrow,TempBmp,-HourOf(Now)*30-MinuteOf(Now)*0.5);
-  TempBmp.DrawTo(FPicture, (FClockBack.Width - FHArrow.Width) div 2, (FClockBack.Height - FHArrow.Height) div 2);
+  if FHArrow.BitmapHandle <> 0 then
+  begin
+    TempBmp.Clear(color32(0,0,0,0));
+    RotateBitmap(FHArrow,TempBmp,-HourOf(Now)*30-MinuteOf(Now)*0.5);
+    TempBmp.DrawTo(FPicture, (FClockBack.Width - FHArrow.Width) div 2, (FClockBack.Height - FHArrow.Height) div 2);
+  end;
 
-  TempBmp.Clear(color32(0,0,0,0));
-  RotateBitmap(FMArrow,TempBmp,-MinuteOf(Now)*6);
-  TempBmp.DrawTo(FPicture, (FClockBack.Width - FMArrow.Width) div 2, (FClockBack.Height - FMArrow.Height) div 2);
+  if FMArrow.BitmapHandle <> 0 then
+  begin
+    TempBmp.Clear(color32(0,0,0,0));
+    RotateBitmap(FMArrow,TempBmp,-MinuteOf(Now)*6);
+    TempBmp.DrawTo(FPicture, (FClockBack.Width - FMArrow.Width) div 2, (FClockBack.Height - FMArrow.Height) div 2);
+  end;
 
-  TempBmp.Clear(color32(0,0,0,0));
-  RotateBitmap(FSArrow,TempBmp,-SecondOf(Now)*6);
-  TempBmp.DrawTo(FPicture, (FClockBack.Width - FSArrow.Width) div 2, (FClockBack.Height - FSArrow.Height) div 2);
-
+  if FSArrow.BitmapHandle <> 0 then
+  begin
+    TempBmp.Clear(color32(0,0,0,0));
+    RotateBitmap(FSArrow,TempBmp,-SecondOf(Now)*6);
+    TempBmp.DrawTo(FPicture, (FClockBack.Width - FSArrow.Width) div 2, (FClockBack.Height - FSArrow.Height) div 2);
+  end;
   TempBmp.Free;
 
   if FSettings.DrawOverlay then
