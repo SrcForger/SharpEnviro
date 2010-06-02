@@ -39,19 +39,15 @@ uses
   GR32_Image,
   GR32_Layers,
   GR32_Transforms,
+  PngImageList,
   uDriveObjectLayer in 'uDriveObjectLayer.pas',
-  DriveObjectSettingsWnd in 'DriveObjectSettingsWnd.pas' {SettingsWnd},
   DriveObjectXMLSettings in 'DriveObjectXMLSettings.pas',
   uSharpDeskTDeskSettings,
-  uSharpDeskTObjectSettings,
-  uSharpDeskTThemeSettings,
   uSharpDeskFunctions,
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   SharpDeskApi in '..\..\..\Common\Libraries\SharpDeskApi\SharpDeskApi.pas',
   SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
-  uSharpeColorBox in '..\..\..\Common\Delphi Components\SharpEColorBox\uSharpeColorBox.pas',
-  uSharpEFontSelector in '..\..\..\Common\Delphi Components\SharpEFontSelector\uSharpEFontSelector.pas',
   mlinewnd in 'mlinewnd.pas' {mlineform};
 
 {$R *.RES}
@@ -81,7 +77,6 @@ type
     TLayerList = class (TObjectList)
                  private
                  public
-                 published
                  end;
 
     TLayer = class
@@ -90,28 +85,19 @@ type
               FLayer : TDriveLayer;
              public
               destructor Destroy; override;
-             published
+
               property ObjectID : integer read FObjectID write FObjectID;
               property DriveLayer : TDriveLayer read FLayer write FLayer;
              end;
 
 var
    LayerList : TLayerList;
-   DeskSettings   : TDeskSettings;
-   ObjectSettings : TObjectSettings;
-   ThemeSettings  : TThemeSettings;
    FirstStart : boolean = True;
-   SettingsWnd : TSettingsWnd;
-   LastSettingsTick,LastSettingsPanel : integer;
-
 
 destructor TLayer.Destroy;
 begin
-  if FLayer <> nil then
-  begin
-    FLayer.Free;
-    FLayer := nil;
-  end;
+  FreeAndNil(FLayer);
+  
   Inherited Destroy;
 end;
 
@@ -127,71 +113,16 @@ begin
   LayerList.Add(TLayer.Create);
   Layer := TLayer(LayerList.Items[LayerList.Count-1]);
   Layer.ObjectID := ObjectID;
-  Layer.DriveLayer := TDriveLayer.create(Image, ObjectID, DeskSettings,ThemeSettings,ObjectSettings);
+  Layer.DriveLayer := TDriveLayer.create(Image, ObjectID);
   Layer.DriveLayer.Tag:=ObjectID;
   result := Layer.DriveLayer;
 end;
 
-function StartSettingsWnd(ObjectID : integer; Handle : hwnd) : hwnd;
-var
-   n : integer;
-   Layer : TLayer;
-begin
-  if not FirstStart then
-  begin
-    Layer := nil;
-    for n := 0 to LayerList.Count - 1 do
-    begin
-      if TLayer(LayerList.Items[n]).ObjectID = ObjectID then
-      begin
-        Layer := TLayer(LayerList.Items[n]);
-        break;
-      end;
-    end;
-    if Layer <> nil then Layer.DriveLayer.EndHL;    
-  end;
-
-  if SettingsWnd=nil then SettingsWnd := TSettingsWnd.Create(nil);
-  SettingsWnd.ParentWindow:=Handle;
-  SettingsWnd.Left:=0;
-  SettingsWnd.Top:=0;
-  SettingsWnd.BorderStyle:=bsNone;
-  SettingsWnd.ObjectID:=ObjectID;
-  SettingsWnd.DeskSettings   := DeskSettings;
-  SettingsWnd.ObjectSettings := ObjectSettings;
-  Settingswnd.ThemeSettings  := ThemeSettings;
-  SettingsWnd.LoadSettings;
-  if (not FirstStart) and (GetTickCount-LastSettingsTick<2000) then
-      SettingsWnd.PageControl1.ActivePageIndex:=LastSettingsPanel;
-  SettingsWnd.Show;
-  result:=SettingsWnd.Handle;
-end;
-
-function CloseSettingsWnd(ObjectID : integer; SaveSettings : boolean) : boolean;
-begin
-  try
-    if (SaveSettings) and (ObjectID<>0) then
-    begin
-      SettingsWnd.ObjectID:=ObjectID;
-      SettingsWnd.SaveSettings(True);
-      LastSettingsTick := GetTickCount;
-      LastSettingsPanel := SettingsWnd.PageControl1.ActivePageIndex;
-    end;
-    SettingsWnd.Close;
-    SettingsWnd.Free;
-    SettingsWnd:=nil;
-    result:=True;
-  except
-    result:=False;
-  end;
-end;
-
-
 procedure SharpDeskMessage(pObjectID : integer; pLayer : TBitmapLayer; DeskMessage,P1,P2,P3 : integer);
 var
-   Menu,Menu2 : TPopupMenu;
+   Menu2 : TPopupMenu;
    MenuItem : TMenuItem;
-   bmp : TBitmap;
+   bmp2 : TBitmap;
    n : integer;
    Layer : TLayer;
 begin
@@ -219,7 +150,6 @@ begin
                         SharpApi.SendDebugMessageEx('Link.Object',PChar('Removing : ' + inttostr(Layer.ObjectID)),0,DMT_INFO);
                         LayerList.Remove(Layer);
                         SharpApi.SendDebugMessageEx('Link.Object',PChar('Freeing : ' + inttostr(Layer.ObjectID)),0,DMT_INFO);
-                        Layer := nil;
                         SharpApi.SendDebugMessageEx('Link.Object',PChar('Object removed'),0,DMT_INFO);                        
                       end;
     SDM_SHUTDOWN : begin
@@ -230,176 +160,60 @@ begin
                    end;
 
     SDM_MENU_POPUP : begin
-                       Bmp := TBitmap.Create;
-                       Menu := TForm(Layer.DriveLayer.FParentImage.Parent).PopupMenu;
+                       Bmp2 := TBitmap.Create;
                        Menu2 := Layer.DriveLayer.FParentImage.PopupMenu;                       
 
-                       MenuItem := TMenuItem.Create(Menu.Items);
+                       MenuItem := TMenuItem.Create(Menu2.Items);
                        MenuItem.Caption := 'Open';
                        MenuItem.ImageIndex := 0;
                        MenuItem.OnClick := Layer.DriveLayer.OnOpenClick;
-                       Menu.Items.Add(MenuItem);
-                       Bmp.LoadFromResourceID(HInstance,100);
-                       Menu.Images.AddMasked(bmp,clFuchsia);
+                       Menu2.Items.Insert(0,MenuItem);
+                       Bmp2.LoadFromResourceID(HInstance,100);
+                       TPngImageList(Menu2.Images).AddMasked(bmp2,clFuchsia);
 
-                       MenuItem := TMenuItem.Create(Menu.Items);
+                       MenuItem := TMenuItem.Create(Menu2.Items);
                        MenuItem.Caption := 'Open With...';
                        MenuItem.ImageIndex := 1;
                        MenuItem.OnClick := Layer.DriveLayer.OnOpenWith;
-                       Menu.Items.Add(MenuItem);
-                       Bmp.LoadFromResourceID(HInstance,103);
-                       Menu.Images.AddMasked(bmp,clFuchsia);
+                       Menu2.Items.Insert(1,MenuItem);
+                       Bmp2.LoadFromResourceID(HInstance,103);
+                       TPngImageList(Menu2.Images).AddMasked(bmp2,clFuchsia);
                        if (FileExists(Layer.DriveLayer.Settings.Target))
                           and (LOWERCASE(ExtractFileExt(Layer.DriveLayer.Settings.Target))<>'.exe') then
                               MenuItem.Visible := True
                               else MenuItem.Visible := False;
 
-                       MenuItem := TMenuItem.Create(Menu.Items);
+                       MenuItem := TMenuItem.Create(Menu2.Items);
                        MenuItem.Caption := 'Search';
                        MenuItem.ImageIndex := 2;
                        MenuItem.OnClick := Layer.DriveLayer.OnSearchClick;
                        MenuItem.Visible := False;
-                       Menu.Items.Add(MenuItem);
-                       Bmp.LoadFromResourceID(HInstance,101);
-                       Menu.Images.AddMasked(bmp,clFuchsia);
+                       Menu2.Items.Add(MenuItem);
+                       Bmp2.LoadFromResourceID(HInstance,101);
+                       TPngImageList(Menu2.Images).AddMasked(bmp2,clFuchsia);
 
                        MenuItem := TMenuItem.Create(Menu2.Items);
                        MenuItem.Caption := 'Properties';
                        MenuItem.ImageIndex := Menu2.Images.Count;
                        MenuItem.OnClick := Layer.DriveLayer.OnPropertiesClick;
                        Menu2.Items.Add(MenuItem);
-                       Bmp.LoadFromResourceID(HInstance,102);
-                       Menu2.Images.AddMasked(bmp,clFuchsia);
+                       Bmp2.LoadFromResourceID(HInstance,102);
+                       TPngImageList(Menu2.Images).AddMasked(bmp2,clFuchsia);
 
-                       Bmp.Free;
+                       Bmp2.Free;
                      end;
      end;
 end;
 
-
-function RenderTooltip(pObjectID : integer; pBitmap : TBitmap32) : boolean;
-var
-  n : integer;
-  Layer : TLayer;
-  w,h : integer;
-  eh : integer;
-  P : TPoint;
-  color1,color2 : TColor32;
-  SList : TStringList;
+procedure InitSettings;
 begin
-  if FirstStart then exit;
-  Layer := nil;
-  for n := 0 to LayerList.Count - 1 do
-  begin
-    if TLayer(LayerList.Items[n]).ObjectID = pObjectID then
-    begin
-      Layer := TLayer(LayerList.Items[n]);
-      break;
-    end;
-  end;
-  if Layer = nil then exit;
 
-  SList := TStringList.Create;
-  SList.Clear;
-  SList.Add('Drive : ' + Layer.DriveLayer.Settings.Target + ':\');
-  SList.Add('Label : ' + Layer.DriveLayer.Settings.Caption);  
-  SList.Add('Disk Size : ' + inttostr(Layer.DriveLayer.DiskMax)+' MB');
-  SList.Add('Free Disk Space : ' + inttostr(Layer.DriveLayer.DiskMax-Layer.DriveLayer.Diskfull)+' MB');  
-
-  with pBitmap do
-  begin
-    if DeskSettings<>nil then
-    begin
-      Color1 := color32(DeskSettings.Theme.Scheme.WorkArealight);
-      Color2 := color32(DeskSettings.Theme.Scheme.WorkAreadark);
-    end else
-    begin
-      Color1 := color32(clsilver);
-      Color2 := color32(clBlack);
-    end;
-    BeginUpdate;
-    MasterAlpha := 255;
-    Font.Name := 'Arial';
-    Font.Color := clBlack;
-    Font.Style := [];
-    Font.Size := 8;
-    p := GetBitmapSize(pBitmap,SList);
-    w := p.x + 8;
-    h := p.y + 4;
-    eh := TextHeight('!"§$%&/()=?`°QWERTZUIOPÜASDFGHJJKLÖÄYXCVBNqp1234567890');
-    SetSize(w,h);
-    Clear(color32(0,0,0,0));
-        
-    FillRectTS(rect(3,0,w-3,h-1),color1);
-    LineT(1,2,1,h-2,color1);
-    LineT(2,1,2,h-1,color1);
-    LineT(w-2,2,w-2,h-2,color1);
-    LineT(w-3,1,w-3,h-1,color1);
-
-    LineT(2,0,w-2,0,color2);
-    LineT(2,h-1,w-2,h-1,color2);
-    LineT(0,2,0,h-2,color2);
-    LineT(w-1,2,w-1,h-2,color2);
-    Pixel[1,1] := color2;
-    Pixel[w-2,1] := color2;
-    Pixel[1,h-2] := color2;
-    Pixel[w-2,h-2] := color2;    
-
-    for n := 0 to SList.Count - 1 do
-        RenderText(4,n*eh+2,SList[n],0,color32(Font.Color));
-    EndUpdate;
-    Changed;    
-  end;
-
-  SList.Free;
 end;
-
-
-
-procedure GetSettings( pDeskSettings   : TDeskSettings;
-                       pThemeSettings  : TThemeSettings;
-                       pObjectSettings : TObjectSettings);
-var
-  XML : TJvSimpleXML;
-  Settings : TXMLSettings;
-begin
-  DeskSettings   := pDeskSettings;
-  ThemeSettings  := pThemeSettings;
-  ObjectSettings := pObjectSettings;
-
-  XML := TJvSimpleXML.Create(nil);
-  try
-    ForceDirectories(GetSharpeGlobalSettingsPath + 'SharpDesk\DragAndDrop\');
-    XML.Root.Items.Clear;
-    XML.Root.Name := 'Drive.object';
-    XML.Root.Items.Add('Settings');
-    with XML.Root.Items.ItemNamed['Settings'].Items do
-    begin
-      Add('Object','Drive.object');
-      Add('FileExt','');
-      Add('MaxLength',3);
-    end;
-    XML.Root.Items.Add('DefaultSettings');
-    Settings := TXMLSettings.Create(-1,XML.Root.Items.ItemNamed['DefaultSettings']);
-    Settings.LoadSettings;
-    Settings.Target := '{File}';
-    Settings.Caption := '[{File}]';
-    Settings.SaveSettings(False);
-    Settings.Free;
-    XML.SaveToFile(GetSharpeGlobalSettingsPath + 'SharpDesk\DragAndDrop\Drive().xml');
-  finally
-    XML.Free;
-  end;
-end;
-
 
 Exports
-  CloseSettingsWnd,
   CreateLayer,
-  StartSettingsWnd,
   SharpDeskMessage,
-  RenderTooltip,
-  GetSettings;
+  InitSettings;
 
 begin
 end.

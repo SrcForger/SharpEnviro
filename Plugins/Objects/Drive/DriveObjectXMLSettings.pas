@@ -27,28 +27,23 @@ unit DriveObjectXMLSettings;
 
 interface
 
-uses JvSimpleXML,
+uses Graphics,
+     JclSimpleXML,
      SharpApi,
      SysUtils,
      uSharpDeskTDeskSettings,
-     uSharpDeskTThemeSettings,
-     uSharpDeskTObjectSettings,
-     uSharpDeskFunctions;
+     uSharpDeskFunctions,
+     uSharpDeskObjectSettings;
 
 type
-    TXMLSettings = class
-    private
-      FXML : TJvSimpleXML;
-      FXMLRoot : TJvSimpleXMLElem;
-      FObjectID : integer;
-      procedure SaveSetting(pXMLElems : TJvSimpleXMLElem; pName,pValue : String; copy : boolean); overload;
-      procedure SaveSetting(pXMLElems : TJvSimpleXMLElem; pName : String; pValue : Integer; copy : boolean); overload;
-      procedure SaveSetting(pXMLElems : TJvSimpleXMLElem; pName : String; pValue : Boolean; copy : boolean); overload;
-    public
-      {Settings Block}
+  TXMLSettings = class(TDesktopXMLSettings)
+  private
+
+  public
+    {Settings Block}
       AlphaValue       : integer;
       AlphaBlend       : boolean;
-      BlendColor       : integer;
+      BlendColor       : TColor;
       BlendValue       : integer;
       IconType         : integer;
       UseIconShadow    : boolean;
@@ -67,11 +62,11 @@ type
       BGTrans          : boolean;
       BGTransValue     : integer;
       BGType           : integer;
-      BGColor          : integer;
-      BGBorderColor    : integer;
+      BGColor          : TColor;
+      BGBorderColor    : TColor;
       BGThicknessValue : integer;
       BGTHBlend        : boolean;
-      BGTHBlendColor   : integer;      
+      BGTHBlendColor   : TColor;      
       MBGStart         : integer;
       MBGEnd           : integer;
       MFGStart         : integer;
@@ -93,7 +88,7 @@ type
       DLAlphaValue     : integer;
       DLFontName       : String;
       DLFontSize       : integer;
-      DLFontColor      : integer;
+      DLFontColor      : TColor;
       DLFontBold       : boolean;
       DLFontItalic     : boolean;
       DLFontUnderline  : boolean;
@@ -103,77 +98,30 @@ type
       CustomFont       : boolean;
       FontName         : String;
       FontSize         : integer;
-      FontColor        : integer;
+      FontColor        : TColor;
       FontBold         : boolean;
       FontItalic       : boolean;
       FontUnderline    : boolean;
       FontShadow       : boolean;
       FontShadowValue  : integer;
-      FontShadowColor  : integer;
+      FontShadowColor  : TColor;
       FontAlpha        : boolean;
-      FontAlphaValue   : integer;      
+      FontAlphaValue   : integer;
+           
       {End Settings Block}
-      constructor Create(pObjectID : integer; pXMLRoot: TJvSimpleXMLElem); reintroduce;
-      destructor Destroy;
-      procedure LoadSettings;
-      procedure SaveSettings(SaveToFile : boolean);
-      function GetSettingsFile : String;
-    published
-      property XML : TJvSimpleXML read FXML;
+      procedure LoadSettings; override;
+      procedure SaveSettings(SaveToFile : boolean); reintroduce;
+
+      property Theme : TThemeSettingsArray read ts;
     end;
 
 
 implementation
 
-constructor TXMLSettings.Create(pObjectID : integer; pXMLRoot: TJvSimpleXMLElem);
-begin
-  Inherited Create;
-  FObjectID := pObjectID;
-  FXMLRoot := pXMLRoot;
-  FXML := TJvSimpleXML.Create(nil);
-  FXML.Root.Name := 'DriveObjectSettings';
-  if FXMLRoot = nil then
-     FXMLRoot := FXML.Root;
-end;
-
-
-destructor TXMLSettings.Destroy;
-begin
-  FXML.Free;
-  FXML := nil;
-  Inherited Destroy;
-end;
-
-function TXMLSettings.GetSettingsFile : string;
-var
-  UserDir,Dir : String;
-begin
-  UserDir := SharpApi.GetSharpeUserSettingsPath;
-  Dir := UserDir + 'SharpDesk\Objects\Drive\';
-  result := Dir + inttostr(FObjectID) + '.xml';
-end;
-
 procedure TXMLSettings.LoadSettings;
-var
-  n : integer;
-  SettingsFile : String;
-  csX : TColorSchemeEX;
 begin
-  if FXML = nil then exit;
-  SettingsFile := GetSettingsFile;
-  if (not FileExists(SettingsFile)) and (FObjectID <> -1) then
-  begin
-    SharpApi.SendDebugMessageEx('Drive.object','Settings File does not exist',0,DMT_INFO);
-  end;
-
-  try
-    if FObjectID <> -1 then
-       FXML.LoadFromFile(SettingsFile);
-  except
-    SharpApi.SendDebugMessageEx('Drive.object',PChar('Failed to load Settings File: '+Settingsfile),0,DMT_ERROR);
-  end;
-
-  csX := SharpApi.LoadColorSchemeEx;
+  inherited InitLoadSettings;
+  inherited LoadSettings;
 
   with FXMLRoot.Items do
   begin
@@ -181,19 +129,19 @@ begin
     AlphaBlend       := BoolValue('AlphaBlend',False);
     BlendValue       := IntValue('BlendValue',0);
     ColorBlend       := BoolValue('ColorBlend',False);
-    UseIconShadow    := BoolValue('UseIconShadow',True);
+    UseIconShadow    := BoolValue('UseIconShadow',False);
     Size             := Value('Size','48');
     IconFile         := Value('IconFile','icon.drive.hd');
     Caption          := Value('Caption','C');
-    Target           := Value('Target','SharpDesk.exe');    
+    Target           := Value('Target','C');    
     Shadow           := BoolValue('Shadow',False);
     ShowCaption      := BoolValue('ShowCaption',True);
     UseThemeSettings := BoolValue('UseThemeSettings',True);
     BGSkin           := Value('BGSkin','');    
     BGType           := IntValue('BGType',0);
-    BGColor          := CodeToColorEx(IntValue('BGColor',-6),csX);
-    BGBorderColor    := CodeToColorEx(IntValue('BGBorderColor',-5),csX);
-    BlendColor       := CodeToColorEx(IntValue('BlendColor',-1),csX);
+    BGColor          := IntValue('BGColor',0);
+    BGBorderColor    := IntValue('BGBorderColor',0);
+    BlendColor       := IntValue('BlendColor',0);
     BGTrans          := BoolValue('BGTrans',False);
     BGTransValue     := IntValue('BGTransValue',0);
     BGThickness      := BoolValue('BGThickness',True);
@@ -204,20 +152,20 @@ begin
     MLeftOffset      := IntValue('MLeftOffset',0);
     MBottomOffset    := IntValue('MBottomOffset',0);
     MRightOffset     := IntValue('MRightOffset',0);
-    DiskData         := BoolValue('DiskData',False);
+    DiskData         := BoolValue('DiskData',True);
     IconSpacingValue := IntValue('IconSpacingValue',0);
     IconSpacing      := BoolValue('IconSpacing',False);
     IconOffsetValue  := IntValue('IconOffsetValue',0);
     IconOffset       := BoolValue('IconOffset',False);
-    MBGStart         := CodeToColorEx(IntValue('MBGStart',-4),csX);
-    MBGEnd           := CodeToColorEx(IntValue('MBGEnd',-6),csX);
-    MFGStart         := CodeToColorEx(IntValue('MFGStart',-1),csX);
-    MFGEnd           := CodeToColorEx(IntValue('MFGEnd',-3),csX);
-    MBorder          := CodeToColorEx(IntValue('MBorder',0),csX);
-    LGStart          := CodeToColorEx(IntValue('LGStart',-2),csX);
-    LGEnd            := CodeToColorEx(IntValue('LGEnd',-1),csX);
+    MBGStart         := IntValue('MBGStart',$AAAAAA);
+    MBGEnd           := IntValue('MBGEnd',$333333);
+    MFGStart         := IntValue('MFGStart',clWhite);
+    MFGEnd           := IntValue('MFGEnd',clBlack);
+    MBorder          := IntValue('MBorder',0);
+    LGStart          := IntValue('LGStart',clWhite);
+    LGEnd            := IntValue('LGEnd',clBlack);
     DriveLetter      := BoolValue('DriveLetter',True);
-    LGBorder         := CodeToColorEx(IntValue('LGBorder',0),csX);
+    LGBorder         := IntValue('LGBorder',0);
     DLAlpha          := BoolValue('DLAlpha',False);
     DLAlphaValue     := IntValue('DLAlphaValue',255);
     DLFontName       := Value('DLFontName','Arial');
@@ -246,123 +194,90 @@ begin
 end;
 
 procedure TXMLSettings.SaveSettings(SaveToFile : boolean);
-var
-  csX : TColorSchemeEx;
-  SettingsFile,SettingsDir : String;
 begin
-  if FXML = nil then exit;
+  if FXMLRoot = nil then
+    exit;
 
-  FXML.Options := FXML.Options + [sxoAutoCreate];
-  FXMLRoot.Clear;
+  inherited InitSaveSettings;
+  inherited SaveSettings;
 
-  csX := SharpApi.LoadColorSchemeEx;
-
-  SaveSetting(FXMLRoot,'AlphaValue',AlphaValue,True);
-  SaveSetting(FXMLRoot,'AlphaBlend',AlphaBlend,True);
-  SaveSetting(FXMLRoot,'BlendValue',BlendValue,True);
-  SaveSetting(FXMLRoot,'ColorBlend',ColorBlend,True);
-  SaveSetting(FXMLRoot,'UseIconShadow',UseIconShadow,False);
-  SaveSetting(FXMLRoot,'Size',Size,True);
-
-  FXMLRoot.Items.Add('Target',Target);
-  with FXMLRoot.Items.ItemNamed['Target'].Properties do
+  with FXMLRoot.Items do
   begin
-    Add('CopyValue',False);
-    Add('SortValue',True);
-  end;
+    Add('AlphaValue', AlphaValue);
+    Add('AlphaBlend', AlphaBlend);
+    Add('BlendValue', BlendValue);
+    Add('ColorBlend', ColorBlend);
+    Add('UseIconShadow', UseIconShadow);
+    Add('Size', Size);
 
-  SaveSetting(FXMLRoot,'IconFile',IconFile,False);
-  SaveSetting(FXMLRoot,'Caption',Caption,False);
-  SaveSetting(FXMLRoot,'Shadow',Shadow,True);
-  SaveSetting(FXMLRoot,'ShowCaption',ShowCaption,True);
-  SaveSetting(FXMLRoot,'UseThemeSettings',UseThemeSettings,True);
-  SaveSetting(FXMLRoot,'BGColor',ColorToCodeEx(BGColor,csX),True);
-  SaveSetting(FXMLRoot,'BGBorderColor',ColorToCodeEx(BGBorderColor,csX),True);
-  SaveSetting(FXMLRoot,'BGType',BGType,True);
-  SaveSetting(FXMLRoot,'BGSkin',BGSkin,True);
-  SaveSetting(FXMLRoot,'BlendColor',ColorToCodeEx(BlendColor,csX),True);
-  SaveSetting(FXMLRoot,'BGTrans',BGTrans,True);
-  SaveSetting(FXMLRoot,'BGTransValue',BGTransValue,True);
-  SaveSetting(FXMLRoot,'BGThickness',BGThickness,True);
-  SaveSetting(FXMLRoot,'BGThicknessValue',BGThicknessValue,True);
-  SaveSetting(FXMLRoot,'DisplayMeter',DisplayMeter,True);
-  SaveSetting(FXMLRoot,'MeterAlign',MeterAlign,True);
-  SaveSetting(FXMLRoot,'MTopOffset',MTopOffset,True);
-  SaveSetting(FXMLRoot,'MLeftOffset',MLeftOffset,True);
-  SaveSetting(FXMLRoot,'MBottomOffset',MBottomOffset,True);
-  SaveSetting(FXMLRoot,'MRightOffset',MRightOffset,True);
-  SaveSetting(FXMLRoot,'DiskData',DiskData,True);
-  SaveSetting(FXMLRoot,'IconSpacingValue',IconSpacingValue,True);
-  SaveSetting(FXMLRoot,'IconSpacing',IconSpacing,True);
-  SaveSetting(FXMLRoot,'IconOffsetValue',IconOffsetValue,True);
-  SaveSetting(FXMLRoot,'IconOffset',IconOffset,True);
-  SaveSetting(FXMLRoot,'MBGStart',ColorToCodeEx(MBGStart,csX),True);
-  SaveSetting(FXMLRoot,'MBGEnd',ColorToCodeEx(MBGEnd,csX),True);
-  SaveSetting(FXMLRoot,'MFGStart',ColorToCodeEx(MFGStart,csX),True);
-  SaveSetting(FXMLRoot,'MFGEnd',ColorToCodeEx(MFGEnd,csX),True);
-  SaveSetting(FXMLRoot,'MBorder',ColorToCodeEx(MBorder,csX),True);
-  SaveSetting(FXMLRoot,'LGStart',ColorToCodeEx(LGStart,csX),True);
-  SaveSetting(FXMLRoot,'LGEnd',ColorToCodeEx(LGEnd,csX),True);
-  SaveSetting(FXMLRoot,'DriveLetter',DriveLetter,True);
-  SaveSetting(FXMLRoot,'LGBorder',ColorToCodeEx(LGBorder,csX),True);
-  SaveSetting(FXMLRoot,'DLAlpha',DLAlpha,True);
-  SaveSetting(FXMLRoot,'DLAlphaValue',DLAlphaValue,True);  
-  SaveSetting(FXMLRoot,'DLFontName',DLFontName,True);
-  SaveSetting(FXMLRoot,'DLFontSize',DLFontSize,True);
-  SaveSetting(FXMLRoot,'DLFontColor',DLFontColor,True);
-  SaveSetting(FXMLRoot,'DLFontBold',DLFontBold,True);
-  SaveSetting(FXMLRoot,'DLFontItalic',DLFontItalic,True);
-  SaveSetting(FXMLRoot,'DLFontUnderline',DLFontUnderline,True);
-  SaveSetting(FXMLRoot,'BGTHBlend',BGTHBlend,True);
-  SaveSetting(FXMLRoot,'BGTHBlendColor',BGTHBlendColor,True);
-  SaveSetting(FXMLRoot,'CaptionAlign',CaptionAlign,False);
-  SaveSetting(FXMLRoot,'MLineCaption',MLineCaption,False);
-  SaveSetting(FXMLRoot,'CustomFont',CustomFont,True);
-  SaveSetting(FXMLRoot,'FontName',FontName,True);
-  SaveSetting(FXMLRoot,'FontSize',FontSize,True);
-  SaveSetting(FXMLRoot,'FontColor',FontColor,True);
-  SaveSetting(FXMLRoot,'FontBold',FontBold,True);
-  SaveSetting(FXMLRoot,'FontItalic',FontItalic,True);
-  SaveSetting(FXMLRoot,'FontUnderline',FontUnderline,True);
-  SaveSetting(FXMLRoot,'FontShadow',FontShadow,True);
-  SaveSetting(FXMLRoot,'FontShadowValue',FontShadowValue,True);
-  SaveSetting(FXMLRoot,'FontShadowColor',FontShadowColor,True);
-  SaveSetting(FXMLRoot,'FontAlpha',FontAlpha,True);
-  SaveSetting(FXMLRoot,'FontAlphaValue',FontAlphaValue,True);
-
-  if SaveToFile then
-  begin
-    SettingsFile := GetSettingsFile;
-    SettingsDir  := ExtractFileDir(SettingsFile);
-    ForceDirectories(SettingsDir);
-    try
-      FXML.SaveToFile(SettingsDir+'~temp.xml');
-    except
-      SharpApi.SendDebugMessageEx('Drive.object',PChar('Failed to save Settings to: '+SettingsDir+'~temp.xml'),0,DMT_ERROR);
-      DeleteFile(SettingsDir+'~temp.xml');
-      exit;
+    Add('Target',Target);
+    with FXMLRoot.Items.ItemNamed['Target'].Properties do
+    begin
+      Add('CopyValue',False);
+      Add('SortValue',True);
     end;
-    if FileExists(SettingsFile) then
-       DeleteFile(SettingsFile);
-    if not RenameFile(SettingsDir+'~temp.xml',SettingsFile) then
-       SharpApi.SendDebugMessageEx('Drive.object','Failed to Rename Settings File',0,DMT_ERROR);
+
+    Add('IconFile', IconFile);
+    Add('Caption', Caption);
+    Add('Shadow', Shadow);
+    Add('ShowCaption', ShowCaption);
+    Add('UseThemeSettings', UseThemeSettings);
+    Add('BGColor', BGColor);
+    Add('BGBorderColor', BGBorderColor);
+    Add('BGType', BGType);
+    Add('BGSkin', BGSkin);
+    Add('BlendColor', BlendColor);
+    Add('BGTrans', BGTrans);
+    Add('BGTransValue', BGTransValue);
+    Add('BGThickness', BGThickness);
+    Add('BGThicknessValue', BGThicknessValue);
+    Add('DisplayMeter', DisplayMeter);
+    Add('MeterAlign', MeterAlign);
+    Add('MTopOffset', MTopOffset);
+    Add('MLeftOffset', MLeftOffset);
+    Add('MBottomOffset', MBottomOffset);
+    Add('MRightOffset', MRightOffset);
+    Add('DiskData', DiskData);
+    Add('IconSpacingValue', IconSpacingValue);
+    Add('IconSpacing', IconSpacing);
+    Add('IconOffsetValue', IconOffsetValue);
+    Add('IconOffset', IconOffset);
+    Add('MBGStart', MBGStart);
+    Add('MBGEnd', MBGEnd);
+    Add('MFGStart', MFGStart);
+    Add('MFGEnd', MFGEnd);
+    Add('MBorder', MBorder);
+    Add('LGStart', LGStart);
+    Add('LGEnd', LGEnd);
+    Add('DriveLetter', DriveLetter);
+    Add('LGBorder', LGBorder);
+    Add('DLAlpha', DLAlpha);
+    Add('DLAlphaValue', DLAlphaValue);  
+    Add('DLFontName', DLFontName);
+    Add('DLFontSize', DLFontSize);
+    Add('DLFontColor', DLFontColor);
+    Add('DLFontBold', DLFontBold);
+    Add('DLFontItalic', DLFontItalic);
+    Add('DLFontUnderline', DLFontUnderline);
+    Add('BGTHBlend', BGTHBlend);
+    Add('BGTHBlendColor', BGTHBlendColor);
+    Add('CaptionAlign', CaptionAlign);
+    Add('MLineCaption', MLineCaption);
+    Add('CustomFont', CustomFont);
+    Add('FontName', FontName);
+    Add('FontSize', FontSize);
+    Add('FontColor', FontColor);
+    Add('FontBold', FontBold);
+    Add('FontItalic', FontItalic);
+    Add('FontUnderline', FontUnderline);
+    Add('FontShadow', FontShadow);
+    Add('FontShadowValue', FontShadowValue);
+    Add('FontShadowColor', FontShadowColor);
+    Add('FontAlpha', FontAlpha);
+    Add('FontAlphaValue', FontAlphaValue);
   end;
-end;
 
-procedure TXMLSettings.SaveSetting(pXMLElems : TJvSimpleXMLElem; pName,pValue : String; copy : boolean);
-begin
-  pXMLElems.Items.Add(pName,pValue).Properties.Add('CopyValue',copy);
+  inherited FinishSaveSettings(SaveToFile);
 end;
-
-procedure TXMLSettings.SaveSetting(pXMLElems : TJvSimpleXMLElem; pName : String; pValue : Integer; copy : boolean);
-begin
-  pXMLElems.Items.Add(pName,pValue).Properties.Add('CopyValue',copy);
-end;
-
-procedure TXMLSettings.SaveSetting(pXMLElems : TJvSimpleXMLElem; pName : String; pValue : Boolean; copy : boolean);
-begin
-  pXMLElems.Items.Add(pName,pValue).Properties.Add('CopyValue',copy);
-end;
-
 
 end.

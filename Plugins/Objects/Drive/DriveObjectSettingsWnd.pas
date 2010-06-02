@@ -33,8 +33,7 @@ uses
   pngimage, ExtCtrls, GR32, GR32_PNG, GR32_Image, ImgList,GR32_Layers,
   Menus, FileCtrl, JvSimpleXML,
   Tabs, SharpDeskApi, ShellApi,
-  uSharpDeskTThemeSettings,
-  uSharpDeskTObjectSettings,
+  SharpGraphicsUtils,
   uSharpDeskTDeskSettings,
   uSharpDeskDebugging,
   uSharpDeskDesktopPanelList,
@@ -43,8 +42,8 @@ uses
   uDriveObjectLayer,
   DriveObjectXMLSettings,
   Buttons,
-  uSharpeColorBox,
-  uSharpEFontSelector,
+  SharpEColorPicker,
+  SharpEFontSelector,
   mlinewnd,
   GR32_Resamplers;
 
@@ -140,12 +139,12 @@ type
     Label12: TLabel;
     tb_bottomoffset: TTrackBar;
     meterpreview: TImage32;
-    scb_bgstart: TSharpEColorBox;
-    scb_fgstart: TSharpEColorBox;
-    scb_border: TSharpEColorBox;
-    cp_bgborder: TSharpEColorBox;
-    cp_bgcolor: TSharpEColorBox;
-    cp_cblend: TSharpEColorBox;
+    scb_bgstart: TSharpEColorPicker;
+    scb_fgstart: TSharpEColorPicker;
+    scb_border: TSharpEColorPicker;
+    cp_bgborder: TSharpEColorPicker;
+    cp_bgcolor: TSharpEColorPicker;
+    cp_cblend: TSharpEColorPicker;
     cb_diskdata: TCheckBox;
     GroupBox13: TGroupBox;
     cb_iconspacing: TCheckBox;
@@ -153,15 +152,15 @@ type
     tb_iconoffset: TTrackBar;
     cb_iconoffset: TCheckBox;
     Label13: TLabel;
-    scb_bgend: TSharpEColorBox;
-    scb_fgend: TSharpEColorBox;
+    scb_bgend: TSharpEColorPicker;
+    scb_fgend: TSharpEColorPicker;
     Label14: TLabel;
     tab_driveltter: TTabSheet;
     GroupBox14: TGroupBox;
     Label15: TLabel;
     Label16: TLabel;
-    scb_lgstart: TSharpEColorBox;
-    scb_lgend: TSharpEColorBox;
+    scb_lgstart: TSharpEColorPicker;
+    scb_lgend: TSharpEColorPicker;
     GroupBox15: TGroupBox;
     cb_driveletter: TCheckBox;
     GroupBox16: TGroupBox;
@@ -173,10 +172,10 @@ type
     FontDialog1: TFontDialog;
     prev1: TImage32;
     Label19: TLabel;
-    scb_lgborder: TSharpEColorBox;
+    scb_lgborder: TSharpEColorPicker;
     Label20: TLabel;
     Shape1: TShape;
-    scb_bgblending: TSharpEColorBox;
+    scb_bgblending: TSharpEColorPicker;
     cb_bgblending: TCheckBox;
     Label21: TLabel;
     TabSheet3: TTabSheet;
@@ -245,27 +244,18 @@ type
     procedure cb_dltransClick(Sender: TObject);
     procedure tb_dltransChange(Sender: TObject);
     procedure tab_driveltterShow(Sender: TObject);
-    procedure scb_lgstartColorClick(Sender: TObject; Color: TColor;
-      ColType: TClickedColorID);
-    procedure scb_lgendColorClick(Sender: TObject; Color: TColor;
-      ColType: TClickedColorID);
-    procedure scb_lgborderColorClick(Sender: TObject; Color: TColor;
-      ColType: TClickedColorID);
+    procedure scb_lgstartColorClick(Sender: TObject; Color: TColor);
+    procedure scb_lgendColorClick(Sender: TObject; Color: TColor);
+    procedure scb_lgborderColorClick(Sender: TObject; Color: TColor);
     procedure cb_driveletterClick(Sender: TObject);
     procedure btn_fontClick(Sender: TObject);
-    procedure scb_bgstartColorClick(Sender: TObject; Color: TColor;
-      ColType: TClickedColorID);
-    procedure scb_bgendColorClick(Sender: TObject; Color: TColor;
-      ColType: TClickedColorID);
-    procedure scb_fgstartColorClick(Sender: TObject; Color: TColor;
-      ColType: TClickedColorID);
-    procedure scb_fgendColorClick(Sender: TObject; Color: TColor;
-      ColType: TClickedColorID);
-    procedure scb_borderColorClick(Sender: TObject; Color: TColor;
-      ColType: TClickedColorID);
+    procedure scb_bgstartColorClick(Sender: TObject; Color: TColor);
+    procedure scb_bgendColorClick(Sender: TObject; Color: TColor);
+    procedure scb_fgstartColorClick(Sender: TObject; Color: TColor);
+    procedure scb_fgendColorClick(Sender: TObject; Color: TColor);
+    procedure scb_borderColorClick(Sender: TObject; Color: TColor);
     procedure cb_bgblendingClick(Sender: TObject);
-    procedure scb_bgblendingColorClick(Sender: TObject; Color: TColor;
-      ColType: TClickedColorID);
+    procedure scb_bgblendingColorClick(Sender: TObject; Color: TColor);
     procedure btn_mlineClick(Sender: TObject);
     procedure cb_cfontClick(Sender: TObject);
     procedure cb_mlineClick(Sender: TObject);
@@ -274,9 +264,6 @@ type
     procedure MenuOnClick(Sender : TObject);
   public
     OSettings : TXMLSettings;
-    DeskSettings   : TDeskSettings;
-    ObjectSettings : TObjectSettings;
-    ThemeSettings  : TThemeSettings;
     ObjectID : integer;
     MouseIsDown_AlphaBlend : Boolean;
     StartX : Integer;
@@ -284,7 +271,6 @@ type
     ThemeIconList : TStringList;
     PanelList : TDesktopPanelList;
     TempDriveObjectLayer : TDriveLayer;
-    TempObjectSettings : TObjectSettings;    
     procedure SaveSettings(SaveToFile : boolean);
     procedure LoadSettings;
     procedure PaintPanels;
@@ -402,7 +388,6 @@ var
  w,h : integer;
  L : TFloatRect;
 begin
-  if TempObjectSettings = nil then exit;
   if TempDriveObjectLayer = nil then exit;
   SaveSettings(False);
   TempDriveObjectLayer.LoadSettings;
@@ -459,7 +444,7 @@ begin
     DP := TDesktopPanel(PanelList.Items[n]);
     DP.Paint;
     if cb_bgblending.Checked then
-       SharpDeskApi.BlendImage(DP.Bitmap,scb_bgblending.color);    
+       BlendImageA(DP.Bitmap,scb_bgblending.color, 255);    
     if n = bgList.Tag then
     begin
      bgList.Bitmap.FillRectTS(Rect(n*(DP.Width+6)+6-2,6-2,n*(DP.Width+6)+6+DP.Width+2,6+DP.Height+2),
