@@ -167,9 +167,13 @@
     <project Name="Weather" Type="DLL">Plugins\Modules\Weather\Weather.dproj</project>
   </package>
   <package Name="Objects">
+    <project Name="Clock" Type="DLL" >Plugins\Objects\Clock\Clock.dproj</project>
+    <project Name="Drive" Type="DLL" >Plugins\Objects\Drive\Drive.dproj</project>
     <project Name="Image" Type="DLL" >Plugins\Objects\Image\Image.dproj</project>
     <project Name="Link" Type="DLL" >Plugins\Objects\Link\Link.dproj</project>
     <project Name="Recycle Bin" Type="DLL" >Plugins\Objects\RecycleBin\RecycleBin.dproj</project>
+    <project Name="Text" Type="DLL" >Plugins\Objects\Text\Text.dproj</project>
+    <project Name="Weather" Type="DLL" >Plugins\Objects\Weather\Weather.dproj</project>
   </package>
   <package Name="Services">
     <project Name="Actions" Type="DLL" >Plugins\Services\Actions\Actions.dproj</project>
