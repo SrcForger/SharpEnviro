@@ -142,50 +142,50 @@ begin
   end;
   if Layer = nil then exit;
   case DeskMessage of
-    SDM_DOUBLE_CLICK : Layer.TextLayer.DoubleClick;
-    SDM_REPAINT_LAYER : Layer.TextLayer.LoadSettings;
-    SDM_MOUSE_ENTER,SDM_SELECT : //if Layer.TextLayer.Highlight <> True then
-                                // begin
-                                   Layer.TextLayer.StartHL;
-//                                   Layer.TextLayer.Highlight := True;
-  //                                 Layer.TextLayer.drawBitmap;
-                                 //end;
-    SDM_MOUSE_LEAVE,SDM_DESELECT : Layer.TextLayer.EndHL;
-//    if Layer.TextLayer.Highlight <> False then
-  //                                 begin
-    //                                 Layer.TextLayer.EndHL;
-//                                     Layer.TextLayer.Highlight := False;
-//                                     Layer.TextLayer.drawBitmap;
-      //                             end;
-    SDM_CLOSE_LAYER : begin
-                        SharpApi.SendDebugMessageEx('Link.Object',PChar('Removing : ' + inttostr(Layer.ObjectID)),0,DMT_INFO);
-                        LayerList.Remove(Layer);
-                        SharpApi.SendDebugMessageEx('Link.Object',PChar('Freeing : ' + inttostr(Layer.ObjectID)),0,DMT_INFO);
-                        Layer := nil;
-                        SharpApi.SendDebugMessageEx('Link.Object',PChar('Object removed'),0,DMT_INFO);                        
-                      end;
-    SDM_SHUTDOWN : begin
-                     LayerList.Clear;
-                     LayerList.Free;
-                     LayerList := nil;
-                     FirstStart := True;
-                   end;
+    SDM_SETTINGS_UPDATE :
+      Layer.TextLayer.LoadSettings;
+    SDM_DOUBLE_CLICK :
+      Layer.TextLayer.DoubleClick;
+    SDM_REPAINT_LAYER :
+      Layer.TextLayer.LoadSettings;
+    SDM_MOUSE_ENTER,SDM_SELECT :
+      Layer.TextLayer.StartHL;
+    SDM_MOUSE_LEAVE,SDM_DESELECT :
+      Layer.TextLayer.EndHL;
+    SDM_CLOSE_LAYER :
+    begin
+      SharpApi.SendDebugMessageEx('Link.Object',PChar('Removing : ' + inttostr(Layer.ObjectID)),0,DMT_INFO);
+      LayerList.Remove(Layer);
+      SharpApi.SendDebugMessageEx('Link.Object',PChar('Freeing : ' + inttostr(Layer.ObjectID)),0,DMT_INFO);
+      Layer := nil;
+      SharpApi.SendDebugMessageEx('Link.Object',PChar('Object removed'),0,DMT_INFO);
+    end;
+    SDM_SHUTDOWN :
+    begin
+      LayerList.Clear;
+      LayerList.Free;
+      LayerList := nil;
+      FirstStart := True;
+    end;
+    SDM_MENU_POPUP :
+    begin
+      Bmp := TBitmap.Create;
+      try
+        Menu := Layer.TextLayer.ParentImage.PopupMenu;
 
-    SDM_MENU_POPUP : begin
-                       Bmp := TBitmap.Create;
-                       Menu := Layer.TextLayer.ParentImage.PopupMenu;
+        MenuItem := TMenuItem.Create(Menu.Items);
+        MenuItem.Caption := 'Open';
+        MenuItem.ImageIndex := 0;
+        MenuItem.OnClick := Layer.TextLayer.OnOpenClick;
+        Menu.Items.Add(MenuItem);
+        Bmp.LoadFromResourceID(HInstance,100);
+        TPngImageList(Menu.Images).AddMasked(bmp,clFuchsia);
 
-                       MenuItem := TMenuItem.Create(Menu.Items);
-                       MenuItem.Caption := 'Open';
-                       MenuItem.ImageIndex := 0;
-                       MenuItem.OnClick := Layer.TextLayer.OnOpenClick;
-                       Menu.Items.Add(MenuItem);
-                       Bmp.LoadFromResourceID(HInstance,100);
-                       TPngImageList(Menu.Images).AddMasked(bmp,clFuchsia);
-
-                       Bmp.Free;
-                     end;
-     end;
+      finally
+        Bmp.Free;
+      end;
+    end;
+  end;
 end;
 
 procedure InitSettings;

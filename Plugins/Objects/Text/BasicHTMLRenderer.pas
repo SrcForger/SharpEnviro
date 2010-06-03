@@ -102,6 +102,7 @@ type
                          FTarget       : TBitmap32;
                          FLines        : TStringList;
                          FLinesData    : TLineList;
+
                          function ParseElement(Text : String; EStatus : TElemStatus; var EList : TElementList) : TElemStatus;
                          function ParseLine(pWidth : integer; pText : String; LineStatus : TLineStatus) : TLineStatus;
                          procedure ClearLinesData;
@@ -223,14 +224,14 @@ var
  fname : String;
  fsize : integer;
  fcolor : TColor;
- fc,fs,fn : boolean;
 begin
-  fcolor := 0;
-  fsize := 0;
+  fname := FTarget.Font.Name;
+  fcolor := FTarget.Font.Color;
+  fsize := FTarget.Font.Size;
 
   if tag = '/font' then
   begin
-    if length(EStatus.FontName)>1 then
+    if length(EStatus.FontName )> 1 then
     begin
       setlength(EStatus.FontName,length(EStatus.FontName)-1);
       setlength(EStatus.FontSize,length(EStatus.FontSize)-1);
@@ -240,46 +241,37 @@ begin
   else
   if tag = 'font' then
   begin
-    fc := false;
-    fs := false;
-    fn := false;
     for n := 0 to High(TagProps) do
     begin
       if TagProps[n].Name = 'color' then
       begin
         try
           fcolor := HexToColor(TagProps[n].Value);
-          fc := true;
         except
-          fc := false;
-          fcolor := 0;
+          fcolor := FTarget.Font.Color;
         end;
       end else
       if TagProps[n].Name = 'face' then
       begin
-        fn := true;
         fname := TagProps[n].Value
       end
       else if TagProps[n].Name = 'size' then
       begin
         try
           fsize := strtoint(TagProps[n].Value);
-          fs := true;
         except
-          fsize := 8;
-          fs := false;
+          fsize := FTarget.Font.Size;
         end;      
       end;
     end;
     setlength(EStatus.FontName,length(EStatus.FontName)+1);
     setlength(EStatus.FontSize,length(EStatus.FontSize)+1);
     setlength(EStatus.FontColor,length(EStatus.FontColor)+1);
-    if fs then EStatus.FontSize[High(EStatus.FontSize)] := fsize
-       else EStatus.FontSize[High(EStatus.FontSize)] := EStatus.FontSize[High(EStatus.FontSize)-1];
-    if fc then EStatus.FontColor[High(EStatus.FontColor)] := fcolor
-       else EStatus.FontColor[High(EStatus.FontColor)] := EStatus.FontColor[High(EStatus.FontColor)-1];
-    if fn then EStatus.FontName[High(EStatus.FontName)] := fname
-       else EStatus.FontName[High(EStatus.FontName)] := EStatus.FontName[High(EStatus.FontName)-1];
+
+    EStatus.FontSize[High(EStatus.FontSize)] := fsize;
+    EStatus.FontColor[High(EStatus.FontColor)] := fcolor;
+    EStatus.FontName[High(EStatus.FontName)] := fname;
+    
   end;
   result := EStatus;
 end;
@@ -396,9 +388,11 @@ begin
   if length(Text)=0 then
   begin
     setlength(EList,length(EList)+1);
-    if length(EList)>1 then
+    if length(EList) > 1 then
        EList[High(EList)].eSPos := EList[High(EList)-1].ePos
-       else EList[High(EList)].eSPos := 0;
+    else
+      EList[High(EList)].eSPos := 0;
+      
     EList[High(EList)].Text        := '';
     EList[High(EList)].isBold      := EStatus.Bold;
     EList[High(EList)].isItalic    := EStatus.Italic;
@@ -406,9 +400,6 @@ begin
     AssignDynArray(EList[High(EList)].FontName,EStatus.FontName);
     AssignDynArray(EList[High(EList)].FontSize,EStatus.FontSize);
     AssignDynArray(EList[High(EList)].FontColor,EStatus.FontColor);
-  //  setlength(EStatus.FontName,0);
-  //  setlength(EStatus.FontSize,0);
-  //  setlength(EStatus.FontColor,0);
     EList[High(EList)].ePos := EList[High(EList)].eSPos + Tag.Pos-1+length(Tag.Tag);
     exit;
   end;
@@ -426,9 +417,6 @@ begin
     AssignDynArray(EList[High(EList)].FontName,EStatus.FontName);
     AssignDynArray(EList[High(EList)].FontSize,EStatus.FontSize);
     AssignDynArray(EList[High(EList)].FontColor,EStatus.FontColor);
-  //  setlength(EStatus.FontName,0);
-   // setlength(EStatus.FontSize,0);
-   // setlength(EStatus.FontColor,0);
     EList[High(EList)].ePos := EList[High(EList)].eSPos + Tag.Pos-1+length(Tag.Tag);
   end;
 
@@ -467,6 +455,7 @@ begin
   FLines.Clear;
 
   i := 1;
+  ai := 0;
 
   while i < Length(pText) do
   begin
@@ -481,7 +470,7 @@ begin
     i := ai + Length('<br>');
   end;
 
-  tmp := Copy(pText, i, (Length(pText) - 1));
+  tmp := Copy(pText, i, (Length(pText) - ai));
   Flines.Add(tmp);
 end;
 
@@ -526,12 +515,18 @@ begin
         LineStatus.isBold := isBold;
         LineStatus.isItalic := isItalic;
         LineStatus.isUnderline := isUnderline;
+
         AssignDynArray(LineStatus.FontName,FontName);
         AssignDynArray(LineStatus.FontSize,FontSize);
         AssignDynArray(LineStatus.FontColor,FontColor);
-        if isBold > 0 then FTarget.Font.Style := FTarget.Font.Style + [fsBold];
-        if isItalic > 0 then FTarget.Font.Style := FTarget.Font.Style + [fsItalic];
-        if isUnderline > 0 then FTarget.Font.Style := FTarget.Font.Style + [fsUnderline];
+
+        if isBold > 0 then
+          FTarget.Font.Style := FTarget.Font.Style + [fsBold];
+        if isItalic > 0 then
+          FTarget.Font.Style := FTarget.Font.Style + [fsItalic];
+        if isUnderline > 0 then
+          FTarget.Font.Style := FTarget.Font.Style + [fsUnderline];
+          
         FTarget.Font.Name  := FontName[High(FontName)];
         FTarget.Font.Color := FontColor[High(FontColor)];
         FTarget.Font.Size  := FontSize[High(FontSize)];
@@ -606,11 +601,14 @@ begin
       FLinesData[High(FLinesData)] := ParseLine(FMaxWidth,Lines[n],LineStatus(0,0,0,0,0,Font.Name,Font.Size,Font.Color))
     else
       FLinesData[High(FLinesData)] := ParseLine(FMaxWidth,Lines[n],FLinesData[High(FLinesData)-1]);
+
     y := y + FLinesData[High(FLinesData)].Height;
+
     if FLinesData[High(FLinesData)].Width > x then
        x := FLinesData[High(FLinesData)].Width;
     if length(FLinesData[High(FLinesData)].Overhead) <> 0 then
        Lines.Insert(n+1,FLinesData[High(FLinesData)].Overhead);
+       
     n := n + 1;
   end;
   FDrawHeight := y;
@@ -641,42 +639,20 @@ begin
       FTarget.Font.Style := [];
       with FLinesData[n].TextElements[i] do
       begin
-//        FLinesData[n].isBold := isBold;
-//        FLinesData[n].isItalic := isItalic;
-//        FLinesData[n].isUnderline := isUnderline;
-        if isBold > 0 then FTarget.Font.Style := FTarget.Font.Style + [fsBold];
-        if isItalic > 0 then FTarget.Font.Style := FTarget.Font.Style + [fsItalic];
-        if isUnderline > 0 then FTarget.Font.Style := FTarget.Font.Style + [fsUnderline];
+
+        if isBold > 0 then
+          FTarget.Font.Style := FTarget.Font.Style + [fsBold];
+        if isItalic > 0 then
+          FTarget.Font.Style := FTarget.Font.Style + [fsItalic];
+        if isUnderline > 0 then
+          FTarget.Font.Style := FTarget.Font.Style + [fsUnderline];
+
         FTarget.Font.Name  := FontName[High(FontName)];
         FTarget.Font.Color := FontColor[High(FontColor)];
         FTarget.Font.Size  := FontSize[High(FontSize)];
-    {    if (FSelected) and (PointInRect(SelEnd,Rect(FDrawPos.X+x,FDrawPos.Y+y,FDrawPos.X+x+FTarget.TextWidth(Text),FDrawPos.Y+y+FLinesData[n].Height))) then
-        begin
-          FSelected := False;
-          for k := 0 to length(Text)-1 do
-              if (((SelEnd.X>FTarget.TextWidth(Copy(Text,0,k))) and (SelEnd.X<FTarget.TextWidth(Copy(Text,0,k+1))))) then
-              begin
-                FSelected := True;
-                FTarget.FillRect(FDrawPos.X+x+FTarget.TextWidth(Copy(Text,0,k)),FDrawPos.Y+y,FMaxWidth,FDrawPos.Y+y+FLinesData[n].Height,color32(clHighlight));
-                break;
-              end;
-        end; //else if FSelected then FTarget.FillRect(FDrawPos.X+x,FDrawPos.Y+y,FDrawPos.X+x+FTarget.TextWidth(Text),FDrawPos.Y+y+FLinesData[n].Height,color32(clHighlight));
 
-        if PointInRect(SelStart,Rect(FDrawPos.X+x,FDrawPos.Y+y,FDrawPos.X+x+FTarget.TextWidth(Text),FDrawPos.Y+y+FLinesData[n].Height)) then
-        begin
-          for k := 0 to length(Text)-1 do
-              if (((SelStart.X>FTarget.TextWidth(Copy(Text,0,k))) and (SelStart.X<FTarget.TextWidth(Copy(Text,0,k+1))))) then
-              begin
-                FSelected := True;
-                if not (PointInRect(SelEnd,Rect(FDrawPos.X+x,FDrawPos.Y+y,FDrawPos.X+x+FTarget.TextWidth(Text),FDrawPos.Y+y+FLinesData[n].Height))) then
-                   FTarget.FillRect(FDrawPos.X+x+FTarget.TextWidth(Copy(Text,0,k)),FDrawPos.Y+y,FMaxWidth,FDrawPos.Y+y+FLinesData[n].Height,color32(clHighlight));
-                break;
-              end;
-//              FTarget.RenderText(FDrawPos.X+x+k*FTarget.TextWidth(Text[1]),round(FDrawPos.Y+y+FLinesData[n].Height-FTarget.TextHeight(Text[k])),Text[k],0,color32(FTarget.Font.Color));
-        end; }
         FTarget.RenderText(FDrawPos.X+x,round(FDrawPos.Y+y+FLinesData[n].Height-FTarget.TextHeight(Text)),Text,0,color32(FTarget.Font.Color));
-        //FTarget.Textout(FDrawPos.X+x,round(FDrawPos.Y+y+FLinesData[n].Height-FTarget.TextHeight(Text)),Text);
-//        showmessage(Text + '] ' + inttostr(FLinesData[n].Height) + ' - ' + inttostr(FTarget.TextHeight(Text)));
+
         x := x + FTarget.TextWidth(Text);
       end;
     end;

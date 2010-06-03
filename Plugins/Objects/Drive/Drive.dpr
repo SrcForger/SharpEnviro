@@ -139,6 +139,8 @@ begin
   end;
   if Layer = nil then exit;
   case DeskMessage of
+    SDM_SETTINGS_UPDATE :
+      Layer.DriveLayer.LoadSettings;
     SDM_DOUBLE_CLICK : Layer.DriveLayer.DoubleClick;
     SDM_REPAINT_LAYER : Layer.DriveLayer.LoadSettings;
     SDM_SELECT : begin

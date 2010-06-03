@@ -80,7 +80,7 @@ begin
     ColorBlend       := BoolValue('ColorBlend',False);
     Text             := Value('Text','');
     if length(Text) = 0 then
-      Text := '<font color="#ffffff">Text.Object</font>';
+      Text := 'Text.Object<br>Object for Displaying Text<br><font color="#ff0000" size="16" face="Arial">Supporting basic HTML</font>';
     Text := StringReplace(Text,'#;01;#','<',[rfReplaceAll, rfIgnoreCase]);
     Text := StringReplace(Text,'#;02;#','>',[rfReplaceAll, rfIgnoreCase]);
     Shadow           := BoolValue('Shadow',False);

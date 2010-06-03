@@ -176,6 +176,8 @@ begin
   if Layer = nil then exit;
 
   case DeskMessage of
+    SDM_SETTINGS_UPDATE :
+      Layer.ClockLayer.LoadSettings;
    SDM_REPAINT_LAYER : Layer.ClockLayer.LoadSettings;
    SDM_SELECT : begin
                   if P1 = 0 then Layer.ClockLayer.Locked := False

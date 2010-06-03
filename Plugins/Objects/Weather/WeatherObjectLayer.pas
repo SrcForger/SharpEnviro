@@ -801,20 +801,25 @@ begin
       FFontSettings.Shadow := FSettings.TextShadow;
   end;   
 
-  if FSettings.AlphaBlend then
+  BuildOutput;
+
+  if FSettings.TextShadow then
+    CreateDropShadow(Bitmap, 0, 1, FShadowAlpha, FShadowColor);
+  if FSettings.ColorBlend then
+    BlendImageA(Bitmap, FSettings.BlendColor, FSettings.BlendValue);
+
+  if FSettings.Theme[DS_ICONALPHABLEND].BoolValue then
   begin
-    Bitmap.MasterAlpha := FSettings.AlphaValue;
+    Bitmap.MasterAlpha := FSettings.Theme[DS_ICONALPHA].IntValue;
     if Bitmap.MasterAlpha < 16 then
       Bitmap.MasterAlpha := 16;
   end else
     Bitmap.MasterAlpha := 255;
 
-  BuildOutput;
-
-  DrawBitmap;
   if FHLTimer.Tag >= FAnimSteps then
      FHLTimer.OnTimer(FHLTimer);   
-//  if FBlend then BlendImage(FPicture, FBlendColor,FBlendValue);
+
+  DrawBitmap;
 end;
 
 

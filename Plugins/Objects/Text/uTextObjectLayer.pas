@@ -340,9 +340,13 @@ begin
 
   if FSettings.AlphaBlend then
   begin
-    Bitmap.MasterAlpha := FSettings.AlphaValue;
-    if Bitmap.MasterAlpha < 16 then
-      Bitmap.MasterAlpha := 16;
+    if FSettings.AlphaBlend then
+      Bitmap.MasterAlpha := FSettings.AlphaValue;
+
+    if Bitmap.MasterAlpha > 255 then
+      Bitmap.MasterAlpha := 255
+    else if Bitmap.MasterAlpha < 32 then
+      Bitmap.MasterAlpha := 32;
   end else
     Bitmap.MasterAlpha := 255;
 
@@ -352,7 +356,11 @@ begin
 
   if FSettings.BGType = 2 then
      FDeskPanel.LoadPanel(FSettings.BGSkin);
-     
+
+  FFontBitmap.Font.Name := Theme.Desktop.Icon.FontName;
+  FFontBitmap.Font.Color := Theme.Desktop.Icon.TextColor;
+  FFontBitmap.Font.Size := Theme.Desktop.Icon.TextSize;
+
   FSHTMLRenderer.LoadFromCommaText(FSettings.Text);
   FSHTMLRenderer.DrawPos := Point(2,2);
   FSHTMLRenderer.ParseText;
@@ -360,18 +368,21 @@ begin
   FFontBitmap.Clear(color32(0,0,0,0));
   FSHTMLRenderer.RenderText;
 
-
-//  showmessage(inttostr(FSHTMLRenderer.DrawPos));
-
   if FSettings.Shadow then
-    createdropshadow(FFontBitmap,0,1,FShadowAlpha,FShadowColor);
+    CreateDropShadow(FFontBitmap, 0, 1, FShadowAlpha, FShadowColor);
   if FSettings.ColorBlend then
-    BlendImageA(FFontBitmap,FSettings.BlendColor,FSettings.BlendValue);
+    BlendImageA(FFontBitmap, FSettings.BlendColor, FSettings.BlendValue);
 
-  DrawBitmap;
+  if FSettings.Theme[DS_ICONALPHABLEND].BoolValue then
+    begin
+      Bitmap.MasterAlpha := FSettings.Theme[DS_ICONALPHA].IntValue;
+      if Bitmap.MasterAlpha<16 then Bitmap.MasterAlpha:=16;
+    end else Bitmap.MasterAlpha := 255;
 
   if FHLTimer.Tag >= FAnimSteps then
-     FHLTimer.OnTimer(FHLTimer);   
+     FHLTimer.OnTimer(FHLTimer);
+
+  DrawBitmap;
 end;
 
 
