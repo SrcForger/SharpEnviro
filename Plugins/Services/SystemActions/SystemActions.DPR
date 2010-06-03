@@ -101,6 +101,9 @@ const
   cMinimizeAllMonitorsIdx = 25;
   cToggleAllMonitorsIdx = 26;
 
+  cConfigThemeIdx = 27;
+  cConfigWallpaperIdx = 28;
+
   cKeyboardLayoutIdx = 99;
 
   RFF_NOBROWSE = 1; //Removes the browse button.
@@ -220,6 +223,9 @@ begin
 
   RegisterActionEx('!RunDlg', 'Misc', h, cRunDlgIdx);
 
+  RegisterActionEx('!ConfigureTheme', 'Themes', h, cConfigThemeIdx);
+  RegisterActionEx('!ConfigureWallpaper', 'Themes', h, cConfigWallpaperIdx);
+
   RegisterKeyBoardLocals;
 end;
 
@@ -279,6 +285,9 @@ begin
   UnRegisterAction('!ToggleAllBars');  
 
   UnRegisterAction('!RunDlg');
+
+  UnRegisterAction('!ConfigureTheme');
+  UnRegisterAction('!ConfigureWallpaper');
 
   LocalsList.Free;
 end;
@@ -449,9 +458,12 @@ begin
           else SharpApi.SharpEBroadCast(WM_HIDEBAR, 0, 0);
           SharpApi.ServiceMsg('DeskArea', 'Update');
         end;
-      cRunDlgIdx: begin
+      cRunDlgIdx:
         RunFileDlg(0, nil, nil, nil, 0);
-      end;
+      cConfigThemeIdx:
+        SharpApi.SharpExecute(SharpApi.GetSharpeDirectory + 'SharpCenter.exe -api "0|{CenterDirectory}_Themes\Theme.con|{CurrentTheme}"');
+      cConfigWallpaperIdx:
+        SharpApi.SharpExecute(SharpApi.GetSharpeDirectory + 'SharpCenter.exe -api "0|{CenterDirectory}_Themes\_themedlls\Wallpaper.dll|{CurrentTheme}"');
     end;
 
   end
