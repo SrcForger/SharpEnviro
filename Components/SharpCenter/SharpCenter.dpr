@@ -5,6 +5,7 @@ uses
   Forms,
   Windows,
   SharpApi,
+  SharpCenterApi,
   JvValidators,
   {$IFDEF DEBUG}DebugDialog in '..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   uSharpCenterMainWnd in 'uSharpCenterMainWnd.pas' {SharpCenterWnd},
@@ -40,12 +41,19 @@ end;
 
 var
   CenterWnd : HWND;
+
+  enumCommandType: TSCC_COMMAND_ENUM;
+  sPluginID: string;
+  sCmd: string;
 begin
   Application.Initialize;
   {$IFDEF VER185} Application.MainFormOnTaskBar := True; {$ENDIF}
 
   if CheckMutex then
   begin
+    if SharpCenterWnd.GetCommandLineParams(enumCommandType, sCmd, sPluginID) then
+      SharpCenterApi.CenterCommand(enumCommandType, PAnsiChar(sCmd), PAnsiChar(sPluginID));
+
     CenterWnd := FindWindow('TSharpCenterWnd', 'SharpCenter');
     SetForegroundWindow(CenterWnd);
     Application.Terminate;

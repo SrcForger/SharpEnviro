@@ -179,6 +179,8 @@ type
     procedure InitToolbar;
     procedure UpdateSize;
 
+    function GetCommandLineParams(var enumCommandType : TSCC_COMMAND_ENUM; var sCmd, sPluginID : string) : boolean;
+
     procedure EnabledWM(var Msg: TMessage); message CM_ENABLEDCHANGED;
 
     property SelectedTabID: Integer read FSelectedTabID write FSelectedTabID;
@@ -289,37 +291,51 @@ begin
     ForceForegroundWindow(Handle);
 end;
 
-procedure TSharpCenterWnd.InitCommandLine;
+function TSharpCenterWnd.GetCommandLineParams(var enumCommandType : TSCC_COMMAND_ENUM; var sCmd, sPluginID : string) : boolean;
 var
-  enumCommandType: TSCC_COMMAND_ENUM;
   strlTokens: TStringList;
   sApiParam: string;
   n: Integer;
-  sPluginID: string;
-  sCmd: string;
 begin
-  {$WARNINGS OFF}
-  SendDebugMessage('SharpCenter',cmdline,0);
+  Result := False;
 
-  n := Pos('-api', CmdLine);
+  n := Pos('-api', ParamStr(1));
   if n <> 0 then
   begin
-    sApiParam := Copy(CmdLine, n + 4, length(CmdLine));
+    sApiParam := ParamStr(2);
+
     strlTokens := TStringlist.Create;
     try
       StrTokenToStrings(sApiParam, '|', strlTokens);
       enumCommandType := TSCC_COMMAND_ENUM(StrToInt(strlTokens[0]));
       sCmd := strlTokens[1];
+
+      StrReplace(sCmd, '{CenterDirectory}', SharpApi.GetCenterDirectory);
+
       if 2 < strlTokens.Count then
         sPluginID := strlTokens[2];
-      SCM.ExecuteCommand(enumCommandType, scmd, sPluginID, 0);
+
+      StrReplace(sPluginID, '{CurrentTheme}', GetCurrentTheme.Skin.Name);
     finally
       strlTokens.Free;
+
+      Result := True;
     end;
   end
+end;
+
+procedure TSharpCenterWnd.InitCommandLine;
+var
+  enumCommandType: TSCC_COMMAND_ENUM;
+  sPluginID: string;
+  sCmd: string;
+begin
+  SendDebugMessage('SharpCenter',cmdline,0);
+
+  if GetCommandLineParams(enumCommandType, sCmd, sPluginID) then
+    SCM.ExecuteCommand(enumCommandType, scmd, sPluginID, 0)
   else
     SCM.BuildNavRoot;
-  {$WARNINGS ON}    
 end;
 
 procedure TSharpCenterWnd.btnBackClick(Sender: TObject);
