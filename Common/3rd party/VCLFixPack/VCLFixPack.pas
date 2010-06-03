@@ -2934,11 +2934,13 @@ initialization
   {$ENDIF MDIChildFocusFix}
 
   {$IFDEF PageControlPaintingFix}
-  InitPageControlPaintingFix;
+  {$UNDEF PageControlPaintingFix}
+  //InitPageControlPaintingFix;
   {$ENDIF PageControlPaintingFix}
 
   {$IFDEF GridFlickerFix}
-  InitGridFlickerFix;
+  {$UNDEF GridFlickerFix}
+  //InitGridFlickerFix;
   {$ENDIF GridFlickerFix}
 
   {$IFDEF SpeedButtonGlassFix}
@@ -3001,11 +3003,11 @@ finalization
   {$ENDIF SpeedButtonGlassFix}
 
   {$IFDEF GridFlickerFix}
-  FiniGridFlickerFix;
+  //FiniGridFlickerFix;
   {$ENDIF GridFlickerFix}
 
   {$IFDEF PageControlPaintingFix}
-  FiniPageControlPaintingFix;
+  //FiniPageControlPaintingFix;
   {$ENDIF PageControlPaintingFix}
 
   {$IFDEF MDIChildFocusFix}
