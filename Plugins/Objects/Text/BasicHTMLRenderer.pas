@@ -33,6 +33,7 @@ uses Types,
      Graphics,
      Math,
      SysUtils,
+     StrUtils,
      GR32;
 
 type
@@ -459,9 +460,29 @@ begin
 end;
 
 procedure TBasicHTMLRenderer.LoadFromCommaText(pText : String);
+var
+  i, ai : integer;
+  tmp : string;
 begin
   FLines.Clear;
-  FLines.CommaText := pText;
+
+  i := 1;
+
+  while i < Length(pText) do
+  begin
+    ai := PosEx('<br>', pText, i);
+    if ai <= 0 then
+      break;
+
+    tmp := Copy(pText, i, (ai - i));
+
+    Flines.Add(tmp);
+
+    i := ai + Length('<br>');
+  end;
+
+  tmp := Copy(pText, i, (Length(pText) - 1));
+  Flines.Add(tmp);
 end;
 
 procedure TBasicHTMLRenderer.LoadFromStringList(pSlist : TStringList);
@@ -578,11 +599,13 @@ begin
   y := 0;
   x := 0;
   n := 0;
-  while n<FLines.Count do
+  while n < FLines.Count do
   begin
     setlength(FLinesData,length(FLinesData)+1);
-    if length(FLinesData)=1 then FLinesData[High(FLinesData)] := ParseLine(FMaxWidth,Lines[n],LineStatus(0,0,0,0,0,Font.Name,Font.Size,Font.Color))
-       else FLinesData[High(FLinesData)] := ParseLine(FMaxWidth,Lines[n],FLinesData[High(FLinesData)-1]);
+    if length(FLinesData) = 1 then
+      FLinesData[High(FLinesData)] := ParseLine(FMaxWidth,Lines[n],LineStatus(0,0,0,0,0,Font.Name,Font.Size,Font.Color))
+    else
+      FLinesData[High(FLinesData)] := ParseLine(FMaxWidth,Lines[n],FLinesData[High(FLinesData)-1]);
     y := y + FLinesData[High(FLinesData)].Height;
     if FLinesData[High(FLinesData)].Width > x then
        x := FLinesData[High(FLinesData)].Width;

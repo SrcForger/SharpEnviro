@@ -40,6 +40,7 @@ uses
   GR32_Image,
   GR32_Layers,
   GR32_Transforms,
+  PngImageList,
   uTextObjectLayer in 'uTextObjectLayer.pas',
   uSharpDeskFunctions,
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
@@ -172,7 +173,7 @@ begin
 
     SDM_MENU_POPUP : begin
                        Bmp := TBitmap.Create;
-                       Menu := TForm(Layer.TextLayer.FParentImage.Parent).PopupMenu;
+                       Menu := Layer.TextLayer.ParentImage.PopupMenu;
 
                        MenuItem := TMenuItem.Create(Menu.Items);
                        MenuItem.Caption := 'Open';
@@ -180,7 +181,7 @@ begin
                        MenuItem.OnClick := Layer.TextLayer.OnOpenClick;
                        Menu.Items.Add(MenuItem);
                        Bmp.LoadFromResourceID(HInstance,100);
-                       Menu.Images.AddMasked(bmp,clFuchsia);
+                       TPngImageList(Menu.Images).AddMasked(bmp,clFuchsia);
 
                        Bmp.Free;
                      end;

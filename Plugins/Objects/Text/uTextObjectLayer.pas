@@ -60,10 +60,11 @@ type
     FFontBitmap      : TBitmap32;
     FSHTMLRenderer   : TBasicHTMLRenderer;
     FDeskPanel       : TDesktopPanel;
+    FParentImage    : TImage32;
+    FAnimSteps      : integer;
   protected
      procedure OnTimer(Sender: TObject);
   public
-     FParentImage : Timage32;
      procedure DrawBitmap;
      procedure LoadSettings;
      procedure DoubleClick;
@@ -78,6 +79,7 @@ type
      property ObjectId: Integer read FObjectId write FObjectId;
      property Highlight : boolean read FHighlight write FHighlight;
      property Settings  : TXMLSettings read FSettings;
+     property ParentImage : TImage32 read FParentImage write FParentImage;
   private
   end;
 
@@ -126,42 +128,57 @@ begin
 end;
 
 procedure TTextLayer.OnTimer(Sender: TObject);
+var
+  i : integer;
+
+  Theme : ISharpETheme;
 begin
   FParentImage.BeginUpdate;
   BeginUpdate;
+
+  Theme := GetCurrentTheme;
+
   FHLTimer.Tag := FHLTimer.Tag + FHLTimerI;
-//  SharpApi.SendDebugMessage('Link.object',inttostr(FHLTimer.Tag),clred);
   if FHLTimer.Tag <= 0 then
   begin
     FHLTimer.Enabled := False;
-    DrawBitmap;
     FHLTimer.Tag := 0;
-    EndUpdate;
+    if (FSettings.UseThemeSettings) and (FSettings.Theme[DS_ICONALPHABLEND].BoolValue) then
+       i := FSettings.Theme[DS_ICONALPHA].IntValue
+        else if FSettings.AlphaBlend then i := FSettings.AlphaValue
+             else i := 255;
+    if i > 255 then i := 255
+       else if i<32 then i := 32;
+    Bitmap.MasterAlpha := i;
+    DrawBitmap;
     FParentImage.EndUpdate;
+    EndUpdate;
     Changed;
     exit;
   end;
-  if FHLTimer.Tag >= 5 then
+  if Theme.Desktop.Animation.Alpha then
+  begin
+    if (FSettings.UseThemeSettings) and (FSettings.Theme[DS_ICONALPHABLEND].BoolValue) then
+       i := FSettings.Theme[DS_ICONALPHA].IntValue
+        else if FSettings.AlphaBlend then i := FSettings.AlphaValue
+             else i := 255;
+    i := i + round(((Theme.Desktop.Animation.AlphaValue/FAnimSteps)*FHLTimer.Tag));
+    if i > 255 then i := 255
+       else if i<32 then i := 32;
+    Bitmap.MasterAlpha := i;
+  end;
+  if FHLTimer.Tag >= FAnimSteps then
   begin
     FHLTimer.Enabled := False;
-    FHLTimer.Tag := 5;
-    //DrawBitmap;
-    EndUpdate;
-    FParentImage.EndUpdate;
-    Changed;
-    exit;
+    FHLTimer.Tag := FAnimSteps;
   end;
   DrawBitmap;
-  case FHLTimerI of
-   1 : begin
-         LightenBitmap(Bitmap,FHLTimer.Tag*15);
-       end;
-   -1  : begin
-           LightenBitmap(Bitmap,FHLTimer.Tag*15);
-         end;
-  end;
-  EndUpdate;
+  if Theme.Desktop.Animation.Brightness then
+     LightenBitmap(Bitmap,round(FHLTimer.Tag*(Theme.Desktop.Animation.BrightnessValue/FAnimSteps)));
+  if Theme.Desktop.Animation.Blend then
+     BlendImageA(Bitmap,Theme.Desktop.Animation.BlendColor,round(FHLTimer.Tag*(Theme.Desktop.Animation.BlendValue/FAnimSteps)));
   FParentImage.EndUpdate;
+  EndUpdate;
   Changed;
 end;
 
@@ -297,8 +314,8 @@ begin
 
   Theme := GetCurrentTheme;
 
-  FShadowAlpha   := FSettings.Theme[DS_TEXTSHADOWALPHA].IntValue;
-  FShadowColor   := Theme.Scheme.SchemeCodeToColor(FSettings.Theme[DS_TEXTSHADOWCOLOR].IntValue);
+  FShadowAlpha   := Theme.Desktop.Icon.IconShadowAlpha;
+  FShadowColor   := Theme.Desktop.Icon.IconShadowColor;
 
   if not FSettings.BGThickness then
      FSettings.BGThicknessValue := 0;
@@ -309,13 +326,13 @@ begin
 
   if FSettings.UseThemeSettings then
   begin
-    FSettings.AlphaValue    := FSettings.Theme[DS_ICONALPHA].IntValue;
-    FSettings.AlphaBlend    := FSettings.Theme[DS_ICONALPHABLEND].BoolValue;
-    FSettings.ColorBlend    := FSettings.Theme[DS_ICONBLENDING].BoolValue;
-    FSettings.BlendColor    := FSettings.Theme[DS_ICONBLENDCOLOR].IntValue;
-    FSettings.BlendValue    := FSettings.Theme[DS_ICONBLENDALPHA].IntValue;
-    FSettings.Shadow        := FSettings.Theme[DS_ICONSHADOW].BoolValue;
-    FSettings.ShowCaption   := FSettings.Theme[DS_DISPLAYTEXT].BoolValue;
+    FSettings.AlphaValue    := Theme.Desktop.Icon.TextAlphaValue;
+    FSettings.AlphaBlend    := Theme.Desktop.Icon.TextAlpha;
+    FSettings.ColorBlend    := Theme.Desktop.Icon.IconBlending;
+    FSettings.BlendColor    := Theme.Desktop.Icon.IconBlendColor;
+    FSettings.BlendValue    := Theme.Desktop.Icon.IconBlendAlpha;
+    FSettings.Shadow        := Theme.Desktop.Icon.TextShadow;
+    FSettings.ShowCaption   := Theme.Desktop.Icon.DisplayText;
   end;
 
   if length(FSettings.Text) = 0 then
@@ -329,9 +346,9 @@ begin
   end else
     Bitmap.MasterAlpha := 255;
 
-  Bitmap.Font.Name := FSettings.Theme[DS_FONTNAME].Value;
-  FShadowColor := FSettings.Theme[DS_ICONSHADOWCOLOR].IntValue;
-  FShadowAlpha := FSettings.Theme[DS_ICONSHADOWALPHA].IntValue;
+  Bitmap.Font.Name := Theme.Desktop.Icon.FontName;
+  FShadowColor := Theme.Desktop.Icon.IconShadowColor;
+  FShadowAlpha := Theme.Desktop.Icon.IconShadowAlpha;
 
   if FSettings.BGType = 2 then
      FDeskPanel.LoadPanel(FSettings.BGSkin);
@@ -352,6 +369,9 @@ begin
     BlendImageA(FFontBitmap,FSettings.BlendColor,FSettings.BlendValue);
 
   DrawBitmap;
+
+  if FHLTimer.Tag >= FAnimSteps then
+     FHLTimer.OnTimer(FHLTimer);   
 end;
 
 
@@ -365,6 +385,7 @@ begin
   FHighlight := False;
   scaled := false;
   FSettings := TXMLSettings.Create(FObjectID, nil, 'Text');
+  FAnimSteps      := 5;
   FHLTimer := TTimer.Create(nil);
   FHLTimer.Interval := 20;
   FHLTimer.Tag      := 0;

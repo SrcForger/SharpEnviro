@@ -78,10 +78,11 @@ begin
     AlphaBlend       := BoolValue('AlphaBlend',False);
     BlendValue       := IntValue('BlendValue',0);
     ColorBlend       := BoolValue('ColorBlend',False);
-    Text             := Value('Text','Text.object');
+    Text             := Value('Text','');
+    if length(Text) = 0 then
+      Text := '<font color="#ffffff">Text.Object</font>';
     Text := StringReplace(Text,'#;01;#','<',[rfReplaceAll, rfIgnoreCase]);
     Text := StringReplace(Text,'#;02;#','>',[rfReplaceAll, rfIgnoreCase]);
-    if length(Text) = 0 then Text := 'Text.Object';
     Shadow           := BoolValue('Shadow',False);
     ShowCaption      := BoolValue('ShowCaption',True);
     UseThemeSettings := BoolValue('UseThemeSettings',True);
