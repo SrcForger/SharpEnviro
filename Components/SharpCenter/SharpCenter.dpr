@@ -6,7 +6,9 @@ uses
   Windows,
   SharpApi,
   SharpCenterApi,
+  SharpThemeApiEx,
   JvValidators,
+  uThemeConsts,
   {$IFDEF DEBUG}DebugDialog in '..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   uSharpCenterMainWnd in 'uSharpCenterMainWnd.pas' {SharpCenterWnd},
   uSharpCenterDllMethods in 'uSharpCenterDllMethods.pas',
@@ -48,6 +50,8 @@ var
 begin
   Application.Initialize;
   {$IFDEF VER185} Application.MainFormOnTaskBar := True; {$ENDIF}
+
+  GetCurrentTheme.LoadTheme(ALL_THEME_PARTS); // Initialize Theme Api
 
   if CheckMutex then
   begin

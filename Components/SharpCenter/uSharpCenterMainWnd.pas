@@ -151,7 +151,6 @@ type
     procedure FormShow(Sender: TObject);
     procedure pnlPluginContainerTabClick(ASender: TObject;
       const ATabIndex: Integer);
-    procedure FormCreate(Sender: TObject);
     procedure ApplicationEvents1Message(var Msg: tagMSG; var Handled: Boolean);
     procedure FormDestroy(Sender: TObject);
   private
@@ -315,7 +314,7 @@ begin
       if 2 < strlTokens.Count then
         sPluginID := strlTokens[2];
 
-      StrReplace(sPluginID, '{CurrentTheme}', GetCurrentTheme.Skin.Name);
+      StrReplace(sPluginID, '{CurrentTheme}', GetCurrentTheme.Info.Name);
     finally
       strlTokens.Free;
 
@@ -1441,11 +1440,6 @@ begin
   CanClose := True;
 end;
 
-
-procedure TSharpCenterWnd.FormCreate(Sender: TObject);
-begin
-  GetCurrentTheme.LoadTheme(ALL_THEME_PARTS); // Initialize Theme Api
-end;
 
 procedure TSharpCenterWnd.FormDestroy(Sender: TObject);
 var

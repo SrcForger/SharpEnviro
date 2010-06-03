@@ -1428,7 +1428,6 @@ object SharpCenterWnd: TSharpCenterWnd
   Position = poScreenCenter
   ScreenSnap = True
   OnCloseQuery = FormCloseQuery
-  OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnMouseWheel = FormMouseWheel
   OnResize = FormResize
