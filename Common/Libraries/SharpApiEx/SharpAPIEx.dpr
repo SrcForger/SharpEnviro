@@ -30,7 +30,7 @@ library SharpAPIEx;
 {$WARN SYMBOL_PLATFORM OFF}
 
 uses
-  VCLFixPack,
+//  VCLFixPack,
   windows,
   messages,
   SysUtils,

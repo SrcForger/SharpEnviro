@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library SkinList;
 uses
-  VCLFixPack,
+//  VCLFixPack,
   SysUtils,
   Controls,
   Classes,

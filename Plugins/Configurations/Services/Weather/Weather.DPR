@@ -1,7 +1,7 @@
 library Weather;
 
 uses
-  VCLFixPack,
+//  VCLFixPack,
   windows,
   registry,
   Classes,

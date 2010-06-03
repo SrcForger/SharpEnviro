@@ -101,7 +101,6 @@ type
                          FTarget       : TBitmap32;
                          FLines        : TStringList;
                          FLinesData    : TLineList;
-                         FSelected     : boolean;
                          function ParseElement(Text : String; EStatus : TElemStatus; var EList : TElementList) : TElemStatus;
                          function ParseLine(pWidth : integer; pText : String; LineStatus : TLineStatus) : TLineStatus;
                          procedure ClearLinesData;
@@ -117,7 +116,7 @@ type
                          procedure LoadFromStrings(pStrings : TStrings);
                          constructor Create(pTarget : TBitmap32); reintroduce;
                          destructor Destroy; override;
-                       published
+
                          property WordWrap   : boolean     read FWordWrap write FWordWrap;
                          property MaxWidth   : integer     read FMaxWidth write FMaxWidth;
                          property DrawPos    : TPoint      read FDrawPos  write FDrawPos;
@@ -225,6 +224,9 @@ var
  fcolor : TColor;
  fc,fs,fn : boolean;
 begin
+  fcolor := 0;
+  fsize := 0;
+
   if tag = '/font' then
   begin
     if length(EStatus.FontName)>1 then
@@ -303,8 +305,8 @@ end;
 
 function GetTagProperties(Text : String) : TNameValueArray;
 var
-  n,k,i : integer;
-  s,Prop,Name : String;
+  k,i : integer;
+  s : String;
 begin
   setlength(result,0);
   Text := ' '+Text+' ';
@@ -373,9 +375,8 @@ begin
   end;
 
   k := (Pos('</font>',Text));
-  if (k<>0) and (k<=i) then
+  if (k <> 0) and (k <= i) then
   begin
-    i := k;
     Tag.isSpecial := True;
     Tag.Pos := k;
     Tag.Tag := '</font>';
@@ -593,8 +594,7 @@ begin
   FDrawWidth := x;
 
   FTarget.Font.Assign(Font);
-  Font.Free;
-  Font := nil;
+  FreeAndNil(Font);
 
   FLines.CommaText := s;
 end;
@@ -603,7 +603,6 @@ procedure TBasicHTMLRenderer.RenderText;
 var
   n : integer;
   i : integer;
-  k : integer;
   Font : TFont;
   y,x : integer;
 begin
@@ -662,8 +661,7 @@ begin
   end;
   
   FTarget.Font.Assign(Font);
-  Font.Free;
-  Font := nil;
+  FreeAndNil(Font);
 end;
 
 procedure TBasicHTMLRenderer.ClearLinesData;

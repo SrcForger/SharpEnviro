@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 program SharpCore;
 
 uses
-  VCLFixPack,
+//  VCLFixPack,
   Forms,
   Windows,
   Messages,

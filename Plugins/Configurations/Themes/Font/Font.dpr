@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library Font;
 uses
-  VCLFixPack,
+//  VCLFixPack,
   Controls,
   Classes,
   Windows,

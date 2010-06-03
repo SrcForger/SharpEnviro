@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library Text;
 uses
-  VCLFixPack,
+//  VCLFixPack,
   Forms,
   windows,
   graphics,
@@ -41,19 +41,13 @@ uses
   GR32_Layers,
   GR32_Transforms,
   uTextObjectLayer in 'uTextObjectLayer.pas',
-  uSharpDeskTDeskSettings,
-  uSharpDeskTObjectSettings,
-  uSharpDeskTThemeSettings,
   uSharpDeskFunctions,
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   SharpDeskApi in '..\..\..\Common\Libraries\SharpDeskApi\SharpDeskApi.pas',
   SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
-  uSharpeColorBox in '..\..\..\Common\Delphi Components\SharpEColorBox\uSharpeColorBox.pas',
-  uSharpEFontSelector in '..\..\..\Common\Delphi Components\SharpEFontSelector\uSharpEFontSelector.pas',
   TextObjectXMLSettings in 'TextObjectXMLSettings.pas',
   uSharpDeskDesktopPanel in '..\..\SharpDesk\Units\uSharpDeskDesktopPanel.pas',
-  uSharpDeskDesktopPanelList in '..\..\SharpDesk\Units\uSharpDeskDesktopPanelList.pas',
   BasicHTMLRenderer in 'BasicHTMLRenderer.pas';
 
 {$R *.RES}
@@ -83,7 +77,6 @@ type
     TLayerList = class (TObjectList)
                  private
                  public
-                 published
                  end;
 
     TLayer = class
@@ -92,19 +85,14 @@ type
               FLayer : TTextLayer;
              public
               destructor Destroy; override;
-             published
+
               property ObjectID : integer read FObjectID write FObjectID;
               property TextLayer : TTextLayer read FLayer write FLayer;
              end;
 
 var
    LayerList : TLayerList;
-   DeskSettings   : TDeskSettings;
-   ObjectSettings : TObjectSettings;
-   ThemeSettings  : TThemeSettings;
    FirstStart : boolean = True;
-   LastSettingsTick,LastSettingsPanel : integer;
-
 
 destructor TLayer.Destroy;
 begin
@@ -128,48 +116,10 @@ begin
   LayerList.Add(TLayer.Create);
   Layer := TLayer(LayerList.Items[LayerList.Count-1]);
   Layer.ObjectID := ObjectID;
-  Layer.TextLayer := TTextLayer.create(Image, ObjectID, DeskSettings,ThemeSettings,ObjectSettings);
+  Layer.TextLayer := TTextLayer.create(Image, ObjectID);
   Layer.TextLayer.Tag:=ObjectID;
   result := Layer.TextLayer;
 end;
-
-function StartSettingsWnd(ObjectID : integer; Handle : hwnd) : hwnd;
-begin
-  if SettingsWnd=nil then SettingsWnd := TSettingsWnd.Create(nil);
-  SettingsWnd.ParentWindow:=Handle;
-  SettingsWnd.Left:=0;
-  SettingsWnd.Top:=0;
-  SettingsWnd.BorderStyle:=bsNone;
-  SettingsWnd.ObjectID:=ObjectID;
-  SettingsWnd.DeskSettings   := DeskSettings;
-  SettingsWnd.ObjectSettings := ObjectSettings;
-  Settingswnd.ThemeSettings  := ThemeSettings;
-  SettingsWnd.LoadSettings;
-  if (not FirstStart) and (GetTickCount-LastSettingsTick<2000) then
-      SettingsWnd.PageControl1.ActivePageIndex:=LastSettingsPanel;
-  SettingsWnd.Show;
-  result:=SettingsWnd.Handle;
-end;
-
-function CloseSettingsWnd(ObjectID : integer; SaveSettings : boolean) : boolean;
-begin
-  try
-    if (SaveSettings) and (ObjectID<>0) then
-    begin
-      SettingsWnd.ObjectID:=ObjectID;
-      SettingsWnd.SaveSettings;
-      LastSettingsTick := GetTickCount;
-      LastSettingsPanel := SettingsWnd.PageControl1.ActivePageIndex;
-    end;
-    SettingsWnd.Close;
-    SettingsWnd.Free;
-    SettingsWnd:=nil;
-    result:=True;
-  except
-    result:=False;
-  end;
-end;
-
 
 procedure SharpDeskMessage(pObjectID : integer; pLayer : TBitmapLayer; DeskMessage,P1,P2,P3 : integer);
 var
@@ -237,102 +187,16 @@ begin
      end;
 end;
 
-
-function RenderTooltip(pObjectID : integer; pBitmap : TBitmap32) : boolean;
-var
-  n : integer;
-  Layer : TLayer;
-  w,h : integer;
-  eh : integer;
-  P : TPoint;
-  L : TFloatRect;
-  color1,color2 : TColor32;
-  SList : TStringList;
+procedure InitSettings;
 begin
-  if FirstStart then exit;
-  Layer := nil;
-  for n := 0 to LayerList.Count - 1 do
-  begin
-    if TLayer(LayerList.Items[n]).ObjectID = pObjectID then
-    begin
-      Layer := TLayer(LayerList.Items[n]);
-      break;
-    end;
-  end;
-  if Layer = nil then exit;
 
-  SList := TStringList.Create;
-  SList.Clear;
-  SList.Add('Object : Text.object'); 
-//  SList.Add('Target : ' + Layer.TextLayer.Settings.Target);
-
-  with pBitmap do
-  begin
-    if DeskSettings<>nil then
-    begin
-      Color1 := color32(DeskSettings.Theme.Scheme.WorkArealight);
-      Color2 := color32(DeskSettings.Theme.Scheme.WorkAreadark);
-    end else
-    begin
-      Color1 := color32(clsilver);
-      Color2 := color32(clBlack);
-    end;
-    BeginUpdate;
-    MasterAlpha := 255;
-    Font.Name := 'Arial';
-    Font.Color := clBlack;
-    Font.Style := [];
-    Font.Size := 8;
-    p := GetBitmapSize(pBitmap,SList);
-    w := p.x + 8;
-    h := p.y + 4;
-    eh := TextHeight('!"§$%&/()=?`°QWERTZUIOPÜASDFGHJJKLÖÄYXCVBNqp1234567890');
-    SetSize(w,h);
-    Clear(color32(0,0,0,0));
-        
-    FillRectTS(rect(3,0,w-3,h-1),color1);
-    LineT(1,2,1,h-2,color1);
-    LineT(2,1,2,h-1,color1);
-    LineT(w-2,2,w-2,h-2,color1);
-    LineT(w-3,1,w-3,h-1,color1);
-
-    LineT(2,0,w-2,0,color2);
-    LineT(2,h-1,w-2,h-1,color2);
-    LineT(0,2,0,h-2,color2);
-    LineT(w-1,2,w-1,h-2,color2);
-    Pixel[1,1] := color2;
-    Pixel[w-2,1] := color2;
-    Pixel[1,h-2] := color2;
-    Pixel[w-2,h-2] := color2;    
-
-    for n := 0 to SList.Count - 1 do
-        RenderText(4,n*eh+2,SList[n],0,color32(Font.Color));
-    EndUpdate;
-    Changed;    
-  end;
-
-  SList.Free;
-end;
-
-
-
-procedure GetSettings( pDeskSettings   : TDeskSettings;
-                       pThemeSettings  : TThemeSettings;
-                       pObjectSettings : TObjectSettings);
-begin
-  DeskSettings   := pDeskSettings;
-  ThemeSettings  := pThemeSettings;
-  ObjectSettings := pObjectSettings;
 end;
 
 
 Exports
-  CloseSettingsWnd,
   CreateLayer,
-  StartSettingsWnd,
   SharpDeskMessage,
-  RenderTooltip,
-  GetSettings;
+  InitSettings;
 
 begin
 end.

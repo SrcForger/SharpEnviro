@@ -49,7 +49,7 @@ const
  =======
    uses
      FastMM4, // optional memory manager
-     VCLFixPack,
+   //  VCLFixPack,
      Forms,
      Unit1 in 'Unit1.pas';
 

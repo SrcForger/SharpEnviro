@@ -39,7 +39,7 @@ type
                     procedure SetSize(pWidth,pHeight : integer);
                     procedure SetCenterSize(pWidth,pHeight : integer);
                     procedure Paint;
-                  published
+
                     property Bitmap       : TBitmap32 read FBitmap;   
                     property PanelName    : String    read FPanelName write FPanelName;
                     property Width        : integer   read FWidth;

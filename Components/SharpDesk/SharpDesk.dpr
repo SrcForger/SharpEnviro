@@ -33,7 +33,7 @@ program SharpDesk;
              
 
 uses
-  VCLFixPack,
+//  VCLFixPack,
   Forms,
   windows,
   Messages,

@@ -468,7 +468,7 @@ begin //FExecute
             if (iBufSize < II) then
               iBufSize := II;
             FillChar(pBuf^, iBufSize, #0); //clear the buffer
-            eol := (Pos(#13#10, InputLines_SHARED[0]) = II - 1) or (Pos(#10, InputLines_SHARED[0]) = II);
+            eol := (Pos(#13#10, InputLines_SHARED[0]) = integer(II - 1)) or (Pos(#10, InputLines_SHARED[0]) = integer(II));
             for I := 0 to II - 1 do
               pBuf^[I]:=InputLines_SHARED[0][I + 1];
             WriteFile(write_stdin, pBuf^, II, bread, nil); //send it to stdin

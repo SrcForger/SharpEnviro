@@ -28,7 +28,7 @@ library iDrop;
 
 
 uses
-  VCLFixPack,
+//  VCLFixPack,
   Windows,
   Controls,
   Dialogs,

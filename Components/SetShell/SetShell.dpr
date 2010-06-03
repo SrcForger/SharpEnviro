@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 program SetShell;
 
 uses
-  VCLFixPack,
+//  VCLFixPack,
   Forms,
   SharpApi,
   {$IFDEF DEBUG}DebugDialog in '..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}

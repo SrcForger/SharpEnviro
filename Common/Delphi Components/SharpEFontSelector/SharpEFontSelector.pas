@@ -16,7 +16,8 @@ uses
   StdCtrls,
   ExtCtrls,
   SharpApi,
-  GR32;
+  GR32,
+  GR32_Backends;
 
 type
   TSEFBackgroundType = (sefbChecker,sefbBlack,sefbWhite);

@@ -1,7 +1,7 @@
 program StartupTest;
 
 uses
-  VCLFixPack,
+//  VCLFixPack,
   Forms,
   uStartupTest in 'uStartupTest.pas' {Form1},
   uStartup in 'uStartup.pas',

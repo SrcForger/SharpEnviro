@@ -30,7 +30,7 @@ program SharpAdmin;
 {$R 'SharpAdmin.res' 'SharpAdmin.rc'}
 
 uses
-  VCLFixPack,
+//  VCLFixPack,
   Windows,
   SysUtils,
   Classes,

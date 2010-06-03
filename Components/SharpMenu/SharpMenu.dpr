@@ -35,7 +35,7 @@ BB
 program SharpMenu;
 
 uses
-  VCLFixPack,
+//  VCLFixPack,
   Forms,
   Windows,
   Messages,

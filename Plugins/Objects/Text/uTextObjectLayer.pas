@@ -27,15 +27,16 @@ unit uTextObjectLayer;
 
 interface
 uses
-  Windows, StdCtrls, Forms,Classes, Controls, ExtCtrls, Dialogs,Math,
+  Windows, Types, StdCtrls, Forms,Classes, Controls, ExtCtrls, Dialogs,Math,
   Messages, JPeg, SharpApi, SysUtils,ShellApi, Graphics,
-  gr32,pngimage,GR32_Image, GR32_Layers, GR32_BLEND,GR32_Transforms, GR32_Filters,
-  JvSimpleXML, SharpDeskApi, JclFileUtils, JclShell,
-  TextObjectSettingsWnd,
+  gr32,pngimage,GR32_Image, GR32_Layers, GR32_BLEND,GR32_Transforms, GR32_Filters, GR32_Backends,
+  JclSimpleXML, SharpDeskApi, JclFileUtils, JclShell,
   TextObjectXMLSettings,
+  SharpThemeApiEx,
+  SharpGraphicsUtils,
+  uISharpETheme,
+  uSharpDeskObjectSettings,
   uSharpDeskDebugging,
-  uSharpDeskTThemeSettings,
-  uSharpDeskTObjectSettings,
   uSharpDeskTDeskSettings,
   uSharpDeskFunctions,
   uSharpDeskDesktopPanel,
@@ -59,10 +60,6 @@ type
     FFontBitmap      : TBitmap32;
     FSHTMLRenderer   : TBasicHTMLRenderer;
     FDeskPanel       : TDesktopPanel;
-    Fcs              : TColorScheme;
-    FDeskSettings    : TDeskSettings;
-    FThemeSettings   : TThemeSettings;
-    FObjectSettings  : TObjectSettings;
   protected
      procedure OnTimer(Sender: TObject);
   public
@@ -76,10 +73,7 @@ type
      procedure OnOpenWith(Sender : TObject);
      procedure StartHL;
      procedure EndHL;
-     constructor Create( ParentImage:Timage32; Id : integer;
-                         DeskSettings : TDeskSettings;
-                         ThemeSettings : TThemeSettings;
-                         ObjectSettings : TObjectSettings); reintroduce;
+     constructor Create( ParentImage:Timage32; Id : integer); reintroduce;
      destructor Destroy; override;
      property ObjectId: Integer read FObjectId write FObjectId;
      property Highlight : boolean read FHighlight write FHighlight;
@@ -92,9 +86,6 @@ const
      DESK_SETTINGS = 'Settings\SharpDesk\SharpDesk.xml';
      THEME_SETTINGS = 'Settings\SharpDesk\Themes.xml';
      OBJECT_SETTINGS = 'Settings\SharpDesk\Objects.xml';
-
-var
-  SettingsWnd : TSettingsWnd;
 
 implementation
 
@@ -163,10 +154,10 @@ begin
   DrawBitmap;
   case FHLTimerI of
    1 : begin
-         SharpDeskApi.LightenBitmap(Bitmap,FHLTimer.Tag*15);
+         LightenBitmap(Bitmap,FHLTimer.Tag*15);
        end;
    -1  : begin
-           SharpDeskApi.LightenBitmap(Bitmap,FHLTimer.Tag*15);
+           LightenBitmap(Bitmap,FHLTimer.Tag*15);
          end;
   end;
   EndUpdate;
@@ -183,7 +174,6 @@ procedure TTextLayer.DrawBitmap;
 var
    R : TFloatrect;
    w,h : integer;
-   cm : integer;
    PM : TPoint;
    TopHeight    : integer;
    BottomHeight : integer;
@@ -212,7 +202,7 @@ begin
         FDeskPanel.SetCenterSize(w,h);
         FDeskPanel.Paint;
         if FSettings.BGTHBlend then
-           SharpDeskApi.BlendImage(FDeskPanel.Bitmap,FSettings.BGTHBlendColor);
+           BlendImageA(FDeskPanel.Bitmap, FSettings.BGTHBlendColor, 255);
         if FSettings.BGTrans then
            FDeskPanel.Bitmap.MasterAlpha := FSettings.BGTransValue
            else FDeskPanel.Bitmap.MasterAlpha := 255;
@@ -298,19 +288,17 @@ end;
 
 procedure TTextLayer.LoadSettings;
 var
-   i : integer;
-   alphablend : integer;
-   IconList : TStringList;
-   p : PChar;
-   Bmp : TBitmap32;
+   Theme : ISharpETheme;
 begin
-  if ObjectID=0 then exit;
+  if ObjectID = 0 then
+    exit;
 
   FSettings.LoadSettings;
 
-  FShadowAlpha   := FDeskSettings.Theme.ShadowAlpha;
-  FShadowColor   := FDeskSettings.Theme.ShadowColor;
-  CodeToColorEx(FShadowColor,FDeskSettings.Theme.Scheme);
+  Theme := GetCurrentTheme;
+
+  FShadowAlpha   := FSettings.Theme[DS_TEXTSHADOWALPHA].IntValue;
+  FShadowColor   := Theme.Scheme.SchemeCodeToColor(FSettings.Theme[DS_TEXTSHADOWCOLOR].IntValue);
 
   if not FSettings.BGThickness then
      FSettings.BGThicknessValue := 0;
@@ -321,26 +309,29 @@ begin
 
   if FSettings.UseThemeSettings then
   begin
-    FSettings.AlphaValue    := FDeskSettings.Theme.DeskAlphaBlend;
-    FSettings.AlphaBlend    := FDeskSettings.Theme.DeskUseAlphaBlend;      
-    FSettings.ColorBlend    := FDeskSettings.Theme.DeskUseColorBlend;
-    FSettings.BlendColor    := FDeskSettings.Theme.DeskColorBlendColor;
-    FSettings.BlendValue    := FDeskSettings.Theme.DeskColorBlend;
-    FSettings.Shadow        := FDeskSettings.Theme.DeskTextShadow;
-    FSettings.ShowCaption   := FDeskSettings.Theme.DeskDisplayCaption;
+    FSettings.AlphaValue    := FSettings.Theme[DS_ICONALPHA].IntValue;
+    FSettings.AlphaBlend    := FSettings.Theme[DS_ICONALPHABLEND].BoolValue;
+    FSettings.ColorBlend    := FSettings.Theme[DS_ICONBLENDING].BoolValue;
+    FSettings.BlendColor    := FSettings.Theme[DS_ICONBLENDCOLOR].IntValue;
+    FSettings.BlendValue    := FSettings.Theme[DS_ICONBLENDALPHA].IntValue;
+    FSettings.Shadow        := FSettings.Theme[DS_ICONSHADOW].BoolValue;
+    FSettings.ShowCaption   := FSettings.Theme[DS_DISPLAYTEXT].BoolValue;
   end;
 
-  if length(FSettings.Text)=0 then FSettings.Text:='Text.object';
+  if length(FSettings.Text) = 0 then
+    FSettings.Text := 'Text.dll';
 
   if FSettings.AlphaBlend then
   begin
     Bitmap.MasterAlpha := FSettings.AlphaValue;
-    if Bitmap.MasterAlpha<16 then Bitmap.MasterAlpha:=16;
-  end else Bitmap.MasterAlpha := 255;
+    if Bitmap.MasterAlpha < 16 then
+      Bitmap.MasterAlpha := 16;
+  end else
+    Bitmap.MasterAlpha := 255;
 
-  Bitmap.Font := FDeskSettings.Theme.TextFont;
-  FShadowColor := FDeskSettings.Theme.ShadowColor;
-  FShadowAlpha := FDeskSettings.Theme.ShadowAlpha;
+  Bitmap.Font.Name := FSettings.Theme[DS_FONTNAME].Value;
+  FShadowColor := FSettings.Theme[DS_ICONSHADOWCOLOR].IntValue;
+  FShadowAlpha := FSettings.Theme[DS_ICONSHADOWALPHA].IntValue;
 
   if FSettings.BGType = 2 then
      FDeskPanel.LoadPanel(FSettings.BGSkin);
@@ -355,30 +346,25 @@ begin
 
 //  showmessage(inttostr(FSHTMLRenderer.DrawPos));
 
-  if FSettings.Shadow then createdropshadow(FFontBitmap,0,1,FShadowAlpha,FShadowColor);
-  if FSettings.ColorBlend then BlendImage(FFontBitmap,FSettings.BlendColor,FSettings.BlendValue);  
+  if FSettings.Shadow then
+    createdropshadow(FFontBitmap,0,1,FShadowAlpha,FShadowColor);
+  if FSettings.ColorBlend then
+    BlendImageA(FFontBitmap,FSettings.BlendColor,FSettings.BlendValue);
 
-  FCs := LoadColorScheme;
   DrawBitmap;
 end;
 
 
-constructor TTextLayer.Create( ParentImage:Timage32; Id : integer;
-                                 DeskSettings : TDeskSettings;
-                                 ThemeSettings : TThemeSettings;
-                                 ObjectSettings : TObjectSettings);
+constructor TTextLayer.Create( ParentImage:Timage32; Id : integer);
 begin
   Inherited Create(ParentImage.Layers);
-  FDeskSettings   := DeskSettings;
-  FThemeSettings  := ThemeSettings;
-  FObjectSettings := ObjectSettings;
   FParentImage := ParentImage;
   FDeskPanel := TDesktopPanel.Create;
   Alphahit := False;
   FObjectId := id;
   FHighlight := False;
   scaled := false;
-  FSettings := TXMLSettings.Create(FObjectID,nil);
+  FSettings := TXMLSettings.Create(FObjectID, nil, 'Text');
   FHLTimer := TTimer.Create(nil);
   FHLTimer.Interval := 20;
   FHLTimer.Tag      := 0;

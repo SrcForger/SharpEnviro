@@ -12,6 +12,7 @@ uses
   Controls,
   Forms,
   Dialogs,
+  Types,
   StdCtrls,
   SharpeColorPicker,
   ExtCtrls,

@@ -1,7 +1,7 @@
 program SharpCenter;
 
 uses
-  VCLFixPack,
+//  VCLFixPack,
   Forms,
   Windows,
   SharpApi,

@@ -28,7 +28,7 @@ library TemplateModule;
 
 
 uses
-  VCLFixPack,
+//  VCLFixPack,
   // Default Units
   Windows, Controls, Dialogs, SysUtils, Forms, Classes, Contnrs, StdCtrls,
   // Custom Units

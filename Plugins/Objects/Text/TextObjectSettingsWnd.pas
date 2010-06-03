@@ -33,8 +33,6 @@ uses
   pngimage, ExtCtrls, GR32, GR32_PNG, GR32_Image, ImgList,
   Menus, FileCtrl, JvSimpleXML,
   Tabs, SharpDeskApi, ShellApi,
-  uSharpDeskTThemeSettings,
-  uSharpDeskTObjectSettings,
   uSharpDeskTDeskSettings,
   uSharpDeskDebugging,
   uSharpDeskDesktopPanelList,
