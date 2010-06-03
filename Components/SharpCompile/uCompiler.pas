@@ -154,8 +154,8 @@ type
     FSearchPath   : String;
     FBrowsePath   : String;
     procedure OnCompilerNewLine(Sender: TObject; NewLine: string; OutputType: TOutputType);
-    procedure MakeCFG(Project: TDelphiProject; bDebug: Boolean);
-    procedure AddDebugUnit(Project: TDelphiProject);
+    {procedure MakeCFG(Project: TDelphiProject; bDebug: Boolean);
+    procedure AddDebugUnit(Project: TDelphiProject); }
   public
     constructor Create; reintroduce;
     destructor Destroy; override;
@@ -499,7 +499,7 @@ begin
   FBrowsePath := StringReplace(FBrowsePath, '$(BDSCOMMONDIR)', JclSysInfo.GetCommonDocumentsFolder + '\Rad Studio\5.0', [rfReplaceAll,rfIgnoreCase]);  
 end;
 
-procedure TDelphiCompiler.MakeCFG(Project: TDelphiProject; bDebug: Boolean);
+{procedure TDelphiCompiler.MakeCFG(Project: TDelphiProject; bDebug: Boolean);
 var
   DCC32: TStringList;
 begin
@@ -564,7 +564,7 @@ begin
   end;
   CloseFile(tempDpr);
   CloseFile(origDpr);
-end;
+end;  }
 
 function TDelphiCompiler.CompileProject(Project: TDelphiProject; bDebug : boolean = False) : boolean;
 var
