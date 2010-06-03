@@ -737,7 +737,8 @@ end;
 
 procedure TWeatherLayer.LoadSettings;
 begin
-  if ObjectID=0 then exit;
+  if ObjectID = 0 then
+    exit;
 
   FOutput.Clear;
   FSettings.LoadSettings;

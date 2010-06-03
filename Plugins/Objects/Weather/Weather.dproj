@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ProjectGuid>{d86dca68-0a3e-4f74-80c7-9c61177ada2c}</ProjectGuid>
     <MainSource>Weather.dpr</MainSource>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_EnabledPackages>true</DCC_EnabledPackages>
     <DCC_UsePackage>vcl;rtl</DCC_UsePackage>
@@ -15,10 +15,10 @@
     <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
     <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
     <DCC_ExeOutput>..\..\..\..\SharpE\Objects</DCC_ExeOutput>
-    <DCC_UnitSearchPath>..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms\;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\SharpFX</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms\;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\SharpFX</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms\;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\SharpFX</DCC_ObjPath>
-    <DCC_IncludePath>..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms\;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\SharpFX</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms\;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\SharpFX;..\..\..\Common\Units\XML;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\Units\SharpTypes;..\..\..\Common\Units\SystemFuncs;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Units\SharpImageUtils;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Libraries\SharpCenterApi;..\..\..\Common\Interfaces;..\..\..\Common\Delphi Components\SharpE Skin Components</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms\;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\SharpFX;..\..\..\Common\Units\XML;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\Units\SharpTypes;..\..\..\Common\Units\SystemFuncs;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Units\SharpImageUtils;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Libraries\SharpCenterApi;..\..\..\Common\Interfaces;..\..\..\Common\Delphi Components\SharpE Skin Components</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms\;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\SharpFX;..\..\..\Common\Units\XML;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\Units\SharpTypes;..\..\..\Common\Units\SystemFuncs;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Units\SharpImageUtils;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Libraries\SharpCenterApi;..\..\..\Common\Interfaces;..\..\..\Common\Delphi Components\SharpE Skin Components</DCC_ObjPath>
+    <DCC_IncludePath>..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms\;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\SharpFX;..\..\..\Common\Units\XML;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\Units\SharpTypes;..\..\..\Common\Units\SystemFuncs;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Units\SharpImageUtils;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Libraries\SharpCenterApi;..\..\..\Common\Interfaces;..\..\..\Common\Delphi Components\SharpE Skin Components</DCC_IncludePath>
     <DCC_Define>RELEASE</DCC_Define>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

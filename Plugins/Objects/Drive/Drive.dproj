@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ProjectGuid>{1dec8b32-8064-4057-9823-9046f507c148}</ProjectGuid>
     <MainSource>Drive.dpr</MainSource>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_EnabledPackages>true</DCC_EnabledPackages>
     <DCC_UsePackage>vcl;rtl;GR32_RS2007</DCC_UsePackage>
@@ -15,10 +15,10 @@
     <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
     <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
     <DCC_ExeOutput>..\..\..\..\SharpE\Objects</DCC_ExeOutput>
-    <DCC_UnitSearchPath>..\..\..\Components\SharpDesk\Units;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\SharpFX</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\..\Components\SharpDesk\Units;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\SharpFX</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\..\Components\SharpDesk\Units;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\SharpFX</DCC_ObjPath>
-    <DCC_IncludePath>..\..\..\Components\SharpDesk\Units;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\SharpFX</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\..\..\Components\SharpDesk\Units;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\SharpFX;..\..\..\Common\Units\XML;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Delphi Components\SharpEColorPicker</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\..\Components\SharpDesk\Units;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\SharpFX;..\..\..\Common\Units\XML;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Delphi Components\SharpEColorPicker</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\..\Components\SharpDesk\Units;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\SharpFX;..\..\..\Common\Units\XML;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Delphi Components\SharpEColorPicker</DCC_ObjPath>
+    <DCC_IncludePath>..\..\..\Components\SharpDesk\Units;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\SharpFX;..\..\..\Common\Units\XML;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Delphi Components\SharpEColorPicker</DCC_IncludePath>
     <DCC_Define>RELEASE</DCC_Define>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -34,11 +34,7 @@
     <Borland.Personality>Delphi.Personality</Borland.Personality>
     <Borland.ProjectType />
     <BorlandProject>
-<BorlandProject><Delphi.Personality><Parameters><Parameters Name="HostApplication">..\..\..\..\SharpE\SharpDesk.exe</Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters>  <Parameters Name="DebugCWD">..\..\..\..\SharpE\</Parameters>
-    </Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">True</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">0</VersionInfo><VersionInfo Name="MinorVer">8</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">True</VersionInfo><VersionInfo Name="Locale">2057</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName">SharpE Development Team</VersionInfoKeys><VersionInfoKeys Name="FileDescription">Create links to all system drives</VersionInfoKeys><VersionInfoKeys Name="FileVersion">0.8.0.0</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright">SharpE Development Team</VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename">Drive.dll</VersionInfoKeys><VersionInfoKeys Name="ProductName">Drive Object</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">0.8.0.0</VersionInfoKeys><VersionInfoKeys Name="Author">Billi Berserker</VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">Drive.dpr</Source></Source> 
-	<Excluded_Packages>
-    </Excluded_Packages>
-  </Delphi.Personality></BorlandProject></BorlandProject>
+<BorlandProject><Delphi.Personality><Parameters><Parameters Name="HostApplication">..\..\..\..\SharpE\SharpDesk.exe</Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters><Parameters Name="DebugCWD">..\..\..\..\SharpE\</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">True</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">0</VersionInfo><VersionInfo Name="MinorVer">8</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">True</VersionInfo><VersionInfo Name="Locale">2057</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName">SharpE Development Team</VersionInfoKeys><VersionInfoKeys Name="FileDescription">Create links to all system drives</VersionInfoKeys><VersionInfoKeys Name="FileVersion">0.8.0.0</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright">SharpE Development Team</VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename">Drive.dll</VersionInfoKeys><VersionInfoKeys Name="ProductName">Drive Object</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">0.8.0.0</VersionInfoKeys><VersionInfoKeys Name="Author">Billi Berserker</VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">Drive.dpr</Source></Source><Excluded_Packages></Excluded_Packages></Delphi.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
   <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
   <ItemGroup>

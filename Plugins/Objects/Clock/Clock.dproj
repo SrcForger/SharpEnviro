@@ -3,7 +3,7 @@
   <PropertyGroup>
     <ProjectGuid>{cb2b60f1-22d8-4d2f-a7cf-bd617fc1fabe}</ProjectGuid>
     <MainSource>Clock.dpr</MainSource>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_EnabledPackages>true</DCC_EnabledPackages>
     <DCC_UsePackage>vcl;rtl</DCC_UsePackage>
@@ -16,19 +16,19 @@
     <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
     <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
     <DCC_ExeOutput>..\..\..\..\SharpE\Objects</DCC_ExeOutput>
-    <DCC_UnitSearchPath>..\..\..\Components\SharpDesk\Units;..\..\..\\Common\Delphi Components\SharpEFontSelector</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\..\Components\SharpDesk\Units;..\..\..\\Common\Delphi Components\SharpEFontSelector</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\..\Components\SharpDesk\Units;..\..\..\\Common\Delphi Components\SharpEFontSelector</DCC_ObjPath>
-    <DCC_IncludePath>..\..\..\Components\SharpDesk\Units;..\..\..\\Common\Delphi Components\SharpEFontSelector</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpDeskApi;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML;..\..\..\Common\Delphi Components\SharpEFontSelector</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpDeskApi;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML;..\..\..\Common\Delphi Components\SharpEFontSelector</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpDeskApi;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML;..\..\..\Common\Delphi Components\SharpEFontSelector</DCC_ObjPath>
+    <DCC_IncludePath>..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpDeskApi;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML;..\..\..\Common\Delphi Components\SharpEFontSelector</DCC_IncludePath>
     <DCC_Define>RELEASE</DCC_Define>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
     <DCC_ExeOutput>..\..\..\..\SharpE\Objects</DCC_ExeOutput>
-    <DCC_UnitSearchPath>..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms\;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpDeskApi;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML;..\..\..\Common\Delphi Components\SharpEFontSelector</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms\;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpDeskApi;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML;..\..\..\Common\Delphi Components\SharpEFontSelector</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms\;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpDeskApi;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML;..\..\..\Common\Delphi Components\SharpEFontSelector</DCC_ObjPath>
-    <DCC_IncludePath>..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms\;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpDeskApi;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML;..\..\..\Common\Delphi Components\SharpEFontSelector</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpDeskApi;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML;..\..\..\Common\Delphi Components\SharpEFontSelector</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpDeskApi;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML;..\..\..\Common\Delphi Components\SharpEFontSelector</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpDeskApi;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML;..\..\..\Common\Delphi Components\SharpEFontSelector</DCC_ObjPath>
+    <DCC_IncludePath>..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpDeskApi;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML;..\..\..\Common\Delphi Components\SharpEFontSelector</DCC_IncludePath>
     <DCC_Define>DEBUG</DCC_Define>
   </PropertyGroup>
   <ProjectExtensions>
@@ -48,8 +48,29 @@
     <DCCReference Include="..\..\..\Common\Delphi Components\SharpeColorPicker\uSharpeColorBox.pas" />
     <DCCReference Include="..\..\..\Common\Delphi Components\SharpEFontSelector\SharpEFontSelector.pas" />
     <DCCReference Include="..\..\..\Common\Delphi Components\SharpEFontSelector\uSharpEFontSelector.pas" />
+    <DCCReference Include="..\..\..\Common\Interfaces\SharpThemeApiEx\SharpThemeApiEx.pas" />
+    <DCCReference Include="..\..\..\Common\Interfaces\uISharpETheme.pas" />
+    <DCCReference Include="..\..\..\Common\Interface\SharpThemeApiEx\SharpThemeApiEx.pas" />
+    <DCCReference Include="..\..\..\Common\Interfac\SharpThemeApiEx\SharpThemeApiEx.pas" />
+    <DCCReference Include="..\..\..\Common\Interfa\SharpThemeApiEx\SharpThemeApiEx.pas" />
+    <DCCReference Include="..\..\..\Common\Interf\SharpThemeApiEx\SharpThemeApiEx.pas" />
+    <DCCReference Include="..\..\..\Common\Inter\SharpThemeApiEx\SharpThemeApiEx.pas" />
+    <DCCReference Include="..\..\..\Common\Inte\SharpThemeApiEx\SharpThemeApiEx.pas" />
+    <DCCReference Include="..\..\..\Common\Int\SharpThemeApiEx\SharpThemeApiEx.pas" />
+    <DCCReference Include="..\..\..\Common\In\SharpThemeApiEx\SharpThemeApiEx.pas" />
+    <DCCReference Include="..\..\..\Common\I\SharpThemeApiEx\SharpThemeApiEx.pas" />
     <DCCReference Include="..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas" />
     <DCCReference Include="..\..\..\Common\Libraries\SharpDeskApi\SharpDeskApi.pas" />
+    <DCCReference Include="..\..\..\Common\Libraries\SharpThemeApiEx" />
+    <DCCReference Include="..\..\..\Common\Libraries\SharpThemeApiEx\" />
+    <DCCReference Include="..\..\..\Common\Libraries\SharpThemeApiEx\SharpAPI.pas" />
+    <DCCReference Include="..\..\..\Common\Libraries\SharpThemeApiEx\SharpThemeApiEx.pas" />
+    <DCCReference Include="..\..\..\Common\Libraries\SharpThemeApiEx\uISharpETheme.pas" />
+    <DCCReference Include="..\..\..\Common\Libraries\SharpThemeApiEx\uThemeConsts" />
+    <DCCReference Include="..\..\..\Common\Libraries\SharpThemeApiEx\uThemeConsts.a" />
+    <DCCReference Include="..\..\..\Common\Libraries\SharpThemeApiEx\uThemeConsts.p" />
+    <DCCReference Include="..\..\..\Common\Libraries\SharpThemeApiEx\uThemeConsts.pa" />
+    <DCCReference Include="..\..\..\Common\Libraries\SharpThemeApiEx\uThemeConsts.pas" />
     <DCCReference Include="..\..\..\Common\Units\SharpFX\graphicsFX.pas" />
     <DCCReference Include="..\..\..\Common\Units\SharpFX\SharpFX.pas" />
     <DCCReference Include="ClockObjectSettingsWnd.pas">
