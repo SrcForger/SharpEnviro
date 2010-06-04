@@ -32,6 +32,7 @@ uses
   gr32,
   GR32_BLEND,
   GR32_Resamplers,
+  GR32Utils,
   Math,
   Classes,
   {$IFDEF DEBUG}DebugDialog in '..\..\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
@@ -371,7 +372,7 @@ begin
     if Font.TextAlpha then
       TempBmp.MasterAlpha := Font.Alpha
     else TempBmp.MasterAlpha := 255;
-    Bmp.Assign(TempBmp);
+    GR32Utils.SaveAssign(TempBmp,Bmp);
     result := True;
   except
     result := False;

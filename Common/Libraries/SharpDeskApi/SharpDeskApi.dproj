@@ -5,7 +5,7 @@
     <MainSource>SharpDeskApi.dpr</MainSource>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <DCC_UsePackage>vcl;rtl;GR32_RS2007</DCC_UsePackage>
+    <DCC_UsePackage>vcl;rtl</DCC_UsePackage>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
     <DCC_DependencyCheckOutputName>..\..\..\..\SharpE\SharpDeskApi.dll</DCC_DependencyCheckOutputName>
     <DCC_EnabledPackages>true</DCC_EnabledPackages>
@@ -17,19 +17,19 @@
     <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
     <DCC_ExeOutput>..\..\..\..\SharpE\</DCC_ExeOutput>
     <DCC_Define>RELEASE</DCC_Define>
-    <DCC_UnitSearchPath>..\SharpApi;..\SharpThemeApiEx;..\..\Units\DebugDialog</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\SharpApi;..\SharpThemeApiEx;..\..\Units\DebugDialog</DCC_ResourcePath>
-    <DCC_ObjPath>..\SharpApi;..\SharpThemeApiEx;..\..\Units\DebugDialog</DCC_ObjPath>
-    <DCC_IncludePath>..\SharpApi;..\SharpThemeApiEx;..\..\Units\DebugDialog</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\SharpApi;..\SharpThemeApiEx;..\..\Units\DebugDialog;..\..\Units\GR32Utils;..\..\Units\SharpFileUtils</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\SharpApi;..\SharpThemeApiEx;..\..\Units\DebugDialog;..\..\Units\GR32Utils;..\..\Units\SharpFileUtils</DCC_ResourcePath>
+    <DCC_ObjPath>..\SharpApi;..\SharpThemeApiEx;..\..\Units\DebugDialog;..\..\Units\GR32Utils;..\..\Units\SharpFileUtils</DCC_ObjPath>
+    <DCC_IncludePath>..\SharpApi;..\SharpThemeApiEx;..\..\Units\DebugDialog;..\..\Units\GR32Utils;..\..\Units\SharpFileUtils</DCC_IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
     <DCC_ExeOutput>..\..\..\..\SharpE\</DCC_ExeOutput>
     <DCC_Define>DEBUG</DCC_Define>
-    <DCC_UnitSearchPath>..\SharpApi;..\SharpThemeApiEx;..\..\Units\DebugDialog</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\SharpApi;..\SharpThemeApiEx;..\..\Units\DebugDialog</DCC_ResourcePath>
-    <DCC_ObjPath>..\SharpApi;..\SharpThemeApiEx;..\..\Units\DebugDialog</DCC_ObjPath>
-    <DCC_IncludePath>..\SharpApi;..\SharpThemeApiEx;..\..\Units\DebugDialog</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\SharpApi;..\SharpThemeApiEx;..\..\Units\DebugDialog;..\..\Units\GR32Utils;..\..\Units\SharpFileUtils</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\SharpApi;..\SharpThemeApiEx;..\..\Units\DebugDialog;..\..\Units\GR32Utils;..\..\Units\SharpFileUtils</DCC_ResourcePath>
+    <DCC_ObjPath>..\SharpApi;..\SharpThemeApiEx;..\..\Units\DebugDialog;..\..\Units\GR32Utils;..\..\Units\SharpFileUtils</DCC_ObjPath>
+    <DCC_IncludePath>..\SharpApi;..\SharpThemeApiEx;..\..\Units\DebugDialog;..\..\Units\GR32Utils;..\..\Units\SharpFileUtils</DCC_IncludePath>
     <DCC_MapFile>3</DCC_MapFile>
   </PropertyGroup>
   <ProjectExtensions>
@@ -37,6 +37,32 @@
     <Borland.ProjectType />
     <BorlandProject>
 <BorlandProject><Delphi.Personality><Parameters><Parameters Name="HostApplication">..\..\..\..\SharpE\SharpDesk.exe</Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters><Parameters Name="DebugCWD">..\..\..\..\SharpE\</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">True</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">0</VersionInfo><VersionInfo Name="MinorVer">8</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">2057</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription">SharpDesk API</VersionInfoKeys><VersionInfoKeys Name="FileVersion">0.8.0.0</VersionInfoKeys><VersionInfoKeys Name="InternalName">DeskAPI</VersionInfoKeys><VersionInfoKeys Name="LegalCopyright">SharpE Development Team</VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename">SharpDeskApi.dll</VersionInfoKeys><VersionInfoKeys Name="ProductName">SharpDesk API</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">0.8.0.0</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">SharpDeskApi.dpr</Source></Source><Excluded_Packages>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Beispiele für gekapselte Komponenten für Automation Server</Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Beispiele für gekapselte Komponenten für Automation Server</Excluded_Packages>
     </Excluded_Packages></Delphi.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
   <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
