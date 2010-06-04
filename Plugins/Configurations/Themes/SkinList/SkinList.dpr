@@ -132,7 +132,8 @@ end;
 
 function GetPluginData(pluginID : String): TPluginData;
 var
-  files: TStringList;
+  i : integer;
+  dirs, files: TStringList;
 begin
   with Result do
   begin
@@ -141,11 +142,18 @@ begin
   	Status := '';
 
     files := TStringList.Create;
+    dirs := TStringList.Create;
     try
-      SharpFileUtils.FindFiles( files, GetSharpeDirectory + 'Skins\', '*Skin.xml' );
+      SharpFileUtils.FindFiles(dirs, GetSharpeDirectory + '\Skins', '*.*', False, True);
+      for i := 0 to dirs.Count - 1 do
+      begin
+        if FileExists(dirs[i] + '\skin.xml') then
+          files.Add(dirs[i] + '\skin.xml');
+      end;
       if files.Count <> 0 then
         Status := IntToStr(files.Count);
     finally
+      dirs.Free;
       files.Free;
     end;
   end;

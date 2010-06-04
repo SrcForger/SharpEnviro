@@ -32,7 +32,7 @@ uses
   Dialogs, StdCtrls, JclSimpleXml, SharpApi, JclFileUtils,
   ImgList, PngImageList, uISharpETheme, uThemeConsts,
   SharpThemeApiEx, SharpEListBoxEx, BarPreview, GR32, pngimage,
-  ExtCtrls, SharpCenterApi, SharpCenterThemeApi, JclStrings,
+  ExtCtrls, SharpCenterApi, SharpFileUtils, SharpCenterThemeApi, JclStrings,
 
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit;
@@ -134,7 +134,7 @@ end;
 procedure TfrmListWnd.BuildPreviewList;
 var
   dir, skin, scheme: string;
-  files, tokens: TStringList;
+  dirs, files, tokens: TStringList;
   i: integer;
   png, png2: TPngImageCollectionItem;
   bmp32: TBitmap32;
@@ -144,12 +144,18 @@ begin
   pilNormal.Clear;        
   pilSelected.Clear;
   dir := SharpApi.GetSharpeDirectory + 'Skins\';
+
   files := TStringList.Create;
+  dirs := TStringList.Create;
   try
-
-    FindFiles( files, dir, '*skin.xml');
-    for i := 0 to Pred( files.Count ) do begin
-
+    SharpFileUtils.FindFiles(dirs, dir, '*.*', False, True);
+    for i := 0 to dirs.Count - 1 do
+    begin
+      if FileExists(dirs[i] + '\skin.xml') then
+        files.Add(dirs[i] + '\skin.xml');
+    end;
+    for i := 0 to Pred( files.Count ) do
+    begin
       // Get skin name
       path := ExtractFilePath(files[i]);
       tokens := TStringList.Create;
@@ -189,6 +195,7 @@ begin
 
     end;
   finally
+    dirs.Free;
     files.free;
   end;
 end;
@@ -199,7 +206,7 @@ var
   li: tsharpelistitem;
 
   i, iIndex: Integer;
-  files, tokens: TStringList;
+  dirs, files, tokens: TStringList;
   sSkin, s: string;
 begin
   dir := SharpApi.GetSharpeDirectory + 'Skins\';
@@ -207,11 +214,17 @@ begin
   lbSkinList.Clear;
 
   files := TStringList.Create;
+  dirs := TStringList.Create;
   try
-
-    FindFiles( files,dir,'*skin.xml');
-    for i := 0 to Pred(files.count) do begin
-
+    SharpFileUtils.FindFiles(dirs, dir, '*.*', False, True);
+    for i := 0 to dirs.Count - 1 do
+    begin
+      if FileExists(dirs[i] + '\skin.xml') then
+        files.Add(dirs[i] + '\skin.xml');
+    end;
+      
+    for i := 0 to Pred(files.count) do
+    begin
       // Get skin name
       sSkin := ExtractFilePath(files[i]);
       tokens := TStringList.Create;
@@ -232,8 +245,8 @@ begin
         iIndex := i;
 
     end;
-
   finally
+    dirs.Free;
     files.Free;
 
     lbSkinList.ItemIndex := iIndex;
