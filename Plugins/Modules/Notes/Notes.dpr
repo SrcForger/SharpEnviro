@@ -181,6 +181,9 @@ begin
 
   if [part] <= [suTheme,suSkinFileChanged] then
     TMainForm(Form).ReAlignComponents;
+
+  if [part] <= [suTheme,suIconSet,suSkinFileChanged] then
+    TMainForm(Form).LoadIcon;
 end;
 
 function GetMetaData(Preview : TBitmap32) : TMetaData;

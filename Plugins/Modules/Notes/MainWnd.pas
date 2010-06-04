@@ -31,7 +31,7 @@ uses
   Windows, Messages, SysUtils, Classes, Controls, Forms, Types,
   StdCtrls, GR32, GR32_PNG, SharpEButton, Graphics,
   JclSimpleXML, SharpApi, Menus, Math, NotesWnd, SharpTypes,
-  SharpEBaseControls,uISharpBarModule, uNotesSettings;
+  SharpEBaseControls,uISharpBarModule, uNotesSettings, SharpIconUtils;
 
 
 type
@@ -47,13 +47,13 @@ type
     FSettings: NotesSettings;
     FReload: Boolean;
     procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
-    procedure LoadIcon;
   public
     NotesForm : TSharpENotesForm;
     mInterface : ISharpBarModule;
     procedure ReAlignComponents;
     procedure UpdateComponentSkins;
     procedure UpdateSize;
+    procedure LoadIcon;
     procedure LoadSettings;
     procedure LoadTabsSettings;
     procedure SaveSettings;
@@ -118,39 +118,17 @@ end;
 
 procedure TMainForm.LoadIcon;
 var
-  ResStream : TResourceStream;
-  TempBmp : TBitmap32;
-  b : boolean;
-  ResID : String;
+  size : Integer;
 begin
   if mInterface = nil then
     exit;
   if mInterface.SkinInterface = nil then
     exit;
 
-  TempBmp := TBitmap32.Create;
-  if mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y <= 16 then
-  begin
-    TempBmp.SetSize(16,16);
-    ResID := 'buttonicon';
-  end else
-  begin
-    TempBmp.SetSize(32,32);
-    ResID := 'buttonicon32';
-  end;
-
-  TempBmp.Clear(color32(0,0,0,0));
-  try
-    ResStream := TResourceStream.Create(HInstance, ResID, RT_RCDATA);
-    try
-      LoadBitmap32FromPng(TempBmp,ResStream,b);
-      Button.Glyph32.Assign(tempBmp);
-    finally
-      ResStream.Free;
-    end;
-  except
-  end;
-  TempBmp.Free;
+  size := GetNearestIconSize(mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y);
+  if not IconStringToIcon('icon.notes','',Button.Glyph32,size) then
+       Button.Glyph32.SetSize(0,0);
+  Button.Repaint;
 end;
 
 procedure TMainForm.SaveSettings;
