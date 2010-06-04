@@ -47,6 +47,7 @@ uses
   uSharpDeskObjectSettings,
   ClockObjectSettingsWnd,
   ClockObjectXMLSettings,
+  uSharpXMLUtils,
   SharpDeskApi, GR32_PNG, JclSimpleXML;
 
 type
@@ -198,10 +199,8 @@ begin
   end;
 
   SkinXml := TJclSimpleXML.Create;
-    
-  try
-    SkinXml.LoadFromFile(SkinDir + 'Skin.xml');
-
+  if LoadXMLFromSharedFile(SkinXML,SkinDir + 'Skin.xml',False) then
+  begin
     if SkinXml.Root.Items.ItemNamed['Skin'] <> nil then
     begin
       with SkinXml.Root.Items.ItemNamed['Skin'].Items do
@@ -251,8 +250,7 @@ begin
         end;
       end;
     end;
-  except
-  end;
+  end else SharpApi.SendDebugMessageEx('Clock.Object','Failed to Load Settings from' + SkinDir + 'Skin.xml',0,DMT_ERROR);
 
   DebugFree(SkinXml);
 end;
