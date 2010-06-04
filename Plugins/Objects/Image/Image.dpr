@@ -252,7 +252,7 @@ begin
       end;
 
       XML.Root.Items.Clear;
-      XML.Root.Name := 'Image.object';
+      XML.Root.Name := 'Image';
       XML.Root.Items.Add('Settings');
       with XML.Root.Items.ItemNamed['Settings'].Items do
       begin
