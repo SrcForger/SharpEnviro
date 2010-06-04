@@ -157,7 +157,6 @@ begin
       SharpApi.SendDebugMessageEx('Link.Object',PChar('Removing : ' + inttostr(Layer.ObjectID)),0,DMT_INFO);
       LayerList.Remove(Layer);
       SharpApi.SendDebugMessageEx('Link.Object',PChar('Freeing : ' + inttostr(Layer.ObjectID)),0,DMT_INFO);
-      Layer := nil;
       SharpApi.SendDebugMessageEx('Link.Object',PChar('Object removed'),0,DMT_INFO);
     end;
     SDM_SHUTDOWN :
