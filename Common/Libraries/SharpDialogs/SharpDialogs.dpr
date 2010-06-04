@@ -1199,6 +1199,7 @@ begin
 
     wIcon := TIcon.Create;
     Theme := GetCurrentTheme;
+    Theme.LoadTheme([tpIconSet]);
     Dir := Theme.Icons.Directory;
     for n := 0 to Theme.Icons.GetIconCount - 1 do
     begin
