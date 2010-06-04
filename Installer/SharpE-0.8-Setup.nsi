@@ -1243,6 +1243,13 @@ Section "!Core Files" SEC01
   File "..\..\SharpE\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons\wmp_icon.png"
   SetOutPath "$INSTDIR\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput"
   File "..\..\SharpE\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\MediaPlayers.xml"
+  SetOutPath "$INSTDIR\Settings\#DefaultGlobal#\SharpDesk\DragAndDrop"
+  File "..\..\SharpE\Settings\#DefaultGlobal#\SharpDesk\DragAndDrop\Image(bmp).xml"
+  File "..\..\SharpE\Settings\#DefaultGlobal#\SharpDesk\DragAndDrop\Image(ico).xml"
+  File "..\..\SharpE\Settings\#DefaultGlobal#\SharpDesk\DragAndDrop\Image(jpeg).xml"
+  File "..\..\SharpE\Settings\#DefaultGlobal#\SharpDesk\DragAndDrop\Image(jpg).xml"
+  File "..\..\SharpE\Settings\#DefaultGlobal#\SharpDesk\DragAndDrop\Image(png).xml"
+  File "..\..\SharpE\Settings\#DefaultGlobal#\SharpDesk\DragAndDrop\Link().xml"
 
   SetOutPath "$INSTDIR"
   # Libraries
@@ -2735,6 +2742,13 @@ Section /o -un.Main UNSEC0000
     Delete "$INSTDIR\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons\Billy.png"
     Delete "$INSTDIR\Settings\#DefaultGlobal#\SharpCore\Services\MultimediaInput\Icons\aTunes.png"
     
+    Delete "$INSTDIR\Settings\#DefaultGlobal#\SharpDesk\DragAndDrop\Image(bmp).xml"
+    Delete "$INSTDIR\Settings\#DefaultGlobal#\SharpDesk\DragAndDrop\Image(ico).xml"
+    Delete "$INSTDIR\Settings\#DefaultGlobal#\SharpDesk\DragAndDrop\Image(jpeg).xml"
+    Delete "$INSTDIR\Settings\#DefaultGlobal#\SharpDesk\DragAndDrop\Image(jpg).xml"
+    Delete "$INSTDIR\Settings\#DefaultGlobal#\SharpDesk\DragAndDrop\Image(png).xml"
+    Delete "$INSTDIR\Settings\#DefaultGlobal#\SharpDesk\DragAndDrop\Link().xml"
+    
     # SharpCompile settings file
     Delete "$INSTDIR\SharpCompile-Settings.xml"
     
@@ -2768,6 +2782,8 @@ Section /o -un.Main UNSEC0000
     RMDir "$INSTDIR\Settings\#DefaultGlobal#\SharpCore\Services"
     RMDir "$INSTDIR\Settings\#DefaultGlobal#\SharpCore\Disabled"
     RMDir "$INSTDIR\Settings\#DefaultGlobal#\SharpCore"
+    RMDir "$INSTDIR\Settings\#DefaultGlobal#\SharpDesk\DragAndDrop"
+    RMDir "$INSTDIR\Settings\#DefaultGlobal#\SharpDesk\"
     RMDir /r "$INSTDIR\Settings\#DefaultGlobal#"
     
     MessageBox MB_YESNO|MB_ICONEXCLAMATION "Do you want to also delete your SharpEnviro user settings?" \
