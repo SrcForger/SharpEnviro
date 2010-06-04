@@ -60,6 +60,7 @@ type
     FBackPanel: TPanel;
     FEnabled: Boolean;
     FPercentDisplay: Boolean;
+    FMaxPercent: integer;
     FOnChangeValue: TChangeValueEvent;
     FMax: Integer;
     FMin: Integer;
@@ -82,6 +83,7 @@ type
     procedure SetPrefix(const Value: string);
     procedure SetSuffix(const Value: string);
     procedure SetValue(const Value: Integer);
+    procedure SetMaxPercent(const Value: integer);
 
     procedure ValueEditKeyPress(Sender: TObject; var Key: Char);
     procedure ValueEditExit(Sender: TObject);
@@ -100,6 +102,7 @@ type
     function GetNewValue: integer;
   protected
     procedure SetEnabled(Value: boolean); override;
+    
   public
     constructor Create(AOwner: TComponent); override;
     procedure UpdateValue(newValue: integer);
@@ -128,6 +131,7 @@ type
     //property Enabled;
     property PopPosition: TPopPosition read FPopPosition write SetPopPosition;
     property PercentDisplay: boolean read FPercentDisplay write SetPercentDisplay;
+    property MaxPercent: integer read FMaxPercent write SetMaxPercent;
 
     property Formatting: string read FFormatting write FFormatting;
 
@@ -164,6 +168,7 @@ begin
   ParentBackground := False;
 
   FPercentDisplay := False;
+  FMaxPercent := 100;
   FEnabled := True;
   FValue := 100;
   FMin := -100;
@@ -288,6 +293,9 @@ begin
 
   if (length(s) <> 0) then
     TryStrToInt(S, Result);
+
+  if FPercentDisplay then
+    Result := round(FMax * (Result / FMaxPercent) * 1.0);
 end;
 
 procedure TSharpeGaugeBox.BtnGaugeClick(Sender: TObject);
@@ -332,6 +340,12 @@ begin
   UpdateEditBox;
 end;
 
+procedure TSharpeGaugeBox.SetMaxPercent(const Value: integer);
+begin
+  FMaxPercent := Value;
+  UpdateEditBox;
+end;
+
 procedure TSharpeGaugeBox.SetPrefix(const Value: string);
 begin
   FPrefix := Value;
@@ -355,7 +369,7 @@ var
   temp : integer;
 begin
   if FPercentDisplay then
-     temp := round(FValue / FMax * 100)
+     temp := round(FValue / FMax * FMaxPercent)
      else temp := FValue;
   FValueEdit.Text := Format('%s' + FFormatting + '%s', [FPrefix, temp, FSuffix]);
 end;
@@ -437,9 +451,6 @@ begin
   if FValue = newValue then
     exit;
 
-  if FPercentDisplay then
-    newValue := round(newValue * FMax / 100);
-
   if (newValue > FMax) and (newValue <> FMax) then
   begin
     newValue := FMax;
@@ -514,7 +525,7 @@ var
   temp: Integer;
 begin
   if FPercentDisplay then
-     temp := round(FValue / FMax * 100)
+     temp := round(FValue / FMax * FMaxPercent)
      else temp := FValue;
 
   FValueEdit.SelStart := Pos(IntToStr(temp), FValueEdit.Text) - 1;
