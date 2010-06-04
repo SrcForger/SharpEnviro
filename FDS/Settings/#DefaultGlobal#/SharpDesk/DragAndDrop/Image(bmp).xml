@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Image.object>
+  <Settings>
+    <Object>Image</Object>
+    <FileExt>.bmp</FileExt>
+    <MaxLength>0</MaxLength>
+  </Settings>
+  <DefaultSettings>
+    <IconFile SortValue="-1">{File}</IconFile>
+    <Size>100</Size>
+    <URLRefresh>30</URLRefresh>
+    <ftURL>0</ftURL>
+  </DefaultSettings>
+</Image.object>

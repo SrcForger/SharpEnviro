@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Link.object>
+  <Settings>
+    <Object>Link</Object>
+    <FileExt>*.*</FileExt>
+    <MaxLength>0</MaxLength>
+  </Settings>
+  <DefaultSettings>
+    <Target>{File}</Target>
+    <Icon>shell:icon</Icon>
+    <Caption SortValue="-1">{FileName}</Caption>
+    <CaptionAlign>2</CaptionAlign>
+    <MLineCaption>0</MLineCaption>
+    <ShowCaption>-1</ShowCaption>
+  </DefaultSettings>
+</Link.object>
