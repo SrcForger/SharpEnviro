@@ -36,7 +36,7 @@ uses
   JclStrings;
 
 procedure FindFiles(var FilesList: TStringList; StartDir, FileMask: string); overload;
-procedure FindFiles(var FilesList: TStringList; StartDir, FileMask: string; Recurse: Boolean); overload;
+procedure FindFiles(var FilesList: TStringList; StartDir, FileMask: string; Recurse: Boolean; Directories: Boolean = false); overload;
 function GetFileNameWithoutParams(pTarget : String) : String;
 function FindFilePath(pTarget : String) : String;
 
@@ -59,10 +59,10 @@ end;
 
 procedure FindFiles(var FilesList: TStringList; StartDir, FileMask: string);
 begin
-  FindFiles(FilesList, StartDir, FileMask, True);
+  FindFiles(FilesList, StartDir, FileMask, True, False);
 end;
 
-procedure FindFiles(var FilesList: TStringList; StartDir, FileMask: string; Recurse: Boolean);
+procedure FindFiles(var FilesList: TStringList; StartDir, FileMask: string; Recurse: Boolean; Directories: Boolean);
 var
   SR: TSearchRec;
   DirList: TStringList;
@@ -75,9 +75,16 @@ begin
   { Build a list of the files in directory StartDir
      (not the directories!)                         }
 
-  IsFound := FindFirst(StartDir + FileMask, faAnyFile - faDirectory, SR) = 0;
-  while IsFound do begin
-    FilesList.Add(StartDir + SR.Name);
+  if Directories then
+    IsFound := FindFirst(StartDir + FileMask, faAnyFile, SR) = 0
+  else
+    IsFound := FindFirst(StartDir + FileMask, faAnyFile - faDirectory, SR) = 0;
+    
+  while IsFound do
+  begin
+    if not ((Directories) and ((SR.Name = '.') or (SR.Name = '..'))) then
+      FilesList.Add(StartDir + SR.Name);
+      
     IsFound := FindNext(SR) = 0;
   end;
   SysUtils.FindClose(SR);
@@ -88,10 +95,11 @@ begin
     DirList := TStringList.Create;
     try
       IsFound := FindFirst(StartDir + '*.*', faAnyFile, SR) = 0;
-      while IsFound do begin
-        if ((SR.Attr and faDirectory) <> 0) and
-          (SR.Name[1] <> '.') then
+      while IsFound do
+      begin
+        if ((SR.Attr and faDirectory) <> 0) and (SR.Name[1] <> '.') then
           DirList.Add(StartDir + SR.Name);
+          
         IsFound := FindNext(SR) = 0;
       end;
       SysUtils.FindClose(SR);
