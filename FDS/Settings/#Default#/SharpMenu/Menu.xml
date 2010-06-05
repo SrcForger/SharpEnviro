@@ -159,25 +159,25 @@
       <item>
         <type>link</type>
         <Caption>Desktop Settings</Caption>
-        <Target>{#SHARPEDIR#}SharpCenter.exe -api0|{#SHARPEDIR#}Center\Root\Desktop.con</Target>
+        <Target>{#SHARPEDIR#}SharpCenter.exe -api &quot;0|{CenterDirectory}Desktop.con&quot;</Target>
         <Icon>icon.file.config</Icon>
       </item>
       <item>
         <type>link</type>
         <Caption>Services</Caption>
-        <Target>{#SHARPEDIR#}SharpCenter.exe -api0|{#SHARPEDIR#}Center\Root\Services.con</Target>
+        <Target>{#SHARPEDIR#}SharpCenter.exe -api &quot;0|{CenterDirectory}Services.con&quot;</Target>
         <Icon>icon.file.config</Icon>
       </item>
       <item>
         <type>link</type>
         <Caption>Themes</Caption>
-        <Target>{#SHARPEDIR#}SharpCenter.exe -api0|{#SHARPEDIR#}Center\Root\Themes.con</Target>
+        <Target>{#SHARPEDIR#}SharpCenter.exe -api &quot;0|{CenterDirectory}Themes.con&quot;</Target>
         <Icon>icon.file.config</Icon>
       </item>
       <item>
         <type>link</type>
         <Caption>Toolbars</Caption>
-        <Target>{#SHARPEDIR#}SharpCenter.exe -api0|{#SHARPEDIR#}Center\Root\Toolbars.con</Target>
+        <Target>{#SHARPEDIR#}SharpCenter.exe -api &quot;0|{CenterDirectory}Toolbars.con&quot;</Target>
         <Icon>icon.file.config</Icon>
       </item>
     </Items>
