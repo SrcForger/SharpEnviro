@@ -46,7 +46,8 @@ uses ItemsWnd;
 procedure TfrmEditWnd.Button1Click(Sender: TObject);
 begin
   edCommand.Text := SharpDialogs.TargetDialog(STI_ALL_TARGETS, Mouse.CursorPos);
-  edName.Text := PathRemoveExtension(ExtractFileName(edCommand.Text));
+  if edName.Text = '' then
+    edName.Text := PathRemoveExtension(ExtractFileName(edCommand.Text));
 end;
 
 procedure TfrmEditWnd.UpdateEditState(Sender: TObject);
