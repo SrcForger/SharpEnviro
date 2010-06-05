@@ -1280,8 +1280,6 @@ Section "!Core Files" SEC01
   File "..\FDS\rtl100.bpl"
   File "..\FDS\vcl100.bpl"
   File "..\FDS\splash.png"
-  
-  CreateDirectory "$INSTDIR\Logs"
 SectionEnd
 
 Section "Additional Icons" SEC02
@@ -2814,7 +2812,6 @@ Section /o -un.Main UNSEC0000
     
     RmDir /r "$INSTDIR\Addons"
     RmDir /r "$INSTDIR\Cache"
-    RmDir /r "$INSTDIR\Logs"
 
     RmDir "$INSTDIR\Center\Root\_Components\_ComponentDlls"
     RmDir "$INSTDIR\Center\Root\_Components"
@@ -2886,8 +2883,6 @@ Section /o -un.Main UNSEC0000
     RmDir "$INSTDIR\Skins\Sunken\images"
     RmDir "$INSTDIR\Skins\Sunken"
     RmDir "$INSTDIR\Skins"
-    
-    RmDir "$INSTDIR\Logs"
     
     DeleteRegValue HKLM "${REGKEY}\Components" Main
 SectionEnd
