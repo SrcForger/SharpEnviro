@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpEMenuFile>
+  <item>
+    <type>link</type>
+    <Caption>Documents</Caption>
+    <Target>shell:Personal</Target>
+    <Icon>icon.folder.documents</Icon>
+  </item>
+  <item>
+    <type>link</type>
+    <Caption>Computer</Caption>
+    <Target>shell:MyComputerFolder</Target>
+    <Icon>icon.mycomputer</Icon>
+  </item>
+  <item>
+    <type>link</type>
+    <Caption>Control Panel</Caption>
+    <Target>shell:ControlPanel</Target>
+    <Icon>icon.controlpanel</Icon>
+  </item>
+</SharpEMenuFile>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpEMenuFile>
+  <item>
+    <type>dynamicdirectory</type>
+    <Target>{#StartMenuDir#}Programs</Target>
+    <MaxItems>-1</MaxItems>
+    <Sort>1</Sort>
+    <Filter/>
+    <Recursive>0</Recursive>
+  </item>
+  <item>
+    <type>dynamicdirectory</type>
+    <Target>{#CommonStartMenuDir#}Programs</Target>
+    <MaxItems>-1</MaxItems>
+    <Sort>1</Sort>
+    <Filter/>
+    <Recursive>0</Recursive>
+  </item>
+</SharpEMenuFile>

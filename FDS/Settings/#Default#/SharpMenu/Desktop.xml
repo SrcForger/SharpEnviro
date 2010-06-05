@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpEMenuFile>
+  <item>
+    <type>submenu</type>
+    <Caption>Add Desktop Object</Caption>
+    <Target/>
+    <Icon>icon.desktop</Icon>
+    <Items>
+      <item>
+        <type>objectlist</type>
+      </item>
+    </Items>
+  </item>
+  <item>
+    <type>separator</type>
+  </item>
+  <item>
+    <type>link</type>
+    <Caption>Configure Theme</Caption>
+    <Target>!ConfigureTheme</Target>
+    <Icon>icon.file.config</Icon>
+  </item>
+  <item>
+    <type>link</type>
+    <Caption>Configure Wallpaper</Caption>
+    <Target>!ConfigureWallpaper</Target>
+    <Icon>icon.file.picture</Icon>
+  </item>
+</SharpEMenuFile>
