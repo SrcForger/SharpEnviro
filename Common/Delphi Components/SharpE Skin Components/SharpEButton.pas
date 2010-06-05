@@ -63,6 +63,9 @@ type
     FPrecacheBmp  : TBitmap32;
     FPrecacheCaption : String;
     FGlyphColor : integer;
+    FForceDown : Boolean;
+    FForceHover : Boolean;
+    //FSkin: TBitmap32;
     procedure CMDialogKey(var Message: TCMDialogKey); message CM_DIALOGKEY;
     procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
     procedure CMFocusChanged(var Message: TCMFocusChanged); message CM_FOCUSCHANGED;
@@ -73,6 +76,8 @@ type
     procedure SetAutoPosition(const Value: boolean);
     procedure SetCaption(Value: string);
     procedure SetDefault(Value: Boolean);
+    procedure SetForceDown(Value: Boolean);
+    procedure SetForceHover(Value: Boolean);
   protected
     procedure DrawDefaultSkin(bmp: TBitmap32; Scheme: ISharpEScheme); override;
     procedure DrawManagedSkin(bmp: TBitmap32; Scheme: ISharpEScheme); override;
@@ -121,6 +126,8 @@ type
     property Default: Boolean read FDefault write SetDefault default False;
     property AutoPosition: Boolean read FAutoPosition write SetAutoPosition;
     property GlyphColor : integer read FGlyphColor;
+    property ForceDown: Boolean read FForceDown write SetForceDown;
+    property ForceHover: Boolean read FForceHover write SetForceHover;
    { Published declarations }
   end;
 
@@ -143,6 +150,8 @@ begin
   FMargin := -1;
   Flayout := blGlyphleft;
   FButtonDown := False;
+  FForceDown := False;
+  FForceHover := False;
 
   CalculateGlyphColor;
 end;
@@ -304,7 +313,7 @@ begin
       FrameRectS(0, 0, Width, Height, color32(clblack));
       Inc(r.Left); Inc(r.Top); Dec(r.Bottom); Dec(r.Right);
     end;
-    if FButtonDown then
+    if FButtonDown or FForceDown then
     begin
       FrameRectS(r.Left, r.Top, r.Right, r.Bottom,
         setalpha(color32(Scheme.GetColorByName('WorkAreaLight')), 200));
@@ -406,9 +415,9 @@ begin
       result := 16;
       exit;
     end;
-    if FButtonDown and not (FManager.Skin.Button.Down.Empty) then
+    if (FButtonDown or FForceDown) and not (FManager.Skin.Button.Down.Empty) then
       result := FManager.Skin.Button.Down.Icon.Dimension.X
-    else if ((FButtonOver) and not (FManager.Skin.Button.Hover.Empty) and not (HasNormalHoverScript)) then
+    else if ((FButtonOver or FForceHover) and not (FManager.Skin.Button.Hover.Empty) and not (HasNormalHoverScript)) then
       result := FManager.Skin.Button.Hover.Icon.Dimension.X
     else
       result := FManager.Skin.Button.Normal.Icon.Dimension.X;
@@ -469,13 +478,13 @@ begin
         end;
     end;
 
-    if FButtonDown and not (FManager.Skin.Button.Down.Empty) then
+    if (FButtonDown or FForceDown) and not (FManager.Skin.Button.Down.Empty) then
     begin
       FManager.Skin.Button.Down.DrawTo(bmp, Scheme);
       SkinText := FManager.Skin.Button.Down.CreateThemedSkinText;
       SkinIcon := FManager.Skin.Button.Down.Icon;
     end
-    else if ((FButtonOver) and not (FManager.Skin.Button.Hover.Empty) and not (HasNormalHoverScript)) then
+    else if ((FButtonOver or FForceHover) and not (FManager.Skin.Button.Hover.Empty) and not (HasNormalHoverScript)) then
     begin
       FManager.Skin.Button.Hover.DrawTo(bmp, Scheme);
       SkinText := FManager.Skin.Button.Hover.CreateThemedSkinText;
@@ -539,6 +548,24 @@ procedure TSharpEButton.SetEnabled(Value: Boolean);
 begin
   inherited;
   UpdateSkin;
+end;
+
+procedure TSharpEButton.SetForceDown(Value: Boolean);
+begin
+  if (Value <> FForceDown) then
+  begin
+    FForceDown := Value;
+    UpdateSkin;
+  end;
+end;
+
+procedure TSharpEButton.SetForceHover(Value: Boolean);
+begin
+  if (FForceHover <> Value) then
+  begin
+    FForceHover := Value;
+    UpdateSkin;
+  end;
 end;
 
 procedure TSharpEButton.UpdateAutoPosition;
