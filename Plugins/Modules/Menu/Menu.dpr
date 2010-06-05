@@ -109,6 +109,7 @@ begin
   begin
     TMainForm(Form).LoadSettings;
     TMainForm(Form).RealignComponents;
+    TMainForm(Form).InitHook;
   end;
 end;
 

@@ -50,14 +50,17 @@ type
     procedure btnMouseEnter(Sender: TObject);
   protected
   private
+    FLastMenuWnd : hwnd;
     sShowIcon    : boolean; 
     sShowLabel   : boolean;
     sIcon        : String; 
     sCaption     : String;
     sMenu        : String;
     procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
+    procedure WMShellHook(var msg : TMessage); message WM_SHARPSHELLMESSAGE;    
 
     procedure OpenMenu;
+    procedure CheckMenu;
   public
     mInterface : ISharpBarModule;
     procedure UpdateIcon;
@@ -65,7 +68,8 @@ type
     procedure ReAlignComponents(Broadcast : boolean = True);
     procedure UpdateComponentSkins;
     procedure UpdateSize;
-    procedure UpdateBangs;    
+    procedure UpdateBangs;
+    procedure InitHook;
   end;
 
 
@@ -92,6 +96,15 @@ begin
   case msg.LParam of
     1: OpenMenu;
   end;
+end;
+
+procedure TMainForm.WMShellHook(var msg: TMessage);
+begin
+  if (msg.wparam = HSHELL_WINDOWACTIVATED) or
+    (msg.wparam = HSHELL_WINDOWACTIVATED + 32768) or
+    (msg.wParam = HSHELL_WINDOWDESTROYED) or
+    (msg.wparam = HSHeLL_WINDOWCREATED) then
+    CheckMenu;
 end;
 
 procedure TMainForm.UpdateIcon;
@@ -226,19 +239,57 @@ begin
   end;
 end;
 
+procedure TMainForm.CheckMenu;
+var
+  wnd : HWND;
+  atm : Word;
+  buf : PAnsiChar;
+begin
+  wnd := FindWindow('TSharpEMenuWnd', 'Menu');
+  if wnd <> 0 then
+  begin
+    if IsWindow(FLastMenuWnd) then
+      btn.ForceHover := True
+    else begin
+      atm := SendMessage(wnd, WM_MENUID, 0, 0);
+
+      buf := StrAlloc(256);
+      GlobalGetAtomName(atm, buf, 256);
+      GlobalDeleteAtom(atm);
+
+      if buf = sMenu then
+      begin
+        FLastMenuWnd := wnd;      
+        btn.ForceHover := True
+      end else btn.ForceHover := False;
+    end;
+  end else
+  begin
+    btn.ForceHover := False;
+    FLastMenuWnd := 0;
+  end;
+end;
+
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   DoubleBuffered := True;
+  FLastMenuWnd := 0;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
+  UnRegisterShellHookReceiver(Handle);
   SharpApi.UnRegisterAction(PChar('!OpenMenu: '+sMenu));
 end;
 
 procedure TMainForm.FormPaint(Sender: TObject);
 begin
   mInterface.Background.DrawTo(Canvas.Handle,0,0);
+end;
+
+procedure TMainForm.InitHook;
+begin
+  SharpApi.RegisterShellHookReceiver(Handle)
 end;
 
 end.
