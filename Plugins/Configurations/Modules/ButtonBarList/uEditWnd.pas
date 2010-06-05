@@ -41,6 +41,7 @@ uses
 
   // SharpE
   SharpApi,
+  SharpFileUtils,
   SharpCenterApi,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
@@ -136,7 +137,7 @@ begin
   begin
     edCommand.Text := s;
     if edName.Text = '' then
-      edName.Text := FileGetDisplayName(s);
+      edName.Text := GetFileDescription(s);
   end;
 end;
 

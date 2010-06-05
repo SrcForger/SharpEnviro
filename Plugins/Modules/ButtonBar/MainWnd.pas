@@ -89,7 +89,8 @@ type
     requestedWidth : integer;
     tooltips     : array of integer;
     procedure ClearButtons;
-    procedure AddButton(pTarget,pIcon,pCaption : String; Index : integer = -1);
+    procedure AddButton(pTarget, pIcon : string); overload;
+    procedure AddButton(pTarget,pIcon,pCaption : String; Index : integer = -1); overload;
     function UpdateButtons(newWidth : integer) : integer;
     procedure WMNotify(var msg : TWMNotify); message WM_NOTIFY;
     procedure WMDropFiles(var msg: TMessage); message WM_DROPFILES;    
@@ -255,7 +256,7 @@ begin
      iSize := DragQueryFile(Msg.wParam, i, nil, 0) + 1;
      pcFileName := StrAlloc(iSize);
      DragQueryFile(Msg.wParam, i, pcFileName, iSize);
-     AddButton(pcFileName,'shell:icon',ExtractFileName(pcFileName),index);
+     AddButton(pcFileName,'shell:icon',GetFileDescription(pcFileName),index);
      StrDispose(pcFileName);
   end;
   DragFinish(Msg.wParam);
@@ -274,6 +275,11 @@ begin
     FButtonList[n].btn.Free;
   setlength(FButtonList,0);
   UpdateToolTips;
+end;
+
+procedure TMainForm.AddButton(pTarget: string; pIcon: string);
+begin
+  AddButton(pTarget, pIcon, GetFileDescription(pTarget));
 end;
 
 procedure TMainForm.AddButton(pTarget,pIcon,pCaption : String; Index : integer = -1);
@@ -574,12 +580,8 @@ begin
     sFirstLaunch := False;
     if length(FButtonList) = 0 then // Add Some Default Items
     begin
-      AddButton('%windir%\System32\mspaint.exe',
-                'shell:icon',
-                'Paint');
-      AddButton('%windir%\System32\cmd.exe',
-                'shell:icon',
-                'Command Line');
+      AddButton('%windir%\System32\mspaint.exe', 'shell:icon');
+      AddButton('%windir%\System32\cmd.exe', 'shell:icon');
     end;
     SaveSettings;
     RealignComponents(True);
@@ -801,7 +803,6 @@ var
   SList : TStringList;
   n,i : integer;
   found : boolean;
-  caption : String;
   addcount : integer;
 begin
   {$WARNINGS OFF}
@@ -831,9 +832,7 @@ begin
       end;
     if not found then // Add It
     begin
-      caption := ExtractFileName(SList[n]);
-      setlength(caption,length(caption) - length(ExtractFileExt(caption))); // remove file extension from filename
-      AddButton(SList[n],'shell:icon',caption);
+      AddButton(SList[n],'shell:icon');
       addcount := addcount + 1;
     end;
   end;

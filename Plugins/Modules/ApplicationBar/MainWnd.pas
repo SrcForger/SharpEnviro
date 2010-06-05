@@ -136,7 +136,8 @@ type
     procedure UpdateButtonIcon(Btn : TButtonRecord);
     function GetButtonIndex(pButton : TSharpETaskItem) : integer;
     function GetButtonItem(pButton : TSharpETaskItem) : TButtonRecord;
-    procedure AddButton(pTarget,pIcon,pCaption : String; Index : integer = -1);
+    procedure AddButton(pTarget, pIcon : string); overload;
+    procedure AddButton(pTarget,pIcon,pCaption : String; Index : integer = -1); overload;
     procedure UpdateButtons;
     procedure WMNotify(var msg : TWMNotify); message WM_NOTIFY;
     procedure WMShellHook(var msg : TMessage); message WM_SHARPSHELLMESSAGE;
@@ -314,13 +315,12 @@ end;
 
 procedure TMainForm.WMAddAppBarTask(var msg: TMessage);
 var
-  FilePath,FileName : String;
+  FilePath : String;
 begin
   if IsWindow(msg.wparam) then
   begin
     FilePath := GetProcessNameFromWnd(msg.wparam);
-    FileName := LowerCase(ExtractFileName(FilePath));
-    AddButton(FilePath,'shell:icon',FileName,Length(FButtonList));
+    AddButton(FilePath,'shell:icon');
 
     sb_config.Visible := False;
     UpdateButtons;
@@ -545,6 +545,11 @@ begin
   SharpApi.SharpExecute('_elevate,' + BtnItem.target);
   if hasmoved then
     SaveSettings;
+end;
+
+procedure TMainForm.AddButton(pTarget: string; pIcon: string);
+begin
+  AddButton(pTarget, pIcon, GetFileDescription(pTarget));
 end;
 
 procedure TMainForm.AddButton(pTarget,pIcon,pCaption : String; Index : integer = -1);
@@ -805,8 +810,8 @@ begin
     if not ImportWin7PinnedTaskBarItems then
       if length(FButtonList) = 0 then
         begin // add default items
-          AddButton('notepad.exe','shell:icon','Notepad');
-          AddButton('explorer.exe','shell:icon','Explorer');
+          AddButton('notepad.exe','shell:icon');
+          AddButton('explorer.exe','shell:icon');
         end;
     sFirstLaunch := False;    
     SaveSettings;
@@ -1775,7 +1780,6 @@ var
   SList : TStringList;
   n,i : integer;
   found : boolean;
-  caption : String;
   addcount : integer;
 begin
   if not IsWindows7 then
@@ -1801,9 +1805,7 @@ begin
       end;
     if not found then // Add It
     begin
-      caption := ExtractFileName(SList[n]);
-      setlength(caption,length(caption) - length(ExtractFileExt(caption))); // remove file extension from filename
-      AddButton(SList[n],'shell:icon',caption);
+      AddButton(SList[n],'shell:icon');
       addcount := addcount + 1;
     end;
   end;

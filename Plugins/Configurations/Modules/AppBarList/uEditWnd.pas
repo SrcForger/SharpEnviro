@@ -41,11 +41,13 @@ uses
 
   // SharpE
   SharpApi,
+  SharpFileUtils,
   SharpCenterApi,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
 
   // Jedi
+  JclFileUtils,
   JvExControls,
   JvComponentBase,
   JclSysInfo,
@@ -139,7 +141,11 @@ procedure TfrmEdit.Open1Click(Sender: TObject);
 begin
   if OpenApplication.Execute then
     if FileExists(OpenApplication.FileName) then
+    begin
       edCommand.Text := OpenApplication.FileName;
+      if edName.Text = '' then
+        edName.Text := GetFileDescription(edCommand.Text);
+    end;
 end;
 
 procedure TfrmEdit.btnCommandBrowseClick(Sender: TObject);
@@ -194,6 +200,8 @@ procedure TfrmEdit.EnumWindowsPopupClick(Sender: TObject);
 begin
   if not (Sender is TMenuItem) then exit;
   frmEdit.edCommand.Text := GetProcessNameFromWnd(TMenuItem(Sender).Tag);
+  if frmEdit.edName.Text = '' then
+    frmEdit.edName.Text := GetFileDescription(frmEdit.edCommand.Text);
 end;
 
 procedure TfrmEdit.BuildWindowList;

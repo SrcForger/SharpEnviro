@@ -29,7 +29,7 @@ interface
 
 uses
   Classes,
-  windows,
+  Windows,
   SysUtils,
   JclShell,
   JclFileUtils,
@@ -43,6 +43,21 @@ function FindFilePath(pTarget : String) : String;
 Function PathFindOnPath(pszPath, ppszOtherDirs: PChar): BOOL; stdcall; external 'shlwapi.dll' Name 'PathFindOnPathA';
 
 procedure GetExecuteableFilesFromDir(var FileList: TStringList; Dir : String);
+
+function GetFileInfo(filePath, propertyName: string): string;
+function GetFileDescription(filePath : string) : string;
+function GetFileVersion(filePath : string) : string;
+function GetFileProductName(filePath : string) : string;
+function GetFileAuthor(filePath : string) : string;
+function GetFileCompanyName(filePath : string) : string;
+function GetFileInternalName(filePath : string) : string;
+
+const GFI_FileDescription = 'FileDescription';
+const GFI_FileVersion = 'FileVersion';
+const GFI_ProductName = 'ProductName';
+const GFI_Author = 'Author';
+const GFI_CompanyName = 'CompanyName';
+const GFI_InternalName = 'InternalName';
 
 implementation
 
@@ -173,6 +188,78 @@ begin
   until FindNext(sr) <> 0;
   FindClose(sr);
 end;
+
+{$REGION 'GetFileInfo'}
+
+function GetFileInfo(filePath, propertyName: string): string;
+var
+  Info: Pointer;
+  InfoData: Pointer;
+  InfoSize: LongInt;
+  InfoLen: {$IFDEF WIN32}DWORD;
+{$ELSE}LongInt;
+{$ENDIF}
+  DataLen: {$IFDEF WIN32}UInt;
+{$ELSE}word;
+{$ENDIF}
+  LangPtr: Pointer;
+begin
+  result := '';
+  DataLen := 255;
+  if Length(filePath) <= 0 then
+    exit;
+  filePath := filePath + #0;
+  InfoSize := GetFileVersionInfoSize(@filePath[1], InfoLen);
+  if (InfoSize > 0) then
+  begin
+    GetMem(Info, InfoSize);
+    try
+      if GetFileVersionInfo(@filePath[1], InfoLen, InfoSize, Info) then
+      begin
+        if VerQueryValue(Info, '\VarFileInfo\Translation', LangPtr, DataLen) then
+          propertyName := Format('\StringFileInfo\%0.4x%0.4x\%s'#0,
+            [LoWord(LongInt(LangPtr^)),
+            HiWord(LongInt(LangPtr^)), propertyName]);
+        if VerQueryValue(Info, @propertyName[1], InfoData, Datalen) then
+          Result := strPas(InfoData);
+      end;
+    finally
+      FreeMem(Info, InfoSize);
+    end;
+  end;
+end;
+
+function GetFileDescription(filePath : string) : string;
+begin
+  Result := GetFileInfo(filePath, GFI_FileDescription);
+end;
+
+function GetFileVersion(filePath : string) : string;
+begin
+  Result := GetFileInfo(filePath, GFI_FileVersion);
+end;
+
+function GetFileProductName(filePath : string) : string;
+begin
+  Result := GetFileInfo(filePath, GFI_ProductName);
+end;
+
+function GetFileAuthor(filePath : string) : string;
+begin
+  Result := GetFileInfo(filePath, GFI_Author);
+end;
+
+function GetFileCompanyName(filePath : string) : string;
+begin
+  Result := GetFileInfo(filePath, GFI_CompanyName);
+end;
+
+function GetFileInternalName(filePath : string) : string;
+begin
+  Result := GetFileInfo(filePath, GFI_InternalName);
+end;
+
+{$ENDREGION 'GetFileInfo'}
 
 begin
 end.
