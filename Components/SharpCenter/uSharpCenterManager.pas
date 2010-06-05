@@ -209,41 +209,33 @@ implementation
 { TSharpCenterManager }
 
 function TSharpCenterManager.Load(AFile, APluginID: string): Boolean;
-var
-  Xml: TJvSimpleXML;
 begin
   Result := False;
-  Xml := TJvSimpleXML.Create(nil);
   FActiveFile := AFile;
 
-  try
-    if FileExists(AFile) then
+  if FileExists(AFile) then
+  begin
+    FPlugin := LoadPluginInterface(PChar(AFile), FPluginHost, APluginID);
+
+    if ((FPlugin.Dllhandle <> 0) and (@FPlugin.InitPluginInterface <> nil)) then
     begin
-      FPlugin := LoadPluginInterface(PChar(AFile), FPluginHost, APluginID);
+      FPluginHost.PluginId := APluginID;
+      FPlugin.PluginInterface := FPlugin.InitPluginInterface(FPluginHost);
+      FPlugin.PluginInterface.CanDestroy := false;
+      FPluginHandle := Plugin.PluginInterface.Open;
+      FPluginHost.PluginOwner.ParentWindow := FPluginHandle;
 
-      if ((FPlugin.Dllhandle <> 0) and (@FPlugin.InitPluginInterface <> nil)) then
-      begin
-        FPluginHost.PluginId := APluginID;
-        FPlugin.PluginInterface := FPlugin.InitPluginInterface(FPluginHost);
-        FPlugin.PluginInterface.CanDestroy := false;
-        FPluginHandle := Plugin.PluginInterface.Open;
-        FPluginHost.PluginOwner.ParentWindow := FPluginHandle;
+      // load plugin tabs
+      LoadPluginTabs;
 
-        // load plugin tabs
-        LoadPluginTabs;
+      if Assigned(FOnLoadPlugin) then
+        FOnLoadPlugin(Self);
 
-        if Assigned(FOnLoadPlugin) then
-          FOnLoadPlugin(Self);
+      if Assigned(FOnUpdateTheme) then
+        FOnUpdateTheme(Self);
 
-        if Assigned(FOnUpdateTheme) then
-          FOnUpdateTheme(Self);
-
-        Result := True;
-      end;
+      Result := True;
     end;
-
-  finally
-    Xml.Free;
   end;
 end;
 
