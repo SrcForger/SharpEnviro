@@ -28,16 +28,11 @@ unit uNotesWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, SharpApi, ExtCtrls, Menus, JvPageList, JvExControls,
-  ComCtrls, Mask, SharpCenterAPI, ISharpCenterHostUnit, SharpECenterHeader,
-  JvXPCore, JvXPCheckCtrls, JvXPButtons, JvBaseDlg, JvBrowseFolder;
+  ComCtrls, SharpCenterAPI, ISharpCenterHostUnit, SharpECenterHeader,
+  JvXPCheckCtrls, JvBrowseFolder, JvXPCore;
 
-type
-  TStringObject = class(TObject)
-  public
-    Str: string;
-  end;
 
 type
   TfrmNotes = class(TForm)
@@ -52,8 +47,7 @@ type
     editCaptionText: TLabeledEdit;
     editDirectory: TLabeledEdit;
     schDirectoryOptions: TSharpECenterHeader;
-    JvBrowseForFolderDialog1: TJvBrowseForFolderDialog;
-    btnBrowse: TJvXPButton;
+    btnBrowse: TButton;
     procedure FormCreate(Sender: TObject);
     procedure cb_alwaysontopClick(Sender: TObject);
     procedure rb_textClick(Sender: TObject);
@@ -67,8 +61,7 @@ type
   public
     sModuleID: string;
     sBarID : string;
-    property PluginHost: ISharpCenterHost read FPluginHost write
-      FPluginHost;
+    property PluginHost: ISharpCenterHost read FPluginHost write FPluginHost;
   end;
 
 var
@@ -120,7 +113,7 @@ end;
 procedure TfrmNotes.UpdateSettings;
 begin
   if Visible then
-    PluginHost.Save;
+    PluginHost.SetSettingsChanged;
 end;
 
 end.

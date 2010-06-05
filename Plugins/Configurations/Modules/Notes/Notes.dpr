@@ -104,8 +104,6 @@ begin
   end;
 
   PluginHost.Xml.Save;
-
-  BroadcastGlobalUpdateMessage(suModule, 0, True);
 end;
 
 procedure TSharpCenterPlugin.Load;
@@ -163,8 +161,7 @@ begin
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
     Version := '0.7.6.5';
     DataType := tteConfig;
-    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
-      Integer(suModule)]);
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply), Integer(suModule)]);
   end;
 end;
 
@@ -172,9 +169,9 @@ function GetPluginData(pluginID : String): TPluginData;
 begin
   with Result do
   begin
-	Name := 'Notes';
+    Name := 'Notes';
     Description := 'Configure the Notes module';
-	Status := '';
+    Status := '';
   end;
 end;
 
