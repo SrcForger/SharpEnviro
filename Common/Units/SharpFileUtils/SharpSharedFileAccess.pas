@@ -189,6 +189,7 @@ begin
   if FileStream.Loaded then
   begin
     Stream.LoadFromStream(FileStream);
+    Stream.Seek(0,soFromBeginning);
     result := sfeSuccess;
   end else
   begin
