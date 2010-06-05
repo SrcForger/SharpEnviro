@@ -450,7 +450,7 @@ begin
 
   // Plugin colours
   ATheme.PluginTab := cTab;
-  ATheme.PluginTabText := cCol5;
+  ATheme.PluginTabText := clWindowText;
   ATheme.PluginSelectedTab := cEdit;
   ATheme.PluginTabSelectedText := clWindowText;
   ATheme.PluginBackground := cEdit;
