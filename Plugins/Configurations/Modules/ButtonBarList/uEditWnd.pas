@@ -47,7 +47,6 @@ uses
   ISharpCenterPluginUnit,
 
   // Jedi
-  JclFileUtils,
   JvExControls,
   JvComponentBase,
 
