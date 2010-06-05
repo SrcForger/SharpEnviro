@@ -38,6 +38,7 @@ uses
   Forms,
   Types,
   Menus,
+  Controls,
   PngImageList,
   ActiveX,
   ShellApi,
@@ -768,7 +769,7 @@ begin
       Bmp.Height := 16;
       Bmp.Canvas.Brush.Color := clRed;
       Bmp.canvas.FillRect(bmp.canvas.ClipRect);
-    
+
       iml.Add(bmp,bmp);
 
       iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'recentfile16');
@@ -1101,11 +1102,11 @@ begin
   iml.Width := 16;
   iml.Height := 16;
   subiml := TPngImageList.Create(nil);
-  subiml.Width := 40;
-  subiml.Height := 40;
+  subiml.Width := 32;
+  subiml.Height := 32;
   subgenericiml := TPngImageList.Create(nil);
   subgenericiml.Width := 16;
-  subgenericiml.Height := 16;  
+  subgenericiml.Height := 16;
   Iconmenu.Images := iml;
 
   try
@@ -1201,6 +1202,8 @@ begin
     Theme := GetCurrentTheme;
     Theme.LoadTheme([tpIconSet]);
     Dir := Theme.Icons.Directory;
+
+    subiml.BeginUpdate;
     for n := 0 to Theme.Icons.GetIconCount - 1 do
     begin
       icon := Theme.Icons.GetIconByIndex(n);
@@ -1215,12 +1218,14 @@ begin
         menuItem.Hint := Icon.Tag;
         menuItem.OnClick := iconmenuclick.OnSharpEIconClick;
         menuItem.ImageIndex := subiml.Count - 1;
-        if n mod 10  = 0 then menuItem.Break := mbBarBreak;
+        if (n mod 10  = 0) and (n > 0) then menuItem.Break := mbBarBreak;
         Iconmenu.Items.Items[mindex].Add(menuItem);
       end;
     end;
     wIcon.Free;
+    subiml.EndUpdate(True);
   end;
+
 
   if smiGenericIcon in IconItems then
   begin
