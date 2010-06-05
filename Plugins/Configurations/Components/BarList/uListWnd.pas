@@ -104,6 +104,8 @@ type
     procedure lbBarListGetCellText(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem;
       var AColText: string);
     procedure FormShow(Sender: TObject);
+    procedure lbBarListDblClickItem(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem);
 
   private
     FWinHandle: THandle;
@@ -276,6 +278,23 @@ begin
 
   FPluginHost.SetEditTabsVisibility( lbBarList.ItemIndex, lbBarList.Count );
   FPluginHost.Refresh;
+end;
+
+procedure TfrmListWnd.lbBarListDblClickItem(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem);
+var
+  tmpBar: TBarItem;
+begin
+  tmpBar := TBarItem(AItem.Data);
+  if tmpBar = nil then
+    exit;
+
+  case ACol of
+    colName: begin
+        if (IsBarRunning(tmpBar.BarID)) then
+          CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
+            + '\_Components\BarEdit.con'), pchar(inttostr(tmpBar.BarID)));
+    end;
+  end;
 end;
 
 procedure TfrmListWnd.lbBarListGetCellCursor(Sender: TObject; const ACol: Integer;

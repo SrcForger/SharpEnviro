@@ -20,7 +20,7 @@ object frmListWnd: TfrmListWnd
   TextHeight = 13
   object Shape1: TShape
     Left = 0
-    Top = 31
+    Top = 30
     Width = 434
     Height = 1
     Align = alTop
@@ -106,6 +106,7 @@ object frmListWnd: TfrmListWnd
     DefaultColumn = 0
     ItemHeight = 30
     OnClickItem = lbModulesClickItem
+    OnDblClickItem = lbModulesLeftDblClickItem
     OnGetCellCursor = lbModulesGetCellCursor
     OnGetCellText = lbModulesGetCellText
     OnGetCellImageIndex = lbModulesGetCellImageIndex
@@ -185,6 +186,7 @@ object frmListWnd: TfrmListWnd
     DefaultColumn = 0
     ItemHeight = 30
     OnClickItem = lbModulesClickItem
+    OnDblClickItem = lbModulesLeftDblClickItem
     OnGetCellCursor = lbModulesGetCellCursor
     OnGetCellText = lbModulesGetCellText
     OnGetCellImageIndex = lbModulesGetCellImageIndex
@@ -237,7 +239,7 @@ object frmListWnd: TfrmListWnd
       Left = 22
       Top = 5
       Width = 101
-      Height = 13
+      Height = 15
       Margins.Left = 2
       Margins.Top = 5
       Margins.Right = 5
@@ -245,6 +247,7 @@ object frmListWnd: TfrmListWnd
       Align = alLeft
       Caption = 'Left Alligned Modules'
       Layout = tlCenter
+      ExplicitHeight = 13
     end
   end
   object Panel1: TPanel
@@ -292,7 +295,7 @@ object frmListWnd: TfrmListWnd
       Left = 22
       Top = 5
       Width = 107
-      Height = 13
+      Height = 15
       Margins.Left = 2
       Margins.Top = 5
       Margins.Right = 5
@@ -300,6 +303,7 @@ object frmListWnd: TfrmListWnd
       Align = alLeft
       Caption = 'Right Alligned Modules'
       Layout = tlCenter
+      ExplicitHeight = 13
     end
   end
   object StatusImages: TPngImageList

@@ -82,6 +82,8 @@ type
       const ASelected: Boolean);
     procedure lbItemsGetCellText(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem;
       var AColText: string);
+    procedure lbItemsDblClickItem(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem);
   private
     FWinHandle: THandle;
     FAddItemsType: TAddItemsType;
@@ -170,6 +172,26 @@ begin
 
       FPluginHost.Refresh(rtTabs);
     end;
+  end;
+end;
+
+procedure TfrmList.lbItemsDblClickItem(Sender: TObject; const ACol: Integer;
+  AItem: TSharpEListItem);
+var
+  sName: string;
+  tmpMetaData: TComponentData;
+begin
+  tmpMetaData := TComponentData(AItem.Data);
+  if tmpMetaData = nil then
+    exit;
+
+  sName := tmpMetaData.MetaData.Name;
+  case ACol of
+    colName: begin
+      if tmpMetaData.HasConfig then
+          CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
+            + '\_Services\' + sName + '.con'), '');
+      end;
   end;
 end;
 

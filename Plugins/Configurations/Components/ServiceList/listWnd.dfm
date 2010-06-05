@@ -70,6 +70,7 @@ object frmList: TfrmList
     OnResize = lbItemsResize
     ItemHeight = 45
     OnClickItem = lbItemsClickItem
+    OnDblClickItem = lbItemsDblClickItem
     OnGetCellCursor = lbItemsGetCellCursor
     OnGetCellText = lbItemsGetCellText
     OnGetCellImageIndex = lbItemsGetCellImageIndex

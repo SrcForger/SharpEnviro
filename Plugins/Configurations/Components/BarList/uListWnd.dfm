@@ -80,6 +80,7 @@ object frmListWnd: TfrmListWnd
     OnResize = lbBarListResize
     ItemHeight = 40
     OnClickItem = lbBarListClickItem
+    OnDblClickItem = lbBarListDblClickItem
     OnGetCellCursor = lbBarListGetCellCursor
     OnGetCellText = lbBarListGetCellText
     OnGetCellImageIndex = lbBarListGetCellImageIndex

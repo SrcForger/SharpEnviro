@@ -108,6 +108,8 @@ type
 
     procedure lbModulesGetCellText(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AColText: string);
+    procedure lbModulesLeftDblClickItem(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem);
   private
     FWinHandle: Thandle;
     FModuleList: TObjectList;
@@ -279,6 +281,39 @@ begin
         else
           AColText := '';
       end;
+  end;
+end;
+
+procedure TfrmListWnd.lbModulesLeftDblClickItem(Sender: TObject;
+  const ACol: Integer; AItem: TSharpEListItem);
+var
+  tmpModule: TModuleItem;
+  wnd: THandle;
+  s,cfile : String;
+begin
+  tmpModule := TModuleItem(AItem.Data);
+  if tmpModule = nil then
+    exit;
+
+  wnd := FindWindow(nil, PChar('SharpBar_' + PluginHost.PluginId));
+  if wnd = 0 then
+    exit;
+
+  case ACol of
+    colName:
+    begin
+      if AItem.SubItemText[ACol] <> '' then
+      begin
+        s := tmpModule.MFile;
+        setlength(s, length(s) - length(ExtractFileExt(s)));
+        cfile := SharpApi.GetCenterDirectory + '_Modules\' + s + '.con';
+
+        if FileExists(cfile) then
+          SharpCenterApi.CenterCommand(sccLoadSetting,
+                                       PChar(cfile),
+                                       PChar(PluginHost.PluginId + ':' + inttostr(tmpModule.ID)));
+      end;
+    end;
   end;
 end;
 
