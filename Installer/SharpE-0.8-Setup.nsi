@@ -1425,6 +1425,7 @@ Section -post SEC0001
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
     SetOutPath $SMPROGRAMS\$StartMenuGroup
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Change Shell.lnk" $INSTDIR\setshell.exe
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\SharpCenter.lnk" $INSTDIR\SharpCenter.exe
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk" $INSTDIR\uninstall.exe
     StrCmp $InstallDevelopmentFiles "True" InstallDevelopmentShortcuts ContinueSection
     InstallDevelopmentShortcuts:
@@ -2891,6 +2892,7 @@ Section -un.post UNSEC0001
     DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Change Shell.lnk"
+    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\SharpCenter.lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Development\SharpCompile.lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Debug\SharpConsole.lnk"
     Delete /REBOOTOK $INSTDIR\uninstall.exe
