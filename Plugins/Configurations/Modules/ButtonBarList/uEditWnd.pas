@@ -46,6 +46,7 @@ uses
   ISharpCenterPluginUnit,
 
   // Jedi
+  JclFileUtils,
   JvExControls,
   JvComponentBase,
 
@@ -103,7 +104,7 @@ begin
       sceAdd: begin
           edName.Text := '';
           edCommand.Text := '';
-          edIcon.Text := '';
+          edIcon.Text := 'shell:icon';
         end;
       sceEdit: begin
           if frmList.lbItems.SelectedItem = nil then
@@ -134,6 +135,8 @@ begin
   if length(trim(s)) > 0 then
   begin
     edCommand.Text := s;
+    if edName.Text = '' then
+      edName.Text := FileGetDisplayName(s);
   end;
 end;
 
