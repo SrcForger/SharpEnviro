@@ -48,6 +48,8 @@ type
   protected
     procedure Execute; override;
     procedure DoDownload;
+    procedure DoCallThreadFinishEvent;
+    procedure DoCallFinishedEvent;
   public
     constructor Create(pUrl : String; pList : TObjectList); overload;
     constructor Create(pUrl : String; pBmp : TBitmap32); overload;
@@ -75,6 +77,7 @@ end;
 constructor TImageDownloadThread.Create(pUrl: String; pList: TObjectList);
 begin
   FOnFinishedDownload := nil;
+  FOnThreadFinished := nil;
   FList := pList;
   FUrl := pUrl;
   FBmp := nil;
@@ -85,10 +88,19 @@ end;
 
 destructor TImageDownloadThread.Destroy;
 begin
+  inherited Destroy;
+end;
+
+procedure TImageDownloadThread.DoCallFinishedEvent;
+begin
+  if Assigned(FOnFinishedDownload) then
+    FOnFinishedDownload(nil);
+end;
+
+procedure TImageDownloadThread.DoCallThreadFinishEvent;
+begin
   if Assigned(FOnThreadFinished) then
     FOnThreadFinished(self);
-
-  inherited Destroy;
 end;
 
 procedure TImageDownloadThread.DoDownload;
@@ -151,14 +163,12 @@ begin
       if SharpImageUtils.LoadImage(Stream,Ext,item.Bmp) then
       begin
         FList.Add(item);
-        if Assigned(FOnFinishedDownload) then
-          FOnFinishedDownload(nil);
+        Synchronize(DoCallFinishedEvent);
       end else item.Free;
     end else if FBmp <> nil then
     begin
       SharpImageUtils.LoadImage(Stream,Ext,FBmp);
-      if Assigned(FOnFinishedDownload) then
-        FOnFinishedDownload(nil);
+      Synchronize(DoCallFinishedEvent);
     end;
   end;
 
@@ -168,7 +178,8 @@ end;
 
 procedure TImageDownloadThread.Execute;
 begin
-  DoDownload
+  DoDownload;
+  Synchronize(DoCallThreadFinishEvent);
 end;
 
 { TImageListItem }

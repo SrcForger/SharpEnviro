@@ -182,7 +182,7 @@ begin
   sSwitchTime := 20; // seconds
   sFeedUpdate := 15; // minutes
   sShowButtons := False;
-  sCustomIcon := True;
+  sCustomIcon := False;
 
   XML := TJclSimpleXML.Create;
   if LoadXMLFromSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
