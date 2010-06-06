@@ -1125,6 +1125,7 @@ Section "!Core Files" SEC01
   File "..\..\SharpE\Settings\#Default#\SharpDesk\Objects\Link\1485347.xml"
   File "..\..\SharpE\Settings\#Default#\SharpDesk\Objects\Link\1934269.xml"
   File "..\..\SharpE\Settings\#Default#\SharpDesk\Objects\Link\5236359.xml"
+  File "..\..\SharpE\Settings\#Default#\SharpDesk\Objects\Link\6494357.xml"
   SetOutPath "$INSTDIR\Settings\#Default#\SharpDesk\Objects\RecycleBin"
   File "..\..\SharpE\Settings\#Default#\SharpDesk\Objects\RecycleBin\2654167.xml"
   SetOutPath "$INSTDIR\Settings\#Default#\SharpDesk"
@@ -1422,12 +1423,12 @@ Section -post SEC0001
     
     SetOutPath $INSTDIR
     WriteUninstaller $INSTDIR\uninstall.exe
+    CreateShortcut "$DESKTOP\SharpE Desktop.lnk" "$INSTDIR\SharpCore.exe" '-action "!ToggleDesktop"'
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
     SetOutPath $SMPROGRAMS\$StartMenuGroup
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Change Shell.lnk" $INSTDIR\setshell.exe
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\SharpCenter.lnk" $INSTDIR\SharpCenter.exe
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk" $INSTDIR\uninstall.exe
-    CreateShortcut "$DESKTOP\SharpE Desktop.lnk" "$INSTDIR\SharpCore.exe -action !ToggleDesktop"
     StrCmp $InstallDevelopmentFiles "True" InstallDevelopmentShortcuts ContinueSection
     InstallDevelopmentShortcuts:
       SetOutPath "$SMPROGRAMS\$StartMenuGroup\Development"
@@ -2691,6 +2692,7 @@ Section /o -un.Main UNSEC0000
     Delete "$INSTDIR\Settings\#Default#\SharpDesk\Presets.xml"
     Delete "$INSTDIR\Settings\#Default#\SharpDesk\Objects.xml"
     Delete "$INSTDIR\Settings\#Default#\SharpDesk\Objects\RecycleBin\2654167.xml"
+    Delete "$INSTDIR\Settings\#Default#\SharpDesk\Objects\Link\6494357.xml"
     Delete "$INSTDIR\Settings\#Default#\SharpDesk\Objects\Link\5236359.xml"
     Delete "$INSTDIR\Settings\#Default#\SharpDesk\Objects\Link\1934269.xml"
     Delete "$INSTDIR\Settings\#Default#\SharpDesk\Objects\Link\1485347.xml"
