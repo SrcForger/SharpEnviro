@@ -67,6 +67,7 @@ var
   hndMutex: THandle;
   stlCmdLine: TStringList;
   i: Integer;
+  sAction : string;
   bDebug: Boolean;
   bDoStartup: Boolean;
   strExtension: string;
@@ -492,13 +493,18 @@ begin
 
   stlCmdLine := TStringList.Create;
 
+  sAction := '';
   bDebug := False;
   bReboot := False;
   bDoStartup := False;
   strExtension := '.dll';
   wndDebug := 0;
   stlCmdLine.DelimitedText := GetCommandLine;
-  for i := 0 to stlCmdLine.Count - 1 do begin
+  for i := 0 to stlCmdLine.Count - 1 do
+  begin
+    if LowerCase(stlCmdLine[i]) = '-action' then
+      if (i + 1) <= (stlCmdLine.Count - 1) then
+          sAction := stlCmdLine[i + 1];
     if LowerCase(stlCmdLine[i]) = '-debug' then
       bDebug := True;
     if LowerCase(stlCmdLine[i]) = '-reboot' then
@@ -513,6 +519,18 @@ begin
   end;
   stlCmdLine.Free;
 
+  // Only allow actions to be run if we were able to parse
+  // one from the command line and we are not starting up
+  // otherwise skip executing the action
+  if (sAction <> '') and not(bDoStartup) then
+  begin
+    // We just SharpExecute what ever is given so it could really be anything.
+    // We also exit here as the action arg should not be used
+    // when it would be the 1st instance.
+    SharpExecute(sAction);
+    Exit;
+  end;
+    
   if bDebug then begin
     if FindWindow('TSharpConsoleWnd', nil) = 0 then begin
       if ShellExecute(hInstance, 'open', PChar(GetSharpEDirectory + 'SharpConsole.exe'),
