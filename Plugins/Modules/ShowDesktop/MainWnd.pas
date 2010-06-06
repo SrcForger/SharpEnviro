@@ -122,7 +122,7 @@ begin
       begin
         TempBmp.SetSize(16,16);
         ResID := '16';
-      end;
+      end else
       begin
         TempBmp.SetSize(32,32);
         ResID := '32';
