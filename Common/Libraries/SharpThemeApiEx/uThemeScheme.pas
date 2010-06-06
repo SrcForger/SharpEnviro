@@ -39,6 +39,7 @@ type
     FDirectory : String;
     FColors    : TSharpEColorSet;
     procedure SetDefaults;
+    procedure CheckDirectory;
     procedure LoadNameAndDefaults; stdcall;    
   public
     LastUpdate : Int64;
@@ -74,6 +75,12 @@ uses
   Windows, SysUtils, Graphics, JclStrings, Classes, GR32, IXmlBaseUnit;
 
 { TThemeScheme }
+
+procedure TThemeScheme.CheckDirectory;
+begin
+  if not DirectoryExists(FDirectory) then
+    ForceDirectories(FDirectory);
+end;
 
 constructor TThemeScheme.Create(pThemeInfo : TThemeInfo; pThemeSkin : TThemeSkin);
 begin
@@ -183,6 +190,7 @@ begin
   // Load custom Scheme
   XML := TInterfacedXMLBase.Create(True);
   FDirectory := FThemeSkin.SchemesDirectory + '\';
+  CheckDirectory;
   XML.XmlFilename := FDirectory + FName + '.xml';
   if XML.Load then
   begin
@@ -501,7 +509,8 @@ end;
 procedure TThemeScheme.SetDefaults;
 begin
   FName := 'Default';
-  FDirectory := FThemeSkin.SchemesDirectory + '\' ;
+  FDirectory := FThemeSkin.SchemesDirectory;
+  CheckDirectory;  
   LastUpdate := 0;
   SetLength(FColors,0);
 end;
