@@ -32,4 +32,12 @@
     <Locked>0</Locked>
     <isWindow>0</isWindow>
   </Item>
+  <Item>
+    <ID>6494357</ID>
+    <Object>Link</Object>
+    <PosX>67</PosX>
+    <PosY>419</PosY>
+    <Locked>0</Locked>
+    <isWindow>0</isWindow>
+  </Item>
 </SharpDeskObjectSet>
