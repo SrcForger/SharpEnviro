@@ -1616,7 +1616,7 @@ begin
 
           if IsIconic(BtnItem.wnd) or (FTM.LastActiveTask <> BtnItem.wnd) then
             SwitchToThisWindow(BtnItem.wnd,True)
-          else PostMessage(BtnItem.wnd,WM_SYSCOMMAND,SC_MINIMIZE,0);
+          else ShowWindow(BtnItem.wnd, SW_MINIMIZE); //PostMessage(BtnItem.wnd,WM_SYSCOMMAND,SC_MINIMIZE,0);
         end;
       end else SharpApi.SharpExecute(BtnItem.target);
     end else if (Button = mbMiddle) and (not hasmoved) then

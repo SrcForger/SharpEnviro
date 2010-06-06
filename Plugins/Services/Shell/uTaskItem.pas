@@ -207,7 +207,8 @@ procedure TTaskItem.Minimize;
 begin
   FLastVWM := SharpApi.GetCurrentVWM;
 //  CloseWindow(FHandle);
-  PostMessage(FHandle,WM_SYSCOMMAND,SC_MINIMIZE,0);
+  ShowWindow(FHandle, SW_MINIMIZE);
+  //PostMessage(FHandle,WM_SYSCOMMAND,SC_MINIMIZE,0);
   UpdateCaption;
   UpdateVisibleState;
   UpdatePlacement;
