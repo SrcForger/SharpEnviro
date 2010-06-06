@@ -59,6 +59,7 @@ Page custom getSettingsSelect getSettingsLeave
 !define MUI_PAGE_CUSTOMFUNCTION_LEAVE "DirectoryLeave"
 !insertmacro MUI_PAGE_DIRECTORY
 Page custom checkNETFramework checkNETFrameworkLeave
+Page custom getRunningComponents getRunningComponentsLeave
 !insertmacro MUI_PAGE_STARTMENU Application $StartMenuGroup
 !insertmacro MUI_PAGE_INSTFILES
 Page custom setShell setShellLeave
@@ -75,7 +76,6 @@ UninstPage custom un.unsetShell un.unsetShellLeave
 
 # Installer languages
 !insertmacro MUI_LANGUAGE English
-
 
 Var UseAppDir
 Var SetupSetShell
@@ -1427,6 +1427,7 @@ Section -post SEC0001
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Change Shell.lnk" $INSTDIR\setshell.exe
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\SharpCenter.lnk" $INSTDIR\SharpCenter.exe
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk" $INSTDIR\uninstall.exe
+    CreateShortcut "$DESKTOP\SharpE Desktop.lnk" "$INSTDIR\SharpCore.exe -action !ToggleDesktop"
     StrCmp $InstallDevelopmentFiles "True" InstallDevelopmentShortcuts ContinueSection
     InstallDevelopmentShortcuts:
       SetOutPath "$SMPROGRAMS\$StartMenuGroup\Development"
@@ -1462,7 +1463,9 @@ Var ComponentsRunning
 Var RunningComponentsHWND
 !define WM_SHARPTERMINATE 33318 # (WM_APP + 550)
 
-Function un.killRunningComponents
+# define a macro for installer and uninstaller functions
+!macro getRunningComponentsMacro un
+Function ${un}killRunningComponents
    FindWindow $0 "TSharpBarMainForm" ""
    SendMessage $0 ${WM_SHARPTERMINATE} 0 0
    
@@ -1510,7 +1513,7 @@ Function un.killRunningComponents
    SendMessage $0 ${WM_SHARPTERMINATE} 0 0
 FunctionEnd
 
-Function un.getRunningComponentsRefresh
+Function ${un}getRunningComponentsRefresh
    GetDlgItem $1 $RunningComponentsHWND 1201
 
    StrCpy $ComponentsRunning "False"
@@ -1586,7 +1589,7 @@ Function un.getRunningComponentsRefresh
    splashNotRunning:
 FunctionEnd
 
-Function un.updateRunningComponentsButtons
+Function ${un}updateRunningComponentsButtons
    StrCmp $ComponentsRunning "False" EnableNext DisableNext
    EnableNext:
      GetDlgItem $0 $HWNDPARENT 1
@@ -1607,7 +1610,7 @@ Function un.updateRunningComponentsButtons
    AfterNext:
 FunctionEnd
 
-Function un.clearRunningComponents
+Function ${un}clearRunningComponents
    GetDlgItem $1 $RunningComponentsHWND 1201
    GoTo CheckNext
    DeleteNext:
@@ -1618,24 +1621,24 @@ Function un.clearRunningComponents
    ContinueUpdate:
 FunctionEnd
 
-Function un.getRunningComponentsLeave
+Function ${un}getRunningComponentsLeave
    ReadINIStr $R0 "$PLUGINSDIR\RunningComponents.ini" "Settings" "State"
    Pop $R1
    GetDlgItem $1 $RunningComponentsHWND 1201
 
    ${If} $R0 == 4 # Refresh
-     Call un.clearRunningComponents
-     Call un.getRunningComponentsRefresh
-     Call un.updateRunningComponentsButtons
+     Call ${un}clearRunningComponents
+     Call ${un}getRunningComponentsRefresh
+     Call ${un}updateRunningComponentsButtons
      
      Abort
    ${EndIf}
    ${If} $R0 == 3 # Close All
-     Call un.killRunningComponents
-     Call un.clearRunningComponents
+     Call ${un}killRunningComponents
+     Call ${un}clearRunningComponents
      sleep 500
-     Call un.getRunningComponentsRefresh
-     Call un.updateRunningComponentsButtons
+     Call ${un}getRunningComponentsRefresh
+     Call ${un}updateRunningComponentsButtons
 
      SendMessage $1 ${LB_GETCOUNT} 0 0 $0
      StrCmp $0 "0" ContinueCloseAll
@@ -1647,20 +1650,25 @@ Function un.getRunningComponentsLeave
    ${EndIf}
 FunctionEnd
 
-Function un.getRunningComponents
+Function ${un}getRunningComponents
   !insertmacro MUI_HEADER_TEXT "Running SharpE Components" "Setup has to check if any SharpE components are still running."
    Push $R0
    InstallOptions::initDialog /NOUNLOAD $PLUGINSDIR\RunningComponents.ini
    Pop $RunningComponentsHWND
 
-   Call un.getRunningComponentsRefresh
-   Call un.updateRunningComponentsButtons
+   Call ${un}getRunningComponentsRefresh
+   Call ${un}updateRunningComponentsButtons
 
    InstallOptions::show
    Pop $R0
    ReadINIStr $R0 "$PLUGINSDIR\RunningComponents.ini" "Settings" "State"
    Pop $R0
 FunctionEnd
+!macroend
+
+# Insert as an installer and unistaller functions
+!insertmacro getRunningComponentsMacro ""
+!insertmacro getRunningComponentsMacro "un."
 
 Function un.unsetShellLeave
   # Seperate Explorer Fix
@@ -2895,6 +2903,7 @@ Section -un.post UNSEC0001
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\SharpCenter.lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Development\SharpCompile.lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Debug\SharpConsole.lnk"
+    Delete /REBOOTOK "$DESKTOP\SharpE Desktop.lnk"
     Delete /REBOOTOK $INSTDIR\uninstall.exe
     DeleteRegValue HKLM "${REGKEY}" StartMenuGroup
     DeleteRegValue HKLM "${REGKEY}" Path
@@ -2914,6 +2923,7 @@ SectionEnd
 # Installer functions
 Function .onInit
     InitPluginsDir
+    File /oname=$PLUGINSDIR\RunningComponents.ini "RunningComponents.ini"
     File /oname=$PLUGINSDIR\SettingsSelect.ini "SettingsSelect.ini"
     File /oname=$PLUGINSDIR\DotNETCheck.ini "DotNETCheck.ini"
     File /oname=$PLUGINSDIR\SetShell.ini "SetShell.ini"
