@@ -224,6 +224,7 @@ end;
 
 procedure TSharpEMenuWnd.WMSharpTerminate(var Msg : TMessage);
 begin
+  FMenuID := '-1';
   FFreeMenuSub := False;
   FFreeMenuSub := False;
   Application.ProcessMessages;
@@ -715,6 +716,7 @@ begin
 
   if (FFreeMenu) or (FFreeMenuSub) then
   begin
+    FMenuID := '-1';
     FFreeMenu := False;
     FFreeMenuSub := False;
     if FParentMenu <> nil then
@@ -762,7 +764,8 @@ begin
       exit; }
     if not FFreeMenu then
       exit;
-      
+
+    FMenuID := '-1';    
     FFreeMenu := False;
     Tag := -1;
     if FMenu <> nil then
@@ -786,6 +789,7 @@ begin
   
   if (FFreeMenu) then
   begin
+    FMenuID := '-1';
     if Msg.WParam <> 0 then
     begin
       wclass := GetWndClass(Msg.Wparam);
@@ -864,6 +868,7 @@ end;
 
 procedure TSharpEMenuWnd.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
+  FMenuID := '-1';
   FIsClosing := True;
   if FMenu = nil then exit;
   FMenu.CheckAndAbortDynamicContentThread;
