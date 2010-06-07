@@ -166,7 +166,7 @@ type
                      procedure Unload(ID : integer; updateBar : boolean = True); overload;
                      procedure Delete(ID : integer);
                      procedure Clone(ID : integer);
-                     procedure CreateModule(MFID : integer; Position : integer; wnd : HWND = 0);
+                     function CreateModule(MFID : integer; Position : integer; wnd : HWND = 0) : TModule;
                      function LoadModule(ID : integer; Module : String; Position,Index : integer) : TModule; overload;
                      function LoadModule(ID : integer; FromBar: integer; Position,Index : integer) : TModule; overload;
                      procedure LoadFromDirectory(pDirectory : String);
@@ -641,10 +641,11 @@ begin
   result := strtoint(s);
 end;
 
-procedure TModuleManager.CreateModule(MFID : integer; Position : integer; wnd : HWND);
+function TModuleManager.CreateModule(MFID : integer; Position : integer; wnd : HWND = 0) : TModule;
 var
   tempModuleFile : TModuleFile;
 begin
+  result := nil;
   if MFID > FModuleFiles.Count - 1 then exit;
 
   if InSendMessage then
@@ -656,7 +657,7 @@ begin
                    'Adding another module might cause modules to overlap each other.' + #10#13 +
                    'Do you want to continue?','Confirm: New Module',MB_YESNO or MB_ICONWARNING or MB_APPLMODAL) = IDNO then exit;
   tempModuleFile := TModuleFile(FModuleFiles.Items[MFID]);
-  LoadModule(GenerateModuleID,ExtractFileName(tempModuleFile.FFileName),Position,-1);
+  result := LoadModule(GenerateModuleID,ExtractFileName(tempModuleFile.FFileName),Position,-1);
   ReCalculateModuleSize;
 end;
 
@@ -1465,12 +1466,7 @@ begin
 
     sdif := maxsize - minsize;
 
-    // Check if there is no bar space left and if other bars which have
-    // free space left should resize
-    maxSize := pMon.Width - ParentControl.Width;
-
     setlength(harray,0);
-
     if Broadcast then
     begin
       SetWindowLong(ParentControl.Handle,GWL_USERDATA,0);

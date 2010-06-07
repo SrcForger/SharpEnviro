@@ -1499,15 +1499,30 @@ end;
 procedure TSharpBarMainForm.OnQuickAddModuleItemClick(Sender: TObject);
 var
   i: integer;
+  tempModule: TModule;
+  s,cfile : string;
 begin
   if not (Sender is TMenuItem) then
     exit;
   i := TMenuItem(Sender).Tag;
-  ModuleManager.CreateModule(i, -1);
+  tempModule := ModuleManager.CreateModule(i, -1);
   ModuleManager.FixModulePositions;
   SaveBarSettings;
 
   SharpApi.BroadcastGlobalUpdateMessage(suCenter);
+
+  if tempModule = nil then
+    exit;
+
+  s := ExtractFileName(tempModule.ModuleFile.FileName);
+  setlength(s, length(s) - length(ExtractFileExt(s)));
+  cfile := SharpApi.GetCenterDirectory + '_Modules\' + s + '.con';
+
+  if FileExists(cfile) then
+    SharpCenterApi.CenterCommand(sccLoadSetting,
+      PChar(cfile),
+      PChar(inttostr(FBarID) + ':' + inttostr(tempModule.mInterface.ID)));
+
 end;
 
 procedure TSharpBarMainForm.PopupMenu1Popup(Sender: TObject);
