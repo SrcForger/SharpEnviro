@@ -329,7 +329,7 @@ var
   sPluginID: string;
   sCmd: string;
 begin
-  SendDebugMessage('SharpCenter',cmdline,0);
+  {$WARN SYMBOL_PLATFORM OFF} SendDebugMessage('SharpCenter',cmdline,0); {$WARN SYMBOL_PLATFORM ON}
 
   if GetCommandLineParams(enumCommandType, sCmd, sPluginID) then
     SCM.ExecuteCommand(enumCommandType, scmd, sPluginID, 0)
