@@ -489,6 +489,10 @@ begin
 end;
 
 procedure TSharpDeskMainForm.WMSharpEUppdateSettings(var msg: TMessage);
+var
+  i : integer;
+  PMon : TMonitor;
+  MonID : integer;
 begin
   if msg.WParam < 0 then exit;
 
@@ -505,6 +509,19 @@ begin
     Background.UnloadWallpaperChanger;
 
     GetCurrentTheme.LoadTheme(ALL_THEME_PARTS);
+
+    // Load the automatic wallpaper changing
+    for i := 0 to Screen.MonitorCount - 1 do
+    begin
+      PMon := Screen.Monitors[i];
+      if PMon.Primary then
+        MonID := -100
+      else
+        MonID := PMon.MonitorNum;
+
+      GetCurrentTheme.Wallpaper.UpdateAutomaticWallpaper(MonID);
+    end;
+
     Background.Reload(msg.Wparam = Integer(suScheme));
     BackgroundImage.ForceFullInvalidate;
     if SharpDesk.BackgroundLayer <> nil then
