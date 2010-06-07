@@ -362,17 +362,17 @@ begin
       case pl.ActivePageIndex of
         0:
         begin
-          pl.Height := 160;
+          pl.Height := pnlFileScaling.Top + pnlFileScaling.Height + 8;
           spc.Height := pl.Height + 60;
         end;
         1:
         begin
-          pl.Height := 240;
+          pl.Height := pnlURLScaling.Top + pnlURLScaling.Height + 8;
           spc.Height := pl.Height + 60;
         end;
         2:
         begin
-          pl.Height := 240;
+          pl.Height := pnlDirectoryDimensions.Top + pnlDirectoryDimensions.Height + 8;
           spc.Height := pl.Height + 60;
         end;
       end;
