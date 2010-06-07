@@ -523,6 +523,12 @@ begin
     end;
 
     Background.Reload(msg.Wparam = Integer(suScheme));
+    if not Visible then
+      BackgroundImage.Bitmap.SetSize(0, 0);
+    SharpDesk.UpdateAnimationLayer;
+
+    Background.LoadWallpaperChanger(WallpaperTimerTimer);
+
     BackgroundImage.ForceFullInvalidate;
     if SharpDesk.BackgroundLayer <> nil then
     begin
@@ -532,10 +538,6 @@ begin
     SharpDesk.SendMessageToAllObjects(SDM_SETTINGS_UPDATE,0,0,0);
     if msg.WParam = Integer(suWallpaper) then
       SharpApi.BroadcastGlobalUpdateMessage(suDesktopBackgroundChanged,-1,True);
-    if not Visible then
-      BackgroundImage.Bitmap.SetSize(0, 0);
-
-    Background.LoadWallpaperChanger(WallpaperTimerTimer);
   end;
 
   if (msg.WParam = Integer(suSharpDesk)) then
