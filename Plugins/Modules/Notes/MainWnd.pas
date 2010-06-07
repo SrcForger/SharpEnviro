@@ -126,8 +126,11 @@ begin
     exit;
 
   size := GetNearestIconSize(mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y);
-  if not IconStringToIcon('icon.notes','',Button.Glyph32,size) then
-       Button.Glyph32.SetSize(0,0);
+  if Settings.ShowIcon then
+  begin
+    if not IconStringToIcon('icon.notes','',Button.Glyph32,size) then
+      Button.Glyph32.SetSize(0,0);
+  end else Button.Glyph32.SetSize(0,0);
   Button.Repaint;
 end;
 
