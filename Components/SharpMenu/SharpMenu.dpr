@@ -99,6 +99,7 @@ var
   loadIconCacheThread : TLoadIconCacheThread;
   loadGenericIconsThread : TLoadGenericIconsThread;
   skinManagerLoadThread : TSkinManagerLoadThread;
+  nomenuid : boolean;
 
 function GetCurrentTime : Int64;
 var
@@ -166,6 +167,7 @@ begin
   // Parse possible params (which define the position and custom menus)
   Pos := Mouse.CursorPos;
   popupdir := 1;
+  nomenuid := False;
   // Check Params
   if ParamCount >= 2 then
   begin
@@ -175,6 +177,9 @@ begin
        Pos.Y := i;
     if TryStrToInt(ParamStr(3),i) then
        popupdir := i;
+    if ParamCount = 5 then
+      if CompareText('-nomenuid',ParamStr(4)) = 0 then
+        nomenuid := True;      
   end;
 
   // Parse the menu file param before setting iconcachefile
@@ -210,7 +215,9 @@ begin
   Application.CreateForm(TSharpEMenuWnd, wnd);
   // MuteX and Timeout settings of the main window
   wnd.MuteXHandle := MutexHandle;
-  wnd.MenuID := mfile;
+  if not nomenuid then
+    wnd.MenuID := mfile
+  else wnd.MenuID := '-1';
   wnd.HideTimeout := menusettings.HideTimeout;
 
   // Wait for icon loading threads to be finished

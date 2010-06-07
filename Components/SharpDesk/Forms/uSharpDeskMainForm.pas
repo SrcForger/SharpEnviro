@@ -851,6 +851,7 @@ begin
     if (Button = mbRight) then
     begin
       ActionStr := inttostr(CPos.X) + ' ' + inttostr(CPos.Y) + ' ' + '1';
+      ActionStr := ActionStr + ' -nomenuid';      
       ActionStr := ActionStr + ' "' + SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\';
       if (Shift = [ssShift]) then
         ActionStr := ActionStr + SharpDesk.DeskSettings.MenuFileShift + '.xml"'
