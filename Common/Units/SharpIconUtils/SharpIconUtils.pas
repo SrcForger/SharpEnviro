@@ -318,7 +318,7 @@ begin
     if Theme.Icons.IsIconInIconSet(Icon) then
     begin
       SEIcon := Theme.Icons.GetIconByTag(Icon);
-      result := LoadIco(Bmp,Theme.Icons.Directory + SEIcon.FileName,Size);
+      result := LoadIco(Bmp,Theme.Icons.Directory + SEIcon.FileName,GetNearestIconSize(Size));
     end else
     begin
       if FileExists(Icon) then
@@ -327,7 +327,7 @@ begin
         if CompareText(Ext,'.png') = 0 then
            result := LoadPng(Bmp,Icon)
         else if CompareText(Ext,'.ico') = 0 then
-           result := LoadIco(Bmp,Icon,0)
+           result := LoadIco(Bmp,Icon,GetNearestIconSize(Size))
         else result := False;
       end else result := False;
     end;
