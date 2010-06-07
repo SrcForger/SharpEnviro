@@ -131,12 +131,12 @@ begin
           exit;
         end;
 
-  NewName := FWallpapers[0].Name;
   i := 0;
   repeat
     found := False;
     i := i + 1;
-    NewName := NewName + inttostr(i);
+    // Always start with the Default wallpaper name and increment from there.
+    NewName := FWallpapers[0].Name + IntToStr(i);
     for n := 0 to High(FWallpapers) do
       if CompareText(FWallpapers[n].Name,NewName) = 0 then
     begin
