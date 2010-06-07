@@ -249,20 +249,22 @@ begin
   if wnd <> 0 then
   begin
     if IsWindow(FLastMenuWnd) then
-      btn.ForceHover := True
-    else begin
-      atm := SendMessage(wnd, WM_MENUID, 0, 0);
+      wnd := FLastMenuWnd
+    else
+      FLastMenuWnd := 0;
 
-      buf := StrAlloc(256);
-      GlobalGetAtomName(atm, buf, 256);
-      GlobalDeleteAtom(atm);
+    atm := SendMessage(wnd, WM_MENUID, 0, 0);
 
-      if buf = sMenu then
-      begin
-        FLastMenuWnd := wnd;      
-        btn.ForceHover := True
-      end else btn.ForceHover := False;
-    end;
+    buf := StrAlloc(256);
+    GlobalGetAtomName(atm, buf, 256);
+    GlobalDeleteAtom(atm);
+
+    if buf = sMenu then
+    begin
+      FLastMenuWnd := wnd;
+      btn.ForceHover := True;
+    end else
+      btn.ForceHover := False;
   end else
   begin
     btn.ForceHover := False;
