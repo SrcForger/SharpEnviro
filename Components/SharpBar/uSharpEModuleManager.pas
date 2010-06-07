@@ -1482,25 +1482,14 @@ begin
           GetWindowRect(harray[n],R);
           // another bar on the same monitor with the same top position?
           if (R.Top = ParentControl.Top) and (MonList.MonitorFromPoint(R.TopLeft,mdNearest) = pMon) then
-            MaxSize := MaxSize - (R.Right - R.Left);
-        end;
-    //  if MaxSize < 0 then
-        for n := 0 to High(harray) do
-          if harray[n] <> ParentControl.Handle then
           begin
-            GetWindowRect(harray[n],R);
-            // another bar on the same monitor with the same top position?
-            if (R.Top = ParentControl.Top) and (MonList.MonitorFromPoint(R.TopLeft,mdNearest) = pMon) then
+            if not isZeroBar then
             begin
-              //freespace := GetWindowLong(harray[n],GWL_USERDATA);
-              //if (MaxSize < 0) and (FreeSpace > 0) then
-              if not isZeroBar then
-              begin
-                 PostMessage(harray[n],WM_UPDATEBARWIDTH,1,0);
-                 break;
-              end;
+              PostMessage(harray[n],WM_UPDATEBARWIDTH,1,0);
+              break;
             end;
           end;
+        end;
       setlength(harray,0);
     end;
     SetWindowLong(ParentControl.Handle,GWL_USERDATA,abs(sdif));
