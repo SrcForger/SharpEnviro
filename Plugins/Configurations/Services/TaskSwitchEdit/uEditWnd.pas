@@ -109,7 +109,7 @@ type
     procedure RenderItems;
     procedure UpdateSize;
 
-    property Updating: boolean read FUpdating write FUpdating;
+    property IsUpdating: boolean read FUpdating write FUpdating;
     property TaskSwitchList: TTaskSwitchItemList read FTaskSwitchList write FTaskSwitchList;
     property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;

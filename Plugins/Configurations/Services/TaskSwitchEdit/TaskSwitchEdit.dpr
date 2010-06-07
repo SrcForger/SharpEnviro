@@ -89,7 +89,7 @@ begin
   frmEdit.TaskSwitchList.Load;
   with frmEdit do begin
 
-    Updating := true;
+    IsUpdating := true;
     try
       n := frmEdit.TaskSwitchList.IndexOfName(PluginHost.PluginId);
       if n = -1 then exit;
@@ -131,7 +131,7 @@ begin
 
     finally
       UpdateSize;
-      Updating := false;
+      IsUpdating := false;
     end;
 
   end;
