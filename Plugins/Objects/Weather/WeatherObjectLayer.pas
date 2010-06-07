@@ -379,7 +379,7 @@ begin
         if pItem.itype = 'image' then
         begin
           pItem.Bitmap := TBitmap32.Create;
-          LoadBitmap32FromPNG(pItem.Bitmap,IncludeTrailingBackslash(ExtractFileDir(filename))+pItem.data, a);
+          {$WARN SYMBOL_PLATFORM OFF} LoadBitmap32FromPNG(pItem.Bitmap,IncludeTrailingBackslash(ExtractFileDir(filename))+pItem.data, a); {$WARN SYMBOL_PLATFORM ON}
           pItem.Bitmap.Clear(color32(0,0,0,0));
         end;
         FWeatherSkinItems.Add(pItem);

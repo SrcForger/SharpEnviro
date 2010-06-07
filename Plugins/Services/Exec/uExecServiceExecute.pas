@@ -363,6 +363,7 @@ var
   AShellLink : IShellLinkW;
   wfd : _WIN32_FIND_DATAW;
   PersistFile : IPersistFile;
+  TempPath : PWideChar;  
 begin
   Result := '';
   (* Create a shellLink object *)
@@ -375,7 +376,10 @@ begin
 
 
   (* Give the shell link a path to resolve *)
-  AShellLink.SetPath(PWideChar(sLink));
+  GetMem(TempPath, sizeof(WideChar) * Succ(Length(sLink)));
+  StringToWideChar(sLink, TempPath, Succ(Length(sLink)));
+  AShellLink.SetPath(TempPath);
+  FreeMem(TempPath);
   if AShellLink.Resolve(HInstance,SLR_UPDATE) = S_OK then
   begin
 
