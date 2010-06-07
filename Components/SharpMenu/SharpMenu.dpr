@@ -198,8 +198,8 @@ begin
   SharpEMenuIcons := TSharpEMenuIcons.Create;
   // Start Thread which loads the generic icons
   loadGenericIconsThread := TLoadGenericIconsThread.Create(true, SharpEMenuIcons);
-  if menusettings.UseGenericIcons then
-    loadGenericIconsThread.Resume;
+  //if menusettings.UseGenericIcons then
+  loadGenericIconsThread.Resume;
 
   // Start thread which loads the icon cache
   loadIconCacheThread := TloadIconCacheThread.Create(true, SharpEMenuIcons, iconcachefile);
