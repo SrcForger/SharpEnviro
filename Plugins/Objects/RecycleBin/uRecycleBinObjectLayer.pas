@@ -406,12 +406,12 @@ begin
     bmp.CombineMode := cmMerge;
     TLinearResampler.Create(bmp);
 
-    IconStringToIcon(FSettings.Icon,FSettings.Target,Bmp,FSettings.Theme[DS_ICONSIZE].IntValue);
+    IconStringToIcon(FSettings.Icon,FSettings.Target,Bmp,GetNearestIconSize(FSettings.Theme[DS_ICONSIZE].IntValue));
     FIconEmpty.SetSize(FSettings.Theme[DS_ICONSIZE].IntValue,FSettings.Theme[DS_ICONSIZE].IntValue);
     FIconEmpty.Clear(color32(0,0,0,0));
     bmp.DrawTo(FIconEmpty,Rect(0,0,FIconEmpty.Width,FIconEmpty.Height));
 
-    IconStringToIcon(FSettings.Icon2,FSettings.Target,Bmp,FSettings.Theme[DS_ICONSIZE].IntValue);
+    IconStringToIcon(FSettings.Icon2,FSettings.Target,Bmp,GetNearestIconSize(FSettings.Theme[DS_ICONSIZE].IntValue));
     FIconFull.SetSize(FSettings.Theme[DS_ICONSIZE].IntValue,FSettings.Theme[DS_ICONSIZE].IntValue);
     FIconFull.Clear(color32(0,0,0,0));
     bmp.DrawTo(FIconFull,Rect(0,0,FIconFull.Width,FIconFull.Height));

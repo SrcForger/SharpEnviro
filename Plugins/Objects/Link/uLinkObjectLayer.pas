@@ -310,7 +310,7 @@ begin
     begin
       bmp := TBitmap32.Create;
       TLinearResampler.Create(Bmp);
-      IconStringToIcon(FSettings.Icon,FSettings.Target,Bmp,Theme[DS_ICONSIZE].IntValue);
+      IconStringToIcon(FSettings.Icon,FSettings.Target,Bmp,GetNearestIconSize(Theme[DS_ICONSIZE].IntValue));
       bmp.DrawMode := dmBlend;
       bmp.CombineMode := cmMerge;
       FIconSettings.Icon.SetSize(Theme[DS_ICONSIZE].IntValue,Theme[DS_ICONSIZE].IntValue);
