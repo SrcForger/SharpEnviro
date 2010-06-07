@@ -15,6 +15,7 @@ uses
   JvExControls,
   JvPageList,
   StdCtrls,
+  SharpFileUtils,
   uSharpEMenuItem,
   uSharpEMenu,
   ExtCtrls,
@@ -339,20 +340,34 @@ end;
 procedure TfrmEdit.btnLinkTargetBrowseClick(Sender: TObject);
 var
   s: string;
+  Ext : String;
 begin
   s := SharpDialogs.TargetDialog(STI_ALL_TARGETS, Mouse.CursorPos);
 
-  if s <> '' then begin
+  if s <> '' then
+  begin
     edLinkTarget.Text := s;
 
     if (length(trim(edLinkIcon.Text)) = 0)
       and (FileExists(s) or DirectoryExists(s)) then
-      edLinkIcon.Text := 'shell:icon';    
+      edLinkIcon.Text := 'shell:icon';
 
-    if edLinkName.Text = '' then
-      edLinkName.Text := ExtractFileName(s);
+    if (length(trim(edLinkName.Text)) = 0) then
+    begin
+      if FileExists(s) then
+      begin
+        Ext := ExtractFileExt(s);
+        if CompareText(Ext,'.exe') = 0 then
+          edLinkName.Text := GetFileDescription(s);
+        if (length(trim(edLinkName.Text)) = 0) then
+        begin
+          s := ExtractFileName(s);
+          setlength(s,length(s)-Length(Ext));
+          edLinkName.Text := s;
+        end;
+      end else edLinkName.Text := s;
+    end;
   end;
-
 end;
 
 procedure TfrmEdit.btnSubmenuIconBrowseClick(Sender: TObject);
