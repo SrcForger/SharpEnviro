@@ -344,8 +344,8 @@ begin
     result := 32
   else if Height <= 48 then
     result := 48
-  else if Height <= 64 then
-    result := 64
+//  else if Height <= 64 then
+//    result := 64
   else if Height <= 128 then
     result := 128
   else result := 256;
