@@ -122,6 +122,9 @@ begin
   if not (Initialized) then
     exit;
 
+  if TMainForm(Form).WeatherLocation = '0' then
+    TMainForm(Form).LoadSettings;
+  
   TMainForm(Form).WeatherParser.Update(TMainForm(Form).WeatherLocation);
   TMainForm(Form).ReAlignComponents;
 end;
