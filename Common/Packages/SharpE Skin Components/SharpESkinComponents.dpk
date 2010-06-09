@@ -68,6 +68,20 @@ contains
   SharpAPI in '..\..\Libraries\SharpAPI\SharpAPI.pas',
   SharpThemeApiEx in '..\..\Libraries\SharpThemeApiEx\SharpThemeApiEx.pas',
   GR32_PNG in '..\..\3rd party\GR32 Addons\GR32_PNG.pas',
-  SystemFontList in '..\..\Delphi Components\SharpE Skin Components\SystemFontList.pas';
+  SystemFontList in '..\..\Delphi Components\SharpE Skin Components\SystemFontList.pas',
+  uSharpXMLUtils in '..\..\Units\XML\uSharpXMLUtils.pas',
+  SharpSharedFileAccess in '..\..\Units\SharpFileUtils\SharpSharedFileAccess.pas',
+  ISharpESkinComponents in '..\..\Interfaces\ISharpESkinComponents.pas',
+  SharpTypes in '..\..\Units\SharpTypes\SharpTypes.pas',
+  uIThemeInfo in '..\..\Libraries\SharpThemeApiEx\uIThemeInfo.pas',
+  uIThemeSkin in '..\..\Libraries\SharpThemeApiEx\uIThemeSkin.pas',
+  uIThemeScheme in '..\..\Libraries\SharpThemeApiEx\uIThemeScheme.pas',
+  uIThemeDesktop in '..\..\Libraries\SharpThemeApiEx\uIThemeDesktop.pas',
+  uIThemeIcons in '..\..\Libraries\SharpThemeApiEx\uIThemeIcons.pas',
+  uIThemeWallpaper in '..\..\Libraries\SharpThemeApiEx\uIThemeWallpaper.pas',
+  uISharpETheme in '..\..\Libraries\SharpThemeApiEx\uISharpETheme.pas',
+  uThemeConsts in '..\..\Libraries\SharpThemeApiEx\uThemeConsts.pas',
+  uIThemeList in '..\..\Libraries\SharpThemeApiEx\uIThemeList.pas',
+  MonitorList in '..\..\Units\MonitorList\MonitorList.pas';
 
 end.

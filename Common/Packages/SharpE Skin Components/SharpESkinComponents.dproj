@@ -1,4 +1,5 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>{621fd4e9-07f3-4b60-918e-938caeac72c6}</ProjectGuid>
     <MainSource>SharpESkinComponents.dpk</MainSource>
@@ -64,10 +65,23 @@
     <DCCReference Include="..\..\Delphi Components\SharpE Skin Components\StrConst.pas" />
     <DCCReference Include="..\..\Delphi Components\SharpE Skin Components\StrTools.pas" />
     <DCCReference Include="..\..\Delphi Components\SharpE Skin Components\SystemFontList.pas" />
+    <DCCReference Include="..\..\Interfaces\ISharpESkinComponents.pas" />
     <DCCReference Include="..\..\Libraries\SharpAPI\SharpAPI.pas" />
     <DCCReference Include="..\..\Libraries\SharpThemeApiEx\SharpThemeApiEx.pas" />
-    <DCCReference Include="..\..\Units\SharpFX\PNG_D10.dcp" />
+    <DCCReference Include="..\..\Libraries\SharpThemeApiEx\uISharpETheme.pas" />
+    <DCCReference Include="..\..\Libraries\SharpThemeApiEx\uIThemeDesktop.pas" />
+    <DCCReference Include="..\..\Libraries\SharpThemeApiEx\uIThemeIcons.pas" />
+    <DCCReference Include="..\..\Libraries\SharpThemeApiEx\uIThemeInfo.pas" />
+    <DCCReference Include="..\..\Libraries\SharpThemeApiEx\uIThemeList.pas" />
+    <DCCReference Include="..\..\Libraries\SharpThemeApiEx\uIThemeScheme.pas" />
+    <DCCReference Include="..\..\Libraries\SharpThemeApiEx\uIThemeSkin.pas" />
+    <DCCReference Include="..\..\Libraries\SharpThemeApiEx\uIThemeWallpaper.pas" />
+    <DCCReference Include="..\..\Libraries\SharpThemeApiEx\uThemeConsts.pas" />
+    <DCCReference Include="..\..\Units\MonitorList\MonitorList.pas" />
+    <DCCReference Include="..\..\Units\SharpFileUtils\SharpSharedFileAccess.pas" />
     <DCCReference Include="..\..\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas" />
+    <DCCReference Include="..\..\Units\SharpTypes\SharpTypes.pas" />
+    <DCCReference Include="..\..\Units\XML\uSharpXMLUtils.pas" />
     <DCCReference Include="designide.dcp" />
     <DCCReference Include="GR32_RS2007.dcp" />
     <DCCReference Include="Jcl.dcp" />
