@@ -27,13 +27,15 @@ unit uSharpEMenuIcons;
 
 interface
 
-uses SysUtils,Contnrs,Classes,GR32,uSharpEMenuIcon;
+uses
+  Windows,SysUtils,Contnrs,Classes,GR32,uSharpEMenuIcon;
 
 type
   TSharpEMenuIcons = class
   private
     FItems : TObjectList;
     FOnlyAdd : boolean;
+    FItemsAccess : TRTLCriticalSection;
   public
     property Items : TObjectList read FItems;
     property OnlyAdd : boolean read FOnlyAdd write FOnlyAdd;
@@ -69,11 +71,15 @@ begin
   FItems := TObjectList.Create;
   FItems.Clear;
   FOnlyAdd := False;
+
+  InitializeCriticalSection(FItemsAccess);
 end;
 
 destructor TSharpEMenuIcons.Destroy;
 begin
   FreeAndNil(FItems);
+
+  DeleteCriticalSection(FItemsAccess);
 
   inherited Destroy;
 end;
@@ -90,24 +96,29 @@ begin
   else isSEIcon := False;
 
   found := False;
-  for n := 0 to FItems.Count -1 do
-  begin
-    Item := TSharpEMenuIcon(FItems.Items[n]);
-    if isSEIcon then
+  EnterCriticalSection(FItemsAccess);
+  try
+    for n := 0 to FItems.Count -1 do
     begin
-      if Item.IconType <> itCustomIcon then
-        if CompareText(Item.IconSource,pIconSource) = 0 then
-          found := True;
-    end else
-    if (CompareText(Item.IconSource,pIconData) = 0) or
-       (CompareText(Item.IconSource,pIconSource) = 0) then
-      found := True;
+      Item := TSharpEMenuIcon(FItems.Items[n]);
+      if isSEIcon then
+      begin
+        if Item.IconType <> itCustomIcon then
+          if CompareText(Item.IconSource,pIconSource) = 0 then
+            found := True;
+      end else
+      if (CompareText(Item.IconSource,pIconData) = 0) or
+         (CompareText(Item.IconSource,pIconSource) = 0) then
+        found := True;
 
-    if found then    
-    begin
-      result := Item;
-      exit;
+      if found then
+      begin
+        result := Item;
+        exit;
+      end;
     end;
+  finally
+    LeaveCriticalSection(FItemsAccess);
   end;
   result := nil;
 end;
@@ -120,15 +131,20 @@ var
 begin
   result := False;
 
-  for n := 0 to FItems.Count -1 do
-  begin
-    Item := TSharpEMenuIcon(FItems.Items[n]);
-    if Item.IconType = itGeneric then
-      if CompareText(Item.IconSource,pIconData) = 0 then
-      begin
-        result := True;
-        exit;
-      end;
+  EnterCriticalSection(FItemsAccess);
+  try
+    for n := 0 to FItems.Count -1 do
+    begin
+      Item := TSharpEMenuIcon(FItems.Items[n]);
+      if Item.IconType = itGeneric then
+        if CompareText(Item.IconSource,pIconData) = 0 then
+        begin
+          result := True;
+          exit;
+        end;
+    end;
+  finally
+    LeaveCriticalSection(FItemsAccess);
   end;
 end;
 
@@ -140,7 +156,9 @@ begin
   if Item = nil then
   begin
     Item := TSharpEMenuIcon.Create(pIconSource,pBmp,pIconType);
+    EnterCriticalSection(FItemsAccess);
     FItems.Add(Item);
+    LeaveCriticalSection(FItemsAccess);
   end else Item.Count := Item.Count + 1;
   result := Item;
 end;
@@ -153,8 +171,14 @@ begin
   if Item = nil then
   begin
     Item := TSharpEMenuIcon.Create(pIconSource,pIconData,pIconType,not OnlyAdd);
+    EnterCriticalSection(FItemsAccess);
     FItems.Add(Item);
-  end else Item.Count := Item.Count + 1;
+    LeaveCriticalSection(FitemsAccess);
+  end else begin
+    EnterCriticalSection(FItemsAccess);
+    Item.Count := Item.Count + 1;
+    LeaveCriticalSection(FitemsAccess);
+  end;
   result := Item;
 end;
 
@@ -163,15 +187,20 @@ var
   n : integer;
   Item : TSharpEMenuIcon;
 begin
-  for n := 0 to FItems.Count -1 do
-  begin
-    Item := TSharpEMenuIcon(FItems.Items[n]);
-    if Item = pIcon then
+  EnterCriticalSection(FItemsAccess);
+  try
+    for n := 0 to FItems.Count -1 do
     begin
-      Item.Count := Item.Count - 1;
-      if Item.Count <= 0 then FItems.Delete(n);
-      exit;      
+      Item := TSharpEMenuIcon(FItems.Items[n]);
+      if Item = pIcon then
+      begin
+        Item.Count := Item.Count - 1;
+        if Item.Count <= 0 then FItems.Delete(n);
+        exit;
+      end;
     end;
+  finally
+    LeaveCriticalSection(FItemsAccess);
   end;
 end;
 
@@ -180,15 +209,20 @@ var
   n : integer;
   Item : TSharpEMenuIcon;
 begin
-  for n := 0 to FItems.Count -1 do
-  begin
-    Item := TSharpEMenuIcon(FItems.Items[n]);
-    if Item.IconSource = pIconSource then
+  EnterCriticalSection(FItemsAccess);
+  try
+    for n := 0 to FItems.Count -1 do
     begin
-      Item.Count := Item.Count - 1;
-      if Item.Count <= 0 then FItems.Delete(n);
-      exit;
+      Item := TSharpEMenuIcon(FItems.Items[n]);
+      if Item.IconSource = pIconSource then
+      begin
+        Item.Count := Item.Count - 1;
+        if Item.Count <= 0 then FItems.Delete(n);
+        exit;
+      end;
     end;
+  finally
+    LeaveCriticalSection(FItemsAccess);
   end;
 end;
 
@@ -259,7 +293,9 @@ begin
       //SendDebugMessageEx('SharpMenu', IconSource, 0, DMT_TRACE);
       Item := TSharpEMenuIcon.Create(IconSource,IconType,Stream);
       Item.Cached := True;
+      EnterCriticalSection(FItemsAccess);
       FItems.Add(item);
+      LeaveCriticalSection(FItemsAccess);
     end;
     Stream.Free;    
   end;
