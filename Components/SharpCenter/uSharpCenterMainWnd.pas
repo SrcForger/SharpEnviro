@@ -1121,33 +1121,17 @@ begin
 end;
 
 procedure TSharpCenterWnd.RefreshTitleEvent(Sender: TObject);
-//var
-//  sName, sStatus, sDescription: string;
-//  tmpItem: TSharpCenterManagerItem;
+var
+  pluginData : TPluginData;
+  tmpItem: TSharpCenterManagerItem;
 begin
-//  if SCM.Plugin.Dllhandle <> 0 then begin
-//
-//    if lbTree.SelectedItem = nil then exit;
-//
-//    tmpItem := TSharpCenterManagerItem(lbTree.SelectedItem.Data);
-//
-//    // Name
-//    sName := PAnsiChar(scm.Plugin.PluginInterface.GetPluginName);
-//    if sName = '' then sName := scm.Plugin.MetaData.Name;
-//    tmpItem.Caption := sName;
-//
-//    // Status
-//    sStatus := PAnsiChar(scm.Plugin.PluginInterface.GetPluginStatusText);
-//    tmpItem.Status := sStatus;
-//
-//    // Description
-//    sDescription := PAnsiChar(scm.Plugin.PluginInterface.GetPluginDescriptionText);
-//    if sDescription = '' then sDescription := scm.Plugin.MetaData.Description;
-//    tmpItem.Description := sDescription;
-//
-//    lbTree.Refresh;
-//  end;
-
+  if lbTree.SelectedItem <> nil then
+  begin
+    GetConfigPluginData(SCM.Plugin.Dllhandle, pluginData, SCM.Plugin.PluginInterface.PluginHost.PluginId);
+    tmpItem := TSharpCenterManagerItem(lbTree.SelectedItem.Data);
+    tmpItem.Status := pluginData.Status;
+    lbTree.Refresh;
+  end;
   UpdateConfigHeader;
 end;
 
