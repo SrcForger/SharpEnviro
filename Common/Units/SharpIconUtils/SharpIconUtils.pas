@@ -183,12 +183,10 @@ var
   BufSize: Integer; // size of expanded string
 begin
   // Get required buffer size
-  BufSize := ExpandEnvironmentStrings(
-    PChar(Str), nil, 0);
+  BufSize := ExpandEnvironmentStrings(PChar(Str), nil, 0);
   // Read expanded string into result string
   SetLength(Result, BufSize);
-  ExpandEnvironmentStrings(PChar(Str),
-    PChar(Result), BufSize);
+  ExpandEnvironmentStrings(PChar(Str), PChar(Result), BufSize);
 end;
 
 function extrShellIconLarge(Bmp : TBitmap32; FileName : String; Size : Integer) : THandle;
@@ -197,6 +195,9 @@ var
   hImgList: HIMAGELIST;
   FileInfo : SHFILEINFO;
 begin
+  if not FileExists(FileName) then
+    FileName := ExpandEnvVars(FileName);
+
   hImgList:= ImageListExtraLarge;
   if hImgList <> 0 then
   begin
@@ -264,7 +265,9 @@ function LoadIco(Bmp : TBitmap32; IconFile : string; Size : integer) : boolean;
 var
   icon : Hicon;
 begin
-  icon := loadimage(0,pchar(IconFile),IMAGE_ICON,Size,Size,LR_DEFAULTSIZE or LR_LOADFROMFILE);
+  icon := 0;
+  if FileExists(IconFile) then
+    icon := loadimage(0,pchar(IconFile),IMAGE_ICON,Size,Size,LR_DEFAULTSIZE or LR_LOADFROMFILE);
   if icon <> 0 then
   begin
     IconToImage(Bmp, icon);
