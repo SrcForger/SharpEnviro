@@ -47,14 +47,19 @@ type
     function GetInfo: TThemeIconSetInfo; stdcall;
     property Info : TThemeIconSetInfo read GetInfo;
 
-    function GetIcons : TSharpEIconSet; stdcall;
-    property Icons : TSharpEIconSet read GetIcons;    
+    function GetIcons : TSharpEIcons; stdcall;
+    property Icons : TSharpEIcons read GetIcons;
 
-    procedure SetInfo(pAuthor, pWebsite : String);
+    procedure SetInfo(pAuthor, pWebsite, pComment : String);
+
+    procedure GetIconsFromDir(var pIcons : TSharpEIcons; pDirectory : String); stdcall;
 
     function GetIconCount: integer; stdcall;
-    function GetIconByIndex(pIndex: integer): TSharpEIcon; stdcall;
+        
     function GetIconByTag(pTag: String): TSharpEIcon; stdcall;
+    function GetIconFileSizedByTag(pTag: String; pTargetSize : integer): String; stdcall;
+    function GetIconFileSizesByIndex(pIndex: integer; pTargetSize : integer): String; stdcall;        
+    function GetIconIndexByTag(pTag : String) : integer; stdcall;
     function IsIconInIconSet(pTag: String): boolean; stdcall;
   end;
 

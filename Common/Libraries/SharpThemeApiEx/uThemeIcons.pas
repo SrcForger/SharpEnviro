@@ -28,7 +28,7 @@ unit uThemeIcons;
 interface
 
 uses
-  SharpApi, uThemeConsts, uIThemeIcons, uThemeInfo;
+  Classes, SharpApi, uThemeConsts, uIThemeIcons, uThemeInfo;
 
 type
   TThemeIcons = class(TInterfacedObject, IThemeIcons)
@@ -37,14 +37,15 @@ type
     FDirectoryIconSet : String;
     FDirectoryBase    : String;
 
+    FIcons : TSharpEIcons;
+
     FName      : String;
     FInfo      : TThemeIconSetInfo;
-    FIcons     : TSharpEIconSet;
     FThemeInfo : TThemeInfo;
     procedure SetDefaults;
     procedure UpdateDirectory;
-    function GetIconIndexByTag(pTag : String) : integer;
     procedure SortByName;
+    procedure ResetIcons;
   public
     LastUpdate : Int64;
     constructor Create(pThemeInfo : TThemeInfo); reintroduce;
@@ -65,14 +66,19 @@ type
     function GetInfo: TThemeIconSetInfo; stdcall;
     property Info : TThemeIconSetInfo read GetInfo;
 
-    function GetIcons : TSharpEIconSet; stdcall;
-    property Icons : TSharpEIconSet read GetIcons;    
+    procedure SetInfo(pAuthor, pWebsite, pComment : String);
 
-    procedure SetInfo(pAuthor, pWebsite : String);
+    function GetIcons : TSharpEIcons; stdcall;
+    property Icons : TSharpEIcons read GetIcons;
+
+    procedure GetIconsFromDir(var pIcons : TSharpEIcons; pDirectory : String); stdcall;
 
     function GetIconCount: integer; stdcall;
-    function GetIconByIndex(pIndex: integer): TSharpEIcon; stdcall;
+
     function GetIconByTag(pTag: String): TSharpEIcon; stdcall;
+    function GetIconFileSizedByTag(pTag: String; pTargetSize : integer): String; stdcall;
+    function GetIconFileSizesByIndex(pIndex: integer; pTargetSize : integer): String; stdcall;
+    function GetIconIndexByTag(pTag : String) : integer; stdcall;     
     function IsIconInIconSet(pTag: String): boolean; stdcall;
   end;
 
@@ -94,7 +100,7 @@ end;
 
 destructor TThemeIcons.Destroy;
 begin
-  SetLength(FIcons,0);
+  ResetIcons;
 
   inherited Destroy;
 end;
@@ -104,33 +110,19 @@ begin
   result := FDirectoryBase;
 end;
 
-function TThemeIcons.GetIconByIndex(pIndex: integer): TSharpEIcon;
-begin
-  if pIndex > GetIconCount - 1 then
-  begin
-    result.FileName := '';
-    result.Tag := '';
-    exit;
-  end;
-
-  result.FileName := FIcons[pIndex].FileName;
-  result.Tag := FIcons[pIndex].Tag;
-end;
 
 function TThemeIcons.GetIconByTag(pTag: String): TSharpEIcon;
 var
-  n: integer;
+  index : integer;
 begin
-  for n := 0 to GetIconCount - 1 do
-    if CompareText(FIcons[n].Tag,pTag) = 0 then
-    begin
-      result.FileName := FIcons[n].FileName;
-      result.Tag := FIcons[n].Tag;
-      exit;
-    end;
-
-  result.FileName := '';
-  result.Tag := '';
+  index := GetIconIndexByTag(pTag);
+  if index <> -1 then
+    result := FIcons[index]
+  else begin
+    result.Tag := '';
+    setlength(result.Sizes,1);
+    result.Sizes[0] := 0;
+  end;
 end;
 
 function TThemeIcons.GetIconCount: integer;
@@ -142,18 +134,192 @@ function TThemeIcons.GetIconIndexByTag(pTag: String): integer;
 var
   n : integer;
 begin
-  result := -1;
-  for n := 0 to GetIconCount - 1 do
-    if CompareText(Icons[n].Tag,pTag) = 0 then
+  for n := 0 to High(FIcons) do
+    if CompareText(FIcons[n].Tag,pTag) = 0 then
     begin
       result := n;
       exit;
     end;
+  result := - 1;
 end;
 
-function TThemeIcons.GetIcons: TSharpEIconSet;
+function TThemeIcons.GetIcons: TSharpEIcons;
 begin
   result := FIcons;
+end;
+
+procedure FindAllIconsInDir(SList : TStringList; Dir : String);
+var
+  sr : TSearchRec;
+  s : String;
+begin
+  {$WARNINGS OFF} Dir := IncludeTrailingBackslash(Dir); {$WARNINGS ON}
+  SList.Clear;
+  if FindFirst(Dir + '*.png',faDirectory  ,sr) = 0 then
+  repeat
+    if FileExists(Dir + sr.Name) then
+    begin
+      s := sr.Name;
+      setlength(s,length(s) - length(ExtractFileExt(s)));
+      SList.Add(s);
+    end;
+  until FindNext(sr) <> 0;
+  FindClose(sr);
+end;
+
+function IsSizeInIcon(Icon : TSharpEIcon; Size : integer) : boolean;
+var
+  n : integer;
+begin
+  for n := 0 to High(Icon.Sizes) do
+    if Icon.Sizes[n] = Size then
+    begin
+      result := True;
+      exit;
+    end;
+  result := False;    
+end;
+
+procedure MergeLists(var Dst : TSharpEIcons; Src : TStringList; Size : integer);
+var
+  n,i : integer;
+  found : boolean;
+begin
+  for n := 0 to Src.Count - 1 do
+  begin
+    found := False;
+    // check if each new icon is already in the Dst List
+    for i := 0 to High(Dst) do
+      if CompareText(Dst[i].Tag,Src[n]) = 0 then
+      begin
+        // If icon is already in the list check if the size already exists
+        if not IsSizeInIcon(Dst[i],Size) then
+        begin
+          // icon isnt in the list with this size, add the size to the icon
+          setlength(Dst[i].Sizes,length(Dst[i].Sizes) + 1);
+          Dst[i].Sizes[High(Dst[i].Sizes)] := Size;
+        end;
+        found := True;
+      end;
+    // Icon isn't in Dst List, add it with the given size
+    if not found then
+    begin
+      setlength(Dst,length(Dst) + 1);
+      Dst[High(Dst)].Tag := Src[n];
+      setlength(Dst[High(Dst)].Sizes, length(Dst[High(Dst)].Sizes) + 1);
+      Dst[High(Dst)].Sizes[High(Dst[High(Dst)].Sizes)] := Size;
+    end;
+  end;
+end;
+
+
+procedure TThemeIcons.GetIconsFromDir(var pIcons: TSharpEIcons; pDirectory: String);
+var
+  XML : IXmlBase;
+  n: integer;
+  Sizes : array of integer;
+  List : TStringList;
+  Dir : String;
+begin
+  {$WARNINGS OFF}pDirectory := IncludeTrailingBackSlash(pDirectory);{$WARNINGS ON}
+
+  // Load Global Default Icon Sizes
+  XML := TInterfacedXMLBase.Create(True);
+  XML.XmlFilename := FDirectoryBase + FDirectoryDefault + 'DefaultIconSet.xml';
+  List := TStringList.Create;
+  setlength(Sizes,0);
+  if XML.Load then
+  begin
+    with XML.XmlRoot.Items do
+      if ItemNamed['IconSizes'] <> nil then
+        with ItemNamed['IconSizes'].Items do
+        begin
+          for n := 0 to Count - 1 do
+          begin
+            SetLength(Sizes,length(Sizes)+1);
+            Sizes[High(Sizes)] := Item[n].Properties.IntValue('Size',-1)
+          end;
+        end;
+  end;
+  XML := nil;
+
+  for n := 0 to High(Sizes) do
+  begin
+    Dir := FDirectoryBase + FDirectoryDefault + inttostr(Sizes[n]) + '\';
+    if DirectoryExists(Dir) then
+    begin
+      FindAllIconsInDir(List,Dir);
+      MergeLists(pIcons,List,Sizes[n]);
+    end;
+  end;
+
+  // Load the actual icon set
+  XML := TInterfacedXMLBase.Create(True);
+  XML.XmlFilename := pDirectory + 'IconSet.xml';
+  setlength(Sizes,0);
+  if XML.Load then
+  begin
+    with XML.XmlRoot.Items, FInfo do
+    begin
+      Author := Value('Author', '');
+      Website := Value('Website', '');
+      Comment := Value('Comment', '');
+      if ItemNamed['IconSizes'] <> nil then
+        with ItemNamed['IconSizes'].Items do
+          for n := 0 to Count - 1 do
+          begin
+            SetLength(Sizes,length(Sizes)+1);
+            Sizes[High(Sizes)] := Item[n].Properties.IntValue('Size',-1)
+          end;
+    end
+  end;
+  XML := nil;
+
+  for n := 0 to High(Sizes) do
+  begin
+    Dir := FDirectoryBase + FDirectoryIconSet + inttostr(Sizes[n]) + '\';
+    if DirectoryExists(Dir) then
+    begin
+      FindAllIconsInDir(List,Dir);
+      MergeLists(pIcons,List,Sizes[n]);
+    end;
+  end;
+
+  List.Free;
+end;
+
+function TThemeIcons.GetIconFileSizedByTag(pTag: String; pTargetSize: integer): String;
+var
+  index : integer;
+begin
+  result := '';
+
+  index := GetIconIndexByTag(pTag);
+  if index <> -1 then
+    result := GetIconFileSizesByIndex(index,pTargetSize);
+end;
+
+function TThemeIcons.GetIconFileSizesByIndex(pIndex: integer; pTargetSize: integer): String;
+var
+  n : integer;
+  nearestsize : integer;
+  icon : TSharpEIcon;
+begin
+  result := '';
+
+  if (pIndex < 0) or (pIndex > High(FIcons)) then
+    exit;
+  
+  icon := FIcons[pIndex];
+  nearestsize := 0;
+  for n := 0 to High(icon.sizes) do
+  begin
+    if (icon.sizes[n] > nearestsize) and (nearestsize < pTargetSize) then
+      nearestsize := icon.sizes[n];
+    if nearestsize >= pTargetSize then
+      break;
+  end;
+  result := FDirectoryBase + FDirectoryDefault + inttostr(nearestsize) + '\' + icon.Tag + '.png';
 end;
 
 function TThemeIcons.GetInfo: TThemeIconSetInfo;
@@ -171,8 +337,8 @@ var
   n: integer;
 begin
   result := False;
-  for n := 0 to GetIconCount - 1 do
-    if CompareText(Icons[n].Tag,pTag) = 0 then
+  for n := 0 to High(FIcons) do
+    if CompareText(FIcons[n].Tag,pTag) = 0 then
     begin
       result := True;
       exit;
@@ -208,68 +374,19 @@ begin
 end;
 
 procedure TThemeIcons.LoadIcons;
-var
-  XML : IXmlBase;
-  n,i: integer;
-  tmpName : String;
 begin
-  SetLength(FIcons,0);
-
-  // Load Global Default Icons
-  XML := TInterfacedXMLBase.Create(True);
-  XML.XmlFilename := FDirectoryBase + FDirectoryDefault + 'DefaultIconSet.xml';
-  if XML.Load then
-  begin
-    with XML.XmlRoot.Items do
-      if ItemNamed['Icons'] <> nil then
-        with ItemNamed['Icons'].Items do
-        begin
-          for n := 0 to Count - 1 do
-          begin
-            SetLength(FIcons,length(FIcons)+1);
-            FIcons[High(FIcons)].Tag      := Item[n].Items.Value('Name', '');
-            FIcons[High(FIcons)].FileName := FDirectoryDefault + Item[n].Items.Value('File', '');
-          end;
-        end;
-  end;
-  XML := nil;
-
-  // Load the actual icon set
-  XML := TInterfacedXMLBase.Create(True);
-  XML.XmlFilename := FDirectoryBase + FDirectoryIconSet + 'IconSet.xml';
-  if XML.Load then
-  begin
-    with XML.XmlRoot.Items, FInfo do
-    begin
-      Author := Value('Author', '');
-      Website := Value('Website', '');
-      if ItemNamed['Icons'] <> nil then
-        with ItemNamed['Icons'].Items do
-        begin
-          for n := 0 to Count - 1 do
-          begin
-            tmpName := Item[n].Items.Value('Name', '');
-            if length(trim(tmpName)) > 0 then
-            begin
-              if IsIconInIconSet(tmpName) then
-              begin
-                i := GetIconIndexByTag(tmpName);
-                if i > -1 then
-                  FIcons[i].FileName := FDirectoryIconSet + Item[n].Items.Value('File', '');
-              end else
-              begin
-                SetLength(FIcons,length(FIcons)+1);
-                FIcons[High(FIcons)].Tag      := tmpName;
-                FIcons[High(FIcons)].FileName := FDirectoryIconSet + Item[n].Items.Value('File', '');
-              end;
-            end;
-          end;
-        end;
-    end
-  end;
-  XML := nil;
-
+  ResetIcons;
+  GetIconsFromDir(FIcons,FDirectoryBase + FDirectoryIconSet);
   SortByName;
+end;
+
+procedure TThemeIcons.ResetIcons;
+var
+  n : integer;
+begin
+  for n := 0 to High(FIcons) do
+    setlength(FIcons[n].Sizes,0);
+  setlength(FIcons,0);
 end;
 
 procedure TThemeIcons.SaveToFile;
@@ -299,17 +416,19 @@ begin
   begin
     Author  := '';
     Website := '';
+    Comment := '';
   end;
-  SetLength(FIcons, 0);
+  ResetIcons;
   UpdateDirectory;
 end;
 
-procedure TThemeIcons.SetInfo(pAuthor, pWebsite: String);
+procedure TThemeIcons.SetInfo(pAuthor, pWebsite, pComment : String);
 begin
   with FInfo do
   begin
     Author  := pAuthor;
     Website := pWebsite;
+    Comment := pComment;
   end;
 end;
 

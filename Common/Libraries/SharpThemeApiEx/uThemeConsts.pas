@@ -144,15 +144,15 @@ type
 
   // TThemeIcon
   TSharpEIcon = record
-    FileName: string;
-    Tag: string;
+    Tag : String;
+    Sizes : array of integer;
   end;
-
-  TSharpEIconSet = array of TSharpEIcon;
+  TSharpEIcons = array of TSharpEIcon;
 
   TThemeIconSetInfo = record
     Author  : String;
     Website : String;
+    Comment : String;
   end;
 
   // TThemeWallpaper
