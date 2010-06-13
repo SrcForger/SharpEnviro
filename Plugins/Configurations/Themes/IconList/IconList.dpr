@@ -96,6 +96,7 @@ procedure TSharpCenterPlugin.Load;
 begin
   FTheme.LoadTheme([tpIconSet]);
   frmListWnd.IconSet := FTheme.Icons.Name;
+  frmListWnd.Theme := FTheme;  
 end;
 
 function TSharpCenterPlugin.Open: Cardinal;

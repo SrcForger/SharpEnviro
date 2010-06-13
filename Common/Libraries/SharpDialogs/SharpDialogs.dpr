@@ -1090,7 +1090,7 @@ var
   FileInfo : SHFILEINFO;
   ImageListHandle : THandle;
   WIcon : TIcon;
-  icon : TSharpEIcon;
+  s : string;
   Theme : ISharpETheme;
   sr : TSearchRec;
   filename,filetag : String;
@@ -1126,8 +1126,8 @@ begin
 
   iml.Add(bmp,bmp);
 
-  Bmp.Width := 40;
-  Bmp.Height := 40;
+  Bmp.Width := 32;
+  Bmp.Height := 32;
   subiml.Add(bmp,bmp);
 
   Bmp.Width := 16;
@@ -1201,21 +1201,20 @@ begin
     wIcon := TIcon.Create;
     Theme := GetCurrentTheme;
     Theme.LoadTheme([tpIconSet]);
-    Dir := Theme.Icons.Directory;
 
     subiml.BeginUpdate;
     for n := 0 to Theme.Icons.GetIconCount - 1 do
     begin
-      icon := Theme.Icons.GetIconByIndex(n);
+      s := Theme.Icons.GetIconFileSizesByIndex(n,32);
 
-      if FileExists(Dir + Icon.FileName) then
+      if FileExists(s) then
       begin
-        wIcon.LoadFromFile(Dir + Icon.FileName);
+        wIcon.LoadFromFile(s);
         subiml.AddIcon(wIcon);
 
         menuItem := TMenuItem.Create(Iconmenu);
-        menuItem.Caption := icon.Tag;
-        menuItem.Hint := Icon.Tag;
+        menuItem.Caption := ExtractFileName(s);
+        menuItem.Hint := ExtractFileName(s);
         menuItem.OnClick := iconmenuclick.OnSharpEIconClick;
         menuItem.ImageIndex := subiml.Count - 1;
         if (n mod 10  = 0) and (n > 0) then menuItem.Break := mbBarBreak;

@@ -30,7 +30,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JclSimpleXML, JclFileUtils,
-  ImgList, PngImageList,
+  ImgList, PngImageList, uISharpETheme, uThemeConsts,
   SharpEListBox, SharpEListBoxEx, GR32, GR32_PNG, SharpApi,
   ExtCtrls, Menus, JclStrings, GR32_Image, Types,
 
@@ -48,10 +48,12 @@ type
     FAuthor: string;
     FName: string;
     FWebsite: string;
+    FComment: string;
   public
     property Name: string read FName write FName;
     property Author: string read FAuthor write FAuthor;
     property Website: string read FWebsite write FWebsite;
+    property Comment: string read FComment write FComment;
   end;
 
 type
@@ -73,6 +75,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
+    FTheme : ISharpETheme;
     FPluginHost: ISharpCenterHost;
     FIconSet: string;
 
@@ -82,8 +85,8 @@ type
     procedure BuildIconPreview(var ABmp: TBitmap32);
 
     property IconSet: string read FIconSet write FIconSet;
-    property PluginHost: ISharpCenterHost read FPluginHost write
-      FPluginHost;
+    property PluginHost: ISharpCenterHost read FPluginHost write FPluginHost;
+    property Theme: ISharpETheme read FTheme write FTheme;
   end;
 
 var
@@ -114,6 +117,7 @@ end;
 procedure TfrmListWnd.FormDestroy(Sender: TObject);
 begin
   ClearList;
+  FTheme := nil;
 end;
 
 procedure TfrmListWnd.FormShow(Sender: TObject);
@@ -126,51 +130,53 @@ const
   IconSize = 32;
 var
   x, y: integer;
-  XML: TJclSimpleXML;
   Dir: string;
   icon: TBitmap32;
-  n: integer;
+  n,i: integer;
   h: integer;
-  IconCount: integer;
   tmp: TIconItem;
+  Icons : TSharpEIcons;
+  SEIcon : TSharpEIcon;
+  nearestsize : integer;
 begin
   tmp := TIconItem(lbIcons.Item[lbIcons.ItemIndex].Data);
   Dir := SharpApi.GetSharpeDirectory + 'Icons\' + tmp.Name + '\';
-
-  XML := TJclSimpleXML.Create;
 
   Icon := TBitmap32.Create;
   Icon.DrawMode := dmBlend;
   Icon.CombineMode := cmMerge;
 
-  try
-    if FileExists(Dir + 'IconSet.xml') then begin
-      XML.LoadFromFile(Dir + 'IconSet.xml');
-      if XML.Root.Items.ItemNamed['Icons'] <> nil then begin
-        IconCount := XML.Root.Items.ItemNamed['Icons'].Items.Count;
-        h := (IconCount div ((ABmp.Width - Icon.Width) div IconSize) + 1) * IconSize;
-        ABmp.Height := h;
 
-        x := 0;
-        y := 0;
-        for n := 0 to XML.Root.Items.ItemNamed['Icons'].Items.Count - 1 do
-          with XML.Root.Items.ItemNamed['Icons'].Items.Item[n].Items do begin
-            Application.ProcessMessages;
-            SharpIconUtils.LoadIco(Icon, Dir + Value('file'), IconSize);
-            Icon.DrawTo(ABmp, x * Icon.Width, y * Icon.Height);
-            x := x + 1;
-            if x * Icon.Width >= (ABmp.Width - Icon.Width) then begin
-              x := 0;
-              y := y + 1;
-            end;
-          end;
-      end;
+  FTheme.Icons.GetIconsFromDir(Icons,Dir);
+
+  h := (length(Icons) div (ABmp.Width div (IconSize + 2)) + 1) * IconSize;
+  ABmp.Height := h;
+
+  x := 0;
+  y := 0;
+  for n := 0 to High(Icons) do
+  begin
+    Application.ProcessMessages;
+    SEIcon := Icons[n];
+    nearestsize := 0;
+    for i := 0 to High(SEIcon.sizes) do
+    begin
+      if (SEIcon.sizes[i] > nearestsize) and (nearestsize < 32) then
+        nearestsize := SEIcon.sizes[i];
+      if nearestsize >= 32 then
+        break;
     end;
-  except
+    SharpIconUtils.LoadPng(Icon,Dir + inttostr(nearestsize) + '\' + SEIcon.Tag + '.png');
+    Icon.DrawTo(ABmp, x * (Icon.Width + 2), y * Icon.Height);
+    x := x + 1;
+    if x * (Icon.Width + 2) >= (ABmp.Width - Icon.Width) then
+    begin
+      x := 0;
+      y := y + 1;
+    end;
   end;
 
   Icon.Free;
-  XML.Free;
 end;
 
 procedure TfrmListWnd.ClearList;
@@ -201,26 +207,32 @@ begin
     if FindFirst(Dir + '*', FADirectory, sr) = 0 then
     begin
       repeat
-        if (CompareText(sr.Name, '.') <> 0) and (CompareText(sr.Name, '..') <> 0) then begin
-          if FileExists(Dir + sr.Name + '\IconSet.xml') then begin
+        if (CompareText(sr.Name, '.') <> 0) and (CompareText(sr.Name, '..') <> 0) then
+        begin
+          if FileExists(Dir + sr.Name + '\IconSet.xml') then
+          begin
             try
               XML.LoadFromFile(Dir + sr.Name + '\IconSet.xml');
-  
-              tmp := TIconItem.Create;
-              tmp.Name := XML.Root.Items.Value('name', '...');
-              tmp.Author := XML.Root.Items.Value('author', '...');
-              tmp.Website := XML.Root.Items.Value('website', '');
-  
-              newItem := lbIcons.AddItem('', 0);
-              newItem.Data := tmp;
-              if length(trim(tmp.Website)) > 0 then
-                newItem.AddSubItem('', 1)
-              else
-                newItem.AddSubItem('', -1);
-  
-              if CompareText(sr.Name,FIconSet) = 0 then begin
-                lbIcons.ItemIndex := lbIcons.Items.Count - 1;
-                //BuildIconPreview;
+
+              if XML.Root.Items.ItemNamed['IconSizes'] <> nil then
+              begin
+                tmp := TIconItem.Create;
+                tmp.Name := XML.Root.Items.Value('name', '...');
+                tmp.Author := XML.Root.Items.Value('author', '...');
+                tmp.Website := XML.Root.Items.Value('website', '');
+
+                newItem := lbIcons.AddItem('', 0);
+                newItem.Data := tmp;
+                if length(trim(tmp.Website)) > 0 then
+                  newItem.AddSubItem('', 1)
+                else
+                  newItem.AddSubItem('', -1);
+
+                if CompareText(sr.Name,FIconSet) = 0 then
+                begin
+                  lbIcons.ItemIndex := lbIcons.Items.Count - 1;
+                  //BuildIconPreview;
+                end;
               end;
             except
             end;

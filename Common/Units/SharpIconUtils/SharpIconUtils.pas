@@ -300,13 +300,12 @@ end;
 
 function IconStringToIcon(Icon,Target : String; Bmp : TBitmap32) : boolean;
 begin
-  result := IconStringToIcon(Icon,Target,Bmp,0);
+  result := IconStringToIcon(Icon,Target,Bmp,32);
 end;
 
 function IconStringToIcon(Icon,Target : String; Bmp : TBitmap32; Size : integer) : boolean;
 var
   Theme : ISharpETheme;
-  SEIcon : TSharpEIcon;
   Ext : String;
 begin
   Target := GetFileNameWithoutParams(Target);
@@ -320,8 +319,7 @@ begin
     Theme := GetCurrentTheme;
     if Theme.Icons.IsIconInIconSet(Icon) then
     begin
-      SEIcon := Theme.Icons.GetIconByTag(Icon);
-      result := LoadIco(Bmp,Theme.Icons.Directory + SEIcon.FileName,GetNearestIconSize(Size));
+      result := LoadPng(Bmp,Theme.Icons.GetIconFileSizedByTag(Icon,Size));
     end else
     begin
       if FileExists(Icon) then
