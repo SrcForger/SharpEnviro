@@ -1217,7 +1217,7 @@ begin
         setlength(s,length(s) - length(ExtractFileExt(filename)));
         menuItem := TMenuItem.Create(Iconmenu);
         menuItem.Caption := s;
-        menuItem.Hint := filename;
+        menuItem.Hint := s;
         menuItem.OnClick := iconmenuclick.OnSharpEIconClick;
         menuItem.ImageIndex := count + 2;
         count := count + 1;
