@@ -303,7 +303,7 @@ end;
 
 procedure TSharpEMenuIcons.LoadNotLoadedIcons;
 const
-  N_THREADS = 4;
+  N_THREADS = 1;
 
 var
   n : integer;
