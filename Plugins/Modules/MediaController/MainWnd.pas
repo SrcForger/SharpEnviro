@@ -318,12 +318,12 @@ begin
   btn_stop.UpdateSkin;
 
   TempBmp.Clear(color32(0,0,0,0));
-  IconStringToIcon('icon.mediaplayer.previous', '', TempBmp, size);
+  IconStringToIcon('icon.mediaplayer.backward', '', TempBmp, size);
   btn_prev.Glyph32.Assign(tempBmp);
   btn_prev.UpdateSkin;
 
   TempBmp.Clear(color32(0,0,0,0));
-  IconStringToIcon('icon.mediaplayer.next', '', TempBmp, size);
+  IconStringToIcon('icon.mediaplayer.forward', '', TempBmp, size);
   btn_next.Glyph32.Assign(tempBmp);
   btn_next.UpdateSkin;
 

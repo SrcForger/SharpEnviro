@@ -114,9 +114,9 @@ var
 begin
   TempBmp := TBitmap32.Create;
 
-  Icon := 'icon.recyclebin.full';
+  Icon := 'icon.trash.full';
   if IsEmpty then
-    Icon := 'icon.recyclebin.empty';
+    Icon := 'icon.trash.empty';
 
   size := GetNearestIconSize(mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y);
 
