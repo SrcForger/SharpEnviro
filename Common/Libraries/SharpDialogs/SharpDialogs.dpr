@@ -1094,6 +1094,7 @@ var
   Theme : ISharpETheme;
   sr : TSearchRec;
   filename,filetag : String;
+  count : integer;
 begin
   Iconmenuresult := '';
   Iconmenu := TPopupMenu.Create(nil);
@@ -1198,30 +1199,32 @@ begin
     Iconmenu.Items.Add(menuItem);
     mindex := mindex + 1;
 
-    wIcon := TIcon.Create;
     Theme := GetCurrentTheme;
     Theme.LoadTheme([tpIconSet]);
 
     subiml.BeginUpdate;
+    count := 0;
     for n := 0 to Theme.Icons.GetIconCount - 1 do
     begin
       s := Theme.Icons.GetIconFileSizesByIndex(n,32);
 
       if FileExists(s) then
       begin
-        wIcon.LoadFromFile(s);
-        subiml.AddIcon(wIcon);
+        subiml.PngImages.Add(False).PngImage.LoadFromFile(s);
 
+        s := ExtractFileName(s);
+        filename := s;
+        setlength(s,length(s) - length(ExtractFileExt(filename)));
         menuItem := TMenuItem.Create(Iconmenu);
-        menuItem.Caption := ExtractFileName(s);
-        menuItem.Hint := ExtractFileName(s);
+        menuItem.Caption := s;
+        menuItem.Hint := filename;
         menuItem.OnClick := iconmenuclick.OnSharpEIconClick;
-        menuItem.ImageIndex := subiml.Count - 1;
-        if (n mod 10  = 0) and (n > 0) then menuItem.Break := mbBarBreak;
+        menuItem.ImageIndex := count + 2;
+        count := count + 1;
+        if (n mod 12  = 0) and (n > 0) then menuItem.Break := mbBarBreak;
         Iconmenu.Items.Items[mindex].Add(menuItem);
       end;
     end;
-    wIcon.Free;
     subiml.EndUpdate(True);
   end;
 
@@ -1237,6 +1240,8 @@ begin
 
     n := 0;
     Dir := SharpApi.GetSharpeDirectory + 'Icons\Menu\';
+    count := 0;
+    subgenericiml.BeginUpdate;
     if FindFirst(Dir + '*.png',faAnyFile,sr) = 0 then
     repeat
       filename := Dir + sr.Name;
@@ -1250,7 +1255,8 @@ begin
           menuItem.Caption := filetag;
           menuItem.Hint := filetag;
           menuItem.OnClick := iconmenuclick.OnSharpEIconClick;
-          menuItem.ImageIndex := subgenericiml.Count;
+          menuItem.ImageIndex := count + 1;
+          count := count + 1;
           if n mod 20  = 0 then menuItem.Break := mbBarBreak;
           Iconmenu.Items.Items[mindex].Add(menuItem);
           n := n + 1;
@@ -1258,6 +1264,7 @@ begin
       until (FindNext(sr) <> 0);
       FindClose(sr);
     end;
+    subgenericiml.EndUpdate(True);
 
     if smiCustomIcon in IconItems then
     begin
