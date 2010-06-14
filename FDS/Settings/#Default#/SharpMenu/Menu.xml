@@ -75,7 +75,7 @@
     <type>link</type>
     <Caption>Run...</Caption>
     <Target>!RunDlg</Target>
-    <Icon>icon.application</Icon>
+    <Icon>icon.system.command</Icon>
   </item>
   <item>
     <type>separator</type>
