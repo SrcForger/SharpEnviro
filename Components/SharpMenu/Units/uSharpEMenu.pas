@@ -430,7 +430,7 @@ begin
   item.Caption := s;
   item.OnClick := FMenuActions.OnDesktopObjectClick;
   if FSettings.UseIcons then
-    item.Icon := SharpEMenuIcons.AddIcon('icon.file.config','icon.file.config',itCustomIcon)
+    item.Icon := SharpEMenuIcons.AddIcon('icon.file.picture','icon.file.picture',itCustomIcon)
   else item.Icon := nil;
   item.isVisible := True;
   item.isDynamic := pDynamic;
