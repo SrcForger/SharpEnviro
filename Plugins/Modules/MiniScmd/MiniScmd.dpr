@@ -178,6 +178,9 @@ begin
   if [part] <= [suTheme,suSkinFileChanged] then
     TMainForm(Form).ReAlignComponents;
 
+  if [part] <= [suIconSet] then
+    TMainForm(Form).LoadIcon;
+
   if [part] <= [suBackground] then
   begin                               
     TMainForm(Form).edit.Repaint;

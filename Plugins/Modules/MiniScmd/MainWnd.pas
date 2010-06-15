@@ -58,15 +58,15 @@ type
     sButton      : Boolean;
     sButtonRight : Boolean;
     sEnableAC    : Boolean;
-    procedure LoadIcon;
     procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
   public
     mInterface : ISharpBarModule;
-    procedure UpdateBangs;    
+    procedure UpdateBangs;
     procedure LoadSettings;
     procedure ReAlignComponents;
     procedure UpdateComponentSkins;
     procedure UpdateSize;
+    procedure LoadIcon;    
 
     procedure LoadAutoComplete;
     procedure SaveAutoComplete(Item : string);
@@ -124,6 +124,7 @@ begin
     end;
     TempBmp.Free;
   end;
+  btn_select.UpdateSkin;
 end;
 
 procedure TMainForm.LoadSettings;
