@@ -304,6 +304,7 @@ var
   n : integer;
   nearestsize : integer;
   icon : TSharpEIcon;
+  s : String;
 begin
   result := '';
 
@@ -318,8 +319,11 @@ begin
       nearestsize := icon.sizes[n];
     if nearestsize >= pTargetSize then
       break;
-  end;
-  result := FDirectoryBase + FDirectoryDefault + inttostr(nearestsize) + '\' + icon.Tag + '.png';
+  end; 
+  s := FDirectoryBase + FDirectoryIconSet + inttostr(nearestsize) + '\' + icon.Tag + '.png';
+  if FileExists(s) then
+    result := s
+  else result := FDirectoryBase + FDirectoryDefault + inttostr(nearestsize) + '\' + icon.Tag + '.png';
 end;
 
 function TThemeIcons.GetInfo: TThemeIconSetInfo;

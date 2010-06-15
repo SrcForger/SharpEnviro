@@ -130,7 +130,7 @@ const
   IconSize = 32;
 var
   x, y: integer;
-  Dir: string;
+  s,DefaultDir,Dir: string;
   icon: TBitmap32;
   n,i: integer;
   h: integer;
@@ -140,6 +140,7 @@ var
   nearestsize : integer;
 begin
   tmp := TIconItem(lbIcons.Item[lbIcons.ItemIndex].Data);
+  DefaultDir := SharpApi.GetSharpeDirectory + 'Icons\Default\';
   Dir := SharpApi.GetSharpeDirectory + 'Icons\' + tmp.Name + '\';
 
   Icon := TBitmap32.Create;
@@ -166,7 +167,10 @@ begin
       if nearestsize >= 32 then
         break;
     end;
-    SharpIconUtils.LoadPng(Icon,Dir + inttostr(nearestsize) + '\' + SEIcon.Tag + '.png');
+    s := Dir + inttostr(nearestsize) + '\' + SEIcon.Tag + '.png';
+    if not FileExists(s) then
+      s := DefaultDir + inttostr(nearestsize) + '\' + SEIcon.Tag + '.png';
+    SharpIconUtils.LoadPng(Icon,s);
     Icon.DrawTo(ABmp, x * (Icon.Width + 2), y * Icon.Height);
     x := x + 1;
     if x * (Icon.Width + 2) >= (ABmp.Width - Icon.Width) then
