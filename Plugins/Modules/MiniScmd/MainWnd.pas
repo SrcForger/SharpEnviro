@@ -30,7 +30,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms, Types, StrUtils, ShellApi,
   Dialogs, StdCtrls, GR32, GR32_PNG, SharpEBaseControls, SharpEButton, Graphics,
-  JclSimpleXML, SharpApi, Math, SharpEEdit, Menus,
+  JclSimpleXML, SharpApi, Math, SharpEEdit, Menus, SharpIconUtils,
   uISharpBarModule, uAliasList;
 
 
@@ -98,29 +98,32 @@ begin
   if mInterface.SkinInterface = nil then
     exit;
 
-  TempBmp := TBitmap32.Create;
-  if mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y <= 16 then
+  if not SharpIconUtils.IconStringToIcon('icon.system.command','icon.system.command',btn_select.Glyph32,mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y) then
   begin
-    TempBmp.SetSize(16,16);
-    ResID := 'miniscmdicon';
-  end else
-  begin
-    TempBmp.SetSize(32,32);
-    ResID := 'miniscmdicon32';
-  end;
-
-  TempBmp.Clear(color32(0,0,0,0));
-  try
-    ResStream := TResourceStream.Create(HInstance, ResID, RT_RCDATA);
-    try
-      LoadBitmap32FromPng(TempBmp,ResStream,b);
-      btn_select.Glyph32.Assign(tempBmp);
-    finally
-      ResStream.Free;
+    TempBmp := TBitmap32.Create;
+    if mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y <= 16 then
+    begin
+      TempBmp.SetSize(16,16);
+      ResID := 'miniscmdicon';
+    end else
+    begin
+      TempBmp.SetSize(32,32);
+      ResID := 'miniscmdicon32';
     end;
-  except
+
+    TempBmp.Clear(color32(0,0,0,0));
+    try
+      ResStream := TResourceStream.Create(HInstance, ResID, RT_RCDATA);
+      try
+        LoadBitmap32FromPng(TempBmp,ResStream,b);
+        btn_select.Glyph32.Assign(tempBmp);
+      finally
+        ResStream.Free;
+      end;
+    except
+    end;
+    TempBmp.Free;
   end;
-  TempBmp.Free;
 end;
 
 procedure TMainForm.LoadSettings;
