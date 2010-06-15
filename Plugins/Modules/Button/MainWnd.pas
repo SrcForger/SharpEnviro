@@ -73,13 +73,10 @@ uses
 {$R *.dfm}
 
 procedure TMainForm.UpdateIcon;
-var
-  size : integer;
 begin
   if sShowIcon then
   begin
-    size := GetNearestIconSize(mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y);
-    if not IconStringToIcon(sIcon,sActionStr,btn.Glyph32,size) then
+    if not IconStringToIcon(sIcon,sActionStr,btn.Glyph32,mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y) then
        btn.Glyph32.SetSize(0,0)
   end else btn.Glyph32.SetSize(0,0);
   btn.Repaint;

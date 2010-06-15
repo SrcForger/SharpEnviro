@@ -1,6 +1,6 @@
 {
-Source Name: Button.dpr
-Description: SharpBar Module Main Project File
+Source Name: Notes.dpr
+Description: SharpBar Notes Module Main Project File
 Copyright (C) Martin Krämer <MartinKraemer@gmx.net>
 
 Source Forge Site

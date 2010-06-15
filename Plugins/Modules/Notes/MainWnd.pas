@@ -117,18 +117,15 @@ begin
 end;
 
 procedure TMainForm.LoadIcon;
-var
-  size : Integer;
 begin
   if mInterface = nil then
     exit;
   if mInterface.SkinInterface = nil then
     exit;
 
-  size := GetNearestIconSize(mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y);
   if Settings.ShowIcon then
   begin
-    if not IconStringToIcon('icon.notes','',Button.Glyph32,size) then
+    if not IconStringToIcon('icon.notes','',Button.Glyph32,mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y) then
       Button.Glyph32.SetSize(0,0);
   end else Button.Glyph32.SetSize(0,0);
   Button.Repaint;

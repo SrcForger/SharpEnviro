@@ -298,7 +298,7 @@ begin
   if mInterface.SkinInterface = nil then
     exit;
 
-  size := GetNearestIconSize(mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y);
+  size := mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y;
   TempBmp := TBitmap32.Create;
   TempBmp.SetSize(size,size);
 

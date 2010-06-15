@@ -108,7 +108,7 @@ begin
   begin
     if sCustomIcons then
     begin
-      size := GetNearestIconSize(mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y);
+      size := mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y;
 
       if not IconStringToIcon(sIconShow,sIconShow,FIconShow,size) then
         FIconShow.SetSize(0,0);

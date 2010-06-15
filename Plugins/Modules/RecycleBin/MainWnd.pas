@@ -118,7 +118,7 @@ begin
   if IsEmpty then
     Icon := 'icon.trash.empty';
 
-  size := GetNearestIconSize(mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y);
+  size := mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y;
 
   TempBmp.SetSize(size, size);
   TempBmp.Clear(color32(0,0,0,0));
