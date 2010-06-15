@@ -32,9 +32,9 @@ object frmVolumeControl: TfrmVolumeControl
       Height = 306
       object lblMixerNote: TLabel
         AlignWithMargins = True
-        Left = 5
-        Top = 42
-        Width = 418
+        Left = 6
+        Top = 41
+        Width = 416
         Height = 36
         Margins.Left = 5
         Margins.Top = 0
@@ -43,9 +43,9 @@ object frmVolumeControl: TfrmVolumeControl
         Align = alTop
         AutoSize = False
         Caption = 
-          'Note that some mixers won'#39't work and for some there might be dou' +
-          'bled entries in the list. You will just have to try and test to ' +
-          'find the one you need.'
+          'Note that some mixers may appear to be listed twice, and some ma' +
+          'y have no effect. You will need to try each one to find the one ' +
+          'that works for you.'
         EllipsisPosition = epEndEllipsis
         Transparent = False
         WordWrap = True
@@ -55,9 +55,9 @@ object frmVolumeControl: TfrmVolumeControl
       end
       object pnlSize: TPanel
         AlignWithMargins = True
-        Left = 5
-        Top = 166
-        Width = 418
+        Left = 6
+        Top = 163
+        Width = 416
         Height = 31
         Margins.Left = 5
         Margins.Top = 0
@@ -67,12 +67,14 @@ object frmVolumeControl: TfrmVolumeControl
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 1
+        ExplicitTop = 167
         object sgb_width: TSharpeGaugeBox
           Left = 0
           Top = 3
           Width = 200
           Height = 21
           ParentBackground = False
+          TabOrder = 0
           Min = 25
           Max = 200
           Value = 50
@@ -81,15 +83,16 @@ object frmVolumeControl: TfrmVolumeControl
           Description = 'Adjust Volume Bar Width'
           PopPosition = ppBottom
           PercentDisplay = False
+          Formatting = '%d'
           OnChangeValue = sgb_widthChangeValue
           BackgroundColor = clWindow
         end
       end
       object pnlMixer: TPanel
         AlignWithMargins = True
-        Left = 5
-        Top = 78
-        Width = 418
+        Left = 6
+        Top = 77
+        Width = 416
         Height = 31
         Margins.Left = 5
         Margins.Top = 0
@@ -99,6 +102,7 @@ object frmVolumeControl: TfrmVolumeControl
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 0
+        ExplicitTop = 79
         object cb_mlist: TComboBox
           Left = 0
           Top = 3
@@ -112,10 +116,10 @@ object frmVolumeControl: TfrmVolumeControl
       end
       object schMixer: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 5
-        Top = 0
-        Width = 418
-        Height = 37
+        Left = 6
+        Top = 1
+        Width = 416
+        Height = 35
         Margins.Left = 5
         Margins.Top = 0
         Margins.Right = 5
@@ -129,10 +133,10 @@ object frmVolumeControl: TfrmVolumeControl
       end
       object schSize: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 5
-        Top = 119
-        Width = 418
-        Height = 37
+        Left = 6
+        Top = 118
+        Width = 416
+        Height = 35
         Margins.Left = 5
         Margins.Top = 10
         Margins.Right = 5
@@ -146,15 +150,16 @@ object frmVolumeControl: TfrmVolumeControl
       end
       object pnButtonPos: TPanel
         AlignWithMargins = True
-        Left = 3
-        Top = 247
-        Width = 422
+        Left = 4
+        Top = 242
+        Width = 420
         Height = 31
         Align = alTop
         BevelOuter = bvNone
         Color = clWindow
         ParentBackground = False
         TabOrder = 2
+        ExplicitTop = 244
         object Label1: TLabel
           Left = 8
           Top = 10
@@ -187,10 +192,10 @@ object frmVolumeControl: TfrmVolumeControl
       end
       object scmQuickSelect: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 5
-        Top = 205
-        Width = 418
-        Height = 37
+        Left = 6
+        Top = 202
+        Width = 416
+        Height = 35
         Margins.Left = 5
         Margins.Top = 8
         Margins.Right = 5
