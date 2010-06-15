@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<IconSet Version="1.0.0.0">
+  <name>nuoveXT2</name>
+  <author>Alexandre Moor</author>
+  <website>http://nuovext.pwsp.net/</website>
+  <comment></comment>
+  <IconSizes>
+    <IconSize Size="16" />
+    <IconSize Size="32" />
+    <IconSize Size="64" />
+    <IconSize Size="128" />
+  </IconSizes>
+</IconSet>
