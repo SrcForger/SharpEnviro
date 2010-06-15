@@ -1094,7 +1094,7 @@ var
   Theme : ISharpETheme;
   sr : TSearchRec;
   filename,filetag : String;
-  count : integer;
+  count,cstart : integer;
 begin
   Iconmenuresult := '';
   Iconmenu := TPopupMenu.Create(nil);
@@ -1204,6 +1204,7 @@ begin
 
     subiml.BeginUpdate;
     count := 0;
+    cstart := subiml.count;
     for n := 0 to Theme.Icons.GetIconCount - 1 do
     begin
       s := Theme.Icons.GetIconFileSizesByIndex(n,32);
@@ -1219,7 +1220,7 @@ begin
         menuItem.Caption := s;
         menuItem.Hint := s;
         menuItem.OnClick := iconmenuclick.OnSharpEIconClick;
-        menuItem.ImageIndex := count + 2;
+        menuItem.ImageIndex := count + cstart;
         count := count + 1;
         if (n mod 12  = 0) and (n > 0) then menuItem.Break := mbBarBreak;
         Iconmenu.Items.Items[mindex].Add(menuItem);
@@ -1241,6 +1242,7 @@ begin
     n := 0;
     Dir := SharpApi.GetSharpeDirectory + 'Icons\Menu\';
     count := 0;
+    cstart := subgenericiml.count;
     subgenericiml.BeginUpdate;
     if FindFirst(Dir + '*.png',faAnyFile,sr) = 0 then
     repeat
@@ -1255,7 +1257,7 @@ begin
           menuItem.Caption := filetag;
           menuItem.Hint := filetag;
           menuItem.OnClick := iconmenuclick.OnSharpEIconClick;
-          menuItem.ImageIndex := count + 1;
+          menuItem.ImageIndex := count + cstart;
           count := count + 1;
           if n mod 20  = 0 then menuItem.Break := mbBarBreak;
           Iconmenu.Items.Items[mindex].Add(menuItem);
