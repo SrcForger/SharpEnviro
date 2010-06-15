@@ -160,7 +160,10 @@ begin
     TMainForm(Form).ReAlignComponents;
 
   if [part] <= [suTheme,suIconSet,suSkinFileChanged] then
+  begin
+    TMainForm(Form).LoadIcons;
     TMainForm(Form).UpdateIcon;
+  end;
 
 end;
 
