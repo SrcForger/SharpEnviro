@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<IconSet Version="1.0.0.0">
+  <name>SimplyGrey</name>
+  <author>Anton Petersson (Scnd101)</author>
+  <website>http://scnd101.deviantart.com/</website>
+  <comment>Completely color-free icon set which is just using three shades of grey</comment>
+  <IconSizes>
+    <IconSize Size="16" />
+    <IconSize Size="22" />
+    <IconSize Size="32" />
+    <IconSize Size="48" />
+    <IconSize Size="64" />
+    <IconSize Size="128" />
+  </IconSizes>
+</IconSet>
