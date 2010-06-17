@@ -6,8 +6,10 @@
   <comment>Completely color-free icon set which is just using three shades of grey</comment>
   <IconSizes>
     <IconSize Size="16" />
+
     <IconSize Size="22" />
     <IconSize Size="32" />
+
     <IconSize Size="48" />
     <IconSize Size="64" />
     <IconSize Size="128" />
