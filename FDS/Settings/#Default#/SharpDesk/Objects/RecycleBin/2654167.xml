@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <RecycleBinObjectSettings>
-  <Icon>icon.recyclebin.empty</Icon>
-  <Icon2>icon.recyclebin.full</Icon2>
+  <Icon>icon.trash.empty</Icon>
+  <Icon2>icon.trash.full</Icon2>
   <ShowData>-1</ShowData>
   <Caption SortValue="-1"/>
   <CaptionAlign>2</CaptionAlign>

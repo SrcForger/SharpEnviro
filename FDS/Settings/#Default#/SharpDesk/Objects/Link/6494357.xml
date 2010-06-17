@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <LinkObjectSettings>
   <Target>!ToggleDesktop</Target>
-  <Icon>icon.desktop</Icon>
+  <Icon>icon.system.desktop</Icon>
   <Caption SortValue="-1">Explorer Desktop</Caption>
   <CaptionAlign>2</CaptionAlign>
   <MLineCaption>0</MLineCaption>

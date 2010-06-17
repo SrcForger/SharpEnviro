@@ -3,33 +3,33 @@
   <Item>
     <ID>5236359</ID>
     <Object>Link</Object>
-    <PosX>64</PosX>
-    <PosY>112</PosY>
-    <Locked>0</Locked>
+    <PosX>88</PosX>
+    <PosY>108</PosY>
+    <Locked>-1</Locked>
     <isWindow>0</isWindow>
   </Item>
   <Item>
     <ID>1485347</ID>
     <Object>Link</Object>
-    <PosX>64</PosX>
+    <PosX>88</PosX>
     <PosY>216</PosY>
-    <Locked>0</Locked>
+    <Locked>-1</Locked>
     <isWindow>0</isWindow>
   </Item>
   <Item>
     <ID>2654167</ID>
     <Object>RecycleBin</Object>
-    <PosX>64</PosX>
-    <PosY>328</PosY>
-    <Locked>0</Locked>
+    <PosX>88</PosX>
+    <PosY>440</PosY>
+    <Locked>-1</Locked>
     <isWindow>0</isWindow>
   </Item>
   <Item>
     <ID>1934269</ID>
     <Object>Link</Object>
-    <PosX>120</PosX>
-    <PosY>728</PosY>
-    <Locked>0</Locked>
+    <PosX>84</PosX>
+    <PosY>320</PosY>
+    <Locked>-1</Locked>
     <isWindow>0</isWindow>
   </Item>
   <Item>
