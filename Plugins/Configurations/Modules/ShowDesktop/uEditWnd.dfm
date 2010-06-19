@@ -178,7 +178,7 @@ object frmEdit: TfrmEdit
         Margins.Bottom = 0
         Constraints.MaxWidth = 300
         TabOrder = 0
-        Text = 'icon.mycomputer'
+        Text = 'icon.system.desktop'
         OnChange = SettingsChange
       end
     end
