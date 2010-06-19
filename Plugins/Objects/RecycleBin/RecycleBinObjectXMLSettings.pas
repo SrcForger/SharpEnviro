@@ -64,8 +64,8 @@ begin
 
   with FXMLRoot.Items do
   begin
-    Icon         := Value('Icon','icon.recyclebin.empty');
-    Icon2        := Value('Icon2','icon.recyclebin.full');
+    Icon         := Value('Icon','icon.trash.empty');
+    Icon2        := Value('Icon2','icon.trash.full');
     Target       := 'shell:RecycleBinFolder';
     ShowData     := BoolValue('ShowData',True);
     Caption      := Value('Caption','');
