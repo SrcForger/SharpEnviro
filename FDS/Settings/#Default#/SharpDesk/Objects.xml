@@ -27,7 +27,7 @@
   <Item>
     <ID>1934269</ID>
     <Object>Link</Object>
-    <PosX>84</PosX>
+    <PosX>88</PosX>
     <PosY>320</PosY>
     <Locked>-1</Locked>
     <isWindow>0</isWindow>
@@ -35,8 +35,8 @@
   <Item>
     <ID>6494357</ID>
     <Object>Link</Object>
-    <PosX>67</PosX>
-    <PosY>419</PosY>
+    <PosX>88</PosX>
+    <PosY>544</PosY>
     <Locked>0</Locked>
     <isWindow>0</isWindow>
   </Item>
