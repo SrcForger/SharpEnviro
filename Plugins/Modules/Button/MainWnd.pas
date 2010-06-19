@@ -95,7 +95,7 @@ begin
   sCaption     := 'SharpE';
   sActionStr   := '!OpenMenu: Menu';
   sActionStrR  := 'explorer';
-  sIcon        := 'icon.mycomputer';
+  sIcon        := 'icon.system.computer';
   sShowIcon    := True;
 
   XML := TJclSimpleXML.Create;

@@ -79,7 +79,7 @@ begin
     begin
       chkDisplayCaption.Checked := BoolValue('ShowLabel', True);
       chkDisplayIcon.Checked := BoolValue('ShowIcon', true);
-      editIcon.Text := Value('Icon','icon.mycomputer');
+      editIcon.Text := Value('Icon','icon.system.computer');
 
       menuFile := PathRemoveExtension(ExtractFileName(Value('Menu','Menu.xml')));
       cbMenu.ItemIndex := cbMenu.Items.IndexOf(menuFile);

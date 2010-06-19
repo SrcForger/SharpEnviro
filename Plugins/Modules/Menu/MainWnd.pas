@@ -124,7 +124,7 @@ begin
   sShowLabel   := True;
   sCaption     := 'Menu';
   sShowIcon    := True;
-  sIcon        := 'icon.mycomputer';
+  sIcon        := 'icon.system.computer';
   sMenu        := 'Menu.xml';
 
   XML := TJclSimpleXML.Create;

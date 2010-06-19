@@ -31,5 +31,7 @@ object MainForm: TMainForm
     Layout = blGlyphLeft
     Caption = '...'
     AutoPosition = True
+    ForceDown = False
+    ForceHover = False
   end
 end

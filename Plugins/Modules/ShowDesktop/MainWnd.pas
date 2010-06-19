@@ -211,7 +211,7 @@ var
 begin
   sShowCaption := False;
   sCaption     := 'Show Desktop';
-  sIconShow    := 'icon.mycomputer';
+  sIconShow    := 'icon.system.computer';
   sIconRestore := 'icon.folder';
   sShowIcon    := True;
   sCustomIcons := False;

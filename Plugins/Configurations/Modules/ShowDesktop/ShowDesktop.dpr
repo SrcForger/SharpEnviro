@@ -79,7 +79,7 @@ begin
     begin
       chkDisplayCaption.Checked := BoolValue('ShowCaption', false);
       chkDisplayIcon.Checked := BoolValue('ShowIcon', true);
-      edIconShow.Text := Value('IconShow','icon.mycomputer');
+      edIconShow.Text := Value('IconShow','icon.system.computer');
       edIconRestore.Text := Value('IconRestore','icon.folder');
       chkCustomIcon.Checked := BoolValue('CustomIcons', false);
       chkAllMonitors.Checked := BoolValue('AllMonitors', false);

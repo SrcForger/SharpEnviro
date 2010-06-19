@@ -79,7 +79,7 @@ begin
     begin
         chkDisplayCaption.Checked := BoolValue('ShowLabel', true);
         chkDisplayIcon.Checked := BoolValue('ShowIcon', true);
-        edIcon.Text := Value('Icon','icon.mycomputer');
+        edIcon.Text := Value('Icon','icon.system.computer');
         edAction.Text := Value('ActionStr','!OpenMenu: Menu');
         edActionR.Text := Value('ActionStrR','explorer');
         edCaption.Text := Value('Caption','SharpE');

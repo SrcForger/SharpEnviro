@@ -29,6 +29,8 @@ object MainForm: TMainForm
     Layout = blGlyphLeft
     Caption = 'Button'
     AutoPosition = True
+    ForceDown = False
+    ForceHover = False
   end
   object MenuPopup: TPopupMenu
     Left = 168
