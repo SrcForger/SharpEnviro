@@ -4,7 +4,7 @@
     <type>submenu</type>
     <Caption>Add Desktop Object</Caption>
     <Target/>
-    <Icon>icon.desktop</Icon>
+    <Icon>icon.system.desktop</Icon>
     <Items>
       <item>
         <type>objectlist</type>
@@ -18,7 +18,7 @@
     <type>link</type>
     <Caption>Configure Theme</Caption>
     <Target>!ConfigureTheme</Target>
-    <Icon>icon.file.config</Icon>
+    <Icon>icon.file.other</Icon>
   </item>
   <item>
     <type>link</type>

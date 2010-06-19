@@ -2,7 +2,7 @@
 <MenuModuleSettings>
   <ShowLabel>-1</ShowLabel>
   <ShowIcon>-1</ShowIcon>
-  <Icon>icon.mycomputer</Icon>
+  <Icon>icon.system.settings</Icon>
   <Menu>Menu</Menu>
   <Caption>SharpE</Caption>
 </MenuModuleSettings>

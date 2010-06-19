@@ -2,7 +2,7 @@
 <ButtonModuleSettings>
   <ShowLabel>-1</ShowLabel>
   <ShowIcon>-1</ShowIcon>
-  <Icon>icon.controlpanel</Icon>
+  <Icon>icon.system.settings</Icon>
   <ActionStr>SharpCenter.exe</ActionStr>
   <ActionStrR>SharpCenter.exe</ActionStrR>
   <Caption>Configure</Caption>

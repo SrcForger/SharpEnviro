@@ -10,12 +10,12 @@
     <type>link</type>
     <Caption>Computer</Caption>
     <Target>shell:MyComputerFolder</Target>
-    <Icon>icon.mycomputer</Icon>
+    <Icon>icon.system.computer</Icon>
   </item>
   <item>
     <type>link</type>
     <Caption>Control Panel</Caption>
     <Target>shell:ControlPanel</Target>
-    <Icon>icon.controlpanel</Icon>
+    <Icon>icon.system.settings</Icon>
   </item>
 </SharpEMenuFile>
