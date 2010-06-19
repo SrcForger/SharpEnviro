@@ -168,9 +168,8 @@ begin
   SettingsFile := GetSettingsFile;
 
   if (not FileExists(SettingsFile)) and (FObjectID <> -1) then
-     SharpApi.SendDebugMessageEx(PChar(FObjectName + ' Object'),'Settings File does not exist',0,DMT_INFO);
-
-  if FObjectID <> -1 then
+     SharpApi.SendDebugMessageEx(PChar(FObjectName + ' Object'),'Settings File does not exist',0,DMT_INFO)
+  else if FObjectID <> -1 then
   begin
     if not LoadXMLFromSharedFile(FXML,SettingsFile,True) then
       SharpApi.SendDebugMessageEx(PChar(FObjectName + ' Object'),PChar('Failed to load Settings File: ' + Settingsfile),0,DMT_ERROR);
