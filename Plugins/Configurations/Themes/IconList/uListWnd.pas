@@ -201,6 +201,7 @@ var
   Dir: string;
   XML: TJclSimpleXML;
   tmp: TIconItem;
+  xmlFile : string;
 begin
   ClearList;
 
@@ -213,10 +214,13 @@ begin
       repeat
         if (CompareText(sr.Name, '.') <> 0) and (CompareText(sr.Name, '..') <> 0) then
         begin
-          if FileExists(Dir + sr.Name + '\IconSet.xml') then
+          xmlFile := Dir + sr.Name + '\DefaultIconSet.xml';
+          if not FileExists(xmlFile) then
+            xmlFile := Dir + sr.Name + '\IconSet.xml';
+          if FileExists(xmlFile) then
           begin
             try
-              XML.LoadFromFile(Dir + sr.Name + '\IconSet.xml');
+              XML.LoadFromFile(xmlFile);
 
               if XML.Root.Items.ItemNamed['IconSizes'] <> nil then
               begin
