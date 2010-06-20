@@ -101,6 +101,7 @@ type
     procedure OnFeedImageDownload(Sender: TObject);
     procedure OnThumbImageDownload(Sender : TObject);
     procedure OnThreadFinished(Sender : TObject);
+    procedure OnFeedUpdateForm(Stream : TStream; isUTF8 : boolean);   
   public
     mInterface : ISharpBarModule;
     procedure UpdateDisplay;
@@ -223,6 +224,26 @@ begin
   RealignComponents(True);
 end;
 
+procedure TMainForm.OnFeedUpdateForm(Stream: TStream; isUTF8: boolean);
+begin
+  FeedValid := False;
+  try
+    Stream.Position := 0;
+
+    if isUTF8 then
+      FFeed.LoadFromStream(Stream,seUTF8)
+    else FFeed.LoadFromStream(Stream,seAuto);
+
+    FeedValid := True;
+    FeedIndex := 0;
+    UpdateDisplay;
+    UpdateFeedIcon;
+    SyncImagesWithFeed;
+  except
+    ErrorMsg := 'Invalid feed file';
+  end;
+end;
+
 procedure TMainForm.OnThreadFinished(Sender: TObject);
 begin
   if Sender <> nil then
@@ -340,7 +361,6 @@ var
   mroot : TMenuItem;
 begin
   SwitchTimer.Enabled := False;
-  SwitchTimer.Enabled := True;
 
   Popup.Items.Clear;
   mroot := Popup.Items;
@@ -444,6 +464,8 @@ begin
         channelcount := channelcount + 1;
       end;
   end;
+
+  SwitchTimer.Enabled := True;
 end;
 
 procedure TMainForm.UpdateFeedIcon;
@@ -455,7 +477,6 @@ var
   Thread : TImageDownloadThread;
 begin
   SwitchTimer.Enabled := False;
-  SwitchTimer.Enabled := True;
 
   if (FFeedValid) and (sCustomIcon) then
   begin
@@ -502,6 +523,8 @@ begin
     FCustomIcon := False;
     FChannelIcon.Assign(FIcon);
   end;
+
+  SwitchTimer.Enabled := True;
 end;
 
 procedure TMainForm.UpdateSize;
@@ -525,6 +548,7 @@ begin
 
   InitializeCriticalSection(CriticalFeedSection);
   Thread := TFeedDownloadThread.Create(sURL,self);
+  Thread.OnFeedUpdateForm := OnFeedUpdateForm;
   Thread.OnThreadFinished := OnThreadFinished;
   FThreadList.Add(Thread);
 end;

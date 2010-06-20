@@ -32,18 +32,26 @@ uses
   JclStreams, Windows, SysUtils;
 
 type
+  TFeedUpdateFormEvent = procedure(Stream : TStream; isUTF8 : boolean) of Object;
+
   TFeedDownloadThread = class(TThread)
   private
     FOnThreadFinished : TNotifyEvent;
+    FOnFeedUpdateForm : TFeedUpdateFormEvent;
     FMainWnd : TMainForm;
     FUrl : String;
   protected
     procedure Execute; override;
     procedure DoDownload;
+    procedure DoUpdateForm;
   public
+    Stream : TMemoryStream; // lokal variables! Made global for Synchronize of DoUpdateForm!
+    UTF8: Boolean;
+
     constructor Create(pUrl : String; pMainWnd : TMainForm);
     destructor Destroy; override;
     property OnThreadFinished : TNotifyEvent read FOnThreadFinished write FOnThreadFinished;
+    property OnFeedUpdateForm : TFeedUpdateFormEvent read FOnFeedUpdateForm write FOnFeedUpdateForm;
   end;
 
 var
@@ -75,12 +83,10 @@ end;
 procedure TFeedDownloadThread.DoDownload;
 var
   idHTTP : TIdHTTP;
-  Stream : TMemoryStream;
   MimeList: TStringList;
   validType : boolean;
   success : boolean;
   n: Integer;
-  UTF8 : boolean;
   s : String;
 begin
   success := False;
@@ -143,25 +149,11 @@ begin
   if FMainWnd <> nil then
   begin
     EnterCriticalSection(CriticalFeedSection);
-    
-    FMainWnd.FeedValid := False;
+
     if success then
     begin
-      try
-        Stream.Position := 0;
-
-        if UTF8 then
-          FMainWnd.Feed.LoadFromStream(Stream,seUTF8)
-        else FMainWnd.Feed.LoadFromStream(Stream,seAuto);
-
-        FMainWnd.FeedValid := True;
-        FMainWnd.FeedIndex := 0;
-        FMainWnd.UpdateDisplay;
-        FMainWnd.UpdateFeedIcon;
-        FMainWnd.SyncImagesWithFeed;
-      except
-        FMainWnd.ErrorMsg := 'Invalid feed file';
-      end;
+      if Assigned(FOnFeedUpdateForm) then
+        Synchronize(DoUpdateForm);
     end else
       FMainWnd.ErrorMsg := 'Error downloading feed';
 
@@ -172,6 +164,12 @@ begin
   MimeList.Free;
 
   FMainWnd.UpdateTimer.Enabled := True;
+end;
+
+procedure TFeedDownloadThread.DoUpdateForm;
+begin
+  if Assigned(FOnFeedUpdateForm) then
+    FOnFeedUpdateForm(Stream,UTF8);
 end;
 
 procedure TFeedDownloadThread.Execute;
