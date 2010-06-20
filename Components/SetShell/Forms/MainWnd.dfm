@@ -403,7 +403,7 @@ object MainForm: TMainForm
         Top = 0
         Width = 189
         Height = 17
-        Caption = 'Seperate Explorer Process'
+        Caption = 'Separate Explorer Process'
         Checked = True
         Color = clWindow
         ParentColor = False
