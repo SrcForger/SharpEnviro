@@ -255,6 +255,7 @@ end;
 procedure TSharpCenterWnd.FormResize(Sender: TObject);
 begin
   UpdateSize;
+  UpdateLivePreview;
 end;
 
 procedure TSharpCenterWnd.FormShow(Sender: TObject);
@@ -919,8 +920,6 @@ var
 begin
   if SCM = nil then exit;
 
-  UpdateLivePreview;
-
   if SCM.PluginWndHandle <> 0 then
   begin
     h := GetControlByHandle(SCM.PluginWndHandle).Height;
@@ -940,7 +939,6 @@ begin
     pnlEditContainer.Minimized := True;
     pnlEditPluginContainer.Visible := False;
   end;
-
 end;
 
 procedure TSharpCenterWnd.LoadPluginEvent(Sender: TObject);
