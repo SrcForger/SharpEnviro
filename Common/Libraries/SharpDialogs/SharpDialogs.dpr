@@ -966,6 +966,7 @@ begin
           menuItem.Hint := SList.Names[n];
           menuItem.ImageIndex := 6;
           menuItem.OnClick := targetmenuclick.OnShellFolderClick;
+          if (n mod 20  = 0) and (n > 0) then menuItem.Break := mbBarBreak;
           targetmenu.Items.Items[mindex].Items[targetmenu.Items.Items[mindex].Count-1].Add(menuItem);
         end;
       end;
@@ -1103,8 +1104,8 @@ begin
   iml.Width := 16;
   iml.Height := 16;
   subiml := TPngImageList.Create(nil);
-  subiml.Width := 32;
-  subiml.Height := 32;
+  subiml.Width := 16;
+  subiml.Height := 16;
   subgenericiml := TPngImageList.Create(nil);
   subgenericiml.Width := 16;
   subgenericiml.Height := 16;
@@ -1127,8 +1128,8 @@ begin
 
   iml.Add(bmp,bmp);
 
-  Bmp.Width := 32;
-  Bmp.Height := 32;
+  Bmp.Width := 16;
+  Bmp.Height := 16;
   subiml.Add(bmp,bmp);
 
   Bmp.Width := 16;
@@ -1141,7 +1142,7 @@ begin
     ImageListHandle := 0;
     try
       ImageListHandle := SHGetFileInfo(pChar(pTarget), 0, FileInfo, sizeof( SHFILEINFO ),
-                                      SHGFI_ICON or SHGFI_SHELLICONSIZE);
+                                      SHGFI_ICON or SHGFI_SMALLICON);
       if FileInfo.hicon <> 0 then
       begin
         wIcon.Handle := FileInfo.hicon;
@@ -1207,7 +1208,7 @@ begin
     cstart := subiml.count;
     for n := 0 to Theme.Icons.GetIconCount - 1 do
     begin
-      s := Theme.Icons.GetIconFileSizesByIndex(n,32);
+      s := Theme.Icons.GetIconFileSizesByIndex(n,16);
 
       if FileExists(s) then
       begin
@@ -1222,7 +1223,7 @@ begin
         menuItem.OnClick := iconmenuclick.OnSharpEIconClick;
         menuItem.ImageIndex := count + cstart;
         count := count + 1;
-        if (n mod 12  = 0) and (n > 0) then menuItem.Break := mbBarBreak;
+        if (n mod 20  = 0) and (n > 0) then menuItem.Break := mbBarBreak;
         Iconmenu.Items.Items[mindex].Add(menuItem);
       end;
     end;
@@ -1259,7 +1260,7 @@ begin
           menuItem.OnClick := iconmenuclick.OnSharpEIconClick;
           menuItem.ImageIndex := count + cstart;
           count := count + 1;
-          if n mod 20  = 0 then menuItem.Break := mbBarBreak;
+          if (n mod 20  = 0) and (n > 0) then menuItem.Break := mbBarBreak;
           Iconmenu.Items.Items[mindex].Add(menuItem);
           n := n + 1;
         end;
@@ -1279,8 +1280,8 @@ begin
       //mindex := mindex + 1;
     end;
 
-    Bmp.Width := 40;
-    Bmp.Height := 40;
+    Bmp.Width := 16;
+    Bmp.Height := 16;
     subiml.Add(bmp,bmp);
 
     Bmp.Width := 16;
