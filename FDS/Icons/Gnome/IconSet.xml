@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<IconSet Version="1.0.0.0">
+  <name>Gnome</name>
+  <author>SharpEnviro Development Team</author>
+  <website>http://gnome-look.org/content/show.php/GNOME-colors?content=82562</website>
+  <comment>Icons from the open source GNOME and Tango icon sets</comment>
+  <IconSizes>
+    <IconSize Size="16" />
+    <IconSize Size="32" />
+    <IconSize Size="64" />
+    <IconSize Size="128" />
+  </IconSizes>
+</IconSet>
