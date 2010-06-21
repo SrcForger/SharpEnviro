@@ -1611,8 +1611,11 @@ begin
   item.Caption := '-';
   ColorScheme1.Add(item);
 
+  n := 0;
+
   Dir := SharpApi.GetSharpeUserSettingsPath + uThemeConsts.SKINS_SCHEME_DIRECTORY + '\' + Theme.Skin.Name + '\';
   if FindFirst(Dir + '*.xml', FAAnyFile, sr) = 0 then
+  begin
     repeat
       s := sr.Name;
       setlength(s, length(s) - length('.xml'));
@@ -1629,8 +1632,15 @@ begin
       item.Hint := sr.Name;
       item.OnClick := OnSchemeSelectItemClick;
       ColorScheme1.Add(item);
+
+      n := n + 1;
     until FindNext(sr) <> 0;
+  end;
+  
   FindClose(sr);
+
+  if n <= 0 then
+    ColorScheme1.Enabled := False;
 
   case SharpEBar.VertPos of
     vpTop: Top1.Checked := True;
