@@ -159,25 +159,25 @@
       <item>
         <type>link</type>
         <Caption>Desktop Settings</Caption>
-        <Target>{#SHARPEDIR#}SharpCenter.exe -api &quot;0|{CenterDirectory}Desktop.con&quot;</Target>
+        <Target>&quot;{#SHARPEDIR#}SharpCenter.exe&quot; -api &quot;0|{CenterDirectory}Desktop.con&quot;</Target>
         <Icon>icon.file.other</Icon>
       </item>
       <item>
         <type>link</type>
         <Caption>Services</Caption>
-        <Target>{#SHARPEDIR#}SharpCenter.exe -api &quot;0|{CenterDirectory}Services.con&quot;</Target>
+        <Target>&quot;{#SHARPEDIR#}SharpCenter.exe&quot; -api &quot;0|{CenterDirectory}Services.con&quot;</Target>
         <Icon>icon.file.other</Icon>
       </item>
       <item>
         <type>link</type>
         <Caption>Themes</Caption>
-        <Target>{#SHARPEDIR#}SharpCenter.exe -api &quot;0|{CenterDirectory}Themes.con&quot;</Target>
+        <Target>&quot;{#SHARPEDIR#}SharpCenter.exe&quot; -api &quot;0|{CenterDirectory}Themes.con&quot;</Target>
         <Icon>icon.file.other</Icon>
       </item>
       <item>
         <type>link</type>
         <Caption>Toolbars</Caption>
-        <Target>{#SHARPEDIR#}SharpCenter.exe -api &quot;0|{CenterDirectory}Toolbars.con&quot;</Target>
+        <Target>&quot;{#SHARPEDIR#}SharpCenter.exe&quot; -api &quot;0|{CenterDirectory}Toolbars.con&quot;</Target>
         <Icon>icon.file.other</Icon>
       </item>
     </Items>
