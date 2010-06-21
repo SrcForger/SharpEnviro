@@ -104,7 +104,7 @@
       <item>
         <type>link</type>
         <Caption>Debug Console</Caption>
-        <Target>{#SHARPEDIR#}SharpConsole.exe</Target>
+        <Target>&quot;{#SHARPEDIR#}SharpConsole.exe&quot;</Target>
         <Icon>icon.file</Icon>
       </item>
       <item>
@@ -139,7 +139,7 @@
       <item>
         <type>link</type>
         <Caption>SharpCenter</Caption>
-        <Target>{#SHARPEDIR#}SharpCenter.exe</Target>
+        <Target>&quot;{#SHARPEDIR#}SharpCenter.exe&quot;</Target>
         <Icon>icon.application</Icon>
       </item>
       <item>
