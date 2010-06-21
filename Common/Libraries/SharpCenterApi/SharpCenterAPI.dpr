@@ -146,9 +146,9 @@ begin
           pchar(format('SharpCenter Mutex not found, Launching file: %s', [Path
           +
             'SharpCenter.exe'])), 0, DMT_STATUS);
-        ShellExecute(wnd, 'open', pchar(Path + 'SharpCenter.exe'), Pchar('-api '
+        ShellExecute(wnd, 'open', pchar(Path + 'SharpCenter.exe'), Pchar('-api "'
           +
-          IntToStr(Integer(ACommand)) + '|"' + AParam + '"|' + APluginID),
+          IntToStr(Integer(ACommand)) + '|' + AParam + '|' + APluginID + '"'),
           pchar(path), SW_SHOWNORMAL);
 
       end
