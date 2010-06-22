@@ -11,7 +11,7 @@
     <ScreenRotAdjust>-1</ScreenRotAdjust>
     <ScreenSizeAdjust>-1</ScreenSizeAdjust>
     <MenuFile>Menu</MenuFile>
-    <MenuFileShift>QuickLaunch</MenuFileShift>
+    <MenuFileShift>Desktop</MenuFileShift>
   </Settings>
   <Grid>
     <UseGrid>-1</UseGrid>
