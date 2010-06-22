@@ -897,6 +897,7 @@ begin
 
   if FontList = nil then
     FontList := TFontList.Create;
+
   FontList.RefreshFontInfo;
 
   FLoadSkins := Skins;
@@ -1054,6 +1055,12 @@ begin
   end;
 
   FBitmapList.Free;
+
+  if FontList <> nil then
+  begin
+    FontList.Free;
+    FontList := nil;
+  end;
 
   inherited;
 end;
@@ -1461,18 +1468,30 @@ end;
 
 procedure TSharpESkin.Clear;
 begin
-  if FButtonSkin <> nil then FButtonSkin.Clear;
-  if FProgressBarSkin <> nil then FProgressBarSkin.Clear;
-  if FBarSkin <> nil then FBarSkin.Clear;
+  if FButtonSkin <> nil then
+    FButtonSkin.Clear;
+  if FProgressBarSkin <> nil then
+    FProgressBarSkin.Clear;
+  if FBarSkin <> nil then
+    FBarSkin.Clear;
+
   FSkinHeader.Clear;
-  if FMiniThrobberSkin <> nil then FMiniThrobberSkin.Clear;
-  if FEditSkin <> nil then FEditSkin.Clear;
-  if FMenuSkin <> nil then FMenuSkin.Clear;
-  if FMenuItemSkin <> nil then FMenuItemSkin.Clear;
-  if FTaskItemSkin <> nil then FTaskItemSkin.Clear;
-  if FTaskSwitchSkin <> nil then FTaskSwitchSkin.Clear;
-  if FNotifySkin <> nil then FNotifySkin.Clear;
-  if FTaskPreviewSkin <> nil then FTaskPreviewSkin.Clear;
+  if FMiniThrobberSkin <> nil then
+    FMiniThrobberSkin.Clear;
+  if FEditSkin <> nil then
+    FEditSkin.Clear;
+  if FMenuSkin <> nil then
+    FMenuSkin.Clear;
+  if FMenuItemSkin <> nil then
+    FMenuItemSkin.Clear;
+  if FTaskItemSkin <> nil then
+    FTaskItemSkin.Clear;
+  if FTaskSwitchSkin <> nil then
+    FTaskSwitchSkin.Clear;
+  if FNotifySkin <> nil then
+    FNotifySkin.Clear;
+  if FTaskPreviewSkin <> nil then
+    FTaskPreviewSkin.Clear;
 
   FSmallText.Clear;
   FMediumText.Clear;
@@ -4026,10 +4045,5 @@ end;
 initialization
 
 finalization
-  if FontList <> nil then
-  begin
-    FontList.Free;
-    FontList := nil;
-  end;
 
 end.
