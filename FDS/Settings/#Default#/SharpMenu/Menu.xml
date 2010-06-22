@@ -134,13 +134,13 @@
     <type>submenu</type>
     <Caption>Configuration</Caption>
     <Target/>
-    <Icon>icon.category.settings</Icon>
+    <Icon>icon.system.settings</Icon>
     <Items>
       <item>
         <type>link</type>
         <Caption>SharpCenter</Caption>
         <Target>&quot;{#SHARPEDIR#}SharpCenter.exe&quot;</Target>
-        <Icon>icon.application</Icon>
+        <Icon>icon.category.settings</Icon>
       </item>
       <item>
         <type>separator</type>
@@ -149,7 +149,7 @@
         <type>submenu</type>
         <Caption>Add Desktop Object</Caption>
         <Target/>
-        <Icon>icon.folder.images</Icon>
+        <Icon>icon.system.desktop</Icon>
         <Items>
           <item>
             <type>objectlist</type>
@@ -160,25 +160,25 @@
         <type>link</type>
         <Caption>Desktop Settings</Caption>
         <Target>&quot;{#SHARPEDIR#}SharpCenter.exe&quot; -api &quot;0|{CenterDirectory}Desktop.con&quot;</Target>
-        <Icon>icon.file.other</Icon>
+        <Icon>icon.system.desktop</Icon>
       </item>
       <item>
         <type>link</type>
         <Caption>Services</Caption>
         <Target>&quot;{#SHARPEDIR#}SharpCenter.exe&quot; -api &quot;0|{CenterDirectory}Services.con&quot;</Target>
-        <Icon>icon.file.other</Icon>
+        <Icon>icon.category.properties</Icon>
       </item>
       <item>
         <type>link</type>
         <Caption>Themes</Caption>
         <Target>&quot;{#SHARPEDIR#}SharpCenter.exe&quot; -api &quot;0|{CenterDirectory}Themes.con&quot;</Target>
-        <Icon>icon.file.other</Icon>
+        <Icon>icon.category.graphics</Icon>
       </item>
       <item>
         <type>link</type>
         <Caption>Toolbars</Caption>
         <Target>&quot;{#SHARPEDIR#}SharpCenter.exe&quot; -api &quot;0|{CenterDirectory}Toolbars.con&quot;</Target>
-        <Icon>icon.file.other</Icon>
+        <Icon>icon.system.computer</Icon>
       </item>
     </Items>
   </item>
