@@ -426,7 +426,6 @@ begin
       imgLivePreview.Bitmap.Clear(color32(SCM.Theme.Background));
       bmp.DrawTo(imgLivePreview.Bitmap, 0, 0);
 
-
       pnlLivePreview.Height := bmp.Height;
       pnlLivePreview.Margins.Top := 10;
       pnlLivePreview.Margins.Bottom := 15;
@@ -435,6 +434,7 @@ begin
     end;
   end
   else begin
+    imgLivePreview.Bitmap.SetSize(0,0);
     pnlLivePreview.Height := 0;
     pnlLivePreview.Margins.Top := 0;
     pnlLivePreview.Margins.Bottom := 0;
