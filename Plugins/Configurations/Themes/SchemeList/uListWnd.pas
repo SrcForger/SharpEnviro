@@ -72,7 +72,6 @@ type
     lbSchemeList: TSharpEListBoxEx;
     imlCol2: TPngImageList;
     bmlMain: TBitmap32List;
-    tmrRefreshItems: TTimer;
     tmrSendUpdate: TTimer;
     tmrSetScheme: TTimer;
 
@@ -84,7 +83,6 @@ type
       AItem: TSharpEListItem);
     procedure lbSchemeListGetCellCursor(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var ACursor: TCursor);
-    procedure tmrRefreshItemsTimer(Sender: TObject);
     procedure lbSchemeListGetCellText(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AColText: string);
     procedure lbSchemeListGetCellImageIndex(Sender: TObject; const ACol: Integer;
@@ -224,7 +222,7 @@ begin
     sl.Free;
 
     PluginHost.SetEditTabsVisibility( lbSchemeList.ItemIndex,lbSchemeList.Count);
-    PluginHost.Refresh;
+    //PluginHost.Refresh;
   end;
 end;
 
@@ -245,7 +243,8 @@ end;
 
 procedure TfrmListWnd.RebuildSchemeList;
 begin
-  tmrRefreshItems.Enabled := True;
+  //tmrRefreshItems.Enabled := True;
+  AddItems(FSchemeManager.PluginID);
 end;
 
 procedure TfrmListWnd.SelectSchemeItem(ASchemeName: string);
@@ -392,12 +391,6 @@ end;
 procedure TfrmListWnd.lbSchemeListResize(Sender: TObject);
 begin
   Self.Height := lbSchemeList.Height;
-end;
-
-procedure TfrmListWnd.tmrRefreshItemsTimer(Sender: TObject);
-begin
-  tmrRefreshItems.Enabled := False;
-  AddItems(FSchemeManager.PluginID);
 end;
 
 procedure TfrmListWnd.tmrSendUpdateTimer(Sender: TObject);

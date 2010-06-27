@@ -71,7 +71,6 @@ type
     procedure lbIconsGetCellImageIndex(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AImageIndex: Integer;
       const ASelected: Boolean);
-    procedure tmrTimer(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
@@ -101,12 +100,6 @@ uses
   SharpIconUtils;
 
 {$R *.dfm}
-
-procedure TfrmListWnd.tmrTimer(Sender: TObject);
-begin
-  tmr.Enabled := false;
-  BuildIconList;
-end;
 
 procedure TfrmListWnd.FormCreate(Sender: TObject);
 begin
@@ -258,7 +251,7 @@ begin
     //BuildIconPreview;
   end;
 
-  PluginHost.Refresh;
+  //PluginHost.Refresh;
 end;
 
 procedure TfrmListWnd.lbIconsClickItem(Sender: TObject; const ACol: Integer;

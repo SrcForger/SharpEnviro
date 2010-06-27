@@ -12318,13 +12318,6 @@ object frmListWnd: TfrmListWnd
     Left = 8
     Top = 256
   end
-  object tmrRefreshItems: TTimer
-    Enabled = False
-    Interval = 1
-    OnTimer = tmrRefreshItemsTimer
-    Left = 8
-    Top = 208
-  end
   object tmrSendUpdate: TTimer
     Enabled = False
     Interval = 1

@@ -169,7 +169,6 @@ object frmListWnd: TfrmListWnd
   object tmr: TTimer
     Enabled = False
     Interval = 1
-    OnTimer = tmrTimer
     Left = 236
     Top = 196
   end
