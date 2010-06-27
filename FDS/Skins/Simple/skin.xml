@@ -1424,7 +1424,7 @@
       <bold>0</bold>
       <name>Tahoma</name>
       <size>8</size>
-      <cleartype>0</cleartype>
+      <cleartype>1</cleartype>
       <color>$Text</color>
       <shadow>1</shadow>
       <shadowcolor>$TextShadow</shadowcolor>
