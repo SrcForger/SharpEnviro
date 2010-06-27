@@ -313,7 +313,7 @@ begin
     if pnlMonitor.Visible then
       Self.Height := Self.Height + 100;
 
-    FPluginHost.Refresh;
+    FPluginHost.Refresh(rtSize);
   finally
     LockWindowUpdate(0);
   end;
@@ -334,7 +334,7 @@ begin
     if pnlMonitor.Visible then
       Self.Height := Self.Height + 100;
 
-    FPluginHost.Refresh;
+    FPluginHost.Refresh(rtSize);
   finally
     LockWindowUpdate(0);
   end;
@@ -350,7 +350,7 @@ begin
     else
       Self.Height := 600;
 
-    FPluginHost.Refresh;
+    FPluginHost.Refresh(rtSize);
   finally
     LockWindowUpdate(0);
   end;

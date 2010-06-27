@@ -195,10 +195,6 @@ begin
   // Refresh gui and render preview
   PopulateAvailableMonitors;
   frmSettingsWnd.UpdateGUIFromWPItem(frmSettingsWnd.CurrentWP);
-
-  // Refresh the preview
-  PluginHost.Refresh(rtPreview);
-
 end;
 
 procedure TSharpCenterPlugin.PopulateAvailableMonitors;
