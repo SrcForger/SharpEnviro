@@ -60,7 +60,6 @@ type
   TfrmListWnd = class(TForm)
     lbIcons: TSharpEListBoxEx;
     Images: TPngImageList;
-    tmr: TTimer;
     procedure FormCreate(Sender: TObject);
     procedure lbIconsResize(Sender: TObject);
     procedure lbIconsClickItem(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem);
@@ -71,7 +70,6 @@ type
     procedure lbIconsGetCellImageIndex(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AImageIndex: Integer;
       const ASelected: Boolean);
-    procedure FormShow(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
     FTheme : ISharpETheme;
@@ -111,11 +109,6 @@ procedure TfrmListWnd.FormDestroy(Sender: TObject);
 begin
   ClearList;
   FTheme := nil;
-end;
-
-procedure TfrmListWnd.FormShow(Sender: TObject);
-begin
-  frmListWnd.tmr.Enabled := true;
 end;
 
 procedure TfrmListWnd.BuildIconPreview(var ABmp: TBitmap32);
@@ -194,7 +187,6 @@ var
   Dir: string;
   XML: TJclSimpleXML;
   tmp: TIconItem;
-  xmlFile : string;
 begin
   ClearList;
 
@@ -207,13 +199,10 @@ begin
       repeat
         if (CompareText(sr.Name, '.') <> 0) and (CompareText(sr.Name, '..') <> 0) then
         begin
-          xmlFile := Dir + sr.Name + '\DefaultIconSet.xml';
-          if not FileExists(xmlFile) then
-            xmlFile := Dir + sr.Name + '\IconSet.xml';
-          if FileExists(xmlFile) then
+          if FileExists(Dir + sr.Name + '\IconSet.xml') then
           begin
             try
-              XML.LoadFromFile(xmlFile);
+              XML.LoadFromFile(Dir + sr.Name + '\IconSet.xml');
 
               if XML.Root.Items.ItemNamed['IconSizes'] <> nil then
               begin
