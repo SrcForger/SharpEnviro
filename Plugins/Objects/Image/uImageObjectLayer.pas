@@ -225,11 +225,12 @@ begin
       MimeList.Add('image/jpeg');
       MimeList.Add('image/png');
       MimeList.Add('image/bmp');
+      MimeList.Add('image/gif');      
       Dir := SharpApi.GetSharpeUserSettingsPath+'SharpDesk\Objects\Image\';
       ForceDirectories(Dir);
       idHTTP := TidHTTP.Create(nil);
       idHTTP.ConnectTimeout := 5000;
-      idHTTP.Request.Accept := 'image/jpeg,image/png,image/bmp';
+      idHTTP.Request.Accept := 'image/jpeg,image/gif,image/png,image/bmp';
       idHTTP.HandleRedirects := True;
       try
         idHTTP.Head(FIconFile);
@@ -242,6 +243,7 @@ begin
           try
             if idHttp.Response.ContentType = 'image/jpeg' then Ext := '.jpg'
             else if idHttp.Response.ContentType = 'image/png' then Ext := '.png'
+            else if idHttp.Response.ContentType = 'image/gif' then Ext := '.gif'
             else Ext := '.bmp';
             FileStream := TFileStream.Create(Dir+'temp'+inttostr(i)+Ext,fmCreate);
             try
