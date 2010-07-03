@@ -312,6 +312,13 @@ begin
       setlength(FWndList,0);
     end;
     UpdateIcon;
+  end else begin
+    if not FDoShow then
+    begin
+      FDoShow := True;
+      setlength(FWndList,0);
+      UpdateIcon;    
+    end;
   end;
 end;
 
