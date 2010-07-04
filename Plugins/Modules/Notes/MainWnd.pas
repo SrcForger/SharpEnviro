@@ -361,7 +361,7 @@ var
   b : boolean;
   Mon : TMonitor;
 begin
-  if NotesForm = nil then NotesForm := TSharpENotesForm.Create(self);
+  if NotesForm = nil then NotesForm := TSharpENotesForm.Create(Self);
 
   if NotesForm.Visible then
   begin

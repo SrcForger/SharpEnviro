@@ -160,6 +160,8 @@ type
     procedure miAddFromCurrentTabClick(Sender: TObject);
     procedure EditorURLClick(Sender: TObject; const URLText: string;
       Button: TMouseButton);
+  protected
+    procedure CreateParams(var Params : TCreateParams); override;
   private
     { Private declarations }
     FIndex: Integer;
@@ -198,6 +200,15 @@ implementation
 uses MainWnd, NotesTabOptionsWnd;
 
 {$R *.dfm}
+
+procedure TSharpENotesForm.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  // Use the Application.Handle as the parent so that the form
+  // will show in the taskbar and it won't be brought forward
+  // when a use clicks anywhere on the bar.
+  Params.WndParent := Application.Handle;
+end;
 
 procedure TSharpENotesForm.WMUpdateNotes(var Msg: TMessage);
 var
