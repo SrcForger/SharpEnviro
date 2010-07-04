@@ -258,6 +258,7 @@ begin
   end else
   begin
     btn_select.Left := 2;
+    edit.Left := 2;
     edit.Width := max(1,(Width - 4));
     btn_select.Hide;
   end;

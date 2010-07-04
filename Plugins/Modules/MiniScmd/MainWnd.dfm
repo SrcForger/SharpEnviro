@@ -64,6 +64,8 @@ object MainForm: TMainForm
       FFFFFF00FFFFFF00}
     Layout = blGlyphLeft
     AutoPosition = True
+    ForceDown = False
+    ForceHover = False
   end
   object edit: TSharpEEdit
     Left = 3
