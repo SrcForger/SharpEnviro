@@ -164,7 +164,9 @@ begin
 
         if ShowRamInfo then
         begin
-          lb_ram.Caption := 'RAM:';
+          lb_ram.Caption := 'RAM';
+          if ShowRamPC then
+            lb_ram.Caption := 'RAM:';
           lb_ram.Left := o1 -5;
           lb_ram.LabelStyle := lsSmall;
           lb_ram.AutoPos := apTop;          
@@ -202,7 +204,9 @@ begin
 
         if ShowSwpInfo then
         begin
-          lb_swp.Caption := 'SWP:';
+          lb_swp.Caption := 'SWP';
+          if ShowSWPPC then
+            lb_swp.Caption := 'SWP:';
           lb_swp.LabelStyle := lsSmall;
           lb_swp.UpdateSkin;
           lb_swp.Left := o4 - 5;
