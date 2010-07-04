@@ -400,9 +400,9 @@ begin
              lb_rambar.Caption := inttostr(i) + '%';
              repaint;
            end;
-        else if CompareText(inttostr(t) + ' MB free',lb_rambar.Caption) <> 0 then
+        else if CompareText(inttostr(t) + ' MB Free',lb_rambar.Caption) <> 0 then
              begin
-               lb_rambar.Caption := inttostr(t) + ' MB free';
+               lb_rambar.Caption := inttostr(t) + ' MB Free';
                repaint;
              end;
        end;
@@ -425,9 +425,9 @@ begin
              lb_swpbar.Caption := inttostr(i) + '%';
              repaint;
            end;
-        else if CompareText(inttostr(t) + ' MB free',lb_swpbar.Caption) <> 0 then
+        else if CompareText(inttostr(t) + ' MB Free',lb_swpbar.Caption) <> 0 then
              begin
-               lb_swpbar.Caption := inttostr(t) + ' MB free';
+               lb_swpbar.Caption := inttostr(t) + ' MB Free';
                repaint;
              end;
       end;
