@@ -13,7 +13,6 @@ object frmListWnd: TfrmListWnd
   OldCreateOrder = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object lbIcons: TSharpEListBoxEx
@@ -165,11 +164,5 @@ object frmListWnd: TfrmListWnd
     Left = 360
     Top = 184
     Bitmap = {}
-  end
-  object tmr: TTimer
-    Enabled = False
-    Interval = 1
-    Left = 236
-    Top = 196
   end
 end
