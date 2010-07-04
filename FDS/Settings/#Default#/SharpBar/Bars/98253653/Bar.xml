@@ -12,7 +12,7 @@
     <DisableHideBar>-1</DisableHideBar>
     <StartHidden>0</StartHidden>
     <AlwaysOnTop>0</AlwaysOnTop>
-    <ShowMiniThrobbers>-1</ShowMiniThrobbers>
+    <ShowMiniThrobbers>0</ShowMiniThrobbers>
   </Settings>
   <Modules>
     <Item>

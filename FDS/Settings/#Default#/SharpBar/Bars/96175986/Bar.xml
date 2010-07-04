@@ -13,7 +13,7 @@
     <StartHidden>0</StartHidden>
     <AlwaysOnTop>0</AlwaysOnTop>
     <ForceAlwaysOnTop>0</ForceAlwaysOnTop>
-    <ShowMiniThrobbers>-1</ShowMiniThrobbers>
+    <ShowMiniThrobbers>0</ShowMiniThrobbers>
     <FixedWidthEnabled>0</FixedWidthEnabled>
     <FixedWidth>50</FixedWidth>
   </Settings>
