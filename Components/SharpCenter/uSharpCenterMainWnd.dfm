@@ -2,8 +2,8 @@ object SharpCenterWnd: TSharpCenterWnd
   Left = 0
   Top = 0
   Caption = 'SharpCenter'
-  ClientHeight = 558
-  ClientWidth = 720
+  ClientHeight = 554
+  ClientWidth = 738
   Color = clWindow
   Constraints.MinHeight = 320
   Constraints.MinWidth = 500
@@ -1424,6 +1424,7 @@ object SharpCenterWnd: TSharpCenterWnd
     FE00000FFFFFFFFFFF00003FFFFFFFFFFF8000FFFFFFFFFFFFC007FFFFFFFFFF
     FFE01FFFFFFFFFFFFFF07FFFFFFFFFFFFFF9FFFFFFFFFFFFFFFFFFFFFFFFFFFF
     FFFFFFFFFFFF}
+  Menu = MainMenu1
   OldCreateOrder = False
   Position = poScreenCenter
   ScreenSnap = True
@@ -1436,8 +1437,8 @@ object SharpCenterWnd: TSharpCenterWnd
   TextHeight = 13
   object PnlButtons: TPanel
     Left = 0
-    Top = 526
-    Width = 720
+    Top = 522
+    Width = 738
     Height = 32
     Align = alBottom
     BevelOuter = bvNone
@@ -1446,11 +1447,12 @@ object SharpCenterWnd: TSharpCenterWnd
     Locked = True
     ParentBackground = False
     TabOrder = 0
+    ExplicitTop = 526
     DesignSize = (
-      720
+      738
       32)
     object btnSave: TPngSpeedButton
-      Left = 577
+      Left = 595
       Top = 3
       Width = 65
       Height = 26
@@ -1901,7 +1903,7 @@ object SharpCenterWnd: TSharpCenterWnd
       ExplicitLeft = 541
     end
     object btnCancel: TPngSpeedButton
-      Left = 649
+      Left = 667
       Top = 3
       Width = 65
       Height = 26
@@ -2366,20 +2368,21 @@ object SharpCenterWnd: TSharpCenterWnd
   object pnlMain: TPanel
     Left = 0
     Top = 0
-    Width = 720
-    Height = 526
+    Width = 738
+    Height = 522
     Align = alClient
     BevelOuter = bvNone
     Color = clWindow
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 1
+    ExplicitHeight = 526
     object pnlSettingTree: TPanel
       AlignWithMargins = True
       Left = 6
       Top = 6
       Width = 160
-      Height = 514
+      Height = 510
       Margins.Left = 6
       Margins.Top = 6
       Margins.Right = 0
@@ -2389,6 +2392,7 @@ object SharpCenterWnd: TSharpCenterWnd
       Color = clWindow
       ParentBackground = False
       TabOrder = 0
+      ExplicitHeight = 514
       object tlToolbar: TSharpETabList
         Left = 0
         Top = 0
@@ -2464,6 +2468,7 @@ object SharpCenterWnd: TSharpCenterWnd
         TabOrder = 1
         DrawMode = srpNormal
         NoTopBorder = False
+        NoBottomBorder = False
         RoundValue = 10
         BorderColor = clBtnFace
         Border = False
@@ -2480,19 +2485,11 @@ object SharpCenterWnd: TSharpCenterWnd
           object tabHistory: TTabSheet
             Caption = 'tabHistory'
             TabVisible = False
-            ExplicitLeft = 0
-            ExplicitTop = 0
-            ExplicitWidth = 0
-            ExplicitHeight = 0
           end
           object tabImport: TTabSheet
             Caption = 'tabImport'
             ImageIndex = 1
             TabVisible = False
-            ExplicitLeft = 0
-            ExplicitTop = 0
-            ExplicitWidth = 0
-            ExplicitHeight = 0
             object btnImport: TPngSpeedButton
               Left = 118
               Top = 36
@@ -3014,10 +3011,6 @@ object SharpCenterWnd: TSharpCenterWnd
             Caption = 'tabExport'
             ImageIndex = 3
             TabVisible = False
-            ExplicitLeft = 0
-            ExplicitTop = 0
-            ExplicitWidth = 0
-            ExplicitHeight = 0
           end
         end
       end
@@ -3026,7 +3019,7 @@ object SharpCenterWnd: TSharpCenterWnd
         Left = 0
         Top = 170
         Width = 160
-        Height = 344
+        Height = 340
         Margins.Left = 0
         Margins.Top = 6
         Margins.Right = 0
@@ -3066,13 +3059,14 @@ object SharpCenterWnd: TSharpCenterWnd
         AutosizeGrid = False
         Borderstyle = bsNone
         Align = alClient
+        ExplicitHeight = 344
       end
     end
     object pnlContent: TPanel
       Left = 166
       Top = 0
-      Width = 554
-      Height = 526
+      Width = 572
+      Height = 522
       Margins.Left = 6
       Margins.Top = 6
       Margins.Right = 6
@@ -3086,11 +3080,15 @@ object SharpCenterWnd: TSharpCenterWnd
       Padding.Bottom = 6
       ParentBackground = False
       TabOrder = 1
+      ExplicitHeight = 526
+      DesignSize = (
+        572
+        522)
       object pnlLivePreview: TPanel
         AlignWithMargins = True
         Left = 6
         Top = 37
-        Width = 542
+        Width = 560
         Height = 27
         Margins.Left = 0
         Margins.Top = 2
@@ -3105,7 +3103,7 @@ object SharpCenterWnd: TSharpCenterWnd
         object imgLivePreview: TImage32
           Left = 0
           Top = 0
-          Width = 542
+          Width = 560
           Height = 27
           Margins.Left = 0
           Margins.Right = 0
@@ -3121,8 +3119,8 @@ object SharpCenterWnd: TSharpCenterWnd
       object pnlPluginContainer: TSharpEPageControl
         Left = 6
         Top = 276
-        Width = 542
-        Height = 244
+        Width = 560
+        Height = 240
         Align = alClient
         DoubleBuffered = False
         ExpandedHeight = 200
@@ -3150,15 +3148,16 @@ object SharpCenterWnd: TSharpCenterWnd
         PageBackgroundColor = clWindow
         OnTabChange = tlPluginTabsTabChange
         OnTabClick = pnlPluginContainerTabClick
+        ExplicitHeight = 244
         DesignSize = (
-          542
-          244)
+          560
+          240)
         object sbPlugin: TScrollBox
           AlignWithMargins = True
           Left = 6
           Top = 32
-          Width = 530
-          Height = 206
+          Width = 548
+          Height = 202
           Margins.Left = 6
           Margins.Top = 32
           Margins.Right = 6
@@ -3171,10 +3170,11 @@ object SharpCenterWnd: TSharpCenterWnd
           ParentColor = False
           TabOrder = 2
           OnResize = sbPluginResize
+          ExplicitHeight = 206
           object pnlPlugin: TPanel
             Left = 0
             Top = 0
-            Width = 513
+            Width = 535
             Height = 331
             Margins.Left = 6
             Margins.Top = 6
@@ -3192,7 +3192,7 @@ object SharpCenterWnd: TSharpCenterWnd
         AlignWithMargins = True
         Left = 6
         Top = 72
-        Width = 542
+        Width = 560
         Height = 200
         Margins.Left = 0
         Margins.Top = 0
@@ -3236,13 +3236,13 @@ object SharpCenterWnd: TSharpCenterWnd
         OnTabChange = tlEditItemTabChange
         OnTabClick = tlEditItemTabClick
         DesignSize = (
-          542
+          560
           200)
         object pnlEditPluginContainer: TSharpERoundPanel
           AlignWithMargins = True
           Left = 0
           Top = 25
-          Width = 542
+          Width = 560
           Height = 175
           Margins.Left = 0
           Margins.Top = 25
@@ -3256,6 +3256,7 @@ object SharpCenterWnd: TSharpCenterWnd
           TabOrder = 2
           DrawMode = srpNoTopLeft
           NoTopBorder = False
+          NoBottomBorder = False
           RoundValue = 10
           BorderColor = clBtnFace
           Border = False
@@ -3263,7 +3264,7 @@ object SharpCenterWnd: TSharpCenterWnd
           object pnlEditPlugin: TPanel
             Left = 4
             Top = 4
-            Width = 534
+            Width = 552
             Height = 133
             Align = alClient
             BevelOuter = bvNone
@@ -3274,7 +3275,7 @@ object SharpCenterWnd: TSharpCenterWnd
           object pnlEditToolbar: TPanel
             Left = 4
             Top = 137
-            Width = 534
+            Width = 552
             Height = 34
             Align = alBottom
             BevelOuter = bvNone
@@ -3283,10 +3284,10 @@ object SharpCenterWnd: TSharpCenterWnd
             ParentBackground = False
             TabOrder = 1
             DesignSize = (
-              534
+              552
               34)
             object btnEditCancel: TPngSpeedButton
-              Left = 465
+              Left = 483
               Top = 5
               Width = 65
               Height = 26
@@ -3738,7 +3739,7 @@ object SharpCenterWnd: TSharpCenterWnd
               ExplicitLeft = 430
             end
             object btnEditApply: TPngSpeedButton
-              Left = 393
+              Left = 411
               Top = 5
               Width = 65
               Height = 26
@@ -4188,7 +4189,7 @@ object SharpCenterWnd: TSharpCenterWnd
         AlignWithMargins = True
         Left = 6
         Top = 9
-        Width = 542
+        Width = 560
         Height = 26
         Margins.Left = 0
         Margins.Right = 0
@@ -4204,7 +4205,7 @@ object SharpCenterWnd: TSharpCenterWnd
           AlignWithMargins = True
           Left = 0
           Top = 0
-          Width = 538
+          Width = 556
           Height = 20
           Margins.Left = 0
           Margins.Top = 0
@@ -4218,8 +4219,127 @@ object SharpCenterWnd: TSharpCenterWnd
           ShowHint = True
           Transparent = True
           Layout = tlBottom
-          ExplicitWidth = 398
-          ExplicitHeight = 13
+          ExplicitLeft = -3
+          ExplicitTop = -1
+        end
+      end
+      object pnlHelp: TSharpERoundPanel
+        AlignWithMargins = True
+        Left = 6
+        Top = 34
+        Width = 560
+        Height = 223
+        Margins.Left = 0
+        Margins.Top = 25
+        Margins.Right = 0
+        Margins.Bottom = 0
+        Anchors = [akLeft, akTop, akRight]
+        BevelOuter = bvNone
+        BorderWidth = 4
+        Color = 8447997
+        ParentBackground = False
+        TabOrder = 4
+        Visible = False
+        DrawMode = srpNoTopRight
+        NoTopBorder = False
+        NoBottomBorder = False
+        RoundValue = 10
+        BorderColor = 14737632
+        Border = True
+        BackgroundColor = clWhite
+        object pnlHelpContent: TPanel
+          Left = 4
+          Top = 4
+          Width = 552
+          Height = 215
+          Align = alClient
+          BevelOuter = bvNone
+          Color = 8447997
+          ParentBackground = False
+          TabOrder = 0
+          ExplicitHeight = 155
+          object pnlSbHelpContent: TScrollBox
+            Left = 0
+            Top = 0
+            Width = 552
+            Height = 215
+            HorzScrollBar.Visible = False
+            VertScrollBar.Increment = 13
+            VertScrollBar.Tracking = True
+            Align = alClient
+            BorderStyle = bsNone
+            Ctl3D = False
+            ParentCtl3D = False
+            TabOrder = 0
+            ExplicitLeft = -4
+          end
+        end
+      end
+      object pnlHelpToggle: TSharpERoundPanel
+        Left = 532
+        Top = 13
+        Width = 34
+        Height = 22
+        Margins.Left = 0
+        Margins.Top = 25
+        Margins.Right = 0
+        Margins.Bottom = 0
+        BevelOuter = bvNone
+        BorderWidth = 4
+        Color = 8447997
+        ParentBackground = False
+        TabOrder = 5
+        DrawMode = srpNoBottom
+        NoTopBorder = False
+        NoBottomBorder = True
+        RoundValue = 10
+        BorderColor = 14737632
+        Border = True
+        BackgroundColor = clWhite
+        DesignSize = (
+          34
+          22)
+        object btnHelp: TPngSpeedButton
+          Left = 6
+          Top = 0
+          Width = 22
+          Height = 22
+          Margins.Top = 0
+          Margins.Right = 0
+          Margins.Bottom = 0
+          Anchors = [akRight, akBottom]
+          Flat = True
+          OnClick = btnHelpClick
+          PngImage.Data = {
+            89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
+            610000000473424954080808087C0864880000001974455874536F6674776172
+            65007777772E696E6B73636170652E6F72679BEE3C1A000003324944415478DA
+            6D937B504C7114C7BFF7EEEB6EB556F4B045E9B1D918A965462A248F5079CC18
+            0CC288FE104D1ED9D5CA8CED61BDA541934735D2187F1924794449E35529234A
+            5B61840AA3AD76ADDAFCEE6553C36FE6CC997B7EBFF3B9E7777EDF43F5F7F763
+            F0F288D029888B26164A6CE29FF00B62F7895D682E54BF1E7C9EB20248224D9C
+            CACE46B8677DD4142640E142FBF9C8B8BDDA868FA8AE6FB5E45E7DF6A3ABC7AC
+            25A18304641900FC492E0BF61FABD4C52F1057D4B4E0CEE346D435B57180F19E
+            4E981B2847D02477A84F1419CBAB5BAA4878060BB10276CF9AE2959CBE75BE78
+            FB91EBF8FABD079A4D61F093CBD06334A3B4AA190545CFE13C5282D4B879483C
+            56687A50D5AC2580FDD4D885FB15125B51E5CD9331363B8E5EC7A3DA77889CE1
+            8B8CC445A87FDB0E998304C32562943CD54373EA0E26FBBA42B36126C2379F31
+            1ABACD4A169096B03A64373948A9328AB89227788F024D51F8D0D18571EE0E28
+            485B81DE3E0B22B6E5A38FF89D6B82A17FDF61399C57AA63010F73B5CB832EDE
+            A8C6ED476F2012F221140A881710CFC7E299BED8B5763A3E7FE9424CFA550E3C
+            CD6F0C4203DC109D74A98205745616C44B166C398F6F062318911022D16F8052
+            E18AC309E110F068A4E63C40ADBE1D344DC1C9DE0629B1A150AECC300C0022E2
+            73D0D96D8698F90D604105A9CBE03CC20E79376A70EB490BF87C9A0068384AC5
+            D0AC0B2680E386812B5CBE558B87A4812C804DB697DA40454A67FF9875A51A14
+            4513000F3C1E85006F6704C81DB152955F616DA27A8CF3703A3DB79403881911
+            24760CA6FBBB4320E0A3A6B19DEB8780CF27001ACB67F9E095FE9365DFE9629D
+            F519AB8A4F6D14A79CBD87572D1D1C44E628C5394D14F72A099925E091642181
+            C947DB63499007C262B38CDF0D26A55548EAD953BDF7B2423A90578E86F75F09
+            6018B2D5911C2031AB8C94CF87C26D049686782229B3D854545EB74F7F4DA51B
+            22E53981F2C96971E14C4D631B586B253A6048353E6E0EF0F37280A74C0A6DF6
+            5D5361595DA5F967EF5F290F1EA661B64CF2D655218CFF3817CAC76D24691E85
+            E6D66F78D9D46E399453F2A3B3CBA4EDB358860ED3FFC699342B94EC71E3CCE3
+            F15EF4F6F6DD27DFFF8CF32F683B4F744CC79CF60000000049454E44AE426082}
         end
       end
     end
@@ -9729,5 +9849,9 @@ object SharpCenterWnd: TSharpCenterWnd
     OnMessage = ApplicationEvents1Message
     Left = 32
     Top = 80
+  end
+  object MainMenu1: TMainMenu
+    Left = 360
+    Top = 280
   end
 end

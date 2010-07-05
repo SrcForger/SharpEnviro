@@ -57,12 +57,14 @@ type
     FCommand: TSCC_COMMAND_ENUM;
     FParam: string;
     FPluginID: String;
+    FHelpFile: string;
     FID: Integer;
     FTabIndex: Integer;
   public
     property ID: Integer read FID write FID;
     property Command: TSCC_COMMAND_ENUM read FCommand write FCommand;
     property Param: string read FParam write FParam;
+    property HelpFile: string read FHelpFile write FHelpFile;
     property PluginID: String read FPluginID write FPluginID;
     property TabIndex: Integer read FTabIndex write FTabIndex;
   end;
@@ -76,9 +78,9 @@ type
     procedure DeleteItem(AItem: TSharpCenterHistoryItem);
 
     function AddFolder(APath: string): TSharpCenterHistoryItem;
-    function AddDll(ADll, APluginId: String): TSharpCenterHistoryItem;
-    function AddCon(AConFile, APluginId: string): TSharpCenterHistoryItem;
-    function AddItem(ACommand: TSCC_COMMAND_ENUM; AParameter, APluginID: string): TSharpCenterHistoryItem;
+    function AddDll(ADll, APluginId, AHelpFile: string): TSharpCenterHistoryItem;
+    function AddCon(AConFile, APluginId, AHelpFile: string): TSharpCenterHistoryItem;
+    function AddItem(ACommand: TSCC_COMMAND_ENUM; AParameter, APluginID, AHelpFile: string): TSharpCenterHistoryItem;
     function GetLastEntry: TSharpCenterHistoryItem;
 
     property Item[Index: Integer] : TSharpCenterHistoryItem
@@ -108,8 +110,7 @@ begin
   Add(Result);
 end;
 
-function TSharpCenterHistoryList.AddDll(
-  ADll, APluginID: string): TSharpCenterHistoryItem;
+function TSharpCenterHistoryList.AddDll(ADll, APluginID, AHelpFile: string): TSharpCenterHistoryItem;
 begin
   Result := nil;
   if ADll = '' then
@@ -120,13 +121,13 @@ begin
   Result.Param := ADll;
   Result.PluginID := APluginID;
   Result.ID := Count;
+  Result.HelpFile := AHelpFile;
   Result.TabIndex := SCM.PluginTabIndex;
 
   Add(Result);
 end;
 
-function TSharpCenterHistoryList.AddCon(
-  AConFile, APluginId: string): TSharpCenterHistoryItem;
+function TSharpCenterHistoryList.AddCon(AConFile, APluginId, AHelpFile: string): TSharpCenterHistoryItem;
 begin
   Result := nil;
   if AConFile = '' then
@@ -136,6 +137,7 @@ begin
   Result.Command := sccLoadSetting;
   Result.Param := AConFile;
   Result.PluginID := APluginId;
+  Result.HelpFile := AHelpFile;
   Result.ID := Count;
   Result.TabIndex := SCM.PluginTabIndex;
 
@@ -155,12 +157,13 @@ begin
 
 end;
 
-function TSharpCenterHistoryList.AddItem(ACommand: TSCC_COMMAND_ENUM; AParameter, APluginID: string): TSharpCenterHistoryItem;
+function TSharpCenterHistoryList.AddItem(ACommand: TSCC_COMMAND_ENUM; AParameter, APluginID, AHelpFile: string): TSharpCenterHistoryItem;
 begin
   Result := TSharpCenterHistoryItem.Create;
   Result.Command := ACommand;
   Result.Param := AParameter;
   Result.PluginID := APluginID;
+  Result.HelpFile := AHelpFile;
   Result.ID := Count;
   Result.TabIndex := SCM.PluginTabIndex;
 
@@ -178,8 +181,7 @@ begin
   end;
 end;
 
-function TSharpCenterHistoryList.GetItem(
-  Index: Integer): TSharpCenterHistoryItem;
+function TSharpCenterHistoryList.GetItem(Index: Integer): TSharpCenterHistoryItem;
 begin
   Result := nil;
 

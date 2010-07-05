@@ -48,7 +48,7 @@ uses
   PngImageList,
   JclFileUtils,
   JclStrings,
-  jvSimpleXml,
+  JclSimpleXml,
   Tabs,
   uSharpCenterDllMethods,
   uSharpCenterManager,
@@ -67,6 +67,7 @@ uses
   SharpEGaugeBoxEdit,
   SharpEColorEditorEx,
   SharpESwatchManager,
+  uSharpXMLUtils,
   JvExControls,
   JvPageList,
   JvXPCheckCtrls,
@@ -116,6 +117,12 @@ type
     tabExport: TTabSheet;
     lblDescription: TLabel;
     ApplicationEvents1: TApplicationEvents;
+    pnlHelp: TSharpERoundPanel;
+    pnlHelpContent: TPanel;
+    MainMenu1: TMainMenu;
+    pnlSbHelpContent: TScrollBox;
+    pnlHelpToggle: TSharpERoundPanel;
+    btnHelp: TPngSpeedButton;
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure tlPluginTabsTabChange(ASender: TObject; const ATabIndex: Integer;
       var AChange: Boolean);
@@ -153,6 +160,7 @@ type
       const ATabIndex: Integer);
     procedure ApplicationEvents1Message(var Msg: tagMSG; var Handled: Boolean);
     procedure FormDestroy(Sender: TObject);
+    procedure btnHelpClick(Sender: TObject);
   private
     FCancelClicked: Boolean;
     FSelectedTabID: Integer;
@@ -177,6 +185,9 @@ type
     procedure InitWindow;
     procedure InitToolbar;
     procedure UpdateSize;
+
+    procedure ClearHelp;
+    procedure ToggleHelp;
 
     function GetCommandLineParams(var enumCommandType : TSCC_COMMAND_ENUM; var sCmd, sPluginID : string) : boolean;
 
@@ -237,6 +248,11 @@ uses
 
 {$R *.dfm}
 
+procedure TSharpCenterWnd.btnHelpClick(Sender: TObject);
+begin
+  ToggleHelp;
+end;
+
 procedure TSharpCenterWnd.btnHomeClick(Sender: TObject);
 begin
   // Initialise the tool bar to a default state
@@ -284,7 +300,7 @@ begin
   tmpMsg := PSharpE_DataStruct(PCopyDataStruct(msg.lParam)^.lpData)^;
 
   command := CenterCommandAsEnum(tmpMsg.Command);
-  SCM.ExecuteCommand(command, tmpMsg.Parameter, tmpMsg.PluginID, 0);
+  SCM.ExecuteCommand(command, tmpMsg.Parameter, tmpMsg.PluginID, '', 0);
 
   // Force window to front
   if command = sccLoadSetting then
@@ -333,7 +349,7 @@ begin
   {$WARN SYMBOL_PLATFORM OFF} SendDebugMessage('SharpCenter',cmdline,0); {$WARN SYMBOL_PLATFORM ON}
 
   if GetCommandLineParams(enumCommandType, sCmd, sPluginID) then
-    SCM.ExecuteCommand(enumCommandType, scmd, sPluginID, 0)
+    SCM.ExecuteCommand(enumCommandType, scmd, sPluginID, '', 0)
   else
     SCM.BuildNavRoot;
 end;
@@ -352,7 +368,7 @@ begin
 
   if tmpItem <> nil then
   begin
-    SCM.ExecuteCommand(tmpItem.Command, tmpItem.Param, tmpItem.PluginID, tmpItem.TabIndex);
+    SCM.ExecuteCommand(tmpItem.Command, tmpItem.Param, tmpItem.PluginID, tmpItem.HelpFile, tmpItem.TabIndex);
     SCM.History.Delete(SCM.History.IndexOf(tmpItem));
 
     SetToolbarTabVisible(tidHistory, not (SCM.History.Count = 0));
@@ -442,6 +458,115 @@ begin
 
   finally
     //LockWindowUpdate(0);
+  end;
+end;
+
+procedure TSharpCenterWnd.ClearHelp;
+var
+  n : integer;
+begin
+  for n := pnlSbHelpContent.ComponentCount - 1 downto 0 do
+    pnlSbHelpContent.Components[n].Free;
+end;
+
+procedure TSharpCenterWnd.ToggleHelp;
+var
+  XML : TJclSimpleXML;
+  n : integer;
+  lbItem : TLabel;
+  i : integer;
+  lastItem,currentItem : TControl;
+begin
+  LockWindowUpdate(Handle);
+  try
+    if not pnlHelp.Visible then
+    begin
+      pnlHelp.Visible := True;
+      pnlHelpToggle.Color := SCM.Theme.EditControlBackground;
+      pnlHelpToggle.BorderColor := SCM.Theme.Border;
+
+      // Load Help File for Current config
+      if length(trim(SCM.ActiveHelpFile)) > 0 then
+        if FileExists(SCM.ActiveHelpFile) then
+        begin
+          XML := TJclSimpleXML.Create;
+          if LoadXMLFromSharedFile(XML,SCM.ActiveHelpFile,True) then
+          begin
+            lastItem := nil;
+            for n := 0 to XML.Root.Items.Count - 1 do
+              with XML.Root.Items do
+              begin
+                currentItem := nil;
+                if (CompareText(Item[n].Name,'Label') = 0) then
+                begin
+                  lbItem := TLabel.Create(pnlSbHelpContent);
+                  lbItem.Parent := pnlSbHelpContent;
+                  lbItem.Align := alTop;
+                  lbItem.Margins.Left := 4;
+                  lbItem.Margins.Right := 4;
+                  lbItem.Margins.Top := 2;
+                  lbItem.Margins.Bottom := 0;
+                  lbItem.AlignWithMargins := True;
+                  lbItem.AutoSize := True;
+                  lbItem.WordWrap := True;
+
+                  i := Item[n].Properties.IntValue('Indent',0);
+                  lbItem.Margins.Left := lbItem.Margins.Left + i*8;                  
+
+                  lbItem.Caption := Item[n].Value;
+                  if Item[n].Properties.BoolValue('bold',False) then
+                    lbItem.Font.Style := lbItem.Font.Style + [fsBold];
+                  if Item[n].Properties.BoolValue('italic',False) then
+                    lbItem.Font.Style := lbItem.Font.Style + [fsItalic];
+                  if Item[n].Properties.BoolValue('underline',False) then
+                    lbItem.Font.Style := lbItem.Font.Style + [fsUnderline];
+                  lbItem.Show;
+
+                  currentItem := lbItem;
+                end else if (CompareText(Item[n].Name,'Sep') = 0) then
+                begin
+                  lbItem := TLabel.Create(pnlSbHelpContent);
+                  lbItem.Parent := pnlSbHelpContent;
+                  lbItem.Align := alTop;
+                  lbItem.Margins.Left := 4;
+                  lbItem.Margins.Right := 4;
+                  lbItem.Margins.Top := 0;
+                  lbItem.Margins.Bottom := 0;
+                  lbItem.AlignWithMargins := True;
+                  lbItem.Caption := '';
+                  if CompareText(Item[n].Properties.Value('Size','Normal'),'Small') = 0 then
+                    lbItem.Height := 4
+                  else if CompareText(Item[n].Properties.Value('Size','Normal'),'Big') = 0 then
+                    lbItem.Height := 16
+                  else lbItem.Height := 10;
+
+                  lbItem.Show;
+
+                  currentItem := lbItem;
+                end;
+
+                if (currentItem <> nil) and (lastItem <> nil) then
+                  currentItem.Top := lastItem.Top + lastItem.Height;
+                if (currentItem <> nil) then
+                  lastItem := currentItem;
+              end;
+
+          end;
+          XML.Free;
+        end;
+
+        // This is to force "UpdateScrollBars" to be called internally
+        pnlSbHelpContent.Height := pnlSbHelpContent.Height + 1;
+        pnlSbHelpContent.Height := pnlSbHelpContent.Height - 1;        
+    end else
+    begin
+      pnlHelp.Visible := False;
+      pnlHelpToggle.Color := SCM.Theme.Background;
+      pnlHelpToggle.BorderColor := SCM.Theme.Background;
+      ClearHelp;
+    end;
+  finally
+    LockWindowUpdate(0);
   end;
 end;
 
@@ -893,8 +1018,9 @@ begin
         tmpHistory.Command := sccLoadDll;
         tmpHistory.PluginID := tmpItem.PluginID;
         tmpHistory.Param := tmpItem.Filename;
+        tmpHistory.HelpFile := tmpItem.HelpFile;
         SCM.Unload;
-        SCM.Load(tmpItem.Filename, tmpItem.PluginID);
+        SCM.Load(tmpItem.Filename, tmpItem.PluginID, tmpItem.HelpFile);
       end;
   end;
 end;
@@ -988,6 +1114,14 @@ begin
 
     // Update Title and Description
     UpdateConfigHeader;
+
+    if pnlHelp.Visible then
+      ToggleHelp;
+     pnlHelpToggle.Visible := False;      
+
+    if length(trim(SCM.ActiveHelpFile)) > 0 then
+      if FileExists(SCM.ActiveHelpFile) then
+        pnlHelpToggle.Visible := True;
 
   finally
     pnlPluginContainer.Show;
@@ -1116,6 +1250,20 @@ begin
   btnSave.Font.Color := SCM.Theme.BackgroundText;
   btnCancel.Font.Color := SCM.Theme.BackgroundText;
 
+  // Help Section
+  pnlHelp.Color := SCM.Theme.EditControlBackground;
+  pnlHelp.BorderColor := SCM.Theme.Border;
+  pnlHelpContent.Color := SCM.Theme.EditControlBackground;
+
+  if pnlHelp.Visible then
+  begin
+    pnlHelpToggle.Color := SCM.Theme.EditControlBackground;
+    pnlHelpToggle.BorderColor := SCM.Theme.Border;
+  end else
+  begin
+    pnlHelpToggle.Color := SCM.Theme.Background;
+    pnlHelpToggle.BorderColor := SCM.Theme.Background;
+  end;
 end;
 
 procedure TSharpCenterWnd.RefreshTitleEvent(Sender: TObject);

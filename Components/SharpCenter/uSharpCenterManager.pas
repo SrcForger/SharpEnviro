@@ -48,6 +48,7 @@ type
   private
     FPath: string;
     FFilename: string;
+    FHelpFile: string;
     FIconIndex: Integer;
     FItemType: TSharpCenterItemType;
     FCaption: string;
@@ -63,6 +64,7 @@ type
     property Description: string read FDescription write FDescription;
     property PluginID: string read FPluginID write FPluginID;
     property Plugin: TPlugin read FPlugin write FPlugin;
+    property HelpFile: string read FHelpFile write FHelpFile;
 
     property Filename: string read FFilename write FFilename;
     property Path: string read FPath write FPath;
@@ -86,6 +88,7 @@ type
     FUnloadCommand: TSharpCenterHistoryItem;
     FActivePluginID: string;
     FActiveFile: string;
+    FActiveHelpFile: string;
     FOnAddNavItem: TSharpCenterManagerAddNavItem;
     FPngImageList: TPngImageList;
 
@@ -114,7 +117,7 @@ type
 
     procedure UnloadTimerEvent(Sender: TObject);
     function UnloadDllCommand(ACommand: TSCC_COMMAND_ENUM; AParam,
-      APluginID: string; APluginTabIndex: Integer): Boolean;
+      APluginID, AHelpFile: string; APluginTabIndex: Integer): Boolean;
 
     function GetHistory: TSharpCenterHistoryList;
 
@@ -122,7 +125,7 @@ type
     procedure AssignIconIndex(AFile: string; AItem: TSharpCenterManagerItem);
 
     procedure SetUnloadCommand(ACommand: TSCC_COMMAND_ENUM; AParam,
-      APluginID: string; APluginTabIndex: Integer);
+      APluginID, AHelpFile: string; APluginTabIndex: Integer);
 
     procedure GetItemText(AFile, APluginID: string; var AName: string;
       var AStatus: string; var ADescription: string);
@@ -139,7 +142,7 @@ type
     procedure BuildNavRoot;
 
     function LoadHome: Boolean;
-    function Load(AFile, APluginID: string): Boolean;
+    function Load(AFile, APluginID, AHelpFile: string): Boolean;
     procedure Save;
     function Reload: Boolean;
     function Unload: Boolean;
@@ -160,7 +163,7 @@ type
     function PluginHasPreviewSupport: Boolean;
 
     function ExecuteCommand(ACommand: TSCC_COMMAND_ENUM; AParam,
-      APluginID: string; APluginTabIndex: Integer): Boolean;
+      APluginID, AHelpFile: string; APluginTabIndex: Integer): Boolean;
 
     property OnAddNavItem: TSharpCenterManagerAddNavItem read FOnAddNavItem write FOnAddNavItem;
     property PngImageList: TPngImageList read FPngImageList write FPngImageList;
@@ -170,6 +173,7 @@ type
     property Plugin: TPlugin read FPlugin write FPlugin;
     property ActivePluginID: string read FActivePluginID write FActivePluginID;
     property ActiveFile: string read FActiveFile write FActiveFile;
+    property ActiveHelpFile: string read FActiveHelpFile write FActiveHelpFile;
 
     property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
 
@@ -208,10 +212,11 @@ implementation
 
 { TSharpCenterManager }
 
-function TSharpCenterManager.Load(AFile, APluginID: string): Boolean;
+function TSharpCenterManager.Load(AFile, APluginID, AHelpFile: string): Boolean;
 begin
   Result := False;
   FActiveFile := AFile;
+  FActiveHelpFile := AHelpFile;
 
   if FileExists(AFile) then
   begin
@@ -275,7 +280,7 @@ begin
       Unload;
 
     if not (IsDirectory(FUnloadCommand.Param)) then
-      Load(FUnloadCommand.Param, FUnloadCommand.PluginID);
+      Load(FUnloadCommand.Param, FUnloadCommand.PluginID, FUnloadCommand.HelpFile);
   end
   else if FUnloadCommand.Command = sccChangeFolder then
   begin
@@ -283,6 +288,7 @@ begin
       Unload;
 
     ActivePluginID := FUnloadCommand.PluginID;
+    ActiveHelpFile := FUnloadCommand.HelpFile;    
     BuildNavFromPath(FUnloadCommand.Param)
   end
   else if FUnloadCommand.Command = sccLoadDll then
@@ -291,6 +297,7 @@ begin
       Unload;
 
     ActivePluginID := FUnloadCommand.PluginID;
+    ActiveHelpFile := FUnloadCommand.HelpFile;
     BuildNavFromCommandLine;
   end
   else if FUnloadCommand.Command = sccLoadSetting then
@@ -299,6 +306,7 @@ begin
       Unload;
 
     ActivePluginID := FUnloadCommand.PluginID;
+    ActiveHelpFile := FUnloadCommand.HelpFile;    
     if CompareText(ExtractFileExt(FUnloadCommand.Param), '.con') = 0 then
     begin
       BuildNavFromFile(FUnloadCommand.Param);
@@ -310,10 +318,10 @@ begin
 end;
 
 function TSharpCenterManager.UnloadDllCommand(ACommand: TSCC_COMMAND_ENUM; AParam,
-  APluginID: string; APluginTabIndex: Integer): Boolean;
+  APluginID, AHelpFile: string; APluginTabIndex: Integer): Boolean;
 begin
   Result := True;
-  SetUnloadCommand(ACommand, AParam, APluginID, APluginTabIndex);
+  SetUnloadCommand(ACommand, AParam, APluginID, AHelpFile, APluginTabIndex);
 
   // Set the timer to unload the dll after this function has finished
   FUnloadTimer.Enabled := True;
@@ -332,7 +340,7 @@ end;
 
 function TSharpCenterManager.Reload: Boolean;
 begin
-  Result := Load(FActiveFile, FActivePluginID);
+  Result := Load(FActiveFile, FActivePluginID, FActiveHelpFile);
 end;
 
 procedure TSharpCenterManager.Save;
@@ -348,9 +356,9 @@ var
   xml: TJvSimpleXML;
   i: Integer;
   pngfile: string;
-  sName, sStatus, sTitle, sDescription, sDll, sIcon: string;
+  sName, sHelp, sStatus, sTitle, sDescription, sDll, sIcon: string;
   sPath: string;
-  sFirstNavFile, sFirstPluginID: string;
+  sFirstNavFile, sFirstPluginID, sFirstHelpFile: string;
   newItem: TSharpCenterManagerItem;
 begin
   if not fileexists(AFile) then exit;
@@ -365,7 +373,7 @@ begin
       FOnInitNavigation(Self);
 
     if AHistory then
-      History.AddCon(AFile, ActivePluginID);
+      History.AddCon(AFile, ActivePluginID, ActiveHelpFile);
 
     xml := TJvSimpleXML.Create(nil);
     try
@@ -387,6 +395,10 @@ begin
           if Items.Item[i].Items.ItemNamed['Icon'] <> nil then
             sIcon := Items.Item[i].Items.ItemNamed['Icon'].Value;
 
+          sHelp := '';
+          if Items.Item[i].Items.ItemNamed['Help'] <> nil then
+            sHelp := sPath + Items.Item[i].Items.ItemNamed['Help'].Value;
+
           sName := '';
           sStatus := '';
           sTitle := '';
@@ -402,6 +414,7 @@ begin
             newItem.Caption := sName;
 
           newItem.Filename := sPath + sDll;
+          newItem.HelpFile := sHelp;
           newItem.PluginID := SCM.ActivePluginID;
           newItem.Description := sDescription;
           NewItem.Status := sStatus;
@@ -417,6 +430,7 @@ begin
           begin
             sFirstNavFile := newItem.Filename;
             sFirstPluginID := newItem.PluginID;
+            sFirstHelpFile := newItem.HelpFile;
           end;
         end;
       end;
@@ -428,11 +442,11 @@ begin
   finally
     if ALoad then begin
       Unload;
-      Load(sFirstNavFile, sFirstPluginID);
+      Load(sFirstNavFile, sFirstPluginID, sFirstHelpFile);
     end else
     begin
       // Add the first dll in the con file
-      FHistory.AddDll(sFirstNavFile,sFirstPluginID);
+      FHistory.AddDll(sFirstNavFile,sFirstPluginID,sFirstHelpFile);
     end;
 
     LockWindowUpdate(0);
@@ -448,6 +462,7 @@ var
   sName, sIcon, sPng: string;
   iCount: Integer;
   sPath: string;
+  sHelp : string;
   sDll: string;
   sStatus: string;
   sTitle: string;
@@ -457,6 +472,7 @@ begin
   Unload;
 
   iCount := 0;
+  sHelp := '';
   LockWindowUpdate(Application.MainForm.Handle);
 
   FPngImageList.Clear;
@@ -488,13 +504,20 @@ begin
 
                 if Items.ItemNamed['Icon'] <> nil then
                   sIcon := APath + Items.ItemNamed['Icon'].Value;
+
+                if Items.ItemNamed['Help'] <> nil then
+                  sHelp := sPath + Items.ItemNamed['Help'].Value;
               end;
             end
             else
             begin
               if xml.Root.Items.ItemNamed['Sections'] <> nil then
                 if xml.Root.Items.ItemNamed['Sections'].items.Item[0] <> nil then
+                begin
                   sDll := xml.Root.Items.ItemNamed['Sections'].items.Item[0].Items.ItemNamed['Dll'].Value;
+                  if xml.Root.Items.ItemNamed['Sections'].Items.Item[0].Items.ItemNamed['Help'] <> nil then
+                    sHelp := sPath + xml.Root.Items.ItemNamed['Sections'].Items.Item[0].Items.ItemNamed['Help'].Value;
+                end;
 
               //sName := PathRemoveExtension(sRec.Name);
               sIcon := APath + PathRemoveExtension(sRec.Name) + '.png';
@@ -514,6 +537,7 @@ begin
           newItem.Caption := sName;
           newItem.Status := sStatus;
           newItem.ItemType := itmSetting;
+          newItem.HelpFile := sHelp;
           newItem.Filename := APath + sRec.Name;
           sPng := sIcon;
           AssignIconIndex(sPng, newItem);
@@ -566,25 +590,25 @@ begin
 end;
 
 function TSharpCenterManager.ExecuteCommand(ACommand: TSCC_COMMAND_ENUM; AParam,
-  APluginID: string; APluginTabIndex: Integer): Boolean;
+  APluginID, AHelpFile: string; APluginTabIndex: Integer): Boolean;
 begin
   Result := True;
   if ACommand = sccChangeFolder then
   begin
-    UnloadDllCommand(sccChangeFolder, AParam, APluginID, APluginTabIndex);
+    UnloadDllCommand(sccChangeFolder, AParam, APluginID, AHelpFile, APluginTabIndex);
   end else
     if ACommand = sccUnloadDll then
     begin
-      UnloadDllCommand(sccUnloadDll, AParam, APluginID, APluginTabIndex);
+      UnloadDllCommand(sccUnloadDll, AParam, APluginID, AHelpFile, APluginTabIndex);
     end else
       if ACommand = sccLoadSetting then
       begin
-        UnloadDllCommand(sccLoadSetting, AParam, APluginID, APluginTabIndex);
+        UnloadDllCommand(sccLoadSetting, AParam, APluginID, AHelpFile, APluginTabIndex);
 
       end
       else
         if ACommand = sccLoadDll then begin
-          UnloadDllCommand(sccLoadDll, AParam, APluginID, APluginTabIndex);
+          UnloadDllCommand(sccLoadDll, AParam, APluginID, AHelpFile, APluginTabIndex);
         end
         else begin
           MessageDlg('Unknown command', mtError, [mbOK], 0);
@@ -649,12 +673,13 @@ begin
   if sConFile <> '' then
     BuildNavFromFile(sConFile, False, False);
 
-  Load(FUnloadCommand.Param, FUnloadCommand.PluginID);
+  Load(FUnloadCommand.Param, FUnloadCommand.PluginID, FUnloadCommand.HelpFile);
 end;
 
 procedure TSharpCenterManager.BuildNavRoot;
 begin
   History.Clear;
+  SCM.ActiveHelpFile := '';
   BuildNavFromPath(FRoot);
 end;
 
@@ -791,12 +816,13 @@ begin
 end;
 
 procedure TSharpCenterManager.SetUnloadCommand(ACommand: TSCC_COMMAND_ENUM; AParam,
-  APluginID: string; APluginTabIndex: Integer);
+  APluginID, AHelpFile: string; APluginTabIndex: Integer);
 begin
   FUnloadCommand.Command := ACommand;
   FUnloadCommand.Param := AParam;
   FUnloadCommand.PluginID := APluginID;
   FUnloadCommand.TabIndex := APluginTabIndex;
+  FUnloadCommand.HelpFIle := AHelpFile;
 end;
 
 function TSharpCenterManager.LoadPluginTabs: Boolean;
