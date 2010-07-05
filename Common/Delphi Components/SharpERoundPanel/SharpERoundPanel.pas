@@ -13,7 +13,7 @@ uses
 
 type
   TSharpERoundPanelDrawMode = (srpNormal, srpNoTopLeft, srpNoTopRight,
-    srpNoBottomLeft, srpNoBottomRight);
+    srpNoBottomLeft, srpNoBottomRight, srpNoTop, srpNoBottom);
 
 type
   TSharpERoundPanel = class(TPanel)
@@ -24,6 +24,7 @@ type
     FBackgroundColor: TColor;
     FDrawMode: TSharpERoundPanelDrawMode;
     FNoTopBorder: Boolean;
+    FNoBottomBorder: Boolean;
     procedure SetBorderColor(const Value: TColor);
     procedure SetBorder(const Value: Boolean);
     procedure SetBackgroundColor(const Value: TColor);
@@ -38,6 +39,7 @@ type
     property DrawMode: TSharpERoundPanelDrawMode read FDrawMode write SetDrawMode;
 
     property NoTopBorder: Boolean read FNoTopBorder write FNoTopBorder;
+    property NoBottomBorder: Boolean read FNoBottomBorder write FNoBottomBorder;
     property RoundValue: Integer read FRoundValue write SetRoundValue;
     property BorderColor: TColor read FBorderColor write SetBorderColor;
     property Border: Boolean read FBorder write SetBorder;
@@ -77,7 +79,15 @@ begin
     Canvas.Pen.Color := Color;
 
   Canvas.Brush.Color := Color;
-  Canvas.RoundRect(0, 0, Width, Height, RoundValue, RoundValue);
+  if (FBorder and (FNoTopBorder or FNoBottomBorder)) then
+  begin
+    if (FNoTopBorder and FNoBottomBorder) then
+      Canvas.RoundRect(0, 0 - 1, Width, Height + 1, RoundValue, RoundValue)
+    else if FNoTopBorder then
+      Canvas.RoundRect(0, 0 - 1, Width, Height, RoundValue, RoundValue)
+    else if FNoBottomBorder then
+      Canvas.RoundRect(0, 0, Width, Height + 1, RoundValue, RoundValue);
+  end else Canvas.RoundRect(0, 0, Width, Height, RoundValue, RoundValue);
 
   Canvas.Pen.Color := Color;
 
@@ -86,34 +96,61 @@ begin
     srpNoTopRight: Canvas.Rectangle(Width - RoundValue, 0, Width, RoundValue);
     srpNoBottomLeft: Canvas.Rectangle(0, Height - RoundValue, RoundValue, Height);
     srpNoBottomRight: Canvas.Rectangle(Width - RoundValue, Height - RoundValue, Width, Height);
+    srpNoTop: begin
+        Canvas.Rectangle(0, 0, RoundValue, RoundValue);
+        Canvas.Rectangle(Width - RoundValue, 0, Width, RoundValue);
+      end;
+    srpNoBottom: begin
+        Canvas.Rectangle(0, Height - RoundValue, RoundValue, Height);
+        Canvas.Rectangle(Width - RoundValue, Height - RoundValue, Width, Height);
+      end;
   end;
 
   if FBorder then begin
     Canvas.Pen.Color := FBorderColor;
 
-    if FDrawMode = srpNoTopLeft then begin
+    if (FDrawMode = srpNoTopLeft) or (FDrawMode = srpNoTop) then
+    begin
       Canvas.MoveTo(0, 0);
       Canvas.LineTo(0, RoundValue);
-      Canvas.MoveTo(0, 0);
-      Canvas.LineTo(RoundValue, 0);
-    end
-    else if FDrawMode = srpNoTopRight then begin
-      Canvas.MoveTo(Width - RoundValue, 0);
-      Canvas.LineTo(Width, 0);
+      if not FNoTopBorder then
+      begin
+        Canvas.MoveTo(0, 0);
+        Canvas.LineTo(RoundValue, 0);
+      end;
+    end; // No "else if" because of the "or" clause
+
+    if (FDrawMode = srpNoTopRight) or (FDrawMode = srpNoTop) then
+    begin
       Canvas.MoveTo(Width - 1, 0);
       Canvas.LineTo(Width - 1, 0 + RoundValue);
-    end
-    else if FDrawMode = srpNoBottomLeft then begin
+      if not FNoTopBorder then
+      begin
+        Canvas.MoveTo(Width - RoundValue, 0);
+        Canvas.LineTo(Width, 0);
+      end;
+    end;
+
+    if (FDrawMode = srpNoBottomLeft) or (FDrawMode = srpNoBottom) then
+    begin
       Canvas.MoveTo(0, Height);
       Canvas.LineTo(0, Height - RoundValue - 1);
-      Canvas.MoveTo(0, Height - 1);
-      Canvas.LineTo(0 + RoundValue, Height - 1);
-    end
-    else if FDrawMode = srpNoBottomRight then begin
+      if not FNoBottomBorder then
+      begin
+        Canvas.MoveTo(0, Height - 1);
+        Canvas.LineTo(0 + RoundValue, Height - 1);
+      end;
+    end;
+
+    if (FDrawMode = srpNoBottomRight) or (FDrawMode = srpNoBottom) then
+    begin
       Canvas.MoveTo(Width - 1, Height);
       Canvas.LineTo(Width - 1, Height - RoundValue - 1);
-      Canvas.MoveTo(Width - 1, Height - 1);
-      Canvas.LineTo(Width - RoundValue, Height - 1);
+      if not FNoBottomBorder then
+      begin
+        Canvas.MoveTo(Width - 1, Height - 1);
+        Canvas.LineTo(Width - RoundValue, Height - 1);
+      end;
     end;
   end;
 end;
