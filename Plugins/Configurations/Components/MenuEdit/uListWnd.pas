@@ -229,8 +229,9 @@ begin
 
         bDelete := True;
         if not (CtrlDown) then
+          // Check for mrYes as closing the window via X returns mrCancel.
           if (MessageDlg(Format('Are you sure you want to delete: %s item?', [tmp.GetCaption]),
-            mtConfirmation, [mbYes, mbNo], 0) = mrNo) then
+            mtConfirmation, [mbYes, mbNo], 0) <> mrYes) then
             bDelete := False;
 
         if bDelete then begin
