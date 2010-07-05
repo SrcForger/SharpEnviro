@@ -110,7 +110,7 @@ namespace SharpEnviro
 				if (result == null)
 					return false;
 				else
-					return (bool)result;
+					return Convert.ToBoolean(result);
 			}
 		}
 	}
