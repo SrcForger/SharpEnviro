@@ -16,208 +16,93 @@ using System.Threading;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
 using System.Diagnostics;
+using System.Windows.Interop;
+
+using SharpSearch;
+using SharpEnviro.Interop;
+using SharpEnviro.Interop.Enums;
+using System.Runtime.InteropServices;
 
 namespace SharpSearchNET
 {
-    /// <summary>
-    /// Interaction logic for ResultWindow.xaml
-    /// </summary>
-    public partial class Window1 : Window
-    {
-        SearchManager searchMgr;
-        SearchCallback searchCallback;
-        public List<SearchResult> searchResults;
-        public List<SearchResultData> searchResultsData;
+	/// <summary>
+	/// Interaction logic for ResultWindow.xaml
+	/// </summary>
+	public partial class Window1 : Window
+	{
+		public Window1()
+		{
+			InitializeComponent();
 
-        BackgroundWorker SearchBw = new BackgroundWorker();
-        BackgroundWorker InitBw = new BackgroundWorker();
-        volatile bool searchUpdate = false, searchCancel = false, searchClose = false;
+			// To making debugging a little easier we show the window
+			// in the taskbar which also causing it to show in Alt+Tab
+			if (Debugger.IsAttached)
+				ShowInTaskbar = true;
 
-        string searchQuery, pendingSearchQuery;
+			_keyPressedTimer = new Timer(new TimerCallback(ProcessKeyPress), null, Timeout.Infinite, Timeout.Infinite);
 
-        private void RemoveResult(SearchResult item)
-        {
-            Dispatcher.Invoke(DispatcherPriority.Normal, (ThreadStart)delegate
-            {
-                foreach (SearchResultData searchResultData in searchResultsData)
-                {
-                    //if ((searchResultData.Name.Equals(item.Name)) && (searchResultData.Description.Equals(item.Description)) && (searchResultData.Location.Equals(item.Location)))
-                    if (searchResultData.Location.Equals(item.Location))
-                    {
-                        searchResultsData.Remove(searchResultData);
-                        break;
-                    }
-                }
-                ApplyDataBinding(true);
+			_searchManager = new SearchManager();
+			lstResults.DataContext = _searchManager.SearchResults;
 
-				if (lstResults.Items.Count > 0)
-					lstResults.SelectedIndex = 0;
-            });
-        }
-        
-        private void NewResult(SearchResult item)
-        {
-            Dispatcher.Invoke(DispatcherPriority.Normal, (ThreadStart)delegate
-            {
-                searchResultsData.Add(new SearchResultData(item.Name, item.Description, item.Location));
-                ApplyDataBinding(false);
-            });
-        }
+			// If both X and Y were set on the command line then override displaying the window
+			// in the center of the monitor (default).
+			if (App.InitialPosition.X != double.MinValue &&
+				App.InitialPosition.Y != double.MinValue)
+			{
+				WindowStartupLocation = System.Windows.WindowStartupLocation.Manual;
+				Left = App.InitialPosition.X;
+				Top = App.InitialPosition.Y;
+			}
 
-        private void StartLocation(ISearchLocation item)
-        {
-            Dispatcher.Invoke(DispatcherPriority.Normal, (ThreadStart)delegate
-            {
-                tbStatus.Text = "Searching for " + searchQuery + "... " + item.Name;
-            });
-        }
+			if (!String.IsNullOrEmpty(App.InitialQuery))
+				edtQuery.Text = App.InitialQuery;
 
-        private void FinishLocation(ISearchLocation item)
-        {
+			edtQuery.Focus();
+		}
 
-        }
+		private void OnClose(object sender, CancelEventArgs e)
+		{
+			if (_keyPressedTimer != null)
+				_keyPressedTimer.Dispose();
 
-        private void FinishSearch()
-        {
-            Dispatcher.Invoke(DispatcherPriority.Normal, (ThreadStart)delegate
-            {
-                tbStatus.Text = "Finished Searching!";
+			if (_searchManager != null)
+				_searchManager.Dispose();
+		}
 
-				if (lstResults.Items.Count > 0)
-					lstResults.SelectedIndex = 0;
-            });
-        }
+		private void ProcessKeyPress(object state)
+		{
+			// Execute the search asynchronously on a thread associated with the Dispacther.
+			// We do this because the SearchManager populates a ObservableCollection which
+			// is bound to the ListBox.
+			Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)delegate
+			{
+				if (String.IsNullOrEmpty(edtQuery.Text))
+					return;
 
-        public Window1()
-        {
-            InitializeComponent();
+				// For now we just query the database when the text changes every time.
+				// If this becomes a problem then we'll look at running this an a background thread.
+				_searchManager.Search(edtQuery.Text);
+			});
+		}
 
-            searchMgr = new SearchManager();
-            searchQuery = "";
-            pendingSearchQuery = App.InitialQuery;
-            searchResults = new List<SearchResult>();
-            searchResultsData = new List<SearchResultData>();
+		/// <summary>
+		/// The user changed the text so we cancel the existing search and wait
+		/// for the timer to expire before starting the new search.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void edtQuery_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			// We use a timer to throttle how many queries we perform against the database as for the
+			// most part a user will type a few characters at a time.
+			_keyPressedTimer.Change(TimeSpan.FromMilliseconds(250), TimeSpan.FromMilliseconds(-1));
+		}
 
-            SearchBw.WorkerSupportsCancellation = true;
-            SearchBw.DoWork += new DoWorkEventHandler(RunWorker);
-            SearchBw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(RunWorkerComplete);
-
-            InitBw.DoWork += new DoWorkEventHandler(InitWorker);
-
-            searchCallback = new SearchCallback();
-            searchCallback.OnNewResult += new ItemChangeHandler(NewResult);
-            searchCallback.OnRemoveResult += new ItemChangeHandler(RemoveResult);
-            searchCallback.OnFinishLocation += new LocationChangeHandler(FinishLocation);
-            searchCallback.OnStartLocation += new LocationChangeHandler(StartLocation);
-            searchCallback.OnFinishSearch += new SearchEventHandler(FinishSearch);
-
-            Left = App.InitialPosition.X;
-            Top = App.InitialPosition.Y;
-
-            // Start the initial query
-            InitBw.RunWorkerAsync();
-         }
-
-        private void OnClose(object sender, CancelEventArgs e) 
-        {
-            if (SearchBw.IsBusy)
-            {
-                SearchBw.CancelAsync();
-                searchClose = true;
-                e.Cancel = true;
-            }
-        }
-
-        private void DoSearch(BackgroundWorker bw)
-        {
-            if (searchQuery != null)
-            {
-                if (!searchUpdate)
-                {
-                    searchResults.Clear();
-                    searchCancel = !searchMgr.DoSearch(searchQuery, searchResults, searchCallback, bw);
-                }
-                else
-                    searchCancel = !searchMgr.UpdateSearch(searchQuery, searchResults, searchCallback, bw);
-            }
-        }
-
-        private void SetSearchQuery(bool Restart)
-        {
-            Dispatcher.Invoke(DispatcherPriority.Normal, (ThreadStart)delegate
-            {
-                if (pendingSearchQuery.Length <= 0 || pendingSearchQuery == searchQuery)
-                    return;
-
-                if (!searchCancel && pendingSearchQuery.Length > searchQuery.Length && searchQuery != "")
-                    searchUpdate = true;
-                else
-                {
-                    searchResults.Clear();
-                    ApplyDataBinding(true);
-                    searchUpdate = false;
-                }
-
-                searchQuery = pendingSearchQuery;
-
-                pendingSearchQuery = "";
-
-                if (Restart)
-                    SearchBw.RunWorkerAsync();
-            });
-        }
-
-        private void InitWorker(object sender, DoWorkEventArgs e)
-        {
-            Dispatcher.Invoke(DispatcherPriority.Normal, (ThreadStart)delegate
-            {
-                edtQuery.Text = App.InitialQuery;
-                edtQuery.Focus();
-            });
-        }
-
-        private void RunWorker(object sender, DoWorkEventArgs e)
-        {
-            BackgroundWorker bw = sender as BackgroundWorker;
-            DoSearch(bw);
-        }
-
-        private void RunWorkerComplete(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (searchClose)
-                Close();
-            else
-            {
-                SetSearchQuery(searchCancel);
-                searchCancel = false;
-            }
-        }
-
-        private void edtQuery_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Dispatcher.Invoke(DispatcherPriority.Normal, (ThreadStart)delegate
-            {
-                pendingSearchQuery = edtQuery.Text;
-
-                if (SearchBw.IsBusy)
-                    SearchBw.CancelAsync();
-                else
-                    SetSearchQuery(true);
-            });
-        }
-
-        public void ApplyDataBinding(bool reset)
-        {
-            this.lstResults.ItemsSource = null;
-            if (reset)
-            {
-                searchResultsData.Clear();
-                foreach (SearchResult searchResult in searchResults)
-                    searchResultsData.Add(new SearchResultData(searchResult.Name, searchResult.Description, searchResult.Location));
-            }
-            this.lstResults.ItemsSource = searchResultsData;
-        }
-
+		/// <summary>
+		/// Handle any special key press logic like Escape to close the window.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void ResultWindow_KeyUp(object sender, KeyEventArgs e)
 		{
 			e.Handled = true;
@@ -225,20 +110,57 @@ namespace SharpSearchNET
 			switch (e.Key)
 			{
 				case Key.Escape:
-					Environment.Exit(0);
-					break;
-				case Key.Tab:
-					break;
-				case Key.Up:
-					if (lstResults.Items.Count > 0 && lstResults.SelectedIndex > 0)
-						lstResults.SelectedIndex--;
-					break;
-				case Key.Down:
-					if (lstResults.Items.Count > 0)
-						lstResults.SelectedIndex++;
+					Close();
 					break;
 				case Key.Enter:
 					StartProcessAndExit();
+					break;
+				default:
+					e.Handled = false;
+					break;
+			}
+		}
+
+		/// <summary>
+		/// Handle any special key press logic like Up and Down arrow.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void ResultWindow_PreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			e.Handled = true;
+
+			// For the Up and Down arrows we change the SelectedItem of the ListBox and scroll it into view.
+			// We also make it so that they continue from the top or bottom of the list depending on which was pressed.
+			switch (e.Key)
+			{
+				case Key.Up:
+					if (lstResults.Items.Count == 0)
+						break;
+
+					if (lstResults.SelectedIndex < 1)
+					{
+						lstResults.SelectedIndex = lstResults.Items.Count - 1;
+						lstResults.ScrollIntoView(lstResults.SelectedItem);
+						break;
+					}
+
+					lstResults.SelectedIndex--;
+					lstResults.ScrollIntoView(lstResults.SelectedItem);
+					break;
+				case Key.Down:
+					if (lstResults.Items.Count == 0)
+						break;
+
+					if (lstResults.SelectedIndex == lstResults.Items.Count - 1 || lstResults.SelectedIndex == -1)
+					{
+						lstResults.SelectedIndex = 0;
+						lstResults.ScrollIntoView(lstResults.SelectedItem);
+						break;
+					}
+
+					lstResults.SelectedIndex++;
+					lstResults.ScrollIntoView(lstResults.SelectedItem);
 					break;
 				default:
 					e.Handled = false;
@@ -258,9 +180,48 @@ namespace SharpSearchNET
 		{
 			if (lstResults.SelectedItem != null)
 			{
-				Process.Start(((SearchResultData)lstResults.SelectedItem).Location);
-				Environment.Exit(0);
+				Process.Start(((ISearchData)lstResults.SelectedItem).Location);
+				Close();
 			}
 		}
-    }
+
+		/// <summary>
+		/// Close the window once it becomes deactivated.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void ResultWindow_Deactivated(object sender, EventArgs e)
+		{
+			if (!Debugger.IsAttached)
+				Close();
+		}
+
+		/// <summary>
+		/// Change the window style so that it will not show in Alt+Tab by add the WS_EX_TOOLWINDOW style.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void ResultWindow_Loaded(object sender, RoutedEventArgs e)
+		{
+			WindowInteropHelper windowHelper = new WindowInteropHelper(this);
+
+			int style = (int)PInvoke.GetWindowLongPtr(windowHelper.Handle, (int)GWL.EXSTYLE);
+
+			if (style == 0)
+				throw new Win32Exception(Marshal.GetLastWin32Error());
+
+			style |= (int)WindowStylesExtended.WS_EX_TOOLWINDOW;
+
+			// Clear the last error before calling SetWindowLongPtr because it does not clear it.
+			PInvoke.SetLastError(0);
+
+			int result = (int)PInvoke.SetWindowLongPtr(windowHelper.Handle, (int)GWL.EXSTYLE, (IntPtr)style);
+
+			if (result == 0)
+				throw new Win32Exception(Marshal.GetLastWin32Error());
+		}
+
+		private SearchManager _searchManager;
+		private Timer _keyPressedTimer;
+	}
 }
