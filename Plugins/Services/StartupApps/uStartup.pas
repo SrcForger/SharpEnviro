@@ -611,7 +611,7 @@ begin
         +#13+#10+''+#13+#10+
           'As these keys are within a protected registry area, they must be deleted using elevation.'
             +#13+#10+''+#13+#10+
-              'To gain access rights, please launch SharpAdmin elevated. Click OK to launch... ', mtInformation, [mbOK, mbIgnore], 0) in [mrIgnore, mrNone]) then
+              'To gain access rights, please launch SharpAdmin elevated. Click OK to launch... ', mtInformation, [mbOK, mbIgnore], 0) <> mrOk) then
                 continue := false;
     end;       
 
