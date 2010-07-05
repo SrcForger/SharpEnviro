@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<ConfigHelp>
+  <Label bold="1">Global Menu Options</Label>
+  <Label>With the following settings you can adjust the behaviour of all SharpEnviro Menus. If you want a single menu to not use those global options then you can use the configuration for that menu to overwrite the global settings.</Label>
+  <Sep/>
+  <Label bold="1">Icons</Label>
+  <Label>Using icons in a menu can, on slow computers or with big menus, drastically reduce the speed with which the menu is loaded. Therefore two options are implemented by which the menu speed can be improved.</Label>
+  <Sep Size="Small"/>
+  <Label Indent="0" Underline="1">Icon Caching</Label>
+  <Label Indent="1">Enabling icon caching will make the menu save all used icons into a binary file. One reason why using icons makes the menu so slow is that the process of extracting an applications icon and the process of getting a system icon is very slow. With enabled icon caching this slow process is only done once and on the next launch of the menu the icons can be directly loaded from the icon cache file.</Label>
+  <Sep Size="Small"/>
+  <Label Indent="0" Underline="1">Generic Icons</Label>
+  <Label Indent="1">Generic Icons are specific icons for common file types such as *.exe, *.png, *.doc,... . Using generic icons will show only those icons in SharpMenu for any item that links to a file of the common types. This not only creates a generic look of the menu icons but also improves the speed of the menu because only a fixed amount of icons has to be loaded.</Label>
+</ConfigHelp>
