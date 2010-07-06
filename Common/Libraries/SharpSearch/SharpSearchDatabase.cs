@@ -35,6 +35,8 @@ namespace SharpSearch
 		/// <param name="databaseFilePath">The full path to the database file.</param>
 		public SharpSearchDatabase(string databaseFilePath)
 		{
+            Directory.CreateDirectory(Path.GetDirectoryName(databaseFilePath));
+
 			_fullPath = databaseFilePath;
 			_database = new SQLiteDatabase(databaseFilePath);
 

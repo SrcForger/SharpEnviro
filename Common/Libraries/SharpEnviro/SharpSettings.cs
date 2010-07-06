@@ -20,7 +20,8 @@ namespace SharpEnviro
 		{
 			get
 			{
-				return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                string result = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                return result;
 			}
 		}
 
@@ -32,10 +33,14 @@ namespace SharpEnviro
 		{
 			get
 			{
+                string result;
+
 				if (UseAppData)
-					return Path.Combine(AppDataPath, @"Settings\User");
+					result = Path.Combine(AppDataPath, @"Settings\User");
 				else
-					return Path.Combine(Path.Combine(ProgramDirectory, @"Settings\User"), Environment.UserName);
+					result = Path.Combine(Path.Combine(ProgramDirectory, @"Settings\User"), Environment.UserName);
+
+                return result;
 			}
 		}
 
@@ -47,10 +52,14 @@ namespace SharpEnviro
 		{
 			get
 			{
+                string result;
+
 				if (UseAppData)
-					return Path.Combine(CommonAppDataPath, @"Settings\Global");
+                    result = Path.Combine(CommonAppDataPath, @"Settings\Global");
 				else
-					return Path.Combine(ProgramDirectory, @"Settings\Global");
+					result =  Path.Combine(ProgramDirectory, @"Settings\Global");
+
+                return result;
 			}
 		}
 
@@ -61,7 +70,8 @@ namespace SharpEnviro
 		{
 			get
 			{
-				return Path.Combine(ProgramDirectory, @"Settings\#Default#");
+                string result = Path.Combine(ProgramDirectory, @"Settings\#Default#");
+                return result;
 			}
 		}
 
@@ -72,7 +82,8 @@ namespace SharpEnviro
 		{
 			get
 			{
-				return Path.Combine(ProgramDirectory, @"Settings\#DefaultGlobal#");
+                string result = Path.Combine(ProgramDirectory, @"Settings\#DefaultGlobal#");
+                return result;
 			}
 		}
 
@@ -83,7 +94,8 @@ namespace SharpEnviro
 		{
 			get
 			{
-				return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SharpEnviro");
+                string result = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SharpEnviro");
+                return result;
 			}
 		}
 
@@ -94,7 +106,8 @@ namespace SharpEnviro
 		{
 			get
 			{
-				return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "SharpEnviro");
+                string result = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "SharpEnviro");
+                return result;
 			}
 		}
 
@@ -105,7 +118,14 @@ namespace SharpEnviro
 		{
 			get
 			{
-				object result = Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\SharpEnviro", "UseAppData", false);
+                object result = null;
+
+                // The installer is 32-bit and on a 64-bit OS it write entries in the Wow6432Node section due to Registry Redirection.
+                // Until we can find a better way accessing the Wow6432Node directly will have to do.
+                if (IntPtr.Size == 8)
+                    result = Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Wow6432Node\SharpEnviro", "UseAppData", false);
+                else
+                    result = Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\SharpEnviro", "UseAppData", false);
 
 				if (result == null)
 					return false;

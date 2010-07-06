@@ -62,6 +62,10 @@ namespace SharpSearchNET
 
 		private void OnClose(object sender, CancelEventArgs e)
 		{
+            // Keep track that the user has closed the window so we don't
+            // try and close again in the Deactivated event.
+            _closing = true;
+
 			if (_keyPressedTimer != null)
 				_keyPressedTimer.Dispose();
 
@@ -192,7 +196,7 @@ namespace SharpSearchNET
 		/// <param name="e"></param>
 		private void ResultWindow_Deactivated(object sender, EventArgs e)
 		{
-			if (!Debugger.IsAttached)
+			if (!_closing && !Debugger.IsAttached)
 				Close();
 		}
 
@@ -223,5 +227,6 @@ namespace SharpSearchNET
 
 		private SearchManager _searchManager;
 		private Timer _keyPressedTimer;
+        private bool _closing = false;
 	}
 }
