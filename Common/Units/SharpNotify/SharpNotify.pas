@@ -665,6 +665,9 @@ begin
   Text.DrawTo(FBitmap,TextPos.x,Textpos.Y);
   Icon.DrawTo(FBitmap,IconPos.x,IconPos.Y);
 
+  Text.Free;
+  Icon.Free;
+
   SkinText := nil;
 end;
 
