@@ -1012,6 +1012,9 @@ begin
         FPlugin.PluginInterface.CanDestroy := false;
         FPluginHandle := FPlugin.PluginInterface.Open;
         FPluginHost.PluginOwner.ParentWindow := FPluginHandle;
+        FActiveHelpFile := GetCenterDirectory + '_home\home.xml';
+        if not FileExists(FActiveHelpFile) then
+          FActiveHelpFile := '';
 
         LoadPluginTabs;
 

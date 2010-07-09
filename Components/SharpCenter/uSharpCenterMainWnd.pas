@@ -35,6 +35,7 @@ uses
   Graphics,
   Controls,
   Forms,
+  Math,
   Dialogs,
   ComCtrls,
   ExtCtrls,
@@ -55,6 +56,7 @@ uses
   SharpERoundPanel,
   SharpETabList,
   GR32_Image,
+  GR32_PNG,
   GR32,
   uVistaFuncs,
   SharpEListBoxEx,
@@ -471,12 +473,22 @@ end;
 
 procedure TSharpCenterWnd.ToggleHelp;
 var
+  s : string;
+  fullsize : boolean;
+  b : boolean;
   XML : TJclSimpleXML;
   n : integer;
   lbItem : TLabel;
+  imgItem : TImage32;
+  Bmp : TBitmap32;
   i : integer;
   lastItem,currentItem : TControl;
+  HelpDir : string;
+  h : integer;
+  nextMargin : integer;
 begin
+  fullsize := False;
+  lastItem := nil;  
   LockWindowUpdate(Handle);
   try
     if not pnlHelp.Visible then
@@ -484,25 +496,75 @@ begin
       pnlHelp.Visible := True;
       pnlHelpToggle.Color := SCM.Theme.EditControlBackground;
       pnlHelpToggle.BorderColor := SCM.Theme.Border;
-
+      
       // Load Help File for Current config
       if length(trim(SCM.ActiveHelpFile)) > 0 then
         if FileExists(SCM.ActiveHelpFile) then
         begin
+          {$WARNINGS OFF} HelpDir := IncludeTrailingBackslash(ExtractFileDir(SCM.ActiveHelpFile)); {$WARNINGS ON}
           XML := TJclSimpleXML.Create;
           if LoadXMLFromSharedFile(XML,SCM.ActiveHelpFile,True) then
           begin
-            lastItem := nil;
+            nextMargin := 0;
+            fullsize := (CompareText('full',XML.Root.Properties.Value('size','fixed')) = 0);
             for n := 0 to XML.Root.Items.Count - 1 do
               with XML.Root.Items do
               begin
                 currentItem := nil;
+                if (CompareText(Item[n].Name,'Image') = 0) then
+                begin
+                  s := HelpDir + Item[n].Value;
+                  if FileExists(s) then
+                  begin
+                    imgItem := TImage32.Create(pnlSbHelpContent);
+                    imgItem.AutoSize := True;
+                    imgItem.ParentColor := True;
+                    Bmp := TBitmap32.Create;                    
+                    try
+                      if (CompareText('.png',ExtractFileExt(s)) = 0) then
+                        GR32_PNG.LoadBitmap32FromPNG(Bmp,s,b)
+                      else Bmp.LoadFromFile(s);
+                      imgItem.Bitmap.SetSize(Bmp.Width,Bmp.Height);
+                      imgItem.Bitmap.Clear(color32(pnlSbHelpContent.Color));
+                      Bmp.DrawMode := dmBlend;
+                      Bmp.CombineMode := cmMerge;
+                      Bmp.DrawTo(imgItem.Bitmap,0,0);
+                    finally
+                      Bmp.Free;
+                    end;
+                    imgItem.Parent := pnlSbHelpContent;
+                    if (CompareText('none',Item[n].Properties.Value('span','none')) = 0) then
+                    begin
+                      if (lastItem <> nil) then
+                        imgItem.Top := lastItem.Top + lastItem.Height
+                      else imgItem.Top := 0;
+                      if (CompareText('left',Item[n].Properties.Value('align','left')) = 0) then
+                        imgItem.Left := 4 + nextMargin;
+                      imgItem.Left := imgItem.Left + Item[n].Properties.IntValue('mleft',0);
+                      imgItem.Top := imgItem.Top + Item[n].Properties.IntValue('mtop',0);                      
+                      nextMargin := imgItem.Left + imgItem.Width;
+                    end else begin // full span
+                      imgItem.Align := alTop;
+                      if (CompareText('left',Item[n].Properties.Value('align','left')) = 0) then
+                        imgItem.BitmapAlign := baTopLeft
+                      else imgItem.BitmapAlign := baCenter;
+                      imgItem.Margins.Left := 4 + nextMargin;
+                      imgItem.Margins.Right := 4;
+                      imgItem.Margins.Top := 2;
+                      imgItem.MArgins.Bottom := 2;
+                      imgItem.AlignWithMargins := True;
+                      nextMargin := 0;
+                      currentItem := imgItem;
+                    end;
+                    imgItem.Show;
+                  end;
+                end;
                 if (CompareText(Item[n].Name,'Label') = 0) then
                 begin
                   lbItem := TLabel.Create(pnlSbHelpContent);
                   lbItem.Parent := pnlSbHelpContent;
                   lbItem.Align := alTop;
-                  lbItem.Margins.Left := 4;
+                  lbItem.Margins.Left := 4 + nextMargin;
                   lbItem.Margins.Right := 4;
                   lbItem.Margins.Top := 2;
                   lbItem.Margins.Bottom := 0;
@@ -511,7 +573,7 @@ begin
                   lbItem.WordWrap := True;
 
                   i := Item[n].Properties.IntValue('Indent',0);
-                  lbItem.Margins.Left := lbItem.Margins.Left + i*8;                  
+                  lbItem.Margins.Left := lbItem.Margins.Left + i*8;
 
                   lbItem.Caption := Item[n].Value;
                   if Item[n].Properties.BoolValue('bold',False) then
@@ -523,12 +585,13 @@ begin
                   lbItem.Show;
 
                   currentItem := lbItem;
+                  nextMargin := 0;
                 end else if (CompareText(Item[n].Name,'Sep') = 0) then
                 begin
                   lbItem := TLabel.Create(pnlSbHelpContent);
                   lbItem.Parent := pnlSbHelpContent;
                   lbItem.Align := alTop;
-                  lbItem.Margins.Left := 4;
+                  lbItem.Margins.Left := 4 + nextMargin;
                   lbItem.Margins.Right := 4;
                   lbItem.Margins.Top := 0;
                   lbItem.Margins.Bottom := 0;
@@ -543,9 +606,10 @@ begin
                   lbItem.Show;
 
                   currentItem := lbItem;
+                  nextMargin := 0;
                 end;
 
-                if (currentItem <> nil) and (lastItem <> nil) then
+                if (currentItem <> nil) and (lastItem <> nil) and (nextMargin = 0) then
                   currentItem.Top := lastItem.Top + lastItem.Height;
                 if (currentItem <> nil) then
                   lastItem := currentItem;
@@ -555,6 +619,14 @@ begin
           XML.Free;
         end;
 
+        if fullsize then
+        begin
+          h := Height - pnlHelp.Top - pnlButtons.Height;
+          if lastItem <> nil then
+            pnlHelp.Height := Min(h,lastItem.Top + lastItem.Height + pnlSbHelpContent.Top + pnlHelpContent.Top + 8)
+          else pnlHelp.Height := h;
+        end else pnlHelp.Height := 224;
+        
         // This is to force "UpdateScrollBars" to be called internally
         pnlSbHelpContent.Height := pnlSbHelpContent.Height + 1;
         pnlSbHelpContent.Height := pnlSbHelpContent.Height - 1;        
