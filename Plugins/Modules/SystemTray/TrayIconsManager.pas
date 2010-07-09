@@ -74,6 +74,7 @@ type
                    FHiddenByClient : boolean;
                    FIsSpecial : boolean;
                    FIsHovering : boolean;
+                   FVersion : integer;
                  public
                    FTip : ArrayWideChar128;
                    FInfo : ArrayWideChar256;
@@ -95,6 +96,7 @@ type
                    property HiddenByClient : boolean read FHiddenByClient write FHiddenByClient;
                    property IsSpecial : boolean read FIsSpecial write FIsSpecial;
                    property IsHovering : boolean read FIsHovering write FIsHovering;
+                   property Version : integer read FVersion write FVersion;
                  end;
 
   TTrayClient = class
@@ -347,11 +349,13 @@ begin
     FInfo := NIDv6.szInfo;
     FInfoTitle := NIDv6.szInfoTitle;
     FBTimeOut := NIDv6.Union.uTimeOut;
+    FBInfoFlags := NIDv6.dwInfoFlags;
   end;
 
   oVersion := NIDv6.Union.uVersion;
-  FBInfoFlags := NIDv6.Union.uVersion;
-  if oVersion <> Integer(FBInfoFlags) then
+
+  FVersion := NIDv6.Union.uVersion;
+  if oVersion <> Integer(FVersion) then
      result := result + [tceVersion];
 
   FFlags := NIDv6.uFlags;
@@ -1120,7 +1124,7 @@ begin
       PositionTrayWindow(parent.ParentWindow,parent.Handle);
 
       FLastTipItem := tempItem;
-      if (tempItem.BInfoFlags >= NOTIFYICON_VERSION_4) then
+      if (tempItem.Version >= NOTIFYICON_VERSION_4) then
       begin
         // NotifyIcon Version > 4
         ix := gx;
@@ -1188,7 +1192,7 @@ begin
           end;
         end;
 
-        if tempItem.BInfoFlags >= NOTIFYICON_VERSION then
+        if tempItem.Version >= NOTIFYICON_VERSION then
         case msg of
           WM_RBUTTONUP: begin
             SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,msg);
