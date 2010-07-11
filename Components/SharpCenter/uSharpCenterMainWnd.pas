@@ -625,7 +625,12 @@ begin
           if lastItem <> nil then
             pnlHelp.Height := Min(h,lastItem.Top + lastItem.Height + pnlSbHelpContent.Top + pnlHelpContent.Top + 8)
           else pnlHelp.Height := h;
-        end else pnlHelp.Height := 224;
+        end else begin
+          h := lastItem.Top + lastItem.Height + pnlSbHelpContent.Top + pnlHelpContent.Top + 8;
+          if h < 224 then
+            pnlHelp.Height := h
+          else pnlHelp.Height := 224;
+        end;
         
         // This is to force "UpdateScrollBars" to be called internally
         pnlSbHelpContent.Height := pnlSbHelpContent.Height + 1;
