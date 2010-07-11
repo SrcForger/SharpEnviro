@@ -67,7 +67,7 @@ begin
   end;
 
   sSkinDir := GetSharpeDirectory + SKINS_DIRECTORY + '\' + sSkin + '\';
-  sSchemeDir := sSkinDir + SKINS_SCHEME_DIRECTORY + '\';
+  sSchemeDir := GetSharpeUserSettingsPath + SKINS_SCHEME_DIRECTORY + '\' + sSkin + '\';
 
   XML := TJclSimpleXML.Create;
   try
