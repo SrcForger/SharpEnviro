@@ -3,6 +3,7 @@
   <Sections>
     <SharpDesk>
       <Dll>_Components\_Componentdlls\DesktopSettings.dll</Dll>
+      <Help>_Components\_ComponentsHelp\DesktopSettings.xml</Help>
       <Icon>desktopEdit.png</Icon>
     </SharpDesk>
     <SharpDeskArea>

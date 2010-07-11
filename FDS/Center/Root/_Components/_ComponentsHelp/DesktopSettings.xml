@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<ConfigHelp>
+  <Label bold="1">Desktop Options</Label>
+  <Label>SharpEnviro comes with a new desktop application called SharpDesk. It follows a completely different purpose than the explorer desktop and is more oriented towards creating a clean and interactive desktop instead of a file storage area.</Label>
+  <Sep></Sep>
+  <Label>However SharpEnviro makes it also possible for you to continue to use the old explorer desktop instead. To do so you can enable the Enable Explorer Desktop option. With this option enabled the old explorer desktop will be used.</Label>
+</ConfigHelp>
