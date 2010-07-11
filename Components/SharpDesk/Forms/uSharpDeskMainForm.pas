@@ -453,7 +453,11 @@ procedure TSharpDeskMainForm.WMSharpEBang(var Msg : TMessage);
 begin
   case msg.LParam of
    1 : WMCloseDesk(msg);        // !CloseSharpDesk
-   2 : Visible := not Visible;  // !ToggleDesktop
+   2 : begin
+         Visible := not Visible;  // !ToggleDesktop
+         SharpDesk.DeskSettings.UseExplorerDesk := not Visible;
+         SharpDesk.DeskSettings.SaveSettings;
+       end;
    3 : Visible := False;        // !DeskExplorer
    4 : Visible := True;         // !DeskSharpE
   end;

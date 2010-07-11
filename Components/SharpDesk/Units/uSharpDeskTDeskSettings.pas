@@ -31,6 +31,7 @@ uses Graphics,
      Windows,
      Sysutils,
      JclSimpleXML,
+     uSharpXMLUtils,
      SharpApi;
 
 type
@@ -144,7 +145,7 @@ begin
     Add('GridX',GridX);
     Add('GridY',GridY);
   end;
-  XML.SaveToFile(GetSharpeUserSettingsPath + 'SharpDesk\Settings.xml');
+  SaveXMLToSharedFile(XML,GetSharpeUserSettingsPath + 'SharpDesk\Settings.xml',True)
 end;
 
 procedure TDeskSettings.ReloadSettings;
@@ -152,22 +153,14 @@ var
    FileName : String;
 begin
   FileName :=  GetSharpeUserSettingsPath + 'SharpDesk\Settings.xml';
-  try
-    XML.LoadFromFile(FileName);
-  except
-    on E: Exception do
-    begin
-      SharpApi.SendDebugMessageEx('SharpDesk',PChar(Format('Error While Loading "%s"', [FileName])), clred, DMT_ERROR);
-      SharpApi.SendDebugMessageEx('SharpDesk',PChar(E.Message),clred, DMT_ERROR);
-      CreateXMLFile;
-      try
-        XML.LoadFromFile(FileName);
-      except
-        exit;
-      end;
-    end;
+  if not LoadXMLFromSharedFile(XML,FileName,True) then
+  begin
+    SharpApi.SendDebugMessageEx('SharpDesk',PChar(Format('Error While Loading "%s"', [FileName])), clred, DMT_ERROR);
+    CreateXMLFile;
+    if not LoadXMLFromSharedFile(XML,FileName,False) then
+      exit;
   end;
-
+  
   XML.Options :=[sxoAutoCreate,sxoAutoIndent];
   with XML.Root.Items.ItemNamed['Settings'].Items do
   begin
@@ -190,7 +183,7 @@ begin
     GridX := IntValue('GridX',5);
     GridY := IntValue('GridY',5);
   end;
-    XML.Options :=[sxoAutoIndent];
+  XML.Options :=[sxoAutoIndent];
 end;
 
 
