@@ -44,10 +44,12 @@ type
     FCommand: string;
     FHotkey: string;
     FName: string;
+    FEnabled : Boolean;
   public
     property Command: string read FCommand write FCommand;
     property Hotkey: string read Fhotkey write Fhotkey;
     property Name: string read FName write FName;
+    property Enabled : Boolean read FEnabled write FEnabled;
   end;
 
   THotkeyList = class(TInterfacedXmlBaseList)
@@ -57,7 +59,7 @@ type
   public
     constructor Create;
 
-    function AddItem(Hotkey, Command, Name: String): THotkeyItem;
+    function AddItem(Hotkey, Command, Name: String; Enabled : Boolean): THotkeyItem;
     procedure Delete(AItem:  THotkeyItem);
     function IndexOfName(AName: String):Integer;
     function IndexOfHotkey(AHotkey: String):Integer;
@@ -94,12 +96,13 @@ begin
   Result := CompareText(tmp1.Name,tmp2.Name);
 end;
 
-function THotkeyList.AddItem(Hotkey, Command, Name: String): THotkeyItem;
+function THotkeyList.AddItem(Hotkey, Command, Name: String; Enabled : Boolean): THotkeyItem;
 begin
   Result := THotkeyItem.Create;
   Result.Hotkey := Hotkey;
   Result.Command := Command;
   Result.Name := Name;
+  Result.Enabled := Enabled;
   Add(Result);
 end;
 
@@ -136,7 +139,11 @@ begin
     for i := 0 to Pred(xml.XmlRoot.Items.Count) do begin
       nodes := Xml.XmlRoot.Items.Item[i].Items;
 
-      Self.AddItem( nodes.Value('Hotkey'),nodes.Value('Command'),nodes.Value('Name'));
+      Self.AddItem(
+        nodes.Value('Hotkey'),
+        nodes.Value('Command'),
+        nodes.Value('Name'),
+        nodes.BoolValue('Enabled', True));
 
     end;
   end;
@@ -159,6 +166,7 @@ begin
         Add('Name', HotkeyItem[i].Name);
         Add('Hotkey', HotkeyItem[i].Hotkey);
         Add('Command', HotkeyItem[i].Command);
+        Add('Enabled', HotkeyItem[i].Enabled);
       end;
     end;
 

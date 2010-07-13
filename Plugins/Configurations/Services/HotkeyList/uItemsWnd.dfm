@@ -35,7 +35,7 @@ object frmItemsWnd: TfrmItemsWnd
       end
       item
         Width = 30
-        HAlign = taCenter
+        HAlign = taLeftJustify
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
@@ -52,6 +52,15 @@ object frmItemsWnd: TfrmItemsWnd
         ColumnType = ctDefault
         VisibleOnSelectOnly = True
         Images = imlList
+      end
+      item
+        Width = 90
+        HAlign = taLeftJustify
+        VAlign = taVerticalCenter
+        ColumnAlign = calRight
+        StretchColumn = False
+        ColumnType = ctCheck
+        VisibleOnSelectOnly = False
       end>
     Colors.BorderColor = clBtnFace
     Colors.BorderColorSelected = clBtnShadow
@@ -63,6 +72,7 @@ object frmItemsWnd: TfrmItemsWnd
     DefaultColumn = 0
     OnResize = lbHotkeysResize
     ItemHeight = 30
+    OnClickCheck = lbHotkeysClickCheck
     OnClickItem = lbHotkeysClickItem
     OnGetCellCursor = lbHotkeysGetCellCursor
     OnGetCellText = lbHotkeysGetCellText

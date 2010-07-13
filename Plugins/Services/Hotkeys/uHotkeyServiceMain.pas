@@ -97,11 +97,13 @@ begin
   for i := 0 to Pred(FHotkeyList.Count) do begin
 
     with FHotkeyList.HotkeyItem[i], HotkeyManager do begin
+      if (Enabled) then
+      begin
+        ConvertToKeyModifier(Hotkey, NewModifier, NewKey);
+        Debug(Format('KeyStr: %s >> %s',[Hotkey,GetKeyModifierAsStr(NewModifier,NewKey)]),DMT_STATUS);
 
-      ConvertToKeyModifier(Hotkey, NewModifier, NewKey);
-      Debug(Format('KeyStr: %s >> %s',[Hotkey,GetKeyModifierAsStr(NewModifier,NewKey)]),DMT_STATUS);
-
-      FHotkeyManager.Add(Format('Hotkey%d', [i]), Command, NewModifier, NewKey);
+        FHotkeyManager.Add(Format('Hotkey%d', [i]), Command, NewModifier, NewKey);
+      end;
     end;
   end;
 

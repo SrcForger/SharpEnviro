@@ -74,6 +74,8 @@ type
     procedure lbHotkeysGetCellText(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AColText: string);
     procedure FormDestroy(Sender: TObject);
+    procedure lbHotkeysClickCheck(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem; var AChecked: Boolean);
   private
     FPluginHost: ISharpCenterHost;
     function CtrlDown: Boolean;
@@ -98,6 +100,7 @@ const
   colName = 0;
   colCopy = 1;
   colDelete = 2;
+  colEnabled = 3;
   iidxDelete = 0;
   iidxCopy = 1;
 
@@ -162,9 +165,10 @@ begin
   for i := 0 to Pred(FHotkeyList.Count) do begin
 
     tmpItem := lbHotkeys.AddItem('');
-    tmpItem.AddSubItem('');
-    tmpItem.AddSubItem('');
-    tmpItem.AddSubItem('');
+    tmpItem.AddSubItem(''); // Copy
+    tmpItem.AddSubItem(''); // Delete
+    tmpItem.AddSubItem('Enabled', True);
+    tmpItem.SubItemChecked[colEnabled] := FHotkeyList.HotkeyItem[i].Enabled;
     tmpItem.Data := FHotkeyList.HotkeyItem[i];
   end;
 
@@ -228,6 +232,18 @@ begin
   end;
 end;
 
+procedure TfrmItemsWnd.lbHotkeysClickCheck(Sender: TObject; const ACol: Integer;
+  AItem: TSharpEListItem; var AChecked: Boolean);
+begin
+  THotkeyItem(AItem.Data).Enabled := AChecked;
+  //AItem.SubItemChecked[colEnabled] := AChecked;
+  
+  FHotkeyList.Save;
+
+  // Refresh hotkeys
+  BroadcastGlobalUpdateMessage(suHotkey);
+end;
+
 procedure TfrmItemsWnd.lbHotkeysClickItem(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem);
 var
@@ -241,6 +257,7 @@ begin
     exit;
 
   case ACol of
+    colEnabled : Exit;
     colDelete: begin
         bDelete := True;
         if not (CtrlDown) then
@@ -256,7 +273,7 @@ begin
       end;
     colCopy: begin
         sCopy := 'Copy of ' + tmp.Name;
-        tmp2 := FHotkeyList.AddItem('', tmp.Command, sCopy);
+        tmp2 := FHotkeyList.AddItem('', tmp.Command, sCopy, tmp.Enabled);
         RefreshHotkeys;
         FHotkeyList.Save;
 
@@ -279,7 +296,7 @@ end;
 procedure TfrmItemsWnd.lbHotkeysGetCellCursor(Sender: TObject;
   const ACol: Integer; AItem: TSharpEListItem; var ACursor: TCursor);
 begin
-  if ACol >= colCopy then
+  if ACol > colName then
     ACursor := crHandPoint;
 end;
 
@@ -316,6 +333,11 @@ begin
       AssignThemeToListBoxItemText(FPluginHost.Theme, AItem, colItemTxt, colDescTxt, colBtnTxt);
 
       AColText := format('<font color="%s">%s (<b>%s</b>) - <font color="%s">%s',[ColorToString(colItemTxt),s,tmpItemData.Hotkey, ColorToString(colDescTxt),tmpItemData.Command]);
+    end;
+    colEnabled:
+    begin
+      AssignThemeToListBoxItemText(FPluginHost.Theme, AItem, colItemTxt, colDescTxt, colBtnTxt);
+      AColText := format('<font color="%s">%s',[ColorToString(colItemTxt),'Enabled']);
     end;
   end;
 end;
