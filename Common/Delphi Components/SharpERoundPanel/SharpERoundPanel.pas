@@ -25,6 +25,7 @@ type
     FDrawMode: TSharpERoundPanelDrawMode;
     FNoTopBorder: Boolean;
     FNoBottomBorder: Boolean;
+    FBottomSideBorder : Boolean;
     procedure SetBorderColor(const Value: TColor);
     procedure SetBorder(const Value: Boolean);
     procedure SetBackgroundColor(const Value: TColor);
@@ -44,6 +45,7 @@ type
     property BorderColor: TColor read FBorderColor write SetBorderColor;
     property Border: Boolean read FBorder write SetBorder;
     property BackgroundColor: TColor read FBackgroundColor write SetBackgroundColor;
+    property BottomSideBorder : Boolean read FBottomSideBorder write FBottomSideBorder;
   end;
 
 procedure Register;
@@ -151,6 +153,14 @@ begin
         Canvas.MoveTo(Width - 1, Height - 1);
         Canvas.LineTo(Width - RoundValue, Height - 1);
       end;
+    end;
+
+    if FBottomSideBorder then
+    begin
+      Canvas.MoveTo(0,Height);
+      Canvas.LineTo(0, Height - RoundValue - 1);
+      Canvas.MoveTo(Width - 1, Height);
+      Canvas.LineTo(Width - 1, Height - RoundValue - 1);      
     end;
   end;
 end;
