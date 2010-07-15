@@ -391,6 +391,7 @@ end;
 procedure TfrmListWnd.lbSchemeListResize(Sender: TObject);
 begin
   Self.Height := lbSchemeList.Height;
+  FPluginHost.Refresh(rtSize);
 end;
 
 procedure TfrmListWnd.tmrSendUpdateTimer(Sender: TObject);
