@@ -1001,6 +1001,7 @@ var
   textrect,iconrect : TRect;
   fixedCaption : String;
   DPIMod : integer;
+  TextMod : integer;
 
 procedure AssignDrawPart(part : ISharpESkinPartEx); overload;
 begin
@@ -1085,10 +1086,10 @@ begin
         textrect := rect(TPos.X,TPos.Y,TPos.X + text.TextWidth(FixedCaption),TPos.Y + text.TextHeight(FixedCaption));
         dtext := true;
       end;
+      IWidth := Icon.Dimension.X;
+      IHeight := Icon.Dimension.Y;
       if (item.Icon <> nil) and (Icon.DrawIcon) and (FSettings.UseIcons) then
       begin
-        IWidth := Icon.Dimension.X;
-        IHeight := Icon.Dimension.Y;
         if (IWidth > 0) and (IHeight > 0) then
         begin
           iconbmp.setsize(IWidth,IHeight);
@@ -1097,7 +1098,7 @@ begin
           dicon := true;
           Ipos := Icon.GetXY(textrect,Rect(0,0,w,h));
         end;
-      end;
+      end else TextMod := IWidth;
       ST := nil;
     end
     else if (drawpart <> nil) then
@@ -1114,7 +1115,7 @@ begin
       if dicon then
          iconbmp.DrawTo(dst,px+IPos.x,py+IPos.y);
       if dtext then
-         text.DrawTo(dst,px,py);
+         text.DrawTo(dst,px - TextMod,py);
     end;
   finally
     FreeAndNil(temp);
