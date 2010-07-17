@@ -45,9 +45,16 @@ if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
     <DelphiCompile Include="SharpScript.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
+    <RcCompile Include="metadata.rc">
+      <Form>metadata.res</Form>
+    </RcCompile>
+    <RcCompile Include="VersionInfo.rc">
+      <Form>VersionInfo.res</Form>
+    </RcCompile>
     <DCCReference Include="..\..\Common\Libraries\SharpAPI\SharpAPI.pas" />
     <DCCReference Include="..\..\Common\Libraries\SharpAPI\SharpApi_Adapter.pas" />
     <DCCReference Include="..\..\Common\Libraries\SharpCenterAPI\SharpCenterAPI.pas" />
+    <DCCReference Include="..\..\Common\Units\DebugDialog\DebugDialog.pas" />
     <DCCReference Include="..\..\Common\Units\SharpScript\SharpBase_Adapter.pas" />
     <DCCReference Include="..\..\Common\Units\SharpScript\SharpFileUtils_Adapter.pas" />
     <DCCReference Include="..\..\Common\Units\SharpScript\Windows_Adapter.pas" />

@@ -25,6 +25,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 program SetShell;
 
+{$R 'VersionInfo.res' 'VersionInfo.rc'}
+{$R 'metadata.res' 'metadata.rc'}
+{$R *.res}
+
 uses
 //  VCLFixPack,
   Forms,
@@ -34,9 +38,6 @@ uses
   uShellSwitcher in 'Units\uShellSwitcher.pas',
   uShutdown in '..\..\Common\Units\Shutdown\uShutdown.pas',
   uShutdownConfirm in '..\..\Common\Units\Shutdown\uShutdownConfirm.pas';
-
-{$R *.res}
-{$R metadata.res}
 
 begin
   Application.Initialize;

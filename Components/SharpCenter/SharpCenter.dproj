@@ -40,14 +40,7 @@
     <Borland.Personality>Delphi.Personality</Borland.Personality>
     <Borland.ProjectType />
     <BorlandProject>
-<BorlandProject><Delphi.Personality><Parameters><Parameters Name="DebugSourceDirs">E:\SVN\Common\Delphi Components\SharpEListBoxEx\;E:\SVN\Common\Delphi Components\SharpETabList\</Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">True</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">0</VersionInfo><VersionInfo Name="MinorVer">8</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1033</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="FileVersion">0.8.0.0</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">0.8.0.0</VersionInfoKeys>  <VersionInfoKeys Name="CompanyName"></VersionInfoKeys>
-      <VersionInfoKeys Name="FileDescription">SharpEnviro Configuration Tool</VersionInfoKeys>
-      <VersionInfoKeys Name="InternalName">SharpCenter</VersionInfoKeys>
-      <VersionInfoKeys Name="LegalCopyright">SharpEnviro Development Team</VersionInfoKeys>
-      <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
-      <VersionInfoKeys Name="OriginalFilename">SharpCenter.exe</VersionInfoKeys>
-      <VersionInfoKeys Name="ProductName">SharpEnviro</VersionInfoKeys>
-    </VersionInfoKeys><Excluded_Packages>
+<BorlandProject><Delphi.Personality><Parameters><Parameters Name="DebugSourceDirs">E:\SVN\Common\Delphi Components\SharpEListBoxEx\;E:\SVN\Common\Delphi Components\SharpETabList\</Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">0</VersionInfo><VersionInfo Name="MinorVer">8</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1033</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="FileVersion">0.8.0.0</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">0.8.0.0</VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription">SharpEnviro Configuration Tool</VersionInfoKeys><VersionInfoKeys Name="InternalName">SharpCenter</VersionInfoKeys><VersionInfoKeys Name="LegalCopyright">SharpEnviro Development Team</VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename">SharpCenter.exe</VersionInfoKeys><VersionInfoKeys Name="ProductName">SharpEnviro</VersionInfoKeys></VersionInfoKeys><Excluded_Packages>
       
       
       
@@ -64,6 +57,12 @@ if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
     <DelphiCompile Include="SharpCenter.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
+    <RcCompile Include="metadata.rc">
+      <Form>metadata.res</Form>
+    </RcCompile>
+    <RcCompile Include="VersionInfo.rc">
+      <Form>VersionInfo.res</Form>
+    </RcCompile>
     <DCCReference Include="..\..\Common\Interfaces\ISharpCenterHostUnit.pas" />
     <DCCReference Include="..\..\Common\Interfaces\ISharpCenterPluginUnit.pas" />
     <DCCReference Include="..\..\Common\Interfaces\IXmlBaseUnit.pas" />

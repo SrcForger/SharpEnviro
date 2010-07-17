@@ -1,5 +1,9 @@
 program SharpCenter;
 
+{$R 'metadata.res' 'metadata.rc'}
+{$R 'VersionInfo.res' 'VersionInfo.rc'}
+{$R *.res}
+
 uses
 //  VCLFixPack,
   Forms,
@@ -22,9 +26,6 @@ uses
   uSharpCenterHost in 'uSharpCenterHost.pas',
   ISharpCenterHostUnit in '..\..\Common\Interfaces\ISharpCenterHostUnit.pas',
   IXmlBaseUnit in '..\..\Common\Interfaces\IXmlBaseUnit.pas';
-
-{$R *.res}
-{$R metadata.res}
 
 function CheckMutex: Boolean;
 var

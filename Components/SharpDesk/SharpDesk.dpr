@@ -30,7 +30,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 program SharpDesk;
 
-             
+{$R 'metadata.res' 'metadata.rc'}
+{$R 'VersionInfo.res' 'VersionInfo.rc'}
+{$R *.res}
 
 uses
 //  VCLFixPack,
@@ -60,9 +62,6 @@ uses
   SharpImageUtils in '..\..\Common\Units\SharpImageUtils\SharpImageUtils.pas',
   SharpIconUtils in '..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas',
   SharpFileUtils in '..\..\Common\Units\SharpFileUtils\SharpFileUtils.pas';
-
-{$R *.res}
-{$R metadata.res}
 
 var
    Parameter,FileName : String;

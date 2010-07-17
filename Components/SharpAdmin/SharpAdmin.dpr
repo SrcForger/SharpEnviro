@@ -28,6 +28,8 @@ program SharpAdmin;
 {$APPTYPE CONSOLE}
 
 {$R 'SharpAdmin.res' 'SharpAdmin.rc'}
+{$R 'VersionInfo.res' 'VersionInfo.rc'}
+{$R 'VistaElevated.res' 'VistaElevated.rc'}
 
 uses
 //  VCLFixPack,
@@ -37,8 +39,6 @@ uses
   JclStrings,
   {$IFDEF DEBUG}DebugDialog in '..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   uSystemFuncs;
-
-{$R VistaElevated.res}
 
 const
   cIniFileMap = 'Software\Microsoft\Windows NT\CurrentVersion\IniFileMapping\system.ini\boot';

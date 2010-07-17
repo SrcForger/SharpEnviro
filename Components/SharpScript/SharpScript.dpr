@@ -1,5 +1,9 @@
 program SharpScript;
 
+{$R 'metadata.res' 'metadata.rc'}
+{$R 'VersionInfo.res' 'VersionInfo.rc'}
+{$R *.res}
+
 uses
 //  VCLFixPack,
   Forms,
@@ -18,9 +22,6 @@ uses
   ScriptControls in 'ScriptControls.pas',
   LogWnd in 'Forms\LogWnd.pas' {LogForm},
   Windows_Adapter in '..\..\Common\Units\SharpScript\Windows_Adapter.pas';
-
-{$R *.res}
-{$R metadata.res}
 
 var
   Prm : String;

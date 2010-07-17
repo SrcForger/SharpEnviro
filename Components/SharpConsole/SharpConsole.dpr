@@ -1,5 +1,9 @@
 program SharpConsole;
 
+{$R 'metadata.res' 'metadata.rc'}
+{$R 'VersionInfo.res' 'VersionInfo.rc'}
+{$R *.res}
+
 uses
 //  VCLFixPack,
   Forms,
@@ -12,9 +16,6 @@ uses
   TextConverterUnit in 'TextConverterUnit.pas',
   uDebugList in 'uDebugList.pas',
   FatThings in 'FatThings.pas';
-
-{$R *.RES}
-{$R metadata.res}
 
 begin
   Application.Initialize;

@@ -34,6 +34,10 @@ BB
 
 program SharpMenu;
 
+{$R 'metadata.res' 'metadata.rc'}
+{$R 'VersionInfo.res' 'VersionInfo.rc'}
+{$R *.res}
+
 uses
 //  VCLFixPack,
   Forms,
@@ -51,7 +55,7 @@ uses
   ISharpESkinComponents,
   uSystemFuncs,
   SharpTypes,
-  DebugDialog in '..\..\Common\Units\DebugDialog\DebugDialog.pas',
+  {$IFDEF DEBUG}DebugDialog in '..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   uSharpEMenuWnd in 'Forms\uSharpEMenuWnd.pas' {SharpEMenuWnd},
   uSharpEMenuLoader in 'Units\uSharpEMenuLoader.pas',
   uSharpEMenu in 'Units\uSharpEMenu.pas',
@@ -69,9 +73,6 @@ uses
   uSharpEMenuDynamicContentThread in 'Units\uSharpEMenuDynamicContentThread.pas',
   uSharpEMenuRenderThread in 'Units\uSharpEMenuRenderThread.pas',
   uSharpEMenuIconThreads in 'Units\uSharpEMenuIconThreads.pas';
-
-{$R *.res}
-{$R metadata.res}
 
 type
   TSkinManagerLoadThread = class(TThread)

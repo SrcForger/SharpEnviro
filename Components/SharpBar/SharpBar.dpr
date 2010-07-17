@@ -25,6 +25,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 program SharpBar;
 
+{$R 'VersionInfo.res' 'VersionInfo.rc'}
+{$R 'metadata.res' 'metadata.rc'}
+{$R *.res}
+
 uses
 //  VCLFixPack,
   Forms,
@@ -33,7 +37,7 @@ uses
   Types,
   StrUtils,
   Graphics,
-  DebugDialog in '..\..\Common\Units\DebugDialog\DebugDialog.pas',
+  {$IFDEF DEBUG}DebugDialog in '..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   SharpBarMainWnd in 'Forms\SharpBarMainWnd.pas' {SharpBarMainForm},
   JclSimpleXML,
   JclFileUtils,
@@ -54,9 +58,6 @@ type
     mutex : THandle;
     timeout : integer;
   end;
-
-{$R *.res}
-{$R metadata.res}
 
 const
  NO_REMOVE_EMPTY_BARS_PARAM = '-noREB';

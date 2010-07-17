@@ -25,6 +25,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 program SharpCore;
 
+{$R 'metadata.res' 'metadata.rc'}
+{$R 'VersionInfo.res' 'VersionInfo.rc'}
+{$R *.res}
+
 uses
 //  VCLFixPack,
   Forms,
@@ -44,9 +48,6 @@ uses
   uISharpESkin,
   {$IFDEF DEBUG}DebugDialog in '..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   uComponentMan in 'uComponentMan.pas';
-
-{$R *.res}
-{$R metadata.res}
 
 const
   WM_ICONTRAY = WM_USER + 1;

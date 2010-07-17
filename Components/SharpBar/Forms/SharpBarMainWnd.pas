@@ -254,7 +254,6 @@ uses
   uThemeConsts;
 
 {$R *.dfm}
-// {$R SharpBarCR.RES}
 
 function GetControlByHandle(AHandle: THandle): TWinControl;
 begin
