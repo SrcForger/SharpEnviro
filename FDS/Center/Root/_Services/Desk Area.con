@@ -4,6 +4,7 @@
     <DeskArea>
       <Dll>_ServiceDlls\DeskArea.dll</Dll>
       <Icon>_ServiceDlls\DeskArea.png</Icon>
+      <Help>_ServiceHelp\DeskArea.xml</Help>
     </DeskArea>
   </Sections>
 </SharpCenter>

@@ -9,6 +9,7 @@
     <SharpDeskArea>
       <Dll>_Services\_Servicedlls\DeskArea.dll</Dll>
       <Icon>_Services\_ServiceDlls\DeskArea.png</Icon>
+      <Help>_Services\_ServiceHelp\DeskArea.xml</Help>
     </SharpDeskArea>
   </Sections>
 </SharpCenter>
