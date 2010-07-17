@@ -9,5 +9,6 @@
   <Label>To help you with the configuration a live help system is integrated into SharpCenter and you did already activate it by clicking the help button on the top right. Many configuration pages will have such a help button to explain some of the more complex settings to you.</Label>
   <Sep></Sep>
   <Label>The best way however to discover all the possibilities SharpEnviro offers is to just use and explorer it.</Label>
-  <Label>We hope that you will enjoy your new desktop environment!</Label>
+  <Sep></Sep>
+  <Label bold="1">We hope that you will enjoy your new desktop environment!</Label>
 </ConfigHelp>
