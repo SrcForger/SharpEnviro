@@ -25,6 +25,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library TaskSwitch;
 
+{$R 'res\TaskSwitchIcon.res' 'res\TaskSwitchIcon.rc'}
+{$R *.RES}
+
 uses
 //  VCLFixPack,
   windows,
@@ -67,10 +70,6 @@ var
   TaskManager : TTaskManager;
   MessageReceived : boolean;
   sIGlobalFilters : array of String; // app bar filters
-
-
-{$R *.RES}
-
 
 procedure LoadGlobalFilters;
 var

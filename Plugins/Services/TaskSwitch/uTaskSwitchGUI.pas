@@ -64,8 +64,6 @@ function ForceForegroundWindow(hwnd: THandle): Boolean;
 
 implementation
 
-{$R TaskSwitchIcon.res}
-
 { TTSGui }
 
 function ForceForegroundWindow(hwnd: THandle): Boolean;
