@@ -12,21 +12,7 @@
 	<project Name="SharpNotify" Type="Resource">Common\Units\SharpNotify\res\buildressource.bat</project>
   </package>
   <package Name="Resources - Components">
-	<project Name="SetShell Metadata" Type="Resource">Components\SetShell\metadata.bat</project>
-	<project Name="SharpAdmin" Type="Resource">Components\SharpAdmin\VistaElevated.bat</project>
-	<project Name="SharpBar" Type="Resource">Components\SharpBar\buildres.bat</project>
-	<project Name="SharpBar Metadata" Type="Resource">Components\SharpBar\metadata.bat</project>
-	<project Name="SharpCenter Metadata" Type="Resource">Components\SharpCenter\metadata.bat</project>
-	<project Name="SharpCompile Metadata" Type="Resource">Components\SharpCompile\metadata.bat</project>
-	<project Name="SharpConsole Metadata" Type="Resource">Components\SharpConsole\metadata.bat</project>
-	<project Name="SharpCore  Metadata" Type="Resource">Components\SharpCore\metadata.bat</project>
-	<project Name="SharpDesk  Metadata" Type="Resource">Components\SharpDesk\metadata.bat</project>
 	<project Name="SharpMenu" Type="Resource">Components\SharpMenu\Res\buildressource.bat</project>
-	<project Name="SharpMenu Metadata" Type="Resource">Components\SharpMenu\metadata.bat</project>
-	<project Name="SharpScript Metadata" Type="Resource">Components\SharpScript\metadata.bat</project>
-	<project Name="SharpShellServices" Type="Resource">Components\SharpShellServices\buildres.bat</project>
-	<project Name="SharpShellServices Metadata" Type="Resource">Components\SharpShellServices\metadata.bat</project>
-	<project Name="SharpSplash" Type="Resource">Components\SharpSplash\metadata.bat</project>
   </package>
   <package Name="Resources - Plugins">
     <project Name="ThemeList" Type="Resource">Plugins\Configurations\Components\ThemeList\compilerc.bat</project>
@@ -131,7 +117,6 @@
     <project Name="SharpMenu" Type="Application">Components\SharpMenu\SharpMenu.dproj</project>
     <project Name="SharpScript" Type="Application">Components\SharpScript\SharpScript.dproj</project>
     <project Name="SharpSearchNET" Type="Solution" requ="Microsoft Visual C# 2010 Express">Components\SharpSearchNET\SharpSearchNET.sln</project>
-    <project Name="SharpShellServices" Type="Application">Components\SharpShellServices\SharpShellServices.dproj</project>
     <project Name="SharpSplash" Type="Application">Components\SharpSplash\SharpSplash.dproj</project>
   </package>
   <package Name="Libraries">
