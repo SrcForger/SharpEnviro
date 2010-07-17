@@ -19,21 +19,6 @@
 	<project Name="Link" Type="Resource">Plugins\Configurations\Objects\Link\res\buildressource.bat</project>
 	<project Name="RecycleBin" Type="Resource">Plugins\Configurations\Objects\RecycleBin\res\buildressource.bat</project>
 	<project Name="DesktopTheme" Type="Resource">Plugins\Configurations\Themes\DesktopTheme\res\buildressource.bat</project>
-	<project Name="AlarmClock" Type="Resource">Plugins\Modules\AlarmClock\res\buildressource.bat</project>
-	<project Name="ApplicationBar" Type="Resource">Plugins\Modules\ApplicationBar\res\buildressource.bat</project>
-	<project Name="Battery Monitor" Type="Resource">Plugins\Modules\Battery Monitor\res\buildressource.bat</project>
-	<project Name="Button" Type="Resource">Plugins\Modules\Button\res\buildressource.bat</project>
-	<project Name="ButtonBar" Type="Resource">Plugins\Modules\ButtonBar\res\buildressource.bat</project>
-	<project Name="Keyboard Layout" Type="Resource">Plugins\Modules\Keyboard Layout\res\buildressource.bat</project>
-	<project Name="MediaController" Type="Resource">Plugins\Modules\MediaController\res\buildressource.bat</project>
-	<project Name="MiniScmd" Type="Resource">Plugins\Modules\MiniScmd\res\buildressource.bat</project>
-	<project Name="Notes" Type="Resource">Plugins\Modules\Notes\res\buildressource.bat</project>
-	<project Name="QuickScript" Type="Resource">Plugins\Modules\QuickScript\res\buildressource.bat</project>
-	<project Name="RSS Reader" Type="Resource">Plugins\Modules\RSS Reader\res\buildressource.bat</project>
-	<project Name="ShowDesktop" Type="Resource">Plugins\Modules\ShowDesktop\res\buildressource.bat</project>
-	<project Name="SystemTray" Type="Resource">Plugins\Modules\SystemTray\res\buildressource.bat</project>
-	<project Name="Taskbar" Type="Resource">Plugins\Modules\Taskbar\res\buildressource.bat</project>
-	<project Name="VolumeControl" Type="Resource">Plugins\Modules\VolumeControl\res\buildressource.bat</project>
 	<project Name="Weather" Type="Resource">Plugins\Objects\Weather\res\buildressource.bat</project>
 	<project Name="StartupApps" Type="Resource">Plugins\Services\StartupApps\build.bat</project>
 	<project Name="TaskSwitch" Type="Resource">Plugins\Services\TaskSwitch\res\buildressource.bat</project>
