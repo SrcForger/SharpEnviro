@@ -1447,7 +1447,6 @@ object SharpCenterWnd: TSharpCenterWnd
     Locked = True
     ParentBackground = False
     TabOrder = 0
-    ExplicitTop = 526
     DesignSize = (
       738
       32)
@@ -2376,7 +2375,6 @@ object SharpCenterWnd: TSharpCenterWnd
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 1
-    ExplicitHeight = 526
     object pnlSettingTree: TPanel
       AlignWithMargins = True
       Left = 6
@@ -2392,7 +2390,6 @@ object SharpCenterWnd: TSharpCenterWnd
       Color = clWindow
       ParentBackground = False
       TabOrder = 0
-      ExplicitHeight = 514
       object tlToolbar: TSharpETabList
         Left = 0
         Top = 0
@@ -2473,6 +2470,7 @@ object SharpCenterWnd: TSharpCenterWnd
         BorderColor = clBtnFace
         Border = False
         BackgroundColor = clWindow
+        BottomSideBorder = False
         object pcToolbar: TPageControl
           Left = 2
           Top = 2
@@ -3059,7 +3057,6 @@ object SharpCenterWnd: TSharpCenterWnd
         AutosizeGrid = False
         Borderstyle = bsNone
         Align = alClient
-        ExplicitHeight = 344
       end
     end
     object pnlContent: TPanel
@@ -3080,7 +3077,6 @@ object SharpCenterWnd: TSharpCenterWnd
       Padding.Bottom = 6
       ParentBackground = False
       TabOrder = 1
-      ExplicitHeight = 526
       DesignSize = (
         572
         522)
@@ -3148,7 +3144,6 @@ object SharpCenterWnd: TSharpCenterWnd
         PageBackgroundColor = clWindow
         OnTabChange = tlPluginTabsTabChange
         OnTabClick = pnlPluginContainerTabClick
-        ExplicitHeight = 244
         DesignSize = (
           560
           240)
@@ -3170,11 +3165,10 @@ object SharpCenterWnd: TSharpCenterWnd
           ParentColor = False
           TabOrder = 2
           OnResize = sbPluginResize
-          ExplicitHeight = 206
           object pnlPlugin: TPanel
             Left = 0
             Top = 0
-            Width = 535
+            Width = 531
             Height = 331
             Margins.Left = 6
             Margins.Top = 6
@@ -3261,6 +3255,7 @@ object SharpCenterWnd: TSharpCenterWnd
           BorderColor = clBtnFace
           Border = False
           BackgroundColor = clWhite
+          BottomSideBorder = False
           object pnlEditPlugin: TPanel
             Left = 4
             Top = 4
@@ -4247,6 +4242,7 @@ object SharpCenterWnd: TSharpCenterWnd
         BorderColor = 14737632
         Border = True
         BackgroundColor = clWhite
+        BottomSideBorder = True
         object pnlHelpContent: TPanel
           Left = 4
           Top = 4
@@ -4257,7 +4253,6 @@ object SharpCenterWnd: TSharpCenterWnd
           Color = 8447997
           ParentBackground = False
           TabOrder = 0
-          ExplicitHeight = 155
           object pnlSbHelpContent: TScrollBox
             Left = 0
             Top = 0
@@ -4271,7 +4266,6 @@ object SharpCenterWnd: TSharpCenterWnd
             Ctl3D = False
             ParentCtl3D = False
             TabOrder = 0
-            ExplicitLeft = -4
           end
         end
       end
@@ -4284,6 +4278,7 @@ object SharpCenterWnd: TSharpCenterWnd
         Margins.Top = 25
         Margins.Right = 0
         Margins.Bottom = 0
+        Anchors = [akTop, akRight]
         BevelOuter = bvNone
         BorderWidth = 4
         Color = 8447997
@@ -4296,6 +4291,7 @@ object SharpCenterWnd: TSharpCenterWnd
         BorderColor = 14737632
         Border = True
         BackgroundColor = clWhite
+        BottomSideBorder = False
         DesignSize = (
           34
           22)
@@ -9853,5 +9849,12 @@ object SharpCenterWnd: TSharpCenterWnd
   object MainMenu1: TMainMenu
     Left = 360
     Top = 280
+  end
+  object HelpRefreshTimer: TTimer
+    Enabled = False
+    Interval = 100
+    OnTimer = HelpRefreshTimerTimer
+    Left = 624
+    Top = 96
   end
 end

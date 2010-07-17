@@ -125,6 +125,7 @@ type
     pnlSbHelpContent: TScrollBox;
     pnlHelpToggle: TSharpERoundPanel;
     btnHelp: TPngSpeedButton;
+    HelpRefreshTimer: TTimer;
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure tlPluginTabsTabChange(ASender: TObject; const ATabIndex: Integer;
       var AChange: Boolean);
@@ -163,6 +164,7 @@ type
     procedure ApplicationEvents1Message(var Msg: tagMSG; var Handled: Boolean);
     procedure FormDestroy(Sender: TObject);
     procedure btnHelpClick(Sender: TObject);
+    procedure HelpRefreshTimerTimer(Sender: TObject);
   private
     FCancelClicked: Boolean;
     FSelectedTabID: Integer;
@@ -189,7 +191,8 @@ type
     procedure UpdateSize;
 
     procedure ClearHelp;
-    procedure ToggleHelp;
+    procedure ToggleHelp(Update : boolean);
+    procedure UpdateHelpHeight;
 
     function GetCommandLineParams(var enumCommandType : TSCC_COMMAND_ENUM; var sCmd, sPluginID : string) : boolean;
 
@@ -252,7 +255,7 @@ uses
 
 procedure TSharpCenterWnd.btnHelpClick(Sender: TObject);
 begin
-  ToggleHelp;
+  ToggleHelp(False);
 end;
 
 procedure TSharpCenterWnd.btnHomeClick(Sender: TObject);
@@ -274,6 +277,11 @@ procedure TSharpCenterWnd.FormResize(Sender: TObject);
 begin
   UpdateSize;
   UpdateLivePreview;
+  if pnlHelp.Visible then
+  begin
+    HelpRefreshTimer.Enabled := False;
+    HelpRefreshTimer.Enabled := True;
+  end;
 end;
 
 procedure TSharpCenterWnd.FormShow(Sender: TObject);
@@ -307,6 +315,12 @@ begin
   // Force window to front
   if command = sccLoadSetting then
     ForceForegroundWindow(Handle);
+end;
+
+procedure TSharpCenterWnd.HelpRefreshTimerTimer(Sender: TObject);
+begin
+  HelpRefreshTimer.Enabled := False;
+  ToggleHelp(True);
 end;
 
 function TSharpCenterWnd.GetCommandLineParams(var enumCommandType : TSCC_COMMAND_ENUM; var sCmd, sPluginID : string) : boolean;
@@ -471,7 +485,7 @@ begin
     pnlSbHelpContent.Components[n].Free;
 end;
 
-procedure TSharpCenterWnd.ToggleHelp;
+procedure TSharpCenterWnd.ToggleHelp(Update : boolean);
 var
   s : string;
   fullsize : boolean;
@@ -484,15 +498,17 @@ var
   i : integer;
   lastItem,currentItem : TControl;
   HelpDir : string;
-  h : integer;
   nextMargin : integer;
 begin
   fullsize := False;
   lastItem := nil;  
   LockWindowUpdate(Handle);
   try
-    if not pnlHelp.Visible then
+    if (not pnlHelp.Visible) or (Update) then
     begin
+      if Update then
+        ClearHelp;
+
       pnlHelp.Visible := True;
       pnlHelpToggle.Color := SCM.Theme.EditControlBackground;
       pnlHelpToggle.BorderColor := SCM.Theme.Border;
@@ -620,17 +636,9 @@ begin
         end;
 
         if fullsize then
-        begin
-          h := Height - pnlHelp.Top - pnlButtons.Height;
-          if lastItem <> nil then
-            pnlHelp.Height := Min(h,lastItem.Top + lastItem.Height + pnlSbHelpContent.Top + pnlHelpContent.Top + 8)
-          else pnlHelp.Height := h;
-        end else begin
-          h := lastItem.Top + lastItem.Height + pnlSbHelpContent.Top + pnlHelpContent.Top + 8;
-          if h < 224 then
-            pnlHelp.Height := h
-          else pnlHelp.Height := 224;
-        end;
+          pnlSbHelpContent.Tag := 1
+        else pnlSbHelpContent.Tag := 0;
+        UpdateHelpHeight;
         
         // This is to force "UpdateScrollBars" to be called internally
         pnlSbHelpContent.Height := pnlSbHelpContent.Height + 1;
@@ -883,6 +891,29 @@ begin
         end;
     end;
     btnEditCancel.Caption := 'Close';
+  end;
+end;
+
+procedure TSharpCenterWnd.UpdateHelpHeight;
+var
+  lastitem : TControl;
+  h : integer;
+begin
+  if pnlSbHelpContent.ComponentCount = 0 then
+    exit;
+    
+  lastitem := TControl(pnlSbHelpContent.Components[pnlSbHelpContent.ComponentCount - 1]);
+  if pnlSbHelpContent.Tag = 1 then // fullscreen
+  begin
+    h := Height - pnlHelp.Top - pnlButtons.Height;
+    if lastItem <> nil then
+      pnlHelp.Height := Min(h,lastItem.Top + lastItem.Height + pnlSbHelpContent.Top + pnlHelpContent.Top + 8)
+    else pnlHelp.Height := h;
+  end else begin
+    h := lastItem.Top + lastItem.Height + pnlSbHelpContent.Top + pnlHelpContent.Top + 8;
+    if h < 224 then
+      pnlHelp.Height := h
+    else pnlHelp.Height := 224;
   end;
 end;
 
@@ -1193,7 +1224,7 @@ begin
     UpdateConfigHeader;
 
     if pnlHelp.Visible then
-      ToggleHelp;
+      ToggleHelp(False);
      pnlHelpToggle.Visible := False;      
 
     if length(trim(SCM.ActiveHelpFile)) > 0 then
