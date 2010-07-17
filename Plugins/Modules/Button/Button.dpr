@@ -25,6 +25,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library Button;
 
+{$R 'res\Preview.res' 'res\Preview.rc'}
+{$R *.res}
+
 uses
 //  VCLFixPack,
   Windows,
@@ -44,7 +47,6 @@ uses
   {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   MainWnd in 'MainWnd.pas' {MainForm};
 
-
 type
   TInterfacedSharpBarModule = class(TInterfacedSharpBarModuleBase)
     private
@@ -59,9 +61,6 @@ type
       procedure SetSkinInterface(Value : ISharpESkinInterface); override;
       procedure SetSize(Value : integer); override;
   end;
-
-{$R Preview.res}  
-{$R *.res}
 
 { TInterfacedSharpBarModule }
 

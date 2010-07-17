@@ -29,5 +29,7 @@ object MainForm: TMainForm
     Glyph32.ResamplerClassName = 'TNearestResampler'
     Layout = blGlyphLeft
     AutoPosition = True
+    ForceDown = False
+    ForceHover = False
   end
 end

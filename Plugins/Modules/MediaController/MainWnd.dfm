@@ -90,6 +90,8 @@ object MainForm: TMainForm
       FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00}
     Layout = blGlyphLeft
     AutoPosition = True
+    ForceDown = False
+    ForceHover = False
   end
   object btn_prev: TSharpEButton
     Left = 50
@@ -165,6 +167,8 @@ object MainForm: TMainForm
       FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00}
     Layout = blGlyphLeft
     AutoPosition = True
+    ForceDown = False
+    ForceHover = False
   end
   object btn_pause: TSharpEButton
     Left = 18
@@ -240,6 +244,8 @@ object MainForm: TMainForm
       000000000000000000000000000000000000000000000000}
     Layout = blGlyphLeft
     AutoPosition = True
+    ForceDown = False
+    ForceHover = False
   end
   object btn_stop: TSharpEButton
     Left = 34
@@ -315,6 +321,8 @@ object MainForm: TMainForm
       FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00}
     Layout = blGlyphLeft
     AutoPosition = True
+    ForceDown = False
+    ForceHover = False
   end
   object btn_play: TSharpEButton
     Left = -4
@@ -390,6 +398,8 @@ object MainForm: TMainForm
       FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00}
     Layout = blGlyphLeft
     AutoPosition = True
+    ForceDown = False
+    ForceHover = False
   end
   object btn_pselect: TSharpEButton
     Left = 88
@@ -437,5 +447,7 @@ object MainForm: TMainForm
       A87050FFA87050A9}
     Layout = blGlyphLeft
     AutoPosition = True
+    ForceDown = False
+    ForceHover = False
   end
 end

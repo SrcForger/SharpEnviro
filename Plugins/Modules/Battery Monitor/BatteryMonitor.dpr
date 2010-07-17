@@ -25,6 +25,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library BatteryMonitor;
 
+{$R 'res\glyphs.res' 'res\glyphs.rc'}
+{$R *.res}
+
 uses
 //  VCLFixPack,
   Windows,
@@ -44,7 +47,6 @@ uses
   {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   MainWnd in 'MainWnd.pas' {MainForm};
 
-
 type
   TInterfacedSharpBarModule = class(TInterfacedSharpBarModuleBase)
     private
@@ -60,8 +62,6 @@ type
       procedure SetSize(Value : integer); override;
       procedure SetLeft(Value : integer); override;
   end;
-
-{$R *.res}
 
 { TInterfacedSharpBarModule }
 

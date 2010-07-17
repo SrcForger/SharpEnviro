@@ -118,7 +118,6 @@ uses
   uSharpEMenuSettings;
 
 {$R *.dfm}
-{$R ButtonBarGlyphs.res}
 
 procedure TMainForm.LoadIcons;
 var

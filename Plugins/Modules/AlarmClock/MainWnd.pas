@@ -136,8 +136,6 @@ uses
   uSharpXMLUtils;
 
 {$R *.dfm}
-{$R alarmglyphs.res}
-
 
 {TAlarmTime}
 constructor TAlarmTime.Create(par : TWinControl);

@@ -47,6 +47,9 @@ if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
     <DelphiCompile Include="ApplicationBar.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
+    <RcCompile Include="res\appbarglyphs.rc">
+      <Form>res\appbarglyphs.res</Form>
+    </RcCompile>
     <DCCReference Include="..\..\..\Common\Units\DebugDialog\DebugDialog.pas" />
     <DCCReference Include="..\..\..\Common\Units\SharpFileUtils\SharpFileUtils.pas" />
     <DCCReference Include="..\..\..\Common\Units\ToolTipApi\ToolTipApi.pas" />

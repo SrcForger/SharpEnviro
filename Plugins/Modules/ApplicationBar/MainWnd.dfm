@@ -30,6 +30,8 @@ object MainForm: TMainForm
     Layout = blGlyphLeft
     Caption = 'Click to Add Buttons'
     AutoPosition = True
+    ForceDown = False
+    ForceHover = False
   end
   object ButtonPopup: TPopupMenu
     Images = PngImageList1

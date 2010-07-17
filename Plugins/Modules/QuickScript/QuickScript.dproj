@@ -46,6 +46,12 @@ if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
     <DelphiCompile Include="QuickScript.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
+    <RcCompile Include="res\icons.rc">
+      <Form>res\icons.res</Form>
+    </RcCompile>
+    <RcCompile Include="res\Preview.rc">
+      <Form>res\Preview.res</Form>
+    </RcCompile>
     <DCCReference Include="..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas" />
     <DCCReference Include="..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas" />
     <DCCReference Include="..\..\..\Common\Units\ControlPanelItems\uControlPanelItems.pas" />

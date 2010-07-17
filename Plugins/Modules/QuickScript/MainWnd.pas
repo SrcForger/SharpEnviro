@@ -74,7 +74,6 @@ uses
   uSharpXMLUtils;
 
 {$R *.dfm}
-{$R icons.res}
 
 procedure TMainForm.LoadSettings;
 var

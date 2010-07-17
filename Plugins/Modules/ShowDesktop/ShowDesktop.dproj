@@ -47,6 +47,9 @@ if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
     <DelphiCompile Include="ShowDesktop.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
+    <RcCompile Include="res\ShowDeskopIcons.rc">
+      <Form>res\ShowDeskopIcons.res</Form>
+    </RcCompile>
     <DCCReference Include="..\..\..\Common\Units\DebugDialog\DebugDialog.pas" />
     <DCCReference Include="MainWnd.pas">
       <Form>MainForm</Form>

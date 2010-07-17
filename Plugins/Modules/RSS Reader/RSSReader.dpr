@@ -25,6 +25,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library RSSReader;
 
+{$R 'res\rssglyphs.res' 'res\rssglyphs.rc'}
+{$R *.res}
+
 uses
 //  VCLFixPack,
   Windows,
@@ -61,8 +64,6 @@ type
       procedure SetSize(Value : integer); override;
       procedure SetLeft(Value : integer); override;
   end;
-
-{$R *.res}
 
 { TInterfacedSharpBarModule }
 

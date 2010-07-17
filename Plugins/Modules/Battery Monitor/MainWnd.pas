@@ -72,7 +72,6 @@ uses
   uSharpXMLUtils;
 
 {$R *.dfm}
-{$R glyphs.res}
 
 function GetPowerStatus(var HasBattery: Boolean; var LoadStatusString: String;
  var LoadstatusPercent: Integer): DWORD;

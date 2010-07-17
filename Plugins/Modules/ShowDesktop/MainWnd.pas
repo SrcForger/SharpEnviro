@@ -88,7 +88,6 @@ implementation
 uses
   uSharpXMLUtils;
 
-//{$R ShowDesktop.res}
 {$R *.dfm}
 
 procedure TMainForm.LoadIcons;

@@ -70,7 +70,6 @@ uses
   uSharpXMLUtils;
 
 {$R *.dfm}
-{$R Icons.res}
 
 procedure TMainForm.LoadIcons;
 var

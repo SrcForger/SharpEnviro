@@ -25,6 +25,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library MediaController;
 
+{$R 'res\mpglyphs.res' 'res\mpglyphs.rc'}
+
 uses
 //  VCLFixPack,
   Windows,

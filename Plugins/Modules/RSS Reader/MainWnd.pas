@@ -130,7 +130,6 @@ uses
   uSharpXMLUtils;
 
 {$R *.dfm}
-{$R rssglyphs.res}
 
 procedure TMainForm.LoadIcons;
 var

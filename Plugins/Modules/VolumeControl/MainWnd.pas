@@ -80,7 +80,6 @@ uses
   uSharpXMLUtils;
 
 {$R *.dfm}
-{$R glyphs.res}
 
 procedure TMainForm.LoadIcons;
 var

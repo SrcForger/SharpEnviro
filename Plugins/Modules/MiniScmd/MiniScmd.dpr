@@ -25,6 +25,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library MiniScmd;
 
+{$R 'res\glyphs.res' 'res\glyphs.rc'}
+{$R *.res}
+
 uses
 //  VCLFixPack,
   Windows,
@@ -59,9 +62,6 @@ type
       procedure SetSize(Value : integer); override;
       procedure SetLeft(Value : integer); override;
   end;
-
-{$R *.res}
-{$R Glyphs.res}
 
 { TInterfacedSharpBarModule }
 

@@ -163,7 +163,6 @@ uses
 var
   SysMenuHandle : hwnd;
 
-{$R icons.res}
 {$R *.dfm}
 
 procedure TMainForm.DebugOutPutInfo(msg : String);

@@ -25,6 +25,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library VolumeControl;
 
+{$R 'res\glyphs.res' 'res\glyphs.rc'}
+{$R *.res}
+
 uses
 //  VCLFixPack,
   Windows,
@@ -64,9 +67,6 @@ type
       procedure SetSkinInterface(Value : ISharpESkinInterface); override;
       procedure SetSize(Value : integer); override;
   end;
-
-
-{$R *.res}
 
 { TInterfacedSharpBarModule }
 

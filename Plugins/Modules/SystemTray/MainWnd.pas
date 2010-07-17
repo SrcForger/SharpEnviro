@@ -98,7 +98,6 @@ type
                TipWnd : hwnd;
              end;
 
-{$R trayicons.res}
 {$R *.dfm}
 
 function Li2Double(x: LARGE_INTEGER): Double;

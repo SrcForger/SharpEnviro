@@ -28,6 +28,8 @@ object MainForm: TMainForm
     Glyph32.ResamplerClassName = 'TNearestResampler'
     Layout = blGlyphLeft
     AutoPosition = True
+    ForceDown = False
+    ForceHover = False
   end
   object sb_btnlist: TSharpEButton
     Left = 2
@@ -41,6 +43,8 @@ object MainForm: TMainForm
     Glyph32.ResamplerClassName = 'TNearestResampler'
     Layout = blGlyphLeft
     AutoPosition = True
+    ForceDown = False
+    ForceHover = False
   end
   object ButtonPopup: TPopupMenu
     Images = PngImageList1

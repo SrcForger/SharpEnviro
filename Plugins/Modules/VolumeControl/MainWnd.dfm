@@ -29,6 +29,8 @@ object MainForm: TMainForm
     Glyph32.ResamplerClassName = 'TLinearResampler'
     Layout = blGlyphLeft
     AutoPosition = True
+    ForceDown = False
+    ForceHover = False
   end
   object pbar: TSharpEProgressBar
     Left = 33

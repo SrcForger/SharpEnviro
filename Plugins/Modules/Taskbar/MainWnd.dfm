@@ -69,6 +69,8 @@ object MainForm: TMainForm
       FFFFFF00FFFFFF00}
     Layout = blGlyphLeft
     AutoPosition = True
+    ForceDown = False
+    ForceHover = False
   end
   object ses_minall: TSharpEButton
     Left = 0
@@ -122,6 +124,8 @@ object MainForm: TMainForm
       04733AFF04733AFF}
     Layout = blGlyphLeft
     AutoPosition = True
+    ForceDown = False
+    ForceHover = False
   end
   object ses_togall: TSharpEButton
     Left = 60
@@ -175,6 +179,8 @@ object MainForm: TMainForm
       000000FF000000FF}
     Layout = blGlyphLeft
     AutoPosition = True
+    ForceDown = False
+    ForceHover = False
   end
   object MenuPopup: TPopupMenu
     Left = 208

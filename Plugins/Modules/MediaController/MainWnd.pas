@@ -94,7 +94,6 @@ uses
   SharpNotify;
 
 {$R *.dfm}
-{$R MPGlyphs.res}
 
 procedure TMainForm.ShowOSD(pCaption : String);
 var

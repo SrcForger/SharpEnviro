@@ -41,10 +41,6 @@
       
       
       
-      
-      
-      
-      
       <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
       <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
     </Excluded_Packages></Delphi.Personality></BorlandProject></BorlandProject>
@@ -58,15 +54,15 @@ if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
     <DelphiCompile Include="VolumeControl.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
-    <DCCReference Include="..\..\..\Common" />
+    <RcCompile Include="res\glyphs.rc">
+      <Form>res\glyphs.res</Form>
+    </RcCompile>
     <DCCReference Include="..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas" />
     <DCCReference Include="..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas" />
-    <DCCReference Include="..\..\..\Common\Units" />
     <DCCReference Include="..\..\..\Common\Units\DebugDialog\DebugDialog.pas" />
     <DCCReference Include="..\..\..\Common\Units\MouseTimer\MouseTimer.pas" />
     <DCCReference Include="..\..\..\Common\Units\SharpFX\graphicsFX.pas" />
     <DCCReference Include="..\..\..\Common\Units\SharpFX\SharpFX.pas" />
-    <DCCReference Include="..\..\..\Common\Units\VistaFuncs" />
     <DCCReference Include="..\..\..\Common\Units\VistaFuncs\uVistaFuncs.pas" />
     <DCCReference Include="..\..\..\Components\SharpBar\uInterfacedSharpBarModuleBase.pas" />
     <DCCReference Include="MainWnd.pas">

@@ -178,7 +178,6 @@ var
   SysMenuButton : TButtonRecord;  
 
 {$R *.dfm}
-{$R appbarglyphs.res}
 
 function PointInRect(P : TPoint; Rect : TRect) : boolean;
 begin

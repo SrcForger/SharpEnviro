@@ -25,6 +25,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library QuickScript;
 
+{$R 'res\icons.res' 'res\icons.rc'}
+{$R 'res\Preview.res' 'res\Preview.rc'}
+{$R *.res}
+
 uses
 //  VCLFixPack,
   Windows,
@@ -62,9 +66,6 @@ type
       procedure SetSkinInterface(Value : ISharpESkinInterface); override;
       procedure SetSize(Value : integer); override;
   end;
-
-{$R Preview.res}  
-{$R *.res}
 
 { TInterfacedSharpBarModule }
 

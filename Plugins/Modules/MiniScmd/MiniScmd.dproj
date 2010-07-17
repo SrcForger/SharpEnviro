@@ -46,6 +46,9 @@ if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
     <DelphiCompile Include="MiniScmd.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
+    <RcCompile Include="res\glyphs.rc">
+      <Form>res\glyphs.res</Form>
+    </RcCompile>
     <DCCReference Include="..\..\..\Common\Units\AliasList\uAliasList.pas" />
     <DCCReference Include="..\..\..\Common\Units\DebugDialog\DebugDialog.pas" />
     <DCCReference Include="MainWnd.pas">

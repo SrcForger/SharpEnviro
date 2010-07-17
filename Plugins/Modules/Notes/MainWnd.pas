@@ -69,7 +69,6 @@ uses uSystemFuncs,
      uSharpXMLUtils;
 
 {$R *.dfm}
-{$R glyphs.res}
 
 procedure TMainForm.UpdateBangs;
 begin

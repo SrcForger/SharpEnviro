@@ -188,6 +188,8 @@ object MainForm: TMainForm
       0000000200000000}
     Layout = blGlyphLeft
     AutoPosition = True
+    ForceDown = False
+    ForceHover = False
   end
   object btnLeft: TSharpEButton
     Left = 61
@@ -331,6 +333,8 @@ object MainForm: TMainForm
       0000000200000000}
     Layout = blGlyphLeft
     AutoPosition = True
+    ForceDown = False
+    ForceHover = False
   end
   object UpdateTimer: TTimer
     Enabled = False
