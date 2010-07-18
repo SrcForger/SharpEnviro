@@ -48,6 +48,9 @@ if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
     <RcCompile Include="metadata.rc">
       <Form>metadata.res</Form>
     </RcCompile>
+    <RcCompile Include="Res\glyphs.rc">
+      <Form>Res\glyphs.res</Form>
+    </RcCompile>
     <RcCompile Include="VersionInfo.rc">
       <Form>VersionInfo.res</Form>
     </RcCompile>

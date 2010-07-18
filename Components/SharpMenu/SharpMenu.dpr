@@ -36,6 +36,7 @@ program SharpMenu;
 
 {$R 'metadata.res' 'metadata.rc'}
 {$R 'VersionInfo.res' 'VersionInfo.rc'}
+{$R 'Res\glyphs.res' 'Res\glyphs.rc'}
 {$R *.res}
 
 uses

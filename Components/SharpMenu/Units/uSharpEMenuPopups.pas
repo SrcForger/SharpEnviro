@@ -55,8 +55,6 @@ type
 
 implementation
 
-{$R glyphs.res}
-
 uses SharpApi,
      uSharpEMenu,
      uSharpEMenuWnd,
