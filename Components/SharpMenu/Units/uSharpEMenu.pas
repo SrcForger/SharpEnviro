@@ -1062,6 +1062,7 @@ begin
     text.Clear(color32(0,0,0,0));
     dicon := False;
     dtext := False;
+    TextMod := 0;
     textrect := Rect(0,0,0,0);
     if drawpartEx <> nil then
     with drawpartEx do
