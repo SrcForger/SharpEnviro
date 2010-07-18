@@ -40,8 +40,10 @@
   <PropertyGroup>
     <PreBuildEvent>del metadata.res
 del VersionInfo.res
+del res\glyphs.res
 brcc32 -v metadata.rc
-brcc32 -v VersionInfo.rc</PreBuildEvent>
+brcc32 -v VersionInfo.rc
+brcc32 -v res\glyphs.rc</PreBuildEvent>
     <PostBuildEvent>if $(Configuration)==Debug "..\..\Common\3rd party\Jedi\MakeJclDbg.exe" -E "$(OUTPUTDIR)$(OUTPUTNAME).map"
 if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
   </PropertyGroup>
@@ -49,9 +51,6 @@ if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
     <DelphiCompile Include="SharpMenu.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
-    <RcCompile Include="Res\glyphs.rc">
-      <Form>Res\glyphs.res</Form>
-    </RcCompile>
     <DCCReference Include="..\..\Common\Units\ControlPanelItems\uControlPanelItems.pas" />
     <DCCReference Include="..\..\Common\Units\DebugDialog\DebugDialog.pas" />
     <DCCReference Include="..\..\Common\Units\PropertyList\uPropertyList.pas" />
