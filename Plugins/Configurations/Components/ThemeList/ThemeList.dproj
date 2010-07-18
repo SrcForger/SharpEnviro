@@ -46,6 +46,8 @@
   </ProjectExtensions>
   <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
   <PropertyGroup>
+    <PreBuildEvent>del "ThemeListGlyphs.res"
+brcc32 -v "ThemeListGlyphs.rc"</PreBuildEvent>
     <PostBuildEvent>if $(Configuration)==Debug "..\..\..\..\Common\3rd party\Jedi\MakeJclDbg.exe" -E "$(OUTPUTDIR)$(OUTPUTNAME).map"
 if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
   </PropertyGroup>
@@ -53,9 +55,6 @@ if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
     <DelphiCompile Include="ThemeList.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
-    <RcCompile Include="ThemeListGlyphs.rc">
-      <Form>ThemeListGlyphs.res</Form>
-    </RcCompile>
     <DCCReference Include="..\..\..\..\Common\Units\DebugDialog\DebugDialog.pas" />
     <DCCReference Include="uThemeListEditWnd.pas">
       <Form>frmEdit</Form>
