@@ -25,6 +25,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library SharpDialogs;
 
+{$R 'res\icons.res' 'res\icons.rc'}
+{$R *.res}
 
 uses
 //  VCLFixPack,
@@ -98,9 +100,6 @@ var
   iconmenuresult : String;
   targetmenu  : TPopupMenu;
   iconmenu : TPopupMenu;
-
-{$R Icons.res}
-{$R *.res}
 
 procedure BuildShellFolderList(Slist : TStringList);
 begin
