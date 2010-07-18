@@ -30,7 +30,11 @@ interface
 uses
   Classes,
   Windows,
+  ShlObj,
+  ActiveX,
   SysUtils,
+  uSystemFuncs,
+  Registry,
   JclShell,
   JclFileUtils,
   JclStrings;
@@ -39,6 +43,8 @@ procedure FindFiles(var FilesList: TStringList; StartDir, FileMask: string); ove
 procedure FindFiles(var FilesList: TStringList; StartDir, FileMask: string; Recurse: Boolean; Directories: Boolean = false); overload;
 function GetFileNameWithoutParams(pTarget : String) : String;
 function FindFilePath(pTarget : String) : String;
+
+function GetX64ValidPath(Path : WideString) : WideString;
 
 Function PathFindOnPath(pszPath, ppszOtherDirs: PChar): BOOL; stdcall; external 'shlwapi.dll' Name 'PathFindOnPathA';
 
@@ -52,6 +58,8 @@ function GetFileAuthor(filePath : string) : string;
 function GetFileCompanyName(filePath : string) : string;
 function GetFileInternalName(filePath : string) : string;
 
+function GetFilePathFromLink(const sLink: String): WideString;
+
 const GFI_FileDescription = 'FileDescription';
 const GFI_FileVersion = 'FileVersion';
 const GFI_ProductName = 'ProductName';
@@ -60,6 +68,63 @@ const GFI_CompanyName = 'CompanyName';
 const GFI_InternalName = 'InternalName';
 
 implementation
+
+var
+  EnvReplList : TWideStringList;
+
+const
+  IID_IPersistFile: TGUID = (D1:$0000010B;D2:$0000;D3:$0000;D4:($C0,$00,$00,$00,$00,$00,$00,$46));
+
+function GetFilePathFromLink(const sLink: String): WideString;
+var
+  sWidePath: Array [0..260] of WideChar;
+  sFoundPath: Array [0..MAX_PATH] of WideChar;
+  AShellLink : IShellLinkW;
+  wfd : _WIN32_FIND_DATAW;
+  PersistFile : IPersistFile;
+  TempPath : PWideChar;
+begin
+  Result := '';
+  (* Create a shellLink object *)
+  if CoCreateInstance(CLSID_ShellLink,
+                     nil,
+                     CLSCTX_INPROC_SERVER,
+                     IID_IShellLinkW,
+                     AShellLink) <> S_OK then
+    raise Exception.Create('unable to create a ShellLink');
+
+
+  (* Give the shell link a path to resolve *)
+  GetMem(TempPath, sizeof(WideChar) * Succ(Length(sLink)));
+  StringToWideChar(sLink, TempPath, Succ(Length(sLink)));
+  AShellLink.SetPath(TempPath);
+  FreeMem(TempPath);
+  if AShellLink.Resolve(HInstance,SLR_UPDATE) = S_OK then
+  begin
+
+    (* Use the shelllink object to gain access to its PersistFile interface *)
+    if Failed(AShellLink.QueryInterface(IID_IPersistFile,PersistFile)) then
+      raise Exception.Create('Unable to create an IPersistFile instance');
+
+    (* Load the file into the PersistFile object *)
+    // we must convert the ansi string to be a widestring to pass to 'PersistFile.Load'
+    MultiByteToWideChar(CP_ACP,
+                        MB_PRECOMPOSED,
+                        PChar(sLink),
+                        -1,
+                        @sWidePath,
+                        MAX_PATH);
+    if PersistFile.Load(sWidePath,STGM_READ) <> S_OK then
+      raise Exception.Create('unable to load file');
+
+    (* Now the file is loaded we can ask the OS to provide us with its
+       original path *)
+    if AShellLink.GetPath(sFoundPath,MAX_PATH,wfd,SLGP_RAWPATH) <> NOERROR  then
+      raise Exception.Create('unable to get path');
+
+    result := sFoundPath;
+  end;
+end;
 
 function FindFilePath(pTarget : String) : String;
 var
@@ -261,5 +326,56 @@ end;
 
 {$ENDREGION 'GetFileInfo'}
 
+procedure BuildEnvRepList;
+var
+  Reg : TRegistry;
 begin
+  EnvReplList.Clear;
+
+  if IsWoW64 then
+  begin
+    Reg := TRegistry.Create;
+    try
+      Reg.Access := KEY_READ or KEY_WOW64_64KEY;
+      Reg.RootKey := HKEY_LOCAL_MACHINE;
+      if Reg.OpenKeyReadOnly('\SOFTWARE\Microsoft\Windows\CurrentVersion') then
+       begin
+        EnvReplList.Add(Reg.ReadString('ProgramFilesDir (x86)') + '=' + Reg.ReadString('ProgramFilesDir'));
+        EnvReplList.Add(Reg.ReadString('CommonFilesDir (x86)') + '=' + Reg.ReadString('CommonFilesDir'));
+        EnvReplList.Add(GetSpecialFolderLocation(CSIDL_SYSTEMX86) + '=' + GetSpecialFolderLocation(CSIDL_SYSTEM));
+      end;
+    finally
+      Reg.Free;
+    end;
+  end;
+end;
+
+
+function GetX64ValidPath(Path : WideString) : WideString;
+var
+  n : integer;
+  s : WideString;
+begin
+  result := Path;
+  for n := 0 to EnvReplList.Count - 1 do
+  begin
+    s := StringReplace(Path,EnvReplList.Names[n],EnvReplList.ValueFromIndex[n],[rfIgnoreCase]);
+    if FileExists(s) then
+    begin
+      result := s;
+      exit;
+    end;
+  end;
+end;
+
+
+
+
+initialization
+  EnvReplList := TWideStringList.Create;
+  BuildEnvRepList;
+
+finalization
+  EnvReplList.Free;
+
 end.
