@@ -224,6 +224,7 @@ var
 begin
   if not FileExists(FileName) then
     FileName := ExpandEnvVars(FileName);
+  FileName := Trim(FileName);
 
   if CompareText(ExtractFileExt(FileName),'.lnk') = 0 then
   begin
