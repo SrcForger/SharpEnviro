@@ -45,6 +45,10 @@
   </ProjectExtensions>
   <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
   <PropertyGroup>
+    <PreBuildEvent>del metadata.res
+del VersionInfo.res
+brcc32 -v metadata.rc
+brcc32 -v VersionInfo.rc</PreBuildEvent>
     <PostBuildEvent>if $(Configuration)==Debug "..\..\Common\3rd party\Jedi\MakeJclDbg.exe" -E "$(OUTPUTDIR)$(OUTPUTNAME).map"
 if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
   </PropertyGroup>
@@ -52,12 +56,6 @@ if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
     <DelphiCompile Include="SharpDesk.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
-    <RcCompile Include="metadata.rc">
-      <Form>metadata.res</Form>
-    </RcCompile>
-    <RcCompile Include="VersionInfo.rc">
-      <Form>VersionInfo.res</Form>
-    </RcCompile>
     <DCCReference Include="..\..\Common\Units\DebugDialog\DebugDialog.pas" />
     <DCCReference Include="..\..\Common\Units\SharpFileUtils\SharpFileUtils.pas" />
     <DCCReference Include="..\..\Common\Units\SharpFX\SharpFX.pas" />

@@ -30,8 +30,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 program SharpDesk;
 
-{$R 'metadata.res' 'metadata.rc'}
-{$R 'VersionInfo.res' 'VersionInfo.rc'}
+{$R 'metadata.res'}
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 uses

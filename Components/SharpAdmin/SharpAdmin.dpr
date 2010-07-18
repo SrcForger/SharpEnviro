@@ -27,9 +27,9 @@ program SharpAdmin;
 
 {$APPTYPE CONSOLE}
 
-{$R 'SharpAdmin.res' 'SharpAdmin.rc'}
-{$R 'VersionInfo.res' 'VersionInfo.rc'}
-{$R 'VistaElevated.res' 'VistaElevated.rc'}
+{$R 'SharpAdmin.res'}
+{$R 'VersionInfo.res'}
+{$R 'VistaElevated.res'}
 
 uses
 //  VCLFixPack,

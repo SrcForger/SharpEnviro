@@ -42,6 +42,12 @@
   </ProjectExtensions>
   <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
   <PropertyGroup>
+    <PreBuildEvent>del SharpAdmin.res
+del VersionInfo.res
+del VistaElevated.res
+brcc32 -v SharpAdmin.rc
+brcc32 -v VersionInfo.rc
+brcc32 -v VistaElevated.rc</PreBuildEvent>
     <PostBuildEvent>if $(Configuration)==Debug "..\..\Common\3rd party\Jedi\MakeJclDbg.exe" -E "$(OUTPUTDIR)$(OUTPUTNAME).map"
 if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
   </PropertyGroup>
@@ -49,15 +55,6 @@ if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
     <DelphiCompile Include="SharpAdmin.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
-    <RcCompile Include="SharpAdmin.rc">
-      <Form>SharpAdmin.res</Form>
-    </RcCompile>
-    <RcCompile Include="VersionInfo.rc">
-      <Form>VersionInfo.res</Form>
-    </RcCompile>
-    <RcCompile Include="VistaElevated.rc">
-      <Form>VistaElevated.res</Form>
-    </RcCompile>
     <DCCReference Include="..\..\Common\Units\DebugDialog\DebugDialog.pas" />
   </ItemGroup>
 </Project>

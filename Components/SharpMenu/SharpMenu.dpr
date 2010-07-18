@@ -34,8 +34,8 @@ BB
 
 program SharpMenu;
 
-{$R 'metadata.res' 'metadata.rc'}
-{$R 'VersionInfo.res' 'VersionInfo.rc'}
+{$R 'metadata.res'}
+{$R 'VersionInfo.res'}
 {$R 'Res\glyphs.res' 'Res\glyphs.rc'}
 {$R *.res}
 
