@@ -1,27 +1,12 @@
 <SharpCompile OutputPath="..\SharpE">
   <package Name="Resources - Common">
-	<project Name="SharpEColorEditor" Type="Resource">Common\Delphi Components\SharpEColorEditor\compilerc.bat</project>
-	<project Name="SharpEColorPicker" Type="Resource">Common\Delphi Components\SharpEColorPicker\build.bat</project>
-	<project Name="SharpEFontSelector" Type="Resource">Common\Delphi Components\SharpEFontSelector\build.bat</project>
-	<project Name="SharpEListBoxEx" Type="Resource">Common\Delphi Components\SharpEListBoxEx\compilerc.bat</project>
-	<project Name="SharpESwatchCollection" Type="Resource">Common\Delphi Components\SharpESwatchCollection\compilerc.bat</project>
-	<project Name="SharpETabList" Type="Resource">Common\Delphi Components\SharpETabList\compilerc.bat</project>
-	<project Name="SharpEUIC" Type="Resource">Common\Delphi Components\SharpEUIC\res\buildressource.bat</project>
-	<project Name="SharpDeskApi" Type="Resource">Common\Libraries\SharpDeskApi\res\buildressource.bat</project>
-	<project Name="SharpDialogs" Type="Resource">Common\Libraries\SharpDialogs\res\buildressource.bat</project>
+	<!-- If you have the Delphi IDE open then building the SharpE (Skin) Components will fail. -->
+	<project Name="SharpE Skin Components" Type="Application">Common\Packages\SharpE Skin Components\SharpESkinComponents.dproj</project>
+	<project Name="SharpE Components" Type="Application">Common\Packages\SharpE Components\SharpEComponents.dproj</project>
 	<project Name="SharpNotify" Type="Resource">Common\Units\SharpNotify\res\buildressource.bat</project>
   </package>
-  <package Name="Resources - Components">
-	<project Name="SharpMenu" Type="Resource">Components\SharpMenu\Res\buildressource.bat</project>
-  </package>
   <package Name="Resources - Plugins">
-    <project Name="ThemeList" Type="Resource">Plugins\Configurations\Components\ThemeList\compilerc.bat</project>
-	<project Name="Link" Type="Resource">Plugins\Configurations\Objects\Link\res\buildressource.bat</project>
-	<project Name="RecycleBin" Type="Resource">Plugins\Configurations\Objects\RecycleBin\res\buildressource.bat</project>
-	<project Name="DesktopTheme" Type="Resource">Plugins\Configurations\Themes\DesktopTheme\res\buildressource.bat</project>
 	<project Name="Weather" Type="Resource">Plugins\Objects\Weather\res\buildressource.bat</project>
-	<project Name="StartupApps" Type="Resource">Plugins\Services\StartupApps\build.bat</project>
-	<project Name="TaskSwitch" Type="Resource">Plugins\Services\TaskSwitch\res\buildressource.bat</project>
    </package>
   <package Name="Configurations - Components">
     <project Name="Toolbar List" Type="DLL">Plugins\Configurations\Components\Barlist\BarList.dproj</project>

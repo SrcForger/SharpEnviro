@@ -37,6 +37,31 @@
     <DelphiCompile Include="SharpEComponents.dpk">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
+    <DCCReference Include="..\..\..\Project Groups\bdertl.dcp" />
+    <DCCReference Include="..\..\..\Project Groups\dbrtl.dcp" />
+    <DCCReference Include="..\..\..\Project Groups\designide.dcp" />
+    <DCCReference Include="..\..\..\Project Groups\Jcl.dcp" />
+    <DCCReference Include="..\..\..\Project Groups\JclVcl.dcp" />
+    <DCCReference Include="..\..\..\Project Groups\JvCoreD11R.dcp" />
+    <DCCReference Include="..\..\..\Project Groups\JvCtrlsD11R.dcp" />
+    <DCCReference Include="..\..\..\Project Groups\JvCustomD11R.dcp" />
+    <DCCReference Include="..\..\..\Project Groups\JvInterpreterD11R.dcp" />
+    <DCCReference Include="..\..\..\Project Groups\JvMMD11R.dcp" />
+    <DCCReference Include="..\..\..\Project Groups\JvPageCompsD11R.dcp" />
+    <DCCReference Include="..\..\..\Project Groups\JvStdCtrlsD11R.dcp" />
+    <DCCReference Include="..\..\..\Project Groups\JvSystemD11R.dcp" />
+    <DCCReference Include="..\..\..\Project Groups\JvXPCtrlsD11R.dcp" />
+    <DCCReference Include="..\..\..\Project Groups\PngComponentsD9.dcp" />
+    <DCCReference Include="..\..\..\Project Groups\PNG_D9.dcp" />
+    <DCCReference Include="..\..\..\Project Groups\rtl.dcp" />
+    <DCCReference Include="..\..\..\Project Groups\SharpESkinComponents.dcp" />
+    <DCCReference Include="..\..\..\Project Groups\vcl.dcp" />
+    <DCCReference Include="..\..\..\Project Groups\vclactnband.dcp" />
+    <DCCReference Include="..\..\..\Project Groups\vcldb.dcp" />
+    <DCCReference Include="..\..\..\Project Groups\vcljpg.dcp" />
+    <DCCReference Include="..\..\..\Project Groups\VclSmp.dcp" />
+    <DCCReference Include="..\..\..\Project Groups\vclx.dcp" />
+    <DCCReference Include="..\..\..\Project Groups\xmlrtl.dcp" />
     <DCCReference Include="..\..\Delphi Components\SharpECenterHeader\SharpECenterHeader.pas" />
     <DCCReference Include="..\..\Delphi Components\SharpEColorEditorEx\SharpEColorEditorEx.pas" />
     <DCCReference Include="..\..\Delphi Components\SharpEColorEditor\SharpEColorEditor.pas" />
@@ -62,31 +87,30 @@
     <DCCReference Include="..\..\Units\SharpFX\SharpFX.pas" />
     <DCCReference Include="..\..\Units\SharpFX\vclactnbandSharpESkinComponents.dcp" />
     <DCCReference Include="..\..\Units\VistaFuncs\uVistaFuncs.pas" />
-    <DCCReference Include="bdertl.dcp" />
-    <DCCReference Include="dbrtl.dcp" />
-    <DCCReference Include="designide.dcp" />
     <DCCReference Include="GR32_RS2007.dcp" />
-    <DCCReference Include="Jcl.dcp" />
-    <DCCReference Include="JclVcl.dcp" />
-    <DCCReference Include="JvCoreD11R.dcp" />
-    <DCCReference Include="JvCtrlsD11R.dcp" />
-    <DCCReference Include="JvCustomD11R.dcp" />
-    <DCCReference Include="JvInterpreterD11R.dcp" />
-    <DCCReference Include="JvMMD11R.dcp" />
-    <DCCReference Include="JvPageCompsD11R.dcp" />
-    <DCCReference Include="JvStdCtrlsD11R.dcp" />
-    <DCCReference Include="JvSystemD11R.dcp" />
-    <DCCReference Include="JvXPCtrlsD11R.dcp" />
-    <DCCReference Include="PngComponentsD9.dcp" />
-    <DCCReference Include="PNG_D9.dcp" />
-    <DCCReference Include="rtl.dcp" />
-    <DCCReference Include="SharpESkinComponents.dcp" />
-    <DCCReference Include="vcl.dcp" />
-    <DCCReference Include="vclactnband.dcp" />
-    <DCCReference Include="vcldb.dcp" />
-    <DCCReference Include="vcljpg.dcp" />
-    <DCCReference Include="VclSmp.dcp" />
-    <DCCReference Include="vclx.dcp" />
-    <DCCReference Include="xmlrtl.dcp" />
+    <RcCompile Include="..\..\Delphi Components\SharpEColorEditor\SharpEColorEditorRes.rc">
+      <Form>SharpEColorEditorRes.res</Form>
+    </RcCompile>
+    <RcCompile Include="..\..\Delphi Components\SharpEColorPicker\Resources.rc">
+      <Form>Resources.res</Form>
+    </RcCompile>
+    <RcCompile Include="..\..\Delphi Components\SharpEFontSelector\SharpeFontSelectorBitmaps.rc">
+      <Form>SharpeFontSelectorBitmaps.res</Form>
+    </RcCompile>
+    <RcCompile Include="..\..\Delphi Components\SharpEGaugeBox\SharpEGaugeBoxBitmaps.rc">
+      <Form>SharpEGaugeBoxBitmaps.res</Form>
+    </RcCompile>
+    <RcCompile Include="..\..\Delphi Components\SharpEListBoxEx\SharpEListBoxEx.rc">
+      <Form>SharpEListBoxEx.res</Form>
+    </RcCompile>
+    <RcCompile Include="..\..\Delphi Components\SharpESwatchCollection\SharpESwatchRes.rc">
+      <Form>SharpESwatchRes.res</Form>
+    </RcCompile>
+    <RcCompile Include="..\..\Delphi Components\SharpETabList\SharpETabList.rc">
+      <Form>SharpETabList.res</Form>
+    </RcCompile>
+    <RcCompile Include="..\..\Delphi Components\SharpEUIC\SharpEUICIcons.rc">
+      <Form>SharpEUICIcons.res</Form>
+    </RcCompile>
   </ItemGroup>
 </Project>

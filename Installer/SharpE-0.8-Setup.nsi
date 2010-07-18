@@ -332,6 +332,8 @@ Section "!Core Files" SEC01
   File "..\..\SharpE\SharpCenterApi.dll"
   File "..\..\SharpE\SharpDeskApi.dll"
   File "..\..\SharpE\SharpDialogs.dll"
+  File "..\..\SharpE\SharpEnviro.dll"
+  File "..\..\SharpE\SharpSearch.dll"
   File "..\..\SharpE\SharpThemeApiEx.dll"
   # Components
   File "..\..\SharpE\SetShell.exe"
@@ -344,7 +346,7 @@ Section "!Core Files" SEC01
   File "..\..\SharpE\SharpLinkLauncherNET.exe"
   File "..\..\SharpE\SharpMenu.exe"
   File "..\..\SharpE\SharpScript.exe"
-  File "..\..\SharpE\SharpShellServices.exe"
+  File "..\..\SharpE\SharpSearchNET.exe"
   File "..\..\SharpE\SharpSplash.exe"
   
   # Other Files
@@ -664,6 +666,8 @@ Section /o -un.Main UNSEC0000
     Delete "$INSTDIR\SharpCenterApi.dll"
     Delete "$INSTDIR\SharpDeskApi.dll"
     Delete "$INSTDIR\SharpDialogs.dll"
+    Delete "$INSTDIR\SharpEnviro.dll"
+    Delete "$INSTDIR\SharpSearch.dll"
     Delete "$INSTDIR\SharpThemeApiEx.dll"
 
     # Components
@@ -677,7 +681,7 @@ Section /o -un.Main UNSEC0000
     Delete "$INSTDIR\SharpLinkLauncherNET.exe"
     Delete "$INSTDIR\SharpMenu.exe"
     Delete "$INSTDIR\SharpScript.exe"
-    Delete "$INSTDIR\SharpShellServices.exe"
+    Delete "$INSTDIR\SharpSearchNET.exe"
     Delete "$INSTDIR\SharpSplash.exe"
     Delete "$INSTDIR\SharpCompile.exe"
     Delete "$INSTDIR\rtl100.bpl"
