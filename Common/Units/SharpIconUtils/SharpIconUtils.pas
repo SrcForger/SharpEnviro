@@ -32,6 +32,7 @@ uses Windows,
      Graphics,
      JclFileUtils,
      SysUtils,
+     Classes,
      ShellApi,
      SharpThemeApiEx,
      uThemeConsts,
@@ -219,9 +220,22 @@ var
   ImageListHandle : THandle;
   Flag : DWord;
   Attr : integer;
+  LinkPath : String;
 begin
   if not FileExists(FileName) then
     FileName := ExpandEnvVars(FileName);
+
+  if CompareText(ExtractFileExt(FileName),'.lnk') = 0 then
+  begin
+    // Resolve the shell link and get the path
+    LinkPath := GetFilePathFromLink(FileName);
+    // Expand all environmental vars (following checks will be performed on the full path)
+    LinkPath := ExpandEnvVars(LinkPath);
+    // Try to see if the path is valid for any x64 directory
+    LinkPath := GetX64ValidPath(LinkPath);
+    if FileExists(LinkPath) then
+    FileName := LinkPath;
+  end;
 
   if Size <= 16 then
     Flag := SHGFI_ICON or SHGFI_SMALLICON
