@@ -39,6 +39,8 @@
   </ProjectExtensions>
   <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
   <PropertyGroup>
+    <PreBuildEvent>del "res\icons.res"
+brcc32 -v "res\icons.rc"</PreBuildEvent>
     <PostBuildEvent>if $(Configuration)==Debug "..\..\..\Common\3rd party\Jedi\MakeJclDbg.exe" -E "$(OUTPUTDIR)$(OUTPUTNAME).map"
 if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
   </PropertyGroup>
@@ -46,9 +48,6 @@ if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
     <DelphiCompile Include="SharpDialogs.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
-    <RcCompile Include="res\icons.rc">
-      <Form>res\icons.res</Form>
-    </RcCompile>
     <DCCReference Include="..\..\3rd party\GR32 Addons\GR32_PNG.pas" />
     <DCCReference Include="..\..\Units\DebugDialog\DebugDialog.pas" />
     <DCCReference Include="..\..\Units\SharpFileUtils\SharpFileUtils.pas" />

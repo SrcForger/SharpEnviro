@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library TaskSwitch;
 
-{$R 'res\TaskSwitchIcon.res' 'res\TaskSwitchIcon.rc'}
+{$R 'res\TaskSwitchIcon.res'}
 {$R *.RES}
 
 uses

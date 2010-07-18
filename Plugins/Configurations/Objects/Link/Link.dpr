@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library Link;
 
-{$R 'res\icons.res' 'res\icons.rc'}
+{$R 'res\icons.res'}
 {$R *.res}
 
 uses
