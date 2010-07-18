@@ -48,6 +48,7 @@ uses
   Types,
   Math,
   Controls,
+  ActiveX,
   SysUtils,
   SharpApi,
   SharpThemeApiEx,
@@ -154,6 +155,8 @@ begin
       halt;
     end;
   end;
+
+  CoInitialize(nil);
 
   // Init Theme
   GetCurrentTheme.LoadTheme([tpSkinScheme,tpIconSet,tpSkinFont]);
