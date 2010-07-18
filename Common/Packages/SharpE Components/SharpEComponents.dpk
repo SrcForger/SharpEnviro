@@ -25,6 +25,11 @@ package SharpEComponents;
 {$DESCRIPTION 'SharpE Components'}
 {$IMPLICITBUILD ON}
 
+{
+If you add a new component that contains a resource or a new resource to an existing
+component be sure to update the PreBuildEvent to delete and compile the resource.
+}
+
 requires
   rtl,
   vcl,
