@@ -75,6 +75,7 @@ var
 const
   IID_IPersistFile: TGUID = (D1:$0000010B;D2:$0000;D3:$0000;D4:($C0,$00,$00,$00,$00,$00,$00,$46));
 
+  
 function GetFilePathFromLink(const sLink: String): WideString;
 var
   sWidePath: Array [0..260] of WideChar;
@@ -84,45 +85,50 @@ var
   PersistFile : IPersistFile;
   TempPath : PWideChar;
 begin
-  Result := '';
+  Result := sLink;
+
   (* Create a shellLink object *)
-  if CoCreateInstance(CLSID_ShellLink,
-                     nil,
-                     CLSCTX_INPROC_SERVER,
-                     IID_IShellLinkW,
-                     AShellLink) <> S_OK then
-    raise Exception.Create('unable to create a ShellLink');
+  CoInitialize(nil);
+  try
+    if CoCreateInstance(CLSID_ShellLink,
+                        nil,
+                        CLSCTX_INPROC_SERVER,
+                        IID_IShellLinkW,
+                        AShellLink) <> S_OK then
+      exit;
 
+    (* Give the shell link a path to resolve *)
+    GetMem(TempPath, sizeof(WideChar) * Succ(Length(sLink)));
+    StringToWideChar(sLink, TempPath, Succ(Length(sLink)));
+    AShellLink.SetPath(TempPath);
+    FreeMem(TempPath);
+    if AShellLink.Resolve(HInstance,SLR_UPDATE) = S_OK then
+    begin
 
-  (* Give the shell link a path to resolve *)
-  GetMem(TempPath, sizeof(WideChar) * Succ(Length(sLink)));
-  StringToWideChar(sLink, TempPath, Succ(Length(sLink)));
-  AShellLink.SetPath(TempPath);
-  FreeMem(TempPath);
-  if AShellLink.Resolve(HInstance,SLR_UPDATE) = S_OK then
-  begin
+      (* Use the shelllink object to gain access to its PersistFile interface *)
+      if Failed(AShellLink.QueryInterface(IID_IPersistFile,PersistFile)) then
+        exit;
 
-    (* Use the shelllink object to gain access to its PersistFile interface *)
-    if Failed(AShellLink.QueryInterface(IID_IPersistFile,PersistFile)) then
-      raise Exception.Create('Unable to create an IPersistFile instance');
+      (* Load the file into the PersistFile object *)
+      // we must convert the ansi string to be a widestring to pass to 'PersistFile.Load'
+      MultiByteToWideChar(CP_ACP,
+                          MB_PRECOMPOSED,
+                          PChar(sLink),
+                          -1,
+                          @sWidePath,
+                          MAX_PATH);
+      if PersistFile.Load(sWidePath,STGM_READ) <> S_OK then
+        exit;
 
-    (* Load the file into the PersistFile object *)
-    // we must convert the ansi string to be a widestring to pass to 'PersistFile.Load'
-    MultiByteToWideChar(CP_ACP,
-                        MB_PRECOMPOSED,
-                        PChar(sLink),
-                        -1,
-                        @sWidePath,
-                        MAX_PATH);
-    if PersistFile.Load(sWidePath,STGM_READ) <> S_OK then
-      raise Exception.Create('unable to load file');
+      (* Now the file is loaded we can ask the OS to provide us with its
+         original path *)
+      if AShellLink.GetPath(sFoundPath,MAX_PATH,wfd,SLGP_RAWPATH) <> NOERROR  then
+        exit;
 
-    (* Now the file is loaded we can ask the OS to provide us with its
-       original path *)
-    if AShellLink.GetPath(sFoundPath,MAX_PATH,wfd,SLGP_RAWPATH) <> NOERROR  then
-      raise Exception.Create('unable to get path');
-
-    result := sFoundPath;
+      result := sFoundPath;
+    end;
+  finally
+    CoUninitialize;
   end;
 end;
 
