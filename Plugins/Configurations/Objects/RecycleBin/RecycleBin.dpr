@@ -24,6 +24,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 library RecycleBin;
+
+{$R 'res\icons.res' 'res\icons.rc'}
+{$R *.res}
+
 uses
 //  VCLFixPack,
   Controls,
@@ -54,8 +58,6 @@ uses
   RecycleBinObjectXMLSettings in '..\..\..\Objects\RecycleBin\RecycleBinObjectXMLSettings.pas';
 
 {$E .dll}
-
-{$R *.res}
 
 type
   TSharpCenterPlugin = class(TInterfacedSharpCenterPlugin, ISharpCenterPluginTabs)
@@ -385,7 +387,7 @@ end;
 procedure TSharpCenterPlugin.SetHasChanged(xmlSettings: TRecycleXMLSettings;
   ITheme: ISharpETheme);
 begin
-  with xmlSettings, frmSettings, ITheme do begin
+  with frmSettings, xmlSettings do begin
     uicIconBlend.HasChanged := Theme[DS_ICONBLENDING].isCustom;
     uicIconAlpha.HasChanged := Theme[DS_ICONALPHABLEND].isCustom;
     uicIconShadow.HasChanged := Theme[DS_ICONSHADOW].isCustom;

@@ -42,7 +42,9 @@ object frmSettingsWnd: TfrmSettingsWnd
         Margins.Right = 5
         Margins.Bottom = 0
         Title = 'SharpDesk not running'
-        Description = 'You are using the explorer desktop. Settings for SharpDesk are not available in this case.'
+        Description = 
+          'You are using the explorer desktop. Settings for SharpDesk are n' +
+          'ot available in this case.'
         TitleColor = clWindowText
         DescriptionColor = clRed
         Align = alTop
@@ -88,6 +90,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Description = 'Adjust to set the transparency'
           PopPosition = ppBottom
           PercentDisplay = True
+          MaxPercent = 100
           Formatting = '%d'
           OnChangeValue = SendUpdateEvent
           BackgroundColor = clWindow
@@ -319,6 +322,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Description = 'Adjust to set the icon size'
             PopPosition = ppBottom
             PercentDisplay = False
+            MaxPercent = 100
             Formatting = '%d'
             OnChangeValue = SendUpdateEvent
             BackgroundColor = clWindow
@@ -373,6 +377,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Description = 'Adjust to set the transparency'
           PopPosition = ppBottom
           PercentDisplay = True
+          MaxPercent = 100
           Formatting = '%d'
           OnChangeValue = SendUpdateEvent
           BackgroundColor = clWindow
@@ -413,6 +418,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Description = 'Adjust to set the transparency'
           PopPosition = ppBottom
           PercentDisplay = True
+          MaxPercent = 100
           Formatting = '%d'
           OnChangeValue = SendUpdateEvent
           BackgroundColor = clWindow
@@ -719,6 +725,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Description = 'Change font size'
           PopPosition = ppBottom
           PercentDisplay = False
+          MaxPercent = 100
           Formatting = '%d'
           OnChangeValue = SendUpdateEvent
           BackgroundColor = clWindow
@@ -759,6 +766,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Description = 'Change font opacity'
           PopPosition = ppBottom
           PercentDisplay = True
+          MaxPercent = 100
           Formatting = '%d'
           OnChangeValue = SendUpdateEvent
           BackgroundColor = clWindow
@@ -978,6 +986,7 @@ object frmSettingsWnd: TfrmSettingsWnd
               Description = 'Adjust to set the scale size'
               PopPosition = ppBottom
               PercentDisplay = False
+              MaxPercent = 100
               Formatting = '%d'
               OnChangeValue = SendUpdateEvent
               BackgroundColor = clWindow
@@ -1015,6 +1024,7 @@ object frmSettingsWnd: TfrmSettingsWnd
               Description = 'Adjust to set the brightness modification value'
               PopPosition = ppBottom
               PercentDisplay = True
+              MaxPercent = 100
               Formatting = '%d'
               OnChangeValue = SendUpdateEvent
               BackgroundColor = clWindow
@@ -1051,6 +1061,7 @@ object frmSettingsWnd: TfrmSettingsWnd
               Description = 'Adjust to set the color blend strength'
               PopPosition = ppBottom
               PercentDisplay = True
+              MaxPercent = 100
               Formatting = '%d'
               OnChangeValue = SendUpdateEvent
               BackgroundColor = clWindow
@@ -1089,6 +1100,7 @@ object frmSettingsWnd: TfrmSettingsWnd
               Description = 'Adjust to set the alpha modification value'
               PopPosition = ppBottom
               PercentDisplay = True
+              MaxPercent = 100
               Formatting = '%d'
               OnChangeValue = SendUpdateEvent
               BackgroundColor = clWindow
@@ -1397,6 +1409,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Description = 'Transparency'
             PopPosition = ppBottom
             PercentDisplay = True
+            MaxPercent = 100
             Formatting = '%d'
             OnChangeValue = SendUpdateEvent
             BackgroundColor = clWindow

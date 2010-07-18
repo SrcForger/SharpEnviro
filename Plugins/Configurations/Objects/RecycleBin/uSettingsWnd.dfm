@@ -127,7 +127,7 @@ object frmSettings: TfrmSettings
             Width = 183
             Height = 21
             Style = csDropDownList
-            ItemHeight = 13
+            ItemHeight = 0
             ItemIndex = 2
             TabOrder = 1
             Text = 'Bottom'
@@ -532,6 +532,7 @@ object frmSettings: TfrmSettings
               Description = 'Adjust to set the transparency'
               PopPosition = ppBottom
               PercentDisplay = True
+              MaxPercent = 100
               Formatting = '%d'
               OnChangeValue = sgbIconAlphaChangeValue
               BackgroundColor = clWindow
@@ -778,6 +779,7 @@ object frmSettings: TfrmSettings
                 Description = 'Adjust to set the icon size'
                 PopPosition = ppBottom
                 PercentDisplay = False
+                MaxPercent = 100
                 Formatting = '%d'
                 OnChangeValue = sgbIconSizeChangeValue
                 BackgroundColor = clWindow
@@ -887,6 +889,7 @@ object frmSettings: TfrmSettings
               Description = 'Adjust to set the transparency'
               PopPosition = ppBottom
               PercentDisplay = True
+              MaxPercent = 100
               Formatting = '%d'
               OnChangeValue = sgbIconBlendAlphaChangeValue
               BackgroundColor = clWindow
@@ -980,6 +983,7 @@ object frmSettings: TfrmSettings
               Description = 'Adjust to set the transparency'
               PopPosition = ppBottom
               PercentDisplay = True
+              MaxPercent = 100
               Formatting = '%d'
               OnChangeValue = sgbIconShadowAlphaChangeValue
               BackgroundColor = clWindow
@@ -1334,6 +1338,7 @@ object frmSettings: TfrmSettings
             Description = 'Change font opacity'
             PopPosition = ppBottom
             PercentDisplay = True
+            MaxPercent = 100
             Formatting = '%d'
             OnChangeValue = sgbTextAlphaValueChangeValue
             BackgroundColor = clWindow
@@ -1518,6 +1523,7 @@ object frmSettings: TfrmSettings
             Description = 'Change font size'
             PopPosition = ppBottom
             PercentDisplay = False
+            MaxPercent = 100
             Formatting = '%d'
             OnChangeValue = sgbTextSizeChangeValue
             BackgroundColor = clWindow
@@ -1785,6 +1791,7 @@ object frmSettings: TfrmSettings
               Description = 'Change shadow opacity'
               PopPosition = ppBottom
               PercentDisplay = True
+              MaxPercent = 100
               Formatting = '%d'
               OnChangeValue = sgbTextShadowAlphaChangeValue
               BackgroundColor = clWindow

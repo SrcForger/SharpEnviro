@@ -24,6 +24,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 library DesktopTheme;
+
+{$R 'res\icons.res' 'res\icons.rc'}
+{$R *.res}
+
 uses
 //  VCLFixPack,
   Controls,
@@ -51,8 +55,6 @@ uses
   uSettingsWnd in 'uSettingsWnd.pas' {frmSettingsWnd};
 
 {$E .dll}
-
-{$R *.res}
 
 type
   TSharpCenterPlugin = class(TInterfacedSharpCenterPlugin,

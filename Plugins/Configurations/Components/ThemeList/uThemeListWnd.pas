@@ -124,7 +124,6 @@ implementation
 uses uThemeListEditWnd;
 
 {$R *.dfm}
-{$R ThemeListGlyphs.res}
 
 { TfrmConfigListWnd }
 

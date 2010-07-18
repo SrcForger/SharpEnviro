@@ -207,7 +207,6 @@ uses
   SharpCenterApi;
 
 {$R *.dfm}
-{$R icons.res}
 
 { TfrmConfigListWnd }
 

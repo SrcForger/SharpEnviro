@@ -288,7 +288,6 @@ const
 implementation
 
 {$R *.dfm}
-{$R Icons.res}
 
 procedure LoadBmpFromRessource(Bmp: TBitmap32; ResName: string);
 var

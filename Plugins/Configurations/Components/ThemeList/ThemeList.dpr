@@ -24,6 +24,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 library ThemeList;
+
+{$R 'ThemeListGlyphs.res' 'ThemeListGlyphs.rc'}
+{$R *.res}
+
 uses
 //  VCLFixPack,
   Controls,
@@ -50,8 +54,6 @@ uses
   uThemeListManager in 'uThemeListManager.pas';
 
 {$E .dll}
-
-{$R *.res}
 
 type
   TSharpCenterPlugin = class(TInterfacedSharpCenterPlugin, ISharpCenterPluginEdit,
