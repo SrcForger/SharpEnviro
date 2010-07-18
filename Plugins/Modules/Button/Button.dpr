@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library Button;
 
-{$R 'res\Preview.res' 'res\Preview.rc'}
+{$R 'res\Preview.res'}
 {$R *.res}
 
 uses

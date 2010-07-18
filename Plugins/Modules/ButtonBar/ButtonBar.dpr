@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library ButtonBar;
 
-{$R 'res\ButtonBarGlyphs.res' 'res\ButtonBarGlyphs.rc'}
+{$R 'res\ButtonBarGlyphs.res'}
 {$R *.res}
 
 uses

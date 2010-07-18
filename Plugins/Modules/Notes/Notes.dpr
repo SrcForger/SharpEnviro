@@ -25,8 +25,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library Notes;
 
-{$R 'res\glyphs.res' 'res\glyphs.rc'}
-{$R 'res\Preview.res' 'res\Preview.rc'}
+{$R 'res\glyphs.res'}
+{$R 'res\Preview.res'}
 {$R *.res}
 
 uses

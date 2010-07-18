@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library MiniScmd;
 
-{$R 'res\glyphs.res' 'res\glyphs.rc'}
+{$R 'res\glyphs.res'}
 {$R *.res}
 
 uses

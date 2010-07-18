@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library ShowDesktop;
 
-{$R 'res\ShowDeskopIcons.res' 'res\ShowDeskopIcons.rc'}
+{$R 'res\ShowDesktopIcons.res'}
 {$R *.res}
 
 uses

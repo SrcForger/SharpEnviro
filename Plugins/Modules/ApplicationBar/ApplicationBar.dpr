@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library ApplicationBar;
 
-{$R 'res\appbarglyphs.res' 'res\appbarglyphs.rc'}
+{$R 'res\appbarglyphs.res'}
 {$R *.res}
 
 uses
