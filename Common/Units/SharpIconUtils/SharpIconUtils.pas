@@ -179,7 +179,7 @@ begin
   end;
 end;
 
-function ExpandEnvVars(const Str: string): string;
+{function ExpandEnvVars(const Str: string): string;
 var
   BufSize: Integer; // size of expanded string
 begin
@@ -188,6 +188,14 @@ begin
   // Read expanded string into result string
   SetLength(Result, BufSize);
   ExpandEnvironmentStrings(PChar(Str), PChar(Result), BufSize);
+end;       }
+
+function ExpandEnvVars(const szInput: string): string;
+const
+  MAXSIZE = 32768;
+begin
+  SetLength(Result,MAXSIZE);
+  SetLength(Result,ExpandEnvironmentStrings(pchar(szInput),@Result[1],length(Result)));
 end;
 
 function extrShellIconLarge(Bmp : TBitmap32; FileName : String; Size : Integer) : THandle;
@@ -229,13 +237,15 @@ begin
   if CompareText(ExtractFileExt(FileName),'.lnk') = 0 then
   begin
     // Resolve the shell link and get the path
-    LinkPath := GetFilePathFromLink(FileName);
-    // Expand all environmental vars (following checks will be performed on the full path)
-    LinkPath := ExpandEnvVars(LinkPath);
-    // Try to see if the path is valid for any x64 directory
-    LinkPath := GetX64ValidPath(LinkPath);
-    if FileExists(LinkPath) then
-    FileName := LinkPath;
+    if GetFilePathFromLink(FileName,LinkPath) then
+    begin
+      // Expand all environmental vars (following checks will be performed on the full path)
+      LinkPath := Trim(ExpandEnvVars(LinkPath));
+      // Try to see if the path is valid for any x64 directory
+      LinkPath := GetX64ValidPath(LinkPath);
+      if FileExists(LinkPath) then
+        FileName := LinkPath;
+    end;
   end;
 
   if Size <= 16 then
@@ -254,11 +264,10 @@ begin
   else
     Attr := FILE_ATTRIBUTE_NORMAL;
 
-
-  ImageListHandle := SHGetFileInfo( pChar(FileName),
-                                    Attr,
-                                    FileInfo, sizeof( SHFILEINFO ),
-                                    Flag);
+  ImageListHandle := SHGetFileInfo(pChar(FileName),
+                                   Attr,
+                                   FileInfo, sizeof( SHFILEINFO ),
+                                   Flag);
   if FileInfo.hicon <> 0 then
   begin
     try
