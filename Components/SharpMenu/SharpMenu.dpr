@@ -294,4 +294,6 @@ begin
   SharpEMenuIcons.Free;     
 
   SkinManagerInterface := nil;
+
+  CoUnInitialize;
 end.

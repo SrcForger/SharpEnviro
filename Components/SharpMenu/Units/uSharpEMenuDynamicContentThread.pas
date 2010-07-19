@@ -29,6 +29,7 @@ interface
 
 uses
   Classes,
+  ActiveX,
   SharpApi,
   Contnrs;
 
@@ -36,6 +37,7 @@ type
   TSharpEMenuDynamicContentThread = class(TThread)
   private
     FList : TObjectList;
+    FCOMInitialized : boolean;
   protected
     procedure Execute; override;
     procedure DoRefresh;
@@ -53,6 +55,7 @@ constructor TSharpEMenuDynamicContentThread.Create(pList : TObjectList);
 begin
   inherited Create(True);
   FreeOnTerminate := False;
+  FCOMInitialized := False;
 
   FList := TObjectList.Create;
   FList.OwnsObjects := False;
@@ -62,7 +65,8 @@ end;
 destructor TSharpEMenuDynamicContentThread.Destroy;
 begin
   FList.Free;
-
+  if FCOMInitialized then  
+    CoUnInitialize;
   inherited Destroy;
 end;
 
@@ -83,6 +87,12 @@ end;
 
 procedure TSharpEMenuDynamicContentThread.Execute;
 begin
+  if not FCOMInitialized then
+  begin
+    CoInitialize(nil);
+    FCOMInitialized := True;
+  end;
+  
   DoRefresh;
 end;
 

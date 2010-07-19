@@ -3,7 +3,7 @@ unit uSharpEMenuIconThreads;
 interface
 
 uses
-  Classes,Contnrs,uSharpEMenuIcons,uSharpEMenuIcon;
+  Classes,Contnrs,uSharpEMenuIcons,uSharpEMenuIcon,ActiveX;
 
 type
   TLoadIconCacheThread = class(TThread)
@@ -28,6 +28,7 @@ type
   TLoadNotLoadedIconsThread = class(TThread)
   private
     FIcons : TObjectList;
+    FCOMInitialized : boolean;
   protected
     procedure Execute; override;
   public
@@ -70,6 +71,7 @@ end;
 constructor TLoadNotLoadedIconsThread.Create;
 begin
   inherited Create(True);
+  FCOMInitialized := False;
 
   FIcons := TObjectList.Create;
   FIcons.OwnsObjects := False;
@@ -80,6 +82,9 @@ begin
   FIcons.Clear;
   FIcons.Free;
 
+  if FCOMInitialized then
+    CoUnInitialize;
+
   inherited Destroy;
 end;
 
@@ -88,6 +93,12 @@ var
   item : TSharpEMenuIcon;
   n : integer;
 begin
+  if not FCOMInitialized then
+  begin
+    CoInitialize(nil);
+    FCOMInitialized := True;
+  end;
+
   for n := 0 to FIcons.Count - 1 do
   begin
     item := TSharpEMenuIcon(FIcons.Items[n]);
