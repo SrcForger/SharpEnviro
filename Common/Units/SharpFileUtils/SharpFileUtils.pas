@@ -58,7 +58,7 @@ function GetFileAuthor(filePath : string) : string;
 function GetFileCompanyName(filePath : string) : string;
 function GetFileInternalName(filePath : string) : string;
 
-function GetFilePathFromLink(const sLink: String): WideString;
+function GetFilePathFromLink(const sLink: String; out Dst : String): boolean;
 
 const GFI_FileDescription = 'FileDescription';
 const GFI_FileVersion = 'FileVersion';
@@ -76,7 +76,7 @@ const
   IID_IPersistFile: TGUID = (D1:$0000010B;D2:$0000;D3:$0000;D4:($C0,$00,$00,$00,$00,$00,$00,$46));
 
   
-function GetFilePathFromLink(const sLink: String): WideString;
+function GetFilePathFromLink(const sLink: String; out Dst : String): boolean;
 var
   sWidePath: Array [0..260] of WideChar;
   sFoundPath: Array [0..MAX_PATH] of WideChar;
@@ -85,50 +85,46 @@ var
   PersistFile : IPersistFile;
   TempPath : PWideChar;
 begin
-  Result := sLink;
+  Dst := sLink;
+  Result := False;
 
   (* Create a shellLink object *)
-  CoInitialize(nil);
-  try
-    if CoCreateInstance(CLSID_ShellLink,
-                        nil,
-                        CLSCTX_INPROC_SERVER,
-                        IID_IShellLinkW,
-                        AShellLink) <> S_OK then
+  if CoCreateInstance(CLSID_ShellLink,
+                      nil,
+                      CLSCTX_INPROC_SERVER,
+                      IID_IShellLinkW,
+                      AShellLink) <> S_OK then
+    exit;
+
+  (* Give the shell link a path to resolve *)
+  GetMem(TempPath, sizeof(WideChar) * Succ(Length(sLink)));
+  StringToWideChar(sLink, TempPath, Succ(Length(sLink)));
+  AShellLink.SetPath(TempPath);
+  FreeMem(TempPath);
+  if AShellLink.Resolve(HInstance,SLR_UPDATE) = S_OK then
+  begin
+    (* Use the shelllink object to gain access to its PersistFile interface *)
+    if Failed(AShellLink.QueryInterface(IID_IPersistFile,PersistFile)) then
       exit;
 
-    (* Give the shell link a path to resolve *)
-    GetMem(TempPath, sizeof(WideChar) * Succ(Length(sLink)));
-    StringToWideChar(sLink, TempPath, Succ(Length(sLink)));
-    AShellLink.SetPath(TempPath);
-    FreeMem(TempPath);
-    if AShellLink.Resolve(HInstance,SLR_UPDATE) = S_OK then
-    begin
+    (* Load the file into the PersistFile object *)
+    // we must convert the ansi string to be a widestring to pass to 'PersistFile.Load'
+    MultiByteToWideChar(CP_ACP,
+                        MB_PRECOMPOSED,
+                        PChar(sLink),
+                        -1,
+                        @sWidePath,
+                        MAX_PATH);
+    if PersistFile.Load(sWidePath,STGM_READ) <> S_OK then
+      exit;
 
-      (* Use the shelllink object to gain access to its PersistFile interface *)
-      if Failed(AShellLink.QueryInterface(IID_IPersistFile,PersistFile)) then
-        exit;
+    (* Now the file is loaded we can ask the OS to provide us with its
+       original path *)
+    if AShellLink.GetPath(sFoundPath,MAX_PATH,wfd,SLGP_RAWPATH) <> NOERROR  then
+      exit;
 
-      (* Load the file into the PersistFile object *)
-      // we must convert the ansi string to be a widestring to pass to 'PersistFile.Load'
-      MultiByteToWideChar(CP_ACP,
-                          MB_PRECOMPOSED,
-                          PChar(sLink),
-                          -1,
-                          @sWidePath,
-                          MAX_PATH);
-      if PersistFile.Load(sWidePath,STGM_READ) <> S_OK then
-        exit;
-
-      (* Now the file is loaded we can ask the OS to provide us with its
-         original path *)
-      if AShellLink.GetPath(sFoundPath,MAX_PATH,wfd,SLGP_RAWPATH) <> NOERROR  then
-        exit;
-
-      result := sFoundPath;
-    end;
-  finally
-    CoUninitialize;
+    Dst := sFoundPath;
+    result := True;
   end;
 end;
 
@@ -366,7 +362,7 @@ begin
   for n := 0 to EnvReplList.Count - 1 do
   begin
     s := StringReplace(Path,EnvReplList.Names[n],EnvReplList.ValueFromIndex[n],[rfIgnoreCase]);
-    if FileExists(s) then
+    if (FileExists(s) and (CompareText(s,Path) <> 0)) then
     begin
       result := s;
       exit;
