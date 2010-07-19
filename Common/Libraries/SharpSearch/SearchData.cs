@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace SharpSearch
 {
@@ -12,6 +17,13 @@ namespace SharpSearch
 		ISearchData
 	{
 		#region Constructors
+
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		public SearchData()
+		{
+		}
 
 		/// <summary>
 		/// Creates a new instance with the supplied values.
@@ -31,6 +43,11 @@ namespace SharpSearch
 		#region ISearchData Members
 
 		/// <summary>
+		/// The row identifier for the search data in the database.
+		/// </summary>
+		public Int64 RowID { get; set; }
+
+		/// <summary>
 		/// The filename for the indexed item.
 		/// </summary>
 		public string Filename { get; set; }
@@ -45,6 +62,37 @@ namespace SharpSearch
 		/// </summary>
 		public string Location { get; set; }
 
+		/// <summary>
+		/// The number of times the item was been launched.
+		/// </summary>
+		public Int64 LaunchCount { get; set; }
+
+		/// <summary>
+		/// The icon associated with the location.
+		/// </summary>
+		public ImageSource IconImage
+		{
+			get
+			{
+				if (_icon == null)
+					using (Icon ico = Icon.ExtractAssociatedIcon(Location))
+					{
+						_icon = Imaging.CreateBitmapSourceFromHIcon(
+							ico.Handle,
+							Int32Rect.Empty,
+							BitmapSizeOptions.FromEmptyOptions());
+					}
+
+				return _icon;
+			}
+		}
+
 		#endregion ISearchData Members
+
+		#region privates
+
+		private ImageSource _icon = null;
+
+		#endregion privates
 	}
 }

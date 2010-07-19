@@ -81,7 +81,10 @@ namespace SharpSearchNET
 			Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)delegate
 			{
 				if (String.IsNullOrEmpty(edtQuery.Text))
+				{
+					_searchManager.SearchResults.Clear();
 					return;
+				}
 
 				// For now we just query the database when the text changes every time.
 				// If this becomes a problem then we'll look at running this an a background thread.
@@ -184,6 +187,7 @@ namespace SharpSearchNET
 		{
 			if (lstResults.SelectedItem != null)
 			{
+				_searchManager.IncrementLaunchCount(((ISearchData)lstResults.SelectedItem).RowID);
 				Process.Start(((ISearchData)lstResults.SelectedItem).Location);
 				Close();
 			}

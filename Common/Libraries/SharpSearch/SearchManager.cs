@@ -66,14 +66,43 @@ namespace SharpSearch
 		/// </summary>
 		public void StartIndexing()
 		{
-			using (BackgroundWorker worker = new BackgroundWorker())
+			//using (BackgroundWorker worker = new BackgroundWorker())
+			//{
+			//    worker.DoWork += (sender, args) =>
+			//        {
+			//            _database.IndexDirectories(_searchLocations.ToArray());
+			//        };
+			//    worker.RunWorkerAsync();
+			//}
+
+			if (_indexWorker == null)
+				_indexWorker = new BackgroundWorker();
+
+			_indexWorker.DoWork += (sender, args) =>
 			{
-				worker.DoWork += (sender, args) =>
-					{
-						_database.IndexDirectories(_searchLocations.ToArray());
-					};
-				worker.RunWorkerAsync();
+				_database.IndexDirectories(_searchLocations.ToArray());
+			};
+			_indexWorker.RunWorkerAsync();
+		}
+
+		/// <summary>
+		/// Indicates whether or not the indexing thread is running.
+		/// </summary>
+		public bool IsIndexing
+		{
+			get
+			{
+				return _indexWorker.IsBusy;
 			}
+		}
+
+		/// <summary>
+		/// Increment the rows launch count.
+		/// </summary>
+		/// <param name="rowID">The ROWID for which to increment the LaunchCount.</param>
+		public void IncrementLaunchCount(Int64 rowID)
+		{
+			_database.IncrementLaunchCount(rowID);
 		}
 
 		#endregion publics
@@ -149,6 +178,7 @@ namespace SharpSearch
 		/// </summary>
 		protected virtual void Dispose(bool disposing)
 		{
+			if (_indexWorker != null) _indexWorker.Dispose();
 			if (_database != null) _database.Dispose();
 		}
 

@@ -76,16 +76,25 @@ namespace SharpSearch
 		public IEnumerable<ISearchData> Search(string searchPattern)
 		{
 			List<ISearchData> results = new List<ISearchData>();
-			string query = String.Format("SELECT Filename, Description, Location FROM [{0}] WHERE Filename LIKE '%{1}%' OR Description LIKE '%{1}%';", _tableName, searchPattern);
+			string query = String.Format("SELECT ROWID, Filename, Description, Location, LaunchCount FROM [{0}] WHERE Filename LIKE '%{1}%' OR Description LIKE '%{1}%' ORDER BY LaunchCount DESC;", _tableName, searchPattern);
 			using (SQLiteDataReader reader = _database.ExecuteReader(query))
 			{
 				while(reader.Read())
 				{
+					Int64 rowID = (Int64)reader["ROWID"];
 					string filename = reader["Filename"] != DBNull.Value ? (string)reader["Filename"] : null;
 					string description = reader["Description"] != DBNull.Value ? (string)reader["Description"] : null;
 					string location = reader["Location"] != DBNull.Value ? (string)reader["Location"] : null;
+					Int64 launchCount = reader["LaunchCount"] != DBNull.Value ? (Int64)reader["LaunchCount"] : 0;
 
-					yield return new SearchData(filename, description, location);
+					yield return new SearchData
+					{
+						RowID = rowID,
+						Filename = filename,
+						Description = description,
+						Location = location,
+						LaunchCount = launchCount
+					};
 				}
 			}
 		}
@@ -116,6 +125,15 @@ namespace SharpSearch
 				IndexDirectory(location.SearchPath);
 
 			DeleteUnsynchronizedEntries();
+		}
+
+		/// <summary>
+		/// Increment the rows launch count.
+		/// </summary>
+		/// <param name="rowID">The ROWID for which to increment the LaunchCount.</param>
+		public void IncrementLaunchCount(Int64 rowID)
+		{
+			_database.ExecuteNonQuery(String.Format("UPDATE [{0}] SET LaunchCount=LaunchCount+1 WHERE ROWID=@rowID;", _tableName), new SQLiteParameter("@rowID", rowID));
 		}
 
 		/// <summary>
@@ -181,7 +199,7 @@ namespace SharpSearch
 		/// <param name="location"></param>
 		private void InsertLocation(string filename, string description, string location)
 		{
-			_database.ExecuteNonQuery(String.Format("INSERT INTO [{0}] ([Filename], [Description], [Location], [Flag]) VALUES (@filename, @description, @location, 1);", _tableName),
+			_database.ExecuteNonQuery(String.Format("INSERT INTO [{0}] ([Filename], [Description], [Location], [Flag], [LaunchCount]) VALUES (@filename, @description, @location, 1, 0);", _tableName),
 					new SQLiteParameter("@filename", filename),
 					new SQLiteParameter("@description", description),
 					new SQLiteParameter("@location", location));
@@ -253,7 +271,7 @@ namespace SharpSearch
 		/// </summary>
 		private void InitializeDatabase()
 		{
-			_database.CreateTable("SharpSearch", "Filename TEXT", "Description TEXT", "Location TEXT", "Flag BOOLEAN");
+			_database.CreateTable("SharpSearch", "Filename TEXT", "Description TEXT", "Location TEXT", "Flag BOOLEAN", "LaunchCount INTEGER");
 			//_database.CreateTable("SharpSearch", "Filename STRING(256)", "Description STRING(512)", "Location STRING(1024)", "Flag BOOLEAN");
 			//_database.CreateIndex("SharpSearch", "IX_Filename_Description", "Filename", "Description");
 		}
