@@ -862,8 +862,20 @@ begin
       begin
         if DesktopObject.Settings.isWindow then MakeWindow1.Checked := True
            else MakeWindow1.Checked := False;
-        if DesktopObject.Settings.Locked then LockObjec1.Checked := True
-           else LockObjec1.Checked := False;
+        if DesktopObject.Settings.Locked then
+        begin
+          LockObjec1.Checked := True;
+          // The object is Locked so change the image and text to Unlock.
+          LockObjec1.ImageIndex := 16;
+          LockObjec1.Caption := 'Unlock';
+        end
+        else
+        begin
+          LockObjec1.Checked := False;
+          // The object is Unlocked so change the image and text to Lock.
+          LockObjec1.ImageIndex := 15;
+          LockObjec1.Caption := 'Lock';
+        end;
         ObjectPopUp.Popup(CPos.X,CPos.y);
       end else ObjectPopUp2.Popup(CPos.x,CPos.y);
     end;
