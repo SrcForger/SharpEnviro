@@ -23,8 +23,12 @@
 	
 	<Window.Resources>
 		<Style TargetType="{x:Type ListBox}">
+			<Setter Property="Margin" Value="1" />
+			<Setter Property="BorderThickness" Value="0" />
 			<Setter Property="Background" Value="#FF333333" />
 			<Setter Property="Foreground" Value="WhiteSmoke" />
+			<!--<Setter Property="ItemTemplate" Value="{StaticResource listBoxTemplate}" />
+			<Setter Property="ItemContainerStyle" Value="{StaticResource StretchedContainerStyle}" />-->
 		</Style>
 		<Style x:Key="StretchedContainerStyle" TargetType="{x:Type ListBoxItem}">
 			<Style.Resources>
@@ -37,10 +41,9 @@
 		<Style TargetType="{x:Type Border}">
 			<Setter Property="Background" Value="#FF676161" />
 		</Style>
-		<Style TargetType="{x:Type Grid}">
-			<Setter Property="Background" Value="#FF676161" />
-		</Style>
 		<Style TargetType="{x:Type TextBox}">
+			<Setter Property="Margin" Value="1" />
+			<Setter Property="BorderThickness" Value="0" />
 			<Setter Property="Background" Value="#FF333333" />
 			<Setter Property="Foreground" Value="WhiteSmoke" />
 		</Style>
@@ -53,9 +56,9 @@
 			</DockPanel>
         </DataTemplate>
     </Window.Resources>
-	
-	<Border BorderThickness="3" CornerRadius="5" BorderBrush="#FF676161">
-		<Grid>
+
+	<Border CornerRadius="5">
+		<Grid Margin="2">
 			<Grid.RowDefinitions>
 				<RowDefinition />
 				<RowDefinition Height="Auto" />
@@ -69,8 +72,6 @@
 				BorderBrush="Silver">
 				
 				<ListBox
-					Margin="1"
-					BorderThickness="0"
 					ScrollViewer.HorizontalScrollBarVisibility="Hidden"
 					ScrollViewer.VerticalScrollBarVisibility="Visible"
 					Name="lstResults"
@@ -90,8 +91,6 @@
 				
 				<TextBox
 					Name="edtQuery"
-					Margin="1"
-					BorderThickness="0"
 					TextChanged="edtQuery_TextChanged" />
 				
 			</Border>
