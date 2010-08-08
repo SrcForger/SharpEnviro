@@ -74,11 +74,11 @@
 				<ListBox
 					ScrollViewer.HorizontalScrollBarVisibility="Hidden"
 					ScrollViewer.VerticalScrollBarVisibility="Visible"
-					Name="lstResults"
+					Name="ResultsListBox"
 					ItemsSource="{Binding}"
 					ItemTemplate="{StaticResource listBoxTemplate}"
 					ItemContainerStyle="{StaticResource StretchedContainerStyle}"
-					MouseDoubleClick="lstResults_MouseDoubleClick" />
+					MouseDoubleClick="ResultsListBox_MouseDoubleClick" />
 				
 			</Border>
 			
@@ -90,8 +90,8 @@
 				BorderBrush="Silver">
 				
 				<TextBox
-					Name="edtQuery"
-					TextChanged="edtQuery_TextChanged" />
+					Name="QueryTextBox"
+					TextChanged="QueryTextBox_TextChanged" />
 				
 			</Border>
 			

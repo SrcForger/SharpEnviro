@@ -42,7 +42,7 @@ namespace SharpSearchNET
 			_keyPressedTimer = new Timer(new TimerCallback(ProcessKeyPress), null, Timeout.Infinite, Timeout.Infinite);
 
 			_searchManager = new SearchManager();
-			lstResults.DataContext = _searchManager.SearchResults;
+			ResultsListBox.DataContext = _searchManager.SearchResults;
 
 			// If both X and Y were set on the command line then override displaying the window
 			// in the center of the monitor (default).
@@ -55,9 +55,9 @@ namespace SharpSearchNET
 			}
 
 			if (!String.IsNullOrEmpty(App.InitialQuery))
-				edtQuery.Text = App.InitialQuery;
+				QueryTextBox.Text = App.InitialQuery;
 
-			edtQuery.Focus();
+			QueryTextBox.Focus();
 		}
 
 		private void OnClose(object sender, CancelEventArgs e)
@@ -80,7 +80,7 @@ namespace SharpSearchNET
 			// is bound to the ListBox.
 			Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)delegate
 			{
-				if (String.IsNullOrEmpty(edtQuery.Text))
+				if (String.IsNullOrEmpty(QueryTextBox.Text))
 				{
 					_searchManager.SearchResults.Clear();
 					return;
@@ -88,7 +88,10 @@ namespace SharpSearchNET
 
 				// For now we just query the database when the text changes every time.
 				// If this becomes a problem then we'll look at running this an a background thread.
-				_searchManager.Search(edtQuery.Text);
+				_searchManager.Search(QueryTextBox.Text);
+
+				if (ResultsListBox.Items.Count > 0)
+					ResultsListBox.SelectedIndex = 0;
 			});
 		}
 
@@ -98,7 +101,7 @@ namespace SharpSearchNET
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void edtQuery_TextChanged(object sender, TextChangedEventArgs e)
+		private void QueryTextBox_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			// We use a timer to throttle how many queries we perform against the database as for the
 			// most part a user will type a few characters at a time.
@@ -142,32 +145,32 @@ namespace SharpSearchNET
 			switch (e.Key)
 			{
 				case Key.Up:
-					if (lstResults.Items.Count == 0)
+					if (ResultsListBox.Items.Count == 0)
 						break;
 
-					if (lstResults.SelectedIndex < 1)
+					if (ResultsListBox.SelectedIndex < 1)
 					{
-						lstResults.SelectedIndex = lstResults.Items.Count - 1;
-						lstResults.ScrollIntoView(lstResults.SelectedItem);
+						ResultsListBox.SelectedIndex = ResultsListBox.Items.Count - 1;
+						ResultsListBox.ScrollIntoView(ResultsListBox.SelectedItem);
 						break;
 					}
 
-					lstResults.SelectedIndex--;
-					lstResults.ScrollIntoView(lstResults.SelectedItem);
+					ResultsListBox.SelectedIndex--;
+					ResultsListBox.ScrollIntoView(ResultsListBox.SelectedItem);
 					break;
 				case Key.Down:
-					if (lstResults.Items.Count == 0)
+					if (ResultsListBox.Items.Count == 0)
 						break;
 
-					if (lstResults.SelectedIndex == lstResults.Items.Count - 1 || lstResults.SelectedIndex == -1)
+					if (ResultsListBox.SelectedIndex == ResultsListBox.Items.Count - 1 || ResultsListBox.SelectedIndex == -1)
 					{
-						lstResults.SelectedIndex = 0;
-						lstResults.ScrollIntoView(lstResults.SelectedItem);
+						ResultsListBox.SelectedIndex = 0;
+						ResultsListBox.ScrollIntoView(ResultsListBox.SelectedItem);
 						break;
 					}
 
-					lstResults.SelectedIndex++;
-					lstResults.ScrollIntoView(lstResults.SelectedItem);
+					ResultsListBox.SelectedIndex++;
+					ResultsListBox.ScrollIntoView(ResultsListBox.SelectedItem);
 					break;
 				default:
 					e.Handled = false;
@@ -175,7 +178,7 @@ namespace SharpSearchNET
 			}
 		}
 
-		private void lstResults_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+		private void ResultsListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
 		{
 			StartProcessAndExit();
 		}
@@ -185,10 +188,10 @@ namespace SharpSearchNET
 		/// </summary>
 		private void StartProcessAndExit()
 		{
-			if (lstResults.SelectedItem != null)
+			if (ResultsListBox.SelectedItem != null)
 			{
-				_searchManager.IncrementLaunchCount(((ISearchData)lstResults.SelectedItem).RowID);
-				Process.Start(((ISearchData)lstResults.SelectedItem).Location);
+				_searchManager.IncrementLaunchCount(((ISearchData)ResultsListBox.SelectedItem).RowID);
+				Process.Start(((ISearchData)ResultsListBox.SelectedItem).Location);
 				Close();
 			}
 		}
