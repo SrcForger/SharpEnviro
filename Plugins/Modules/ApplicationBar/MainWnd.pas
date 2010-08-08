@@ -132,6 +132,7 @@ type
     procedure OnFlaskTask(pItem : TTaskItem; Index : integer);
     procedure OnActivateTask(pItem : TTaskItem; Index : integer);
     procedure OnPreviewClick(Sender : TObject);
+    procedure OnPreviewMouseMove(Sender : TObject);
     procedure ClearButtons(Update: boolean = True);
     procedure UpdateButtonIcon(Btn : TButtonRecord);
     function GetButtonIndex(pButton : TSharpETaskItem) : integer;
@@ -296,6 +297,9 @@ begin
 end;
  
 procedure TMainForm.WMShellHook(var msg: TMessage);
+//var
+//  buf: array [0..254] of Char;
+//  s: String;
 begin
   case msg.WParam of
     HSHELL_WINDOWCREATED : FTM.HandleShellMessage(msg.WParam,msg.LParam);
@@ -309,7 +313,21 @@ begin
 
   if (msg.wparam = HSHELL_WINDOWACTIVATED) or
     (msg.wparam = HSHELL_WINDOWACTIVATED + 32768) then
-    FLastDragItem := nil;  
+  begin
+    FLastDragItem := nil;
+
+   { if (FPreviewWnds.Count > 0) and (msg.lParam <> 0) and (IsWindow(msg.lParam)) then
+    begin
+      GetClassName(msg.lParam, buf, SizeOf(buf));
+      s := buf;
+      if (CompareText(s,'SharpETaskPreviewWnd') <> 0) and (CompareText(s,'TSharpBarMainForm') <> 0) then
+      begin
+        // Close all preview windows if another window was activated
+        FPreviewWnds.Clear;
+        FPreviewButton := nil;
+      end;
+    end; }
+  end;
 end;
 
 procedure TMainForm.WMAddAppBarTask(var msg: TMessage);
@@ -414,7 +432,7 @@ begin
         VWMMoveWindotToVWM(msg.WParam - 256 + 1,VWMIndex,VWMCount,SysMenuButton.wnd);
       end;
 
-      PostMessage(GetShellTaskMgrWindow,WM_TASKVWMCHANGE,Integer(SysMenuButton.wnd),msg.WParam - 256 + 1);      
+      PostMessage(GetShellTaskMgrWindow,WM_TASKVWMCHANGE,Integer(SysMenuButton.wnd),msg.WParam - 256 + 1);
       taskitem.Used := True;
     end;
 
@@ -521,7 +539,7 @@ begin
   end;
 
   setlength(wndlist,0);
-  FPreviewWnds.Clear;  
+  FPreviewWnds.Clear;
 end;
 
 procedure TMainForm.mnuPopupLaunchClick(Sender: TObject);
@@ -1126,6 +1144,16 @@ end;
 procedure TMainForm.OnPreviewClick(Sender: TObject);
 begin
   FPreviewWnds.Clear;
+  FPreviewButton := nil;
+end;
+
+procedure TMainForm.OnPreviewMouseMove(Sender: TObject);
+begin
+  if (PreviewCheckTimer.Enabled) then
+  begin
+    PreviewCheckTimer.Enabled := False;
+    PreviewCheckTimer.Enabled := True;
+  end;
 end;
 
 procedure TMainForm.OnRemoveTask(pItem: TTaskItem; Index: integer);
@@ -1227,7 +1255,7 @@ begin
           break;
         end;         
       end;
-      if (not valid) or (FPreviewWnds.Count = 1) then
+      if (not valid) then // or (FPreviewWnds.Count = 1) then
       begin
         if FPreviewWnds.Count = 1 then
           TTaskPreviewWnd(FPreviewWnds.Items[0]).HideWindow(True);
@@ -1436,7 +1464,13 @@ begin
     end;
 
     ToolTipApi.DisableToolTip(FHintWnd);
-    
+
+    if PreviewCheckTimer.Enabled then
+    begin
+      PreviewCheckTimer.Enabled := False;
+      PreviewCheckTimer.Enabled := True;
+    end;
+
     if FPreviewButton = cButton then
       exit;
       
@@ -1505,9 +1539,10 @@ begin
                                        mInterface.SkinInterface.SkinManager,
                                        TaskItem.Caption,
                                        Animate,
-                                       (wndlist.Count > 1));
+                                       true);
         item.LockKey := sTPLockKey;
-        item.OnPreviewClick := OnPreviewClick;                                                
+        item.OnPreviewClick := OnPreviewClick;
+        item.OnPreviewMouseMove := OnPreviewMouseMove;                                                
         FPreviewWnds.Add(item);
         xpos := xpos - (size - item.Width);
       end;
@@ -1530,9 +1565,10 @@ begin
                                          mInterface.SkinInterface.SkinManager,
                                          TaskItem.Caption,
                                          Animate,
-                                         (wndlist.Count > 1));
+                                         true);
           item.LockKey := sTPLockKey;
           item.OnPreviewClick := OnPreviewClick;
+          item.OnPreviewMouseMove := OnPreviewMouseMove;
           FPreviewWnds.Add(item);
         end;          
 

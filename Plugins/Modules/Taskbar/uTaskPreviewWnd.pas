@@ -33,6 +33,7 @@ uses
 type
 
   TTaskPreviewClickEvent = procedure(Sender : TObject) of object;
+  TTaskPreviewMouseMoveEvent = procedure(Sender : TObject) of object;
   TTaskPreviewWnd = class
     private
       FX,FY : integer;
@@ -46,6 +47,8 @@ type
       FAllowHover : boolean;
       FCaption : String;
       FOnPreviewClick : TTaskPreviewClickEvent;
+      FOnMouseMove : TTaskPreviewMouseMoveEvent;
+      FOnMouseLeave : TTaskPreviewMouseMoveEvent;
       FLockKey : integer;
       FWidth : integer;
 
@@ -70,6 +73,8 @@ type
       property Wnd : hwnd read FWnd;
       property AllowHover : boolean read FAllowHover;
       property OnPreviewClick : TTaskPreviewClickEvent read FOnPreviewClick write FOnPreviewClick;
+      property OnPreviewMouseMove : TTaskPreviewMouseMoveEvent read FOnMouseMove write FOnMouseMove;
+      property OnPreviewMouseLeave : TTaskPreviewMouseMoveEvent read FOnMouseLeave write FOnMouseLeave;
       property LockKey : integer read FLockKey write FLockKey;
       property Width : integer read FWidth;
   end;
@@ -124,6 +129,9 @@ begin
         RenderSpecial;
         UpdateWndLayer;
       end;
+
+      if Assigned(FOnMouseMove) then
+        FOnMouseMove(self);
     end;
   end else if Msg.Msg = WM_MOUSELEAVE then
   begin
@@ -136,6 +144,9 @@ begin
         RenderSpecial;
         UpdateWndLayer;
       end;
+
+      if Assigned(FOnMouseLeave) then
+        FOnMouseLeave(self);
     end;
   end else if Msg.Msg = WM_LBUTTONUP then
   begin
@@ -244,6 +255,10 @@ begin
   FAllowHover := pAllowHover;
   FLockKey := 1; // Shift;
   Fwidth := 256;
+
+  FOnPreviewClick := nil;
+  FOnMouseMove := nil;
+  FOnMouseLeave := nil;
 
   // set dwm thumnail properties
   with FdwmThumbProps do

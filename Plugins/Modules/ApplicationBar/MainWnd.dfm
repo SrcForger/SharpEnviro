@@ -3,7 +3,7 @@ object MainForm: TMainForm
   Top = 0
   Caption = 'ApplicationBar'
   ClientHeight = 159
-  ClientWidth = 277
+  ClientWidth = 344
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -181,7 +181,7 @@ object MainForm: TMainForm
   end
   object PreviewCheckTimer: TTimer
     Enabled = False
-    Interval = 100
+    Interval = 500
     OnTimer = PreviewCheckTimerTimer
     Left = 272
     Top = 8
