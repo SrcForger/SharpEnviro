@@ -4,7 +4,7 @@
   <Label>The Desktop Work Area or DeskArea defines to which extend windows will maximize. By adjusting the values for the left, top, right and bottom offsets you can specify the spacing between the screen borders and the maximized window.</Label>
   <Sep Size="Small"/>
   <Label Indent="0" Underline="1">Automated Mode</Label>
-  <Label Indent="1">With this option enabled the desktop area will be automatically caluclated and updated, so that non of your SharpBars will be overlapped by a maximized window. Enable this option if you want your SharpBars always visible and if you don't want to worry about manually setting the offsets.</Label>
+  <Label Indent="1">With this option enabled the desktop area will be automatically calculated and updated, so that non of your SharpBars will be overlapped by a maximized window. Enable this option if you want your SharpBars always visible and if you don't want to worry about manually setting the offsets.</Label>
   <Sep Size="Small"/>
   <Label Indent="1">Note: Even in automated mode you can adjust the offsets. Doing so will add or remove additional spacing from the automatically calculated offets.</Label>
 </ConfigHelp>
