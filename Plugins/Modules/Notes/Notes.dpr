@@ -188,21 +188,21 @@ begin
 end;
 
 function GetMetaData(Preview : TBitmap32) : TMetaData;
-var
+{var
   Bmp : TBitmap32;
   ResStream : TResourceStream;
-  b : boolean;
+  b : boolean;}
 begin
   with result do
   begin
     Name := 'Notes';
     Author := 'Martin Krämer <Martin@SharpEnviro.com>';
     Description := 'Quick access to an easy to use notes window (with tab support)';
-    Version := '0.7.6.5';
-    ExtraData := 'preview: True';
+    Version := '0.8.0.0';
+    ExtraData := 'preview: false';
     DataType := tteModule;
 
-    Bmp := TBitmap32.Create;
+    {Bmp := TBitmap32.Create;
     ResStream := TResourceStream.Create(HInstance, 'Preview', RT_RCDATA);
     try
       LoadBitmap32FromPng(Bmp,ResStream,b);
@@ -211,7 +211,7 @@ begin
     end;
     Preview.SetSize(Bmp.Width,Bmp.Height);
     Bmp.DrawTo(Preview);
-    Bmp.Free;
+    Bmp.Free;}
   end;
 end;
 
