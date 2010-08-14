@@ -4,6 +4,7 @@
     <Hotkeys>
       <Dll>_ServiceDlls\HotkeyList.dll</Dll>
       <Icon>_ServiceDlls\HotkeyList.png</Icon>
+      <Help>_ServiceHelp\Hotkeys.xml</Help>
     </Hotkeys>
   </Sections>
 </SharpCenter>
