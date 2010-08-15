@@ -136,6 +136,30 @@ namespace SharpSearch
 			_database.ExecuteNonQuery(String.Format("UPDATE [{0}] SET LaunchCount=LaunchCount+1 WHERE ROWID=@rowID;", _tableName), new SQLiteParameter("@rowID", rowID));
 		}
 
+        /// <summary>
+        /// Recursive search a directory and add all files to a list of files.
+        /// </summary>
+        /// <param name="searchDir">The directory to search</param>
+        /// <param name="searchPattern">Search pattern</param>
+        /// <param name="dstFileArray">Array where to add the files to</param>
+        private void DirSearch(string searchDir, string searchPattern, List<string> dstFileArray)
+        {
+            string[] dirList = System.IO.Directory.GetDirectories(searchDir);
+            foreach (string iDir in dirList)
+            {
+                try
+                {
+                   string[] fileList = System.IO.Directory.GetFiles(iDir, searchPattern, SearchOption.TopDirectoryOnly);
+                   dstFileArray.AddRange(fileList);
+                   DirSearch(iDir, searchPattern, dstFileArray);
+                }
+                catch
+                {
+                    // catch UnauthorizedAccessException and continue with the next directory
+                }                
+            }
+        }
+
 		/// <summary>
 		/// Indexes a directory by searching for *.exe and *.lnk and inserting or updating rows in the database.
 		/// </summary>
@@ -149,9 +173,9 @@ namespace SharpSearch
 
 			List<string> files = new List<string>();
 
-			files.AddRange(Directory.GetFiles(expandedPath, "*.exe", SearchOption.AllDirectories));
-			files.AddRange(Directory.GetFiles(expandedPath, "*.lnk", SearchOption.AllDirectories));
-
+            DirSearch(expandedPath, "*.exe", files);
+            DirSearch(expandedPath, "*.lnk", files);            
+   
 			using (SQLiteTransaction transaction = _database.BeginTransaction())
 			{
 				try
