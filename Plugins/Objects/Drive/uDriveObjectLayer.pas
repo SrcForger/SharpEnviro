@@ -521,6 +521,9 @@ var
    SList : TStringList;
    TempBitmap : TBitmap32;
    cialign : TAlignInfo;
+
+   SpaceFree : integer;
+   SpacePrefix : string;
 begin
   FParentImage.BeginUpdate;
   BeginUpdate;
@@ -642,7 +645,27 @@ begin
       if FSettings.MLineCaption then FCaptionSettings.Caption.CommaText := FSettings.Caption
          else FCaptionSettings.Caption.Add(FSettings.Caption);
     end;
-    if FSettings.DiskData then FCaptionSettings.Caption.Add(inttostr(FDiskMax-FDiskFull)+' MB Free');
+
+    if FSettings.DiskData then
+    begin
+      SpaceFree := FDiskMax - FDiskFull;
+
+      if SpaceFree >= (1024 * 1024) then
+      begin
+        SpaceFree := SpaceFree div (1024 * 1024);
+        SpacePrefix := 'TB';
+      end else if SpaceFree > (1024) then
+      begin
+        SpaceFree := SpaceFree div (1024);
+        SpacePrefix := 'GB';
+      end else
+      begin
+        SpacePrefix := 'MB';
+      end;
+
+      FCaptionSettings.Caption.Add(inttostr(SpaceFree) + ' ' + SpacePrefix + ' Free');
+    end;
+
     case FCaptionSettings.Align of
       taTop,taBottom: n := 0;
       taLeft: n := 1;

@@ -131,7 +131,7 @@ begin
     ColorBlend       := BoolValue('ColorBlend',False);
     UseIconShadow    := BoolValue('UseIconShadow',False);
     Size             := Value('Size','48');
-    IconFile         := Value('IconFile','icon.drive.hd');
+    IconFile         := Value('IconFile','icon.drive.hdd');
     Caption          := Value('Caption','C');
     Target           := Value('Target','C');    
     Shadow           := BoolValue('Shadow',False);
