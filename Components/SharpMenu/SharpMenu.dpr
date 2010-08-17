@@ -193,7 +193,21 @@ begin
      mfile := ParamStr(ParamCount);
   if not FileExists(mfile) then
      mfile := SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\Menu.xml';
-  if not FileExists(mfile) then halt;
+  if not FileExists(mfile) then
+  begin
+    TimeList.Free;
+
+    // Wait for skin manager loading thread to be finished
+    if not skinManagerLoadThread.Suspended then
+      skinManagerLoadThread.WaitFor;
+    skinManagerLoadThread.Free;
+
+    menusettings.Free;
+
+    CoUnInitialize;
+
+    Halt;
+  end;
 
   // Init Icon Variables and Classes
   iconcachefile := ExtractFileName(mfile);
@@ -291,9 +305,11 @@ begin
   if (menusettings.CacheIcons) and (menuSettings.UseIcons) then
      SharpEMenuIcons.SaveIconCache(iconcachefile);
 
-  SharpEMenuIcons.Free;     
+  SharpEMenuIcons.Free;
+  menusettings.Free;   
 
   SkinManagerInterface := nil;
 
   CoUnInitialize;
+
 end.
