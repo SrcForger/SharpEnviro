@@ -80,9 +80,10 @@ begin
     ColorBlend       := BoolValue('ColorBlend',False);
     Text             := Value('Text','');
     if length(Text) = 0 then
-      Text := 'Text.Object<br>Object for Displaying Text<br><font color="#ff0000" size="16" face="Arial">Supporting basic HTML</font>';
+      Text := '<font size="16">Welcome to</font><br><u><b><font size="20">Sharp</font><font size="20" color="#fd800d">Enviro</b></u></font><font size="16">!</font>';
     Text := StringReplace(Text,'#;01;#','<',[rfReplaceAll, rfIgnoreCase]);
     Text := StringReplace(Text,'#;02;#','>',[rfReplaceAll, rfIgnoreCase]);
+    Text := StringReplace(Text,'#;03;#','"',[rfReplaceAll, rfIgnoreCase]);
     Shadow           := BoolValue('Shadow',False);
     ShowCaption      := BoolValue('ShowCaption',True);
     UseThemeSettings := BoolValue('UseThemeSettings',True);
@@ -110,6 +111,7 @@ begin
 
   Text := StringReplace(Text,'<','#;01;#',[rfReplaceAll, rfIgnoreCase]);
   Text := StringReplace(Text,'>','#;02;#',[rfReplaceAll, rfIgnoreCase]);
+  Text := StringReplace(Text,'"','#;03;#',[rfReplaceAll, rfIgnoreCase]);
 
   with FXMLRoot.Items do
   begin
@@ -133,6 +135,8 @@ begin
     Add('BGTHBlend', BGTHBlend);
     Add('BGTHBlendColor', BGTHBlendColor);
   end;
+
+  inherited FinishSaveSettings(SaveToFile);
 end;
 
 end.

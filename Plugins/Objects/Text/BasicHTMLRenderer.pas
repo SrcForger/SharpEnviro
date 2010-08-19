@@ -463,15 +463,32 @@ begin
     if ai <= 0 then
       break;
 
-    tmp := Copy(pText, i, (ai - i));
+    // Add newline
+    if ai = i then
+    begin
+      FLines.Add(sLineBreak);
 
-    Flines.Add(tmp);
+      i := i + Length('<br>');
+
+      continue;
+    end;
+
+    // Add text between <br>'s
+    if (ai - i) > 0 then
+    begin
+      tmp := Copy(pText, i, (ai - i));
+      Flines.Add(tmp);
+    end;
 
     i := ai + Length('<br>');
   end;
 
-  tmp := Copy(pText, i, (Length(pText) - ai));
-  Flines.Add(tmp);
+  // Add any remaining text
+  if ((Length(pText) - ai) - i) > 0 then
+  begin
+    tmp := Copy(pText, i, (Length(pText) - ai) - i + 1);
+    Flines.Add(tmp);
+  end;
 end;
 
 procedure TBasicHTMLRenderer.LoadFromStringList(pSlist : TStringList);
