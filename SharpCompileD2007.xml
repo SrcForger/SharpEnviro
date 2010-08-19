@@ -71,6 +71,7 @@
     <project Name="Image Object" Type="DLL">Plugins\Configurations\Objects\Image\Image.dproj</project>
     <project Name="Link Object" Type="DLL">Plugins\Configurations\Objects\Link\Link.dproj</project>
     <project Name="Recycle Bin Object" Type="DLL">Plugins\Configurations\Objects\RecycleBin\RecycleBin.dproj</project>
+	<project Name="Text Object" Type="DLL">Plugins\Configurations\Objects\Text\Text.dproj</project>
   </package>
   <package Name="Components">
 	<project Name="ExplorerNET" Type="Solution">Components\ExplorerNET\Explorer.sln</project>
