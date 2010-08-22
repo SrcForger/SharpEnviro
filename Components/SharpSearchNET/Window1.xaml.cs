@@ -191,7 +191,15 @@ namespace SharpSearchNET
 			if (ResultsListBox.SelectedItem != null)
 			{
 				_searchManager.IncrementLaunchCount(((ISearchData)ResultsListBox.SelectedItem).RowID);
-				Process.Start(((ISearchData)ResultsListBox.SelectedItem).Location);
+
+                try
+                {
+                    Process.Start(((ISearchData)ResultsListBox.SelectedItem).Location);
+                }
+                catch(System.IO.FileNotFoundException)
+                {
+                }
+
 				Close();
 			}
 		}
