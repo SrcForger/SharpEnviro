@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<ConfigHelp Size="Full">
+  <Label bold="1">Show Desktop</Label>
+  <Label>The show desktop button will minimize all visible windows to enable quick access to the desktop. In addition it will save the positions of all windows before they where minimized, so when clicked again all windows which have been previously minimized will be restored.</Label>
+  <Sep></Sep>
+  <Label>By default only the windows are affected which are on the monitor on which the show desktop module is placed. By enabling the 'Include all Monitors' option you can change this so that all windows across all monitors are minimized and restored.</Label>
+  <Sep Size="Small"></Sep>
+  <Label Indent="0" Underline="1">Special Features</Label>
+  <Label Indent="1">1) A right click on the show desktop button will reset it to the "show desktop" state if you, in some cases, won't use the restore option by left clicking it a second time.</Label>
+</ConfigHelp>

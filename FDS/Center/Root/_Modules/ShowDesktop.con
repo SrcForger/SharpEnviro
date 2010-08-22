@@ -4,6 +4,7 @@
     <Notes>
       <Dll>_ModuleDlls\ShowDesktop.dll</Dll>
       <Icon>_ModuleDlls\ShowDesktop.png</Icon>
+      <Help>_ModuleHelp\ShowDesktop.xml</Help>
     </Notes>
   </Sections>
 </SharpCenter>
