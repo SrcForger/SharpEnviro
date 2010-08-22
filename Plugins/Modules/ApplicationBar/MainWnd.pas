@@ -1653,6 +1653,7 @@ begin
   BtnItem := GetButtonItem(TSharpETaskItem(Sender));
   if BtnItem.Btn <> nil then
   begin
+    PreviewViewTimer.Enabled := False;
     if (Button = mbRight) then
     begin
       if (BtnItem.Btn.Tag = 1) then
