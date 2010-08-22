@@ -29,7 +29,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, uShellSwitcher, uShutdown, uSystemFuncs, GR32_Image;
+  Dialogs, StdCtrls, ExtCtrls, uShellSwitcher, uShutdown, uSystemFuncs,
+  GR32_Image, SharpApi;
 
 type
   TMainForm = class(TForm)
@@ -128,17 +129,22 @@ begin
   {$WARNINGS OFF} s := IncludeTrailingBackSlash(ExtractFileDir(Application.ExeName))+'Temp.Temp'; {$WARNINGS ON}
   if not HasWriteAccess(s) then
   begin
-    ShowMessage('SetShell.exe has detected that it is executed from a directory ' +
-                'with limited access rights. Your user account has no access ' +
-                'rights to write data into this directory. This can be due to ' +
-                'limited access rights on the directory or because of a directory ' +
-                'which is protected by the UAC (User Account Control) of Windows Vista or Later. ' +
-                'On Windows Vista or later it is not possible to run SharpE from ' +
-                'a protected Directory like "Program Files". Please chose another Directory ' +
-                'for SharpE. For example "C:\SharpE\"');
-    cb_seb.Enabled := False;
-    cb_seb.Checked := False;
-    Label2.Enabled := False;
+    if not SharpApi.UseAppDataSettingsDir then
+    begin
+      ShowMessage('SetShell.exe has detected that it is executed from a directory ' +
+                  'with limited access rights. Your user account has no access ' +
+                  'rights to write data into this directory. This can be due to ' +
+                  'limited access rights on the directory or because of a directory ' +
+                  'which is protected by the UAC (User Account Control) of Windows Vista or Later. ' +
+                  'On Windows Vista or later it is not possible to run SharpE from ' +
+                  'a protected Directory like "Program Files". Please chose another Directory ' +
+                  'for SharpE. For example "C:\SharpE\"');
+      cb_seb.Enabled := False;
+      cb_seb.Checked := False;
+      rbExplorer.Checked := True;
+      rbSharpe.enabled := False;
+      Label2.Enabled := False;
+    end;
   end;
 end;
 
