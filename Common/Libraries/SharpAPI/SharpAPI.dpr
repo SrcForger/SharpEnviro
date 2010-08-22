@@ -988,7 +988,11 @@ begin
       Result := True;
       Break;
     end;
+end;
 
+function UseAppDataSettingsDir : boolean;
+begin
+  result := UseAppData;
 end;
 
 function GetSharpeDirectory: String;
@@ -1752,6 +1756,7 @@ exports
   GetSharpeDirectory,
   GetSharpeUserSettingsPath,
   GetSharpeGlobalSettingsPath,
+  UseAppDataSettingsDir,
 
   SendMessageTo,
 
