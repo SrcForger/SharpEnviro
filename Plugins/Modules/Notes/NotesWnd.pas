@@ -197,7 +197,7 @@ var
 
 implementation
 
-uses MainWnd, NotesTabOptionsWnd;
+uses MainWnd, NotesTabOptionsWnd, SharpSharedFileAccess;
 
 {$R *.dfm}
 
@@ -248,6 +248,7 @@ var
   tabSettings : NotesTabSettings;
   frmTabOptions : TTabOptionsForm;
   oldTabName : string;
+  Stream : TSharedFileStream;
 begin
   Result := False;
   
@@ -282,7 +283,12 @@ begin
           Parent := hiddenPanel;
           Visible := False;
           // Create a file for the new tab.
-          Lines.SaveToFile(TabFilePath(frmTabOptions.editName.Text));
+          if OpenFileStreamShared(Stream, sfaCreate, TabFilePath(frmTabOptions.editName.Text), True) = sfeSuccess then
+          begin
+            Lines.SaveToStream(Stream);
+            Stream.Free;
+          end;
+          // Lines.SaveToFile(TabFilePath(frmTabOptions.editName.Text));
         finally
           Free;
         end;
@@ -348,6 +354,8 @@ end;
 {$REGION 'Editor Events'}
 
 procedure TSharpENotesForm.EditorChange(Sender: TObject);
+var
+  Stream : TSharedFileStream;
 begin
   if FIndex = -1 then
     Exit;
@@ -355,7 +363,13 @@ begin
   // Only save the tab if we are not loading a tab
   // and the file is not read only.
   if not (FLoading or FileIsReadOnly(TabFilePath(FIndex))) then
-    reNotes.Lines.SaveToFile(TabFilePath(FIndex));
+  begin
+    if OpenFileStreamShared(Stream, sfaCreate, TabFilePath(FIndex), True) = sfeSuccess then
+    begin
+      reNotes.Lines.SaveToStream(Stream);
+      Stream.Free;
+    end;
+  end;
 end;
 
 procedure TSharpENotesForm.EditorCloseFindDialog(Sender: TObject;
@@ -518,6 +532,7 @@ procedure TSharpENotesForm.btnImportClick(Sender: TObject);
 var
   i: Integer;
   filePath: string;
+  ReadStream, WriteStream : TSharedFileStream;
 begin
   if OpenDialog.Execute(Self.Handle) then
   begin
@@ -532,9 +547,19 @@ begin
         Parent := hiddenPanel;
         Visible := False;
         // Open the file being imported.
-        Lines.LoadFromFile(filePath);
-        // Save the file being imported to the notes directory.
-        Lines.SaveToFile(TabFilePath(PathExtractFileNameNoExt(filePath)));
+        if OpenFileStreamShared(ReadStream, sfaRead, filePath, True) = sfeSuccess then
+        begin
+          Lines.LoadFromStream(ReadStream);
+          ReadStream.Free;
+          // Save the file being imported to the notes directory.
+          if OpenFileStreamShared(WriteStream, sfaCreate, TabFilePath(PathExtractFileNameNoExt(filePath)), True) = sfeSuccess then
+          begin
+            Lines.SaveToStream(WriteStream);
+            WriteStream.Free;
+          end;
+        end;
+        // Lines.LoadFromFile(filePath);
+        // Lines.SaveToFile(TabFilePath(PathExtractFileNameNoExt(filePath)));
       finally
         Free;
       end;
@@ -553,6 +578,7 @@ procedure TSharpENotesForm.btnExportClick(Sender: TObject);
 var
   ext : string;
   newIndex : Integer;
+  Stream : TSharedFileStream;
 begin
   if FIndex = -1 then
     Exit;
@@ -566,7 +592,12 @@ begin
       ext := '.txt';
 
     // Save the current text to the new file.
-    reNotes.Lines.SaveToFile(SaveDialog.FileName + ext);
+    if OpenFileStreamShared(Stream, sfaCreate, SaveDialog.FileName + ext, True) = sfeSuccess then
+    begin
+      reNotes.Lines.SaveToStream(Stream);
+      Stream.Free;
+    end;
+    // reNotes.Lines.SaveToFile(SaveDialog.FileName + ext);
 
     // Delete the exported file from disk.
     DeleteFile(TabFilePath(FIndex));
@@ -1169,6 +1200,7 @@ procedure TSharpENotesForm.pcNotesTabChange(ASender: TObject;
   const ATabIndex: Integer; var AChange: Boolean);
 var
   tabSettings : NotesTabSettings;
+  Stream : TSharedFileStream;
 begin
   if ATabIndex > -1 then
     // Allow input seeing how we have a tab.
@@ -1189,7 +1221,11 @@ begin
     if ATabIndex > -1 then
     begin
       // Load the new tab.
-      reNotes.Lines.LoadFromFile(TabFilePath(ATabIndex));
+      if OpenFileStreamShared(Stream, sfaRead, TabFilePath(ATabIndex), True) = sfeSuccess then
+      begin
+        reNotes.Lines.LoadFromStream(Stream);
+        Stream.Free;
+      end;
 
       tabSettings := GetTabSettings(TabName(ATabIndex));
       reNotes.SelStart := tabSettings.SelStart;
@@ -1225,6 +1261,7 @@ procedure TSharpENotesForm.ConvertTxtFilesToRtfFiles;
 var
   filePaths: TStringList;
   filePath: string;
+  ReadStream, WriteStream : TSharedFileStream;
 begin
   filePaths := TStringList.Create;
   try
@@ -1238,12 +1275,26 @@ begin
       try
         Parent := hiddenPanel;
         Visible := False;
+
         // Load the text file to be converted.
-        Lines.LoadFromFile(filePath);
-        // Save the text file as an rtf.
-        Lines.SaveToFile(TabFilePath(PathExtractFileNameNoExt(filePath)));
+        if OpenFileStreamShared(ReadStream, sfaRead, filePath, True) = sfeSuccess then
+        begin
+          Lines.LoadFromStream(ReadStream);
+          ReadStream.Free;
+          // Save the text file as an rtf.
+          if OpenFileStreamShared(WriteStream, sfaCreate, TabFilePath(PathExtractFileNameNoExt(filePath)), True) = sfeSuccess then
+          begin
+            Lines.SaveToStream(WriteStream);
+            WriteStream.Free;
+          end;
+        end;
         // Delete the text file now that it is converted.
         DeleteFile(filePath);
+
+        // Load the text file to be converted.
+        // Lines.LoadFromFile(filePath);
+        // Save the text file as an rtf.
+        // Lines.SaveToFile(TabFilePath(PathExtractFileNameNoExt(filePath)));
       finally
         Free;
       end;
@@ -1270,13 +1321,20 @@ begin
 end;
 
 procedure TSharpENotesForm.LoadDefaultTab;
+var
+  Stream : TSharedFileStream;
 begin
   // Create the default tab file.
   with TJvRichEdit.Create(hiddenPanel) do
   try
     Parent := hiddenPanel;
     Visible := False;
-    Lines.SaveToFile(TabFilePath('My Notes'));
+    if OpenFileStreamShared(Stream, sfaRead, TabFilePath('My Notes'), True) = sfeSuccess then
+    begin
+      Lines.LoadFromStream(Stream);
+      Stream.Free;
+    end;
+    // Lines.SaveToFile(TabFilePath('My Notes'));
   finally
     Free;
   end;
@@ -1395,13 +1453,19 @@ begin
 end;
 
 function TSharpENotesForm.TabTextContainsFilterText(Index: Integer) : Boolean;
+var
+  Stream : TSharedFileStream;
 begin
   // Check if the tab text contains the text in the filter.
   with TJvRichEdit.Create(hiddenPanel) do
   try
     Parent := hiddenPanel;
     Visible := False;
-    Lines.LoadFromFile(TabFilePath(Index));
+    if OpenFileStreamShared(Stream, sfaRead, TabFilePath(Index), True) = sfeSuccess then
+    begin
+      Lines.LoadFromStream(Stream);
+      Stream.Free;
+    end;
     Result := AnsiContainsText(Lines.Text, editFilter.Text);
   finally
     Free;

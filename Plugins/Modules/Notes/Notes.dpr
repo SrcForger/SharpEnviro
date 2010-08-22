@@ -30,7 +30,6 @@ library Notes;
 {$R *.res}
 
 uses
-//  VCLFixPack,
   Windows,
   Controls,
   SysUtils,
@@ -52,7 +51,8 @@ uses
   uInterfacedSharpBarModuleBase in '..\..\..\Components\SharpBar\uInterfacedSharpBarModuleBase.pas',
   NotesTabOptionsWnd in 'NotesTabOptionsWnd.pas' {TabOptionsForm},
   NotesWnd in 'NotesWnd.pas' {NotesForm},
-  uNotesSettings in 'uNotesSettings.pas';
+  uNotesSettings in 'uNotesSettings.pas',
+  SharpSharedFileAccess in '..\..\..\Common\Units\SharpFileUtils\SharpSharedFileAccess.pas';
 
 type
   TInterfacedSharpBarModule = class(TInterfacedSharpBarModuleBase)
