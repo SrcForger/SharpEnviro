@@ -79,13 +79,14 @@ type
     DDHandler: TJvDragDrop;
     Launch1: TMenuItem;
     LaunchElevated1: TMenuItem;
+    PreviewViewTimer: TTimer;
     procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure btnMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);       
+      Shift: TShiftState; X, Y: Integer);
     procedure btnMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);         
     procedure sb_configClick(Sender: TObject);
@@ -99,6 +100,7 @@ type
     procedure mnuPopupLaunchElevClick(Sender: TObject);
     procedure mnuPopupLaunchClick(Sender: TObject);
     procedure ButtonPopupPopup(Sender: TObject);
+    procedure PreviewViewTimerTimer(Sender: TObject);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   private
@@ -122,6 +124,7 @@ type
     FTM          : TTaskManager;
     FPreviewWnds : TObjectList;
     FPreviewButton : TSharpETaskItem;
+    FPreviewAnimate : Boolean;
     FRefreshOnNextMouseMove : boolean;
     FLastDragItem : TSharpETaskItem; // Only a pointer, don't free it...
     FLastDragMinimized : Boolean;    
@@ -1271,6 +1274,131 @@ begin
   end;
 end;
 
+procedure TMainForm.PreviewViewTimerTimer(Sender: TObject);
+var
+  cButton : TSharpETaskItem;
+  cButtonIndex : integer;
+  cursorPos : TPoint;
+  n : integer;
+  cPos : TPoint;
+  popupdown : boolean;
+  size : real;
+  xpos,ypos : real;
+  pos : TPoint;
+  R : TRect;
+  TaskItem : TTaskItem;
+  wndlist : TObjectList;
+  perline : integer;
+  count : integer;
+  item : TTaskPreviewWnd;
+begin
+  PreviewViewTimer.Enabled := False;
+  cButtonIndex := PreviewViewTimer.Tag;
+  PreviewViewTimer.Tag := -1;
+  if (cButtonIndex >= 0) and (cButtonIndex < length(FButtonList)) then
+    cButton := FButtonList[cButtonIndex].btn
+  else exit;
+
+
+  if GetCursorPosSecure(cursorPos) then
+    CPos := ScreenToClient(cursorPos)
+  else exit;
+  if not PointInRect(CPos,Rect(-5,-5,Width+5,Height+5)) then
+    exit;
+
+  if FPreviewWnds.Count > 0 then
+  begin
+    FPreviewWnds.Clear;
+  end;
+
+  popupdown := (ClientToScreen(Point(0,0)).y < Monitor.Top + Monitor.Height div 2);
+
+  perline := mInterface.SkinInterface.SkinManager.Skin.TaskPreview.Dimension.X;
+  size := Monitor.Width / perline;
+  GetWindowRect(mInterface.BarInterface.BarWnd,R);
+
+  // go through associated window list
+  wndlist := TObjectList.Create(False);
+  for n := 0 to FTM.ItemCount - 1 do
+  begin
+    TaskItem := TTaskItem(FTM.GetItemByIndex(n));
+    if TaskItem <> nil then
+      if (CompareText(TaskItem.FileName,FButtonList[cButtonIndex].exename) = 0) and (CheckWindow(TaskItem.Handle)) then
+        WndList.Add(TaskItem);
+  end;
+
+  if wndlist.count > 0 then
+  begin
+    if wndlist.count > perline then
+      count := perline
+    else count := wndlist.count;
+    if count > 1 then
+      FPreviewAnimate := False;
+
+    pos := ClientToScreen(Point(cButton.Left + cButton.Width div 2,0));
+    xpos := pos.X - (count * size) / 2;
+    // Do not allow the preview to appear off the left side of the monitor.
+    if xpos < Monitor.Left then
+      xpos := Monitor.Left;
+    // Do not allow the preview to appear off the right side of the monitor.
+    if xpos + (count * size) >  Monitor.Left + Monitor.Width then
+       xpos := Monitor.Left + Monitor.Width - (count * size);
+    if popupdown then
+      ypos := R.Bottom
+    else ypos := R.Top;
+
+    // first line
+    xpos := xpos - size;
+    for n := 0 to count - 1 do
+    begin
+      TaskItem := TTaskItem(wndlist.Items[n]);
+      xpos := xpos + size;
+      item := TTaskPreviewWnd.Create(TaskItem.handle,
+                                     popupdown,
+                                     round(xpos),
+                                     round(ypos),
+                                     round(xpos) - round(xpos - size),
+                                     mInterface.SkinInterface.SkinManager,
+                                     TaskItem.Caption,
+                                     FPreviewAnimate,
+                                     true);
+      item.LockKey := sTPLockKey;
+      item.OnPreviewClick := OnPreviewClick;
+      item.OnPreviewMouseMove := OnPreviewMouseMove;
+      FPreviewWnds.Add(item);
+      xpos := xpos - (size - item.Width);
+    end;
+    if count < wndlist.Count then
+      for n := count to wndlist.Count - 1 do
+      begin
+        TaskItem := TTaskItem(wndlist.Items[n]);
+        GetWindowRect(TTaskPreviewWnd(FPreviewWnds.Items[FPreviewWnds.Count - perline]).Wnd,R);
+        xpos := R.Left;
+        if popupdown then
+          ypos := R.Bottom
+        else ypos := R.Top;
+        size := R.Right - R.Left; // adjust width to preview window below
+
+        item := TTaskPreviewWnd.Create(TaskItem.handle,
+                                       popupdown,
+                                       round(xpos),
+                                       round(ypos),
+                                       round(xpos) - round(xpos - size),
+                                       mInterface.SkinInterface.SkinManager,
+                                       TaskItem.Caption,
+                                       FPreviewAnimate,
+                                       true);
+        item.LockKey := sTPLockKey;
+        item.OnPreviewClick := OnPreviewClick;
+        item.OnPreviewMouseMove := OnPreviewMouseMove;
+        FPreviewWnds.Add(item);
+      end;
+
+    PreviewCheckTimer.Enabled := True;
+  end;
+  wndlist.Free;
+end;
+
 procedure TMainForm.UpdateSize;
 begin
   LoadIcons;
@@ -1414,17 +1542,6 @@ var
   cPos : integer;
   temp : TButtonRecord;
   MoveButtonIndex : integer;
-  Animate : boolean;
-  popupdown : boolean;
-  size : real;
-  xpos,ypos : real;
-  pos : TPoint;
-  R : TRect;
-  TaskItem : TTaskItem;
-  wndlist : TObjectList;
-  perline : integer;
-  count : integer;
-  item : TTaskPreviewWnd;
 begin
   cButton := nil;
   cButtonIndex := -1;
@@ -1476,10 +1593,12 @@ begin
       
     if FPreviewWnds.Count > 0 then
     begin
-      FPreviewWnds.Clear;
-      Animate := False;
-    end else Animate := True;
+      // FPreviewWnds.Clear;
+      PreviewCheckTimer.Enabled := True;
+      FPreviewAnimate := False;
+    end else FPreviewAnimate := True;
 
+    PreviewViewTimer.Enabled := False;    
     // app not running, exit
     if (cButton.Tag <= 0) then
     begin
@@ -1489,93 +1608,8 @@ begin
 
     FPreviewButton := cButton;
 
-    popupdown := (ClientToScreen(Point(0,0)).y < Monitor.Top + Monitor.Height div 2);
-
-    perline := mInterface.SkinInterface.SkinManager.Skin.TaskPreview.Dimension.X;
-    size := Monitor.Width / perline;
-    GetWindowRect(mInterface.BarInterface.BarWnd,R);
-
-    // go through associated window list
-    wndlist := TObjectList.Create(False);
-    for n := 0 to FTM.ItemCount - 1 do
-    begin
-      TaskItem := TTaskItem(FTM.GetItemByIndex(n));
-      if TaskItem <> nil then
-        if (CompareText(TaskItem.FileName,FButtonList[cButtonIndex].exename) = 0) and (CheckWindow(TaskItem.Handle)) then
-          WndList.Add(TaskItem);
-    end;
-
-    if wndlist.count > 0 then
-    begin
-      if wndlist.count > perline then
-        count := perline
-      else count := wndlist.count;
-      if count > 1 then
-        Animate := False;      
-
-      pos := ClientToScreen(Point(cButton.Left + cButton.Width div 2,0));
-      xpos := pos.X - (count * size) / 2;
-      // Do not allow the preview to appear off the left side of the monitor.
-      if xpos < Monitor.Left then
-        xpos := Monitor.Left;
-      // Do not allow the preview to appear off the right side of the monitor.
-      if xpos + (count * size) >  Monitor.Left + Monitor.Width then
-         xpos := Monitor.Left + Monitor.Width - (count * size);
-      if popupdown then
-        ypos := R.Bottom
-      else ypos := R.Top;
-
-      // first line
-      xpos := xpos - size;
-      for n := 0 to count - 1 do
-      begin
-        TaskItem := TTaskItem(wndlist.Items[n]);
-        xpos := xpos + size;
-        item := TTaskPreviewWnd.Create(TaskItem.handle,
-                                       popupdown,
-                                       round(xpos),
-                                       round(ypos),
-                                       round(xpos) - round(xpos - size),
-                                       mInterface.SkinInterface.SkinManager,
-                                       TaskItem.Caption,
-                                       Animate,
-                                       true);
-        item.LockKey := sTPLockKey;
-        item.OnPreviewClick := OnPreviewClick;
-        item.OnPreviewMouseMove := OnPreviewMouseMove;                                                
-        FPreviewWnds.Add(item);
-        xpos := xpos - (size - item.Width);
-      end;
-      if count < wndlist.Count then
-        for n := count to wndlist.Count - 1 do
-        begin
-          TaskItem := TTaskItem(wndlist.Items[n]);
-          GetWindowRect(TTaskPreviewWnd(FPreviewWnds.Items[FPreviewWnds.Count - perline]).Wnd,R);
-          xpos := R.Left;
-          if popupdown then
-            ypos := R.Bottom
-          else ypos := R.Top;
-          size := R.Right - R.Left; // adjust width to preview window below
-
-          item := TTaskPreviewWnd.Create(TaskItem.handle,
-                                         popupdown,
-                                         round(xpos),
-                                         round(ypos),
-                                         round(xpos) - round(xpos - size),
-                                         mInterface.SkinInterface.SkinManager,
-                                         TaskItem.Caption,
-                                         Animate,
-                                         true);
-          item.LockKey := sTPLockKey;
-          item.OnPreviewClick := OnPreviewClick;
-          item.OnPreviewMouseMove := OnPreviewMouseMove;
-          FPreviewWnds.Add(item);
-        end;          
-
-      PreviewCheckTimer.Enabled := True;
-    end;
-    wndlist.Free;
-
+    PreviewViewTimer.Tag := cButtonIndex;
+    PreviewViewTimer.Enabled := True;
     exit;
   end;
 

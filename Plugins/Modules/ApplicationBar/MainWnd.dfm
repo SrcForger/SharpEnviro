@@ -181,7 +181,7 @@ object MainForm: TMainForm
   end
   object PreviewCheckTimer: TTimer
     Enabled = False
-    Interval = 500
+    Interval = 300
     OnTimer = PreviewCheckTimerTimer
     Left = 272
     Top = 8
@@ -195,5 +195,12 @@ object MainForm: TMainForm
     DropTarget = Owner
     Left = 184
     Top = 96
+  end
+  object PreviewViewTimer: TTimer
+    Enabled = False
+    Interval = 400
+    OnTimer = PreviewViewTimerTimer
+    Left = 304
+    Top = 8
   end
 end
