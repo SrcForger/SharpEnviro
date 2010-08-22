@@ -87,14 +87,17 @@ namespace SharpSearch
 					string location = reader["Location"] != DBNull.Value ? (string)reader["Location"] : null;
 					Int64 launchCount = reader["LaunchCount"] != DBNull.Value ? (Int64)reader["LaunchCount"] : 0;
 
-					yield return new SearchData
-					{
-						RowID = rowID,
-						Filename = filename,
-						Description = description,
-						Location = location,
-						LaunchCount = launchCount
-					};
+                    if ((File.Exists(location)) || (Directory.Exists(location)))
+                    {
+                        yield return new SearchData
+                        {
+                            RowID = rowID,
+                            Filename = filename,
+                            Description = description,
+                            Location = location,
+                            LaunchCount = launchCount
+                        };
+					}
 				}
 			}
 		}
