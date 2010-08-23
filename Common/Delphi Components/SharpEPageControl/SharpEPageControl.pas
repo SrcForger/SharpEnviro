@@ -180,6 +180,7 @@ begin
     Parent := Self;
     Top := 0;
     Left := 0;
+    Height := 24;
     Width := Self.Width;
     BottomBorder := True;
     BorderColor := clBlack;
