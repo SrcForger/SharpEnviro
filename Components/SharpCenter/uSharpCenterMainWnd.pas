@@ -1085,8 +1085,10 @@ begin
   pnlToolbar.Hide;
 
   pnlHelpToggle.Top := pnlTitle.Top + pnlTitle.Height - pnlHelpToggle.Height;
+  pnlHelp.Top := pnlTitle.Top + pnlTitle.Height - 1;
   pnlHelp.Width := pnlPluginContainer.Width;
   pnlHelp.Left := pnlPluginContainer.Left;
+  pnlHelpToggle.Left := pnlPluginContainer.Left + pnlPluginContainer.Width - pnlHelpToggle.Width;  
 end;
 
 procedure TSharpCenterWnd.ClickItem;
