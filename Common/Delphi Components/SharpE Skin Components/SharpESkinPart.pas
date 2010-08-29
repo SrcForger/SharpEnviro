@@ -1880,7 +1880,7 @@ var temp: Tbitmap32;
   FBitmap: Tbitmap32;
   i: integer;
   r: Trect;
-  isEmpty: boolean;
+  isEmptyImage: boolean;
 begin
   if not FEnabled then exit;
   if FIsEmpty then exit;
@@ -1889,21 +1889,23 @@ begin
   begin
     FBitmap := TSkinBitmap(FBmpList.Items[FBitmapId]).Bitmap;
     if TSkinBitmap(FBmpList.Items[FBitmapID]).FileName = 'empty' then
-      isEmpty := True
+      isEmptyImage := True
     else
-      isEmpty := False;
+      isEmptyImage := False;
+
+    r := FSkinDim.GetRect(rect(0, 0, bmp.Width, bmp.Height));
+    if isEmptyImage then
+    begin
+      FBitmap.SetSize(r.Right - r.Left, R.Bottom - R.Top);
+      FBitmap.Clear(color32(BlendColor));
+    end;      
+
     FBitmap.MasterAlpha := FMasterAlpha;
     FBitmap.DrawMode := dmBlend;
     FBitmap.CombineMode := cmMerge;
 
-    r := FSkinDim.GetRect(rect(0, 0, bmp.Width, bmp.Height));
-    if IsEmpty then
-    begin
-      FBitmap.SetSize(r.Right - r.Left, R.Bottom - R.Top);
-      FBitmap.Clear(color32(BlendColor));
-    end;
     TKernelResampler.Create(bmp).Kernel := TLanczosKernel.Create;
-    if (Fblend) and not (IsEmpty) then
+    if (Fblend) and not (isEmptyImage) then
     begin
       temp := TBitmap32.Create;
       temp.DrawMode := dmBlend;
@@ -1925,10 +1927,10 @@ begin
 
     // if Bitmap is an empty blend dummy image set the size back to 16,16
     // saves memory...
-    if IsEmpty then
+    if isEmptyImage then
     begin
       FBitmap.SetSize(16, 16);
-      FBitmap.Clear(color32(0, 0, 0, 0));
+      FBitmap.Clear(color32(128, 128, 128, 255));
     end;
   end;
 
@@ -1995,8 +1997,10 @@ var sp: TSkinPart;
   i: integer;
   fil: string;
   s : string;
+  emptyImage : boolean;
 begin
   Clear;
+  emptyImage := False;
   if Text <> nil then
     FSkinText.Assign(Text);
   sp := TSkinPart.create(FBmpList);
@@ -2052,13 +2056,8 @@ begin
       end;
       if ItemNamed['image'] <> nil then
       begin
-        if lowercase(Value('image', '')) = 'empty' then
-        begin
-          FBitmapId := FBmpList.Find('empty');
-          if (FBitmapId < 0) then
-            FBitmapId := FBmpList.AddEmptyBitmap(0, 0);
-          result := (FBitmapId >= 0);
-        end
+        if (CompareText(Value('image', 'empty'),'empty') = 0) then
+          emptyImage := True
         else
         begin
           fil := path + Value('image', '');
@@ -2067,7 +2066,7 @@ begin
             FBitmapId := FBmpList.AddFromFile(fil);
           result := (FBitmapId >= 0);
         end;
-      end;
+      end else emptyImage := True;
       for i := 0 to Count - 1 do
       begin
         if lowercase(Item[i].Name) = 'skinpart' then
@@ -2088,6 +2087,15 @@ begin
       result := false;
     end;
   end;
+
+  if emptyImage then
+  begin
+    FBitmapId := FBmpList.Find('empty');
+    if (FBitmapId < 0) then
+      FBitmapId := FBmpList.AddEmptyBitmap(0, 0);
+    result := (FBitmapId >= 0);
+  end;
+
   sp.free;
 end;
 
@@ -2133,8 +2141,8 @@ begin
   FBlendColor := 0;
   FBlendColorString := '$000000';
   FBlendAlpha := 255;
-  FMasterAlphaString := '255';
-  FMasterAlpha := 255;
+  FMasterAlphaString := '0';
+  FMasterAlpha := 0;
   FGradientColor.Clear;
   FGradientColorS.Clear;
   FGradientAlpha.Clear;

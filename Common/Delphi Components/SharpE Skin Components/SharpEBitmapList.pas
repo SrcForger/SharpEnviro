@@ -232,7 +232,9 @@ begin
       item.Bitmap.SetSize(Width, Height)
     else
       item.Bitmap.SetSize(16, 16);
-    item.Bitmap.Clear(color32(0, 0, 0, 0));
+    item.Bitmap.Clear(color32(128, 128, 128, 255));
+    item.Bitmap.CombineMode := cmMerge;
+    item.Bitmap.DrawMode := dmBlend;
     result := Add(item);
   except
     item.Free;
