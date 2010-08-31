@@ -226,13 +226,22 @@ begin
   end;
 end;
 
+// Helper function to load a config
+function LoadConfig(AConfig, AType: string; ABarID, AIntID : integer): hresult;
+begin
+  Result := CenterCommand(sccLoadSetting,
+      PChar(SharpApi.GetCenterDirectory + '_' + AType + '\' + AConfig + '.con'),
+      PChar(inttostr(ABarID) + ':' + inttostr(AIntID)));
+end;
+
 exports
   BroadcastCenterMessage,
   CenterCommand,
   CenterCommandAsText,
   CenterCommandAsEnum,
   CenterReadDefaults,
-  CenterWriteDefaults;
+  CenterWriteDefaults,
+  LoadConfig;
 begin
 
 end.

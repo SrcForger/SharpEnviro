@@ -113,6 +113,9 @@ procedure CenterReadDefaults(var AFields: TSC_DEFAULT_FIELDS);
 procedure CenterWriteDefaults(var AFields: TSC_DEFAULT_FIELDS);
   external 'SharpCenterAPI.dll' name 'CenterWriteDefaults';
 
+function LoadConfig(AConfig, AType: string; ABarID, AIntID : integer): hresult;
+  external 'SharpCenterAPI.dll' name 'LoadConfig';
+
 procedure XmlGetCenterThemeList(var AThemeList: TCenterThemeInfoSet);
 procedure FindFiles(var FilesList: TStringList; StartDir, FileMask: string);
 function GetCenterThemeListAsCommaText: string;
