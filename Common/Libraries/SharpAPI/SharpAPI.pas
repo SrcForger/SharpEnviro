@@ -99,10 +99,13 @@ const
   WM_SHARPCENTERMESSAGE = WM_APP + 660;
 
   // Explorer
-  WM_SHARPSTARTEXPLORER = WM_APP + 661;
+  //WM_SHARPSTARTEXPLORER = WM_APP + 661;
 
   // SharpMenu
   WM_MENUID = WM_APP + 661;
+
+  // Explorer shell
+  WM_SHARPSHELLREADY = WM_APP + 662;
 
   // WM_BARCOMMAND messages param
   BC_ADD = 0;
