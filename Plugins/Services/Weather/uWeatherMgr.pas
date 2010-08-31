@@ -47,9 +47,9 @@ uses
   uWeatherList,
   SharpApi;
 
-type
+{type
   TConnectionKind = (ckModem, ckLan, ckProxy, ckRAS, ckModemBusy,
-    ckOtherConnected, ckNotConnected);
+    ckOtherConnected, ckNotConnected);}
 
 type
   TWeatherMgr = class
@@ -62,7 +62,7 @@ type
     FWeatherList: TWeatherList;
     procedure Download(UrlTarget: string; Target: string);
     procedure WeatherUpdateCheck(Sender: TObject);
-    function ConnectionKind: TConnectionKind;
+    {function ConnectionKind: TConnectionKind; }
     procedure Debug(msg: string; errorType: Integer=DMT_INFO);
   public
     constructor Create;
@@ -96,7 +96,7 @@ uses
 
 { TWeatherMgr }
 
-function TWeatherMgr.ConnectionKind: TConnectionKind;
+{function TWeatherMgr.ConnectionKind: TConnectionKind;
 var
   flags: dword;
   bState: Boolean;
@@ -118,7 +118,7 @@ begin
   end
   else
     Result := ckNotConnected;
-end;
+end;  }
 
 constructor TWeatherMgr.Create;
 var
@@ -173,6 +173,12 @@ var
   Stream: TMemoryStream;
   HTTPReqResp1: THTTPReqResp;
 begin
+
+  if not InternetCheckConnection(PAnsiChar(UrlTarget), 1, 0) then
+  begin
+    Debug('No internet connection could be established');
+    exit;
+  end;
 
   Stream := TMemoryStream.Create;
   HTTPReqResp1 := THTTPReqResp.Create(nil);
@@ -250,7 +256,7 @@ begin
 {$ENDREGION}
 
   {$REGION 'Check Connection Type'}
-  case ConnectionKind of
+{  case ConnectionKind of
     ckModem: Debug('Connected via modem: Check Weather Sources', DMT_STATUS);
     ckModemBusy:
       begin
@@ -267,7 +273,7 @@ begin
       DMT_STATUS);
     ckOtherConnected:
       Debug('Unknown connection to internet: Check Weather Sources', DMT_STATUS);
-  end;
+  end;  }
 {$ENDREGION}
 
   currentdt := now;
