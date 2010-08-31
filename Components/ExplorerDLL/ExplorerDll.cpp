@@ -7,6 +7,11 @@ extern "C" DLLEXPORT void StartDesktop()
 	explorerDll.Start();
 }
 
+extern "C" DLLEXPORT void ShellReady()
+{
+	explorerDll.ShellReady();
+}
+
 ExplorerDll::ExplorerDll()
 {
 	hShellDLL = hWinListDLL = NULL;
@@ -71,12 +76,57 @@ void ExplorerDll::Start()
 	m_hThread = CreateThread(NULL, 0, ThreadFunc, this, 0, NULL);
 }
 
+void ExplorerDll::ShellReady()
+{
+	// Check the shell32 dll
+	if (!hShellDLL)
+		return;
+
+	SHCREATEDESKTOP SHCreateDesktop = (SHCREATEDESKTOP)GetProcAddress(hShellDLL, MAKEINTRESOURCEA(200));
+	SHDESKTOPMESSAGELOOP SHDesktopMessageLoop = (SHDESKTOPMESSAGELOOP)GetProcAddress(hShellDLL, MAKEINTRESOURCEA(201));
+
+	if (SHCreateDesktop && SHDesktopMessageLoop)
+	{
+		// Create the desktop
+		HANDLE hDesktop = SHCreateDesktop(iTray);
+
+
+		SendMessage(GetDesktopWindow(), 0x400, 0, 0);
+
+		// Switching shell event
+		HANDLE hEv = OpenEvent(EVENT_MODIFY_STATE, false, L"Global\\msgina: ShellReadyEvent");
+		if(hEv)
+		{
+			SetEvent(hEv);
+			CloseHandle(hEv);
+		}
+		hEv = OpenEvent(EVENT_MODIFY_STATE, false, L"msgina: ShellReadyEvent");
+		if(hEv)
+		{
+			SetEvent(hEv);
+			CloseHandle(hEv);
+		}
+		hEv = OpenEvent(EVENT_MODIFY_STATE, false, L"ShellDesktopSwitchEvent");
+		if(hEv)
+		{
+			SetEvent(hEv);
+			CloseHandle(hEv);
+		}
+
+
+		// Run the desktop message loop
+		SHDesktopMessageLoop(hDesktop);
+	}
+}
+
 DWORD WINAPI ExplorerDll::ThreadFunc(LPVOID pvParam)
 {
 	// Initialize COM for this thread
 	CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
 
 	ExplorerDll pThis = *static_cast<ExplorerDll*>(pvParam);
+
+	SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
 
 	// Load the shell32 dll
 	pThis.hShellDLL = LoadLibrary(L"shell32.dll");
@@ -87,9 +137,6 @@ DWORD WINAPI ExplorerDll::ThreadFunc(LPVOID pvParam)
 	pThis.ShellDDEInit = (SHELLDDEINIT)GetProcAddress(pThis.hShellDLL, MAKEINTRESOURCEA(188));
 	RUNINSTALLUNINSTALLSTUBS RunInstallUninstallStubs = (RUNINSTALLUNINSTALLSTUBS)GetProcAddress(pThis.hShellDLL, MAKEINTRESOURCEA(885));
 	pThis.FileIconInit = (FILEICONINIT)GetProcAddress(pThis.hShellDLL, MAKEINTRESOURCEA(660));
-
-	SHCREATEDESKTOP SHCreateDesktop = (SHCREATEDESKTOP)GetProcAddress(pThis.hShellDLL, MAKEINTRESOURCEA(200));
-	SHDESKTOPMESSAGELOOP SHDesktopMessageLoop = (SHDESKTOPMESSAGELOOP)GetProcAddress(pThis.hShellDLL, MAKEINTRESOURCEA(201));
 
 	// Create a mutex telling that this is the Explorer shell
 	HANDLE hIsShell = CreateMutex(NULL, false, L"Local\\ExplorerIsShellMutex");
@@ -123,8 +170,16 @@ DWORD WINAPI ExplorerDll::ThreadFunc(LPVOID pvParam)
 	if (pThis.ShellDDEInit)
 		pThis.ShellDDEInit(true);
 
+	SetProcessShutdownParameters(2, 0);
+
 	// Wait for Scm to be created
-	HANDLE hGScmEvent = OpenEvent(SYNCHRONIZE, false, L"Global\\ScmCreatedEvent");
+	HANDLE hGScmEvent = OpenEvent(0x100002, false, L"Global\\ScmCreatedEvent");
+	if (hGScmEvent == NULL)
+		hGScmEvent = OpenEvent(0x100000, false, L"Global\\ScmCreatedEvent");
+	if (hGScmEvent == NULL)
+		hGScmEvent = CreateEvent(NULL, true, false, L"Global\\ScmCreatedEvent");
+
+	hGScmEvent = OpenEvent(0x100000, false, L"Global\\ScmCreatedEvent");
 	if (hGScmEvent != NULL)
 	{
 		WaitForSingleObject(hGScmEvent, 6000);
@@ -143,21 +198,14 @@ DWORD WINAPI ExplorerDll::ThreadFunc(LPVOID pvParam)
 
 	CloseHandle(CanRegisterEvent);
 
-	if (SHCreateDesktop && SHDesktopMessageLoop)
+	/*if (SHCreateDesktop && SHDesktopMessageLoop)
 	{
 		// Create the desktop
 		HANDLE hDesktop = SHCreateDesktop(pThis.iTray);
 
-		// Switching shell event
-		HANDLE ShellDesktopEvent = CreateEvent(NULL, true, true, L"ShellDesktopSwitchEvent");
-		HANDLE ShellReadyEvent = OpenEvent(2, false, L"msgina: ShellReadyEvent");
-		SetEvent(ShellReadyEvent);
-		CloseHandle(ShellReadyEvent);
-		CloseHandle(ShellDesktopEvent);
-
 		// Run the desktop message loop
 		SHDesktopMessageLoop(hDesktop);
-	}
+	}*/
 
 	CoUninitialize();
 

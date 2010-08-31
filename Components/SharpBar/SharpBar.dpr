@@ -359,7 +359,7 @@ begin
           ServiceDone('SharpBar');
 
           // Start Explorer
-          SendMessage(FindWindow('Shell_TrayWnd', nil), WM_SHARPSTARTEXPLORER, 0, 0);
+          //SendMessage(FindWindow('Shell_TrayWnd', nil), WM_SHARPSTARTEXPLORER, 0, 0);
 
           halt;
        end;

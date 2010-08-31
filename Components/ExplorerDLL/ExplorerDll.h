@@ -23,6 +23,8 @@ class ExplorerDll
 
 		void Start();
 
+		void ShellReady();
+
 	private:
 		DWORD registerCookie;
 		TShellDesktopTrayFactory explorerFactory;
@@ -38,3 +40,4 @@ class ExplorerDll
 };
 
 extern "C" DLLEXPORT void StartDesktop();
+extern "C" DLLEXPORT void ShellReady();

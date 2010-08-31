@@ -13,6 +13,7 @@ namespace SharpEnviro.Explorer
 {
     class Explorer
     {
+        static IntPtr hSharpDll;
         static bool bShouldExit = false;
 
         static bool Is64Bit() 
@@ -22,6 +23,20 @@ namespace SharpEnviro.Explorer
 
         static IntPtr SharpWindowProc(IntPtr hWnd, uint uMsgm, IntPtr wParam, IntPtr lParam)
         {
+            if (uMsgm == WM_SHARPSHELLREADY)
+            {
+                // Run the StartDesktop function
+                if (hSharpDll != IntPtr.Zero)
+                {
+                    IntPtr fptr = GetProcAddress(hSharpDll, "ShellReady");
+                    if (fptr != IntPtr.Zero)
+                    {
+                        StartDesktopInvoker sdi = (StartDesktopInvoker)Marshal.GetDelegateForFunctionPointer(fptr, typeof(StartDesktopInvoker));
+                        sdi();
+                    }
+                }
+            }
+
             if (uMsgm == WM_ENDSESSION || uMsgm == WM_CLOSE || uMsgm == WM_QUIT || uMsgm == WM_SHARPTERMINATE)
             {
                 bShouldExit = true;
@@ -55,17 +70,15 @@ namespace SharpEnviro.Explorer
 
                 NativeWindowEx explorerWindow = new NativeWindowEx(classParams, createParams);
 
-                IntPtr hDll;
-
                 if (Is64Bit())
-                    hDll = LoadLibrary("Explorer64.dll");
+                    hSharpDll = LoadLibrary("Explorer64.dll");
                 else
-                    hDll = LoadLibrary("Explorer32.dll");
+                    hSharpDll = LoadLibrary("Explorer32.dll");
 
                 // Run the StartDesktop function
-                if (hDll != IntPtr.Zero)
+                if (hSharpDll != IntPtr.Zero)
                 {
-                    IntPtr fptr = GetProcAddress(hDll, "StartDesktop");
+                    IntPtr fptr = GetProcAddress(hSharpDll, "StartDesktop");
                     if (fptr != IntPtr.Zero)
                     {
                         StartDesktopInvoker sdi = (StartDesktopInvoker)Marshal.GetDelegateForFunctionPointer(fptr, typeof(StartDesktopInvoker));
@@ -89,7 +102,7 @@ namespace SharpEnviro.Explorer
                 }
 
 				ShellServices.Stop();
-                FreeLibrary(hDll);
+                FreeLibrary(hSharpDll);
             }
         }
 
@@ -131,6 +144,7 @@ namespace SharpEnviro.Explorer
         public const int WM_CLOSE = 0x0010;
         public const int WM_QUIT = 0x0012;
         public const int WM_SHARPTERMINATE = 0x8226;
+        public const int WM_SHARPSHELLREADY = 0x8296;
 
         // Error codes
         public const int ERROR_ALREADY_EXISTS = 0x00B7;
