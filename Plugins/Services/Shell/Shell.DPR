@@ -479,7 +479,7 @@ begin
         result := 1;
       end else result := 0;
     end;
-    WM_SHARPSTARTEXPLORER: begin
+{    WM_SHARPSTARTEXPLORER: begin
       if (FindWindow('TSharpExplorerform', nil) = 0) then
       begin
         TerminateExplorer;
@@ -487,7 +487,7 @@ begin
         StartExplorer;
       end;
       result := 1;
-    end;
+    end;    }
     else Result := DefWindowProc(wnd, Msg, wParam, lParam);
   end;
 
@@ -750,12 +750,12 @@ begin
   sleep(1000);
   StartShellServices;
 
+  if ShellInitialized then
+    StartExplorer;
+
   ServiceDone('Shell');
   Result := owner;
   SendNotifyMessage(HWND_BROADCAST, RegisterWindowMessage('TaskbarCreated'), 0, 0);
-
-  if ShellInitialized then
-    StartExplorer(); 
 end;
 
 function GetMetaData(): TMetaData;
