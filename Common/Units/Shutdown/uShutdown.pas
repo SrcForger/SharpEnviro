@@ -36,7 +36,7 @@ uses
 
 type
   TShutdownActionType = (sdPowerOff, sdShutdown, sdReboot, sdLogOff,
-    sdLock, sdHibernate);
+    sdLock, sdHibernate, sdSleep);
 
   TQueryShutdownEvent = procedure(Sender: TObject;
     var CanShutdown: Boolean) of object;
@@ -73,17 +73,19 @@ type
 implementation
 
 const
-  ShutdownTypes : Array[0..5] of string =
+  ShutdownTypes : Array[0..6] of string =
   (
     'Shut Down', 'Shut Down',
     'Reboot', 'Log Out',
-    'Lock', 'Hibernate'
+    'Lock', 'Hibernate',
+    'Sleep'
   );
-  ShutdownIcons : Array[0..5] of string =
+  ShutdownIcons : Array[0..6] of string =
   (
     'icon.shutdown.shutdown', 'icon.shutdown.shutdown',
     'icon.shutdown.reboot', 'icon.shutdown.logout',
-    'icon.shutdown.lock', 'icon.shutdown.hibernate'
+    'icon.shutdown.lock', 'icon.shutdown.hibernate',
+    'icon.shutdown.sleep'
   );
 
 { TScShutDown }
@@ -154,6 +156,7 @@ begin
     sdLogoff: Result := ExitWindowsEx(Flags or EWX_LOGOFF, 0);
     sdLock: Windows.LockWorkStation;
     sdHibernate: Result := SetSystemPowerState(False, FForce);
+    sdSleep	: Result := SetSystemPowerState(True, FForce);
   end;
 end;
 

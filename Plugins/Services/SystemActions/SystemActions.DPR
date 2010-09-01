@@ -80,15 +80,17 @@ const
   cLogoutIdx = 2;
   cHibernateIdx = 3;
   cSwitchUserLockIdx = 4;
+  cSleepIdx = 5;
 
   cRestart_QuietIdx = 10;
   cShutdown_QuietIdx = 11;
   cLogout_QuietIdx = 12;
   cHibernate_QuietIdx = 13;
   cSwitchUserLock_QuietIdx = 14;
+  cSleep_QuietIdx = 15;
 
   cShutdownStart = 0;
-  cShutdownEnd = 14;
+  cShutdownEnd = 15;
   cShutdownNonVerbose = 10;
 
   cMinimizeAllIdx = 20;
@@ -205,12 +207,14 @@ begin
   RegisterActionEx('!Logout', 'Shutdown', h, cLogoutIdx);
   RegisterActionEx('!Hibernate', 'Shutdown', h, cHibernateIdx);
   RegisterActionEx('!SwitchUser/LockStation', 'Shutdown', h, cSwitchUserLockIdx);
+  RegisterActionEx('!Sleep', 'Shutdown', h, cSleepIdx);
 
   RegisterActionEx('!Restart_Quiet', 'Shutdown', h, cRestart_QuietIdx);
   RegisterActionEx('!Shutdown_Quiet', 'Shutdown', h, cShutdown_QuietIdx);
   RegisterActionEx('!Logout_Quiet', 'Shutdown', h, cLogout_QuietIdx);
   RegisterActionEx('!Hibernate_Quiet', 'Shutdown', h, cHibernate_QuietIdx);
   RegisterActionEx('!SwitchUser/LockStation_Quiet', 'Shutdown', h, cSwitchUserLock_QuietIdx);
+  RegisterActionEx('!Sleep_Quiet', 'Shutdown', h, cSleep_QuietIdx);
 
   RegisterActionEx('!MinimizeAll', 'Window Management', h, cMinimizeAllIdx);
   RegisterActionEx('!RestoreAll', 'Window Management', h, cRestoreAllIdx);
@@ -268,12 +272,14 @@ begin
   UnRegisterAction('!Logout');
   UnRegisterAction('!Hibernate');
   UnRegisterAction('!SwitchUser/LockStation');
+  UnRegisterAction('!Sleep');
 
   UnRegisterAction('!Restart_Quiet');
   UnRegisterAction('!Shutdown_Quiet');
   UnRegisterAction('!Logout_Quiet');
   UnRegisterAction('!Hibernate_Quiet');
   UnRegisterAction('!SwitchUser/LockStation_Quiet');
+  UnRegisterAction('!Sleep_Quiet');
 
   UnRegisterAction('!MinimizeAll');
   UnRegisterAction('!RestoreAll');
@@ -406,6 +412,9 @@ begin
               cSwitchUserLockIdx, cSwitchUserLock_QuietIdx: begin
                   ShutDown.ActionType := sdLock;
                 end;
+              cSleepIdx, cSleep_QuietIdx: begin
+                ShutDown.ActionType := sdSleep;
+              end;
             end;
             ShutDown.Force := True;
 
