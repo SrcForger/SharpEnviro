@@ -31,8 +31,9 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, SharpEBaseControls, Types,
   SharpEScheme, SharpTypes, ExtCtrls, GR32,
-  JclSimpleXML, SharpApi, Menus, Math, SharpESkinLabel,
-  uWeatherParser, GR32_Image, uISharpBarModule, SharpNotify, ISharpESkinComponents;
+  JclSimpleXML, SharpApi, SharpCenterApi, Menus, Math, SharpESkinLabel,
+  uWeatherParser, GR32_Image, uISharpBarModule, SharpNotify, ISharpESkinComponents,
+  ImgList, PngImageList;
 
 
 type
@@ -41,6 +42,11 @@ type
     lb_top: TSharpESkinLabel;
     PopupTimer: TTimer;
     ClosePopupTimer: TTimer;
+    mnuRight: TPopupMenu;
+    mnuRightUpdate: TMenuItem;
+    N1: TMenuItem;
+    mnuRightConfigure: TMenuItem;
+    PngImageList1: TPngImageList;
     procedure FormPaint(Sender: TObject);
     procedure BackgroundDblClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -48,6 +54,10 @@ type
     procedure MouseEnter(Sender: TObject);
     procedure PopupTimerTimer(Sender: TObject);
     procedure ClosePopupTimerTimer(Sender: TObject);
+    procedure FormMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure mnuRightUpdateClick(Sender: TObject);
+    procedure mnuRightConfigureClick(Sender: TObject);
   protected
   private
     notifyItem : TNotifyItem;
@@ -198,6 +208,16 @@ begin
     XML.Free;
   end;
   FWeatherParser.Update(sLocation);
+end;
+
+procedure TMainForm.mnuRightConfigureClick(Sender: TObject);
+begin
+  SharpCenterApi.LoadConfig('Weather', 'Modules', mInterface.BarInterface.BarID, mInterface.ID);
+end;
+
+procedure TMainForm.mnuRightUpdateClick(Sender: TObject);
+begin
+  SharpApi.ServiceMsg('weather', '_forceupdate');
 end;
 
 procedure TMainForm.MouseEnter(Sender: TObject);
@@ -524,6 +544,25 @@ procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(FIcon);
   FreeAndNil(FWeatherParser);
+end;
+
+procedure TMainForm.FormMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  p : TPoint;
+begin
+  if Button = mbRight then
+  begin
+    p := ClientToScreen(Point(lb_top.Left, lb_top.Top));
+
+    // Get the cordinates on the screen where the popup should appear.
+    p := ClientToScreen(Point(0, Self.Height));
+    if p.Y > Monitor.Top + Monitor.Height div 2 then
+      p.Y := p.Y - Self.Height;
+
+    // Show the menu
+    mnuRight.Popup(p.X, p.Y);
+  end;
 end;
 
 procedure TMainForm.BackgroundDblClick(Sender: TObject);

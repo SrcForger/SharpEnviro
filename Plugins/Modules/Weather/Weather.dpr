@@ -117,7 +117,7 @@ function TInterfacedSharpBarModule.ModuleMessage(msg: string): HRESULT;
 begin
   result := inherited ModuleMessage(msg);
 
-  if CompareText(msg,'MM_WEATHERUPDATE') <> 0 then exit;
+  //if CompareText(msg,'MM_WEATHERUPDATE') <> 0 then exit;
 
   if not (Initialized) then
     exit;
