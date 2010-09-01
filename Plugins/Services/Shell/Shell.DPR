@@ -750,7 +750,7 @@ begin
   sleep(1000);
   StartShellServices;
 
-  if ShellInitialized then
+  //if ShellInitialized then
     StartExplorer;
 
   ServiceDone('Shell');
