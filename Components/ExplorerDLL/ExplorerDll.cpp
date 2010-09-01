@@ -78,44 +78,14 @@ void ExplorerDll::Start()
 
 void ExplorerDll::ShellReady()
 {
-	// Check the shell32 dll
-	if (!hShellDLL)
-		return;
+	HANDLE hEv = OpenEvent(EVENT_MODIFY_STATE, false, L"SharpExplorer_ShellReady");
+	if(!hEv)
+		hEv = CreateEvent(NULL, true, false, L"SharpExplorer_ShellReady");
 
-	SHCREATEDESKTOP SHCreateDesktop = (SHCREATEDESKTOP)GetProcAddress(hShellDLL, MAKEINTRESOURCEA(200));
-	SHDESKTOPMESSAGELOOP SHDesktopMessageLoop = (SHDESKTOPMESSAGELOOP)GetProcAddress(hShellDLL, MAKEINTRESOURCEA(201));
-
-	if (SHCreateDesktop && SHDesktopMessageLoop)
+	if(hEv)
 	{
-		// Create the desktop
-		HANDLE hDesktop = SHCreateDesktop(iTray);
-
-
-		SendMessage(GetDesktopWindow(), 0x400, 0, 0);
-
-		// Switching shell event
-		HANDLE hEv = OpenEvent(EVENT_MODIFY_STATE, false, L"Global\\msgina: ShellReadyEvent");
-		if(hEv)
-		{
-			SetEvent(hEv);
-			CloseHandle(hEv);
-		}
-		hEv = OpenEvent(EVENT_MODIFY_STATE, false, L"msgina: ShellReadyEvent");
-		if(hEv)
-		{
-			SetEvent(hEv);
-			CloseHandle(hEv);
-		}
-		hEv = OpenEvent(EVENT_MODIFY_STATE, false, L"ShellDesktopSwitchEvent");
-		if(hEv)
-		{
-			SetEvent(hEv);
-			CloseHandle(hEv);
-		}
-
-
-		// Run the desktop message loop
-		SHDesktopMessageLoop(hDesktop);
+		SetEvent(hEv);
+		CloseHandle(hEv);
 	}
 }
 
@@ -198,14 +168,48 @@ DWORD WINAPI ExplorerDll::ThreadFunc(LPVOID pvParam)
 
 	CloseHandle(CanRegisterEvent);
 
-	/*if (SHCreateDesktop && SHDesktopMessageLoop)
+
+	HANDLE hEv = OpenEvent(0x100000, false, L"SharpExplorer_ShellReady");
+	if(!hEv)
+		hEv = CreateEvent(NULL, true, false, L"SharpExplorer_ShellReady");
+
+	WaitForSingleObject(hEv, INFINITE);
+	CloseHandle(hEv);
+
+	SHCREATEDESKTOP SHCreateDesktop = (SHCREATEDESKTOP)GetProcAddress(pThis.hShellDLL, MAKEINTRESOURCEA(200));
+	SHDESKTOPMESSAGELOOP SHDesktopMessageLoop = (SHDESKTOPMESSAGELOOP)GetProcAddress(pThis.hShellDLL, MAKEINTRESOURCEA(201));
+
+	if (SHCreateDesktop && SHDesktopMessageLoop)
 	{
 		// Create the desktop
 		HANDLE hDesktop = SHCreateDesktop(pThis.iTray);
 
+		SendMessage(GetDesktopWindow(), 0x400, 0, 0);
+
+		// Switching shell event
+		HANDLE hEv = OpenEvent(EVENT_MODIFY_STATE, false, L"Global\\msgina: ShellReadyEvent");
+		if(hEv)
+		{
+			SetEvent(hEv);
+			CloseHandle(hEv);
+		}
+		hEv = OpenEvent(EVENT_MODIFY_STATE, false, L"msgina: ShellReadyEvent");
+		if(hEv)
+		{
+			SetEvent(hEv);
+			CloseHandle(hEv);
+		}
+		hEv = OpenEvent(EVENT_MODIFY_STATE, false, L"ShellDesktopSwitchEvent");
+		if(hEv)
+		{
+			SetEvent(hEv);
+			CloseHandle(hEv);
+		}
+
+
 		// Run the desktop message loop
 		SHDesktopMessageLoop(hDesktop);
-	}*/
+	}
 
 	CoUninitialize();
 
