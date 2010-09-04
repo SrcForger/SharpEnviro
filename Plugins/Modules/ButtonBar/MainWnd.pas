@@ -60,6 +60,9 @@ type
     Delete1: TMenuItem;
     PngImageList1: TPngImageList;
     sb_btnlist: TSharpEButton;
+    N1: TMenuItem;
+    LaunchElevated1: TMenuItem;
+    Launch1: TMenuItem;
     procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -75,6 +78,8 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure mnOnClick(pItem : TSharpEMenuItem; pMenuWnd : TObject; var CanClose : boolean);
     procedure mnOnConfigClick(pItem : TSharpEMenuItem; pMenuWnd : TObject; var CanClose : boolean);
+    procedure LaunchElevated1Click(Sender: TObject);
+    procedure Launch1Click(Sender: TObject);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   private
@@ -118,6 +123,28 @@ uses
   uSharpEMenuSettings;
 
 {$R *.dfm}
+
+procedure TMainForm.Launch1Click(Sender: TObject);
+var
+  BtnItem : TButtonRecord;
+begin
+  MoveButton := nil;
+  BtnItem := FButtonList[ButtonPopup.Tag];
+  SharpExecute(BtnItem.target);
+  if hasmoved then
+    SaveSettings;
+end;
+
+procedure TMainForm.LaunchElevated1Click(Sender: TObject);
+var
+  BtnItem : TButtonRecord;
+begin
+  MoveButton := nil;
+  BtnItem := FButtonList[ButtonPopup.Tag];
+  SharpExecute('_elevate,' + BtnItem.target);
+  if hasmoved then
+    SaveSettings;
+end;
 
 procedure TMainForm.LoadIcons;
 var
