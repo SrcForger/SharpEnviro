@@ -98,7 +98,8 @@ type
     procedure AddButton(pTarget,pIcon,pCaption : String; Index : integer = -1); overload;
     function UpdateButtons(newWidth : integer) : integer;
     procedure WMNotify(var msg : TWMNotify); message WM_NOTIFY;
-    procedure WMDropFiles(var msg: TMessage); message WM_DROPFILES;    
+    procedure WMDropFiles(var msg: TMessage); message WM_DROPFILES;
+    function GetButtonIndex(pButton : TSharpEButton) : Integer;    
   public
     mInterface : ISharpBarModule;
     procedure LoadIcons;
@@ -787,6 +788,8 @@ var
   ActionStr : String;
 begin
   MoveButton := nil;
+  if (Button = mbRight) then
+    ButtonPopup.Tag := GetButtonIndex(TSharpEButton(Sender));
   if (Button = mbLeft) and (not hasmoved) then
   begin
     ActionStr := TSharpEButton(Sender).Hint;
@@ -866,5 +869,18 @@ begin
   result := (addcount > 0);
 end;
 
+function TMainForm.GetButtonIndex(pButton : TSharpEButton) : integer;
+var
+  n : integer;
+begin
+  for n := 0 to High(FButtonList) do
+    if FButtonList[n].btn = pButton then
+    begin
+      result := n;
+      exit;
+    end;
+
+  result := -1;
+end;
 
 end.
