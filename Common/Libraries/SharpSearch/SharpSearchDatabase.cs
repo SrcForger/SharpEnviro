@@ -76,7 +76,7 @@ namespace SharpSearch
 		public IEnumerable<ISearchData> Search(string searchPattern)
 		{
 			List<ISearchData> results = new List<ISearchData>();
-			string query = String.Format("SELECT ROWID, Filename, Description, Location, LaunchCount FROM [{0}] WHERE Filename LIKE '%{1}%' OR Description LIKE '%{1}%' ORDER BY LaunchCount DESC;", _tableName, searchPattern);
+			string query = String.Format("SELECT ROWID, * FROM [{0}] WHERE Filename LIKE '%{1}%' OR Description LIKE '%{1}%' ORDER BY LaunchCount DESC;", _tableName, searchPattern);
 			using (SQLiteDataReader reader = _database.ExecuteReader(query))
 			{
 				while(reader.Read())
@@ -97,6 +97,40 @@ namespace SharpSearch
                             Location = location,
                             LaunchCount = launchCount
                         };
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Select the most launched items.
+		/// </summary>
+		/// <param name="numberOfItems">The number of items to be limited to, a negative number indicates unlimited.</param>
+		/// <returns>A collection of <see cref="ISearchData"/> items listed descendingly with a max of <see cref="numberOfItems"/>.</returns>
+		public IEnumerable<ISearchData> SelectMostLaunched(int numberOfItems)
+		{
+			List<ISearchData> results = new List<ISearchData>();
+			string query = String.Format("SELECT ROWID, * FROM [{0}] ORDER BY LaunchCount DESC LIMIT {1}", _tableName, numberOfItems);
+			using (SQLiteDataReader reader = _database.ExecuteReader(query))
+			{
+				while (reader.Read())
+				{
+					Int64 rowID = (Int64)reader["ROWID"];
+					string filename = reader["Filename"] != DBNull.Value ? (string)reader["Filename"] : null;
+					string description = reader["Description"] != DBNull.Value ? (string)reader["Description"] : null;
+					string location = reader["Location"] != DBNull.Value ? (string)reader["Location"] : null;
+					Int64 launchCount = reader["LaunchCount"] != DBNull.Value ? (Int64)reader["LaunchCount"] : 0;
+
+					if ((File.Exists(location)) || (Directory.Exists(location)))
+					{
+						yield return new SearchData
+						{
+							RowID = rowID,
+							Filename = filename,
+							Description = description,
+							Location = location,
+							LaunchCount = launchCount
+						};
 					}
 				}
 			}

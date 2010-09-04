@@ -56,7 +56,10 @@ namespace SharpSearchNET
 
 			if (!String.IsNullOrEmpty(App.InitialQuery))
 				QueryTextBox.Text = App.InitialQuery;
-
+			else
+				// Simulate the change event so that the MostLaunched will be displayed.
+				_keyPressedTimer.Change(TimeSpan.FromMilliseconds(0), TimeSpan.FromMilliseconds(-1));
+			
 			QueryTextBox.Focus();
 		}
 
@@ -81,14 +84,11 @@ namespace SharpSearchNET
 			Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)delegate
 			{
 				if (String.IsNullOrEmpty(QueryTextBox.Text))
-				{
-					_searchManager.SearchResults.Clear();
-					return;
-				}
-
-				// For now we just query the database when the text changes every time.
-				// If this becomes a problem then we'll look at running this an a background thread.
-				_searchManager.Search(QueryTextBox.Text);
+					_searchManager.MostLaunched(20);
+				else
+					// For now we just query the database when the text changes every time.
+					// If this becomes a problem then we'll look at running this an a background thread.
+					_searchManager.Search(QueryTextBox.Text);
 
 				if (ResultsListBox.Items.Count > 0)
 					ResultsListBox.SelectedIndex = 0;

@@ -62,6 +62,18 @@ namespace SharpSearch
 		}
 
 		/// <summary>
+		/// Query the database for the most launched items.
+		/// </summary>
+		/// <param name="numberOfItems">The number of items to be limited to, a negative number indicates unlimited.</param>
+		public void MostLaunched(int numberOfItems)
+		{
+			IEnumerable<ISearchData> results = _database.SelectMostLaunched(numberOfItems);
+			SearchResults.Clear();
+			foreach (ISearchData item in results)
+				SearchResults.Add(item);
+		}
+
+		/// <summary>
 		/// Start indexing the search locations.
 		/// </summary>
 		public void StartIndexing()
