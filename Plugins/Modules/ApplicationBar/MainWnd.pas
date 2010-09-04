@@ -966,9 +966,10 @@ begin
   
   if VWMMenu <> 0 then
     DeleteMenu(AppMenu,0,MF_BYPOSITION);
-  DeleteMenu(AppMenu,0,MF_BYPOSITION);    
-  DeleteMenu(AppMenu,0,MF_BYPOSITION);
-  DeleteMenu(AppMenu,0,MF_BYPOSITION);
+  DeleteMenu(AppMenu,0,MF_BYPOSITION); // Remove from Application Bar
+  DeleteMenu(AppMenu,0,MF_BYPOSITION); // Launch Elevated
+  DeleteMenu(AppMenu,0,MF_BYPOSITION); // Launch
+  DeleteMenu(AppMenu,0,MF_BYPOSITION); // Separator
 end;
 
 procedure TMainForm.DropTargetDragOver(Sender: TJvDropTarget;
