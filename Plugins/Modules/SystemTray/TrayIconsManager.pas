@@ -695,7 +695,6 @@ end;
 procedure TTrayClient.UpdateTrayIcons;
 var
   i, a : integer;
-  truecount : integer;
 begin
   for i := 0 to FItems.Count - 1 do
   begin
@@ -731,7 +730,7 @@ var
   n : integer;
   i : integer;
 begin
-  i := -1;
+  i := 0;
   repeat
     i := i + 1;
     b := True;
@@ -763,7 +762,6 @@ end;
 procedure TTrayClient.AddTrayIcon(NIDv6 : TNotifyIconDataV7);
 var
   tempItem : TTrayItem;
-  n,truecount : integer;
 begin
   tempItem := TTrayItem.Create(NIDv6);
   tempItem.Owner := self;
