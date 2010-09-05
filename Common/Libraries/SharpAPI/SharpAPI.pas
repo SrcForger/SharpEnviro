@@ -106,6 +106,7 @@ const
 
   // Explorer shell
   WM_SHARPSHELLREADY = WM_APP + 662;
+  WM_SHARPSEARCH = WM_APP + 663;	
 
   // WM_BARCOMMAND messages param
   BC_ADD = 0;

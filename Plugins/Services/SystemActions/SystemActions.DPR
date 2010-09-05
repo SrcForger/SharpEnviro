@@ -106,6 +106,8 @@ const
   cConfigThemeIdx = 27;
   cConfigWallpaperIdx = 28;
 
+  cSearchIdx = 29;
+  
   cKeyboardLayoutIdx = 99;
 
   RFF_NOBROWSE = 1; //Removes the browse button.
@@ -226,7 +228,8 @@ begin
   RegisterActionEx('!ToggleAllBars', 'SharpBar', h, cToggleAllBarsIdx);
 
   RegisterActionEx('!RunDlg', 'Misc', h, cRunDlgIdx);
-
+  RegisterActionEx('!Search', 'Misc', h, cSearchIdx);
+  
   RegisterActionEx('!ConfigureTheme', 'Themes', h, cConfigThemeIdx);
   RegisterActionEx('!ConfigureWallpaper', 'Themes', h, cConfigWallpaperIdx);
 
@@ -469,6 +472,8 @@ begin
         end;
       cRunDlgIdx:
         RunFileDlg(0, nil, nil, nil, 0);
+      cSearchIdx:
+         PostMessage(FindWindow('TSharpExplorerForm', nil), WM_SHARPSEARCH, 0, 0);
       cConfigThemeIdx:
         SharpApi.SharpExecute(SharpApi.GetSharpeDirectory + 'SharpCenter.exe -api "0|{CenterDirectory}_Themes\Theme.con|{CurrentTheme}"');
       cConfigWallpaperIdx:
