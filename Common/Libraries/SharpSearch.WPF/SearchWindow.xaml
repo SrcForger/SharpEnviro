@@ -1,0 +1,107 @@
+﻿<Window
+	x:Class="SharpSearch.WPF.SearchWindow"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	Title="SearchWindow"
+	Height="410"
+	Width="325"
+	Name="ResultWindow"
+	KeyUp="ResultWindow_KeyUp"
+	Closing="OnClose"
+	WindowStartupLocation="CenterScreen"
+	Icon="/SharpSearch.WPF;component/Silver.ico"
+	WindowStyle="None"
+	AllowsTransparency="True"
+	ShowInTaskbar="False"
+	Deactivated="ResultWindow_Deactivated"
+	Loaded="ResultWindow_Loaded"
+	PreviewKeyDown="ResultWindow_PreviewKeyDown"
+	Topmost="True">
+	
+	<Window.Background>
+		<SolidColorBrush />
+	</Window.Background>
+
+	<Window.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="Themes\ExpressionDark.xaml" />
+			</ResourceDictionary.MergedDictionaries>
+			
+			<Style TargetType="{x:Type ListBox}">
+				<Setter Property="Margin" Value="1" />
+				<Setter Property="BorderThickness" Value="0" />
+				<Setter Property="Background" Value="#FF333333" />
+				<Setter Property="Foreground" Value="WhiteSmoke" />
+				<!--<Setter Property="ItemTemplate" Value="{StaticResource listBoxTemplate}" />
+				<Setter Property="ItemContainerStyle" Value="{StaticResource StretchedContainerStyle}" />-->
+			</Style>
+			<Style x:Key="StretchedContainerStyle" TargetType="{x:Type ListBoxItem}">
+				<Style.Resources>
+					<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#4296EE" />
+					<SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#4296EE" />
+				</Style.Resources>
+				<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+				<Setter Property="MaxWidth" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Path=ViewportWidth}" />
+			</Style>
+			<Style TargetType="{x:Type Border}">
+				<Setter Property="Background" Value="#FF676161" />
+			</Style>
+			<Style TargetType="{x:Type TextBox}">
+				<Setter Property="Margin" Value="1" />
+				<Setter Property="BorderThickness" Value="0" />
+				<Setter Property="Background" Value="#FF333333" />
+				<Setter Property="Foreground" Value="WhiteSmoke" />
+			</Style>
+
+			<DataTemplate x:Key="listBoxTemplate">
+				<DockPanel Margin="2" ToolTip="{Binding Path=Description}">
+					<Image Source="{Binding Path=IconImage}" Height="24" />
+					<TextBlock Text=" " />
+					<TextBlock Text="{Binding Path=Filename}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+				</DockPanel>
+			</DataTemplate>
+		</ResourceDictionary>
+	</Window.Resources>
+
+	<Border CornerRadius="5">
+		<Grid Margin="2">
+			<Grid.RowDefinitions>
+				<RowDefinition />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
+
+			<Border
+				Grid.Row="0"
+				Margin="5,5,5,2.5"
+				CornerRadius="3"
+				BorderThickness="1"
+				BorderBrush="Silver">
+
+				<ListBox
+					ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+					ScrollViewer.VerticalScrollBarVisibility="Visible"
+					Name="ResultsListBox"
+					ItemsSource="{Binding}"
+					ItemTemplate="{StaticResource listBoxTemplate}"
+					ItemContainerStyle="{StaticResource StretchedContainerStyle}"
+					MouseDoubleClick="ResultsListBox_MouseDoubleClick" />
+
+			</Border>
+
+			<Border
+				Grid.Row="1"
+				Margin="5,2.5,5,5"
+				CornerRadius="3"
+				BorderThickness="1"
+				BorderBrush="Silver">
+
+				<TextBox
+					Name="QueryTextBox"
+					TextChanged="QueryTextBox_TextChanged" />
+
+			</Border>
+
+		</Grid>
+	</Border>
+</Window>

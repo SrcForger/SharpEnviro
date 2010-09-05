@@ -60,6 +60,8 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -82,7 +84,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NativeWindowEx.cs" />
     <Compile Include="Program.cs">
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="ShellServices\OleCommandID.cs" />
     <Compile Include="ShellServices\ShellServiceObject.cs" />
     <Compile Include="ShellServices\ShellServices.cs" />
+    <Compile Include="WPFRuntime.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="black.ico" />
@@ -129,6 +131,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Explorer.manifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Libraries\SharpEnviro\SharpEnviro.csproj">
+      <Project>{6341A0DF-6F28-433F-90ED-432BD1D0908C}</Project>
+      <Name>SharpEnviro</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\Libraries\SharpSearch.WPF\SharpSearch.WPF.csproj">
+      <Project>{B07B1E35-84B7-4C23-8B24-FBD0FD66103B}</Project>
+      <Name>SharpSearch.WPF</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

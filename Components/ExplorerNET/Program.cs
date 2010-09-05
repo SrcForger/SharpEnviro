@@ -7,7 +7,12 @@ using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using System.Windows.Forms;
 using Microsoft.Win32;
+
+using Explorer;
 using Explorer.ShellServices;
+using SharpEnviro.Interop;
+using SharpEnviro.Interop.Enums;
+using SharpSearch.WPF;
 
 namespace SharpEnviro.Explorer
 {
@@ -66,7 +71,7 @@ namespace SharpEnviro.Explorer
                 CreateParamsEx createParams = new CreateParamsEx();
                 createParams.Caption = "SharpExplorerForm";
                 createParams.ClassName = classParams.Name;
-                createParams.ExStyle = PInvoke.WS_EX_TOOLWINDOW;
+				createParams.ExStyle = (int)WindowStylesExtended.WS_EX_TOOLWINDOW;
 
                 NativeWindowEx explorerWindow = new NativeWindowEx(classParams, createParams);
 
@@ -87,6 +92,7 @@ namespace SharpEnviro.Explorer
                 }
 
 				ShellServices.Start();
+				WPFRuntime.Instance.Start();
 
                 // Loop through message until a quit message is received
                 NativeMessage mMsg;
@@ -96,11 +102,15 @@ namespace SharpEnviro.Explorer
                     {
                         if ((mMsg.msg == WM_ENDSESSION) || (mMsg.msg == WM_CLOSE) || (mMsg.msg == WM_QUIT))
                             break;
+
+						if (mMsg.msg == WM_SHARPSEARCH)
+							WPFRuntime.Instance.Show<SearchWindow>();
                     }
 
                     System.Threading.Thread.Sleep(16);
                 }
 
+				WPFRuntime.Instance.Stop();
 				ShellServices.Stop();
                 FreeLibrary(hSharpDll);
             }
@@ -145,6 +155,7 @@ namespace SharpEnviro.Explorer
         public const int WM_QUIT = 0x0012;
         public const int WM_SHARPTERMINATE = 0x8226;
         public const int WM_SHARPSHELLREADY = 0x8296;
+		public const int WM_SHARPSEARCH = 0x8297;
 
         // Error codes
         public const int ERROR_ALREADY_EXISTS = 0x00B7;
