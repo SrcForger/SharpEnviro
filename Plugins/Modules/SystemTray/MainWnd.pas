@@ -30,7 +30,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, GR32_Image, SharpEBaseControls, SharpEButton,
-  JclSimpleXML, SharpApi, Menus, GR32_Layers, Types, JclSysInfo,
+  JclWideStrings, JclSimpleXML, SharpApi, Menus, GR32_Layers, Types, JclSysInfo,
   TrayIconsManager, Math, GR32, SharpECustomSkinSettings, SharpESkinLabel,
   ToolTipApi,Commctrl, uISharpBarModule, SharpIconUtils, GR32_PNG,
   uSharpEMenu, uSharpEMenuWnd, uSharpEMenuSettings, uSharpEMenuItem, pngimage,
@@ -40,6 +40,7 @@ uses
 type
   TMainForm = class(TForm)
     lb_servicenotrunning: TSharpESkinLabel;
+    ShowHideButton: TSharpEButton;
     procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure FormMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -49,6 +50,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure mnOnClick(pItem: TSharpEMenuItem; pMenuWnd : TObject; var CanClose: boolean);
+    procedure ShowHideButtonClick(Sender: TObject);
   protected
   private
     sEnableIconHiding   : Boolean;
@@ -68,10 +70,11 @@ type
     cwidth              : integer;
     doubleclick         : boolean;
     refreshed           : boolean;
-    FShowHideIcon       : TBitmap32;
     FCustomSkinSettings : TSharpECustomSkinSettings;
     procedure CMMOUSELEAVE(var msg : TMessage); message CM_MOUSELEAVE;
     procedure WMNotify(var msg : TWMNotify); message WM_NOTIFY;
+
+    procedure LoadIcons;
   public
     FTrayClient : TTrayClient;
     Buffer     : TBitmap32;
@@ -108,6 +111,7 @@ end;
 procedure TMainForm.UpdateComponentSkins;
 begin
   lb_servicenotrunning.SkinManager := mInterface.SkinInterface.SkinManager;
+  ShowHideButton.SkinManager    := mInterface.SkinInterface.SkinManager;
 end;
 
 procedure TMainForm.mnOnClick(pItem: TSharpEMenuItem; pMenuWnd : TObject; var CanClose: boolean);
@@ -128,7 +132,8 @@ begin
     TrayItem := TTrayItem(FTrayClient.Items.Items[n]);
     if (TrayItem.Wnd = pItem.PropList.GetInt('Wnd'))
       and (TrayItem.UID = pItem.PropList.GetInt('uID')) then
-      break;
+        break;
+        
     TrayItem := nil;
   end;
   
@@ -217,6 +222,11 @@ begin
     SharpApi.SendDebugMessageEx('SystemTray',PChar('Failed to Save Settings to File: ' + mInterface.BarInterface.GetModuleXMLFile(mInterface.ID)), clred, DMT_ERROR);
 end;
 
+procedure TMainForm.ShowHideButtonClick(Sender: TObject);
+begin
+  ShowHideMenu;
+end;
+
 procedure TMainForm.ShowHideMenu;
 var
   p : TPoint;
@@ -285,30 +295,6 @@ begin
     end;
   end;  
 
-  {item := TSharpEMenuItem(mn.AddSubMenuItem('Hide Icons','icon.settings','',False));
-  item.SubMenu := TSharpEMenu.Create(item,mInterface.SkinInterface.SkinManager,mn.Settings);
-  hidemenu := TSharpEMenu(item.SubMenu);
-
-  item := TSharpEMenuItem(mn.AddSubMenuItem('Show Icons','icon.settings','',False));
-  item.SubMenu := TSharpEMenu.Create(item,mInterface.SkinInterface.SkinManager,mn.Settings);
-  showmenu := TSharpEMenu(item.SubMenu);
-
-  for n := 0 to FTrayClient.Items.Count - 1 do
-  begin
-    TrayItem := TTrayItem(FTrayClient.Items.Items[n]);
-    if IsWindow(TrayItem.wnd) then
-    begin
-      IconToImage(Bmp,TrayItem.Icon);
-      s := TrayItem.FTip + ' (' + ExtractFileName(GetProcessNameFromWnd(TrayItem.Wnd)) + ')';
-      if TrayItem.HiddenByClient then
-        item := TSharpEMenuItem(showmenu.AddCustomItem(s,'customicon:'+inttostr(n),Bmp))
-      else item := TSharpEMenuItem(hidemenu.AddCustomItem(s,'customicon:'+inttostr(n),Bmp));
-      item.PropList.Add('wnd',TrayItem.wnd);
-      item.PropList.Add('uID',TrayItem.UID);
-      item.PropList.Add('Hide',not TrayItem.HiddenByClient);
-      item.OnClick := mnOnClick;
-    end;
-  end;     }
   Bmp.Free;
 
   mn.RenderBackground(0,0);  
@@ -341,8 +327,6 @@ end;
 
 procedure TMainForm.CMMOUSELEAVE(var msg : TMessage);
 begin
-  {FTrayClient.StopTipTimer;
-  FTrayClient.CloseVistaInfoTip;  }
   FTrayClient.PerformIconAction(0,0,0,0,0,WM_MOUSELEAVE,self);
 end;
 
@@ -478,60 +462,65 @@ begin
   XML.Free;
   if not sEnableIconHiding then
   begin
-    FTrayClient.HiddenList.Clear;
-    if FTrayClient.Items.Count > 0 then
-      if TTrayItem(FTrayClient.Items.Items[0]).IsSpecial then
-        FTrayClient.DeleteTrayIconByIndex(0);
+    ShowHideButton.Width := 0;
+    ShowHideButton.Visible := False;
+    ShowHideButton.Enabled := False;
   end;
 
   FTrayClient.UpdateTrayIcons;
 end;
 
+procedure TMainForm.LoadIcons;
+var
+  size : integer;
+  TempBmp : TBitmap32;
+  rc : TRect;
+begin
+  if mInterface = nil then
+      exit;
+  if mInterface.SkinInterface = nil then
+    exit;
+
+  size := 16{mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y};
+  TempBmp := TBitmap32.Create;
+  TempBmp.SetSize(size,size);
+
+  TempBmp.Clear(color32(0,0,0,0));
+
+  // Change arrow depending on what position the bar has
+  GetWindowRect(mInterface.BarInterface.BarWnd, rc);
+  if rc.Top <= 0 then
+    IconStringToIcon('icon.tray.arrow.down', '', TempBmp, size)
+  else
+    IconStringToIcon('icon.tray.arrow.up', '', TempBmp, size);
+
+  ShowHideButton.Glyph32.Clear(color32(0,0,0,0));
+  ShowHideButton.Glyph32.SetSize(16, 25);
+  TempBmp.DrawTo(ShowHideButton.Glyph32, 0, 1 + (ShowHideButton.Height - TempBmp.Height) div 2);
+  ShowHideButton.UpdateSkin;
+
+  TempBmp.Free;
+end;
+
 procedure TMainForm.ReAlignComponents;
 var
  newwidth : integer;
- n : integer;
- addfirstitem : boolean;
- item : TTrayItem;
- temp : TNotifyIconDataV7;
- s : WideString; 
 begin
-  addfirstitem := False;
-  if sEnableIconHiding then
+  if (sEnableIconHiding) and (not lb_servicenotrunning.visible) then
   begin
-    if FTrayClient.Items.Count = 0 then
-      addfirstitem := True
-    else if (not TTrayItem(FTrayClient.Items.Items[0]).IsSpecial) then
-      addfirstitem := True;
-  end;
+    ShowHideButton.Width := 16;
+    ShowHideButton.Visible := True;
+    ShowHideButton.Enabled := True;
 
-  if (addfirstitem) and (not lb_servicenotrunning.visible) then
-  begin
-    temp.cbSize := sizeOf(temp);
-    temp.Wnd := 0;
-    temp.uID := 0;
-    temp.uFlags := NIF_ICON or NIF_TIP;
-    temp.Union.uVersion := 5;
-    s := 'Hide/Show icons';
-    for n := 0 to length(s) - 1 do
-      temp.szTip[n] := s[n];
-    item := TTrayItem.Create(temp);
-    item.Owner := FTrayClient;
-    item.TipIndex := FTrayClient.GetFreeTipIndex;
-    item.IsSpecial := True;
-    item.Bitmap.Assign(FShowHideIcon);
-    item.HiddenByClient := True; // UpdateHiddenStatus will make it visible, but will also add the tooltip
-    FTrayClient.Items.Insert(0,item);
-    FTrayClient.UpdateHiddenStatus;
-    FTrayClient.UpdateTrayIcons;
-    FTrayClient.RenderIcons;
-    ToolTipApi.UpdateToolTipTextByCallback(FTrayClient.TipWnd,
-                                           FTrayClient.TipForm,
-                                           item.TipIndex);    
+    LoadIcons;
   end;
 
   if lb_servicenotrunning.visible then
   begin
+    ShowHideButton.Width := 0;
+    ShowHideButton.Visible := False;
+    ShowHideButton.Enabled := False;
+
     lb_servicenotrunning.UpdateSkin;
     lb_servicenotrunning.UpdateAutoPosition;
     newWidth := lb_servicenotrunning.TextWidth+8;
@@ -556,7 +545,7 @@ begin
       FTrayClient.BlendAlpha      := sBlendAlpha;
       FTrayClient.IconAlpha       := sIconAlpha;
       FTrayClient.RenderIcons;
-      NewWidth := FTrayClient.Bitmap.Width;
+      NewWidth := FTrayClient.Bitmap.Width + ShowHideButton.Width;
       begin
         cwidth := Width;
       end;
@@ -579,52 +568,32 @@ end;
 procedure TMainForm.RepaintIcons(pRepaint : boolean = True); 
 begin
   Buffer.Assign(mInterface.Background);
-  if FTrayClient = nil then exit;
+  if FTrayClient = nil then
+    exit;
+    
   FTrayClient.Bitmap.DrawMode := dmBlend;
-  FTrayClient.Bitmap.DrawTo(Buffer,0,Height div 2 - FTrayClient.Bitmap.Height div 2);
+  FTrayClient.Bitmap.DrawTo(Buffer,ShowHideButton.Width,Height div 2 - FTrayClient.Bitmap.Height div 2);
+
+  //ShowHideButton.Glyph32.DrawTo(Buffer, 0, 0);
+
   if pRepaint then
      Repaint;
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
-var
-  ResStream : TResourceStream;
-  TempBmp : TBitmap32;
-  b : boolean;
 begin
   DoubleBuffered := True;
-  FShowHideIcon := TBitmap32.Create;
   FCustomSkinSettings := TSharpECustomSkinSettings.Create;
+
   Buffer := TBitmap32.Create;
   Buffer.DrawMode := dmBlend;
   Buffer.CombineMode := cmMerge;
-
-  TempBmp := TBitmap32.Create;
-  TempBmp.SetSize(22,22);
-  TempBmp.Clear(color32(0,0,0,0));
-
-  TempBmp.DrawMode := dmBlend;
-  TempBmp.CombineMode := cmMerge;
-
-  try
-    ResStream := TResourceStream.Create(HInstance, 'traysettingsicon', RT_RCDATA);
-    try
-      LoadBitmap32FromPng(TempBmp,ResStream,b);
-      FShowHideIcon.Assign(tempBmp);
-    finally
-      ResStream.Free;
-    end;
-  except
-  end;
-
-  TempBmp.Free;   
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(FCustomSkinSettings);
   Buffer.Free;
-  FShowHideIcon.Free;
 end;
 
 procedure TMainForm.FormPaint(Sender: TObject);
@@ -642,7 +611,7 @@ begin
     exit;
 
   p := ClientToScreen(point(x,y));
-  modx := x;
+  modx := x - ShowHideButton.Width;
 
   if ssDouble in Shift then
   begin
@@ -678,7 +647,7 @@ begin
   end;
 
   p := ClientToScreen(point(x,y));
-  modx := x;
+  modx := x - ShowHideButton.Width;
 
   case Button of
     mbRight:  FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_RBUTTONUP,self);
@@ -701,9 +670,10 @@ begin
     refreshed := False;
     exit;
   end;
+
   p := ClientToScreen(point(x,y));
-  modx := x;
-  FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_MOUSEMOVE,self);
+  modx := x - ShowHideButton.Width;
+  FTrayClient.PerformIconAction(modx,y,p.x + ShowHideButton.Width,p.y,0,WM_MOUSEMOVE,self);
 end;
 
 end.

@@ -72,7 +72,6 @@ type
                    FOwner : TObject;
                    FTipIndex : integer;
                    FHiddenByClient : boolean;
-                   FIsSpecial : boolean;
                    FIsHovering : boolean;
                    FVersion : integer;
                  public
@@ -94,7 +93,6 @@ type
                    property Owner : TObject read FOwner write FOwner;
                    property TipIndex : integer read FTipIndex write FTipIndex;
                    property HiddenByClient : boolean read FHiddenByClient write FHiddenByClient;
-                   property IsSpecial : boolean read FIsSpecial write FIsSpecial;
                    property IsHovering : boolean read FIsHovering write FIsHovering;
                    property Version : integer read FVersion write FVersion;
                  end;
@@ -621,7 +619,6 @@ var
   wp : wparam;
   lp : lparam;
 begin
-
   // Vista Popup?
   if (FV4Popup <> nil) then
   begin
@@ -683,7 +680,7 @@ begin
     for n := 0 to HiddenList.Count - 1 do
     begin
       s := GetProcessNameFromWnd(TrayItem.Wnd) + ':' + inttostr(TrayItem.UID);
-      if CompareText(s,HiddenList[n]) = 0 then
+      if CompareText(s, HiddenList[n]) = 0 then
       begin
         if not TrayItem.HiddenByClient then
         begin
@@ -721,13 +718,16 @@ begin
   begin
     if TTrayItem(FItems.Items[i]).HiddenByClient then
       hcount := hcount + 1
-    else ToolTipApi.UpdateToolTipRect(FTipWnd,
+    else
+    begin
+      ToolTipApi.UpdateToolTipRect(FTipWnd,
                                       FTipForm,
                                       TTrayItem(FItems.Items[i]).TipIndex,
                                       Rect(FTopSpacing+(i-1-hcount)*(FIconSize + FIconSpacing),
                                            FTopOffset,
                                            FTopSpacing+(i-1-hcount)*(FIconSize + FIconSpacing)+FIconSize,
                                            FIconSize+FTopOffset));
+    end;
   end;
 end;
 
@@ -781,7 +781,7 @@ begin
   for n := 0 to FItems.Count - 1 do
     if not TTrayItem(FItems.Items[n]).HiddenByClient then
       truecount := truecount + 1;
-  n := truecount - 1;
+  n := truecount;
   
   if FTipWnd <> 0 then
   begin
@@ -963,7 +963,7 @@ begin
   for n := FItems.Count - 1 downto 0 do
   begin
     tempItem := TTrayItem(FItems.Items[n]);
-    if (not iswindow(tempItem.Wnd)) and (not tempItem.IsSpecial) then
+    if (not iswindow(tempItem.Wnd)) then
     begin
       DeleteTrayIconByIndex(n);
       RenderIcons;
@@ -1009,8 +1009,17 @@ begin
           tempItem.Bitmap.DrawTo(tempBmp);
           BlendImageA(tempBmp,FBlendColor,FBlendAlpha);
           tempBmp.MasterAlpha := FIconAlpha;
-          tempBmp.DrawTo(FBitmap,Rect(FTopSpacing+(n-hcount)*(FIconSize + FIconSpacing),FTopSpacing,FTopSpacing+(n-hcount)*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopSpacing));
-        end else tempItem.Bitmap.DrawTo(FBitmap,Rect(FTopSpacing+(n-hcount)*(FIconSize + FIconSpacing),FTopSpacing,FTopSpacing+(n-hcount)*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopSpacing));
+          tempBmp.DrawTo(FBitmap,
+                          Rect(FTopSpacing + (n - hcount) * (FIconSize + FIconSpacing),
+                          FTopSpacing,
+                          FTopSpacing + (n - hcount) * (FIconSize + FIconSpacing) + FIconSize,
+                          FIconSize + FTopSpacing));
+        end else
+          tempItem.Bitmap.DrawTo(FBitmap,
+                                  Rect(FTopSpacing + (n - hcount) * (FIconSize + FIconSpacing),
+                                  FTopSpacing,
+                                  FTopSpacing + (n - hcount) * (FIconSize + FIconSpacing) + FIconSize,
+                                  FIconSize + FTopSpacing));
       end;
     end;
     NewRepaintHash;
@@ -1044,7 +1053,7 @@ begin
     wnd2 := FindWindowEx(wnd,0,'TrayNotifyWnd',nil);
     if wnd2 <> 0 then
     begin
-      SetWindowPos(wnd2,0,rct.Left,rct.Top,rct.Right,rct.Bottom,SWP_NOZORDER or SWP_NOACTIVATE or SWP_HIDEWINDOW);
+      SetWindowPos(wnd2,0,rct.Left+16,rct.Top,rct.Right - 16,rct.Bottom,SWP_NOZORDER or SWP_NOACTIVATE or SWP_HIDEWINDOW);
       if IsWindowVisible(wnd2) then
          ShowWindow(wnd2,SW_HIDE);
     end;
@@ -1082,18 +1091,15 @@ begin
     if TTrayItem(FItems.Items[n+imod]).HiddenByClient then
       hcount := hcount + 1
     else
-    if PointInRect(Point(x,y),Rect(FIconSpacing+(n-hcount)*(FIconSize + FIconSpacing),FTopOffset,FIconSpacing+(n-hcount)*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopOffset)) then
+    if PointInRect( Point(x, y),
+                    Rect(FIconSpacing + ( n - hcount) * (FIconSize + FIconSpacing),
+                    FTopOffset,
+                    FIconSpacing + (n - hcount) * (FIconSize + FIconSpacing) + FIconSize,
+                    FIconSize + FTopOffset)) then
     begin
       tempItem := TTrayItem(FItems.Items[n+imod]);
       if tempItem = nil then
         exit;
-
-      if TempItem.IsSpecial then
-      begin
-        if (msg = WM_LBUTTONUP) or (msg = WM_RBUTTONUP) then
-          TMainForm(FTipForm).ShowHideMenu;
-        exit;
-      end;
 
       // Check if there was a tray icon which displayed a new Vista tooltip
       if (TempItem <> FV4Popup) and (FV4Popup <> nil) then
@@ -1102,7 +1108,7 @@ begin
           TTrayItem(FItems.Items[n+imod]).IsHovering := False;
       end;
 
-      if (not iswindow(tempItem.Wnd)) and (not tempItem.IsSpecial) then
+      if (not iswindow(tempItem.Wnd)) then
       begin
         StopTipTimer;
         DeleteTrayIconByIndex(n+imod);
@@ -1113,32 +1119,33 @@ begin
       GetWindowThreadProcessId(tempItem.Wnd, @PID);
       AllowSetForegroundWindow(PID);
 
-{      SharpApi.SendDebugMessage('Module: SystemTray',PChar('Wnd:' + inttostr(tempItem.Wnd)
+      {SharpApi.SendDebugMessage('Module: SystemTray',PChar('Wnd:' + inttostr(tempItem.Wnd)
                                 + ' | CallBack:' + inttostr(tempItem.CallbackMessage)
                                 + ' | uID:' + inttostr(tempItem.uID)
                                 + ' | uVersion:' + inttostr(tempItem.BInfoFlags)
-                                + ' | Title:' + tempItem.FTip),0);}
+                                + ' | Title:' + tempItem.FTip
+                                + ' | Msg:' + inttostr(msg)),0); }
 
       // reposition the tray window (some stupid shell services are using
       // it for positioning)
       PositionTrayWindow(parent.ParentWindow,parent.Handle);
 
+      // Stop the tip timer on any other message
+      if ((msg <> WM_MOUSEMOVE) and (TTrayItem(FItems.Items[n+imod]).IsHovering)) then
+      begin
+        StopTipTimer;
+        CloseVistaInfoTip;
+        TTrayItem(FItems.Items[n+imod]).IsHovering := False;
+      end;
+
       FLastTipItem := tempItem;
       if (tempItem.Version >= NOTIFYICON_VERSION_4) then
       begin
+        {$REGION 'NotifyIcon Version > 4'}
         // NotifyIcon Version > 4
         ix := gx;
         iy := gy;
         wp := MakeWParam(ix,iy);
-
-        // Stop the tip timer on any other message
-        if ((msg <> WM_MOUSEMOVE) and (TTrayItem(FItems.Items[n+imod]).IsHovering)) then
-        begin
-          StopTipTimer;
-          CloseVistaInfoTip;
-          TTrayItem(FItems.Items[n+imod]).IsHovering := False;
-        end;
-
         lp := MakeLParam(msg,tempItem.uID);
 
         case msg of
@@ -1179,19 +1186,10 @@ begin
         end;
 
         SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,lp);
+        {$ENDREGION}
       end else
       begin
-        // Make sure no other tray item is displaying a tooltip
-        for i := 0 to FItems.Count - 1 do
-        begin
-          if (TTrayItem(FItems.Items[i+imod]).IsHovering) then
-          begin
-            StopTipTimer;
-            CloseVistaInfoTip;
-            TTrayItem(FItems.Items[i+imod]).IsHovering := False;
-          end;
-        end;
-
+        {$REGION 'NotifyIcon Version <= 4'}
         if tempItem.Version >= NOTIFYICON_VERSION then
         case msg of
           WM_RBUTTONUP: begin
@@ -1201,6 +1199,7 @@ begin
         end;
 
         SendNotifyMessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,msg);
+        {$ENDREGION}
       end;
     end;
   end;
