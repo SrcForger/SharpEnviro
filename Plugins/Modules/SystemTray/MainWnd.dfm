@@ -40,7 +40,6 @@ object MainForm: TMainForm
     AutoSize = False
     Visible = False
     OnClick = ShowHideButtonClick
-    Glyph32FileName = 'bitmap32data'
     Glyph32.DrawMode = dmBlend
     Glyph32.CombineMode = cmMerge
     Glyph32.ResamplerClassName = 'TNearestResampler'

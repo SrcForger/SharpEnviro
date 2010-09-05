@@ -34,7 +34,7 @@ uses
   TrayIconsManager, Math, GR32, SharpECustomSkinSettings, SharpESkinLabel,
   ToolTipApi,Commctrl, uISharpBarModule, SharpIconUtils, GR32_PNG,
   uSharpEMenu, uSharpEMenuWnd, uSharpEMenuSettings, uSharpEMenuItem, pngimage,
-  ExtCtrls;
+  ExtCtrls, StrUtils;
 
 
 type
@@ -264,7 +264,8 @@ begin
     if IsWindow(TrayItem.wnd) then
     begin
       IconToImage(Bmp,TrayItem.Icon);
-      s := TrayItem.FTip + ' (' + ExtractFileName(GetProcessNameFromWnd(TrayItem.Wnd)) + ')';
+      s := StringReplace(TrayItem.FTip, sLineBreak, ', ', [rfReplaceAll, rfIgnoreCase]);
+      { + ' (' + ExtractFileName(GetProcessNameFromWnd(TrayItem.Wnd)) + ')'}
       if not TrayItem.HiddenByClient then
       begin
         item := TSharpEMenuItem(mn.AddCustomItem(s,'customicon:'+inttostr(n),Bmp));
@@ -283,7 +284,8 @@ begin
     if IsWindow(TrayItem.wnd) then
     begin
       IconToImage(Bmp,TrayItem.Icon);
-      s := TrayItem.FTip + ' (' + ExtractFileName(GetProcessNameFromWnd(TrayItem.Wnd)) + ')';
+      s := TrayItem.FTip;
+      { + ' (' + ExtractFileName(GetProcessNameFromWnd(TrayItem.Wnd)) + ')'}
       if TrayItem.HiddenByClient then
       begin
         item := TSharpEMenuItem(mn.AddCustomItem(s,'customicon:'+inttostr(n),Bmp));
@@ -465,6 +467,9 @@ begin
     ShowHideButton.Width := 0;
     ShowHideButton.Visible := False;
     ShowHideButton.Enabled := False;
+
+    FTrayClient.ArrowWidth := ShowHideButton.Width;
+    FTrayClient.ArrowHeight := ShowHideButton.Height;
   end;
 
   FTrayClient.UpdateTrayIcons;
@@ -495,7 +500,7 @@ begin
     IconStringToIcon('icon.tray.arrow.up', '', TempBmp, size);
 
   ShowHideButton.Glyph32.Clear(color32(0,0,0,0));
-  ShowHideButton.Glyph32.SetSize(16, 25);
+  ShowHideButton.Glyph32.SetSize(16, mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y);
   TempBmp.DrawTo(ShowHideButton.Glyph32, 0, 1 + (ShowHideButton.Height - TempBmp.Height) div 2);
   ShowHideButton.UpdateSkin;
 
@@ -521,6 +526,9 @@ begin
     ShowHideButton.Visible := False;
     ShowHideButton.Enabled := False;
 
+    FTrayClient.ArrowWidth := ShowHideButton.Width;
+    FTrayClient.ArrowHeight := ShowHideButton.Height;
+
     lb_servicenotrunning.UpdateSkin;
     lb_servicenotrunning.UpdateAutoPosition;
     newWidth := lb_servicenotrunning.TextWidth+8;
@@ -532,6 +540,9 @@ begin
       sBackGroundColor := mInterface.SkinInterface.SkinManager.ParseColor(sBackGroundColorStr);
       sBorderColor     := mInterface.SkinInterface.SkinManager.ParseColor(sBorderColorStr);
       sBlendColor      := mInterface.SkinInterface.SkinManager.ParseColor(sBlendColorStr);
+
+      FTrayClient.ArrowWidth := ShowHideButton.Width;
+      FTrayClient.ArrowHeight := ShowHideButton.Height;
 
       FTrayClient.TopOffset       := (Height - FTrayClient.IconSize) div 2;
       FTrayClient.BackGroundColor := sBackGroundColor;
