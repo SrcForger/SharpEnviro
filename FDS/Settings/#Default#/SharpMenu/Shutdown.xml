@@ -8,6 +8,12 @@
   </item>
   <item>
     <type>link</type>
+    <Caption>Sleep</Caption>
+    <Target>!Sleep_Quiet</Target>
+    <Icon>icon.shutdown.sleep</Icon>
+  </item>
+  <item>
+    <type>link</type>
     <Caption>Logout</Caption>
     <Target>!Logout_Quiet</Target>
     <Icon>icon.shutdown.logout</Icon>
