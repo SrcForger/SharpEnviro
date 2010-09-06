@@ -61,13 +61,29 @@ namespace SharpEnviro.Interop
         public static extern uint RegisterWindowMessage(string lpString);
 
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern bool SystemParametersInfo(uint uiAction, uint uiParam, ref MinimizedMetrics pvParam, uint fWinIni);
+        public static extern bool SystemParametersInfo(uint uiAction, uint uiParam, IntPtr pvParam, uint fWinIni);
 
         public const uint SPI_GETMINIMIZEDMETRICS = 0x002B;
         public const uint SPI_SETMINIMIZEDMETRICS = 0x002C;
         public const uint SPIF_UPDATEINIFILE = 0x01;
         public const uint SPIF_SENDCHANGE = 0x02;
         public const uint SPIF_SENDWININICHANGE = 0x02;
+
+        // For SharpSearch.WPF
+        [DllImport("user32.dll")]
+        public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
+        [DllImport("user32.dll")]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern uint GetWindowThreadProcessId(IntPtr hWnd, IntPtr lpdwProcessId);
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetForegroundWindow();
+        [DllImport("user32.dll")]
+        public static extern bool AttachThreadInput(uint idAttach, uint idAttachTo, bool fAttach);
+        [DllImport("user32.dll")]
+        public static extern bool BringWindowToTop(IntPtr hWnd);
+        [DllImport("user32.dll")]
+        public static extern int GetWindowThreadProcessId(IntPtr hWnd, ref Int32 lpdwProcessId);
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         private static extern int GetWindowTextW(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
