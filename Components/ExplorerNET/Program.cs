@@ -169,6 +169,7 @@ namespace SharpEnviro.Explorer
         public const int WM_SHARPTERMINATE = 0x8226;
         public const int WM_SHARPSHELLREADY = 0x8296;
 		public const int WM_SHARPSEARCH = 0x8297;
+		public const int WM_SHARPSEARCH_INDEXING = 0x8298;
 
         // Error codes
         public const int ERROR_ALREADY_EXISTS = 0x00B7;
