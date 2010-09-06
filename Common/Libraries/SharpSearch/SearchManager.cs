@@ -23,6 +23,14 @@ namespace SharpSearch
 		/// Constructor.
 		/// </summary>
 		public SearchManager()
+			: this(false)
+		{
+		}
+
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		public SearchManager(bool watchDirectories)
 		{
 			// We need to hook into the AssemblyResolve event to load the appropriate version (x86 or x64).
 			// We set the properties on the reference to NOT copy local to avoid running against a local copy.
@@ -42,8 +50,14 @@ namespace SharpSearch
 			_database = new SharpSearchDatabase();
 			_searchResults = new ObservableCollection<ISearchData>();
 			_searchLocations = new List<SearchLocation>();
+			_indexWorker = new BackgroundWorker();
+			_watchers = new List<FileSystemWatcher>();
 
 			LoadLocations();
+
+			// Only setup the watchers when we need to.
+			if (watchDirectories)
+				SetupFileSystemWatchers();
 		}
 
 		#endregion Constructors
@@ -88,22 +102,11 @@ namespace SharpSearch
 		/// </summary>
 		public void StartIndexing()
 		{
-			//using (BackgroundWorker worker = new BackgroundWorker())
-			//{
-			//    worker.DoWork += (sender, args) =>
-			//        {
-			//            _database.IndexDirectories(_searchLocations.ToArray());
-			//        };
-			//    worker.RunWorkerAsync();
-			//}
-
-			if (_indexWorker == null)
-				_indexWorker = new BackgroundWorker();
-
 			_indexWorker.DoWork += (sender, args) =>
 			{
 				_database.IndexDirectories(_searchLocations.ToArray());
 			};
+
 			_indexWorker.RunWorkerAsync();
 		}
 
@@ -177,10 +180,42 @@ namespace SharpSearch
 			}
 		}
 
+		/// <summary>
+		/// Setup a <see cref="FileSystemWatcher"/> for each <see cref="SearchLocation"/> to
+		/// watch for Created and Deleted change events on all files and start indexing.
+		/// </summary>
+		private void SetupFileSystemWatchers()
+		{
+			foreach (SearchLocation location in _searchLocations)
+			{
+				FileSystemWatcher watcher = new FileSystemWatcher();
+				watcher.Path = Helpers.ParseEnvironmentVars(location.SearchPath);
+				watcher.IncludeSubdirectories = true;
+				watcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName;
+
+				watcher.Created += (sender, args) =>
+				{
+					if (!IsIndexing)
+						StartIndexing();
+				};
+
+				watcher.Deleted += (sender, args) =>
+				{
+					if (!IsIndexing)
+						StartIndexing();
+				};
+
+				watcher.EnableRaisingEvents = true;
+
+				_watchers.Add(watcher);
+			}
+		}
+
 		private List<SearchLocation> _searchLocations;
 		private ObservableCollection<ISearchData> _searchResults;
 		private SharpSearchDatabase _database;
 		private BackgroundWorker _indexWorker;
+		private List<FileSystemWatcher> _watchers;
 
 		#endregion privates
 
@@ -200,6 +235,9 @@ namespace SharpSearch
 		/// </summary>
 		protected virtual void Dispose(bool disposing)
 		{
+			foreach (FileSystemWatcher watcher in _watchers)
+				watcher.Dispose();
+
 			if (_indexWorker != null) _indexWorker.Dispose();
 			if (_database != null) _database.Dispose();
 		}

@@ -98,7 +98,7 @@ namespace SharpEnviro.Explorer
 
 				// Check if the database file exists before creating the SearchManager as it automatically creates the file.
 				bool needsIndexing = !File.Exists(Path.Combine(SharpSearchDatabase.DefaultDatabaseDirectory, SharpSearchDatabase.DefaultDatabaseFilename));
-				SearchManager manager = new SearchManager();
+				SearchManager manager = new SearchManager(true);
 
 				if (needsIndexing)
 					manager.StartIndexing();
