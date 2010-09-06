@@ -7,6 +7,7 @@ using System.Windows;
 using System.IO;
 using System.Xml.Serialization;
 using System.ComponentModel;
+using System.Reflection;
 
 namespace SharpSearch
 {
@@ -23,17 +24,26 @@ namespace SharpSearch
 		/// </summary>
 		public SearchManager()
 		{
-			//TODO: Index periodically and not just the 1st time.  Maybe add a commandline option to force indexing also.
-			bool needsIndexing = !File.Exists(Path.Combine(SharpSearchDatabase.DefaultDatabaseDirectory, SharpSearchDatabase.DefaultDatabaseFilename));
+			// We need to hook into the AssemblyResolve event to load the appropriate version (x86 or x64).
+			// We set the properties on the reference to NOT copy local to avoid running against a local copy.
+			// The 2 dlls are expected to be in a subfolder structure of SQLite\x86 and SQLite\x86 which is
+			// handled by having them included in the SharpSearch.dll with the same folder structure.
+			AppDomain.CurrentDomain.AssemblyResolve += (s, args) =>
+			{
+				if (!args.Name.StartsWith("System.Data.SQLite,"))
+					return null;
+
+				if (IntPtr.Size == 8)
+					return Assembly.LoadFrom(@"SQLite\x64\System.Data.SQLite.DLL");
+				else
+					return Assembly.LoadFrom(@"SQLite\x86\System.Data.SQLite.DLL");
+			};
 
 			_database = new SharpSearchDatabase();
 			_searchResults = new ObservableCollection<ISearchData>();
 			_searchLocations = new List<SearchLocation>();
 
 			LoadLocations();
-
-			if (needsIndexing)
-				StartIndexing();
 		}
 
 		#endregion Constructors

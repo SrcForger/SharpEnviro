@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -31,21 +30,6 @@ namespace SharpSearch.WPF
 	{
 		public SearchWindow()
 		{
-			// We need to hook into the AssemblyResolve event to load the appropriate version (x86 or x64).
-			// We set the properties on the reference to NOT copy local to avoid running against a local copy.
-			// The 2 dlls are expected to be in a subfolder structure of SQLite\x86 and SQLite\x86 which is
-			// handled by having them included in the SharpSearch.dll with the same folder structure.
-			AppDomain.CurrentDomain.AssemblyResolve += (s, args) =>
-			{
-				if (!args.Name.StartsWith("System.Data.SQLite,"))
-					return null;
-
-				if (IntPtr.Size == 8)
-					return Assembly.LoadFrom(@"..\SQLite\x64\System.Data.SQLite.DLL");
-				else
-					return Assembly.LoadFrom(@"..\SQLite\x86\System.Data.SQLite.DLL");
-			};
-
 			InitializeComponent();
 
 			// To making debugging a little easier we show the window

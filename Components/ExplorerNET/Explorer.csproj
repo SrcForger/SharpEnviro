@@ -141,6 +141,10 @@
       <Project>{B07B1E35-84B7-4C23-8B24-FBD0FD66103B}</Project>
       <Name>SharpSearch.WPF</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Common\Libraries\SharpSearch\SharpSearch.csproj">
+      <Project>{E486FC30-8F5D-4405-991D-4FE56547046F}</Project>
+      <Name>SharpSearch</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

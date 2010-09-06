@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
+using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Interop;
 using System.Windows.Forms;
 using Microsoft.Win32;
@@ -12,6 +13,7 @@ using Explorer;
 using Explorer.ShellServices;
 using SharpEnviro.Interop;
 using SharpEnviro.Interop.Enums;
+using SharpSearch;
 using SharpSearch.WPF;
 
 namespace SharpEnviro.Explorer
@@ -94,6 +96,13 @@ namespace SharpEnviro.Explorer
 				ShellServices.Start();
 				WPFRuntime.Instance.Start();
 
+				// Check if the database file exists before creating the SearchManager as it automatically creates the file.
+				bool needsIndexing = !File.Exists(Path.Combine(SharpSearchDatabase.DefaultDatabaseDirectory, SharpSearchDatabase.DefaultDatabaseFilename));
+				SearchManager manager = new SearchManager();
+
+				if (needsIndexing)
+					manager.StartIndexing();
+
                 // Loop through message until a quit message is received
                 NativeMessage mMsg;
                 while (!bShouldExit)
@@ -105,11 +114,15 @@ namespace SharpEnviro.Explorer
 
 						if (mMsg.msg == WM_SHARPSEARCH)
 							WPFRuntime.Instance.Show<SearchWindow>();
+
+						if (mMsg.msg == WM_SHARPSEARCH_INDEXING)
+							if (!manager.IsIndexing) manager.StartIndexing();
                     }
 
                     System.Threading.Thread.Sleep(16);
                 }
 
+				manager.Dispose();
 				WPFRuntime.Instance.Stop();
 				ShellServices.Stop();
                 FreeLibrary(hSharpDll);
