@@ -27,6 +27,11 @@
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="Themes\ExpressionDark.xaml" />
 			</ResourceDictionary.MergedDictionaries>
+
+			<ContextMenu x:Key="listMenu">
+				<MenuItem Header="Launch" Click="LaunchMenuItem_Click" />
+				<MenuItem Header="Launch Elevated" Click="LaunchElevatedMenuItem_Click" />
+			</ContextMenu>
 			
 			<Style TargetType="{x:Type ListBox}">
 				<Setter Property="Margin" Value="1" />
@@ -55,7 +60,7 @@
 			</Style>
 
 			<DataTemplate x:Key="listBoxTemplate">
-				<DockPanel Margin="2" ToolTip="{Binding Path=Description}">
+				<DockPanel Margin="2" ToolTip="{Binding Path=Description}" ContextMenu="{StaticResource listMenu}">
 					<Image Source="{Binding Path=IconImage}" Height="24" />
 					<TextBlock Text=" " />
 					<TextBlock Text="{Binding Path=Filename}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />

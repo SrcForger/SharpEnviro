@@ -1750,7 +1750,31 @@
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
     </Style>
 
-    <Style TargetType="{x:Type Menu}">
+	<Style TargetType="{x:Type ContextMenu}">
+		<Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource NormalBorderBrush}" />
+		<Setter Property="SnapsToDevicePixels" Value="True" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type ContextMenu}">
+					<Border CornerRadius="3" Margin="5" BorderBrush="Silver" BorderThickness="1" Background="{DynamicResource ControlBackgroundBrush}">
+						<Grid Margin="2">
+							<Border Margin="1" x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" />
+							<StackPanel Background="{TemplateBinding Background}" IsItemsHost="True" ClipToBounds="True" Orientation="Vertical" />
+						</Grid>
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter Property="Background" Value="{DynamicResource DisabledBackgroundBrush}" TargetName="Border" />
+							<Setter Property="BorderBrush" Value="{DynamicResource DisabledBorderBrush}" TargetName="Border" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style TargetType="{x:Type Menu}">
         <Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource NormalBorderBrush}" />
         <Setter Property="SnapsToDevicePixels" Value="True" />

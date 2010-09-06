@@ -184,7 +184,8 @@ namespace SharpSearch.WPF
 		/// <summary>
 		/// Start the selected item and exit, if no item is selected then this is a no op.
 		/// </summary>
-		private void StartProcessAndExit()
+		/// <param name="elevate">Whether or not the item should be run as administrator.</param>
+		private void StartProcessAndExit(bool elevate)
 		{
 			if (ResultsListBox.SelectedItem != null)
 			{
@@ -192,14 +193,30 @@ namespace SharpSearch.WPF
 
 				try
 				{
-					Process.Start(((ISearchData)ResultsListBox.SelectedItem).Location);
+					ProcessStartInfo psi = new ProcessStartInfo();
+					psi.FileName = ((ISearchData)ResultsListBox.SelectedItem).Location;
+
+					if (elevate)
+						psi.Verb = "runas";
+
+					Process.Start(psi);
 				}
-				catch (System.IO.FileNotFoundException)
+				catch
 				{
+					// Squash all exceptions such as FileNotFoundException and
+					// Win32Exception which occurs when user cancels elevation request.
 				}
 
 				Close();
 			}
+		}
+
+		/// <summary>
+		/// Start the selected item and exit, if no item is selected then this is a no op.
+		/// </summary>
+		private void StartProcessAndExit()
+		{
+			StartProcessAndExit(false);
 		}
 
 		/// <summary>
@@ -236,6 +253,16 @@ namespace SharpSearch.WPF
 
 			if (result == 0)
 				throw new Win32Exception(Marshal.GetLastWin32Error());
+		}
+
+		private void LaunchElevatedMenuItem_Click(object sender, RoutedEventArgs e)
+		{
+			StartProcessAndExit(true);
+		}
+
+		private void LaunchMenuItem_Click(object sender, RoutedEventArgs e)
+		{
+			StartProcessAndExit();
 		}
 
 		private SearchManager _searchManager;
