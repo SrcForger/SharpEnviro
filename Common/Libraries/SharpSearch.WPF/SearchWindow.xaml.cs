@@ -237,22 +237,22 @@ namespace SharpSearch.WPF
 		/// <param name="e"></param>
 		private void ResultWindow_Loaded(object sender, RoutedEventArgs e)
 		{
-			WindowInteropHelper windowHelper = new WindowInteropHelper(this);
+            WindowInteropHelper windowHelper = new WindowInteropHelper(this);
 
-			int style = (int)PInvoke.GetWindowLongPtr(windowHelper.Handle, (int)GWL.EXSTYLE);
+            int style = (int)PInvoke.GetWindowLongPtr(windowHelper.Handle, (int)GWL.EXSTYLE);
 
-			if (style == 0)
-				throw new Win32Exception(Marshal.GetLastWin32Error());
+            if (style == 0)
+                throw new Win32Exception(Marshal.GetLastWin32Error());
 
-			style |= (int)WindowStylesExtended.WS_EX_TOOLWINDOW;
+            style |= (int)WindowStylesExtended.WS_EX_TOOLWINDOW;
 
-			// Clear the last error before calling SetWindowLongPtr because it does not clear it.
-			PInvoke.SetLastError(0);
+            // Clear the last error before calling SetWindowLongPtr because it does not clear it.
+            PInvoke.SetLastError(0);
 
-			int result = (int)PInvoke.SetWindowLongPtr(windowHelper.Handle, (int)GWL.EXSTYLE, (IntPtr)style);
+            int result = (int)PInvoke.SetWindowLongPtr(windowHelper.Handle, (int)GWL.EXSTYLE, (IntPtr)style);
 
-			if (result == 0)
-				throw new Win32Exception(Marshal.GetLastWin32Error());
+            if (result == 0)
+                throw new Win32Exception(Marshal.GetLastWin32Error());
 		}
 
 		private void LaunchElevatedMenuItem_Click(object sender, RoutedEventArgs e)
@@ -268,5 +268,41 @@ namespace SharpSearch.WPF
 		private SearchManager _searchManager;
 		private Timer _keyPressedTimer;
 		private bool _closing = false;
+
+
+        private void ResultWindow_Activated(object sender, EventArgs e)
+        {
+            WindowInteropHelper windowHelper = new WindowInteropHelper(this);
+
+            IntPtr hWnd = windowHelper.Handle;
+
+            PInvoke.ShowWindowAsync(hWnd, PInvoke.SW_SHOW);
+            PInvoke.SetForegroundWindow(hWnd);
+
+            // Code from Karl E. Peterson, www.mvps.org/vb/sample.htm
+            // Converted to Delphi by Ray Lischner
+            // Published in The Delphi Magazine 55, page 16
+            // Converted to C# by Kevin Gale
+            IntPtr foregroundWindow = PInvoke.GetForegroundWindow();
+            IntPtr Dummy = IntPtr.Zero;
+
+            uint foregroundThreadId = PInvoke.GetWindowThreadProcessId(foregroundWindow, Dummy);
+            uint thisThreadId = PInvoke.GetWindowThreadProcessId(hWnd, Dummy);
+
+            if (PInvoke.AttachThreadInput(thisThreadId, foregroundThreadId, true))
+            {
+                PInvoke.BringWindowToTop(hWnd); // IE 5.5 related hack
+                PInvoke.SetForegroundWindow(hWnd);
+                PInvoke.AttachThreadInput(thisThreadId, foregroundThreadId, false);
+            }
+
+            if (PInvoke.GetForegroundWindow() != hWnd)
+            {
+                PInvoke.SystemParametersInfo(PInvoke.SPI_GETFOREGROUNDLOCKTIMEOUT, 0, IntPtr.Zero, 0);
+                PInvoke.SystemParametersInfo(PInvoke.SPI_SETFOREGROUNDLOCKTIMEOUT, 0, IntPtr.Zero, PInvoke.SPIF_SENDCHANGE);
+                PInvoke.BringWindowToTop(hWnd);
+                PInvoke.SetForegroundWindow(hWnd);
+            }
+        }
 	}
 }
