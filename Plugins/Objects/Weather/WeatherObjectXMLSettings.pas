@@ -49,6 +49,7 @@ type
       CustomFormat     : boolean;
       TextShadow       : boolean;
       DisplayIcon      : boolean;
+      DisplayCaption   : boolean;
       BlendColor       : integer;
       BlendValue       : integer;
       AlphaValue       : integer;
@@ -104,6 +105,7 @@ begin
     Spacing          := IntValue('Spacing',0);
     TextShadow       := BoolValue('TextShadow',False);
     DisplayIcon      := BoolValue('DisplayIcon',True);
+    DisplayCaption   := BoolValue('DisplayCaption',True);
     FontName         := Value('FontName','Verdana');
     FontSize         := IntValue('FontSize',10);
     FontColor        := IntValue('FontColor',0);
@@ -131,6 +133,7 @@ begin
     Add('Spacing', Spacing);
     Add('TextShadow', TextShadow);
     Add('DisplayIcon', DisplayIcon);
+    Add('DisplayCaption', DisplayCaption);
     Add('ColorBlend', ColorBlend);
     Add('AlphaBlend', AlphaBlend);
     Add('UseThemeSettings', UseThemeSettings);

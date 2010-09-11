@@ -177,6 +177,8 @@ type
     property FCValid : boolean read FFCValid;
   end;
 
+function GetWeatherIcon(strCode : string): string;
+
 //var
 //  WP: TWeatherParser;
 
@@ -187,6 +189,43 @@ implementation
 
 
 { TWeatherParser }
+
+function GetWeatherIcon(strCode : string): string;
+var
+  code : integer;
+  a : string;
+begin
+  a := '';
+
+  code := StrToInt(strCode);
+
+  case code of
+    0 .. 4, 17, 35, 37, 38, 47 : a := 'thunder';
+    5 : a := 'sleet';
+    6, 18 : a := 'hail';
+    7 : a := 'snowhail';
+    8, 10 : a := 'icerain';
+    9, 11,45 : a := 'rain';
+    12, 39 : a := 'hardrain';
+    13, 14, 46 : a := 'snow';
+    15 : a := 'snowstorm';
+    16, 41, 42, 43 : a := 'hardsnow';
+    19 : a := 'sandstorm';
+    20 : a := 'fog';
+    21, 22, 24, 25, 44 : a := 'na';
+    23 : a := 'windy';
+    26 : a := 'cloudy';
+    27 : a := 'partiallycloudyn';
+    28 : a := 'partiallycloudyd';
+    29, 33 : a := 'fairn';
+    30, 34 : a := 'faird';
+    31 : a := 'clearn';
+    32, 36 : a := 'cleard';
+    40 : a := 'rainstorm';
+  end;
+
+  Result := 'icon.weather.' + a + '.png';
+end;
 
 constructor TWeatherParser.Create;
 begin

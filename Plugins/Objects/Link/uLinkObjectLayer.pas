@@ -27,8 +27,8 @@ unit uLinkObjectLayer;
 
 interface
 uses
-  Windows, StdCtrls, Forms,Classes, ExtCtrls, Math,
-  Messages, SharpApi, SysUtils,ShellApi, Graphics,
+  Windows, StdCtrls, Forms, Classes, ExtCtrls, Math,
+  Messages, SharpApi, SysUtils, ShellApi, Graphics,
   gr32,GR32_Image, GR32_Layers, GR32_BLEND,GR32_Transforms, GR32_Filters,
   JvSimpleXML, SharpDeskApi, JclShell, Types,
   LinkObjectXMLSettings,
@@ -145,12 +145,10 @@ begin
     FHLTimer.Enabled := False;
     FHLTimer.Tag := 0;
     FScale := 100;
-    if FSettings.Theme[DS_ICONALPHABLEND].BoolValue then
-       i := FSettings.Theme[DS_ICONALPHA].IntValue
-       else i := 255;
-    if i > 255 then i := 255
-       else if i<32 then i := 32;
+
+    i := 255;
     Bitmap.MasterAlpha := i;
+    
     DrawBitmap;
     FParentImage.EndUpdate;
     EndUpdate;
@@ -164,12 +162,14 @@ begin
   if Theme.Desktop.Animation.Alpha then
   begin
     FScale := 100;
-    if FSettings.Theme[DS_ICONALPHABLEND].BoolValue then
-       i := FSettings.Theme[DS_ICONALPHA].IntValue
-       else i := 255;
+
+    i := 255;
     i := i + round(((Theme.Desktop.Animation.AlphaValue/FAnimSteps)*FHLTimer.Tag));
-    if i > 255 then i := 255
-       else if i<32 then i := 32;
+    if i > 255 then
+      i := 255
+    else if i < 32 then
+      i := 32;
+      
     Bitmap.MasterAlpha := i;
   end;
   if FHLTimer.Tag >= FAnimSteps then
@@ -290,8 +290,10 @@ begin
     FCaptionSettings.Draw := ShowCaption;
     FCaptionSettings.LineSpace := 0;
 
-    FIconSettings.Size  := 100;
+    FIconSettings.Size        := 100;
     FIconSettings.Alpha := 255;
+    if FSettings.Theme[DS_ICONALPHABLEND].BoolValue then
+      FIconSettings.Alpha := Theme[DS_ICONALPHA].IntValue;
     FIconSettings.XOffset     := 0;
     FIconSettings.YOffset     := 0;
     //if FSettings.IconOffset then FIconSettings.XOffset := FSettings.IconOffsetValue;;
@@ -319,11 +321,7 @@ begin
       bmp.Free;
     end;
 
-    if Theme[DS_ICONALPHABLEND].BoolValue then
-    begin
-      Bitmap.MasterAlpha := Theme[DS_ICONALPHA].IntValue;
-      if Bitmap.MasterAlpha<16 then Bitmap.MasterAlpha:=16;
-    end else Bitmap.MasterAlpha := 255;
+    Bitmap.MasterAlpha := 255;
   end;
 
   DrawBitmap;

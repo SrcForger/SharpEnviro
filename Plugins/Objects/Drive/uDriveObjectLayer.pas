@@ -666,14 +666,7 @@ begin
       FCaptionSettings.Caption.Add(inttostr(SpaceFree) + ' ' + SpacePrefix + ' Free');
     end;
 
-    case FCaptionSettings.Align of
-      taTop,taBottom: n := 0;
-      taLeft: n := 1;
-      taRight: n:= -1;
-      else n := 0;
-    end;
-
-    SharpDeskApi.RenderText(FontBitmap,FFontSettings,FCaptionSettings.Caption,n,0);
+    SharpDeskApi.RenderText(FontBitmap,FFontSettings,FCaptionSettings.Caption,FCaptionSettings.Align,0);
 
   end else
   begin

@@ -45,6 +45,8 @@ type
       Text             : string;
       BGSkin           : string;
       Shadow           : boolean;
+      ShadowAlpha      : integer;
+      ShadowColor      : integer;
       ColorBlend       : boolean;
       ShowCaption      : boolean;
       UseThemeSettings : boolean;
@@ -78,13 +80,17 @@ begin
     AlphaBlend       := BoolValue('AlphaBlend',False);
     BlendValue       := IntValue('BlendValue',0);
     ColorBlend       := BoolValue('ColorBlend',False);
+    
     Text             := Value('Text','');
     if length(Text) = 0 then
       Text := '<font size="16">Welcome to</font><br><u><b><font size="20">Sharp</font><font size="20" color="#fd800d">Enviro</b></u></font><font size="16">!</font>';
     Text := StringReplace(Text,'#;01;#','<',[rfReplaceAll, rfIgnoreCase]);
     Text := StringReplace(Text,'#;02;#','>',[rfReplaceAll, rfIgnoreCase]);
     Text := StringReplace(Text,'#;03;#','"',[rfReplaceAll, rfIgnoreCase]);
+
     Shadow           := BoolValue('Shadow',False);
+    ShadowAlpha      := IntValue('ShadowAlpha',255);
+    ShadowColor      := IntValue('ShadowColor',0);
     ShowCaption      := BoolValue('ShowCaption',True);
     UseThemeSettings := BoolValue('UseThemeSettings',True);
     BGSkin           := Value('BGSkin','');    
@@ -121,6 +127,8 @@ begin
     Add('ColorBlend', ColorBlend);
     Add('Text', Text);
     Add('Shadow', Shadow);
+    Add('ShadowAlpha', ShadowAlpha);
+    Add('ShadowColor', ShadowColor);
     Add('ShowCaption', ShowCaption);
     Add('UseThemeSettings', UseThemeSettings);
     Add('BGColor',BGColor);

@@ -139,11 +139,9 @@ begin
   begin
     FHLTimer.Enabled := False;
     FHLTimer.Tag := 0;
-    if FSettings.Theme[DS_ICONALPHABLEND].BoolValue then
-       i := FSettings.Theme[DS_ICONALPHA].IntValue
-       else i := 255;
-    if i > 255 then i := 255
-       else if i<32 then i := 32;
+
+    i := 255;
+
     Bitmap.MasterAlpha := i;
     DrawBitmap;
     FParentImage.EndUpdate;
@@ -155,12 +153,14 @@ begin
   Theme := GetCurrentTheme;
   if Theme.Desktop.Animation.Alpha then
   begin
-    if FSettings.Theme[DS_ICONALPHABLEND].BoolValue then
-       i := FSettings.Theme[DS_ICONALPHA].IntValue
-       else i := 255;
+    i := 255;
     i := i + round(((Theme.Desktop.Animation.AlphaValue/FAnimSteps)*FHLTimer.Tag));
-    if i > 255 then i := 255
-       else if i<32 then i := 32;
+
+    if i > 255 then
+      i := 255
+    else if i < 32 then
+      i := 32;
+      
     Bitmap.MasterAlpha := i;
   end;
   if FHLTimer.Tag >= FAnimSteps then
@@ -415,11 +415,7 @@ begin
     FAlphaBlend := Theme[DS_ICONALPHABLEND].BoolValue;
   end;
 
-  if FAlphaBlend then
-  begin
-    Bitmap.MasterAlpha := FAlphaValue;
-    if Bitmap.MasterAlpha<16 then Bitmap.MasterAlpha:=16;
-  end else Bitmap.MasterAlpha := 255;
+  Bitmap.MasterAlpha := 255;
 
   UpdateImage;
 

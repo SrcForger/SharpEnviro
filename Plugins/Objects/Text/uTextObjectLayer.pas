@@ -54,8 +54,6 @@ type
     FHLTimer         : TTimer;
     FHLTimerI        : integer;
     FObjectID        : integer;
-    FShadowAlpha     : integer;
-    FShadowColor     : integer;
     FHighlight       : boolean;
     FFontBitmap      : TBitmap32;
     FSHTMLRenderer   : TBasicHTMLRenderer;
@@ -293,15 +291,12 @@ begin
   begin
     Bitmap.SetSize(32,32);
     Bitmap.Clear(color32(128,128,128,128));
-  end;  
+  end;
 
   EndUpdate;
   FParentImage.EndUpdate;
   changed;
 end;
-
-
-
 
 procedure TTextLayer.LoadSettings;
 var
@@ -314,15 +309,11 @@ begin
 
   Theme := GetCurrentTheme;
 
-  FShadowAlpha   := Theme.Desktop.Icon.IconShadowAlpha;
-  FShadowColor   := Theme.Desktop.Icon.IconShadowColor;
-
   if not FSettings.BGThickness then
      FSettings.BGThicknessValue := 0;
 
   if not FSettings.BGTrans then
      FSettings.BGTransValue := 255;
-
 
   if FSettings.UseThemeSettings then
   begin
@@ -332,11 +323,10 @@ begin
     FSettings.BlendColor    := Theme.Desktop.Icon.IconBlendColor;
     FSettings.BlendValue    := Theme.Desktop.Icon.IconBlendAlpha;
     FSettings.Shadow        := Theme.Desktop.Icon.TextShadow;
+    FSettings.ShadowAlpha   := Theme.Desktop.Icon.TextShadowAlpha;
+    FSettings.ShadowColor   := Theme.Desktop.Icon.TextShadowColor;
     FSettings.ShowCaption   := Theme.Desktop.Icon.DisplayText;
   end;
-
-  if length(FSettings.Text) = 0 then
-    FSettings.Text := 'Text.dll';
 
   if FSettings.AlphaBlend then
   begin
@@ -351,8 +341,6 @@ begin
     Bitmap.MasterAlpha := 255;
 
   Bitmap.Font.Name := Theme.Desktop.Icon.FontName;
-  FShadowColor := Theme.Desktop.Icon.IconShadowColor;
-  FShadowAlpha := Theme.Desktop.Icon.IconShadowAlpha;
 
   if FSettings.BGType = 2 then
      FDeskPanel.LoadPanel(FSettings.BGSkin);
@@ -369,7 +357,7 @@ begin
   FSHTMLRenderer.RenderText;
 
   if FSettings.Shadow then
-    CreateDropShadow(FFontBitmap, 0, 1, FShadowAlpha, FShadowColor);
+    CreateDropShadow(FFontBitmap, 0, 1, FSettings.ShadowAlpha, FSettings.ShadowColor);
   if FSettings.ColorBlend then
     BlendImageA(FFontBitmap, FSettings.BlendColor, FSettings.BlendValue);
 

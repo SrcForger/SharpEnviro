@@ -235,12 +235,10 @@ begin
     FHLTimer.Enabled := False;
     FHLTimer.Tag := 0;
     FScale := 100;
-    if FSettings.Theme[DS_ICONALPHABLEND].BoolValue then
-       i := FSettings.Theme[DS_ICONALPHA].IntValue
-       else i := 255;
-    if i > 255 then i := 255
-       else if i<32 then i := 32;
+
+    i := 255;
     Bitmap.MasterAlpha := i;
+    
     DrawBitmap;
     FParentImage.EndUpdate;
     EndUpdate;
@@ -254,12 +252,14 @@ begin
   if Theme.Desktop.Animation.Alpha then
   begin
     FScale := 100;
-    if FSettings.Theme[DS_ICONALPHABLEND].BoolValue then
-       i := FSettings.Theme[DS_ICONALPHA].IntValue
-       else i := 255;
+
+    i := 255;
     i := i + round(((Theme.Desktop.Animation.AlphaValue/FAnimSteps)*FHLTimer.Tag));
-    if i > 255 then i := 255
-       else if i<32 then i := 32;
+    if i > 255 then
+      i := 255
+    else if i < 32 then
+      i := 32;
+      
     Bitmap.MasterAlpha := i;
   end;
   if FHLTimer.Tag >= FAnimSteps then
@@ -388,6 +388,8 @@ begin
 
     FIconSettings.Size  := 100;
     FIconSettings.Alpha := 255;
+    if Theme[DS_ICONALPHABLEND].BoolValue then
+      FIconSettings.Alpha := Theme[DS_ICONALPHA].IntValue;
     FIconSettings.XOffset     := 0;
     FIconSettings.YOffset     := 0;
 
@@ -418,11 +420,7 @@ begin
 
     bmp.Free;
 
-    if Theme[DS_ICONALPHABLEND].BoolValue then
-    begin
-      Bitmap.MasterAlpha := Theme[DS_ICONALPHA].IntValue;
-      if Bitmap.MasterAlpha<16 then Bitmap.MasterAlpha:=16;
-    end else Bitmap.MasterAlpha := 255;
+    Bitmap.MasterAlpha := 255;
   end;
 
   GetRecycleBinStatus;
