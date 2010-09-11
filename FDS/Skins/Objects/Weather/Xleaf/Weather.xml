@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<weatherskin>
+	<Info>
+		<Author>Captain Hérisson</Author>
+		<Preview>Preview.png</Preview>
+		<Comment></Comment>
+		<Website></Website>
+	</Info>
+
+   <day0bg>
+     <DataType>Image</DataType>
+     <x>0</x>
+     <y>0</y>
+     <alpha>255</alpha>
+     <data>panel.png</data>
+   </day0bg>
+   <day0image>
+     <DataType>WeatherImage</DataType>
+     <x>5</x>
+     <y>15</y>
+     <alpha>255</alpha>
+	 <Size>64</Size>
+     <data>{#ICON#}</data>
+   </day0image> 
+     
+   <day0temp>
+     <DataType>Text</DataType>
+     <x>65</x>
+     <y>20</y>
+	 <fontshadow>1</fontshadow>
+     <alpha>255</alpha>
+	 <fontshadow>1</fontshadow>
+	 <shadowalpha>1</shadowalpha>
+	 <shadowalphavalue>50</shadowalphavalue>
+	 <fontcolor>0</fontcolor>
+	 <fontname>MS Sans Serif</fontname> <fontsize>8</fontsize>
+	 <fontsize>8</fontsize>
+     <data>Temperature : {#TEMPERATURE#}°</data>
+   </day0temp>
+   <day0wind>
+     <DataType>Text</DataType>
+     <x>70</x>
+     <y>35</y>
+	 <fontshadow>1</fontshadow>
+     <alpha>255</alpha>
+	 <fontshadow>1</fontshadow>
+	 <shadowalpha>1</shadowalpha>
+	 <shadowalphavalue>50</shadowalphavalue>
+	 <fontcolor>0</fontcolor>
+	 <fontname>MS Sans Serif</fontname> <fontsize>8</fontsize>
+	 <fontsize>8</fontsize>
+     <data>Wind Speed : {#WINDSPEED#} ({#UNITSPEED#})</data>
+   </day0wind>
+   <day0condition>
+     <DataType>Text</DataType>
+     <x>65</x>
+     <y>50</y>
+	 <fontshadow>1</fontshadow>
+     <alpha>255</alpha>
+	 <fontshadow>1</fontshadow>
+	 <shadowalpha>1</shadowalpha>
+	 <shadowalphavalue>50</shadowalphavalue>
+	 <fontcolor>0</fontcolor>
+	 <fontname>MS Sans Serif</fontname> <fontsize>8</fontsize>
+	 <fontsize>8</fontsize>
+     <data>Condition : {#CONDITION#}</data>
+   </day0condition>
+   
+   <day0glazing>
+     <DataType>Image</DataType>
+     <x>0</x>
+     <y>0</y>
+     <alpha>255</alpha>
+     <data>glazing.png</data>
+   </day0glazing>
+
+   <day1bg>
+     <DataType>Image</DataType>
+     <x>34</x>
+     <y>72</y>
+     <alpha>255</alpha>
+     <data>small_panel.png</data>
+   </day1bg>
+   <day1image>
+     <DataType>WeatherImage</DataType>
+     <x>40</x>
+     <y>77</y>
+     <alpha>255</alpha>
+	 <Size>32</Size>
+     <data>{#FC_D1_DAY_DAYICON#}</data>
+   </day1image>
+   <day1glazing>
+     <DataType>Image</DataType>
+     <x>34</x>
+     <y>72</y>
+     <alpha>255</alpha>
+     <data>small_glazing.png</data>
+   </day1glazing>
+
+   <day2bg>
+     <DataType>Image</DataType>
+     <x>85</x>
+     <y>72</y>
+     <alpha>255</alpha>
+     <data>small_panel.png</data>
+   </day2bg>
+   <day2image>
+     <DataType>WeatherImage</DataType>
+     <x>91</x>
+     <y>77</y>
+     <alpha>255</alpha>
+	 <Size>32</Size>
+     <data>{#FC_D2_DAY_DAYICON#}</data>
+   </day2image>
+   <day2glazing>
+     <DataType>Image</DataType>
+     <x>85</x>
+     <y>72</y>
+     <alpha>255</alpha>
+     <data>small_glazing.png</data>
+   </day2glazing>
+
+   <day3bg>
+     <DataType>Image</DataType>
+     <x>136</x>
+     <y>72</y>
+     <alpha>255</alpha>
+     <data>small_panel.png</data>
+   </day3bg>
+   <day3image>
+     <DataType>WeatherImage</DataType>
+     <x>142</x>
+     <y>77</y>
+     <alpha>255</alpha>
+	 <Size>32</Size>
+     <data>{#FC_D3_DAY_DAYICON#}</data>
+   </day3image>
+   <day3glazing>
+     <DataType>Image</DataType>
+     <x>136</x>
+     <y>72</y>
+     <alpha>255</alpha>
+     <data>small_glazing.png</data>
+   </day3glazing>
+</weatherskin>
