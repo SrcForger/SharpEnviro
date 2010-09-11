@@ -413,7 +413,7 @@ begin
     begin
       IconSpacer := '';
 
-      if FSettings.DisplayCaption then
+      if FSettings.ShowCaption then
       begin
         if FSettings.Location then
         begin
@@ -645,7 +645,7 @@ begin
   //FCaptionSettings.Align := IntToTextAlign(FSettings.CaptionAlign);
   FCaptionSettings.Xoffset := 0;
   FCaptionSettings.Yoffset := 0;
-  FCaptionSettings.Draw := FSettings.DisplayCaption;
+  FCaptionSettings.Draw := FSettings.ShowCaption;
   FCaptionSettings.LineSpace := 0;
   FCaptionSettings.Align := taRight;
 
@@ -678,9 +678,9 @@ begin
     if FileExists(Filename) then
       LoadPng(bmp, Filename);
 
-    FIconSettings.Icon.SetSize(bmp.Width, bmp.Height);
+    FIconSettings.Icon.SetSize(FSettings.Theme[DS_ICONSIZE].IntValue, FSettings.Theme[DS_ICONSIZE].IntValue);
     FIconSettings.Icon.Clear(color32(0,0,0,0));
-    bmp.DrawTo(FIconSettings.Icon, Rect(0, 0, bmp.Width, bmp.Height));
+    bmp.DrawTo(FIconSettings.Icon, Rect(0, 0, FIconSettings.Icon.Width, FIconSettings.Icon.Height));
 
     bmp.Free;
   end;

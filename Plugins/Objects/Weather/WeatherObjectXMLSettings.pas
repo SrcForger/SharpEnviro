@@ -38,34 +38,15 @@ type
     TXMLSettings = class(TDesktopXMLSettings)
     public
       {Settings Block}
-      UseThemeSettings : boolean;
-      ColorBlend       : boolean;
-      AlphaBlend       : boolean;
       Location         : boolean;
       DetailedLocation : boolean;
       Temperature      : boolean;
       Wind             : boolean;
       Condition        : boolean;
       CustomFormat     : boolean;
-      TextShadow       : boolean;
       DisplayIcon      : boolean;
-      DisplayCaption   : boolean;
-      BlendColor       : integer;
-      BlendValue       : integer;
-      AlphaValue       : integer;
-      Spacing          : integer;
+      ShowCaption      : boolean;
       CustomData       : String;
-      FontName         : String;
-      FontSize         : integer;
-      FontColor        : integer;
-      FontBold         : boolean;
-      FontItalic       : boolean;
-      FontUnderline    : boolean;
-      FontShadow       : boolean;
-      FontShadowValue  : integer;
-      FontShadowColor  : integer;
-      FontAlpha        : boolean;
-      FontAlphaValue   : integer;
       WeatherSkin      : string;
       WeatherLocation  : String;
 
@@ -86,9 +67,6 @@ begin
 
   with FXMLRoot.Items do
   begin
-    AlphaBlend       := BoolValue('AlphaBlend',False);
-    ColorBlend       := BoolValue('ColorBlend',False);
-    UseThemeSettings := BoolValue('UseThemeSettings',True);
     Location         := BoolValue('Location',True);
     DetailedLocation := BoolValue('DetailedLocation',True);
     Temperature      := BoolValue('Temperature',True);
@@ -99,24 +77,8 @@ begin
     CustomData       := Value('CustomData','');
     WeatherLocation  := Value('WeatherLocation','');
 
-    BlendColor       := IntValue('BlendColor',0);
-    BlendValue       := IntValue('BlendValue',0);
-    AlphaValue       := IntValue('AlphaValue',255);
-    Spacing          := IntValue('Spacing',0);
-    TextShadow       := BoolValue('TextShadow',False);
     DisplayIcon      := BoolValue('DisplayIcon',True);
-    DisplayCaption   := BoolValue('DisplayCaption',True);
-    FontName         := Value('FontName','Verdana');
-    FontSize         := IntValue('FontSize',10);
-    FontColor        := IntValue('FontColor',0);
-    FontBold         := BoolValue('FontBold',False);
-    FontItalic       := BoolValue('FontItalic',False);
-    FontUnderline    := BoolValue('FontUnderline',False);
-    FontShadow       := BoolValue('FontShadow',False);
-    FontShadowValue  := IntValue('FontShadowValue',0);
-    FontShadowColor  := IntValue('FontShadowColor',0);
-    FontAlpha        := BoolValue('FontAlpha',False);
-    FontAlphaValue   := IntValue('FontAlphaValue',255);
+    ShowCaption      := BoolValue('ShowCaption',True);
     WeatherSkin      := Value('WeatherSkin','');
   end;
 end;
@@ -130,13 +92,9 @@ begin
 
   with FXMLRoot.Items do
   begin
-    Add('Spacing', Spacing);
-    Add('TextShadow', TextShadow);
     Add('DisplayIcon', DisplayIcon);
-    Add('DisplayCaption', DisplayCaption);
-    Add('ColorBlend', ColorBlend);
-    Add('AlphaBlend', AlphaBlend);
-    Add('UseThemeSettings', UseThemeSettings);
+    Add('ShowCaption', ShowCaption);
+
     Add('Temperature', Temperature);
     Add('Condition', Condition);
     Add('Location', Location);
@@ -147,20 +105,6 @@ begin
     Add('CustomData', CustomData);
     Add('WeatherLocation', WeatherLocation);
 
-    Add('BlendColor', BlendColor);
-    Add('BlendValue', BlendValue);
-    Add('AlphaValue', AlphaValue);
-    Add('FontName', FontName);
-    Add('FontSize', FontSize);
-    Add('FontColor', FontColor);
-    Add('FontBold', FontBold);
-    Add('FontItalic', FontItalic);
-    Add('FontUnderline', FontUnderline);
-    Add('FontShadow', FontShadow);
-    Add('FontShadowValue', FontShadowValue);
-    Add('FontShadowColor', FontShadowColor);
-    Add('FontAlpha', FontAlpha);
-    Add('FontAlphaValue', FontAlphaValue);
     Add('WeatherSkin', WeatherSkin);
   end;
 
