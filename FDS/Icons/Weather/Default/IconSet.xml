@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<IconSet Version="1.0.0.0">
+  <name>Default</name>
+  <author>SharpEnviro Development Team</author>
+  <website>http://sharpe-shell.org/</website>
+  <comment>Default weather icons</comment>
+  <IconSizes>
+    <IconSize Size="128" />
+	<IconSize Size="64" />
+	<IconSize Size="32" />
+	<IconSize Size="16" />
+  </IconSizes>
+</IconSet>
