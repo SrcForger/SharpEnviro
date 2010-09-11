@@ -36,6 +36,7 @@ uses
 type
     TWallpaperAlign = (waTile,waCenter,waStretch);
     TTextAlign = (taTop,taRight,taBottom,taLeft,taCenter);
+    TTextAligns = set of TTextAlign;
     TDeskFont = record
                   Name        : String;
                   Color       : integer;
@@ -110,9 +111,9 @@ procedure CreateDropShadow(Bmp : TBitmap32; StartX, StartY, sAlpha, color :integ
 procedure releasebuffer(p : pChar); external 'SharpDeskApi.dll';
 
 // Align: -1=Left; 0=Center; 1=Right
-function RenderText(dst : TBitmap32; Font : TDeskFont; Text : TStringList; Align : integer; Spacing : integer) : boolean; overload; external 'SharpDeskApi.dll' name 'RenderTextC';
-function RenderText(dst : TBitmap32; Font : TDeskFont; Text : String; Align : integer; Spacing : integer) : boolean; overload; external 'SharpDeskApi.dll' name 'RenderTextB';
-function RenderTextNA(dst : TBitmap32; Font : TDeskFont; Text : TStringList; Align : integer; Spacing : integer; BGColor : integer) : boolean; external 'SharpDeskApi.dll';
+function RenderText(dst : TBitmap32; Font : TDeskFont; Text : TStringList; Align : TTextAlign; Spacing : integer) : boolean; overload; external 'SharpDeskApi.dll' name 'RenderTextC';
+function RenderText(dst : TBitmap32; Font : TDeskFont; Text : String; Align : TTextAlign; Spacing : integer) : boolean; overload; external 'SharpDeskApi.dll' name 'RenderTextB';
+function RenderTextNA(dst : TBitmap32; Font : TDeskFont; Text : TStringList; Align : TTextAlign; Spacing : integer; BGColor : integer) : boolean; external 'SharpDeskApi.dll';
 function RenderIcon(dst : TBitmap32; Icon : TDeskIcon; SizeMod : TPoint) : boolean; external 'SharpDeskApi.dll';
 function RenderObject(dst : TBitmap32; Icon : TDeskIcon; Font : TDeskFont; Caption : TDeskCaption; SizeMod : TPoint; OffsetMod : TPoint) : boolean; external 'SharpDeskApi.dll';
 function RenderIconCaptionAligned(dst : TBitmap32; Icon : TBitmap32; Caption : TBitmap32; CaptionAlign : TTextAlign; IconOffset : TPoint; CaptionOffset : TPoint; IconHasShadow : boolean; CaptionHasShadow : boolean) : TAlignInfo; external 'SharpDeskApi.dll';
@@ -121,7 +122,8 @@ function RenderIconCaptionAligned(dst : TBitmap32; Icon : TBitmap32; Caption : T
 function DeskFont(Name : String; Color : integer; Bold : boolean; Italic : boolean; Underline : boolean; AALevel : integer; Alpha : integer; Size : integer; ShadowColor : integer; TextAlpha : boolean; ShadowAlphaValue : integer; Shadow : boolean; ShadowType  : integer; ShadowSize  : integer) : TDeskFont;
 function DeskIcon(Icon : TBitmap32; Size : integer; Alpha : integer; Blend : boolean; BlendColor : integer; BlendValue : integer; Shadow : boolean; ShadowColor : integer; ShadowAlpha : integer; XOffset : integer; YOffset : integer) : TDeskIcon;
 function DeskCaption(Caption : TStringList; Align : TTextAlign; Xoffset : integer; Yoffset : integer; Draw : boolean; LineSpace : integer) : TDeskCaption;
-function IntToTextAlign(value : integer) : TTextAlign;
+
+function IntToTextAlign(a : integer) : TTextAlign; external 'SharpDeskApi.dll' name 'IntToTextAlign';
 
 
 implementation
@@ -171,6 +173,7 @@ function DeskIcon(Icon        : TBitmap32;
 begin
   result.Icon        := Icon;
   result.Size        := Size;
+  result.Alpha       := Alpha;
   result.Blend       := Blend;
   result.BlendColor  := BlendColor;
   result.BlendValue  := BlendValue;
@@ -193,17 +196,6 @@ begin
   result.Xoffset   := XOffset;
   result.Yoffset   := YOffset;
   result.LineSpace := LineSpace;
-end;
-
-function IntToTextAlign(value : integer) : TTextAlign;
-begin
-  case value of
-    0: result := taTop;
-    1: result := taRight;
-    3: result := taLeft;
-    4: result := taCenter;
-    else result := taBottom
-  end;
 end;
 
 end.

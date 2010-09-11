@@ -35,6 +35,7 @@ uses
   GR32Utils,
   Math,
   Classes,
+  SysUtils,
   {$IFDEF DEBUG}DebugDialog in '..\..\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   GR32_PNG in '..\..\3rd party\GR32 Addons\GR32_PNG.pas',
   SharpGraphicsUtils in '..\..\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas';
@@ -105,6 +106,17 @@ type
                    CaptionTop  : integer;
                  end;
 
+function IntToTextAlign(a : integer) : TTextAlign;
+begin
+  case a of
+    0: result := taTop;
+    1: result := taRight;
+    3: result := taLeft;
+    4: result := taCenter;
+    else result := taBottom
+  end;
+end;
+
 procedure CreateDropShadow(Bmp : TBitmap32; StartX, StartY, sAlpha, color :integer);
 var
    P: PColor32;
@@ -126,7 +138,7 @@ begin
         if (alpha <> 0) then pass[X,Y] := sAlpha
             else if (X>1) and (Y>1) then
             begin
-              pass[X,Y] := round((pass[X-1,Y] + pass[X,Y-1])/2) - 20;
+              pass[X,Y] := round((pass[X-1,Y] + pass[X,Y-1])/2) - 30;
               if pass[X,Y] > sAlpha-1 then pass[X,Y] := sAlpha;
               if pass[X,Y] < 0 then pass[X,Y] := 0;
               P^ := color32(GetRValue(Color),GetGValue(Color),GetBValue(Color),pass[X,Y]);
@@ -252,7 +264,7 @@ begin
 end;
 
 function RenderTextC(Bmp : TBitmap32; Font : TDeskFont;
-                     Text    : TStringList; Align   : integer;
+                     Text    : TStringList; Align   : TTextAlign;
                      Spacing : integer) : boolean;
 var
   c : TColor;
@@ -271,13 +283,18 @@ begin
     Bmp.Font.Color := Font.Color;
     Bmp.Font.Size  := Font.Size;
     Bmp.Font.Style := [];
-    if Font.Bold then      Bmp.Font.Style := Bmp.Font.Style + [fsBold];
-    if Font.Italic then    Bmp.Font.Style := Bmp.Font.Style + [fsItalic];
-    if Font.Underline then Bmp.Font.Style := Bmp.Font.Style + [fsUnderline];
+    if Font.Bold then
+      Bmp.Font.Style := Bmp.Font.Style + [fsBold];
+    if Font.Italic then
+      Bmp.Font.Style := Bmp.Font.Style + [fsItalic];
+    if Font.Underline then
+      Bmp.Font.Style := Bmp.Font.Style + [fsUnderline];
+
     p := GetTextSize(Bmp,Text);
     w := p.x;
     h := p.Y;
     eh := Bmp.TextHeight('SHARPE-WQGgYyqQ') + Spacing;
+    
     TempBmp.SetSize(w+20,h+20);
     TempBmp.Font.Assign(Bmp.Font);
     TempBmp.Clear(color32(0,0,0,0));
@@ -302,42 +319,47 @@ begin
         begin
           case TShadowType(Font.ShadowType) of
             stLeft    :
-              case Align of
-                -1 : ShadowBmp.RenderText(10 - 1,
-                                          TempBmp.Height div 2 - h div 2 + 1 + eh * n,Text[n],0,c2);
-               1 : ShadowBmp.RenderText(TempBmp.Width - TempBmp.TextWidth(Text[n]) - 10 - 1,
-                                         TempBmp.Height div 2 - h div 2 + 1 + eh * n,Text[n],0,c2);
-                else ShadowBmp.RenderText(TempBmp.Width div 2 - TempBmp.TextWidth(Text[n]) div 2 - 1,
-                                          TempBmp.Height div 2 - h div 2 + 1 + eh * n,Text[n],0,c2);
-              end;
+              if (Align = taRight) then
+                ShadowBmp.RenderText(10 - 1,
+                                      TempBmp.Height div 2 - h div 2 + 1 + eh * n,Text[n],0,c2)
+              else if (Align = taLeft) then
+                ShadowBmp.RenderText(TempBmp.Width - TempBmp.TextWidth(Text[n]) - 10 - 1,
+                                      TempBmp.Height div 2 - h div 2 + 1 + eh * n,Text[n],0,c2)
+              else
+                ShadowBmp.RenderText(TempBmp.Width div 2 - TempBmp.TextWidth(Text[n]) div 2 - 1,
+                                      TempBmp.Height div 2 - h div 2 + 1 + eh * n,Text[n],0,c2);
             stRight :
-              case Align of
-                -1 : ShadowBmp.RenderText(10 + 1,
-                                          TempBmp.Height div 2 - h div 2 + 1 + eh * n,Text[n],0,c2);
-                1 : ShadowBmp.RenderText(TempBmp.Width - TempBmp.TextWidth(Text[n]) - 10 + 1,
-                                         TempBmp.Height div 2 - h div 2 + 1 + eh * n,Text[n],0,c2);
-                else ShadowBmp.RenderText(TempBmp.Width div 2 - TempBmp.TextWidth(Text[n]) div 2 + 1,
-                                          TempBmp.Height div 2 - h div 2 + 1 + eh * n,Text[n],0,c2);
-              end;
+              if (Align = taRight) then
+                ShadowBmp.RenderText(10 + 1,
+                                      TempBmp.Height div 2 - h div 2 + 1 + eh * n,Text[n],0,c2)
+              else if (Align = taLeft) then
+                ShadowBmp.RenderText(TempBmp.Width - TempBmp.TextWidth(Text[n]) - 10 + 1,
+                                      TempBmp.Height div 2 - h div 2 + 1 + eh * n,Text[n],0,c2)
+              else
+                ShadowBmp.RenderText(TempBmp.Width div 2 - TempBmp.TextWidth(Text[n]) div 2 + 1,
+                                      TempBmp.Height div 2 - h div 2 + 1 + eh * n,Text[n],0,c2);
             else
             begin
-              case Align of
-                -1 : ShadowBmp.RenderText(10 + 1,
-                                          TempBmp.Height div 2 - h div 2 + eh * n,Text[n],0,c2);
-                1 : ShadowBmp.RenderText(TempBmp.Width - TempBmp.TextWidth(Text[n]) - 10,
-                                         TempBmp.Height div 2 - h div 2 + eh * n,Text[n],0,c2);
-                else ShadowBmp.RenderText(TempBmp.Width div 2 - TempBmp.TextWidth(Text[n]) div 2 ,
-                                          TempBmp.Height div 2 - h div 2 + eh * n,Text[n],0,c2);
-              end;
+              if (Align = taRight) then
+                ShadowBmp.RenderText(10 + 1,
+                                      TempBmp.Height div 2 - h div 2 + eh * n,Text[n],0,c2)
+              else if (Align = taLeft) then
+                ShadowBmp.RenderText(TempBmp.Width - TempBmp.TextWidth(Text[n]) - 10,
+                                      TempBmp.Height div 2 - h div 2 + eh * n,Text[n],0,c2)
+              else
+                ShadowBmp.RenderText(TempBmp.Width div 2 - TempBmp.TextWidth(Text[n]) div 2 ,
+                                      TempBmp.Height div 2 - h div 2 + eh * n,Text[n],0,c2);
+
               fastblur(ShadowBmp,1,1);
-              case Align of
-                -1 : ShadowBmp.RenderText(10 + 1,
+              if (Align = taRight) then
+                ShadowBmp.RenderText(10 + 1,
+                                          TempBmp.Height div 2 - h div 2 + eh * n,Text[n],0,c2)
+              else if (Align = taLeft) then
+                ShadowBmp.RenderText(TempBmp.Width - TempBmp.TextWidth(Text[n]) - 10,
+                                         TempBmp.Height div 2 - h div 2 + eh * n,Text[n],0,c2)
+              else
+                ShadowBmp.RenderText(TempBmp.Width div 2 - TempBmp.TextWidth(Text[n]) div 2 ,
                                           TempBmp.Height div 2 - h div 2 + eh * n,Text[n],0,c2);
-                1 : ShadowBmp.RenderText(TempBmp.Width - TempBmp.TextWidth(Text[n]) - 10,
-                                         TempBmp.Height div 2 - h div 2 + eh * n,Text[n],0,c2);
-                else ShadowBmp.RenderText(TempBmp.Width div 2 - TempBmp.TextWidth(Text[n]) div 2 ,
-                                          TempBmp.Height div 2 - h div 2 + eh * n,Text[n],0,c2);
-              end;
             end;
           end;
         end;
@@ -359,19 +381,26 @@ begin
     c2 := color32(R,G,B,255);
     for n := 0 to Text.Count - 1 do
     begin
-      case Align of
-       -1 : TempBmp.RenderText(10 ,
-                               TempBmp.Height div 2 - h div 2 + eh * n,Text[n],0,c2);
-        1 : TempBmp.RenderText(TempBmp.Width - TempBmp.TextWidth(Text[n]) - 10,
-                               TempBmp.Height div 2 - h div 2 + eh * n,Text[n],0,c2);
-        else TempBmp.RenderText(TempBmp.Width div 2 - TempBmp.TextWidth(Text[n]) div 2,
-                                TempBmp.Height div 2 - h div 2 + eh * n,Text[n],0,c2);
-      end;
+      if (Align = taRight) then
+        TempBmp.RenderText(10,
+                            TempBmp.Height div 2 - h div 2 + eh * n,Text[n],0,c2)
+      else if (Align = taLeft) then
+        TempBmp.RenderText(TempBmp.Width - TempBmp.TextWidth(Text[n]) - 10,
+                            TempBmp.Height div 2 - h div 2 + eh * n,Text[n],0,c2)
+      else
+        TempBmp.RenderText(TempBmp.Width div 2 - TempBmp.TextWidth(Text[n]) div 2,
+                            TempBmp.Height div 2 - h div 2 + eh * n,Text[n],0,c2);
     end;
+
     if Font.TextAlpha then
       TempBmp.MasterAlpha := Font.Alpha
-    else TempBmp.MasterAlpha := 255;
-    GR32Utils.SaveAssign(TempBmp,Bmp);
+    else
+      TempBmp.MasterAlpha := 255;
+
+    Bmp.SetSize(TempBmp.Width, TempBmp.Height);
+    Bmp.Clear(color32(0,0,0,0));
+    TempBmp.DrawTo(Bmp, 0, 0);
+
     result := True;
   except
     result := False;
@@ -382,7 +411,7 @@ end;
 function RenderTextB(dst     : TBitmap32;
                     Font    : TDeskFont;
                     Text    : String;
-                    Align   : integer;
+                    Align   : TTextAlign;
                     Spacing : integer) : boolean;
 var
   SList : TStringList;
@@ -397,7 +426,7 @@ end;
 function RenderTextNA(dst     : TBitmap32;
                       Font    : TDeskFont;
                       Text    : TStringList;
-                      Align   : integer;
+                      Align   : TTextAlign;
                       Spacing : integer;
                       BGColor : integer) : boolean;
 var
@@ -418,6 +447,7 @@ function RenderIcon(dst  : TBitmap32;
                     Icon : TDeskIcon;
                     SizeMod : TPoint): boolean;
 var
+  TempBmp : TBitmap32;
   w,h : integer;
   x1,y1,x2,y2 : integer;
 begin
@@ -426,35 +456,59 @@ begin
     RenderIcon := False;
     exit;
   end;
-  w := round(Icon.Icon.Width * (Icon.Size / 100));
-  h := round(Icon.Icon.Height * (Icon.Size / 100));
-  w := w + abs(Icon.Xoffset) + SizeMod.X;
-  h := h + abs(Icon.Yoffset) + SizeMod.Y;
-  if Icon.Shadow then dst.SetSize(w+6,h+6)
-     else dst.SetSize(w,h);
-  dst.Clear(color32(0,0,0,0));
-  TDraftResampler.Create(dst);
-  x1 := Icon.Xoffset;
-  y1 := Icon.Yoffset;
-  if x1<0 then
-  begin
-    x1 := 0;
-    x2 := Icon.XOffset;
-  end else x2 := 0;
-  if y1<0 then
-  begin
-    y1 := 0;
-    y2 := Icon.Yoffset;
-  end else y2 := 0;
-  dst.Draw(Rect(x1,y1,w+x2-SizeMod.X,h+y2-SizeMod.Y),
-           Rect(0,0,Icon.Icon.Width,Icon.Icon.Height),
-                Icon.Icon);
-  if Icon.Blend then
-     BlendImageA(dst,Icon.BlendColor,Icon.BlendValue);
-  if Icon.Shadow then
-     CreateIconShadow(dst,Icon.ShadowColor,Icon.ShadowAlpha);
-  dst.MasterAlpha := Icon.Alpha;
 
+  TempBmp := TBitmap32.Create;
+  try
+    TempBmp.DrawMode := dmBlend;
+    TempBmp.CombineMode := cmMerge;
+
+	  w := round(Icon.Icon.Width * (Icon.Size / 100));
+	  h := round(Icon.Icon.Height * (Icon.Size / 100));
+	  w := w + abs(Icon.Xoffset) + SizeMod.X;
+  	h := h + abs(Icon.Yoffset) + SizeMod.Y;
+	
+    if Icon.Shadow then
+      TempBmp.SetSize(w+6,h+6)
+    else
+      TempBmp.SetSize(w,h);
+
+    TempBmp.Clear(color32(0,0,0,0));
+    TDraftResampler.Create(TempBmp);
+
+    x1 := Icon.Xoffset;
+    y1 := Icon.Yoffset;
+    if x1 < 0 then
+    begin
+      x1 := 0;
+      x2 := Icon.XOffset;
+    end else
+      x2 := 0;
+
+    if y1 < 0 then
+    begin
+      y1 := 0;
+      y2 := Icon.Yoffset;
+    end else
+      y2 := 0;
+
+    TempBmp.Draw(Rect(x1,y1,w+x2-SizeMod.X,h+y2-SizeMod.Y),
+                Rect(0,0,Icon.Icon.Width,Icon.Icon.Height),
+                Icon.Icon);
+                
+    if Icon.Blend then
+      BlendImageA(TempBmp,Icon.BlendColor,Icon.BlendValue);
+    if Icon.Shadow then
+      CreateIconShadow(TempBmp,Icon.ShadowColor,Icon.ShadowAlpha);
+
+    TempBmp.MasterAlpha := Icon.Alpha;
+
+    dst.SetSize(TempBmp.Width, TempBmp.Height);
+    dst.Clear(color32(0,0,0,0));
+    TempBmp.DrawTo(dst, 0, 0);
+  except
+  end;
+
+  TempBmp.Free;
 
   RenderIcon := True;
 end;
@@ -475,9 +529,7 @@ begin
   result.CaptionLeft := 0;
   result.CaptionTop  := 0;
 
-  {if IconHasShadow then smod := -3
-     else if CaptionHasShadow then smod := -2
-          else} smod := 0;
+  smod := 0;
 
   Caption.DrawMode := dmBlend;
   Caption.CombineMode := cmMerge;
@@ -491,12 +543,12 @@ begin
     result.IconTop  := dst.Height div 2 - Icon.Height div 2;
     result.CaptionLeft := dst.Width div 2 - Caption.Width div 2 + smod;
     result.CaptionTop  := dst.Height div 2 - Caption.Height div 2+ smod - 5;
-  end else
+  end;
   if (CaptionAlign = taTop) or (CaptionAlign = taBottom) then
   begin
     dst.SetSize(Max(Caption.Width,Icon.Width)+8+abs(IconOffset.X)+CaptionOffset.X,Caption.Height+Icon.Height+CaptionOffset.Y+IconOffset.Y);
     dst.Clear(color32(0,0,0,0));
-    if CaptionAlign = taTop then
+    if (CaptionAlign = taTop) then
     begin
       result.IconLeft := dst.Width div 2 - Icon.Width div 2 + IconOffset.X;
       result.IconTop  := dst.Height - Icon.Height + IconOffset.Y;
@@ -507,13 +559,14 @@ begin
       result.IconLeft := dst.Width div 2 - Icon.Width div 2 + IconOffset.X;
       result.IconTop  := 0 + IconOffset.Y;
       result.CaptionLeft := dst.Width div 2 - Caption.Width div 2 + smod;
-      result.CaptionTop  := dst.Height - Caption.Height - 5;    
+      result.CaptionTop  := dst.Height - Caption.Height - 5;
     end;
-  end else
+  end;
+  if (CaptionAlign = taLeft) or (CaptionAlign = taRight) then
   begin
     dst.SetSize(Caption.Width+Icon.Width+CaptionOffset.X+IconOffset.X+8,Max(Caption.Height,Icon.Height)+CaptionOffset.Y+IconOffset.Y);
     dst.Clear(color32(0,0,0,0));
-    if CaptionAlign = taLeft then
+    if (CaptionAlign = taLeft) then
     begin
       result.IconLeft := dst.Width - Icon.Width;
       result.IconTop  := dst.Height div 2 - Icon.Height div 2;
@@ -528,8 +581,9 @@ begin
       result.CaptionTop  := dst.Height div 2 - Caption.Height div 2 + smod;
     end;
   end;
-  dst.Draw(result.IconLeft,result.IconTop,Icon);
-  dst.Draw(result.CaptionLeft,result.CaptionTop ,Caption);
+
+  Icon.DrawTo(dst, result.IconLeft, result.IconTop);
+  Caption.DrawTo(dst, result.CaptionLeft, result.CaptionTop);
 end;
 
 
@@ -542,7 +596,6 @@ function RenderObject(dst            : TBitmap32;
 var
   FontBitmap : TBitmap32;
   IconBitmap : TBitmap32;
-  n : integer;
 begin
   if dst = nil then
   begin
@@ -560,13 +613,7 @@ begin
     FontBitmap := TBitmap32.Create;
     FontBitmap.DrawMode := dmBlend;
     FontBitmap.CombineMode := cmMerge;
-    case Caption.Align of
-      taTop,taBottom: n := 0;
-      taLeft: n := 1;
-      taRight: n:= -1;
-      else n := 0;
-    end;
-    if not RenderTextC(FontBitmap,Font,Caption.Caption,n,Caption.LineSpace) then
+    if not RenderTextC(FontBitmap,Font,Caption.Caption,Caption.Align,Caption.LineSpace) then
     begin
       FontBitmap.SetSize(64,64);
       FontBitmap.Clear(color32(0,0,0,0));
@@ -595,6 +642,7 @@ end;
 
 
 exports
+ IntToTextAlign,
  CreateDropShadow,
  releasebuffer,
  RenderTextC,
