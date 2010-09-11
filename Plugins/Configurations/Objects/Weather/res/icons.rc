@@ -1,0 +1,6 @@
+blue32 RCDATA "blue32.png"
+blue48 RCDATA "blue48.png"
+blue64 RCDATA "blue64.png"
+white32 RCDATA "white32.png"
+white48 RCDATA "white48.png"
+white64 RCDATA "white64.png"
