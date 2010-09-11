@@ -672,7 +672,9 @@ begin
     bmp := TBitmap32.Create;
     bmp.DrawMode := dmBlend;
 
-    Filename := SharpAPI.GetSharpeDirectory + 'Icons\Weather\Default\' + IntToStr(FSettings.Theme[DS_ICONSIZE].IntValue) + '\' + uWeatherParser.GetWeatherIcon(FWeatherParser.wxml.CurrentCondition.IconCode);
+    Filename := SharpAPI.GetSharpeDirectory + 'Icons\Weather\Default\' +
+                IntToStr(GetNearestIconSize(FSettings.Theme[DS_ICONSIZE].IntValue)) + '\' +
+                uWeatherParser.GetWeatherIcon(FWeatherParser.wxml.CurrentCondition.IconCode);
     if FileExists(Filename) then
       LoadPng(bmp, Filename);
 
