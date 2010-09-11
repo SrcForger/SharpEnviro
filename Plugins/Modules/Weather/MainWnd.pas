@@ -283,10 +283,9 @@ begin
 
   if (bShowIcon) and (FWeatherParser.CCValid) then
   begin
-    s := SharpApi.GetSharpeDirectory +
-      'Icons\Weather\61x61\' +
-      LeftPad(FWeatherParser.wxml.CurrentCondition.IconCode, '0', 2) +
-      '.png';
+    s := SharpAPI.GetSharpeDirectory + 'Icons\Weather\Default\' +
+          IntToStr(32) + '\' +
+          uWeatherParser.GetWeatherIcon(FWeatherParser.wxml.CurrentCondition.IconCode);
 
     if FileExists(s) then
     begin
@@ -400,10 +399,9 @@ begin
   // We will close the window manually so disable the timeout
   timeout := 0;
   
-  iconPath := SharpApi.GetSharpeDirectory +
-    'Icons\Weather\93x93\' +
-    LeftPad(WeatherParser.wxml.CurrentCondition.IconCode, '0', 2) +
-    '.png';
+  iconPath := SharpAPI.GetSharpeDirectory + 'Icons\Weather\Default\' +
+          IntToStr(128) + '\' +
+          uWeatherParser.GetWeatherIcon(FWeatherParser.wxml.CurrentCondition.IconCode);
 
   BmpToDisplay := TBitmap32.Create;
   BmpToDisplay.DrawMode := dmBlend;
