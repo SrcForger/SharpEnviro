@@ -51,20 +51,22 @@ uses
 type
 
   TWeatherSkinItem = class
-                       x,y : integer;
-                       itype : string;
-                       data : String;
-                       alpha : integer;
-                       Bitmap : TBitmap32;
-                       Font   : TDeskFont;
-                       BlendA  : boolean;
-                       BlendColorA : integer;
-                       BlendValueA : integer;
-                       BlendB  : boolean;
-                       BlendColorB : integer;
-                       BlendValueB : integer;
-                       destructor Destroy; override;
-                     end;
+    x,y : integer;
+    DataType : string;
+    Data : String;
+    Size : integer;
+    Alpha : integer;
+    Bitmap : TBitmap32;
+    Font   : TDeskFont;
+    BlendA  : boolean;
+    BlendColorA : integer;
+    BlendValueA : integer;
+    BlendB  : boolean;
+    BlendColorB : integer;
+    BlendValueB : integer;
+    constructor Create;
+    destructor Destroy; override;
+  end;
 
   TWeatherLayer = class(TBitmapLayer)
   private
@@ -88,8 +90,8 @@ type
   public
      procedure DrawBitmap;
      procedure BuildOutput;
-     procedure LoadWeatherSkin(filename : string);
-     procedure RenderWeatherSkin;
+     function LoadWeatherSkin(skinName : string): boolean;
+     procedure RenderWeatherSkin(outBmp : TBitmap32);
      function  ReplaceDataInString(pString : String) : String;
      procedure ReplaceData(var pSList : TStringList);
      procedure ReplaceSpacer(var pSList : TStringList);
@@ -118,9 +120,16 @@ uses uSharpDeskManager,
      uSharpDeskObjectSet,
      uSharpDeskObjectSetItem;
 
+constructor TWeatherSkinItem.Create;
+begin
+  inherited Create;
+
+  Bitmap := nil;
+end;
+
 destructor TWeatherSkinItem.Destroy;
 begin
-  if itype = 'image' then Bitmap.Free;
+  Bitmap.Free;
   inherited Destroy;
 end;
 
@@ -236,7 +245,7 @@ begin
   Changed;
 end;
 
-procedure TWeatherLayer.RenderWeatherSkin;
+procedure TWeatherLayer.RenderWeatherSkin(outBmp : TBitmap32);
 var
   n : integer;
   mx,my : integer;
@@ -251,7 +260,7 @@ begin
   for n := 0 to FWeatherSkinItems.Count - 1 do
   begin
     pItem := TWeatherSkinItem(FWeatherSkinItems.Items[n]);
-    if pItem.itype = 'image' then
+    if (pItem.DataType = 'Image') or (pItem.DataType = 'WeatherImage') then
     begin
       if pItem.Bitmap.Width + pItem.x > mx then
          mx := pItem.Bitmap.Width + pItem.x;
@@ -259,18 +268,18 @@ begin
          my := pItem.Bitmap.Height + pItem.y;
     end else
     begin
-      if Bitmap.TextWidth(pItem.data) + pItem.x > mx then
-         mx := Bitmap.TextWidth(pItem.data) + pItem.x;
-      if Bitmap.TextHeight(pItem.data) + pItem.y > my then
-         my := Bitmap.TextHeight(pItem.data) + pItem.y;
+      if outBmp.TextWidth(pItem.data) + pItem.x > mx then
+         mx := outBmp.TextWidth(pItem.data) + pItem.x;
+      if outBmp.TextHeight(pItem.data) + pItem.y > my then
+         my := outBmp.TextHeight(pItem.data) + pItem.y;
     end;
   end;
-  Bitmap.SetSize(mx,my);
-  Bitmap.Clear(color32(0,0,0,0));
+  outBmp.SetSize(mx,my);
+  outBmp.Clear(color32(0,0,0,0));
   for n := 0 to FWeatherSkinItems.Count - 1 do
   begin
     pItem := TWeatherSkinItem(FWeatherSkinItems.Items[n]);
-    if pItem.itype = 'image' then
+    if (pItem.DataType = 'Image') or (pItem.DataType = 'WeatherImage') then
     begin
       Bmp.Assign(pItem.Bitmap);
       Bmp.DrawMode := dmBlend;
@@ -280,12 +289,12 @@ begin
       if pItem.BlendB then
          BlendImageA(Bmp,pItem.BlendColorB,pItem.BlendValueB);
       Bmp.MasterAlpha := pItem.alpha;
-      Bmp.DrawTo(Bitmap,pItem.x,pItem.y);
+      Bmp.DrawTo(outBmp,pItem.x,pItem.y);
     end else
     begin
       SharpDeskApi.RenderText(Bmp,pItem.Font,pItem.data,taRight,0);
       Bmp.MasterAlpha := pItem.alpha;
-      Bmp.DrawTo(Bitmap,pItem.x,pItem.y);
+      Bmp.DrawTo(outBmp,pItem.x,pItem.y);
     end;
   end;
   Bmp.Free;
@@ -320,69 +329,101 @@ begin
   end;
 end;
 
-procedure TWeatherLayer.LoadWeatherSkin(filename : string);
+function TWeatherLayer.LoadWeatherSkin(skinName : string): boolean;
 var
   XML : TJclSimpleXML;
   pItem : TWeatherSkinItem;
   n : integer;
   s : string;
   a : boolean;
+  skinDir, weatherDir : string;
+  TempBitmap : TBitmap32;
 begin
+  Result := True;
+
   FWeatherSkinItems.Clear;
   XML := TJclSimpleXML.Create;
   try
-    XML.LoadFromFile(filename);
+    skinDir := SharpAPI.GetSharpeDirectory + 'Skins\Objects\Weather\' + skinName + '\';
+    XML.LoadFromFile(skinDir + 'Weather.xml');
   except
     FSettings.CustomFormat := False;
     FSettings.WeatherSkin  := '';
     XML.Free;
+
+    Result := False;
     exit;
   end;
   
   for n := 0 to XML.Root.Items.Count - 1 do
-    if XML.Root.Items.Item[n].Name = 'Item' then
+    if XML.Root.Items.Item[n].Name <> 'Info' then
     begin
       with XML.Root.Items.Item[n].Items do
       begin
         pItem := TWeatherSkinItem.Create;
-        pItem.x := IntValue('x',0);
-        pItem.y := IntValue('y',0);
-        pItem.itype := lowercase(Value('type',''));
-        pItem.data  := Value('data','');
+        pItem.x := IntValue('X',0);
+        pItem.y := IntValue('Y',0);
+        pItem.DataType := Value('DataType','');
+        pItem.data  := Value('Data','');
         pItem.data := ReplaceDataInString(pItem.data);
-        pItem.alpha := IntValue('alpha',255);
+        pItem.alpha := IntValue('Alpha',255);
+        pItem.Size := IntValue('Size', 32);
 
-        s := Value('fontcolor',inttostr(FFontSettings.Color));
+        s := Value('FontColor',inttostr(FFontSettings.Color));
         pItem.Font.Color := ParseColor(s,FFontsettings.Color);
 
-        s := Value('shadowcolor',inttostr(FFontSettings.ShadowColor));
+        s := Value('ShadowColor',inttostr(FFontSettings.ShadowColor));
         pItem.Font.ShadowColor := ParseColor(s,FFontsettings.Color);
 
-        s := Value('blendcolorA',inttostr(FFontSettings.ShadowColor));
+        s := Value('BlendColorA',inttostr(FFontSettings.ShadowColor));
         pItem.BlendColorA := ParseColor(s,FFontsettings.Color);
 
-        s := Value('blendcolorB',inttostr(FFontSettings.ShadowColor));
+        s := Value('BlendColorB',inttostr(FFontSettings.ShadowColor));
         pItem.BlendColorB := ParseColor(s,FFontsettings.Color);
 
-        pItem.Font.Name             := Value('fontname',FFontSettings.Name);
-        pItem.Font.Bold             := BoolValue('fontbold',FFontSettings.Bold);
-        pItem.Font.Italic           := BoolValue('fontitalic',FFontSettings.Italic);
-        pItem.Font.Underline        := BoolValue('fontunderline',FFontSettings.Underline);
-        pItem.Font.AALevel          := IntValue('fontaa',FFontSettings.AALevel);
-        pItem.Font.Alpha            := IntValue('fontalpha',FFontSettings.Alpha);
-        pItem.Font.Size             := IntValue('fontsize',FFontSettings.Size);
-        pItem.Font.ShadowAlphaValue := IntValue('shadowalphavalue',FFontSettings.ShadowAlphaValue);
-        pItem.Font.Shadow           := BoolValue('fontshadow',FFontSettings.Shadow);
-        pItem.BlendA                := BoolValue('blendA',False);
-        pItem.BlendValueA           := IntValue('blendvalueA',255);
-        pItem.BlendB                := BoolValue('blendB',False);
-        pItem.BlendValueB           := IntValue('blendvalueB',255);
-        if pItem.itype = 'image' then
+        pItem.Font.Name             := Value('FontName',FFontSettings.Name);
+        pItem.Font.Bold             := BoolValue('FontBold',FFontSettings.Bold);
+        pItem.Font.Italic           := BoolValue('FontItalic',FFontSettings.Italic);
+        pItem.Font.Underline        := BoolValue('FontUnderline',FFontSettings.Underline);
+        pItem.Font.AALevel          := IntValue('FontAA',FFontSettings.AALevel);
+        pItem.Font.Alpha            := IntValue('FontAlpha',FFontSettings.Alpha);
+        pItem.Font.Size             := IntValue('FontSize',FFontSettings.Size);
+        pItem.Font.ShadowAlphaValue := IntValue('ShadowAlphaValue',FFontSettings.ShadowAlphaValue);
+        pItem.Font.Shadow           := BoolValue('FontShadow',FFontSettings.Shadow);
+        pItem.BlendA                := BoolValue('BlendA',False);
+        pItem.BlendValueA           := IntValue('BlendValueA',255);
+        pItem.BlendB                := BoolValue('BlendB',False);
+        pItem.BlendValueB           := IntValue('BlendValueB',255);
+
+        // Normal image
+        if (pItem.DataType = 'Image') and (FileExists(skinDir + pItem.Data)) then
         begin
           pItem.Bitmap := TBitmap32.Create;
-          {$WARN SYMBOL_PLATFORM OFF} LoadBitmap32FromPNG(pItem.Bitmap,IncludeTrailingBackslash(ExtractFileDir(filename))+pItem.data, a); {$WARN SYMBOL_PLATFORM ON}
-          pItem.Bitmap.Clear(color32(0,0,0,0));
+          try
+            LoadBitmap32FromPNG(pItem.Bitmap, skinDir + pItem.data, a);
+          except
+            pItem.Bitmap.Free;
+          end;
         end;
+
+        // Weather icon
+        weatherDir := SharpAPI.GetSharpeDirectory + 'Icons\Weather\Default\' + IntToStr(GetNearestIconSize(pItem.Size)) + '\';
+        if (pItem.DataType = 'WeatherImage') and (FileExists(weatherDir + pItem.Data)) then
+        begin
+          TempBitmap := TBitmap32.Create;
+          pItem.Bitmap := TBitmap32.Create;
+          try
+            LoadBitmap32FromPNG(TempBitmap, weatherDir + pItem.data, a);
+
+            pItem.Bitmap.SetSize(pItem.size, pItem.Size);
+            pItem.Bitmap.Clear(color32(0,0,0,0));
+            TempBitmap.DrawTo(pItem.Bitmap, Rect(0, 0, pItem.Size, pItem.Size));
+          except
+            pItem.Bitmap.Free;
+          end;
+          TempBitmap.Free;
+        end;
+
         FWeatherSkinItems.Add(pItem);
       end;
     end;
@@ -398,9 +439,7 @@ begin
     FOutput.Clear;
     if FSettings.WeatherSkin <> '' then
     begin
-      if FileExists(SharpApi.GetSharpeDirectory + 'Skins\Objects\Weather\' + FSettings.WeatherSkin + 'Skin.xml') then
-         LoadWeatherSkin(SharpApi.GetSharpeDirectory + 'Skins\Objects\Weather\' + FSettings.WeatherSkin + 'Skin.xml')
-      else
+      if not LoadWeatherSkin(FSettings.WeatherSkin) then
       begin
         FSettings.CustomFormat := False;
         FSettings.WeatherSkin := '';
@@ -483,32 +522,34 @@ end;
 function TWeatherLayer.ReplaceDataInString(pString : String) : String;
 var
   n : integer;
+  d : string;
 begin
   pString := StringReplace(pString,'{#FC_LASTUPDATE#}', FWeatherParser.wxml.Forecast.LastUpdated,[rfReplaceAll,rfIgnoreCase]);
   for n := 0 to High(FWeatherParser.wxml.Forecast.Days) do
   begin
-    pString := StringReplace(pString,'{#FC_D'+inttostr(n)+'_DAY_CONDITION#}',      FWeatherParser.wxml.Forecast.Days[n].Day.ConditionTxt,[rfReplaceAll,rfIgnoreCase]);
-    pString := StringReplace(pString,'{#FC_D'+inttostr(n)+'_DAY_DAYICON#}',        FWeatherParser.wxml.Forecast.Days[n].Day.IconCode,[rfReplaceAll,rfIgnoreCase]);
-    pString := StringReplace(pString,'{#FC_D'+inttostr(n)+'_DAY_HUMIDITY#}',       FWeatherParser.wxml.Forecast.Days[n].Day.Humidity,[rfReplaceAll,rfIgnoreCase]);
-    pString := StringReplace(pString,'{#FC_D'+inttostr(n)+'_DAY_PRECIPITATION#}',  FWeatherParser.wxml.Forecast.Days[n].Day.PercentChancePrecip,[rfReplaceAll,rfIgnoreCase]);
-    pString := StringReplace(pString,'{#FC_D'+inttostr(n)+'_DAY_WIND_DIRDEG#}',    FWeatherParser.wxml.Forecast.Days[n].Day.Wind.DirAsDegr,[rfReplaceAll,rfIgnoreCase]);
-    pString := StringReplace(pString,'{#FC_D'+inttostr(n)+'_DAY_WIND_DIRTEXT#}',   FWeatherParser.wxml.Forecast.Days[n].Day.Wind.DirAsTxt,[rfReplaceAll,rfIgnoreCase]);
-    pString := StringReplace(pString,'{#FC_D'+inttostr(n)+'_DAY_WIND_MAXSPEED#}',  FWeatherParser.wxml.Forecast.Days[n].Day.Wind.MaxWindSpd,[rfReplaceAll,rfIgnoreCase]);
-    pString := StringReplace(pString,'{#FC_D'+inttostr(n)+'_DAY_WIND_SPEED#}',     FWeatherParser.wxml.Forecast.Days[n].Day.Wind.WindSpd,[rfReplaceAll,rfIgnoreCase]);
-    pString := StringReplace(pString,'{#FC_D'+inttostr(n)+'_NIGHT_CONDITION#}',    FWeatherParser.wxml.Forecast.Days[n].Night.ConditionTxt,[rfReplaceAll,rfIgnoreCase]);
-    pString := StringReplace(pString,'{#FC_D'+inttostr(n)+'_NIGHT_DAYICON#}',      FWeatherParser.wxml.Forecast.Days[n].Night.IconCode,[rfReplaceAll,rfIgnoreCase]);
-    pString := StringReplace(pString,'{#FC_D'+inttostr(n)+'_NIGHT_HUMIDITY#}',     FWeatherParser.wxml.Forecast.Days[n].Night.Humidity,[rfReplaceAll,rfIgnoreCase]);
-    pString := StringReplace(pString,'{#FC_D'+inttostr(n)+'_NIGHT_PRECIPITATION#}',FWeatherParser.wxml.Forecast.Days[n].Night.PercentChancePrecip,[rfReplaceAll,rfIgnoreCase]);
-    pString := StringReplace(pString,'{#FC_D'+inttostr(n)+'_NIGHT_WIND_DIRDEG#}',  FWeatherParser.wxml.Forecast.Days[n].Night.Wind.DirAsDegr,[rfReplaceAll,rfIgnoreCase]);
-    pString := StringReplace(pString,'{#FC_D'+inttostr(n)+'_NIGHT_WIND_DIRTEXT#}', FWeatherParser.wxml.Forecast.Days[n].Night.Wind.DirAsTxt,[rfReplaceAll,rfIgnoreCase]);
-    pString := StringReplace(pString,'{#FC_D'+inttostr(n)+'_NIGHT_WIND_MAXSPEED#}',FWeatherParser.wxml.Forecast.Days[n].Night.Wind.MaxWindSpd,[rfReplaceAll,rfIgnoreCase]);
-    pString := StringReplace(pString,'{#FC_D'+inttostr(n)+'_NIGHT_WIND_SPEED#}',   FWeatherParser.wxml.Forecast.Days[n].Night.Wind.WindSpd,[rfReplaceAll,rfIgnoreCase]);
-    pString := StringReplace(pString,'{#FC_D'+inttostr(n)+'_DAYTEXT#}',            FWeatherParser.wxml.Forecast.Days[n].DayText,[rfReplaceAll,rfIgnoreCase]);
-    pString := StringReplace(pString,'{#FC_D'+inttostr(n)+'_DATE#}',               FWeatherParser.wxml.Forecast.Days[n].Date,[rfReplaceAll,rfIgnoreCase]);
-    pString := StringReplace(pString,'{#FC_D'+inttostr(n)+'_HIGHTEMP#}',           FWeatherParser.wxml.Forecast.Days[n].HighTemp,[rfReplaceAll,rfIgnoreCase]);
-    pString := StringReplace(pString,'{#FC_D'+inttostr(n)+'_LOWTEMP#}',            FWeatherParser.wxml.Forecast.Days[n].LowTemp,[rfReplaceAll,rfIgnoreCase]);
-    pString := StringReplace(pString,'{#FC_D'+inttostr(n)+'_TIMESUNSET#}',         FWeatherParser.wxml.Forecast.Days[n].TimeSunset,[rfReplaceAll,rfIgnoreCase]);
-    pString := StringReplace(pString,'{#FC_D'+inttostr(n)+'_TIMESUNRISE#}',        FWeatherParser.wxml.Forecast.Days[n].TimeSunrise,[rfReplaceAll,rfIgnoreCase]);
+    d := inttostr(n);
+    pString := StringReplace(pString,'{#FC_D'+d+'_DAY_CONDITION#}',      FWeatherParser.wxml.Forecast.Days[n].Day.ConditionTxt,[rfReplaceAll,rfIgnoreCase]);
+    pString := StringReplace(pString,'{#FC_D'+d+'_DAY_DAYICON#}',        uWeatherParser.GetWeatherIcon(FWeatherParser.wxml.Forecast.Days[n].Day.IconCode),[rfReplaceAll,rfIgnoreCase]);
+    pString := StringReplace(pString,'{#FC_D'+d+'_DAY_HUMIDITY#}',       FWeatherParser.wxml.Forecast.Days[n].Day.Humidity,[rfReplaceAll,rfIgnoreCase]);
+    pString := StringReplace(pString,'{#FC_D'+d+'_DAY_PRECIPITATION#}',  FWeatherParser.wxml.Forecast.Days[n].Day.PercentChancePrecip,[rfReplaceAll,rfIgnoreCase]);
+    pString := StringReplace(pString,'{#FC_D'+d+'_DAY_WIND_DIRDEG#}',    FWeatherParser.wxml.Forecast.Days[n].Day.Wind.DirAsDegr,[rfReplaceAll,rfIgnoreCase]);
+    pString := StringReplace(pString,'{#FC_D'+d+'_DAY_WIND_DIRTEXT#}',   FWeatherParser.wxml.Forecast.Days[n].Day.Wind.DirAsTxt,[rfReplaceAll,rfIgnoreCase]);
+    pString := StringReplace(pString,'{#FC_D'+d+'_DAY_WIND_MAXSPEED#}',  FWeatherParser.wxml.Forecast.Days[n].Day.Wind.MaxWindSpd,[rfReplaceAll,rfIgnoreCase]);
+    pString := StringReplace(pString,'{#FC_D'+d+'_DAY_WIND_SPEED#}',     FWeatherParser.wxml.Forecast.Days[n].Day.Wind.WindSpd,[rfReplaceAll,rfIgnoreCase]);
+    pString := StringReplace(pString,'{#FC_D'+d+'_NIGHT_CONDITION#}',    FWeatherParser.wxml.Forecast.Days[n].Night.ConditionTxt,[rfReplaceAll,rfIgnoreCase]);
+    pString := StringReplace(pString,'{#FC_D'+d+'_NIGHT_DAYICON#}',      uWeatherParser.GetWeatherIcon(FWeatherParser.wxml.Forecast.Days[n].Night.IconCode),[rfReplaceAll,rfIgnoreCase]);
+    pString := StringReplace(pString,'{#FC_D'+d+'_NIGHT_HUMIDITY#}',     FWeatherParser.wxml.Forecast.Days[n].Night.Humidity,[rfReplaceAll,rfIgnoreCase]);
+    pString := StringReplace(pString,'{#FC_D'+d+'_NIGHT_PRECIPITATION#}',FWeatherParser.wxml.Forecast.Days[n].Night.PercentChancePrecip,[rfReplaceAll,rfIgnoreCase]);
+    pString := StringReplace(pString,'{#FC_D'+d+'_NIGHT_WIND_DIRDEG#}',  FWeatherParser.wxml.Forecast.Days[n].Night.Wind.DirAsDegr,[rfReplaceAll,rfIgnoreCase]);
+    pString := StringReplace(pString,'{#FC_D'+d+'_NIGHT_WIND_DIRTEXT#}', FWeatherParser.wxml.Forecast.Days[n].Night.Wind.DirAsTxt,[rfReplaceAll,rfIgnoreCase]);
+    pString := StringReplace(pString,'{#FC_D'+d+'_NIGHT_WIND_MAXSPEED#}',FWeatherParser.wxml.Forecast.Days[n].Night.Wind.MaxWindSpd,[rfReplaceAll,rfIgnoreCase]);
+    pString := StringReplace(pString,'{#FC_D'+d+'_NIGHT_WIND_SPEED#}',   FWeatherParser.wxml.Forecast.Days[n].Night.Wind.WindSpd,[rfReplaceAll,rfIgnoreCase]);
+    pString := StringReplace(pString,'{#FC_D'+d+'_DAYTEXT#}',            FWeatherParser.wxml.Forecast.Days[n].DayText,[rfReplaceAll,rfIgnoreCase]);
+    pString := StringReplace(pString,'{#FC_D'+d+'_DATE#}',               FWeatherParser.wxml.Forecast.Days[n].Date,[rfReplaceAll,rfIgnoreCase]);
+    pString := StringReplace(pString,'{#FC_D'+d+'_HIGHTEMP#}',           FWeatherParser.wxml.Forecast.Days[n].HighTemp,[rfReplaceAll,rfIgnoreCase]);
+    pString := StringReplace(pString,'{#FC_D'+d+'_LOWTEMP#}',            FWeatherParser.wxml.Forecast.Days[n].LowTemp,[rfReplaceAll,rfIgnoreCase]);
+    pString := StringReplace(pString,'{#FC_D'+d+'_TIMESUNSET#}',         FWeatherParser.wxml.Forecast.Days[n].TimeSunset,[rfReplaceAll,rfIgnoreCase]);
+    pString := StringReplace(pString,'{#FC_D'+d+'_TIMESUNRISE#}',        FWeatherParser.wxml.Forecast.Days[n].TimeSunrise,[rfReplaceAll,rfIgnoreCase]);
   end;
 
   pString := StringReplace(pString,'{#LATITUE#}',     FWeatherParser.wxml.HeadLoc.Latitude,[rfReplaceAll,rfIgnoreCase]);
@@ -532,13 +573,13 @@ begin
   pString := StringReplace(pString,'{#BAROMPRESSRF#}',FWeatherParser.wxml.CurrentCondition.BaromPressure.RaiseOrFallAsTxt,[rfReplaceAll,rfIgnoreCase]);
   pString := StringReplace(pString,'{#UV#}',          FWeatherParser.wxml.CurrentCondition.UV.Value,[rfReplaceAll,rfIgnoreCase]);
   pString := StringReplace(pString,'{#UVTEXT#}',      FWeatherParser.wxml.CurrentCondition.UV.ValueAsTxt,[rfReplaceAll,rfIgnoreCase]);
-//  pString := StringReplace(pString,'{#MOONICON#}',    FWeatherParser.wxml.CurrentCondition.Moon.IconCode,[rfReplaceAll,rfIgnoreCase]);
+  pString := StringReplace(pString,'{#MOONICON#}',    uWeatherParser.GetWeatherIcon(FWeatherParser.wxml.CurrentCondition.Moon.IconCode),[rfReplaceAll,rfIgnoreCase]);
   pString := StringReplace(pString,'{#MOONTEXT#}',    FWeatherParser.wxml.CurrentCondition.Moon.MoonText,[rfReplaceAll,rfIgnoreCase]);
   pString := StringReplace(pString,'{#VISIBILITY#}',  FWeatherParser.wxml.CurrentCondition.Visibility,[rfReplaceAll,rfIgnoreCase]);
   pString := StringReplace(pString,'{#DEWPOINT#}',    FWeatherParser.wxml.CurrentCondition.Dewpoint,[rfReplaceAll,rfIgnoreCase]);
   pString := StringReplace(pString,'{#LASTUPDATE#}',  FWeatherParser.wxml.CurrentCondition.DateTimeLastUpdate,[rfReplaceAll,rfIgnoreCase]);
   pString := StringReplace(pString,'{#HUMIDITY#}',    FWeatherParser.wxml.CurrentCondition.Humidity,[rfReplaceAll,rfIgnoreCase]);
-//  pString := StringReplace(pString,'{#ICON#}',        FWeatherParser.wxml.CurrentCondition.IconCode,[rfReplaceAll,rfIgnoreCase]);
+  pString := StringReplace(pString,'{#ICON#}',        uWeatherParser.GetWeatherIcon(FWeatherParser.wxml.CurrentCondition.IconCode),[rfReplaceAll,rfIgnoreCase]);
   pString := StringReplace(pString,'{#CONDITION#}',   FWeatherParser.wxml.CurrentCondition.ConditionTxt,[rfReplaceAll,rfIgnoreCase]);
   pString := StringReplace(pString,'{#OBSSTATION#}',  FWeatherParser.wxml.CurrentCondition.ObservationStation,[rfReplaceAll,rfIgnoreCase]);
   result := pString;
@@ -564,7 +605,9 @@ begin
 
   if FSettings.WeatherSkin <> '' then
   begin
-    RenderWeatherSkin;
+    FCaptionSettings.Caption.Clear;
+
+    //RenderWeatherSkin(FIconSettings.Icon);
   end;
 
   Bmp := TBitmap32.Create;
@@ -702,6 +745,7 @@ begin
   FAnimSteps      := 5;
   FOutput         := TStringList.Create;
   FWeatherSkinItems := TObjectList.Create;
+  FWeatherSkinItems.OwnsObjects := True;
   FParentImage := ParentImage;
   Alphahit := False;
   FObjectId := id;

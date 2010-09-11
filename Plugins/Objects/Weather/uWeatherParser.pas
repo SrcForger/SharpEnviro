@@ -197,7 +197,9 @@ var
 begin
   a := '';
 
-  code := StrToInt(strCode);
+  Result := '';
+  if not TryStrToInt(strCode, code) then
+    exit;
 
   case code of
     0 .. 4, 17, 35, 37, 38, 47 : a := 'thunder';
