@@ -97,7 +97,7 @@ type
      procedure ReplaceSpacer(var pSList : TStringList);
      procedure StartHL;
      procedure EndHL;
-     procedure LoadSettings;
+     procedure LoadSettings(newLocation : string = '');
      procedure OnLocationClick(Sender : TObject);
      constructor Create(ParentImage : Timage32; Id : integer); reintroduce;
      destructor Destroy; override;
@@ -129,7 +129,10 @@ end;
 
 destructor TWeatherSkinItem.Destroy;
 begin
-  Bitmap.Free;
+  if Assigned(Bitmap) then
+    Bitmap.Free;
+  Bitmap := nil;
+    
   inherited Destroy;
 end;
 
@@ -151,11 +154,7 @@ begin
   end;
   XML.Free;
   if NewL <> 'error' then
-  begin
-    Settings.WeatherLocation := NewL;
-    Settings.SaveSettings(True);
-    LoadSettings;
-  end;
+    LoadSettings(NewL);
 end;
 
 procedure TWeatherLayer.StartHL;
@@ -260,7 +259,7 @@ begin
   for n := 0 to FWeatherSkinItems.Count - 1 do
   begin
     pItem := TWeatherSkinItem(FWeatherSkinItems.Items[n]);
-    if (pItem.DataType = 'Image') or (pItem.DataType = 'WeatherImage') then
+    if (Assigned(pItem.Bitmap)) and ((pItem.DataType = 'Image') or (pItem.DataType = 'WeatherImage')) then
     begin
       if pItem.Bitmap.Width + pItem.x > mx then
          mx := pItem.Bitmap.Width + pItem.x;
@@ -279,7 +278,7 @@ begin
   for n := 0 to FWeatherSkinItems.Count - 1 do
   begin
     pItem := TWeatherSkinItem(FWeatherSkinItems.Items[n]);
-    if (pItem.DataType = 'Image') or (pItem.DataType = 'WeatherImage') then
+    if (Assigned(pItem.Bitmap)) and ((pItem.DataType = 'Image') or (pItem.DataType = 'WeatherImage')) then
     begin
       Bmp.Assign(pItem.Bitmap);
       Bmp.DrawMode := dmBlend;
@@ -299,34 +298,6 @@ begin
   end;
   Bmp.Free;
 
-end;
-
-function ParseColor(s : String; failurecolor : integer) : integer;
-var
-  Theme : ISharpETheme;
-  SkinInterface : TSharpESkinInterface;
-begin
-  Theme := GetCurrentTheme;
-
-  result := 0;
-
-  SkinInterface := TSharpESkinInterface.Create(nil, ALL_SHARPE_SKINS);
-  try
-    s := StringReplace(s,'Throbberback',inttostr(SkinInterface.SkinManager.Scheme.GetColorByName('Throbberback')),[rfIgnoreCase]);
-    s := StringReplace(s,'Throbberdark',inttostr(SkinInterface.SkinManager.Scheme.GetColorByName('Throbberdark')),[rfIgnoreCase]);
-    s := StringReplace(s,'Throbberlight',inttostr(SkinInterface.SkinManager.Scheme.GetColorByName('Throbberlight')),[rfIgnoreCase]);
-    s := StringReplace(s,'Throbbetext',inttostr(SkinInterface.SkinManager.Scheme.GetColorByName('ThrobberText')),[rfIgnoreCase]);
-    s := StringReplace(s,'WorkAreaback',inttostr(SkinInterface.SkinManager.Scheme.GetColorByName('WorkAreaback')),[rfIgnoreCase]);
-    s := StringReplace(s,'WorkAreadark',inttostr(SkinInterface.SkinManager.Scheme.GetColorByName('WorkAreadark')),[rfIgnoreCase]);
-    s := StringReplace(s,'WorkArealight',inttostr(SkinInterface.SkinManager.Scheme.GetColorByName('WorkArealight')),[rfIgnoreCase]);
-    s := StringReplace(s,'WorkAreatext',inttostr(SkinInterface.SkinManager.Scheme.GetColorByName('WorkAreaText')),[rfIgnoreCase]);
-    try
-      result := strtoint(s);
-    except
-      result := failurecolor;
-    end;
-  except
-  end;
 end;
 
 function TWeatherLayer.LoadWeatherSkin(skinName : string): boolean;
@@ -370,16 +341,16 @@ begin
         pItem.Size := IntValue('Size', 32);
 
         s := Value('FontColor',inttostr(FFontSettings.Color));
-        pItem.Font.Color := ParseColor(s,FFontsettings.Color);
+        pItem.Font.Color := GetCurrentTheme.Scheme.ParseColor(s);
 
         s := Value('ShadowColor',inttostr(FFontSettings.ShadowColor));
-        pItem.Font.ShadowColor := ParseColor(s,FFontsettings.Color);
+        pItem.Font.ShadowColor := GetCurrentTheme.Scheme.ParseColor(s);
 
         s := Value('BlendColorA',inttostr(FFontSettings.ShadowColor));
-        pItem.BlendColorA := ParseColor(s,FFontsettings.Color);
+        pItem.BlendColorA := GetCurrentTheme.Scheme.ParseColor(s);
 
         s := Value('BlendColorB',inttostr(FFontSettings.ShadowColor));
-        pItem.BlendColorB := ParseColor(s,FFontsettings.Color);
+        pItem.BlendColorB := GetCurrentTheme.Scheme.ParseColor(s);
 
         pItem.Font.Name             := Value('FontName',FFontSettings.Name);
         pItem.Font.Bold             := BoolValue('FontBold',FFontSettings.Bold);
@@ -403,6 +374,7 @@ begin
             LoadBitmap32FromPNG(pItem.Bitmap, skinDir + pItem.data, a);
           except
             pItem.Bitmap.Free;
+            pItem.Bitmap := nil;
           end;
         end;
 
@@ -420,6 +392,7 @@ begin
             TempBitmap.DrawTo(pItem.Bitmap, Rect(0, 0, pItem.Size, pItem.Size));
           except
             pItem.Bitmap.Free;
+            pItem.Bitmap := nil;
           end;
           TempBitmap.Free;
         end;
@@ -653,7 +626,7 @@ begin
   Changed;
 end;
 
-procedure TWeatherLayer.LoadSettings;
+procedure TWeatherLayer.LoadSettings(newLocation : string);
 var
   bmp : TBitmap32;
   Filename : string;
@@ -663,7 +636,10 @@ begin
 
   FOutput.Clear;
   FSettings.LoadSettings;
-  FWeatherParser.Update(FSettings.WeatherLocation);  
+  
+  FSettings.WeatherLocation := newLocation;
+
+  FWeatherParser.Update(FSettings.WeatherLocation);
 
   FFontSettings.Name             := FSettings.Theme[DS_FONTNAME].Value;
   FFontSettings.Size             := FSettings.Theme[DS_TEXTSIZE].IntValue;
