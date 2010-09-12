@@ -636,8 +636,9 @@ begin
 
   FOutput.Clear;
   FSettings.LoadSettings;
-  
-  FSettings.WeatherLocation := newLocation;
+
+  if newLocation <> '' then
+    FSettings.WeatherLocation := newLocation;
 
   FWeatherParser.Update(FSettings.WeatherLocation);
 
