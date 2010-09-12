@@ -607,7 +607,7 @@ begin
   begin
     FCaptionSettings.Caption.Clear;
 
-    //RenderWeatherSkin(FIconSettings.Icon);
+    RenderWeatherSkin(FIconSettings.Icon);
   end;
 
   Bmp := TBitmap32.Create;
