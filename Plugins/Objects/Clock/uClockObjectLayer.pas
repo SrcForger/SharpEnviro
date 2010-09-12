@@ -291,14 +291,16 @@ var
 
   SkinStr : string;
 begin
+  SetLength(FClockTexts, 0);
+
   SkinDir := ExtractFileDir(Application.ExeName) + '\Skins\Objects\Clock\' + FSettings.AnalogSkin + '\';
-  if (FSettings.DrawText) and (not FileExists(SkinDir + 'Skin.xml')) then
+  if (FSettings.DrawText) and (not FileExists(SkinDir + 'Clock.xml')) then
   begin
     FSettings.DrawText := False;
   end;
 
   SkinXml := TJclSimpleXML.Create;
-  if LoadXMLFromSharedFile(SkinXML,SkinDir + 'Skin.xml',False) then
+  if LoadXMLFromSharedFile(SkinXML,SkinDir + 'Clock.xml',False) then
   begin
     if SkinXml.Root.Items.ItemNamed['Skin'] <> nil then
     begin
@@ -469,7 +471,7 @@ begin
   //Draw image centered
   Bitmap.Clear(color32(0,0,0,0));
 
-  if FSettings.SkinType then
+  if FSettings.AnalogSkin <> '' then
   begin
     Bitmap.SetSize(FPicture.Width,FPicture.Height);
     Bitmap.Clear(color32(0,0,0,0));
@@ -546,7 +548,7 @@ begin
   fTimer.Interval := (60 - SecondOfTheMinute(Now));
 
   { Decide size }
-  if not FSettings.SkinType then
+  if FSettings.AnalogSkin = '' then
   begin
     w := Bitmap.textwidth('00:00') + 2;        // 00:00 likely to be wide
     h := Bitmap.textHeight('1234567890') + 4;  // use all numbers!
