@@ -26,14 +26,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library Clock;
 uses
-//  VCLFixPack,
   Forms,
   windows,
   graphics,
   Contnrs,
   Dialogs,
   sysUtils,
-  ClockObjectSettingsWnd in 'ClockObjectSettingsWnd.pas' {SettingsWnd},
   uClockObjectLayer in 'uClockObjectLayer.pas',
   gr32,
   pngimage,
@@ -93,7 +91,6 @@ var
   LayerList : TLayerList;
   DeskSettings   : TDeskSettings;
   FirstStart : boolean = True;
-  SettingsWnd : TSettingsWnd;
 
 
 
@@ -124,40 +121,6 @@ begin
   result := Layer.ClockLayer;
 end;
 
-function StartSettingsWnd(ObjectID : integer; Handle : hwnd) : hwnd;
-begin
-  if SettingsWnd = nil then
-    SettingsWnd := TSettingsWnd.Create(nil);
-    
-  SettingsWnd.ParentWindow:=Handle;
-  SettingsWnd.Left:=2;
-  SettingsWnd.Top:=2;
-  SettingsWnd.BorderStyle:=bsNone;
-  SettingsWnd.ObjectID:=ObjectID;
-  SettingsWnd.DeskSettings := DeskSettings;
-  SettingsWnd.LoadSettings;
-  SettingsWnd.Show;
-  result:=SettingsWnd.Handle;
-end;
-
-function CloseSettingsWnd(ObjectID : integer; SaveSettings : boolean) : boolean;
-begin
-  try
-    if (SaveSettings) and (ObjectID<>0) then
-    begin
-         SettingsWnd.ObjectID:=ObjectID;
-         SettingsWnd.SaveSettings;
-    end;
-    SettingsWnd.Close;
-    SettingsWnd.Free;
-    SettingsWnd:=nil;
-    result:=True;
-  except
-        result:=False;
-  end;
-end;
-
-
 procedure SharpDeskMessage(pObjectID : integer; pLayer : TBitmapLayer; DeskMessage,P1,P2,P3 : integer);
 var
    n : integer;
@@ -176,19 +139,15 @@ begin
   if Layer = nil then exit;
 
   case DeskMessage of
+    SDM_SELECT : begin
+                   if P1 = 0 then Layer.ClockLayer.Locked := False
+                      else Layer.ClockLayer.Locked := True;
+                      Layer.ClockLayer.StartHL;
+                   end;
+    SDM_DESELECT : Layer.ClockLayer.EndHL;
     SDM_SETTINGS_UPDATE :
       Layer.ClockLayer.LoadSettings;
    SDM_REPAINT_LAYER : Layer.ClockLayer.LoadSettings;
-   SDM_SELECT : begin
-                  if P1 = 0 then Layer.ClockLayer.Locked := False
-                     else Layer.ClockLayer.Locked := True;
-                  Layer.ClockLayer.Highlight := True;
-                  Layer.ClockLayer.DrawBitmap;
-                end;
-   SDM_DESELECT : begin
-                    Layer.ClockLayer.Highlight := False;
-                    Layer.ClockLayer.DrawBitmap;
-                  end;
    SDM_CLOSE_LAYER : begin
                       SharpApi.SendDebugMessageEx('Clock.Object',PChar('Removing : ' + inttostr(Layer.ObjectID)),0,DMT_INFO);
                       LayerList.Remove(Layer);
@@ -204,16 +163,14 @@ begin
   end;
 end;
 
-procedure InitSettings();
+procedure InitSettings;
 begin
   
 end;
 
 
 exports
-  CloseSettingsWnd,
   CreateLayer,
-  StartSettingsWnd,
   SharpDeskMessage,
   InitSettings;
 

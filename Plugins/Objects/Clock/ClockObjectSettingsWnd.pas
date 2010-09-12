@@ -376,7 +376,7 @@ begin
      if cb_glass.checked then FClockGlas.DrawTo(FPicture);
 
      FPicture.DrawMode := dmBlend;
-     FPicture.MasterAlpha := tb_alpha.Position;
+     //FPicture.MasterAlpha := tb_alpha.Position;
      FPicture.DrawTo(ImgView321.Bitmap);
 
      XML.Free;     

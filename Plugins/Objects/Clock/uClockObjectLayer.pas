@@ -41,6 +41,7 @@ uses
   GR32_Backends,
   DateUtils, Forms,
   SharpThemeApiEx,
+  SharpGraphicsUtils,
   uISharpETheme,
   uSharpDeskDebugging,
   uSharpDeskTDeskSettings,
@@ -76,6 +77,9 @@ type
 
   TClockLayer = class(TBitmapLayer)
   private
+    FHLTimer        : TTimer;
+    FHLTimerI       : integer;
+    FAnimSteps      : integer;
     FLocked      : boolean;
     FHighlight   : boolean;
     FShadowAlpha : integer;
@@ -101,18 +105,25 @@ type
   protected
     procedure LoadSkin;
 
-     procedure fTimer1TimerNormal(Sender: TObject);
+    procedure fTimer1TimerNormal(Sender: TObject);
+
+    procedure OnTimer(Sender: TObject);
      
   public
-     procedure DrawClock;
-     procedure DrawBitmap;
-     procedure LoadSettings;
-     constructor Create( ParentImage:Timage32; Id : integer;
+    constructor Create( ParentImage:Timage32; Id : integer;
                          DeskSettings : TDeskSettings); reintroduce;
-     destructor Destroy; override;
-     property ObjectId: Integer read FObjectId write FObjectId;
-     property Highlight : boolean read FHighlight write FHighlight;
-     property Locked : boolean read FLocked write FLocked;
+    destructor Destroy; override;
+
+    procedure StartHL;
+    procedure EndHL;
+
+    procedure DrawClock;
+    procedure DrawBitmap;
+    procedure LoadSettings;
+
+    property ObjectId: Integer read FObjectId write FObjectId;
+    property Highlight : boolean read FHighlight write FHighlight;
+    property Locked : boolean read FLocked write FLocked;
   end;
 
 
@@ -179,6 +190,94 @@ begin
   end;
 
   Result := str;
+end;
+
+procedure TClockLayer.StartHL;
+begin
+  if (GetCurrentTheme.Desktop.Animation.UseAnimations) and (not FLocked) then
+  begin
+    FHLTimerI := 1;
+    FHLTimer.Enabled := True;
+  end else
+  begin
+    DrawBitmap;
+    if (not FLocked) then
+      SharpGraphicsUtils.LightenBitmap(Bitmap,50);
+  end;
+end;
+
+procedure TClockLayer.EndHL;
+begin
+  if (GetCurrentTheme.Desktop.Animation.UseAnimations) and (not FLocked) then
+  begin
+    FHLTimerI := -1;
+    FHLTimer.Enabled := True;
+  end else
+  begin
+    DrawBitmap;
+  end;
+end;
+
+procedure TClockLayer.OnTimer(Sender: TObject);
+var
+  i : integer;
+
+  Theme : ISharpETheme;
+begin
+  FParentImage.BeginUpdate;
+  BeginUpdate;
+
+  Theme := GetCurrentTheme;
+
+  FHLTimer.Tag := FHLTimer.Tag + FHLTimerI;
+  
+  if FHLTimer.Tag <= 0 then
+  begin
+    FHLTimer.Enabled := False;
+    FHLTimer.Tag := 0;
+
+    i := 255;
+
+    Bitmap.MasterAlpha := i;
+
+    DrawBitmap;
+
+    FParentImage.EndUpdate;
+    EndUpdate;
+    Changed;
+    exit;
+  end;
+
+  if Theme.Desktop.Animation.Alpha then
+  begin
+    i := 255;
+    i := i + round(((Theme.Desktop.Animation.AlphaValue / FAnimSteps) * FHLTimer.Tag));
+    if i > 255 then
+      i := 255
+    else if i < 32 then
+      i := 32;
+      
+    Bitmap.MasterAlpha := i;
+  end;
+
+  if FHLTimer.Tag >= FAnimSteps then
+  begin
+    FHLTimer.Enabled := False;
+    FHLTimer.Tag := FAnimSteps;
+  end;
+  
+  DrawBitmap;
+  
+  if Theme.Desktop.Animation.Brightness then
+     LightenBitmap(Bitmap,round(FHLTimer.Tag*(Theme.Desktop.Animation.BrightnessValue/FAnimSteps)));
+  if Theme.Desktop.Animation.Blend then
+     BlendImageA(Bitmap,
+                 Theme.Desktop.Animation.BlendColor,
+                 round(FHLTimer.Tag*(Theme.Desktop.Animation.BlendValue/FAnimSteps)));
+                 
+  FParentImage.EndUpdate;
+  EndUpdate;
+  Changed;
 end;
 
 procedure TClockLayer.LoadSkin;
@@ -426,13 +525,7 @@ begin
   ITheme := GetCurrentTheme;
   with FSettings do
   begin
-    if AlphaBlend then
-      Bitmap.MasterAlpha := BitmapMasterAlpha
-    else
-      Bitmap.MasterAlpha := 255;
-
-    if Bitmap.MasterAlpha < 16 then
-      Bitmap.MasterAlpha := 16;
+    Bitmap.MasterAlpha := 255;
 
     with Bitmap.Font do
     begin
@@ -460,6 +553,9 @@ begin
     Bitmap.SetSize(w+4, h+4);
   end;
 
+  if FHLTimer.Tag >= FAnimSteps then
+     FHLTimer.OnTimer(FHLTimer);   
+
   LoadSkin;
 end;
 
@@ -467,6 +563,14 @@ constructor TClockLayer.Create( ParentImage:Timage32; Id : integer;
                                  DeskSettings : TDeskSettings);
 begin
   Inherited Create(ParentImage.Layers);
+
+  FHLTimer := TTimer.Create(nil);
+  FHLTimer.Interval := 20;
+  FHLTimer.Tag      := 0;
+  FHLTimer.Enabled := False;
+  FHLTimer.OnTimer := OnTimer;
+  FAnimSteps      := 5;
+
   FDeskSettings   := DeskSettings;
   FParentImage := ParentImage;
   FHighlight := False;
@@ -508,6 +612,7 @@ begin
   DebugFree(FHArrow);
   DebugFree(FMArrow);
   DebugFree(FSArrow);
+  DebugFree(FHLTimer);
 
   inherited;
 end;

@@ -62,20 +62,12 @@ implementation
 
 
 procedure TClockXMLSettings.LoadSettings;
-var
-   alphablend : boolean;
 begin
   inherited InitLoadSettings;
   inherited LoadSettings;
   
   with FXMLRoot.Items do
   begin
-    AlphaBlend := BoolValue('AlphaBlend',False);
-    if AlphaBlend then
-      BitmapMasterAlpha := IntValue('AlphaValue',255)
-    else
-      BitmapMasterAlpha := 255;
-
     Color := StringToColor(Value('FontColor','0'));
     Shadow := BoolValue('DrawShadow',false);
     SkinType := BoolValue('ClockType',False);

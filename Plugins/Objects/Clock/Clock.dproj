@@ -25,10 +25,10 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
     <DCC_ExeOutput>..\..\..\..\SharpE\Objects</DCC_ExeOutput>
-    <DCC_UnitSearchPath>..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpDeskApi;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\VistaFuncs</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpDeskApi;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\VistaFuncs</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpDeskApi;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\VistaFuncs</DCC_ObjPath>
-    <DCC_IncludePath>..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpDeskApi;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\VistaFuncs</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpDeskApi;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Units\SharpGraphicsUtils</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpDeskApi;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Units\SharpGraphicsUtils</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpDeskApi;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Units\SharpGraphicsUtils</DCC_ObjPath>
+    <DCC_IncludePath>..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpDeskApi;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Units\SharpGraphicsUtils</DCC_IncludePath>
     <DCC_Define>DEBUG</DCC_Define>
   </PropertyGroup>
   <ProjectExtensions>
@@ -36,6 +36,40 @@
     <Borland.ProjectType />
     <BorlandProject>
 <BorlandProject><Delphi.Personality><Parameters><Parameters Name="HostApplication">..\..\..\..\SharpE\SharpDesk.exe</Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters><Parameters Name="DebugCWD">..\..\..\..\SharpE\</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">True</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">0</VersionInfo><VersionInfo Name="MinorVer">8</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">2057</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName">SharpE Development Team</VersionInfoKeys><VersionInfoKeys Name="FileDescription">Add a clock to desktop</VersionInfoKeys><VersionInfoKeys Name="FileVersion">0.8.0.0</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename">clock.dll</VersionInfoKeys><VersionInfoKeys Name="ProductName">Clock Object</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">0.8.0.0</VersionInfoKeys><VersionInfoKeys Name="Author">Billi Berserker, Delusional</VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">Clock.dpr</Source></Source><Excluded_Packages>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
       
       
       <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Beispiele für gekapselte Komponenten für Automation Server</Excluded_Packages>
@@ -78,9 +112,6 @@
     <DCCReference Include="..\..\..\Common\Libraries\SharpThemeApiEx\uThemeConsts.pas" />
     <DCCReference Include="..\..\..\Common\Units\SharpFX\graphicsFX.pas" />
     <DCCReference Include="..\..\..\Common\Units\SharpFX\SharpFX.pas" />
-    <DCCReference Include="ClockObjectSettingsWnd.pas">
-      <Form>SettingsWnd</Form>
-    </DCCReference>
     <DCCReference Include="ClockObjectXMLSettings.pas" />
     <DCCReference Include="uClockObjectLayer.pas" />
   </ItemGroup>
