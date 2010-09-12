@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <WeatherSkin>
 	<Info>
-		<Author>Captain Hérisson</Author>
-		<Preview>Preview.png</Preview>
-		<Comment></Comment>
-		<Website></Website>
-	</Info>
+		<name>X-Reaction White</name>
+		<author>Captain Hérisson</author>
+		<website>http://www.sharpenviro.com</website>
+		<info>X-Reaction White Weather skin</info>
+		<version>0.8</version>
+	</Info>	
 	
    <Day0Bg>
      <DataType>Image</DataType>

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<?xml-stylesheet type="text/xsl" href="preview.xsl"?>
 <weatherskin>
 	<Info>
+		<name>Classic Winter</name>
 		<author>Captain Hérisson</author>
-		<preview>preview.png</preview>
-		<comment>blend to your sheme</comment>
-		<website></website>
-	</Info>
+		<website>http://www.sharpenviro.com</website>
+		<info>Classic Winter Weather skin</info>
+		<version>0.8</version>
+	</Info>	
 	
    <day0bg>
      <DataType>Image</DataType>

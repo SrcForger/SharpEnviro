@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <weatherskin>
 	<Info>
+		<name>Control Metallic</name>
 		<author>Captain Hérisson</author>
-		<preview>preview.png</preview>
-		<comment>blend to your sheme</comment>
-		<website></website>
-	</Info>
+		<website>http://www.sharpenviro.com</website>
+		<info>Control Metallic Weather skin</info>
+		<version>0.8</version>
+	</Info>	
 
    <day0blend>
 		<DataType>Image</DataType>
