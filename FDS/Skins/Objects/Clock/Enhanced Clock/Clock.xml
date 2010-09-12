@@ -1,0 +1,27 @@
+<ClockSkin>
+	<Info>
+		<Name>Enhanced Clock</Name>
+		<Author>The SharpEnviro Team</Author>
+		<Website>http://g00glen00b.deviantart.com/</Website>
+		<Info>Enhanced Clock skin</Info>
+		<Version>0.8</Version>
+	</Info>
+	<Skin>
+		<Background>Clock.png</Background>
+		<Overlay>Overlay.png</Overlay>
+		<HandHour>Hour.png</HandHour>
+		<HandMinute>Minute.png</HandMinute>
+		<HandSecond>Second.png</HandSecond>
+	</Skin>
+	<Text>
+		<FontName>Calibri</FontName>
+		<FontSize>10</FontSize>
+		<FontColor>0</FontColor>
+		<FontAlpha>175</FontAlpha>
+		<FontStyle></FontStyle>
+		<XMod>50</XMod>
+		<YMod>78</YMod>
+		<Caption>{ddd}</Caption>
+		<FontAALevel>1</FontAALevel>
+	</Text>
+</ClockSkin>
