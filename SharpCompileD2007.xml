@@ -68,6 +68,7 @@
     <project Name="Wallpaper" Type="DLL">Plugins\Configurations\Themes\Wallpaper\Wallpaper.dproj</project>
   </package>
   <package Name="Configurations - Objects">
+    <project Name="Clock" Type="DLL">Plugins\Configurations\Objects\Clock\Clock.dproj</project>
     <project Name="Image" Type="DLL">Plugins\Configurations\Objects\Image\Image.dproj</project>
     <project Name="Link" Type="DLL">Plugins\Configurations\Objects\Link\Link.dproj</project>
     <project Name="Recycle Bin" Type="DLL">Plugins\Configurations\Objects\RecycleBin\RecycleBin.dproj</project>
@@ -128,7 +129,6 @@
     <project Name="Image" Type="DLL" >Plugins\Objects\Image\Image.dproj</project>
     <project Name="Link" Type="DLL" >Plugins\Objects\Link\Link.dproj</project>
     <project Name="Recycle Bin" Type="DLL" >Plugins\Objects\RecycleBin\RecycleBin.dproj</project>
-    <project Name="Text" Type="DLL" >Plugins\Objects\Text\Text.dproj</project>
     <project Name="Weather" Type="DLL" >Plugins\Objects\Weather\Weather.dproj</project>
   </package>
   <package Name="Services">
