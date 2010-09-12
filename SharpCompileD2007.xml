@@ -68,9 +68,10 @@
     <project Name="Wallpaper" Type="DLL">Plugins\Configurations\Themes\Wallpaper\Wallpaper.dproj</project>
   </package>
   <package Name="Configurations - Objects">
-    <project Name="Image Object" Type="DLL">Plugins\Configurations\Objects\Image\Image.dproj</project>
-    <project Name="Link Object" Type="DLL">Plugins\Configurations\Objects\Link\Link.dproj</project>
-    <project Name="Recycle Bin Object" Type="DLL">Plugins\Configurations\Objects\RecycleBin\RecycleBin.dproj</project>
+    <project Name="Image" Type="DLL">Plugins\Configurations\Objects\Image\Image.dproj</project>
+    <project Name="Link" Type="DLL">Plugins\Configurations\Objects\Link\Link.dproj</project>
+    <project Name="Recycle Bin" Type="DLL">Plugins\Configurations\Objects\RecycleBin\RecycleBin.dproj</project>
+    <project Name="Weather" Type="DLL">Plugins\Configurations\Objects\Weather\Weather.dproj</project>
   </package>
   <package Name="Components">
 	<project Name="ExplorerNET" Type="Solution">Components\ExplorerNET\Explorer.sln</project>
@@ -149,6 +150,5 @@
   <package Name="Files">
     <!-- Export FDS first otherwise subsequent commands may fail due to directories not existing -->
     <project Name="FDS" Type="CommandLine">svn export --force .\FDS ..\SharpE</project>
-    <project Name="Weather" Type="CommandLine">svn export --force .\Graphics\Weather\Icons ..\SharpE\Icons\Weather</project>
   </package>
 </SharpCompile>
