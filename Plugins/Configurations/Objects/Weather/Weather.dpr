@@ -118,7 +118,6 @@ var
 begin
   xmlSettings := TXMLSettings.Create(strtoint(PluginHost.PluginId), nil, 'Weather');
   try
-
     xmlSettings.LoadSettings;
 
     ITheme := GetCurrentTheme;
@@ -128,6 +127,11 @@ begin
      {$REGION 'Load custom options'}
       // Show caption?
       chkCaption.Checked := ShowCaption;
+      if (WeatherSkin <> '') and (FileExists(SharpApi.GetSharpeDirectory + 'Skins\Objects\Weather\' + WeatherSkin + '\Weather.xml')) then
+      begin
+        chkSkinEnable.Checked := true;
+        frmSettings.WeatherSkin := xmlSettings.WeatherSkin;
+      end;
       {$ENDREGION}
 
       // Load uic defaults
@@ -209,6 +213,8 @@ begin
   finally
     xmlSettings.Free;
   end;
+
+  frmSettings.BuildSkinList;
 end;
 
 function TSharpCenterPlugin.Open: Cardinal;
@@ -239,6 +245,10 @@ begin
 
       {$REGION 'Save custom options'}
       ShowCaption := chkCaption.Checked;
+      if (not chkSkinEnable.Checked) then
+        WeatherSkin := ''
+      else
+        WeatherSkin := TSkinItem(lbSkins.SelectedItem.Data).SkinName;
       {$ENDREGION}
 
       {$REGION 'Set IsCustom'}

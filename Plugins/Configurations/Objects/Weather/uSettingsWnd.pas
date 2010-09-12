@@ -38,7 +38,7 @@ uses
   Forms,
   Dialogs,
   StdCtrls,
-  JvSimpleXml,
+  JclSimpleXML,
   JclFileUtils,
   ImgList,
   PngImageList,
@@ -76,12 +76,28 @@ uses
   Buttons,
   PngSpeedButton,
   pngimage,
-  SharpECenterHeader;
+  SharpECenterHeader,
+  SharpCenterThemeApi;
 
 type
   TStringObject = class(TObject)
   public
     Str: string;
+  end;
+
+  TSkinItem = class
+  private
+    FAuthor: string;
+    FName: string;
+    FWebsite: string;
+    FComment: string;
+    FSkinName: string;
+  public
+    property Name: string read FName write FName;
+    property Author: string read FAuthor write FAuthor;
+    property Website: string read FWebsite write FWebsite;
+    property Comment: string read FComment write FComment;
+    property SkinName: string read FSkinName write FSkinName;
   end;
 
 type
@@ -146,7 +162,6 @@ type
     Label6: TLabel;
     btnRevert: TPngSpeedButton;
     SharpECenterHeader1: TSharpECenterHeader;
-    pnlCaption: TPanel;
     SharpECenterHeader5: TSharpECenterHeader;
     SharpERoundPanel1: TSharpERoundPanel;
     icon32: TImage32;
@@ -177,8 +192,10 @@ type
     SharpECenterHeader15: TSharpECenterHeader;
     SharpECenterHeader16: TSharpECenterHeader;
     SharpECenterHeader17: TSharpECenterHeader;
-    Panel2: TPanel;
-    Panel3: TPanel;
+    SharpECenterHeader2: TSharpECenterHeader;
+    chkSkinEnable: TJvXPCheckbox;
+    pnlSkin: TPanel;
+    lbSkins: TSharpEListBoxEx;
     procedure FormCreate(Sender: TObject);
     procedure chkCaptionClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -223,7 +240,18 @@ type
     procedure uicTextShadowReset(Sender: TObject);
     procedure btnRevertClick(Sender: TObject);
     procedure uicTextShadowColorResize(Sender: TObject);
+    procedure chkSkinEnableClick(Sender: TObject);
+    procedure lbSkinsGetCellText(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem; var AColText: string);
+    procedure lbSkinsGetCellImageIndex(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem; var AImageIndex: Integer;
+      const ASelected: Boolean);
+    procedure lbSkinsGetCellCursor(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem; var ACursor: TCursor);
+    procedure lbSkinsClickItem(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem);
   private
+    FWeatherSkin : string;
     FBlue32, FBlue48, FBlue64: TBitmap32;
     FWhite32, FWhite48, FWhite64: TBitmap32;
     FFontList: TFontList;
@@ -232,7 +260,8 @@ type
     procedure UpdateIcon;
     procedure SendUpdate;
     procedure LoadResources;
-    procedure UpdateCaptionPanelState;
+
+    procedure ClearList;
   public
     sObjectID: string;
     procedure UpdateIconPage;
@@ -240,6 +269,10 @@ type
     procedure UpdateFontShadowPage;
     procedure UpdatePageUI;
     procedure UpdateWeatherPage;
+
+    procedure BuildSkinList;
+
+    property WeatherSkin : string read FWeatherSkin write FWeatherSkin;
     property FontList: TFontList read FFontList;
 
     property PluginHost: ISharpCenterHost read FPluginHost
@@ -353,8 +386,6 @@ end;
 
 procedure TfrmSettings.chkCaptionClick(Sender: TObject);
 begin
-  UpdateCaptionPanelState;
-
   SendUpdate;
 end;
 
@@ -426,6 +457,10 @@ begin
   FWhite64 := TBitmap32.Create;
   LoadResources;
 
+
+  FWeatherSkin := '';
+  lbSkins.DoubleBuffered := True;
+
   RefreshFontList;
 end;
 
@@ -438,12 +473,190 @@ begin
   FWhite48.Free;
   FWhite64.Free;
   FFontList.Free;
+  ClearList;
 end;
 
 procedure TfrmSettings.FormShow(Sender: TObject);
 begin
   UpdateIcon;
-  UpdateCaptionPanelState;
+
+  pnlSkin.Visible := chkSkinEnable.Checked;
+end;
+
+procedure TfrmSettings.lbSkinsClickItem(Sender: TObject; const ACol: Integer;
+  AItem: TSharpEListItem);
+var
+  tmp: TSkinItem;
+begin
+  tmp := TSkinItem(AItem.Data);
+  if tmp = nil then
+    exit;
+
+  if (ACol = 0) then
+  begin
+    PluginHost.Refresh;
+    PluginHost.Save;
+  end else if (ACol = 1) then
+  begin
+    if (Pos('http', tmp.Website) <> 0) then
+      SharpExecute(TSkinItem(AItem.Data).Website)
+    else begin
+      PluginHost.Refresh(rtPreview);
+      PluginHost.Save;
+    end;
+  end;
+end;
+
+procedure TfrmSettings.lbSkinsGetCellCursor(Sender: TObject;
+  const ACol: Integer; AItem: TSharpEListItem; var ACursor: TCursor);
+var
+  tmp : TSkinItem;
+begin
+  tmp := TSkinItem(AItem.Data);
+  if tmp = nil then
+    exit;
+
+  if (ACol = 0) or (Pos('http', tmp.Website) = 0) then
+    ACursor := crDefault
+  else if ACol = 1 then
+    ACursor := crHandPoint;
+end;
+
+procedure TfrmSettings.lbSkinsGetCellImageIndex(Sender: TObject;
+  const ACol: Integer; AItem: TSharpEListItem; var AImageIndex: Integer;
+  const ASelected: Boolean);
+var
+  tmp : TSkinItem;
+begin
+  tmp := TSkinItem(AItem.Data);
+  if tmp = nil then
+    exit;
+
+  if ACol = 0 then
+    AImageIndex := 2;
+
+  if ACol = 1 then begin
+
+    if (Pos('http', tmp.Website) = 0) then
+      AImageIndex := -1
+    else
+      AImageIndex := 1;
+
+  end;
+end;
+
+procedure TfrmSettings.lbSkinsGetCellText(Sender: TObject; const ACol: Integer;
+  AItem: TSharpEListItem; var AColText: string);
+var
+  tmp: TSkinItem;
+  s: string;
+  colItemTxt, colDescTxt, colBtnTxt: TColor;
+begin
+  tmp := TSkinItem(AItem.Data);
+  if tmp = nil then
+    exit;
+
+  // Assign theme colours
+  AssignThemeToListBoxItemText(FPluginHost.Theme, AItem, colItemTxt, colDescTxt, colBtnTxt);
+
+  if ACol = 0 then
+  begin
+    if tmp.Author <> '' then
+      s := ' By ' + tmp.Author
+    else
+      s := '';
+
+    AColText := Format('<font color="%s" />%s<font color="%s" />%s',
+      [ColorToString(colItemTxt), tmp.Name, ColorToString(colDescTxt), s]);
+  end;
+end;
+
+procedure TfrmSettings.chkSkinEnableClick(Sender: TObject);
+begin
+  pnlSkin.Visible := chkSkinEnable.Checked;
+  UpdateWeatherPage;
+  SendUpdate;
+end;
+
+procedure TfrmSettings.ClearList;
+var
+  n : integer;
+begin
+  for n := lbSkins.Count - 1 downto 0 do
+  begin
+    TSkinItem(lbSkins.Item[n].Data).Free;
+    lbSkins.DeleteItem(n);
+  end;
+end;
+
+procedure TfrmSettings.BuildSkinList;
+var
+  newItem: TSharpEListItem;
+  sr: TSearchRec;
+  Dir: string;
+  XML: TJclSimpleXML;
+  tmp: TSkinItem;
+  n : integer;
+begin
+  ClearList;
+
+  XML := TJclSimpleXML.Create;
+  try
+    Dir := SharpApi.GetSharpeDirectory + 'Skins\Objects\Weather\';
+  
+    if FindFirst(Dir + '*', FADirectory, sr) = 0 then
+    begin
+      repeat
+        if (CompareText(sr.Name, '.') <> 0) and (CompareText(sr.Name, '..') <> 0) then
+        begin
+          if FileExists(Dir + sr.Name + '\Weather.xml') then
+          begin
+            try
+              XML.LoadFromFile(Dir + sr.Name + '\Weather.xml');
+
+              for n := 0 to XML.Root.Items.Count - 1 do
+              begin
+                if XML.Root.Items.Item[n].Name = 'Info' then
+                begin
+                  with XML.Root.Items.Item[n].Items do
+                  begin
+                    tmp := TSkinItem.Create;
+                    tmp.Name := Value('name', '...');
+                    tmp.Author := Value('author', '...');
+                    tmp.Website := Value('website', '');
+                    tmp.SkinName := sr.Name;
+
+                    newItem := lbSkins.AddItem('', 0);
+                    newItem.Data := tmp;
+                    if length(trim(tmp.Website)) > 0 then
+                      newItem.AddSubItem('', 1)
+                    else
+                      newItem.AddSubItem('', -1);
+
+                    if CompareText(sr.Name,FWeatherSkin) = 0 then
+                    begin
+                      lbSkins.ItemIndex := lbSkins.Items.Count - 1;
+                    end;
+                  end;
+                end;
+              end;
+            except
+            end;
+          end;
+        end;
+      until FindNext(sr) <> 0;
+      FindClose(sr);
+    end;
+  finally
+    XML.Free;
+  end;
+
+  if (lbSkins.ItemIndex < 0) and (lbSkins.Count > 0) then begin
+    lbSkins.ItemIndex := 0;
+    //BuildIconPreview;
+  end;
+
+  //PluginHost.Refresh;
 end;
 
 procedure TfrmSettings.LoadResources;
@@ -758,15 +971,9 @@ procedure TfrmSettings.UpdateWeatherPage;
 begin
   if not pagWeather.Visible then
     exit;
-
+    
   frmSettings.Height := pnlWeather.Height + 50;
   FPluginHost.Refresh(rtSize);
-end;
-
-procedure TfrmSettings.UpdateCaptionPanelState;
-begin
-  pnlCaption.Visible := chkCaption.Checked;
-  UpdateWeatherPage;
 end;
 
 procedure TfrmSettings.UpdatePageUI;
