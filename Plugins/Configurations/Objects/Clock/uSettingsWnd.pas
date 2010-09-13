@@ -1,6 +1,6 @@
 ﻿{
-Source Name: uLinkWnd.pas
-Description: Link Object Settings Window
+Source Name: uSettingsWnd.pas
+Description: Clock Object Settings Window
 Copyright (C) Martin Krämer (MartinKraemer@gmx.net)
 
 Source Forge Site
