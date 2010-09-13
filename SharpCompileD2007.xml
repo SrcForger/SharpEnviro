@@ -69,6 +69,7 @@
   </package>
   <package Name="Configurations - Objects">
     <project Name="Clock" Type="DLL">Plugins\Configurations\Objects\Clock\Clock.dproj</project>
+	<project Name="Drive" Type="DLL">Plugins\Configurations\Objects\Drive\Drive.dproj</project>
     <project Name="Image" Type="DLL">Plugins\Configurations\Objects\Image\Image.dproj</project>
     <project Name="Link" Type="DLL">Plugins\Configurations\Objects\Link\Link.dproj</project>
     <project Name="Recycle Bin" Type="DLL">Plugins\Configurations\Objects\RecycleBin\RecycleBin.dproj</project>
