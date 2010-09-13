@@ -46,7 +46,6 @@ uses
   uSharpDeskDebugging,
   uSharpDeskTDeskSettings,
   uSharpDeskObjectSettings,
-  ClockObjectSettingsWnd,
   ClockObjectXMLSettings,
   uSharpXMLUtils,
   SharpDeskApi, GR32_PNG, JclSimpleXML;
@@ -130,10 +129,6 @@ type
     property Locked : boolean read FLocked write FLocked;
   end;
 
-
-var
-  SettingsWnd : TSettingsWnd;
-
 implementation
 
 
@@ -142,7 +137,6 @@ var
   SrcR: Integer;
   SrcB: Integer;
   Scale: Single;
-  R: TKernelResampler;
 begin
   SrcR := Src.Width - 1;
   SrcB := Src.Height - 1;

@@ -25,7 +25,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library Drive;
 uses
-//  VCLFixPack,
   Forms,
   windows,
   graphics,
@@ -48,8 +47,7 @@ uses
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   SharpDeskApi in '..\..\..\Common\Libraries\SharpDeskApi\SharpDeskApi.pas',
   SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
-  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
-  mlinewnd in 'mlinewnd.pas' {mlineform};
+  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas';
 
 {$R *.RES}
 {$R icons.res}

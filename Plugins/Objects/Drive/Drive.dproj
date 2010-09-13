@@ -40,10 +40,6 @@
       
       
       
-      
-      
-      
-      
       <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Beispiele für gekapselte Komponenten für Automation Server</Excluded_Packages>
       <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Beispiele für gekapselte Komponenten für Automation Server</Excluded_Packages>
     </Excluded_Packages></Delphi.Personality></BorlandProject></BorlandProject>
@@ -60,9 +56,6 @@
     <DCCReference Include="..\..\..\Common\Libraries\SharpDeskApi\SharpDeskApi.pas" />
     <DCCReference Include="..\..\..\Common\Units\SharpFX\SharpFX.pas" />
     <DCCReference Include="DriveObjectXMLSettings.pas" />
-    <DCCReference Include="mlinewnd.pas">
-      <Form>mlineform</Form>
-    </DCCReference>
     <DCCReference Include="uDriveObjectLayer.pas" />
   </ItemGroup>
 </Project>
