@@ -187,7 +187,7 @@ function GetPluginData(pluginID : String): TPluginData;
 begin
   with result do
   begin
-    Name := 'Weather';
+    Name := 'Clock';
     Description := 'The Clock object shows the current time on your desktop';
     Status := '';
   end;

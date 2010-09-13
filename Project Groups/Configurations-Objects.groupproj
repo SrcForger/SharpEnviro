@@ -4,15 +4,17 @@
   </PropertyGroup>
   <ItemGroup />
   <ItemGroup>
+    <Projects Include="..\Plugins\Configurations\Objects\Clock\Clock.dproj" />
     <Projects Include="..\Plugins\Configurations\Objects\Image\Image.dproj" />
     <Projects Include="..\Plugins\Configurations\Objects\Link\Link.dproj" />
     <Projects Include="..\Plugins\Configurations\Objects\RecycleBin\RecycleBin.dproj" />
+    <Projects Include="..\Plugins\Configurations\Objects\Weather\Weather.dproj" />
   </ItemGroup>
   <ProjectExtensions>
     <Borland.Personality>Default.Personality</Borland.Personality>
     <Borland.ProjectType />
     <BorlandProject>
-  <BorlandProject xmlns=""> <Default.Personality> </Default.Personality> </BorlandProject></BorlandProject>
+<BorlandProject xmlns=""><Default.Personality></Default.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
   <Target Name="Image">
     <MSBuild Projects="..\Plugins\Configurations\Objects\Image\Image.dproj" Targets="" />
@@ -41,14 +43,32 @@
   <Target Name="RecycleBin:Make">
     <MSBuild Projects="..\Plugins\Configurations\Objects\RecycleBin\RecycleBin.dproj" Targets="Make" />
   </Target>
+  <Target Name="Clock">
+    <MSBuild Projects="..\Plugins\Configurations\Objects\Clock\Clock.dproj" Targets="" />
+  </Target>
+  <Target Name="Clock:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Objects\Clock\Clock.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Clock:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Objects\Clock\Clock.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Weather">
+    <MSBuild Projects="..\Plugins\Configurations\Objects\Weather\Weather.dproj" Targets="" />
+  </Target>
+  <Target Name="Weather:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Objects\Weather\Weather.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Weather:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Objects\Weather\Weather.dproj" Targets="Make" />
+  </Target>
   <Target Name="Build">
-    <CallTarget Targets="Image;Link;RecycleBin" />
+    <CallTarget Targets="Image;Link;RecycleBin;Clock;Weather" />
   </Target>
   <Target Name="Clean">
-    <CallTarget Targets="Image:Clean;Link:Clean;RecycleBin:Clean" />
+    <CallTarget Targets="Image:Clean;Link:Clean;RecycleBin:Clean;Clock:Clean;Weather:Clean" />
   </Target>
   <Target Name="Make">
-    <CallTarget Targets="Image:Make;Link:Make;RecycleBin:Make" />
+    <CallTarget Targets="Image:Make;Link:Make;RecycleBin:Make;Clock:Make;Weather:Make" />
   </Target>
   <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
 </Project>
