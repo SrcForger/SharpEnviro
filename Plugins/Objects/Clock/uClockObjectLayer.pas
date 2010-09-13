@@ -102,12 +102,16 @@ type
     fTimer : TTimer;
     strTime, strDate : string;
 
+    FAffineTrans: TAffineTransformation;
+
   protected
     procedure LoadSkin;
 
     procedure fTimer1TimerNormal(Sender: TObject);
 
     procedure OnTimer(Sender: TObject);
+
+    procedure RotateBitmap(Src, Dst : TBitmap32; Alpha: Single);
      
   public
     constructor Create( ParentImage:Timage32; Id : integer;
@@ -133,36 +137,32 @@ var
 implementation
 
 
-procedure RotateBitmap(Src, Dst : TBitmap32; Alpha: Single);
+procedure TClockLayer.RotateBitmap(Src, Dst : TBitmap32; Alpha: Single);
 var
   SrcR: Integer;
   SrcB: Integer;
-  T: TAffineTransformation;
   Scale: Single;
+  R: TKernelResampler;
 begin
   SrcR := Src.Width - 1;
   SrcB := Src.Height - 1;
-  TKernelResampler.Create(Src).Kernel := TMitchellKernel.Create;
-  T := TAffineTransformation.Create;
-  T.SrcRect := FloatRect(0, 0, SrcR + 1, SrcB + 1);
-  try
-    T.Clear;
 
-    T.Translate(-SrcR / 2, -SrcB / 2);
-    T.Rotate(0, 0, Alpha);
+  FAffineTrans.SrcRect := FloatRect(0, 0, SrcR + 1, SrcB + 1);
 
-    scale := 1;
+  FAffineTrans.Clear;
 
-    T.Scale(Scale, Scale);
+  FAffineTrans.Translate(-SrcR / 2, -SrcB / 2);
+  FAffineTrans.Rotate(0, 0, Alpha);
 
-    T.Translate(SrcR / 2, SrcB / 2);
+  scale := 1;
 
-    Dst.BeginUpdate;
-    Transform(Dst, Src, T);
-    Dst.EndUpdate;
-  finally
-    T.Free;
-  end;
+  FAffineTrans.Scale(Scale, Scale);
+
+  FAffineTrans.Translate(SrcR / 2, SrcB / 2);
+
+  Dst.BeginUpdate;
+  Transform(Dst, Src, FAffineTrans);
+  Dst.EndUpdate;
 end;
 
 function FormatCaption(str : string) : string;
@@ -476,7 +476,7 @@ begin
     Bitmap.SetSize(FPicture.Width,FPicture.Height);
     Bitmap.Clear(color32(0,0,0,0));
     if (FLastHour <> HourOf(Now)) or (FLastMinute <> MinuteOf(Now)) or (FLastSecond <> SecondOf(Now)) then
-      DrawClock;
+      DrawClock;   
 
     Bitmap.Draw(0,0,FPicture);
   end else
@@ -584,6 +584,11 @@ begin
   FHArrow := TBitmap32.Create;
   FMArrow := TBitmap32.Create;
   FSArrow := TBitmap32.Create;
+  TKernelResampler.Create(FHArrow).Kernel := TMitchellKernel.Create;
+  TKernelResampler.Create(FMArrow).Kernel := TMitchellKernel.Create;
+  TKernelResampler.Create(FSArrow).Kernel := TMitchellKernel.Create;
+
+  FAffineTrans := TAffineTransformation.Create;
 
   FPicture := TBitmap32.Create;
   FPicture.DrawMode := dmBlend;
@@ -615,6 +620,7 @@ begin
   DebugFree(FMArrow);
   DebugFree(FSArrow);
   DebugFree(FHLTimer);
+  DebugFree(FAffineTrans);
 
   inherited;
 end;
