@@ -69,7 +69,7 @@ begin
     Caption          := Value('Caption','C');
     Target           := Value('Target','C');
     ShowCaption      := BoolValue('ShowCaption',True);
-    CaptionAlign     := IntValue('CaptionAlign',0);
+    CaptionAlign     := IntValue('CaptionAlign',2);
   end;
 end;
 

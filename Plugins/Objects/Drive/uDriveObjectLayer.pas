@@ -70,7 +70,6 @@ type
   protected
      procedure OnTimer(Sender: TObject);
      procedure OnUpdateTimer(Sender : TObject);
-     procedure doLoadImage(IconFile: string);
 
      procedure SetCaptions;
 
@@ -108,19 +107,20 @@ var
   b: string;
   driveno: integer;
 begin
-     try
-       driveno := Ord(UpCase(Drive)) - Ord('A') + 1;
-       a := Disksize(driveno) / 1048576;
-       if a = -1 then
-       begin
-            result := 0;
-            exit;
-       end;
-       b := floattostrf(a, ffFixed, 10, 0);
-       Result := StrToInt(b);
-     except
-       result:=0;
-     end;
+  try
+    driveno := Ord(UpCase(Drive)) - Ord('A') + 1;
+    a := Disksize(driveno) / 1048576;
+    if a = -1 then
+    begin
+      result := 0;
+      exit;
+    end;
+
+    b := floattostrf(a, ffFixed, 10, 0);
+    Result := StrToInt(b);
+  except
+    result:=0;
+  end;
 end;
 
 function GetDiskFree(drive: char): integer;
@@ -129,20 +129,20 @@ var
   b: string;
   driveno: integer;
 begin
-     try
-       driveno := Ord(UpCase(Drive)) - Ord('A') + 1;
-       a := DiskFree(driveno) / 1048576;
-       if a = -1 then
-       begin
-            result := 0;
-            exit;
-       end;
-       b := floattostrf(a, ffFixed, 10, 0);
-       Result := StrToInt(b);
-     except
-           result := 0;
-           exit;
-     end;
+  try
+    driveno := Ord(UpCase(Drive)) - Ord('A') + 1;
+    a := DiskFree(driveno) / 1048576;
+    if a = -1 then
+    begin
+      result := 0;
+      exit;
+    end;
+
+    b := floattostrf(a, ffFixed, 10, 0);
+    Result := StrToInt(b);
+  except
+    result := 0;
+  end;
 end;
 
 
@@ -153,8 +153,11 @@ var  hr : hresult;
 begin
   cbRemoteName := Length(RemoteName);
   hr := WNetGetConnection(pChar(DriveLetter), RemoteName, cbRemoteName);
-  if hr = NO_ERROR then result := true
-  else result := false;
+  
+  if hr = NO_ERROR then
+    result := true
+  else
+    result := false;
 end;
 
 function GetDiskIn(Drive: Char): Boolean;
@@ -163,13 +166,13 @@ var
   DriveNumber: Integer;
 begin
   {Meldung eines kritischen Systemfehlers vehindern}
-  ErrorMode:=SetErrorMode(SEM_FailCriticalErrors);
+  ErrorMode := SetErrorMode(SEM_FailCriticalErrors);
   try
-    DriveNumber:=Ord(Drive) - 64;
+    DriveNumber := Ord(Drive) - 64;
     if DiskSize(DriveNumber) = -1 then
-      Result:=False
+      Result := False
     else
-      Result:=True;
+      Result := True;
   finally
     {ErrorMode auf den alten Wert setzen}
     SetErrorMode(ErrorMode);
@@ -349,61 +352,12 @@ begin
   changed;
 end;
 
-
-
 procedure TDriveLayer.LoadDefaultImage;
 begin
   FIconType := 0;
   FPicture.SetSize(100,100);
   FPicture.Clear(color32(0,0,0,0));
 end;
-
-procedure TDriveLayer.doLoadImage(IconFile: string);
-var
-   FileExt : String;
-   b : integer;
-begin
-  b := 0;
-  if (FIconType = 1) and IsRootDirectory(IconFile) then
-  begin
-    b := extrShellIcon(FPicture,IconFile);
-    if (b <> 0) then
-      exit;
-  end else
-  begin
-    if (FIconType = 1) and (FileExists(IconFile)) then
-    begin
-      b := integer(LoadIco(FPicture, IconFile, 64));
-      if (b <> 0) then
-        exit;
-    end;
-  end;
-
-  if FileExists(IconFile) = True then
-  begin
-    FIconType := 0;
-    FileExt := ExtractFileExt(IconFile);
-    if (lowercase(FileExt) = '.ico') then
-    begin
-      FIconType := 1;
-      b := integer(loadIco(FPicture, IconFile, GetNearestIconSize(FSettings.Theme[DS_ICONSIZE].IntValue)))
-    end
-    else if (lowercase(FileExt) = '.png') then
-    begin
-      FIconType := 1;
-      b := integer(loadPng(FPicture,IconFile))
-    end
-    else if (lowercase(FileExt) = '.exe') then
-      b := integer(loadIco(FPicture, IconFile, 64))
-    else
-      b := integer(extrShellIcon(FPicture,IconFile));
-  end;
-  
-  if b = 0 then
-    LoadDefaultImage;
-end;
-
-
 
 procedure TDriveLayer.SetCaptions;
 var
@@ -449,6 +403,9 @@ begin
 end;
 
 procedure TDriveLayer.LoadSettings;
+var
+  TempBitmap : TBitmap32;
+  iconSize : integer;
 begin
   if ObjectID = 0 then
     exit;
@@ -500,28 +457,24 @@ begin
        Theme[DS_ICONSIZE].IntValue:= 48;
   end;
 
-  FIconType := 0;
-  if (FSettings.IconFile = '-2') then
-  begin
-    {Shell Icon}
-    FIconType := 1;
-    FSettings.IconFile := FSettings.Target;
-    doLoadImage(FSettings.IconFile+':\');
-  end else
-  {Custom Icon}
-  if FileExists(FSettings.IconFile) then
-    doLoadImage(FSettings.IconFile)
-  else
-  begin
-    {SharpE Icon}
-    IconStringToIcon(FSettings.IconFile, FSettings.Target, FPicture);
+  {SharpE Icon}
+  TempBitmap := TBitmap32.Create;
+  try
+    iconSize := FSettings.Theme[DS_ICONSIZE].IntValue;
+    IconStringToIcon(FSettings.IconFile, FSettings.Target, TempBitmap, GetNearestIconSize(iconSize));
+
+    FPicture.SetSize(iconSize, iconSize);
+    FPicture.Clear(color32(0,0,0,0));
+    TempBitmap.DrawTo(FPicture, Rect(0, 0, iconSize, iconSize));
+  except
   end;
 
-  Bitmap.DrawMode := dmBlend;
+  TempBitmap.Free;
 
-  FUpdateTimer.Enabled := True;
+  if FHLTimer.Tag >= FAnimSteps then
+     FHLTimer.OnTimer(FHLTimer);   
+
   DrawBitmap;
-  Changed;
 end;
 
 
