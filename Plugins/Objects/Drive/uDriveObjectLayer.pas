@@ -382,7 +382,7 @@ begin
         FCaptionSettings.Caption.Add(FSettings.Caption);
       end;
 
-      SpaceFree := (GetDiskCapacity(FSettings.Target[1])) - (GetDiskFree(FSettings.Target[1]));
+      SpaceFree := GetDiskFree(FSettings.Target[1]);
 
       if SpaceFree >= (1024 * 1024) then
       begin

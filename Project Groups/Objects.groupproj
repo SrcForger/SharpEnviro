@@ -9,7 +9,6 @@
     <Projects Include="..\Plugins\Objects\Image\Image.dproj" />
     <Projects Include="..\Plugins\Objects\Link\Link.dproj" />
     <Projects Include="..\Plugins\Objects\RecycleBin\RecycleBin.dproj" />
-    <Projects Include="..\Plugins\Objects\Text\Text.dproj" />
     <Projects Include="..\Plugins\Objects\Weather\Weather.dproj" />
   </ItemGroup>
   <ProjectExtensions>
@@ -63,15 +62,6 @@
   <Target Name="Drive:Make">
     <MSBuild Projects="..\Plugins\Objects\Drive\Drive.dproj" Targets="Make" />
   </Target>
-  <Target Name="Text">
-    <MSBuild Projects="..\Plugins\Objects\Text\Text.dproj" Targets="" />
-  </Target>
-  <Target Name="Text:Clean">
-    <MSBuild Projects="..\Plugins\Objects\Text\Text.dproj" Targets="Clean" />
-  </Target>
-  <Target Name="Text:Make">
-    <MSBuild Projects="..\Plugins\Objects\Text\Text.dproj" Targets="Make" />
-  </Target>
   <Target Name="Weather">
     <MSBuild Projects="..\Plugins\Objects\Weather\Weather.dproj" Targets="" />
   </Target>
@@ -82,13 +72,13 @@
     <MSBuild Projects="..\Plugins\Objects\Weather\Weather.dproj" Targets="Make" />
   </Target>
   <Target Name="Build">
-    <CallTarget Targets="Link;RecycleBin;Image;Clock;Drive;Text;Weather" />
+    <CallTarget Targets="Link;RecycleBin;Image;Clock;Drive;Weather" />
   </Target>
   <Target Name="Clean">
-    <CallTarget Targets="Link:Clean;RecycleBin:Clean;Image:Clean;Clock:Clean;Drive:Clean;Text:Clean;Weather:Clean" />
+    <CallTarget Targets="Link:Clean;RecycleBin:Clean;Image:Clean;Clock:Clean;Drive:Clean;Weather:Clean" />
   </Target>
   <Target Name="Make">
-    <CallTarget Targets="Link:Make;RecycleBin:Make;Image:Make;Clock:Make;Drive:Make;Text:Make;Weather:Make" />
+    <CallTarget Targets="Link:Make;RecycleBin:Make;Image:Make;Clock:Make;Drive:Make;Weather:Make" />
   </Target>
   <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
 </Project>
