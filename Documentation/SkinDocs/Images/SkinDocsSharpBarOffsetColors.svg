@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.47 r22583"
+   sodipodi:docname="SkinDocsSharpBarOffsetColors.svg">
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.71238679"
+     inkscape:cx="445.20226"
+     inkscape:cy="893.27134"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1280"
+     inkscape:window-height="720"
+     inkscape:window-x="-8"
+     inkscape:window-y="21"
+     inkscape:window-maximized="1" />
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Mend"
+       style="overflow:visible;">
+      <path
+         id="path4145"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none;"
+         transform="scale(0.4) rotate(180) translate(10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lstart"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lstart"
+       style="overflow:visible">
+      <path
+         id="path4136"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none"
+         transform="scale(0.8) translate(12.5,0)" />
+    </marker>
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective10" />
+    <inkscape:perspective
+       id="perspective2824"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <marker
+       inkscape:stockid="Arrow1MendN"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1MendN"
+       style="overflow:visible;">
+      <path
+         id="path5352"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="marker-start:none;stroke:#0000ff;stroke-width:1.0pt;fill:#0000ff;fill-rule:evenodd"
+         transform="scale(0.4) rotate(180) translate(10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1MendL"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1MendL"
+       style="overflow:visible;">
+      <path
+         id="path5406"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="marker-start:none;stroke:#ff0000;stroke-width:1.0pt;fill:#ff0000;fill-rule:evenodd"
+         transform="scale(0.4) rotate(180) translate(10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1MendD"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1MendD"
+       style="overflow:visible;">
+      <path
+         id="path5409"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="marker-start:none;stroke:#ff0000;stroke-width:1.0pt;fill:#ff0000;fill-rule:evenodd"
+         transform="scale(0.4) rotate(180) translate(10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1MendLz"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1MendLz"
+       style="overflow:visible;">
+      <path
+         id="path5412"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="marker-start:none;stroke:#ff0000;stroke-width:1.0pt;fill:#ff0000;fill-rule:evenodd"
+         transform="scale(0.4) rotate(180) translate(10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1MendV"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1MendV"
+       style="overflow:visible;">
+      <path
+         id="path5415"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="marker-start:none;stroke:#ff0000;stroke-width:1.0pt;fill:#ff0000;fill-rule:evenodd"
+         transform="scale(0.4) rotate(180) translate(10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1MendNR"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1MendNR"
+       style="overflow:visible;">
+      <path
+         id="path5484"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="marker-start:none;stroke:#0000ff;stroke-width:1.0pt;fill:#0000ff;fill-rule:evenodd"
+         transform="scale(0.4) rotate(180) translate(10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1MendNRj"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1MendNRj"
+       style="overflow:visible;">
+      <path
+         id="path5557"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;marker-start:none;stroke:#00008c;stroke-width:1.0pt;fill:#00008c"
+         transform="scale(0.4) rotate(180) translate(10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1MendNh"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1MendNh"
+       style="overflow:visible;">
+      <path
+         id="path5560"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;marker-start:none;stroke:#00008b;stroke-width:1.0pt;fill:#00008b"
+         transform="scale(0.4) rotate(180) translate(10,0)" />
+    </marker>
+  </defs>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <image
+       y="1.1479056"
+       x="0.49999565"
+       id="image2826"
+       height="171"
+       width="639"
+       xlink:href="file:///C:/Users/Martin/Desktop/SkinDocsSharpBarOffsetColors.jpg"
+       inkscape:export-filename="C:\Users\Martin\Desktop\SkinDocsSharpBarOffsetColorsArrows.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#ff0000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="170.03442"
+       y="-37.349602"
+       id="text2830"
+       inkscape:export-filename="C:\Users\Martin\Desktop\SkinDocsSharpBarOffsetColorsArrows.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan2832"
+         x="170.03442"
+         y="-37.349602"
+         style="font-size:28px;fill:#ff0000;fill-opacity:1;font-family:Calibri;-inkscape-font-specification:Calibri">&lt;payoffsets&gt;</tspan></text>
+    <path
+       style="stroke-linejoin:miter;marker-end:url(#Arrow1MendD);stroke-opacity:1;marker-start:none;stroke:#ff0000;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-width:2;fill:#ff0000"
+       d="M 251,-26.778643 269,125.36218"
+       id="path3606"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\Martin\Desktop\SkinDocsSharpBarOffsetColorsArrows.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:nodetypes="cc"
+       id="path5325"
+       d="M 225.06671,-25.771231 197.08153,2.3325332"
+       style="stroke-linejoin:miter;marker-end:url(#Arrow1MendL);stroke-opacity:1;marker-start:none;stroke:#ff0000;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-width:2;fill:#ff0000"
+       inkscape:export-filename="C:\Users\Martin\Desktop\SkinDocsSharpBarOffsetColorsArrows.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       id="text5327"
+       y="203.87691"
+       x="285.62741"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#ff0000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       inkscape:export-filename="C:\Users\Martin\Desktop\SkinDocsSharpBarOffsetColorsArrows.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         style="font-size:28px;fill:#ff0000;fill-opacity:1;font-family:Calibri;-inkscape-font-specification:Calibri"
+         y="203.87691"
+         x="285.62741"
+         id="tspan5329"
+         sodipodi:role="line">&lt;paxoffsets&gt;</tspan></text>
+    <path
+       sodipodi:nodetypes="cc"
+       id="path5331"
+       d="m 288,183.36218 -203,-73"
+       style="stroke-linejoin:miter;marker-end:url(#Arrow1MendLz);stroke-opacity:1;marker-start:none;stroke:#ff0000;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-width:2;fill:#ff0000"
+       inkscape:export-filename="C:\Users\Martin\Desktop\SkinDocsSharpBarOffsetColorsArrows.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="stroke-linejoin:miter;marker-end:url(#Arrow1MendV);stroke-opacity:1;marker-start:none;stroke:#ff0000;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-width:2;fill:#ff0000"
+       d="m 438,182.36218 192,-67"
+       id="path5333"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\Martin\Desktop\SkinDocsSharpBarOffsetColorsArrows.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       id="text5335"
+       y="-37.349602"
+       x="406.30649"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#0000ff;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       inkscape:export-filename="C:\Users\Martin\Desktop\SkinDocsSharpBarOffsetColorsArrows.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         style="fill:#0000ff;fill-opacity:1;font-family:Calibri;-inkscape-font-specification:Calibri;font-size:28"
+         y="-37.349602"
+         x="406.30649"
+         id="tspan5337"
+         sodipodi:role="line">&lt;ncyoffsets&gt;</tspan></text>
+    <path
+       style="stroke-linejoin:miter;marker-end:url(#Arrow1MendNh);stroke-opacity:1;marker-start:none;stroke:#00008b;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-width:2;fill:#000080"
+       d="M 469.02965,-29.763819 442,6.36218"
+       id="path5339"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\Martin\Desktop\SkinDocsSharpBarOffsetColorsArrows.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:nodetypes="cc"
+       id="path5341"
+       d="M 487,-31.748996 519,118.36218"
+       style="stroke-linejoin:miter;marker-end:url(#Arrow1MendNRj);stroke-opacity:1;marker-start:none;stroke:#00008c;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-width:2;fill:#000000"
+       inkscape:export-filename="C:\Users\Martin\Desktop\SkinDocsSharpBarOffsetColorsArrows.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+  </g>
+</svg>
