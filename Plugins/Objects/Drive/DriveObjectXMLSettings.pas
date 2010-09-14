@@ -42,6 +42,7 @@ type
   public
     {Settings Block}
 
+      CustomIcon : boolean;
       IconFile : string;
       Caption : string;
       Target : string;
@@ -65,6 +66,7 @@ begin
 
   with FXMLRoot.Items do
   begin
+    CustomIcon       := BoolValue('CustomIcon',false);
     IconFile         := Value('IconFile','icon.drive.hdd');
     Caption          := Value('Caption','C');
     Target           := Value('Target','C');
@@ -83,6 +85,7 @@ begin
 
   with FXMLRoot.Items do
   begin
+    Add('CustomIcon',CustomIcon);
     Add('IconFile',IconFile);
     Add('Target',Target);
     with FXMLRoot.Items.ItemNamed['Target'].Properties do

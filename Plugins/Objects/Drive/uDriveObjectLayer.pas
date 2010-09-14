@@ -66,12 +66,15 @@ type
     FDeskPanel       : TDesktopPanel;
     FPicture         : TBitmap32;
     FMeterBmp        : TBitmap32;
+    FOldSpaceFree    : integer;
+    FOldDriveType    : integer;
     
   protected
      procedure OnTimer(Sender: TObject);
      procedure OnUpdateTimer(Sender : TObject);
 
-     procedure SetCaptions;
+     function UpdateDriveSize: boolean;
+     function UpdateDriveType: boolean;
 
   public
      FParentImage : Timage32;
@@ -230,11 +233,103 @@ begin
   end;
 end;
 
+function TDriveLayer.UpdateDriveSize: boolean;
+var
+  SpaceFree : single;
+  SpacePrefix : string;
+begin
+  Result := False;
+
+  if (GetDiskIn(FSettings.Target[1])) then
+  begin
+    SpaceFree := (GetDiskCapacity(FSettings.Target[1])) - (GetDiskFree(FSettings.Target[1]));
+    if floor(SpaceFree) = FOldSpaceFree then
+      exit;
+
+    FOldSpaceFree := floor(SpaceFree);
+
+    if (FSettings.ShowCaption) then
+    begin
+      if SpaceFree >= (1024 * 1024) then
+      begin
+        SpaceFree := SpaceFree / (1024 * 1024);
+        SpacePrefix := 'TB';
+      end else if SpaceFree > (1024) then
+      begin
+        SpaceFree := SpaceFree / (1024);
+        SpacePrefix := 'GB';
+      end else
+      begin
+        SpacePrefix := 'MB';
+      end;
+
+      // Add the Drive letter
+      FCaptionSettings.Caption.Clear;
+      FCaptionSettings.Caption.Delimiter := ' ';
+
+      FCaptionSettings.Caption.Add(FSettings.Caption);
+
+      FCaptionSettings.Caption.Add(FloatToStrF(SpaceFree,ffFixed,6,2) + ' ' + SpacePrefix + ' Free');
+    end else
+    begin
+      // Add the Drive letter
+      FCaptionSettings.Caption.Clear;
+      FCaptionSettings.Caption.Delimiter := ' ';
+
+      FCaptionSettings.Caption.Add(FSettings.Caption);
+    end;
+  end;
+
+  Result := True;
+end;
+
+function TDriveLayer.UpdateDriveType: boolean;
+var
+  driveType : integer;
+  iconStr : string;
+  iconSize : integer;
+  TempBitmap : TBitmap32;
+begin
+  Result := False;
+
+  driveType := GetDriveType(PChar(FSettings.Target + ':\'));
+  if driveType = FOldDriveType then
+    exit;
+
+  FOldDriveType := driveType;
+
+  case driveType of
+  DRIVE_UNKNOWN, DRIVE_NO_ROOT_DIR:
+    iconStr := 'icon.drive.unknown';
+  DRIVE_FIXED, DRIVE_REMOTE:
+    iconStr := 'icon.drive.hdd';
+  DRIVE_REMOVABLE, DRIVE_RAMDISK:
+    iconStr := 'icon.drive.other';
+  DRIVE_CDROM:
+    iconStr := 'icon.drive.cdrom';
+  end;
+
+  {SharpE Icon}
+  TempBitmap := TBitmap32.Create;
+  try
+    iconSize := FSettings.Theme[DS_ICONSIZE].IntValue;
+    IconStringToIcon(iconStr, FSettings.Target, TempBitmap, GetNearestIconSize(iconSize));
+
+    FPicture.SetSize(iconSize, iconSize);
+    FPicture.Clear(color32(0,0,0,0));
+    TempBitmap.DrawTo(FPicture, Rect(0, 0, iconSize, iconSize));
+  except
+  end;
+
+  TempBitmap.Free;
+
+  Result := True;
+end;
+
 procedure TDriveLayer.OnUpdateTimer(Sender : TObject);
 begin
-  SetCaptions;
-
-  DrawBitmap;
+  if (UpdateDriveSize) or (UpdateDriveType) then
+    DrawBitmap;
 end;
 
 procedure TDriveLayer.OnTimer(Sender: TObject);
@@ -359,49 +454,6 @@ begin
   FPicture.Clear(color32(0,0,0,0));
 end;
 
-procedure TDriveLayer.SetCaptions;
-var
-  SpaceFree : single;
-  SpacePrefix : string;
-begin
-  FCaptionSettings.Caption.Clear;
-  FCaptionSettings.Caption.Delimiter := ' ';
-
-  if (not FSettings.ShowCaption) then
-    exit;
-
-  FCaptionSettings.Caption.Add(FSettings.Caption);
-
-  if (GetDiskIn(FSettings.Target[1])) then
-  begin
-    if (FSettings.ShowCaption) then
-    begin
-      FCaptionSettings.Caption.Clear;
-      if FSettings.ShowCaption then
-      begin
-        FCaptionSettings.Caption.Add(FSettings.Caption);
-      end;
-
-      SpaceFree := GetDiskFree(FSettings.Target[1]);
-
-      if SpaceFree >= (1024 * 1024) then
-      begin
-        SpaceFree := SpaceFree / (1024 * 1024);
-        SpacePrefix := 'TB';
-      end else if SpaceFree > (1024) then
-      begin
-        SpaceFree := SpaceFree / (1024);
-        SpacePrefix := 'GB';
-      end else
-      begin
-        SpacePrefix := 'MB';
-      end;
-
-      FCaptionSettings.Caption.Add(FloatToStrF(SpaceFree,ffFixed,6,2) + ' ' + SpacePrefix + ' Free');
-    end;
-  end;
-end;
-
 procedure TDriveLayer.LoadSettings;
 var
   TempBitmap : TBitmap32;
@@ -437,7 +489,7 @@ begin
     FCaptionSettings.Draw := ShowCaption;
     FCaptionSettings.LineSpace := 0;
 
-    SetCaptions;
+    UpdateDriveSize;
 
     FIconSettings.Size  := 100;
     FIconSettings.Alpha := 255;
@@ -458,18 +510,22 @@ begin
   end;
 
   {SharpE Icon}
-  TempBitmap := TBitmap32.Create;
-  try
-    iconSize := FSettings.Theme[DS_ICONSIZE].IntValue;
-    IconStringToIcon(FSettings.IconFile, FSettings.Target, TempBitmap, GetNearestIconSize(iconSize));
+  if FSettings.CustomIcon then
+  begin
+    TempBitmap := TBitmap32.Create;
+    try
+      iconSize := FSettings.Theme[DS_ICONSIZE].IntValue;
+      IconStringToIcon(FSettings.IconFile, FSettings.Target, TempBitmap, GetNearestIconSize(iconSize));
 
-    FPicture.SetSize(iconSize, iconSize);
-    FPicture.Clear(color32(0,0,0,0));
-    TempBitmap.DrawTo(FPicture, Rect(0, 0, iconSize, iconSize));
-  except
-  end;
+      FPicture.SetSize(iconSize, iconSize);
+      FPicture.Clear(color32(0,0,0,0));
+      TempBitmap.DrawTo(FPicture, Rect(0, 0, iconSize, iconSize));
+    except
+    end;
 
-  TempBitmap.Free;
+    TempBitmap.Free;
+  end else
+    UpdateDriveType;
 
   if FHLTimer.Tag >= FAnimSteps then
      FHLTimer.OnTimer(FHLTimer);   
@@ -489,19 +545,27 @@ begin
   FObjectId := id;
   FScale     := 100;
   scaled := false;
+
+  FOldSpaceFree := -1;
+  FOldDriveType := -1;
+
   FSettings := TXMLSettings.Create(FObjectId,nil,'Drive');
+
   FHLTimer := TTimer.Create(nil);
   FHLTimer.Interval := 20;
   FHLTimer.Tag      := 0;
   FHLTimer.Enabled  := False;  
   FHLTimer.OnTimer  := OnTimer;
   FAnimSteps        := 5;
+
   FUpdateTimer := TTImer.Create(nil);
-  FUpdateTimer.Interval := 1000*30;
+  FUpdateTimer.Interval := 1000*10;
   FUpdateTimer.Enabled  := False;
   FUpdateTimer.OnTimer  := OnUpdateTimer;
+  
   FCaptionSettings.Caption := TStringList.Create;
   FCaptionSettings.Caption.Clear;
+  
   FIconSettings.Icon := TBitmap32.Create;   
   LoadSettings;
 end;
