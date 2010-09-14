@@ -41,15 +41,27 @@
 
 \renewcommand*\lstlistingname{Code Example}
 \renewcommand*\lstlistlistingname{List of code examples}
+\makeatletter% --> De-TeX-FAQ
+\renewcommand*{\lstlistoflistings}{%
+  \begingroup
+    \if@twocolumn
+      \@restonecoltrue\onecolumn
+    \else
+      \@restonecolfalse
+    \fi
+    \lol@heading
+    \setlength{\parskip}{\z@}%
+    \setlength{\parindent}{\z@}%
+    \setlength{\parfillskip}{\z@ \@plus 1fil}%
+    \@starttoc{lol}%
+    \if@restonecol\twocolumn\fi
+  \endgroup
+}
+\makeatother% --> \makeatletter
 
 \lstdefinelanguage{XXML} {
-%  otherkeywords={version,info,name,SharpESkin,SharpESkinInfo,header,SharpBar,website,
-%SkinPart,Text,Icon,url,author,Menu,MenuItem,TaskItem,Full,Mini,Compact,Button,Font,ProgressBar,
-%Edit,Notify,TaskPreview,Normal,Hover,Down,MiniThrobber,color,alpha,item,Default,Info,Tag,Type,
-%location,dimension,image,drawmode,gradienttype,gradientalpha,gradientcolor,cleartype,shadow,shadowtype,
-%shadowcolor,shadowalpha,size,draw,blend,blendcolor,blendalpha,fsmod,sbmod,paxoffsets,paxoffsetsbottom,
-%payoffsets,payoffsetsbottom,enablevflip,glasseffect,specialhideform,throbber},
   sensitive=false, 
+  morekeywords={$Background,$Alpha,$IconHighlight},
   morecomment=[s][\color{tag}]{<}{>},
 %  morecomment=[s][\color{string}]{"}{"},
   morecomment=[s][\color{comment}]{<!--}{-->},
@@ -57,25 +69,15 @@
 }
 
 \lstset{
-%  keywordstyle=\color[rgb]{0,0,1},
-%  commentstyle=\color[rgb]{0.133,0.545,0.133},
-%  stringstyle=\color[rgb]{0,0.5,0},
+  keywordstyle=\color[rgb]{1.0, 0.0, 0.0},
   basicstyle=\footnotesize,       % the size of the fonts that are used for the code
   numbers=left,                   % where to put the line-numbers
   numberstyle=\footnotesize,
-%  morecomment=[l]{--},
-%  otherkeywords={?xml,?>,<,</,version>,version=,encoding=,info>,name>,SharpESkin,SharpESkinInfo>,header>,SharpBar>,website>,
-%SkinPart>,Text>,Icon>,url>,author>,Menu>,MenuItem>,TaskItem>,Full>,Mini>,Compact>,Button>,Font>,ProgressBar>,
-%Edit>,Notify>,TaskPreview>,Normal>,Hover>,Down>,MiniThrobber>,color>,alpha>,item>,Default>,Info>,Tag>,Type>,
-%location>,dimension>,image>,drawmode>,gradienttype>,gradientalpha>,gradientcolor>,cleartype>,shadow>,shadowtype>,
-%shadowcolor>,shadowalpha>,size>,draw>,blend>,blendcolor>,blendalpha>,fsmod>,sbmod>,paxoffsets>,paxoffsetsbottom>,
-%payoffsets>,payoffsetsbottom>,enablevflip>,glasseffect>,specialhideform>,throbber>},
-%  otherkeywords={<,>,</,/>},
-  %keywordsprefix={<},
   frame=tb,
   captionpos=b,
   xleftmargin={0.8cm},
-  framexleftmargin={0.8cm}
+  framexleftmargin={0.8cm},
+  aboveskip={0.5cm}
 }
 
 \usepackage{setspace} % anderthalbfacher Zeilenabstand durch "\onehalfspacing"
@@ -147,4 +149,16 @@
 
 \chapter{Skin System}
   \input{Content/SkinSystem.tex}
+
+\newpage
+
+\pagenumbering{Roman}
+
+\appendix
+
+\addcontentsline{toc}{chapter}{List of Code Examples}
+\lstlistoflistings
+\addcontentsline{toc}{chapter}{List of Tables}
+\listoftables
+
 \end{document}

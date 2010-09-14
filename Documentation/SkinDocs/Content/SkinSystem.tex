@@ -2,15 +2,15 @@
 Each skin gets its own directory within the \emph{SharpEnviro$\backslash$Skins$\backslash$} folder\\
 \hbox{\quad}{\emph{SharpEnviro$\backslash$Skins$\backslash$MySkin$\backslash$}}
 
-Within the directory of the skin 3 xml files are to be created\\
+Within the directory of the skin three XML files are to be created\\
 \hbox{\quad}{\emph{SharpEnviro$\backslash$Skins$\backslash$MySkin$\backslash$info.xml}}\\
 \hbox{\quad}{\emph{SharpEnviro$\backslash$Skins$\backslash$MySkin$\backslash$scheme.xml}}\\
 \hbox{\quad}{\emph{SharpEnviro$\backslash$Skins$\backslash$MySkin$\backslash$skin.xml}}
 
 \paragraph{Info.xml - Skin Header and Information File}\hspace{0cm}\\
-This file is a very simple xml file which contains nothing more than the name of the skin, the authors name, authors website, info description and the version of the skin. An example file would look like this:
+This file is a very simple XML file which contains nothing more than the name of the skin, the authors name, authors website, info description and the version of the skin. An example file would look like this:
 
-\begin{lstlisting}[caption={Header file for the skin (\emph{info.xml}).}]
+\begin{lstlisting}[caption={[Header file for the skin (info.xml)]Header file for the skin (\textbf{info.xml}).}]
 <?xml version="1.0" encoding="iso-8859-1"?>
 <SharpESkinInfo>
   <header>
@@ -24,12 +24,12 @@ This file is a very simple xml file which contains nothing more than the name of
 \end{lstlisting}
 
 \paragraph{Scheme.xml - Scheme Color Definitions}\hspace{0cm}\\
-The scheme color xml file defines which scheme color and scheme values will be available for the skin. Those are not only the values the user can change by adjusting their color schemes, but those are also the values and tags which a skin developer can use while creating a skin. When you create a skin it's recommended to take a look at this file first because you can use all the scheme tags created here later when creating the skin. A more detailed description of the scheme color system can be found here.
+The scheme color XML file defines which scheme color and scheme values will be available for the skin. Those are not only the values the user can change by adjusting their color schemes, but those are also the values and tags which a skin developer can use while creating a skin. When you create a skin it's recommended to take a look at this file first because you can use all the scheme tags created here later when creating the skin. A more detailed description of the scheme color system can be found in chapter \ref{ch:schemecolors}.
 
 \paragraph{Skin.xml - Skin Components}\hspace{0cm}\\
-This file contains the actual skins for all the components which can be skinned. The basic structure of the file is very simple, under the root xml element each skin component gets it's own element under which the actual skin informations are stored.
+This file contains the actual skins for all the components which can be skinned. The basic structure of the file is very simple, under the root XML element each skin component gets it's own element under which the actual skin informations are stored.
 
-\begin{lstlisting}[caption={Basic structure of the file \emph{skin.xml}.}]
+\begin{lstlisting}[caption={[Basic structure of the file skin.xml]Basic structure of the file \textbf{skin.xml}.}]
 <?xml version="1.0" encoding="iso-8859-1"?>
 <SharpESkin>
   <SharpBar>...</SharpBar>
@@ -49,15 +49,89 @@ This file contains the actual skins for all the components which can be skinned.
 
 The skin components itself can have different sub parts which represent different states or parts of that component. A Button for example can have a part which defines how it looks when it's clicked and how it will look when it's not clicked. Which skin component parts exist depends on the skin component and will be discussed later for each component in detail. The following example shows how a button skin is structured.
 
-\begin{lstlisting}[caption={Structure of the skin for the button skin component. The skin consists of three different sates: \emph{Normal},\emph{Hover},\emph{Down}. Which stated is used for drawing the button is based on the status of the mouse.}]
+\begin{lstlisting}[caption={[Structure of the skin for the button skin component]Structure of the skin for the button skin component. The skin consists of three different sates: \textbf{Normal}, \textbf{Hover}, \textbf{Down}. Which state is used for drawing the button is based on the status of the mouse.}]
 [...]
   <Button>
     <Text>...</Text> <!-- Text Settings -->
     <Icon>...</Icon> <!-- Icon Settings -->
 
-    <Normal>...</Normal> <!-- Actual Skin for a button in its normal state -->
-    <Hover>...</Hover> <!-- Skin for a button when the mouse is over the button -->
-    <Down>...</Down> <!-- Skin for when a button is clicked or pressed down -->
+    <Normal>...</Normal> <!-- Skin for a button in its normal state -->
+    <Hover>...</Hover> <!-- Skin for a button when the mouse is over it -->
+    <Down>...</Down> <!-- Skin for when a button is clicked -->
   </Button>
 [...]
+\end{lstlisting}
+
+\newpage
+
+\section{Scheme Colors}
+\label{ch:schemecolors}
+The available scheme colors of a skin are defined within the \textbf{scheme.xml} file in the skins directory. The items of this XML file are a list of the scheme values (see code example \ref{ce:schemelist}) which a skin author wants to use. Therefore it's recommended to edit and adjust this file before creating the skin.
+
+\begin{lstlisting}[caption={[List of all scheme items in the scheme.xml file]List of all scheme items in the \textbf{scheme.xml} file.},label={ce:schemelist}]
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpESkinScheme>
+  <item>...</item>
+  <item>...</item>
+  <item>...</item>
+</SharpESkinScheme>
+\end{lstlisting}
+
+Each scheme item consists of 5 tags which specify the properties of the item, those tags are shown in table \ref{tab:schemetags}.
+\begin{table}[!ht]
+  \centering
+  \begin{tabular}{l l}
+    \toprule
+     \multicolumn{1}{M}{Tag} &  \multicolumn{1}{M}{Description} \\
+    \midrule
+	<Name>    & the name of the scheme item \\
+	<Tag>     & tag by which the item can be used when creating the skin \\
+	<Type>    & type of the scheme item: Color, Boolean, Integer, Dynamic \\
+	<Info>    & short Info Tag what the item changes (will be displayed in the scheme editor) \\
+	<Default> & default value which is used when there is no custom user scheme selected \\
+    \bottomrule
+  \end{tabular}
+  \caption[Scheme item properties]{List of all tags which specify the properties of a scheme item.}
+  \label{tab:schemetags} 
+\end{table}
+
+The four possible scheme item types are \textbf{Color}, \textbf{Integer} and \textbf{Dynamic} whereas color and integer are the most important options. The dynamic option is only used in a special case.
+
+Using a scheme item in the skin itself is simply done by inserting the tag of color as it is defined in the \textbf{scheme.xml} file. For example by writing \textcolor{string}{\$Background}.
+
+\subsection{Type: Color}
+With the color type the scheme item will specify a simple color which can be used to change the color of certain skin parts. The default color for this item can either be an integer value representing the RGB color value, a Delphi string name like \textbf{clRed}, \textbf{clWhite}, a string containing single \textbf{RGB}, \textbf{HSL}, \textbf{CYMK} or \textbf{HSV} values in the form like \textbf{RGB(234,65,94)} or a hexadecimal value like \textbf{\#43D2AF}. More details about the possible color codes can be found in chapter ....
+
+\newpage
+\begin{lstlisting}[caption={Declaration of the scheme type \textbf{color}.}]
+<item>
+  <Name>Background</Name>
+  <Tag>$Background</Tag>
+  <Info>Background Color</Info>
+  <Default>RGB(64,32,0)</Default>
+</item>
+\end{lstlisting}
+
+\subsection{Type: Integer}
+The integer type is used to control the alpha/transparency value of skin parts and it can take values between 0 and 255.
+\begin{lstlisting}[caption={Declaration of the scheme type \textbf{integer}.}]
+<item>
+  <Name>Alpha</Name>
+  <Tag>$Alpha</Tag>
+  <Info>Background Alpha</Info>
+  <Default>196</Default>
+  <type>Integer</type>
+</item>
+\end{lstlisting}
+
+\subsection{Type: Dynamic}
+Dynamic scheme items cant be controlled or changed by the user, those are special items which represent colors which are dynamically changed at runtime by the source code. Currently the only usage for dynamic scheme items is to have a scheme color which represents the color of the associated icon of a button or taskbar item. A scheme item with type \textbf{dynamic} and tag \textcolor{string}{\$IconHighlight} will dynamically change it's color to represent the average color of an associated icon. This can for example be used to change the background color of a button to match the color of the assigned icon. Note that the Tag of this dynamic item is fixed and has to be \textcolor{string}{\$IconHighlight}.
+\begin{lstlisting}[caption={Declaration of the scheme type \textbf{dynamic}.}]
+<item>
+  <Name>Icon Highlight</Name>
+  <Tag>$IconHighlight</Tag>
+  <Info>Icon Highlight Color</Info>
+  <Default>clWhite</Default>
+  <type>Dynamic</type>
+</item>
 \end{lstlisting}
