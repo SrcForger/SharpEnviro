@@ -270,15 +270,17 @@ begin
       FCaptionSettings.Caption.Add(FSettings.Caption);
 
       FCaptionSettings.Caption.Add(FloatToStrF(SpaceFree,ffFixed,6,2) + ' ' + SpacePrefix + ' Free');
-    end else
-    begin
-      // Add the Drive letter
-      FCaptionSettings.Caption.Clear;
-      FCaptionSettings.Caption.Delimiter := ' ';
 
-      FCaptionSettings.Caption.Add(FSettings.Caption);
+      Result := True;
+      exit;
     end;
   end;
+
+  // Add the Drive letter
+  FCaptionSettings.Caption.Clear;
+  FCaptionSettings.Caption.Delimiter := ' ';
+
+  FCaptionSettings.Caption.Add(FSettings.Caption);
 
   Result := True;
 end;
