@@ -1,0 +1,63 @@
+\section{File Structure}
+Each skin gets its own directory within the \emph{SharpEnviro$\backslash$Skins$\backslash$} folder\\
+\hbox{\quad}{\emph{SharpEnviro$\backslash$Skins$\backslash$MySkin$\backslash$}}
+
+Within the directory of the skin 3 xml files are to be created\\
+\hbox{\quad}{\emph{SharpEnviro$\backslash$Skins$\backslash$MySkin$\backslash$info.xml}}\\
+\hbox{\quad}{\emph{SharpEnviro$\backslash$Skins$\backslash$MySkin$\backslash$scheme.xml}}\\
+\hbox{\quad}{\emph{SharpEnviro$\backslash$Skins$\backslash$MySkin$\backslash$skin.xml}}
+
+\paragraph{Info.xml - Skin Header and Information File}\hspace{0cm}\\
+This file is a very simple xml file which contains nothing more than the name of the skin, the authors name, authors website, info description and the version of the skin. An example file would look like this:
+
+\begin{lstlisting}[caption={Header file for the skin (\emph{info.xml}).}]
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpESkinInfo>
+  <header>
+    <name>Number 8</name>
+    <author>Martin Krämer</author>
+    <url>http://www.sharpenviro.com</url>
+    <info>Big skin similiar to Windows 7</info>
+    <version>0.8</version>
+  </header>
+</SharpESkinInfo>
+\end{lstlisting}
+
+\paragraph{Scheme.xml - Scheme Color Definitions}\hspace{0cm}\\
+The scheme color xml file defines which scheme color and scheme values will be available for the skin. Those are not only the values the user can change by adjusting their color schemes, but those are also the values and tags which a skin developer can use while creating a skin. When you create a skin it's recommended to take a look at this file first because you can use all the scheme tags created here later when creating the skin. A more detailed description of the scheme color system can be found here.
+
+\paragraph{Skin.xml - Skin Components}\hspace{0cm}\\
+This file contains the actual skins for all the components which can be skinned. The basic structure of the file is very simple, under the root xml element each skin component gets it's own element under which the actual skin informations are stored.
+
+\begin{lstlisting}[caption={Basic structure of the file \emph{skin.xml}.}]
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpESkin>
+  <SharpBar>...</SharpBar>
+  <Menu>...</Menu>
+  <MenuItem>...</MenuItem>
+  <TaskItem>...</TaskItem>
+  <MiniThrobber>...</MiniThrobber> <!-- SharpBar mini config buttons -->
+  <Button>...</Button>
+  <Font>...</Font> <!-- Captions and Labels -->
+  <ProgressBar>...</Progressbar>
+  <Edit>...</Edit> <!-- Edit Box -->
+  <Notify>...</Notify>
+  <TaskPreview>...</TaskPreview>
+</SharpESkin>
+\end{lstlisting}
+
+
+The skin components itself can have different sub parts which represent different states or parts of that component. A Button for example can have a part which defines how it looks when it's clicked and how it will look when it's not clicked. Which skin component parts exist depends on the skin component and will be discussed later for each component in detail. The following example shows how a button skin is structured.
+
+\begin{lstlisting}[caption={Structure of the skin for the button skin component. The skin consists of three different sates: \emph{Normal},\emph{Hover},\emph{Down}. Which stated is used for drawing the button is based on the status of the mouse.}]
+[...]
+  <Button>
+    <Text>...</Text> <!-- Text Settings -->
+    <Icon>...</Icon> <!-- Icon Settings -->
+
+    <Normal>...</Normal> <!-- Actual Skin for a button in its normal state -->
+    <Hover>...</Hover> <!-- Skin for a button when the mouse is over the button -->
+    <Down>...</Down> <!-- Skin for when a button is clicked or pressed down -->
+  </Button>
+[...]
+\end{lstlisting}

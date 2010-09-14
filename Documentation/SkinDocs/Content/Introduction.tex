@@ -1,0 +1,27 @@
+This document will help you to understand how the SharpEnviro skin system works so that you can create your own skins. Creating skins isn't very difficult so we want to encourage you to try it out and create some new cool skins for SharpEnviro. If you have created a new skin you can \href{http://www.sharpenviro.com/wp/?page_id=38/customization/}{share it with other users} in our forum or you can \href{http://www.sharpenviro.com/wp/?page_id=23}{contact the developers} so that maybe your skin will be included in the next release of SharpEnviro or a possible update packages.
+
+\paragraph{How does the skin system work?}\hspace{0cm}\\
+The skin system developed for SharpEnviro is a XML based bitmap layer-based rendering system. A skin defines a rendering path from the top-most bitmap layer to the bottom layer and in the end all those layers will be merged together. The layers however aren't simple windows bitmaps, we are using 32bit bitmaps as layers which fully support transparency and alpha blending. Therefore, all images used in a skin must be saved in PNG format with transparency (32bit PNG). We also recommend you save the PNG files with the normal RGB color palette (not grayscale!). 
+
+A SharpEnviro skin is divided into several skin components which together form the complete skin. Those components are skinned independently from each other and a valid SharpEnviro skin must contain skins for all of the components. 
+%\paragraph{Skin Components}\hspace{0cm}\\
+\begin{itemize}
+  \item Buttons
+  \item Labels/Captions
+  \item Edit Boxes
+  \item Menu background
+  \item Menu items
+  \item Notification Popups
+  \item Progress bars
+  \item SharpBar background
+  \item SharpBar mini config buttons
+  \item Taskbar items
+  \item Taskbar preview windows
+  \item Menu Item
+\end{itemize}
+
+\paragraph{How is the coloring of the skins working?}\hspace{0cm}\\
+One of the more exciting features of the skinning system is the support for color schemes. SharpEnviro supports the use of color schemes which allow the colors of certain skin parts to be changed by the user. Which parts of the skin can be controlled and colored is up to the skin developer. Besides the colors itself the scheme system also allows for other properties like the alpha value of the skin to be changed. You can for example add a scheme property which would enable the dynamic changing of the background transparency for any skin components. Adding support for schemes is not a required part of a skin, but supporting scheme colors and values in your skin is a great feature and highly recommended. With schemes, you control the skin, but the end-user can define the colors and final look of it.
+
+\paragraph{How to get started?}\hspace{0cm}\\
+The best way to get started on creating a new skin for SharpEnviro is to modify an already existing skin. Chose the skin that matches your ideas and visions for a new skin best and start to modify this skin. By doing so you can very quickly see results even of small changes. However we still recommend to read this entire document for getting a better understanding about how the skin system and especially the advanced features work.

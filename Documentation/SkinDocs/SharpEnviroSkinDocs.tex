@@ -1,0 +1,150 @@
+\documentclass[11pt,a4paper,pdftex,oneside,headsepline,parskip=half,final]{scrreprt}
+
+%\usepackage[ngerman]{babel}
+\usepackage[automark]{scrpage2}
+\usepackage{ragged2e} %flattersatz rechts --> trennt besser als normal
+\usepackage[top = 3cm, bottom=3cm, left=3cm, right=2.5cm]{geometry}
+% \usepackage{babel}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amssymb}%%Symbole
+
+\usepackage[format=plain,labelfont=bf,up]{caption}
+
+\usepackage[all,color,frame]{xy}
+\usepackage{xypdf}
+
+\usepackage{afterpage} % clear page containing only float figures after the current page ends -> \afterpage{\clearpage}
+
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{booktabs}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+%\usepackage[ansinew]{inputenc}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{wrapfig}
+\usepackage{subfig}
+\usepackage{multirow}
+
+\usepackage{color}
+
+\usepackage{listings}
+
+\definecolor{tag}{rgb}{0.0, 0.0, 0.8}
+\definecolor{comment}{rgb}{0.0, 0.4, 0.0}
+\definecolor{string}{rgb}{1.0, 0.0, 0.0}
+
+\renewcommand*\lstlistingname{Code Example}
+\renewcommand*\lstlistlistingname{List of code examples}
+
+\lstdefinelanguage{XXML} {
+%  otherkeywords={version,info,name,SharpESkin,SharpESkinInfo,header,SharpBar,website,
+%SkinPart,Text,Icon,url,author,Menu,MenuItem,TaskItem,Full,Mini,Compact,Button,Font,ProgressBar,
+%Edit,Notify,TaskPreview,Normal,Hover,Down,MiniThrobber,color,alpha,item,Default,Info,Tag,Type,
+%location,dimension,image,drawmode,gradienttype,gradientalpha,gradientcolor,cleartype,shadow,shadowtype,
+%shadowcolor,shadowalpha,size,draw,blend,blendcolor,blendalpha,fsmod,sbmod,paxoffsets,paxoffsetsbottom,
+%payoffsets,payoffsetsbottom,enablevflip,glasseffect,specialhideform,throbber},
+  sensitive=false, 
+  morecomment=[s][\color{tag}]{<}{>},
+%  morecomment=[s][\color{string}]{"}{"},
+  morecomment=[s][\color{comment}]{<!--}{-->},
+  morestring=[b]",
+}
+
+\lstset{
+%  keywordstyle=\color[rgb]{0,0,1},
+%  commentstyle=\color[rgb]{0.133,0.545,0.133},
+%  stringstyle=\color[rgb]{0,0.5,0},
+  basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+  numbers=left,                   % where to put the line-numbers
+  numberstyle=\footnotesize,
+%  morecomment=[l]{--},
+%  otherkeywords={?xml,?>,<,</,version>,version=,encoding=,info>,name>,SharpESkin,SharpESkinInfo>,header>,SharpBar>,website>,
+%SkinPart>,Text>,Icon>,url>,author>,Menu>,MenuItem>,TaskItem>,Full>,Mini>,Compact>,Button>,Font>,ProgressBar>,
+%Edit>,Notify>,TaskPreview>,Normal>,Hover>,Down>,MiniThrobber>,color>,alpha>,item>,Default>,Info>,Tag>,Type>,
+%location>,dimension>,image>,drawmode>,gradienttype>,gradientalpha>,gradientcolor>,cleartype>,shadow>,shadowtype>,
+%shadowcolor>,shadowalpha>,size>,draw>,blend>,blendcolor>,blendalpha>,fsmod>,sbmod>,paxoffsets>,paxoffsetsbottom>,
+%payoffsets>,payoffsetsbottom>,enablevflip>,glasseffect>,specialhideform>,throbber>},
+%  otherkeywords={<,>,</,/>},
+  %keywordsprefix={<},
+  frame=tb,
+  captionpos=b,
+  xleftmargin={0.8cm},
+  framexleftmargin={0.8cm}
+}
+
+\usepackage{setspace} % anderthalbfacher Zeilenabstand durch "\onehalfspacing"
+\usepackage[
+  bookmarks=true,
+  bookmarksnumbered=true,
+  pdftitle={Skin System for the SharpEnviro shell replacement},
+  pdfauthor={Martin Krämer},
+  pdfsubject={Basic guide on how the skins system for the SharpEnviro shell replacement works},
+  breaklinks=true,
+  colorlinks=true,
+  linkcolor=black,
+  anchorcolor=black,
+  citecolor=blue,
+  filecolor=black,
+  menucolor=black,
+  pagecolor=black,
+  urlcolor=blue
+]
+{hyperref} % Inhaltsverzeichnis verlinken
+
+%latex reserviert gerne eine einzelne seite fuer ein bild, wo locker noch
+%etwas text drunter passen wuerde. das sieht meist nicht so gut aus. man kann
+%das abfangen, indem man an topfraction, textfraction u. floatpagefraction
+%rumschraubt in in der präambel sowas wie
+%floatpagefraction sollte dabei kleiner bleiben als topfraction.   
+\renewcommand{\topfraction}{0.90}
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\floatpagefraction}{0.85}
+
+%\addto\captionsngerman{
+%\renewcommand{\figurename}{Abb.}%
+%\renewcommand{\tablename}{Tab.}%
+%}
+
+\setcounter{secnumdepth}{3} % auch subsubsection nummerieren
+
+\newcolumntype{N}{>{\footnotesize}l}
+\newcolumntype{M}{>{\footnotesize}c}
+\newcolumntype{O}[1]{>{\footnotesize}C{#1}}
+\newcommand{\RM}[1]{\MakeUppercase{\romannumeral #1}} % Römische Zahlen
+\newcommand{\abbrev}[2]{\emph{#1} (#2)}
+
+\DeclareMathOperator{\sinc}{sinc}
+
+\pagestyle{scrheadings}
+\automark[section]{chapter}
+\clearscrheadfoot
+\ohead{\headmark} % rechte Kopfzeile
+\ofoot{\pagemark} % rechte Fußzeile
+\automark[section]{chapter}
+
+\begin{document}
+\lstset{language=XXML}
+
+\pagenumbering{Roman}
+\input{Content/Titel.tex}
+
+\onehalfspacing
+
+\tableofcontents
+
+\newpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\chapter{Introduction}
+  \input{Content/Introduction.tex}
+
+\chapter{Skin System}
+  \input{Content/SkinSystem.tex}
+\end{document}
