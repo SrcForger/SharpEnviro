@@ -77,8 +77,6 @@
   </package>
   <package Name="Components">
 	<project Name="ExplorerNET" Type="Solution">Components\ExplorerNET\Explorer.sln</project>
-	<project Name="ExplorerDLL 32-Bit" Type="Solution" Platform="Win32">Components\ExplorerDLL\ExplorerDll.sln</project>
-	<project Name="ExplorerDLL 64-Bit" Type="Solution" Platform="x64">Components\ExplorerDLL\ExplorerDll.sln</project>
     <project Name="SetShell" Type="Application">Components\SetShell\SetShell.dproj</project>
     <project Name="SharpAdmin" Type="Application">Components\SharpAdmin\SharpAdmin.dproj</project>
     <project Name="SharpBar" Type="Application">Components\SharpBar\SharpBar.dproj</project>
@@ -93,12 +91,15 @@
     <project Name="SharpSplash" Type="Application">Components\SharpSplash\SharpSplash.dproj</project>
   </package>
   <package Name="Libraries">
+	<project Name="ExplorerDLL 32-Bit" Type="Solution" Platform="Win32">Components\ExplorerDLL\ExplorerDll.sln</project>
+	<project Name="ExplorerDLL 64-Bit" Type="Solution" Platform="x64">Components\ExplorerDLL\ExplorerDll.sln</project>
     <project Name="SharpApi" Type="DLL" >Common\Libraries\SharpAPI\SharpApi.dproj</project>
     <project Name="SharpApiEx" Type="DLL">Common\Libraries\SharpApiEx\SharpApiEx.dproj</project>
     <project Name="SharpCenterApi" Type="DLL">Common\Libraries\SharpCenterApi\SharpCenterApi.dproj</project>
     <project Name="SharpDeskApi" Type="DLL">Common\Libraries\SharpDeskApi\SharpDeskApi.dproj</project>
     <project Name="SharpDialogs" Type="DLL">Common\Libraries\SharpDialogs\SharpDialogs.dproj</project>
     <project Name="SharpThemeApiEx" Type="DLL">Common\Libraries\SharpThemeApiEx\SharpThemeApiEx.dproj</project>
+	<project Name="SharpTwitter" Type="Solution">Common\Libraries\SharpTwitter\SharpTwitter.sln</project>
   </package>
   <package Name="Modules">
     <project Name="Alarm Clock" Type="DLL" >Plugins\Modules\AlarmClock\AlarmClock.dproj</project>
