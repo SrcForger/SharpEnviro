@@ -108,34 +108,35 @@ var
   b : boolean;
   Ext : String;
 begin
-  result := SharpIconUtils.IconStringToIcon(Image,Image,Bmp);
-  if (not result) then
+  Result := False;
+
+  if FileExists(Image) then
   begin
-    if FileExists(Image) then
+    Ext := ExtractFileExt(Image);
+    if CompareText(Ext,'.bmp') = 0 then
     begin
-      Ext := ExtractFileExt(Image);
-      if CompareText(Ext,'.bmp') = 0 then
-      begin
-        Bmp.LoadFromFile(Image);
-        result := True;
-      end else
-      if (CompareText(Ext,'.jpg') = 0) or (CompareText(Ext,'.jpeg') = 0) then
-      begin
-        Bmp.LoadFromFile(Image);
-        result := True;
-      end else
-      if (CompareText(Ext,'.png') = 0) then
-      begin
-        GR32_PNG.LoadBitmap32FromPNG(Bmp,Image,b);
-        result := True;
-      end else
-      if (CompareText(Ext,'.gif') = 0) then
-      begin
-        Bmp.LoadFromFile(Image);
-        result := True;
-      end;
+      Bmp.LoadFromFile(Image);
+      result := True;
+    end else
+    if (CompareText(Ext,'.jpg') = 0) or (CompareText(Ext,'.jpeg') = 0) then
+    begin
+      Bmp.LoadFromFile(Image);
+      result := True;
+    end else
+    if (CompareText(Ext,'.png') = 0) then
+    begin
+      GR32_PNG.LoadBitmap32FromPNG(Bmp,Image,b);
+      result := True;
+    end else
+    if (CompareText(Ext,'.gif') = 0) then
+    begin
+      Bmp.LoadFromFile(Image);
+      result := True;
     end;
   end;
+    
+  if not Result then
+    result := SharpIconUtils.IconStringToIcon(Image,Image,Bmp);
 end;
 
 procedure RescaleImage(Src,Dst : TBitmap32; Width,Height : integer; Resample : boolean);
