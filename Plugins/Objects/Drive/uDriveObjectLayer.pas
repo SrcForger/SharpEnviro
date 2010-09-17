@@ -565,7 +565,7 @@ begin
 
   FUpdateTimer := TTImer.Create(nil);
   FUpdateTimer.Interval := 1000*10;
-  FUpdateTimer.Enabled  := False;
+  FUpdateTimer.Enabled  := True;
   FUpdateTimer.OnTimer  := OnUpdateTimer;
   
   FCaptionSettings.Caption := TStringList.Create;
