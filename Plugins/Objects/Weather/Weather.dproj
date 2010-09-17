@@ -1,4 +1,5 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>{d86dca68-0a3e-4f74-80c7-9c61177ada2c}</ProjectGuid>
     <MainSource>Weather.dpr</MainSource>

@@ -464,6 +464,9 @@ begin
   if ObjectID = 0 then
     exit;
 
+  FOldDriveType := -1;
+  FOldSpaceFree := -1;
+  
   FSettings.LoadSettings;
   if length(FSettings.Target) > 1 then
     FSettings.Target := FSettings.Target[1];
