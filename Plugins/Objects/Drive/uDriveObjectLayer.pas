@@ -236,6 +236,43 @@ begin
   end;
 end;
 
+function GetDriveName(Drive : string) : string;
+var
+  NotUsed, VolFlags: DWORD;
+  Buf: array[0..MAX_PATH] of Char;
+  Ret : string;
+  driveType : integer;
+begin
+  try
+    GetVolumeInformation(PChar(Drive + ':\'), Buf, SizeOf(Buf), nil, NotUsed, VolFlags, nil, 0);
+    Ret := Buf;
+
+    // Return drive type if name is not specified
+    if Length(Ret) <= 0 then
+    begin
+      driveType := GetDriveType(PChar(Drive + ':\'));
+
+      case driveType of
+      DRIVE_UNKNOWN, DRIVE_NO_ROOT_DIR:
+        Ret := 'Unknown Disk';
+      DRIVE_FIXED:
+        Ret := 'Local Disk';
+      DRIVE_REMOTE:
+        Ret := 'Network Disk';
+      DRIVE_REMOVABLE:
+        Ret := 'Removable Disk';
+      DRIVE_RAMDISK:
+        Ret := 'Floppy Disk';
+      DRIVE_CDROM:
+        Ret := 'CD Drive';
+      end;
+    end;
+
+    Result := Ret;
+  except
+  end;
+end;
+
 function TDriveLayer.UpdateDriveSize: boolean;
 var
   SpaceFree : single;
@@ -274,7 +311,10 @@ begin
       FCaptionSettings.Caption.Clear;
       FCaptionSettings.Caption.Delimiter := ' ';
 
-      FCaptionSettings.Caption.Add(FSettings.Caption);
+      if Length(GetDriveName(FSettings.Target[1])) <= 0 then
+        FCaptionSettings.Caption.Add(FSettings.Caption)
+      else
+        FCaptionSettings.Caption.Add(GetDriveName(FSettings.Target[1]) + ' (' + FSettings.Caption + ':)');
 
       FCaptionSettings.Caption.Add(FloatToStrF(SpaceFree,ffFixed,6,2) + ' ' + SpacePrefix + ' Free');
 
