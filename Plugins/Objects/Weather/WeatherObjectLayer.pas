@@ -156,12 +156,9 @@ begin
   end;
   XML.Free;
   if NewL <> 'error' then
-//    LoadSettings(NewL);
   begin
     FSettings.WeatherLocation := NewL;
     FSettings.SaveSettings(True);
-    FreeAndNil(FSettings);
-    FSettings := TXMLSettings.Create(FObjectId, nil, 'Weather');
     LoadSettings;
   end;
 end;
