@@ -102,6 +102,9 @@ const
      THEME_SETTINGS = 'Settings\SharpDesk\Themes.xml';
      OBJECT_SETTINGS = 'Settings\SharpDesk\Objects.xml';
 
+function GetDiskFree(drive: char): integer;
+function GetDiskCapacity(drive: char): integer;
+
 implementation
 
 function GetDiskCapacity(drive: char): integer;
@@ -242,7 +245,11 @@ begin
 
   if (GetDiskIn(FSettings.Target[1])) then
   begin
-    SpaceFree := (GetDiskCapacity(FSettings.Target[1])) - (GetDiskFree(FSettings.Target[1]));
+    // Check if read-only
+    if GetDiskFree(FSettings.Target[1]) = 0 then
+      SpaceFree := 0.00
+    else
+      SpaceFree := (GetDiskCapacity(FSettings.Target[1])) - (GetDiskFree(FSettings.Target[1]));
     if floor(SpaceFree) = FOldSpaceFree then
       exit;
 
