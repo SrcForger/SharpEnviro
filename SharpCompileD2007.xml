@@ -91,8 +91,8 @@
     <project Name="SharpSplash" Type="Application">Components\SharpSplash\SharpSplash.dproj</project>
   </package>
   <package Name="Libraries">
-	<project Name="ExplorerDLL 32-Bit" Type="Solution" Platform="Win32">Components\ExplorerDLL\ExplorerDll.sln</project>
-	<project Name="ExplorerDLL 64-Bit" Type="Solution" Platform="x64">Components\ExplorerDLL\ExplorerDll.sln</project>
+	<project Name="ExplorerDLL 32-Bit" Type="Solution" Platform="Win32">Common\Libraries\ExplorerDLL\ExplorerDll.sln</project>
+	<project Name="ExplorerDLL 64-Bit" Type="Solution" Platform="x64">Common\Libraries\ExplorerDLL\ExplorerDll.sln</project>
     <project Name="SharpApi" Type="DLL" >Common\Libraries\SharpAPI\SharpApi.dproj</project>
     <project Name="SharpApiEx" Type="DLL">Common\Libraries\SharpApiEx\SharpApiEx.dproj</project>
     <project Name="SharpCenterApi" Type="DLL">Common\Libraries\SharpCenterApi\SharpCenterApi.dproj</project>
