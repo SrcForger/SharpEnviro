@@ -71,8 +71,6 @@ begin
 end;
 
 procedure TWeatherOptions.SaveSettings;
-var
-  node: TJclSimpleXMLElemClassic;
 begin
   // Delete file and set up XML
   XmlFilename := FFileName;
