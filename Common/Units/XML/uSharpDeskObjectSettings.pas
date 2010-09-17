@@ -85,6 +85,8 @@ type
       FObjectName : String;
       FObjectID : Integer;
       ts : TThemeSettingsArray;
+
+      procedure LoadTheme;
     public
       constructor Create(pObjectID : integer; pXMLRoot: TJclSimpleXMLElem; pObjectName : String); reintroduce;
       destructor Destroy; override;
@@ -118,6 +120,26 @@ begin
   FXML.Root.Name := pObjectName + 'ObjectSettings';
   if FXMLRoot = nil then
      FXMLRoot := FXML.Root;
+end;
+
+
+destructor TDesktopXMLSettings.Destroy;
+begin
+  FXML.Free;
+  Inherited Destroy;
+end;
+
+procedure TDesktopXMLSettings.LoadTheme;
+begin
+  if Assigned(FXML) then
+    FreeAndNil(FXML);
+
+  FXML := TJclSimpleXML.Create;
+  FXML.Root.Name := FObjectName + 'ObjectSettings';
+  FXMLRoot := FXML.Root;
+
+  // Reset ts array
+  setlength(ts,0);
 
   setlength(ts,23);
   AddArrayItem(DS_ICONSIZE,'IconSize',DST_INT,False);
@@ -145,13 +167,6 @@ begin
   AddArrayItem(DS_TEXTSHADOWSIZE,'TextShadowSize',DST_INT,False);
 end;
 
-
-destructor TDesktopXMLSettings.Destroy;
-begin
-  FXML.Free;
-  Inherited Destroy;
-end;
-
 function TDesktopXMLSettings.GetSettingsFile : string;
 var
   UserDir,Dir : String;
@@ -165,6 +180,9 @@ procedure TDesktopXMLSettings.InitLoadSettings;
 var
   SettingsFile : String;
 begin
+  // Reload Theme
+  LoadTheme;
+
   SettingsFile := GetSettingsFile;
 
   if (not FileExists(SettingsFile)) and (FObjectID <> -1) then
