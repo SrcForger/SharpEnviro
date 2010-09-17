@@ -50,6 +50,7 @@ if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
     <DCCReference Include="..\..\..\Common\Units\DebugDialog\DebugDialog.pas" />
     <DCCReference Include="..\..\..\Common\Units\SharpNotify\SharpNotify.pas" />
     <DCCReference Include="..\..\Objects\Weather\uWeatherParser.pas" />
+    <DCCReference Include="..\..\Services\Weather\uWeatherOptions.pas" />
     <DCCReference Include="MainWnd.pas">
       <Form>MainForm</Form>
     </DCCReference>

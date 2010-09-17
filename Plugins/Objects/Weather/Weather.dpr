@@ -25,7 +25,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library Weather;
 uses
-//  VCLFixPack,
   Forms,
   windows,
   graphics,
@@ -51,7 +50,8 @@ uses
   SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
   uSharpDeskDesktopPanel in '..\..\SharpDesk\Units\uSharpDeskDesktopPanel.pas',
-  uWeatherParser in 'uWeatherParser.pas';
+  uWeatherParser in 'uWeatherParser.pas',
+  uWeatherOptions in '..\..\Services\Weather\uWeatherOptions.pas';
 
 {$R *.RES}
 {$R icons.RES}

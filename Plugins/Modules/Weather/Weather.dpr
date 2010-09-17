@@ -26,7 +26,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 library Weather;
 
 uses
-//  VCLFixPack,
   Windows,
   Controls,
   SysUtils,
@@ -41,10 +40,11 @@ uses
   uISharpESkin,
   uISharpBar,
   uInterfacedSharpBarModuleBase,
-  {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
+  DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',
   MainWnd in 'MainWnd.pas' {MainForm},
   uWeatherParser in '..\..\Objects\Weather\uWeatherParser.pas',
-  SharpNotify in '..\..\..\Common\Units\SharpNotify\SharpNotify.pas';
+  SharpNotify in '..\..\..\Common\Units\SharpNotify\SharpNotify.pas',
+  uWeatherOptions in '..\..\Services\Weather\uWeatherOptions.pas';
 
 type
   TInterfacedSharpBarModule = class(TInterfacedSharpBarModuleBase)

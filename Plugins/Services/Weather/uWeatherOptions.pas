@@ -20,6 +20,7 @@ type
     FCCondInterval: Integer;
     FFCastInterval: Integer;
     FCheckInterval: Integer;
+    FIconSet: String;
 
   public
     constructor Create;
@@ -32,6 +33,7 @@ type
     Property CCondInterval: Integer read FCCondInterval write FCCondInterval;
     property FCastInterval: Integer read FFCastInterval write FFCastInterval;
     property CheckInterval: Integer read FCheckInterval write FCheckInterval;
+    property IconSet: String read FIconSet write FIconSet;
   end;
 
 implementation
@@ -42,18 +44,29 @@ begin
   FCCondInterval := 30;
   FCastInterval := 120;
   FCheckInterval := 60;
+  FIconSet := 'Default';
+  FFileName := GetSharpeUserSettingsPath + 'SharpCore\Services\Weather\WeatherOptions.xml';
 end;
 
 procedure TWeatherOptions.LoadSettings;
 begin
   XmlFilename := FFileName;
   if Load then begin
-    with XmlRoot.Items.ItemNamed['Main'].Items do begin
-      FMetric := BoolValue('Metric');
-      FCCondInterval := IntValue('CCondInterval',30);
-      FFCastInterval := IntValue('FCastInterval',120);
-      FCheckInterval := IntValue('CheckInterval',60);
-    end;
+    if XmlRoot.Items.ItemNamed['Main'] <> nil then
+      with XmlRoot.Items.ItemNamed['Main'].Items do begin
+        FMetric := BoolValue('Metric');
+        FCCondInterval := IntValue('CCondInterval',30);
+        FFCastInterval := IntValue('FCastInterval',120);
+        FCheckInterval := IntValue('CheckInterval',60);
+      end;
+    if XmlRoot.Items.ItemNamed['Skin'] <> nil then
+      with XmlRoot.Items.ItemNamed['Skin'].Items do begin
+        FIconSet := Value('IconSet', 'Default');
+
+
+        if not DirectoryExists(SharpAPI.GetSharpeDirectory + 'Icons\Weather\' + FIconSet) then
+          FIconSet := 'Default';
+      end;
   end;
 end;
 
@@ -66,14 +79,19 @@ begin
   XmlRoot.Items.Clear;
   XmlRoot.Name := 'Weather';
 
-  with XmlRoot do begin
-    node := Items.Add('Main');
-
-    with node.Items do begin
+  with XmlRoot do
+  begin
+    with Items.Add('Main').Items do
+    begin
       Add('Metric',FMetric);
       Add('CCondInterval',FCCondInterval);
       Add('FCastInterval',FCastInterval);
       Add('CheckInterval',FCheckInterval);
+    end;
+
+    with Items.Add('Skin').Items do
+    begin
+      Add('IconSet', FIconSet);
     end;
 
     Save;

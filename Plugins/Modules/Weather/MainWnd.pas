@@ -32,7 +32,7 @@ uses
   Dialogs, StdCtrls, SharpEBaseControls, Types,
   SharpEScheme, SharpTypes, ExtCtrls, GR32,
   JclSimpleXML, SharpApi, SharpCenterApi, Menus, Math, SharpESkinLabel,
-  uWeatherParser, GR32_Image, uISharpBarModule, SharpNotify, ISharpESkinComponents,
+  uWeatherParser, uWeatherOptions, GR32_Image, uISharpBarModule, SharpNotify, ISharpESkinComponents,
   ImgList, PngImageList;
 
 
@@ -69,8 +69,9 @@ type
     sBottomLabel : String;
     FIcon        : TBitmap32;
     FWeatherParser : TWeatherParser;
+    FWeatherOptions : TWeatherOptions;
+
     function ReplaceDataInString(pString : String) : String;
-    function LeftPad(stringToPad: string; charToPadWith: Char; paddedLength: Integer) : string;
   public
     mInterface : ISharpBarModule;
     procedure LoadSettings;
@@ -186,6 +187,9 @@ begin
   sBottomLabel := 'Condition: {#CONDITION#}';
   sLocation    := '0';
 
+  // Load service options
+  FWeatherOptions.LoadSettings;
+
   XML := TJclSimpleXML.Create;
   if LoadXMLFromSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
     with xml.Root.Items do
@@ -283,7 +287,7 @@ begin
 
   if (bShowIcon) and (FWeatherParser.CCValid) then
   begin
-    s := SharpAPI.GetSharpeDirectory + 'Icons\Weather\Default\' +
+    s := SharpAPI.GetSharpeDirectory + 'Icons\Weather\' + FWeatherOptions.IconSet + '\' +
           IntToStr(32) + '\' +
           uWeatherParser.GetWeatherIcon(FWeatherParser.wxml.CurrentCondition.IconCode);
 
@@ -398,8 +402,8 @@ begin
   spacer := 5;
   // We will close the window manually so disable the timeout
   timeout := 0;
-  
-  iconPath := SharpAPI.GetSharpeDirectory + 'Icons\Weather\Default\' +
+
+  iconPath := SharpAPI.GetSharpeDirectory + 'Icons\Weather\' + FWeatherOptions.IconSet + '\' +
           IntToStr(128) + '\' +
           uWeatherParser.GetWeatherIcon(FWeatherParser.wxml.CurrentCondition.IconCode);
 
@@ -531,6 +535,7 @@ begin
   FIcon.DrawMode := dmBlend;
   FIcon.CombineMode := cmMerge;
   FWeatherParser := TWeatherParser.Create;
+  FWeatherOptions := TWeatherOptions.Create;
 
   lb_top.OnMouseEnter := OnMouseEnter;
   lb_top.OnMouseLeave := OnMouseLeave;
@@ -542,6 +547,7 @@ procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(FIcon);
   FreeAndNil(FWeatherParser);
+  FreeAndNil(FWeatherOptions);
 end;
 
 procedure TMainForm.FormMouseUp(Sender: TObject; Button: TMouseButton;
@@ -579,19 +585,6 @@ begin
      FIcon.DrawTo(Bmp,Rect(1,1,Height-1,Height-1));
   Bmp.DrawTo(Canvas.Handle,0,0);
   Bmp.Free;
-end;
-
-function TMainForm.LeftPad(stringToPad: string; charToPadWith: Char; paddedLength: Integer) : string;
-var
-  numberOfCharsToPadWith: Integer;
-begin
-  Result := stringToPad;
-
-  numberOfCharsToPadWith := paddedLength - Length(stringToPad);
-  if numberOfCharsToPadWith < 1 then
-    Exit;
-    
-  Result := StringOfChar(charToPadWith, numberOfCharsToPadWith) + stringToPad;
 end;
 
 end.

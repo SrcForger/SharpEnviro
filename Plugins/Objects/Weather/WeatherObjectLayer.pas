@@ -46,6 +46,7 @@ uses
   uSharpDeskObjectSettings,
   uSharpDeskDebugging,
   WeatherObjectXMLSettings,
+  uWeatherOptions,
   uWeatherParser;
 
 type
@@ -83,6 +84,7 @@ type
     FCaptionSettings : TDeskCaption;
     FIconSettings    : TDeskIcon;
     FWeatherSkinItems : TObjectList;
+    FWeatherOptions : TWeatherOptions;
 
   protected
      procedure OnTimer(Sender: TObject);
@@ -379,7 +381,8 @@ begin
         end;
 
         // Weather icon
-        weatherDir := SharpAPI.GetSharpeDirectory + 'Icons\Weather\Default\' + IntToStr(GetNearestIconSize(pItem.Size)) + '\';
+        weatherDir := SharpAPI.GetSharpeDirectory + 'Icons\Weather\' + FWeatherOptions.IconSet +
+                      '\' + IntToStr(GetNearestIconSize(pItem.Size)) + '\';
         if (pItem.DataType = 'WeatherImage') and (FileExists(weatherDir + pItem.Data)) then
         begin
           TempBitmap := TBitmap32.Create;
@@ -634,6 +637,9 @@ begin
   if ObjectID = 0 then
     exit;
 
+  // Load service settings
+  FWeatherOptions.LoadSettings;
+
   FOutput.Clear;
   FSettings.LoadSettings;
 
@@ -692,7 +698,7 @@ begin
     bmp := TBitmap32.Create;
     bmp.DrawMode := dmBlend;
 
-    Filename := SharpAPI.GetSharpeDirectory + 'Icons\Weather\Default\' +
+    Filename := SharpAPI.GetSharpeDirectory + 'Icons\Weather\' + FWeatherOptions.IconSet + '\' +
                 IntToStr(GetNearestIconSize(FSettings.Theme[DS_ICONSIZE].IntValue)) + '\' +
                 uWeatherParser.GetWeatherIcon(FWeatherParser.wxml.CurrentCondition.IconCode);
     if FileExists(Filename) then
@@ -728,6 +734,9 @@ begin
   FObjectId := id;
   scaled := False;
   FWeatherParser := TWeatherParser.Create;
+
+  FWeatherOptions := TWeatherOptions.Create;
+
   FSettings := TXMLSettings.Create(FObjectId, nil, 'Weather');
 
   FCaptionSettings.Caption := TStringList.Create;
@@ -748,6 +757,7 @@ begin
   DebugFree(FHLTimer);
   FWeatherSkinItems.Clear;
   DebugFree(FWeatherSkinItems);
+  FreeAndNil(FWeatherOptions);
   inherited;
 end;
 
