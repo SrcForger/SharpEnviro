@@ -327,7 +327,10 @@ begin
   FCaptionSettings.Caption.Clear;
   FCaptionSettings.Caption.Delimiter := ' ';
 
-  FCaptionSettings.Caption.Add(FSettings.Caption);
+  if Length(GetDriveName(FSettings.Target[1])) <= 0 then
+    FCaptionSettings.Caption.Add(FSettings.Caption)
+  else
+    FCaptionSettings.Caption.Add(GetDriveName(FSettings.Target[1]) + ' (' + FSettings.Caption + ':)');
 
   Result := True;
 end;
