@@ -541,7 +541,7 @@ begin
     FFontSettings.Bold      := Theme[DS_TEXTBOLD].BoolValue;
     FFontSettings.Italic    := Theme[DS_TEXTITALIC].BoolValue;
     FFontSettings.Underline := Theme[DS_TEXTUNDERLINE].BoolValue;
-    FFontSettings.AALevel   := 0;
+    FFontSettings.ClearType   := Theme[DS_TEXTCLEARTYPE].BoolValue;
     FFontSettings.ShadowColor      := GetCurrentTheme.Scheme.SchemeCodeToColor(Theme[DS_TEXTSHADOWCOLOR].IntValue);
     FFontSettings.ShadowAlphaValue := Theme[DS_TEXTSHADOWALPHA].IntValue;
     FFontSettings.Shadow           := Theme[DS_TEXTSHADOW].BoolValue;

@@ -362,7 +362,7 @@ begin
         pItem.Font.Bold             := BoolValue('FontBold',FFontSettings.Bold);
         pItem.Font.Italic           := BoolValue('FontItalic',FFontSettings.Italic);
         pItem.Font.Underline        := BoolValue('FontUnderline',FFontSettings.Underline);
-        pItem.Font.AALevel          := IntValue('FontAA',FFontSettings.AALevel);
+        pItem.Font.ClearType        := BoolValue('ClearType',FFontSettings.ClearType);
         pItem.Font.Alpha            := IntValue('FontAlpha',FFontSettings.Alpha);
         pItem.Font.Size             := IntValue('FontSize',FFontSettings.Size);
         pItem.Font.ShadowAlphaValue := IntValue('ShadowAlphaValue',FFontSettings.ShadowAlphaValue);
@@ -658,7 +658,7 @@ begin
   FFontSettings.Bold             := FSettings.Theme[DS_TEXTBOLD].BoolValue;
   FFontSettings.Italic           := FSettings.Theme[DS_TEXTITALIC].BoolValue;
   FFontSettings.Underline        := FSettings.Theme[DS_TEXTUNDERLINE].BoolValue;
-  FFontSettings.AALevel          := 0;
+  FFontSettings.ClearType        := FSettings.Theme[DS_TEXTCLEARTYPE].BoolValue;
   FFontSettings.ShadowColor      := GetCurrentTheme.Scheme.SchemeCodeToColor(FSettings.Theme[DS_TEXTSHADOWCOLOR].IntValue);
   FFontSettings.ShadowAlphaValue := FSettings.Theme[DS_TEXTSHADOWALPHA].IntValue;
   FFontSettings.Shadow           := FSettings.Theme[DS_TEXTSHADOW].BoolValue;

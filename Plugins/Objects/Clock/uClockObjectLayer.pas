@@ -67,7 +67,7 @@ type
     XMod : integer;
     YMod : integer;
     Caption : string;
-    AALevel : integer;
+    ClearType : boolean;
 
     Overlay : boolean;
   end;
@@ -349,7 +349,7 @@ begin
             FClockTexts[n1].XMod := IntValue('XMod', 0);
             FClockTexts[n1].YMod := IntValue('YMod', 0);
             FClockTexts[n1].Caption := Value('Caption', 'none');
-            FClockTexts[n1].AALevel := IntValue('FontAALevel', 0);
+            FClockTexts[n1].ClearType := BoolValue('ClearType', true);
         end;
       end;
     end;
@@ -362,6 +362,7 @@ procedure TClockLayer.DrawClock;
 var
   n : integer;
   TempBmp : TBitmap32;
+  AALevel : integer;
 begin
   FClockBack.DrawMode := dmBlend;
   FClockBack.CombineMode := cmMerge;
@@ -400,7 +401,11 @@ begin
     if AnsiContainsText(FClockTexts[n].FontStyle, 'Strikeout') then
       FPicture.Font.Style := FPicture.Font.Style + [fsStrikeout];
 
-    FPicture.RenderText(FClockTexts[n].XMod, FClockTexts[n].YMod, FormatCaption(FClockTexts[n].Caption), FClockTexts[n].AALevel, color32(GetRValue(FClockTexts[n].FontColor), GetGValue(FClockTexts[n].FontColor), GetBValue(FClockTexts[n].FontColor), FClockTexts[n].FontAlpha));
+    AALevel := 0;
+    if FClockTexts[n].ClearType then
+      AALevel := -2;
+
+    FPicture.RenderText(FClockTexts[n].XMod, FClockTexts[n].YMod, FormatCaption(FClockTexts[n].Caption), AALevel, color32(GetRValue(FClockTexts[n].FontColor), GetGValue(FClockTexts[n].FontColor), GetBValue(FClockTexts[n].FontColor), FClockTexts[n].FontAlpha));
   end;
 
   TempBmp := TBitmap32.Create;
@@ -464,7 +469,11 @@ begin
     if AnsiContainsText(FClockTexts[n].FontStyle, 'Strikeout') then
       FPicture.Font.Style := FPicture.Font.Style + [fsStrikeout];
 
-    FPicture.RenderText(FClockTexts[n].XMod, FClockTexts[n].YMod, FClockTexts[n].Caption, FClockTexts[n].AALevel, color32(GetRValue(FClockTexts[n].FontColor), GetGValue(FClockTexts[n].FontColor), GetBValue(FClockTexts[n].FontColor), FClockTexts[n].FontAlpha));
+    AALevel := 0;
+    if FClockTexts[n].ClearType then
+      AALevel := -2;
+
+    FPicture.RenderText(FClockTexts[n].XMod, FClockTexts[n].YMod, FClockTexts[n].Caption, AALevel, color32(GetRValue(FClockTexts[n].FontColor), GetGValue(FClockTexts[n].FontColor), GetBValue(FClockTexts[n].FontColor), FClockTexts[n].FontAlpha));
   end;
 
   FLastHour := HourOf(Now);
