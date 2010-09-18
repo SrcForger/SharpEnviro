@@ -96,7 +96,6 @@ object frmSettings: TfrmSettings
             TitleColor = clWindowText
             DescriptionColor = clRed
             Align = alTop
-            ExplicitTop = 66
           end
           object chkSkinEnable: TJvXPCheckbox
             Left = 5
@@ -122,9 +121,6 @@ object frmSettings: TfrmSettings
           BevelKind = bkSoft
           Caption = 'pnlSkin'
           TabOrder = 1
-          ExplicitLeft = 0
-          ExplicitTop = 160
-          ExplicitWidth = 443
           object lbSkins: TSharpEListBoxEx
             AlignWithMargins = True
             Left = 1
@@ -172,7 +168,6 @@ object frmSettings: TfrmSettings
             AutosizeGrid = True
             Borderstyle = bsNone
             Align = alClient
-            ExplicitWidth = 437
           end
         end
       end
@@ -1479,7 +1474,7 @@ object frmSettings: TfrmSettings
               Margins.Bottom = 2
               Align = alLeft
               Style = csDropDownList
-              ItemHeight = 13
+              ItemHeight = 0
               ItemIndex = 0
               TabOrder = 0
               Text = 'Left Shadow'
