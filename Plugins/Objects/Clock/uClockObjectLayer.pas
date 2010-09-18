@@ -295,6 +295,12 @@ begin
     FSettings.DrawText := False;
   end;
 
+  FClockBack.SetSize(0,0);
+  FClockOverlay.SetSize(0,0);
+  FHArrow.SetSize(0,0);
+  FMArrow.SetSize(0,0);
+  FSArrow.SetSize(0,0);
+
   SkinXml := TJclSimpleXML.Create;
   if LoadXMLFromSharedFile(SkinXML,SkinDir + 'Clock.xml',False) then
   begin
@@ -372,7 +378,8 @@ begin
   FPicture.Clear(color32(0,0,0,0));
 
   //Draw background
-  FClockBack.DrawTo(FPicture);
+  if FClockBack.Width <> 0 then
+    FClockBack.DrawTo(FPicture);
 
   // Draw texts
   for n := 0 to Length(FClockTexts) - 1 do
@@ -401,7 +408,7 @@ begin
   TempBmp.CombineMode := cmMerge;
   TempBmp.SetSize(FClockBack.Width,FClockBack.Height);
 
-  if FHArrow.BitmapHandle <> 0 then
+  if FHArrow.Width > 0 then
   begin
     TempBmp.Clear(color32(0,0,0,0));
 
@@ -414,7 +421,7 @@ begin
     FHArrowRot.DrawTo(FPicture, (FClockBack.Width - FHArrow.Width) div 2, (FClockBack.Height - FHArrow.Height) div 2);
   end;
 
-  if FMArrow.BitmapHandle <> 0 then
+  if FMArrow.Width > 0 then
   begin
     TempBmp.Clear(color32(0,0,0,0));
 
@@ -427,7 +434,7 @@ begin
     FMArrowRot.DrawTo(FPicture, (FClockBack.Width - FMArrow.Width) div 2, (FClockBack.Height - FMArrow.Height) div 2);
   end;
 
-  if FSArrow.BitmapHandle <> 0 then
+  if FSArrow.Width > 0 then
   begin
     TempBmp.Clear(color32(0,0,0,0));
     RotateBitmap(FSArrow,TempBmp,-SecondOf(Now)*6);
@@ -435,7 +442,7 @@ begin
   end;
   TempBmp.Free;
 
-  if FSettings.DrawOverlay then
+  if (FSettings.DrawOverlay) and (FClockOverlay.Width > 0) then
     FClockOverlay.DrawTo(FPicture);
 
   // Draw overlay texts
