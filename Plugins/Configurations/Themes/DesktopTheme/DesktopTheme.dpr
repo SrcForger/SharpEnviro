@@ -175,6 +175,7 @@ begin
       sceShadowColor.Items.Item[0].ColorCode := i
     else sceShadowColor.Items.Item[0].ColorCode := FTheme.Scheme.ParseColor(TextShadowColorStr);
     cboFontShadowType.ItemIndex := Max(0, Min(3, TextShadowType));
+    chkClearType.Checked := TextClearType;
   end;
 
   with frmSettingsWnd, FTheme.Desktop.Animation do
@@ -250,6 +251,7 @@ begin
     TextShadowType     := cboFontShadowType.ItemIndex;
     TextColorStr       := Inttostr(sceFontColor.Items.Item[0].ColorCode);
     TextShadowColorStr := Inttostr(sceShadowColor.Items.Item[0].ColorCode);
+    TextClearType := chkClearType.Checked;
   end;
   FTheme.Desktop.Icon := IconData;
 

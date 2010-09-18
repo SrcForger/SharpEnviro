@@ -154,6 +154,8 @@ type
     rdoIcon64: TJvXPCheckbox;
     rdoIconCustom: TJvXPCheckbox;
     chkAnim: TJvXPCheckbox;
+    SharpECenterHeader20: TSharpECenterHeader;
+    chkClearType: TJvXPCheckbox;
     procedure IconColorsUiChange(Sender: TObject);
 
     procedure cbboldClick(Sender: TObject);
@@ -176,6 +178,7 @@ type
     procedure UpdateFontShadowPageEvent(Sender: TObject);
     procedure cboFontShadowTypeChange(Sender: TObject);
     procedure UpdateAnimationPageEvent(Sender: TObject);
+    procedure chkClearTypeClick(Sender: TObject);
   private
     FBlue32, FBlue48, FBlue64: TBitmap32;
     FWhite32, FWhite48, FWhite64: TBitmap32;
@@ -534,6 +537,11 @@ begin
 end;
 
 procedure TfrmSettingsWnd.cboFontShadowTypeChange(Sender: TObject);
+begin
+  SendUpdate;
+end;
+
+procedure TfrmSettingsWnd.chkClearTypeClick(Sender: TObject);
 begin
   SendUpdate;
 end;
