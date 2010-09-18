@@ -383,13 +383,13 @@ begin
     begin
       if (Align = taRight) then
         TempBmp.RenderText(10,
-                            TempBmp.Height div 2 - h div 2 + eh * n,Text[n],0,c2)
+                            TempBmp.Height div 2 - h div 2 + eh * n,Text[n],Font.AALevel,c2)
       else if (Align = taLeft) then
         TempBmp.RenderText(TempBmp.Width - TempBmp.TextWidth(Text[n]) - 10,
-                            TempBmp.Height div 2 - h div 2 + eh * n,Text[n],0,c2)
+                            TempBmp.Height div 2 - h div 2 + eh * n,Text[n],Font.AALevel,c2)
       else
         TempBmp.RenderText(TempBmp.Width div 2 - TempBmp.TextWidth(Text[n]) div 2,
-                            TempBmp.Height div 2 - h div 2 + eh * n,Text[n],0,c2);
+                            TempBmp.Height div 2 - h div 2 + eh * n,Text[n],Font.AALevel,c2);
     end;
 
     if Font.TextAlpha then
