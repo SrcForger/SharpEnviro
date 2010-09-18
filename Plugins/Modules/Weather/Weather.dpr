@@ -117,12 +117,10 @@ function TInterfacedSharpBarModule.ModuleMessage(msg: string): HRESULT;
 begin
   result := inherited ModuleMessage(msg);
 
-  //if CompareText(msg,'MM_WEATHERUPDATE') <> 0 then exit;
-
   if not (Initialized) then
     exit;
 
-  if TMainForm(Form).WeatherLocation = '0' then
+  if (TMainForm(Form).WeatherLocation = '0') then
     TMainForm(Form).LoadSettings;
   
   TMainForm(Form).WeatherParser.Update(TMainForm(Form).WeatherLocation);
@@ -149,7 +147,7 @@ function TInterfacedSharpBarModule.UpdateMessage(part: TSU_UPDATE_ENUM;
   param: integer): HRESULT;
 const
   processed : TSU_UPDATES = [suSkinFileChanged,suBackground,suTheme,suSkin,
-                             suScheme,suIconSet,suSkinFont,suModule];
+                             suScheme,suIconSet,suSkinFont,suModule,suWeather];
 begin
   result := inherited UpdateMessage(part,param);
 
@@ -159,7 +157,7 @@ begin
   if not (part in processed) then
     exit;  
 
-  if (part = suModule) and (ID  = param) then
+  if ((part = suModule) and (ID  = param)) or (part = suWeather) then
   begin
     TMainForm(Form).LoadSettings;
     TMainForm(Form).ReAlignComponents;
