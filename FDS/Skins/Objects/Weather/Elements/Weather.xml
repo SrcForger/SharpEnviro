@@ -21,16 +21,15 @@
 		<Y>0</Y>
 		<Alpha>255</Alpha>
 		<Size>64</Size>
-		<Centered>1</Centered>
+		<Align>1</Align>
 		<Data>{#ICON#}</Data>
 	</Day0Image>
 	<Day0Condition>
 		<DataType>Text</DataType>
-		<X>40</X>
+		<X>10</X>
 		<Y>50</Y>
 		<Alpha>255</Alpha>
 		<FontSize>8</FontSize>
-		<Centered>1</Centered>
 		<Data>{#CONDITION#}</Data>
 	</Day0Condition>
 
@@ -39,8 +38,8 @@
 		<X>118</X>
 		<Y>10</Y>
 		<Alpha>255</Alpha>
-		<FontSize>10</FontSize>
-		<Centered>1</Centered>
+		<FontSize>8</FontSize>
+		<Align>1</Align>
 		<Data>Hi: {#FC_D0_HIGHTEMP#}°</Data>
 	</Day0High>
 	<Day0Low>
@@ -48,8 +47,8 @@
 		<X>118</X>
 		<Y>32</Y>
 		<Alpha>255</Alpha>
-		<FontSize>10</FontSize>
-		<Centered>1</Centered>
+		<FontSize>8</FontSize>
+		<Align>1</Align>
 		<Data>Lo: {#FC_D0_LOWTEMP#}°</Data>
 	</Day0Low>
 	
@@ -81,10 +80,11 @@
 	</Day0UnitTemp>
 	<Day0Location>
 		<DataType>Text</DataType>
-		<X>145</X>
+		<X>235</X>
 		<Y>50</Y>
 		<Alpha>255</Alpha>
 		<FontSize>8</FontSize>
+		<Align>2</Align>
 		<Data>{#LOCATION#}</Data>
 	</Day0Location>
 
@@ -115,7 +115,7 @@
 		<X>40</X>
 		<Y>83</Y>
 		<Alpha>255</Alpha>
-		<Centered>1</Centered>
+		<Align>1</Align>
 		<Data>{#FC_D1_DAYTEXT#}</Data>
 	</Day1Header>
 	<Day1High>
@@ -124,7 +124,7 @@
 		<Y>105</Y>
 		<Alpha>255</Alpha>
 		<FontSize>10</FontSize>
-		<Centered>1</Centered>
+		<Align>1</Align>
 		<Data>{#FC_D1_HIGHTEMP#}°</Data>
 	</Day1High>
 	<Day1Low>
@@ -133,7 +133,7 @@
 		<Y>125</Y>
 		<Alpha>255</Alpha>
 		<FontSize>10</FontSize>
-		<Centered>1</Centered>
+		<Align>1</Align>
 		<Data>{#FC_D1_LOWTEMP#}°</Data>
 	</Day1Low>
 	<Day1Image>
@@ -142,7 +142,7 @@
 		<Y>115</Y>
 		<Alpha>255</Alpha>
 		<Size>32</Size>
-		<Centered>1</Centered>
+		<Align>1</Align>
 		<Data>{#FC_D1_DAY_DAYICON#}</Data>
 	</Day1Image>
 
@@ -159,7 +159,7 @@
 		<X>120</X>
 		<Y>83</Y>
 		<Alpha>255</Alpha>
-		<Centered>1</Centered>
+		<Align>1</Align>
 		<Data>{#FC_D2_DAYTEXT#}</Data>
 	</Day2Header>
 	<Day2High>
@@ -167,7 +167,7 @@
 		<X>100</X>
 		<Y>105</Y>
 		<Alpha>255</Alpha>
-		<Centered>1</Centered>
+		<Align>1</Align>
 		<Data>{#FC_D2_HIGHTEMP#}°</Data>
 	</Day2High>
 	<Day2Low>
@@ -175,7 +175,7 @@
 		<X>100</X>
 		<Y>125</Y>
 		<Alpha>255</Alpha>
-		<Centered>1</Centered>
+		<Align>1</Align>
 		<Data>{#FC_D2_LOWTEMP#}°</Data>
 	</Day2Low>
 	<Day2Image>
@@ -184,7 +184,7 @@
 		<Y>115</Y>
 		<Alpha>255</Alpha>
 		<Size>32</Size>
-		<Centered>1</Centered>
+		<Align>1</Align>
 		<Data>{#FC_D2_DAY_DAYICON#}</Data>
 	</Day2Image>
 
@@ -201,7 +201,7 @@
 		<X>200</X>
 		<Y>83</Y>
 		<Alpha>255</Alpha>
-		<Centered>1</Centered>
+		<Align>1</Align>
 		<Data>{#FC_D3_DAYTEXT#}</Data>
 	</Day3Header>
 	<Day3High>
@@ -209,7 +209,7 @@
 		<X>180</X>
 		<Y>105</Y>
 		<Alpha>255</Alpha>
-		<Centered>1</Centered>
+		<Align>1</Align>
 		<Data>{#FC_D3_HIGHTEMP#}°</Data>
 	</Day3High>
 	<Day3Low>
@@ -217,7 +217,7 @@
 		<X>180</X>
 		<Y>125</Y>
 		<Alpha>255</Alpha>
-		<Centered>1</Centered>
+		<Align>1</Align>
 		<Data>{#FC_D3_LOWTEMP#}°</Data>
 	</Day3Low>
 	<Day3Image>
@@ -226,7 +226,7 @@
 		<Y>115</Y>
 		<Alpha>255</Alpha>
 		<Size>32</Size>
-		<Centered>1</Centered>
+		<Align>1</Align>
 		<Data>{#FC_D3_DAY_DAYICON#}</Data>
 	</Day3Image>
 </WeatherSkin>

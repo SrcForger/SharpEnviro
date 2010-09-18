@@ -51,6 +51,8 @@ uses
 
 type
 
+  TWeatherSkinItemAlign = (waLeft,waCenter,waRight);
+
   TWeatherSkinItem = class
     x,y : integer;
     DataType : string;
@@ -65,7 +67,7 @@ type
     BlendB  : boolean;
     BlendColorB : integer;
     BlendValueB : integer;
-    Centered : Boolean;
+    Align : TWeatherSkinItemAlign;
     constructor Create;
     destructor Destroy; override;
   end;
@@ -300,11 +302,12 @@ begin
       SharpDeskApi.RenderText(Bmp,pItem.Font,pItem.data,taRight,0);
       Bmp.MasterAlpha := pItem.alpha;
     end;
-    
-    if pItem.Centered then
-        Bmp.DrawTo(outBmp, pItem.x - Round(Bmp.Width div 2), pItem.y)
-      else
-        Bmp.DrawTo(outBmp,pItem.x,pItem.y);
+
+    case pItem.Align of
+      waLeft: Bmp.DrawTo(outBmp,pItem.x,pItem.y);
+      waCenter: Bmp.DrawTo(outBmp, pItem.x - Round(Bmp.Width div 2), pItem.y);
+      waRight: Bmp.DrawTo(outBmp, pItem.x - Bmp.Width, pItem.y);
+    end;
   end;
   Bmp.Free;
 
@@ -375,7 +378,7 @@ begin
         pItem.BlendValueA           := IntValue('BlendValueA',255);
         pItem.BlendB                := BoolValue('BlendB',False);
         pItem.BlendValueB           := IntValue('BlendValueB',255);
-        pItem.Centered              := BoolValue('Centered', False);
+        pItem.Align                 := TWeatherSkinItemAlign(IntValue('Align', Int64(waLeft)));
 
         // Normal image
         if (pItem.DataType = 'Image') and (FileExists(skinDir + pItem.Data)) then
