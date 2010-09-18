@@ -65,6 +65,7 @@ type
     BlendB  : boolean;
     BlendColorB : integer;
     BlendValueB : integer;
+    Centered : Boolean;
     constructor Create;
     destructor Destroy; override;
   end;
@@ -294,13 +295,16 @@ begin
       if pItem.BlendB then
          BlendImageA(Bmp,pItem.BlendColorB,pItem.BlendValueB);
       Bmp.MasterAlpha := pItem.alpha;
-      Bmp.DrawTo(outBmp,pItem.x,pItem.y);
     end else
     begin
       SharpDeskApi.RenderText(Bmp,pItem.Font,pItem.data,taRight,0);
       Bmp.MasterAlpha := pItem.alpha;
-      Bmp.DrawTo(outBmp,pItem.x,pItem.y);
     end;
+    
+    if pItem.Centered then
+        Bmp.DrawTo(outBmp, pItem.x - Round(Bmp.Width div 2), pItem.y)
+      else
+        Bmp.DrawTo(outBmp,pItem.x,pItem.y);
   end;
   Bmp.Free;
 
@@ -371,6 +375,7 @@ begin
         pItem.BlendValueA           := IntValue('BlendValueA',255);
         pItem.BlendB                := BoolValue('BlendB',False);
         pItem.BlendValueB           := IntValue('BlendValueB',255);
+        pItem.Centered              := BoolValue('Centered', False);
 
         // Normal image
         if (pItem.DataType = 'Image') and (FileExists(skinDir + pItem.Data)) then
