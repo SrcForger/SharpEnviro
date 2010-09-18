@@ -68,6 +68,7 @@ type
     FMeterBmp        : TBitmap32;
     FOldSpaceFree    : integer;
     FOldDriveType    : integer;
+    FOldDriveName    : String;
     
   protected
      procedure OnTimer(Sender: TObject);
@@ -238,14 +239,13 @@ end;
 
 function GetDriveName(Drive : string) : string;
 var
-  NotUsed, VolFlags: DWORD;
-  Buf: array[0..MAX_PATH] of Char;
   Ret : string;
   driveType : integer;
+  Info: TSHFileInfo;
 begin
   try
-    GetVolumeInformation(PChar(Drive + ':\'), Buf, SizeOf(Buf), nil, NotUsed, VolFlags, nil, 0);
-    Ret := Buf;
+    SHGetFileInfo(PChar(Drive + ':\'), 0, Info, SizeOf(TSHFileInfo), SHGFI_DISPLAYNAME or SHGFI_TYPENAME);
+    Ret := Trim(Info.szDisplayName);
 
     // Return drive type if name is not specified
     if Length(Ret) <= 0 then
@@ -277,8 +277,11 @@ function TDriveLayer.UpdateDriveSize: boolean;
 var
   SpaceFree : single;
   SpacePrefix : string;
+  DriveName : string;
 begin
   Result := False;
+
+  DriveName := GetDriveName(FSettings.Target[1]);
 
   if (GetDiskIn(FSettings.Target[1])) then
   begin
@@ -287,10 +290,13 @@ begin
       SpaceFree := 0.00
     else
       SpaceFree := (GetDiskCapacity(FSettings.Target[1])) - (GetDiskFree(FSettings.Target[1]));
-    if floor(SpaceFree) = FOldSpaceFree then
+
+    // If the free space and the drive name have not changed then exit.
+    if (floor(SpaceFree) = FOldSpaceFree) and (DriveName = FOldDriveName) then
       exit;
 
     FOldSpaceFree := floor(SpaceFree);
+    FOldDriveName := DriveName;
 
     if (FSettings.ShowCaption) then
     begin
@@ -311,10 +317,10 @@ begin
       FCaptionSettings.Caption.Clear;
       FCaptionSettings.Caption.Delimiter := ' ';
 
-      if Length(GetDriveName(FSettings.Target[1])) <= 0 then
+      if Length(DriveName) <= 0 then
         FCaptionSettings.Caption.Add(FSettings.Caption)
       else
-        FCaptionSettings.Caption.Add(GetDriveName(FSettings.Target[1]) + ' (' + FSettings.Caption + ':)');
+        FCaptionSettings.Caption.Add(DriveName);
 
       FCaptionSettings.Caption.Add(FloatToStrF(SpaceFree,ffFixed,6,2) + ' ' + SpacePrefix + ' Free');
 
@@ -323,14 +329,19 @@ begin
     end;
   end;
 
+  if (DriveName = FOldDriveName) then
+    Exit;
+
+  FOldDriveName := DriveName;
+      
   // Add the Drive letter
   FCaptionSettings.Caption.Clear;
   FCaptionSettings.Caption.Delimiter := ' ';
 
-  if Length(GetDriveName(FSettings.Target[1])) <= 0 then
+  if Length(DriveName) <= 0 then
     FCaptionSettings.Caption.Add(FSettings.Caption)
   else
-    FCaptionSettings.Caption.Add(GetDriveName(FSettings.Target[1]) + ' (' + FSettings.Caption + ':)');
+    FCaptionSettings.Caption.Add(DriveName);
 
   Result := True;
 end;
@@ -516,6 +527,7 @@ begin
 
   FOldDriveType := -1;
   FOldSpaceFree := -1;
+  FOldDrivename := '';
   
   FSettings.LoadSettings;
   if length(FSettings.Target) > 1 then
@@ -603,6 +615,7 @@ begin
 
   FOldSpaceFree := -1;
   FOldDriveType := -1;
+  FOldDriveName := '';
 
   FSettings := TXMLSettings.Create(FObjectId,nil,'Drive');
 
