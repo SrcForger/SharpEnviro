@@ -60,6 +60,7 @@ const
   DS_TEXTSHADOWCOLOR = 20;
   DS_TEXTSHADOWTYPE = 21;
   DS_TEXTSHADOWSIZE = 22;
+  DS_TEXTCLEARTYPE = 23;
 
   DST_INT = 0;
   DST_STRING = 1;
@@ -141,7 +142,7 @@ begin
   // Reset ts array
   setlength(ts,0);
 
-  setlength(ts,23);
+  setlength(ts,24);
   AddArrayItem(DS_ICONSIZE,'IconSize',DST_INT,False);
   AddArrayItem(DS_ICONALPHABLEND,'IconAlhpaBlend',DST_BOOL,False);
   AddArrayItem(DS_ICONALPHA,'IconAlpha',DST_INT,False);
@@ -165,6 +166,7 @@ begin
   AddArrayItem(DS_TEXTSHADOWCOLOR,'TextShadowColor',DST_INT,False);
   AddArrayItem(DS_TEXTSHADOWTYPE,'TextShadowType',DST_INT,False);
   AddArrayItem(DS_TEXTSHADOWSIZE,'TextShadowSize',DST_INT,False);
+  AddArrayItem(DS_TEXTCLEARTYPE,'TextCleartype',DST_BOOL,False);
 end;
 
 function TDesktopXMLSettings.GetSettingsFile : string;
@@ -228,6 +230,7 @@ begin
     ts[DS_TEXTSHADOWCOLOR].IntValue := TextShadowColor;
     ts[DS_TEXTSHADOWTYPE].IntValue := TextShadowType;
     ts[DS_TEXTSHADOWSIZE].IntValue := TextShadowSize;
+	  ts[DS_TEXTCLEARTYPE].BoolValue := TextCleartype;
   end;
 
   // Object Theme Settings

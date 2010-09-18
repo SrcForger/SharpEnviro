@@ -159,6 +159,7 @@ begin
       TextShadowType     := IntValue('TextShadowType', TextShadowType);
       TextShadowSize     := IntValue('TextShadowSize', TextShadowSize);
       DisplayText        := BoolValue('DisplayText', DisplayText);
+	  TextClearType      := BoolValue('TextClearType', TextClearType);
     end
   end else fileloaded := False;
   XML := nil;
@@ -248,6 +249,7 @@ begin
     Add('TextShadowType', TextShadowType);
     Add('TextShadowSize', TextShadowSize);
     Add('DisplayText', DisplayText);
+	Add('TextClearType', TextClearType);
   end;
   XML.Save;
 
@@ -290,6 +292,7 @@ begin
     TextShadowType := 1;
     TextShadowSize := 1;
     DisplayText := True;
+	TextClearType := False;
   end;
 
   with FAnimation do

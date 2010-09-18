@@ -112,6 +112,7 @@ type
     TextShadowType: integer;
     TextShadowSize: integer;
     DisplayText: boolean;
+	TextCleartype: boolean;
   end;
 
   TThemeDesktopAnim = record

@@ -43,7 +43,7 @@ type
                   Bold        : boolean;
                   Italic      : boolean;
                   Underline   : boolean;
-                  AALevel     : integer;
+                  ClearType   : boolean;
                   Alpha       : integer;
                   Size        : integer;
                   TextAlpha   : boolean;
@@ -119,7 +119,7 @@ function RenderObject(dst : TBitmap32; Icon : TDeskIcon; Font : TDeskFont; Capti
 function RenderIconCaptionAligned(dst : TBitmap32; Icon : TBitmap32; Caption : TBitmap32; CaptionAlign : TTextAlign; IconOffset : TPoint; CaptionOffset : TPoint; IconHasShadow : boolean; CaptionHasShadow : boolean) : TAlignInfo; external 'SharpDeskApi.dll';
 
 // wrapper functions
-function DeskFont(Name : String; Color : integer; Bold : boolean; Italic : boolean; Underline : boolean; AALevel : integer; Alpha : integer; Size : integer; ShadowColor : integer; TextAlpha : boolean; ShadowAlphaValue : integer; Shadow : boolean; ShadowType  : integer; ShadowSize  : integer) : TDeskFont;
+function DeskFont(Name : String; Color : integer; Bold : boolean; Italic : boolean; Underline : boolean; ClearType : boolean; Alpha : integer; Size : integer; ShadowColor : integer; TextAlpha : boolean; ShadowAlphaValue : integer; Shadow : boolean; ShadowType  : integer; ShadowSize  : integer) : TDeskFont;
 function DeskIcon(Icon : TBitmap32; Size : integer; Alpha : integer; Blend : boolean; BlendColor : integer; BlendValue : integer; Shadow : boolean; ShadowColor : integer; ShadowAlpha : integer; XOffset : integer; YOffset : integer) : TDeskIcon;
 function DeskCaption(Caption : TStringList; Align : TTextAlign; Xoffset : integer; Yoffset : integer; Draw : boolean; LineSpace : integer) : TDeskCaption;
 
@@ -133,7 +133,7 @@ function DeskFont(Name        : String;
                   Bold        : boolean;
                   Italic      : boolean;
                   Underline   : boolean;
-                  AALevel     : integer;
+                  ClearType   : boolean;
                   Alpha       : integer;
                   Size        : integer;
                   ShadowColor : integer;
@@ -148,7 +148,7 @@ begin
   DeskFont.Bold        := Bold;
   DeskFont.Italic      := Italic;
   DeskFont.Underline   := Underline;
-  DeskFont.AALevel     := AALevel;
+  DeskFont.ClearType   := ClearType;
   DeskFont.Alpha       := Alpha;
   DeskFont.Size        := Size;
   DeskFont.ShadowColor := ShadowColor;

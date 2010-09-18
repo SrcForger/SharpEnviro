@@ -63,7 +63,7 @@ type
                   Bold        : boolean;
                   Italic      : boolean;
                   Underline   : boolean;
-                  AALevel     : integer;
+                  ClearType   : boolean;
                   Alpha       : integer;
                   Size        : integer;
                   TextAlpha   : boolean;
@@ -276,6 +276,7 @@ var
   p : TPoint;
   eh : integer;
   n : integer;
+  AALevel : integer;
 begin
   TempBmp := TBitmap32.Create;
   try
@@ -379,17 +380,22 @@ begin
     G := GetGValue(c);
     B := GetBValue(c);
     c2 := color32(R,G,B,255);
+
+    AALevel := 0;
+    if Font.ClearType then
+      AALevel := -2;
+
     for n := 0 to Text.Count - 1 do
     begin
       if (Align = taRight) then
         TempBmp.RenderText(10,
-                            TempBmp.Height div 2 - h div 2 + eh * n,Text[n],Font.AALevel,c2)
+                            TempBmp.Height div 2 - h div 2 + eh * n,Text[n],AALevel,c2)
       else if (Align = taLeft) then
         TempBmp.RenderText(TempBmp.Width - TempBmp.TextWidth(Text[n]) - 10,
-                            TempBmp.Height div 2 - h div 2 + eh * n,Text[n],Font.AALevel,c2)
+                            TempBmp.Height div 2 - h div 2 + eh * n,Text[n],AALevel,c2)
       else
         TempBmp.RenderText(TempBmp.Width div 2 - TempBmp.TextWidth(Text[n]) div 2,
-                            TempBmp.Height div 2 - h div 2 + eh * n,Text[n],Font.AALevel,c2);
+                            TempBmp.Height div 2 - h div 2 + eh * n,Text[n],AALevel,c2);
     end;
 
     if Font.TextAlpha then
