@@ -36,7 +36,6 @@
     <project Name="Menu" Type="DLL">Plugins\Configurations\Modules\MenuModule\MenuModule.dproj</project>
     <project Name="Mini Scmd" Type="DLL">Plugins\Configurations\Modules\MiniScmd\MiniScmd.dproj</project>
     <project Name="Notes" Type="DLL">Plugins\Configurations\Modules\Notes\Notes.dproj</project>
-    <project Name="Quick Script" Type="DLL">Plugins\Configurations\Modules\QuickScript\QuickScript.dproj</project>
     <project Name="RSS Reader" Type="DLL">Plugins\Configurations\Modules\RSS Reader\RSSReader.dproj</project>
     <project Name="Show Desktop" Type="DLL">Plugins\Configurations\Modules\ShowDesktop\ShowDesktop.dproj</project>
     <project Name="System Tray" Type="DLL">Plugins\Configurations\Modules\SystemTray\SystemTray.dproj</project>
@@ -86,8 +85,6 @@
     <project Name="SharpDesk" Type="Application">Components\SharpDesk\SharpDesk.dproj</project>
     <project Name="SharpLinkLauncherNET" Type="Solution" requ="Microsoft Visual C# 2010 Express">Components\SharpLinkLauncherNET\SharpLinkLauncherNET.sln</project>
     <project Name="SharpMenu" Type="Application">Components\SharpMenu\SharpMenu.dproj</project>
-    <project Name="SharpScript" Type="Application">Components\SharpScript\SharpScript.dproj</project>
-    <project Name="SharpSearchNET" Type="Solution" requ="Microsoft Visual C# 2010 Express">Components\SharpSearchNET\SharpSearchNET.sln</project>
     <project Name="SharpSplash" Type="Application">Components\SharpSplash\SharpSplash.dproj</project>
   </package>
   <package Name="Libraries">
@@ -115,7 +112,6 @@
     <project Name="Menu" Type="DLL" >Plugins\Modules\Menu\Menu.dproj</project>
     <project Name="Mini Scmd" Type="DLL" >Plugins\Modules\MiniScmd\MiniScmd.dproj</project>
     <project Name="Notes" Type="DLL" >Plugins\Modules\Notes\Notes.dproj</project>
-    <project Name="Quick Script" Type="DLL" >Plugins\Modules\QuickScript\QuickScript.dproj</project>
     <project Name="Recycle Bin" Type="DLL" >Plugins\Modules\RecycleBin\RecycleBin.dproj</project>
     <project Name="RSS Reader" Type="DLL" >Plugins\Modules\RSS Reader\RSSReader.dproj</project>
     <project Name="Show Desktop" Type="DLL" >Plugins\Modules\ShowDesktop\ShowDesktop.dproj</project>
