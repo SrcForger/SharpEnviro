@@ -173,7 +173,7 @@ DWORD WINAPI ExplorerDll::ThreadFunc(LPVOID pvParam)
 	if(!hEv)
 		hEv = CreateEvent(NULL, true, false, L"SharpExplorer_ShellReady");
 
-	WaitForSingleObject(hEv, INFINITE);
+	WaitForSingleObject(hEv, 5*1000);
 	CloseHandle(hEv);
 
 	SHCREATEDESKTOP SHCreateDesktop = (SHCREATEDESKTOP)GetProcAddress(pThis.hShellDLL, MAKEINTRESOURCEA(200));
