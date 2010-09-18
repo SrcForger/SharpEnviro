@@ -90,6 +90,8 @@ type
     FHArrow      : TBitmap32;
     FMArrow      : TBitmap32;
     FSArrow      : TBitmap32;
+    FHArrowRot   : TBitmap32;
+    FMArrowRot   : TBitmap32;
     FPicture     : TBitmap32;
     FDeskSettings   : TDeskSettings;
     FSettings : TClockXMLSettings;
@@ -268,7 +270,7 @@ begin
      BlendImageA(Bitmap,
                  Theme.Desktop.Animation.BlendColor,
                  round(FHLTimer.Tag*(Theme.Desktop.Animation.BlendValue/FAnimSteps)));
-                 
+
   FParentImage.EndUpdate;
   EndUpdate;
   Changed;
@@ -402,15 +404,27 @@ begin
   if FHArrow.BitmapHandle <> 0 then
   begin
     TempBmp.Clear(color32(0,0,0,0));
-    RotateBitmap(FHArrow,TempBmp,-HourOf(Now)*30-MinuteOf(Now)*0.5);
-    TempBmp.DrawTo(FPicture, (FClockBack.Width - FHArrow.Width) div 2, (FClockBack.Height - FHArrow.Height) div 2);
+
+    if (FLastHour <> HourOf(Now)) then
+    begin
+      FHArrowRot.Clear(color32(0,0,0,0));
+      FHArrowRot.SetSize(FClockBack.Width,FClockBack.Height);
+      RotateBitmap(FHArrow,FHArrowRot,-HourOf(Now)*30-MinuteOf(Now)*0.5);
+    end;
+    FHArrowRot.DrawTo(FPicture, (FClockBack.Width - FHArrow.Width) div 2, (FClockBack.Height - FHArrow.Height) div 2);
   end;
 
   if FMArrow.BitmapHandle <> 0 then
   begin
     TempBmp.Clear(color32(0,0,0,0));
-    RotateBitmap(FMArrow,TempBmp,-MinuteOf(Now)*6);
-    TempBmp.DrawTo(FPicture, (FClockBack.Width - FMArrow.Width) div 2, (FClockBack.Height - FMArrow.Height) div 2);
+
+    if (FLastMinute <> MinuteOf(Now)) then
+    begin
+      FMArrowRot.Clear(color32(0,0,0,0));
+      FMArrowRot.SetSize(FClockBack.Width,FClockBack.Height);
+      RotateBitmap(FMArrow,FMArrowRot,-MinuteOf(Now)*6);
+    end;
+    FMArrowRot.DrawTo(FPicture, (FClockBack.Width - FMArrow.Width) div 2, (FClockBack.Height - FMArrow.Height) div 2);
   end;
 
   if FSArrow.BitmapHandle <> 0 then
@@ -512,6 +526,8 @@ begin
   if ObjectID = 0 then
     exit;
 
+  fTimer.Enabled := False;
+
   FLastHour := -1;
   FLastMinute := -1;
   FLastSecond := -1;
@@ -536,10 +552,11 @@ begin
     FShadowAlpha := 32;
 
   { Get the initial time }
-  fTimer1TimerNormal(Self);
+  DateTimeToString(strDate, 'dddd d mmmm, yyyy', Date);
+  DateTimeToString(strTime, 'hh:mm', Now);
 
   { Start timer off with seconds to next minute. Set to 60000 on first tick }
-  fTimer.Interval := (60 - SecondOfTheMinute(Now));
+  fTimer.Interval := 1000; //;(60 - SecondOfTheMinute(Now));
 
   { Decide size }
   if FSettings.AnalogSkin = '' then
@@ -553,6 +570,10 @@ begin
      FHLTimer.OnTimer(FHLTimer);   
 
   LoadSkin;
+
+  fTimer1TimerNormal(Self);
+  fTimer.Enabled := True;
+  fTimer1TimerNormal(Self);  
 end;
 
 constructor TClockLayer.Create( ParentImage:Timage32; Id : integer;
@@ -578,9 +599,20 @@ begin
   FHArrow := TBitmap32.Create;
   FMArrow := TBitmap32.Create;
   FSArrow := TBitmap32.Create;
-  TKernelResampler.Create(FHArrow).Kernel := TMitchellKernel.Create;
-  TKernelResampler.Create(FMArrow).Kernel := TMitchellKernel.Create;
-  TKernelResampler.Create(FSArrow).Kernel := TMitchellKernel.Create;
+  TLinearResampler.Create(FHArrow);
+  TLinearResampler.Create(FMArrow);
+  TLinearResampler.Create(FSArrow);  
+//  TKernelResampler.Create(FHArrow).Kernel := TMitchellKernel.Create;
+//  TKernelResampler.Create(FMArrow).Kernel := TMitchellKernel.Create;
+//  TKernelResampler.Create(FSArrow).Kernel := TMitchellKernel.Create;
+
+  // for storing the rotated minute and hour arrows
+  FHArrowRot := TBitmap32.Create;
+  FMArrowRot := TBitmap32.Create;
+  FHArrowRot.DrawMode := dmBlend;
+  FHArrowRot.CombineMode := cmMerge;
+  FMArrowRot.DrawMode := dmBlend;
+  FMArrowRot.CombineMode := cmMerge;
 
   FAffineTrans := TAffineTransformation.Create;
 
@@ -588,7 +620,7 @@ begin
   FPicture.DrawMode := dmBlend;
   FPicture.CombineMode := cmMerge;
   fTimer := TTimer.Create(nil);
-  fTimer.Interval := 60;
+  fTimer.Interval := 1000;
   fTimer.OnTimer := fTimer1TimerNormal;
 
   DateTimeToString(strDate, 'dddd d mmmm, yyyy', Date);
@@ -613,6 +645,8 @@ begin
   DebugFree(FHArrow);
   DebugFree(FMArrow);
   DebugFree(FSArrow);
+  DebugFree(FHArrowRot);
+  DebugFree(FMArrowRot);
   DebugFree(FHLTimer);
   DebugFree(FAffineTrans);
 
@@ -624,7 +658,10 @@ begin
   DateTimeToString(strDate, 'dddd d mmmm, yyyy', Date);
   DateTimeToString(strTime, 'hh:mm', Now);
 
-  DrawBitmap;
+  if (FHLTimer.Tag >= 1) and (not FHLTimer.Enabled) then
+    FHLTimer.OnTimer(nil)
+  else if (FHLTimer. Tag <= 0) and (not FHLTimer.Enabled) then
+    DrawBitmap;
 end;
 
 end.
