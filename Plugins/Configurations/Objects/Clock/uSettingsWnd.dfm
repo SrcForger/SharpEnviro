@@ -3,7 +3,7 @@ object frmSettings: TfrmSettings
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmSettings'
-  ClientHeight = 658
+  ClientHeight = 446
   ClientWidth = 445
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -21,20 +21,22 @@ object frmSettings: TfrmSettings
     Left = 0
     Top = 30
     Width = 445
-    Height = 628
+    Height = 416
     ActivePage = pagClock
     PropagateEnable = False
     Align = alClient
+    ExplicitHeight = 628
     object pagClock: TJvStandardPage
       Left = 0
       Top = 0
       Width = 445
-      Height = 628
+      Height = 416
+      ExplicitHeight = 628
       object pnlClock: TPanel
         Left = 1
         Top = 1
         Width = 443
-        Height = 300
+        Height = 414
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
@@ -43,7 +45,7 @@ object frmSettings: TfrmSettings
           Left = 0
           Top = 0
           Width = 443
-          Height = 49
+          Height = 44
           Align = alTop
           BevelOuter = bvNone
           Ctl3D = True
@@ -61,7 +63,7 @@ object frmSettings: TfrmSettings
             Margins.Right = 5
             Margins.Bottom = 10
             Title = 'Skin'
-            Description = 'Define the skin for this object'
+            Description = 'Select the clock skin which you want to use'
             TitleColor = clWindowText
             DescriptionColor = clRed
             Align = alTop
@@ -70,24 +72,25 @@ object frmSettings: TfrmSettings
         object pnlSkin: TPanel
           AlignWithMargins = True
           Left = 5
-          Top = 49
+          Top = 44
           Width = 433
-          Height = 246
+          Height = 365
           Margins.Left = 5
           Margins.Top = 0
           Margins.Right = 5
           Margins.Bottom = 5
-          Align = alTop
-          BevelKind = bkSoft
+          Align = alClient
+          BevelOuter = bvNone
           Caption = 'pnlSkin'
           TabOrder = 1
-          ExplicitTop = 81
+          ExplicitTop = 49
+          ExplicitHeight = 246
           object lbSkins: TSharpEListBoxEx
             AlignWithMargins = True
-            Left = 1
-            Top = 1
-            Width = 427
-            Height = 240
+            Left = 0
+            Top = 0
+            Width = 433
+            Height = 365
             Margins.Left = 0
             Margins.Top = 0
             Margins.Right = 0
@@ -127,8 +130,14 @@ object frmSettings: TfrmSettings
             OnGetCellText = lbSkinsGetCellText
             OnGetCellImageIndex = lbSkinsGetCellImageIndex
             AutosizeGrid = True
+            BevelInner = bvNone
+            BevelOuter = bvNone
             Borderstyle = bsNone
             Align = alClient
+            ExplicitLeft = 1
+            ExplicitTop = 1
+            ExplicitWidth = 427
+            ExplicitHeight = 240
           end
         end
       end
@@ -353,8 +362,8 @@ object frmSettings: TfrmSettings
         Name = 'PngImage2'
         Background = clWindow
       end>
-    Left = 384
-    Top = 420
+    Left = 376
+    Top = 372
     Bitmap = {}
   end
 end
