@@ -10,5 +10,10 @@
       <Icon>..\_Services\_ServiceDlls\locations.png</Icon>
       <Name>Locations</Name>
     </WeatherList>
+	<WeatherIcons>
+      <Dll>..\_Themes\_ThemeDlls\WeatherIcons.dll</Dll>
+      <Icon>..\_Themes\_ThemeDlls\ThemeSkinList.png</Icon>
+      <Name>Icon Set</Name>
+    </WeatherIcons>
   </Sections>
 </SharpCenter>
