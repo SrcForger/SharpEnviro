@@ -9,6 +9,6 @@ STRINGTABLE
   IDS_NAME "SetShell"
   IDS_DESCRIPTION "Assists in setting the windows shell"
   IDS_AUTHOR "Martin Krämer (MartinKraemer@gmx.net)"
-  IDS_VERSION "0.7.6.5"
+  IDS_VERSION "0.8.0.0"
   IDS_EXTRADATA "priority: 0|delay: 0"
 }
