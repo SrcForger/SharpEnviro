@@ -1,0 +1,14 @@
+<ClockSkin>
+	<Info>
+		<Name>Elements</Name>
+		<Author>James Brumbaugh</Author>
+		<Website>http://www.sharpenviro.com</Website>
+	</Info>
+	<Skin>
+		<Background>Background.png</Background>
+		<Overlay>Overlay.png</Overlay>
+		<HandHour>Hour.png</HandHour>
+		<HandMinute>Minute.png</HandMinute>
+		<HandSecond>Second.png</HandSecond>
+	</Skin>
+</ClockSkin>
