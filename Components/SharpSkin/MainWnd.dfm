@@ -2,8 +2,8 @@ object MainForm: TMainForm
   Left = 0
   Top = 0
   Caption = 'SharpEnviro Skin Validator'
-  ClientHeight = 446
-  ClientWidth = 832
+  ClientHeight = 439
+  ClientWidth = 820
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -16,8 +16,8 @@ object MainForm: TMainForm
   object panMain: TPanel
     Left = 0
     Top = 0
-    Width = 832
-    Height = 446
+    Width = 820
+    Height = 439
     Margins.Left = 155
     Margins.Bottom = 0
     Align = alClient
@@ -28,15 +28,11 @@ object MainForm: TMainForm
     ParentBackground = False
     ParentCtl3D = False
     TabOrder = 0
-    ExplicitLeft = -388
-    ExplicitTop = -167
-    ExplicitWidth = 860
-    ExplicitHeight = 492
     object splMain: TSplitter
       Left = 313
       Top = 6
       Width = 9
-      Height = 434
+      Height = 427
       ResizeStyle = rsUpdate
       ExplicitLeft = 193
       ExplicitHeight = 430
@@ -45,7 +41,7 @@ object MainForm: TMainForm
       Left = 6
       Top = 6
       Width = 307
-      Height = 434
+      Height = 427
       Margins.Bottom = 0
       Align = alLeft
       BevelOuter = bvNone
@@ -80,7 +76,6 @@ object MainForm: TMainForm
         Border = True
         BackgroundColor = clWindow
         BottomSideBorder = False
-        ExplicitWidth = 255
         object Label1: TLabel
           AlignWithMargins = True
           Left = 9
@@ -109,7 +104,6 @@ object MainForm: TMainForm
           Border = False
           BackgroundColor = 16510947
           BottomSideBorder = False
-          ExplicitWidth = 243
           object lblProjects: TLabel
             AlignWithMargins = True
             Left = 3
@@ -132,7 +126,6 @@ object MainForm: TMainForm
           BevelOuter = bvNone
           Caption = 'Panel1'
           TabOrder = 1
-          ExplicitWidth = 237
           object edSkinPath: TEdit
             Left = 0
             Top = 0
@@ -141,9 +134,6 @@ object MainForm: TMainForm
             Align = alClient
             ReadOnly = True
             TabOrder = 0
-            ExplicitLeft = 40
-            ExplicitTop = 64
-            ExplicitWidth = 121
             ExplicitHeight = 21
           end
           object Button1: TButton
@@ -160,7 +150,6 @@ object MainForm: TMainForm
             Caption = 'Open'
             TabOrder = 1
             OnClick = Button1Click
-            ExplicitLeft = 192
           end
         end
       end
@@ -169,7 +158,7 @@ object MainForm: TMainForm
         Left = 4
         Top = 98
         Width = 303
-        Height = 333
+        Height = 326
         Margins.Left = 4
         Margins.Top = 0
         Margins.Right = 0
@@ -210,19 +199,15 @@ object MainForm: TMainForm
         TabCaptionColor = clBlack
         TabStatusColor = clGreen
         PageBackgroundColor = 14875898
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 576
-        ExplicitHeight = 448
         DesignSize = (
           303
-          333)
+          326)
         object lbSchemeItems: TSharpEListBoxEx
           AlignWithMargins = True
           Left = 6
           Top = 30
           Width = 291
-          Height = 297
+          Height = 290
           Margins.Left = 6
           Margins.Top = 30
           Margins.Right = 6
@@ -269,7 +254,6 @@ object MainForm: TMainForm
           OnGetCellClickable = lbSchemeItemsGetCellClickable
           AutosizeGrid = False
           Borderstyle = bsNone
-          Ctl3d = True
           Align = alClient
         end
       end
@@ -277,22 +261,19 @@ object MainForm: TMainForm
     object panRight: TPanel
       Left = 322
       Top = 6
-      Width = 504
-      Height = 434
+      Width = 492
+      Height = 427
       Margins.Bottom = 0
       Align = alClient
       BevelOuter = bvNone
       Color = clWindow
       ParentBackground = False
       TabOrder = 1
-      ExplicitLeft = 274
-      ExplicitWidth = 580
-      ExplicitHeight = 480
       object tbMain: TToolBar
         AlignWithMargins = True
         Left = 9
-        Top = 411
-        Width = 492
+        Top = 404
+        Width = 480
         Height = 19
         Margins.Left = 9
         Margins.Bottom = 4
@@ -308,8 +289,6 @@ object MainForm: TMainForm
         ShowCaptions = True
         TabOrder = 0
         Transparent = False
-        ExplicitTop = 409
-        ExplicitWidth = 434
         object tbClear: TToolButton
           Left = 0
           Top = 0
@@ -331,8 +310,8 @@ object MainForm: TMainForm
         AlignWithMargins = True
         Left = 0
         Top = 0
-        Width = 500
-        Height = 405
+        Width = 488
+        Height = 398
         Margins.Left = 0
         Margins.Top = 0
         Margins.Right = 4
@@ -368,17 +347,15 @@ object MainForm: TMainForm
         TabCaptionColor = clBlack
         TabStatusColor = clGreen
         PageBackgroundColor = clWindow
-        ExplicitWidth = 576
-        ExplicitHeight = 448
         DesignSize = (
-          500
-          405)
+          488
+          398)
         object lbSummary: TSharpEListBoxEx
           AlignWithMargins = True
           Left = 6
           Top = 30
-          Width = 488
-          Height = 369
+          Width = 476
+          Height = 362
           Margins.Left = 6
           Margins.Top = 30
           Margins.Right = 6
@@ -418,10 +395,6 @@ object MainForm: TMainForm
           AutosizeGrid = False
           Borderstyle = bsNone
           Align = alClient
-          ExplicitLeft = 9
-          ExplicitTop = 33
-          ExplicitWidth = 430
-          ExplicitHeight = 367
         end
       end
     end

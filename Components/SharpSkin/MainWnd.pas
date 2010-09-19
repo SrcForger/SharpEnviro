@@ -170,10 +170,18 @@ begin
 end;
 
 procedure TMainForm.LoadSkin;
+
+procedure AddError(pError : String; var pBool1,pBool2 : boolean);
+begin
+  lbSummary.AddItem(pError,0);
+  pBool1 := False;
+  pBool2 := False;
+end;
+
 var
   CustomFile,SkinFile,SchemeFile,InfoFile : String;
   Dir : String;
-  b : boolean;
+  b,partValid : boolean;
   XML : TJclSimpleXML;
   s : String;
   i,n : integer;
@@ -301,10 +309,14 @@ begin
 
       sCount := sCount + 1;
     end;
+    
+  XML.Free;
   if b then
     lbSummary.AddItem('Found ' + inttostr(sCount) + ' Scheme Items without errors',1)
-  else lbSummary.AddItem('Found ' + inttostr(sCount) + ' Scheme Items but there have been errors...',0);
-  XML.Free;  
+  else begin
+    lbSummary.AddItem('Found ' + inttostr(sCount) + ' Scheme Items but there have been errors...',0);
+    exit;
+  end;
 
   SList := TStringList.Create;
   SList.LoadFromFile(SkinFile);
@@ -324,6 +336,28 @@ begin
     end;
   end;
   SList.Free;
+
+  b := True;
+  lbSummary.AddItem('Step 4: Skin Analysis (Skin.xml)',2);
+  XML := TJclSimpleXML.Create;
+  XML.LoadFromFile(SkinFile);
+
+  // SharpBar
+  partValid := True;
+  if (XML.Root.Items.ItemNamed['sharpbar'] <> nil) then
+    with XML.Root.Items.ItemNamed['sharpbar'].Items do
+    begin
+      if ItemNamed['bar'] = nil then
+        AddError('Component Skin [SharpBar]: required skin state [bar] not found',b,partValid);
+      if ItemNamed['throbber'] = nil then
+        AddError('Component Skin [SharpBar]: required skin state [throbber] not found',b,partValid);
+      if ItemNamed['dimension'] = nil then
+        AddError('Component Skin [SharpBar]: required property [dimension] not defined',b,partValid);
+    end else AddError('Component Skin [SharpBar]: tag does not exist',b,partValid);
+  if partValid then
+    lbSummary.AddItem('Component Skin [SharpBar]... Found',1);
+
+  XML.Free;
 end;
 
 procedure TMainForm.tbClearClick(Sender: TObject);
