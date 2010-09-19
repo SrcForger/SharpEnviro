@@ -77,7 +77,7 @@
     <project Name="Weather" Type="DLL">Plugins\Configurations\Objects\Weather\Weather.dproj</project>
   </package>
   <package Name="Components">
-	<project Name="ExplorerNET" Type="Solution">Components\ExplorerNET\Explorer.sln</project>
+    <project Name="ExplorerNET" Type="Solution">Components\ExplorerNET\Explorer.sln</project>
     <project Name="SetShell" Type="Application">Components\SetShell\SetShell.dproj</project>
     <project Name="SharpAdmin" Type="Application">Components\SharpAdmin\SharpAdmin.dproj</project>
     <project Name="SharpBar" Type="Application">Components\SharpBar\SharpBar.dproj</project>
@@ -88,6 +88,7 @@
     <project Name="SharpLinkLauncherNET" Type="Solution" requ="Microsoft Visual C# 2010 Express">Components\SharpLinkLauncherNET\SharpLinkLauncherNET.sln</project>
     <project Name="SharpMenu" Type="Application">Components\SharpMenu\SharpMenu.dproj</project>
     <project Name="SharpSplash" Type="Application">Components\SharpSplash\SharpSplash.dproj</project>
+    <project Name="SharpSkin" Type="Application">Components\SharpSkin\SharpSkin.dproj</project>
   </package>
   <package Name="Libraries">
 	<project Name="ExplorerDLL 32-Bit" Type="Solution" Platform="Win32">Common\Libraries\ExplorerDLL\ExplorerDll.sln</project>
