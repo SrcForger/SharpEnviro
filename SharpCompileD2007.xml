@@ -65,6 +65,8 @@
     <project Name="Skin List" Type="DLL">Plugins\Configurations\Themes\SkinList\SkinList.dproj</project>
     <project Name="Skin Font" Type="DLL">Plugins\Configurations\Themes\Font\Font.dproj</project>
     <project Name="Wallpaper" Type="DLL">Plugins\Configurations\Themes\Wallpaper\Wallpaper.dproj</project>
+    <project Name="Weather Icons" Type="DLL">Plugins\Configurations\Themes\WeatherIcons\WeatherIcons.dproj</project>
+
   </package>
   <package Name="Configurations - Objects">
     <project Name="Clock" Type="DLL">Plugins\Configurations\Objects\Clock\Clock.dproj</project>
