@@ -237,24 +237,26 @@ begin
   end;
 end;
 
-function GetDriveName(Drive : string) : string;
+function GetDriveName(Drive : char) : string;
 var
   Ret : string;
   driveType : integer;
   Info: TSHFileInfo;
+  r : DWord;
 begin
-  try
-    SHGetFileInfo(PChar(Drive + ':\'), 0, Info, SizeOf(TSHFileInfo), SHGFI_DISPLAYNAME or SHGFI_TYPENAME);
-    Ret := Trim(Info.szDisplayName);
+  Ret := 'Unkown Disk';
 
+  try
+    r := SHGetFileInfo(PChar(Drive + ':\'), 0, Info, SizeOf(TSHFileInfo), SHGFI_DISPLAYNAME or SHGFI_TYPENAME);
+    
     // Return drive type if name is not specified
-    if Length(Ret) <= 0 then
+    if (r = 0) or (StrLen(Info.szDisplayName) <= 0) then
     begin
       driveType := GetDriveType(PChar(Drive + ':\'));
 
       case driveType of
       DRIVE_UNKNOWN, DRIVE_NO_ROOT_DIR:
-        Ret := 'Unknown Disk';
+        Ret := 'Unknown Disk' + ' (' + drive + ':)';
       DRIVE_FIXED:
         Ret := 'Local Disk';
       DRIVE_REMOTE:
@@ -266,7 +268,8 @@ begin
       DRIVE_CDROM:
         Ret := 'CD Drive';
       end;
-    end;
+    end else
+      Ret := Trim(Info.szDisplayName);
 
     Result := Ret;
   except
@@ -355,22 +358,46 @@ var
 begin
   Result := False;
 
-  driveType := GetDriveType(PChar(FSettings.Target + ':\'));
-  if driveType = FOldDriveType then
+  {SharpE Icon}
+  if FSettings.CustomIcon then
+  begin
+    TempBitmap := TBitmap32.Create;
+    try
+      iconSize := FSettings.Theme[DS_ICONSIZE].IntValue;
+      IconStringToIcon(FSettings.IconFile, FSettings.Target, TempBitmap, GetNearestIconSize(iconSize));
+
+      FPicture.SetSize(iconSize, iconSize);
+      FPicture.Clear(color32(0,0,0,0));
+      TempBitmap.DrawTo(FPicture, Rect(0, 0, iconSize, iconSize));
+    except
+    end;
+
+    TempBitmap.Free;
+
+    Result := True;
     exit;
-
-  FOldDriveType := driveType;
-
-  case driveType of
-  DRIVE_UNKNOWN, DRIVE_NO_ROOT_DIR:
-    iconStr := 'icon.drive.unknown';
-  DRIVE_FIXED, DRIVE_REMOTE:
-    iconStr := 'icon.drive.hdd';
-  DRIVE_REMOVABLE, DRIVE_RAMDISK:
-    iconStr := 'icon.drive.other';
-  DRIVE_CDROM:
-    iconStr := 'icon.drive.cdrom';
   end;
+
+  if (GetDiskIn(FSettings.Target[1])) then
+  begin
+    driveType := GetDriveType(PChar(FSettings.Target + ':\'));
+    if (driveType = FOldDriveType) and (FOldDriveType >= 0) then
+      exit;
+
+    FOldDriveType := driveType;
+
+    case driveType of
+    DRIVE_UNKNOWN, DRIVE_NO_ROOT_DIR:
+      iconStr := 'icon.drive.unknown';
+    DRIVE_FIXED, DRIVE_REMOTE:
+      iconStr := 'icon.drive.hdd';
+    DRIVE_REMOVABLE, DRIVE_RAMDISK:
+      iconStr := 'icon.drive.other';
+    DRIVE_CDROM:
+      iconStr := 'icon.drive.cdrom';
+    end;
+  end else
+    iconStr := 'icon.drive.unknown';
 
   {SharpE Icon}
   TempBitmap := TBitmap32.Create;
@@ -390,8 +417,16 @@ begin
 end;
 
 procedure TDriveLayer.OnUpdateTimer(Sender : TObject);
+var
+  r : boolean;
 begin
-  if (UpdateDriveSize) or (UpdateDriveType) then
+  r := UpdateDriveSize;
+  if not r then
+    r := UpdateDriveType
+  else
+    UpdateDriveType;
+  
+  if r then
     DrawBitmap;
 end;
 
@@ -518,9 +553,6 @@ begin
 end;
 
 procedure TDriveLayer.LoadSettings;
-var
-  TempBitmap : TBitmap32;
-  iconSize : integer;
 begin
   if ObjectID = 0 then
     exit;
@@ -557,6 +589,7 @@ begin
     FCaptionSettings.LineSpace := 0;
 
     UpdateDriveSize;
+    UpdateDriveType;
 
     FIconSettings.Size  := 100;
     FIconSettings.Alpha := 255;
@@ -575,24 +608,6 @@ begin
     if Theme[DS_ICONSIZE].IntValue <= 8 then
        Theme[DS_ICONSIZE].IntValue:= 48;
   end;
-
-  {SharpE Icon}
-  if FSettings.CustomIcon then
-  begin
-    TempBitmap := TBitmap32.Create;
-    try
-      iconSize := FSettings.Theme[DS_ICONSIZE].IntValue;
-      IconStringToIcon(FSettings.IconFile, FSettings.Target, TempBitmap, GetNearestIconSize(iconSize));
-
-      FPicture.SetSize(iconSize, iconSize);
-      FPicture.Clear(color32(0,0,0,0));
-      TempBitmap.DrawTo(FPicture, Rect(0, 0, iconSize, iconSize));
-    except
-    end;
-
-    TempBitmap.Free;
-  end else
-    UpdateDriveType;
 
   if FHLTimer.Tag >= FAnimSteps then
      FHLTimer.OnTimer(FHLTimer);   
