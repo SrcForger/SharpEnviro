@@ -112,7 +112,7 @@ begin
         begin
           Name     := XML.Root.Items.Value('Name', 'Invalid_Name');
           Author   := XML.Root.Items.Value('Author', 'Invalid_Author');
-          Comment  := XML.Root.Items.Value('Comment', 'Invalid_Comment');
+          Comment  := XML.Root.Items.Value('Info', 'Invalid_Comment');
           Website  := XML.Root.Items.Value('Website', 'Invalid_Website');
           ReadOnly := XML.Root.Items.BoolValue('ReadOnly', false);
 

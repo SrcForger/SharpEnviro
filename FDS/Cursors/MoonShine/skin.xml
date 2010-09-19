@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Curses>
-  <SknDef>
-    <Title>MoonShine</Title>
-    <Author>VovanR @ DeviantArt</Author>
-    <OtherInfo></OtherInfo>
-    <AnimInterval>100</AnimInterval>
-  </SknDef>
+  <Info>
+ 	<name>MoonShine</name>
+    <author>The SharpEnviro Team</author>
+    <Website>http://www.sharpenviro.com/</Website>
+    <Info>Thanks to VovanR @ DeviantArt</Info>
+    <version>0.8</version>
+  </Info>
+  <Animation>
+	<Interval>100</Interval>
+  </Animation>
   <Cursors>
 	<AppStarting>
 		<File>MoonShine_v2_Busy.ani</File>

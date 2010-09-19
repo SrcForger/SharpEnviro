@@ -507,22 +507,26 @@ begin
                  with xml.Root.Items do
                  begin
                    FCursorInfo.Path := GetCursorsFolder + sr.Name + '\';
-                   if ItemNamed['SknDef'] <> nil then
-                      with ItemNamed['SknDef'].Items do
+                   if ItemNamed['Info'] <> nil then
+                      with ItemNamed['Info'].Items do
                       begin
-                        FCursorInfo.Name := Value('Title','');
+                        FCursorInfo.Name := Value('Name','');
                         FCursorInfo.Author := Value('Author','');
-                        FCursorInfo.OtherInfo := Value('OtherInfo','');
-                        UpdTimer.Interval := IntValue('AnimInterval', 1000);
+                        FCursorInfo.OtherInfo := Value('Info','');
                       end;
-
+					if ItemNamed['Animation'] <> nil then
+                      with ItemNamed['Animation'].Items do
+                      begin
+                        UpdTimer.Interval := IntValue('Interval', 1000);
+                      end;
+	
                    C := 0;
                    IName := '';
 
                    // Old way
-                   if ItemNamed['CursPoints'] <> nil then
+                   if ItemNamed['Points'] <> nil then
                    begin
-                     with ItemNamed['CursPoints'].Items do
+                     with ItemNamed['Points'].Items do
                      begin
                         for I := 0 to Count - 1 do
                         begin

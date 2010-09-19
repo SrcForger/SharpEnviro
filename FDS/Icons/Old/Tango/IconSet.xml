@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <IconSet Version="1.0.0.0">
-  <name>Tango</name>
-  <author>deadtronic</author>
-  <website></website>
+  <Info>
+    <name>Tango</name>
+    <author>deadtronic</author>
+    <website></website>
+    <Info>Tango icon sets</Info>
+    <version>0.8</version>
+  </Info>
   <Icons>
     <Icon>
       <name>icon.application</name>

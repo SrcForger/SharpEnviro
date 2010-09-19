@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <IconSet Version="1.0.0.0">
-  <name>Crystal</name>
-  <author>deadtronic</author>
-  <website></website>
+  <Info>
+    <name>Crystal</name>
+    <author>deadtronic</author>
+    <website></website>
+    <Info></Info>
+    <version>0.8</version>
+  </Info>
   <Icons>
     <Icon>
       <name>icon.application</name>

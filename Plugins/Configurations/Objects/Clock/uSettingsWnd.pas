@@ -361,9 +361,9 @@ begin
                   with XML.Root.Items.Item[n].Items do
                   begin
                     tmp := TSkinItem.Create;
-                    tmp.Name := Value('name', '...');
-                    tmp.Author := Value('author', '...');
-                    tmp.Website := Value('website', '');
+                    tmp.Name := Value('Name', '...');
+                    tmp.Author := Value('Author', '...');
+                    tmp.Website := Value('Website', '');
                     tmp.SkinName := sr.Name;
 
                     newItem := lbSkins.AddItem('', 0);

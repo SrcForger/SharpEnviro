@@ -207,11 +207,13 @@ begin
       Xml := TJclSimpleXml.Create;
       if LoadXmlFromSharedFile(Xml, files[i]) then
       begin
-        with xml.Root.Items do
-        begin
-          if Value('name') <> '' then
-            sSkin := Value('name');
-        end;
+		if XML.Root.Items.ItemNamed['Info'] <> nil
+		then
+			with XML.Root.Items.ItemNamed['Info'].Items do
+			begin
+			if Value('name') <> '' then
+				sSkin := Value('name');
+			end;
       end;
       Xml.Free;
 
@@ -459,14 +461,15 @@ begin
   xml := TJclSimpleXML.Create;
   if LoadXMLFromSharedFile(xml,s) then
   begin
-    with xml.Root.Items do
-    begin
-      FName := ASkin;
-      FAuthor := Value('author');
-      FWebsite := Value('url');
-      FInfo := Value('info');
-      FVersion := Value('version');
-    end;
+	if XML.Root.Items.ItemNamed['Info'] <> nil then
+		with XML.Root.Items.ItemNamed['Info'].Items do
+		begin
+			FName := ASkin;
+			FAuthor := Value('author');
+			FWebsite := Value('Website');
+			FInfo := Value('info');
+			FVersion := Value('version');
+		end;
   end;
   xml.Free;
 end;

@@ -204,26 +204,27 @@ begin
             try
               XML.LoadFromFile(Dir + sr.Name + '\IconSet.xml');
 
-              if XML.Root.Items.ItemNamed['IconSizes'] <> nil then
-              begin
-                tmp := TIconItem.Create;
-                tmp.Name := XML.Root.Items.Value('name', '...');
-                tmp.Author := XML.Root.Items.Value('author', '...');
-                tmp.Website := XML.Root.Items.Value('website', '');
+              if XML.Root.Items.ItemNamed['Info'] <> nil then
+                with XML.Root.Items.ItemNamed['Info'].Items do
+				begin				
+					tmp := TIconItem.Create;
+					tmp.Name := Value('Name', '');
+					tmp.Author := Value('Author', '');
+					tmp.Website := Value('Website', '');
 
-                newItem := lbIcons.AddItem('', 0);
-                newItem.Data := tmp;
-                if length(trim(tmp.Website)) > 0 then
-                  newItem.AddSubItem('', 1)
-                else
-                  newItem.AddSubItem('', -1);
+					newItem := lbIcons.AddItem('', 0);
+					newItem.Data := tmp;
+					if length(trim(tmp.Website)) > 0 then
+					  newItem.AddSubItem('', 1)
+					else
+					  newItem.AddSubItem('', -1);
 
-                if CompareText(sr.Name,FIconSet) = 0 then
-                begin
-                  lbIcons.ItemIndex := lbIcons.Items.Count - 1;
-                  //BuildIconPreview;
-                end;
-              end;
+					if CompareText(sr.Name,FIconSet) = 0 then
+					begin
+					  lbIcons.ItemIndex := lbIcons.Items.Count - 1;
+					  //BuildIconPreview;
+					end;
+				end;
             except
             end;
           end;

@@ -77,7 +77,7 @@ begin
     Items.Clear;
 
     Items.Add('showicon', frmRSSReader.cbIcon.Checked);
-    Items.Add('url', frmRSSReader.edtURL.Text);
+    Items.Add('Website', frmRSSReader.edtURL.Text);
     Items.Add('shownotification', frmRSSReader.cbNotify.Checked);
     Items.Add('switchtime', frmRssReader.sgbSwitchInterval.Value);
     Items.Add('feedupdate', frmRssReader.sgbUpdateInterval.Value);
@@ -96,7 +96,7 @@ begin
     with PluginHost.Xml.XmlRoot do
     begin
       frmRSSReader.cbIcon.Checked := Items.BoolValue('showicon',True);
-      frmRSSReader.edtURL.Text := Items.Value('url',frmRSSReader.edtURL.Text);
+      frmRSSReader.edtURL.Text := Items.Value('Website',frmRSSReader.edtURL.Text);
       frmRSSReader.cbNotify.Checked := Items.BoolValue('shownotification',True);
       frmRssReader.sgbSwitchInterval.Value := Items.IntValue('switchtime',20); // seconds
       frmRssReader.sgbUpdateInterval.Value := Items.IntValue('feedupdate',15); // minutes

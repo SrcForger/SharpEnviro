@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <IconSet Version="1.0.0.0">
+  <Info>
+    <name>Default</name>
+    <author>The SharpEnviro Team</author>
+    <website>http://www.sharpenviro.com/</website>
+    <Info>Icons from the open source GNOME and Tango icon sets</Info>
+    <version>0.8</version>
+  </Info>
   <Icons>
     <Icon>
       <name>icon.mediaplayer.play</name>

@@ -116,7 +116,7 @@ begin
     begin
       Author  := Value('Author',Author);
       Website := Value('Website',Website);
-      Comment := Value('Comment',Comment);
+      Comment := Value('Info',Comment);
     end
   end else fileloaded := False;
   XML := nil;
@@ -142,7 +142,7 @@ begin
     Add('Name',FName);
     Add('Author',Author);
     Add('Website',Website);
-    Add('Comment',Comment);
+    Add('Info',Comment);
   end;
   XML.Save;
 

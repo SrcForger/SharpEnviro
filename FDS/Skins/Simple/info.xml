@@ -2,9 +2,9 @@
 <SharpESkinInfo>
   <header>
     <name>Simple</name>
-    <author>Martin Krämer</author>
-    <url>http://www.sharpenviro.com</url>
-    <info>Something Simple!</info>
+	<author>The SharpEnviro Team</author>
+	<Website>http://www.sharpenviro.com/</Website>
+    <Info>Something Simple!</Info>
     <version>0.8</version>
   </header>
 </SharpESkinInfo>

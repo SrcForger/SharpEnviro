@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Curses>
-  <SknDef>
-    <Title>GNOME</Title>
-    <Author>Homer</Author>
-    <OtherInfo></OtherInfo>
-    <AnimInterval>100</AnimInterval>
-  </SknDef>
+  <Info>
+	<name>GNOME</name>
+    <author>The SharpEnviro Team</author>
+    <Website>http://www.sharpenviro.com/</Website>
+    <Info>GNOME cursors</Info>
+    <version>0.8</version>
+  </Info>
+  <Animation>
+	<Interval>100</Interval>
+  </Animation>
   <Cursors>
 	<AppStarting>
 		<File>appstarting.png</File>

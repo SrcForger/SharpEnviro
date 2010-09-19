@@ -189,7 +189,7 @@ begin
     with xml.Root.Items do
     begin
       sShowIcon := BoolValue('showicon',sShowIcon);
-      sURL      := Value('url',sURL);
+      sURL      := Value('Website',sURL);
       sShowNotification := BoolValue('shownotification',sShowNotification);
       sSwitchTime := IntValue('switchtime',sSwitchTime);
       sFeedUpdate := IntValue('feedupdate',sFeedUpdate);
@@ -436,11 +436,11 @@ begin
                 if (hasEnclosure) or (hasMediaThumbnail) or (hasMediaContent) then
                 begin
                   if hasEnclosure then
-                    image := ItemNamed['enclosure'].Properties.Value('url','')
+                    image := ItemNamed['enclosure'].Properties.Value('Website','')
                   else if hasMediaThumbnail then
-                    image := ItemNamed['thumbnail'].Properties.Value('url','')
+                    image := ItemNamed['thumbnail'].Properties.Value('Website','')
                   else if hasMediaContent then
-                    image := ItemNamed['content'].Properties.Value('url','');
+                    image := ItemNamed['content'].Properties.Value('Website','');
                        
                   FFeedImage := image;
 
@@ -500,7 +500,7 @@ begin
           begin
             s := '';
             if ItemNamed['image'] <> nil then
-              s := ItemNamed['image'].Items.Value('url','');
+              s := ItemNamed['image'].Items.Value('Website','');
             if length(trim(s)) > 0 then
             begin
               Thread := TImageDownloadThread.Create(s,FChannelIcon);
@@ -817,11 +817,11 @@ begin
               if (hasEnclosure) or (hasMediaThumbnail) or (hasMediaContent) then
               begin
                 if hasEnclosure then
-                  image := ItemNamed['enclosure'].Properties.Value('url','')
+                  image := ItemNamed['enclosure'].Properties.Value('Website','')
                 else if hasMediaThumbnail then
-                  image := ItemNamed['thumbnail'].Properties.Value('url','')
+                  image := ItemNamed['thumbnail'].Properties.Value('Website','')
                 else if hasMediaContent then
-                  image := ItemNamed['content'].Properties.Value('url','');
+                  image := ItemNamed['content'].Properties.Value('Website','');
 
                RssImages.Add(image);
               end;

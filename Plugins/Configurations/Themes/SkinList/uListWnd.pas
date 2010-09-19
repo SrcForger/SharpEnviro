@@ -461,7 +461,7 @@ begin
       begin
         FName := ASkin;
         FAuthor := Items.Value('author');
-        FWebsite := Items.Value('url');
+        FWebsite := Items.Value('Website');
         FInfo := Items.Value('info');
         FVersion := Items.Value('version');
       end;

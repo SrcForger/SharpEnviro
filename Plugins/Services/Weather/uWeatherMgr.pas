@@ -78,7 +78,7 @@ const
   sPOST_FileExt = '.sop';
   sPOST_Filter = 'SOAP POST Files (*.sop)|*.SOP';
   sPOST_Request = 'Request';
-  sPOST_URL = 'URL';
+  sPOST_URL = 'Website';
   sPOST_Action = 'SOAPAction';
   sPOST_Untitled = 'Untitled' + sPOST_FileExt;
   STRRequest = '  Request: ';

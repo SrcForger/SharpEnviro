@@ -380,20 +380,20 @@ begin
     C := 0;
     with XML.Root.Items do
     begin
-      if ItemNamed['SknDef'] <> nil then
+      if ItemNamed['Animation'] <> nil then
       begin
-        with ItemNamed['SknDef'].Items do
+        with ItemNamed['Animation'].Items do
         begin
           // Set the timer interval
-          AnimTimer.Interval := IntValue('AnimInterval', 1000);
+          AnimTimer.Interval := IntValue('Interval', 1000);
           AnimTimer.Enabled := True;
         end;
       end;
 
       // Old way
-      if ItemNamed['CursPoints'] <> nil then
+      if ItemNamed['Points'] <> nil then
       begin
-        with ItemNamed['CursPoints'].Items do
+        with ItemNamed['Points'].Items do
         begin
           for I := 0 to Count - 1 do
           begin
@@ -577,15 +577,15 @@ begin
                 FNames[I] := sr.Name;
 
                 XML.LoadFromFile(Dir + sr.Name + '\Skin.xml');
-                if XML.Root.Items.ItemNamed['SknDef'] <> nil then
+                if XML.Root.Items.ItemNamed['Info'] <> nil then
                 begin
-                  with XML.Root.Items do
+                  with XML.Root.Items.ItemNamed['Info'].Items do
                   begin
                     obj := TStringObject.Create();
 
                     // Get the Name and Author
-                    sName := ItemNamed['SknDef'].Items.Value('Title','Unknown');
-                    sAuthor := ItemNamed['SknDef'].Items.Value('Author','Unknown');
+                    sName := Value('Name','Unknown');
+                    sAuthor := Value('Author','Unknown');
                     s := Format('%s by %s', [sName, sAuthor]);
 
                     obj.Str := sName;

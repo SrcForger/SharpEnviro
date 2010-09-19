@@ -28,7 +28,7 @@ unit uThemeIcons;
 interface
 
 uses
-  Classes, SharpApi, uThemeConsts, uIThemeIcons, uThemeInfo;
+  Classes, JclSimpleXML, SharpApi, uThemeConsts, uIThemeIcons, uThemeInfo;
 
 type
   TThemeIcons = class(TInterfacedObject, IThemeIcons)
@@ -215,7 +215,7 @@ end;
 
 procedure TThemeIcons.GetIconsFromDir(var pIcons: TSharpEIcons; pDirectory: String);
 var
-  XML : IXmlBase;
+  XML : TJclSimpleXML;
   n: integer;
   Sizes : array of integer;
   List : TStringList;
@@ -223,25 +223,25 @@ var
 begin
   {$WARNINGS OFF}pDirectory := IncludeTrailingBackSlash(pDirectory);{$WARNINGS ON}
 
-  // Load Global Default Icon Sizes
-  XML := TInterfacedXMLBase.Create(True);
-  XML.XmlFilename := FDirectoryBase + FDirectoryDefault + 'DefaultIconSet.xml';
   List := TStringList.Create;
   setlength(Sizes,0);
-  if XML.Load then
-  begin
-    with XML.XmlRoot.Items do
-      if ItemNamed['IconSizes'] <> nil then
-        with ItemNamed['IconSizes'].Items do
+
+  // Load Global Default Icon Sizes
+  XML := TJclSimpleXML.Create;
+  try
+    XML.LoadFromFile(FDirectoryBase + FDirectoryDefault + 'DefaultIconSet.xml');
+    if XML.Root.Items.ItemNamed['IconSizes'] <> nil then
+      with XML.Root.Items.ItemNamed['IconSizes'].Items do
+      begin
+        for n := 0 to Count - 1 do
         begin
-          for n := 0 to Count - 1 do
-          begin
-            SetLength(Sizes,length(Sizes)+1);
-            Sizes[High(Sizes)] := Item[n].Properties.IntValue('Size',-1)
-          end;
+          SetLength(Sizes,length(Sizes)+1);
+          Sizes[High(Sizes)] := Item[n].Properties.IntValue('Size',-1)
         end;
+      end;
+  except
   end;
-  XML := nil;
+  XML.Free;
 
   for n := 0 to High(Sizes) do
   begin
@@ -253,27 +253,29 @@ begin
     end;
   end;
 
-  // Load the actual icon set
-  XML := TInterfacedXMLBase.Create(True);
-  XML.XmlFilename := pDirectory + 'IconSet.xml';
   setlength(Sizes,0);
-  if XML.Load then
-  begin
-    with XML.XmlRoot.Items, FInfo do
-    begin
-      Author := Value('Author', '');
-      Website := Value('Website', '');
-      Comment := Value('Comment', '');
-      if ItemNamed['IconSizes'] <> nil then
-        with ItemNamed['IconSizes'].Items do
-          for n := 0 to Count - 1 do
-          begin
-            SetLength(Sizes,length(Sizes)+1);
-            Sizes[High(Sizes)] := Item[n].Properties.IntValue('Size',-1)
-          end;
-    end
+
+  // Load the actual icon set
+  XML := TJclSimpleXML.Create;
+  try
+    XML.LoadFromFile(pDirectory + 'IconSet.xml');
+		if XML.Root.Items.ItemNamed['Info'] <> nil then
+			with XML.Root.Items.ItemNamed['Info'].Items do
+			begin
+				FInfo.Author := Value('Author', '');
+				FInfo.Website := Value('Website', '');
+				FInfo.Comment := Value('Info', '');
+			end;
+		if XML.Root.Items.ItemNamed['IconSizes'] <> nil then
+			with XML.Root.Items.ItemNamed['IconSizes'].Items do
+			  for n := 0 to Count - 1 do
+			  begin
+				  SetLength(Sizes,length(Sizes)+1);
+				  Sizes[High(Sizes)] := Item[n].Properties.IntValue('Size',-1)
+			  end;
+  except
   end;
-  XML := nil;
+  XML.Free;
 
   for n := 0 to High(Sizes) do
   begin

@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Curses>
-  <SknDef>
-    <Title>Cony Island</Title>
-    <Author>Ron Huggins</Author>
-    <OtherInfo></OtherInfo>
-  </SknDef>
-  <CursPoints>
+  <Info>
+	<name>Cony Island</name>
+    <author>Ron Huggins</author>
+    <Website></Website>
+    <Info>Cony Island cursors</Info>
+    <version>0.8</version>
+  </Info>
+  <Points>
     <AppStarting>7,5</AppStarting>
     <Hand>13,3</Hand>
     <Help>14,14</Help>
@@ -18,5 +20,5 @@
     <SizeNWSE>16,16</SizeNWSE>
     <SizeWE>16,16</SizeWE>
     <Wait>5,5</Wait>
-  </CursPoints>
+  </Points>
 </Curses>

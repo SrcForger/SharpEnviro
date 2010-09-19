@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <IconSet Version="1.0.0.0">
-  <name>Token</name>
-  <author>SharpEnviro Development Team</author>
-  <website>http://brsev.deviantart.com/art/Token-128429570</website>
-  <comment>Icons from the Token icon set (credits goes to brsev and alecive @ DeviantArt)</comment>
+  <Info>
+    <name>Token</name>
+    <author>The SharpEnviro Team</author>
+    <website>http://www.sharpenviro.com/</website>
+    <Info>Icons from the Token icon set (credits goes to brsev and alecive @ DeviantArt)</Info>
+    <version>0.8</version>
+  </Info>
   <IconSizes>
     <IconSize Size="128" />
 	<IconSize Size="64" />

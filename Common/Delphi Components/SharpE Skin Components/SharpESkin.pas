@@ -3312,8 +3312,8 @@ begin
       FVersion := Value('version', '0');
     if ItemNamed['author'] <> nil then
       FAuthor := Value('author', '');
-    if ItemNamed['url'] <> nil then
-      FUrl := Value('url', '');
+    if ItemNamed['Website'] <> nil then
+      FUrl := Value('Website', '');
   end;
 end;
 

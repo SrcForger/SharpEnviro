@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Curses>
-  <SknDef>
-    <Title>Nabla Extended</Title>
-    <Author>Billi Berserker</Author>
-    <OtherInfo></OtherInfo>
-  </SknDef>
-  <CursPoints>
+  <Info>
+ 	<name>Nabla Extended</name>
+    <author>The SharpEnviro Team</author>
+    <Website>http://www.sharpenviro.com/</Website>
+    <Info>Extended version of Nabla cursors</Info>
+    <version>0.8</version>
+  </Info>
+  <Points>
     <AppStarting>8,8</AppStarting>
     <Hand>10,10</Hand>
     <Help>14,14</Help>
@@ -18,5 +20,5 @@
     <SizeNWSE>14,14</SizeNWSE>
     <SizeWE>14,14</SizeWE>
     <Wait>8,8</Wait>
-  </CursPoints>
+  </Points>
 </Curses>

@@ -236,7 +236,7 @@ begin
     else i := 1;
     lbSummary.AddItem('Author = ' + s,i);
 
-    s := Value('Url','### tag not found ###');
+    s := Value('Website','### tag not found ###');
     if (CompareText(s,'### tag not found ###') = 0) or (length(trim(s)) = 0) then
       i := 3
     else i := 1;
