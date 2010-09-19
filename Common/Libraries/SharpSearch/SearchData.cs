@@ -14,7 +14,8 @@ namespace SharpSearch
 	/// A class for search results.
 	/// </summary>
 	public class SearchData :
-		ISearchData
+		ISearchData,
+		IDisposable
 	{
 		#region Constructors
 
@@ -94,5 +95,27 @@ namespace SharpSearch
 		private ImageSource _icon = null;
 
 		#endregion privates
+
+		#region IDisposable Members
+
+		/// <summary>
+		/// Disposes of the object.
+		/// </summary>
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		/// <summary>
+		/// Disposes of the object.
+		/// </summary>
+		/// <param name="disposing"></param>
+		protected virtual void Dispose(bool disposing)
+		{
+			_icon = null;
+		}
+
+		#endregion IDisposable Members
 	}
 }

@@ -237,7 +237,7 @@ namespace SharpSearch
 			{
 				foreach (SQLiteParameter parameter in parameters)
 					command.Parameters.Add(parameter);
-
+				
 				command.CommandText = commandText;
 
 				object result = command.ExecuteScalar();

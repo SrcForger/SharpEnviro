@@ -75,7 +75,7 @@ namespace SharpSearch
 		/// <returns>A collection of <see cref="ISearchData"/> items that matched the search pattern.</returns>
 		public IEnumerable<ISearchData> Search(string searchPattern)
 		{
-			List<ISearchData> results = new List<ISearchData>();
+			//List<ISearchData> results = new List<ISearchData>();
 			string query = String.Format("SELECT ROWID, * FROM [{0}] WHERE Filename LIKE '%{1}%' OR Description LIKE '%{1}%' ORDER BY LaunchCount DESC;", _tableName, searchPattern);
 			using (SQLiteDataReader reader = _database.ExecuteReader(query))
 			{
@@ -109,7 +109,7 @@ namespace SharpSearch
 		/// <returns>A collection of <see cref="ISearchData"/> items listed descendingly with a max of <see cref="numberOfItems"/>.</returns>
 		public IEnumerable<ISearchData> SelectMostLaunched(int numberOfItems)
 		{
-			List<ISearchData> results = new List<ISearchData>();
+			//List<ISearchData> results = new List<ISearchData>();
 			string query = String.Format("SELECT ROWID, * FROM [{0}] ORDER BY LaunchCount DESC LIMIT {1}", _tableName, numberOfItems);
 			using (SQLiteDataReader reader = _database.ExecuteReader(query))
 			{

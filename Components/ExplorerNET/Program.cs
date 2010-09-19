@@ -15,6 +15,7 @@ using SharpEnviro.Interop;
 using SharpEnviro.Interop.Enums;
 using SharpSearch;
 using SharpSearch.WPF;
+using NLog;
 
 namespace SharpEnviro.Explorer
 {
@@ -58,6 +59,12 @@ namespace SharpEnviro.Explorer
         [STAThread]
         static void Main(string[] args)
         {
+			AppDomain.CurrentDomain.UnhandledException +=
+				(s, a) =>
+				{
+					_logger.LogException(LogLevel.Error, "Explorer encountered and unhandled exception.", (Exception)a.ExceptionObject);
+				};
+
             // Make sure SharpExplorer isn't running already
             IntPtr sharpMutex = CreateMutex(IntPtr.Zero, true, "SharpExplorer");
             if (sharpMutex != IntPtr.Zero && Marshal.GetLastWin32Error() == ERROR_ALREADY_EXISTS)
@@ -113,7 +120,11 @@ namespace SharpEnviro.Explorer
                             break;
 
 						if (mMsg.msg == WM_SHARPSEARCH)
+						{
+							_logger.Info("SharpSearch message received.");
 							WPFRuntime.Instance.Show<SearchWindow>();
+							_logger.Info("SharpSearch message processed.");
+						}
 
 						if (mMsg.msg == WM_SHARPSEARCH_INDEXING)
 							if (!manager.IsIndexing) manager.StartIndexing();
@@ -128,6 +139,8 @@ namespace SharpEnviro.Explorer
                 FreeLibrary(hSharpDll);
             }
         }
+
+		private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         #region Win32
 

@@ -79,9 +79,9 @@ namespace SharpSearch
 		/// <param name="searchPattern">The pattern to use when searching for matches.</param>
 		public void Search(string searchPattern)
 		{
-			IEnumerable<ISearchData> results = _database.Search(searchPattern);
+			//IEnumerable<ISearchData> results = _database.Search(searchPattern);
 			SearchResults.Clear();
-			foreach (ISearchData item in results)
+			foreach (ISearchData item in _database.Search(searchPattern))
 				SearchResults.Add(item);
 		}
 
@@ -91,9 +91,9 @@ namespace SharpSearch
 		/// <param name="numberOfItems">The number of items to be limited to, a negative number indicates unlimited.</param>
 		public void MostLaunched(int numberOfItems)
 		{
-			IEnumerable<ISearchData> results = _database.SelectMostLaunched(numberOfItems);
+			//IEnumerable<ISearchData> results = _database.SelectMostLaunched(numberOfItems);
 			SearchResults.Clear();
-			foreach (ISearchData item in results)
+			foreach (ISearchData item in _database.SelectMostLaunched(numberOfItems))
 				SearchResults.Add(item);
 		}
 

@@ -111,14 +111,15 @@ namespace SharpSearch.WPF
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void ResultWindow_KeyUp(object sender, KeyEventArgs e)
+		private void SearchWindow_KeyUp(object sender, KeyEventArgs e)
 		{
 			e.Handled = true;
 
 			switch (e.Key)
 			{
 				case Key.Escape:
-					Close();
+					Hide();
+					//Close();
 					break;
 				case Key.Enter:
 					StartProcessAndExit();
@@ -134,7 +135,7 @@ namespace SharpSearch.WPF
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void ResultWindow_PreviewKeyDown(object sender, KeyEventArgs e)
+		private void SearchWindow_PreviewKeyDown(object sender, KeyEventArgs e)
 		{
 			e.Handled = true;
 
@@ -204,10 +205,11 @@ namespace SharpSearch.WPF
 				catch
 				{
 					// Squash all exceptions such as FileNotFoundException and
-					// Win32Exception which occurs when user cancels elevation request.
+					// Win32Exception which occurs when user cancel elevation request.
 				}
 
-				Close();
+				Hide();
+				//Close();
 			}
 		}
 
@@ -224,10 +226,11 @@ namespace SharpSearch.WPF
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void ResultWindow_Deactivated(object sender, EventArgs e)
+		private void SearchWindow_Deactivated(object sender, EventArgs e)
 		{
 			if (!_closing && !Debugger.IsAttached)
-				Close();
+				Hide();
+				//Close();
 		}
 
 		/// <summary>
@@ -235,7 +238,7 @@ namespace SharpSearch.WPF
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void ResultWindow_Loaded(object sender, RoutedEventArgs e)
+		private void SearchWindow_Loaded(object sender, RoutedEventArgs e)
 		{
             WindowInteropHelper windowHelper = new WindowInteropHelper(this);
 
@@ -270,7 +273,7 @@ namespace SharpSearch.WPF
 		private bool _closing = false;
 
 
-        private void ResultWindow_Activated(object sender, EventArgs e)
+		private void SearchWindow_Activated(object sender, EventArgs e)
         {
             WindowInteropHelper windowHelper = new WindowInteropHelper(this);
 
@@ -303,6 +306,8 @@ namespace SharpSearch.WPF
                 PInvoke.BringWindowToTop(hWnd);
                 PInvoke.SetForegroundWindow(hWnd);
             }
+
+			hWnd = IntPtr.Zero;
         }
 	}
 }
