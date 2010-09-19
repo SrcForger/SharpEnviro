@@ -20,7 +20,7 @@ RequestExecutionLevel highest
 
 # General Symbol Definitions
 !define REGKEY "SOFTWARE\$(^Name)"
-!define VERSION 0.8-RC1
+!define VERSION 0.8-RC2
 !define COMPANY "SharpE Development Team"
 !define URL www.sharpenviro.com
 
@@ -240,6 +240,14 @@ Section "!Core Files" SEC01
   File "..\..\SharpE\Addons\Explorer.exe"
   File "..\..\SharpE\Addons\Explorer32.dll"
   File "..\..\SharpE\Addons\Explorer64.dll"
+  File "..\..\SharpE\Addons\SharpEnviro.dll"
+  File "..\..\SharpE\Addons\SharpSearch.dll"
+  File "..\..\SharpE\Addons\SharpSearch.WPF.dll"
+  File "..\..\SharpE\Addons\SharpTwitter.dll"
+  SetOutPath "$INSTDIR\Addons\SQLite\x64\"
+  File "..\..\SharpE\Addons\SQLite\x64\System.Data.SQLite.dll"
+  SetOutPath "$INSTDIR\Addons\SQLite\x86\"
+  File "..\..\SharpE\Addons\SQLite\x86\System.Data.SQLite.dll"
   
   # Center
   SetOutPath "$INSTDIR\Center\"
@@ -250,24 +258,28 @@ Section "!Core Files" SEC01
   File /r "..\..\SharpE\Cursors\*.*"
 
   # Icons - Default
-  SetOutPath "$INSTDIR\Icons\Default"
+  SetOutPath "$INSTDIR\Icons\Default\"
   File /r "..\..\SharpE\Icons\Default\*.*"
 
   # Icons - GNOME
-  SetOutPath "$INSTDIR\Icons\GNOME"
+  SetOutPath "$INSTDIR\Icons\GNOME\"
   File /r "..\..\SharpE\Icons\GNOME\*.*"
   
   # Icons - Menu
-  SetOutPath "$INSTDIR\Icons\Menu"
+  SetOutPath "$INSTDIR\Icons\Menu\"
   File /r "..\..\SharpE\Icons\Menu\*.*"
   
   # Icons - nuoveXT2
-  SetOutPath "$INSTDIR\Icons\nuoveXT2"
+  SetOutPath "$INSTDIR\Icons\nuoveXT2\"
   File /r "..\..\SharpE\Icons\nuoveXT2\*.*"
   
   # Icons - Tango
-  SetOutPath "$INSTDIR\Icons\SimplyGrey"
+  SetOutPath "$INSTDIR\Icons\SimplyGrey\"
   File /r "..\..\SharpE\Icons\SimplyGrey\*.*"
+
+  # Icons - Tango
+  SetOutPath "$INSTDIR\Icons\Token\"
+  File /r "..\..\SharpE\Icons\Token\*.*"
   
   # Icons - Weather
   SetOutPath "$INSTDIR\Icons\Weather\"
@@ -332,8 +344,6 @@ Section "!Core Files" SEC01
   File "..\..\SharpE\SharpCenterApi.dll"
   File "..\..\SharpE\SharpDeskApi.dll"
   File "..\..\SharpE\SharpDialogs.dll"
-  File "..\..\SharpE\SharpEnviro.dll"
-  File "..\..\SharpE\SharpSearch.dll"
   File "..\..\SharpE\SharpThemeApiEx.dll"
   # Components
   File "..\..\SharpE\SetShell.exe"
@@ -345,8 +355,6 @@ Section "!Core Files" SEC01
   File "..\..\SharpE\SharpDesk.exe"
   File "..\..\SharpE\SharpLinkLauncherNET.exe"
   File "..\..\SharpE\SharpMenu.exe"
-  File "..\..\SharpE\SharpScript.exe"
-  File "..\..\SharpE\SharpSearchNET.exe"
   File "..\..\SharpE\SharpSplash.exe"
   
   # Other Files
@@ -666,8 +674,6 @@ Section /o -un.Main UNSEC0000
     Delete "$INSTDIR\SharpCenterApi.dll"
     Delete "$INSTDIR\SharpDeskApi.dll"
     Delete "$INSTDIR\SharpDialogs.dll"
-    Delete "$INSTDIR\SharpEnviro.dll"
-    Delete "$INSTDIR\SharpSearch.dll"
     Delete "$INSTDIR\SharpThemeApiEx.dll"
 
     # Components
@@ -680,8 +686,6 @@ Section /o -un.Main UNSEC0000
     Delete "$INSTDIR\SharpDesk.exe"
     Delete "$INSTDIR\SharpLinkLauncherNET.exe"
     Delete "$INSTDIR\SharpMenu.exe"
-    Delete "$INSTDIR\SharpScript.exe"
-    Delete "$INSTDIR\SharpSearchNET.exe"
     Delete "$INSTDIR\SharpSplash.exe"
     Delete "$INSTDIR\SharpCompile.exe"
     Delete "$INSTDIR\rtl100.bpl"
@@ -713,44 +717,45 @@ Section /o -un.Main UNSEC0000
       DontDeleteUserSettings:
     DontDeleteSettings:
     
-    RMDir "$INSTDIR\Settings"
+    RMDir "$INSTDIR\Settings\"
     
-    RmDir /r "$INSTDIR\Addons"
-    RmDir /r "$INSTDIR\Cache"
-    RmDir /r "$INSTDIR\Center"
+    RmDir /r "$INSTDIR\Addons\"
+    RmDir /r "$INSTDIR\Cache\"
+    RmDir /r "$INSTDIR\Center\"
     
     # Delete the cursors that we install, leave any the user may have added
-    RmDir /r "$INSTDIR\Cursors\Cony Island"
-    RmDir /r "$INSTDIR\Cursors\GNOME"
-    RmDir /r "$INSTDIR\Cursors\MoonShine"
-    RmDir /r "$INSTDIR\Cursors\Nabla"
-    RmDir /r "$INSTDIR\Cursors\Nabla Extended"
-    RmDir /r "$INSTDIR\Cursors\Snubby"
-    RmDir "$INSTDIR\Cursors"
+    RmDir /r "$INSTDIR\Cursors\Cony Island\"
+    RmDir /r "$INSTDIR\Cursors\GNOME\"
+    RmDir /r "$INSTDIR\Cursors\MoonShine\"
+    RmDir /r "$INSTDIR\Cursors\Nabla\"
+    RmDir /r "$INSTDIR\Cursors\Nabla Extended\"
+    RmDir /r "$INSTDIR\Cursors\Snubby\"
+    RmDir "$INSTDIR\Cursors\"
     
     # Delete the icons that we install, leave any the user may have added
-    RmDir /r "$INSTDIR\Icons\Default"
-    RmDir /r "$INSTDIR\Icons\Gnome"
-    RmDir /r "$INSTDIR\Icons\Menu"
-    RmDir /r "$INSTDIR\Icons\nuoveXT2"
-    RmDir /r "$INSTDIR\Icons\SimplyGrey"
-    RmDir /r "$INSTDIR\Icons\Weather"
-    RmDir "$INSTDIR\Icons"
+    RmDir /r "$INSTDIR\Icons\Default\"
+    RmDir /r "$INSTDIR\Icons\Gnome\"
+    RmDir /r "$INSTDIR\Icons\Menu\"
+    RmDir /r "$INSTDIR\Icons\nuoveXT2\"
+    RmDir /r "$INSTDIR\Icons\SimplyGrey\"
+    RmDir /r "$INSTDIR\Icons\Token\"
+    RmDir /r "$INSTDIR\Icons\Weather\"
+    RmDir "$INSTDIR\Icons\"
     
-    RmDir /r "$INSTDIR\Modules"
-    RmDir /r "$INSTDIR\Objects"
-    RmDir /r "$INSTDIR\Services"
+    RmDir /r "$INSTDIR\Modules\"
+    RmDir /r "$INSTDIR\Objects\"
+    RmDir /r "$INSTDIR\Services\"
     
     # Delete the skins that we install, leave any the user may have added
-    RmDir /r "$INSTDIR\Skins\Minimal"
-    RmDir /r "$INSTDIR\Skins\Minimal 2"
-    RmDir /r "$INSTDIR\Skins\Number 7"
-    RmDir /r "$INSTDIR\Skins\Number 8"
-    RmDir /r "$INSTDIR\Skins\Objects"
-    RmDir /r "$INSTDIR\Skins\Sept"
-    RmDir /r "$INSTDIR\Skins\Simple"
-    RmDir /r "$INSTDIR\Skins\Sunken"
-    RmDir "$INSTDIR\Skins"
+    RmDir /r "$INSTDIR\Skins\Minimal\"
+    RmDir /r "$INSTDIR\Skins\Minimal 2\"
+    RmDir /r "$INSTDIR\Skins\Number 7\"
+    RmDir /r "$INSTDIR\Skins\Number 8\"
+    RmDir /r "$INSTDIR\Skins\Objects\"
+    RmDir /r "$INSTDIR\Skins\Sept\"
+    RmDir /r "$INSTDIR\Skins\Simple\"
+    RmDir /r "$INSTDIR\Skins\Sunken\"
+    RmDir "$INSTDIR\Skins\"
     
     DeleteRegValue HKLM "${REGKEY}\Components" Main
 SectionEnd
