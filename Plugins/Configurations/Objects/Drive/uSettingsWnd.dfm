@@ -23,7 +23,7 @@ object frmSettings: TfrmSettings
     Top = 30
     Width = 445
     Height = 628
-    ActivePage = pagDrive
+    ActivePage = pagIcon
     PropagateEnable = False
     Align = alClient
     object pagDrive: TJvStandardPage
@@ -66,7 +66,6 @@ object frmSettings: TfrmSettings
             TitleColor = clWindowText
             DescriptionColor = clRed
             Align = alTop
-            ExplicitTop = 83
           end
           object chkCaption: TJvXPCheckbox
             AlignWithMargins = True
@@ -82,7 +81,6 @@ object frmSettings: TfrmSettings
             TabOrder = 0
             Align = alTop
             OnClick = chkCaptionClick
-            ExplicitTop = 121
           end
           object SharpECenterHeader2: TSharpECenterHeader
             AlignWithMargins = True
@@ -790,7 +788,6 @@ object frmSettings: TfrmSettings
           MonitorControl = sceIconBlendColor
           OnReset = uicIconBlendReset
           object sceIconBlendColor: TSharpEColorEditorEx
-            AlignWithMargins = True
             Left = 0
             Top = 0
             Width = 401
@@ -801,7 +798,6 @@ object frmSettings: TfrmSettings
             Margins.Bottom = 0
             VertScrollBar.Smooth = True
             VertScrollBar.Tracking = True
-            Align = alTop
             AutoSize = True
             BevelInner = bvNone
             BevelOuter = bvNone
@@ -859,7 +855,6 @@ object frmSettings: TfrmSettings
           MonitorControl = sceIconShadowColor
           OnReset = uicIconBlendReset
           object sceIconShadowColor: TSharpEColorEditorEx
-            AlignWithMargins = True
             Left = 0
             Top = 0
             Width = 401
@@ -870,7 +865,6 @@ object frmSettings: TfrmSettings
             Margins.Bottom = 0
             VertScrollBar.Smooth = True
             VertScrollBar.Tracking = True
-            Align = alTop
             AutoSize = True
             BevelInner = bvNone
             BevelOuter = bvNone
@@ -1100,7 +1094,6 @@ object frmSettings: TfrmSettings
           MonitorControl = sceTextColor
           OnReset = uicFontNameReset
           object sceTextColor: TSharpEColorEditorEx
-            AlignWithMargins = True
             Left = 0
             Top = 0
             Width = 401
@@ -1111,7 +1104,6 @@ object frmSettings: TfrmSettings
             Margins.Bottom = 0
             VertScrollBar.Smooth = True
             VertScrollBar.Tracking = True
-            Align = alTop
             AutoSize = True
             BevelInner = bvNone
             BevelOuter = bvNone
@@ -1533,7 +1525,6 @@ object frmSettings: TfrmSettings
             MonitorControl = sceTextShadowColor
             OnReset = uicTextShadowReset
             object sceTextShadowColor: TSharpEColorEditorEx
-              AlignWithMargins = True
               Left = 0
               Top = 0
               Width = 401
@@ -1544,7 +1535,6 @@ object frmSettings: TfrmSettings
               Margins.Bottom = 0
               VertScrollBar.Smooth = True
               VertScrollBar.Tracking = True
-              Align = alTop
               AutoSize = True
               BevelInner = bvNone
               BevelOuter = bvNone

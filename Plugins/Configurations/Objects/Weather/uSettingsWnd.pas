@@ -135,8 +135,6 @@ type
     uicTextUnderline: TSharpEUIC;
     uicTextItalic: TSharpEUIC;
     uicTextBold: TSharpEUIC;
-    uicTextColor: TSharpEUIC;
-    sceTextColor: TSharpEColorEditorEx;
     pagFontShadow: TJvStandardPage;
     pnlTextShadow: TPanel;
     uicTextShadow: TSharpEUIC;
@@ -196,6 +194,8 @@ type
     chkSkinEnable: TJvXPCheckbox;
     pnlSkin: TPanel;
     lbSkins: TSharpEListBoxEx;
+    uicTextColor: TSharpEUIC;
+    sceTextColor: TSharpEColorEditorEx;
     procedure FormCreate(Sender: TObject);
     procedure chkCaptionClick(Sender: TObject);
     procedure FormShow(Sender: TObject);

@@ -68,8 +68,8 @@ object frmListWnd: TfrmListWnd
     OnGetCellText = lbIconsListGetCellText
     OnGetCellImageIndex = lbIconsListGetCellImageIndex
     AutosizeGrid = True
-    BevelOuter = bvNone
     Borderstyle = bsNone
+    Ctl3d = False
     Align = alTop
   end
   object PngImageList1: TPngImageList

@@ -20,7 +20,7 @@ object frmSettings: TfrmSettings
     Top = 0
     Width = 508
     Height = 422
-    ActivePage = pagImage
+    ActivePage = pagDisplay
     PropagateEnable = False
     Align = alClient
     object pagImage: TJvStandardPage
@@ -29,9 +29,9 @@ object frmSettings: TfrmSettings
       Width = 508
       Height = 422
       object pnlImage: TPanel
-        Left = 0
-        Top = 0
-        Width = 508
+        Left = 1
+        Top = 1
+        Width = 506
         Height = 332
         Align = alTop
         AutoSize = True
@@ -41,7 +41,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 0
-          Width = 498
+          Width = 496
           Height = 37
           Margins.Left = 5
           Margins.Top = 0
@@ -59,7 +59,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 47
-          Width = 498
+          Width = 496
           Height = 285
           Margins.Left = 5
           Margins.Top = 0
@@ -108,13 +108,13 @@ object frmSettings: TfrmSettings
           PageBackgroundColor = clWindow
           OnTabChange = spcTabChange
           DesignSize = (
-            498
+            496
             285)
           object pl: TJvPageList
             AlignWithMargins = True
             Left = 8
             Top = 34
-            Width = 482
+            Width = 480
             Height = 240
             Margins.Left = 8
             Margins.Top = 34
@@ -127,14 +127,14 @@ object frmSettings: TfrmSettings
             object pagefile: TJvStandardPage
               Left = 0
               Top = 0
-              Width = 482
+              Width = 480
               Height = 240
               Caption = 'pagefile'
               object schFile: TSharpECenterHeader
                 AlignWithMargins = True
-                Left = 5
-                Top = 10
-                Width = 472
+                Left = 6
+                Top = 11
+                Width = 468
                 Height = 37
                 Margins.Left = 5
                 Margins.Top = 10
@@ -148,9 +148,9 @@ object frmSettings: TfrmSettings
               end
               object pnlFile: TPanel
                 AlignWithMargins = True
-                Left = 5
-                Top = 57
-                Width = 472
+                Left = 6
+                Top = 58
+                Width = 468
                 Height = 22
                 Margins.Left = 5
                 Margins.Top = 0
@@ -161,7 +161,7 @@ object frmSettings: TfrmSettings
                 TabOrder = 0
                 object PngSpeedButton1: TPngSpeedButton
                   AlignWithMargins = True
-                  Left = 443
+                  Left = 439
                   Top = 0
                   Width = 29
                   Height = 22
@@ -199,7 +199,7 @@ object frmSettings: TfrmSettings
                 object imagefile: TEdit
                   Left = 0
                   Top = 0
-                  Width = 440
+                  Width = 436
                   Height = 22
                   Margins.Left = 5
                   Margins.Top = 0
@@ -214,9 +214,9 @@ object frmSettings: TfrmSettings
               end
               object pnlFileScaling: TPanel
                 AlignWithMargins = True
-                Left = 5
-                Top = 136
-                Width = 472
+                Left = 6
+                Top = 137
+                Width = 468
                 Height = 22
                 Margins.Left = 5
                 Margins.Top = 0
@@ -226,9 +226,6 @@ object frmSettings: TfrmSettings
                 BevelOuter = bvNone
                 ParentColor = True
                 TabOrder = 2
-                ExplicitLeft = 0
-                ExplicitTop = 159
-                ExplicitWidth = 464
                 object sgbFileScaling: TSharpeGaugeBox
                   Left = 0
                   Top = 0
@@ -249,6 +246,7 @@ object frmSettings: TfrmSettings
                   Description = 'Scale image by'
                   PopPosition = ppBottom
                   PercentDisplay = False
+                  MaxPercent = 100
                   Formatting = '%d'
                   OnChangeValue = sgbFileScalingChangeValue
                   BackgroundColor = clWindow
@@ -256,9 +254,9 @@ object frmSettings: TfrmSettings
               end
               object schFileScaling: TSharpECenterHeader
                 AlignWithMargins = True
-                Left = 5
-                Top = 89
-                Width = 472
+                Left = 6
+                Top = 90
+                Width = 468
                 Height = 37
                 Margins.Left = 5
                 Margins.Top = 10
@@ -269,23 +267,20 @@ object frmSettings: TfrmSettings
                 TitleColor = clWindowText
                 DescriptionColor = clRed
                 Align = alTop
-                ExplicitLeft = 13
-                ExplicitTop = 282
-                ExplicitWidth = 480
               end
             end
             object pageurl: TJvStandardPage
               Left = 0
               Top = 0
-              Width = 482
+              Width = 480
               Height = 240
               Caption = 'pageurl'
               ParentBackground = True
               object pnlURL: TPanel
                 AlignWithMargins = True
-                Left = 5
-                Top = 57
-                Width = 472
+                Left = 6
+                Top = 58
+                Width = 468
                 Height = 21
                 Margins.Left = 5
                 Margins.Top = 0
@@ -295,12 +290,10 @@ object frmSettings: TfrmSettings
                 BevelOuter = bvNone
                 ParentColor = True
                 TabOrder = 0
-                ExplicitLeft = 0
-                ExplicitWidth = 482
                 object imageurl: TEdit
                   Left = 0
                   Top = 0
-                  Width = 472
+                  Width = 468
                   Height = 21
                   Margins.Left = 5
                   Margins.Top = 0
@@ -310,14 +303,13 @@ object frmSettings: TfrmSettings
                   TabOrder = 0
                   Text = 'http://'
                   OnChange = imageurlChange
-                  ExplicitLeft = 5
                 end
               end
               object schURLInterval: TSharpECenterHeader
                 AlignWithMargins = True
-                Left = 5
-                Top = 88
-                Width = 472
+                Left = 6
+                Top = 89
+                Width = 468
                 Height = 37
                 Margins.Left = 5
                 Margins.Top = 10
@@ -331,9 +323,9 @@ object frmSettings: TfrmSettings
               end
               object schURL: TSharpECenterHeader
                 AlignWithMargins = True
-                Left = 5
-                Top = 10
-                Width = 472
+                Left = 6
+                Top = 11
+                Width = 468
                 Height = 37
                 Margins.Left = 5
                 Margins.Top = 10
@@ -347,9 +339,9 @@ object frmSettings: TfrmSettings
               end
               object pnlURLInterval: TPanel
                 AlignWithMargins = True
-                Left = 5
-                Top = 135
-                Width = 472
+                Left = 6
+                Top = 136
+                Width = 468
                 Height = 22
                 Margins.Left = 5
                 Margins.Top = 0
@@ -359,8 +351,6 @@ object frmSettings: TfrmSettings
                 BevelOuter = bvNone
                 ParentColor = True
                 TabOrder = 1
-                ExplicitLeft = 0
-                ExplicitWidth = 482
                 object sgbURLInterval: TSharpeGaugeBox
                   Left = 0
                   Top = 0
@@ -382,6 +372,7 @@ object frmSettings: TfrmSettings
                   Description = 'Scale image by'
                   PopPosition = ppBottom
                   PercentDisplay = False
+                  MaxPercent = 100
                   Formatting = '%d'
                   OnChangeValue = sgbFileScalingChangeValue
                   BackgroundColor = clWindow
@@ -389,9 +380,9 @@ object frmSettings: TfrmSettings
               end
               object schURLScaling: TSharpECenterHeader
                 AlignWithMargins = True
-                Left = 5
-                Top = 167
-                Width = 472
+                Left = 6
+                Top = 168
+                Width = 468
                 Height = 37
                 Margins.Left = 5
                 Margins.Top = 10
@@ -402,15 +393,12 @@ object frmSettings: TfrmSettings
                 TitleColor = clWindowText
                 DescriptionColor = clRed
                 Align = alTop
-                ExplicitLeft = 13
-                ExplicitTop = 173
-                ExplicitWidth = 464
               end
               object pnlURLScaling: TPanel
                 AlignWithMargins = True
-                Left = 5
-                Top = 214
-                Width = 472
+                Left = 6
+                Top = 215
+                Width = 468
                 Height = 22
                 Margins.Left = 5
                 Margins.Top = 0
@@ -420,8 +408,6 @@ object frmSettings: TfrmSettings
                 BevelOuter = bvNone
                 ParentColor = True
                 TabOrder = 5
-                ExplicitTop = 218
-                ExplicitWidth = 464
                 object sgbURLScaling: TSharpeGaugeBox
                   Left = 0
                   Top = 0
@@ -442,6 +428,7 @@ object frmSettings: TfrmSettings
                   Description = 'Scale image by'
                   PopPosition = ppBottom
                   PercentDisplay = False
+                  MaxPercent = 100
                   Formatting = '%d'
                   OnChangeValue = sgbFileScalingChangeValue
                   BackgroundColor = clWindow
@@ -451,13 +438,13 @@ object frmSettings: TfrmSettings
             object pageDirectory: TJvStandardPage
               Left = 0
               Top = 0
-              Width = 482
+              Width = 480
               Height = 240
               object pnlDirectory: TPanel
                 AlignWithMargins = True
-                Left = 5
-                Top = 57
-                Width = 472
+                Left = 6
+                Top = 58
+                Width = 468
                 Height = 21
                 Margins.Left = 5
                 Margins.Top = 0
@@ -467,11 +454,9 @@ object frmSettings: TfrmSettings
                 BevelOuter = bvNone
                 ParentColor = True
                 TabOrder = 0
-                ExplicitLeft = 0
-                ExplicitWidth = 482
                 object psbDirectory: TPngSpeedButton
                   AlignWithMargins = True
-                  Left = 443
+                  Left = 439
                   Top = 0
                   Width = 29
                   Height = 21
@@ -509,7 +494,7 @@ object frmSettings: TfrmSettings
                 object imageDirectory: TEdit
                   Left = 0
                   Top = 0
-                  Width = 440
+                  Width = 436
                   Height = 21
                   Margins.Left = 5
                   Margins.Top = 0
@@ -518,14 +503,13 @@ object frmSettings: TfrmSettings
                   Align = alClient
                   TabOrder = 0
                   OnChange = imageDirectoryChange
-                  ExplicitLeft = 5
                 end
               end
               object pnlDirectoryInterval: TPanel
                 AlignWithMargins = True
-                Left = 5
-                Top = 135
-                Width = 472
+                Left = 6
+                Top = 136
+                Width = 468
                 Height = 22
                 Margins.Left = 5
                 Margins.Top = 0
@@ -535,8 +519,6 @@ object frmSettings: TfrmSettings
                 BevelOuter = bvNone
                 ParentColor = True
                 TabOrder = 1
-                ExplicitLeft = 0
-                ExplicitWidth = 482
                 object sgbDirectoryInterval: TSharpeGaugeBox
                   Left = 0
                   Top = 0
@@ -558,6 +540,7 @@ object frmSettings: TfrmSettings
                   Description = 'Scale image by'
                   PopPosition = ppBottom
                   PercentDisplay = False
+                  MaxPercent = 100
                   Formatting = '%d'
                   OnChangeValue = sgbDirectoryIntervalChangeValue
                   BackgroundColor = clWindow
@@ -565,9 +548,9 @@ object frmSettings: TfrmSettings
               end
               object schDirectoryInterval: TSharpECenterHeader
                 AlignWithMargins = True
-                Left = 5
-                Top = 88
-                Width = 472
+                Left = 6
+                Top = 89
+                Width = 468
                 Height = 37
                 Margins.Left = 5
                 Margins.Top = 10
@@ -581,9 +564,9 @@ object frmSettings: TfrmSettings
               end
               object schDirectory: TSharpECenterHeader
                 AlignWithMargins = True
-                Left = 5
-                Top = 10
-                Width = 472
+                Left = 6
+                Top = 11
+                Width = 468
                 Height = 37
                 Margins.Left = 5
                 Margins.Top = 10
@@ -597,9 +580,9 @@ object frmSettings: TfrmSettings
               end
               object schDirectoryDimensions: TSharpECenterHeader
                 AlignWithMargins = True
-                Left = 5
-                Top = 167
-                Width = 472
+                Left = 6
+                Top = 168
+                Width = 468
                 Height = 37
                 Margins.Left = 5
                 Margins.Top = 10
@@ -613,9 +596,9 @@ object frmSettings: TfrmSettings
               end
               object pnlDirectoryDimensions: TPanel
                 AlignWithMargins = True
-                Left = 5
-                Top = 214
-                Width = 472
+                Left = 6
+                Top = 215
+                Width = 468
                 Height = 21
                 Margins.Left = 5
                 Margins.Top = 0
@@ -625,8 +608,6 @@ object frmSettings: TfrmSettings
                 BevelOuter = bvNone
                 ParentColor = True
                 TabOrder = 5
-                ExplicitLeft = 0
-                ExplicitWidth = 482
                 object sgbDirectoryHeight: TSharpeGaugeBox
                   Left = 0
                   Top = 0
@@ -648,6 +629,7 @@ object frmSettings: TfrmSettings
                   Description = 'Set the height for the images.'
                   PopPosition = ppBottom
                   PercentDisplay = False
+                  MaxPercent = 100
                   Formatting = '%d'
                   OnChangeValue = sgbDirectoryHeightChangeValue
                   BackgroundColor = clWindow
@@ -674,6 +656,7 @@ object frmSettings: TfrmSettings
                   Description = 'Set the width for the images.'
                   PopPosition = ppBottom
                   PercentDisplay = False
+                  MaxPercent = 100
                   Formatting = '%d'
                   OnChangeValue = sgbDirectoryWidthChangeValue
                   BackgroundColor = clWindow
@@ -691,10 +674,10 @@ object frmSettings: TfrmSettings
       Height = 422
       Caption = 'pagDisplay'
       object pnlDisplay: TPanel
-        Left = 0
-        Top = 0
-        Width = 508
-        Height = 305
+        Left = 1
+        Top = 1
+        Width = 506
+        Height = 301
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
@@ -702,7 +685,7 @@ object frmSettings: TfrmSettings
         object Panel3: TPanel
           Left = 0
           Top = 194
-          Width = 508
+          Width = 506
           Height = 65
           Margins.Left = 0
           Margins.Top = 0
@@ -717,7 +700,7 @@ object frmSettings: TfrmSettings
             AlignWithMargins = True
             Left = 5
             Top = 0
-            Width = 498
+            Width = 496
             Height = 25
             Margins.Left = 5
             Margins.Top = 0
@@ -754,7 +737,7 @@ object frmSettings: TfrmSettings
             AlignWithMargins = True
             Left = 5
             Top = 30
-            Width = 498
+            Width = 496
             Height = 25
             Margins.Left = 5
             Margins.Top = 0
@@ -791,6 +774,7 @@ object frmSettings: TfrmSettings
               Description = 'Adjust to set the blend strength'
               PopPosition = ppBottom
               PercentDisplay = True
+              MaxPercent = 100
               Formatting = '%d'
               OnChangeValue = sbgimagencblendalphaChangeValue
               BackgroundColor = clWindow
@@ -800,7 +784,7 @@ object frmSettings: TfrmSettings
         object Panel5: TPanel
           Left = 0
           Top = 77
-          Width = 508
+          Width = 506
           Height = 60
           Align = alTop
           AutoSize = True
@@ -811,7 +795,7 @@ object frmSettings: TfrmSettings
             AlignWithMargins = True
             Left = 5
             Top = 0
-            Width = 498
+            Width = 496
             Height = 25
             Margins.Left = 5
             Margins.Top = 0
@@ -848,7 +832,7 @@ object frmSettings: TfrmSettings
             AlignWithMargins = True
             Left = 5
             Top = 30
-            Width = 498
+            Width = 496
             Height = 25
             Margins.Left = 5
             Margins.Top = 0
@@ -885,6 +869,7 @@ object frmSettings: TfrmSettings
               Description = 'Adjust to set the transparency'
               PopPosition = ppBottom
               PercentDisplay = True
+              MaxPercent = 100
               Formatting = '%d'
               OnChangeValue = sgbiconalphaChangeValue
               BackgroundColor = clWindow
@@ -895,7 +880,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 0
           Top = 0
-          Width = 503
+          Width = 501
           Height = 25
           Margins.Left = 0
           Margins.Top = 0
@@ -995,7 +980,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 30
-          Width = 498
+          Width = 496
           Height = 37
           Margins.Left = 5
           Margins.Top = 0
@@ -1011,7 +996,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 147
-          Width = 498
+          Width = 496
           Height = 37
           Margins.Left = 5
           Margins.Top = 10
@@ -1027,8 +1012,8 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 2
           Top = 259
-          Width = 501
-          Height = 36
+          Width = 499
+          Height = 32
           Margins.Left = 2
           Margins.Top = 0
           Margins.Right = 5
@@ -1044,10 +1029,9 @@ object frmSettings: TfrmSettings
           DefaultValue = '0'
           MonitorControl = IconColors
           object IconColors: TSharpEColorEditorEx
-            AlignWithMargins = True
             Left = 0
             Top = 0
-            Width = 467
+            Width = 465
             Height = 32
             Margins.Left = 0
             Margins.Top = 0
@@ -1055,7 +1039,6 @@ object frmSettings: TfrmSettings
             Margins.Bottom = 4
             VertScrollBar.Smooth = True
             VertScrollBar.Tracking = True
-            Align = alTop
             AutoSize = True
             BevelInner = bvNone
             BevelOuter = bvNone
@@ -1095,7 +1078,7 @@ object frmSettings: TfrmSettings
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
     PopulateThemeColors = True
-    Width = 434
+    Width = 432
     ShowCaptions = True
     SwatchHeight = 16
     SwatchWidth = 16

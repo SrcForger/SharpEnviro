@@ -32,9 +32,9 @@ object frmSettings: TfrmSettings
       Width = 445
       Height = 628
       object pnlLink: TPanel
-        Left = 0
-        Top = 0
-        Width = 445
+        Left = 1
+        Top = 1
+        Width = 443
         Height = 458
         Align = alTop
         AutoSize = True
@@ -43,7 +43,7 @@ object frmSettings: TfrmSettings
         object Panel69: TPanel
           Left = 0
           Top = 0
-          Width = 445
+          Width = 443
           Height = 74
           Align = alTop
           AutoSize = True
@@ -56,7 +56,7 @@ object frmSettings: TfrmSettings
             AlignWithMargins = True
             Left = 5
             Top = 0
-            Width = 435
+            Width = 433
             Height = 37
             Margins.Left = 5
             Margins.Top = 0
@@ -72,7 +72,7 @@ object frmSettings: TfrmSettings
             AlignWithMargins = True
             Left = 5
             Top = 47
-            Width = 435
+            Width = 433
             Height = 17
             Margins.Left = 5
             Margins.Top = 0
@@ -88,7 +88,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 310
-          Width = 435
+          Width = 433
           Height = 37
           Margins.Left = 5
           Margins.Top = 10
@@ -104,7 +104,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 74
-          Width = 435
+          Width = 433
           Height = 137
           Margins.Left = 5
           Margins.Top = 0
@@ -127,7 +127,7 @@ object frmSettings: TfrmSettings
             Width = 183
             Height = 21
             Style = csDropDownList
-            ItemHeight = 0
+            ItemHeight = 13
             ItemIndex = 2
             TabOrder = 1
             Text = 'Bottom'
@@ -143,7 +143,7 @@ object frmSettings: TfrmSettings
             AlignWithMargins = True
             Left = 0
             Top = 0
-            Width = 430
+            Width = 428
             Height = 105
             Margins.Left = 0
             Margins.Top = 0
@@ -187,13 +187,13 @@ object frmSettings: TfrmSettings
             PageBackgroundColor = clWindow
             OnTabChange = spcCaptionTabChange
             DesignSize = (
-              430
+              428
               105)
             object pl: TJvPageList
               AlignWithMargins = True
               Left = 8
               Top = 34
-              Width = 414
+              Width = 412
               Height = 63
               Margins.Left = 8
               Margins.Top = 34
@@ -206,14 +206,14 @@ object frmSettings: TfrmSettings
               object pagesingle: TJvStandardPage
                 Left = 0
                 Top = 0
-                Width = 414
+                Width = 412
                 Height = 63
                 Caption = 'pagesingle'
                 object edtSingle: TEdit
                   AlignWithMargins = True
-                  Left = 3
-                  Top = 0
-                  Width = 408
+                  Left = 4
+                  Top = 1
+                  Width = 404
                   Height = 21
                   Margins.Top = 0
                   Align = alTop
@@ -226,15 +226,15 @@ object frmSettings: TfrmSettings
               object pagemulti: TJvStandardPage
                 Left = 0
                 Top = 0
-                Width = 414
+                Width = 412
                 Height = 63
                 Caption = 'pagemulti'
                 ParentBackground = True
                 object mmoMulti: TMemo
-                  Left = 0
-                  Top = 0
-                  Width = 414
-                  Height = 63
+                  Left = 1
+                  Top = 1
+                  Width = 410
+                  Height = 61
                   Align = alClient
                   BorderStyle = bsNone
                   Ctl3D = True
@@ -253,7 +253,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 436
-          Width = 435
+          Width = 433
           Height = 22
           Margins.Left = 5
           Margins.Top = 0
@@ -264,7 +264,7 @@ object frmSettings: TfrmSettings
           TabOrder = 4
           object PngSpeedButton1: TPngSpeedButton
             AlignWithMargins = True
-            Left = 406
+            Left = 404
             Top = 0
             Width = 29
             Height = 22
@@ -302,7 +302,7 @@ object frmSettings: TfrmSettings
           object edtRecycleBinFull: TEdit
             Left = 0
             Top = 0
-            Width = 403
+            Width = 401
             Height = 22
             Margins.Left = 5
             Margins.Top = 0
@@ -319,7 +319,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 389
-          Width = 435
+          Width = 433
           Height = 37
           Margins.Left = 5
           Margins.Top = 10
@@ -335,7 +335,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 357
-          Width = 435
+          Width = 433
           Height = 22
           Margins.Left = 5
           Margins.Top = 0
@@ -346,7 +346,7 @@ object frmSettings: TfrmSettings
           TabOrder = 3
           object PngSpeedButton2: TPngSpeedButton
             AlignWithMargins = True
-            Left = 406
+            Left = 404
             Top = 0
             Width = 29
             Height = 22
@@ -382,7 +382,7 @@ object frmSettings: TfrmSettings
           object edtRecycleBinEmpty: TEdit
             Left = 0
             Top = 0
-            Width = 403
+            Width = 401
             Height = 22
             Margins.Left = 5
             Margins.Top = 0
@@ -399,7 +399,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 226
-          Width = 435
+          Width = 433
           Height = 37
           Margins.Left = 5
           Margins.Top = 10
@@ -417,7 +417,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 273
-          Width = 435
+          Width = 433
           Height = 17
           Margins.Left = 5
           Margins.Top = 0
@@ -436,9 +436,9 @@ object frmSettings: TfrmSettings
       Width = 445
       Height = 628
       object pnlIcon: TPanel
-        Left = 0
-        Top = 0
-        Width = 445
+        Left = 1
+        Top = 1
+        Width = 443
         Height = 557
         Align = alTop
         AutoSize = True
@@ -447,7 +447,7 @@ object frmSettings: TfrmSettings
         object Panel1: TPanel
           Left = 0
           Top = 275
-          Width = 445
+          Width = 443
           Height = 52
           Align = alTop
           AutoSize = True
@@ -458,7 +458,7 @@ object frmSettings: TfrmSettings
             AlignWithMargins = True
             Left = 4
             Top = 4
-            Width = 437
+            Width = 435
             Height = 21
             Margins.Left = 4
             Margins.Top = 4
@@ -496,7 +496,7 @@ object frmSettings: TfrmSettings
             AlignWithMargins = True
             Left = 5
             Top = 30
-            Width = 435
+            Width = 433
             Height = 22
             Margins.Left = 5
             Margins.Top = 5
@@ -542,7 +542,7 @@ object frmSettings: TfrmSettings
         object Panel5: TPanel
           Left = 0
           Top = 47
-          Width = 445
+          Width = 443
           Height = 82
           Align = alTop
           AutoSize = True
@@ -553,7 +553,7 @@ object frmSettings: TfrmSettings
             AlignWithMargins = True
             Left = 5
             Top = 0
-            Width = 435
+            Width = 433
             Height = 82
             Margins.Left = 5
             Margins.Top = 0
@@ -581,10 +581,12 @@ object frmSettings: TfrmSettings
               TabOrder = 0
               DrawMode = srpNormal
               NoTopBorder = False
+              NoBottomBorder = False
               RoundValue = 10
               BorderColor = clBtnFace
               Border = True
               BackgroundColor = clWindow
+              BottomSideBorder = False
               object icon32: TImage32
                 AlignWithMargins = True
                 Left = 3
@@ -665,10 +667,12 @@ object frmSettings: TfrmSettings
               TabOrder = 1
               DrawMode = srpNormal
               NoTopBorder = False
+              NoBottomBorder = False
               RoundValue = 10
               BorderColor = clBtnFace
               Border = True
               BackgroundColor = clWindow
+              BottomSideBorder = False
               object icon48: TImage32
                 AlignWithMargins = True
                 Left = 3
@@ -712,10 +716,12 @@ object frmSettings: TfrmSettings
               TabOrder = 2
               DrawMode = srpNormal
               NoTopBorder = False
+              NoBottomBorder = False
               RoundValue = 10
               BorderColor = clBtnFace
               Border = True
               BackgroundColor = clWindow
+              BottomSideBorder = False
               object Icon64: TImage32
                 AlignWithMargins = True
                 Left = 3
@@ -759,10 +765,12 @@ object frmSettings: TfrmSettings
               TabOrder = 3
               DrawMode = srpNormal
               NoTopBorder = False
+              NoBottomBorder = False
               RoundValue = 10
               BorderColor = clWindow
               Border = False
               BackgroundColor = clWindow
+              BottomSideBorder = False
               object sgbIconSize: TSharpeGaugeBox
                 AlignWithMargins = True
                 Left = 7
@@ -803,7 +811,7 @@ object frmSettings: TfrmSettings
         object Panel6: TPanel
           Left = 0
           Top = 176
-          Width = 445
+          Width = 443
           Height = 52
           Align = alTop
           AutoSize = True
@@ -814,7 +822,7 @@ object frmSettings: TfrmSettings
             AlignWithMargins = True
             Left = 4
             Top = 4
-            Width = 437
+            Width = 435
             Height = 21
             Margins.Left = 4
             Margins.Top = 4
@@ -853,7 +861,7 @@ object frmSettings: TfrmSettings
             AlignWithMargins = True
             Left = 5
             Top = 30
-            Width = 435
+            Width = 433
             Height = 22
             Margins.Left = 5
             Margins.Top = 5
@@ -899,7 +907,7 @@ object frmSettings: TfrmSettings
         object Panel7: TPanel
           Left = 0
           Top = 379
-          Width = 445
+          Width = 443
           Height = 52
           Align = alTop
           AutoSize = True
@@ -910,7 +918,7 @@ object frmSettings: TfrmSettings
             AlignWithMargins = True
             Left = 4
             Top = 4
-            Width = 437
+            Width = 435
             Height = 21
             Margins.Left = 4
             Margins.Top = 4
@@ -947,7 +955,7 @@ object frmSettings: TfrmSettings
             AlignWithMargins = True
             Left = 5
             Top = 30
-            Width = 435
+            Width = 433
             Height = 22
             Margins.Left = 5
             Margins.Top = 5
@@ -994,7 +1002,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 238
-          Width = 435
+          Width = 433
           Height = 37
           Margins.Left = 5
           Margins.Top = 10
@@ -1010,7 +1018,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 0
-          Width = 435
+          Width = 433
           Height = 37
           Margins.Left = 5
           Margins.Top = 0
@@ -1026,7 +1034,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 134
-          Width = 435
+          Width = 433
           Height = 37
           Margins.Left = 5
           Margins.Top = 5
@@ -1042,7 +1050,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 337
-          Width = 435
+          Width = 433
           Height = 37
           Margins.Left = 5
           Margins.Top = 10
@@ -1058,7 +1066,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 441
-          Width = 435
+          Width = 433
           Height = 37
           Margins.Left = 5
           Margins.Top = 10
@@ -1074,7 +1082,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 488
-          Width = 435
+          Width = 433
           Height = 32
           Margins.Left = 5
           Margins.Top = 10
@@ -1092,10 +1100,9 @@ object frmSettings: TfrmSettings
           MonitorControl = sceIconBlendColor
           OnReset = uicIconBlendReset
           object sceIconBlendColor: TSharpEColorEditorEx
-            AlignWithMargins = True
             Left = 0
             Top = 0
-            Width = 403
+            Width = 401
             Height = 32
             Margins.Left = 0
             Margins.Top = 0
@@ -1103,7 +1110,6 @@ object frmSettings: TfrmSettings
             Margins.Bottom = 0
             VertScrollBar.Smooth = True
             VertScrollBar.Tracking = True
-            Align = alTop
             AutoSize = True
             BevelInner = bvNone
             BevelOuter = bvNone
@@ -1143,7 +1149,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 520
-          Width = 435
+          Width = 433
           Height = 32
           Margins.Left = 5
           Margins.Top = 0
@@ -1161,10 +1167,9 @@ object frmSettings: TfrmSettings
           MonitorControl = sceIconShadowColor
           OnReset = uicIconBlendReset
           object sceIconShadowColor: TSharpEColorEditorEx
-            AlignWithMargins = True
             Left = 0
             Top = 0
-            Width = 403
+            Width = 401
             Height = 32
             Margins.Left = 0
             Margins.Top = 0
@@ -1172,7 +1177,6 @@ object frmSettings: TfrmSettings
             Margins.Bottom = 0
             VertScrollBar.Smooth = True
             VertScrollBar.Tracking = True
-            Align = alTop
             AutoSize = True
             BevelInner = bvNone
             BevelOuter = bvNone
@@ -1214,9 +1218,9 @@ object frmSettings: TfrmSettings
       Width = 445
       Height = 628
       object pnlFont: TPanel
-        Left = 0
-        Top = 0
-        Width = 445
+        Left = 1
+        Top = 1
+        Width = 443
         Height = 477
         Align = alTop
         AutoSize = True
@@ -1226,7 +1230,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 47
-          Width = 435
+          Width = 433
           Height = 27
           Margins.Left = 5
           Margins.Top = 0
@@ -1266,7 +1270,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 210
-          Width = 435
+          Width = 433
           Height = 21
           Margins.Left = 5
           Margins.Top = 0
@@ -1302,7 +1306,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 236
-          Width = 435
+          Width = 433
           Height = 22
           Margins.Left = 5
           Margins.Top = 0
@@ -1348,7 +1352,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 367
-          Width = 435
+          Width = 433
           Height = 21
           Margins.Left = 5
           Margins.Top = 5
@@ -1384,7 +1388,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 445
-          Width = 435
+          Width = 433
           Height = 32
           Margins.Left = 5
           Margins.Top = 0
@@ -1402,10 +1406,9 @@ object frmSettings: TfrmSettings
           MonitorControl = sceTextColor
           OnReset = uicFontNameReset
           object sceTextColor: TSharpEColorEditorEx
-            AlignWithMargins = True
             Left = 0
             Top = 0
-            Width = 403
+            Width = 401
             Height = 32
             Margins.Left = 0
             Margins.Top = 0
@@ -1413,7 +1416,6 @@ object frmSettings: TfrmSettings
             Margins.Bottom = 0
             VertScrollBar.Smooth = True
             VertScrollBar.Tracking = True
-            Align = alTop
             AutoSize = True
             BevelInner = bvNone
             BevelOuter = bvNone
@@ -1451,7 +1453,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 341
-          Width = 435
+          Width = 433
           Height = 21
           Margins.Left = 5
           Margins.Top = 5
@@ -1487,7 +1489,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 131
-          Width = 435
+          Width = 433
           Height = 22
           Margins.Left = 5
           Margins.Top = 0
@@ -1533,7 +1535,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 315
-          Width = 435
+          Width = 433
           Height = 21
           Margins.Left = 5
           Margins.Top = 0
@@ -1569,7 +1571,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 0
-          Width = 435
+          Width = 433
           Height = 37
           Margins.Left = 5
           Margins.Top = 0
@@ -1585,7 +1587,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 84
-          Width = 435
+          Width = 433
           Height = 37
           Margins.Left = 5
           Margins.Top = 10
@@ -1601,7 +1603,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 163
-          Width = 435
+          Width = 433
           Height = 37
           Margins.Left = 5
           Margins.Top = 10
@@ -1617,7 +1619,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 268
-          Width = 435
+          Width = 433
           Height = 37
           Margins.Left = 5
           Margins.Top = 10
@@ -1633,7 +1635,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 398
-          Width = 435
+          Width = 433
           Height = 37
           Margins.Left = 5
           Margins.Top = 10
@@ -1654,10 +1656,10 @@ object frmSettings: TfrmSettings
       Height = 628
       Caption = 'pagFontShadow'
       object pnlFontShadow: TPanel
-        Left = 0
-        Top = 0
-        Width = 445
-        Height = 315
+        Left = 1
+        Top = 1
+        Width = 443
+        Height = 314
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
@@ -1666,8 +1668,8 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 0
           Top = 68
-          Width = 445
-          Height = 247
+          Width = 443
+          Height = 246
           Margins.Left = 0
           Margins.Top = 0
           Margins.Right = 0
@@ -1681,7 +1683,7 @@ object frmSettings: TfrmSettings
             AlignWithMargins = True
             Left = 5
             Top = 10
-            Width = 435
+            Width = 433
             Height = 37
             Margins.Left = 5
             Margins.Top = 10
@@ -1697,8 +1699,8 @@ object frmSettings: TfrmSettings
             AlignWithMargins = True
             Left = 5
             Top = 57
-            Width = 435
-            Height = 22
+            Width = 433
+            Height = 21
             Margins.Left = 5
             Margins.Top = 0
             Margins.Right = 5
@@ -1724,7 +1726,7 @@ object frmSettings: TfrmSettings
               Margins.Bottom = 2
               Align = alLeft
               Style = csDropDownList
-              ItemHeight = 0
+              ItemHeight = 13
               ItemIndex = 0
               TabOrder = 0
               Text = 'Left Shadow'
@@ -1738,8 +1740,8 @@ object frmSettings: TfrmSettings
           object SharpECenterHeader11: TSharpECenterHeader
             AlignWithMargins = True
             Left = 5
-            Top = 89
-            Width = 435
+            Top = 88
+            Width = 433
             Height = 37
             Margins.Left = 5
             Margins.Top = 10
@@ -1754,8 +1756,8 @@ object frmSettings: TfrmSettings
           object uicTextShadowAlpha: TSharpEUIC
             AlignWithMargins = True
             Left = 5
-            Top = 136
-            Width = 435
+            Top = 135
+            Width = 433
             Height = 22
             Margins.Left = 5
             Margins.Top = 0
@@ -1800,8 +1802,8 @@ object frmSettings: TfrmSettings
           object SharpECenterHeader12: TSharpECenterHeader
             AlignWithMargins = True
             Left = 5
-            Top = 168
-            Width = 435
+            Top = 167
+            Width = 433
             Height = 37
             Margins.Left = 5
             Margins.Top = 10
@@ -1816,8 +1818,8 @@ object frmSettings: TfrmSettings
           object uicTextShadowColor: TSharpEUIC
             AlignWithMargins = True
             Left = 5
-            Top = 215
-            Width = 435
+            Top = 214
+            Width = 433
             Height = 32
             Margins.Left = 5
             Margins.Top = 0
@@ -1835,10 +1837,9 @@ object frmSettings: TfrmSettings
             MonitorControl = sceTextShadowColor
             OnReset = uicTextShadowReset
             object sceTextShadowColor: TSharpEColorEditorEx
-              AlignWithMargins = True
               Left = 0
               Top = 0
-              Width = 403
+              Width = 401
               Height = 32
               Margins.Left = 0
               Margins.Top = 0
@@ -1846,7 +1847,6 @@ object frmSettings: TfrmSettings
               Margins.Bottom = 0
               VertScrollBar.Smooth = True
               VertScrollBar.Tracking = True
-              Align = alTop
               AutoSize = True
               BevelInner = bvNone
               BevelOuter = bvNone
@@ -1885,7 +1885,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 47
-          Width = 435
+          Width = 433
           Height = 21
           Margins.Left = 5
           Margins.Top = 0
@@ -1921,7 +1921,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 0
-          Width = 435
+          Width = 433
           Height = 37
           Margins.Left = 5
           Margins.Top = 0
@@ -2039,7 +2039,7 @@ object frmSettings: TfrmSettings
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
     PopulateThemeColors = True
-    Width = 370
+    Width = 368
     ShowCaptions = True
     SwatchHeight = 16
     SwatchWidth = 16
