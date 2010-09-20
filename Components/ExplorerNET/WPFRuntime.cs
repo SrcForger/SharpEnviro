@@ -68,7 +68,8 @@ namespace Explorer
 
 		private void InternalShutDown()
 		{
-			_windowInstance.Close();
+			if(_windowInstance != null)
+				_windowInstance.Close();
 			// End the WPF thread by closing the main (hidden) window
 			_window.Close();
 			_logger.Info("WPFRuntime window closed.");
