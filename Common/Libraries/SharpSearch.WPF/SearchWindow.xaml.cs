@@ -195,7 +195,8 @@ namespace SharpSearch.WPF
 				try
 				{
 					ProcessStartInfo psi = new ProcessStartInfo();
-					psi.FileName = ((ISearchData)ResultsListBox.SelectedItem).Location;
+					psi.FileName = ((ISearchData)ResultsListBox.SelectedItem).Shortcut;
+                    psi.UseShellExecute = true;
 
 					if (elevate)
 						psi.Verb = "runas";

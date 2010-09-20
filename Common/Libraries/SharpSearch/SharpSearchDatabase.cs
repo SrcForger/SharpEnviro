@@ -85,6 +85,7 @@ namespace SharpSearch
 					string filename = reader["Filename"] != DBNull.Value ? (string)reader["Filename"] : null;
 					string description = reader["Description"] != DBNull.Value ? (string)reader["Description"] : null;
 					string location = reader["Location"] != DBNull.Value ? (string)reader["Location"] : null;
+                    string shortcut = reader["Shortcut"] != DBNull.Value ? (string)reader["Shortcut"] : null; 
 					Int64 launchCount = reader["LaunchCount"] != DBNull.Value ? (Int64)reader["LaunchCount"] : 0;
 
                     if ((File.Exists(location)) || (Directory.Exists(location)))
@@ -95,6 +96,7 @@ namespace SharpSearch
                             Filename = filename,
                             Description = description,
                             Location = location,
+                            Shortcut = shortcut,
                             LaunchCount = launchCount
                         };
 					}
@@ -119,6 +121,7 @@ namespace SharpSearch
 					string filename = reader["Filename"] != DBNull.Value ? (string)reader["Filename"] : null;
 					string description = reader["Description"] != DBNull.Value ? (string)reader["Description"] : null;
 					string location = reader["Location"] != DBNull.Value ? (string)reader["Location"] : null;
+                    string shortcut = reader["Shortcut"] != DBNull.Value ? (string)reader["Shortcut"] : null;
 					Int64 launchCount = reader["LaunchCount"] != DBNull.Value ? (Int64)reader["LaunchCount"] : 0;
 
 					if ((File.Exists(location)) || (Directory.Exists(location)))
@@ -129,6 +132,7 @@ namespace SharpSearch
 							Filename = filename,
 							Description = description,
 							Location = location,
+                            Shortcut = shortcut,
 							LaunchCount = launchCount
 						};
 					}
@@ -230,6 +234,7 @@ namespace SharpSearch
 						string description = !String.IsNullOrEmpty(versionInfo.Comments) ? versionInfo.Comments : versionInfo.FileDescription;
 
 						string location = ResolvePath(file);
+                        string shortcut = file;
 
 						versionInfo = FileVersionInfo.GetVersionInfo(location);
 						if (String.IsNullOrEmpty(description))
@@ -238,7 +243,7 @@ namespace SharpSearch
 						Int64 rowID = GetRowID(location);
 
 						if (rowID == Int64.MinValue)
-							InsertLocation(filename, description, location);
+							InsertLocation(filename, description, location, shortcut);
 						else
 							SetSynchronizedFlag(rowID);
 					}
@@ -258,12 +263,13 @@ namespace SharpSearch
 		/// <param name="filename"></param>
 		/// <param name="description"></param>
 		/// <param name="location"></param>
-		private void InsertLocation(string filename, string description, string location)
+		private void InsertLocation(string filename, string description, string location, string shortcut)
 		{
-			_database.ExecuteNonQuery(String.Format("INSERT INTO [{0}] ([Filename], [Description], [Location], [Flag], [LaunchCount]) VALUES (@filename, @description, @location, 1, 0);", _tableName),
+			_database.ExecuteNonQuery(String.Format("INSERT INTO [{0}] ([Filename], [Description], [Location], [Shortcut], [Flag], [LaunchCount]) VALUES (@filename, @description, @location, @shortcut, 1, 0);", _tableName),
 					new SQLiteParameter("@filename", filename),
 					new SQLiteParameter("@description", description),
-					new SQLiteParameter("@location", location));
+					new SQLiteParameter("@location", location),
+                    new SQLiteParameter("@shortcut", shortcut));
 		}
 
 		/// <summary>
@@ -332,7 +338,7 @@ namespace SharpSearch
 		/// </summary>
 		private void InitializeDatabase()
 		{
-			_database.CreateTable("SharpSearch", "Filename TEXT", "Description TEXT", "Location TEXT", "Flag BOOLEAN", "LaunchCount INTEGER");
+			_database.CreateTable("SharpSearch", "Filename TEXT", "Description TEXT", "Location TEXT", "Shortcut TEXT", "Flag BOOLEAN", "LaunchCount INTEGER");
 			//_database.CreateTable("SharpSearch", "Filename STRING(256)", "Description STRING(512)", "Location STRING(1024)", "Flag BOOLEAN");
 			//_database.CreateIndex("SharpSearch", "IX_Filename_Description", "Filename", "Description");
 		}

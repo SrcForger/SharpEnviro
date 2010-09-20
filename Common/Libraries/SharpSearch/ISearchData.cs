@@ -31,6 +31,11 @@ namespace SharpSearch
 		/// </summary>
 		string Location { get; set; }
 
+        /// <summary>
+        /// The shortcut of the indexed item.
+        /// </summary>
+        string Shortcut { get; set; }
+
 		/// <summary>
 		/// The number of times the item was been launched.
 		/// </summary>

@@ -32,11 +32,12 @@ namespace SharpSearch
 		/// <param name="filename"></param>
 		/// <param name="description"></param>
 		/// <param name="location"></param>
-		public SearchData(string filename, string description, string location)
+		public SearchData(string filename, string description, string location, string shortcut)
 		{
 			Filename = filename;
 			Description = description;
 			Location = location;
+            Shortcut = shortcut;
 		}
 
 		#endregion Constructors
@@ -62,6 +63,11 @@ namespace SharpSearch
 		/// The location of the indexed item.
 		/// </summary>
 		public string Location { get; set; }
+
+        /// <summary>
+        /// The shortcut of the indexed item.
+        /// </summary>
+        public string Shortcut { get; set; }
 
 		/// <summary>
 		/// The number of times the item was been launched.
