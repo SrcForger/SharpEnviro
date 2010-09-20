@@ -309,5 +309,11 @@ namespace SharpSearch.WPF
 
 			hWnd = IntPtr.Zero;
         }
+
+		private void Thumb_DragDelta(object sender, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
+		{
+			Canvas.SetLeft(this, Canvas.GetLeft(this) + e.HorizontalChange);
+			Canvas.SetTop(this, Canvas.GetTop(this) + e.VerticalChange);
+		}
 	}
 }

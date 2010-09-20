@@ -76,6 +76,9 @@
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 
+			<!-- We use a thumb that covers the window to allow users to drag the window when it has no title bar. -->
+			<Thumb Grid.RowSpan="2" Opacity="0" DragDelta="Thumb_DragDelta" />
+			
 			<Border
 				Grid.Row="0"
 				Margin="5,5,5,2.5"
