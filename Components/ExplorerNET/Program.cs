@@ -23,6 +23,7 @@ namespace SharpEnviro.Explorer
     {
         static IntPtr hSharpDll;
         static bool bShouldExit = false;
+        static bool bCanExit = false;
 
         static bool Is64Bit() 
 	    {
@@ -48,6 +49,9 @@ namespace SharpEnviro.Explorer
             if (uMsgm == WM_ENDSESSION || uMsgm == WM_CLOSE || uMsgm == WM_QUIT || uMsgm == WM_SHARPTERMINATE)
             {
                 bShouldExit = true;
+                while (!bCanExit)
+                    System.Threading.Thread.Sleep(16);
+
                 return (IntPtr)1;
             }
 
@@ -138,6 +142,8 @@ namespace SharpEnviro.Explorer
 				ShellServices.Stop();
                 FreeLibrary(hSharpDll);
             }
+
+            bCanExit = true;
         }
 
 		private static Logger _logger = LogManager.GetCurrentClassLogger();
