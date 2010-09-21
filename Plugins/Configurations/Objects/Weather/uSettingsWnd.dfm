@@ -80,6 +80,7 @@ object frmSettings: TfrmSettings
             Caption = 'Display Caption'
             TabOrder = 0
             Align = alTop
+            OnClick = chkCaptionClick
           end
           object SharpECenterHeader2: TSharpECenterHeader
             AlignWithMargins = True
@@ -118,18 +119,17 @@ object frmSettings: TfrmSettings
           Margins.Right = 5
           Margins.Bottom = 5
           Align = alTop
-          BevelInner = bvRaised
-          BevelOuter = bvLowered
+          BevelOuter = bvNone
           Caption = 'pnlSkin'
           Ctl3D = False
           ParentCtl3D = False
           TabOrder = 1
           object lbSkins: TSharpEListBoxEx
             AlignWithMargins = True
-            Left = 2
-            Top = 2
-            Width = 429
-            Height = 242
+            Left = 0
+            Top = 0
+            Width = 433
+            Height = 246
             Margins.Left = 0
             Margins.Top = 0
             Margins.Right = 0
@@ -173,10 +173,10 @@ object frmSettings: TfrmSettings
             BevelOuter = bvNone
             Borderstyle = bsNone
             Align = alClient
-            ExplicitLeft = 1
-            ExplicitTop = 1
-            ExplicitWidth = 427
-            ExplicitHeight = 240
+            ExplicitLeft = 2
+            ExplicitTop = 2
+            ExplicitWidth = 429
+            ExplicitHeight = 242
           end
         end
       end

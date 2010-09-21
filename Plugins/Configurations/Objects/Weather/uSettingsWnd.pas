@@ -386,6 +386,9 @@ end;
 
 procedure TfrmSettings.chkCaptionClick(Sender: TObject);
 begin
+  if (not chkCaption.Checked) then
+    chkSkinEnable.Checked := True
+  else chkSkinEnable.Checked := False;
   SendUpdate;
 end;
 
@@ -574,6 +577,10 @@ end;
 procedure TfrmSettings.chkSkinEnableClick(Sender: TObject);
 begin
   pnlSkin.Visible := chkSkinEnable.Checked;
+
+  if (not chkSkinEnable.Checked) then
+    chkCaption.Checked := True
+  else chkCaption.Checked := False;
   UpdateWeatherPage;
   SendUpdate;
 end;
