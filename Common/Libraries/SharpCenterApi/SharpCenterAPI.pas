@@ -117,7 +117,7 @@ function LoadConfig(AConfig, AType: string; ABarID, AIntID : integer): hresult;
   external 'SharpCenterAPI.dll' name 'LoadConfig';
 
 procedure XmlGetCenterThemeList(var AThemeList: TCenterThemeInfoSet);
-procedure FindFiles(var FilesList: TStringList; StartDir, FileMask: string);
+procedure FindFiles(var FilesList: TStringList; StartDir, FileMask: string; pMaxDepths : integer = -1);
 function GetCenterThemeListAsCommaText: string;
 
 function XmlGetCenterTheme: string; overload;
@@ -131,13 +131,20 @@ procedure XmlSetCenterTheme(AThemeName: String);
 
 implementation
 
-procedure FindFiles(var FilesList: TStringList; StartDir, FileMask: string);
+procedure FindFiles(var FilesList: TStringList; StartDir, FileMask: string; pMaxDepths : integer = -1);
 var
   SR: TSearchRec;
   DirList: TStringList;
   IsFound: Boolean;
   i: integer;
 begin
+  if pMaxDepths <> -1 then
+  begin
+    pMaxDepths := pMaxDepths - 1;
+    if pMaxDepths = -1 then
+      exit;
+  end;
+
   if StartDir[length(StartDir)] <> '\' then
     StartDir := StartDir + '\';
 
@@ -165,7 +172,7 @@ begin
 
     // Scan the list of subdirectories
     for i := 0 to DirList.Count - 1 do
-      FindFiles(FilesList, DirList[i], FileMask);
+      FindFiles(FilesList, DirList[i], FileMask, pMaxDepths);
 
   finally
     DirList.Free;
