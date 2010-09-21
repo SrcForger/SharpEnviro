@@ -614,16 +614,9 @@ begin
 
   Bmp.Free;
 
-  if FLocked then
-  begin
-    w := (Bitmap.Width) div 100;
-    h := (Bitmap.Height) div 100;
-    TDraftResampler.Create(Bitmap);
-  end else
-  begin
-    w := Bitmap.Width;
-    h := Bitmap.Height;
-  end;
+  w := Bitmap.Width;
+  h := Bitmap.Height;
+  
   R := getadjustedlocation;
   if (w <> (R.Right-R.left)) then   //dont move image if resize
     R.Left := R.left + round(((R.Right-R.left)- w)/2);
