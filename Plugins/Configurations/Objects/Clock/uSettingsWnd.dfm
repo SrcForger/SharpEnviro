@@ -78,17 +78,17 @@ object frmSettings: TfrmSettings
           Margins.Right = 5
           Margins.Bottom = 5
           Align = alClient
-          BevelInner = bvLowered
+          BevelOuter = bvNone
           Caption = 'pnlSkin'
           Ctl3D = False
           ParentCtl3D = False
           TabOrder = 1
           object lbSkins: TSharpEListBoxEx
             AlignWithMargins = True
-            Left = 2
-            Top = 2
-            Width = 429
-            Height = 361
+            Left = 0
+            Top = 0
+            Width = 433
+            Height = 365
             Margins.Left = 0
             Margins.Top = 0
             Margins.Right = 0
@@ -132,10 +132,10 @@ object frmSettings: TfrmSettings
             BevelOuter = bvNone
             Borderstyle = bsNone
             Align = alClient
-            ExplicitLeft = 1
-            ExplicitTop = 1
-            ExplicitWidth = 431
-            ExplicitHeight = 363
+            ExplicitLeft = 2
+            ExplicitTop = 2
+            ExplicitWidth = 429
+            ExplicitHeight = 361
           end
         end
       end
