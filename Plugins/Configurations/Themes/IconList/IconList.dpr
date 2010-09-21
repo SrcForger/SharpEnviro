@@ -160,7 +160,7 @@ begin
 
     files := TStringList.Create;
     try
-      FindFiles( files, SharpApi.GetSharpeDirectory + 'Icons\', '*Iconset.xml' );
+      FindFiles( files, SharpApi.GetSharpeDirectory + 'Icons\', '*Iconset.xml',2);
       if files.Count <> 0 then
         Status := IntToStr(files.Count - 1); // -1 to exlude the default icons directory
     finally
