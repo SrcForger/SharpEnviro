@@ -80,6 +80,7 @@ type
     Launch1: TMenuItem;
     LaunchElevated1: TMenuItem;
     PreviewViewTimer: TTimer;
+    PreviewViewClickBlockTimer: TTimer;
     procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -101,6 +102,7 @@ type
     procedure mnuPopupLaunchClick(Sender: TObject);
     procedure ButtonPopupPopup(Sender: TObject);
     procedure PreviewViewTimerTimer(Sender: TObject);
+    procedure PreviewViewClickBlockTimerTimer(Sender: TObject);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   private
@@ -1275,6 +1277,11 @@ begin
   end;
 end;
 
+procedure TMainForm.PreviewViewClickBlockTimerTimer(Sender: TObject);
+begin
+  PreviewViewClickBlockTimer.Enabled := False;
+end;
+
 procedure TMainForm.PreviewViewTimerTimer(Sender: TObject);
 var
   cButton : TSharpETaskItem;
@@ -1299,7 +1306,8 @@ begin
   if (cButtonIndex >= 0) and (cButtonIndex < length(FButtonList)) then
     cButton := FButtonList[cButtonIndex].btn
   else exit;
-
+  
+  FPreviewButton := cButton;  
 
   if GetCursorPosSecure(cursorPos) then
     CPos := ScreenToClient(cursorPos)
@@ -1334,7 +1342,11 @@ begin
       count := perline
     else count := wndlist.count;
     if count > 1 then
+    begin
       FPreviewAnimate := False;
+      if (Sender = nil) or (Sender = PreviewViewTimer) then
+        PreviewViewClickBlockTimer.Enabled := True;
+    end;
 
     pos := ClientToScreen(Point(cButton.Left + cButton.Width div 2,0));
     xpos := pos.X - (count * size) / 2;
@@ -1607,8 +1619,6 @@ begin
       exit;
     end;
 
-    FPreviewButton := cButton;
-
     PreviewViewTimer.Tag := cButtonIndex;
     PreviewViewTimer.Enabled := True;
     exit;
@@ -1672,18 +1682,33 @@ begin
       begin
         if (BtnItem.Btn.Tag > 1) and (FPreviewWnds.Count = 0) and ((not sTaskPreview) or (not DwmCompositionEnabled)) then
           BuildAndShowMenu(BtnItem)
-        else begin
-          if (FPreviewWnds.Count > 0) then
+        else
+        begin
+          if (FPreviewWnds.Count > 0) then // and (FPreviewButton = TSharpETaskItem(Sender)) then
           begin
+            // Have the previews been recently opened by a click? Don't close them again!
+            if (BtnItem.Btn.Tag > 1) and (PreviewViewClickBlockTimer.Enabled) then
+            begin
+              PreviewViewClickBlockTimer.Enabled := False;
+              exit;
+            end;
+
             FPreviewWnds.Clear;
             wascleared := True;
           end else wascleared := False;
-          if (BtnItem.Btn.Tag > 1) then begin
-            if not wascleared then
-              FPreviewButton := nil;
-              BtnItem.btn.OnMouseMove(Sender,Shift,X,Y);
+          if (BtnItem.Btn.Tag > 1) then
+          begin
+            if (not wascleared) or (FPreviewButton <> TSharpETaskItem(Sender)) then
+            begin
+              FPreviewButton := TSharpETaskItem(Sender);
+              begin
+                PreviewViewTimer.Tag := GetButtonIndex(TSharpETaskItem(Sender));
+                PreviewViewTimer.OnTimer(self);
+              end;
+            end;
             exit;
           end;
+          FPreviewButton := TSharpETaskItem(Sender);
 
           if IsIconic(BtnItem.wnd) or (FTM.LastActiveTask <> BtnItem.wnd) then
             SwitchToThisWindow(BtnItem.wnd,True)

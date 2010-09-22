@@ -203,4 +203,11 @@ object MainForm: TMainForm
     Left = 304
     Top = 8
   end
+  object PreviewViewClickBlockTimer: TTimer
+    Enabled = False
+    Interval = 500
+    OnTimer = PreviewViewClickBlockTimerTimer
+    Left = 304
+    Top = 40
+  end
 end
