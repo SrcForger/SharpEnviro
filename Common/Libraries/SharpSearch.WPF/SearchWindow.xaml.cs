@@ -190,6 +190,10 @@ namespace SharpSearch.WPF
 		{
 			if (ResultsListBox.SelectedItem != null)
 			{
+				// Hide the menu before launching.
+				Hide();
+				//Close();
+
 				_searchManager.IncrementLaunchCount(((ISearchData)ResultsListBox.SelectedItem).RowID);
 
 				try
@@ -208,9 +212,6 @@ namespace SharpSearch.WPF
 					// Squash all exceptions such as FileNotFoundException and
 					// Win32Exception which occurs when user cancel elevation request.
 				}
-
-				Hide();
-				//Close();
 			}
 		}
 
