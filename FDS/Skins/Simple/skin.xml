@@ -533,7 +533,7 @@
     <label>
       <text>
         <dimension>w-20,h</dimension>
-        <location>cw-1,1</location>
+        <location>cw+14,1</location>
 	<shadowtype>Outline</shadowtype>
       </text>
       <dimension>w,24</dimension>
