@@ -57,6 +57,8 @@ type
   TColorArray = array[0..MaxInt div SizeOf(TColorRec)-1] of TColorRec;
   PColorArray = ^TColorArray;
 
+  TClockSkinTextAlign = (caLeft,caCenter,caRight);
+
   TClockText = record
     FontName : string;
     FontSize : integer;
@@ -68,6 +70,7 @@ type
     YMod : integer;
     Caption : string;
     ClearType : boolean;
+    Align : TClockSkinTextAlign;
 
     Overlay : boolean;
   end;
@@ -350,6 +353,7 @@ begin
             FClockTexts[n1].YMod := IntValue('YMod', 0);
             FClockTexts[n1].Caption := Value('Caption', 'none');
             FClockTexts[n1].ClearType := BoolValue('ClearType', true);
+            FClockTexts[n1].Align := TClockSkinTextAlign(IntValue('Align', Int64(caLeft)));
         end;
       end;
     end;
@@ -360,7 +364,8 @@ end;
 
 procedure TClockLayer.DrawClock;
 var
-  n : integer;
+  n, x : integer;
+  formattedCaption : string;
   TempBmp : TBitmap32;
   AALevel : integer;
 begin
@@ -405,7 +410,16 @@ begin
     if FClockTexts[n].ClearType then
       AALevel := -2;
 
-    FPicture.RenderText(FClockTexts[n].XMod, FClockTexts[n].YMod, FormatCaption(FClockTexts[n].Caption), AALevel, color32(GetRValue(FClockTexts[n].FontColor), GetGValue(FClockTexts[n].FontColor), GetBValue(FClockTexts[n].FontColor), FClockTexts[n].FontAlpha));
+    formattedCaption := FormatCaption(FClockTexts[n].Caption);
+    x := 0;
+    
+    case FClockTexts[n].Align of
+      caLeft: x := FClockTexts[n].XMod;
+      caCenter: x := FClockTexts[n].XMod - Round(FPicture.TextWidth(formattedCaption) div 2);
+      caRight: x := FClockTexts[n].XMod - FPicture.TextWidth(formattedCaption);
+    end;
+
+    FPicture.RenderText(x, FClockTexts[n].YMod, formattedCaption, AALevel, color32(GetRValue(FClockTexts[n].FontColor), GetGValue(FClockTexts[n].FontColor), GetBValue(FClockTexts[n].FontColor), FClockTexts[n].FontAlpha));
   end;
 
   TempBmp := TBitmap32.Create;
