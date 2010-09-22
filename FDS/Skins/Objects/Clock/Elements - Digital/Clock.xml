@@ -1,0 +1,30 @@
+<ClockSkin>
+	<Info>
+		<Name>Elements - Digital</Name>
+		<Author>The SharpEnviro Team</Author>
+		<Website>http://www.sharpenviro.com/</Website>
+	</Info>
+	<Skin>
+		<Background>Background.png</Background>
+	</Skin>
+	<Text>
+		<Caption>{t}</Caption>
+		<FontSize>28</FontSize>
+		<FontColor>16777215</FontColor>
+		<FontAlpha>255</FontAlpha>
+		<ClearType>1</ClearType>
+		<Align>1</Align>
+		<XMod>110</XMod>
+		<YMod>5</YMod>
+	</Text>
+	<Text>
+		<Caption>{dddddd}</Caption>
+		<FontSize>10</FontSize>
+		<FontColor>16777215</FontColor>
+		<FontAlpha>255</FontAlpha>
+		<ClearType>0</ClearType>
+		<Align>1</Align>
+		<XMod>110</XMod>
+		<YMod>55</YMod>
+	</Text>
+</ClockSkin>
