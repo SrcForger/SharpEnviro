@@ -4284,6 +4284,7 @@ object SharpCenterWnd: TSharpCenterWnd
         Color = 8447997
         ParentBackground = False
         TabOrder = 5
+        Visible = False
         DrawMode = srpNoBottom
         NoTopBorder = False
         NoBottomBorder = True
