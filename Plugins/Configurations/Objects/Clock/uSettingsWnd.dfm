@@ -31,9 +31,9 @@ object frmSettings: TfrmSettings
       Width = 445
       Height = 416
       object pnlAnalog: TPanel
-        Left = 1
-        Top = 1
-        Width = 443
+        Left = 0
+        Top = 0
+        Width = 445
         Height = 414
         Align = alTop
         AutoSize = True
@@ -42,7 +42,7 @@ object frmSettings: TfrmSettings
         object Panel69: TPanel
           Left = 0
           Top = 0
-          Width = 443
+          Width = 445
           Height = 44
           Align = alTop
           BevelOuter = bvNone
@@ -54,7 +54,7 @@ object frmSettings: TfrmSettings
             AlignWithMargins = True
             Left = 5
             Top = 0
-            Width = 433
+            Width = 435
             Height = 37
             Margins.Left = 5
             Margins.Top = 0
@@ -71,7 +71,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 44
-          Width = 433
+          Width = 435
           Height = 365
           Margins.Left = 5
           Margins.Top = 0
@@ -87,7 +87,7 @@ object frmSettings: TfrmSettings
             AlignWithMargins = True
             Left = 0
             Top = 0
-            Width = 433
+            Width = 435
             Height = 365
             Margins.Left = 0
             Margins.Top = 0
@@ -142,9 +142,9 @@ object frmSettings: TfrmSettings
       Width = 445
       Height = 416
       object pnlDigital: TPanel
-        Left = 1
-        Top = 1
-        Width = 443
+        Left = 0
+        Top = 0
+        Width = 445
         Height = 414
         Align = alTop
         AutoSize = True
@@ -153,7 +153,7 @@ object frmSettings: TfrmSettings
         object Panel2: TPanel
           Left = 0
           Top = 0
-          Width = 443
+          Width = 445
           Height = 44
           Align = alTop
           BevelOuter = bvNone
@@ -165,7 +165,7 @@ object frmSettings: TfrmSettings
             AlignWithMargins = True
             Left = 5
             Top = 0
-            Width = 433
+            Width = 435
             Height = 37
             Margins.Left = 5
             Margins.Top = 0
@@ -182,7 +182,7 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 5
           Top = 44
-          Width = 433
+          Width = 435
           Height = 365
           Margins.Left = 5
           Margins.Top = 0
@@ -198,7 +198,7 @@ object frmSettings: TfrmSettings
             AlignWithMargins = True
             Left = 0
             Top = 0
-            Width = 433
+            Width = 435
             Height = 365
             Margins.Left = 0
             Margins.Top = 0

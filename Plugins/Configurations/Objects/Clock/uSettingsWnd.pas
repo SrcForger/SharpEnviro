@@ -395,9 +395,9 @@ begin
                     else
                       newItem.AddSubItem('', -1);
 
-                    if CompareText(sr.Name, FClockSkin) = 0 then
+                    if (CompareText(sr.Name, FClockSkin) = 0) and (Value('Category') = FClockSkinCategory) then
                     begin
-                      if Value('Category') = Self.ClockSkinCategory then
+                      if Value('Category') = 'Digital' then
                         lbDigitalSkins.ItemIndex := lbDigitalSkins.Items.Count - 1
                       else
                         lbAnalogSkins.ItemIndex := lbAnalogSkins.Items.Count - 1;
@@ -415,8 +415,9 @@ begin
     XML.Free;
   end;
 
-  if (lbAnalogSkins.ItemIndex < 0) and (lbAnalogSkins.Count > 0) then
-    lbAnalogSkins.ItemIndex := 0;
+//  if (lbAnalogSkins.ItemIndex < 0) and (lbAnalogSkins.Count > 0) then
+//    lbAnalogSkins.ItemIndex := 0;
+
 end;
 
 procedure TfrmSettings.SendUpdate;
