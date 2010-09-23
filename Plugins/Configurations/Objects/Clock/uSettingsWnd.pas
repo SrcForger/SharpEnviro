@@ -153,6 +153,7 @@ type
     procedure UpdateDigitalPage;
 
     procedure BuildSkinList;
+    procedure UpdateList;
 
     property ClockSkin : string read FClockSkin write FClockSkin;
     property ClockSkinCategory : string read FClockSkinCategory write FClockSkinCategory;
@@ -346,6 +347,9 @@ begin
     TSkinItem(lbDigitalSkins.Item[n].Data).Free;
     lbDigitalSkins.DeleteItem(n);
   end;
+
+  lbAnalogSkins.ItemIndex := -1;
+  lbDigitalSkins.ItemIndex := -1;
 end;
 
 procedure TfrmSettings.BuildSkinList;
@@ -418,6 +422,14 @@ begin
 //  if (lbAnalogSkins.ItemIndex < 0) and (lbAnalogSkins.Count > 0) then
 //    lbAnalogSkins.ItemIndex := 0;
 
+end;
+
+procedure TfrmSettings.UpdateList;
+begin
+  if self.FClockSkinCategory = 'Digital' then
+    lbAnalogSkins.ItemIndex := -1
+  else
+    lbDigitalSkins.ItemIndex := -1;
 end;
 
 procedure TfrmSettings.SendUpdate;

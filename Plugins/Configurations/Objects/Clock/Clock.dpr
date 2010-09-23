@@ -168,12 +168,18 @@ begin
         xmlSettings.SkinCategory := 'Analog';
       end;
       {$ENDREGION}
+
+      // Update form settings
+      frmSettings.ClockSkin := xmlSettings.Skin;
+      frmSettings.ClockSkinCategory := xmlSettings.SkinCategory;
     end;
     xmlSettings.SaveSettings(True);
 
   finally
     xmlSettings.Free;
   end;
+
+  frmSettings.UpdateList;
 end;
 
 function GetMetaData(): TMetaData;
