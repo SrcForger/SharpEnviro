@@ -218,6 +218,7 @@ type
     procedure InitBar;
     procedure HideBar;
     procedure ShowNotify(pCaption : String; pScreenBorder : boolean = False);
+    procedure UpdateMonitor;
     property BGImage: TBitmap32 read FBGImage;
     property SharpEBar: TSharpEBar read FSharpEBar;
     property ShellBCInProgress: boolean read FShellBCInProgress;
@@ -600,7 +601,9 @@ begin
   begin
     // This avoids the bars from becoming overlapped if you have multiple monitors
     // with 2 full screen bars.  One of the bars crashes once they become overlapped.
-    // These settings are also changed later by DelayTimer3 but that seems to be to late. 
+    // These settings are also changed later by DelayTimer3 but that seems to be to late.
+    if not MonList.IsValidMonitorIndex(SharpEBar.MonitorIndex) then
+      UpdateMonitor;
     Left := MonList.Monitors[SharpEBar.MonitorIndex].Left;
     Width := MonList.Monitors[SharpEBar.MonitorIndex].Width;
   end;
@@ -964,6 +967,16 @@ begin
   end;
   BGBmp.Free;
   UpdateBGImage;
+end;
+
+procedure TSharpBarMainForm.UpdateMonitor;
+var
+  Mon : TMonitorItem;
+begin
+  Mon := MonList.MonitorFromWindow(Handle);
+  if Mon <> nil then
+    SharpEBar.MonitorIndex := MonList.GetMonitorIndex(Mon)
+  else SharpEBar.MonitorIndex := 0;
 end;
 
 procedure TSharpBarMainForm.LoadBarModules(XMLElem: TJclSimpleXMlElem);
@@ -1463,8 +1476,11 @@ begin
       if (CompareText(wndClass, 'Progman') = 0) or
         (CompareText(wndClass, 'TSharpDeskMainForm') = 0) then
         Exit;
-        
+
       GetWindowRect(wnd, wndRect);
+      if not MonList.IsValidMonitorIndex(SharpEBar.MonitorIndex) then
+        UpdateMonitor;
+
       mon := MonList.Monitors[SharpEBar.MonitorIndex];
       // If the window is on the same monitor as the bar then check if it is fullscreen.
       if MonList.MonitorFromRect(wndRect).MonitorNum = mon.MonitorNum then
@@ -2217,7 +2233,12 @@ begin
     if (SharpEBar.MonitorIndex > (MonList.MonitorCount - 1)) or (SharpEBar.PrimaryMonitor) then
       Mon := MonList.PrimaryMonitor
     else
+    begin
+      if not MonList.IsValidMonitorIndex(SharpEBar.MonitorIndex) then
+        UpdateMonitor;
+        
       Mon := MonList.Monitors[SharpEBar.MonitorIndex];
+    end;
     if Mon <> nil then begin
       if x < Mon.Left then
         x := Mon.Left;
