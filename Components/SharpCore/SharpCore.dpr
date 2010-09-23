@@ -534,7 +534,12 @@ begin
     SharpExecute(sAction);
     Exit;
   end;
-    
+
+  // Delete app bar data to remove old modules which no longer exist
+  // Still existing modules will add their items back on startup
+  if bDoStartup or bReboot then
+    DeleteFile(SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\ApplicationBar\Apps.xml');
+
   if bDebug then begin
     if FindWindow('TSharpConsoleWnd', nil) = 0 then begin
       if ShellExecute(hInstance, 'open', PChar(GetSharpEDirectory + 'SharpConsole.exe'),
