@@ -59,6 +59,8 @@ type
     constructor Create; reintroduce;
     destructor Destroy; override;
     procedure GetMonitors;
+    function GetMonitorIndex(pMon : TMonitorItem) : integer;
+    function IsValidMonitorIndex(pIndex : integer) : boolean;
     function FindMonitor(Handle: HMONITOR): TMonitorItem;    
     function MonitorFromPoint(const Point: TPoint;
       MonitorDefault: TMonitorDefaultTo = mdNearest): TMonitorItem;
@@ -253,6 +255,19 @@ begin
     Result := FMonitors.Count;
 end;
 
+function TMonitorList.GetMonitorIndex(pMon: TMonitorItem): integer;
+var
+  n : integer;
+begin
+  for n := 0 to FMonitors.Count - 1 do
+    if TMonitorItem(FMonitors[n]).Handle = pMon.Handle then
+    begin
+      result := n;
+      exit;
+    end;
+  result := -1;
+end;
+
 procedure TMonitorList.GetMonitors;
 begin
   ClearMonitors;
@@ -316,6 +331,13 @@ function TMonitorList.GetWorkAreaWidth: Integer;
 begin
     with WorkAreaRect do
     Result := Right - Left;
+end;
+
+function TMonitorList.IsValidMonitorIndex(pIndex: integer): boolean;
+begin
+  if (pIndex >= 0) and (pIndex <= FMonitors.Count - 1) then
+    result := True
+  else result := False;
 end;
 
 const
