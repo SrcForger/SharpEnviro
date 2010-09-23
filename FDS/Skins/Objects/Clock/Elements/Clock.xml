@@ -1,14 +1,53 @@
-<ClockSkin>
-	<Info>
-		<Name>Elements</Name>
-		<author>The SharpEnviro Team</author>
-		<Website>http://www.sharpenviro.com/</Website>
-	</Info>
-	<Skin>
-		<Background>Background.png</Background>
-		<Overlay>Overlay.png</Overlay>
-		<HandHour>Hour.png</HandHour>
-		<HandMinute>Minute.png</HandMinute>
-		<HandSecond>Second.png</HandSecond>
-	</Skin>
-</ClockSkin>
+<ClockSkins>
+	<!-- Analog Clock //-->
+	<ClockSkin>
+		<Info>
+			<Name>Elements</Name>
+			<author>The SharpEnviro Team</author>
+			<Website>http://www.sharpenviro.com/</Website>
+			<Category>Analog</Category>
+			<Filter>Medium</Filter>
+		</Info>
+		<Skin>
+			<Background>Background.png</Background>
+			<Overlay>Overlay.png</Overlay>
+			<HandHour>Hour.png</HandHour>
+			<HandMinute>Minute.png</HandMinute>
+			<HandSecond>Second.png</HandSecond>
+		</Skin>
+	</ClockSkin>
+	
+	<!-- Digial Clock //-->
+	<ClockSkin>
+		<Info>
+			<Name>Elements</Name>
+			<Author>The SharpEnviro Team</Author>
+			<Website>http://www.sharpenviro.com/</Website>
+			<Category>Digital</Category>
+			<Filter>Medium</Filter>
+		</Info>
+		<Skin>
+			<Background>Digital-Background.png</Background>
+		</Skin>
+		<Text>
+			<Caption>{t}</Caption>
+			<FontSize>28</FontSize>
+			<FontColor>16777215</FontColor>
+			<FontAlpha>255</FontAlpha>
+			<ClearType>1</ClearType>
+			<Align>1</Align>
+			<XMod>110</XMod>
+			<YMod>5</YMod>
+		</Text>
+		<Text>
+			<Caption>{dddddd}</Caption>
+			<FontSize>10</FontSize>
+			<FontColor>16777215</FontColor>
+			<FontAlpha>255</FontAlpha>
+			<ClearType>0</ClearType>
+			<Align>1</Align>
+			<XMod>110</XMod>
+			<YMod>55</YMod>
+		</Text>
+	</ClockSkin>
+</ClockSkins>

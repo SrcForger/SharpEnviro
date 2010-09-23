@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<ClockSkin>
-	<Info>
-		<Name>Black & White Big</Name>
-		<author>The SharpEnviro Team</author>
-		<Website>http://www.sharpenviro.com/</Website>
-		<Info>Big version of Black & White</Info>
-		<Version>0.8</Version>
-	</Info>
-	<Skin>
-		<Background>watch_face.png</Background>
-		<Overlay>watch_glass.png</Overlay>
-		<HandHour>hand_hour.png</HandHour>
-		<HandMinute>hand_minute.png</HandMinute>
-		<HandSecond>hand_second.png</HandSecond>
-	</Skin>
-	<text>
-		<Caption>{Date}</Caption>
-		<FontName>Arial</FontName>
-		<FontSize>8</FontSize>
-		<FontColor>0</FontColor>
-		<FontAALevel>0</FontAALevel>
-		<FontBold>0</FontBold>
-		<XMod>18</XMod>
-		<YMod>20</YMod>
-	</text>
-</ClockSkin>
+<ClockSkins>
+	<ClockSkin>
+		<Info>
+			<Name>Black & White Big</Name>
+			<author>The SharpEnviro Team</author>
+			<Website>http://www.sharpenviro.com/</Website>
+			<Info>Big version of Black & White</Info>
+			<Version>0.8</Version>
+			<Category>Analog</Category>
+			<Filter>Big</Filter>
+		</Info>
+		<Skin>
+			<Background>watch_face.png</Background>
+			<Overlay>watch_glass.png</Overlay>
+			<HandHour>hand_hour.png</HandHour>
+			<HandMinute>hand_minute.png</HandMinute>
+			<HandSecond>hand_second.png</HandSecond>
+		</Skin>
+		<text>
+			<Caption>{Date}</Caption>
+			<FontName>Arial</FontName>
+			<FontSize>8</FontSize>
+			<FontColor>0</FontColor>
+			<FontAALevel>0</FontAALevel>
+			<FontBold>0</FontBold>
+			<XMod>18</XMod>
+			<YMod>20</YMod>
+		</text>
+	</ClockSkin>
+</ClockSkins>
