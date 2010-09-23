@@ -43,7 +43,8 @@ type
       BitmapMasterAlpha : integer;
       Color : TColor;
       Shadow : Boolean;
-      AnalogSkin : String;
+      Skin : String;
+      SkinCategory : String;
       DrawText : Boolean;
       DrawOverlay : Boolean;
 
@@ -69,9 +70,11 @@ begin
   begin
     Color := StringToColor(Value('FontColor','0'));
     Shadow := BoolValue('DrawShadow',false);
-    AnalogSkin := Value('AnalogSkin','');
-    if not FileExists(SharpAPI.GetSharpeDirectory + 'Skins\Objects\Clock\' + AnalogSkin + '\Clock.xml') then
-      AnalogSkin := '';
+    Skin := Value('Skin');
+    if not FileExists(SharpAPI.GetSharpeDirectory + 'Skins\Objects\Clock\' + Skin + '\Clock.xml') then
+      Skin := '';
+
+    SkinCategory := Value('SkinCategory');
       
     DrawText := BoolValue('DrawText',True);
     DrawOverlay := BoolValue('DrawOverlay',True);
@@ -95,10 +98,11 @@ begin
     Add('FontColor', ColorToString(Color));
     Add('DrawShadow',Shadow);
 
-    if not FileExists(SharpAPI.GetSharpeDirectory + 'Skins\Objects\Clock\' + AnalogSkin + '\Clock.xml') then
-      AnalogSkin := '';
+    if not FileExists(SharpAPI.GetSharpeDirectory + 'Skins\Objects\Clock\' + Skin + '\Clock.xml') then
+      Skin := '';
       
-    Add('AnalogSkin',AnalogSkin);
+    Add('Skin',Skin);
+    Add('SkinCategory',SkinCategory);
     Add('DrawText',DrawText);
     Add('DrawOverlay',DrawOverlay);
 

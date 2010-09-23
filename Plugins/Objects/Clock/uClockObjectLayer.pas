@@ -284,15 +284,15 @@ var
   SkinDir : String;
 
   b : boolean;
-  n, n1 : integer;
+  i, n, n1 : integer;
 
-  SkinXml: TJclSimpleXML;
+  XML: TJclSimpleXML;
 
   SkinStr : string;
 begin
   SetLength(FClockTexts, 0);
 
-  SkinDir := ExtractFileDir(Application.ExeName) + '\Skins\Objects\Clock\' + FSettings.AnalogSkin + '\';
+  SkinDir := ExtractFileDir(Application.ExeName) + '\Skins\Objects\Clock\' + FSettings.Skin + '\';
   if (FSettings.DrawText) and (not FileExists(SkinDir + 'Clock.xml')) then
   begin
     FSettings.DrawText := False;
@@ -304,62 +304,77 @@ begin
   FMArrow.SetSize(0,0);
   FSArrow.SetSize(0,0);
 
-  SkinXml := TJclSimpleXML.Create;
-  if LoadXMLFromSharedFile(SkinXML,SkinDir + 'Clock.xml',False) then
+  XML := TJclSimpleXML.Create;
+  if LoadXMLFromSharedFile(XML,SkinDir + 'Clock.xml',False) then
   begin
-    if SkinXml.Root.Items.ItemNamed['Skin'] <> nil then
+    for n := 0 to XML.Root.Items.Count - 1 do
     begin
-      with SkinXml.Root.Items.ItemNamed['Skin'].Items do
+      if XML.Root.Items.Item[n].Name = 'ClockSkin' then
       begin
-        SkinStr := Value('Background','');
-        if (SkinStr <> '') and (FileExists(SkinDir + SkinStr)) then
-          LoadBitmap32FromPNG(FClockBack, SkinDir + SkinStr, b);
-        
-        SkinStr := Value('Overlay','');
-        if (SkinStr <> '') and (FileExists(SkinDir + SkinStr)) then
-          LoadBitmap32FromPNG(FClockOverlay, SkinDir + SkinStr, b);
 
-        SkinStr := Value('HandHour','');
-        if (SkinStr <> '') and (FileExists(SkinDir + SkinStr)) then
-          LoadBitmap32FromPNG(FHArrow, SkinDir + SkinStr, b);
-
-        SkinStr := Value('HandMinute','');
-        if (SkinStr <> '') and (FileExists(SkinDir + SkinStr)) then
-          LoadBitmap32FromPNG(FMArrow, SkinDir + SkinStr, b);
-
-        SkinStr := Value('HandSecond','');
-        if (SkinStr <> '') and (FileExists(SkinDir + SkinStr)) then
-          LoadBitmap32FromPNG(FSArrow, SkinDir + SkinStr, b)
-      end;
-    end;
-
-    if FSettings.DrawText then
-    begin
-      for n := 0 to SkinXml.Root.Items.Count - 1 do
-        if SkinXml.Root.Items.Item[n].Name = 'Text' then
+        if XML.Root.Items.Item[n].Items.ItemNamed['Info'] <> nil then
         begin
-          n1 := Length(FClockTexts);
-          SetLength(FClockTexts, Length(FClockTexts) + 1);
+          if XML.Root.Items.Item[n].Items.ItemNamed['Info'].Items.Value('Category') <> FSettings.SkinCategory then
+            continue;
+        end;
 
-          with SkinXml.Root.Items.Item[n].Items do
+        // Skin
+        if XML.Root.Items.Item[n].Items.ItemNamed['Skin'] <> nil then
+        begin
+          with XML.Root.Items.Item[n].Items.ItemNamed['Skin'].Items do
           begin
-            FClockTexts[n1].FontName := Value('FontName','Arial');
-            FClockTexts[n1].FontSize := IntValue('FontSize',8);
-            FClockTexts[n1].FontColor := IntValue('FontColor',0);
-            FClockTexts[n1].FontAlpha := IntValue('FontAlpha',0);
-            FClockTexts[n1].FontStyle := Value('FontStyle', '');
+            SkinStr := Value('Background','');
+            if (SkinStr <> '') and (FileExists(SkinDir + SkinStr)) then
+              LoadBitmap32FromPNG(FClockBack, SkinDir + SkinStr, b);
 
-            FClockTexts[n1].XMod := IntValue('XMod', 0);
-            FClockTexts[n1].YMod := IntValue('YMod', 0);
-            FClockTexts[n1].Caption := Value('Caption', 'none');
-            FClockTexts[n1].ClearType := BoolValue('ClearType', true);
-            FClockTexts[n1].Align := TClockSkinTextAlign(IntValue('Align', Int64(caLeft)));
+            SkinStr := Value('Overlay','');
+            if (SkinStr <> '') and (FileExists(SkinDir + SkinStr)) then
+              LoadBitmap32FromPNG(FClockOverlay, SkinDir + SkinStr, b);
+
+            SkinStr := Value('HandHour','');
+            if (SkinStr <> '') and (FileExists(SkinDir + SkinStr)) then
+              LoadBitmap32FromPNG(FHArrow, SkinDir + SkinStr, b);
+
+            SkinStr := Value('HandMinute','');
+            if (SkinStr <> '') and (FileExists(SkinDir + SkinStr)) then
+              LoadBitmap32FromPNG(FMArrow, SkinDir + SkinStr, b);
+
+            SkinStr := Value('HandSecond','');
+            if (SkinStr <> '') and (FileExists(SkinDir + SkinStr)) then
+            LoadBitmap32FromPNG(FSArrow, SkinDir + SkinStr, b)
+          end;
+        end;
+
+        if FSettings.DrawText then
+        begin
+          for i := 0 to XML.Root.Items.Item[n].Items.Count - 1 do
+            if XML.Root.Items.Item[n].Items[i].Name = 'Text' then
+            begin
+              n1 := Length(FClockTexts);
+              SetLength(FClockTexts, Length(FClockTexts) + 1);
+
+              with XML.Root.Items.Item[n].Items[i].Items do
+              begin
+                FClockTexts[n1].FontName := Value('FontName','Arial');
+                FClockTexts[n1].FontSize := IntValue('FontSize',8);
+                FClockTexts[n1].FontColor := IntValue('FontColor',0);
+                FClockTexts[n1].FontAlpha := IntValue('FontAlpha',0);
+                FClockTexts[n1].FontStyle := Value('FontStyle', '');
+
+                FClockTexts[n1].XMod := IntValue('XMod', 0);
+                FClockTexts[n1].YMod := IntValue('YMod', 0);
+                FClockTexts[n1].Caption := Value('Caption', 'none');
+                FClockTexts[n1].ClearType := BoolValue('ClearType', true);
+                FClockTexts[n1].Align := TClockSkinTextAlign(IntValue('Align', Int64(caLeft)));
+              end;
+            end;
         end;
       end;
     end;
-  end else SharpApi.SendDebugMessageEx('Clock.Object','Failed to Load Settings from' + SkinDir + 'Skin.xml',0,DMT_ERROR);
+  end else
+    SharpApi.SendDebugMessageEx('Clock.Object','Failed to Load Settings from' + SkinDir + 'Skin.xml',0,DMT_ERROR);
 
-  DebugFree(SkinXml);
+  DebugFree(XML);
 end;
 
 procedure TClockLayer.DrawClock;
@@ -509,7 +524,7 @@ begin
   //Draw image centered
   Bitmap.Clear(color32(0,0,0,0));
 
-  if FSettings.AnalogSkin <> '' then
+  if FSettings.Skin <> '' then
   begin
     Bitmap.SetSize(FPicture.Width,FPicture.Height);
     Bitmap.Clear(color32(0,0,0,0));
@@ -589,7 +604,7 @@ begin
   fTimer.Interval := 1000; //;(60 - SecondOfTheMinute(Now));
 
   { Decide size }
-  if FSettings.AnalogSkin = '' then
+  if FSettings.Skin = '' then
   begin
     w := Bitmap.textwidth('00:00') + 2;        // 00:00 likely to be wide
     h := Bitmap.textHeight('1234567890') + 4;  // use all numbers!
