@@ -94,6 +94,7 @@ type
     FComment: string;
     FSkinName: string;
     FSkinCategory: string;
+    FSkinFilter: string;
   public
     property Name: string read FName write FName;
     property Author: string read FAuthor write FAuthor;
@@ -101,6 +102,7 @@ type
     property Comment: string read FComment write FComment;
     property SkinName: string read FSkinName write FSkinName;
     property SkinCategory: string read FSkinCategory write FSkinCategory;
+    property SkinFilter: string read FSkinFilter write FSkinFilter;
   end;
 
 type
@@ -110,10 +112,6 @@ type
     Panel69: TPanel;
     SharpESwatchManager1: TSharpESwatchManager;
     imlFontIcons: TPngImageList;
-    pnlOverride: TPanel;
-    Image1: TImage;
-    Label6: TLabel;
-    btnRevert: TPngSpeedButton;
     pnlAnalog: TPanel;
     SharpECenterHeader2: TSharpECenterHeader;
     pnlAnalogSkin: TPanel;
@@ -124,6 +122,12 @@ type
     SharpECenterHeader1: TSharpECenterHeader;
     pnlDigitalSkin: TPanel;
     lbDigitalSkins: TSharpEListBoxEx;
+    cbAnalogSize: TComboBox;
+    Panel1: TPanel;
+    Panel3: TPanel;
+    cbDigitalSize: TComboBox;
+    StaticText1: TStaticText;
+    StaticText2: TStaticText;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
 
@@ -137,8 +141,13 @@ type
       AItem: TSharpEListItem; var ACursor: TCursor);
     procedure lbAnalogSkinsClickItem(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem);
+    procedure cbAnalogSizeSelect(Sender: TObject);
+    procedure cbDigitalSizeSelect(Sender: TObject);
   private
-    FClockSkin, FClockSkinCategory : string;
+    FClockSkin, FClockSkinCategory, FClockSkinFilter: string;
+
+    FCurrentFilter: string;
+
     FFontList: TFontList;
     FPluginHost: ISharpCenterHost;
 
@@ -155,8 +164,9 @@ type
     procedure BuildSkinList;
     procedure UpdateList;
 
-    property ClockSkin : string read FClockSkin write FClockSkin;
-    property ClockSkinCategory : string read FClockSkinCategory write FClockSkinCategory;
+    property ClockSkin: string read FClockSkin write FClockSkin;
+    property ClockSkinCategory: string read FClockSkinCategory write FClockSkinCategory;
+    property ClockSkinFilter: string read FClockSkinFilter write FClockSkinFilter;
 
     property FontList: TFontList read FFontList;
 
@@ -236,6 +246,11 @@ begin
   DoubleBuffered := true;
 
   FClockSkin := '';
+  FClockSkinCategory := '';
+  FClockSkinFilter := '';
+
+  FCurrentFilter := '';
+
   lbAnalogSkins.DoubleBuffered := True;
   lbDigitalSkins.DoubleBuffered := True;
 end;
@@ -337,16 +352,13 @@ var
   n : integer;
 begin
   for n := lbAnalogSkins.Count - 1 downto 0 do
-  begin
     TSkinItem(lbAnalogSkins.Item[n].Data).Free;
-    lbAnalogSkins.DeleteItem(n);
-  end;
-
+    
   for n := lbDigitalSkins.Count - 1 downto 0 do
-  begin
     TSkinItem(lbDigitalSkins.Item[n].Data).Free;
-    lbDigitalSkins.DeleteItem(n);
-  end;
+
+  lbAnalogSkins.Clear;
+  lbDigitalSkins.Clear;
 
   lbAnalogSkins.ItemIndex := -1;
   lbDigitalSkins.ItemIndex := -1;
@@ -382,11 +394,16 @@ begin
                 begin
                   with XML.Root.Items.Item[n].Items.ItemNamed['Info'].Items do
                   begin
+                    if (FCurrentFilter <> '') and (Value('Filter') <> FCurrentFilter) then
+                      continue;
+  
                     tmp := TSkinItem.Create;
-                    tmp.Name := Value('Name', '...');
-                    tmp.Author := Value('Author', '...');
-                    tmp.Website := Value('Website', '');
+                    tmp.Name := Value('Name', 'Name');
+                    tmp.Author := Value('Author', 'Author');
+                    tmp.Website := Value('Website', 'Website');
                     tmp.SkinName := sr.Name;
+                    tmp.SkinCategory := Value('Category');
+                    tmp.SkinFilter := Value('Filter');
 
                     if Value('Category') = 'Digital' then
                       newItem := lbDigitalSkins.AddItem('', 0)
@@ -399,9 +416,11 @@ begin
                     else
                       newItem.AddSubItem('', -1);
 
-                    if (CompareText(sr.Name, FClockSkin) = 0) and (Value('Category') = FClockSkinCategory) then
+                    if (tmp.SkinName = FClockSkin) and
+                        (tmp.SkinCategory = FClockSkinCategory) and
+                        (tmp.SkinFilter = FClockSkinFilter) then
                     begin
-                      if Value('Category') = 'Digital' then
+                      if tmp.SkinCategory = 'Digital' then
                         lbDigitalSkins.ItemIndex := lbDigitalSkins.Items.Count - 1
                       else
                         lbAnalogSkins.ItemIndex := lbAnalogSkins.Items.Count - 1;
@@ -418,10 +437,36 @@ begin
   finally
     XML.Free;
   end;
+end;
 
-//  if (lbAnalogSkins.ItemIndex < 0) and (lbAnalogSkins.Count > 0) then
-//    lbAnalogSkins.ItemIndex := 0;
+procedure TfrmSettings.cbAnalogSizeSelect(Sender: TObject);
+begin
+  FCurrentFilter := '';
+  
+  case cbAnalogSize.ItemIndex of
+    1: FCurrentFilter := 'Big';
+    2: FCurrentFilter := 'Medium';
+    3: FCurrentFilter := 'Small';
+  end;
 
+  cbDigitalSize.ItemIndex := cbAnalogSize.ItemIndex;
+
+  BuildSkinList;
+end;
+
+procedure TfrmSettings.cbDigitalSizeSelect(Sender: TObject);
+begin
+  FCurrentFilter := '';
+
+  case cbDigitalSize.ItemIndex of
+    1: FCurrentFilter := 'Big';
+    2: FCurrentFilter := 'Medium';
+    3: FCurrentFilter := 'Small';
+  end;
+
+  cbAnalogSize.ItemIndex := cbDigitalSize.ItemIndex;
+
+  BuildSkinList;
 end;
 
 procedure TfrmSettings.UpdateList;

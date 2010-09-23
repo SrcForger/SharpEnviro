@@ -121,6 +121,7 @@ begin
      {$REGION 'Load custom options'}
       frmSettings.ClockSkin := xmlSettings.Skin;
       frmSettings.ClockSkinCategory := xmlSettings.SkinCategory;
+      frmSettings.ClockSkinFilter := xmlSettings.SkinFilter;
       {$ENDREGION}
     end;
 
@@ -162,10 +163,12 @@ begin
       begin
         xmlSettings.Skin := TSkinItem(lbDigitalSkins.SelectedItem.Data).SkinName;
         xmlSettings.SkinCategory := 'Digital';
+        xmlSettings.SkinFilter := TSkinItem(lbDigitalSkins.SelectedItem.Data).SkinFilter;
       end else
       begin
         xmlSettings.Skin := TSkinItem(lbAnalogSkins.SelectedItem.Data).SkinName;
         xmlSettings.SkinCategory := 'Analog';
+        xmlSettings.SkinFilter := TSkinItem(lbAnalogSkins.SelectedItem.Data).SkinFilter;
       end;
       {$ENDREGION}
 
