@@ -79,7 +79,8 @@ type
 
 procedure TSharpCenterPlugin.AddPluginTabs(ATabItems: TStringList);
 begin
-  ATabItems.AddObject('Clock', frmSettings.pagClock);
+  ATabItems.AddObject('Analog Skins', frmSettings.pagAnalog);
+  ATabItems.AddObject('Digital Skins', frmSettings.pagDigital);
 end;
 
 procedure TSharpCenterPlugin.ClickPluginTab(ATab: TStringItem);
@@ -118,10 +119,8 @@ begin
     with frmSettings, xmlSettings do
     begin
      {$REGION 'Load custom options'}
-      if (xmlSettings.AnalogSkin <> '') then
-      begin
-        frmSettings.ClockSkin := xmlSettings.AnalogSkin;
-      end;
+      frmSettings.ClockSkin := xmlSettings.Skin;
+      frmSettings.ClockSkinCategory := xmlSettings.SkinCategory;
       {$ENDREGION}
     end;
 
@@ -159,7 +158,15 @@ begin
     begin
 
       {$REGION 'Save custom options'}
-      xmlSettings.AnalogSkin := TSkinItem(lbSkins.SelectedItem.Data).SkinName;
+      if frmSettings.pagDigital.Visible then
+      begin
+        xmlSettings.Skin := TSkinItem(lbDigitalSkins.SelectedItem.Data).SkinName;
+        xmlSettings.SkinCategory := 'Digital';
+      end else
+      begin
+        xmlSettings.Skin := TSkinItem(lbAnalogSkins.SelectedItem.Data).SkinName;
+        xmlSettings.SkinCategory := 'Analog';
+      end;
       {$ENDREGION}
     end;
     xmlSettings.SaveSettings(True);

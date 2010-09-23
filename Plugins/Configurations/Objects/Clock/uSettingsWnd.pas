@@ -77,7 +77,8 @@ uses
   PngSpeedButton,
   pngimage,
   SharpECenterHeader,
-  SharpCenterThemeApi;
+  SharpCenterThemeApi,
+  uSharpXMLUtils;
 
 type
   TStringObject = class(TObject)
@@ -92,18 +93,20 @@ type
     FWebsite: string;
     FComment: string;
     FSkinName: string;
+    FSkinCategory: string;
   public
     property Name: string read FName write FName;
     property Author: string read FAuthor write FAuthor;
     property Website: string read FWebsite write FWebsite;
     property Comment: string read FComment write FComment;
     property SkinName: string read FSkinName write FSkinName;
+    property SkinCategory: string read FSkinCategory write FSkinCategory;
   end;
 
 type
   TfrmSettings = class(TForm)
     plMain: TJvPageList;
-    pagClock: TJvStandardPage;
+    pagAnalog: TJvStandardPage;
     Panel69: TPanel;
     SharpESwatchManager1: TSharpESwatchManager;
     imlFontIcons: TPngImageList;
@@ -111,25 +114,31 @@ type
     Image1: TImage;
     Label6: TLabel;
     btnRevert: TPngSpeedButton;
-    pnlClock: TPanel;
+    pnlAnalog: TPanel;
     SharpECenterHeader2: TSharpECenterHeader;
-    pnlSkin: TPanel;
-    lbSkins: TSharpEListBoxEx;
+    pnlAnalogSkin: TPanel;
+    lbAnalogSkins: TSharpEListBoxEx;
+    pagDigital: TJvStandardPage;
+    pnlDigital: TPanel;
+    Panel2: TPanel;
+    SharpECenterHeader1: TSharpECenterHeader;
+    pnlDigitalSkin: TPanel;
+    lbDigitalSkins: TSharpEListBoxEx;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
 
     procedure btnRevertClick(Sender: TObject);
-    procedure lbSkinsGetCellText(Sender: TObject; const ACol: Integer;
+    procedure lbAnalogSkinsGetCellText(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AColText: string);
-    procedure lbSkinsGetCellImageIndex(Sender: TObject; const ACol: Integer;
+    procedure lbAnalogSkinsGetCellImageIndex(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AImageIndex: Integer;
       const ASelected: Boolean);
-    procedure lbSkinsGetCellCursor(Sender: TObject; const ACol: Integer;
+    procedure lbAnalogSkinsGetCellCursor(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var ACursor: TCursor);
-    procedure lbSkinsClickItem(Sender: TObject; const ACol: Integer;
+    procedure lbAnalogSkinsClickItem(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem);
   private
-    FClockSkin : string;
+    FClockSkin, FClockSkinCategory : string;
     FFontList: TFontList;
     FPluginHost: ISharpCenterHost;
 
@@ -140,11 +149,14 @@ type
     sObjectID: string;
 
     procedure UpdatePageUI;
-    procedure UpdateClockPage;
+    procedure UpdateAnalogPage;
+    procedure UpdateDigitalPage;
 
     procedure BuildSkinList;
 
     property ClockSkin : string read FClockSkin write FClockSkin;
+    property ClockSkinCategory : string read FClockSkinCategory write FClockSkinCategory;
+
     property FontList: TFontList read FFontList;
 
     property PluginHost: ISharpCenterHost read FPluginHost
@@ -223,7 +235,8 @@ begin
   DoubleBuffered := true;
 
   FClockSkin := '';
-  lbSkins.DoubleBuffered := True;
+  lbAnalogSkins.DoubleBuffered := True;
+  lbDigitalSkins.DoubleBuffered := True;
 end;
 
 procedure TfrmSettings.FormDestroy(Sender: TObject);
@@ -231,7 +244,7 @@ begin
   ClearList;
 end;
 
-procedure TfrmSettings.lbSkinsClickItem(Sender: TObject; const ACol: Integer;
+procedure TfrmSettings.lbAnalogSkinsClickItem(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem);
 var
   tmp: TSkinItem;
@@ -255,7 +268,7 @@ begin
   end;
 end;
 
-procedure TfrmSettings.lbSkinsGetCellCursor(Sender: TObject;
+procedure TfrmSettings.lbAnalogSkinsGetCellCursor(Sender: TObject;
   const ACol: Integer; AItem: TSharpEListItem; var ACursor: TCursor);
 var
   tmp : TSkinItem;
@@ -270,7 +283,7 @@ begin
     ACursor := crHandPoint;
 end;
 
-procedure TfrmSettings.lbSkinsGetCellImageIndex(Sender: TObject;
+procedure TfrmSettings.lbAnalogSkinsGetCellImageIndex(Sender: TObject;
   const ACol: Integer; AItem: TSharpEListItem; var AImageIndex: Integer;
   const ASelected: Boolean);
 var
@@ -293,7 +306,7 @@ begin
   end;
 end;
 
-procedure TfrmSettings.lbSkinsGetCellText(Sender: TObject; const ACol: Integer;
+procedure TfrmSettings.lbAnalogSkinsGetCellText(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AColText: string);
 var
   tmp: TSkinItem;
@@ -322,10 +335,16 @@ procedure TfrmSettings.ClearList;
 var
   n : integer;
 begin
-  for n := lbSkins.Count - 1 downto 0 do
+  for n := lbAnalogSkins.Count - 1 downto 0 do
   begin
-    TSkinItem(lbSkins.Item[n].Data).Free;
-    lbSkins.DeleteItem(n);
+    TSkinItem(lbAnalogSkins.Item[n].Data).Free;
+    lbAnalogSkins.DeleteItem(n);
+  end;
+
+  for n := lbDigitalSkins.Count - 1 downto 0 do
+  begin
+    TSkinItem(lbDigitalSkins.Item[n].Data).Free;
+    lbDigitalSkins.DeleteItem(n);
   end;
 end;
 
@@ -349,16 +368,15 @@ begin
       repeat
         if (CompareText(sr.Name, '.') <> 0) and (CompareText(sr.Name, '..') <> 0) then
         begin
-          if FileExists(Dir + sr.Name + '\Clock.xml') then
+          if LoadXMLFromSharedFile(XML, Dir + sr.Name + '\Clock.xml') then
           begin
-            try
-              XML.LoadFromFile(Dir + sr.Name + '\Clock.xml');
-
-              for n := 0 to XML.Root.Items.Count - 1 do
+            for n := 0 to XML.Root.Items.Count - 1 do
+            begin
+              if XML.Root.Items.Item[n].Name = 'ClockSkin' then
               begin
-                if XML.Root.Items.Item[n].Name = 'Info' then
+                if XML.Root.Items.Item[n].Items.ItemNamed['Info'] <> nil then
                 begin
-                  with XML.Root.Items.Item[n].Items do
+                  with XML.Root.Items.Item[n].Items.ItemNamed['Info'].Items do
                   begin
                     tmp := TSkinItem.Create;
                     tmp.Name := Value('Name', '...');
@@ -366,7 +384,11 @@ begin
                     tmp.Website := Value('Website', '');
                     tmp.SkinName := sr.Name;
 
-                    newItem := lbSkins.AddItem('', 0);
+                    if Value('Category') = 'Digital' then
+                      newItem := lbDigitalSkins.AddItem('', 0)
+                    else
+                      newItem := lbAnalogSkins.AddItem('', 0);
+
                     newItem.Data := tmp;
                     if length(trim(tmp.Website)) > 0 then
                       newItem.AddSubItem('', 1)
@@ -375,12 +397,14 @@ begin
 
                     if CompareText(sr.Name, FClockSkin) = 0 then
                     begin
-                      lbSkins.ItemIndex := lbSkins.Items.Count - 1;
+                      if Value('Category') = Self.ClockSkinCategory then
+                        lbDigitalSkins.ItemIndex := lbDigitalSkins.Items.Count - 1
+                      else
+                        lbAnalogSkins.ItemIndex := lbAnalogSkins.Items.Count - 1;
                     end;
                   end;
                 end;
               end;
-            except
             end;
           end;
         end;
@@ -391,12 +415,8 @@ begin
     XML.Free;
   end;
 
-  if (lbSkins.ItemIndex < 0) and (lbSkins.Count > 0) then begin
-    lbSkins.ItemIndex := 0;
-    //BuildIconPreview;
-  end;
-
-  //PluginHost.Refresh;
+  if (lbAnalogSkins.ItemIndex < 0) and (lbAnalogSkins.Count > 0) then
+    lbAnalogSkins.ItemIndex := 0;
 end;
 
 procedure TfrmSettings.SendUpdate;
@@ -405,20 +425,30 @@ begin
     FPluginHost.SetSettingsChanged;
 end;
 
-procedure TfrmSettings.UpdateClockPage;
+procedure TfrmSettings.UpdateAnalogPage;
 begin
-  if not pagClock.Visible then
+  if not pagAnalog.Visible then
     exit;
 
-  frmSettings.Height := pnlClock.Height + 50;
+  frmSettings.Height := pnlAnalog.Height + 50;
+  FPluginHost.Refresh(rtSize);
+end;
+
+procedure TfrmSettings.UpdateDigitalPage;
+begin
+  if not pagDigital.Visible then
+    exit;
+
+  frmSettings.Height := pnlDigital.Height + 50;
   FPluginHost.Refresh(rtSize);
 end;
 
 procedure TfrmSettings.UpdatePageUI;
 begin
-  pnlOverride.Visible := not (pagClock.Visible);
-
-  UpdateClockPage;
+  if pagDigital.Visible then
+    UpdateDigitalPage
+  else
+    UpdateAnalogPage;
 
 end;
 

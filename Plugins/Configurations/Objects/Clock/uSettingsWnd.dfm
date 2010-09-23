@@ -22,15 +22,15 @@ object frmSettings: TfrmSettings
     Top = 30
     Width = 445
     Height = 416
-    ActivePage = pagClock
+    ActivePage = pagDigital
     PropagateEnable = False
     Align = alClient
-    object pagClock: TJvStandardPage
+    object pagAnalog: TJvStandardPage
       Left = 0
       Top = 0
       Width = 445
       Height = 416
-      object pnlClock: TPanel
+      object pnlAnalog: TPanel
         Left = 1
         Top = 1
         Width = 443
@@ -60,14 +60,14 @@ object frmSettings: TfrmSettings
             Margins.Top = 0
             Margins.Right = 5
             Margins.Bottom = 10
-            Title = 'Skin'
-            Description = 'Select the clock skin which you want to use'
+            Title = 'Analog Skin'
+            Description = 'Select the analog clock skin which you want to use'
             TitleColor = clWindowText
             DescriptionColor = clRed
             Align = alTop
           end
         end
-        object pnlSkin: TPanel
+        object pnlAnalogSkin: TPanel
           AlignWithMargins = True
           Left = 5
           Top = 44
@@ -79,11 +79,11 @@ object frmSettings: TfrmSettings
           Margins.Bottom = 5
           Align = alClient
           BevelOuter = bvNone
-          Caption = 'pnlSkin'
+          Caption = 'pnlAnalogSkin'
           Ctl3D = False
           ParentCtl3D = False
           TabOrder = 1
-          object lbSkins: TSharpEListBoxEx
+          object lbAnalogSkins: TSharpEListBoxEx
             AlignWithMargins = True
             Left = 0
             Top = 0
@@ -123,19 +123,126 @@ object frmSettings: TfrmSettings
             Colors.DisabledColor = clBlack
             DefaultColumn = 0
             ItemHeight = 30
-            OnClickItem = lbSkinsClickItem
-            OnGetCellCursor = lbSkinsGetCellCursor
-            OnGetCellText = lbSkinsGetCellText
-            OnGetCellImageIndex = lbSkinsGetCellImageIndex
+            OnClickItem = lbAnalogSkinsClickItem
+            OnGetCellCursor = lbAnalogSkinsGetCellCursor
+            OnGetCellText = lbAnalogSkinsGetCellText
+            OnGetCellImageIndex = lbAnalogSkinsGetCellImageIndex
             AutosizeGrid = True
             BevelInner = bvNone
             BevelOuter = bvNone
             Borderstyle = bsNone
             Align = alClient
-            ExplicitLeft = 2
-            ExplicitTop = 2
-            ExplicitWidth = 429
-            ExplicitHeight = 361
+          end
+        end
+      end
+    end
+    object pagDigital: TJvStandardPage
+      Left = 0
+      Top = 0
+      Width = 445
+      Height = 416
+      object pnlDigital: TPanel
+        Left = 1
+        Top = 1
+        Width = 443
+        Height = 414
+        Align = alTop
+        AutoSize = True
+        BevelOuter = bvNone
+        TabOrder = 0
+        object Panel2: TPanel
+          Left = 0
+          Top = 0
+          Width = 443
+          Height = 44
+          Align = alTop
+          BevelOuter = bvNone
+          Ctl3D = True
+          ParentColor = True
+          ParentCtl3D = False
+          TabOrder = 0
+          object SharpECenterHeader1: TSharpECenterHeader
+            AlignWithMargins = True
+            Left = 5
+            Top = 0
+            Width = 433
+            Height = 37
+            Margins.Left = 5
+            Margins.Top = 0
+            Margins.Right = 5
+            Margins.Bottom = 10
+            Title = 'Skin'
+            Description = 'Select the digital clock skin which you want to use'
+            TitleColor = clWindowText
+            DescriptionColor = clRed
+            Align = alTop
+          end
+        end
+        object pnlDigitalSkin: TPanel
+          AlignWithMargins = True
+          Left = 5
+          Top = 44
+          Width = 433
+          Height = 365
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 5
+          Align = alClient
+          BevelOuter = bvNone
+          Caption = 'pnlSkin'
+          Ctl3D = False
+          ParentCtl3D = False
+          TabOrder = 1
+          object lbDigitalSkins: TSharpEListBoxEx
+            AlignWithMargins = True
+            Left = 0
+            Top = 0
+            Width = 433
+            Height = 365
+            Margins.Left = 0
+            Margins.Top = 0
+            Margins.Right = 0
+            Margins.Bottom = 0
+            Columns = <
+              item
+                Width = 256
+                HAlign = taLeftJustify
+                VAlign = taVerticalCenter
+                ColumnAlign = calLeft
+                StretchColumn = False
+                ColumnType = ctDefault
+                VisibleOnSelectOnly = False
+                Images = imlFontIcons
+              end
+              item
+                Width = 30
+                HAlign = taLeftJustify
+                VAlign = taVerticalCenter
+                ColumnAlign = calRight
+                StretchColumn = False
+                ColumnType = ctDefault
+                VisibleOnSelectOnly = False
+                Images = imlFontIcons
+              end>
+            Colors.BorderColor = clBtnFace
+            Colors.BorderColorSelected = clBtnShadow
+            Colors.ItemColor = clWindow
+            Colors.ItemColorSelected = clBtnFace
+            Colors.CheckColorSelected = clBtnFace
+            Colors.CheckColor = 15528425
+            Colors.DisabledColor = clBlack
+            DefaultColumn = 0
+            ItemHeight = 30
+            OnClickItem = lbAnalogSkinsClickItem
+            OnGetCellCursor = lbAnalogSkinsGetCellCursor
+            OnGetCellText = lbAnalogSkinsGetCellText
+            OnGetCellImageIndex = lbAnalogSkinsGetCellImageIndex
+            AutosizeGrid = True
+            BevelInner = bvNone
+            BevelOuter = bvNone
+            Borderstyle = bsNone
+            Align = alClient
           end
         end
       end
