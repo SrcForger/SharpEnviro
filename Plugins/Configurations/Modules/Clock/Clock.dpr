@@ -93,9 +93,9 @@ begin
     with PluginHost.Xml.XmlRoot do
     begin
       frmClock.cboSize.ItemIndex := Items.IntValue('Style', 3);
-      frmClock.editTop.Text := Items.Value('Format', 'HH:MM:SS');
-      frmClock.editBottom.Text := Items.Value('BottomFormat', 'DD.MM.YYYY');
-      frmClock.editTooltip.Text := Items.Value('TooltipFormat', 'DDDD - DD.MM.YYYY');
+      frmClock.editTop.Text := Items.Value('Format', 'T');
+      frmClock.editBottom.Text := Items.Value('BottomFormat', 'DDDDD');
+      frmClock.editTooltip.Text := Items.Value('TooltipFormat', 'DDDDDD');
     end;
   end;
 end;

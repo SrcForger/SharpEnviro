@@ -109,10 +109,10 @@ begin
     with xml.Root.Items do
     begin
       // There should always be a Format element no matter which style is used.
-      sFormat := Value('Format', 'HH:MM:SS');
+      sFormat := Value('Format', 'T');
 
       // There should always be a tooltip format element.
-      sTooltipFormat := Value('TooltipFormat', 'DDDD - DD.MM.YYYY');
+      sTooltipFormat := Value('TooltipFormat', 'DDDDDD');
 
       // The valid values for style are
       // 0 = Small, 1 = Medium, 2 = Big, 3 = Automatic
@@ -143,7 +143,7 @@ begin
           // Its either a new config or it is messed up so start fresh.
           lb_clock.LabelStyle := lsSmall;
           lb_clock.AutoPos := apTop;
-          sBottomFormat := 'DD.MM.YYYY';
+          sBottomFormat := 'DDDDD';
           lb_bottomclock.Visible := True;
       end;
     end;
