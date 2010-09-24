@@ -314,7 +314,8 @@ begin
 
         if XML.Root.Items.Item[n].Items.ItemNamed['Info'] <> nil then
         begin
-          if XML.Root.Items.Item[n].Items.ItemNamed['Info'].Items.Value('Category') <> FSettings.SkinCategory then
+          if (XML.Root.Items.Item[n].Items.ItemNamed['Info'].Items.Value('Category') <> FSettings.SkinCategory) or
+            (XML.Root.Items.Item[n].Items.ItemNamed['Info'].Items.Value('Filter') <> FSettings.SkinFilter) then
             continue;
         end;
 
