@@ -311,7 +311,6 @@ begin
     begin
       if XML.Root.Items.Item[n].Name = 'ClockSkin' then
       begin
-
         if XML.Root.Items.Item[n].Items.ItemNamed['Info'] <> nil then
         begin
           if (XML.Root.Items.Item[n].Items.ItemNamed['Info'].Items.Value('Category') <> FSettings.SkinCategory) or
@@ -342,7 +341,13 @@ begin
 
             SkinStr := Value('HandSecond','');
             if (SkinStr <> '') and (FileExists(SkinDir + SkinStr)) then
-            LoadBitmap32FromPNG(FSArrow, SkinDir + SkinStr, b)
+              LoadBitmap32FromPNG(FSArrow, SkinDir + SkinStr, b);
+
+            if (IntValue('Width') > -1) and (IntValue('Height') > -1) then
+            begin
+              FClockBack.SetSize(IntValue('Width'), IntValue('Height')); 
+              FClockBack.Clear(Color32(0,0,0,0));
+            end;
           end;
         end;
 
@@ -358,7 +363,7 @@ begin
               begin
                 FClockTexts[n1].FontName := Value('FontName','Arial');
                 FClockTexts[n1].FontSize := IntValue('FontSize',8);
-                FClockTexts[n1].FontColor := IntValue('FontColor',0);
+                FClockTexts[n1].FontColor := GetCurrentTheme.Scheme.ParseColor(Value('FontColor','RGB(0,0,0)'));
                 FClockTexts[n1].FontAlpha := IntValue('FontAlpha',0);
                 FClockTexts[n1].FontStyle := Value('FontStyle', '');
 
