@@ -45,6 +45,7 @@ type
       Shadow : Boolean;
       Skin : String;
       SkinCategory : String;
+      SkinFilter : String;
       DrawText : Boolean;
       DrawOverlay : Boolean;
 
@@ -75,6 +76,7 @@ begin
       Skin := '';
 
     SkinCategory := Value('SkinCategory');
+    SkinFilter := Value('SkinFilter');
       
     DrawText := BoolValue('DrawText',True);
     DrawOverlay := BoolValue('DrawOverlay',True);
@@ -103,6 +105,7 @@ begin
       
     Add('Skin',Skin);
     Add('SkinCategory',SkinCategory);
+    Add('SkinFilter',SkinFilter);
     Add('DrawText',DrawText);
     Add('DrawOverlay',DrawOverlay);
 
