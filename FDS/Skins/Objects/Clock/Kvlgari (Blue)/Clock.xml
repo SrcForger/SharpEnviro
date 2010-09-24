@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<ClockSkins>
+	<!-- Big //-->
+	<ClockSkin>
+		<Info>
+			<Name>Kvlgari (Blue) Big</Name>
+			<author>The SharpEnviro Team</author>
+			<Website>http://www.sharpenviro.com/</Website>
+			<Info>Big version of Kvlgari (Blue)</Info>
+			<Version>0.8</Version>
+			<Category>Analog</Category>
+			<Filter>Big</Filter>
+		</Info>
+		<Skin>
+			<Background>Big\watch_face.png</Background>
+			<Overlay>Big\watch_glass.png</Overlay>
+			<HandHour>Big\hand_hour.png</HandHour>
+			<HandMinute>Big\hand_minute.png</HandMinute>
+			<HandSecond>Big\hand_second.png</HandSecond>
+		</Skin>
+		<text>
+			<Caption>{Date}</Caption>
+			<FontName>Arial</FontName>
+			<FontSize>8</FontSize>
+			<FontColor>0</FontColor>
+			<FontAALevel>0</FontAALevel>
+			<FontBold>0</FontBold>
+			<XMod>18</XMod>
+			<YMod>20</YMod>
+		</text>
+	</ClockSkin>
+	
+	<!-- Medium //-->
+	<ClockSkin>
+		<Info>
+			<Name>Kvlgari (Blue) Medium</Name>
+			<author>The SharpEnviro Team</author>
+			<Website>http://www.sharpenviro.com/</Website>
+			<Info>Medium version of Kvlgari (Blue)</Info>
+			<Version>0.8</Version>
+			<Category>Analog</Category>
+			<Filter>Medium</Filter>
+		</Info>
+		<Skin>
+			<Background>Medium\watch_face.png</Background>
+			<Overlay>Medium\watch_glass.png</Overlay>
+			<HandHour>Medium\hand_hour.png</HandHour>
+			<HandMinute>Medium\hand_minute.png</HandMinute>
+			<HandSecond>Medium\hand_second.png</HandSecond>
+		</Skin>
+		<text>
+			<Caption>{Day}</Caption>
+			<FontName>Arial</FontName>
+			<FontSize>30</FontSize>
+			<FontColor>16777215</FontColor>
+			<FontAALevel>2</FontAALevel>
+			<FontBold>1</FontBold>
+			<FontAlpha>196</FontAlpha>
+			<XMod>40</XMod>
+			<YMod>90</YMod>
+		</text>
+
+		<text>
+			<Caption>{Month2}</Caption>
+			<FontName>Arial</FontName>
+			<FontSize>20</FontSize>
+			<FontColor>16777215</FontColor>
+			<FontAALevel>2</FontAALevel>
+			<FontBold>1</FontBold>
+			<FontAlpha>196</FontAlpha>
+			<XMod>134</XMod>
+			<YMod>96</YMod>
+		</text>
+		
+		<text>
+			<Caption>{Year}</Caption>
+			<FontName>Arial</FontName>
+			<FontSize>18</FontSize>
+			<FontColor>16777215</FontColor>
+			<FontAALevel>2</FontAALevel>
+			<FontBold>1</FontBold>
+			<FontAlpha>196</FontAlpha>
+			<XMod>85</XMod>
+			<YMod>155</YMod>
+		</text>
+	</ClockSkin>
+	
+	<!-- Small //-->
+	<ClockSkin>
+		<Info>
+			<Name>Kvlgari (Blue) Small</Name>
+			<author>The SharpEnviro Team</author>
+			<Website>http://www.sharpenviro.com/</Website>
+			<Info>Small version of Kvlgari (Blue)</Info>
+			<Version>0.8</Version>
+			<Category>Analog</Category>
+			<Filter>Small</Filter>
+		</Info>
+		<Skin>
+			<Background>Small\watch_face.png</Background>
+			<Overlay>Small\watch_glass.png</Overlay>
+			<HandHour>Small\hand_hour.png</HandHour>
+			<HandMinute>Small\hand_minute.png</HandMinute>
+			<HandSecond>Small\hand_second.png</HandSecond>
+		</Skin>
+		<text>
+			<Caption>{Day}</Caption>
+			<FontName>Arial</FontName>
+			<FontSize>30</FontSize>
+			<FontColor>16581375</FontColor>
+			<FontAALevel>1</FontAALevel>
+			<FontBold>1</FontBold>
+			<XMod>45</XMod>
+			<YMod>102</YMod>
+		</text>
+	</ClockSkin>
+</ClockSkins>

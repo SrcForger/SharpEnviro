@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<ClockSkins>
+	<!-- Big //-->
+	<ClockSkin>
+		<Info>
+			<Name>Black & White Big</Name>
+			<author>The SharpEnviro Team</author>
+			<Website>http://www.sharpenviro.com/</Website>
+			<Info>Big version of Black & White</Info>
+			<Version>0.8</Version>
+			<Category>Analog</Category>
+			<Filter>Big</Filter>
+		</Info>
+		<Skin>
+			<Background>Big\watch_face.png</Background>
+			<Overlay>Big\watch_glass.png</Overlay>
+			<HandHour>Big\hand_hour.png</HandHour>
+			<HandMinute>Big\hand_minute.png</HandMinute>
+			<HandSecond>Big\hand_second.png</HandSecond>
+		</Skin>
+		<text>
+			<Caption>{Date}</Caption>
+			<FontName>Arial</FontName>
+			<FontSize>8</FontSize>
+			<FontColor>0</FontColor>
+			<FontAALevel>0</FontAALevel>
+			<FontBold>0</FontBold>
+			<XMod>18</XMod>
+			<YMod>20</YMod>
+		</text>
+	</ClockSkin>
+	
+	<!-- Medium //-->
+	<ClockSkin>
+		<Info>
+			<Name>Black & White Medium</Name>
+			<author>The SharpEnviro Team</author>
+			<Website>http://www.sharpenviro.com/</Website>
+			<Info>Medium version of Black & White</Info>
+			<Version>0.8</Version>
+			<Category>Analog</Category>
+			<Filter>Medium</Filter>
+		</Info>
+		<Skin>
+			<Background>Medium\watch_face.png</Background>
+			<Overlay>Medium\watch_glass.png</Overlay>
+			<HandHour>Medium\hand_hour.png</HandHour>
+			<HandMinute>Medium\hand_minute.png</HandMinute>
+			<HandSecond>Medium\hand_second.png</HandSecond>
+		</Skin>
+		<text>
+			<Caption>{Date}</Caption>
+			<FontName>Arial</FontName>
+			<FontSize>8</FontSize>
+			<FontColor>0</FontColor>
+			<FontAALevel>0</FontAALevel>
+			<FontBold>0</FontBold>
+			<XMod>18</XMod>
+			<YMod>20</YMod>
+		</text>
+	</ClockSkin>
+	
+	<!-- Small //-->
+	<ClockSkin>
+		<Info>
+			<Name>Black & White Small</Name>
+			<author>The SharpEnviro Team</author>
+			<Website>http://www.sharpenviro.com/</Website>
+			<Info>Small version of Black & White</Info>
+			<Version>0.8</Version>
+			<Category>Analog</Category>
+			<Filter>Small</Filter>
+		</Info>
+		<Skin>
+			<Background>Small\watch_face.png</Background>
+			<Overlay>Small\watch_glass.png</Overlay>
+			<HandHour>Small\hand_hour.png</HandHour>
+			<HandMinute>Small\hand_minute.png</HandMinute>
+			<HandSecond>Small\hand_second.png</HandSecond>
+		</Skin>
+		<text>
+			<Caption>{Date}</Caption>
+			<FontName>Arial</FontName>
+			<FontSize>8</FontSize>
+			<FontColor>0</FontColor>
+			<FontAALevel>0</FontAALevel>
+			<FontBold>0</FontBold>
+			<XMod>18</XMod>
+			<YMod>20</YMod>
+		</text>
+	</ClockSkin>
+</ClockSkins>
