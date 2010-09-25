@@ -36,7 +36,7 @@ uses
   Forms,
   Math,
   Dialogs,
-  JvSimpleXml,
+  JclSimpleXml,
   GR32,
   GR32_Image,
   PngSpeedButton,
@@ -82,6 +82,7 @@ type
 procedure TSharpCenterPlugin.AddPluginTabs(ATabItems: TStringList);
 begin
   ATabItems.AddObject('Weather', frmSettings.pagWeather);
+  ATabItems.AddObject('Skin', frmSettings.pagSkin);
   ATabItems.AddObject('Icon', frmSettings.pagIcon);
   ATabItems.AddObject('Font', frmSettings.pagFont);
   ATabItems.AddObject('Font Shadow', frmSettings.pagFontShadow);
@@ -132,6 +133,8 @@ begin
         chkSkinEnable.Checked := true;
         frmSettings.WeatherSkin := xmlSettings.WeatherSkin;
       end;
+
+      frmSettings.Location := xmlSettings.WeatherLocation;
       {$ENDREGION}
 
       // Load uic defaults
@@ -232,6 +235,38 @@ begin
   AssignThemeToPluginForm(frmSettings,AEditing,Theme);
 end;
 
+function GetLocationID(loc: string): string;
+var
+  xml:TJclSimpleXML;
+  n: Integer;
+  WeatherFile : String;
+  locID : string;
+begin
+  Result := '';
+
+  WeatherFile := GetSharpEUserSettingsPath+'SharpCore\Services\Weather\WeatherList.xml';
+
+  if not FileExists(WeatherFile) then
+    exit;
+
+  xml := TJclSimpleXML.Create;
+  try
+    xml.LoadFromFile(WeatherFile);
+
+    for n := 0 to XML.Root.Items.Count - 1 do
+    begin
+      locID := xml.Root.Items.Item[n].Properties.Value('LocationID','');
+      if xml.Root.Items.Item[n].Properties.Value('Location','') = loc then
+        break;
+    end;
+
+  finally
+    xml.Free;
+  end;
+
+  Result := locID;
+end;
+
 procedure TSharpCenterPlugin.Save;
 var
   xmlSettings: TXMLSettings;
@@ -249,6 +284,9 @@ begin
         WeatherSkin := ''
       else
         WeatherSkin := TSkinItem(lbSkins.SelectedItem.Data).SkinName;
+
+
+      xmlSettings.WeatherLocation := GetLocationID(cbLocation.Items[cbLocation.ItemIndex]);
       {$ENDREGION}
 
       {$REGION 'Set IsCustom'}

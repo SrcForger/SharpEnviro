@@ -23,7 +23,7 @@ object frmSettings: TfrmSettings
     Top = 30
     Width = 445
     Height = 628
-    ActivePage = pagWeather
+    ActivePage = pagSkin
     PropagateEnable = False
     Align = alClient
     object pagWeather: TJvStandardPage
@@ -35,8 +35,9 @@ object frmSettings: TfrmSettings
         Left = 1
         Top = 1
         Width = 443
-        Height = 404
+        Height = 152
         Align = alTop
+        Anchors = [akLeft, akTop, akRight, akBottom]
         AutoSize = True
         BevelOuter = bvNone
         TabOrder = 0
@@ -44,8 +45,9 @@ object frmSettings: TfrmSettings
           Left = 0
           Top = 0
           Width = 443
-          Height = 153
+          Height = 152
           Align = alTop
+          AutoSize = True
           BevelOuter = bvNone
           Ctl3D = True
           ParentColor = True
@@ -81,8 +83,10 @@ object frmSettings: TfrmSettings
             TabOrder = 0
             Align = alTop
             OnClick = chkCaptionClick
+            ExplicitLeft = -1
+            ExplicitTop = 38
           end
-          object SharpECenterHeader2: TSharpECenterHeader
+          object SharpECenterHeader6: TSharpECenterHeader
             AlignWithMargins = True
             Left = 5
             Top = 74
@@ -92,91 +96,36 @@ object frmSettings: TfrmSettings
             Margins.Top = 0
             Margins.Right = 5
             Margins.Bottom = 10
-            Title = 'Skin'
-            Description = 'Define the skin for this object'
+            Title = 'Weather Location'
+            Description = 'Define which location to use for this object'
             TitleColor = clWindowText
             DescriptionColor = clRed
             Align = alTop
           end
-          object chkSkinEnable: TJvXPCheckbox
-            Left = 5
-            Top = 124
-            Width = 161
-            Height = 17
-            Caption = 'Enable skins'
-            TabOrder = 3
-            OnClick = chkSkinEnableClick
-          end
-        end
-        object pnlSkin: TPanel
-          AlignWithMargins = True
-          Left = 5
-          Top = 153
-          Width = 433
-          Height = 246
-          Margins.Left = 5
-          Margins.Top = 0
-          Margins.Right = 5
-          Margins.Bottom = 5
-          Align = alTop
-          BevelOuter = bvNone
-          Caption = 'pnlSkin'
-          Ctl3D = False
-          ParentCtl3D = False
-          TabOrder = 1
-          object lbSkins: TSharpEListBoxEx
+          object cbLocation: TComboBox
             AlignWithMargins = True
-            Left = 0
-            Top = 0
-            Width = 433
-            Height = 246
-            Margins.Left = 0
+            Left = 8
+            Top = 121
+            Width = 300
+            Height = 21
+            Margins.Left = 8
             Margins.Top = 0
-            Margins.Right = 0
-            Margins.Bottom = 0
-            Columns = <
-              item
-                Width = 256
-                HAlign = taLeftJustify
-                VAlign = taVerticalCenter
-                ColumnAlign = calLeft
-                StretchColumn = False
-                ColumnType = ctDefault
-                VisibleOnSelectOnly = False
-                Images = imlFontIcons
-              end
-              item
-                Width = 30
-                HAlign = taLeftJustify
-                VAlign = taVerticalCenter
-                ColumnAlign = calRight
-                StretchColumn = False
-                ColumnType = ctDefault
-                VisibleOnSelectOnly = False
-                Images = imlFontIcons
-              end>
-            Colors.BorderColor = clBtnFace
-            Colors.BorderColorSelected = clBtnShadow
-            Colors.ItemColor = clWindow
-            Colors.ItemColorSelected = clBtnFace
-            Colors.CheckColorSelected = clBtnFace
-            Colors.CheckColor = 15528425
-            Colors.DisabledColor = clBlack
-            DefaultColumn = 0
-            ItemHeight = 30
-            OnClickItem = lbSkinsClickItem
-            OnGetCellCursor = lbSkinsGetCellCursor
-            OnGetCellText = lbSkinsGetCellText
-            OnGetCellImageIndex = lbSkinsGetCellImageIndex
-            AutosizeGrid = True
-            BevelInner = bvNone
-            BevelOuter = bvNone
-            Borderstyle = bsNone
-            Align = alClient
-            ExplicitLeft = 2
-            ExplicitTop = 2
-            ExplicitWidth = 429
-            ExplicitHeight = 242
+            Margins.Right = 12
+            Margins.Bottom = 10
+            Align = alTop
+            Style = csDropDownList
+            Constraints.MaxWidth = 300
+            ItemHeight = 13
+            ItemIndex = 0
+            TabOrder = 3
+            Text = 'Default'
+            OnClick = cbLocationClick
+            Items.Strings = (
+              'Default'
+              'Compact'
+              'Minimal')
+            ExplicitLeft = 5
+            ExplicitTop = 106
           end
         end
       end
@@ -1683,6 +1632,141 @@ object frmSettings: TfrmSettings
           TitleColor = clWindowText
           DescriptionColor = clRed
           Align = alTop
+        end
+      end
+    end
+    object pagSkin: TJvStandardPage
+      Left = 0
+      Top = 0
+      Width = 445
+      Height = 628
+      Caption = 'pagSkin'
+      object pnlSkin: TPanel
+        Left = 1
+        Top = 1
+        Width = 443
+        Height = 425
+        Align = alTop
+        AutoSize = True
+        BevelOuter = bvNone
+        TabOrder = 0
+        object chkSkinEnable: TJvXPCheckbox
+          AlignWithMargins = True
+          Left = 5
+          Top = 47
+          Width = 433
+          Height = 17
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 10
+          Caption = 'Enable skins'
+          TabOrder = 0
+          Align = alTop
+          OnClick = chkSkinEnableClick
+          ExplicitLeft = 6
+          ExplicitTop = 48
+        end
+        object pnlSelectSkin: TPanel
+          AlignWithMargins = True
+          Left = 5
+          Top = 74
+          Width = 433
+          Height = 346
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 5
+          Align = alTop
+          BevelOuter = bvNone
+          Ctl3D = False
+          ParentCtl3D = False
+          TabOrder = 1
+          object lbSkins: TSharpEListBoxEx
+            AlignWithMargins = True
+            Left = 0
+            Top = 47
+            Width = 433
+            Height = 299
+            Margins.Left = 0
+            Margins.Top = 0
+            Margins.Right = 0
+            Margins.Bottom = 0
+            Columns = <
+              item
+                Width = 256
+                HAlign = taLeftJustify
+                VAlign = taVerticalCenter
+                ColumnAlign = calLeft
+                StretchColumn = False
+                ColumnType = ctDefault
+                VisibleOnSelectOnly = False
+                Images = imlFontIcons
+              end
+              item
+                Width = 30
+                HAlign = taLeftJustify
+                VAlign = taVerticalCenter
+                ColumnAlign = calRight
+                StretchColumn = False
+                ColumnType = ctDefault
+                VisibleOnSelectOnly = False
+                Images = imlFontIcons
+              end>
+            Colors.BorderColor = clBtnFace
+            Colors.BorderColorSelected = clBtnShadow
+            Colors.ItemColor = clWindow
+            Colors.ItemColorSelected = clBtnFace
+            Colors.CheckColorSelected = clBtnFace
+            Colors.CheckColor = 15528425
+            Colors.DisabledColor = clBlack
+            DefaultColumn = 0
+            ItemHeight = 30
+            OnClickItem = lbSkinsClickItem
+            OnGetCellCursor = lbSkinsGetCellCursor
+            OnGetCellText = lbSkinsGetCellText
+            OnGetCellImageIndex = lbSkinsGetCellImageIndex
+            AutosizeGrid = True
+            BevelInner = bvNone
+            BevelOuter = bvNone
+            Borderstyle = bsNone
+            Align = alClient
+            ExplicitHeight = 527
+          end
+          object SharpECenterHeader18: TSharpECenterHeader
+            AlignWithMargins = True
+            Left = 0
+            Top = 0
+            Width = 433
+            Height = 37
+            Margins.Left = 0
+            Margins.Top = 0
+            Margins.Right = 0
+            Margins.Bottom = 10
+            Title = 'Select Skin'
+            Description = 'Define the skin for this object'
+            TitleColor = clWindowText
+            DescriptionColor = clRed
+            Align = alTop
+          end
+        end
+        object SharpECenterHeader2: TSharpECenterHeader
+          AlignWithMargins = True
+          Left = 5
+          Top = 0
+          Width = 433
+          Height = 37
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 10
+          Title = 'Skin'
+          Description = 'Define whether to enable skins'
+          TitleColor = clWindowText
+          DescriptionColor = clRed
+          Align = alTop
+          ExplicitLeft = 6
+          ExplicitTop = 1
         end
       end
     end

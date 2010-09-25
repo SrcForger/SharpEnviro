@@ -190,12 +190,16 @@ type
     SharpECenterHeader15: TSharpECenterHeader;
     SharpECenterHeader16: TSharpECenterHeader;
     SharpECenterHeader17: TSharpECenterHeader;
-    SharpECenterHeader2: TSharpECenterHeader;
-    chkSkinEnable: TJvXPCheckbox;
-    pnlSkin: TPanel;
-    lbSkins: TSharpEListBoxEx;
     uicTextColor: TSharpEUIC;
     sceTextColor: TSharpEColorEditorEx;
+	cbLocation: TComboBox;
+    pagSkin: TJvStandardPage;
+    SharpECenterHeader18: TSharpECenterHeader;
+    pnlSelectSkin: TPanel;
+    lbSkins: TSharpEListBoxEx;
+    chkSkinEnable: TJvXPCheckbox;
+    SharpECenterHeader2: TSharpECenterHeader;
+    pnlSkin: TPanel;
     procedure FormCreate(Sender: TObject);
     procedure chkCaptionClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -250,8 +254,10 @@ type
       AItem: TSharpEListItem; var ACursor: TCursor);
     procedure lbSkinsClickItem(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem);
+	procedure cbLocationClick(Sender: TObject);
   private
     FWeatherSkin : string;
+	FLocation: string;
     FBlue32, FBlue48, FBlue64: TBitmap32;
     FWhite32, FWhite48, FWhite64: TBitmap32;
     FFontList: TFontList;
@@ -262,17 +268,21 @@ type
     procedure LoadResources;
 
     procedure ClearList;
+	procedure PopulateLocations;
   public
     sObjectID: string;
     procedure UpdateIconPage;
     procedure UpdateFontPage;
     procedure UpdateFontShadowPage;
     procedure UpdatePageUI;
+    procedure UpdateSkinPage;
     procedure UpdateWeatherPage;
 
     procedure BuildSkinList;
 
     property WeatherSkin : string read FWeatherSkin write FWeatherSkin;
+	property Location: string read FLocation write FLocation;
+	
     property FontList: TFontList read FFontList;
 
     property PluginHost: ISharpCenterHost read FPluginHost
@@ -483,7 +493,7 @@ procedure TfrmSettings.FormShow(Sender: TObject);
 begin
   UpdateIcon;
 
-  pnlSkin.Visible := chkSkinEnable.Checked;
+  pnlSelectSkin.Visible := chkSkinEnable.Checked;
 end;
 
 procedure TfrmSettings.lbSkinsClickItem(Sender: TObject; const ACol: Integer;
@@ -576,12 +586,14 @@ end;
 
 procedure TfrmSettings.chkSkinEnableClick(Sender: TObject);
 begin
-  pnlSkin.Visible := chkSkinEnable.Checked;
+  pnlSelectSkin.Visible := chkSkinEnable.Checked;
 
   if (not chkSkinEnable.Checked) then
     chkCaption.Checked := True
-  else chkCaption.Checked := False;
-  UpdateWeatherPage;
+  else
+    chkCaption.Checked := False;
+    
+  UpdateSkinPage;
   SendUpdate;
 end;
 
@@ -901,17 +913,53 @@ begin
   SendUpdate;
 end;
 
+procedure TfrmSettings.cbLocationClick(Sender: TObject);
+begin
+  SendUpdate;
+end;
+
+procedure TfrmSettings.PopulateLocations;
+var
+  xml:TJclSimpleXML;
+  n: Integer;
+  WeatherFile : String;
+  locID : string;
+begin
+  WeatherFile := GetSharpEUserSettingsPath+'SharpCore\Services\Weather\WeatherList.xml';
+  cbLocation.Clear;
+
+  if not FileExists(WeatherFile) then
+    exit;
+
+  xml := TJclSimpleXML.Create;
+  try
+    xml.LoadFromFile(WeatherFile);
+
+    for n := 0 to XML.Root.Items.Count - 1 do
+    begin
+      locID := xml.Root.Items.Item[n].Properties.Value('LocationID','');
+      cbLocation.Items.Add(xml.Root.Items.Item[n].Properties.Value('Location',''));
+      if FLocation = locID then
+        cbLocation.ItemIndex := n;
+      
+    end;
+
+  finally
+    xml.Free;
+  end;
+end;
+
 procedure TfrmSettings.UpdateFontPage;
 begin
   if not pagFont.Visible then
     exit;
 
-    // Font Transparency
-    uicTextAlphaValue.Visible := chkTextAlpha.Checked;
+  // Font Transparency
+  uicTextAlphaValue.Visible := chkTextAlpha.Checked;
 
-    // Update Page Height
-    Self.Height := pnlFont.Height + 50;
-    FPluginHost.Refresh(rtSize);
+  // Update Page Height
+  Self.Height := pnlFont.Height + 50;
+  FPluginHost.Refresh(rtSize);
 end;
 
 procedure TfrmSettings.UpdateFontShadowPage;
@@ -919,13 +967,13 @@ begin
   if not pagFontShadow.Visible then
     exit;
 
-    // Font Shadow
-    pnlTextShadow.Visible := chkTextShadow.Checked;
+  // Font Shadow
+  pnlTextShadow.Visible := chkTextShadow.Checked;
 
-    // Update Page Height
-    Self.Height := pnlFontShadow.Height + 50;
+  // Update Page Height
+  Self.Height := pnlFontShadow.Height + 50;
 
-    FPluginHost.Refresh(rtSize);
+  FPluginHost.Refresh(rtSize);
 end;
 
 procedure TfrmSettings.UpdateIcon;
@@ -977,26 +1025,44 @@ begin
     FPluginHost.Refresh(rtSize);
 end;
 
+procedure TfrmSettings.UpdateSkinPage;
+begin
+  if not pagSkin.Visible then
+    exit;
+
+  pnlOverride.Visible := False;
+
+  frmSettings.Height := pnlSkin.Height + 50;
+  FPluginHost.Refresh(rtSize);
+end;
+
 procedure TfrmSettings.UpdateWeatherPage;
 begin
   if not pagWeather.Visible then
     exit;
+
+  pnlOverride.Visible := False;
     
   frmSettings.Height := pnlWeather.Height + 50;
   FPluginHost.Refresh(rtSize);
+  
+  PopulateLocations;
 end;
 
 procedure TfrmSettings.UpdatePageUI;
 begin
-  pnlOverride.Visible := not (pagWeather.Visible);
+  pnlOverride.Visible := True;
 
   if pagIcon.Visible then
-    UpdateIconPage else
-    if pagFont.Visible then
-      UpdateFontPage else
-      if pagFontShadow.Visible then
-        UpdateFontShadowPage
-      else UpdateWeatherPage;
+    UpdateIconPage
+  else if pagFont.Visible then
+    UpdateFontPage
+  else if pagFontShadow.Visible then
+    UpdateFontShadowPage
+  else if pagSkin.Visible then
+    UpdateSkinPage
+  else
+    UpdateWeatherPage;
 
 end;
 
