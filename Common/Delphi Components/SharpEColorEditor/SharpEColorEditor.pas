@@ -107,6 +107,7 @@ type
       ATextRect, ASliderRect, ASliderValRect: TRect; ARow: Integer; AParent:
       TWinControl;
       ALabelAnchors, ASliderAnchors: TAnchors);
+
     procedure LoadResources;
     procedure ResizeEvent(Sender: TObject);
 
@@ -787,9 +788,18 @@ begin
   // Show color picker
   if not (FColorPicker.Visible) then
     FColorPicker.Show;
+	
+  FColorPicker.Left := FTabs.Width - 100;
+  FColorPicker.Top := 7;
+  FColorPicker.Height := 17;
 
   // Show add color button?
   FAddColorButton.Visible := FExpanded;
+  
+  FAddColorButton.Width := 20;
+  FAddColorButton.Height := FColorPicker.Height + 3;
+  FAddColorButton.Left := FColorPicker.Left - FAddColorButton.Width - 4;
+  FAddColorButton.Top := 5;
 
   // Show swatch tab
   if not (FTabs.TabList.Item[cTabColSwatch].Visible) then
