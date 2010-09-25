@@ -249,8 +249,8 @@ begin
   if FHasChanged then
   begin
     FResetBtn.Visible := True;
-    FResetBtn.Top := 1;
-    FResetBtn.Height := Height - 2;
+    FResetBtn.Top := 4 + (Height - 24) div 2;
+    FResetBtn.Height := 24;
     FResetBtn.Width := 24;
 
     if FMonitorControl <> nil then
