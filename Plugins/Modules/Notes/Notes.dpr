@@ -99,10 +99,9 @@ begin
   ModuleName := 'Notes Module';
 
   try
-    Form := TMainForm.CreateParented(BarWnd);
+    Form := TMainForm.CreateParented(pBarWnd);
     Form.BorderStyle := bsNone;
     TMainForm(Form).mInterface := self;
-    Form.ParentWindow := BarWnd;
   except
     on E:Exception do
     begin

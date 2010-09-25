@@ -116,6 +116,8 @@ begin
 end;
 
 procedure TMainForm.LoadIcon;
+var
+  newIcon : TIcon;
 begin
   if mInterface = nil then
     exit;
@@ -128,6 +130,16 @@ begin
       Button.Glyph32.SetSize(0,0);
   end else Button.Glyph32.SetSize(0,0);
   Button.Repaint;
+
+  if (NotesForm <> nil) then
+  begin
+    newIcon := CreateIconFromBitmap(Button.Glyph32, clNone);
+    if newIcon <> nil then
+    begin
+      NotesForm.Icon.Assign(newIcon);
+      newIcon.Free;
+    end;
+  end;
 end;
 
 procedure TMainForm.SaveSettings;

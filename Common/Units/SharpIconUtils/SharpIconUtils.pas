@@ -30,6 +30,7 @@ interface
 
 uses Windows,
      Graphics,
+     Controls,
      JclFileUtils,
      SysUtils,
      Classes,
@@ -53,6 +54,7 @@ function LoadPng(Bmp : TBitmap32; PngFile:string) : boolean;
 function IconStringToIcon(Icon,Target : String; Bmp : TBitmap32) : boolean; overload;
 function IconStringToIcon(Icon,Target : String; Bmp : TBitmap32; Size : integer) : boolean; overload;
 function GetNearestIconSize(Height : integer) : integer;
+function CreateIconFromBitmap(Bitmap: TBitmap32; TransparentColor: TColor): TIcon;
 
 implementation
 
@@ -321,7 +323,6 @@ begin
   result := true;
 end;
 
-
 function IconStringToIcon(Icon,Target : String; Bmp : TBitmap32) : boolean;
 begin
   result := IconStringToIcon(Icon,Target,Bmp,32);
@@ -375,6 +376,41 @@ begin
     result := 128
 //  else result := 256;
 	else result := 128;
+end;
+
+function CreateIconFromBitmap(Bitmap: TBitmap32; TransparentColor: TColor): TIcon;
+var
+  bmp : TBitmap;
+begin
+  bmp := TBitmap.Create;
+
+  try
+    try
+      bmp.Assign(Bitmap);
+    
+      with TImageList.CreateSize(bmp.Width, bmp.Height) do
+      begin
+        try
+          AllocBy := 1;
+          AddMasked(bmp, TransparentColor);
+          Result := TIcon.Create;
+          try
+            GetIcon(0, Result);
+          except
+            Result.Free;
+            Result := nil;
+            raise;
+          end;
+        finally
+          Free;
+        end;
+      end;  
+    except
+      Result := nil;
+    end;
+  finally
+    bmp.Free;
+  end;
 end;
 
 initialization
