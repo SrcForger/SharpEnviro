@@ -103,7 +103,7 @@
           <dimension>13,20</dimension>
           <image>images/Throbber.png</image>
 	  <color>$Special</color>
-          <alpha>$Alpha</alpha>
+          <alpha>$Alpha+128</alpha>
           <enabled>$IsBarTop</enabled>
         </skinpart>
         <skinpart>
@@ -111,7 +111,7 @@
           <dimension>13,20</dimension>
           <image>images/ThrobberBottom.png</image>
 	  <color>$Special</color>
-          <alpha>$Alpha</alpha>
+          <alpha>$Alpha+128</alpha>
           <enabled>$IsBarBottom</enabled>
         </skinpart>
       </normal>
@@ -121,7 +121,7 @@
           <dimension>13,20</dimension>
           <image>images/Throbber.png</image>
 	  <color>$Special+32</color>
-          <alpha>$Alpha</alpha>
+          <alpha>$Alpha+128</alpha>
           <enabled>$IsBarTop</enabled>
         </skinpart>
         <skinpart>
@@ -129,7 +129,7 @@
           <dimension>13,20</dimension>
           <image>images/ThrobberBottom.png</image>
 	  <color>$Special+32</color>
-          <alpha>$Alpha</alpha>
+          <alpha>$Alpha+128</alpha>
           <enabled>$IsBarBottom</enabled>
         </skinpart>
       </hover>
@@ -139,7 +139,7 @@
           <dimension>13,20</dimension>
           <image>images/Throbber.png</image>
 	  <color>$Special-32</color>
-          <alpha>$Alpha</alpha>
+          <alpha>$Alpha+128</alpha>
           <enabled>$IsBarTop</enabled>
         </skinpart>
         <skinpart>
@@ -147,7 +147,7 @@
           <dimension>13,20</dimension>
           <image>images/ThrobberBottom.png</image>
 	  <color>$Special-32</color>
-          <alpha>$Alpha</alpha>
+          <alpha>$Alpha+128</alpha>
           <enabled>$IsBarBottom</enabled>
         </skinpart>
       </down>
@@ -1222,28 +1222,28 @@
         <dimension>1,h</dimension>
         <image>images/empty.png</image>
         <color>0</color>
-        <alpha>$BAlpha+16</alpha>
+        <alpha>$Alpha+128</alpha>
       </skinpart>
       <skinpart>
         <location>w-1,0</location>
         <dimension>1,h</dimension>
         <image>images/empty.png</image>
         <color>0</color>
-        <alpha>$BAlpha+16</alpha>
+        <alpha>$Alpha+128</alpha>
       </skinpart>
       <skinpart>
         <location>1,0</location>
         <dimension>w-2,1</dimension>
         <image>images/empty.png</image>
         <color>0</color>
-        <alpha>$BAlpha+16</alpha>
+        <alpha>$Alpha+128</alpha>
       </skinpart>
       <skinpart>
         <location>1,h-1</location>
         <dimension>w-2,1</dimension>
         <image>images/empty.png</image>
         <color>0</color>
-        <alpha>$BAlpha+16</alpha>
+        <alpha>$Alpha+128</alpha>
       </skinpart>
       <skinpart>
         <location>1,1</location>
@@ -1252,7 +1252,7 @@
         <gradienttype>vertical</gradienttype>
         <gradientcolor>$Special,$Special-32</gradientcolor>
         <gradientalpha>255,255</gradientalpha>
-        <alpha>164</alpha>
+        <alpha>$Alpha+128</alpha>
       </skinpart>  
     </normal>
     <hover>
@@ -1261,28 +1261,28 @@
         <dimension>1,h</dimension>
         <image>images/empty.png</image>
         <color>0</color>
-        <alpha>$BAlpha+16</alpha>
+        <alpha>$Alpha+128</alpha>
       </skinpart>
       <skinpart>
         <location>w-1,0</location>
         <dimension>1,h</dimension>
         <image>images/empty.png</image>
         <color>0</color>
-        <alpha>$BAlpha+16</alpha>
+        <alpha>$Alpha+128</alpha>
       </skinpart>
       <skinpart>
         <location>1,0</location>
         <dimension>w-2,1</dimension>
         <image>images/empty.png</image>
         <color>0</color>
-        <alpha>$BAlpha+16</alpha>
+        <alpha>$Alpha+128</alpha>
       </skinpart>
       <skinpart>
         <location>1,h-1</location>
         <dimension>w-2,1</dimension>
         <image>images/empty.png</image>
         <color>0</color>
-        <alpha>$BAlpha+16</alpha>
+        <alpha>$Alpha+128</alpha>
       </skinpart>
       <skinpart>
         <location>1,1</location>
@@ -1291,7 +1291,7 @@
         <gradienttype>vertical</gradienttype>
         <gradientcolor>$Special,$Special+32</gradientcolor>
         <gradientalpha>255,255</gradientalpha>
-        <alpha>196</alpha>
+        <alpha>$Alpha+128</alpha>
       </skinpart>  
     </hover>
     <down>
@@ -1300,28 +1300,28 @@
         <dimension>1,h</dimension>
         <image>images/empty.png</image>
         <color>0</color>
-        <alpha>$BAlpha+16</alpha>
+        <alpha>$Alpha+128</alpha>
       </skinpart>
       <skinpart>
         <location>w-1,0</location>
         <dimension>1,h</dimension>
         <image>images/empty.png</image>
         <color>0</color>
-        <alpha>$BAlpha+16</alpha>
+        <alpha>$Alpha+128</alpha>
       </skinpart>
       <skinpart>
         <location>1,0</location>
         <dimension>w-2,1</dimension>
         <image>images/empty.png</image>
         <color>0</color>
-        <alpha>$BAlpha+16</alpha>
+        <alpha>$Alpha+128</alpha>
       </skinpart>
       <skinpart>
         <location>1,h-1</location>
         <dimension>w-2,1</dimension>
         <image>images/empty.png</image>
         <color>0</color>
-        <alpha>$BAlpha+16</alpha>
+        <alpha>$Alpha+128</alpha>
       </skinpart>
       <skinpart>
         <location>1,1</location>
@@ -1330,7 +1330,7 @@
         <gradienttype>vertical</gradienttype>
         <gradientcolor>$Special,$Special-32</gradientcolor>
         <gradientalpha>255,255</gradientalpha>
-        <alpha>96</alpha>
+        <alpha>$Alpha+128</alpha>
       </skinpart>  
     </down>
   </minithrobber>
