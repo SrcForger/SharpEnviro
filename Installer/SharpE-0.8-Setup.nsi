@@ -277,9 +277,13 @@ Section "!Core Files" SEC01
   SetOutPath "$INSTDIR\Icons\SimplyGrey\"
   File /r "..\..\SharpE\Icons\SimplyGrey\*.*"
 
-  # Icons - Tango
+  # Icons - Token
   SetOutPath "$INSTDIR\Icons\Token\"
   File /r "..\..\SharpE\Icons\Token\*.*"
+  
+  # Icons - Token Dark
+  SetOutPath "$INSTDIR\Icons\Token Dark\"
+  File /r "..\..\SharpE\Icons\Token Dark\*.*"
   
   # Icons - Weather
   SetOutPath "$INSTDIR\Icons\Weather\"
@@ -702,9 +706,9 @@ Section /o -un.Main UNSEC0000
     MessageBox MB_YESNO|MB_ICONEXCLAMATION "Do you want to also delete your SharpEnviro user settings?" \
       IDYES DeleteSettings IDNO DontDeleteSettings
     DeleteSettings:
-      RMDir /r "$INSTDIR\Settings\Global"
-      RMDir /r "$INSTDIR\Settings\User"
-      RMDir /r "$INSTDIR\Settings"
+      RMDir /r "$INSTDIR\Settings\Global\"
+      RMDir /r "$INSTDIR\Settings\User\"
+      RMDir /r "$INSTDIR\Settings\"
       SetShellVarContext all
       IfFileExists "$APPDATA\SharpEnviro\*.*" DeleteGlobalSettings DontDeleteGlobalSettings
       DeleteGlobalSettings:
@@ -739,6 +743,7 @@ Section /o -un.Main UNSEC0000
     RmDir /r "$INSTDIR\Icons\nuoveXT2\"
     RmDir /r "$INSTDIR\Icons\SimplyGrey\"
     RmDir /r "$INSTDIR\Icons\Token\"
+    RmDir /r "$INSTDIR\Icons\Token Dark\"
     RmDir /r "$INSTDIR\Icons\Weather\"
     RmDir "$INSTDIR\Icons\"
     
