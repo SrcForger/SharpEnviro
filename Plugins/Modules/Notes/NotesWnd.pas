@@ -1329,9 +1329,9 @@ begin
   try
     Parent := hiddenPanel;
     Visible := False;
-    if OpenFileStreamShared(Stream, sfaRead, TabFilePath('My Notes'), True) = sfeSuccess then
+    if OpenFileStreamShared(Stream, sfaCreate, TabFilePath('My Notes'), True) = sfeSuccess then
     begin
-      Lines.LoadFromStream(Stream);
+      Lines.SaveToStream(Stream);
       Stream.Free;
     end;
     // Lines.SaveToFile(TabFilePath('My Notes'));
