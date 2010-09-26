@@ -34,7 +34,7 @@ uses
   Dialogs,
   Forms,
 
-  JvSimpleXml,
+  JclSimpleXml,
   JclStrings,
   jclIniFiles,
   jclFileUtils,
@@ -45,13 +45,33 @@ uses
 
   uWeatherOptions,
   uWeatherList,
-  SharpApi;
-
-{type
-  TConnectionKind = (ckModem, ckLan, ckProxy, ckRAS, ckModemBusy,
-    ckOtherConnected, ckNotConnected);}
+  SharpApi,
+  uSharpXMLUtils;
 
 type
+  TDownloadComplete = procedure(tmpInfo: TWeatherItem; path: string) of object;
+
+  TDownloadItem = class
+    CompleteProc: TDownloadComplete;
+    TmpInfo: TWeatherItem;
+    UrlTarget, Target: string;
+  end;
+
+  TDownloadThread = class(TThread)
+  private
+    FDownloadItems: TObjectList;
+
+  protected
+    procedure Execute; override;
+
+  public
+    constructor Create;
+    destructor Destroy; override;
+
+    procedure Add(CompleteProc: TDownloadComplete; tmpInfo: TWeatherItem; UrlTarget, Target: string);
+
+  end;
+
   TWeatherMgr = class
   private
     FTimer: TTimer;
@@ -60,10 +80,13 @@ type
     FNextUpdate: Double;
     FWeatherOptions: TWeatherOptions;
     FWeatherList: TWeatherList;
-    procedure Download(UrlTarget: string; Target: string);
+
+    FDownloadThread: TDownloadThread;
+
+    procedure DownloadCompleteCC(tmpInfo: TWeatherItem; path: string);
+    procedure DownloadCompleteForecast(tmpInfo: TWeatherItem; path: string);
+
     procedure WeatherUpdateCheck(Sender: TObject);
-    {function ConnectionKind: TConnectionKind; }
-    procedure Debug(msg: string; errorType: Integer=DMT_INFO);
   public
     constructor Create;
     destructor Destroy; override;
@@ -88,43 +111,141 @@ const
 
 var
   WeatherMgr: TWeatherMgr;
+  DownloadCritical: TRTLCriticalSection;
+
+procedure Debug(msg: string; errorType: Integer = DMT_INFO);
 
 implementation
 
 uses
   SOAPHTTPTrans;
 
-{ TWeatherMgr }
-
-{function TWeatherMgr.ConnectionKind: TConnectionKind;
-var
-  flags: dword;
-  bState: Boolean;
+procedure Debug(msg: string; errorType: Integer);
 begin
-  Result := ckOtherConnected;
-  bState := InternetGetConnectedState(@flags, 0);
-  if bState then
+  SendDebugMessageEx('Weather Service',pchar(msg),clBlack, errorType);
+end;
+
+{ TDownloadThread }
+constructor TDownloadThread.Create;
+begin
+  inherited Create(false);
+
+  FDownloadItems := TObjectList.Create;
+end;
+
+destructor TDownloadThread.Destroy;
+begin
+  FDownloadItems.Clear;
+  FDownloadItems.Free;
+
+  inherited;
+end;
+
+procedure TDownloadThread.Add(CompleteProc: TDownloadComplete; tmpInfo: TWeatherItem; UrlTarget, Target: string);
+var
+  item: TDownloadItem;
+begin
+  Debug('Adding ' + UrlTarget, DMT_INFO);
+
+  item := TDownloadItem.Create;
+  item.CompleteProc := CompleteProc;
+  item.TmpInfo := tmpInfo;
+  item.UrlTarget := UrlTarget;
+  item.Target := Target;
+
+  EnterCriticalSection(DownloadCritical);
+  FDownloadItems.Add(item);
+  LeaveCriticalSection(DownloadCritical);
+
+  Debug('Finished Adding ' + UrlTarget, DMT_INFO);
+end;
+
+procedure TDownloadThread.Execute;
+var
+  i: integer;
+  item: TDownloadItem;
+  Stream: TMemoryStream;
+  HTTPReqResp1: THTTPReqResp;
+begin
+  while true do
   begin
-    if (flags and INTERNET_CONNECTION_MODEM) = INTERNET_CONNECTION_MODEM then
-      Result := ckModem
-    else if (flags and INTERNET_CONNECTION_LAN) = INTERNET_CONNECTION_LAN then
-      Result := ckLan
-    else if (flags and INTERNET_CONNECTION_PROXY) = INTERNET_CONNECTION_PROXY
-      then
-      Result := ckProxy
-    else if (flags and INTERNET_CONNECTION_MODEM_BUSY) =
-      INTERNET_CONNECTION_MODEM_BUSY then
-      Result := ckModemBusy;
-  end
-  else
-    Result := ckNotConnected;
-end;  }
+    if self.Terminated then
+      break;
+
+    Sleep(16);
+
+    EnterCriticalSection(DownloadCritical);
+    i := FDownloadItems.Count - 1;
+    LeaveCriticalSection(DownloadCritical);
+  
+    while i > 0 do
+    begin
+      if self.Terminated then
+        break;
+
+      Sleep(16);
+
+      EnterCriticalSection(DownloadCritical);
+      item := TDownloadItem(FDownloadItems.Items[i]);
+      LeaveCriticalSection(DownloadCritical);
+
+      if not InternetCheckConnection(PAnsiChar(item.UrlTarget), 1, 0) then
+      begin
+        Debug('No internet connection could be established');
+        continue;
+      end;
+
+      Stream := TMemoryStream.Create;
+      HTTPReqResp1 := THTTPReqResp.Create(nil);
+      try
+        try
+          HTTPReqResp1.URL := item.UrlTarget;
+          HTTPReqResp1.UseUTF8InHeader := False;
+          HTTPReqResp1.Execute(item.UrlTarget, Stream);
+
+          Debug(STRSeparator, DMT_INFO);
+          Debug(STRRequest + item.Target, DMT_INFO);
+          Debug(STRDateTime + DateTimeToStr(now), DMT_INFO);
+          Debug(STRSeparator, DMT_INFO);
+        except
+          Debug(Format('Error downloading %s (Connection Issue)', [item.Target]),
+            DMT_ERROR);
+
+          // Remove the last downloaded item
+          EnterCriticalSection(DownloadCritical);
+          FDownloadItems.Remove(item);
+          i := FDownloadItems.Count - 1;
+          LeaveCriticalSection(DownloadCritical);
+          
+          continue;
+        end;
+      finally
+        Stream.SaveToFile(item.Target);
+
+        Stream.Destroy;
+        HTTPReqResp1.Free;
+      end;
+
+      item.CompleteProc(item.TmpInfo, item.Target);
+
+      // Remove the last downloaded item
+      EnterCriticalSection(DownloadCritical);
+      FDownloadItems.Remove(item);
+      i := FDownloadItems.Count - 1;
+      LeaveCriticalSection(DownloadCritical);
+    end;
+  end;
+end;
+
+{ TWeatherMgr }
 
 constructor TWeatherMgr.Create;
 var
   interval: Integer;
   iMin: Integer;
 begin
+  FDownloadThread := TDownloadThread.Create;
+
   FWeatherList := TWeatherList.Create();
   FWeatherList.FileName := GetSharpeUserSettingsPath + 'SharpCore\Services\Weather\WeatherList.xml';
   FWeatherList.LoadSettings;
@@ -155,59 +276,55 @@ begin
   WeatherUpdateCheck(Self);
 end;
 
-procedure TWeatherMgr.Debug(msg: string; errorType: Integer);
-begin
-  SendDebugMessageEx('Weather Service',pchar(msg),clBlack, errorType);
-end;
-
 destructor TWeatherMgr.Destroy;
 begin
+  FDownloadThread.Terminate;
+  FDownloadThread.WaitFor;
+  FDownloadThread.Free;
+
   FTimer.Free;
   FWeatherOptions.Free;
   FWeatherList.Free;
   inherited;
 end;
 
-procedure TWeatherMgr.Download(UrlTarget: string; Target: string);
+procedure TWeatherMgr.DownloadCompleteCC(tmpInfo: TWeatherItem; path: string);
 var
-  Stream: TMemoryStream;
-  HTTPReqResp1: THTTPReqResp;
+  xml: TJclSimpleXML;
 begin
+  FNextUpdate := Now + (30 / SecsPerDay);
 
-  if not InternetCheckConnection(PAnsiChar(UrlTarget), 1, 0) then
+  // Get Last Icon + Last Temp
+  xml := TJclSimpleXML.Create;
+  if LoadXMLFromSharedFile(xml, path) then
   begin
-    Debug('No internet connection could be established');
-    exit;
+    tmpInfo.LastIconID :=
+      xml.Root.Items.ItemNamed['cc'].Items.ItemNamed['icon'].IntValue;
+    tmpInfo.LastTemp :=
+      xml.Root.Items.ItemNamed['cc'].Items.ItemNamed['tmp'].IntValue;
   end;
+  xml.Free;
 
-  Stream := TMemoryStream.Create;
-  HTTPReqResp1 := THTTPReqResp.Create(nil);
-  try
-    try
+  tmpInfo.CCLastUpdated := now;
+  FErrorCount := 0;
 
-      HTTPReqResp1.URL := UrlTarget;
-      HTTPReqResp1.UseUTF8InHeader := False;
-      HTTPReqResp1.Execute(UrlTarget, Stream);
+  WeatherList.SaveSettings;
+  SharpApi.BroadcastGlobalUpdateMessage(suCenter);
 
-      Debug(STRSeparator, DMT_INFO);
-      Debug(STRRequest + Target, DMT_INFO);
-      Debug(STRDateTime + DateTimeToStr(now), DMT_INFO);
-      Debug(STRSeparator, DMT_INFO);
+  SharpEBroadCast(WM_WEATHERUPDATE, 0, 0);
+end;
 
-    except
-      Inc(FErrorCount);
-      Debug(Format('Error downloading %s (Connection Issue)', [Target]),
-        DMT_ERROR);
-      exit;
-    end;
-  finally
-    Stream.SaveToFile(Target);
+procedure TWeatherMgr.DownloadCompleteForecast(tmpInfo: TWeatherItem; path: string);
+begin
+  FNextUpdate := Now + (30 / SecsPerDay);
 
-    Stream.Destroy;
-    HTTPReqResp1.Free;
+  tmpInfo.FCLastUpdated := now;
+  FErrorCount := 0;
 
-    FNextUpdate := Now + (30 / SecsPerDay);
-  end;
+  WeatherList.SaveSettings;
+
+  SharpEBroadCast(WM_WEATHERUPDATE, 0, 0);
+  SharpApi.BroadcastGlobalUpdateMessage(suCenter);
 end;
 
 procedure TWeatherMgr.ForceUpdate;
@@ -228,9 +345,8 @@ var
   path, locpath, url: string;
   tmps: string;
   i: Integer;
-  tmpInfo: TWeatherItem;
-  xml: TJvSimpleXML;
   interval: Integer;
+  tmpInfo: TWeatherItem;
 const
   MaxErrors = 5;
 
@@ -253,27 +369,6 @@ begin
       'stop/start the service', DMT_ERROR);
     Exit;
   end;
-{$ENDREGION}
-
-  {$REGION 'Check Connection Type'}
-{  case ConnectionKind of
-    ckModem: Debug('Connected via modem: Check Weather Sources', DMT_STATUS);
-    ckModemBusy:
-      begin
-        Debug('Modem busy: Delayed Updating', DMT_STATUS);
-        exit;
-      end;
-    ckNotConnected:
-      begin
-        Debug('No Internet connection: Delayed Updating', DMT_STATUS);
-        Exit;
-      end;
-    ckLan: Debug('Connected via LAN: Check Weather Sources', DMT_STATUS);
-    ckProxy: Debug('Connected behind a proxy: Check Weather Sources',
-      DMT_STATUS);
-    ckOtherConnected:
-      Debug('Unknown connection to internet: Check Weather Sources', DMT_STATUS);
-  end;  }
 {$ENDREGION}
 
   currentdt := now;
@@ -325,30 +420,9 @@ begin
 
         if ((now > FNextUpdate) or FForce) then
         begin
-
           Debug(Format('%s: CCUpdate', [tmpInfo.LocationID]), DMT_INFO);
           url := Format(fsCCUrl, [tmpInfo.LocationID, tmps]);
-          Download(url, locpath + 'cc.xml');
-
-          // Get Last Icon + Last Temp
-          xml := TJvSimpleXML.Create(nil);
-          try
-            xml.LoadFromFile(locpath + 'cc.xml');
-            tmpInfo.LastIconID :=
-              xml.Root.Items.ItemNamed['cc'].Items.ItemNamed['icon'].IntValue;
-            tmpInfo.LastTemp :=
-              xml.Root.Items.ItemNamed['cc'].Items.ItemNamed['tmp'].IntValue;
-          finally
-            xml.Free;
-          end;
-
-          tmpInfo.CCLastUpdated := now;
-          FErrorCount := 0;
-
-          WeatherList.SaveSettings;
-          SharpApi.BroadcastGlobalUpdateMessage(suCenter);
-
-          SharpEBroadCast(WM_WEATHERUPDATE, 0, 0);
+          FDownloadThread.Add(DownloadCompleteCC, tmpInfo, url, locpath + 'cc.xml');
         end;
       end;
     except
@@ -380,14 +454,7 @@ begin
 
           Debug(Format('%s: FCUpdate', [tmpInfo.LocationID]), DMT_INFO);
           url := Format(fsForecastUrl, [tmpInfo.LocationID, tmps]);
-          Download(url, locpath + 'forecast.xml');
-          tmpInfo.FCLastUpdated := now;
-          FErrorCount := 0;
-
-          WeatherList.SaveSettings;
-
-          SharpEBroadCast(WM_WEATHERUPDATE, 0, 0);
-          SharpApi.BroadcastGlobalUpdateMessage(suCenter);
+          FDownloadThread.Add(DownloadCompleteForecast, tmpInfo, url, locpath + 'forecast.xml');
         end;
       end;
     except
@@ -398,6 +465,12 @@ begin
 
   end;
 end;
+
+initialization
+  InitializeCriticalSection(DownloadCritical);
+
+finalization
+  DeleteCriticalSection(DownloadCritical);
 
 end.
 
