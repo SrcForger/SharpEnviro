@@ -32,7 +32,8 @@ uses
   Types, StdCtrls, SharpEBaseControls, Commctrl, SharpTypes,
   JclSimpleXML, SharpApi, SharpCenterApi, Menus, Math,
   SharpESkinLabel, GR32, ExtCtrls, ToolTipApi,
-  uISharpBarModule, ImgList, PngImageList;
+  uISharpBarModule, ImgList, PngImageList,
+  uTimeCalendar;
 
 
 type
@@ -55,6 +56,8 @@ type
     procedure Configure1Click(Sender: TObject);
     procedure lb_clockMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure lb_clockClick(Sender: TObject);
+    procedure FormClick(Sender: TObject);
   protected
   private
     sFormat : String;
@@ -64,6 +67,7 @@ type
     FTipWnd : hwnd;
     FTipSet : boolean;
     FOldTip : String;
+    FTimeCalendar: TTimeCalendar;
     procedure WMNotify(var msg : TWMNotify); message WM_NOTIFY;
   public
     mInterface : ISharpBarModule;
@@ -255,6 +259,15 @@ begin
   end;
 end;
 
+procedure TMainForm.lb_clockClick(Sender: TObject);
+var
+  pos: TPoint;
+begin
+  GetCursorPos(pos);
+
+  FTimeCalendar.Show(pos.x, pos.y);
+end;
+
 procedure TMainForm.lb_clockDblClick(Sender: TObject);
 begin
   SharpApi.SharpExecute('timedate.cpl');
@@ -272,9 +285,15 @@ begin
       PChar(inttostr(mInterface.BarInterface.BarID) + ':' + inttostr(mInterface.ID)));
 end;
 
+procedure TMainForm.FormClick(Sender: TObject);
+begin
+  lb_clockClick(lb_clock);
+end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  FTimeCalendar := TTimeCalendar.Create;
+
   FTipSet := False;
   FOldTip := '.';
   DoubleBuffered := True;
@@ -289,6 +308,8 @@ end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
+  FTimeCalendar.Free;
+
   ToolTipApi.DeleteToolTip(FTipWnd,Self,0);
   if FTipWnd <> 0 then
      DestroyWindow(FTipWnd);

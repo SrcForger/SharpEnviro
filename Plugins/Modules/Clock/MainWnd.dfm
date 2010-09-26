@@ -11,6 +11,7 @@ object MainForm: TMainForm
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnClick = FormClick
   OnCreate = FormCreate
   OnDblClick = FormDblClick
   OnDestroy = FormDestroy
@@ -25,6 +26,7 @@ object MainForm: TMainForm
     Height = 21
     AutoSize = True
     Visible = False
+    OnClick = lb_clockClick
     OnDblClick = lb_clockDblClick
     OnMouseUp = lb_clockMouseUp
     Caption = '.'
@@ -37,6 +39,7 @@ object MainForm: TMainForm
     Width = 12
     Height = 21
     AutoSize = True
+    OnClick = lb_clockClick
     OnDblClick = lb_clockDblClick
     OnMouseUp = lb_clockMouseUp
     Caption = '.'
