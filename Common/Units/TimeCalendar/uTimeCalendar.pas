@@ -88,7 +88,7 @@ begin
   if not Assigned(FTimeDateCPL) then
     exit;
 
-  rc := Rect(x, y, x-TimeCalendarWidth, y-TimeCalendarHeight);
+  rc := Rect(x+(TimeCalendarWidth div 2), y, x-(TimeCalendarWidth - (TimeCalendarWidth div 2)), y-TimeCalendarHeight);
 
   FTimeDateCPL.ShowCalendar(0, @rc);
 end;
