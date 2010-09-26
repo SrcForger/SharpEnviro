@@ -1491,6 +1491,9 @@ begin
     end
   end;
   setlength(BR,0);
+
+  if (FindWindow('TSharpExplorerform', nil) <> 0) then
+    SendMessage(FindWindow('TSharpExplorerform', nil), WM_SHARPSHELLREADY, 0, 0);
 end;
 
 procedure TDeskAreaManager.SetFullScreenArea;
