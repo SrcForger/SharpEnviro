@@ -33,9 +33,9 @@ object frmNotes: TfrmNotes
         317)
       object rb_icon: TRadioButton
         AlignWithMargins = True
-        Left = 6
-        Top = 140
-        Width = 446
+        Left = 5
+        Top = 143
+        Width = 448
         Height = 17
         Margins.Left = 5
         Margins.Top = 0
@@ -46,12 +46,13 @@ object frmNotes: TfrmNotes
         TabOrder = 2
         TabStop = True
         OnClick = rb_textClick
+        ExplicitTop = 139
       end
       object rb_text: TRadioButton
         AlignWithMargins = True
-        Left = 6
-        Top = 162
-        Width = 446
+        Left = 5
+        Top = 165
+        Width = 448
         Height = 17
         Margins.Left = 5
         Margins.Top = 0
@@ -61,12 +62,13 @@ object frmNotes: TfrmNotes
         Caption = 'Text'
         TabOrder = 3
         OnClick = rb_textClick
+        ExplicitTop = 161
       end
       object rb_icontext: TRadioButton
         AlignWithMargins = True
-        Left = 6
-        Top = 118
-        Width = 446
+        Left = 5
+        Top = 121
+        Width = 448
         Height = 17
         Margins.Left = 5
         Margins.Top = 8
@@ -78,13 +80,14 @@ object frmNotes: TfrmNotes
         TabOrder = 1
         TabStop = True
         OnClick = rb_textClick
+        ExplicitTop = 117
       end
       object schWindowOptions: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 6
-        Top = 1
-        Width = 446
-        Height = 35
+        Left = 5
+        Top = 0
+        Width = 448
+        Height = 37
         Margins.Left = 5
         Margins.Top = 0
         Margins.Right = 5
@@ -99,10 +102,10 @@ object frmNotes: TfrmNotes
       end
       object schDisplayOptions: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 6
-        Top = 72
-        Width = 446
-        Height = 35
+        Left = 5
+        Top = 73
+        Width = 448
+        Height = 37
         Margins.Left = 5
         Margins.Top = 10
         Margins.Right = 5
@@ -115,9 +118,9 @@ object frmNotes: TfrmNotes
       end
       object cbAlwaysOnTop: TJvXPCheckbox
         AlignWithMargins = True
-        Left = 6
-        Top = 42
-        Width = 441
+        Left = 5
+        Top = 43
+        Width = 443
         Height = 17
         Margins.Left = 5
         Margins.Right = 10
@@ -157,10 +160,10 @@ object frmNotes: TfrmNotes
       end
       object schDirectoryOptions: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 6
-        Top = 224
-        Width = 446
-        Height = 35
+        Left = 5
+        Top = 227
+        Width = 448
+        Height = 37
         Margins.Left = 5
         Margins.Top = 40
         Margins.Right = 5
@@ -174,13 +177,14 @@ object frmNotes: TfrmNotes
         Color = clWindow
       end
       object btnBrowse: TButton
-        Left = 368
-        Top = 268
+        Left = 364
+        Top = 270
         Width = 75
         Height = 25
         Anchors = [akTop, akRight]
         Caption = 'Browse'
         TabOrder = 9
+        OnClick = btnBrowseClick
       end
     end
   end
