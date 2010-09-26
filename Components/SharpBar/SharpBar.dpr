@@ -358,8 +358,7 @@ begin
        begin
           ServiceDone('SharpBar');
 
-          // Start Explorer
-          //SendMessage(FindWindow('Shell_TrayWnd', nil), WM_SHARPSTARTEXPLORER, 0, 0);
+          SharpApi.ServiceMsg('Shell', 'StartExplorer');
 
           halt;
        end;

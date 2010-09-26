@@ -49,7 +49,7 @@ begin
      begin
        SharpBarMainForm.Show;
        SharpBarMainForm.Repaint;
-       SharpApi.ServiceMsg('DeskArea','Update');
+       SharpApi.ServiceMsg('Shell','DeskAreaUpdate');
      end;
 end;
 
@@ -70,14 +70,14 @@ begin
         SharpBarMainForm.SaveBarTooltipSettings;
       end;
       
-      SharpApi.ServiceMsg('DeskArea','Update');
+      SharpApi.ServiceMsg('Shell','DeskAreaUpdate');
     end;
   end
      else
      begin
        SharpBarMainForm.Show;
        SharpBarMainForm.Repaint;
-       SharpApi.ServiceMsg('DeskArea','Update');
+       SharpApi.ServiceMsg('Shell','DeskAreaUpdate');
        if not (SharpBarMainForm.SharpEBar.SpecialHideForm) then
        begin
          Close;

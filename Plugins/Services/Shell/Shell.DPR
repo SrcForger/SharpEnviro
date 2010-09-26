@@ -40,6 +40,7 @@ uses
   Contnrs,
   JclSysInfo,
   JclSimpleXML,
+  Jclstrings,
   MonitorList,
   {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   winver in 'winver.pas',
@@ -154,6 +155,8 @@ var
   MsTaskSwWClass   : hwnd;
   DeskAreaTimerWnd : hwnd;
 
+  ExplorerStarted: boolean;
+
   ShellTrayWndClass: TWndClass = (
     style: 0;
     lpfnWndProc: @ShellTrayWndProc;
@@ -266,8 +269,10 @@ begin
     end
     else if DeskAreaManager <> nil then
       DeskAreaManager.SetDeskArea;
+      
     result := 0;
-  end else Result := DefWindowProc(wnd, Msg, wParam, lParam);
+  end else
+    Result := DefWindowProc(wnd, Msg, wParam, lParam);
 end;
 
 procedure DebugIconData(pData : TNotifyIconDataV7);
@@ -316,6 +321,8 @@ end;
 
 procedure TerminateExplorer;
 begin
+  ExplorerStarted := False;
+
   PostMessage(FindWindow('TSharpExplorerform', nil), WM_CLOSE, 0, 0);
 end;
 
@@ -479,15 +486,9 @@ begin
         result := 1;
       end else result := 0;
     end;
-{    WM_SHARPSTARTEXPLORER: begin
-      if (FindWindow('TSharpExplorerform', nil) = 0) then
-      begin
-        TerminateExplorer;
-        sleep(1000);
-        StartExplorer;
-      end;
-      result := 1;
-    end;    }
+    WM_SHARPSHELLREADY: begin
+      result := Integer(ExplorerStarted);
+    end;   
     else Result := DefWindowProc(wnd, Msg, wParam, lParam);
   end;
 
@@ -730,6 +731,8 @@ function Start(owner: hwnd): hwnd;
 begin
   InitThemeLibrary;
 
+  ExplorerStarted := False;
+
   TaskMsgManager := nil;
   TrayManager := nil;
   DeskAreaManager := nil;
@@ -758,6 +761,37 @@ begin
   SendNotifyMessage(HWND_BROADCAST, RegisterWindowMessage('TaskbarCreated'), 0, 0);
 end;
 
+function SCMsg(msg: string): integer;
+var
+  CmdList: TStringList;
+  Cmd, Val: string;
+begin
+  CmdList := TStringList.Create;
+  StrTokenToStrings(msg, ',', CmdList);
+
+  // Get Command and value
+  Cmd := CmdList.Strings[0];
+  Val := Copy(msg, length(cmd) + 2, length(msg));
+  CmdList.Free;
+
+  if Cmd = 'DeskAreaUpdate' then
+    DeskAreaManager.SetDeskArea
+  else if Cmd = 'StartExplorer' then
+  begin
+    DeskAreaManager.SetDeskArea;
+
+    // Start Explorer
+    if (FindWindow('TSharpExplorerform', nil) <> 0) then
+	begin
+      SendMessage(FindWindow('TSharpExplorerform', nil), WM_SHARPSHELLREADY, 0, 0);
+	  
+	  ExplorerStarted := True;
+	end;
+  end;
+
+  Result := 1;
+end;
+
 function GetMetaData(): TMetaData;
 begin
   with result do
@@ -775,6 +809,7 @@ end;
 exports
   Start,
   Stop,
+  SCMsg,
   GetMetaData;
 
 { TTaskMsgManager }
@@ -1491,9 +1526,6 @@ begin
     end
   end;
   setlength(BR,0);
-
-  if (FindWindow('TSharpExplorerform', nil) <> 0) then
-    SendMessage(FindWindow('TSharpExplorerform', nil), WM_SHARPSHELLREADY, 0, 0);
 end;
 
 procedure TDeskAreaManager.SetFullScreenArea;

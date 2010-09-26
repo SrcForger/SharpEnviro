@@ -30,21 +30,24 @@ namespace SharpEnviro.Explorer
             return (IntPtr.Size == 8);
 	    }
 
+        static void ShellReady()
+        {
+            // Run the StartDesktop function
+            if (hSharpDll != IntPtr.Zero)
+            {
+                IntPtr fptr = GetProcAddress(hSharpDll, "ShellReady");
+                if (fptr != IntPtr.Zero)
+                {
+                    StartDesktopInvoker sdi = (StartDesktopInvoker)Marshal.GetDelegateForFunctionPointer(fptr, typeof(StartDesktopInvoker));
+                    sdi();
+                }
+            }
+        }
+
         static IntPtr SharpWindowProc(IntPtr hWnd, uint uMsgm, IntPtr wParam, IntPtr lParam)
         {
             if (uMsgm == WM_SHARPSHELLREADY)
-            {
-                // Run the StartDesktop function
-                if (hSharpDll != IntPtr.Zero)
-                {
-                    IntPtr fptr = GetProcAddress(hSharpDll, "ShellReady");
-                    if (fptr != IntPtr.Zero)
-                    {
-                        StartDesktopInvoker sdi = (StartDesktopInvoker)Marshal.GetDelegateForFunctionPointer(fptr, typeof(StartDesktopInvoker));
-                        sdi();
-                    }
-                }
-            }
+                ShellReady();
 
             if (uMsgm == WM_ENDSESSION || uMsgm == WM_CLOSE || uMsgm == WM_QUIT || uMsgm == WM_SHARPTERMINATE)
             {
@@ -106,6 +109,12 @@ namespace SharpEnviro.Explorer
 
 				ShellServices.Start();
 				WPFRuntime.Instance.Start();
+
+                if (PInvoke.FindWindow("Shell_TrayWnd", (string)null) != IntPtr.Zero)
+                {
+                    if (PInvoke.SendMessage(PInvoke.FindWindow("Shell_TrayWnd", (string)null), 33430, IntPtr.Zero, IntPtr.Zero) == new IntPtr(1))
+                        ShellReady();
+                }
 
 				// Check if the database file exists before creating the SearchManager as it automatically creates the file.
 				bool needsIndexing = !File.Exists(Path.Combine(SharpSearchDatabase.DefaultDatabaseDirectory, SharpSearchDatabase.DefaultDatabaseFilename));

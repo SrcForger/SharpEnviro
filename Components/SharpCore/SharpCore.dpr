@@ -259,9 +259,6 @@ begin
     end;
   end;
 
-  if (FindWindow('TSharpExplorerform', nil) <> 0) then
-    SendMessage(FindWindow('TSharpExplorerform', nil), WM_SHARPSHELLREADY, 0, 0);
-
   SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));
 end;
 

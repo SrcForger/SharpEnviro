@@ -78,9 +78,7 @@ void ExplorerDll::Start()
 
 void ExplorerDll::ShellReady()
 {
-	HANDLE hEv = OpenEvent(EVENT_MODIFY_STATE, false, L"SharpExplorer_ShellReady");
-	if(!hEv)
-		hEv = CreateEvent(NULL, true, false, L"SharpExplorer_ShellReady");
+	HANDLE hEv = CreateEvent(NULL, false, false, L"SharpExplorer_ShellReady");
 
 	if(hEv)
 	{
@@ -169,12 +167,9 @@ DWORD WINAPI ExplorerDll::ThreadFunc(LPVOID pvParam)
 	CloseHandle(CanRegisterEvent);
 
 
-	HANDLE hEv = OpenEvent(0x100000, false, L"SharpExplorer_ShellReady");
-	if(!hEv)
-		hEv = CreateEvent(NULL, true, false, L"SharpExplorer_ShellReady");
+	HANDLE hEv = CreateEvent(NULL, false, false, L"SharpExplorer_ShellReady");
 
-	if(!FindWindow(L"TSharpDeskMainForm", NULL))
-		WaitForSingleObject(hEv, INFINITE);
+	WaitForSingleObject(hEv, INFINITE);
 	CloseHandle(hEv);
 
 	SHCREATEDESKTOP SHCreateDesktop = (SHCREATEDESKTOP)GetProcAddress(pThis.hShellDLL, MAKEINTRESOURCEA(200));

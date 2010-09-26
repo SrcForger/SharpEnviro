@@ -219,6 +219,7 @@ type
     procedure HideBar;
     procedure ShowNotify(pCaption : String; pScreenBorder : boolean = False);
     procedure UpdateMonitor;
+
     property BGImage: TBitmap32 read FBGImage;
     property SharpEBar: TSharpEBar read FSharpEBar;
     property ShellBCInProgress: boolean read FShellBCInProgress;
@@ -2023,9 +2024,11 @@ end;
 
 procedure TSharpBarMainForm.HideBar;
 begin
-  if not SharpEBar.DisableHideBar then begin
+  if not SharpEBar.DisableHideBar then
+  begin
     //BarHideForm.Color := SkinManager.Scheme.Throbberback;
-    if (SharpEbar.VertPos = vpBottom) then begin
+    if (SharpEbar.VertPos = vpBottom) then
+    begin
       BarHideForm.Left := Left;
       BarHideForm.Width := Width;
       BarHideForm.Height := 1;
@@ -2033,9 +2036,10 @@ begin
       ShowWindow(SharpEBar.abackground.Handle, SW_HIDE);
       SharpBarMainForm.Hide;
       BarHideForm.Show;
-      SharpApi.ServiceMsg('DeskArea', 'Update');
+      SharpApi.ServiceMsg('Shell', 'DeskAreaUpdate');
     end
-    else if (SharpEBar.VertPos = vpTop) then begin
+    else if (SharpEBar.VertPos = vpTop) then
+    begin
       BarHideForm.Left := Left;
       BarHideForm.Width := Width;
       BarHideForm.Height := 1;
@@ -2043,7 +2047,7 @@ begin
       ShowWindow(SharpEBar.abackground.Handle, SW_HIDE);
       SharpBarMainForm.Hide;
       BarHideForm.Show;
-      SharpApi.ServiceMsg('DeskArea', 'Update');
+      SharpApi.ServiceMsg('Shell', 'DeskAreaUpdate');
     end;
   end;
 
