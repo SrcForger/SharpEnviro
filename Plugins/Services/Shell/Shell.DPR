@@ -151,6 +151,7 @@ var
 
   ShellTrayWnd     : hwnd;
   TrayNotifyWnd    : hwnd;
+  TrayClockWWnd    : hwnd;
   ReBarWindow32    : hwnd;
   MsTaskSwWClass   : hwnd;
   DeskAreaTimerWnd : hwnd;
@@ -190,6 +191,17 @@ var
     hbrBackground: 1;
     lpszMenuName: nil;
     lpszClassName: 'ReBarWindow32');
+  TrayClockWClass: TWndClass = (
+    style: 0;
+    lpfnWndProc: @DefWindowProc;
+    cbClsExtra: 0;
+    cbWndExtra: 0;
+    hInstance: 0;
+    hIcon: 0;
+    hCursor: 0;
+    hbrBackground: 1;
+    lpszMenuName: nil;
+    lpszClassName: 'TrayClockWClass');
   MsTaskSwWClassClass: TWndClass = (
     style: 0;
     lpfnWndProc: @MsTaskSwWClassWndProc;
@@ -618,6 +630,7 @@ procedure CreateWindowStructure;
 begin
   ShellTrayWndClass.hInstance := hInstance;
   TrayNotifyWndClass.hInstance := hInstance;
+  TrayClockWClass.hInstance := hInstance;
   ReBarWindow32Class.hInstance := hInstance;
   MsTaskSwWClassClass.hInstance := hInstance;
   
@@ -631,7 +644,20 @@ begin
       if Windows.RegisterClass(TrayNotifyWndClass) <> 0 then
       begin
         TrayNotifyWnd := CreateWindow(TrayNotifyWndClass.lpszClassName, 'TrayNotifyWnd', WS_CHILDWINDOW or WS_CLIPSIBLINGS or WS_CLIPCHILDREN, 0, 0, 0, 0, ShellTrayWnd, 0, hInstance, nil);
-        if TrayNotifyWnd = 0 then
+        if TrayNotifyWnd <> 0 then
+        begin
+          // TrayClockWClass
+          if Windows.RegisterClass(TrayClockWClass) <> 0 then
+          begin
+            TrayClockWWnd := CreateWindow(TrayClockWClass.lpszClassName, 'TrayClockWClass', WS_CHILDWINDOW or WS_CLIPSIBLINGS or WS_CLIPCHILDREN, 0, 0, 0, 0, TrayNotifyWnd, 0, hInstance, nil);
+            if TrayClockWWnd = 0 then
+            begin
+              SendDebugMessageEx('Shell','Failed to create "TrayClockWClass" window',0,0);
+              Windows.UnregisterClass(PChar('TrayClockWClass'),hinstance);
+            end;
+          end else
+            SendDebugMessageEx('Shell','Failed to register "TrayClockWClass" window class',0,0);
+        end else
         begin
           SendDebugMessageEx('Shell','Failed to create "TrayNotifyWnd" window',0,0);
           Windows.UnregisterClass(PChar('TrayNotifyWnd'),hinstance);
@@ -692,6 +718,11 @@ begin
   begin
     DestroyWindow(TrayNotifyWnd);
     Windows.UnregisterClass(PChar('TrayNotifyWnd'),hinstance)
+  end;
+  if TrayClockWWnd <> 0 then
+  begin
+    DestroyWindow(TrayClockWWnd);
+    Windows.UnregisterClass(PChar('TrayClockWClass'),hinstance)
   end;
   if ShellTrayWnd <> 0 then
   begin
