@@ -123,11 +123,11 @@ namespace SharpEnviro.Explorer
 				if (needsIndexing)
 					manager.StartIndexing();
 
-                // Loop through message until a quit message is received
-                NativeMessage mMsg;
+                NativeMessage mMsg = new NativeMessage();
+                HandleRef uTmp = new HandleRef(null, IntPtr.Zero);
                 while (!bShouldExit)
                 {
-                    if (PeekMessage(out mMsg, new HandleRef(null, IntPtr.Zero), 0, 0, 1))
+                    if (PeekMessage(out mMsg, uTmp, 0, 0, 1))
                     {
                         if ((mMsg.msg == WM_ENDSESSION) || (mMsg.msg == WM_CLOSE) || (mMsg.msg == WM_QUIT))
                             break;
