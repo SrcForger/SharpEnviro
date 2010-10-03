@@ -260,12 +260,8 @@ begin
 end;
 
 procedure TMainForm.lb_clockClick(Sender: TObject);
-var
-  pos: TPoint;
 begin
-  GetCursorPos(pos);
-
-  FTimeCalendar.Show(pos.x, pos.y);
+  FTimeCalendar.Show(Self);
 end;
 
 procedure TMainForm.lb_clockDblClick(Sender: TObject);
