@@ -186,9 +186,30 @@ namespace SharpEnviro.Interop
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool IsWindow(IntPtr hWnd);
 
-        [DllImport("user32.dll")]
+        #region Window Messages
+        // Window Message declaration
+        public const int WM_ENDSESSION = 0x0016;
+        public const int WM_CLOSE = 0x0010;
+        public const int WM_QUIT = 0x0012;
+        public const int WM_SHARPTERMINATE = 0x8226;
+        public const int WM_SHARPSHELLREADY = 0x8296;
+        public const int WM_SHARPSEARCH = 0x8297;
+        public const int WM_SHARPSEARCH_INDEXING = 0x8298;
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct NativeMessage
+        {
+            public IntPtr handle;
+            public uint msg;
+            public IntPtr wParam;
+            public IntPtr lParam;
+            public uint time;
+            public System.Drawing.Point p;
+        }
+
+        [DllImport("User32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool IsWindowVisible(IntPtr hWnd);
+        public static extern bool PeekMessage(out NativeMessage message, IntPtr handle, uint filterMin, uint filterMax, uint flags);
 
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -196,6 +217,33 @@ namespace SharpEnviro.Interop
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam);
+        #endregion
+
+        #region DLL
+        [DllImport("kernel32.dll")]
+        public static extern IntPtr LoadLibrary(string dllToLoad);
+
+        [DllImport("kernel32.dll")]
+        public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
+
+        [DllImport("kernel32.dll")]
+        public static extern bool FreeLibrary(IntPtr hModule);
+        #endregion
+
+        #region Mutexes
+        // Error codes
+        public const int ERROR_ALREADY_EXISTS = 0x00B7;
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern IntPtr CreateMutex(IntPtr lpMutexAttributes, bool bInitialOwner, string lpName);
+
+        [DllImport("kernel32.dll")]
+        public static extern bool ReleaseMutex(IntPtr hMutex);
+        #endregion
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool IsWindowVisible(IntPtr hWnd);
 
         [DllImport("user32.dll", EntryPoint = "GetWindowLong", SetLastError = true)]
         private static extern IntPtr GetWindowLongPtr32(IntPtr hWnd, int nIndex);

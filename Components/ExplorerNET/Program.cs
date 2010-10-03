@@ -35,7 +35,7 @@ namespace SharpEnviro.Explorer
             // Run the StartDesktop function
             if (hSharpDll != IntPtr.Zero)
             {
-                IntPtr fptr = GetProcAddress(hSharpDll, "ShellReady");
+                IntPtr fptr = PInvoke.GetProcAddress(hSharpDll, "ShellReady");
                 if (fptr != IntPtr.Zero)
                 {
                     StartDesktopInvoker sdi = (StartDesktopInvoker)Marshal.GetDelegateForFunctionPointer(fptr, typeof(StartDesktopInvoker));
@@ -46,10 +46,10 @@ namespace SharpEnviro.Explorer
 
         static IntPtr SharpWindowProc(IntPtr hWnd, uint uMsgm, IntPtr wParam, IntPtr lParam)
         {
-            if (uMsgm == WM_SHARPSHELLREADY)
+            if (uMsgm == PInvoke.WM_SHARPSHELLREADY)
                 ShellReady();
 
-            if (uMsgm == WM_ENDSESSION || uMsgm == WM_CLOSE || uMsgm == WM_QUIT || uMsgm == WM_SHARPTERMINATE)
+            if (uMsgm == PInvoke.WM_ENDSESSION || uMsgm == PInvoke.WM_CLOSE || uMsgm == PInvoke.WM_QUIT || uMsgm == PInvoke.WM_SHARPTERMINATE)
             {
                 bShouldExit = true;
                 while (!bCanExit)
@@ -73,8 +73,8 @@ namespace SharpEnviro.Explorer
 				};
 
             // Make sure SharpExplorer isn't running already
-            IntPtr sharpMutex = CreateMutex(IntPtr.Zero, true, "SharpExplorer");
-            if (sharpMutex != IntPtr.Zero && Marshal.GetLastWin32Error() == ERROR_ALREADY_EXISTS)
+            IntPtr sharpMutex = PInvoke.CreateMutex(IntPtr.Zero, true, "SharpExplorer");
+            if (sharpMutex != IntPtr.Zero && Marshal.GetLastWin32Error() == PInvoke.ERROR_ALREADY_EXISTS)
 				return;
 
             // check Operating system version
@@ -92,14 +92,14 @@ namespace SharpEnviro.Explorer
                 NativeWindowEx explorerWindow = new NativeWindowEx(classParams, createParams);
 
                 if (Is64Bit())
-                    hSharpDll = LoadLibrary("Explorer64.dll");
+                    hSharpDll = PInvoke.LoadLibrary("Explorer64.dll");
                 else
-                    hSharpDll = LoadLibrary("Explorer32.dll");
+                    hSharpDll = PInvoke.LoadLibrary("Explorer32.dll");
 
                 // Run the StartDesktop function
                 if (hSharpDll != IntPtr.Zero)
                 {
-                    IntPtr fptr = GetProcAddress(hSharpDll, "StartDesktop");
+                    IntPtr fptr = PInvoke.GetProcAddress(hSharpDll, "StartDesktop");
                     if (fptr != IntPtr.Zero)
                     {
                         StartDesktopInvoker sdi = (StartDesktopInvoker)Marshal.GetDelegateForFunctionPointer(fptr, typeof(StartDesktopInvoker));
@@ -123,23 +123,23 @@ namespace SharpEnviro.Explorer
 				if (needsIndexing)
 					manager.StartIndexing();
 
-                NativeMessage mMsg = new NativeMessage();
-                HandleRef uTmp = new HandleRef(null, IntPtr.Zero);
                 while (!bShouldExit)
                 {
-                    if (PeekMessage(out mMsg, uTmp, 0, 0, 1))
+                    PInvoke.NativeMessage mMsg;
+
+                    if (PInvoke.PeekMessage(out mMsg, IntPtr.Zero, 0, 0, 1))
                     {
-                        if ((mMsg.msg == WM_ENDSESSION) || (mMsg.msg == WM_CLOSE) || (mMsg.msg == WM_QUIT))
+                        if ((mMsg.msg == PInvoke.WM_ENDSESSION) || (mMsg.msg == PInvoke.WM_CLOSE) || (mMsg.msg == PInvoke.WM_QUIT))
                             break;
 
-						if (mMsg.msg == WM_SHARPSEARCH)
+                        if (mMsg.msg == PInvoke.WM_SHARPSEARCH)
 						{
 							_logger.Info("SharpSearch message received.");
 							WPFRuntime.Instance.Show<SearchWindow>();
 							_logger.Info("SharpSearch message processed.");
 						}
 
-						if (mMsg.msg == WM_SHARPSEARCH_INDEXING)
+                        if (mMsg.msg == PInvoke.WM_SHARPSEARCH_INDEXING)
 							if (!manager.IsIndexing) manager.StartIndexing();
                     }
 
@@ -149,7 +149,7 @@ namespace SharpEnviro.Explorer
 				manager.Dispose();
 				WPFRuntime.Instance.Stop();
 				ShellServices.Stop();
-                FreeLibrary(hSharpDll);
+                PInvoke.FreeLibrary(hSharpDll);
             }
 
             bCanExit = true;
@@ -158,49 +158,6 @@ namespace SharpEnviro.Explorer
 		private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         #region Win32
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct NativeMessage
-        {
-            public IntPtr handle;
-            public uint msg;
-            public IntPtr wParam;
-            public IntPtr lParam;
-            public uint time;
-            public System.Drawing.Point p;
-        }
-
-        // Import GetMessage function from user32.dll
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool PeekMessage(out NativeMessage lpMsg, HandleRef hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg);
-
-        [DllImport("kernel32.dll")]
-        public static extern IntPtr LoadLibrary(string dllToLoad);
-
-        [DllImport("kernel32.dll")]
-        public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
-
-        [DllImport("kernel32.dll")]
-        public static extern bool FreeLibrary(IntPtr hModule);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern IntPtr CreateMutex(IntPtr lpMutexAttributes, bool bInitialOwner, string lpName);
-
-        [DllImport("kernel32.dll")]
-        public static extern bool ReleaseMutex(IntPtr hMutex);
-
-        // Window Message declaration
-        public const int WM_ENDSESSION = 0x0016;
-        public const int WM_CLOSE = 0x0010;
-        public const int WM_QUIT = 0x0012;
-        public const int WM_SHARPTERMINATE = 0x8226;
-        public const int WM_SHARPSHELLREADY = 0x8296;
-		public const int WM_SHARPSEARCH = 0x8297;
-		public const int WM_SHARPSEARCH_INDEXING = 0x8298;
-
-        // Error codes
-        public const int ERROR_ALREADY_EXISTS = 0x00B7;
 
         #endregion
     }
