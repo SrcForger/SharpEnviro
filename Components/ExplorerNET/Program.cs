@@ -21,9 +21,9 @@ namespace SharpEnviro.Explorer
 {
     class Explorer
     {
-        static IntPtr hSharpDll;
-        static bool bShouldExit = false;
-        static bool bCanExit = false;
+        volatile static IntPtr hSharpDll;
+        volatile static bool bShouldExit = false;
+        volatile static bool bCanExit = false;
 
         static bool Is64Bit() 
 	    {
@@ -112,7 +112,7 @@ namespace SharpEnviro.Explorer
 
                 if (PInvoke.FindWindow("Shell_TrayWnd", (string)null) != IntPtr.Zero)
                 {
-                    if (PInvoke.SendMessage(PInvoke.FindWindow("Shell_TrayWnd", (string)null), 33430, IntPtr.Zero, IntPtr.Zero) == new IntPtr(1))
+                    if (PInvoke.SendMessage(PInvoke.FindWindow("Shell_TrayWnd", (string)null), 33430, IntPtr.Zero, IntPtr.Zero) == 1)
                         ShellReady();
                 }
 
@@ -125,25 +125,23 @@ namespace SharpEnviro.Explorer
 
                 while (!bShouldExit)
                 {
-                    PInvoke.NativeMessage mMsg;
+                    MSG mMsg;
 
-                    if (PInvoke.PeekMessage(out mMsg, IntPtr.Zero, 0, 0, 1))
+                    if (PInvoke.GetMessage(out mMsg, IntPtr.Zero, 0, 0))
                     {
-                        if ((mMsg.msg == PInvoke.WM_ENDSESSION) || (mMsg.msg == PInvoke.WM_CLOSE) || (mMsg.msg == PInvoke.WM_QUIT))
+                        if ((mMsg.message == PInvoke.WM_ENDSESSION) || (mMsg.message == PInvoke.WM_CLOSE) || (mMsg.message == PInvoke.WM_QUIT))
                             break;
 
-                        if (mMsg.msg == PInvoke.WM_SHARPSEARCH)
+                        if (mMsg.message == PInvoke.WM_SHARPSEARCH)
 						{
 							_logger.Info("SharpSearch message received.");
 							WPFRuntime.Instance.Show<SearchWindow>();
 							_logger.Info("SharpSearch message processed.");
 						}
 
-                        if (mMsg.msg == PInvoke.WM_SHARPSEARCH_INDEXING)
+                        if (mMsg.message == PInvoke.WM_SHARPSEARCH_INDEXING)
 							if (!manager.IsIndexing) manager.StartIndexing();
                     }
-
-                    System.Threading.Thread.Sleep(16);
                 }
 
 				manager.Dispose();
