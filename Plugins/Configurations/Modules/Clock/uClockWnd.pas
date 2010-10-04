@@ -133,13 +133,25 @@ begin
 end;
 
 procedure TfrmClock.UpdateSettingsEvent(Sender: TObject);
+var
+  r: string;
 begin
+  if Sender is TEdit then
+  begin
+    DateTimeToString(r,TEdit(Sender).Text,now());
+    TEdit(Sender).Hint := r;
+  end;
+
   UpdateSettings;
 end;
 
 procedure TfrmClock.FormCreate(Sender: TObject);
 begin
   DoubleBuffered := true;
+
+  UpdateSettingsEvent(editTop);
+  UpdateSettingsEvent(editBottom);
+  UpdateSettingsEvent(editTooltip);
 end;
 
 procedure TfrmClock.FormShow(Sender: TObject);

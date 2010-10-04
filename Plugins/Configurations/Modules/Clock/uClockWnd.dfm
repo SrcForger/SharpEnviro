@@ -88,6 +88,9 @@ object frmClock: TfrmClock
       Top = 0
       Width = 286
       Height = 21
+      Hint = 'Top'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 0
       OnChange = UpdateSettingsEvent
     end
@@ -97,7 +100,7 @@ object frmClock: TfrmClock
     Left = 5
     Top = 162
     Width = 426
-    Height = 22
+    Height = 26
     Margins.Left = 5
     Margins.Top = 10
     Margins.Right = 10
@@ -110,13 +113,12 @@ object frmClock: TfrmClock
     TabOrder = 2
     object Label2: TLabel
       Left = 0
-      Top = 0
+      Top = 4
       Width = 38
       Height = 22
       Align = alLeft
       Caption = 'Bottom:'
       Layout = tlCenter
-      ExplicitHeight = 13
     end
     object btnBottom: TButton
       Left = 356
@@ -129,9 +131,12 @@ object frmClock: TfrmClock
     end
     object editBottom: TEdit
       Left = 64
-      Top = 0
+      Top = 4
       Width = 286
       Height = 21
+      Hint = 'Bottom'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 0
       OnChange = UpdateSettingsEvent
     end
@@ -176,7 +181,7 @@ object frmClock: TfrmClock
   object SharpECenterHeader3: TSharpECenterHeader
     AlignWithMargins = True
     Left = 5
-    Top = 199
+    Top = 203
     Width = 431
     Height = 37
     Margins.Left = 5
@@ -190,11 +195,12 @@ object frmClock: TfrmClock
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
+    ExplicitTop = 199
   end
   object pnlTooltip: TPanel
     AlignWithMargins = True
     Left = 5
-    Top = 246
+    Top = 250
     Width = 431
     Height = 23
     Margins.Left = 5
@@ -207,12 +213,15 @@ object frmClock: TfrmClock
     Color = clWindow
     ParentBackground = False
     TabOrder = 3
-    ExplicitTop = 241
+    ExplicitTop = 246
     object editTooltip: TEdit
       Left = 0
       Top = 2
       Width = 350
       Height = 21
+      Hint = 'Tooltip'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 0
       OnChange = UpdateSettingsEvent
     end
