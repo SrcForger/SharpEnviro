@@ -64,15 +64,14 @@ implementation
 
 constructor TTimeCalendar.Create;
 begin
-  FTimeDateCPL := nil;
-
   CoInitialize(nil);
-  OleCheck(CoCreateInstance(
+  if CoCreateInstance(
       Class_TimeDateCPL,
       nil,
       CLSCTX_INPROC_SERVER,
       ITimeDateCPL,
-      FTimeDateCPL));
+      FTimeDateCPL) <> S_OK then
+    FTimeDateCPL := nil;
 end;
 
 destructor TTimeCalendar.Destroy;
