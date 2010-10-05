@@ -230,6 +230,10 @@ namespace SharpSearch.WPF
 		/// <param name="e"></param>
 		private void SearchWindow_Deactivated(object sender, EventArgs e)
 		{
+			// Clear the textbox on deactivate so there is no delay/ when the window
+			// is shown again, the most launched results will already be loaded.
+			QueryTextBox.Clear();
+
 			if (!_closing && !Debugger.IsAttached)
 				Hide();
 				//Close();
