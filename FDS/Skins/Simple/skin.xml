@@ -1771,11 +1771,6 @@
       <shadowtype>Right</shadowtype>
       <shadowalpha>196</shadowalpha>
     </text>
-    <icon>
-      <draw>1</draw>
-      <size>32,32</size>
-      <location>4,hh-ihh</location>
-    </icon>    
     <background>
       <skinpart>
         <location>0,0</location>
