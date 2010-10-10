@@ -65,6 +65,10 @@ type
     FCustomSettings : boolean;
     FDesignMode : boolean;
     FDynamicContentThread : TSharpEMenuDynamicContentThread;
+    FOffset : integer;
+    FOldWH : TPoint;
+    FWrapCount : integer;
+
     procedure UpdateItemWidth;
     procedure UpdateItemsHeight;
     procedure ImageCheck(var pbmp : TBitmap32; pSize : TPoint);
@@ -74,8 +78,8 @@ type
 
   public
     // Create/Destroy
-    constructor Create(pParentMenuItem : TSharpEMenuItem; pManager  : ISharpESkinManager; pSettings : TSharpEMenuSettings); reintroduce; overload;
-    constructor Create(pManager  : ISharpESkinManager; pSettings : TSharpEMenuSettings); reintroduce; overload;
+    constructor Create(pParentMenuItem : TSharpEMenuItem; pManager  : ISharpESkinManager; pSettings : TSharpEMenuSettings; pDynamicContentThread : TSharpEMenuDynamicContentThread); reintroduce; overload;
+    constructor Create(pManager  : ISharpESkinManager; pSettings : TSharpEMenuSettings; pDynamicContentThread : TSharpEMenuDynamicContentThread); reintroduce; overload;
 
     destructor Destroy; override;
 
@@ -103,9 +107,11 @@ type
     procedure RecycleBitmaps;
 
     // Item Control
-    function GetItemsHeight(pindex : integer) : integer;
+    function GetItemsHeight(pstart, pmax: integer; sizeRestrict: boolean = true) : integer;
     function NextVisibleIndex : integer;
     function PreviousVisibleIndex : integer;
+    function NextNotVisibleIndex : integer;
+    function PreviousNotVisibleIndex : integer;
     procedure SelectItemByMenu(pSubMenu : TSharpEMenu);
     function GetItemUndercursor(px, py: integer): TSharpEMenuItem;
 
@@ -118,11 +124,16 @@ type
     // Refresh Content
     procedure RefreshDynamicContent;
     procedure InitializeDynamicSubMenus;
-    procedure CheckAndAbortDynamicContentThread;
 
     // Wrap
     procedure WrapMenu(pMaxItems : integer);
     procedure UnWrapMenu(target : TSharpEMenu);
+
+    function GetStartIndex: integer;
+    function GetStartIndexHeight: integer;
+    function GetMaxHeight: integer;
+
+    procedure UpdateOffset(val: integer);
 
     property ItemIndex  : integer read FItemIndex write FItemIndex;
     property CurrentItem : TSharpEMenuItem read GetCurrentItem;
@@ -137,6 +148,10 @@ type
     property ParentMenuItem : TSharpEMenuItem read FParentMenuItem;
     property CustomSettings : boolean read FCustomSettings write FCustomSettings;
     property DesignMode : boolean read FDesignMode write FDesignMode;
+    property DynamicContentThread : TSharpEMenuDynamicContentThread read FDynamicContentThread write FDynamicContentThread;
+    property Offset : integer read FOffset write UpdateOffset;
+    property StartIndex : integer read GetStartIndex;
+
   end;
 
 var
@@ -158,10 +173,11 @@ begin
      else PointInRect:=False;
 end;     
 
-constructor TSharpEMenu.Create(pParentMenuItem : TSharpEMenuItem; pManager  : ISharpESkinManager; pSettings : TSharpEMenuSettings);
+constructor TSharpEMenu.Create(pParentMenuItem : TSharpEMenuItem; pManager  : ISharpESkinManager; pSettings : TSharpEMenuSettings; pDynamicContentThread : TSharpEMenuDynamicContentThread);
 begin
   inherited Create;
 
+  FDynamicContentThread := pDynamicContentThread;
   FCustomSettings := False;
   FDesignMode := False;
   FParentMenuItem  := pParentMenuItem;
@@ -173,6 +189,8 @@ begin
   FSkinManager := pManager;
   FMouseDown := False;
   FItemIndex := -1;
+  FOffset := 0;
+  FOldWH := Point(-1, -1);
   FItems := TObjectList.Create(True);
 
   FWrapMenu := False;
@@ -185,12 +203,14 @@ begin
 
   if SharpEMenuPopups = nil then
      SharpEMenuPopups := TSharpEMenuPopups.Create;
+
+  FWrapCount := Settings.WrapCount;
+  if Settings.WrapMenu then
+    FWrapCount := FWrapCount + 2;
 end;
 
 destructor TSharpEMenu.Destroy;
 begin
-  CheckAndAbortDynamicContentThread;
-
   FreeAndNil(FItems);
 
   FreeAndNil(FMenuActions);
@@ -210,6 +230,76 @@ begin
   FSkinManager := nil;
 
   inherited Destroy;
+end;
+
+procedure TSharpEMenu.UpdateOffset(val: Integer);
+var
+  w, h : integer;
+begin
+  if val < 0 then
+    exit;
+
+  FOffset := val;
+
+  w := FItemWidth;
+  h := Max(1,GetItemsHeight(StartIndex, FWrapCount));
+
+  if (FOldWH.X <> w) or (FOldWH.Y <> h) then
+  begin
+    FOldWH := Point(w, h);
+
+    RenderBackground(0, 0);
+  end;
+  RenderNormalMenu;
+end;
+
+function TSharpEMenu.GetStartIndex: integer;
+var
+  n : integer;
+  size, idx : integer;
+begin
+  size := 0;
+  idx := 0;
+
+  for n := 0 to High(FItemsHeight) do
+  begin
+    size := size + FItemsHeight[n];
+    if size >= FOffset then
+      break;
+
+    idx := idx + 1;
+  end;
+  result := idx;
+end;
+
+function TSharpEMenu.GetStartIndexHeight: integer;
+var
+  n : integer;
+  size : integer;
+begin
+  size := 0;
+
+  for n := 0 to High(FItemsHeight) do
+  begin
+    if size + FItemsHeight[n] >= FOffset then
+      break;
+
+    size := size + FItemsHeight[n];
+  end;
+  result := size;
+end;
+
+function TSharpEMenu.GetMaxHeight: integer;
+var
+  n : integer;
+  size : integer;
+begin
+  size := 0;
+
+  for n := 0 to High(FItemsHeight) - FWrapCount do
+    size := size + FItemsHeight[n];
+
+  result := size;
 end;
 
 procedure TSharpEMenu.RecycleBitmaps;
@@ -257,11 +347,8 @@ var
   item : TSharpEMenuItem;
   n : integer;
 begin
-  CheckAndAbortDynamicContentThread;
-
   FSubList := TObjectList.Create;
   FSubList.OwnsObjects := False;
-  FSubList.Clear;
 
   // Build a list of all items with sub menus
   for n := 0 to FItems.Count - 1 do
@@ -271,10 +358,9 @@ begin
       FSubList.Add(item.SubMenu);
   end;
 
-  FDynamicContentThread := TSharpEMenuDynamicContentThread.Create(FSubList);
+  FDynamicContentThread.AddItem(FSubList);
   FDynamicContentThread.Resume;
 
-  FSubList.Free;
 end;
 
 procedure TSharpEMenu.RefreshDynamicContent;
@@ -307,7 +393,6 @@ begin
 
   FDynList := TObjectList.Create;
   FDynList.OwnsObjects := False;
-  FDynList.Clear;
 
   // Build a list of all dynamic items
   AddDynamicItems(FDynList,self);
@@ -347,7 +432,8 @@ begin
 
   FDynList.Free;
 
-  if FSettings.WrapMenu then WrapMenu(Max(5,FSettings.WrapCount));
+  if FSettings.WrapMenu then
+    WrapMenu(Max(5, FSettings.WrapCount));
 end;
 
 function TSharpEMenu.AddLabelItem(pCaption : String; pDynamic : boolean; pInsertPos: Integer=-1): TObject;
@@ -545,22 +631,9 @@ begin
   FItems.Insert(pInsertPos,item);
 end;
 
-procedure TSharpEMenu.CheckAndAbortDynamicContentThread;
+constructor TSharpEMenu.Create(pManager: ISharpESkinManager; pSettings: TSharpEMenuSettings; pDynamicContentThread: TSharpEMenuDynamicContentThread);
 begin
-  if (FDynamicContentThread <> nil) then
-  begin
-    if not FDynamicContentThread.Suspended then
-    begin
-      FDynamicContentThread.Terminate;
-      FDynamicContentThread.WaitFor;
-    end;
-    FreeAndNil(FDynamicContentThread);
-  end;
-end;
-
-constructor TSharpEMenu.Create(pManager: ISharpESkinManager; pSettings: TSharpEMenuSettings);
-begin
-  Create(nil, pManager, pSettings);
+  Create(nil, pManager, pSettings, pDynamicContentThread);
 end;
 
 function TSharpEMenu.AddDynamicDirectoryItem(pTarget : String; pMax,pSort : integer; pFilter : String; pRecursive : Boolean; pDynamic : boolean; pInsertPos: Integer=-1): TObject;
@@ -618,20 +691,33 @@ begin
 end;
 
 // Calculate overall items size until pindex (-1 = all)
-function TSharpEMenu.GetItemsHeight(pindex : integer) : integer;
+function TSharpEMenu.GetItemsHeight(pstart, pmax: integer; sizeRestrict: boolean) : integer;
 var
   n : integer;
   size : integer;
 begin
   size := 0;
-  if (pindex < 0) or (pindex > High(FItemsHeight)) then
-     pindex := High(FItemsHeight);
 
-  for n := 0 to pindex do
-      size := size + FItemsHeight[n];
+  if (pmax < 0) then
+    pmax := pstart + FWrapCount;
+  if (pmax > High(FItemsHeight)) then
+     pmax := High(FItemsHeight);
+
+  for n := pstart to pmax + pstart do
+  begin
+    if n >= Length(FItemsHeight) then
+      break;
+
+    size := size + FItemsHeight[n];
+    if (size > Screen.WorkAreaHeight - FItemsHeight[PreviousVisibleIndex]) and (sizeRestrict) then
+    begin
+      size := Screen.WorkAreaHeight - FItemsHeight[PreviousVisibleIndex];
+      break;
+    end;
+  end;
+
   result := size;
 end;
-
 
 function TSharpEMenu.GetItemUndercursor(px, py: integer): TSharpEMenuItem;
 var
@@ -644,8 +730,11 @@ begin
   tl.x := menuskin.LROffset.X;
   tl.y := menuskin.TBOffset.X;
 
-  for n := 0 to Min(High(FItemsHeight),FItems.Count-1) do
+  for n := StartIndex to StartIndex + FWrapCount do
   begin
+    if n >= FItems.Count then
+      break;
+
     item := TSharpEMenuItem(FItems.Items[n]);
     if (PointInRect(Point(px,py),Rect(0,tl.y,tl.y + tl.x+FItemWidth,tl.y + FItemsHeight[n]))
         and (item.isVisible)) then
@@ -839,7 +928,7 @@ begin
       submenuitem.Caption := 'Next Page...';
       submenuitem.isDynamic := True;
       submenuitem.isWrapMenu := True;
-      submenuitem.SubMenu := TSharpEMenu.Create(submenuitem,FSkinManager,FSettings);
+      submenuitem.SubMenu := TSharpEMenu.Create(submenuitem,FSkinManager,FSettings,FDynamicContentThread);
       TSharpeMenu(submenuitem.SubMenu).isWrapMenu := True;
 
       if FSettings.WrapPosition = 0 then
@@ -891,8 +980,11 @@ begin
 
   menuskin := FSkinManager.Skin.Menu;
 
-  w := Max(8,FItemWidth);
-  h := Max(8,GetItemsHeight(-1));
+  if (FOldWH.X = -1) or (FOldWH.Y = -1) then
+    FOldWH := Point(FItemWidth, Max(1,GetItemsHeight(StartIndex, FWrapCount)));
+
+  w := FOldWH.X;
+  h := FOldWH.Y;
 
   // add Left/Right and Top/Bottom offsets to menu size;
   w := w + menuskin.LROffset.X + menuskin.LROffset.Y;
@@ -1129,25 +1221,27 @@ procedure TSharpEMenu.RenderNormalMenu;
 var
   item : TSharpEMenuItem;
   n : integer;
-  w,h : integer;
   dh : integer;
 begin
   ImageCheck(FNormalMenu,Point(255,32));
   if FSkinManager = nil then exit;
 
-  w := FItemWidth;
-  h := Max(1,GetItemsHeight(-1));
+  if (FOldWH.X = -1) or (FOldWH.Y = -1) then
+    FOldWH := Point(FItemWidth, Max(1,GetItemsHeight(StartIndex, FWrapCount)));
 
-  FNormalMenu.SetSize(w,h);
+  FNormalMenu.SetSize(FOldWH.X,FOldWH.Y);
   FNormalMenu.Clear(color32(0,0,0,0));
 
-  dh := 0;
+  dh := -(FOffset - GetStartIndexHeight);
   try
-    for n := 0 to FItems.Count - 1 do
+    for n := StartIndex to StartIndex + FWrapCount do
     begin
+      if n >= FItems.Count then
+        break;
+
       item := TSharpEMenuItem(FItems.Items[n]);
       if item.isVisible then
-         RenderMenuItem(FNormalMenu,0,dh,item,msNormal);
+         RenderMenuItem(FNormalMenu, 0, dh, item, msNormal);
       dh := dh + FItemsHeight[n];
     end;
   finally
@@ -1160,6 +1254,7 @@ var
   temp : TBitmap32;
   n : integer;
   y : integer;
+  fr : TPoint;
   backgroundThread : TSharpEMenuRenderThread;
   normalItemsThread : TSharpEMenuRenderThread;
 begin
@@ -1212,19 +1307,32 @@ begin
       normalItemsThread.WaitFor();
     normalItemsThread.Free;
   end;
-
+  
   temp := TBitmap32.Create;
   temp.assign(FNormalMenu);
-  y := 0;
+  y := -(FOffset - GetStartIndexHeight);;
   try
-    for n := 0 to Min(High(FItemsHeight),FItems.Count-1) do
+    for n := StartIndex to FWrapCount + StartIndex do
     begin
+      if n >= FItems.Count then
+        break;
+
       if (n = FItemIndex) and (TSharpEMenuItem(FItems.Items[n]).isVisible) then
       begin
+        fr := Point(y, y+FItemsHeight[n]);
+        if fr.X < 0 then
+          fr.X := 0;
+        if fr.Y > FNormalMenu.Height then
+          fr.Y := FNormalMenu.Height;
+      
         temp.DrawMode := dmOpaque;
-        temp.FillRect(0,y,FItemWidth,y+FItemsHeight[n],color32(0,0,0,0));
-        if FMouseDown then RenderMenuItem(temp,0,y,TSharpEMenuItem(FItems.Items[n]),msDown)
-           else RenderMenuItem(temp,0,y,TSharpEMenuItem(FItems.Items[n]),msHover);
+        temp.FillRect(0,fr.X,FItemWidth,fr.Y,color32(0,0,0,0));
+
+        if FMouseDown then
+          RenderMenuItem(temp,0,y,TSharpEMenuItem(FItems.Items[n]),msDown)
+        else
+          RenderMenuItem(temp,0,y,TSharpEMenuItem(FItems.Items[n]),msHover);
+          
         temp.DrawMode := dmBlend;
         break;
       end;
@@ -1263,7 +1371,7 @@ end;
 procedure TSharpEMenu.RenderTo(Dst : TBitmap32; pLeft,pTop : integer);
 begin
   if (FSkinManager = nil) then exit;
-  RenderBackground(pLeft,pTop);
+    RenderBackground(pLeft,pTop);
 
   RenderTo(Dst);
 end;
@@ -1348,17 +1456,22 @@ var
   n : integer;
 begin
   menuskin := FSkinManager.Skin.Menu;
-  tl.x := menuskin.LROffset.X;
-  tl.y := menuskin.TBOffset.X;
 
-  for n := 0 to Min(High(FItemsHeight),FItems.Count-1) do
+  tl.x := menuskin.LROffset.X;
+  tl.y := menuskin.TBOffset.X + -(FOffset - GetStartIndexHeight);;
+
+  for n := StartIndex to FWrapCount + StartIndex do
   begin
+    if n >= FItems.Count then
+      break;
+      
     item := TSharpEMenuItem(FItems.Items[n]);
     if (PointInRect(Point(px,py),Rect(0,tl.y,tl.y + tl.x+FItemWidth,tl.y + FItemsHeight[n]))
         and (item.isVisible)) then
     begin
       result := (FItemIndex <> n);
       FItemIndex := n;
+
       submenu := (item.ItemType = mtSubMenu);
       exit;
     end;
@@ -1402,6 +1515,40 @@ begin
     end;
   end;
   result := FItemIndex;
+end;
+
+function TSharpEMenu.NextNotVisibleIndex : integer;
+var
+  n : integer;
+  item : TSharpEMenuItem;
+begin
+  for n := Max(0,FItemIndex+1) to FItems.Count - 1 do
+  begin
+    item := TSharpEMenuItem(FItems.Items[n]);
+    if (not item.isVisible)  then
+    begin
+      result := n;
+      exit;
+    end;
+  end;
+  result := FItems.Count;
+end;
+
+function TSharpEMenu.PreviousNotVisibleIndex : integer;
+var
+  n : integer;
+  item : TSharpEMenuItem;
+begin
+  for n := Min(FItems.Count - 1,FItemIndex - 1) downto 0 do
+  begin
+    item := TSharpEMenuItem(FItems.Items[n]);
+    if (not item.isVisible) then
+    begin
+      result := n;
+      exit;
+    end;
+  end;
+  result := 0;
 end;
 
 end.

@@ -9,6 +9,7 @@ object SharpEMenuWnd: TSharpEMenuWnd
   ClientHeight = 265
   ClientWidth = 259
   Color = clBtnFace
+  Enabled = False
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -23,6 +24,7 @@ object SharpEMenuWnd: TSharpEMenuWnd
   OnDestroy = FormDestroy
   OnDeactivate = FormDeactivate
   OnKeyDown = FormKeyDown
+  OnKeyPress = FormKeyPress
   OnMouseDown = FormMouseDown
   OnMouseEnter = FormMouseEnter
   OnMouseLeave = FormMouseLeave
@@ -65,5 +67,12 @@ object SharpEMenuWnd: TSharpEMenuWnd
     OnTimer = HideTimerOnTimer
     Left = 144
     Top = 104
+  end
+  object ScrollMenuTimer: TTimer
+    Enabled = False
+    Interval = 10
+    OnTimer = ScrollMenuTimerTimer
+    Left = 112
+    Top = 136
   end
 end

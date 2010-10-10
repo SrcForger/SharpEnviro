@@ -30,22 +30,23 @@ interface
 uses JvSimpleXML,SysUtils,
      uSharpEMenu,
      uSharpEMenuSettings,
-     ISharpESkinComponents;
+     ISharpESkinComponents,
+     uSharpEMenuDynamicContentThread;
 
-function LoadMenu(pFileName : String; pManager: ISharpESkinManager; pDesignMode : boolean) : TSharpEMenu;
+function LoadMenu(pFileName : String; pManager: ISharpESkinManager; DynamicContentThread : TSharpEMenuDynamicContentThread; pDesignMode : boolean) : TSharpEMenu;
 
 implementation
 
 uses uSharpEMenuItem;
 
-function LoadMenuFromXML(pParemtItem : TSharpEMenuItem; pXML : TJvSimpleXMLElems; pManager: ISharpESkinManager; pSettings : TSharpEMenuSettings; pDesignMode : boolean) : TSharpEMenu;
+function LoadMenuFromXML(pParemtItem : TSharpEMenuItem; pXML : TJvSimpleXMLElems; pManager: ISharpESkinManager; pSettings : TSharpEMenuSettings; DynamicContentThread : TSharpEMenuDynamicContentThread; pDesignMode : boolean) : TSharpEMenu;
 var
   n : integer;
   menu : TSharpEMenu;
   menuitem : TSharpEMenuItem;
   typestring : String;
 begin
-  menu := TSharpEMenu.Create(pParemtItem,pManager,pSettings);
+  menu := TSharpEMenu.Create(pParemtItem,pManager,pSettings,DynamicContentThread);
   menu.DesignMode := pDesignMode;
   result := menu;
   // Load the custom settings
@@ -98,13 +99,13 @@ begin
           begin
             menuitem := TSharpEMenuItem(menu.AddSubMenuItem(Value('Caption'),Value('Icon'),Value('Target',''),False));
             if ItemNamed['items'] <> nil then
-              menuitem.SubMenu := LoadMenuFromXML(menuitem,ItemNamed['items'].Items,pManager,menu.settings,menu.DesignMode);
+              menuitem.SubMenu := LoadMenuFromXML(menuitem,ItemNamed['items'].Items,pManager,menu.settings,DynamicContentThread,menu.DesignMode);
           end;
         end;
       end;
 end;
 
-function LoadMenu(pFileName : String; pManager: ISharpESkinManager; pDesignMode : boolean) : TSharpEMenu;
+function LoadMenu(pFileName : String; pManager: ISharpESkinManager; DynamicContentThread : TSharpEMenuDynamicContentThread; pDesignMode : boolean) : TSharpEMenu;
 var
   XML : TJvSimpleXML;
   RootMenu : TSharpEMenu;
@@ -120,14 +121,14 @@ begin
       if FileExists(pFileName) then
       begin
         XML.LoadFromFile(pFileName);
-        RootMenu := LoadMenuFromXML(nil,XML.Root.Items,pManager,tempSettings,pDesignMode);
+        RootMenu := LoadMenuFromXML(nil,XML.Root.Items,pManager,tempSettings,DynamicContentThread,pDesignMode);
       end;
     finally
       XML.Free;
     end;
   
     if RootMenu = nil then
-      RootMenu := TSharpEMenu.Create(nil,pManager,tempSettings);
+      RootMenu := TSharpEMenu.Create(nil,pManager,tempSettings,DynamicContentThread);
     result := RootMenu;
 
   finally

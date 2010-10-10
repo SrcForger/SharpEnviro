@@ -31,7 +31,8 @@ uses
   Classes,
   ActiveX,
   SharpApi,
-  Contnrs;
+  Contnrs,
+  Windows;
 
 type
   TSharpEMenuDynamicContentThread = class(TThread)
@@ -42,8 +43,10 @@ type
     procedure Execute; override;
     procedure DoRefresh;
   public
-    constructor Create(pList : TObjectList);
+    constructor Create;
     destructor Destroy; override;
+
+    procedure AddItem(pList : TObjectList);
   end;
 
 implementation
@@ -51,15 +54,16 @@ implementation
 uses
   uSharpEMenu;
 
-constructor TSharpEMenuDynamicContentThread.Create(pList : TObjectList);
+var
+  CritSect : TRTLCriticalSection;
+
+constructor TSharpEMenuDynamicContentThread.Create;
 begin
   inherited Create(True);
   FreeOnTerminate := False;
   FCOMInitialized := False;
 
   FList := TObjectList.Create;
-  FList.OwnsObjects := False;
-  FList.Assign(pList);
 end;
 
 destructor TSharpEMenuDynamicContentThread.Destroy;
@@ -70,18 +74,47 @@ begin
   inherited Destroy;
 end;
 
+procedure TSharpEMenuDynamicContentThread.AddItem(pList : TObjectList);
+begin
+  EnterCriticalSection(CritSect);
+  FList.Add(pList);
+  LeaveCriticalSection(CritSect);
+end;
+
 procedure TSharpEMenuDynamicContentThread.DoRefresh;
 var
-  n : integer;
+  i : integer;
   menu : TSharpEMenu;
+  mnuObjs : TObjectList;
 begin
-  for n := 0 to FList.Count - 1 do
+  while not Terminated do
   begin
+    while FList.Count > 0 do
+    begin
+      if Terminated then
+        break;
+
+      mnuObjs := TObjectList(FList.Extract(FList.Last));
+
+      for i := 0 to mnuObjs.Count - 1 do
+      begin
+        if Terminated then
+          break;
+
+        EnterCriticalSection(CritSect);
+        menu := TSharpEMenu(mnuObjs.Items[i]);
+        menu.RefreshDynamicContent;
+        menu.ParentMenuItem.isDynamicSubMenuInitialized := True;
+        LeaveCriticalSection(CritSect);
+      end;
+
+      Sleep(1);
+    end;
+
     if Terminated then
       break;
-    menu := TSharpEMenu(FList.Items[n]);
-    menu.RefreshDynamicContent;
-    menu.ParentMenuItem.isDynamicSubMenuInitialized := True;
+      
+    Suspend;
   end;
 end;
 
@@ -95,5 +128,11 @@ begin
   
   DoRefresh;
 end;
+
+initialization
+   InitializeCriticalSection(CritSect);
+
+finalization
+  DeleteCriticalSection(CritSect);
 
 end.

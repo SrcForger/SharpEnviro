@@ -30,7 +30,9 @@ interface
 uses
   Windows,
   Messages,
+  ShellApi,
   SysUtils,
+  StrUtils,
   Classes,
   Graphics,
   Controls,
@@ -49,7 +51,8 @@ uses
   GR32_Blend,
   uSharpEMenu,
   Menus,
-  AppEvnts;
+  AppEvnts, JvComponentBase,
+  DragDrop, DropSource, DragDropFile;
 
 type
   TSharpEMenuWnd = class(TForm)
@@ -58,6 +61,7 @@ type
     ApplicationEvents1: TApplicationEvents;
     SubMenuCloseTimer: TTimer;
     HideTimer: TTimer;
+    ScrollMenuTimer: TTimer;
     procedure ApplicationEvents1Message(var Msg: tagMSG; var Handled: Boolean);
     procedure FormMouseWheelUp(Sender: TObject; Shift: TShiftState;
       MousePos: TPoint; var Handled: Boolean);
@@ -83,10 +87,12 @@ type
     procedure FormMouseLeave(Sender: TObject);
     procedure FormMouseEnter(Sender: TObject);
     procedure CreateParams(var Params: TCreateParams); override;
+    procedure ScrollMenuTimerTimer(Sender: TObject);
+    procedure FormKeyPress(Sender: TObject; var Key: Char);
+
   private
     FMenu : TSharpEMenu;
     FParentMenu : TSharpeMenuWnd;
-    FOffset : integer;
     FOwner : TObject;
     FSubMenu : TSharpEMenuWnd;
     FPicture : TBitmap32;
@@ -100,10 +106,18 @@ type
     FIsVisible : boolean;
     FMenuID : string;
     FMouseLeave : boolean;
-
+    FOldMousePos : TPoint;
+                                      
     DC: HDC;
     Blend: TBlendFunction;
+    FMenuScroll : integer;
+    FDropFileSource: TDropFileSource;
+
     procedure UpdateWndLayer;
+    procedure ScrollMenu(num: integer; noParent: boolean = false);
+    procedure ScrollMenuOffset(num: integer; noParent: boolean = false);
+    procedure ScrollMenuKey(key: char; noParent: boolean);
+
   protected
     procedure WMActivate(var Msg : TMessage); message WM_ACTIVATE;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
@@ -112,6 +126,7 @@ type
     procedure WMSharpTerminate(var Msg : TMessage); message WM_SHARPTERMINATE;
 
     procedure WMMenuID(var Msg : TMessage); message WM_MENUID;
+
   public
     MuteXHandle : THandle;
 
@@ -127,6 +142,7 @@ type
     procedure SetHideTimeout(n : integer);
     procedure EnableHideTimeout;
     procedure DisableHideTimeout;
+    
   published
     property SharpEMenu : TSharpEMenu read FMenu;
     property SharpESubMenu : TSharpEMenuWnd read FSubMenu write FSubMenu;
@@ -175,17 +191,17 @@ end;
 procedure TSharpEMenuWnd.InitMenu(pMenu : TSharpEMenu; pRootMenu : boolean);
 begin
   if pMenu = nil then exit;
+
   FRootMenu := pRootMenu;
   FMenu := pMenu;
 
   if FMenu.ParentMenuItem <> nil then
   begin
-    TSharpEMenu(FMenu.ParentMenuItem.OwnerMenu).CheckAndAbortDynamicContentThread;
     if not FMenu.ParentMenuItem.isDynamicSubMenuInitialized then
       FMenu.RefreshDynamicContent;
   end else FMenu.RefreshDynamicContent;
 
-  FMenu.RenderTo(FPicture,FOffset);
+  FMenu.RenderTo(FPicture,0);
   PreMul(FPicture);
 
   Width  := FPicture.Width;
@@ -196,7 +212,7 @@ begin
   FMouseLeave := False;
   HideTimer.Enabled := False;
   if not pRootMenu then
-    FMenu.InitializeDynamicSubMenus;  
+    FMenu.InitializeDynamicSubMenus;
 end;
 
 constructor TSharpEMenuWnd.Create(AOwner: TComponent);
@@ -217,7 +233,10 @@ begin
   FIgnoreNextDeactivate := False;
   FIgnoreNextKillFocus := False;
   FFreeMenuSub := False;
-  FIsVisible := False;  
+  FIsVisible := False;
+  FMenuScroll := 0;
+
+  FDropFileSource := TDropFileSource.Create(Self);
 
   InitMenu(pMenu,False);
 end;
@@ -286,8 +305,6 @@ var
 begin
   if (Height <> FPicture.Height) then
   begin
-    if (FPicture.Height - FOffset < Height) then
-       FOffset := Max(0,FPicture.Height - Monitor.Height);
     if (FPicture.Height <= Height) then
        Height := FPicture.Height
   end;
@@ -310,7 +327,7 @@ begin
 
   Bmp := TBitmap32.Create;
   Bmp.SetSize(Width,Height);
-  FPicture.DrawTo(Bmp,0,-FOffset);
+  FPicture.DrawTo(Bmp);
 
   DC := GetDC(Handle);
   try
@@ -348,7 +365,6 @@ end;
 procedure TSharpEMenuWnd.FormCreate(Sender: TObject);
 begin
   SubMenuTimer.Interval := SUBMENUTIMER_INTERVAL;
-  FOffset := 0;
   FRootMenu := False;
   FFreeMenu := False;
   if FPicture = nil then FPicture := TBitmap32.Create;
@@ -396,13 +412,18 @@ begin
   if FIsClosing then exit;
   if FMenu = nil then exit;
 
+  if (FOldMousePos.X = X) and (FOldMousePos.Y = Y) then
+    exit;
+
+  FOldMousePos := Point(X, Y);
+
   submenu := false;
   if FParentMenu <> nil then
   begin
     FParentMenu.SubMenuCloseTimer.Enabled := False;
     FParentMenu.SubMenuTimer.Enabled := False;
     FParentMenu.SharpEMenu.SelectItemByMenu(FMenu);
-    FParentMenu.SharpEMenu.RenderTo(FParentMenu.Picture, FParentMenu.FOffset);
+    FParentMenu.SharpEMenu.RenderTo(FParentMenu.Picture, 0);
     PreMul(FParentMenu.Picture);
     FParentMenu.DrawWindow;
   end;
@@ -417,7 +438,7 @@ begin
       end else SubMenuCloseTimer.Enabled := False;
     end;
   end;
-  if FMenu.PerformMouseMove(x,y+FOffset,submenu) then
+  if FMenu.PerformMouseMove(x,y,submenu) then
   begin
     SubMenuTimer.Enabled := False;
     if submenu then
@@ -426,7 +447,7 @@ begin
         SubMenuTimer.Interval := 25;
       SubMenuTimer.Enabled := True;
     end;
-    FMenu.RenderTo(FPicture,FOffset);
+    FMenu.RenderTo(FPicture, 0);
     PreMul(FPicture);
     DrawWindow;
   end;
@@ -438,13 +459,37 @@ end;
 
 procedure TSharpEMenuWnd.FormMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
+var
+  dragPath : string;
 begin
   if FIsClosing then exit;
   if FMenu = nil then exit;
 
+  if (DragDetectPlus(TWinControl(Sender))) then
+  begin
+    // Delete anything from a previous drag.
+    FDropFileSource.Files.Clear;
+
+    dragPath := '';
+    if not ((FMenu.CurrentItem.isDynamic) and (FMenu.CurrentItem.ItemType = mtSubMenu)) then
+    begin
+      dragPath := FMenu.CurrentItem.PropList.GetString('Action');
+    end;
+
+    if (dragPath <> '') then
+    begin
+      FDropFileSource.Files.Add(dragPath);
+      // Start the drag operation.
+      FDropFileSource.Execute;
+
+      Close;
+      exit;
+    end;
+  end;
+
   if FMenu.PerformMouseDown(self,Button, X,Y) then
   begin
-    FMenu.RenderTo(FPicture,FOffset);
+    FMenu.RenderTo(FPicture,0);
     PreMul(FPicture);
     DrawWindow;
   end;
@@ -496,7 +541,7 @@ begin
   begin
     EnableHideTimeout;
 
-    FMenu.RenderTo(FPicture,FOffset);
+    FMenu.RenderTo(FPicture,0);
     PreMul(FPicture);
     DrawWindow;
   end;
@@ -538,7 +583,8 @@ begin
 
   if FMenu.PerformClick(self) then
      CloseAll
-  else SubMenuTimerTimer(nil);
+  else
+    SubMenuTimerTimer(nil);
 end;
 
 procedure TSharpEMenuWnd.FormShow(Sender: TObject);
@@ -559,7 +605,6 @@ begin
 
   if FMenu <> nil then
   begin
-    FMenu.CheckAndAbortDynamicContentThread;
     FMenu.ItemIndex := -1;
     FMenu.RecycleBitmaps;
     if FSubMenu <> nil then
@@ -570,12 +615,18 @@ begin
     if FFreeMenu then
        FreeAndNil(FMenu);
   end;
+
   FPicture.Free;
+
   if (FFreeMenu or (Tag = - 1)) and (SharpEMenuPopups <> nil) then
      FreeAndNil(SharpEMenuPopups);
   if FRootMenu or FreeMenu then
      SharpApi.UnRegisterShellHookReceiver(Handle);
-  if FRootMenu then Application.Terminate;
+
+  FreeAndNil(FDropFileSource);
+
+  if FRootMenu then
+    Application.Terminate;
 end;
 
 procedure TSharpEMenuWnd.SubMenuCloseTimerTimer(Sender: TObject);
@@ -625,9 +676,9 @@ begin
       if (t < Monitor.Left) then t := 0;
       FSubMenu.Left := t;
 
-      t := Top;
+      t := Top - FMenu.Offset;
       if FMenu.ItemIndex <> 0 then
-         t := t + FMenu.GetItemsHeight(Max(0,FMenu.Itemindex-1)) - FOffset;
+         t := t + FMenu.GetItemsHeight(0, FMenu.ItemIndex - 1, false);
       if (t + FSubMenu.Picture.Height) > (Monitor.Top + Monitor.Height) then
          t := Monitor.Top + Monitor.Height - FSubMenu.Picture.Height;
 
@@ -651,6 +702,7 @@ end;
 procedure TSharpEMenuWnd.offsettimerTimer(Sender: TObject);
 var
   CPos : TPoint;
+  WRc : TRect;
 begin
   if FIsClosing then exit;
   if FMenu = nil then exit;
@@ -662,42 +714,30 @@ begin
     SubMenuTimer.Enabled := True;
   end;
 
+  WRc := Rect(Left, Top, Width, Height);
+
   CPos := Mouse.CursorPos;
-  if (CPos.X > Left) and (CPos.X < Left + Width) then
+
+  if (CPos.X >= WRc.Left) and (CPos.X < WRc.Left + WRc.Right) then
   begin
-    if (CPos.Y >= Monitor.Top + Top) and (CPos.Y <= Monitor.Top + 5 + Top) and (FOffset >= 0) then
+    if (CPos.Y >= WRc.Top) and
+      (CPos.Y < WRc.Top + 5) then
     begin
-      FOffset := FOffset -15;
-      if FOffset < 0 then FOffset := 0;
-      
       if FMenu.ItemIndex <> -1 then
         FMenu.ItemIndex := -1;
 
-      FMenu.RenderTo(FPicture,FOffset);
-      PreMul(FPicture);
-      DrawWindow;
-
-      DrawWindow;
-    end
-    else
-    if (CPos.Y >= Monitor.Top + Monitor.Height - 5)
-        and (CPos.Y <= Monitor.Top + Monitor.Height)
-        and (FOffset <= FPicture.Height - Monitor.Height + top) then
+      ScrollMenuOffset(-FMenu.Settings.ScrollSpeed, true);
+    end else if (CPos.Y >= WRc.Top + WRc.Bottom - 5) and
+                (CPos.Y < WRc.Top + WRc.Bottom) then
     begin
-      FOffset := FOffset +15;
-      if FOffset > FPicture.Height - Monitor.Height + top then
-         FOffset := FPicture.Height - Monitor.Height + top;
-
       if FMenu.ItemIndex <> -1 then
         FMenu.ItemIndex := -1;
 
-      FMenu.RenderTo(FPicture,FOffset);
-      PreMul(FPicture);
-      DrawWindow;
-
-      DrawWindow;
-    end else offsettimer.Enabled := False;
-  end else offsettimer.Enabled := False;
+      ScrollMenuOffset(FMenu.Settings.ScrollSpeed, true);
+    end else
+      offsettimer.Enabled := False;
+  end else
+    offsettimer.Enabled := False;
 end;
 
 procedure TSharpEMenuWnd.FormDeactivate(Sender: TObject);
@@ -807,8 +847,6 @@ end;
 
 procedure TSharpEMenuWnd.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
-var
-  n : integer;
 begin
   if FMenu = nil then exit;
 
@@ -821,27 +859,20 @@ begin
   if (Key = VK_UP) or (Key = VK_DOWN) or (Key = VK_HOME) or (Key = VK_END) then
   begin
     case Key of
-      VK_UP : FMenu.ItemIndex := FMenu.PreviousVisibleIndex;
-      VK_DOWN : FMenu.ItemIndex := FMenu.NextVisibleIndex;
+      VK_UP : ScrollMenuOffset(FMenu.Settings.ScrollSpeed, true);
+      VK_DOWN : ScrollMenuOffset(-FMenu.Settings.ScrollSpeed, true);
       VK_HOME : begin
-                  FOffset := 0;
-                  FMenu.ItemIndex := -1;
-                  FMenu.ItemIndex := FMenu.NextVisibleIndex;
-                end;
+        FMenu.ItemIndex := -1;
+        FMenu.ItemIndex := FMenu.NextVisibleIndex;
+        ScrollMenu(0);
+      end;
       VK_END : begin
-                 FMenu.ItemIndex := FMenu.Items.Count - 1;
-                 FMenu.ItemIndex := FMenu.PreviousVisibleIndex;
-                 FMenu.ItemIndex := FMenu.NextVisibleIndex;
-               end;
+        FMenu.ItemIndex := FMenu.Items.Count - 1;
+        FMenu.ItemIndex := FMenu.PreviousVisibleIndex;
+        FMenu.ItemIndex := FMenu.NextVisibleIndex;
+        ScrollMenu(-1);
+      end;
     end;
-    n := FMenu.GetItemsHeight(FMenu.ItemIndex);
-    if n > Height + FOffset then
-       FOffset := n - Height + FMenu.Background.Height - FMenu.NormalMenu.Height;
-    if n < FOffset then
-       FOffset := FOffset - FMenu.ItemsHeight[FMenu.ItemIndex];
-    FMenu.RenderTo(FPicture,FOffset);
-    PreMul(FPicture);
-    DrawWindow;
   end else
   if (Key = VK_RIGHT) then
   begin
@@ -849,7 +880,7 @@ begin
     if FSubMenu <> nil then
     begin
       FSubMenu.SharpEMenu.ItemIndex := FSubMenu.SharpEMenu.NextVisibleIndex;
-      FSubMenu.SharpEMenu.RenderTo(FSubMenu.Picture,FSubMenu.FOffset);
+      FSubMenu.SharpEMenu.RenderTo(FSubMenu.Picture,0);
       FSubMenu.PreMul(FSubMenu.Picture);
       FSubMenu.DrawWindow;
     end;
@@ -866,68 +897,151 @@ begin
   end;
 end;
 
+procedure TSharpEMenuWnd.FormKeyPress(Sender: TObject; var Key: Char);
+begin
+  if Key in ['a'..'z'] + ['A'..'Z'] + ['0'..'9'] then
+    ScrollMenuKey(Char(Key), false);
+end;
+
 procedure TSharpEMenuWnd.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   FMenuID := '-1';
   FIsClosing := True;
   if FMenu = nil then exit;
-  FMenu.CheckAndAbortDynamicContentThread;
 //  if not FMenu.isWrapMenu then
 //     FMenu.UnWrapMenu(FMenu);  // Doesn't make sense, doesn't work, necessary at all?
 end;
 
-procedure TSharpEMenuWnd.FormMouseWheelDown(Sender: TObject; Shift: TShiftState;
-  MousePos: TPoint; var Handled: Boolean);
+procedure TSharpEMenuWnd.ScrollMenu(num: integer; noParent: boolean);
 var
-  o : integer;
+  startOffset, startOffsetMax : integer;
 begin
-  if FParentMenu = nil then exit;
-  if FMenu = nil then exit;
-  if (FPicture.Height <= Height) and (FParentMenu.Picture.Height <= FParentMenu.Height) then exit;
-
-  if ((Mouse.CursorPos.x < Left) or (Mouse.CursorPos.x > Left + Width))
-     and (FParentMenu.Picture.Height > FParentMenu.Height) then
-  begin
-    FParentMenu.SharpESubMenu := nil;
-    FParentMenu.FormMouseWheelDown(FParentMenu,Shift,MousePos,Handled);
-    FMenu.RecycleBitmaps;
-    Release;
+  if FMenu = nil then
     exit;
+
+  if (not noParent) and ((Mouse.CursorPos.x >= Left) and (Mouse.CursorPos.x < Left + Width)) then
+      noParent := true;
+
+  if not noParent then
+    Visible := False;
+
+  startOffset := 0;
+  if num >= 0 then
+    startOffset := num;
+
+  if (FParentMenu <> nil) and (not noParent) then
+    startOffsetMax := FParentMenu.SharpEMenu.GetMaxHeight
+  else
+    startOffsetMax := FMenu.GetMaxHeight;
+
+  if num < 0 then
+    startOffset := startOffsetMax;
+
+  if startOffset > startOffsetMax then
+    startOffset := startOffsetMax;
+  if startOffset < 0 then
+    startOffset := 0;
+
+  if (FParentMenu <> nil) and (not noParent) then
+  begin
+    if (startOffset = FParentMenu.SharpEMenu.Offset) then
+      exit;
+
+    FParentMenu.SharpEMenu.Offset := startOffset;
+
+    FParentMenu.SharpEMenu.RenderTo(FParentMenu.Picture, 0);
+    PreMul(FParentMenu.FPicture);
+    FParentMenu.DrawWindow;
+  end else
+  begin
+    if (startOffset = FMenu.Offset) then
+      exit;
+      
+    FMenu.Offset := startOffset;
+
+    FMenu.RenderTo(FPicture, 0);
+    PreMul(FPicture);
+    DrawWindow;
+  end;
+end;
+
+procedure TSharpEMenuWnd.ScrollMenuOffset(num: integer; noParent: boolean);
+var
+  scroll : integer;
+begin
+  if (not noParent) and ((Mouse.CursorPos.x >= Left) and (Mouse.CursorPos.x < Left + Width)) then
+      noParent := true;
+
+  if (FParentMenu <> nil) and (not noParent) then
+    scroll := FParentMenu.SharpEMenu.Offset + num
+  else
+    scroll := FMenu.Offset + num;
+    
+  if scroll < 0 then
+    scroll := 0;
+
+  ScrollMenu(scroll, noParent);
+end;
+
+procedure TSharpEMenuWnd.ScrollMenuKey(key: char; noParent: boolean);
+var
+  n : integer;
+  num, numMax : integer;
+  cap : string;
+begin
+  if (not noParent) and ((Mouse.CursorPos.x >= Left) and (Mouse.CursorPos.x < Left + Width)) then
+      noParent := true;
+
+  if noParent then
+    numMax := FMenu.Items.Count - 1
+  else
+    numMax := FParentMenu.SharpEMenu.Items.Count - 1;
+      
+  num := -1;
+  for n := 0 to numMax do
+  begin
+    if noParent then
+      cap := AnsiUpperCase(TSharpEMenuItem(FMenu.Items.Items[n]).Caption)
+    else
+      cap := AnsiUpperCase(TSharpEMenuItem(FParentMenu.SharpEMenu.Items.Items[n]).Caption);
+      
+    if Length(cap) <= 0 then
+      continue;
+
+    if (cap[1] = AnsiUpperCase(key)[1]) then
+      break;
+
+    if noParent then
+      num := num + FMenu.ItemsHeight[n]
+    else
+      num := num + FParentMenu.SharpEMenu.ItemsHeight[n];
   end;
 
-  o := FOffset;
-  FOffset := FOffset + 50;
-  if FOffset > FPicture.Height - Monitor.Height then
-     FOffset := FPicture.Height - Monitor.Height;
-  if o <> FOffset then
-     DrawWindow;
+  if num >= 0 then
+    ScrollMenu(num, noParent);
+end;
+
+procedure TSharpEMenuWnd.ScrollMenuTimerTimer(Sender: TObject);
+begin
+  ScrollMenuOffset(FMenuScroll);
+  FMenuScroll := 0;
+  ScrollMenuTimer.Enabled := False;
+end;
+
+procedure TSharpEMenuWnd.FormMouseWheelDown(Sender: TObject; Shift: TShiftState;
+  MousePos: TPoint; var Handled: Boolean);
+begin
+  ScrollMenuTimer.Enabled := False;
+  FMenuScroll := FMenuScroll + FMenu.Settings.ScrollSpeed;
+  ScrollMenuTimer.Enabled := True;
 end;
 
 procedure TSharpEMenuWnd.FormMouseWheelUp(Sender: TObject; Shift: TShiftState;
   MousePos: TPoint; var Handled: Boolean);
-  var
-  o : integer;
 begin
-  if FParentMenu = nil then exit;
-  if FMenu = nil then exit;
-  if (FPicture.Height <= Height) and (FParentMenu.Picture.Height <= FParentMenu.Height) then exit;
-
-  if ((Mouse.CursorPos.x < Left) or (Mouse.CursorPos.x > Left + Width))
-     and (FParentMenu.Picture.Height > FParentMenu.Height) then
-  begin
-    FParentMenu.SharpESubMenu := nil;
-    FParentMenu.FormMouseWheelUp(FParentMenu,Shift,MousePos,Handled);
-    FMenu.RecycleBitmaps;
-    Release;
-    exit;
-  end;
-
-  o := FOffset;
-  FOffset := FOffset - 50;
-  if FOffset < 0 then
-     FOffset := 0;
-  if o <> FOffset then
-     DrawWindow;
+  ScrollMenuTimer.Enabled := False;
+  FMenuScroll := FMenuScroll - FMenu.Settings.ScrollSpeed;
+  ScrollMenuTimer.Enabled := True;
 end;
 
 procedure TSharpEMenuWnd.ApplicationEvents1Message(var Msg: tagMSG;

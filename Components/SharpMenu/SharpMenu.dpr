@@ -103,6 +103,7 @@ var
   loadGenericIconsThread : TLoadGenericIconsThread;
   skinManagerLoadThread : TSkinManagerLoadThread;
   nomenuid : boolean;
+  DynamicContentThread : TSharpEMenuDynamicContentThread;
 
 function GetCurrentTime : Int64;
 var
@@ -160,6 +161,8 @@ begin
 
   // Init Theme
   GetCurrentTheme.LoadTheme([tpSkinScheme,tpIconSet,tpSkinFont]);
+
+  DynamicContentThread := TSharpEMenuDynamicContentThread.Create;
 
   // Start the thread that will Init and load the Skin Manager
   skinManagerLoadThread := TSkinManagerLoadThread.Create(True);
@@ -255,7 +258,7 @@ begin
 
   // Load menu xml file, but don't load the icons (yet)
   SharpEMenuIcons.OnlyAdd := True;
-  mn := uSharpEMenuLoader.LoadMenu(mfile,SkinManagerInterface,False);
+  mn := uSharpEMenuLoader.LoadMenu(mfile,SkinManagerInterface,DynamicContentThread,False);
 
   // All cached icons are now loaded, load all icons which aren't cached
   SharpEMenuIcons.OnlyAdd := False;
@@ -309,6 +312,14 @@ begin
   menusettings.Free;   
 
   SkinManagerInterface := nil;
+
+  if (DynamicContentThread <> nil) then
+  begin
+    DynamicContentThread.Terminate;
+    DynamicContentThread.Resume;
+    DynamicContentThread.WaitFor;
+  end;
+  FreeAndNil(DynamicContentThread);
 
   CoUnInitialize;
 

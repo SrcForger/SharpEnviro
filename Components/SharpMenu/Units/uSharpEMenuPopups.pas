@@ -117,7 +117,6 @@ begin
            DeleteDirectory(item.PropList.GetString('Target'),True);
            if DirectoryExists(item.PropList.GetString('Target')) then
               RemoveDir(item.PropList.GetString('Target'));
-           menu.CheckAndAbortDynamicContentThread;
            menu.Items.Remove(item);
            menuwnd.Visible := False;
            menu.RenderBackground(menuwnd.Left,menuwnd.Top);
@@ -151,7 +150,6 @@ begin
     case TMenuItem(Sender).Tag of
       1: begin
            JclFileUtils.FileDelete(item.PropList.GetString('Action'));
-           menu.CheckAndAbortDynamicContentThread;
            menu.Items.Remove(item);
            menuwnd.Visible := False;           
            menu.RenderBackground(menuwnd.Left,menuwnd.Top);

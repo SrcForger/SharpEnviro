@@ -43,6 +43,7 @@ type
     UseGenericIcons : boolean;
     ShowExtensions : boolean;
     HideTimeout : integer;
+    ScrollSpeed : integer;
 
     procedure LoadFromXML; overload;
     procedure LoadFromXML(pFileName : String); overload;
@@ -71,6 +72,7 @@ begin
   UseGenericIcons := False;
   ShowExtensions := False;
   HideTimeout := 0;
+  ScrollSpeed := 50;
 end;
 
 procedure TSharpEMenuSettings.Assign(from : TSharpeMenuSettings);
@@ -84,6 +86,7 @@ begin
   UseGenericIcons := from.UseGenericIcons;
   ShowExtensions := from.ShowExtensions;
   HideTimeout := from.HideTimeout;
+  ScrollSpeed := from.ScrollSpeed;
 end;
 
 procedure TSharpEMenuSettings.LoadFromXML;
@@ -104,6 +107,7 @@ begin
     UseGenericIcons := BoolValue('UseGenericIcons',UseGenericIcons);
     ShowExtensions := BoolValue('ShowExtensions',ShowExtensions);
     HideTimeout := IntValue('HideTimeout',HideTimeout);
+    ScrollSpeed := IntValue('ScrollSpeed',ScrollSpeed);
   end;
 end;
 
@@ -120,6 +124,7 @@ begin
     Add('UseGenericIcons',UseGenericIcons);
     Add('ShowExtensions',ShowExtensions);
     Add('HideTimeout',HideTimeout);
+    Add('ScrollSpeed',ScrollSpeed);
   end;
 end;
 
