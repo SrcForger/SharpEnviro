@@ -453,7 +453,7 @@ begin
   end;
 
   CPos := Mouse.CursorPos;
-  if (Y < 10) or (Y > Monitor.Height - 10 - Top) or (CPos.y < Monitor.Top + 10) then
+  if ((CPos.Y < Top + 5) or (CPos.Y >= Top + Height - 5)) then
      offsettimer.Enabled := True;
 end;
 
