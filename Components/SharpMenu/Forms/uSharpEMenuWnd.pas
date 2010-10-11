@@ -864,8 +864,8 @@ begin
   if (Key = VK_UP) or (Key = VK_DOWN) or (Key = VK_HOME) or (Key = VK_END) then
   begin
     case Key of
-      VK_UP : ScrollMenuOffset(FMenu.Settings.ScrollSpeed, true);
-      VK_DOWN : ScrollMenuOffset(-FMenu.Settings.ScrollSpeed, true);
+      VK_UP : ScrollMenuOffset(-FMenu.Settings.ScrollSpeed, true);
+      VK_DOWN : ScrollMenuOffset(FMenu.Settings.ScrollSpeed, true);
       VK_HOME : begin
         FMenu.ItemIndex := -1;
         FMenu.ItemIndex := FMenu.NextVisibleIndex;
@@ -896,8 +896,8 @@ begin
     begin
       FParentMenu.SharpESubMenu := nil;
       FMenu.RecycleBitmaps;
+      FParentMenu.SetFocus;
       Release;
-      FParentMenu.SetFocus;      
     end;
   end;
 end;
