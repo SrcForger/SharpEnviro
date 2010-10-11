@@ -645,7 +645,7 @@ end;
 procedure TSharpEMenuWnd.SubMenuTimerTimer(Sender: TObject);
 var
   item : TSharpEMenuItem;
-  t : integer;
+  t, m : integer;
 begin
   if FIsClosing then exit;
   if FMenu = nil then exit;
@@ -676,14 +676,13 @@ begin
       if (t < Monitor.Left) then t := 0;
       FSubMenu.Left := t;
 
+      m := FSubMenu.SharpEMenu.Background.Height;
+      
       t := Top - FMenu.Offset;
       if FMenu.ItemIndex <> 0 then
          t := t + FMenu.GetItemsHeight(0, FMenu.ItemIndex - 1, false);
-      if (t + FSubMenu.Picture.Height) > (Monitor.Top + Monitor.Height) then
-         t := Monitor.Top + Monitor.Height - FSubMenu.Picture.Height;
-
-      if item.isWrapMenu then
-         t := Top;
+      if (t + m) > (Monitor.Top + Monitor.Height) then
+         t := Monitor.Top + Monitor.Height - m;
 
       if t < Monitor.Top then
       begin

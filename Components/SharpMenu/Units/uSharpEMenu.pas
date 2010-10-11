@@ -151,6 +151,7 @@ type
     property DynamicContentThread : TSharpEMenuDynamicContentThread read FDynamicContentThread write FDynamicContentThread;
     property Offset : integer read FOffset write UpdateOffset;
     property StartIndex : integer read GetStartIndex;
+    property WrapCount : integer read FWrapCount;
 
   end;
 
@@ -709,11 +710,6 @@ begin
       break;
 
     size := size + FItemsHeight[n];
-    if (size > Screen.WorkAreaHeight - FItemsHeight[PreviousVisibleIndex]) and (sizeRestrict) then
-    begin
-      size := Screen.WorkAreaHeight - FItemsHeight[PreviousVisibleIndex];
-      break;
-    end;
   end;
 
   result := size;
@@ -774,7 +770,8 @@ begin
         mtSubMenu  : i := menuitemskin.NormalSubItem.Dimension.Y;
         else         i := menuitemskin.NormalItem.Dimension.Y;
       end;
-    end else i := 0;
+    end else
+      i := 0;
     FItemsHeight[High(FItemsHeight)] := i;
   end;
 end;
@@ -911,7 +908,7 @@ begin
     if item.isVisible then
        c := c + 1;
 
-    if ((c >= pMaxItems) or (size > Screen.WorkAreaHeight - FItemsHeight[PreviousVisibleIndex]))
+    if ((c >= pMaxItems) or (size > GetItemsHeight(0, FWrapCount, false)))
        and (n < FItems.Count - 1) then
     begin
       item := TSharpEMenuItem.Create(self,mtSeparator);
