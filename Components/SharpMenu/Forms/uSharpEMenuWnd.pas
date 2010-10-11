@@ -672,7 +672,7 @@ begin
       SubMenuCloseTimer.Enabled := False;
       FSubMenu := TSharpEMenuWnd.Create(self,TSharpEMenu(item.submenu));
       FSubMenu.SharpEMenu.Offset := 0;
-      FSubMenu.SharpEMenu.ItemIndex := 0;
+      FSubMenu.SharpEMenu.ItemIndex := -1;
       
       FSubMenu.ParentMenu := self;
       t := Left + Width + FMenu.SkinManager.Skin.Menu.LocationOffset.X;
