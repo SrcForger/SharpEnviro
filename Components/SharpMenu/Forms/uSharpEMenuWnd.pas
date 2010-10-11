@@ -201,7 +201,7 @@ begin
       FMenu.RefreshDynamicContent;
   end else FMenu.RefreshDynamicContent;
 
-  FMenu.RenderTo(FPicture,0);
+  FMenu.RenderTo(FPicture);
   PreMul(FPicture);
 
   Width  := FPicture.Width;
@@ -423,7 +423,7 @@ begin
     FParentMenu.SubMenuCloseTimer.Enabled := False;
     FParentMenu.SubMenuTimer.Enabled := False;
     FParentMenu.SharpEMenu.SelectItemByMenu(FMenu);
-    FParentMenu.SharpEMenu.RenderTo(FParentMenu.Picture, 0);
+    FParentMenu.SharpEMenu.RenderTo(FParentMenu.Picture);
     PreMul(FParentMenu.Picture);
     FParentMenu.DrawWindow;
   end;
@@ -447,7 +447,7 @@ begin
         SubMenuTimer.Interval := 25;
       SubMenuTimer.Enabled := True;
     end;
-    FMenu.RenderTo(FPicture, 0);
+    FMenu.RenderTo(FPicture);
     PreMul(FPicture);
     DrawWindow;
   end;
@@ -489,7 +489,7 @@ begin
 
   if FMenu.PerformMouseDown(self,Button, X,Y) then
   begin
-    FMenu.RenderTo(FPicture,0);
+    FMenu.RenderTo(FPicture);
     PreMul(FPicture);
     DrawWindow;
   end;
@@ -541,7 +541,7 @@ begin
   begin
     EnableHideTimeout;
 
-    FMenu.RenderTo(FPicture,0);
+    FMenu.RenderTo(FPicture);
     PreMul(FPicture);
     DrawWindow;
   end;
@@ -593,6 +593,8 @@ begin
   
   if FMenu = nil then
     exit;
+
+  FMenu.Position := Point(Left, Top);
 
   FMenu.RenderTo(FPicture,Left,Top);
   PreMul(FPicture);
@@ -669,6 +671,9 @@ begin
     begin
       SubMenuCloseTimer.Enabled := False;
       FSubMenu := TSharpEMenuWnd.Create(self,TSharpEMenu(item.submenu));
+      FSubMenu.SharpEMenu.Offset := 0;
+      FSubMenu.SharpEMenu.ItemIndex := 0;
+      
       FSubMenu.ParentMenu := self;
       t := Left + Width + FMenu.SkinManager.Skin.Menu.LocationOffset.X;
       if (t + FSubMenu.Width > Monitor.Left + Monitor.Width) then
@@ -879,7 +884,7 @@ begin
     if FSubMenu <> nil then
     begin
       FSubMenu.SharpEMenu.ItemIndex := FSubMenu.SharpEMenu.NextVisibleIndex;
-      FSubMenu.SharpEMenu.RenderTo(FSubMenu.Picture,0);
+      FSubMenu.SharpEMenu.RenderTo(FSubMenu.Picture);
       FSubMenu.PreMul(FSubMenu.Picture);
       FSubMenu.DrawWindow;
     end;
@@ -948,17 +953,17 @@ begin
 
     FParentMenu.SharpEMenu.Offset := startOffset;
 
-    FParentMenu.SharpEMenu.RenderTo(FParentMenu.Picture, 0);
+    FParentMenu.SharpEMenu.RenderTo(FParentMenu.Picture);
     PreMul(FParentMenu.FPicture);
     FParentMenu.DrawWindow;
   end else
   begin
     if (startOffset = FMenu.Offset) then
       exit;
-      
+
     FMenu.Offset := startOffset;
 
-    FMenu.RenderTo(FPicture, 0);
+    FMenu.RenderTo(FPicture);
     PreMul(FPicture);
     DrawWindow;
   end;

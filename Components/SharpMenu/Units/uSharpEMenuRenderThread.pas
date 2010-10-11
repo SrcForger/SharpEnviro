@@ -73,8 +73,10 @@ var
 begin
   menu := TSharpEMenu(FMenu);
   case FRenderItems of
-    riBackground: menu.RenderBackground(0,0,True);
-    riNormalItems: menu.RenderNormalMenu;
+    riBackground:
+      menu.RenderBackground(menu.Position.X,menu.Position.Y,True);
+    riNormalItems:
+      menu.RenderNormalMenu;
   end;
 end;
 

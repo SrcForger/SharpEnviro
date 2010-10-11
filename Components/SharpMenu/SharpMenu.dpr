@@ -290,7 +290,7 @@ begin
     i := Mon.Top;
   end;
   wnd.top := i;
-  
+
   // Register Shell Hook
   SharpApi.RegisterShellHookReceiver(wnd.Handle);
 

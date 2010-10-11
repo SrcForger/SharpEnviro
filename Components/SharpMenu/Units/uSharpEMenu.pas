@@ -68,6 +68,8 @@ type
     FOffset : integer;
     FOldWH : TPoint;
     FWrapCount : integer;
+    FPosition : TPoint;
+    FRedrawBG : boolean;
 
     procedure UpdateItemWidth;
     procedure UpdateItemsHeight;
@@ -102,7 +104,6 @@ type
     procedure RenderNormalMenu;
     procedure RenderTo(Dst : TBitmap32); overload;
     procedure RenderTo(Dst : TBitmap32; pLeft,pTop : integer); overload;
-    procedure RenderTo(Dst : TBitmap32; Offset : integer); overload;
     procedure RenderTo(Dst : TBitmap32; pLeft,pTop : integer; BGBmp : TBitmap32); overload;    
     procedure RecycleBitmaps;
 
@@ -135,6 +136,8 @@ type
 
     procedure UpdateOffset(val: integer);
 
+    procedure SetPosition(pos: TPoint);
+
     property ItemIndex  : integer read FItemIndex write FItemIndex;
     property CurrentItem : TSharpEMenuItem read GetCurrentItem;
     property Background : TBitmap32 read FBackground;
@@ -152,6 +155,7 @@ type
     property Offset : integer read FOffset write UpdateOffset;
     property StartIndex : integer read GetStartIndex;
     property WrapCount : integer read FWrapCount;
+    property Position : TPoint read FPosition write SetPosition;
 
   end;
 
@@ -192,6 +196,9 @@ begin
   FItemIndex := -1;
   FOffset := 0;
   FOldWH := Point(-1, -1);
+  FPosition := Point(-1, -1);
+  FRedrawBG := True;
+
   FItems := TObjectList.Create(True);
 
   FWrapMenu := False;
@@ -249,7 +256,7 @@ begin
   begin
     FOldWH := Point(w, h);
 
-    RenderBackground(0, 0);
+    RenderBackground(FPosition.X, FPosition.Y);
   end;
   RenderNormalMenu;
 end;
@@ -301,6 +308,14 @@ begin
     size := size + FItemsHeight[n];
 
   result := size;
+end;
+
+procedure TSharpEMenu.SetPosition(pos: TPoint);
+begin
+  if (FPosition.X <> pos.X) and (FPosition.Y <> pos.Y) then
+    FRedrawBG := True;
+
+  FPosition := pos;
 end;
 
 procedure TSharpEMenu.RecycleBitmaps;
@@ -997,14 +1012,10 @@ begin
   if FSkinManager.Skin.Bar.GlassEffect then
   begin
     ImageCheck(FSpecialBackground,Point(w,h));
-    ImageCheck(FSpecialBackgroundSource,Point(w,h));
+
     FSpecialBackground.SetSize(w,h);
     FSpecialBackground.Clear(color32(0,0,0,0));
-    if BGBmp = nil then
-    begin
-      FSpecialBackgroundSource.SetSize(w,h);
-      FSpecialBackgroundSource.Clear(color32(0,0,0,0));
-    end;
+
     dc := GetWindowDC(GetDesktopWindow);
     try
       Theme := GetCurrentTheme;    
@@ -1012,31 +1023,44 @@ begin
         BGBmp.DrawTo(FSpecialBackground,0,0)
       else
       begin
-        BitBlt(FSpecialBackgroundSource.Canvas.Handle,
-               0,
-               0,
-               FSpecialBackgroundSource.Width,
-               FSpecialBackgroundSource.Height,
-               dc,
-               pLeft,
-               pTop,
-               SRCCOPY or CAPTUREBLT);
-        FSpecialBackgroundSource.ResetAlpha;
+        if (FSpecialBackgroundSource = nil) or (FRedrawBG) then
+        begin
+          ImageCheck(FSpecialBackgroundSource,Point(w,h));
+          FSpecialBackgroundSource.SetSize(w,h);
+          FSpecialBackgroundSource.Clear(color32(0,0,0,0));
+
+          BitBlt(FSpecialBackgroundSource.Canvas.Handle,
+                  0,
+                  0,
+                  FSpecialBackgroundSource.Width,
+                  FSpecialBackgroundSource.Height,
+                  dc,
+                  pLeft,
+                  pTop,
+                  SRCCOPY or CAPTUREBLT);
+               
+            FSpecialBackgroundSource.ResetAlpha;
+
+            FRedrawBG := False;
+        end;
+        
         FSpecialBackground.Assign(FSpecialBackgroundSource);
       end;
+    finally
+      ReleaseDC(GetDesktopWindow, dc);
+    end;
+      
       if Theme.Skin.GlassEffect.Blend then
         BlendImageC(FSpecialBackground,Theme.Skin.GlassEffect.BlendColor,Theme.Skin.GlassEffect.BlendAlpha);
       fastblur(FSpecialBackground,Theme.Skin.GlassEffect.BlurRadius,Theme.Skin.GlassEffect.BlurIterations);
       if Theme.Skin.GlassEffect.Lighten then
          lightenBitmap(FSpecialBackground,Theme.Skin.GlassEffect.LightenAmount);
       FSpecialBackground.ResetAlpha(255);
+
       FBackground.SetSize(w,h);
       FBackground.Clear(color32(0,0,0,0));
       menuskin.Background.DrawTo(FBackground,FSkinManager.Scheme);
       ReplaceTransparentAreas(FSpecialBackground,FBackground,Color32(0,0,0,0));
-    finally
-      ReleaseDC(GetDesktopWindow, dc);
-    end;
   end else
   begin
     menuskin.Background.drawto(FBackground,FSkinManager.Scheme);
@@ -1245,7 +1269,7 @@ begin
   end;
 end;
 
-procedure TSharpEMenu.RenderTo(Dst: TBitmap32; Offset: integer);
+procedure TSharpEMenu.RenderTo(Dst: TBitmap32);
 var
   menuskin : ISharpEMenuSkin;
   temp : TBitmap32;
@@ -1275,7 +1299,7 @@ begin
     end;
   end else
   begin
-    if (FBackground = nil) then RenderBackground(0,0);
+    if (FBackground = nil) then RenderBackground(FPosition.X,FPosition.Y);
     if (FNormalMenu = nil) then RenderNormalMenu();
   end;
 
@@ -1294,7 +1318,7 @@ begin
   Dst.SetSize(FBackground.Width,FBackground.Height);
   Dst.Clear(color32(0,0,0,0));
   if FSpecialBackground <> nil then
-    FSpecialBackground.DrawTo(Dst,0,Offset);
+    FSpecialBackground.DrawTo(Dst);
 
   FBackground.DrawTo(Dst);
 
@@ -1371,11 +1395,6 @@ begin
     RenderBackground(pLeft,pTop);
 
   RenderTo(Dst);
-end;
-
-procedure TSharpEMenu.RenderTo(Dst : TBitmap32);
-begin
-  RenderTo(Dst,0);
 end;
 
 function TSharpEMenu.PerformClick(Wnd : TObject) : boolean;
