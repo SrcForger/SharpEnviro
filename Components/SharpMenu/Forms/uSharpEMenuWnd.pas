@@ -676,9 +676,10 @@ begin
       
       FSubMenu.ParentMenu := self;
       t := Left + Width + FMenu.SkinManager.Skin.Menu.LocationOffset.X;
-      if (t + FSubMenu.Width > Monitor.Left + Monitor.Width) then
+      if (t + FSubMenu.Width > Monitor.WorkareaRect.Right) then
          t := Left - FSubMenu.Width - FMenu.SkinManager.Skin.Menu.LocationOffset.Y;
-      if (t < Monitor.Left) then t := 0;
+      if (t < Monitor.WorkareaRect.Left) then
+        t := Monitor.WorkareaRect.Left;
       FSubMenu.Left := t;
 
       m := FSubMenu.SharpEMenu.Background.Height;
@@ -686,13 +687,13 @@ begin
       t := Top - FMenu.Offset;
       if FMenu.ItemIndex <> 0 then
          t := t + FMenu.GetItemsHeight(0, FMenu.ItemIndex - 1, false);
-      if (t + m) > (Monitor.Top + Monitor.Height) then
-         t := Monitor.Top + Monitor.Height - m;
+      if (t + m) > (Monitor.WorkareaRect.Bottom) then
+         t := Monitor.WorkareaRect.Bottom - m;
 
-      if t < Monitor.Top then
+      if t < Monitor.WorkareaRect.Top then
       begin
-        if FSubMenu.Picture.Height > Monitor.Height then
-           FSubMenu.Height := Monitor.Height;
+        if FSubMenu.Picture.Height > (Monitor.WorkareaRect.Bottom - Monitor.WorkareaRect.Top) then
+           FSubMenu.Height := (Monitor.WorkareaRect.Bottom - Monitor.WorkareaRect.Top);
         t := 0;
       end;
       FSubMenu.top := t;
