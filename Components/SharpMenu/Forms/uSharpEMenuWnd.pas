@@ -896,7 +896,6 @@ begin
     begin
       FParentMenu.SharpESubMenu := nil;
       FMenu.RecycleBitmaps;
-      FParentMenu.SetFocus;
       Release;
     end;
   end;
