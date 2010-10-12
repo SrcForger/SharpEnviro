@@ -1076,10 +1076,12 @@ object SharpCompileMainWnd: TSharpCompileMainWnd
         TabOrder = 0
         DrawMode = srpNormal
         NoTopBorder = False
+        NoBottomBorder = False
         RoundValue = 10
         BorderColor = 16244164
         Border = True
         BackgroundColor = clWindow
+        BottomSideBorder = False
         object sepProjLbl: TSharpERoundPanel
           Left = 6
           Top = 6
@@ -1092,10 +1094,12 @@ object SharpCompileMainWnd: TSharpCompileMainWnd
           TabOrder = 0
           DrawMode = srpNormal
           NoTopBorder = False
+          NoBottomBorder = False
           RoundValue = 10
           BorderColor = clBtnFace
           Border = False
           BackgroundColor = 16510947
+          BottomSideBorder = False
           object lblProjects: TLabel
             AlignWithMargins = True
             Left = 3
@@ -1147,10 +1151,12 @@ object SharpCompileMainWnd: TSharpCompileMainWnd
         TabOrder = 1
         DrawMode = srpNormal
         NoTopBorder = False
+        NoBottomBorder = False
         RoundValue = 10
         BorderColor = 12709113
         Border = True
         BackgroundColor = clWindow
+        BottomSideBorder = False
         object sepOptLbl: TSharpERoundPanel
           Left = 6
           Top = 6
@@ -1164,10 +1170,12 @@ object SharpCompileMainWnd: TSharpCompileMainWnd
           TabOrder = 0
           DrawMode = srpNormal
           NoTopBorder = False
+          NoBottomBorder = False
           RoundValue = 10
           BorderColor = clBtnFace
           Border = False
           BackgroundColor = 14875898
+          BottomSideBorder = False
           object lblOptions: TLabel
             AlignWithMargins = True
             Left = 3
@@ -1384,7 +1392,7 @@ object SharpCompileMainWnd: TSharpCompileMainWnd
     Left = 496
     Top = 416
     Bitmap = {
-      494C010105001400280010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101050014002C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

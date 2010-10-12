@@ -450,10 +450,12 @@ var
   dtStart, dtEnd : TDateTime;
   succeeded : Boolean;
 begin
+  LockWindowUpdate(Handle);
   newItem := lbSummary.AddItem('Compiling ' + Project.Name + '...',2);
   newItem.AddSubItem('');
   lbSummary.ItemIndex := lbSummary.Count-1;
   Project.SIndex := lbSummary.Count -1;
+  LockWindowUpdate(0);
 
   dtStart := Now;
   Log('Build for ' + Project.Name + ' started at ' + FormatDateTime('hh:nn:ss', dtStart));
