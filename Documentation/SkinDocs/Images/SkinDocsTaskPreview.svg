@@ -17,8 +17,8 @@
    inkscape:version="0.48.0 r9654"
    sodipodi:docname="SkinDocsTaskPreview.svg"
    inkscape:export-filename="C:\Daten\SharpE-Dev\svn\Documentation\SkinDocs\Images\SkinDocsTaskPreviewArrows.png"
-   inkscape:export-xdpi="74.990479"
-   inkscape:export-ydpi="74.990479">
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -27,8 +27,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4142136"
-     inkscape:cx="375.91828"
-     inkscape:cy="968.51155"
+     inkscape:cx="190.03724"
+     inkscape:cy="962.50864"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -394,5 +394,12 @@
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"
        inkscape:connector-curvature="0" />
+    <rect
+       style="fill:#ff0000;fill-opacity:0.54901961;stroke:none"
+       id="rect3031"
+       width="247.14999"
+       height="20.682875"
+       x="79.769997"
+       y="14.884308" />
   </g>
 </svg>
