@@ -80,8 +80,8 @@ type
 
   public
     // Create/Destroy
-    constructor Create(pParentMenuItem : TSharpEMenuItem; pManager  : ISharpESkinManager; pSettings : TSharpEMenuSettings; pDynamicContentThread : TSharpEMenuDynamicContentThread); reintroduce; overload;
-    constructor Create(pManager  : ISharpESkinManager; pSettings : TSharpEMenuSettings; pDynamicContentThread : TSharpEMenuDynamicContentThread); reintroduce; overload;
+    constructor Create(pParentMenuItem : TSharpEMenuItem; pManager  : ISharpESkinManager; pSettings : TSharpEMenuSettings; pDynamicContentThread : TSharpEMenuDynamicContentThread = nil); reintroduce; overload;
+    constructor Create(pManager  : ISharpESkinManager; pSettings : TSharpEMenuSettings; pDynamicContentThread : TSharpEMenuDynamicContentThread = nil); reintroduce; overload;
 
     destructor Destroy; override;
 
@@ -374,8 +374,11 @@ begin
       FSubList.Add(item.SubMenu);
   end;
 
-  FDynamicContentThread.AddItem(FSubList);
-  FDynamicContentThread.Resume;
+  if Assigned(FDynamicContentThread) then
+  begin
+    FDynamicContentThread.AddItem(FSubList);
+    FDynamicContentThread.Resume;
+  end;
 
 end;
 

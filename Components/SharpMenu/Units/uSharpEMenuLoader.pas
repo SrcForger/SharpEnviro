@@ -33,7 +33,7 @@ uses JvSimpleXML,SysUtils,
      ISharpESkinComponents,
      uSharpEMenuDynamicContentThread;
 
-function LoadMenu(pFileName : String; pManager: ISharpESkinManager; DynamicContentThread : TSharpEMenuDynamicContentThread; pDesignMode : boolean) : TSharpEMenu;
+function LoadMenu(pFileName : String; pManager: ISharpESkinManager; pDesignMode : boolean = false; DynamicContentThread : TSharpEMenuDynamicContentThread = nil) : TSharpEMenu;
 
 implementation
 
@@ -105,7 +105,7 @@ begin
       end;
 end;
 
-function LoadMenu(pFileName : String; pManager: ISharpESkinManager; DynamicContentThread : TSharpEMenuDynamicContentThread; pDesignMode : boolean) : TSharpEMenu;
+function LoadMenu(pFileName : String; pManager: ISharpESkinManager; pDesignMode : boolean; DynamicContentThread : TSharpEMenuDynamicContentThread) : TSharpEMenu;
 var
   XML : TJvSimpleXML;
   RootMenu : TSharpEMenu;
