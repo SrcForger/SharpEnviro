@@ -360,8 +360,8 @@ begin
   FPanel.Left := FColorPicker.Left - FPanel.Width - 4;
   FPanel.Parent := FPageControl.TabList;
   FPanel.OnClick := AddSwatchEvent;
-  FPanel.BevelInner := bvLowered;
-  FPanel.BevelOuter := bvRaised;
+  FPanel.BevelInner := bvNone;
+  FPanel.BevelOuter := bvNone;
   FPanel.ParentBackground := false;
   FPanel.DoubleBuffered := true;
   FPanel.ParentColor := False;
