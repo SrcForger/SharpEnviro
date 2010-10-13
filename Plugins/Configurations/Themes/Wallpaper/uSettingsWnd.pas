@@ -128,10 +128,10 @@ type
     Panel9: TPanel;
     sgbWpTrans: TSharpeGaugeBox;
     pnlMonitor: TSharpERoundPanel;
-    Panel3: TSharpERoundPanel;
+    pnlMonitorList: TSharpERoundPanel;
     cboMonitor: TComboBox;
     imgColor: TImage32;
-    pnlColor: TPanel;
+    pnlColorHSL: TPanel;
     Panel10: TPanel;
     sgbLum: TSharpeGaugeBox;
     sgbSat: TSharpeGaugeBox;
@@ -170,6 +170,13 @@ type
     sgbWpChangeInterval: TSharpeGaugeBox;
     chkWpRandomize: TJvXPCheckbox;
     pnlWallpaperOptions: TPanel;
+    pnlWallpaper: TPanel;
+    pagMonitor: TJvStandardPage;
+    pnlColor: TPanel;
+    pnlGradient: TPanel;
+    SharpECenterHeader11: TSharpECenterHeader;
+    SharpECenterHeader12: TSharpECenterHeader;
+    stNoMonitors: TStaticText;
     procedure fedit_image_KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
 
@@ -192,19 +199,23 @@ type
     procedure chkWpRandomizeClick(Sender: TObject);
     procedure sgbWpChangeIntervalChangeValue(Sender: TObject; Value: Integer);
     procedure edtWpDirectoryChange(Sender: TObject);
+    procedure secColorExpandCollapse(ASender: TObject);
   private
     FPluginHost: ISharpCenterHost;
     FCurrentWP: TWPItem;
     FTheme: ISharpETheme;
     procedure UpdateWpItem;
+
   public
     procedure UpdateGUIFromWPItem(AWPItem: TWPItem);
     procedure UpdateWPItemFromGUI;
     procedure RenderPreview;
 
+    procedure UpdatePageUI;
     procedure UpdateWallpaperPage;
     procedure UpdateColorPage;
     procedure UpdateGradientPage;
+    procedure UpdateMonitorPage;
 
     property PluginHost: ISharpCenterHost read FPluginHost write FPluginHost;
     property CurrentWP: TWPItem read FCurrentWP write FCurrentWP;
@@ -300,60 +311,46 @@ end;
 
 procedure TfrmSettingsWnd.UpdateColorPage;
 begin
-  LockWindowUpdate(Self.Handle);
-  try
+  if not pagColor.Visible then
+    exit;
 
-    pnlColor.Visible := chkApplyColor.Checked;
+  pnlColorHSL.Visible := chkApplyColor.Checked;
 
-    if chkApplyColor.Checked then
-      Self.Height := 150
-    else
-      Self.Height := 60;
+  Self.Height := pnlColor.Height + 50;
 
-    if pnlMonitor.Visible then
-      Self.Height := Self.Height + 100;
-
-    FPluginHost.Refresh(rtSize);
-  finally
-    LockWindowUpdate(0);
-  end;
+  FPluginHost.Refresh(rtSize);
 end;
 
 procedure TfrmSettingsWnd.UpdateGradientPage;
 begin
-  LockWindowUpdate(Self.Handle);
-  try
+  if not pagGradient.Visible then
+    exit;
 
-    pnlGrad.Visible := chkApplyGrad.Checked;
+  pnlGrad.Visible := chkApplyGrad.Checked;
 
-    if chkApplyGrad.Checked then
-      Self.Height := 450
-    else
-      Self.Height := 60;
+  Self.Height := pnlGradient.Height + 50;
 
-    if pnlMonitor.Visible then
-      Self.Height := Self.Height + 100;
-
-    FPluginHost.Refresh(rtSize);
-  finally
-    LockWindowUpdate(0);
-  end;
+  FPluginHost.Refresh(rtSize);
 end;
 
 procedure TfrmSettingsWnd.UpdateWallpaperPage;
 begin
-  LockWindowUpdate(Self.Handle);
-  try
+  if not pagWallpaper.Visible then
+    exit;
 
-    if pnlMonitor.Visible then
-      Self.Height := 700
-    else
-      Self.Height := 600;
+  Self.Height := pnlWallpaper.Height + 50;
 
-    FPluginHost.Refresh(rtSize);
-  finally
-    LockWindowUpdate(0);
-  end;
+  FPluginHost.Refresh(rtSize);
+end;
+
+procedure TfrmSettingsWnd.UpdateMonitorPage;
+begin
+  if not pagMonitor.Visible then
+    exit;
+
+  Self.Height := pnlMonitor.Height + 50;
+
+  FPluginHost.Refresh(rtSize);
 end;
 
 procedure TfrmSettingsWnd.RenderPreview;
@@ -477,6 +474,11 @@ end;
 procedure TfrmSettingsWnd.chkWpRecursiveClick(Sender: TObject);
 begin
   UpdateWpItem;
+end;
+
+procedure TfrmSettingsWnd.secColorExpandCollapse(ASender: TObject);
+begin
+  UpdatePageUI;
 end;
 
 procedure TfrmSettingsWnd.sgbWpChangeIntervalChangeValue(Sender: TObject;
@@ -704,14 +706,14 @@ procedure TfrmSettingsWnd.ApplyGradientClickEvent(Sender: TObject);
 begin
   UpdateWpItem;
 
-  UpdateGradientPage;
+  UpdatePageUI;
 end;
 
 procedure TfrmSettingsWnd.ApplyColorClickEvent(Sender: TObject);
 begin
   UpdateWpItem;
 
-  UpdateColorPage;
+  UpdatePageUI;
 end;
 
 procedure TfrmSettingsWnd.btnWpBrowseClick(Sender: TObject);
@@ -751,6 +753,18 @@ procedure TfrmSettingsWnd.fedit_image_KeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   edtWpFile.OnChange(edtWpFile);
+end;
+
+procedure TfrmSettingsWnd.UpdatePageUI;
+begin
+  if pagColor.Visible then
+    UpdateColorPage
+  else if pagGradient.Visible then
+    UpdateGradientPage
+  else if pagWallpaper.Visible then
+    UpdateWallpaperPage
+  else
+    UpdateMonitorPage;
 end;
 
 end.

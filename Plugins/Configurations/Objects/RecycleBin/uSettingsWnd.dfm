@@ -459,7 +459,7 @@ object frmSettings: TfrmSettings
             Left = 4
             Top = 4
             Width = 435
-            Height = 21
+            Height = 27
             Margins.Left = 4
             Margins.Top = 4
             Margins.Right = 4
@@ -479,7 +479,7 @@ object frmSettings: TfrmSettings
               Left = 0
               Top = 0
               Width = 141
-              Height = 21
+              Height = 27
               Margins.Left = 4
               Margins.Top = 2
               Margins.Right = 50
@@ -495,9 +495,9 @@ object frmSettings: TfrmSettings
           object uicIconAlphaValue: TSharpEUIC
             AlignWithMargins = True
             Left = 5
-            Top = 30
+            Top = 36
             Width = 433
-            Height = 22
+            Height = 27
             Margins.Left = 5
             Margins.Top = 5
             Margins.Right = 5
@@ -517,7 +517,7 @@ object frmSettings: TfrmSettings
               Left = 0
               Top = 0
               Width = 250
-              Height = 22
+              Height = 27
               Margins.Left = 4
               Margins.Top = 2
               Margins.Right = 4
@@ -823,7 +823,7 @@ object frmSettings: TfrmSettings
             Left = 4
             Top = 4
             Width = 435
-            Height = 21
+            Height = 27
             Margins.Left = 4
             Margins.Top = 4
             Margins.Right = 4
@@ -844,7 +844,7 @@ object frmSettings: TfrmSettings
               Left = 0
               Top = 0
               Width = 141
-              Height = 21
+              Height = 27
               Margins.Left = 0
               Margins.Top = 0
               Margins.Right = 50
@@ -860,9 +860,9 @@ object frmSettings: TfrmSettings
           object uicIconBlendAlpha: TSharpEUIC
             AlignWithMargins = True
             Left = 5
-            Top = 30
+            Top = 36
             Width = 433
-            Height = 22
+            Height = 27
             Margins.Left = 5
             Margins.Top = 5
             Margins.Right = 5
@@ -882,7 +882,7 @@ object frmSettings: TfrmSettings
               Left = 0
               Top = 0
               Width = 250
-              Height = 22
+              Height = 27
               Margins.Left = 4
               Margins.Top = 2
               Margins.Right = 4
@@ -919,7 +919,7 @@ object frmSettings: TfrmSettings
             Left = 4
             Top = 4
             Width = 435
-            Height = 21
+            Height = 27
             Margins.Left = 4
             Margins.Top = 4
             Margins.Right = 4
@@ -938,7 +938,7 @@ object frmSettings: TfrmSettings
               Left = 0
               Top = 0
               Width = 141
-              Height = 21
+              Height = 27
               Margins.Left = 4
               Margins.Top = 2
               Margins.Right = 50
@@ -954,9 +954,9 @@ object frmSettings: TfrmSettings
           object uicIconShadowAlpha: TSharpEUIC
             AlignWithMargins = True
             Left = 5
-            Top = 30
+            Top = 36
             Width = 433
-            Height = 22
+            Height = 27
             Margins.Left = 5
             Margins.Top = 5
             Margins.Right = 5
@@ -976,7 +976,7 @@ object frmSettings: TfrmSettings
               Left = 0
               Top = 0
               Width = 250
-              Height = 22
+              Height = 27
               Margins.Left = 4
               Margins.Top = 2
               Margins.Right = 4
@@ -1100,6 +1100,7 @@ object frmSettings: TfrmSettings
           MonitorControl = sceIconBlendColor
           OnReset = uicIconBlendReset
           object sceIconBlendColor: TSharpEColorEditorEx
+            AlignWithMargins = True
             Left = 0
             Top = 0
             Width = 401
@@ -1110,6 +1111,7 @@ object frmSettings: TfrmSettings
             Margins.Bottom = 0
             VertScrollBar.Smooth = True
             VertScrollBar.Tracking = True
+            Align = alTop
             AutoSize = True
             BevelInner = bvNone
             BevelOuter = bvNone
@@ -1120,7 +1122,6 @@ object frmSettings: TfrmSettings
             ParentColor = False
             ParentCtl3D = False
             TabOrder = 0
-            OnResize = sceIconBlendColorResize
             Items = <
               item
                 Title = 'Blend Colour'
@@ -1138,6 +1139,7 @@ object frmSettings: TfrmSettings
               end>
             SwatchManager = SharpESwatchManager1
             OnChangeColor = sceIconBlendColorChangeColor
+            OnExpandCollapse = sceColorExpandCollapse
             BorderColor = clBlack
             BackgroundColor = clBlack
             BackgroundTextColor = clBlack
@@ -1167,6 +1169,7 @@ object frmSettings: TfrmSettings
           MonitorControl = sceIconShadowColor
           OnReset = uicIconBlendReset
           object sceIconShadowColor: TSharpEColorEditorEx
+            AlignWithMargins = True
             Left = 0
             Top = 0
             Width = 401
@@ -1177,6 +1180,7 @@ object frmSettings: TfrmSettings
             Margins.Bottom = 0
             VertScrollBar.Smooth = True
             VertScrollBar.Tracking = True
+            Align = alTop
             AutoSize = True
             BevelInner = bvNone
             BevelOuter = bvNone
@@ -1185,7 +1189,6 @@ object frmSettings: TfrmSettings
             ParentBackground = True
             ParentColor = False
             TabOrder = 0
-            OnResize = sceIconShadowColorResize
             Items = <
               item
                 Title = 'Icon Shadow Colour'
@@ -1203,6 +1206,7 @@ object frmSettings: TfrmSettings
               end>
             SwatchManager = SharpESwatchManager1
             OnChangeColor = sceIconShadowColorChangeColor
+            OnExpandCollapse = sceColorExpandCollapse
             BorderColor = clBlack
             BackgroundColor = clBlack
             BackgroundTextColor = clBlack
@@ -1221,7 +1225,7 @@ object frmSettings: TfrmSettings
         Left = 1
         Top = 1
         Width = 443
-        Height = 477
+        Height = 524
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
@@ -1231,7 +1235,7 @@ object frmSettings: TfrmSettings
           Left = 5
           Top = 47
           Width = 433
-          Height = 27
+          Height = 29
           Margins.Left = 5
           Margins.Top = 0
           Margins.Right = 5
@@ -1269,9 +1273,9 @@ object frmSettings: TfrmSettings
         object uicTextAlpha: TSharpEUIC
           AlignWithMargins = True
           Left = 5
-          Top = 210
+          Top = 217
           Width = 433
-          Height = 21
+          Height = 29
           Margins.Left = 5
           Margins.Top = 0
           Margins.Right = 5
@@ -1287,11 +1291,13 @@ object frmSettings: TfrmSettings
           AutoReset = False
           MonitorControl = chkTextAlpha
           OnReset = uicTextAlphaReset
+          ExplicitTop = 212
+          ExplicitHeight = 27
           object chkTextAlpha: TJvXPCheckbox
             Left = 0
             Top = 0
             Width = 149
-            Height = 21
+            Height = 29
             Margins.Left = 4
             Margins.Top = 2
             Margins.Right = 48
@@ -1300,14 +1306,15 @@ object frmSettings: TfrmSettings
             TabOrder = 0
             Align = alLeft
             OnClick = chkTextAlphaClick
+            ExplicitHeight = 27
           end
         end
         object uicTextAlphaValue: TSharpEUIC
           AlignWithMargins = True
           Left = 5
-          Top = 236
+          Top = 251
           Width = 433
-          Height = 22
+          Height = 29
           Margins.Left = 5
           Margins.Top = 0
           Margins.Right = 5
@@ -1323,11 +1330,13 @@ object frmSettings: TfrmSettings
           AutoReset = False
           MonitorControl = sgbTextAlphaValue
           OnReset = uicFontNameReset
+          ExplicitTop = 244
+          ExplicitHeight = 27
           object sgbTextAlphaValue: TSharpeGaugeBox
             Left = 0
             Top = 0
             Width = 250
-            Height = 22
+            Height = 29
             Margins.Left = 4
             Margins.Top = 2
             Margins.Right = 4
@@ -1346,14 +1355,15 @@ object frmSettings: TfrmSettings
             Formatting = '%d'
             OnChangeValue = sgbTextAlphaValueChangeValue
             BackgroundColor = clWindow
+            ExplicitHeight = 27
           end
         end
         object uicTextBold: TSharpEUIC
           AlignWithMargins = True
           Left = 5
-          Top = 367
+          Top = 404
           Width = 433
-          Height = 21
+          Height = 31
           Margins.Left = 5
           Margins.Top = 5
           Margins.Right = 5
@@ -1369,11 +1379,13 @@ object frmSettings: TfrmSettings
           AutoReset = False
           MonitorControl = chkTextBold
           OnReset = uicFontNameReset
+          ExplicitTop = 380
+          ExplicitHeight = 27
           object chkTextBold: TJvXPCheckbox
             Left = 0
             Top = 0
             Width = 364
-            Height = 21
+            Height = 31
             Margins.Left = 4
             Margins.Top = 2
             Margins.Right = 48
@@ -1382,12 +1394,13 @@ object frmSettings: TfrmSettings
             TabOrder = 0
             Align = alLeft
             OnClick = chkTextBoldClick
+            ExplicitHeight = 27
           end
         end
         object uicTextColor: TSharpEUIC
           AlignWithMargins = True
           Left = 5
-          Top = 445
+          Top = 492
           Width = 433
           Height = 32
           Margins.Left = 5
@@ -1405,7 +1418,9 @@ object frmSettings: TfrmSettings
           AutoReset = False
           MonitorControl = sceTextColor
           OnReset = uicFontNameReset
+          ExplicitTop = 464
           object sceTextColor: TSharpEColorEditorEx
+            AlignWithMargins = True
             Left = 0
             Top = 0
             Width = 401
@@ -1416,6 +1431,7 @@ object frmSettings: TfrmSettings
             Margins.Bottom = 0
             VertScrollBar.Smooth = True
             VertScrollBar.Tracking = True
+            Align = alTop
             AutoSize = True
             BevelInner = bvNone
             BevelOuter = bvNone
@@ -1424,7 +1440,6 @@ object frmSettings: TfrmSettings
             ParentBackground = True
             ParentColor = False
             TabOrder = 0
-            OnResize = sceTextColorResize
             Items = <
               item
                 Title = 'Text'
@@ -1442,6 +1457,7 @@ object frmSettings: TfrmSettings
               end>
             SwatchManager = SharpESwatchManager1
             OnChangeColor = sceTextColorChangeColor
+            OnExpandCollapse = sceColorExpandCollapse
             BorderColor = clBlack
             BackgroundColor = clBlack
             BackgroundTextColor = clBlack
@@ -1452,9 +1468,9 @@ object frmSettings: TfrmSettings
         object uicTextItalic: TSharpEUIC
           AlignWithMargins = True
           Left = 5
-          Top = 341
+          Top = 369
           Width = 433
-          Height = 21
+          Height = 30
           Margins.Left = 5
           Margins.Top = 5
           Margins.Right = 5
@@ -1470,11 +1486,13 @@ object frmSettings: TfrmSettings
           AutoReset = False
           MonitorControl = chkTextItalic
           OnReset = uicFontNameReset
+          ExplicitTop = 354
+          ExplicitHeight = 27
           object chkTextItalic: TJvXPCheckbox
             Left = 0
             Top = 0
             Width = 364
-            Height = 21
+            Height = 30
             Margins.Left = 4
             Margins.Top = 2
             Margins.Right = 48
@@ -1483,14 +1501,15 @@ object frmSettings: TfrmSettings
             TabOrder = 0
             Align = alLeft
             OnClick = chkTextItalicClick
+            ExplicitHeight = 27
           end
         end
         object uicTextSize: TSharpEUIC
           AlignWithMargins = True
           Left = 5
-          Top = 131
+          Top = 133
           Width = 433
-          Height = 22
+          Height = 27
           Margins.Left = 5
           Margins.Top = 0
           Margins.Right = 5
@@ -1510,7 +1529,7 @@ object frmSettings: TfrmSettings
             Left = 0
             Top = 0
             Width = 250
-            Height = 22
+            Height = 27
             Margins.Left = 4
             Margins.Top = 2
             Margins.Right = 4
@@ -1534,9 +1553,9 @@ object frmSettings: TfrmSettings
         object uicTextUnderline: TSharpEUIC
           AlignWithMargins = True
           Left = 5
-          Top = 315
+          Top = 337
           Width = 433
-          Height = 21
+          Height = 27
           Margins.Left = 5
           Margins.Top = 0
           Margins.Right = 5
@@ -1556,7 +1575,7 @@ object frmSettings: TfrmSettings
             Left = 0
             Top = 0
             Width = 364
-            Height = 21
+            Height = 27
             Margins.Left = 4
             Margins.Top = 2
             Margins.Right = 48
@@ -1586,7 +1605,7 @@ object frmSettings: TfrmSettings
         object SharpECenterHeader14: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 84
+          Top = 86
           Width = 433
           Height = 37
           Margins.Left = 5
@@ -1602,7 +1621,7 @@ object frmSettings: TfrmSettings
         object SharpECenterHeader15: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 163
+          Top = 170
           Width = 433
           Height = 37
           Margins.Left = 5
@@ -1618,7 +1637,7 @@ object frmSettings: TfrmSettings
         object SharpECenterHeader16: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 268
+          Top = 290
           Width = 433
           Height = 37
           Margins.Left = 5
@@ -1634,7 +1653,7 @@ object frmSettings: TfrmSettings
         object SharpECenterHeader17: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 398
+          Top = 445
           Width = 433
           Height = 37
           Margins.Left = 5
@@ -1659,7 +1678,7 @@ object frmSettings: TfrmSettings
         Left = 1
         Top = 1
         Width = 443
-        Height = 314
+        Height = 331
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
@@ -1667,9 +1686,9 @@ object frmSettings: TfrmSettings
         object pnlTextShadow: TPanel
           AlignWithMargins = True
           Left = 0
-          Top = 68
+          Top = 74
           Width = 443
-          Height = 246
+          Height = 257
           Margins.Left = 0
           Margins.Top = 0
           Margins.Right = 0
@@ -1679,6 +1698,8 @@ object frmSettings: TfrmSettings
           BevelOuter = bvNone
           ParentColor = True
           TabOrder = 1
+          ExplicitTop = 68
+          ExplicitHeight = 246
           object SharpECenterHeader10: TSharpECenterHeader
             AlignWithMargins = True
             Left = 5
@@ -1700,7 +1721,7 @@ object frmSettings: TfrmSettings
             Left = 5
             Top = 57
             Width = 433
-            Height = 21
+            Height = 27
             Margins.Left = 5
             Margins.Top = 0
             Margins.Right = 5
@@ -1740,7 +1761,7 @@ object frmSettings: TfrmSettings
           object SharpECenterHeader11: TSharpECenterHeader
             AlignWithMargins = True
             Left = 5
-            Top = 88
+            Top = 94
             Width = 433
             Height = 37
             Margins.Left = 5
@@ -1756,9 +1777,9 @@ object frmSettings: TfrmSettings
           object uicTextShadowAlpha: TSharpEUIC
             AlignWithMargins = True
             Left = 5
-            Top = 135
+            Top = 141
             Width = 433
-            Height = 22
+            Height = 27
             Margins.Left = 5
             Margins.Top = 0
             Margins.Right = 5
@@ -1777,7 +1798,7 @@ object frmSettings: TfrmSettings
               Left = 0
               Top = 0
               Width = 250
-              Height = 22
+              Height = 27
               Margins.Left = 4
               Margins.Top = 2
               Margins.Right = 4
@@ -1802,7 +1823,7 @@ object frmSettings: TfrmSettings
           object SharpECenterHeader12: TSharpECenterHeader
             AlignWithMargins = True
             Left = 5
-            Top = 167
+            Top = 178
             Width = 433
             Height = 37
             Margins.Left = 5
@@ -1818,7 +1839,7 @@ object frmSettings: TfrmSettings
           object uicTextShadowColor: TSharpEUIC
             AlignWithMargins = True
             Left = 5
-            Top = 214
+            Top = 225
             Width = 433
             Height = 32
             Margins.Left = 5
@@ -1837,6 +1858,7 @@ object frmSettings: TfrmSettings
             MonitorControl = sceTextShadowColor
             OnReset = uicTextShadowReset
             object sceTextShadowColor: TSharpEColorEditorEx
+              AlignWithMargins = True
               Left = 0
               Top = 0
               Width = 401
@@ -1847,6 +1869,7 @@ object frmSettings: TfrmSettings
               Margins.Bottom = 0
               VertScrollBar.Smooth = True
               VertScrollBar.Tracking = True
+              Align = alTop
               AutoSize = True
               BevelInner = bvNone
               BevelOuter = bvNone
@@ -1855,7 +1878,6 @@ object frmSettings: TfrmSettings
               ParentBackground = True
               ParentColor = False
               TabOrder = 0
-              OnResize = sceTextShadowColorResize
               Items = <
                 item
                   Title = 'Shadow'
@@ -1873,6 +1895,7 @@ object frmSettings: TfrmSettings
                 end>
               SwatchManager = SharpESwatchManager1
               OnChangeColor = sceTextShadowColorChangeColor
+              OnExpandCollapse = sceColorExpandCollapse
               BorderColor = clBlack
               BackgroundColor = clBlack
               BackgroundTextColor = clBlack
@@ -1886,7 +1909,7 @@ object frmSettings: TfrmSettings
           Left = 5
           Top = 47
           Width = 433
-          Height = 21
+          Height = 27
           Margins.Left = 5
           Margins.Top = 0
           Margins.Right = 5
@@ -1906,7 +1929,7 @@ object frmSettings: TfrmSettings
             Left = 0
             Top = 0
             Width = 113
-            Height = 21
+            Height = 27
             Margins.Left = 4
             Margins.Top = 2
             Margins.Right = 48

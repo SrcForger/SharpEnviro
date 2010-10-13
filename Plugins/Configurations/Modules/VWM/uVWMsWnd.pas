@@ -62,10 +62,12 @@ type
     schColorSelection: TSharpECenterHeader;
     schNumbers: TSharpECenterHeader;
     chkShowNumbers: TJvXPCheckbox;
+    pnlVWM: TPanel;
     procedure FormCreate(Sender: TObject);
     procedure cb_numbersClick(Sender: TObject);
     procedure sgb_backgroundChangeValue(Sender: TObject; Value: Integer);
     procedure ColorsChangeColor(ASender: TObject; AValue: Integer);
+    procedure ColorsExpandCollapse(ASender: TObject);
   private
     FPluginHost: ISharpCenterHost;
     procedure UpdateSettings;
@@ -91,6 +93,15 @@ end;
 procedure TfrmVWM.ColorsChangeColor(ASender: TObject; AValue: Integer);
 begin
   UpdateSettings;
+end;
+
+procedure TfrmVWM.ColorsExpandCollapse(ASender: TObject);
+begin
+  if not pagVWM.Visible then
+    exit;
+
+  frmVWM.Height := pnlVWM.Height + 50;
+  FPluginHost.Refresh(rtSize);
 end;
 
 procedure TfrmVWM.FormCreate(Sender: TObject);

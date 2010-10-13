@@ -83,21 +83,21 @@ type
     tmr: TTimer;
     PngImageList1: TPngImageList;
     ccolors: TSharpEColorEditorEx;
+    pnlCursorList: TPanel;
 
     procedure FormDestroy(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure lbCursorListClickItem(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem);
-    procedure lbCursorListResize(Sender: TObject);
     procedure ccolorsUiChange(Sender: TObject);
     procedure tmrOnTimer(Sender: TObject);
-    procedure FormShow(Sender: TObject);
     procedure lbCursorListGetCellText(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AColText: string);
     procedure lbCursorListGetCellImageIndex(Sender: TObject;
       const ACol: Integer; AItem: TSharpEListItem; var AImageIndex: Integer;
       const ASelected: Boolean);
+    procedure sceColorExpandCollapse(ASender: TObject);
 
   private
     FPluginHost: ISharpCenterHost;
@@ -277,9 +277,9 @@ begin
   end;
 end;
 
-procedure TfrmSettingsWnd.lbCursorListResize(Sender: TObject);
+procedure TfrmSettingsWnd.sceColorExpandCollapse(ASender: TObject);
 begin
-  Self.Height := lbCursorList.Height+ccolors.Height;
+  Self.Height := pnlCursorList.Height + 50;
 end;
 
 procedure TfrmSettingsWnd.SendUpdate;
@@ -298,6 +298,12 @@ procedure TfrmSettingsWnd.FormCreate(Sender: TObject);
 begin
   FPreview := TBitmap32.Create;
   lbCursorList.DoubleBuffered := true;
+
+  AnimTimer := TTimer.Create(Self);
+  AnimTimer.OnTimer := AnimOnTimer;
+  AnimTimer.Enabled := false;
+
+  tmr.Enabled := true;
 end;
 
 procedure TfrmSettingsWnd.AnimOnTimer(Sender: TObject);
@@ -361,6 +367,10 @@ var
   XML : TJclSimpleXML;
   I, C : integer;
 begin
+  // Disable animation timer
+  if Assigned(AnimTimer) then
+    AnimTimer.Enabled := False;
+
   LockWindowUpdate(self.Handle);
   try
   if (lbCursorList.ItemIndex < 0) or (lbCursorList.Count = 0) then
@@ -624,15 +634,6 @@ begin
   BuildCursorPreview;
 end;
 
-procedure TfrmSettingsWnd.FormShow(Sender: TObject);
-begin
-  AnimTimer := TTimer.Create(nil);
-  AnimTimer.OnTimer := AnimOnTimer;
-  AnimTimer.Enabled := false;
-
-  tmr.Enabled := true;
-end;
-
 procedure TfrmSettingsWnd.ccolorsUiChange(Sender: TObject);
 begin
   BuildCursorPreview;
@@ -643,7 +644,6 @@ procedure TfrmSettingsWnd.FormDestroy(Sender: TObject);
 var
   i : integer;
 begin
-  AnimTimer.Free;
   FPreview.Free;
   SetLength(FNames, 0);
 

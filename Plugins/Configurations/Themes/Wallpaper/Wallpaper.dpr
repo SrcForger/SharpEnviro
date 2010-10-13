@@ -87,6 +87,7 @@ type
 
 procedure TSharpCenterPlugin.AddPluginTabs(ATabItems: TStringList);
 begin
+  ATabItems.AddObject('Monitor', frmSettingsWnd.pagMonitor);
   ATabItems.AddObject('Wallpaper', frmSettingsWnd.pagWallpaper);
   ATabItems.AddObject('Color', frmSettingsWnd.pagColor);
   ATabItems.AddObject('Gradient', frmSettingsWnd.pagGradient);
@@ -94,16 +95,12 @@ end;
 
 procedure TSharpCenterPlugin.ClickPluginTab(ATab: TStringItem);
 begin
-  with frmSettingsWnd, frmSettingsWnd.plConfig do begin
-
-    ActivePage := TJvStandardPage(ATab.FObject);
-    if TJvStandardPage(ATab.FObject) = pagWallpaper then
-      UpdateWallpaperPage else
-      if TJvStandardPage(ATab.FObject) = pagColor then
-        UpdateColorPage else
-        if TJvStandardPage(ATab.FObject) = pagGradient then
-          UpdateGradientPage;
+  if ATab.FObject is TJvStandardPage then
+  begin
+    TJvStandardPage(ATab.FObject).Show;
   end;
+
+  frmSettingsWnd.UpdatePageUI;
 end;
 
 procedure TSharpCenterPlugin.Close;
@@ -217,7 +214,8 @@ begin
     end;
 
     // If one item then hide the monitor selection, select first item
-    pnlMonitor.Visible := (cboMonitor.Items.Count > 1);
+    pnlMonitorList.Visible := (cboMonitor.Items.Count > 1);
+    stNoMonitors.Visible := not pnlMonitorList.Visible;
     cboMonitor.ItemIndex := 0;
   end;
 end;

@@ -77,7 +77,7 @@ uses
   PngSpeedButton,
   pngimage,
   SharpECenterHeader,
-  SharpCenterThemeApi;
+  SharpCenterThemeApi, JvExComCtrls, JvComCtrls;
 
 type
   TStringObject = class(TObject)
@@ -142,8 +142,6 @@ type
     cboTextShadowType: TComboBox;
     uicTextShadowAlpha: TSharpEUIC;
     sgbTextShadowAlpha: TSharpeGaugeBox;
-    uicTextShadowColor: TSharpEUIC;
-    sceTextShadowColor: TSharpEColorEditorEx;
     SharpESwatchManager1: TSharpESwatchManager;
     imlFontIcons: TPngImageList;
     chkCaption: TJvXPCheckbox;
@@ -192,7 +190,7 @@ type
     SharpECenterHeader17: TSharpECenterHeader;
     uicTextColor: TSharpEUIC;
     sceTextColor: TSharpEColorEditorEx;
-	cbLocation: TComboBox;
+	  cbLocation: TComboBox;
     pagSkin: TJvStandardPage;
     SharpECenterHeader18: TSharpECenterHeader;
     pnlSelectSkin: TPanel;
@@ -200,6 +198,8 @@ type
     chkSkinEnable: TJvXPCheckbox;
     SharpECenterHeader2: TSharpECenterHeader;
     pnlSkin: TPanel;
+    uicTextShadowColor: TSharpEUIC;
+    sceTextShadowColor: TSharpEColorEditorEx;
     procedure FormCreate(Sender: TObject);
     procedure chkCaptionClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -217,8 +217,6 @@ type
     procedure sgbIconSizeChangeValue(Sender: TObject; Value: Integer);
     procedure uicIconSizeReset(Sender: TObject);
     procedure uicIconBlendReset(Sender: TObject);
-    procedure sceIconBlendColorResize(Sender: TObject);
-    procedure sceIconShadowColorResize(Sender: TObject);
     procedure sceIconBlendColorChangeColor(ASender: TObject; AValue: Integer);
     procedure sceIconShadowColorChangeColor(ASender: TObject; AValue: Integer);
     procedure cboFontNameDrawItem(Control: TWinControl; Index: Integer;
@@ -234,16 +232,13 @@ type
     procedure chkTextUnderlineClick(Sender: TObject);
     procedure uicTextColorClick(Sender: TObject);
     procedure sceTextColorChangeColor(ASender: TObject; AValue: Integer);
-    procedure sceTextColorResize(Sender: TObject);
     procedure chkTextShadowClick(Sender: TObject);
     procedure uicTextShadowTypeReset(Sender: TObject);
     procedure cboTextShadowTypeChange(Sender: TObject);
     procedure sgbTextShadowAlphaChangeValue(Sender: TObject; Value: Integer);
-    procedure sceTextShadowColorResize(Sender: TObject);
     procedure sceTextShadowColorChangeColor(ASender: TObject; AValue: Integer);
     procedure uicTextShadowReset(Sender: TObject);
     procedure btnRevertClick(Sender: TObject);
-    procedure uicTextShadowColorResize(Sender: TObject);
     procedure chkSkinEnableClick(Sender: TObject);
     procedure lbSkinsGetCellText(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AColText: string);
@@ -254,16 +249,17 @@ type
       AItem: TSharpEListItem; var ACursor: TCursor);
     procedure lbSkinsClickItem(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem);
-	procedure cbLocationClick(Sender: TObject);
+	  procedure cbLocationClick(Sender: TObject);
+    procedure sceExpandCollapse(ASender: TObject);
+
   private
     FWeatherSkin : string;
-	FLocation: string;
+	  FLocation: string;
     FBlue32, FBlue48, FBlue64: TBitmap32;
     FWhite32, FWhite48, FWhite64: TBitmap32;
     FFontList: TFontList;
     FPluginHost: ISharpCenterHost;
     procedure RefreshFontList;
-    procedure UpdateIcon;
     procedure SendUpdate;
     procedure LoadResources;
 
@@ -398,7 +394,11 @@ procedure TfrmSettings.chkCaptionClick(Sender: TObject);
 begin
   if (not chkCaption.Checked) then
     chkSkinEnable.Checked := True
-  else chkSkinEnable.Checked := False;
+  else
+    chkSkinEnable.Checked := False;
+
+  pnlSelectSkin.Visible := chkSkinEnable.Checked;
+
   SendUpdate;
 end;
 
@@ -491,8 +491,6 @@ end;
 
 procedure TfrmSettings.FormShow(Sender: TObject);
 begin
-  UpdateIcon;
-
   pnlSelectSkin.Visible := chkSkinEnable.Checked;
 end;
 
@@ -761,22 +759,15 @@ begin
   SendUpdate;
 end;
 
-procedure TfrmSettings.sceIconBlendColorResize(Sender: TObject);
-begin
-  uicIconBlendColor.Height := sceIconBlendColor.Height + 4;
-  UpdateIconPage;
-end;
-
 procedure TfrmSettings.sceTextColorChangeColor(ASender: TObject; AValue: Integer);
 begin
   uicTextColor.UpdateStatus;
   SendUpdate;
 end;
 
-procedure TfrmSettings.sceTextColorResize(Sender: TObject);
+procedure TfrmSettings.sceExpandCollapse(ASender: TObject);
 begin
-  uicTextColor.Height := sceTextColor.Height + 4;
-  UpdateFontPage;
+  UpdatePageUI;
 end;
 
 procedure TfrmSettings.sceIconShadowColorChangeColor(ASender: TObject; AValue: Integer);
@@ -785,22 +776,10 @@ begin
   SendUpdate;
 end;
 
-procedure TfrmSettings.sceIconShadowColorResize(Sender: TObject);
-begin
-  UICIconShadowColor.Height := sceIconShadowColor.Height + 4;
-  UpdateIconPage;
-end;
-
 procedure TfrmSettings.sceTextShadowColorChangeColor(ASender: TObject; AValue: Integer);
 begin
   uicTextShadowColor.UpdateStatus;
   SendUpdate;
-end;
-
-procedure TfrmSettings.sceTextShadowColorResize(Sender: TObject);
-begin
-  uicTextShadowColor.Height := sceTextShadowColor.Height + 4;
-  UpdateFontShadowPage;
 end;
 
 procedure TfrmSettings.SendUpdate;
@@ -866,12 +845,6 @@ end;
 procedure TfrmSettings.uicFontNameReset(Sender: TObject);
 begin
   SendUpdate;
-end;
-
-procedure TfrmSettings.uicTextShadowColorResize(Sender: TObject);
-begin
-  uicTextShadowColor.Height := sceTextShadowColor.Height + 4;
-  UpdatePageUI;
 end;
 
 procedure TfrmSettings.uicTextShadowReset(Sender: TObject);
@@ -941,9 +914,7 @@ begin
       cbLocation.Items.Add(xml.Root.Items.Item[n].Properties.Value('Location',''));
       if FLocation = locID then
         cbLocation.ItemIndex := n;
-      
     end;
-
   finally
     xml.Free;
   end;
@@ -972,22 +943,7 @@ begin
 
   // Update Page Height
   Self.Height := pnlFontShadow.Height + 50;
-
   FPluginHost.Refresh(rtSize);
-end;
-
-procedure TfrmSettings.UpdateIcon;
-//var
-//  Bmp: TBitmap32;
-begin
-  //  Bmp := TBitmap32.Create;
-  //  Bmp.DrawMode := dmBlend;
-  //  Bmp.CombineMode := cmMerge;
-  //  SharpIconUtils.IconStringToIcon(edtIcon.Text,edtTarget.Text,Bmp,32);
-  //  IconPreview.Bitmap.SetSize(32,32);
-  //  IconPreview.Bitmap.Clear(color32(IconPreview.Color));
-  //  Bmp.DrawTo(IconPreview.Bitmap,Rect(0,0,32,32));
-  //  Bmp.Free;
 end;
 
 procedure TfrmSettings.UpdateIconPage;
@@ -995,34 +951,34 @@ begin
   if not PagIcon.Visible then
     exit;
 
-    // Icon Size
-    sgbiconsize.Enabled := rdoIconCustom.checked;
-    if rdoIcon32.Checked then
-      icon32.Bitmap.Assign(FBlue32)
-    else
-      icon32.Bitmap.Assign(FWhite32);
-    if rdoIcon48.Checked then
-      icon48.Bitmap.Assign(FBlue48)
-    else
-      icon48.Bitmap.Assign(FWhite48);
-    if rdoIcon64.Checked then
-      icon64.Bitmap.Assign(FBlue64)
-    else
-      icon64.Bitmap.Assign(FWhite64);
+  // Icon Size
+  sgbiconsize.Enabled := rdoIconCustom.checked;
+  if rdoIcon32.Checked then
+    icon32.Bitmap.Assign(FBlue32)
+  else
+    icon32.Bitmap.Assign(FWhite32);
+  if rdoIcon48.Checked then
+    icon48.Bitmap.Assign(FBlue48)
+  else
+    icon48.Bitmap.Assign(FWhite48);
+  if rdoIcon64.Checked then
+    icon64.Bitmap.Assign(FBlue64)
+  else
+    icon64.Bitmap.Assign(FWhite64);
 
-    // IconBlendAlpha
-    uicIconBlendAlpha.Visible := chkIconBlendAlpha.checked;
+  // IconBlendAlpha
+  uicIconBlendAlpha.Visible := chkIconBlendAlpha.checked;
 
-    // IconShadowAlpha
-    uicIconShadowAlpha.Visible := chkIconShadowAlpha.checked;
+  // IconShadowAlpha
+  uicIconShadowAlpha.Visible := chkIconShadowAlpha.checked;
 
-    // IconAlpha
-    uicIconAlphaValue.Visible := chkIconAlpha.Checked;
+  // IconAlpha
+  uicIconAlphaValue.Visible := chkIconAlpha.Checked;
 
-    frmSettings.Height := pnlIcon.Height + 50;
+  frmSettings.Height := pnlIcon.Height + 50;
 
-    // Refresh size
-    FPluginHost.Refresh(rtSize);
+  // Refresh size
+  FPluginHost.Refresh(rtSize);
 end;
 
 procedure TfrmSettings.UpdateSkinPage;
@@ -1042,7 +998,7 @@ begin
     exit;
 
   pnlOverride.Visible := False;
-    
+
   frmSettings.Height := pnlWeather.Height + 50;
   FPluginHost.Refresh(rtSize);
   

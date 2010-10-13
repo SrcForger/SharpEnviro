@@ -156,6 +156,11 @@ type
     chkAnim: TJvXPCheckbox;
     SharpECenterHeader20: TSharpECenterHeader;
     chkClearType: TJvXPCheckbox;
+    pnlAnimation: TPanel;
+    pnlFont: TPanel;
+    pnlFontShadow: TPanel;
+    pnlIcon: TPanel;
+    pnlExplorerDesktop: TPanel;
     procedure IconColorsUiChange(Sender: TObject);
 
     procedure cbboldClick(Sender: TObject);
@@ -179,6 +184,7 @@ type
     procedure cboFontShadowTypeChange(Sender: TObject);
     procedure UpdateAnimationPageEvent(Sender: TObject);
     procedure chkClearTypeClick(Sender: TObject);
+    procedure sceColorExpandCollapse(ASender: TObject);
   private
     FBlue32, FBlue48, FBlue64: TBitmap32;
     FWhite32, FWhite48, FWhite64: TBitmap32;
@@ -260,141 +266,6 @@ begin
   LoadResources;
 end;
 
-procedure TfrmSettingsWnd.UpdateIconPage;
-begin
-  LockWindowUpdate(Self.Handle);
-  try
-
-    // Icon Size
-    sgbiconsize.Enabled := rdoIconCustom.checked;
-    if rdoIcon32.Checked then
-      icon32.Bitmap.Assign(FBlue32)
-    else
-      icon32.Bitmap.Assign(FWhite32);
-    if rdoIcon48.Checked then
-      icon48.Bitmap.Assign(FBlue48)
-    else
-      icon48.Bitmap.Assign(FWhite48);
-    if rdoIcon64.Checked then
-      icon64.Bitmap.Assign(FBlue64)
-    else
-      icon64.Bitmap.Assign(FWhite64);
-
-    // Icon Color Blend
-    sgbColorBlend.Enabled := chkColorBlend.Checked;
-    sceIconColor.Items.Item[0].Visible := chkColorBlend.checked;
-
-    // Icon Shadow Transparency
-    sgbIconShadow.Enabled := chkIconShadow.Checked;
-    sceIconColor.Items.Item[1].Visible := chkIconShadow.checked;
-
-    // Refresh ColorEditorEx
-    sceIconColor.Invalidate;
-
-    // Icon Transparency
-    sgbIconTrans.Enabled := chkIconTrans.Checked;
-
-    // Update Page Height
-    if (chkIconShadow.Checked or chkColorBlend.Checked) then
-      Self.Height := 680
-    else
-      Self.Height := 440;
-
-    // Refresh size
-    FPluginHost.Refresh;
-  finally
-    LockWindowUpdate(0);
-  end;
-end;
-
-procedure TfrmSettingsWnd.UpdateAnimationPage;
-begin
-  LockWindowUpdate(Self.Handle);
-  try
-    // Hide/Show Animation Options
-    pnlAnim.Visible := chkAnim.checked;
-
-    // Animation Transparency
-    sgbAnimTrans.Enabled := chkAnimTrans.Checked;
-
-    // Animation Brightness
-    sgbAnimBrightness.Enabled := chkAnimBrightness.Checked;
-
-    // Animation Size
-    sgbAnimSize.Enabled := chkAnimSize.Checked;
-
-    // Animation Color Blend
-    sgbAnimColorBlend.Enabled := chkAnimColorBlend.Checked;
-    sceAnimColor.Visible := chkAnimColorBlend.Checked;
-    sceAnimColor.Items.Item[0].Visible := chkAnimColorBlend.checked;
-
-    // Update Page Height
-    if chkAnim.Checked then begin
-
-      if sceAnimColor.Visible then
-        Self.Height := 520
-      else
-        Self.Height := 380;
-
-    end
-    else
-      Self.Height := 70;
-
-    // Refresh size
-    PluginHost.Refresh;
-  finally
-    LockWindowUpdate(0);
-  end;
-end;
-
-procedure TfrmSettingsWnd.LoadResources;
-begin
-  LoadBmpFromRessource(FBlue32, 'Blue32');
-  LoadBmpFromRessource(FBlue48, 'Blue48');
-  LoadBmpFromRessource(FBlue64, 'Blue64');
-  LoadBmpFromRessource(FWhite32, 'White32');
-  LoadBmpFromRessource(FWhite48, 'White48');
-  LoadBmpFromRessource(FWhite64, 'White64');
-end;
-
-procedure TfrmSettingsWnd.UpdateFontPage;
-begin
-  LockWindowUpdate(Self.Handle);
-  try
-
-    // Font Transparency
-    sgbFontTrans.Enabled := chkFontTrans.Checked;
-
-    // Update Page Height
-    Self.Height := 580;
-    PluginHost.Refresh;
-
-  finally
-    LockWindowUpdate(0);
-  end;
-end;
-
-procedure TfrmSettingsWnd.UpdateFontShadowPage;
-begin
-  LockWindowUpdate(Self.Handle);
-  try
-
-    // Font Shadow
-    pnlTextShadow.Visible := chkFontShadow.Checked;
-
-    // Update Page Height
-    if chkFontShadow.Checked then
-      Self.Height := 440
-    else
-      Self.Height := 85;
-
-    PluginHost.Refresh;
-
-  finally
-    LockWindowUpdate(0);
-  end;
-end;
-
 procedure TfrmSettingsWnd.SendUpdate;
 begin
   if Visible then
@@ -448,25 +319,6 @@ begin
   SendUpdate;
 end;
 
-procedure TfrmSettingsWnd.UpdatePageUi;
-begin
-  if FExplorerDesktop then
-  begin
-    pagExplorerDesktop.Show;
-    Self.Height := 300;
-    exit;
-  end;
-
-  if pagIcon.Visible then
-    UpdateIconPage
-  else if pagFont.Visible then
-    UpdateFontPage
-  else if pagFontShadow.Visible then
-    UpdateFontShadowPage
-  else if pagAnimation.Visible then
-    UpdateAnimationPage;
-end;
-
 procedure TfrmSettingsWnd.RefreshFontList;
 var
   fi: TFontInfo;
@@ -493,6 +345,11 @@ end;
 procedure TfrmSettingsWnd.UpdateColorChangeEvent(Sender: TObject);
 begin
   SendUpdate;
+end;
+
+procedure TfrmSettingsWnd.sceColorExpandCollapse(ASender: TObject);
+begin
+  UpdatePageUI;
 end;
 
 procedure TfrmSettingsWnd.sceIconColorUiChange(Sender: TObject);
@@ -583,6 +440,145 @@ end;
 procedure TfrmSettingsWnd.IconColorsUiChange(Sender: TObject);
 begin
   SendUpdate;
+end;
+
+procedure TfrmSettingsWnd.UpdateIconPage;
+begin
+  LockWindowUpdate(Self.Handle);
+  try
+
+    // Icon Size
+    sgbiconsize.Enabled := rdoIconCustom.checked;
+    if rdoIcon32.Checked then
+      icon32.Bitmap.Assign(FBlue32)
+    else
+      icon32.Bitmap.Assign(FWhite32);
+    if rdoIcon48.Checked then
+      icon48.Bitmap.Assign(FBlue48)
+    else
+      icon48.Bitmap.Assign(FWhite48);
+    if rdoIcon64.Checked then
+      icon64.Bitmap.Assign(FBlue64)
+    else
+      icon64.Bitmap.Assign(FWhite64);
+
+    // Icon Color Blend
+    sgbColorBlend.Enabled := chkColorBlend.Checked;
+    sceIconColor.Items.Item[0].Visible := chkColorBlend.checked;
+
+    // Icon Shadow Transparency
+    sgbIconShadow.Enabled := chkIconShadow.Checked;
+    sceIconColor.Items.Item[1].Visible := chkIconShadow.checked;
+
+    // Refresh ColorEditorEx
+    sceIconColor.Invalidate;
+
+    // Icon Transparency
+    sgbIconTrans.Enabled := chkIconTrans.Checked;
+
+    // Update Page Height
+    Self.Height := pnlIcon.Height + 50;
+
+    // Refresh size
+    FPluginHost.Refresh;
+  finally
+    LockWindowUpdate(0);
+  end;
+end;
+
+procedure TfrmSettingsWnd.UpdateAnimationPage;
+begin
+  LockWindowUpdate(Self.Handle);
+  try
+    // Hide/Show Animation Options
+    pnlAnim.Visible := chkAnim.checked;
+
+    // Animation Transparency
+    sgbAnimTrans.Enabled := chkAnimTrans.Checked;
+
+    // Animation Brightness
+    sgbAnimBrightness.Enabled := chkAnimBrightness.Checked;
+
+    // Animation Size
+    sgbAnimSize.Enabled := chkAnimSize.Checked;
+
+    // Animation Color Blend
+    sgbAnimColorBlend.Enabled := chkAnimColorBlend.Checked;
+    sceAnimColor.Visible := chkAnimColorBlend.Checked;
+    sceAnimColor.Items.Item[0].Visible := chkAnimColorBlend.checked;
+
+    // Update Page Height
+    Self.Height := pnlAnimation.Height + 50;
+
+    // Refresh size
+    PluginHost.Refresh;
+  finally
+    LockWindowUpdate(0);
+  end;
+end;
+
+procedure TfrmSettingsWnd.LoadResources;
+begin
+  LoadBmpFromRessource(FBlue32, 'Blue32');
+  LoadBmpFromRessource(FBlue48, 'Blue48');
+  LoadBmpFromRessource(FBlue64, 'Blue64');
+  LoadBmpFromRessource(FWhite32, 'White32');
+  LoadBmpFromRessource(FWhite48, 'White48');
+  LoadBmpFromRessource(FWhite64, 'White64');
+end;
+
+procedure TfrmSettingsWnd.UpdateFontPage;
+begin
+  LockWindowUpdate(Self.Handle);
+  try
+
+    // Font Transparency
+    sgbFontTrans.Enabled := chkFontTrans.Checked;
+
+    // Update Page Height
+    Self.Height := pnlFont.Height + 50;
+    PluginHost.Refresh;
+
+  finally
+    LockWindowUpdate(0);
+  end;
+end;
+
+procedure TfrmSettingsWnd.UpdateFontShadowPage;
+begin
+  LockWindowUpdate(Self.Handle);
+  try
+
+    // Font Shadow
+    pnlTextShadow.Visible := chkFontShadow.Checked;
+
+    // Update Page Height
+    Self.Height := pnlFontShadow.Height + 50;
+
+    PluginHost.Refresh;
+
+  finally
+    LockWindowUpdate(0);
+  end;
+end;
+
+procedure TfrmSettingsWnd.UpdatePageUi;
+begin
+  if FExplorerDesktop then
+  begin
+    pagExplorerDesktop.Show;
+    Self.Height := pnlExplorerDesktop.Height + 50;
+    exit;
+  end;
+
+  if pagIcon.Visible then
+    UpdateIconPage
+  else if pagFont.Visible then
+    UpdateFontPage
+  else if pagFontShadow.Visible then
+    UpdateFontShadowPage
+  else if pagAnimation.Visible then
+    UpdateAnimationPage;
 end;
 
 end.

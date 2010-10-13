@@ -2,8 +2,8 @@ object frmSettingsWnd: TfrmSettingsWnd
   Left = 0
   Top = 0
   Caption = 'frmSettingsWnd'
-  ClientHeight = 284
-  ClientWidth = 418
+  ClientHeight = 290
+  ClientWidth = 487
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -14,130 +14,146 @@ object frmSettingsWnd: TfrmSettingsWnd
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnResize = FormResize
-  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object ccolors: TSharpEColorEditorEx
-    Left = 0
-    Top = 65
-    Width = 418
-    Height = 219
-    Margins.Left = 0
-    Margins.Top = 4
-    Margins.Right = 0
-    Margins.Bottom = 0
-    VertScrollBar.Smooth = True
-    VertScrollBar.Tracking = True
-    Align = alClient
-    BevelInner = bvNone
-    BevelOuter = bvNone
-    BorderStyle = bsNone
-    Color = clWhite
-    ParentColor = False
-    TabOrder = 0
-    Items = <
-      item
-        Title = 'Primary Color'
-        ColorCode = 0
-        ColorAsTColor = clBlack
-        Expanded = False
-        ValueEditorType = vetColor
-        Value = 0
-        ValueMin = 0
-        ValueMax = 255
-        Visible = True
-        DisplayPercent = False
-        ColorEditor = ccolors.Item0
-        Tag = 0
-      end
-      item
-        Title = 'Secondary Color'
-        ColorCode = 0
-        ColorAsTColor = clBlack
-        Expanded = False
-        ValueEditorType = vetColor
-        Value = 0
-        ValueMin = 0
-        ValueMax = 255
-        Visible = True
-        DisplayPercent = False
-        ColorEditor = ccolors.Item1
-        Tag = 0
-      end
-      item
-        Title = 'Color 3'
-        ColorCode = 0
-        ColorAsTColor = clBlack
-        Expanded = False
-        ValueEditorType = vetColor
-        Value = 0
-        ValueMin = 0
-        ValueMax = 255
-        Visible = True
-        DisplayPercent = False
-        ColorEditor = ccolors.Item2
-        Tag = 0
-      end
-      item
-        Title = 'Color 4'
-        ColorCode = 0
-        ColorAsTColor = clBlack
-        Expanded = False
-        ValueEditorType = vetColor
-        Value = 0
-        ValueMin = 0
-        ValueMax = 255
-        Visible = True
-        DisplayPercent = False
-        ColorEditor = ccolors.Item3
-        Tag = 0
-      end>
-    SwatchManager = SharpESwatchManager1
-    OnUiChange = ccolorsUiChange
-    BorderColor = clBlack
-    BackgroundColor = clWhite
-    BackgroundTextColor = clBlack
-    ContainerColor = clBlack
-    ContainerTextColor = clBlack
-  end
-  object lbCursorList: TSharpEListBoxEx
+  object pnlCursorList: TPanel
     Left = 0
     Top = 0
-    Width = 418
-    Height = 65
-    Columns = <
-      item
-        Width = 256
-        HAlign = taLeftJustify
-        VAlign = taVerticalCenter
-        ColumnAlign = calLeft
-        StretchColumn = True
-        ColumnType = ctDefault
-        VisibleOnSelectOnly = False
-        Images = PngImageList1
-      end>
-    Colors.BorderColor = clBtnFace
-    Colors.BorderColorSelected = clBtnShadow
-    Colors.ItemColor = clWindow
-    Colors.ItemColorSelected = clBtnFace
-    Colors.CheckColorSelected = clBtnFace
-    Colors.CheckColor = 15528425
-    Colors.DisabledColor = clBlack
-    DefaultColumn = 0
-    OnResize = lbCursorListResize
-    ItemHeight = 30
-    OnClickItem = lbCursorListClickItem
-    OnGetCellText = lbCursorListGetCellText
-    OnGetCellImageIndex = lbCursorListGetCellImageIndex
-    AutosizeGrid = True
-    Borderstyle = bsNone
-    Ctl3d = False
-    Align = alTop
+    Width = 487
+    Height = 290
+    Align = alClient
+    AutoSize = True
+    BevelOuter = bvNone
+    TabOrder = 0
+    ExplicitHeight = 171
+    object ccolors: TSharpEColorEditorEx
+      Left = 0
+      Top = 186
+      Width = 487
+      Height = 104
+      Margins.Left = 0
+      Margins.Top = 4
+      Margins.Right = 0
+      Margins.Bottom = 0
+      VertScrollBar.Smooth = True
+      VertScrollBar.Tracking = True
+      Align = alBottom
+      AutoSize = True
+      BevelInner = bvNone
+      BevelOuter = bvNone
+      BorderStyle = bsNone
+      Color = clWhite
+      ParentColor = False
+      TabOrder = 0
+      Items = <
+        item
+          Title = 'Primary Color'
+          ColorCode = 0
+          ColorAsTColor = clBlack
+          Expanded = False
+          ValueEditorType = vetColor
+          Value = 0
+          ValueMin = 0
+          ValueMax = 255
+          Visible = True
+          DisplayPercent = False
+          ColorEditor = ccolors.Item0
+          Tag = 0
+        end
+        item
+          Title = 'Secondary Color'
+          ColorCode = 0
+          ColorAsTColor = clBlack
+          Expanded = False
+          ValueEditorType = vetColor
+          Value = 0
+          ValueMin = 0
+          ValueMax = 255
+          Visible = True
+          DisplayPercent = False
+          ColorEditor = ccolors.Item1
+          Tag = 0
+        end
+        item
+          Title = 'Color 3'
+          ColorCode = 0
+          ColorAsTColor = clBlack
+          Expanded = False
+          ValueEditorType = vetColor
+          Value = 0
+          ValueMin = 0
+          ValueMax = 255
+          Visible = True
+          DisplayPercent = False
+          ColorEditor = ccolors.Item2
+          Tag = 0
+        end
+        item
+          Title = 'Color 4'
+          ColorCode = 0
+          ColorAsTColor = clBlack
+          Expanded = False
+          ValueEditorType = vetColor
+          Value = 0
+          ValueMin = 0
+          ValueMax = 255
+          Visible = True
+          DisplayPercent = False
+          ColorEditor = ccolors.Item3
+          Tag = 0
+        end>
+      SwatchManager = SharpESwatchManager1
+      OnUiChange = ccolorsUiChange
+      OnExpandCollapse = sceColorExpandCollapse
+      BorderColor = clBlack
+      BackgroundColor = clWhite
+      BackgroundTextColor = clBlack
+      ContainerColor = clBlack
+      ContainerTextColor = clBlack
+      ExplicitTop = 290
+    end
+    object lbCursorList: TSharpEListBoxEx
+      Left = 0
+      Top = 0
+      Width = 487
+      Height = 186
+      Columns = <
+        item
+          Width = 256
+          HAlign = taLeftJustify
+          VAlign = taVerticalCenter
+          ColumnAlign = calLeft
+          StretchColumn = True
+          ColumnType = ctDefault
+          VisibleOnSelectOnly = False
+          Images = PngImageList1
+        end>
+      Colors.BorderColor = clBtnFace
+      Colors.BorderColorSelected = clBtnShadow
+      Colors.ItemColor = clWindow
+      Colors.ItemColorSelected = clBtnFace
+      Colors.CheckColorSelected = clBtnFace
+      Colors.CheckColor = 15528425
+      Colors.DisabledColor = clBlack
+      DefaultColumn = 0
+      ItemHeight = 30
+      OnClickItem = lbCursorListClickItem
+      OnGetCellText = lbCursorListGetCellText
+      OnGetCellImageIndex = lbCursorListGetCellImageIndex
+      AutosizeGrid = True
+      Borderstyle = bsNone
+      Ctl3d = False
+      Align = alClient
+      ExplicitLeft = 1
+      ExplicitTop = 1
+      ExplicitWidth = 485
+      ExplicitHeight = 184
+    end
   end
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
     PopulateThemeColors = True
-    Width = 385
+    Width = 454
     ShowCaptions = True
     SwatchHeight = 16
     SwatchWidth = 16

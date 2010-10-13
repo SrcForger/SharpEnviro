@@ -20,9 +20,9 @@ object frmSettingsWnd: TfrmSettingsWnd
   object plConfig: TJvPageList
     AlignWithMargins = True
     Left = 0
-    Top = 76
+    Top = 0
     Width = 491
-    Height = 490
+    Height = 566
     Margins.Left = 0
     Margins.Top = 0
     Margins.Right = 0
@@ -30,431 +30,560 @@ object frmSettingsWnd: TfrmSettingsWnd
     ActivePage = pagWallpaper
     PropagateEnable = False
     Align = alClient
+    object pagMonitor: TJvStandardPage
+      Left = 0
+      Top = 0
+      Width = 491
+      Height = 566
+      object pnlMonitor: TSharpERoundPanel
+        Left = 1
+        Top = 1
+        Width = 489
+        Height = 90
+        Align = alTop
+        AutoSize = True
+        BevelOuter = bvNone
+        ParentBackground = False
+        ParentColor = True
+        TabOrder = 0
+        DrawMode = srpNormal
+        NoTopBorder = False
+        NoBottomBorder = False
+        RoundValue = 10
+        BorderColor = clBtnFace
+        Border = False
+        BackgroundColor = clWindow
+        BottomSideBorder = False
+        ExplicitLeft = 4
+        ExplicitTop = 4
+        ExplicitWidth = 483
+        object pnlMonitorList: TSharpERoundPanel
+          AlignWithMargins = True
+          Left = 5
+          Top = 59
+          Width = 479
+          Height = 21
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 10
+          Align = alTop
+          AutoSize = True
+          BevelOuter = bvNone
+          ParentBackground = False
+          ParentColor = True
+          TabOrder = 0
+          DrawMode = srpNormal
+          NoTopBorder = False
+          NoBottomBorder = False
+          RoundValue = 10
+          BorderColor = clBtnFace
+          Border = False
+          BackgroundColor = clBtnFace
+          BottomSideBorder = False
+          ExplicitTop = 47
+          ExplicitWidth = 473
+          object cboMonitor: TComboBox
+            Left = 0
+            Top = 0
+            Width = 250
+            Height = 21
+            Margins.Left = 28
+            Margins.Top = 8
+            Margins.Right = 8
+            Margins.Bottom = 0
+            Align = alLeft
+            Style = csDropDownList
+            Constraints.MaxWidth = 250
+            DropDownCount = 12
+            ItemHeight = 13
+            TabOrder = 0
+            OnChange = MonitorChangeEvent
+            ExplicitTop = 40
+          end
+        end
+        object SharpECenterHeader1: TSharpECenterHeader
+          AlignWithMargins = True
+          Left = 5
+          Top = 0
+          Width = 479
+          Height = 37
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 0
+          Title = 'Monitor'
+          Description = 'Please select the monitor from the list below'
+          TitleColor = clWindowText
+          DescriptionColor = clRed
+          Align = alTop
+          ExplicitWidth = 473
+        end
+        object stNoMonitors: TStaticText
+          AlignWithMargins = True
+          Left = 5
+          Top = 42
+          Width = 479
+          Height = 17
+          Margins.Left = 5
+          Margins.Top = 5
+          Margins.Right = 5
+          Margins.Bottom = 0
+          Align = alTop
+          Caption = 'There are no monitors available'
+          TabOrder = 2
+          ExplicitTop = 54
+          ExplicitWidth = 473
+        end
+      end
+    end
     object pagWallpaper: TJvStandardPage
       Left = 0
       Top = 0
       Width = 491
-      Height = 490
+      Height = 566
       Caption = 'pagWallpaper'
-      object Panel7: TPanel
-        AlignWithMargins = True
-        Left = 6
-        Top = 224
-        Width = 479
-        Height = 23
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Align = alTop
-        BevelOuter = bvNone
-        ParentBackground = False
-        ParentColor = True
-        TabOrder = 1
-        object rdoWpAlignStretch: TJvXPCheckbox
-          Left = 138
-          Top = 0
-          Width = 69
-          Height = 23
-          Caption = 'Stretch'
-          TabOrder = 2
-          Align = alLeft
-          OnClick = AlignmentChangeEvent
-        end
-        object rdoWpAlignScale: TJvXPCheckbox
-          Left = 69
-          Top = 0
-          Width = 69
-          Height = 23
-          Caption = 'Scale'
-          TabOrder = 1
-          Align = alLeft
-          OnClick = AlignmentChangeEvent
-        end
-        object rdoWpAlignCenter: TJvXPCheckbox
-          Left = 0
-          Top = 0
-          Width = 69
-          Height = 23
-          Caption = 'Center'
-          TabOrder = 0
-          Checked = True
-          State = cbChecked
-          Align = alLeft
-          OnClick = AlignmentChangeEvent
-        end
-        object rdoWpAlignTile: TJvXPCheckbox
-          Left = 207
-          Top = 0
-          Width = 69
-          Height = 23
-          Caption = 'Tile'
-          TabOrder = 3
-          Align = alLeft
-          OnClick = AlignmentChangeEvent
-        end
-      end
-      object Panel8: TPanel
-        AlignWithMargins = True
-        Left = 6
-        Top = 304
-        Width = 479
-        Height = 23
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Align = alTop
-        BevelOuter = bvNone
-        ParentBackground = False
-        ParentColor = True
-        TabOrder = 2
-        object chkWpMirrorVert: TJvXPCheckbox
-          Left = 81
-          Top = 0
-          Width = 97
-          Height = 23
-          Caption = 'Vertical'
-          TabOrder = 1
-          Align = alLeft
-          OnClick = MirrorChangeEvent
-        end
-        object chkWpMirrorHoriz: TJvXPCheckbox
-          Left = 0
-          Top = 0
-          Width = 81
-          Height = 23
-          Caption = 'Horizontal'
-          TabOrder = 0
-          Align = alLeft
-          OnClick = MirrorChangeEvent
-        end
-      end
-      object imgWallpaper: TImage32
-        Left = 260
-        Top = 120
-        Width = 213
-        Height = 133
-        Bitmap.ResamplerClassName = 'TNearestResampler'
-        BitmapAlign = baTopLeft
-        Scale = 1.000000000000000000
-        ScaleMode = smNormal
-        TabOrder = 5
-        Visible = False
-      end
-      object Panel9: TPanel
-        AlignWithMargins = True
-        Left = 6
-        Top = 384
-        Width = 479
-        Height = 22
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Align = alTop
-        BevelOuter = bvNone
-        ParentBackground = False
-        ParentColor = True
-        TabOrder = 3
-        object sgbWpTrans: TSharpeGaugeBox
-          Left = 0
-          Top = 0
-          Width = 250
-          Height = 22
-          Margins.Left = 28
-          Margins.Top = 8
-          Margins.Right = 8
-          Margins.Bottom = 0
-          Align = alLeft
-          ParentBackground = False
-          TabOrder = 0
-          Min = 0
-          Max = 255
-          Value = 0
-          Prefix = 'Transparency: '
-          Suffix = '%'
-          Description = 'Change Wallpaper Transparency'
-          PopPosition = ppBottom
-          PercentDisplay = True
-          MaxPercent = 100
-          Formatting = '%d'
-          OnChangeValue = WallpaperTransChangeEvent
-          BackgroundColor = clWindow
-        end
-      end
-      object secWpColor: TSharpEColorEditorEx
-        AlignWithMargins = True
-        Left = 2
-        Top = 463
-        Width = 483
-        Height = 32
-        Margins.Left = 1
-        Margins.Top = 10
-        Margins.Right = 5
-        Margins.Bottom = 0
-        VertScrollBar.Smooth = True
-        VertScrollBar.Tracking = True
+      object pnlWallpaper: TPanel
+        Left = 1
+        Top = 1
+        Width = 489
+        Height = 484
         Align = alTop
         AutoSize = True
-        BevelInner = bvNone
         BevelOuter = bvNone
-        BorderStyle = bsNone
-        Color = clBlack
-        ParentColor = False
-        TabOrder = 4
-        Items = <
-          item
-            Title = 'Background'
-            ColorCode = 0
-            ColorAsTColor = clBlack
-            Expanded = False
-            ValueEditorType = vetColor
-            Value = 0
-            ValueMin = 0
-            ValueMax = 255
-            Visible = True
-            DisplayPercent = False
-            ColorEditor = secWpColor.Item0
-            Tag = 0
-          end>
-        SwatchManager = ssmConfig
-        OnUiChange = WallpaperColorUiChangeEvent
-        BorderColor = clBlack
-        BackgroundColor = clBlack
-        BackgroundTextColor = clBlack
-        ContainerColor = clBlack
-        ContainerTextColor = clBlack
-      end
-      object SharpECenterHeader6: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 6
-        Top = 11
-        Width = 479
-        Height = 37
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Title = 'Wallpaper options'
-        Description = 
-          'Define the wallpaper filename or directory for the selected moni' +
-          'tor'
-        TitleColor = clWindowText
-        DescriptionColor = clRed
-        Align = alTop
-      end
-      object SharpECenterHeader7: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 6
-        Top = 177
-        Width = 479
-        Height = 37
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Title = 'Wallpaper allignment'
-        Description = 'Define the allignment for the wallpaper'
-        TitleColor = clWindowText
-        DescriptionColor = clRed
-        Align = alTop
-      end
-      object SharpECenterHeader8: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 6
-        Top = 257
-        Width = 479
-        Height = 37
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Title = 'Wallpaper mirroring'
-        Description = 'Define the mirroring options for the wallpaper'
-        TitleColor = clWindowText
-        DescriptionColor = clRed
-        Align = alTop
-      end
-      object SharpECenterHeader9: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 6
-        Top = 337
-        Width = 479
-        Height = 37
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Title = 'Wallpaper visibility'
-        Description = 
-          'Define how visible the wallpaper is against the background colou' +
-          'r'
-        TitleColor = clWindowText
-        DescriptionColor = clRed
-        Align = alTop
-      end
-      object SharpECenterHeader10: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 6
-        Top = 416
-        Width = 479
-        Height = 37
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Title = 'Background colour'
-        Description = 'Define the wallpaper background colour'
-        TitleColor = clWindowText
-        DescriptionColor = clRed
-        Align = alTop
-      end
-      object chkAutoWallpaper: TJvXPCheckbox
-        AlignWithMargins = True
-        Left = 6
-        Top = 58
-        Width = 479
-        Height = 17
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 5
-        Caption = 'Enable automatic wallpaper changing'
         TabOrder = 0
-        Align = alTop
-        OnClick = chkAutoWallpaperClick
-      end
-      object pnlWallpaperOptions: TPanel
-        AlignWithMargins = True
-        Left = 6
-        Top = 88
-        Width = 479
-        Height = 79
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Align = alTop
-        AutoSize = True
-        BevelOuter = bvNone
-        ParentBackground = False
-        ParentColor = True
-        TabOrder = 11
-        object pnlWallpaperDirectoryPath: TPanel
-          Left = 0
+        object SharpECenterHeader6: TSharpECenterHeader
+          AlignWithMargins = True
+          Left = 5
           Top = 0
           Width = 479
-          Height = 57
+          Height = 37
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 0
+          Title = 'Wallpaper options'
+          Description = 
+            'Define the wallpaper filename or directory for the selected moni' +
+            'tor'
+          TitleColor = clWindowText
+          DescriptionColor = clRed
+          Align = alTop
+          ExplicitTop = 10
+        end
+        object chkAutoWallpaper: TJvXPCheckbox
+          AlignWithMargins = True
+          Left = 5
+          Top = 47
+          Width = 479
+          Height = 17
+          Margins.Left = 5
+          Margins.Top = 10
+          Margins.Right = 5
+          Caption = 'Enable automatic wallpaper changing'
+          TabOrder = 1
+          Align = alTop
+          OnClick = chkAutoWallpaperClick
+          ExplicitTop = 57
+        end
+        object pnlWallpaperOptions: TPanel
+          AlignWithMargins = True
+          Left = 5
+          Top = 77
+          Width = 479
+          Height = 79
+          Margins.Left = 5
+          Margins.Top = 10
+          Margins.Right = 5
+          Margins.Bottom = 0
+          Align = alTop
+          AutoSize = True
+          BevelOuter = bvNone
+          ParentBackground = False
+          ParentColor = True
+          TabOrder = 2
+          ExplicitTop = 87
+          object pnlWallpaperDirectoryPath: TPanel
+            Left = 0
+            Top = 0
+            Width = 479
+            Height = 57
+            Margins.Left = 5
+            Margins.Top = 10
+            Margins.Right = 5
+            Margins.Bottom = 0
+            Align = alTop
+            BevelOuter = bvNone
+            ParentColor = True
+            TabOrder = 0
+            object edtWpDirectory: TEdit
+              Left = 0
+              Top = 0
+              Width = 403
+              Height = 21
+              Margins.Left = 28
+              Margins.Top = 8
+              Margins.Right = 8
+              Margins.Bottom = 0
+              TabOrder = 0
+              OnChange = edtWpDirectoryChange
+            end
+            object btnWpDirectoryBrowse: TButton
+              AlignWithMargins = True
+              Left = 406
+              Top = 0
+              Width = 75
+              Height = 22
+              Margins.Top = 0
+              Margins.Right = 0
+              Margins.Bottom = 0
+              Caption = 'Browse'
+              TabOrder = 1
+              OnClick = btnWpDirectoryBrowseClick
+            end
+            object chkWpRecursive: TJvXPCheckbox
+              Left = 3
+              Top = 31
+              Width = 138
+              Height = 17
+              Caption = 'Include Subdirectories'
+              TabOrder = 2
+              OnClick = chkWpRecursiveClick
+            end
+            object sgbWpChangeInterval: TSharpeGaugeBox
+              Left = 258
+              Top = 30
+              Width = 145
+              Height = 21
+              ParentBackground = False
+              TabOrder = 3
+              Min = 1
+              Max = 720
+              Value = 30
+              Prefix = 'Interval: '
+              Suffix = ' minutes'
+              Description = 'Set how often the wallpaper should change.'
+              PopPosition = ppBottom
+              PercentDisplay = False
+              MaxPercent = 100
+              Formatting = '%d'
+              OnChangeValue = sgbWpChangeIntervalChangeValue
+              BackgroundColor = clWindow
+            end
+            object chkWpRandomize: TJvXPCheckbox
+              Left = 155
+              Top = 31
+              Width = 86
+              Height = 17
+              Caption = 'Randomize'
+              TabOrder = 4
+              OnClick = chkWpRandomizeClick
+            end
+          end
+          object pnlWallpaperFilePath: TPanel
+            Left = 0
+            Top = 57
+            Width = 479
+            Height = 22
+            Margins.Left = 5
+            Margins.Top = 10
+            Margins.Right = 5
+            Margins.Bottom = 0
+            Align = alTop
+            BevelOuter = bvNone
+            ParentColor = True
+            TabOrder = 1
+            object edtWpFile: TEdit
+              Left = 0
+              Top = 0
+              Width = 403
+              Height = 21
+              Margins.Left = 28
+              Margins.Top = 8
+              Margins.Right = 8
+              Margins.Bottom = 0
+              TabOrder = 0
+              OnChange = edtWallpaperChange
+            end
+            object btnWpBrowse: TButton
+              AlignWithMargins = True
+              Left = 406
+              Top = 0
+              Width = 75
+              Height = 22
+              Margins.Top = 0
+              Margins.Right = 0
+              Margins.Bottom = 0
+              Caption = 'Browse'
+              TabOrder = 1
+              OnClick = btnWpBrowseClick
+            end
+          end
+        end
+        object SharpECenterHeader7: TSharpECenterHeader
+          AlignWithMargins = True
+          Left = 5
+          Top = 166
+          Width = 479
+          Height = 37
+          Margins.Left = 5
+          Margins.Top = 10
+          Margins.Right = 5
+          Margins.Bottom = 0
+          Title = 'Wallpaper allignment'
+          Description = 'Define the allignment for the wallpaper'
+          TitleColor = clWindowText
+          DescriptionColor = clRed
+          Align = alTop
+          ExplicitTop = 176
+        end
+        object Panel7: TPanel
+          AlignWithMargins = True
+          Left = 5
+          Top = 213
+          Width = 479
+          Height = 23
           Margins.Left = 5
           Margins.Top = 10
           Margins.Right = 5
           Margins.Bottom = 0
           Align = alTop
           BevelOuter = bvNone
+          ParentBackground = False
           ParentColor = True
-          TabOrder = 0
-          object edtWpDirectory: TEdit
+          TabOrder = 4
+          ExplicitTop = 223
+          object rdoWpAlignStretch: TJvXPCheckbox
+            Left = 138
+            Top = 0
+            Width = 69
+            Height = 23
+            Caption = 'Stretch'
+            TabOrder = 2
+            Align = alLeft
+            OnClick = AlignmentChangeEvent
+          end
+          object rdoWpAlignScale: TJvXPCheckbox
+            Left = 69
+            Top = 0
+            Width = 69
+            Height = 23
+            Caption = 'Scale'
+            TabOrder = 1
+            Align = alLeft
+            OnClick = AlignmentChangeEvent
+          end
+          object rdoWpAlignCenter: TJvXPCheckbox
             Left = 0
             Top = 0
-            Width = 403
-            Height = 21
+            Width = 69
+            Height = 23
+            Caption = 'Center'
+            TabOrder = 0
+            Checked = True
+            State = cbChecked
+            Align = alLeft
+            OnClick = AlignmentChangeEvent
+          end
+          object rdoWpAlignTile: TJvXPCheckbox
+            Left = 207
+            Top = 0
+            Width = 69
+            Height = 23
+            Caption = 'Tile'
+            TabOrder = 3
+            Align = alLeft
+            OnClick = AlignmentChangeEvent
+          end
+        end
+        object SharpECenterHeader8: TSharpECenterHeader
+          AlignWithMargins = True
+          Left = 5
+          Top = 246
+          Width = 479
+          Height = 37
+          Margins.Left = 5
+          Margins.Top = 10
+          Margins.Right = 5
+          Margins.Bottom = 0
+          Title = 'Wallpaper mirroring'
+          Description = 'Define the mirroring options for the wallpaper'
+          TitleColor = clWindowText
+          DescriptionColor = clRed
+          Align = alTop
+          ExplicitTop = 256
+        end
+        object Panel8: TPanel
+          AlignWithMargins = True
+          Left = 5
+          Top = 293
+          Width = 479
+          Height = 23
+          Margins.Left = 5
+          Margins.Top = 10
+          Margins.Right = 5
+          Margins.Bottom = 0
+          Align = alTop
+          BevelOuter = bvNone
+          ParentBackground = False
+          ParentColor = True
+          TabOrder = 6
+          ExplicitTop = 303
+          object chkWpMirrorVert: TJvXPCheckbox
+            Left = 81
+            Top = 0
+            Width = 97
+            Height = 23
+            Caption = 'Vertical'
+            TabOrder = 1
+            Align = alLeft
+            OnClick = MirrorChangeEvent
+          end
+          object chkWpMirrorHoriz: TJvXPCheckbox
+            Left = 0
+            Top = 0
+            Width = 81
+            Height = 23
+            Caption = 'Horizontal'
+            TabOrder = 0
+            Align = alLeft
+            OnClick = MirrorChangeEvent
+          end
+        end
+        object SharpECenterHeader9: TSharpECenterHeader
+          AlignWithMargins = True
+          Left = 5
+          Top = 326
+          Width = 479
+          Height = 37
+          Margins.Left = 5
+          Margins.Top = 10
+          Margins.Right = 5
+          Margins.Bottom = 0
+          Title = 'Wallpaper visibility'
+          Description = 
+            'Define how visible the wallpaper is against the background colou' +
+            'r'
+          TitleColor = clWindowText
+          DescriptionColor = clRed
+          Align = alTop
+          ExplicitTop = 336
+        end
+        object Panel9: TPanel
+          AlignWithMargins = True
+          Left = 5
+          Top = 373
+          Width = 479
+          Height = 22
+          Margins.Left = 5
+          Margins.Top = 10
+          Margins.Right = 5
+          Margins.Bottom = 0
+          Align = alTop
+          BevelOuter = bvNone
+          ParentBackground = False
+          ParentColor = True
+          TabOrder = 8
+          ExplicitTop = 383
+          object sgbWpTrans: TSharpeGaugeBox
+            Left = 0
+            Top = 0
+            Width = 250
+            Height = 22
             Margins.Left = 28
             Margins.Top = 8
             Margins.Right = 8
             Margins.Bottom = 0
-            TabOrder = 0
-            OnChange = edtWpDirectoryChange
-          end
-          object btnWpDirectoryBrowse: TButton
-            AlignWithMargins = True
-            Left = 406
-            Top = 0
-            Width = 75
-            Height = 22
-            Margins.Top = 0
-            Margins.Right = 0
-            Margins.Bottom = 0
-            Caption = 'Browse'
-            TabOrder = 1
-            OnClick = btnWpDirectoryBrowseClick
-          end
-          object chkWpRecursive: TJvXPCheckbox
-            Left = 3
-            Top = 31
-            Width = 138
-            Height = 17
-            Caption = 'Include Subdirectories'
-            TabOrder = 2
-            OnClick = chkWpRecursiveClick
-          end
-          object sgbWpChangeInterval: TSharpeGaugeBox
-            Left = 258
-            Top = 30
-            Width = 145
-            Height = 21
+            Align = alLeft
             ParentBackground = False
-            TabOrder = 3
-            Min = 1
-            Max = 720
-            Value = 30
-            Prefix = 'Interval: '
-            Suffix = ' minutes'
-            Description = 'Set how often the wallpaper should change.'
+            TabOrder = 0
+            Min = 0
+            Max = 255
+            Value = 0
+            Prefix = 'Transparency: '
+            Suffix = '%'
+            Description = 'Change Wallpaper Transparency'
             PopPosition = ppBottom
-            PercentDisplay = False
+            PercentDisplay = True
             MaxPercent = 100
             Formatting = '%d'
-            OnChangeValue = sgbWpChangeIntervalChangeValue
+            OnChangeValue = WallpaperTransChangeEvent
             BackgroundColor = clWindow
           end
-          object chkWpRandomize: TJvXPCheckbox
-            Left = 155
-            Top = 31
-            Width = 86
-            Height = 17
-            Caption = 'Randomize'
-            TabOrder = 4
-            OnClick = chkWpRandomizeClick
-          end
         end
-        object pnlWallpaperFilePath: TPanel
-          Left = 0
-          Top = 57
+        object SharpECenterHeader10: TSharpECenterHeader
+          AlignWithMargins = True
+          Left = 5
+          Top = 405
           Width = 479
-          Height = 22
+          Height = 37
           Margins.Left = 5
           Margins.Top = 10
           Margins.Right = 5
           Margins.Bottom = 0
+          Title = 'Background colour'
+          Description = 'Define the wallpaper background colour'
+          TitleColor = clWindowText
+          DescriptionColor = clRed
           Align = alTop
+          ExplicitTop = 415
+        end
+        object imgWallpaper: TImage32
+          Left = 260
+          Top = 120
+          Width = 213
+          Height = 133
+          Bitmap.ResamplerClassName = 'TNearestResampler'
+          BitmapAlign = baTopLeft
+          Scale = 1.000000000000000000
+          ScaleMode = smNormal
+          TabOrder = 10
+          Visible = False
+        end
+        object secWpColor: TSharpEColorEditorEx
+          AlignWithMargins = True
+          Left = 1
+          Top = 452
+          Width = 483
+          Height = 32
+          Margins.Left = 1
+          Margins.Top = 10
+          Margins.Right = 5
+          Margins.Bottom = 0
+          VertScrollBar.Smooth = True
+          VertScrollBar.Tracking = True
+          Align = alTop
+          AutoSize = True
+          BevelInner = bvNone
           BevelOuter = bvNone
-          ParentColor = True
-          TabOrder = 1
-          object edtWpFile: TEdit
-            Left = 0
-            Top = 0
-            Width = 403
-            Height = 21
-            Margins.Left = 28
-            Margins.Top = 8
-            Margins.Right = 8
-            Margins.Bottom = 0
-            TabOrder = 0
-            OnChange = edtWallpaperChange
-          end
-          object btnWpBrowse: TButton
-            AlignWithMargins = True
-            Left = 406
-            Top = 0
-            Width = 75
-            Height = 22
-            Margins.Top = 0
-            Margins.Right = 0
-            Margins.Bottom = 0
-            Caption = 'Browse'
-            TabOrder = 1
-            OnClick = btnWpBrowseClick
-          end
+          BorderStyle = bsNone
+          Color = clBlack
+          ParentColor = False
+          TabOrder = 11
+          Items = <
+            item
+              Title = 'Background'
+              ColorCode = 0
+              ColorAsTColor = clBlack
+              Expanded = False
+              ValueEditorType = vetColor
+              Value = 0
+              ValueMin = 0
+              ValueMax = 255
+              Visible = True
+              DisplayPercent = False
+              ColorEditor = secWpColor.Item0
+              Tag = 0
+            end>
+          SwatchManager = ssmConfig
+          OnUiChange = WallpaperColorUiChangeEvent
+          OnExpandCollapse = secColorExpandCollapse
+          BorderColor = clBlack
+          BackgroundColor = clBlack
+          BackgroundTextColor = clBlack
+          ContainerColor = clBlack
+          ContainerTextColor = clBlack
+          ExplicitTop = 462
         end
       end
     end
@@ -462,485 +591,473 @@ object frmSettingsWnd: TfrmSettingsWnd
       Left = 0
       Top = 0
       Width = 491
-      Height = 490
+      Height = 566
       Caption = 'pagColor'
-      object imgColor: TImage32
-        Left = 384
-        Top = 113
-        Width = 56
-        Height = 45
-        Bitmap.ResamplerClassName = 'TNearestResampler'
-        BitmapAlign = baTopLeft
-        Scale = 1.000000000000000000
-        ScaleMode = smNormal
-        TabOrder = 2
-        Visible = False
-      end
       object pnlColor: TPanel
-        AlignWithMargins = True
         Left = 1
-        Top = 32
+        Top = 1
         Width = 489
-        Height = 457
-        Margins.Left = 0
-        Margins.Top = 4
-        Margins.Right = 0
-        Margins.Bottom = 0
-        Align = alClient
+        Height = 147
+        Align = alTop
+        AutoSize = True
         BevelOuter = bvNone
-        Color = clWindow
-        TabOrder = 1
-        object Panel10: TPanel
+        TabOrder = 0
+        object chkApplyColor: TJvXPCheckbox
           AlignWithMargins = True
           Left = 5
-          Top = 57
+          Top = 47
           Width = 479
-          Height = 22
+          Height = 17
           Margins.Left = 5
           Margins.Top = 10
           Margins.Right = 5
           Margins.Bottom = 0
-          Align = alTop
-          BevelOuter = bvNone
-          ParentBackground = False
-          ParentColor = True
+          Caption = 'Apply colour blending effects'
           TabOrder = 0
-          object sgbLum: TSharpeGaugeBox
+          Align = alTop
+          OnClick = ApplyColorClickEvent
+          ExplicitLeft = 6
+          ExplicitTop = 48
+          ExplicitWidth = 477
+        end
+        object pnlColorHSL: TPanel
+          AlignWithMargins = True
+          Left = 0
+          Top = 68
+          Width = 489
+          Height = 79
+          Margins.Left = 0
+          Margins.Top = 4
+          Margins.Right = 0
+          Margins.Bottom = 0
+          Align = alTop
+          AutoSize = True
+          BevelOuter = bvNone
+          Color = clWindow
+          TabOrder = 1
+          ExplicitLeft = 1
+          ExplicitTop = 69
+          ExplicitWidth = 487
+          object Panel10: TPanel
             AlignWithMargins = True
-            Left = 218
-            Top = 0
-            Width = 105
+            Left = 5
+            Top = 57
+            Width = 479
             Height = 22
-            Margins.Left = 4
-            Margins.Top = 0
-            Margins.Right = 0
+            Margins.Left = 5
+            Margins.Top = 10
+            Margins.Right = 5
             Margins.Bottom = 0
-            Align = alLeft
+            Align = alTop
+            BevelOuter = bvNone
             ParentBackground = False
-            TabOrder = 2
-            Min = -255
-            Max = 255
-            Value = 0
-            Prefix = 'Lum: '
-            Description = 'Change Luminance'
-            PopPosition = ppBottom
-            PercentDisplay = False
-            MaxPercent = 100
-            Formatting = '%d'
-            OnChangeValue = HSLColorChangeEvent
-            BackgroundColor = clWindow
-          end
-          object sgbSat: TSharpeGaugeBox
-            AlignWithMargins = True
-            Left = 109
-            Top = 0
-            Width = 105
-            Height = 22
-            Margins.Left = 4
-            Margins.Top = 0
-            Margins.Right = 0
-            Margins.Bottom = 0
-            Align = alLeft
-            ParentBackground = False
-            TabOrder = 1
-            Min = -255
-            Max = 255
-            Value = 0
-            Prefix = 'Sat: '
-            Description = 'Change Saturation'
-            PopPosition = ppBottom
-            PercentDisplay = False
-            MaxPercent = 100
-            Formatting = '%d'
-            OnChangeValue = HSLColorChangeEvent
-            BackgroundColor = clWindow
-          end
-          object sgbHue: TSharpeGaugeBox
-            Left = 0
-            Top = 0
-            Width = 105
-            Height = 22
-            Margins.Left = 0
-            Margins.Top = 8
-            Margins.Right = 8
-            Margins.Bottom = 0
-            Align = alLeft
-            ParentBackground = False
+            ParentColor = True
             TabOrder = 0
-            Min = -255
-            Max = 255
-            Value = 0
-            Prefix = 'Hue: '
-            Description = 'Change Hue'
-            PopPosition = ppBottom
-            PercentDisplay = False
-            MaxPercent = 100
-            Formatting = '%d'
-            OnChangeValue = HSLColorChangeEvent
-            BackgroundColor = clWindow
+            ExplicitWidth = 477
+            object sgbLum: TSharpeGaugeBox
+              AlignWithMargins = True
+              Left = 218
+              Top = 0
+              Width = 105
+              Height = 22
+              Margins.Left = 4
+              Margins.Top = 0
+              Margins.Right = 0
+              Margins.Bottom = 0
+              Align = alLeft
+              ParentBackground = False
+              TabOrder = 2
+              Min = -255
+              Max = 255
+              Value = 0
+              Prefix = 'Lum: '
+              Description = 'Change Luminance'
+              PopPosition = ppBottom
+              PercentDisplay = False
+              MaxPercent = 100
+              Formatting = '%d'
+              OnChangeValue = HSLColorChangeEvent
+              BackgroundColor = clWindow
+            end
+            object sgbSat: TSharpeGaugeBox
+              AlignWithMargins = True
+              Left = 109
+              Top = 0
+              Width = 105
+              Height = 22
+              Margins.Left = 4
+              Margins.Top = 0
+              Margins.Right = 0
+              Margins.Bottom = 0
+              Align = alLeft
+              ParentBackground = False
+              TabOrder = 1
+              Min = -255
+              Max = 255
+              Value = 0
+              Prefix = 'Sat: '
+              Description = 'Change Saturation'
+              PopPosition = ppBottom
+              PercentDisplay = False
+              MaxPercent = 100
+              Formatting = '%d'
+              OnChangeValue = HSLColorChangeEvent
+              BackgroundColor = clWindow
+            end
+            object sgbHue: TSharpeGaugeBox
+              Left = 0
+              Top = 0
+              Width = 105
+              Height = 22
+              Margins.Left = 0
+              Margins.Top = 8
+              Margins.Right = 8
+              Margins.Bottom = 0
+              Align = alLeft
+              ParentBackground = False
+              TabOrder = 0
+              Min = -255
+              Max = 255
+              Value = 0
+              Prefix = 'Hue: '
+              Description = 'Change Hue'
+              PopPosition = ppBottom
+              PercentDisplay = False
+              MaxPercent = 100
+              Formatting = '%d'
+              OnChangeValue = HSLColorChangeEvent
+              BackgroundColor = clWindow
+            end
+          end
+          object SharpECenterHeader2: TSharpECenterHeader
+            AlignWithMargins = True
+            Left = 5
+            Top = 10
+            Width = 479
+            Height = 37
+            Margins.Left = 5
+            Margins.Top = 10
+            Margins.Right = 5
+            Margins.Bottom = 0
+            Title = 'HSL Colour Adjust'
+            Description = 
+              'Change the values below to adjust the Hue, Saturation and Lumino' +
+              'sity'
+            TitleColor = clWindowText
+            DescriptionColor = clRed
+            Align = alTop
+            ExplicitWidth = 477
           end
         end
-        object SharpECenterHeader2: TSharpECenterHeader
+        object imgColor: TImage32
+          Left = 427
+          Top = 71
+          Width = 56
+          Height = 45
+          Bitmap.ResamplerClassName = 'TNearestResampler'
+          BitmapAlign = baTopLeft
+          Scale = 1.000000000000000000
+          ScaleMode = smNormal
+          TabOrder = 2
+          Visible = False
+        end
+        object SharpECenterHeader12: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 10
+          Top = 0
           Width = 479
           Height = 37
           Margins.Left = 5
-          Margins.Top = 10
+          Margins.Top = 0
           Margins.Right = 5
           Margins.Bottom = 0
-          Title = 'HSL Colour Adjust'
-          Description = 
-            'Change the values below to adjust the Hue, Saturation and Lumino' +
-            'sity'
+          Title = 'Colour blend'
+          Description = 'Define whether to apply a colour blending effect'
           TitleColor = clWindowText
           DescriptionColor = clRed
           Align = alTop
+          ExplicitLeft = 6
+          ExplicitTop = 1
+          ExplicitWidth = 477
         end
-      end
-      object chkApplyColor: TJvXPCheckbox
-        AlignWithMargins = True
-        Left = 6
-        Top = 11
-        Width = 479
-        Height = 17
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Caption = 'Apply colour blending effects'
-        TabOrder = 0
-        Align = alTop
-        OnClick = ApplyColorClickEvent
       end
     end
     object pagGradient: TJvStandardPage
       Left = 0
       Top = 0
       Width = 491
-      Height = 490
+      Height = 566
       Caption = 'pagGradient'
-      object pnlGrad: TPanel
-        AlignWithMargins = True
+      object pnlGradient: TPanel
         Left = 1
-        Top = 32
+        Top = 1
         Width = 489
-        Height = 457
-        Margins.Left = 0
-        Margins.Top = 4
-        Margins.Right = 0
-        Margins.Bottom = 0
-        Align = alClient
-        BevelOuter = bvNone
-        Color = clWindow
-        TabOrder = 1
-        object Panel5: TPanel
-          AlignWithMargins = True
-          Left = 5
-          Top = 57
-          Width = 479
-          Height = 23
-          Margins.Left = 5
-          Margins.Top = 10
-          Margins.Right = 5
-          Margins.Bottom = 0
-          Align = alTop
-          BevelOuter = bvNone
-          ParentBackground = False
-          ParentColor = True
-          TabOrder = 0
-          object cboGradType: TComboBox
-            Left = 0
-            Top = 0
-            Width = 250
-            Height = 21
-            Align = alLeft
-            Style = csDropDownList
-            ItemHeight = 13
-            TabOrder = 0
-            OnSelect = cboGradTypeSelect
-            Items.Strings = (
-              'Horizontal'
-              'Vertical'
-              'Left/Right Horizontal'
-              'Top/Bottom Vertical')
-          end
-        end
-        object Panel11: TPanel
-          AlignWithMargins = True
-          Left = 5
-          Top = 137
-          Width = 479
-          Height = 22
-          Margins.Left = 5
-          Margins.Top = 10
-          Margins.Right = 5
-          Margins.Bottom = 0
-          Align = alTop
-          BevelOuter = bvNone
-          ParentBackground = False
-          ParentColor = True
-          TabOrder = 1
-          object sgbGradStartTrans: TSharpeGaugeBox
-            Left = 0
-            Top = 0
-            Width = 125
-            Height = 22
-            Align = alLeft
-            ParentBackground = False
-            TabOrder = 0
-            Min = 0
-            Max = 255
-            Value = 255
-            Prefix = 'Start: '
-            Suffix = '%'
-            Description = 'Set the Start Transparency'
-            PopPosition = ppBottom
-            PercentDisplay = True
-            MaxPercent = 100
-            Formatting = '%d'
-            OnChangeValue = WallpaperTransChangeEvent
-            BackgroundColor = clWindow
-          end
-          object sgbGradEndTrans: TSharpeGaugeBox
-            AlignWithMargins = True
-            Left = 129
-            Top = 0
-            Width = 125
-            Height = 22
-            Margins.Left = 4
-            Margins.Top = 0
-            Margins.Right = 0
-            Margins.Bottom = 0
-            Align = alLeft
-            ParentBackground = False
-            TabOrder = 1
-            Min = 0
-            Max = 255
-            Value = 255
-            Prefix = 'End: '
-            Suffix = '%'
-            Description = 'Set the End Transparency'
-            PopPosition = ppBottom
-            PercentDisplay = True
-            MaxPercent = 100
-            Formatting = '%d'
-            OnChangeValue = WallpaperTransChangeEvent
-            BackgroundColor = clWindow
-          end
-        end
-        object secGradColor: TSharpEColorEditorEx
-          AlignWithMargins = True
-          Left = 1
-          Top = 216
-          Width = 483
-          Height = 241
-          Margins.Left = 1
-          Margins.Top = 10
-          Margins.Right = 5
-          Margins.Bottom = 0
-          VertScrollBar.Smooth = True
-          VertScrollBar.Tracking = True
-          Align = alClient
-          AutoSize = True
-          BevelInner = bvNone
-          BevelOuter = bvNone
-          BorderStyle = bsNone
-          Color = clBlack
-          ParentColor = False
-          TabOrder = 2
-          Items = <
-            item
-              Title = 'Gradient Start'
-              ColorCode = 0
-              ColorAsTColor = clBlack
-              Expanded = False
-              ValueEditorType = vetColor
-              Value = 0
-              ValueMin = 0
-              ValueMax = 255
-              Visible = True
-              DisplayPercent = False
-              ColorEditor = secGradColor.Item0
-              Tag = 0
-            end
-            item
-              Title = 'Gradient End'
-              ColorCode = 0
-              ColorAsTColor = clBlack
-              Expanded = False
-              ValueEditorType = vetColor
-              Value = 0
-              ValueMin = 0
-              ValueMax = 255
-              Visible = True
-              DisplayPercent = False
-              ColorEditor = secGradColor.Item1
-              Tag = 0
-            end>
-          SwatchManager = ssmConfig
-          OnUiChange = WallpaperColorUiChangeEvent
-          BorderColor = clBlack
-          BackgroundColor = clBlack
-          BackgroundTextColor = clBlack
-          ContainerColor = clBlack
-          ContainerTextColor = clBlack
-        end
-        object SharpECenterHeader3: TSharpECenterHeader
-          AlignWithMargins = True
-          Left = 5
-          Top = 10
-          Width = 479
-          Height = 37
-          Margins.Left = 5
-          Margins.Top = 10
-          Margins.Right = 5
-          Margins.Bottom = 0
-          Title = 'Gradient type'
-          Description = 'Define the gradient effect you wish to apply to the wallpaper'
-          TitleColor = clWindowText
-          DescriptionColor = clRed
-          Align = alTop
-        end
-        object SharpECenterHeader4: TSharpECenterHeader
-          AlignWithMargins = True
-          Left = 5
-          Top = 90
-          Width = 479
-          Height = 37
-          Margins.Left = 5
-          Margins.Top = 10
-          Margins.Right = 5
-          Margins.Bottom = 0
-          Title = 'Gradient visibility'
-          Description = 'Define how visible the gradient is when applied'
-          TitleColor = clWindowText
-          DescriptionColor = clRed
-          Align = alTop
-        end
-        object SharpECenterHeader5: TSharpECenterHeader
-          AlignWithMargins = True
-          Left = 5
-          Top = 169
-          Width = 479
-          Height = 37
-          Margins.Left = 5
-          Margins.Top = 10
-          Margins.Right = 5
-          Margins.Bottom = 0
-          Title = 'Gradient colour'
-          Description = 'Define the gradient colours'
-          TitleColor = clWindowText
-          DescriptionColor = clRed
-          Align = alTop
-        end
-      end
-      object imgGradient: TImage32
-        Left = 428
-        Top = 161
-        Width = 39
-        Height = 39
-        Bitmap.ResamplerClassName = 'TNearestResampler'
-        BitmapAlign = baCenter
-        Scale = 1.000000000000000000
-        ScaleMode = smNormal
-        TabOrder = 2
-        Visible = False
-      end
-      object chkApplyGrad: TJvXPCheckbox
-        AlignWithMargins = True
-        Left = 6
-        Top = 11
-        Width = 479
-        Height = 17
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Caption = 'Apply gradient effects'
-        TabOrder = 0
+        Height = 340
         Align = alTop
-        OnClick = ApplyGradientClickEvent
-      end
-    end
-  end
-  object pnlMonitor: TSharpERoundPanel
-    AlignWithMargins = True
-    Left = 3
-    Top = 3
-    Width = 485
-    Height = 70
-    Align = alTop
-    AutoSize = True
-    BevelOuter = bvNone
-    ParentBackground = False
-    ParentColor = True
-    TabOrder = 0
-    DrawMode = srpNormal
-    NoTopBorder = False
-    NoBottomBorder = False
-    RoundValue = 10
-    BorderColor = clBtnFace
-    Border = False
-    BackgroundColor = clWindow
-    BottomSideBorder = False
-    object Panel3: TSharpERoundPanel
-      AlignWithMargins = True
-      Left = 5
-      Top = 47
-      Width = 475
-      Height = 23
-      Margins.Left = 5
-      Margins.Top = 10
-      Margins.Right = 5
-      Margins.Bottom = 0
-      Align = alTop
-      BevelOuter = bvNone
-      ParentBackground = False
-      ParentColor = True
-      TabOrder = 0
-      DrawMode = srpNormal
-      NoTopBorder = False
-      NoBottomBorder = False
-      RoundValue = 10
-      BorderColor = clBtnFace
-      Border = False
-      BackgroundColor = clBtnFace
-      BottomSideBorder = False
-      object cboMonitor: TComboBox
-        Left = 0
-        Top = 0
-        Width = 250
-        Height = 21
-        Margins.Left = 28
-        Margins.Top = 8
-        Margins.Right = 8
-        Margins.Bottom = 0
-        Align = alLeft
-        Style = csDropDownList
-        Constraints.MaxWidth = 250
-        DropDownCount = 12
-        ItemHeight = 13
+        AutoSize = True
+        BevelOuter = bvNone
         TabOrder = 0
-        OnChange = MonitorChangeEvent
+        object chkApplyGrad: TJvXPCheckbox
+          AlignWithMargins = True
+          Left = 5
+          Top = 47
+          Width = 479
+          Height = 17
+          Margins.Left = 5
+          Margins.Top = 10
+          Margins.Right = 5
+          Margins.Bottom = 0
+          Caption = 'Apply gradient effects'
+          TabOrder = 0
+          Align = alTop
+          OnClick = ApplyGradientClickEvent
+        end
+        object pnlGrad: TPanel
+          AlignWithMargins = True
+          Left = 0
+          Top = 68
+          Width = 489
+          Height = 272
+          Margins.Left = 0
+          Margins.Top = 4
+          Margins.Right = 0
+          Margins.Bottom = 0
+          Align = alTop
+          AutoSize = True
+          BevelOuter = bvNone
+          Color = clWindow
+          TabOrder = 1
+          object Panel5: TPanel
+            AlignWithMargins = True
+            Left = 5
+            Top = 57
+            Width = 479
+            Height = 23
+            Margins.Left = 5
+            Margins.Top = 10
+            Margins.Right = 5
+            Margins.Bottom = 0
+            Align = alTop
+            BevelOuter = bvNone
+            ParentBackground = False
+            ParentColor = True
+            TabOrder = 0
+            object cboGradType: TComboBox
+              Left = 0
+              Top = 0
+              Width = 250
+              Height = 21
+              Align = alLeft
+              Style = csDropDownList
+              ItemHeight = 13
+              TabOrder = 0
+              OnSelect = cboGradTypeSelect
+              Items.Strings = (
+                'Horizontal'
+                'Vertical'
+                'Left/Right Horizontal'
+                'Top/Bottom Vertical')
+            end
+          end
+          object Panel11: TPanel
+            AlignWithMargins = True
+            Left = 5
+            Top = 137
+            Width = 479
+            Height = 22
+            Margins.Left = 5
+            Margins.Top = 10
+            Margins.Right = 5
+            Margins.Bottom = 0
+            Align = alTop
+            BevelOuter = bvNone
+            ParentBackground = False
+            ParentColor = True
+            TabOrder = 1
+            object sgbGradStartTrans: TSharpeGaugeBox
+              Left = 0
+              Top = 0
+              Width = 125
+              Height = 22
+              Align = alLeft
+              ParentBackground = False
+              TabOrder = 0
+              Min = 0
+              Max = 255
+              Value = 255
+              Prefix = 'Start: '
+              Suffix = '%'
+              Description = 'Set the Start Transparency'
+              PopPosition = ppBottom
+              PercentDisplay = True
+              MaxPercent = 100
+              Formatting = '%d'
+              OnChangeValue = WallpaperTransChangeEvent
+              BackgroundColor = clWindow
+            end
+            object sgbGradEndTrans: TSharpeGaugeBox
+              AlignWithMargins = True
+              Left = 129
+              Top = 0
+              Width = 125
+              Height = 22
+              Margins.Left = 4
+              Margins.Top = 0
+              Margins.Right = 0
+              Margins.Bottom = 0
+              Align = alLeft
+              ParentBackground = False
+              TabOrder = 1
+              Min = 0
+              Max = 255
+              Value = 255
+              Prefix = 'End: '
+              Suffix = '%'
+              Description = 'Set the End Transparency'
+              PopPosition = ppBottom
+              PercentDisplay = True
+              MaxPercent = 100
+              Formatting = '%d'
+              OnChangeValue = WallpaperTransChangeEvent
+              BackgroundColor = clWindow
+            end
+          end
+          object secGradColor: TSharpEColorEditorEx
+            AlignWithMargins = True
+            Left = 1
+            Top = 216
+            Width = 483
+            Height = 56
+            Margins.Left = 1
+            Margins.Top = 10
+            Margins.Right = 5
+            Margins.Bottom = 0
+            VertScrollBar.Smooth = True
+            VertScrollBar.Tracking = True
+            Align = alTop
+            AutoSize = True
+            BevelInner = bvNone
+            BevelOuter = bvNone
+            BorderStyle = bsNone
+            Color = clBlack
+            ParentColor = False
+            TabOrder = 2
+            Items = <
+              item
+                Title = 'Gradient Start'
+                ColorCode = 0
+                ColorAsTColor = clBlack
+                Expanded = False
+                ValueEditorType = vetColor
+                Value = 0
+                ValueMin = 0
+                ValueMax = 255
+                Visible = True
+                DisplayPercent = False
+                ColorEditor = secGradColor.Item0
+                Tag = 0
+              end
+              item
+                Title = 'Gradient End'
+                ColorCode = 0
+                ColorAsTColor = clBlack
+                Expanded = False
+                ValueEditorType = vetColor
+                Value = 0
+                ValueMin = 0
+                ValueMax = 255
+                Visible = True
+                DisplayPercent = False
+                ColorEditor = secGradColor.Item1
+                Tag = 0
+              end>
+            SwatchManager = ssmConfig
+            OnUiChange = WallpaperColorUiChangeEvent
+            OnExpandCollapse = secColorExpandCollapse
+            BorderColor = clBlack
+            BackgroundColor = clBlack
+            BackgroundTextColor = clBlack
+            ContainerColor = clBlack
+            ContainerTextColor = clBlack
+          end
+          object SharpECenterHeader3: TSharpECenterHeader
+            AlignWithMargins = True
+            Left = 5
+            Top = 10
+            Width = 479
+            Height = 37
+            Margins.Left = 5
+            Margins.Top = 10
+            Margins.Right = 5
+            Margins.Bottom = 0
+            Title = 'Gradient type'
+            Description = 'Define the gradient effect you wish to apply to the wallpaper'
+            TitleColor = clWindowText
+            DescriptionColor = clRed
+            Align = alTop
+          end
+          object SharpECenterHeader5: TSharpECenterHeader
+            AlignWithMargins = True
+            Left = 5
+            Top = 169
+            Width = 479
+            Height = 37
+            Margins.Left = 5
+            Margins.Top = 10
+            Margins.Right = 5
+            Margins.Bottom = 0
+            Title = 'Gradient colour'
+            Description = 'Define the gradient colours'
+            TitleColor = clWindowText
+            DescriptionColor = clRed
+            Align = alTop
+          end
+          object SharpECenterHeader4: TSharpECenterHeader
+            AlignWithMargins = True
+            Left = 5
+            Top = 90
+            Width = 479
+            Height = 37
+            Margins.Left = 5
+            Margins.Top = 10
+            Margins.Right = 5
+            Margins.Bottom = 0
+            Title = 'Gradient visibility'
+            Description = 'Define how visible the gradient is when applied'
+            TitleColor = clWindowText
+            DescriptionColor = clRed
+            Align = alTop
+          end
+        end
+        object imgGradient: TImage32
+          Left = 428
+          Top = 161
+          Width = 39
+          Height = 39
+          Bitmap.ResamplerClassName = 'TNearestResampler'
+          BitmapAlign = baCenter
+          Scale = 1.000000000000000000
+          ScaleMode = smNormal
+          TabOrder = 2
+          Visible = False
+        end
+        object SharpECenterHeader11: TSharpECenterHeader
+          AlignWithMargins = True
+          Left = 5
+          Top = 0
+          Width = 479
+          Height = 37
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 0
+          Title = 'Gradient effect'
+          Description = 'Define whether to apply a gradient effect'
+          TitleColor = clWindowText
+          DescriptionColor = clRed
+          Align = alTop
+        end
       end
-    end
-    object SharpECenterHeader1: TSharpECenterHeader
-      AlignWithMargins = True
-      Left = 5
-      Top = 0
-      Width = 475
-      Height = 37
-      Margins.Left = 5
-      Margins.Top = 0
-      Margins.Right = 5
-      Margins.Bottom = 0
-      Title = 'Monitor'
-      Description = 'Please select the monitor from the list below'
-      TitleColor = clWindowText
-      DescriptionColor = clRed
-      Align = alTop
     end
   end
   object ssmConfig: TSharpESwatchManager

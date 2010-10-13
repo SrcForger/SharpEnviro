@@ -147,12 +147,12 @@ type
     procedure imageurlChange(Sender: TObject);
     procedure btnRevertClick(Sender: TObject);
     procedure PngSpeedButton1Click(Sender: TObject);
-    procedure IconColorsResize(Sender: TObject);
     procedure psbDirectoryClick(Sender: TObject);
     procedure imageDirectoryChange(Sender: TObject);
     procedure sgbDirectoryHeightChangeValue(Sender: TObject; Value: Integer);
     procedure sgbDirectoryWidthChangeValue(Sender: TObject; Value: Integer);
     procedure sgbDirectoryIntervalChangeValue(Sender: TObject; Value: Integer);
+    procedure IconColorsExpandCollapse(ASender: TObject);
   private
     FPluginHost: ISharpCenterHost;
     function GetChangedControlCount: integer;
@@ -285,9 +285,8 @@ begin
   UpdateSettingsChanged;
 end;
 
-procedure TfrmSettings.IconColorsResize(Sender: TObject);
+procedure TfrmSettings.IconColorsExpandCollapse(ASender: TObject);
 begin
-  UIC_Colors.Height := IconColors.Height + 4;
   UpdateDisplayPage;
 end;
 
@@ -345,7 +344,7 @@ begin
       UIC_blendalpha.Visible := cbalphablend.Checked;
       UIC_ColorAlpha.Visible := cbcolorblend.Checked;
 
-      frmSettings.Height := pnlDisplay.Height;
+      frmSettings.Height := pnlDisplay.Height + 50;
       PluginHost.Refresh(rtSize);
     end;
   finally

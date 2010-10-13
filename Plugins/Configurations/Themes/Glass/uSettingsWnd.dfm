@@ -2,7 +2,7 @@ object frmSettingsWnd: TfrmSettingsWnd
   Left = 0
   Top = 0
   Caption = 'frmSettingsWnd'
-  ClientHeight = 327
+  ClientHeight = 233
   ClientWidth = 525
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -13,33 +13,46 @@ object frmSettingsWnd: TfrmSettingsWnd
   OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 13
-  object sceGlassOptions: TSharpEColorEditorEx
-    AlignWithMargins = True
-    Left = 8
+  object pnlGlass: TPanel
+    Left = 0
     Top = 0
-    Width = 509
-    Height = 319
-    Margins.Left = 8
-    Margins.Top = 0
-    Margins.Right = 8
-    Margins.Bottom = 8
-    VertScrollBar.Smooth = True
-    VertScrollBar.Tracking = True
-    Align = alClient
-    BevelInner = bvNone
+    Width = 525
+    Height = 39
+    Align = alTop
+    AutoSize = True
     BevelOuter = bvNone
-    BorderStyle = bsNone
-    Color = clBlack
-    ParentColor = False
     TabOrder = 0
-    Items = <>
-    SwatchManager = SharpESwatchManager1
-    OnUiChange = sceGlassOptionsUiChange
-    BorderColor = clBlack
-    BackgroundColor = clBlack
-    BackgroundTextColor = clBlack
-    ContainerColor = clBlack
-    ContainerTextColor = clBlack
+    object sceGlassOptions: TSharpEColorEditorEx
+      AlignWithMargins = True
+      Left = 8
+      Top = 0
+      Width = 509
+      Height = 31
+      Margins.Left = 8
+      Margins.Top = 0
+      Margins.Right = 8
+      Margins.Bottom = 8
+      VertScrollBar.Smooth = True
+      VertScrollBar.Tracking = True
+      Align = alTop
+      AutoSize = True
+      BevelInner = bvNone
+      BevelOuter = bvNone
+      BorderStyle = bsNone
+      Color = clBlack
+      ParentColor = False
+      TabOrder = 0
+      Items = <>
+      SwatchManager = SharpESwatchManager1
+      OnUiChange = sceGlassOptionsUiChange
+      OnExpandCollapse = sceGlassOptionsExpandCollapse
+      BorderColor = clBlack
+      BackgroundColor = clBlack
+      BackgroundTextColor = clBlack
+      ContainerColor = clBlack
+      ContainerTextColor = clBlack
+      ExplicitHeight = 319
+    end
   end
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>

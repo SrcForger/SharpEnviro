@@ -31,23 +31,35 @@ object frmSettingsWnd: TfrmSettingsWnd
       Width = 595
       Height = 591
       Caption = 'pagExplorerDesktop'
-      object SharpECenterHeader123: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 6
+      object pnlExplorerDesktop: TPanel
+        Left = 1
         Top = 1
-        Width = 583
+        Width = 593
         Height = 37
-        Margins.Left = 5
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Title = 'SharpDesk not running'
-        Description = 
-          'You are using the explorer desktop. Settings for SharpDesk are n' +
-          'ot available in this case.'
-        TitleColor = clWindowText
-        DescriptionColor = clRed
         Align = alTop
+        AutoSize = True
+        BevelOuter = bvNone
+        TabOrder = 0
+        object SharpECenterHeader123: TSharpECenterHeader
+          AlignWithMargins = True
+          Left = 5
+          Top = 0
+          Width = 583
+          Height = 37
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 0
+          Title = 'SharpDesk not running'
+          Description = 
+            'You are using the explorer desktop. Settings for SharpDesk are n' +
+            'ot available in this case.'
+          TitleColor = clWindowText
+          DescriptionColor = clRed
+          Align = alTop
+          ExplicitLeft = 6
+          ExplicitTop = 1
+        end
       end
     end
     object pagIcon: TJvStandardPage
@@ -55,982 +67,267 @@ object frmSettingsWnd: TfrmSettingsWnd
       Top = 0
       Width = 595
       Height = 591
-      object Panel3: TPanel
-        AlignWithMargins = True
-        Left = 6
-        Top = 411
-        Width = 583
-        Height = 22
-        Margins.Left = 5
-        Margins.Top = 5
-        Margins.Right = 5
-        Margins.Bottom = 10
-        Align = alTop
-        AutoSize = True
-        BevelOuter = bvNone
-        Color = clWindow
-        TabOrder = 6
-        object sgbIconTrans: TSharpeGaugeBox
-          AlignWithMargins = True
-          Left = 0
-          Top = 0
-          Width = 250
-          Height = 22
-          Margins.Left = 0
-          Margins.Top = 0
-          Margins.Right = 0
-          Margins.Bottom = 0
-          Constraints.MaxWidth = 534
-          ParentBackground = False
-          TabOrder = 0
-          Min = 1
-          Max = 255
-          Value = 192
-          Suffix = '% visible'
-          Description = 'Adjust to set the transparency'
-          PopPosition = ppBottom
-          PercentDisplay = True
-          MaxPercent = 100
-          Formatting = '%d'
-          OnChangeValue = SendUpdateEvent
-          BackgroundColor = clWindow
-        end
-      end
-      object Panel4: TPanel
-        AlignWithMargins = True
-        Left = 6
-        Top = 48
-        Width = 583
-        Height = 82
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 5
-        Margins.Bottom = 10
-        Align = alTop
-        AutoSize = True
-        BevelOuter = bvNone
-        Color = clWindow
-        TabOrder = 0
-        object SharpERoundPanel1: TSharpERoundPanel
-          Left = 0
-          Top = 0
-          Width = 80
-          Height = 74
-          BevelOuter = bvNone
-          Caption = 'SharpERoundPanel1'
-          Color = clWhite
-          ParentBackground = False
-          TabOrder = 0
-          DrawMode = srpNormal
-          NoTopBorder = False
-          NoBottomBorder = False
-          RoundValue = 10
-          BorderColor = clBtnFace
-          Border = True
-          BackgroundColor = clWindow
-          BottomSideBorder = False
-          object icon32: TImage32
-            AlignWithMargins = True
-            Left = 3
-            Top = 27
-            Width = 74
-            Height = 44
-            Align = alClient
-            AutoSize = True
-            Bitmap.OuterColor = -1
-            Bitmap.ResamplerClassName = 'TKernelResampler'
-            Bitmap.Resampler.KernelClassName = 'TBoxKernel'
-            Bitmap.Resampler.KernelMode = kmDynamic
-            Bitmap.Resampler.TableSize = 32
-            Bitmap.Data = {
-              1000000010000000000000FF000000FF211913FF2D251EFF271F19FF231C16FF
-              1F1813FF1B140FFF17120DFF15100BFF120D0AFF100C09FF0C0907FF0A0805FF
-              080604FF030202FF000000FF000000FF90877EFFDEBAADFFD7B4A5FFD3B2A5FF
-              D1B5A9FFCDBFB7FFC6B8AFFFBFAEA5FFB7AAA2FFB0A197FFA8988EFFA1948BFF
-              9F9791FF4A3F36FF000000FF0C0906FFBCA99FFFF79673FFF59572FFF79774FF
-              FCA17FFFFECFBAFFFFC6B1FFFFC7B2FFFFC8B3FFFDB69CFFF9A483FFFB9E7CFF
-              EDBEAEFF5A5752FF000000FF1B1510FFD7BBADFFF7926BFFF6956FFFF9A07EFF
-              D19E83FFA69588FFE9B197FFFEB699FFFAB093FFF8A381FFF69772FFF7926BFF
-              E5B2A0FF514B44FF000000FF302821FFE7B9A5FFF98D60FFF99871FFEBBAA4FF
-              B5A299FF7C7C7CFFC19277FFFC9D76FFFA976FFFFA946AFFF88F64FFF98455FF
-              DFA893FF4A433BFF000000FF484038FFF7B597FFFF8F5DFFF7956BFFA48B74FF
-              7B8580FF84887EFFD78C68FFFC8452FFFC743CFFFA6A2FFFF96325FFFB5813FF
-              D89175FF433B34FF000000FF645E55FFE9A684FFB17858FFE4936AFFD68A64FF
-              6F5547FF3C4F44FF7B5C3CFFFE7538FFFD7439FFFD6C2DFFFC6929FFFF601CFF
-              D4977EFF3D352DFF000000FF7E7C73FF617367FF6A6154FFFF8F59FF986543FF
-              984F31FFAB714BFF836B53FFFF7D3DFFFF7D40FFFE783BFFFF7433FFFF6D29FF
-              CDA190FF362E26FF070503FF91928FFF344344FF664A38FFDE6E46FFD07550FF
-              E6764AFFFC864CFFD57B52FFFF8449FFFC844CFFFC8147FFFC7B41FFFF773AFF
-              C8A496FF30271FFF140E0AFFBBC0C2FF9C9BA3FF999591FFE0955AFFFB9951FF
-              FA934FFFF88B49FFFA8547FFFA8248FFFC834CFFFD834DFFFB7E4AFFFF783DFF
-              C2A498FF2A2119FF251D16FFD7E0E9FFF6F7FFFFF3F6FFFFD4D2CBFFCCB280FF
-              DEB86FFFE5BA69FFDEA656FFD89446FFD4863BFFD67D31FFDE7E31FFE97B2CFF
-              B8A699FF241B14FF3C3229FFE1EBF7FFE2E4F3FFE9ECF5FFDAD3DAFFB7A0A0FF
-              B99780FFC8A172FFDAB679FFE4BE77FFE1B76EFFD5A75EFFCB9249FFBE7930FF
-              A8A59CFF1E1711FF4E443BFFC4D3DFFFCFDBEAFFDCE7F6FFEAF2FDFFE9EEF9FF
-              DED7E0FFD0C0C2FFC6B0A4FFC3A37FFFCFA973FFDDB06DFFE1B46AFFE4B768FF
-              A9ACA4FF19120DFF100C08FF2F231AFF42362BFF5A5148FF75726DFF939594FF
-              B0B9BEFFC4D2DDFFD0DDEBFFC4CCD6FFB2B6B2FFAFA893FFB5A177FFC6AA70FF
-              A0A39EFF140E0AFF000000FF000000FF000000FF000000FF000000FF070503FF
-              140E0AFF251B14FF392E24FF52473EFF6B655FFF848685FF98A2A3FFADBBB8FF
-              8B9496FF0F0B07FF000000FF000000FF000000FF000000FF000000FF000000FF
-              000000FF000000FF000000FF000000FF000000FF040302FF100B08FF1F1711FF
-              2B2018FF050303FF}
-            BitmapAlign = baCenter
-            Scale = 1.000000000000000000
-            ScaleMode = smNormal
-            TabOrder = 1
-          end
-          object rdoIcon32: TJvXPCheckbox
-            AlignWithMargins = True
-            Left = 5
-            Top = 4
-            Width = 72
-            Height = 17
-            Margins.Left = 5
-            Margins.Top = 4
-            Caption = '32x32'
-            TabOrder = 0
-            Checked = True
-            State = cbChecked
-            Align = alTop
-            OnClick = rdoIconCustomClick
-          end
-        end
-        object SharpERoundPanel2: TSharpERoundPanel
-          Left = 86
-          Top = 0
-          Width = 80
-          Height = 73
-          BevelOuter = bvNone
-          Caption = 'SharpERoundPanel1'
-          Color = clWhite
-          ParentBackground = False
-          TabOrder = 1
-          DrawMode = srpNormal
-          NoTopBorder = False
-          NoBottomBorder = False
-          RoundValue = 10
-          BorderColor = clBtnFace
-          Border = True
-          BackgroundColor = clWindow
-          BottomSideBorder = False
-          object icon48: TImage32
-            AlignWithMargins = True
-            Left = 3
-            Top = 27
-            Width = 74
-            Height = 43
-            Align = alClient
-            AutoSize = True
-            Bitmap.ResamplerClassName = 'TKernelResampler'
-            Bitmap.Resampler.KernelClassName = 'TBoxKernel'
-            Bitmap.Resampler.KernelMode = kmDynamic
-            Bitmap.Resampler.TableSize = 32
-            BitmapAlign = baCenter
-            Scale = 1.000000000000000000
-            ScaleMode = smNormal
-            TabOrder = 1
-          end
-          object rdoIcon48: TJvXPCheckbox
-            AlignWithMargins = True
-            Left = 5
-            Top = 4
-            Width = 72
-            Height = 17
-            Margins.Left = 5
-            Margins.Top = 4
-            Caption = '48x48'
-            TabOrder = 0
-            Align = alTop
-            OnClick = rdoIconCustomClick
-          end
-        end
-        object SharpERoundPanel3: TSharpERoundPanel
-          Left = 169
-          Top = 0
-          Width = 80
-          Height = 73
-          BevelOuter = bvNone
-          Caption = 'SharpERoundPanel1'
-          Color = clWhite
-          ParentBackground = False
-          TabOrder = 2
-          DrawMode = srpNormal
-          NoTopBorder = False
-          NoBottomBorder = False
-          RoundValue = 10
-          BorderColor = clBtnFace
-          Border = True
-          BackgroundColor = clWindow
-          BottomSideBorder = False
-          object Icon64: TImage32
-            AlignWithMargins = True
-            Left = 3
-            Top = 27
-            Width = 74
-            Height = 43
-            Align = alClient
-            AutoSize = True
-            Bitmap.ResamplerClassName = 'TKernelResampler'
-            Bitmap.Resampler.KernelClassName = 'TBoxKernel'
-            Bitmap.Resampler.KernelMode = kmDynamic
-            Bitmap.Resampler.TableSize = 32
-            BitmapAlign = baCenter
-            Scale = 1.000000000000000000
-            ScaleMode = smNormal
-            TabOrder = 1
-          end
-          object rdoIcon64: TJvXPCheckbox
-            AlignWithMargins = True
-            Left = 5
-            Top = 4
-            Width = 72
-            Height = 17
-            Margins.Left = 5
-            Margins.Top = 4
-            Caption = '64x64'
-            TabOrder = 0
-            Align = alTop
-            OnClick = rdoIconCustomClick
-          end
-        end
-        object SharpERoundPanel4: TSharpERoundPanel
-          Left = 255
-          Top = 0
-          Width = 119
-          Height = 82
-          BevelOuter = bvNone
-          Caption = 'SharpERoundPanel1'
-          Color = clWhite
-          ParentBackground = False
-          TabOrder = 3
-          DrawMode = srpNormal
-          NoTopBorder = False
-          NoBottomBorder = False
-          RoundValue = 10
-          BorderColor = clWindow
-          Border = False
-          BackgroundColor = clWindow
-          BottomSideBorder = False
-          object sgbIconSize: TSharpeGaugeBox
-            AlignWithMargins = True
-            Left = 3
-            Top = 27
-            Width = 113
-            Height = 22
-            Align = alTop
-            ParentBackground = False
-            TabOrder = 1
-            Min = 12
-            Max = 256
-            Value = 96
-            Prefix = 'Icon Size: '
-            Suffix = 'px'
-            Description = 'Adjust to set the icon size'
-            PopPosition = ppBottom
-            PercentDisplay = False
-            MaxPercent = 100
-            Formatting = '%d'
-            OnChangeValue = SendUpdateEvent
-            BackgroundColor = clWindow
-          end
-          object rdoIconCustom: TJvXPCheckbox
-            AlignWithMargins = True
-            Left = 5
-            Top = 4
-            Width = 111
-            Height = 17
-            Margins.Left = 5
-            Margins.Top = 4
-            Caption = 'Custom'
-            TabOrder = 0
-            Align = alTop
-            OnClick = rdoIconCustomClick
-          end
-        end
-      end
-      object Panel1: TPanel
-        AlignWithMargins = True
-        Left = 6
-        Top = 209
-        Width = 583
-        Height = 22
-        Margins.Left = 5
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 10
-        Align = alTop
-        AutoSize = True
-        BevelOuter = bvNone
-        Color = clWindow
-        TabOrder = 2
-        object sgbColorBlend: TSharpeGaugeBox
-          AlignWithMargins = True
-          Left = 0
-          Top = 0
-          Width = 250
-          Height = 22
-          Margins.Left = 0
-          Margins.Top = 0
-          Margins.Right = 0
-          Margins.Bottom = 0
-          Constraints.MaxWidth = 534
-          ParentBackground = False
-          TabOrder = 0
-          Min = 1
-          Max = 255
-          Value = 192
-          Suffix = '% blended'
-          Description = 'Adjust to set the transparency'
-          PopPosition = ppBottom
-          PercentDisplay = True
-          MaxPercent = 100
-          Formatting = '%d'
-          OnChangeValue = SendUpdateEvent
-          BackgroundColor = clWindow
-        end
-      end
-      object Panel2: TPanel
-        AlignWithMargins = True
-        Left = 6
-        Top = 310
-        Width = 583
-        Height = 22
-        Margins.Left = 5
-        Margins.Top = 5
-        Margins.Right = 5
-        Margins.Bottom = 10
-        Align = alTop
-        AutoSize = True
-        BevelOuter = bvNone
-        Color = clWindow
-        TabOrder = 4
-        object sgbIconShadow: TSharpeGaugeBox
-          AlignWithMargins = True
-          Left = 0
-          Top = 0
-          Width = 250
-          Height = 22
-          Margins.Left = 0
-          Margins.Top = 0
-          Margins.Right = 0
-          Margins.Bottom = 0
-          Constraints.MaxWidth = 534
-          ParentBackground = False
-          TabOrder = 0
-          Min = 1
-          Max = 255
-          Value = 192
-          Suffix = '% visible'
-          Description = 'Adjust to set the transparency'
-          PopPosition = ppBottom
-          PercentDisplay = True
-          MaxPercent = 100
-          Formatting = '%d'
-          OnChangeValue = SendUpdateEvent
-          BackgroundColor = clWindow
-        end
-      end
-      object Panel10: TPanel
+      object pnlIcon: TPanel
         Left = 1
-        Top = 480
+        Top = 1
         Width = 593
-        Height = 110
-        Align = alClient
+        Height = 545
+        Align = alTop
+        AutoSize = True
         BevelOuter = bvNone
-        Color = clWindow
-        TabOrder = 7
-        object sceIconColor: TSharpEColorEditorEx
+        TabOrder = 0
+        object SharpECenterHeader5: TSharpECenterHeader
           AlignWithMargins = True
-          Left = 1
+          Left = 5
           Top = 0
-          Width = 587
-          Height = 100
-          Margins.Left = 1
+          Width = 583
+          Height = 37
+          Margins.Left = 5
           Margins.Top = 0
           Margins.Right = 5
-          Margins.Bottom = 10
-          VertScrollBar.Smooth = True
-          VertScrollBar.Tracking = True
-          Align = alClient
-          BevelInner = bvNone
-          BevelOuter = bvNone
-          BorderStyle = bsNone
-          Color = clBlack
-          ParentBackground = True
-          ParentColor = False
-          TabOrder = 0
-          Items = <
-            item
-              Title = 'Blend Colour'
-              ColorCode = 0
-              ColorAsTColor = clBlack
-              Expanded = False
-              ValueEditorType = vetColor
-              Value = 0
-              ValueMin = 0
-              ValueMax = 255
-              Visible = True
-              DisplayPercent = False
-              ColorEditor = sceIconColor.Item0
-              Tag = 0
-            end
-            item
-              Title = 'Icon Shadow Colour'
-              ColorCode = 0
-              ColorAsTColor = clBlack
-              Expanded = False
-              ValueEditorType = vetColor
-              Value = 0
-              ValueMin = 0
-              ValueMax = 255
-              Visible = True
-              DisplayPercent = False
-              ColorEditor = sceIconColor.Item1
-              Tag = 0
-            end>
-          SwatchManager = SharpESwatchManager1
-          OnUiChange = UpdateColorChangeEvent
-          BorderColor = clBlack
-          BackgroundColor = clBlack
-          BackgroundTextColor = clBlack
-          ContainerColor = clBlack
-          ContainerTextColor = clBlack
-        end
-      end
-      object SharpECenterHeader5: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 6
-        Top = 1
-        Width = 583
-        Height = 37
-        Margins.Left = 5
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Title = 'Icon Size'
-        Description = 'Define the default icon size for desktop icons'
-        TitleColor = clWindowText
-        DescriptionColor = clRed
-        Align = alTop
-      end
-      object SharpECenterHeader6: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 6
-        Top = 342
-        Width = 583
-        Height = 37
-        Margins.Left = 5
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Title = 'Icon Visibility'
-        Description = 'Define the visibility of the icon'
-        TitleColor = clWindowText
-        DescriptionColor = clRed
-        Align = alTop
-      end
-      object SharpECenterHeader7: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 6
-        Top = 140
-        Width = 583
-        Height = 37
-        Margins.Left = 5
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Title = 'Icon Blend'
-        Description = 'Define the amount of colour blend applied to the icon'
-        TitleColor = clWindowText
-        DescriptionColor = clRed
-        Align = alTop
-      end
-      object SharpECenterHeader8: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 6
-        Top = 241
-        Width = 583
-        Height = 37
-        Margins.Left = 5
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Title = 'Icon Shadow'
-        Description = 'Define the visiblity of the icon shadow'
-        TitleColor = clWindowText
-        DescriptionColor = clRed
-        Align = alTop
-      end
-      object SharpECenterHeader9: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 6
-        Top = 443
-        Width = 583
-        Height = 37
-        Margins.Left = 5
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Title = 'Icon Colour'
-        Description = 'Define various icon specific colours'
-        TitleColor = clWindowText
-        DescriptionColor = clRed
-        Align = alTop
-      end
-      object chkColorBlend: TJvXPCheckbox
-        AlignWithMargins = True
-        Left = 6
-        Top = 187
-        Width = 583
-        Height = 17
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 5
-        Margins.Bottom = 5
-        Caption = 'Colour blend the icon'
-        TabOrder = 1
-        Checked = True
-        State = cbChecked
-        Align = alTop
-        OnClick = UpdateIcontPageEvent
-      end
-      object chkIconShadow: TJvXPCheckbox
-        AlignWithMargins = True
-        Left = 6
-        Top = 288
-        Width = 583
-        Height = 17
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Caption = 'Apply an icon shadow'
-        TabOrder = 3
-        Checked = True
-        State = cbChecked
-        Align = alTop
-        OnClick = UpdateIcontPageEvent
-      end
-      object chkIconTrans: TJvXPCheckbox
-        AlignWithMargins = True
-        Left = 6
-        Top = 389
-        Width = 583
-        Height = 17
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Caption = 'Apply icon visibility'
-        TabOrder = 5
-        Checked = True
-        State = cbChecked
-        Align = alTop
-        OnClick = UpdateIcontPageEvent
-      end
-    end
-    object pagFont: TJvStandardPage
-      Left = 0
-      Top = 0
-      Width = 595
-      Height = 591
-      object sceFontColor: TSharpEColorEditorEx
-        AlignWithMargins = True
-        Left = 2
-        Top = 451
-        Width = 587
-        Height = 157
-        Margins.Left = 1
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 10
-        VertScrollBar.Smooth = True
-        VertScrollBar.Tracking = True
-        Align = alTop
-        BevelInner = bvNone
-        BevelOuter = bvNone
-        BorderStyle = bsNone
-        Color = clBlack
-        ParentBackground = True
-        ParentColor = False
-        TabOrder = 5
-        Items = <
-          item
-            Title = 'Font Colour'
-            ColorCode = 0
-            ColorAsTColor = clBlack
-            Expanded = False
-            ValueEditorType = vetColor
-            Value = 0
-            ValueMin = 0
-            ValueMax = 255
-            Visible = True
-            DisplayPercent = False
-            ColorEditor = sceFontColor.Item0
-            Tag = 0
-          end>
-        SwatchManager = SharpESwatchManager1
-        OnUiChange = UpdateColorChangeEvent
-        BorderColor = clBlack
-        BackgroundColor = clBlack
-        BackgroundTextColor = clBlack
-        ContainerColor = clBlack
-        ContainerTextColor = clBlack
-        ExplicitTop = 377
-      end
-      object cboFontName: TComboBox
-        AlignWithMargins = True
-        Left = 6
-        Top = 48
-        Width = 250
-        Height = 23
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 10
-        Margins.Bottom = 10
-        Align = alTop
-        Style = csOwnerDrawVariable
-        Constraints.MaxWidth = 250
-        DropDownCount = 12
-        ItemHeight = 17
-        TabOrder = 0
-        OnChange = cboFontNameChange
-        OnDrawItem = cboFontNameDrawItem
-      end
-      object Panel5: TPanel
-        AlignWithMargins = True
-        Left = 6
-        Top = 128
-        Width = 578
-        Height = 22
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 10
-        Margins.Bottom = 10
-        Align = alTop
-        AutoSize = True
-        BevelOuter = bvNone
-        ParentBackground = False
-        ParentColor = True
-        TabOrder = 1
-        object sgbFontSize: TSharpeGaugeBox
-          Left = 0
-          Top = 0
-          Width = 250
-          Height = 22
-          Margins.Left = 28
-          Margins.Top = 8
-          Margins.Right = 8
           Margins.Bottom = 0
-          Align = alLeft
-          ParentBackground = False
-          TabOrder = 0
-          Min = 6
-          Max = 24
-          Value = 10
-          Suffix = ' px'
-          Description = 'Change font size'
-          PopPosition = ppBottom
-          PercentDisplay = False
-          MaxPercent = 100
-          Formatting = '%d'
-          OnChangeValue = SendUpdateEvent
-          BackgroundColor = clWindow
+          Title = 'Icon Size'
+          Description = 'Define the default icon size for desktop icons'
+          TitleColor = clWindowText
+          DescriptionColor = clRed
+          Align = alTop
+          ExplicitLeft = 6
+          ExplicitTop = 42
         end
-      end
-      object Panel7: TPanel
-        AlignWithMargins = True
-        Left = 6
-        Top = 229
-        Width = 583
-        Height = 22
-        Margins.Left = 5
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 10
-        Align = alTop
-        AutoSize = True
-        BevelOuter = bvNone
-        ParentBackground = False
-        ParentColor = True
-        TabOrder = 3
-        object sgbFontTrans: TSharpeGaugeBox
-          Left = 0
-          Top = 0
-          Width = 250
-          Height = 22
-          Margins.Left = 28
-          Margins.Top = 8
-          Margins.Right = 8
-          Margins.Bottom = 0
-          Align = alLeft
-          ParentBackground = False
-          TabOrder = 0
-          Min = 0
-          Max = 255
-          Value = 0
-          Suffix = '% visible'
-          Description = 'Change font opacity'
-          PopPosition = ppBottom
-          PercentDisplay = True
-          MaxPercent = 100
-          Formatting = '%d'
-          OnChangeValue = SendUpdateEvent
-          BackgroundColor = clWindow
-        end
-      end
-      object SharpECenterHeader10: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 6
-        Top = 1
-        Width = 583
-        Height = 37
-        Margins.Left = 5
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Title = 'Font Type'
-        Description = 'Define the font face for the desktop'
-        TitleColor = clWindowText
-        DescriptionColor = clRed
-        Align = alTop
-      end
-      object SharpECenterHeader11: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 6
-        Top = 81
-        Width = 583
-        Height = 37
-        Margins.Left = 5
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Title = 'Font Size'
-        Description = 'Define the type face size'
-        TitleColor = clWindowText
-        DescriptionColor = clRed
-        Align = alTop
-      end
-      object SharpECenterHeader12: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 6
-        Top = 160
-        Width = 583
-        Height = 37
-        Margins.Left = 5
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Title = 'Font Visibility'
-        Description = 'Define how visible the font is on the desktop'
-        TitleColor = clWindowText
-        DescriptionColor = clRed
-        Align = alTop
-      end
-      object SharpECenterHeader13: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 6
-        Top = 335
-        Width = 583
-        Height = 37
-        Margins.Left = 5
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Title = 'Font Style'
-        Description = 'Define styles applied to the font'
-        TitleColor = clWindowText
-        DescriptionColor = clRed
-        Align = alTop
-        ExplicitTop = 261
-      end
-      object Panel8: TPanel
-        AlignWithMargins = True
-        Left = 6
-        Top = 382
-        Width = 583
-        Height = 22
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 5
-        Margins.Bottom = 10
-        Align = alTop
-        BevelOuter = bvNone
-        ParentBackground = False
-        ParentColor = True
-        TabOrder = 4
-        ExplicitTop = 308
-        object chkBold: TJvXPCheckbox
-          Left = 0
-          Top = 3
-          Width = 69
-          Height = 17
+        object Panel4: TPanel
+          AlignWithMargins = True
+          Left = 5
+          Top = 47
+          Width = 583
+          Height = 82
           Margins.Left = 5
           Margins.Top = 10
-          Margins.Right = 10
-          Margins.Bottom = 0
-          Caption = 'Bold'
-          TabOrder = 0
-          OnClick = FontStyleCheckEvent
-        end
-        object chkItalic: TJvXPCheckbox
-          AlignWithMargins = True
-          Left = 67
-          Top = 3
-          Width = 68
-          Height = 17
-          Margins.Left = 5
-          Margins.Top = 5
           Margins.Right = 5
-          Margins.Bottom = 0
-          Caption = 'Italic'
-          TabOrder = 1
-          OnClick = FontStyleCheckEvent
-        end
-        object chkUnderline: TJvXPCheckbox
-          Left = 137
-          Top = 3
-          Width = 89
-          Height = 17
-          Margins.Left = 5
-          Margins.Top = 5
-          Margins.Right = 5
-          Margins.Bottom = 0
-          Caption = 'Underline'
-          TabOrder = 2
-          OnClick = FontStyleCheckEvent
-        end
-      end
-      object SharpECenterHeader14: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 6
-        Top = 414
-        Width = 583
-        Height = 37
-        Margins.Left = 5
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Title = 'Font Colour'
-        Description = 'Define the font face colour'
-        TitleColor = clWindowText
-        DescriptionColor = clRed
-        Align = alTop
-        ExplicitTop = 340
-      end
-      object chkFontTrans: TJvXPCheckbox
-        AlignWithMargins = True
-        Left = 6
-        Top = 207
-        Width = 583
-        Height = 17
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 5
-        Margins.Bottom = 5
-        Caption = 'Apply font opacity'
-        TabOrder = 2
-        Align = alTop
-        OnClick = UpdateFontPageEvent
-      end
-      object SharpECenterHeader20: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 6
-        Top = 261
-        Width = 583
-        Height = 37
-        Margins.Left = 5
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Title = 'Clear Font'
-        Description = 
-          'Define whether to use cleartype rendering for the current skin'#39's' +
-          ' font'
-        TitleColor = clWindowText
-        DescriptionColor = clRed
-        Align = alTop
-        ExplicitTop = 277
-      end
-      object chkClearType: TJvXPCheckbox
-        AlignWithMargins = True
-        Left = 6
-        Top = 308
-        Width = 583
-        Height = 17
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 5
-        Margins.Bottom = 10
-        Caption = 'Apply ClearType font'
-        TabOrder = 12
-        Align = alTop
-        OnClick = chkClearTypeClick
-        ExplicitTop = 340
-      end
-    end
-    object pagAnimation: TJvStandardPage
-      Left = 0
-      Top = 0
-      Width = 595
-      Height = 591
-      object pnlAnim: TPanel
-        Left = 1
-        Top = 75
-        Width = 593
-        Height = 515
-        Align = alClient
-        BevelOuter = bvNone
-        ParentColor = True
-        TabOrder = 1
-        object Panel9: TPanel
-          AlignWithMargins = True
-          Left = 0
-          Top = 4
-          Width = 593
-          Height = 493
-          Margins.Left = 0
-          Margins.Top = 4
-          Margins.Right = 0
-          Margins.Bottom = 0
+          Margins.Bottom = 10
           Align = alTop
+          AutoSize = True
           BevelOuter = bvNone
-          ParentBackground = False
-          ParentColor = True
-          TabOrder = 0
-          object Panel12: TPanel
-            AlignWithMargins = True
-            Left = 5
-            Top = 271
-            Width = 583
-            Height = 22
-            Margins.Left = 5
-            Margins.Top = 5
-            Margins.Right = 5
-            Margins.Bottom = 10
-            Align = alTop
-            AutoSize = True
+          Color = clWindow
+          TabOrder = 1
+          ExplicitLeft = 6
+          ExplicitTop = 48
+          object SharpERoundPanel1: TSharpERoundPanel
+            Left = 0
+            Top = 0
+            Width = 80
+            Height = 74
             BevelOuter = bvNone
+            Caption = 'SharpERoundPanel1'
+            Color = clWhite
             ParentBackground = False
-            ParentColor = True
-            TabOrder = 5
-            Visible = False
-            object sgbAnimSize: TSharpeGaugeBox
-              Left = 0
-              Top = 0
-              Width = 250
-              Height = 22
-              Align = alLeft
-              ParentBackground = False
+            TabOrder = 0
+            DrawMode = srpNormal
+            NoTopBorder = False
+            NoBottomBorder = False
+            RoundValue = 10
+            BorderColor = clBtnFace
+            Border = True
+            BackgroundColor = clWindow
+            BottomSideBorder = False
+            object icon32: TImage32
+              AlignWithMargins = True
+              Left = 3
+              Top = 27
+              Width = 74
+              Height = 44
+              Align = alClient
+              AutoSize = True
+              Bitmap.OuterColor = -1
+              Bitmap.ResamplerClassName = 'TKernelResampler'
+              Bitmap.Resampler.KernelClassName = 'TBoxKernel'
+              Bitmap.Resampler.KernelMode = kmDynamic
+              Bitmap.Resampler.TableSize = 32
+              Bitmap.Data = {
+                1000000010000000000000FF000000FF211913FF2D251EFF271F19FF231C16FF
+                1F1813FF1B140FFF17120DFF15100BFF120D0AFF100C09FF0C0907FF0A0805FF
+                080604FF030202FF000000FF000000FF90877EFFDEBAADFFD7B4A5FFD3B2A5FF
+                D1B5A9FFCDBFB7FFC6B8AFFFBFAEA5FFB7AAA2FFB0A197FFA8988EFFA1948BFF
+                9F9791FF4A3F36FF000000FF0C0906FFBCA99FFFF79673FFF59572FFF79774FF
+                FCA17FFFFECFBAFFFFC6B1FFFFC7B2FFFFC8B3FFFDB69CFFF9A483FFFB9E7CFF
+                EDBEAEFF5A5752FF000000FF1B1510FFD7BBADFFF7926BFFF6956FFFF9A07EFF
+                D19E83FFA69588FFE9B197FFFEB699FFFAB093FFF8A381FFF69772FFF7926BFF
+                E5B2A0FF514B44FF000000FF302821FFE7B9A5FFF98D60FFF99871FFEBBAA4FF
+                B5A299FF7C7C7CFFC19277FFFC9D76FFFA976FFFFA946AFFF88F64FFF98455FF
+                DFA893FF4A433BFF000000FF484038FFF7B597FFFF8F5DFFF7956BFFA48B74FF
+                7B8580FF84887EFFD78C68FFFC8452FFFC743CFFFA6A2FFFF96325FFFB5813FF
+                D89175FF433B34FF000000FF645E55FFE9A684FFB17858FFE4936AFFD68A64FF
+                6F5547FF3C4F44FF7B5C3CFFFE7538FFFD7439FFFD6C2DFFFC6929FFFF601CFF
+                D4977EFF3D352DFF000000FF7E7C73FF617367FF6A6154FFFF8F59FF986543FF
+                984F31FFAB714BFF836B53FFFF7D3DFFFF7D40FFFE783BFFFF7433FFFF6D29FF
+                CDA190FF362E26FF070503FF91928FFF344344FF664A38FFDE6E46FFD07550FF
+                E6764AFFFC864CFFD57B52FFFF8449FFFC844CFFFC8147FFFC7B41FFFF773AFF
+                C8A496FF30271FFF140E0AFFBBC0C2FF9C9BA3FF999591FFE0955AFFFB9951FF
+                FA934FFFF88B49FFFA8547FFFA8248FFFC834CFFFD834DFFFB7E4AFFFF783DFF
+                C2A498FF2A2119FF251D16FFD7E0E9FFF6F7FFFFF3F6FFFFD4D2CBFFCCB280FF
+                DEB86FFFE5BA69FFDEA656FFD89446FFD4863BFFD67D31FFDE7E31FFE97B2CFF
+                B8A699FF241B14FF3C3229FFE1EBF7FFE2E4F3FFE9ECF5FFDAD3DAFFB7A0A0FF
+                B99780FFC8A172FFDAB679FFE4BE77FFE1B76EFFD5A75EFFCB9249FFBE7930FF
+                A8A59CFF1E1711FF4E443BFFC4D3DFFFCFDBEAFFDCE7F6FFEAF2FDFFE9EEF9FF
+                DED7E0FFD0C0C2FFC6B0A4FFC3A37FFFCFA973FFDDB06DFFE1B46AFFE4B768FF
+                A9ACA4FF19120DFF100C08FF2F231AFF42362BFF5A5148FF75726DFF939594FF
+                B0B9BEFFC4D2DDFFD0DDEBFFC4CCD6FFB2B6B2FFAFA893FFB5A177FFC6AA70FF
+                A0A39EFF140E0AFF000000FF000000FF000000FF000000FF000000FF070503FF
+                140E0AFF251B14FF392E24FF52473EFF6B655FFF848685FF98A2A3FFADBBB8FF
+                8B9496FF0F0B07FF000000FF000000FF000000FF000000FF000000FF000000FF
+                000000FF000000FF000000FF000000FF000000FF040302FF100B08FF1F1711FF
+                2B2018FF050303FF}
+              BitmapAlign = baCenter
+              Scale = 1.000000000000000000
+              ScaleMode = smNormal
+              TabOrder = 1
+            end
+            object rdoIcon32: TJvXPCheckbox
+              AlignWithMargins = True
+              Left = 5
+              Top = 4
+              Width = 72
+              Height = 17
+              Margins.Left = 5
+              Margins.Top = 4
+              Caption = '32x32'
               TabOrder = 0
-              Min = -64
-              Max = 64
-              Value = 32
-              Prefix = 'Change scale by '
-              Suffix = ' px'
-              Description = 'Adjust to set the scale size'
+              Checked = True
+              State = cbChecked
+              Align = alTop
+              OnClick = rdoIconCustomClick
+            end
+          end
+          object SharpERoundPanel2: TSharpERoundPanel
+            Left = 86
+            Top = 0
+            Width = 80
+            Height = 73
+            BevelOuter = bvNone
+            Caption = 'SharpERoundPanel1'
+            Color = clWhite
+            ParentBackground = False
+            TabOrder = 1
+            DrawMode = srpNormal
+            NoTopBorder = False
+            NoBottomBorder = False
+            RoundValue = 10
+            BorderColor = clBtnFace
+            Border = True
+            BackgroundColor = clWindow
+            BottomSideBorder = False
+            object icon48: TImage32
+              AlignWithMargins = True
+              Left = 3
+              Top = 27
+              Width = 74
+              Height = 43
+              Align = alClient
+              AutoSize = True
+              Bitmap.ResamplerClassName = 'TKernelResampler'
+              Bitmap.Resampler.KernelClassName = 'TBoxKernel'
+              Bitmap.Resampler.KernelMode = kmDynamic
+              Bitmap.Resampler.TableSize = 32
+              BitmapAlign = baCenter
+              Scale = 1.000000000000000000
+              ScaleMode = smNormal
+              TabOrder = 1
+            end
+            object rdoIcon48: TJvXPCheckbox
+              AlignWithMargins = True
+              Left = 5
+              Top = 4
+              Width = 72
+              Height = 17
+              Margins.Left = 5
+              Margins.Top = 4
+              Caption = '48x48'
+              TabOrder = 0
+              Align = alTop
+              OnClick = rdoIconCustomClick
+            end
+          end
+          object SharpERoundPanel3: TSharpERoundPanel
+            Left = 169
+            Top = 0
+            Width = 80
+            Height = 73
+            BevelOuter = bvNone
+            Caption = 'SharpERoundPanel1'
+            Color = clWhite
+            ParentBackground = False
+            TabOrder = 2
+            DrawMode = srpNormal
+            NoTopBorder = False
+            NoBottomBorder = False
+            RoundValue = 10
+            BorderColor = clBtnFace
+            Border = True
+            BackgroundColor = clWindow
+            BottomSideBorder = False
+            object Icon64: TImage32
+              AlignWithMargins = True
+              Left = 3
+              Top = 27
+              Width = 74
+              Height = 43
+              Align = alClient
+              AutoSize = True
+              Bitmap.ResamplerClassName = 'TKernelResampler'
+              Bitmap.Resampler.KernelClassName = 'TBoxKernel'
+              Bitmap.Resampler.KernelMode = kmDynamic
+              Bitmap.Resampler.TableSize = 32
+              BitmapAlign = baCenter
+              Scale = 1.000000000000000000
+              ScaleMode = smNormal
+              TabOrder = 1
+            end
+            object rdoIcon64: TJvXPCheckbox
+              AlignWithMargins = True
+              Left = 5
+              Top = 4
+              Width = 72
+              Height = 17
+              Margins.Left = 5
+              Margins.Top = 4
+              Caption = '64x64'
+              TabOrder = 0
+              Align = alTop
+              OnClick = rdoIconCustomClick
+            end
+          end
+          object SharpERoundPanel4: TSharpERoundPanel
+            Left = 255
+            Top = 0
+            Width = 119
+            Height = 82
+            BevelOuter = bvNone
+            Caption = 'SharpERoundPanel1'
+            Color = clWhite
+            ParentBackground = False
+            TabOrder = 3
+            DrawMode = srpNormal
+            NoTopBorder = False
+            NoBottomBorder = False
+            RoundValue = 10
+            BorderColor = clWindow
+            Border = False
+            BackgroundColor = clWindow
+            BottomSideBorder = False
+            object sgbIconSize: TSharpeGaugeBox
+              AlignWithMargins = True
+              Left = 3
+              Top = 27
+              Width = 113
+              Height = 22
+              Align = alTop
+              ParentBackground = False
+              TabOrder = 1
+              Min = 12
+              Max = 256
+              Value = 96
+              Prefix = 'Icon Size: '
+              Suffix = 'px'
+              Description = 'Adjust to set the icon size'
               PopPosition = ppBottom
               PercentDisplay = False
               MaxPercent = 100
@@ -1038,140 +335,312 @@ object frmSettingsWnd: TfrmSettingsWnd
               OnChangeValue = SendUpdateEvent
               BackgroundColor = clWindow
             end
-          end
-          object Panel13: TPanel
-            AlignWithMargins = True
-            Left = 5
-            Top = 170
-            Width = 583
-            Height = 22
-            Margins.Left = 5
-            Margins.Top = 5
-            Margins.Right = 5
-            Margins.Bottom = 10
-            Align = alTop
-            AutoSize = True
-            BevelOuter = bvNone
-            ParentBackground = False
-            ParentColor = True
-            TabOrder = 3
-            object sgbAnimBrightness: TSharpeGaugeBox
-              Left = 0
-              Top = 0
-              Width = 250
-              Height = 22
-              Align = alLeft
-              ParentBackground = False
+            object rdoIconCustom: TJvXPCheckbox
+              AlignWithMargins = True
+              Left = 5
+              Top = 4
+              Width = 111
+              Height = 17
+              Margins.Left = 5
+              Margins.Top = 4
+              Caption = 'Custom'
               TabOrder = 0
-              Min = -255
-              Max = 255
-              Value = 64
-              Prefix = 'Change brightness by '
-              Suffix = '%'
-              Description = 'Adjust to set the brightness modification value'
-              PopPosition = ppBottom
-              PercentDisplay = True
-              MaxPercent = 100
-              Formatting = '%d'
-              OnChangeValue = SendUpdateEvent
-              BackgroundColor = clWindow
+              Align = alTop
+              OnClick = rdoIconCustomClick
             end
           end
-          object Panel14: TPanel
+        end
+        object SharpECenterHeader7: TSharpECenterHeader
+          AlignWithMargins = True
+          Left = 5
+          Top = 139
+          Width = 583
+          Height = 37
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 0
+          Title = 'Icon Blend'
+          Description = 'Define the amount of colour blend applied to the icon'
+          TitleColor = clWindowText
+          DescriptionColor = clRed
+          Align = alTop
+          ExplicitLeft = 6
+          ExplicitTop = 140
+        end
+        object chkColorBlend: TJvXPCheckbox
+          AlignWithMargins = True
+          Left = 5
+          Top = 186
+          Width = 583
+          Height = 17
+          Margins.Left = 5
+          Margins.Top = 10
+          Margins.Right = 5
+          Margins.Bottom = 5
+          Caption = 'Colour blend the icon'
+          TabOrder = 3
+          Checked = True
+          State = cbChecked
+          Align = alTop
+          OnClick = UpdateIcontPageEvent
+          ExplicitLeft = 6
+          ExplicitTop = 187
+        end
+        object Panel1: TPanel
+          AlignWithMargins = True
+          Left = 5
+          Top = 208
+          Width = 583
+          Height = 22
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 10
+          Align = alTop
+          AutoSize = True
+          BevelOuter = bvNone
+          Color = clWindow
+          TabOrder = 4
+          ExplicitLeft = 6
+          ExplicitTop = 209
+          object sgbColorBlend: TSharpeGaugeBox
             AlignWithMargins = True
-            Left = 5
-            Top = 372
-            Width = 583
+            Left = 0
+            Top = 0
+            Width = 250
             Height = 22
-            Margins.Left = 5
-            Margins.Top = 5
-            Margins.Right = 5
+            Margins.Left = 0
+            Margins.Top = 0
+            Margins.Right = 0
             Margins.Bottom = 0
-            Align = alTop
-            BevelOuter = bvNone
+            Constraints.MaxWidth = 534
             ParentBackground = False
-            ParentColor = True
-            TabOrder = 7
-            object sgbAnimColorBlend: TSharpeGaugeBox
-              Left = 0
-              Top = 0
-              Width = 250
-              Height = 22
-              Align = alLeft
-              ParentBackground = False
-              TabOrder = 0
-              Min = 0
-              Max = 255
-              Value = 255
-              Prefix = 'Change blend by '
-              Suffix = '%'
-              Description = 'Adjust to set the color blend strength'
-              PopPosition = ppBottom
-              PercentDisplay = True
-              MaxPercent = 100
-              Formatting = '%d'
-              OnChangeValue = SendUpdateEvent
-              BackgroundColor = clWindow
-            end
+            TabOrder = 0
+            Min = 1
+            Max = 255
+            Value = 192
+            Suffix = '% blended'
+            Description = 'Adjust to set the transparency'
+            PopPosition = ppBottom
+            PercentDisplay = True
+            MaxPercent = 100
+            Formatting = '%d'
+            OnChangeValue = SendUpdateEvent
+            BackgroundColor = clWindow
           end
-          object Panel15: TPanel
+        end
+        object SharpECenterHeader8: TSharpECenterHeader
+          AlignWithMargins = True
+          Left = 5
+          Top = 240
+          Width = 583
+          Height = 37
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 0
+          Title = 'Icon Shadow'
+          Description = 'Define the visiblity of the icon shadow'
+          TitleColor = clWindowText
+          DescriptionColor = clRed
+          Align = alTop
+          ExplicitLeft = 6
+          ExplicitTop = 241
+        end
+        object chkIconShadow: TJvXPCheckbox
+          AlignWithMargins = True
+          Left = 5
+          Top = 287
+          Width = 583
+          Height = 17
+          Margins.Left = 5
+          Margins.Top = 10
+          Margins.Right = 5
+          Margins.Bottom = 0
+          Caption = 'Apply an icon shadow'
+          TabOrder = 6
+          Checked = True
+          State = cbChecked
+          Align = alTop
+          OnClick = UpdateIcontPageEvent
+          ExplicitLeft = 6
+          ExplicitTop = 288
+        end
+        object Panel2: TPanel
+          AlignWithMargins = True
+          Left = 5
+          Top = 309
+          Width = 583
+          Height = 22
+          Margins.Left = 5
+          Margins.Top = 5
+          Margins.Right = 5
+          Margins.Bottom = 10
+          Align = alTop
+          AutoSize = True
+          BevelOuter = bvNone
+          Color = clWindow
+          TabOrder = 7
+          ExplicitLeft = 6
+          ExplicitTop = 310
+          object sgbIconShadow: TSharpeGaugeBox
+            AlignWithMargins = True
+            Left = 0
+            Top = 0
+            Width = 250
+            Height = 22
+            Margins.Left = 0
+            Margins.Top = 0
+            Margins.Right = 0
+            Margins.Bottom = 0
+            Constraints.MaxWidth = 534
+            ParentBackground = False
+            TabOrder = 0
+            Min = 1
+            Max = 255
+            Value = 192
+            Suffix = '% visible'
+            Description = 'Adjust to set the transparency'
+            PopPosition = ppBottom
+            PercentDisplay = True
+            MaxPercent = 100
+            Formatting = '%d'
+            OnChangeValue = SendUpdateEvent
+            BackgroundColor = clWindow
+          end
+        end
+        object SharpECenterHeader6: TSharpECenterHeader
+          AlignWithMargins = True
+          Left = 5
+          Top = 341
+          Width = 583
+          Height = 37
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 0
+          Title = 'Icon Visibility'
+          Description = 'Define the visibility of the icon'
+          TitleColor = clWindowText
+          DescriptionColor = clRed
+          Align = alTop
+          ExplicitLeft = 6
+          ExplicitTop = 342
+        end
+        object chkIconTrans: TJvXPCheckbox
+          AlignWithMargins = True
+          Left = 5
+          Top = 388
+          Width = 583
+          Height = 17
+          Margins.Left = 5
+          Margins.Top = 10
+          Margins.Right = 5
+          Margins.Bottom = 0
+          Caption = 'Apply icon visibility'
+          TabOrder = 9
+          Checked = True
+          State = cbChecked
+          Align = alTop
+          OnClick = UpdateIcontPageEvent
+          ExplicitLeft = 6
+          ExplicitTop = 389
+        end
+        object Panel3: TPanel
+          AlignWithMargins = True
+          Left = 5
+          Top = 410
+          Width = 583
+          Height = 22
+          Margins.Left = 5
+          Margins.Top = 5
+          Margins.Right = 5
+          Margins.Bottom = 10
+          Align = alTop
+          AutoSize = True
+          BevelOuter = bvNone
+          Color = clWindow
+          TabOrder = 10
+          ExplicitLeft = 6
+          ExplicitTop = 411
+          object sgbIconTrans: TSharpeGaugeBox
+            AlignWithMargins = True
+            Left = 0
+            Top = 0
+            Width = 250
+            Height = 22
+            Margins.Left = 0
+            Margins.Top = 0
+            Margins.Right = 0
+            Margins.Bottom = 0
+            Constraints.MaxWidth = 534
+            ParentBackground = False
+            TabOrder = 0
+            Min = 1
+            Max = 255
+            Value = 192
+            Suffix = '% visible'
+            Description = 'Adjust to set the transparency'
+            PopPosition = ppBottom
+            PercentDisplay = True
+            MaxPercent = 100
+            Formatting = '%d'
+            OnChangeValue = SendUpdateEvent
+            BackgroundColor = clWindow
+          end
+        end
+        object SharpECenterHeader9: TSharpECenterHeader
+          AlignWithMargins = True
+          Left = 5
+          Top = 442
+          Width = 583
+          Height = 37
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 0
+          Title = 'Icon Colour'
+          Description = 'Define various icon specific colours'
+          TitleColor = clWindowText
+          DescriptionColor = clRed
+          Align = alTop
+          ExplicitLeft = 6
+          ExplicitTop = 443
+        end
+        object Panel10: TPanel
+          Left = 0
+          Top = 479
+          Width = 593
+          Height = 66
+          Align = alTop
+          AutoSize = True
+          BevelOuter = bvNone
+          Color = clWindow
+          TabOrder = 12
+          ExplicitLeft = 1
+          ExplicitTop = 480
+          object sceIconColor: TSharpEColorEditorEx
             AlignWithMargins = True
             Left = 5
-            Top = 69
-            Width = 578
-            Height = 22
+            Top = 0
+            Width = 583
+            Height = 56
             Margins.Left = 5
             Margins.Top = 0
-            Margins.Right = 10
-            Margins.Bottom = 10
-            Align = alTop
-            AutoSize = True
-            BevelOuter = bvNone
-            ParentBackground = False
-            ParentColor = True
-            TabOrder = 1
-            object sgbAnimTrans: TSharpeGaugeBox
-              Left = 0
-              Top = 0
-              Width = 250
-              Height = 22
-              Align = alLeft
-              ParentBackground = False
-              TabOrder = 0
-              Min = -255
-              Max = 255
-              Value = 64
-              Prefix = 'Change visibility by '
-              Suffix = '%'
-              Description = 'Adjust to set the alpha modification value'
-              PopPosition = ppBottom
-              PercentDisplay = True
-              MaxPercent = 100
-              Formatting = '%d'
-              OnChangeValue = SendUpdateEvent
-              BackgroundColor = clWindow
-            end
-          end
-          object sceAnimColor: TSharpEColorEditorEx
-            AlignWithMargins = True
-            Left = 1
-            Top = 399
-            Width = 587
-            Height = 94
-            Margins.Left = 1
-            Margins.Top = 5
             Margins.Right = 5
-            Margins.Bottom = 0
+            Margins.Bottom = 10
             VertScrollBar.Smooth = True
             VertScrollBar.Tracking = True
-            Align = alClient
+            Align = alTop
+            AutoSize = True
             BevelInner = bvNone
             BevelOuter = bvNone
             BorderStyle = bsNone
             Color = clBlack
             ParentBackground = True
             ParentColor = False
-            TabOrder = 8
+            TabOrder = 0
             Items = <
               item
                 Title = 'Blend Colour'
@@ -1184,211 +653,50 @@ object frmSettingsWnd: TfrmSettingsWnd
                 ValueMax = 255
                 Visible = True
                 DisplayPercent = False
-                ColorEditor = sceAnimColor.Item0
+                ColorEditor = sceIconColor.Item0
+                Tag = 0
+              end
+              item
+                Title = 'Icon Shadow Colour'
+                ColorCode = 0
+                ColorAsTColor = clBlack
+                Expanded = False
+                ValueEditorType = vetColor
+                Value = 0
+                ValueMin = 0
+                ValueMax = 255
+                Visible = True
+                DisplayPercent = False
+                ColorEditor = sceIconColor.Item1
                 Tag = 0
               end>
             SwatchManager = SharpESwatchManager1
             OnUiChange = UpdateColorChangeEvent
+            OnExpandCollapse = sceColorExpandCollapse
             BorderColor = clBlack
             BackgroundColor = clBlack
             BackgroundTextColor = clBlack
             ContainerColor = clBlack
             ContainerTextColor = clBlack
           end
-          object SharpECenterHeader16: TSharpECenterHeader
-            AlignWithMargins = True
-            Left = 5
-            Top = 0
-            Width = 583
-            Height = 37
-            Margins.Left = 5
-            Margins.Top = 0
-            Margins.Right = 5
-            Margins.Bottom = 0
-            Title = 'Animation Visibility'
-            Description = 'Define desktop icon animation transparency'
-            TitleColor = clWindowText
-            DescriptionColor = clRed
-            Align = alTop
-          end
-          object SharpECenterHeader17: TSharpECenterHeader
-            AlignWithMargins = True
-            Left = 5
-            Top = 101
-            Width = 583
-            Height = 37
-            Margins.Left = 5
-            Margins.Top = 0
-            Margins.Right = 5
-            Margins.Bottom = 0
-            Title = 'Animation Brightness'
-            Description = 'Define desktop icon brightness animation'
-            TitleColor = clWindowText
-            DescriptionColor = clRed
-            Align = alTop
-          end
-          object SharpECenterHeader18: TSharpECenterHeader
-            AlignWithMargins = True
-            Left = 5
-            Top = 202
-            Width = 583
-            Height = 37
-            Margins.Left = 5
-            Margins.Top = 0
-            Margins.Right = 5
-            Margins.Bottom = 0
-            Title = 'Animation Scale'
-            Description = 'Define desktop icon scale animation'
-            TitleColor = clWindowText
-            DescriptionColor = clRed
-            Visible = False
-            Align = alTop
-          end
-          object SharpECenterHeader19: TSharpECenterHeader
-            AlignWithMargins = True
-            Left = 5
-            Top = 303
-            Width = 583
-            Height = 37
-            Margins.Left = 5
-            Margins.Top = 0
-            Margins.Right = 5
-            Margins.Bottom = 0
-            Title = 'Animation Colour Blend'
-            Description = 'Define desktop icon colour blend animation'
-            TitleColor = clWindowText
-            DescriptionColor = clRed
-            Align = alTop
-          end
-          object chkAnimTrans: TJvXPCheckbox
-            AlignWithMargins = True
-            Left = 5
-            Top = 47
-            Width = 578
-            Height = 17
-            Margins.Left = 5
-            Margins.Top = 10
-            Margins.Right = 10
-            Margins.Bottom = 5
-            Caption = 'Apply animation transparency'
-            TabOrder = 0
-            Align = alTop
-            OnClick = UpdateAnimationPageEvent
-          end
-          object chkAnimSize: TJvXPCheckbox
-            AlignWithMargins = True
-            Left = 5
-            Top = 249
-            Width = 583
-            Height = 17
-            Margins.Left = 5
-            Margins.Top = 10
-            Margins.Right = 5
-            Margins.Bottom = 0
-            Caption = 'Apply animation scale'
-            TabOrder = 4
-            Align = alTop
-            Visible = False
-            OnClick = UpdateAnimationPageEvent
-          end
-          object chkAnimBrightness: TJvXPCheckbox
-            AlignWithMargins = True
-            Left = 5
-            Top = 148
-            Width = 583
-            Height = 17
-            Margins.Left = 5
-            Margins.Top = 10
-            Margins.Right = 5
-            Margins.Bottom = 0
-            Caption = 'Apply animation brightness'
-            TabOrder = 2
-            Align = alTop
-            OnClick = UpdateAnimationPageEvent
-          end
-          object chkAnimColorBlend: TJvXPCheckbox
-            AlignWithMargins = True
-            Left = 5
-            Top = 350
-            Width = 583
-            Height = 17
-            Margins.Left = 5
-            Margins.Top = 10
-            Margins.Right = 5
-            Margins.Bottom = 0
-            Caption = 'Apply animation colour blend'
-            TabOrder = 6
-            Align = alTop
-            OnClick = UpdateAnimationPageEvent
-          end
         end
       end
-      object SharpECenterHeader15: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 6
-        Top = 1
-        Width = 583
-        Height = 37
-        Margins.Left = 5
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Title = 'Animation'
-        Description = 'Define desktop icon animated effects'
-        TitleColor = clWindowText
-        DescriptionColor = clRed
-        Align = alTop
-      end
-      object chkAnim: TJvXPCheckbox
-        AlignWithMargins = True
-        Left = 6
-        Top = 48
-        Width = 578
-        Height = 17
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 10
-        Margins.Bottom = 10
-        Caption = 'Apply desktop icon animation'
-        TabOrder = 0
-        Align = alTop
-        OnClick = UpdateAnimationPageEvent
-      end
     end
-    object pagFontShadow: TJvStandardPage
+    object pagFont: TJvStandardPage
       Left = 0
       Top = 0
       Width = 595
       Height = 591
-      Caption = 'pagFontShadow'
-      object SharpECenterHeader1: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 6
-        Top = 1
-        Width = 583
-        Height = 37
-        Margins.Left = 5
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Title = 'Font Shadow'
-        Description = 'Define whether the desktop font has a shadow applied'
-        TitleColor = clWindowText
-        DescriptionColor = clRed
-        Align = alTop
-      end
-      object pnlTextShadow: TPanel
+      object pnlFont: TPanel
         Left = 1
-        Top = 75
+        Top = 1
         Width = 593
-        Height = 361
+        Height = 492
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
-        ParentBackground = False
-        ParentColor = True
-        TabOrder = 1
-        object SharpECenterHeader2: TSharpECenterHeader
+        TabOrder = 0
+        object SharpECenterHeader10: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
           Top = 0
@@ -1398,32 +706,57 @@ object frmSettingsWnd: TfrmSettingsWnd
           Margins.Top = 0
           Margins.Right = 5
           Margins.Bottom = 0
-          Title = 'Font Shadow Type'
-          Description = 'Define the type of shadow effect to apply to the font'
+          Title = 'Font Type'
+          Description = 'Define the font face for the desktop'
           TitleColor = clWindowText
           DescriptionColor = clRed
           Align = alTop
+          ExplicitLeft = 6
+          ExplicitTop = 1
         end
-        object SharpECenterHeader3: TSharpECenterHeader
+        object cboFontName: TComboBox
           AlignWithMargins = True
           Left = 5
-          Top = 78
+          Top = 47
+          Width = 250
+          Height = 23
+          Margins.Left = 5
+          Margins.Top = 10
+          Margins.Right = 10
+          Margins.Bottom = 10
+          Align = alTop
+          Style = csOwnerDrawVariable
+          Constraints.MaxWidth = 250
+          DropDownCount = 12
+          ItemHeight = 17
+          TabOrder = 1
+          OnChange = cboFontNameChange
+          OnDrawItem = cboFontNameDrawItem
+          ExplicitLeft = 6
+          ExplicitTop = 50
+        end
+        object SharpECenterHeader11: TSharpECenterHeader
+          AlignWithMargins = True
+          Left = 5
+          Top = 80
           Width = 583
           Height = 37
           Margins.Left = 5
           Margins.Top = 0
           Margins.Right = 5
           Margins.Bottom = 0
-          Title = 'Font Shadow Visiblity'
-          Description = 'Define how visible the font shadow is'
+          Title = 'Font Size'
+          Description = 'Define the type face size'
           TitleColor = clWindowText
           DescriptionColor = clRed
           Align = alTop
+          ExplicitLeft = 6
+          ExplicitTop = 83
         end
-        object Panel11: TPanel
+        object Panel5: TPanel
           AlignWithMargins = True
           Left = 5
-          Top = 125
+          Top = 127
           Width = 578
           Height = 22
           Margins.Left = 5
@@ -1433,9 +766,12 @@ object frmSettingsWnd: TfrmSettingsWnd
           Align = alTop
           AutoSize = True
           BevelOuter = bvNone
+          ParentBackground = False
           ParentColor = True
-          TabOrder = 1
-          object sgbFontShadowTrans: TSharpeGaugeBox
+          TabOrder = 3
+          ExplicitLeft = 6
+          ExplicitTop = 130
+          object sgbFontSize: TSharpeGaugeBox
             Left = 0
             Top = 0
             Width = 250
@@ -1445,14 +781,91 @@ object frmSettingsWnd: TfrmSettingsWnd
             Margins.Right = 8
             Margins.Bottom = 0
             Align = alLeft
-            Constraints.MaxWidth = 532
+            ParentBackground = False
+            TabOrder = 0
+            Min = 6
+            Max = 24
+            Value = 10
+            Suffix = ' px'
+            Description = 'Change font size'
+            PopPosition = ppBottom
+            PercentDisplay = False
+            MaxPercent = 100
+            Formatting = '%d'
+            OnChangeValue = SendUpdateEvent
+            BackgroundColor = clWindow
+          end
+        end
+        object SharpECenterHeader12: TSharpECenterHeader
+          AlignWithMargins = True
+          Left = 5
+          Top = 159
+          Width = 583
+          Height = 37
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 0
+          Title = 'Font Visibility'
+          Description = 'Define how visible the font is on the desktop'
+          TitleColor = clWindowText
+          DescriptionColor = clRed
+          Align = alTop
+          ExplicitLeft = 6
+          ExplicitTop = 162
+        end
+        object chkFontTrans: TJvXPCheckbox
+          AlignWithMargins = True
+          Left = 5
+          Top = 206
+          Width = 583
+          Height = 17
+          Margins.Left = 5
+          Margins.Top = 10
+          Margins.Right = 5
+          Margins.Bottom = 5
+          Caption = 'Apply font opacity'
+          TabOrder = 5
+          Align = alTop
+          OnClick = UpdateFontPageEvent
+          ExplicitLeft = 6
+          ExplicitTop = 209
+        end
+        object Panel7: TPanel
+          AlignWithMargins = True
+          Left = 5
+          Top = 228
+          Width = 583
+          Height = 22
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 10
+          Align = alTop
+          AutoSize = True
+          BevelOuter = bvNone
+          ParentBackground = False
+          ParentColor = True
+          TabOrder = 6
+          ExplicitLeft = 6
+          ExplicitTop = 231
+          object sgbFontTrans: TSharpeGaugeBox
+            Left = 0
+            Top = 0
+            Width = 250
+            Height = 22
+            Margins.Left = 28
+            Margins.Top = 8
+            Margins.Right = 8
+            Margins.Bottom = 0
+            Align = alLeft
             ParentBackground = False
             TabOrder = 0
             Min = 0
             Max = 255
             Value = 0
             Suffix = '% visible'
-            Description = 'Transparency'
+            Description = 'Change font opacity'
             PopPosition = ppBottom
             PercentDisplay = True
             MaxPercent = 100
@@ -1461,45 +874,161 @@ object frmSettingsWnd: TfrmSettingsWnd
             BackgroundColor = clWindow
           end
         end
-        object SharpECenterHeader4: TSharpECenterHeader
+        object SharpECenterHeader20: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 157
+          Top = 260
           Width = 583
           Height = 37
           Margins.Left = 5
           Margins.Top = 0
           Margins.Right = 5
           Margins.Bottom = 0
-          Title = 'Font Shadow Colour'
-          Description = 'Define the font shadow colour'
+          Title = 'Clear Font'
+          Description = 
+            'Define whether to use cleartype rendering for the current skin'#39's' +
+            ' font'
           TitleColor = clWindowText
           DescriptionColor = clRed
           Align = alTop
+          ExplicitLeft = 6
+          ExplicitTop = 263
         end
-        object sceShadowColor: TSharpEColorEditorEx
+        object chkClearType: TJvXPCheckbox
           AlignWithMargins = True
-          Left = 1
-          Top = 194
-          Width = 582
-          Height = 157
-          Margins.Left = 1
+          Left = 5
+          Top = 307
+          Width = 583
+          Height = 17
+          Margins.Left = 5
+          Margins.Top = 10
+          Margins.Right = 5
+          Margins.Bottom = 10
+          Caption = 'Apply ClearType font'
+          TabOrder = 8
+          Align = alTop
+          OnClick = chkClearTypeClick
+          ExplicitLeft = 6
+          ExplicitTop = 310
+        end
+        object SharpECenterHeader13: TSharpECenterHeader
+          AlignWithMargins = True
+          Left = 5
+          Top = 334
+          Width = 583
+          Height = 37
+          Margins.Left = 5
           Margins.Top = 0
-          Margins.Right = 10
+          Margins.Right = 5
+          Margins.Bottom = 0
+          Title = 'Font Style'
+          Description = 'Define styles applied to the font'
+          TitleColor = clWindowText
+          DescriptionColor = clRed
+          Align = alTop
+          ExplicitLeft = 6
+          ExplicitTop = 337
+        end
+        object Panel8: TPanel
+          AlignWithMargins = True
+          Left = 5
+          Top = 381
+          Width = 583
+          Height = 22
+          Margins.Left = 5
+          Margins.Top = 10
+          Margins.Right = 5
+          Margins.Bottom = 10
+          Align = alTop
+          BevelOuter = bvNone
+          ParentBackground = False
+          ParentColor = True
+          TabOrder = 10
+          ExplicitLeft = 6
+          ExplicitTop = 384
+          object chkBold: TJvXPCheckbox
+            Left = 0
+            Top = 3
+            Width = 69
+            Height = 17
+            Margins.Left = 5
+            Margins.Top = 10
+            Margins.Right = 10
+            Margins.Bottom = 0
+            Caption = 'Bold'
+            TabOrder = 0
+            OnClick = FontStyleCheckEvent
+          end
+          object chkItalic: TJvXPCheckbox
+            AlignWithMargins = True
+            Left = 67
+            Top = 3
+            Width = 68
+            Height = 17
+            Margins.Left = 5
+            Margins.Top = 5
+            Margins.Right = 5
+            Margins.Bottom = 0
+            Caption = 'Italic'
+            TabOrder = 1
+            OnClick = FontStyleCheckEvent
+          end
+          object chkUnderline: TJvXPCheckbox
+            Left = 137
+            Top = 3
+            Width = 89
+            Height = 17
+            Margins.Left = 5
+            Margins.Top = 5
+            Margins.Right = 5
+            Margins.Bottom = 0
+            Caption = 'Underline'
+            TabOrder = 2
+            OnClick = FontStyleCheckEvent
+          end
+        end
+        object SharpECenterHeader14: TSharpECenterHeader
+          AlignWithMargins = True
+          Left = 5
+          Top = 413
+          Width = 583
+          Height = 37
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 0
+          Title = 'Font Colour'
+          Description = 'Define the font face colour'
+          TitleColor = clWindowText
+          DescriptionColor = clRed
+          Align = alTop
+          ExplicitLeft = 6
+          ExplicitTop = 416
+        end
+        object sceFontColor: TSharpEColorEditorEx
+          AlignWithMargins = True
+          Left = 5
+          Top = 450
+          Width = 583
+          Height = 32
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 5
           Margins.Bottom = 10
           VertScrollBar.Smooth = True
           VertScrollBar.Tracking = True
           Align = alTop
+          AutoSize = True
           BevelInner = bvNone
           BevelOuter = bvNone
           BorderStyle = bsNone
           Color = clBlack
           ParentBackground = True
           ParentColor = False
-          TabOrder = 2
+          TabOrder = 12
           Items = <
             item
-              Title = 'Shadow Colour'
+              Title = 'Font Colour'
               ColorCode = 0
               ColorAsTColor = clBlack
               Expanded = False
@@ -1509,76 +1038,667 @@ object frmSettingsWnd: TfrmSettingsWnd
               ValueMax = 255
               Visible = True
               DisplayPercent = False
-              ColorEditor = sceShadowColor.Item0
+              ColorEditor = sceFontColor.Item0
               Tag = 0
             end>
           SwatchManager = SharpESwatchManager1
           OnUiChange = UpdateColorChangeEvent
+          OnExpandCollapse = sceColorExpandCollapse
           BorderColor = clBlack
           BackgroundColor = clBlack
           BackgroundTextColor = clBlack
           ContainerColor = clBlack
           ContainerTextColor = clBlack
+          ExplicitLeft = 6
+          ExplicitTop = 453
         end
-        object Panel6: TPanel
+      end
+    end
+    object pagAnimation: TJvStandardPage
+      Left = 0
+      Top = 0
+      Width = 595
+      Height = 591
+      object pnlAnimation: TPanel
+        Left = 1
+        Top = 1
+        Width = 593
+        Height = 509
+        Align = alTop
+        AutoSize = True
+        BevelOuter = bvNone
+        TabOrder = 0
+        object chkAnim: TJvXPCheckbox
           AlignWithMargins = True
           Left = 5
           Top = 47
           Width = 578
-          Height = 21
+          Height = 17
           Margins.Left = 5
           Margins.Top = 10
           Margins.Right = 10
           Margins.Bottom = 10
+          Caption = 'Apply desktop icon animation'
+          TabOrder = 0
+          Align = alTop
+          OnClick = UpdateAnimationPageEvent
+          ExplicitLeft = 6
+          ExplicitTop = 48
+        end
+        object pnlAnim: TPanel
+          Left = 0
+          Top = 74
+          Width = 593
+          Height = 435
           Align = alTop
           AutoSize = True
           BevelOuter = bvNone
           ParentColor = True
-          TabOrder = 0
-          object cboFontShadowType: TComboBox
+          TabOrder = 1
+          object Panel9: TPanel
+            AlignWithMargins = True
             Left = 0
-            Top = 0
-            Width = 250
-            Height = 21
-            Margins.Left = 28
-            Margins.Top = 8
-            Margins.Right = 8
+            Top = 4
+            Width = 593
+            Height = 431
+            Margins.Left = 0
+            Margins.Top = 4
+            Margins.Right = 0
             Margins.Bottom = 0
-            Align = alLeft
-            Style = csDropDownList
-            ItemHeight = 13
-            ItemIndex = 0
+            Align = alTop
+            AutoSize = True
+            BevelOuter = bvNone
+            ParentBackground = False
+            ParentColor = True
             TabOrder = 0
-            Text = 'Left Shadow'
-            OnChange = cboFontShadowTypeChange
-            Items.Strings = (
-              'Left Shadow'
-              'Right Shadow'
-              'Outline Glow')
+            object Panel12: TPanel
+              AlignWithMargins = True
+              Left = 5
+              Top = 271
+              Width = 583
+              Height = 22
+              Margins.Left = 5
+              Margins.Top = 5
+              Margins.Right = 5
+              Margins.Bottom = 10
+              Align = alTop
+              AutoSize = True
+              BevelOuter = bvNone
+              ParentBackground = False
+              ParentColor = True
+              TabOrder = 5
+              Visible = False
+              object sgbAnimSize: TSharpeGaugeBox
+                Left = 0
+                Top = 0
+                Width = 250
+                Height = 22
+                Align = alLeft
+                ParentBackground = False
+                TabOrder = 0
+                Min = -64
+                Max = 64
+                Value = 32
+                Prefix = 'Change scale by '
+                Suffix = ' px'
+                Description = 'Adjust to set the scale size'
+                PopPosition = ppBottom
+                PercentDisplay = False
+                MaxPercent = 100
+                Formatting = '%d'
+                OnChangeValue = SendUpdateEvent
+                BackgroundColor = clWindow
+              end
+            end
+            object Panel13: TPanel
+              AlignWithMargins = True
+              Left = 5
+              Top = 170
+              Width = 583
+              Height = 22
+              Margins.Left = 5
+              Margins.Top = 5
+              Margins.Right = 5
+              Margins.Bottom = 10
+              Align = alTop
+              AutoSize = True
+              BevelOuter = bvNone
+              ParentBackground = False
+              ParentColor = True
+              TabOrder = 3
+              object sgbAnimBrightness: TSharpeGaugeBox
+                Left = 0
+                Top = 0
+                Width = 250
+                Height = 22
+                Align = alLeft
+                ParentBackground = False
+                TabOrder = 0
+                Min = -255
+                Max = 255
+                Value = 64
+                Prefix = 'Change brightness by '
+                Suffix = '%'
+                Description = 'Adjust to set the brightness modification value'
+                PopPosition = ppBottom
+                PercentDisplay = True
+                MaxPercent = 100
+                Formatting = '%d'
+                OnChangeValue = SendUpdateEvent
+                BackgroundColor = clWindow
+              end
+            end
+            object Panel14: TPanel
+              AlignWithMargins = True
+              Left = 5
+              Top = 372
+              Width = 583
+              Height = 22
+              Margins.Left = 5
+              Margins.Top = 5
+              Margins.Right = 5
+              Margins.Bottom = 0
+              Align = alTop
+              AutoSize = True
+              BevelOuter = bvNone
+              ParentBackground = False
+              ParentColor = True
+              TabOrder = 7
+              object sgbAnimColorBlend: TSharpeGaugeBox
+                Left = 0
+                Top = 0
+                Width = 250
+                Height = 22
+                Align = alLeft
+                ParentBackground = False
+                TabOrder = 0
+                Min = 0
+                Max = 255
+                Value = 255
+                Prefix = 'Change blend by '
+                Suffix = '%'
+                Description = 'Adjust to set the color blend strength'
+                PopPosition = ppBottom
+                PercentDisplay = True
+                MaxPercent = 100
+                Formatting = '%d'
+                OnChangeValue = SendUpdateEvent
+                BackgroundColor = clWindow
+              end
+            end
+            object Panel15: TPanel
+              AlignWithMargins = True
+              Left = 5
+              Top = 69
+              Width = 578
+              Height = 22
+              Margins.Left = 5
+              Margins.Top = 0
+              Margins.Right = 10
+              Margins.Bottom = 10
+              Align = alTop
+              AutoSize = True
+              BevelOuter = bvNone
+              ParentBackground = False
+              ParentColor = True
+              TabOrder = 1
+              object sgbAnimTrans: TSharpeGaugeBox
+                Left = 0
+                Top = 0
+                Width = 250
+                Height = 22
+                Align = alLeft
+                ParentBackground = False
+                TabOrder = 0
+                Min = -255
+                Max = 255
+                Value = 64
+                Prefix = 'Change visibility by '
+                Suffix = '%'
+                Description = 'Adjust to set the alpha modification value'
+                PopPosition = ppBottom
+                PercentDisplay = True
+                MaxPercent = 100
+                Formatting = '%d'
+                OnChangeValue = SendUpdateEvent
+                BackgroundColor = clWindow
+              end
+            end
+            object sceAnimColor: TSharpEColorEditorEx
+              AlignWithMargins = True
+              Left = 5
+              Top = 399
+              Width = 583
+              Height = 32
+              Margins.Left = 5
+              Margins.Top = 5
+              Margins.Right = 5
+              Margins.Bottom = 0
+              VertScrollBar.Smooth = True
+              VertScrollBar.Tracking = True
+              Align = alTop
+              AutoSize = True
+              BevelInner = bvNone
+              BevelOuter = bvNone
+              BorderStyle = bsNone
+              Color = clBlack
+              ParentBackground = True
+              ParentColor = False
+              TabOrder = 8
+              Items = <
+                item
+                  Title = 'Blend Colour'
+                  ColorCode = 0
+                  ColorAsTColor = clBlack
+                  Expanded = False
+                  ValueEditorType = vetColor
+                  Value = 0
+                  ValueMin = 0
+                  ValueMax = 255
+                  Visible = True
+                  DisplayPercent = False
+                  ColorEditor = sceAnimColor.Item0
+                  Tag = 0
+                end>
+              SwatchManager = SharpESwatchManager1
+              OnUiChange = UpdateColorChangeEvent
+              OnExpandCollapse = sceColorExpandCollapse
+              BorderColor = clBlack
+              BackgroundColor = clBlack
+              BackgroundTextColor = clBlack
+              ContainerColor = clBlack
+              ContainerTextColor = clBlack
+            end
+            object SharpECenterHeader16: TSharpECenterHeader
+              AlignWithMargins = True
+              Left = 5
+              Top = 0
+              Width = 583
+              Height = 37
+              Margins.Left = 5
+              Margins.Top = 0
+              Margins.Right = 5
+              Margins.Bottom = 0
+              Title = 'Animation Visibility'
+              Description = 'Define desktop icon animation transparency'
+              TitleColor = clWindowText
+              DescriptionColor = clRed
+              Align = alTop
+            end
+            object SharpECenterHeader17: TSharpECenterHeader
+              AlignWithMargins = True
+              Left = 5
+              Top = 101
+              Width = 583
+              Height = 37
+              Margins.Left = 5
+              Margins.Top = 0
+              Margins.Right = 5
+              Margins.Bottom = 0
+              Title = 'Animation Brightness'
+              Description = 'Define desktop icon brightness animation'
+              TitleColor = clWindowText
+              DescriptionColor = clRed
+              Align = alTop
+            end
+            object SharpECenterHeader18: TSharpECenterHeader
+              AlignWithMargins = True
+              Left = 5
+              Top = 202
+              Width = 583
+              Height = 37
+              Margins.Left = 5
+              Margins.Top = 0
+              Margins.Right = 5
+              Margins.Bottom = 0
+              Title = 'Animation Scale'
+              Description = 'Define desktop icon scale animation'
+              TitleColor = clWindowText
+              DescriptionColor = clRed
+              Visible = False
+              Align = alTop
+            end
+            object SharpECenterHeader19: TSharpECenterHeader
+              AlignWithMargins = True
+              Left = 5
+              Top = 303
+              Width = 583
+              Height = 37
+              Margins.Left = 5
+              Margins.Top = 0
+              Margins.Right = 5
+              Margins.Bottom = 0
+              Title = 'Animation Colour Blend'
+              Description = 'Define desktop icon colour blend animation'
+              TitleColor = clWindowText
+              DescriptionColor = clRed
+              Align = alTop
+            end
+            object chkAnimTrans: TJvXPCheckbox
+              AlignWithMargins = True
+              Left = 5
+              Top = 47
+              Width = 578
+              Height = 17
+              Margins.Left = 5
+              Margins.Top = 10
+              Margins.Right = 10
+              Margins.Bottom = 5
+              Caption = 'Apply animation transparency'
+              TabOrder = 0
+              Align = alTop
+              OnClick = UpdateAnimationPageEvent
+            end
+            object chkAnimSize: TJvXPCheckbox
+              AlignWithMargins = True
+              Left = 5
+              Top = 249
+              Width = 583
+              Height = 17
+              Margins.Left = 5
+              Margins.Top = 10
+              Margins.Right = 5
+              Margins.Bottom = 0
+              Caption = 'Apply animation scale'
+              TabOrder = 4
+              Align = alTop
+              Visible = False
+              OnClick = UpdateAnimationPageEvent
+            end
+            object chkAnimBrightness: TJvXPCheckbox
+              AlignWithMargins = True
+              Left = 5
+              Top = 148
+              Width = 583
+              Height = 17
+              Margins.Left = 5
+              Margins.Top = 10
+              Margins.Right = 5
+              Margins.Bottom = 0
+              Caption = 'Apply animation brightness'
+              TabOrder = 2
+              Align = alTop
+              OnClick = UpdateAnimationPageEvent
+            end
+            object chkAnimColorBlend: TJvXPCheckbox
+              AlignWithMargins = True
+              Left = 5
+              Top = 350
+              Width = 583
+              Height = 17
+              Margins.Left = 5
+              Margins.Top = 10
+              Margins.Right = 5
+              Margins.Bottom = 0
+              Caption = 'Apply animation colour blend'
+              TabOrder = 6
+              Align = alTop
+              OnClick = UpdateAnimationPageEvent
+            end
           end
         end
+        object SharpECenterHeader15: TSharpECenterHeader
+          AlignWithMargins = True
+          Left = 5
+          Top = 0
+          Width = 583
+          Height = 37
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 0
+          Title = 'Animation'
+          Description = 'Define desktop icon animated effects'
+          TitleColor = clWindowText
+          DescriptionColor = clRed
+          Align = alTop
+          ExplicitLeft = 6
+          ExplicitTop = 1
+        end
       end
-      object chkFontShadow: TJvXPCheckbox
-        AlignWithMargins = True
-        Left = 6
-        Top = 48
-        Width = 578
-        Height = 17
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 10
-        Margins.Bottom = 10
-        Caption = 'Apply font shadow'
-        TabOrder = 0
+    end
+    object pagFontShadow: TJvStandardPage
+      Left = 0
+      Top = 0
+      Width = 595
+      Height = 591
+      Caption = 'pagFontShadow'
+      object pnlFontShadow: TPanel
+        Left = 1
+        Top = 1
+        Width = 593
+        Height = 310
         Align = alTop
-        OnClick = UpdateFontshadowPageEvent
+        AutoSize = True
+        BevelOuter = bvNone
+        TabOrder = 0
+        object SharpECenterHeader1: TSharpECenterHeader
+          AlignWithMargins = True
+          Left = 5
+          Top = 0
+          Width = 583
+          Height = 37
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 0
+          Title = 'Font Shadow'
+          Description = 'Define whether the desktop font has a shadow applied'
+          TitleColor = clWindowText
+          DescriptionColor = clRed
+          Align = alTop
+          ExplicitLeft = 6
+          ExplicitTop = 42
+        end
+        object chkFontShadow: TJvXPCheckbox
+          AlignWithMargins = True
+          Left = 5
+          Top = 47
+          Width = 578
+          Height = 17
+          Margins.Left = 5
+          Margins.Top = 10
+          Margins.Right = 10
+          Margins.Bottom = 10
+          Caption = 'Apply font shadow'
+          TabOrder = 1
+          Align = alTop
+          OnClick = UpdateFontshadowPageEvent
+          ExplicitLeft = 6
+          ExplicitTop = 48
+        end
+        object pnlTextShadow: TPanel
+          Left = 0
+          Top = 74
+          Width = 593
+          Height = 236
+          Align = alTop
+          AutoSize = True
+          BevelOuter = bvNone
+          ParentBackground = False
+          ParentColor = True
+          TabOrder = 2
+          ExplicitLeft = 1
+          ExplicitTop = 75
+          object SharpECenterHeader2: TSharpECenterHeader
+            AlignWithMargins = True
+            Left = 5
+            Top = 0
+            Width = 583
+            Height = 37
+            Margins.Left = 5
+            Margins.Top = 0
+            Margins.Right = 5
+            Margins.Bottom = 0
+            Title = 'Font Shadow Type'
+            Description = 'Define the type of shadow effect to apply to the font'
+            TitleColor = clWindowText
+            DescriptionColor = clRed
+            Align = alTop
+          end
+          object SharpECenterHeader3: TSharpECenterHeader
+            AlignWithMargins = True
+            Left = 5
+            Top = 78
+            Width = 583
+            Height = 37
+            Margins.Left = 5
+            Margins.Top = 0
+            Margins.Right = 5
+            Margins.Bottom = 0
+            Title = 'Font Shadow Visiblity'
+            Description = 'Define how visible the font shadow is'
+            TitleColor = clWindowText
+            DescriptionColor = clRed
+            Align = alTop
+          end
+          object Panel11: TPanel
+            AlignWithMargins = True
+            Left = 5
+            Top = 125
+            Width = 578
+            Height = 22
+            Margins.Left = 5
+            Margins.Top = 10
+            Margins.Right = 10
+            Margins.Bottom = 10
+            Align = alTop
+            AutoSize = True
+            BevelOuter = bvNone
+            ParentColor = True
+            TabOrder = 1
+            object sgbFontShadowTrans: TSharpeGaugeBox
+              Left = 0
+              Top = 0
+              Width = 250
+              Height = 22
+              Margins.Left = 28
+              Margins.Top = 8
+              Margins.Right = 8
+              Margins.Bottom = 0
+              Align = alLeft
+              Constraints.MaxWidth = 532
+              ParentBackground = False
+              TabOrder = 0
+              Min = 0
+              Max = 255
+              Value = 0
+              Suffix = '% visible'
+              Description = 'Transparency'
+              PopPosition = ppBottom
+              PercentDisplay = True
+              MaxPercent = 100
+              Formatting = '%d'
+              OnChangeValue = SendUpdateEvent
+              BackgroundColor = clWindow
+            end
+          end
+          object SharpECenterHeader4: TSharpECenterHeader
+            AlignWithMargins = True
+            Left = 5
+            Top = 157
+            Width = 583
+            Height = 37
+            Margins.Left = 5
+            Margins.Top = 0
+            Margins.Right = 5
+            Margins.Bottom = 0
+            Title = 'Font Shadow Colour'
+            Description = 'Define the font shadow colour'
+            TitleColor = clWindowText
+            DescriptionColor = clRed
+            Align = alTop
+          end
+          object sceShadowColor: TSharpEColorEditorEx
+            AlignWithMargins = True
+            Left = 5
+            Top = 194
+            Width = 583
+            Height = 32
+            Margins.Left = 5
+            Margins.Top = 0
+            Margins.Right = 5
+            Margins.Bottom = 10
+            VertScrollBar.Smooth = True
+            VertScrollBar.Tracking = True
+            Align = alTop
+            AutoSize = True
+            BevelInner = bvNone
+            BevelOuter = bvNone
+            BorderStyle = bsNone
+            Color = clBlack
+            ParentBackground = True
+            ParentColor = False
+            TabOrder = 2
+            Items = <
+              item
+                Title = 'Shadow Colour'
+                ColorCode = 0
+                ColorAsTColor = clBlack
+                Expanded = False
+                ValueEditorType = vetColor
+                Value = 0
+                ValueMin = 0
+                ValueMax = 255
+                Visible = True
+                DisplayPercent = False
+                ColorEditor = sceShadowColor.Item0
+                Tag = 0
+              end>
+            SwatchManager = SharpESwatchManager1
+            OnUiChange = UpdateColorChangeEvent
+            OnExpandCollapse = sceColorExpandCollapse
+            BorderColor = clBlack
+            BackgroundColor = clBlack
+            BackgroundTextColor = clBlack
+            ContainerColor = clBlack
+            ContainerTextColor = clBlack
+          end
+          object Panel6: TPanel
+            AlignWithMargins = True
+            Left = 5
+            Top = 47
+            Width = 578
+            Height = 21
+            Margins.Left = 5
+            Margins.Top = 10
+            Margins.Right = 10
+            Margins.Bottom = 10
+            Align = alTop
+            AutoSize = True
+            BevelOuter = bvNone
+            ParentColor = True
+            TabOrder = 0
+            object cboFontShadowType: TComboBox
+              Left = 0
+              Top = 0
+              Width = 250
+              Height = 21
+              Margins.Left = 28
+              Margins.Top = 8
+              Margins.Right = 8
+              Margins.Bottom = 0
+              Align = alLeft
+              Style = csDropDownList
+              ItemHeight = 13
+              ItemIndex = 0
+              TabOrder = 0
+              Text = 'Left Shadow'
+              OnChange = cboFontShadowTypeChange
+              Items.Strings = (
+                'Left Shadow'
+                'Right Shadow'
+                'Outline Glow')
+            end
+          end
+        end
       end
     end
   end
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
     PopulateThemeColors = True
-    Width = 549
+    Width = 550
     ShowCaptions = True
     SwatchHeight = 16
     SwatchWidth = 16
@@ -1600,7 +1720,7 @@ object frmSettingsWnd: TfrmSettingsWnd
     Left = 520
     Top = 20
     Bitmap = {
-      494C010103000400080010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101030004000C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

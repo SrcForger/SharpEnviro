@@ -74,6 +74,7 @@ type
     SharpECenterHeader4: TSharpECenterHeader;
     Panel3: TPanel;
     sgbWidth: TSharpeGaugeBox;
+    pnlColors: TPanel;
     procedure FormCreate(Sender: TObject);
     procedure cb_numbersClick(Sender: TObject);
     procedure sgbWidthChangeValue(Sender: TObject; Value: Integer);
@@ -83,6 +84,7 @@ type
     procedure pagColorsShow(Sender: TObject);
     procedure pagMonShow(Sender: TObject);
     procedure Button1Click(Sender: TObject);
+    procedure ColorsExpandCollapse(ASender: TObject);
   private
     FPluginHost: ISharpCenterHost;
     sLastPage: TJvStandardPage;
@@ -158,6 +160,16 @@ end;
 procedure TfrmCPUMon.ColorsChangeColor(ASender: TObject; AValue: Integer);
 begin
   UpdateSettings;
+end;
+
+procedure TfrmCPUMon.ColorsExpandCollapse(ASender: TObject);
+begin
+  if not pagColors.Visible then
+    exit;
+
+  // Update Page Height
+  frmCPUMon.Height := pnlColors.Height + 50;
+  FPluginHost.Refresh(rtSize);
 end;
 
 procedure TfrmCPUMon.edit_cpuChange(Sender: TObject);

@@ -223,8 +223,6 @@ type
     procedure sgbIconSizeChangeValue(Sender: TObject; Value: Integer);
     procedure uicIconSizeReset(Sender: TObject);
     procedure uicIconBlendReset(Sender: TObject);
-    procedure sceIconBlendColorResize(Sender: TObject);
-    procedure sceIconShadowColorResize(Sender: TObject);
     procedure sceIconBlendColorChangeColor(ASender: TObject; AValue: Integer);
     procedure sceIconShadowColorChangeColor(ASender: TObject; AValue: Integer);
     procedure cboFontNameDrawItem(Control: TWinControl; Index: Integer;
@@ -240,16 +238,14 @@ type
     procedure chkTextUnderlineClick(Sender: TObject);
     procedure uicTextColorClick(Sender: TObject);
     procedure sceTextColorChangeColor(ASender: TObject; AValue: Integer);
-    procedure sceTextColorResize(Sender: TObject);
     procedure chkTextShadowClick(Sender: TObject);
     procedure uicTextShadowTypeReset(Sender: TObject);
     procedure cboTextShadowTypeChange(Sender: TObject);
     procedure sgbTextShadowAlphaChangeValue(Sender: TObject; Value: Integer);
-    procedure sceTextShadowColorResize(Sender: TObject);
     procedure sceTextShadowColorChangeColor(ASender: TObject; AValue: Integer);
     procedure uicTextShadowReset(Sender: TObject);
     procedure btnRevertClick(Sender: TObject);
-    procedure uicTextShadowColorResize(Sender: TObject);
+    procedure sceColorExpandCollapse(ASender: TObject);
   private
     FBlue32, FBlue48, FBlue64: TBitmap32;
     FWhite32, FWhite48, FWhite64: TBitmap32;
@@ -586,16 +582,15 @@ begin
   end;
 end;
 
+procedure TfrmSettings.sceColorExpandCollapse(ASender: TObject);
+begin
+  UpdatePageUI;
+end;
+
 procedure TfrmSettings.sceIconBlendColorChangeColor(ASender: TObject; AValue: Integer);
 begin
   uicIconBlendColor.UpdateStatus;
   SendUpdate;
-end;
-
-procedure TfrmSettings.sceIconBlendColorResize(Sender: TObject);
-begin
-  uicIconBlendColor.Height := sceIconBlendColor.Height + 4;
-  UpdateIconPage;
 end;
 
 procedure TfrmSettings.sceTextColorChangeColor(ASender: TObject; AValue: Integer);
@@ -604,34 +599,16 @@ begin
   SendUpdate;
 end;
 
-procedure TfrmSettings.sceTextColorResize(Sender: TObject);
-begin
-  uicTextColor.Height := sceTextColor.Height + 4;
-  UpdateFontPage;
-end;
-
 procedure TfrmSettings.sceIconShadowColorChangeColor(ASender: TObject; AValue: Integer);
 begin
   UICIconShadowColor.UpdateStatus;
   SendUpdate;
 end;
 
-procedure TfrmSettings.sceIconShadowColorResize(Sender: TObject);
-begin
-  UICIconShadowColor.Height := sceIconShadowColor.Height + 4;
-  UpdateIconPage;
-end;
-
 procedure TfrmSettings.sceTextShadowColorChangeColor(ASender: TObject; AValue: Integer);
 begin
   uicTextShadowColor.UpdateStatus;
   SendUpdate;
-end;
-
-procedure TfrmSettings.sceTextShadowColorResize(Sender: TObject);
-begin
-  uicTextShadowColor.Height := sceTextShadowColor.Height + 4;
-  UpdateFontShadowPage;
 end;
 
 procedure TfrmSettings.SendUpdate;
@@ -728,12 +705,6 @@ end;
 procedure TfrmSettings.uicFontNameReset(Sender: TObject);
 begin
   SendUpdate;
-end;
-
-procedure TfrmSettings.uicTextShadowColorResize(Sender: TObject);
-begin
-  uicTextShadowColor.Height := sceTextShadowColor.Height + 4;
-  UpdatePageUI;
 end;
 
 procedure TfrmSettings.uicTextShadowReset(Sender: TObject);

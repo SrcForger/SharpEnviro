@@ -701,7 +701,7 @@ object frmSettings: TfrmSettings
             Left = 5
             Top = 0
             Width = 496
-            Height = 25
+            Height = 28
             Margins.Left = 5
             Margins.Top = 0
             Margins.Right = 5
@@ -722,7 +722,7 @@ object frmSettings: TfrmSettings
               Left = 0
               Top = 0
               Width = 177
-              Height = 25
+              Height = 28
               Margins.Left = 4
               Margins.Top = 4
               Margins.Right = 4
@@ -736,9 +736,9 @@ object frmSettings: TfrmSettings
           object UIC_ColorAlpha: TSharpEUIC
             AlignWithMargins = True
             Left = 5
-            Top = 30
+            Top = 33
             Width = 496
-            Height = 25
+            Height = 28
             Margins.Left = 5
             Margins.Top = 0
             Margins.Right = 5
@@ -759,7 +759,7 @@ object frmSettings: TfrmSettings
               Left = 0
               Top = 0
               Width = 300
-              Height = 25
+              Height = 28
               Margins.Left = 4
               Margins.Top = 4
               Margins.Right = 4
@@ -796,7 +796,7 @@ object frmSettings: TfrmSettings
             Left = 5
             Top = 0
             Width = 496
-            Height = 25
+            Height = 28
             Margins.Left = 5
             Margins.Top = 0
             Margins.Right = 5
@@ -817,7 +817,7 @@ object frmSettings: TfrmSettings
               Left = 0
               Top = 0
               Width = 177
-              Height = 25
+              Height = 28
               Margins.Left = 4
               Margins.Top = 4
               Margins.Right = 4
@@ -831,9 +831,9 @@ object frmSettings: TfrmSettings
           object UIC_blendalpha: TSharpEUIC
             AlignWithMargins = True
             Left = 5
-            Top = 30
+            Top = 33
             Width = 496
-            Height = 25
+            Height = 28
             Margins.Left = 5
             Margins.Top = 0
             Margins.Right = 5
@@ -854,7 +854,7 @@ object frmSettings: TfrmSettings
               Left = 0
               Top = 0
               Width = 300
-              Height = 25
+              Height = 28
               Margins.Left = 4
               Margins.Top = 4
               Margins.Right = 4
@@ -1029,16 +1029,18 @@ object frmSettings: TfrmSettings
           DefaultValue = '0'
           MonitorControl = IconColors
           object IconColors: TSharpEColorEditorEx
+            AlignWithMargins = True
             Left = 0
             Top = 0
-            Width = 465
+            Width = 467
             Height = 32
             Margins.Left = 0
             Margins.Top = 0
-            Margins.Right = 34
-            Margins.Bottom = 4
+            Margins.Right = 32
+            Margins.Bottom = 0
             VertScrollBar.Smooth = True
             VertScrollBar.Tracking = True
+            Align = alTop
             AutoSize = True
             BevelInner = bvNone
             BevelOuter = bvNone
@@ -1047,7 +1049,6 @@ object frmSettings: TfrmSettings
             ParentBackground = True
             ParentColor = False
             TabOrder = 0
-            OnResize = IconColorsResize
             Items = <
               item
                 Title = 'Blend Colour'
@@ -1065,11 +1066,13 @@ object frmSettings: TfrmSettings
               end>
             SwatchManager = SharpESwatchManager1
             OnChangeColor = IconColorsChangeColor
+            OnExpandCollapse = IconColorsExpandCollapse
             BorderColor = clBlack
             BackgroundColor = clBlack
             BackgroundTextColor = clBlack
             ContainerColor = clBlack
             ContainerTextColor = clBlack
+            ExplicitWidth = 465
           end
         end
       end
@@ -1078,7 +1081,7 @@ object frmSettings: TfrmSettings
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
     PopulateThemeColors = True
-    Width = 432
+    Width = 434
     ShowCaptions = True
     SwatchHeight = 16
     SwatchWidth = 16

@@ -56,6 +56,7 @@ type
     cexScheme: TSharpEColorEditorEx;
     smScheme: TSharpESwatchManager;
     tmrPreview: TTimer;
+    pnlScheme: TPanel;
 
     procedure RenderScheme;
 
@@ -63,6 +64,7 @@ type
     procedure cexSchemeChangeColor(ASender: TObject; AValue: Integer);
     procedure cexSchemeUiChange(Sender: TObject);
     procedure tmrPreviewTimer(Sender: TObject);
+    procedure cexSchemeExpandCollapse(ASender: TObject);
   private
     FTheme: ISharpETheme;
     FScheme: string;
@@ -97,6 +99,13 @@ begin
     Colors[TSharpEColorEditorExItem(ASender).Tag].Color := AValue;
 
   tmrPreview.Enabled := True;
+end;
+
+procedure TfrmEditWnd.cexSchemeExpandCollapse(ASender: TObject);
+begin
+  Self.Height := pnlScheme.Height + 50;
+
+  FPluginHost.Refresh(rtSize);
 end;
 
 procedure TfrmEditWnd.cexSchemeUiChange(Sender: TObject);

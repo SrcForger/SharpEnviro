@@ -58,8 +58,10 @@ type
     sceGlassOptions: TSharpEColorEditorEx;
     SharpESwatchManager1: TSharpESwatchManager;
     tmrRefresh: TTimer;
+    pnlGlass: TPanel;
     procedure tmrRefreshTimer(Sender: TObject);
     procedure sceGlassOptionsUiChange(Sender: TObject);
+    procedure sceGlassOptionsExpandCollapse(ASender: TObject);
   private
     FPluginHost: ISharpCenterHost;
     FIsUpdating: boolean;
@@ -77,6 +79,13 @@ uses SharpThemeApiEx,
   SharpCenterApi, SharpApi;
 
 {$R *.dfm}
+
+procedure TfrmSettingsWnd.sceGlassOptionsExpandCollapse(ASender: TObject);
+begin
+  Self.Height := pnlGlass.Height + 50;
+
+  FPluginHost.Refresh(rtSize);
+end;
 
 procedure TfrmSettingsWnd.sceGlassOptionsUiChange(Sender: TObject);
 begin

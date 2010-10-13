@@ -254,6 +254,7 @@ type
     procedure PngSpeedButton2Click(Sender: TObject);
     procedure PngSpeedButton1Click(Sender: TObject);
     procedure chkBinStatusClick(Sender: TObject);
+    procedure sceColorExpandCollapse(ASender: TObject);
   private
     FBlue32, FBlue48, FBlue64: TBitmap32;
     FWhite32, FWhite48, FWhite64: TBitmap32;
@@ -606,6 +607,11 @@ begin
   finally
     cboFontName.ItemIndex := cboFontName.Items.IndexOf('Arial');
   end;
+end;
+
+procedure TfrmSettings.sceColorExpandCollapse(ASender: TObject);
+begin
+  UpdatePageUI;
 end;
 
 procedure TfrmSettings.sceIconBlendColorChangeColor(ASender: TObject; AValue: Integer);

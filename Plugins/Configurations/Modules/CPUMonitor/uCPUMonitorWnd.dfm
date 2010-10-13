@@ -20,7 +20,7 @@ object frmCPUMon: TfrmCPUMon
     Top = 0
     Width = 432
     Height = 378
-    ActivePage = pagMon
+    ActivePage = pagColors
     PropagateEnable = False
     Align = alClient
     ParentBackground = True
@@ -32,9 +32,9 @@ object frmCPUMon: TfrmCPUMon
       OnShow = pagMonShow
       object Panel5: TPanel
         AlignWithMargins = True
-        Left = 5
-        Top = 245
-        Width = 422
+        Left = 6
+        Top = 246
+        Width = 420
         Height = 23
         Margins.Left = 5
         Margins.Top = 10
@@ -48,9 +48,9 @@ object frmCPUMon: TfrmCPUMon
       end
       object Panel6: TPanel
         AlignWithMargins = True
-        Left = 5
-        Top = 212
-        Width = 422
+        Left = 6
+        Top = 213
+        Width = 420
         Height = 23
         Margins.Left = 5
         Margins.Top = 10
@@ -79,6 +79,7 @@ object frmCPUMon: TfrmCPUMon
           Description = 'Adjust Update Interval'
           PopPosition = ppBottom
           PercentDisplay = False
+          MaxPercent = 100
           Formatting = '%d'
           OnChangeValue = sgbWidthChangeValue
           BackgroundColor = clWindow
@@ -102,6 +103,7 @@ object frmCPUMon: TfrmCPUMon
           Description = 'Adjust Update Interval'
           PopPosition = ppBottom
           PercentDisplay = False
+          MaxPercent = 100
           Formatting = '%d'
           OnChangeValue = sgbWidthChangeValue
           BackgroundColor = clWindow
@@ -109,9 +111,9 @@ object frmCPUMon: TfrmCPUMon
       end
       object SharpECenterHeader3: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 5
-        Top = 0
-        Width = 422
+        Left = 6
+        Top = 1
+        Width = 420
         Height = 37
         Margins.Left = 5
         Margins.Top = 0
@@ -125,9 +127,9 @@ object frmCPUMon: TfrmCPUMon
       end
       object SharpECenterHeader5: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 5
-        Top = 165
-        Width = 422
+        Left = 6
+        Top = 166
+        Width = 420
         Height = 37
         Margins.Left = 5
         Margins.Top = 10
@@ -143,9 +145,9 @@ object frmCPUMon: TfrmCPUMon
       end
       object Panel1: TPanel
         AlignWithMargins = True
-        Left = 5
-        Top = 47
-        Width = 422
+        Left = 6
+        Top = 48
+        Width = 420
         Height = 23
         Margins.Left = 5
         Margins.Top = 10
@@ -179,9 +181,9 @@ object frmCPUMon: TfrmCPUMon
       end
       object SharpECenterHeader4: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 5
-        Top = 80
-        Width = 422
+        Left = 6
+        Top = 81
+        Width = 420
         Height = 37
         Margins.Left = 5
         Margins.Top = 10
@@ -195,9 +197,9 @@ object frmCPUMon: TfrmCPUMon
       end
       object Panel3: TPanel
         AlignWithMargins = True
-        Left = 5
-        Top = 127
-        Width = 422
+        Left = 6
+        Top = 128
+        Width = 420
         Height = 23
         Margins.Left = 5
         Margins.Top = 10
@@ -228,6 +230,7 @@ object frmCPUMon: TfrmCPUMon
           Description = 'Adjust graph size'
           PopPosition = ppBottom
           PercentDisplay = False
+          MaxPercent = 100
           Formatting = '%d'
           OnChangeValue = sgbWidthChangeValue
           BackgroundColor = clWindow
@@ -241,212 +244,239 @@ object frmCPUMon: TfrmCPUMon
       Height = 378
       Caption = 'pagColors'
       OnShow = pagColorsShow
-      object Colors: TSharpEColorEditorEx
-        AlignWithMargins = True
-        Left = 2
-        Top = 160
-        Width = 425
-        Height = 80
-        Margins.Left = 2
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 0
-        VertScrollBar.Smooth = True
-        VertScrollBar.Tracking = True
-        Align = alTop
-        AutoSize = True
-        BevelInner = bvNone
-        BevelOuter = bvNone
-        BorderStyle = bsNone
-        Color = clWhite
-        ParentColor = False
-        TabOrder = 2
-        Items = <
-          item
-            Title = 'Background'
-            ColorCode = 16777215
-            ColorAsTColor = clBlack
-            Expanded = False
-            ValueEditorType = vetColor
-            Value = 16777215
-            ValueMin = 0
-            ValueMax = 255
-            Visible = True
-            DisplayPercent = False
-            ColorEditor = Colors.Item0
-            Tag = 0
-          end
-          item
-            Title = 'Foreground'
-            ColorCode = 0
-            ColorAsTColor = clBlack
-            Expanded = False
-            ValueEditorType = vetColor
-            Value = 0
-            ValueMin = 0
-            ValueMax = 255
-            Visible = True
-            DisplayPercent = False
-            ColorEditor = Colors.Item1
-            Tag = 0
-          end
-          item
-            Title = 'Border'
-            ColorCode = 0
-            ColorAsTColor = clBlack
-            Expanded = False
-            ValueEditorType = vetColor
-            Value = 0
-            ValueMin = 0
-            ValueMax = 255
-            Visible = True
-            DisplayPercent = False
-            ColorEditor = Colors.Item2
-            Tag = 0
-          end>
-        SwatchManager = SharpESwatchManager1
-        OnChangeColor = ColorsChangeColor
-        BorderColor = clBlack
-        BackgroundColor = clWhite
-        BackgroundTextColor = clBlack
-        ContainerColor = clBlack
-        ContainerTextColor = clBlack
-      end
-      object Panel2: TPanel
-        AlignWithMargins = True
-        Left = 5
-        Top = 47
-        Width = 417
-        Height = 23
-        Margins.Left = 5
-        Margins.Top = 0
-        Margins.Right = 10
-        Margins.Bottom = 5
+      object pnlColors: TPanel
+        Left = 1
+        Top = 1
+        Width = 430
+        Height = 240
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
-        ParentColor = True
         TabOrder = 0
-        object sgbBackground: TSharpeGaugeBox
+        object Panel2: TPanel
           AlignWithMargins = True
-          Left = 0
-          Top = 0
-          Width = 200
+          Left = 5
+          Top = 47
+          Width = 415
           Height = 23
-          Margins.Left = 0
+          Margins.Left = 5
           Margins.Top = 0
           Margins.Right = 10
-          Margins.Bottom = 0
-          ParentBackground = False
+          Margins.Bottom = 5
+          Align = alTop
+          AutoSize = True
+          BevelOuter = bvNone
+          ParentColor = True
           TabOrder = 0
-          Min = 0
-          Max = 255
-          Value = 128
-          Prefix = 'Background: '
-          Suffix = '% Visible'
-          Description = 'Adjust transparency'
-          PopPosition = ppBottom
-          PercentDisplay = True
-          Formatting = '%d'
-          OnChangeValue = sgbWidthChangeValue
-          BackgroundColor = clWindow
+          ExplicitLeft = 6
+          ExplicitTop = 48
+          object sgbBackground: TSharpeGaugeBox
+            AlignWithMargins = True
+            Left = 0
+            Top = 0
+            Width = 200
+            Height = 23
+            Margins.Left = 0
+            Margins.Top = 0
+            Margins.Right = 10
+            Margins.Bottom = 0
+            ParentBackground = False
+            TabOrder = 0
+            Min = 0
+            Max = 255
+            Value = 128
+            Prefix = 'Background: '
+            Suffix = '% Visible'
+            Description = 'Adjust transparency'
+            PopPosition = ppBottom
+            PercentDisplay = True
+            MaxPercent = 100
+            Formatting = '%d'
+            OnChangeValue = sgbWidthChangeValue
+            BackgroundColor = clWindow
+          end
+          object sgbForeground: TSharpeGaugeBox
+            AlignWithMargins = True
+            Left = 210
+            Top = 0
+            Width = 200
+            Height = 23
+            Margins.Left = 0
+            Margins.Top = 0
+            Margins.Right = 0
+            Margins.Bottom = 0
+            ParentBackground = False
+            TabOrder = 1
+            Min = 0
+            Max = 255
+            Value = 128
+            Prefix = 'Foreground: '
+            Suffix = '% Visible'
+            Description = 'Adjust transparency'
+            PopPosition = ppBottom
+            PercentDisplay = True
+            MaxPercent = 100
+            Formatting = '%d'
+            OnChangeValue = sgbWidthChangeValue
+            BackgroundColor = clWindow
+          end
         end
-        object sgbForeground: TSharpeGaugeBox
+        object Panel4: TPanel
           AlignWithMargins = True
-          Left = 210
-          Top = 0
-          Width = 200
+          Left = 5
+          Top = 80
+          Width = 415
           Height = 23
-          Margins.Left = 0
-          Margins.Top = 0
-          Margins.Right = 0
+          Margins.Left = 5
+          Margins.Top = 5
+          Margins.Right = 10
           Margins.Bottom = 0
-          ParentBackground = False
+          Align = alTop
+          AutoSize = True
+          BevelOuter = bvNone
+          ParentColor = True
           TabOrder = 1
-          Min = 0
-          Max = 255
-          Value = 128
-          Prefix = 'Foreground: '
-          Suffix = '% Visible'
-          Description = 'Adjust transparency'
-          PopPosition = ppBottom
-          PercentDisplay = True
-          Formatting = '%d'
-          OnChangeValue = sgbWidthChangeValue
-          BackgroundColor = clWindow
+          ExplicitLeft = 6
+          ExplicitTop = 18
+          ExplicitWidth = 168
+          object sgbBorder: TSharpeGaugeBox
+            AlignWithMargins = True
+            Left = 0
+            Top = 0
+            Width = 200
+            Height = 23
+            Margins.Left = 0
+            Margins.Top = 0
+            Margins.Right = 0
+            Margins.Bottom = 0
+            ParentBackground = False
+            TabOrder = 0
+            Min = 0
+            Max = 255
+            Value = 255
+            Prefix = 'Border: '
+            Suffix = '% Visible'
+            Description = 'Adjust Blend Strength'
+            PopPosition = ppBottom
+            PercentDisplay = True
+            MaxPercent = 100
+            Formatting = '%d'
+            OnChangeValue = sgbWidthChangeValue
+            BackgroundColor = clWindow
+          end
         end
-      end
-      object Panel4: TPanel
-        AlignWithMargins = True
-        Left = 5
-        Top = 80
-        Width = 417
-        Height = 23
-        Margins.Left = 5
-        Margins.Top = 5
-        Margins.Right = 10
-        Margins.Bottom = 0
-        Align = alTop
-        AutoSize = True
-        BevelOuter = bvNone
-        ParentColor = True
-        TabOrder = 1
-        object sgbBorder: TSharpeGaugeBox
+        object SharpECenterHeader1: TSharpECenterHeader
           AlignWithMargins = True
-          Left = 0
+          Left = 5
           Top = 0
-          Width = 200
-          Height = 23
-          Margins.Left = 0
+          Width = 420
+          Height = 37
+          Margins.Left = 5
           Margins.Top = 0
-          Margins.Right = 0
-          Margins.Bottom = 0
-          ParentBackground = False
-          TabOrder = 0
-          Min = 0
-          Max = 255
-          Value = 255
-          Prefix = 'Border: '
-          Suffix = '% Visible'
-          Description = 'Adjust Blend Strength'
-          PopPosition = ppBottom
-          PercentDisplay = True
-          Formatting = '%d'
-          OnChangeValue = sgbWidthChangeValue
-          BackgroundColor = clWindow
+          Margins.Right = 5
+          Margins.Bottom = 10
+          Title = 'Chart Element Visibility'
+          Description = 'Define the visibility of the chart elements'
+          TitleColor = clWindowText
+          DescriptionColor = clRed
+          Align = alTop
+          ExplicitLeft = 6
+          ExplicitTop = 1
         end
-      end
-      object SharpECenterHeader1: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 5
-        Top = 0
-        Width = 422
-        Height = 37
-        Margins.Left = 5
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 10
-        Title = 'Chart Element Visibility'
-        Description = 'Define the visibility of the chart elements'
-        TitleColor = clWindowText
-        DescriptionColor = clRed
-        Align = alTop
-      end
-      object SharpECenterHeader2: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 5
-        Top = 113
-        Width = 422
-        Height = 37
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 5
-        Margins.Bottom = 10
-        Title = 'Chart Element Colours'
-        Description = 'Define the colour of the chart elements'
-        TitleColor = clWindowText
-        DescriptionColor = clRed
-        Align = alTop
+        object SharpECenterHeader2: TSharpECenterHeader
+          AlignWithMargins = True
+          Left = 5
+          Top = 113
+          Width = 420
+          Height = 37
+          Margins.Left = 5
+          Margins.Top = 10
+          Margins.Right = 5
+          Margins.Bottom = 10
+          Title = 'Chart Element Colours'
+          Description = 'Define the colour of the chart elements'
+          TitleColor = clWindowText
+          DescriptionColor = clRed
+          Align = alTop
+          ExplicitLeft = 3
+          ExplicitTop = 161
+          ExplicitWidth = 418
+        end
+        object Colors: TSharpEColorEditorEx
+          AlignWithMargins = True
+          Left = 5
+          Top = 160
+          Width = 420
+          Height = 80
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 0
+          VertScrollBar.Smooth = True
+          VertScrollBar.Tracking = True
+          Align = alTop
+          AutoSize = True
+          BevelInner = bvNone
+          BevelOuter = bvNone
+          BorderStyle = bsNone
+          Color = clWhite
+          ParentColor = False
+          TabOrder = 4
+          Items = <
+            item
+              Title = 'Background'
+              ColorCode = 16777215
+              ColorAsTColor = clBlack
+              Expanded = False
+              ValueEditorType = vetColor
+              Value = 16777215
+              ValueMin = 0
+              ValueMax = 255
+              Visible = True
+              DisplayPercent = False
+              ColorEditor = Colors.Item0
+              Tag = 0
+            end
+            item
+              Title = 'Foreground'
+              ColorCode = 0
+              ColorAsTColor = clBlack
+              Expanded = False
+              ValueEditorType = vetColor
+              Value = 0
+              ValueMin = 0
+              ValueMax = 255
+              Visible = True
+              DisplayPercent = False
+              ColorEditor = Colors.Item1
+              Tag = 0
+            end
+            item
+              Title = 'Border'
+              ColorCode = 0
+              ColorAsTColor = clBlack
+              Expanded = False
+              ValueEditorType = vetColor
+              Value = 0
+              ValueMin = 0
+              ValueMax = 255
+              Visible = True
+              DisplayPercent = False
+              ColorEditor = Colors.Item2
+              Tag = 0
+            end>
+          SwatchManager = SharpESwatchManager1
+          OnChangeColor = ColorsChangeColor
+          OnExpandCollapse = ColorsExpandCollapse
+          BorderColor = clBlack
+          BackgroundColor = clWhite
+          BackgroundTextColor = clBlack
+          ContainerColor = clBlack
+          ContainerTextColor = clBlack
+          ExplicitLeft = 6
+          ExplicitTop = 218
+          ExplicitWidth = 421
+        end
       end
     end
     object pagError: TJvStandardPage
@@ -457,9 +487,9 @@ object frmCPUMon: TfrmCPUMon
       Caption = 'pagError'
       object SharpERoundPanel1: TSharpERoundPanel
         AlignWithMargins = True
-        Left = 4
-        Top = 4
-        Width = 424
+        Left = 5
+        Top = 5
+        Width = 422
         Height = 141
         Margins.Left = 4
         Margins.Top = 4
@@ -473,15 +503,17 @@ object frmCPUMon: TfrmCPUMon
         TabOrder = 0
         DrawMode = srpNormal
         NoTopBorder = False
+        NoBottomBorder = False
         RoundValue = 10
         BorderColor = clBtnFace
         Border = True
         BackgroundColor = clWindow
+        BottomSideBorder = False
         object Label10: TLabel
           AlignWithMargins = True
           Left = 8
           Top = 80
-          Width = 408
+          Width = 406
           Height = 15
           Margins.Left = 8
           Margins.Top = 0
@@ -500,7 +532,7 @@ object frmCPUMon: TfrmCPUMon
           AlignWithMargins = True
           Left = 8
           Top = 8
-          Width = 408
+          Width = 406
           Height = 57
           Margins.Left = 8
           Margins.Top = 8
@@ -520,7 +552,7 @@ object frmCPUMon: TfrmCPUMon
           AlignWithMargins = True
           Left = 8
           Top = 65
-          Width = 408
+          Width = 406
           Height = 15
           Margins.Left = 8
           Margins.Top = 0
@@ -554,9 +586,9 @@ object frmCPUMon: TfrmCPUMon
       Caption = 'pagError2'
       object SharpERoundPanel2: TSharpERoundPanel
         AlignWithMargins = True
-        Left = 4
-        Top = 4
-        Width = 424
+        Left = 5
+        Top = 5
+        Width = 422
         Height = 189
         Margins.Left = 4
         Margins.Top = 4
@@ -570,15 +602,17 @@ object frmCPUMon: TfrmCPUMon
         TabOrder = 0
         DrawMode = srpNormal
         NoTopBorder = False
+        NoBottomBorder = False
         RoundValue = 10
         BorderColor = clBtnFace
         Border = True
         BackgroundColor = clWindow
+        BottomSideBorder = False
         object Label13: TLabel
           AlignWithMargins = True
           Left = 22
           Top = 105
-          Width = 394
+          Width = 392
           Height = 24
           Margins.Left = 22
           Margins.Top = 0
@@ -594,7 +628,7 @@ object frmCPUMon: TfrmCPUMon
           AlignWithMargins = True
           Left = 8
           Top = 8
-          Width = 408
+          Width = 406
           Height = 57
           Margins.Left = 8
           Margins.Top = 8
@@ -614,7 +648,7 @@ object frmCPUMon: TfrmCPUMon
           AlignWithMargins = True
           Left = 8
           Top = 65
-          Width = 408
+          Width = 406
           Height = 15
           Margins.Left = 8
           Margins.Top = 0
@@ -633,7 +667,7 @@ object frmCPUMon: TfrmCPUMon
           AlignWithMargins = True
           Left = 8
           Top = 88
-          Width = 408
+          Width = 406
           Height = 17
           Margins.Left = 8
           Margins.Top = 8
@@ -649,7 +683,7 @@ object frmCPUMon: TfrmCPUMon
           AlignWithMargins = True
           Left = 8
           Top = 137
-          Width = 408
+          Width = 406
           Height = 17
           Margins.Left = 8
           Margins.Top = 0
@@ -666,7 +700,7 @@ object frmCPUMon: TfrmCPUMon
           AlignWithMargins = True
           Left = 8
           Top = 162
-          Width = 408
+          Width = 406
           Height = 17
           Margins.Left = 8
           Margins.Top = 8
@@ -685,7 +719,7 @@ object frmCPUMon: TfrmCPUMon
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
     PopulateThemeColors = True
-    Width = 392
+    Width = 387
     ShowCaptions = True
     SwatchHeight = 16
     SwatchWidth = 16

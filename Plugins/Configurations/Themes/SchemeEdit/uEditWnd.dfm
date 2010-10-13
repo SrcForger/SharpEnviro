@@ -15,30 +15,44 @@ object frmEditWnd: TfrmEditWnd
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 14
-  object cexScheme: TSharpEColorEditorEx
+  object pnlScheme: TPanel
     Left = 0
     Top = 0
     Width = 380
-    Height = 217
-    VertScrollBar.Smooth = True
-    VertScrollBar.Tracking = True
+    Height = 49
     Align = alTop
     AutoSize = True
-    BevelInner = bvNone
     BevelOuter = bvNone
-    BorderStyle = bsNone
-    Color = clBlack
-    ParentColor = False
     TabOrder = 0
-    Items = <>
-    SwatchManager = smScheme
-    OnChangeColor = cexSchemeChangeColor
-    OnUiChange = cexSchemeUiChange
-    BorderColor = clBlack
-    BackgroundColor = clBlack
-    BackgroundTextColor = clBlack
-    ContainerColor = clBlack
-    ContainerTextColor = clBlack
+    object cexScheme: TSharpEColorEditorEx
+      Left = 0
+      Top = 0
+      Width = 380
+      Height = 49
+      VertScrollBar.Smooth = True
+      VertScrollBar.Tracking = True
+      Align = alTop
+      AutoSize = True
+      BevelInner = bvNone
+      BevelOuter = bvNone
+      BorderStyle = bsNone
+      Color = clBlack
+      ParentColor = False
+      TabOrder = 0
+      Items = <>
+      SwatchManager = smScheme
+      OnChangeColor = cexSchemeChangeColor
+      OnUiChange = cexSchemeUiChange
+      OnExpandCollapse = cexSchemeExpandCollapse
+      BorderColor = clBlack
+      BackgroundColor = clBlack
+      BackgroundTextColor = clBlack
+      ContainerColor = clBlack
+      ContainerTextColor = clBlack
+      ExplicitLeft = 1
+      ExplicitTop = -8
+      ExplicitWidth = 183
+    end
   end
   object smScheme: TSharpESwatchManager
     Swatches = <>

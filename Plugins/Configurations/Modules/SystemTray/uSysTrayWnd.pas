@@ -38,7 +38,6 @@ type
   TfrmSysTray = class(TForm)
     plMain: TJvPageList;
     pagSysTray: TJvStandardPage;
-    pnlIcon: TPanel;
     sgbIconAlpha: TSharpeGaugeBox;
     pnlBackground: TPanel;
     sgbBackground: TSharpeGaugeBox;
@@ -56,9 +55,10 @@ type
     chkBackground: TJvXPCheckbox;
     chkBorder: TJvXPCheckbox;
     chkBlend: TJvXPCheckbox;
-    Panel1: TPanel;
     chkIconHiding: TJvXPCheckbox;
     SharpECenterHeader1: TSharpECenterHeader;
+    pnlSysTray: TPanel;
+    Panel1: TPanel;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure cb_numbersClick(Sender: TObject);
@@ -67,12 +67,14 @@ type
     procedure cbBackgroundClick(Sender: TObject);
     procedure cbBorderClick(Sender: TObject);
     procedure cbBlendClick(Sender: TObject);
+    procedure ColorsExpandCollapse(ASender: TObject);
   private
     FPluginHost: ISharpCenterHost;
     procedure BackgroundChanged;
     procedure BlendChanged;
     procedure BorderChanged;
     procedure UpdateSettings;
+    procedure UpdateVisibility;
   public
     property PluginHost: ISharpCenterHost read FPluginHost write
       FPluginHost;
@@ -88,6 +90,13 @@ uses
 
 {$R *.dfm}
 
+procedure TfrmSysTray.UpdateVisibility;
+begin
+  schColor.Visible := (chkBackground.Checked) or (chkBorder.Checked) or (chkBlend.Checked);
+
+  ColorsExpandCollapse(nil);
+end;
+
 procedure TfrmSysTray.cbBackgroundClick(Sender: TObject);
 begin
   BackgroundChanged;
@@ -98,6 +107,7 @@ procedure TfrmSysTray.BackgroundChanged();
 begin
   sgbBackground.Enabled := chkBackground.Checked;
   Colors.Items.Item[0].Visible := chkBackground.Checked;
+  UpdateVisibility;
 end;
 
 procedure TfrmSysTray.cbBlendClick(Sender: TObject);
@@ -110,6 +120,7 @@ procedure TfrmSysTray.BlendChanged();
 begin
   sgbBlend.Enabled := chkBlend.Checked;
   Colors.Items.Item[2].Visible := chkBlend.Checked;
+  UpdateVisibility;
 end;
 
 procedure TfrmSysTray.cbBorderClick(Sender: TObject);
@@ -122,6 +133,7 @@ procedure TfrmSysTray.BorderChanged;
 begin
   sgbBorder.Enabled := chkBorder.Checked;
   Colors.Items.Item[1].Visible := chkBorder.Checked;
+  UpdateVisibility;
 end;
 
 procedure TfrmSysTray.cb_numbersClick(Sender: TObject);
@@ -132,6 +144,15 @@ end;
 procedure TfrmSysTray.ColorsChangeColor(ASender: TObject; AValue: Integer);
 begin
   UpdateSettings;
+end;
+
+procedure TfrmSysTray.ColorsExpandCollapse(ASender: TObject);
+begin
+  if not pagSysTray.Visible then
+    exit;
+
+  frmSysTray.Height := pnlSysTray.Height + 50;
+  FPluginHost.Refresh(rtSize);
 end;
 
 procedure TfrmSysTray.FormCreate(Sender: TObject);
