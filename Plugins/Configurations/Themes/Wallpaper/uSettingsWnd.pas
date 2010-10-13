@@ -171,7 +171,6 @@ type
     chkWpRandomize: TJvXPCheckbox;
     pnlWallpaperOptions: TPanel;
     pnlWallpaper: TPanel;
-    pagMonitor: TJvStandardPage;
     pnlColor: TPanel;
     pnlGradient: TPanel;
     SharpECenterHeader11: TSharpECenterHeader;
@@ -215,7 +214,6 @@ type
     procedure UpdateWallpaperPage;
     procedure UpdateColorPage;
     procedure UpdateGradientPage;
-    procedure UpdateMonitorPage;
 
     property PluginHost: ISharpCenterHost read FPluginHost write FPluginHost;
     property CurrentWP: TWPItem read FCurrentWP write FCurrentWP;
@@ -316,7 +314,7 @@ begin
 
   pnlColorHSL.Visible := chkApplyColor.Checked;
 
-  Self.Height := pnlColor.Height + 50;
+  Self.Height := pnlColor.Height + pnlMonitor.Height + 50;
 
   FPluginHost.Refresh(rtSize);
 end;
@@ -328,7 +326,7 @@ begin
 
   pnlGrad.Visible := chkApplyGrad.Checked;
 
-  Self.Height := pnlGradient.Height + 50;
+  Self.Height := pnlGradient.Height + pnlMonitor.Height + 50;
 
   FPluginHost.Refresh(rtSize);
 end;
@@ -338,20 +336,11 @@ begin
   if not pagWallpaper.Visible then
     exit;
 
-  Self.Height := pnlWallpaper.Height + 50;
+  Self.Height := pnlWallpaper.Height + pnlMonitor.Height + 50;
 
   FPluginHost.Refresh(rtSize);
 end;
 
-procedure TfrmSettingsWnd.UpdateMonitorPage;
-begin
-  if not pagMonitor.Visible then
-    exit;
-
-  Self.Height := pnlMonitor.Height + 50;
-
-  FPluginHost.Refresh(rtSize);
-end;
 
 procedure TfrmSettingsWnd.RenderPreview;
 var
@@ -763,8 +752,6 @@ begin
     UpdateGradientPage
   else if pagWallpaper.Visible then
     UpdateWallpaperPage
-  else
-    UpdateMonitorPage;
 end;
 
 end.

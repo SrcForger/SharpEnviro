@@ -87,7 +87,6 @@ type
 
 procedure TSharpCenterPlugin.AddPluginTabs(ATabItems: TStringList);
 begin
-  ATabItems.AddObject('Monitor', frmSettingsWnd.pagMonitor);
   ATabItems.AddObject('Wallpaper', frmSettingsWnd.pagWallpaper);
   ATabItems.AddObject('Color', frmSettingsWnd.pagColor);
   ATabItems.AddObject('Gradient', frmSettingsWnd.pagGradient);
