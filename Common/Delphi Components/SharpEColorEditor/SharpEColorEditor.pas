@@ -824,7 +824,7 @@ begin
   FColDefinePage.Width := FPageControl.Width-8;
   FColDefinePage.Left := 4;
 
-  FSwatchesPage.Top := FPageControl.Height + 4;
+  FSwatchesPage.Top := FPageControl.TabList.Height + 4;
   FSwatchesPage.Height := FPageControl.Height-FPageControl.TabList.Height-8;
   FSwatchesPage.Width := FPageControl.Width-8;
   FSwatchesPage.Left := 4;
