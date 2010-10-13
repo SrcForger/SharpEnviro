@@ -77,6 +77,7 @@ type
     procedure SaveSettings();
     procedure LoadSettings();
     procedure ShowErrorDetail(AItem: TSharpEListItem);
+    procedure UpdateCaption;
   public
     { Public declarations }
   end;
@@ -88,7 +89,9 @@ var
   bDebug: Boolean;
   bClean : Boolean;
   bZip : Boolean;
+  bDev : Boolean;
   sOutputPath : string;
+  sVersion : string;
   sXMLPath : string;
   
 implementation
@@ -168,6 +171,65 @@ begin
     archive.Compress;
   finally
     archive.Free;
+  end;
+end;
+
+procedure UpdateVersionInfoFile(path : string);
+var
+  versionInfoFilePath : string;
+  versionInfoBackupFilePath : string;
+  versionInfoFile : TextFile;
+  versionInfoBackupFile : TextFile;
+  line : string;
+begin
+  if bDev then
+    Exit;
+    
+  versionInfoFilePath := IncludeTrailingBackslash(path) + 'VersionInfo.rc';
+  versionInfoBackupFilePath := versionInfoFilePath + '.bak';
+
+  if FileExists(versionInfoFilePath) then
+  begin
+    FileCopy(versionInfoFilePath, versionInfoBackupFilePath, True);
+
+    AssignFile(versionInfoFile, versionInfoFilePath);
+    AssignFile(versionInfoBackupFile, versionInfoBackupFilePath);
+    try
+      Rewrite(versionInfoFile);
+      Reset(versionInfoBackupFile);
+      while not Eof(versionInfoBackupFile) do
+      begin
+        Readln(versionInfoBackupFile, line);
+        // The version in the build xml should be using '.' for seprators.
+        // We replace 0.0.0.0 with the version from the xml.
+        line := ReplaceStr(line, '0.0.0.0', sVersion);
+        // We also replace 0,0,0,0 with the version from the xml but adjusted
+        // to use ',' as a separator instead of '.'.
+        line := ReplaceStr(line, '0,0,0,0', ReplaceStr(sVersion, '.', ','));
+        Writeln(versionInfoFile, line);
+      end;
+    finally
+      CloseFile(versionInfoFile);
+      CloseFile(versionInfoBackupFile);
+    end;
+  end;
+end;
+
+procedure RestoreVersionInfoFile(path : string);
+var
+  versionInfoFilePath : string;
+  versionInfoBackupFilePath : string;
+begin
+  if bDev then
+    Exit;
+    
+  versionInfoFilePath := IncludeTrailingBackslash(path) + 'VersionInfo.rc';
+  versionInfoBackupFilePath := versionInfoFilePath + '.bak';
+  
+  if FileExists(versionInfoBackupFilePath) then
+  begin
+    FileCopy(versionInfoBackupFilePath, versionInfoFilePath, True);
+    FileDelete(versionInfoBackupFilePath);
   end;
 end;
 
@@ -405,12 +467,13 @@ var
   succeeded : Boolean;
   buildStart, buildEnd : TDateTime;
 begin
+  LockWindowUpdate(Handle);
   newItem := lbSummary.AddItem('Compiling ' + Project.Name + '...',2);
   newItem.AddSubItem('');
-
   lbSummary.ItemIndex := lbSummary.Count - 1;
   Project.SummaryIndex := lbSummary.Count - 1;
-  
+  LockWindowUpdate(0);
+    
   compiler := TCSharpCompiler.Create;
   compiler.OnCompilerCmdOutput := CompilerNewLine;
   
@@ -456,18 +519,22 @@ begin
   lbSummary.ItemIndex := lbSummary.Count-1;
   Project.SIndex := lbSummary.Count -1;
   LockWindowUpdate(0);
-
+  
   dtStart := Now;
   Log('Build for ' + Project.Name + ' started at ' + FormatDateTime('hh:nn:ss', dtStart));
 
   Project.DIndex := mDetailed.Lines.Count -1;
 
+  UpdateVersionInfoFile(Project.Dir);
+  
   dCompiler := TDelphiCompiler.Create;
   dCompiler.OnCompilerCmdOutput := CompilerNewLine;
 
   succeeded := dCompiler.CompileProject(Project, bDebug);
   dtEnd := Now;
 
+  RestoreVersionInfoFile(Project.Dir);
+  
   if succeeded then
   begin
     sStatus := 'Success! (' + IntToStr(iPercent) + '%)';
@@ -595,6 +662,8 @@ begin
   bDebug := clbOptions.Checked[0];
   bZip := clbOptions.Checked[1];
   bClean := clbOptions.Checked[2];
+  bDev := clbOptions.Checked[3];
+  UpdateCaption;
 end;
 
 procedure TSharpCompileMainWnd.ctvProjectsSelectionChange(Sender: TObject);
@@ -625,6 +694,8 @@ begin
       for n := 0 to xFile.Root.Items.Count - 1 do
       begin
         sOutputPath := xFile.Root.Properties.Value('OutputPath', '..\SharpE');
+        sVersion := xFile.Root.Properties.Value('Version', '0.0.0.0');
+        UpdateCaption;
         with xFile.Root.Items.Item[n] do
         begin
           sPackage := Items.Item[0].Name;
@@ -713,6 +784,8 @@ begin
         clbOptions.Checked[1] := bZip;
         bClean := Properties.BoolValue('Clean', False);
         clbOptions.Checked[2] := bClean;
+        bDev := Properties.BoolValue('Dev', True);
+        clbOptions.Checked[3] := bDev;
         sXMLPath := Properties.Value('XMLPath', '');
       end;
   finally
@@ -764,12 +837,21 @@ begin
       Properties.Add('Debug', bDebug);
       Properties.Add('Zip', bZip);
       Properties.Add('Clean', bClean);
+      Properties.Add('Dev', bDev);
       Properties.Add('XMLPath', sXMLPath);
     end;
     xFile.SaveToFile(sSettingsFile);
   finally
     xFile.Free;
   end
+end;
+
+procedure TSharpCompileMainWnd.UpdateCaption;
+begin
+  if bDev then
+    Caption := 'Sharp Compile - Dev Version'
+  else
+    Caption := 'Sharp Compile - Version ' + sVersion;
 end;
 
 end.

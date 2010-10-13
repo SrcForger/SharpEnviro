@@ -1,4 +1,4 @@
-<SharpCompile OutputPath="..\SharpE">
+<SharpCompile OutputPath="..\SharpE" Version="0.8.0.0">
   <package Name="Resources - Common">
 	<!-- If you have the Delphi IDE open then building the SharpE (Skin) Components will fail. -->
 	<project Name="SharpE Skin Components" Type="Application">Common\Packages\SharpE Skin Components\SharpESkinComponents.dproj</project>

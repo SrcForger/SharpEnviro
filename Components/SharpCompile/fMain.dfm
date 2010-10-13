@@ -1,7 +1,7 @@
 object SharpCompileMainWnd: TSharpCompileMainWnd
   Left = 0
   Top = 0
-  Caption = 'SharpCompile'
+  Caption = 'Sharp Compile'
   ClientHeight = 492
   ClientWidth = 860
   Color = clBtnFace
@@ -1204,7 +1204,8 @@ object SharpCompileMainWnd: TSharpCompileMainWnd
           Items.Strings = (
             'Debug Build'
             'Package - Zip'
-            'Clean')
+            'Clean'
+            'Dev Build')
           TabOrder = 1
           OnClick = clbOptionsClick
         end
@@ -1392,7 +1393,7 @@ object SharpCompileMainWnd: TSharpCompileMainWnd
     Left = 496
     Top = 416
     Bitmap = {
-      494C0101050014002C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010105001400340010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
