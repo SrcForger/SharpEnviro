@@ -41,6 +41,7 @@ uses
   uExecServiceUsedItemList in '..\..\..\Plugins\Services\Exec\uExecServiceUsedItemList.pas',
   SimpleForms in '..\..\Units\SimpleUnits\SimpleForms.pas';
 
+{$R 'VersionInfo.res'}
 {$R *.RES}
 
 { HELPER FUNCTIONS }

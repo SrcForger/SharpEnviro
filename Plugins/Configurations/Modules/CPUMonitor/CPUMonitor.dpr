@@ -51,7 +51,8 @@ uses
   uCPUMonitorWnd in 'uCPUMonitorWnd.pas' {frmCPUMon};
 
 {$E .dll}
-
+         
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 type

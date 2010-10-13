@@ -43,7 +43,8 @@ uses
   SettingsWnd in 'SettingsWnd.pas' {frmSettings};
 
 {$E .dll}
-
+        
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 type

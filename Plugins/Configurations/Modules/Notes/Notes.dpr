@@ -44,7 +44,8 @@ uses
   uNotesWnd in 'uNotesWnd.pas' {frmNotes};
 
 {$E .dll}
-
+            
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 type

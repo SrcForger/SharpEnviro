@@ -7,6 +7,7 @@
     <Projects Include="..\Plugins\Configurations\Services\AliasList\AliasList.dproj" />
     <Projects Include="..\Plugins\Configurations\Services\DeskArea\DeskArea.dproj" />
     <Projects Include="..\Plugins\Configurations\Services\HotkeyList\HotkeyList.dproj" />
+    <Projects Include="..\Plugins\Configurations\Services\MultimediaInputList\MultimediaInputList.dproj" />
     <Projects Include="..\Plugins\Configurations\Services\MultimediaInput\MultimediaInput.dproj" />
     <Projects Include="..\Plugins\Configurations\Services\TaskSwitchEdit\TaskSwitchEdit.dproj" />
     <Projects Include="..\Plugins\Configurations\Services\TaskSwitchList\TaskswitchList.dproj" />
@@ -17,7 +18,7 @@
     <Borland.Personality>Default.Personality</Borland.Personality>
     <Borland.ProjectType />
     <BorlandProject>
-  <BorlandProject xmlns=""> <Default.Personality> </Default.Personality> </BorlandProject></BorlandProject>
+<BorlandProject xmlns=""><Default.Personality></Default.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
   <Target Name="AliasList">
     <MSBuild Projects="..\Plugins\Configurations\Services\AliasList\AliasList.dproj" Targets="" />
@@ -91,14 +92,23 @@
   <Target Name="Weather:Make">
     <MSBuild Projects="..\Plugins\Configurations\Services\Weather\Weather.dproj" Targets="Make" />
   </Target>
+  <Target Name="MultimediaInputList">
+    <MSBuild Projects="..\Plugins\Configurations\Services\MultimediaInputList\MultimediaInputList.dproj" Targets="" />
+  </Target>
+  <Target Name="MultimediaInputList:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Services\MultimediaInputList\MultimediaInputList.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="MultimediaInputList:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Services\MultimediaInputList\MultimediaInputList.dproj" Targets="Make" />
+  </Target>
   <Target Name="Build">
-    <CallTarget Targets="AliasList;DeskArea;HotkeyList;MultimediaInput;TaskSwitchEdit;TaskswitchList;VWM;Weather" />
+    <CallTarget Targets="AliasList;DeskArea;HotkeyList;MultimediaInput;TaskSwitchEdit;TaskswitchList;VWM;Weather;MultimediaInputList" />
   </Target>
   <Target Name="Clean">
-    <CallTarget Targets="AliasList:Clean;DeskArea:Clean;HotkeyList:Clean;MultimediaInput:Clean;TaskSwitchEdit:Clean;TaskswitchList:Clean;VWM:Clean;Weather:Clean" />
+    <CallTarget Targets="AliasList:Clean;DeskArea:Clean;HotkeyList:Clean;MultimediaInput:Clean;TaskSwitchEdit:Clean;TaskswitchList:Clean;VWM:Clean;Weather:Clean;MultimediaInputList:Clean" />
   </Target>
   <Target Name="Make">
-    <CallTarget Targets="AliasList:Make;DeskArea:Make;HotkeyList:Make;MultimediaInput:Make;TaskSwitchEdit:Make;TaskswitchList:Make;VWM:Make;Weather:Make" />
+    <CallTarget Targets="AliasList:Make;DeskArea:Make;HotkeyList:Make;MultimediaInput:Make;TaskSwitchEdit:Make;TaskswitchList:Make;VWM:Make;Weather:Make;MultimediaInputList:Make" />
   </Target>
   <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
 </Project>

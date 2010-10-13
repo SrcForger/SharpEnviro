@@ -14,6 +14,7 @@
     <Projects Include="..\Plugins\Configurations\Modules\Clock\Clock.dproj" />
     <Projects Include="..\Plugins\Configurations\Modules\CPUMonitor\CPUMonitor.dproj" />
     <Projects Include="..\Plugins\Configurations\Modules\KeyboardLayout\KeyboardLayout.dproj" />
+    <Projects Include="..\Plugins\Configurations\Modules\MediaController\MediaController.dproj" />
     <Projects Include="..\Plugins\Configurations\Modules\MemoryMonitor\MemoryMonitor.dproj" />
     <Projects Include="..\Plugins\Configurations\Modules\MenuModule\MenuModule.dproj" />
     <Projects Include="..\Plugins\Configurations\Modules\MiniScmd\MiniScmd.dproj" />
@@ -231,14 +232,23 @@
   <Target Name="ShowDesktop:Make">
     <MSBuild Projects="..\Plugins\Configurations\Modules\ShowDesktop\ShowDesktop.dproj" Targets="Make" />
   </Target>
+  <Target Name="MediaController">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\MediaController\MediaController.dproj" Targets="" />
+  </Target>
+  <Target Name="MediaController:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\MediaController\MediaController.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="MediaController:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Modules\MediaController\MediaController.dproj" Targets="Make" />
+  </Target>
   <Target Name="Build">
-    <CallTarget Targets="AppBarList;AppBarOptions;BatteryMonitor;ButtonBarList;ButtonBarOptions;ButtonModule;Clock;CPUMonitor;KeyboardLayout;MemoryMonitor;MenuModule;MiniScmd;Notes;QuickScript;SystemTray;TaskModule;VolumeControl;VWM;WeatherModule;AlarmClock;RSSReader;ShowDesktop" />
+    <CallTarget Targets="AppBarList;AppBarOptions;BatteryMonitor;ButtonBarList;ButtonBarOptions;ButtonModule;Clock;CPUMonitor;KeyboardLayout;MemoryMonitor;MenuModule;MiniScmd;Notes;QuickScript;SystemTray;TaskModule;VolumeControl;VWM;WeatherModule;AlarmClock;RSSReader;ShowDesktop;MediaController" />
   </Target>
   <Target Name="Clean">
-    <CallTarget Targets="AppBarList:Clean;AppBarOptions:Clean;BatteryMonitor:Clean;ButtonBarList:Clean;ButtonBarOptions:Clean;ButtonModule:Clean;Clock:Clean;CPUMonitor:Clean;KeyboardLayout:Clean;MemoryMonitor:Clean;MenuModule:Clean;MiniScmd:Clean;Notes:Clean;QuickScript:Clean;SystemTray:Clean;TaskModule:Clean;VolumeControl:Clean;VWM:Clean;WeatherModule:Clean;AlarmClock:Clean;RSSReader:Clean;ShowDesktop:Clean" />
+    <CallTarget Targets="AppBarList:Clean;AppBarOptions:Clean;BatteryMonitor:Clean;ButtonBarList:Clean;ButtonBarOptions:Clean;ButtonModule:Clean;Clock:Clean;CPUMonitor:Clean;KeyboardLayout:Clean;MemoryMonitor:Clean;MenuModule:Clean;MiniScmd:Clean;Notes:Clean;QuickScript:Clean;SystemTray:Clean;TaskModule:Clean;VolumeControl:Clean;VWM:Clean;WeatherModule:Clean;AlarmClock:Clean;RSSReader:Clean;ShowDesktop:Clean;MediaController:Clean" />
   </Target>
   <Target Name="Make">
-    <CallTarget Targets="AppBarList:Make;AppBarOptions:Make;BatteryMonitor:Make;ButtonBarList:Make;ButtonBarOptions:Make;ButtonModule:Make;Clock:Make;CPUMonitor:Make;KeyboardLayout:Make;MemoryMonitor:Make;MenuModule:Make;MiniScmd:Make;Notes:Make;QuickScript:Make;SystemTray:Make;TaskModule:Make;VolumeControl:Make;VWM:Make;WeatherModule:Make;AlarmClock:Make;RSSReader:Make;ShowDesktop:Make" />
+    <CallTarget Targets="AppBarList:Make;AppBarOptions:Make;BatteryMonitor:Make;ButtonBarList:Make;ButtonBarOptions:Make;ButtonModule:Make;Clock:Make;CPUMonitor:Make;KeyboardLayout:Make;MemoryMonitor:Make;MenuModule:Make;MiniScmd:Make;Notes:Make;QuickScript:Make;SystemTray:Make;TaskModule:Make;VolumeControl:Make;VWM:Make;WeatherModule:Make;AlarmClock:Make;RSSReader:Make;ShowDesktop:Make;MediaController:Make" />
   </Target>
   <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
 </Project>

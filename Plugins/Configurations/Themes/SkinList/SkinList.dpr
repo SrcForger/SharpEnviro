@@ -48,7 +48,8 @@ uses
   BarForm in '..\..\..\..\Common\Units\BarPreview\BarForm.pas' {BarWnd};
 
 {$E .dll}
-
+                  
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 type

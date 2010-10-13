@@ -37,11 +37,15 @@
     <Borland.ProjectType>VCLApplication</Borland.ProjectType>
     <BorlandProject>
 <BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">0</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">2057</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys></VersionInfoKeys><Excluded_Packages>
+      
+      
       <Excluded_Packages Name="C:\Users\Lee Green\Documents\Borland Studio Projects\Bpl\PngComponentsD9.bpl">Png components</Excluded_Packages>
     </Excluded_Packages><Source><Source Name="MainSource">Startup.DPR</Source></Source></Delphi.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
   <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
   <PropertyGroup>
+    <PreBuildEvent>del "VersionInfo.res"
+brcc32 -v "VersionInfo.rc"</PreBuildEvent>
     <PostBuildEvent>if $(Configuration)==Debug "..\..\..\Common\3rd party\Jedi\MakeJclDbg.exe" -E "$(OUTPUTDIR)$(OUTPUTNAME).map"
 if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
   </PropertyGroup>
@@ -49,6 +53,7 @@ if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
     <DelphiCompile Include="Startup.DPR">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
+    <DCCReference Include="..\..\..\Common\Units\DebugDialog\DebugDialog.pas" />
     <DCCReference Include="..\Exec\FileUtils.pas" />
     <DCCReference Include="uStartup.pas" />
   </ItemGroup>

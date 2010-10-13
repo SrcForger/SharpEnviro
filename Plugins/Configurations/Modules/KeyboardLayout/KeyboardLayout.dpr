@@ -44,7 +44,8 @@ uses
   uKLayoutWnd in 'uKLayoutWnd.pas' {frmKLayout};
 
 {$E .dll}
-
+                        
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 type

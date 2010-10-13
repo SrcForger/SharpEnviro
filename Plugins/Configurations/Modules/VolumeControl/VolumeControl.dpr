@@ -47,7 +47,8 @@ uses
   uVolumeControlWnd in 'uVolumeControlWnd.pas' {frmVolumeControl};
 
 {$E .dll}
-
+         
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 type

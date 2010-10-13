@@ -48,7 +48,8 @@ uses
   uButtonBarList in 'uButtonBarList.pas';
 
 {$E .dll}
-
+        
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 type

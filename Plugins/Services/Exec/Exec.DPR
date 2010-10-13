@@ -41,6 +41,7 @@ uses
   uExecServiceUsedItemList in 'uExecServiceUsedItemList.pas',
   uAliasList in '..\..\..\Common\Units\AliasList\uAliasList.pas';
 
+{$R 'VersionInfo.res'}  
 {$R *.RES}
 
 // Free all service resources

@@ -59,7 +59,8 @@ uses
   uSettingsWnd in 'uSettingsWnd.pas' {frmSettingsWnd};
 
 {$E .dll}
-
+            
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 type

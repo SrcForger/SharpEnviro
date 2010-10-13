@@ -44,7 +44,8 @@ uses
   uAlarmClockWnd in 'uAlarmClockWnd.pas' {frmAlarmClock};
 
 {$E .dll}
-
+                      
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 type

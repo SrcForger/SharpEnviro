@@ -46,6 +46,11 @@ uses
   uEditWnd in 'uEditWnd.pas' {frmEditWnd},
   uAppCommandList in '..\..\..\Services\MultimediaInput\uAppCommandList.pas';
 
+{$E .dll}
+
+{$R 'VersionInfo.res'}
+{$R *.res}
+
 type
   TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin, ISharpCenterPluginEdit)
   private

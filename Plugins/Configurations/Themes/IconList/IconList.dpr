@@ -51,7 +51,8 @@ uses
   uListWnd in 'uListWnd.pas' {frmListWnd};
 
 {$E .dll}
-
+     
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 type

@@ -50,6 +50,7 @@ uses
   uEditWnd in 'uEditWnd.pas' {frmEditWnd},
   uSchemeList in 'uSchemeList.pas';
 
+{$R 'VersionInfo.res'}
 {$R *.RES}
 
 type

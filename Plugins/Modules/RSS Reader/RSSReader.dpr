@@ -26,6 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 library RSSReader;
 
 {$R 'res\rssglyphs.res'}
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 uses

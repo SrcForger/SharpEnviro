@@ -43,7 +43,8 @@ uses
   uRSSReaderWnd in 'uRSSReaderWnd.pas' {frmRSSReader};
 
 {$E .dll}
-
+                    
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 type

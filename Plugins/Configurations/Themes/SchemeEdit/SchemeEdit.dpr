@@ -47,6 +47,7 @@ uses
   {$IFDEF DEBUG}DebugDialog in '..\..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   uEditWnd in 'uEditWnd.pas' {frmEditWnd};
 
+{$R 'VersionInfo.res'}
 {$R *.RES}
 
 type

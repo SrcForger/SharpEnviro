@@ -43,7 +43,8 @@ uses
   uClockWnd in 'uClockWnd.pas' {frmClock};
 
 {$E .dll}
-
+                 
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 type

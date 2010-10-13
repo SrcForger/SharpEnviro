@@ -41,7 +41,7 @@ uses
   MMSystem,
   Math,
   SharpTypes,
-  DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',
+  {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   SharpNotify in '..\..\..\Common\Units\SharpNotify\SharpNotify.pas',
   SoundControls in '..\..\Modules\VolumeControl\SoundControls.pas',
   MediaPlayerList in '..\..\Modules\MediaController\MediaPlayerList.pas',
@@ -68,7 +68,8 @@ var
   sOSDHorizPos : THorizontalPos;
   MPlayers : TMediaPlayerList;
   AppCmdList : TAppCommandList;
-
+  
+{$R 'VersionInfo.res'}
 {$R *.RES}
 
 procedure ShowOSD(pCaption : String);

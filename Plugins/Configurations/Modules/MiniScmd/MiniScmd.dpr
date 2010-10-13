@@ -44,7 +44,8 @@ uses
   uMiniScmdWnd in 'uMiniScmdWnd.pas' {frmMiniScmd};
 
 {$E .dll}
-
+            
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 type

@@ -61,6 +61,7 @@ type
       procedure SetSkinInterface(Value : ISharpESkinInterface); override;
   end;
 
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 { TInterfacedSharpBarModule }

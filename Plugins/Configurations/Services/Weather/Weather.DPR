@@ -26,6 +26,7 @@ uses
 
 {$E dll}
 
+{$R 'VersionInfo.res'}
 {$R *.RES}
 
 type

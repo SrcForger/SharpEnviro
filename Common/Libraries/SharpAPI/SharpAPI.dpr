@@ -49,6 +49,7 @@ uses
   uSystemFuncs in '..\..\Units\SystemFuncs\uSystemFuncs.pas',
   SharpTypes in '..\..\Units\SharpTypes\SharpTypes.pas';
 
+{$R 'VersionInfo.res'}
 {$R *.RES}
 
 const

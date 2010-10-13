@@ -49,7 +49,8 @@ uses
   uVWMsWnd in 'uVWMsWnd.pas' {frmVWM};
 
 {$E .dll}
-
+         
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 type

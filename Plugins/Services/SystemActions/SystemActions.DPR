@@ -116,6 +116,7 @@ const
   RFF_NOLABEL = 8; // Removes the edit box label.
   RFF_NOSEPARATEMEM = 14; // Removes the Separate Memory Space check box (Windows NT only)
 
+{$R 'VersionInfo.res'}
 {$R *.RES}
 
 function SwitchToThisWindow(Wnd: hwnd; fAltTab: boolean): boolean; stdcall; external 'user32.dll';

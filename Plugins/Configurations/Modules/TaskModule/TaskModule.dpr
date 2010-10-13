@@ -48,7 +48,8 @@ uses
   uEditWnd in 'uEditWnd.pas' {frmEdit};
 
 {$E .dll}
-
+         
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 type

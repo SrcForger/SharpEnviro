@@ -60,6 +60,7 @@ type
       procedure SetLeft(Value : integer); override;
   end;
 
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 { TInterfacedSharpBarModule }

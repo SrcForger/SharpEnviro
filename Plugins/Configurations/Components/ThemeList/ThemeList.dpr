@@ -26,6 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 library ThemeList;
 
 {$R 'ThemeListGlyphs.res'}
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 uses

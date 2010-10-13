@@ -35,7 +35,11 @@
     <Borland.Personality>Delphi.Personality</Borland.Personality>
     <Borland.ProjectType />
     <BorlandProject>
-<BorlandProject><Delphi.Personality><Parameters><Parameters Name="HostApplication">..\..\..\..\SharpE\SharpDesk.exe</Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters><Parameters Name="DebugCWD">..\..\..\..\SharpE\</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">True</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">0</VersionInfo><VersionInfo Name="MinorVer">8</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">2057</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName">SharpE Development Team</VersionInfoKeys><VersionInfoKeys Name="FileDescription">Add a clock to desktop</VersionInfoKeys><VersionInfoKeys Name="FileVersion">0.8.0.0</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename">clock.dll</VersionInfoKeys><VersionInfoKeys Name="ProductName">Clock Object</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">0.8.0.0</VersionInfoKeys><VersionInfoKeys Name="Author">Billi Berserker, Delusional</VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">Clock.dpr</Source></Source><Excluded_Packages>
+<BorlandProject><Delphi.Personality><Parameters><Parameters Name="HostApplication">..\..\..\..\SharpE\SharpDesk.exe</Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters><Parameters Name="DebugCWD">..\..\..\..\SharpE\</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">0</VersionInfo><VersionInfo Name="MinorVer">8</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">2057</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName">SharpE Development Team</VersionInfoKeys><VersionInfoKeys Name="FileDescription">Add a clock to desktop</VersionInfoKeys><VersionInfoKeys Name="FileVersion">0.8.0.0</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename">clock.dll</VersionInfoKeys><VersionInfoKeys Name="ProductName">Clock Object</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">0.8.0.0</VersionInfoKeys><VersionInfoKeys Name="Author">Billi Berserker, Delusional</VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">Clock.dpr</Source></Source><Excluded_Packages>
+      
+      
+      
+      
       
       
       
@@ -82,9 +86,16 @@
     <DCCReference Include="..\..\..\Common\Libraries\SharpThemeApiEx\uThemeConsts.p" />
     <DCCReference Include="..\..\..\Common\Libraries\SharpThemeApiEx\uThemeConsts.pa" />
     <DCCReference Include="..\..\..\Common\Libraries\SharpThemeApiEx\uThemeConsts.pas" />
+    <DCCReference Include="..\..\..\Common\Units\DebugDialog\DebugDialog.pas" />
     <DCCReference Include="..\..\..\Common\Units\SharpFX\graphicsFX.pas" />
     <DCCReference Include="..\..\..\Common\Units\SharpFX\SharpFX.pas" />
     <DCCReference Include="ClockObjectXMLSettings.pas" />
     <DCCReference Include="uClockObjectLayer.pas" />
   </ItemGroup>
+  <PropertyGroup>
+    <PreBuildEvent>del "VersionInfo.res"
+brcc32 -v "VersionInfo.rc"</PreBuildEvent>
+    <PostBuildEvent>if $(Configuration)==Debug "..\..\..\Common\3rd party\Jedi\MakeJclDbg.exe" -E "$(OUTPUTDIR)$(OUTPUTNAME).map"
+if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

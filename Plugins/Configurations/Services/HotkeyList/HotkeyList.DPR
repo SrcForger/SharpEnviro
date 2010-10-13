@@ -46,6 +46,10 @@ uses
   uEditWnd in 'uEditWnd.pas' {frmEditWnd},
   uHotkeyServiceGeneral in 'uHotkeyServiceGeneral.pas';
 
+{$E .dll}
+
+{$R 'VersionInfo.res'}
+
 type
   TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin, ISharpCenterPluginEdit,
     ISharpCenterPluginValidation )

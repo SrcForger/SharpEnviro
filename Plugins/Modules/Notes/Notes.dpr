@@ -27,6 +27,7 @@ library Notes;
 
 {$R 'res\glyphs.res'}
 {$R 'res\Preview.res'}
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 uses

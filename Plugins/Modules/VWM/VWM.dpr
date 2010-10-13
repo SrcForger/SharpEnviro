@@ -62,6 +62,7 @@ type
       procedure SetSize(Value : integer); override;
   end;
 
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 { TInterfacedSharpBarModule }

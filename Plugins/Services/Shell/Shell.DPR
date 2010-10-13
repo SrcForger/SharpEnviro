@@ -130,6 +130,7 @@ type
     property ScreenChange : Boolean read FScreenChange write FScreenChange;
   end;
 
+{$R 'VersionInfo.res'}
 {$R *.RES}
 
 {$WARN SYMBOL_PLATFORM OFF}

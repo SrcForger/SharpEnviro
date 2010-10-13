@@ -45,7 +45,8 @@ uses
   uQuickScriptWnd in 'uQuickScriptWnd.pas' {frmQuickScript};
 
 {$E .dll}
-
+          
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 type

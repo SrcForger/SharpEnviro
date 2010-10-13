@@ -27,6 +27,7 @@ library QuickScript;
 
 {$R 'res\icons.res'}
 {$R 'res\Preview.res'}
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 uses

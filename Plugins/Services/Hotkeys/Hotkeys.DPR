@@ -41,6 +41,8 @@ uses
 
 {$E dll}
 
+{$R 'VersionInfo.res'}
+
 procedure Stop;
 begin
   HKService.UnregisterAllKeys;

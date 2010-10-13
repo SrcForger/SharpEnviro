@@ -40,6 +40,7 @@ uses
   GR32_Transforms,
   uSharpDeskTDeskSettings,
   uSharpDeskFunctions,
+  {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   SharpDeskApi in '..\..\..\Common\Libraries\SharpDeskApi\SharpDeskApi.pas',
   SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
@@ -49,6 +50,7 @@ uses
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
   ClockObjectXMLSettings in 'ClockObjectXMLSettings.pas';
 
+{$R 'VersionInfo.res'}
 {$R *.RES}
 
 const

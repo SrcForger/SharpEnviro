@@ -52,6 +52,7 @@ uses
 
 {$R *.RES}
 {$R icons.res}
+{$R 'VersionInfo.res'}
 
 const
      SDM_DEBUG = 0;           // Perform some Debug Action

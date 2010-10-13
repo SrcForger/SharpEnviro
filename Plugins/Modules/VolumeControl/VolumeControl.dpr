@@ -26,6 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 library VolumeControl;
 
 {$R 'res\glyphs.res'}
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 uses

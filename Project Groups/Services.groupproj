@@ -5,8 +5,9 @@
   <ItemGroup />
   <ItemGroup>
     <Projects Include="..\Plugins\Services\Actions\Actions.dproj" />
-    <Projects Include="..\Plugins\Services\Cursors\cursors.dproj" />
+    <Projects Include="..\Plugins\Services\Cursors\Cursors.dproj" />
     <Projects Include="..\Plugins\Services\DDEServer\DDEServer.dproj" />
+    <Projects Include="..\Plugins\Services\Debug\Debug.dproj" />
     <Projects Include="..\Plugins\Services\Exec\Exec.dproj" />
     <Projects Include="..\Plugins\Services\Hotkeys\Hotkeys.dproj" />
     <Projects Include="..\Plugins\Services\MultimediaInput\MultimediaInput.dproj" />
@@ -78,14 +79,14 @@
   <Target Name="Actions:Make">
     <MSBuild Projects="..\Plugins\Services\Actions\Actions.dproj" Targets="Make" />
   </Target>
-  <Target Name="cursors">
-    <MSBuild Projects="..\Plugins\Services\Cursors\cursors.dproj" Targets="" />
+  <Target Name="Cursors">
+    <MSBuild Projects="..\Plugins\Services\Cursors\Cursors.dproj" Targets="" />
   </Target>
-  <Target Name="cursors:Clean">
-    <MSBuild Projects="..\Plugins\Services\Cursors\cursors.dproj" Targets="Clean" />
+  <Target Name="Cursors:Clean">
+    <MSBuild Projects="..\Plugins\Services\Cursors\Cursors.dproj" Targets="Clean" />
   </Target>
-  <Target Name="cursors:Make">
-    <MSBuild Projects="..\Plugins\Services\Cursors\cursors.dproj" Targets="Make" />
+  <Target Name="Cursors:Make">
+    <MSBuild Projects="..\Plugins\Services\Cursors\Cursors.dproj" Targets="Make" />
   </Target>
   <Target Name="TaskSwitch">
     <MSBuild Projects="..\Plugins\Services\TaskSwitch\TaskSwitch.dproj" Targets="" />
@@ -141,14 +142,23 @@
   <Target Name="DDEServer:Make">
     <MSBuild Projects="..\Plugins\Services\DDEServer\DDEServer.dproj" Targets="Make" />
   </Target>
+  <Target Name="Debug">
+    <MSBuild Projects="..\Plugins\Services\Debug\Debug.dproj" Targets="" />
+  </Target>
+  <Target Name="Debug:Clean">
+    <MSBuild Projects="..\Plugins\Services\Debug\Debug.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Debug:Make">
+    <MSBuild Projects="..\Plugins\Services\Debug\Debug.dproj" Targets="Make" />
+  </Target>
   <Target Name="Build">
-    <CallTarget Targets="Exec;Hotkeys;SkinController;Startup;Weather;Actions;cursors;TaskSwitch;SystemActions;VWM;MultimediaInput;Shell;DDEServer" />
+    <CallTarget Targets="Exec;Hotkeys;SkinController;Startup;Weather;Actions;Cursors;TaskSwitch;SystemActions;VWM;MultimediaInput;Shell;DDEServer;Debug" />
   </Target>
   <Target Name="Clean">
-    <CallTarget Targets="Exec:Clean;Hotkeys:Clean;SkinController:Clean;Startup:Clean;Weather:Clean;Actions:Clean;cursors:Clean;TaskSwitch:Clean;SystemActions:Clean;VWM:Clean;MultimediaInput:Clean;Shell:Clean;DDEServer:Clean" />
+    <CallTarget Targets="Exec:Clean;Hotkeys:Clean;SkinController:Clean;Startup:Clean;Weather:Clean;Actions:Clean;Cursors:Clean;TaskSwitch:Clean;SystemActions:Clean;VWM:Clean;MultimediaInput:Clean;Shell:Clean;DDEServer:Clean;Debug:Clean" />
   </Target>
   <Target Name="Make">
-    <CallTarget Targets="Exec:Make;Hotkeys:Make;SkinController:Make;Startup:Make;Weather:Make;Actions:Make;cursors:Make;TaskSwitch:Make;SystemActions:Make;VWM:Make;MultimediaInput:Make;Shell:Make;DDEServer:Make" />
+    <CallTarget Targets="Exec:Make;Hotkeys:Make;SkinController:Make;Startup:Make;Weather:Make;Actions:Make;Cursors:Make;TaskSwitch:Make;SystemActions:Make;VWM:Make;MultimediaInput:Make;Shell:Make;DDEServer:Make;Debug:Make" />
   </Target>
   <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
 </Project>

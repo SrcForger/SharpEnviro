@@ -58,6 +58,7 @@ uses
 
 {$R *.RES}
 {$R icons.res}
+{$R 'VersionInfo.res'}
 // {$EXTENSION obj}
 
 const

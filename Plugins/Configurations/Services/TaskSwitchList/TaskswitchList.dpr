@@ -45,6 +45,7 @@ uses
   uEditWnd in 'uEditWnd.pas' {frmEdit},
   uTaskswitchUtility in 'uTaskswitchUtility.pas';
 
+{$R 'VersionInfo.res'}
 {$R *.RES}
 
 type

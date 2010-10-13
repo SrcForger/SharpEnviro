@@ -40,6 +40,7 @@ uses
   GR32_Layers,
   GR32_Transforms,
   PngImageList,
+  {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   uDriveObjectLayer in 'uDriveObjectLayer.pas',
   DriveObjectXMLSettings in 'DriveObjectXMLSettings.pas',
   uSharpDeskTDeskSettings,
@@ -50,6 +51,7 @@ uses
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas';
 
 {$R *.RES}
+{$R 'VersionInfo.res'}
 {$R icons.res}
 // {$EXTENSION obj}
 

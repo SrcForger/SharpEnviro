@@ -50,7 +50,8 @@ uses
   uWeatherOptions in '..\..\..\Services\Weather\uWeatherOptions.pas';
 
 {$E .dll}
-
+          
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 type

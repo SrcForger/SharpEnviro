@@ -41,6 +41,7 @@ uses
   uWeatherOptions in 'uWeatherOptions.pas',
   uWeatherMgr in 'uWeatherMgr.pas';
 
+{$R 'VersionInfo.res'}
 {$R *.RES}
 
 type

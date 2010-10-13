@@ -37,7 +37,7 @@ uses
   uStartup in 'uStartup.pas',
   FileUtils in '..\Exec\FileUtils.pas';
 
-
+{$R 'VersionInfo.res'}
 {$R *.RES}
 
 //starts the service

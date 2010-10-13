@@ -47,6 +47,7 @@ uses
   uThemeList in 'uThemeList.pas',
   uIThemeList in 'uIThemeList.pas';
 
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 var

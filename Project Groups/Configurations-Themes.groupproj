@@ -13,12 +13,13 @@
     <Projects Include="..\Plugins\Configurations\Themes\SchemeList\SchemeList.dproj" />
     <Projects Include="..\Plugins\Configurations\Themes\SkinList\SkinList.dproj" />
     <Projects Include="..\Plugins\Configurations\Themes\Wallpaper\Wallpaper.dproj" />
+    <Projects Include="..\Plugins\Configurations\Themes\WeatherIcons\WeatherIcons.dproj" />
   </ItemGroup>
   <ProjectExtensions>
     <Borland.Personality>Default.Personality</Borland.Personality>
     <Borland.ProjectType />
     <BorlandProject>
-  <BorlandProject xmlns=""> <Default.Personality> </Default.Personality> </BorlandProject></BorlandProject>
+<BorlandProject xmlns=""><Default.Personality></Default.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
   <Target Name="CursorList">
     <MSBuild Projects="..\Plugins\Configurations\Themes\CursorList\CursorList.dproj" Targets="" />
@@ -101,14 +102,23 @@
   <Target Name="Wallpaper:Make">
     <MSBuild Projects="..\Plugins\Configurations\Themes\Wallpaper\Wallpaper.dproj" Targets="Make" />
   </Target>
+  <Target Name="WeatherIcons">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\WeatherIcons\WeatherIcons.dproj" Targets="" />
+  </Target>
+  <Target Name="WeatherIcons:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\WeatherIcons\WeatherIcons.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="WeatherIcons:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Themes\WeatherIcons\WeatherIcons.dproj" Targets="Make" />
+  </Target>
   <Target Name="Build">
-    <CallTarget Targets="CursorList;DesktopTheme;Font;Glass;IconList;SchemeEdit;SchemeList;SkinList;Wallpaper" />
+    <CallTarget Targets="CursorList;DesktopTheme;Font;Glass;IconList;SchemeEdit;SchemeList;SkinList;Wallpaper;WeatherIcons" />
   </Target>
   <Target Name="Clean">
-    <CallTarget Targets="CursorList:Clean;DesktopTheme:Clean;Font:Clean;Glass:Clean;IconList:Clean;SchemeEdit:Clean;SchemeList:Clean;SkinList:Clean;Wallpaper:Clean" />
+    <CallTarget Targets="CursorList:Clean;DesktopTheme:Clean;Font:Clean;Glass:Clean;IconList:Clean;SchemeEdit:Clean;SchemeList:Clean;SkinList:Clean;Wallpaper:Clean;WeatherIcons:Clean" />
   </Target>
   <Target Name="Make">
-    <CallTarget Targets="CursorList:Make;DesktopTheme:Make;Font:Make;Glass:Make;IconList:Make;SchemeEdit:Make;SchemeList:Make;SkinList:Make;Wallpaper:Make" />
+    <CallTarget Targets="CursorList:Make;DesktopTheme:Make;Font:Make;Glass:Make;IconList:Make;SchemeEdit:Make;SchemeList:Make;SkinList:Make;Wallpaper:Make;WeatherIcons:Make" />
   </Target>
   <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
 </Project>

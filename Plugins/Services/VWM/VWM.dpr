@@ -45,6 +45,7 @@ uses
   uSystemFuncs in '..\..\..\Common\Units\SystemFuncs\uSystemFuncs.pas',
   SharpNotify in '..\..\..\Common\Units\SharpNotify\SharpNotify.pas';
 
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 type

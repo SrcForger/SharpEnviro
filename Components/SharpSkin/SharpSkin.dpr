@@ -4,6 +4,7 @@ uses
   Forms,
   MainWnd in 'MainWnd.pas' {MainForm};
 
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 begin

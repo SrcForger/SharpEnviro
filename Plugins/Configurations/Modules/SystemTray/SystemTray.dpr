@@ -46,7 +46,8 @@ uses
   SharpCenterThemeAPI in '..\..\..\..\Common\Libraries\SharpCenterApi\SharpCenterThemeAPI.pas';
 
 {$E .dll}
-
+           
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 type

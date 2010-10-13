@@ -41,6 +41,7 @@ uses
   {$IFDEF DEBUG}DebugDialog in '..\..\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   SharpApi;
 
+{$R 'VersionInfo.res'}
 {$R *.RES}
 
 var

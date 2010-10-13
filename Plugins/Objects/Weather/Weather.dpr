@@ -42,6 +42,7 @@ uses
   GR32_Transforms,
   GR32_Resamplers,
   PngImageList,
+  {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   WeatherObjectXMLSettings in 'WeatherObjectXMLSettings.pas',
   uSharpDeskTDeskSettings,
   uSharpDeskFunctions,
@@ -54,6 +55,7 @@ uses
   uWeatherOptions in '..\..\Services\Weather\uWeatherOptions.pas';
 
 {$R *.RES}
+{$R 'VersionInfo.res'}
 {$R icons.RES}
 
 

@@ -45,12 +45,13 @@ uses
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uSharpCenterPluginScheme,
-  DebugDialog in '..\..\..\..\Common\Units\DebugDialog\DebugDialog.pas',
+  {$IFDEF DEBUG}DebugDialog in '..\..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   uEditWnd in 'uEditWnd.pas' {frmEdit},
   MediaPlayerList in '..\..\..\Modules\MediaController\MediaPlayerList.pas';
 
 {$E .dll}
 
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 type

@@ -40,6 +40,7 @@ const
 var
   dllHandle : THandle;
 
+{$R 'VersionInfo.res'}
 {$R *.RES}
 
 function Start(owner: hwnd): hwnd;

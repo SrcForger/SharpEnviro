@@ -41,6 +41,7 @@ uses
   uCursorsServiceManager in 'uCursorsServiceManager.pas',
   uCursorsServiceSettings in 'uCursorsServiceSettings.pas';
 
+{$R 'VersionInfo.res'}
 {$R *.RES}
 
 procedure Stop;

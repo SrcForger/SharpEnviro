@@ -70,8 +70,8 @@ var
   ThreadID : dword;
   DebugLog : TDebugLog;
 
+{$R 'VersionInfo.res'}
 {$R *.RES}
-
 
 function msgThread(): LongInt; stdcall;
 var

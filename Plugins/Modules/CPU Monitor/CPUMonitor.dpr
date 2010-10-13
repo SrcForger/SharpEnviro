@@ -69,7 +69,8 @@ type
 
 var
   CurrentCPUUsage : TCPUUsage;
-  
+
+{$R 'VersionInfo.res'}  
 {$R *.res}
 
 { TInterfacedSharpBarModule }

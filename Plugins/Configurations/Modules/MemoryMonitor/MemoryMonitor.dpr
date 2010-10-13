@@ -45,7 +45,8 @@ uses
   uMMWnd in 'uMMWnd.pas' {frmMM};
 
 {$E .dll}
-
+           
+{$R 'VersionInfo.res'}
 {$R *.res}
 
 type

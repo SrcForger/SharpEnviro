@@ -46,6 +46,7 @@ uses
   uActionServiceList in 'uActionServiceList.pas',
   uActionServiceManager in 'uActionServiceManager.pas';
 
+{$R 'VersionInfo.res'}
 {$R *.RES}
 
 function Start(owner: hwnd): hwnd;
