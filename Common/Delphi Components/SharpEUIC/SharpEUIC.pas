@@ -252,13 +252,19 @@ begin
   if FHasChanged then
   begin
     FResetBtn.Visible := True;
-    FResetBtn.Top := 8;
+    FResetBtn.Top := 2;
+    FResetBtn.Left := Width - 4 - FResetBtn.Width;
     FResetBtn.Height := 24;
     FResetBtn.Width := 24;
 
     if FMonitorControl <> nil then
-      FResetBtn.Left := TWinControl(FMonitorControl).Left + TWinControl(FMonitorControl).Width else
-      FResetBtn.Left := Width - 4 - FResetBtn.Width;
+    begin
+      if FMonitorControl is TSharpEColorEditorEx then
+        FResetBtn.Top := 8;
+
+      //FResetBtn.Top := TWinControl(FMonitorControl).Top;
+      FResetBtn.Left := TWinControl(FMonitorControl).Left + TWinControl(FMonitorControl).Width;
+    end;
   end else
     FResetBtn.Visible := False;
 end;

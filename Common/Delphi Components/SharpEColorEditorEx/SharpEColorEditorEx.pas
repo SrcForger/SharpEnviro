@@ -651,7 +651,10 @@ begin
     Self.Padding.Right := 0;
 
   for i := 0 to Pred(FItems.Count) do
-    FItems.Item[i].ColorEditor.UpdateSize;
+  begin
+    if Assigned(FItems.Item[i].ColorEditor) then
+      FItems.Item[i].ColorEditor.UpdateSize;
+  end;
 end;
 
 procedure TSharpEColorEditorEx.SetBackgroundColor(const Value: TColor);

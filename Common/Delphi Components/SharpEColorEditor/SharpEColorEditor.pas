@@ -764,7 +764,8 @@ end;
 
 procedure TSharpEColorEditor.UpdateSize;
 begin
-  FPageControl.UpdateSize;
+  if Assigned(FPageControl) then
+    FPageControl.UpdateSize;
 
   case FValueEditorType of
     vetColor: ResizeDefineColsPage;
