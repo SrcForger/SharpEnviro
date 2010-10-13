@@ -18,4 +18,25 @@
     <Target>shell:ControlPanel</Target>
     <Icon>icon.system.settings</Icon>
   </item>
+  <item>
+    <type>separator</type>
+  </item>
+  <item>
+    <type>link</type>
+    <Caption>User Settings Directory</Caption>
+    <Target>sharpe:usersettings</Target>
+    <Icon>icon.folder.documents</Icon>
+  </item>
+  <item>
+    <type>link</type>
+    <Caption>Global Settings Directory</Caption>
+    <Target>sharpe:globalsettings</Target>
+    <Icon>icon.system.settings</Icon>
+  </item>
+  <item>
+    <type>link</type>
+    <Caption>SharpE Directory</Caption>
+    <Target>sharpe:directory</Target>
+    <Icon>icon.folder</Icon>
+  </item>
 </SharpEMenuFile>
