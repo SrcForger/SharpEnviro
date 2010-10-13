@@ -1205,7 +1205,7 @@ object SharpCompileMainWnd: TSharpCompileMainWnd
             'Debug Build'
             'Package - Zip'
             'Clean'
-            'Dev Build')
+            'Dev Version')
           TabOrder = 1
           OnClick = clbOptionsClick
         end
