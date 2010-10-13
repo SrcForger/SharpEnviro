@@ -11,11 +11,15 @@ uses
   Controls,
   Forms,
   StdCtrls,
+  SharpApi,
   SharpEColorEditor,
   SharpThemeApiEx,
   SharpESwatchManager;
 
 type
+  TExpandCollapse = procedure(ASender: TObject) of
+    object;
+
   TSharpEColorEditorExItem = class(TCollectionItem)
   private
     FTitle: string;
@@ -122,6 +126,7 @@ type
     FUpdate: Boolean;
     FOnChangeColor: tvaluechangeevent;
     FOnUiChange: TNotifyEvent;
+    FOnExpandCollapse: TExpandCollapse;
     FBorderColor: TColor;
     FContainerTextColor: TColor;
     FContainerColor: TColor;
@@ -161,6 +166,7 @@ type
     property OnChangeColor: tvaluechangeevent read FOnChangeColor write
       FOnChangeColor;
     property OnUiChange: TNotifyEvent read FOnUiChange write FOnUiChange;
+    property OnExpandCollapse: TExpandCollapse read FOnExpandCollapse write FOnExpandCollapse;
 
     property BorderColor: TColor read FBorderColor write SetBorderColor;
     property BackgroundColor : TColor read FBackgroundColor write SetBackgroundColor;
@@ -284,20 +290,16 @@ begin
 
   if ((TSharpEColorEditor(Sender).GetTabIndex = FLastTab) and
     (TSharpEColorEditor(Sender) = FLastColorEditor) and
-    (TSharpEColorEditor(Sender).Expanded)) then begin
-    bExpand := False;
-  end
-  else begin
+    (TSharpEColorEditor(Sender).Expanded)) then
+    bExpand := False
+  else
     bExpand := True;
-  end;
 
   FLastTab := FColorEditor.GetTabIndex;
   FLastColorEditor := FColorEditor;
 
-  if FParent <> nil then begin
-    //TSharpEColorEditorEx(FParent).DisableAlign;
+  if FParent <> nil then
     TSharpEColorEditorEx(FParent).DisableAutoRange;
-  end;
 
   // collapse all
   LockWindowUpdate(TSharpEColorEditorEx(FParent).Handle);
@@ -325,15 +327,19 @@ begin
     LockWindowUpdate(0);
   end;
 
-  if FParent <> nil then begin
-    //TSharpEColorEditorEx(FParent).EnableAlign;
+  if FParent <> nil then
+  begin
     TSharpEColorEditorEx(FParent).EnableAutoRange;
     TSharpEColorEditorEx(FParent).ScrollInView(FColorEditor);
   end;
 
   FColorEditor.SwatchManager :=
     TSharpEColorEditorEx(FParent).SwatchManager;
+	
+  if Assigned(TSharpEColorEditorEx(FParent).OnExpandCollapse) then
+    TSharpEColorEditorEx(FParent).OnExpandCollapse(Self);
 
+  TSharpEColorEditorEx(FParent).ResizeEvent(nil);
 end;
 
 function TSharpEColorEditorExItem.GetColorCode: Integer;
@@ -356,11 +362,11 @@ procedure TSharpEColorEditorExItem.SetParseColor(const Value: string);
 var
   col: TColor;
 begin
-
   try
     col := GetCurrentTheme.Scheme.ParseColor(Value);
 
-    if FColorEditor <> nil then begin
+    if FColorEditor <> nil then
+    begin
       FColorEditor.OverrideSliderUpdateMode(sumAll);
       FColorEditor.Value := col;
     end;
@@ -582,8 +588,8 @@ begin
         TSharpEColorEditor(Components[i]).Free;
       end;
 
-    for i := 0 to Pred(FItems.Count) do begin
-
+    for i := 0 to Pred(FItems.Count) do
+    begin
       tmp := TSharpEColorEditor.Create(Self);
       tmp.Parent := self;
       tmp.SwatchManager := FSwatchManager;
@@ -605,7 +611,6 @@ begin
       tmp.ValueMax := FItems.Item[i].ValueMax;
       if tmp.ValueMax = 0 then
         tmp.ValueMax := 255;
-      
 
       tmp.ValueMin := FItems.Item[i].ValueMin;
       tmp.Description := FItems.Item[i].Description;
@@ -625,9 +630,7 @@ begin
       tmp.Height := 24;
       tmp.Visible := FItems.Item[i].Visible;
     end;
-
   finally
-
     Self.EnableAlign;
     Self.EnableAutoRange;
     Self.Updated;
@@ -636,6 +639,8 @@ begin
 end;
 
 procedure TSharpEColorEditorEx.ResizeEvent(Sender: TObject);
+var
+  i : integer;
 begin
   if ((FSwatchManager <> nil) and (FUpdate)) then
     FSwatchManager.Resize;
@@ -645,6 +650,8 @@ begin
   else
     Self.Padding.Right := 0;
 
+  for i := 0 to Pred(FItems.Count) do
+    FItems.Item[i].ColorEditor.UpdateSize;
 end;
 
 procedure TSharpEColorEditorEx.SetBackgroundColor(const Value: TColor);

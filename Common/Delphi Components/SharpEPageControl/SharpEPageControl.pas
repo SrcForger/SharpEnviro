@@ -8,10 +8,12 @@ uses
   Graphics,
   Controls,
   Forms,
+  SysUtils,
   SharpERoundPanel,
   SharpETabList,
   ExtCtrls,
-  pngimagelist;
+  pngimagelist,
+  SharpApi;
 
 type
   TSharpEPageControl = class(TCustomPanel)
@@ -84,9 +86,13 @@ type
     procedure SetPageBackgroundColor(const Value: TColor);
   protected
     procedure Loaded; override;
+
   public
     constructor Create(AOwner: TComponent); override;
     procedure BeforeDestruction; override;
+
+    procedure UpdateSize;
+
     property TabList: TSharpETabList read FTabList write FTabList;
     property Minimized: Boolean read GetMinimized write SetMinimized;
     property TabControlVisible: boolean read FTabControlVisible write SetTabControlVisible;
@@ -135,8 +141,6 @@ type
     property OnTabClick: TSharpETabClick read GetOnTabClick write SetOnTabClick;
     property OnBtnClick: TSharpEBtnClick read GetOnBtnClick write SetOnBtnClick;
 
-    procedure ResizeEvent(Sender: TObject);
-
   end;
 
 procedure Register;
@@ -163,7 +167,6 @@ begin
   inherited Create(AOwner);
   Self.BevelInner := bvNone;
   Self.BevelOuter := bvNone;
-  Self.OnResize := ResizeEvent;
   Self.TabControlVisible := True;
   Height := 200;
   ExpandedHeight := 200;
@@ -192,6 +195,7 @@ begin
     AutoSizeTabs := True;
     DoubleBuffered := False;
   end;
+  
   FPnlContent := TSharpERoundPanel.Create(Self);
   with FPnlContent do begin
     Parent := Self;
@@ -361,38 +365,32 @@ end;
 procedure TSharpEPageControl.Loaded;
 begin
   inherited;
-  ResizeEvent(nil);
+  UpdateSize;
 end;
 
-procedure TSharpEPageControl.ResizeEvent(Sender: TObject);
+procedure TSharpEPageControl.UpdateSize;
 begin
+  FTabList.Width := Self.Width;
+  FTabList.Height := 25;
 
-  with FTabList do begin
-    Top := 0;
-    Left := 0;
-    Width := Self.Width;
-    Anchors := [akLeft, akRight, akTop];
-  end;
+  FPnlContent.Left := 0;
+  FPnlContent.Width := Self.Width;
+  FPnlContent.Anchors := [akLeft, akRight, akTop, akBottom];
 
-  with FPnlContent do begin
+  if FTabList.Visible then
+  begin
+    FPnlContent.Top := FTabList.Top + FTabList.Height - 1;
+    FPnlContent.Height := Self.Height - FTabList.Height + 1;
 
-    if FTabList.Visible then begin
-      Top := FTabList.Top + FTabList.Height - 1;
-      Height := Self.Height - FTabList.Height+1;
-
-      if Self.TabAlignment = taLeftJustify then
-        FPnlContent.DrawMode := srpNoTopLeft
-      else if Self.TabAlignment = taRightJustify then
-        FPnlContent.DrawMode := srpNoTopRight;
-    end else begin
-      Top := 0;
-      Height := Self.Height;
-      FPnlContent.DrawMode := srpNormal;
-    end;
-
-    Left := 0;
-    Width := Self.Width;
-    Anchors := [akLeft, akRight, akTop, akBottom];
+    if Self.TabAlignment = taLeftJustify then
+      FPnlContent.DrawMode := srpNoTopLeft
+    else if Self.TabAlignment = taRightJustify then
+      FPnlContent.DrawMode := srpNoTopRight;
+  end else
+  begin
+    FPnlContent.Top := 0;
+    FPnlContent.Height := Self.Height;
+    FPnlContent.DrawMode := srpNormal;
   end;
 end;
 
@@ -534,7 +532,7 @@ begin
 
   if FTabList <> nil then begin
     FTabList.Visible := Value;
-    ResizeEvent(nil);
+    UpdateSize;
   end;
 end;
 

@@ -24,6 +24,7 @@ uses
 
 
   // SharpE Units
+  SharpAPI,
   SharpFX,
   SharpThemeApiEx,
   uThemeConsts,
@@ -49,7 +50,6 @@ const
 type
   TSharpEColorEditor = class(TCustomPanel)
   private
-    FTabs: TSharpETabList;
     FColorPicker: TSharpEColorPicker;
     FAddColorButton: TPngSpeedButton;
     FPngImageList: TPngImageList;
@@ -92,6 +92,7 @@ type
     FContainerTextColor: TColor;
     FContainerColor: TColor;
 
+    procedure AssignDefaultSliderProps(ASlider: TJvTrackBar);
     procedure CreateControls;
     procedure SetExpanded(const Value: Boolean);
     procedure SetGroupIndex(const Value: Integer);
@@ -103,13 +104,12 @@ type
     procedure SetValueAsTColor(const Value: TColor);
 
 
-    procedure PositionSlider(ASlider: TJvTrackBar; ACaption: string;
+    procedure PositionSlider(var ASlider: TJvTrackBar; ACaption: string;
       ATextRect, ASliderRect, ASliderValRect: TRect; ARow: Integer; AParent:
       TWinControl;
       ALabelAnchors, ASliderAnchors: TAnchors);
 
     procedure LoadResources;
-    procedure ResizeEvent(Sender: TObject);
 
     procedure ResizeDefineColsPage;
     procedure ResizeDefineValPage;
@@ -158,6 +158,8 @@ type
     procedure SelectDefaultTab;
     procedure Collapse;
     function GetTabIndex: Integer;
+
+    procedure UpdateSize;
 
     procedure OverrideSliderUpdateMode(ASliderUpdateMode:
       TColorSliderUpdateMode);
@@ -251,39 +253,40 @@ begin
   CreateControls;
 end;
 
-procedure TSharpEColorEditor.CreateControls;
-
-  procedure AssignDefaultSliderProps(ASlider: TJvTrackBar);
-  begin
-
-    with ASlider do begin
-
-      Top := 1000;
-      Parent := FPageControl;
-      Frequency := 1;
-      ShowRange := False;
-      Ctl3D := False;
-      DotNetHighlighting := False;
-      TickStyle := tsNone;
-      PageSize := 1;
-      Visible := False;
-      DoubleBuffered := True;
-
-      Min := 0;
-      Max := 255;
-      Height := 25;
-
-      Color := FBackgroundColor;
-      Font.Color := FBackgroundTextColor;
-
-      OnChange := SliderChangeEvent;
-      OnMouseDown := SliderMouseDownEvent;
-      OnMouseUp := SliderMouseDownEvent;
-
-    end;
-  end;
+procedure TSharpEColorEditor.AssignDefaultSliderProps(ASlider: TJvTrackBar);
 begin
+  with ASlider do
+  begin
+    Left := 0;
+    Top := 0;
+    Width := 0;
+    Height := 25;
+    Ctl3D := False;
+    ParentCtl3D := False;
+    ParentShowHint := False;
+    ShowHint := False;
+    ShowSelRange := False;
+    TickStyle := tsNone;
+    ShowRange := False;
 
+    DoubleBuffered := True;
+    Visible := False;
+
+    Min := 0;
+    Max := 255;
+    Height := 25;
+
+    Color := FContainerColor;
+    Font.Color := FContainerTextColor;
+
+    OnChange := SliderChangeEvent;
+    OnMouseDown := SliderMouseDownEvent;
+    OnMouseUp := SliderMouseDownEvent;
+  end;
+end;
+
+procedure TSharpEColorEditor.CreateControls;
+begin
   // Load the image resource files
   FControlsCreated := False;
   try
@@ -326,19 +329,19 @@ begin
     TabList.Border := True;
 
     OnTabClick := TabClickEvent;
-    FTabs := TabList;
   end;
 
   // Create the colour picker control
-  FColorPicker := TSharpEColorPicker.Create(FTabs);
+  FColorPicker := TSharpEColorPicker.Create(FPageControl.TabList);
   with FColorPicker do begin
-    Parent := FTabs;
+    Parent := FPageControl.TabList;
     Anchors := [akRight, akTop];
     name := 'FColorPicker';
 
-    FColorPicker.Left := FTabs.Width - 100;
-    Top := 7;
-    Height := 17;
+    FColorPicker.Width := 40;
+    FColorPicker.Height := 17;
+    FColorPicker.Left := FPageControl.TabList.Width - 100;
+    FColorPicker.Top := 7;
 
     BackgroundColor := self.Color;
 
@@ -347,22 +350,23 @@ begin
     DoubleBuffered := True;
     ParentColor := True;
   end;
+  FColorPicker.SetBorder;
 
-  FPanel := TPanel.Create(FTabs);
-    FPanel.Anchors := [akRight, akTop];
-    FPanel.Width := 20;
-    FPanel.Height := FColorPicker.Height + 2;
-    FPanel.Caption := '';
-    FPanel.Left := FColorPicker.Left - FPanel.Width - 4;
-    FPanel.Parent := FTabs;
-    FPanel.OnClick := AddSwatchEvent;
-    FPanel.BevelInner := bvNone;
-    FPanel.BevelOuter := bvNone;
-    FPanel.ParentBackground := false;
-    FPanel.DoubleBuffered := true;
-    FPanel.ParentColor := False;
-    FPanel.Color := self.Color;
-    FPanel.Top := 5;
+  FPanel := TPanel.Create(FPageControl.TabList);
+  FPanel.Anchors := [akRight, akTop];
+  FPanel.Width := 20;
+  FPanel.Height := FColorPicker.Height + 2;
+  FPanel.Caption := '';
+  FPanel.Left := FColorPicker.Left - FPanel.Width - 4;
+  FPanel.Parent := FPageControl.TabList;
+  FPanel.OnClick := AddSwatchEvent;
+  FPanel.BevelInner := bvLowered;
+  FPanel.BevelOuter := bvRaised;
+  FPanel.ParentBackground := false;
+  FPanel.DoubleBuffered := true;
+  FPanel.ParentColor := False;
+  FPanel.Color := self.Color;
+  FPanel.Top := 5;
 
   FAddColorButton := TPngSpeedButton.Create(FPanel);
   with FAddColorButton do begin
@@ -380,9 +384,9 @@ begin
   end;
 
   // Create the name panel control
-  FNameLabel := TPanel.Create(FTabs);
+  FNameLabel := TPanel.Create(FPageControl.TabList);
   with FNameLabel do begin
-    Parent := FTabs;
+    Parent := FPageControl.TabList;
     name := 'fnamelabel';
     Anchors := [akLeft, akTop, akRight];
     Align := alNone;
@@ -396,7 +400,7 @@ begin
     Left := 0;
     Top := 0;
     Width := FAddColorButton.Left - 4;
-    Height := FTabs.Height-2;
+    Height := FPageControl.TabList.Height-2;
 
     ParentColor := False;
     ParentBackground := False;
@@ -422,7 +426,7 @@ begin
 
     Top := 0;
     Left := 0;
-    Height := Height - FTabs.Height;
+    Height := Self.Height - FPageControl.TabList.Height;
     Width := Self.Width;
 
     Anchors := [akLeft, akTop, akRight, akBottom];
@@ -460,7 +464,7 @@ begin
 
     Top := 0;
     Left := 0;
-    Height := Height - FTabs.Height;
+    Height := Height - FPageControl.TabList.Height;
     Width := Self.Width;
 
     Anchors := [akLeft, akTop, akRight, akBottom];
@@ -482,7 +486,7 @@ begin
 
     Top := 0;
     Left := 0;
-    Height := Height - FTabs.Height;
+    Height := Height - FPageControl.TabList.Height;
     Width := Self.Width;
 
     Anchors := [akLeft, akTop, akRight, akBottom];
@@ -511,7 +515,7 @@ begin
 
     Top := 0;
     Left := 0;
-    Height := Height - FTabs.Height;
+    Height := Height - FPageControl.TabList.Height;
     Width := Self.Width;
 
     Anchors := [akLeft, akTop, akRight, akBottom];
@@ -529,8 +533,7 @@ begin
     ParentBackground := False;
   end;
 
-  FTabs.TabIndex := -1;
-  Self.OnResize := ResizeEvent;
+  FPageControl.TabList.TabIndex := -1;
   finally
     FControlsCreated := True;
     RefreshTheme;
@@ -598,7 +601,7 @@ begin
       else
         Self.Height := FExpandedHeight;
 
-      FTabs.TabIndex := cTabDefine;
+      FPageControl.TabList.TabIndex := cTabDefine;
 
     end
     else begin
@@ -607,7 +610,7 @@ begin
           Self.Height := 0
         else
           Self.Height := FExpandedHeight;
-        FTabs.TabIndex := cTabDefine;
+        FPageControl.TabList.TabIndex := cTabDefine;
       end
       else begin
         if not (FVisible) then
@@ -615,7 +618,7 @@ begin
         else
           Self.Height := FCollapseHeight;
 
-        FTabs.TabIndex := -1;
+        FPageControl.TabList.TabIndex := -1;
       end;
     end;
 
@@ -650,8 +653,10 @@ begin
   else
     Expanded := True;
 
-  FTabs.TabIndex := ATabIndex;
-
+  if Self.Expanded then
+    FPageControl.TabList.TabIndex := ATabIndex
+  else
+    FPageControl.TabList.TabIndex := -1;
 end;
 
 procedure TSharpEColorEditor.ColorClickEvent(ASender: TObject);
@@ -672,7 +677,7 @@ begin
   Self.Value := Value;
 end;
 
-procedure TSharpEColorEditor.PositionSlider(ASlider: TJvTrackBar; ACaption:
+procedure TSharpEColorEditor.PositionSlider(var ASlider: TJvTrackBar; ACaption:
   string;
   ATextRect, ASliderRect, ASliderValRect: TRect; ARow: Integer; AParent:
   TWinControl;
@@ -680,13 +685,14 @@ procedure TSharpEColorEditor.PositionSlider(ASlider: TJvTrackBar; ACaption:
 var
   lbl: TLabel;
 begin
-
   // Position the slider
-  with ASlider do begin
+  with ASlider do
+  begin
     Parent := AParent;
     Left := ASliderRect.Left;
     Top := ASliderRect.Top + (ASlider.Height * ARow);
     Width := ASliderRect.Right - ASliderRect.Left;
+    Height := 25;
     Anchors := ASliderAnchors;
     Visible := True;
   end;
@@ -741,7 +747,6 @@ begin
   end;
 
   ASlider.Tag := Integer(lbl);
-
 end;
 
 procedure TSharpEColorEditor.LoadResources;
@@ -757,8 +762,10 @@ begin
   png.PngImage.LoadFromResourceName(HInstance, 'COLOR_PANEL_HEART_PNG');
 end;
 
-procedure TSharpEColorEditor.ResizeEvent(Sender: TObject);
+procedure TSharpEColorEditor.UpdateSize;
 begin
+  FPageControl.UpdateSize;
+
   case FValueEditorType of
     vetColor: ResizeDefineColsPage;
     vetValue: ResizeDefineValPage;
@@ -773,52 +780,60 @@ var
   rLeftSlider, rLeftSliderVal, rRightSlider, rRightSliderVal, rLeftText,
     rRightText: TRect;
 begin
+  FPageControl.Width := Self.Width;
+  FPageControl.Height := Self.Height;
+  FPageControl.UpdateSize;
 
-  // Set Tab Container Height
-  FColDefinePage.Top := FTabs.Height + 4;
-  FColDefinePage.Height := FPageControl.Height-FTabs.Height-8;
-  FColDefinePage.Width := FPageControl.Width-8;
-  FColDefinePage.Left := 4;
+  FPanel.Width := 20;
+  FPanel.Height := 19;
+  FPanel.Left := FPageControl.TabList.Width - 100 - FPanel.Width - 4;
+  FPanel.Top := 5;
 
-  FSwatchesPage.Top := FTabs.Height + 4;
-  FSwatchesPage.Height := FPageControl.Height-FTabs.Height-8;
-  FSwatchesPage.Width := FPageControl.Width-8;
-  FSwatchesPage.Left := 4;
+  // Show add color button?
+  FAddColorButton.Visible := FExpanded;
+
+  FAddColorButton.Width := FPanel.Width;
+  FAddColorButton.Height := FPanel.Height;
+  FAddColorButton.Left := FPanel.Left;
+  FAddColorButton.Top := FPanel.Top;
 
   // Show color picker
   if not (FColorPicker.Visible) then
     FColorPicker.Show;
-	
-  FColorPicker.Left := FTabs.Width - 100;
-  FColorPicker.Top := 7;
-  FColorPicker.Height := 17;
 
-  // Show add color button?
-  FAddColorButton.Visible := FExpanded;
-  
-  FAddColorButton.Width := 20;
-  FAddColorButton.Height := FColorPicker.Height + 3;
-  FAddColorButton.Left := FColorPicker.Left - FAddColorButton.Width - 4;
-  FAddColorButton.Top := 5;
+  FColorPicker.Width := 40;
+  FColorPicker.Height := 17;
+  FColorPicker.Left := FPanel.Left + FPanel.Width + 4;
+  FColorPicker.Top := 7;
 
   // Show swatch tab
-  if not (FTabs.TabList.Item[cTabColSwatch].Visible) then
-    FTabs.TabList.Item[cTabColSwatch].Visible := True;
-
-  FTabs.Refresh;
+  if not (FPageControl.TabList.TabList.Item[cTabColSwatch].Visible) then
+    FPageControl.TabList.TabList.Item[cTabColSwatch].Visible := True;
 
   // Free all existing labels
   for i := Pred(FColDefinePage.ControlCount) downto 0 do
     if FColDefinePage.Controls[i] is TLabel then
       FColDefinePage.Controls[i].Free;
 
+  LockWindowUpdate(Handle);
+
+  // Set Tab Container Height
+  FColDefinePage.Top := FPageControl.TabList.Height + 4;
+  FColDefinePage.Height := FPageControl.Height-FPageControl.TabList.Height-8;
+  FColDefinePage.Width := FPageControl.Width-8;
+  FColDefinePage.Left := 4;
+
+  FSwatchesPage.Top := FPageControl.Height + 4;
+  FSwatchesPage.Height := FPageControl.Height-FPageControl.TabList.Height-8;
+  FSwatchesPage.Width := FPageControl.Width-8;
+  FSwatchesPage.Left := 4;
+
   // Set default tab to color definition page
   tmptab := FColDefinePage;
   iSpacer := 12;
   iWidthLT := Self.Canvas.TextWidth('Green:X');
   iWidthVal := Self.Canvas.TextWidth('XXXXXXX');
-  iSliderWidth := (tmpTab.Width - (iWidthLT * 2) - (iWidthVal * 2) +
-    (iSpacer)) div 2;
+  iSliderWidth := ((tmpTab.Width + iSpacer) div 2) - (iWidthLT) - (iWidthVal);
 
   iY := iSpacer;
 
@@ -828,28 +843,30 @@ begin
 
   rRightText := Rect(rLeftSliderVal.Right + 4, iY, rLeftSliderVal.Right + iWidthLT, iY + 10);
   rRightSlider := Rect(rRightText.Right, iY, rRightText.Right - iSpacer + iSliderWidth, iY + 10);
-  rRightSliderVal := Rect(rRightSlider.Right, iY, Self.Width - iSpacer*2, iY + 10);
+  rRightSliderVal := Rect(rRightSlider.Right, iY, Self.Width - iSpacer * 2, iY + 10);
 
   PositionSlider(FHueSlider, 'Hue:', rLeftText, rLeftSlider, rLeftSliderVal, 0,
-    tmpTab, [akLeft, akTop], [akTop, akLeft, akRight]);
+    tmpTab, [akLeft, akTop, akRight], [akTop, akLeft, akRight]);
 
   PositionSlider(FSatSlider, 'Sat:', rLeftText, rLeftSlider, rLeftSliderVal, 1,
-    tmpTab, [akLeft, akTop], [akTop, akLeft, akRight]);
+    tmpTab, [akLeft, akTop, akRight], [akTop, akLeft, akRight]);
 
   PositionSlider(FLumSlider, 'Lum:', rLeftText, rLeftSlider, rLeftSliderVal, 2,
-    tmpTab, [akLeft, akTop], [akTop, akLeft, akRight]);
+    tmpTab, [akLeft, akTop, akRight], [akTop, akLeft, akRight]);
 
   PositionSlider(FRedSlider, 'Red:', rRightText, rRightSlider, rRightSliderVal,
-    0, tmpTab, [akRight, akTop], [akTop, akRight]);
+    0, tmpTab, [akLeft, akTop, akRight], [akLeft, akTop, akRight]);
 
   PositionSlider(FGreenSlider, 'Green:', rRightText, rRightSlider,
-    rRightSliderVal, 1, tmpTab, [akRight, akTop, akRight], [akTop, akRight]);
+    rRightSliderVal, 1, tmpTab, [akLeft, akTop, akRight], [akLeft, akTop, akRight]);
 
   PositionSlider(FBlueSlider, 'Blue:', rRightText, rRightSlider,
-    rRightSliderVal, 2, tmpTab, [akRight, akTop, akRight], [akTop, akRight]);
+    rRightSliderVal, 2, tmpTab, [akLeft, akTop, akRight], [akLeft, akTop, akRight]);
 
   FSliderUpdateMode := sumAll;
   InitialiseColSliders;
+
+  LockWindowUpdate(0);
 end;
 
 procedure TSharpEColorEditor.ResizeDefineValPage;
@@ -858,18 +875,16 @@ var
   tmpLbl: TLabel;
   iWidthLT, iWidthVal, iSliderWidth, iSpacer, iY, n: Integer;
   rLeftSlider, rLeftSliderVal, rLeftText: TRect;
-
 begin
-
-  FValDefinePage.Top := FTabs.Height + 4;
-  FValDefinePage.Height := FPageControl.Height-FTabs.Height-8;
+  FValDefinePage.Top := FPageControl.TabList.Height + 4;
+  FValDefinePage.Height := FPageControl.Height-FPageControl.TabList.Height-8;
   FValDefinePage.Width := FPageControl.Width-8;
   FValDefinePage.Left := 4;
 
   FColorPicker.Hide;
   FAddColorButton.Hide;
-  FTabs.TabList.Item[1].Visible := False;
-  FTabs.Refresh;
+  FPageControl.TabList.TabList.Item[1].Visible := False;
+  FPageControl.TabList.Refresh;
 
   for n := Pred(FValDefinePage.ControlCount) downto 0 do
     if FValDefinePage.Controls[n] is TLabel then
@@ -915,6 +930,56 @@ begin
   SetValue(FValue);
 end;
 
+procedure TSharpEColorEditor.ResizeDefineBoolPage;
+var
+  tmpTab: TPanel;
+  tmpLbl: TLabel;
+  iSpacer, iY, n: Integer;
+
+begin
+  FBoolDefinePage.Top := FPageControl.TabList.Height + 4;
+  FBoolDefinePage.Height := FPageControl.Height-FPageControl.TabList.Height-8;
+  FBoolDefinePage.Width := FPageControl.Width-8;
+  FBoolDefinePage.Left := 4;
+
+  FColorPicker.Hide;
+  FAddColorButton.Hide;
+  FPageControl.TabList.TabList.Item[1].Visible := False;
+  FPageControl.TabList.Refresh;
+
+  for n := Pred(FBoolDefinePage.ControlCount) downto 0 do
+    if FBoolDefinePage.Controls[n] is TLabel then
+      FBoolDefinePage.Controls[n].Free;
+
+  tmptab := FBoolDefinePage;
+  iSpacer := 12;
+
+  // Create value description label
+  if FDescription <> '' then begin
+    tmpLbl := TLabel.Create(tmpTab);
+    with tmpLbl do begin
+      Parent := tmpTab;
+
+      if Font.Color <> FContainerTextColor then
+        Font.Color := FContainerTextColor;
+
+      Top := iSpacer;
+      Left := iSpacer;
+      Width := tmpTab.Width - iSpacer;
+      Caption := FDescription;
+    end;
+    iY := (iSpacer * 2) + Self.Canvas.TextHeight(FDescription);
+  end
+  else
+    iY := iSpacer;
+
+  FBoolCheckbox.Left := iSpacer;
+  FBoolCheckbox.Top := iy;
+
+  SetValue(FValue);
+  Caption := FCaption;
+end;
+
 procedure TSharpEColorEditor.InitialiseColSliders;
 var
   col: TColor;
@@ -942,7 +1007,6 @@ var
     UpdateHSLLabel;
   end;
 begin
-
   if csDesigning in componentState then
     exit;
 
@@ -994,7 +1058,6 @@ begin
   end;
 
   UpdateLabels;
-
 end;
 
 procedure TSharpEColorEditor.SetBackgroundColor(const Value: TColor);
@@ -1107,13 +1170,13 @@ end;
 
 procedure TSharpEColorEditor.CaptionLabelClickEvent(Sender: TObject);
 begin
-  TabClickEvent(FTabs, FTabs.TabIndex);
+  TabClickEvent(FPageControl.TabList, FPageControl.TabList.TabIndex);
 end;
 
 procedure TSharpEColorEditor.deselecttabs;
 begin
-  if FTabs <> nil then
-    FTabs.TabIndex := -1;
+  if FPageControl.TabList <> nil then
+    FPageControl.TabList.TabIndex := -1;
 end;
 
 procedure TSharpEColorEditor.UpdatePageVisibility(const ATabIndex: Integer);
@@ -1179,8 +1242,8 @@ end;
 
 procedure TSharpEColorEditor.SelectDefaultTab;
 begin
-  if FTabs.TabIndex <> 0 then
-    FTabs.TabIndex := 0;
+  if FPageControl.TabList.TabIndex <> 0 then
+    FPageControl.TabList.TabIndex := 0;
 end;
 
 procedure TSharpEColorEditor.OverrideSliderUpdateMode(
@@ -1280,36 +1343,36 @@ begin
       end;
   end;
 
-  if FTabs.TabIndex <> -1 then
-    FTabs.TabIndex := 0;
+  if FPageControl.TabList.TabIndex <> -1 then
+    FPageControl.TabList.TabIndex := 0;
 
-  ResizeEvent(nil);
+  UpdateSize;
 end;
 
 procedure TSharpEColorEditor.SetValueMax(const Value: Integer);
 begin
   FValueMax := Value;
   FValueSlider.Max := Value;
-  ResizeEvent(nil);
+  UpdateSize;
 end;
 
 procedure TSharpEColorEditor.SetValueMin(const Value: Integer);
 begin
   FValueMin := Value;
   FValueSlider.Min := Value;
-  ResizeEvent(nil);
+  UpdateSize;
 end;
 
 procedure TSharpEColorEditor.SetDescription(const Value: string);
 begin
   FDescription := Value;
-  ResizeEvent(nil);
+  UpdateSize;
 end;
 
 procedure TSharpEColorEditor.SetDisplayPercent(const Value: boolean);
 begin
   FDisplayPercent := Value;
-  ResizeEvent(nil);
+  UpdateSize;
 end;
 
 procedure TSharpEColorEditor.ColorSliderChangeEvent(Sender: TObject);
@@ -1420,10 +1483,10 @@ end;
 
 procedure TSharpEColorEditor.RefreshTheme;
 
-  procedure AssignDefaultSliderProps(ASlider: TJvTrackBar);
+  procedure AssignDefaultSliderColorProps(ASlider: TJvTrackBar);
   begin
-
-    with ASlider do begin
+    with ASlider do
+    begin
       Color := FContainerColor;
       Font.Color := FContainerTextColor;
     end;
@@ -1456,16 +1519,16 @@ begin
   FColDefinePage.Color := FContainerColor;
   FColDefinePage.DoubleBuffered := true;
 
-  AssignDefaultSliderProps(FHueSlider);
-  AssignDefaultSliderProps(FSatSlider);
-  AssignDefaultSliderProps(FLumSlider);
-  AssignDefaultSliderProps(FRedSlider);
-  AssignDefaultSliderProps(FGreenSlider);
-  AssignDefaultSliderProps(FBlueSlider);
+  AssignDefaultSliderColorProps(FHueSlider);
+  AssignDefaultSliderColorProps(FSatSlider);
+  AssignDefaultSliderColorProps(FLumSlider);
+  AssignDefaultSliderColorProps(FRedSlider);
+  AssignDefaultSliderColorProps(FGreenSlider);
+  AssignDefaultSliderColorProps(FBlueSlider);
 
   FValDefinePage.color := FContainerColor;
 
-  AssignDefaultSliderProps(FValueSlider);
+  AssignDefaultSliderColorProps(FValueSlider);
 
   FBoolDefinePage.color := FContainerColor;
 
@@ -1474,56 +1537,6 @@ begin
 
   FSwatchesPage.color := FBackgroundColor;
   FSharpESwatchCollection.Color := FContainerColor;
-end;
-
-procedure TSharpEColorEditor.ResizeDefineBoolPage;
-var
-  tmpTab: TPanel;
-  tmpLbl: TLabel;
-  iSpacer, iY, n: Integer;
-
-begin
-  FBoolDefinePage.Top := FTabs.Height + 4;
-  FBoolDefinePage.Height := FPageControl.Height-FTabs.Height-8;
-  FBoolDefinePage.Width := FPageControl.Width-8;
-  FBoolDefinePage.Left := 4;
-
-  FColorPicker.Hide;
-  FAddColorButton.Hide;
-  FTabs.TabList.Item[1].Visible := False;
-  FTabs.Refresh;
-
-  for n := Pred(FBoolDefinePage.ControlCount) downto 0 do
-    if FBoolDefinePage.Controls[n] is TLabel then
-      FBoolDefinePage.Controls[n].Free;
-
-  tmptab := FBoolDefinePage;
-  iSpacer := 12;
-
-  // Create value description label
-  if FDescription <> '' then begin
-    tmpLbl := TLabel.Create(tmpTab);
-    with tmpLbl do begin
-      Parent := tmpTab;
-
-      if Font.Color <> FContainerTextColor then
-        Font.Color := FContainerTextColor;
-
-      Top := iSpacer;
-      Left := iSpacer;
-      Width := tmpTab.Width - iSpacer;
-      Caption := FDescription;
-    end;
-    iY := (iSpacer * 2) + Self.Canvas.TextHeight(FDescription);
-  end
-  else
-    iY := iSpacer;
-
-  FBoolCheckbox.Left := iSpacer;
-  FBoolCheckbox.Top := iy;
-
-  SetValue(FValue);
-  Caption := FCaption;
 end;
 
 procedure TSharpEColorEditor.CheckClickEvent(ASender: TObject);
@@ -1538,8 +1551,8 @@ function TSharpEColorEditor.GetTabIndex: Integer;
 begin
   Result := -1;
 
-  if FTabs <> nil then
-    Result := FTabs.TabIndex;
+  if FPageControl.TabList <> nil then
+    Result := FPageControl.TabList.TabIndex;
 end;
 
 end.

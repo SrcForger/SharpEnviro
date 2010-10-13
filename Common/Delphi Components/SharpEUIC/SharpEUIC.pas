@@ -46,13 +46,16 @@ type
     FAutoReset : boolean;
     FDefaultValue : String;
     FMonitorControl : TComponent;
+
     procedure SetMonitorControl(const Value: TComponent);
     
     procedure ResetBtnOnClick(Sender : TObject);
     procedure SetHasChanged(const Value: boolean);
+
   protected
     procedure Resize; override;
     procedure Paint; override;
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -249,7 +252,7 @@ begin
   if FHasChanged then
   begin
     FResetBtn.Visible := True;
-    FResetBtn.Top := 4 + (Height - 24) div 2;
+    FResetBtn.Top := 8;
     FResetBtn.Height := 24;
     FResetBtn.Width := 24;
 

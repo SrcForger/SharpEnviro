@@ -2,7 +2,7 @@ unit SharpETabList;
 
 interface
 
-uses
+uses                                                                            
   Windows,
   Messages,
   Classes,
@@ -10,6 +10,7 @@ uses
   Controls,
   Forms,
   Menus,
+  SysUtils,
   GR32,
   GR32_Backends,
   GR32_Image,
@@ -17,7 +18,7 @@ uses
   ExtCtrls,
   PngImageList,
   JclFileUtils;
-
+  
 type
   TTabExtents = record
     TabRect: TRect;
@@ -190,7 +191,10 @@ type
       var APngImageList: TPngImageList; AButton: TButtonItem);
     procedure Loaded; override;
     procedure Resize; override;
+
   public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
 
     function ClickTab(ATabItem: TTabItem): Boolean; overload;
     function ClickTab(ATabID: Integer): Boolean; overload;
@@ -205,10 +209,8 @@ type
 
     procedure Delete(ATabItem: TTabItem);
     procedure Paint; override;
-    constructor Create(AOwner: TComponent); override;
 
     procedure Clear;
-    destructor Destroy; override;
 
     property TabsWidth: Integer read GetTabsWidth;
     property ButtonsWidth: Integer read GetButtonsWidth;
@@ -324,6 +326,7 @@ constructor TSharpETabList.Create(AOwner: TComponent);
 begin
   inherited;
 
+  Self.AutoSize := False;
   Self.BevelInner := bvNone;
   Self.BevelOuter := bvNone;
 
@@ -352,13 +355,17 @@ begin
 
   Fimage32 := Timage32.Create(self);
   FImage32.Parent := Self;
-  Fimage32.Align := alClient;
+  Fimage32.Align := alNone;
+  FImage32.Left := 0;
+  FImage32.Top := 0;
+  FImage32.Width := Self.Width;
+  FImage32.Height := Self.Height;
   FImage32.OnMouseUp := MouseDownEvent;
   FImage32.OnMouseMove := MouseMoveEvent;
 
   FTabsMenu := TPopupMenu.Create(Self);
   FTabsMenu.Alignment := paRight;
-  
+
   CreateScrollButtonComponents;
   Screen.Cursors[crHandPoint] := LoadCursor(0, IDC_HAND);
 end;
@@ -1053,7 +1060,11 @@ begin
   if ((Height <= 0) or (Width <= 0)) then
     exit;
 
-  FImage32.Bitmap.Setsize(Self.ClientWidth, Self.Height);
+  FImage32.Top := 0;
+  FImage32.Left := 0;
+  FImage32.Width := Self.Width;
+  FImage32.Height := Self.Height;
+  FImage32.Bitmap.Setsize(Self.Width, Self.Height);
   FImage32.Bitmap.Clear(Color32(FBkgColor));
 
 {$REGION 'Draw bottom border'}
@@ -1079,7 +1090,6 @@ begin
     DrawScrollButtons(rScrollButtons);
   end;
 {$ENDREGION}
-
 end;
 
 procedure TSharpETabList.Resize;
@@ -1348,23 +1358,13 @@ begin
 {$REGION 'Draw right aligned tabs'}
       for i := Pred(FTabList.Count) downto 0 do
       begin
-        if i = i then
+        iTabWidth := GetTabWidth(FTabList.Item[i]);
+        GetTabExtent(FTabList.Item[i], x, 4, tabExtents);
+        FTabList.Item[i].TabExtent := tabExtents;
+        if FTabList.Item[i].Visible then
         begin
-          iTabWidth := GetTabWidth(FTabList.Item[i]);
-          GetTabExtent(FTabList.Item[i], x, 4, tabExtents);
-          FTabList.Item[i].TabExtent := tabExtents;
-          if FTabList.Item[i].Visible then
-          begin
-            DrawTab(FTabList.Item[i]);
-            x := x + iTabWidth + 2;
-          end;
-        end
-        else
-        begin
-          with FTabList.Item[i].TabExtent do
-          begin
-            TabRect := Rect(0, 0, 0, 0);
-          end;
+          DrawTab(FTabList.Item[i]);
+          x := x + iTabWidth + 2;
         end;
       end;
 {$ENDREGION}

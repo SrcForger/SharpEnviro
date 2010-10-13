@@ -51,6 +51,7 @@ type
     procedure Paint; override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
   published
     { Published declarations }
     property BackgroundColor: TColor read FBackgroundColor write SetBackgroundColor;
@@ -62,6 +63,8 @@ type
 type
   TSharpEColorPicker = class(TCustomSharpEColorPicker)
   private
+  public
+    procedure SetBorder;
   published
     property BackgroundColor;
     property Color;
@@ -79,6 +82,14 @@ implementation
 procedure Register;
 begin
   RegisterComponents('SharpE_Common', [TSharpeColorPicker]);
+end;
+
+procedure TSharpEColorPicker.SetBorder;
+begin
+  BevelInner := bvLowered;
+    BevelOuter := bvRaised;
+    BorderWidth := 1;
+    BevelWidth := 1;
 end;
 
 { TCustomSharpeColorPicker }
