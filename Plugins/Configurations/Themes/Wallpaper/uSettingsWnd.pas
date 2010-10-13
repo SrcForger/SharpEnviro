@@ -175,7 +175,6 @@ type
     pnlGradient: TPanel;
     SharpECenterHeader11: TSharpECenterHeader;
     SharpECenterHeader12: TSharpECenterHeader;
-    stNoMonitors: TStaticText;
     procedure fedit_image_KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
 

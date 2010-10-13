@@ -20,9 +20,9 @@ object frmSettingsWnd: TfrmSettingsWnd
   object plConfig: TJvPageList
     AlignWithMargins = True
     Left = 0
-    Top = 100
+    Top = 83
     Width = 491
-    Height = 466
+    Height = 483
     Margins.Left = 0
     Margins.Top = 0
     Margins.Right = 0
@@ -36,7 +36,7 @@ object frmSettingsWnd: TfrmSettingsWnd
       Left = 0
       Top = 0
       Width = 491
-      Height = 466
+      Height = 483
       Caption = 'pagWallpaper'
       ExplicitHeight = 566
       object pnlWallpaper: TPanel
@@ -476,7 +476,7 @@ object frmSettingsWnd: TfrmSettingsWnd
       Left = 0
       Top = 0
       Width = 491
-      Height = 466
+      Height = 483
       Caption = 'pagColor'
       ExplicitHeight = 566
       object pnlColor: TPanel
@@ -661,7 +661,7 @@ object frmSettingsWnd: TfrmSettingsWnd
       Left = 0
       Top = 0
       Width = 491
-      Height = 466
+      Height = 483
       Caption = 'pagGradient'
       ExplicitHeight = 476
       object pnlGradient: TPanel
@@ -941,7 +941,7 @@ object frmSettingsWnd: TfrmSettingsWnd
     Left = 0
     Top = 0
     Width = 491
-    Height = 90
+    Height = 73
     Margins.Left = 0
     Margins.Top = 0
     Margins.Right = 0
@@ -960,17 +960,14 @@ object frmSettingsWnd: TfrmSettingsWnd
     Border = False
     BackgroundColor = clWindow
     BottomSideBorder = False
-    ExplicitLeft = 1
-    ExplicitTop = 1
-    ExplicitWidth = 489
     object pnlMonitorList: TSharpERoundPanel
       AlignWithMargins = True
       Left = 5
-      Top = 59
+      Top = 42
       Width = 481
       Height = 21
       Margins.Left = 5
-      Margins.Top = 0
+      Margins.Top = 5
       Margins.Right = 5
       Margins.Bottom = 10
       Align = alTop
@@ -987,6 +984,7 @@ object frmSettingsWnd: TfrmSettingsWnd
       Border = False
       BackgroundColor = clBtnFace
       BottomSideBorder = False
+      ExplicitTop = 59
       object cboMonitor: TComboBox
         Left = 0
         Top = 0
@@ -1020,20 +1018,6 @@ object frmSettingsWnd: TfrmSettingsWnd
       TitleColor = clWindowText
       DescriptionColor = clRed
       Align = alTop
-    end
-    object stNoMonitors: TStaticText
-      AlignWithMargins = True
-      Left = 5
-      Top = 42
-      Width = 481
-      Height = 17
-      Margins.Left = 5
-      Margins.Top = 5
-      Margins.Right = 5
-      Margins.Bottom = 0
-      Align = alTop
-      Caption = 'There are no monitors available'
-      TabOrder = 2
     end
   end
   object ssmConfig: TSharpESwatchManager

@@ -213,8 +213,8 @@ begin
     end;
 
     // If one item then hide the monitor selection, select first item
-    pnlMonitorList.Visible := (cboMonitor.Items.Count > 1);
-    stNoMonitors.Visible := not pnlMonitorList.Visible;
+    //pnlMonitorList.Visible := (cboMonitor.Items.Count > 1);
+    //stNoMonitors.Visible := not pnlMonitorList.Visible;
     cboMonitor.ItemIndex := 0;
   end;
 end;
