@@ -324,7 +324,12 @@ begin
   FBitmap.SetSize(FIconSize,FIconSize);
   FHiddenByClient := False;
   FIsHovering := False;
-  TKernelResampler.Create(FBitmap).Kernel := TLanczosKernel.Create;
+  // If the size is the default size or less use the TLinearResampler,
+  // when scaling up use TKernelResampler for better quality.
+  if FIconSize <= 16 then
+    TLinearResampler.Create(FBitmap)
+  else
+    TKernelResampler.Create(FBitmap).Kernel := TLanczosKernel.Create;
   AssignFromNIDv6(NIDv6);
   Inherited Create;
 end;
