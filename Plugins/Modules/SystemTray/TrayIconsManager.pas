@@ -66,6 +66,7 @@ type
                    FCallbackMessage : UINT;
                    FBitmap : TBitmap32;
                    FIcon   : hIcon;
+                   FIconSize : Integer;
                    FFlags  : Cardinal;
                    FBTimeOut : Cardinal;
                    FBInfoFlags : DWORD;
@@ -79,7 +80,7 @@ type
                    FInfo : ArrayWideChar256;
                    FInfoTitle : ArrayWideChar64;
                    function AssignFromNIDv6(NIDv6 : TNotifyIconDataV7) : TTrayChangeEvents;
-                   constructor Create(NIDv6 : TNotifyIconDataV7); reintroduce;
+                   constructor Create(NIDv6 : TNotifyIconDataV7; IconSize : Integer); reintroduce;
                    destructor Destroy; override;
 
                    property UID : Cardinal read FUID;
@@ -103,6 +104,7 @@ type
                    FTipForm : TForm;
                    FMsgWnd: TMsgWnd;
                    FV4Popup : TTrayItem;
+                   FIconAutoSize : Boolean;
                    FIconSize : integer;
                    FIconSpacing : integer;
                    FTopSpacing  : integer;
@@ -163,6 +165,7 @@ type
                    procedure SetBackgroundAlpha(Value : integer);
                    procedure SetBlendAlpha(Value : integer);
                    procedure SetIconAlpha(Value : integer);
+                   procedure SetIconAutoSize(Value : Boolean);
                    procedure PositionTrayWindow(parent, trayParent : HWND);
                    procedure InitToolTips(wnd : TObject);
                    procedure DeleteToolTips;
@@ -173,6 +176,7 @@ type
                    property Items : TObjectList read FItems;
                    property Bitmap : TBitmap32 read FBitmap;
                    property IconAlpha : integer read FIconAlpha write SetIconAlpha;
+                   property IconAutoSize : Boolean read FIconAutoSize write SetIconAutoSize;
                    property IconSize : integer read FIconSize write FIconSize;
                    property IconSpacing : integer read FIconSpacing write FIconSpacing;
                    property TopOffset : integer read FTopOffset write FTopOffset;
@@ -313,13 +317,14 @@ begin
   PostMessage(FindWindow('Shell_TrayWnd',nil),WM_UNREGISTERWITHTRAY,handle,0);
 end;
 
-constructor TTrayItem.Create(NIDv6 : TNotifyIconDataV7);
+constructor TTrayItem.Create(NIDv6 : TNotifyIconDataV7; IconSize : Integer);
 begin
+  FIconSize := IconSize;
   FBitmap := TBitmap32.Create;
-  FBitmap.SetSize(16,16);
+  FBitmap.SetSize(FIconSize,FIconSize);
   FHiddenByClient := False;
   FIsHovering := False;
-  TLinearResampler.Create(FBitmap);
+  TKernelResampler.Create(FBitmap).Kernel := TLanczosKernel.Create;
   AssignFromNIDv6(NIDv6);
   Inherited Create;
 end;
@@ -389,6 +394,7 @@ begin
   FDrawBorder := True;
   FBackgroundAlpha := 255;
   FBorderAlpha := 255;
+  FIconAutoSize := False;
   FIconSize := 16;
   FIconSpacing := 1;
   FTopSpacing  := 2;
@@ -447,6 +453,13 @@ begin
   end;
   FTipWnd := 0;
   FTipForm := nil;
+end;
+
+procedure TTrayClient.SetIconAutoSize(Value: Boolean);
+begin
+  if not Value then
+    FIconSize := 16;
+  FIconAutoSize := Value;
 end;
 
 procedure TTrayClient.SetIconAlpha(Value : integer);
@@ -763,7 +776,7 @@ procedure TTrayClient.AddTrayIcon(NIDv6 : TNotifyIconDataV7);
 var
   tempItem : TTrayItem;
 begin
-  tempItem := TTrayItem.Create(NIDv6);
+  tempItem := TTrayItem.Create(NIDv6, FIconSize);
   tempItem.Owner := self;
   tempItem.TipIndex := GetFreeTipIndex;
   tempItem.HiddenByClient := GetHiddenStatus(NIDv6);

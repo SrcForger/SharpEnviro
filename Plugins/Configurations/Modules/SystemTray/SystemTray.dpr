@@ -85,6 +85,11 @@ begin
       ItemNamed['iconhiding'].BoolValue := chkIconHiding.Checked
     else Add('iconhiding',chkIconHiding.Checked);
 
+    if ItemNamed['IconAutoSize'] <> nil then
+      ItemNamed['IconAutoSize'].BoolValue := chkIconSizing.Checked
+    else
+      Add('IconAutoSize', chkIconSizing.Checked);
+      
     if ItemNamed['skin'] <> nil then
     begin
       if ItemNamed['skin'].Items.ItemNamed[skin] = nil then
@@ -149,6 +154,7 @@ begin
     with PluginHost.Xml.XmlRoot.Items, frmSysTray do
     begin
       chkIconHiding.Checked := BoolValue('iconhiding',true);
+      chkIconSizing.Checked := BoolValue('IconAutoSize', False);
       if ItemNamed['skin'] <> nil then
       begin
          if ItemNamed['skin'].Items.ItemNamed[skin] <> nil then

@@ -237,10 +237,10 @@ begin
   begin
     if Initialized then
       TMainForm(Form).RealignComponents;
-      
-    if Height < 20 then
-      FTrayClient.IconSize := Height - 4
-    else FTrayClient.IconSize := 16;
+
+    if FTrayClient.IconAutoSize then
+      FTrayClient.IconSize := Height - 6;
+
     FTrayClient.TopOffset := (Height - FTrayClient.IconSize) div 2;
     FTrayClient.RenderIcons;
     FTrayClient.UpdateTrayIcons;

@@ -67,6 +67,7 @@ type
     sBlendColorStr      : String;
     sBlendAlpha         : integer;
     sIconAlpha          : integer;
+    sIconAutoSize       : Boolean;
     cwidth              : integer;
     doubleclick         : boolean;
     refreshed           : boolean;
@@ -405,6 +406,7 @@ begin
   sBlendAlpha         := 255;
   sIconAlpha          := 255;
   sEnableIconHiding   := True;
+  sIconAutoSize       := False;
   FCustomSkinSettings.LoadFromXML('');
   try
     with FCustomSkinSettings.xml.Items do
@@ -437,6 +439,7 @@ begin
 
       FTrayClient.HiddenList.Clear;
 
+      sIconAutoSize := BoolValue('IconAutoSize', sIconAutoSize);
       sEnableIconHiding   := BoolValue('iconhiding', True);
       if (ItemNamed['Hidden'] <> nil) and (sEnableIconHiding) then
         with ItemNamed['Hidden'].Items do
@@ -471,7 +474,7 @@ begin
     FTrayClient.ArrowWidth := ShowHideButton.Width;
     FTrayClient.ArrowHeight := ShowHideButton.Height;
   end;
-
+  FTrayClient.IconAutoSize := sIconAutoSize;
   FTrayClient.UpdateTrayIcons;
 end;
 
@@ -555,6 +558,9 @@ begin
       FTrayClient.BlendColor      := sBlendColor;
       FTrayClient.BlendAlpha      := sBlendAlpha;
       FTrayClient.IconAlpha       := sIconAlpha;
+      FTrayClient.IconAutoSize    := sIconAutoSize;
+      if sIconAutoSize then
+        FTrayClient.IconSize := Height - 6;
       FTrayClient.RenderIcons;
       NewWidth := FTrayClient.Bitmap.Width + ShowHideButton.Width;
       begin

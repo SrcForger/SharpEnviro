@@ -59,6 +59,8 @@ type
     SharpECenterHeader1: TSharpECenterHeader;
     pnlSysTray: TPanel;
     Panel1: TPanel;
+    schIconSizing: TSharpECenterHeader;
+    chkIconSizing: TJvXPCheckbox;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure cb_numbersClick(Sender: TObject);
@@ -68,6 +70,7 @@ type
     procedure cbBorderClick(Sender: TObject);
     procedure cbBlendClick(Sender: TObject);
     procedure ColorsExpandCollapse(ASender: TObject);
+    procedure chkIconSizingClick(Sender: TObject);
   private
     FPluginHost: ISharpCenterHost;
     procedure BackgroundChanged;
@@ -137,6 +140,11 @@ begin
 end;
 
 procedure TfrmSysTray.cb_numbersClick(Sender: TObject);
+begin
+  UpdateSettings;
+end;
+
+procedure TfrmSysTray.chkIconSizingClick(Sender: TObject);
 begin
   UpdateSettings;
 end;

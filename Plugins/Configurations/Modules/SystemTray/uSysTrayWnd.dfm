@@ -33,7 +33,7 @@ object frmSysTray: TfrmSysTray
         Left = 1
         Top = 1
         Width = 433
-        Height = 534
+        Height = 603
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
@@ -56,8 +56,6 @@ object frmSysTray: TfrmSysTray
           DescriptionColor = clRed
           Align = alTop
           Color = clWindow
-          ExplicitLeft = 6
-          ExplicitTop = 11
         end
         object schIconVisibility: TSharpECenterHeader
           AlignWithMargins = True
@@ -75,8 +73,6 @@ object frmSysTray: TfrmSysTray
           DescriptionColor = clRed
           Align = alTop
           Color = clWindow
-          ExplicitLeft = -1
-          ExplicitTop = 92
         end
         object chkIconHiding: TJvXPCheckbox
           AlignWithMargins = True
@@ -92,12 +88,12 @@ object frmSysTray: TfrmSysTray
           TabOrder = 2
           Align = alTop
           OnClick = cbBackgroundClick
-          ExplicitTop = 52
+          ExplicitLeft = 10
         end
         object schBackgroundVisibility: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 163
+          Top = 232
           Width = 423
           Height = 37
           Margins.Left = 5
@@ -112,8 +108,7 @@ object frmSysTray: TfrmSysTray
           DescriptionColor = clRed
           Align = alTop
           Color = clWindow
-          ExplicitLeft = -1
-          ExplicitTop = 201
+          ExplicitTop = 200
         end
         object Panel1: TPanel
           AlignWithMargins = True
@@ -129,8 +124,6 @@ object frmSysTray: TfrmSysTray
           AutoSize = True
           BevelOuter = bvNone
           TabOrder = 4
-          ExplicitLeft = -5
-          ExplicitTop = 123
           object sgbIconAlpha: TSharpeGaugeBox
             AlignWithMargins = True
             Left = 5
@@ -161,7 +154,7 @@ object frmSysTray: TfrmSysTray
         object pnlBackground: TPanel
           AlignWithMargins = True
           Left = 5
-          Top = 205
+          Top = 274
           Width = 423
           Height = 31
           Margins.Left = 5
@@ -172,8 +165,7 @@ object frmSysTray: TfrmSysTray
           BevelOuter = bvNone
           ParentColor = True
           TabOrder = 5
-          ExplicitLeft = -1
-          ExplicitTop = 212
+          ExplicitTop = 205
           object sgbBackground: TSharpeGaugeBox
             Left = 146
             Top = 5
@@ -208,7 +200,7 @@ object frmSysTray: TfrmSysTray
         object schBorderVisibility: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 246
+          Top = 315
           Width = 423
           Height = 37
           Margins.Left = 5
@@ -221,13 +213,12 @@ object frmSysTray: TfrmSysTray
           DescriptionColor = clRed
           Align = alTop
           Color = clWindow
-          ExplicitLeft = -1
-          ExplicitTop = 256
+          ExplicitTop = 246
         end
         object pnlBorder: TPanel
           AlignWithMargins = True
           Left = 5
-          Top = 288
+          Top = 357
           Width = 423
           Height = 31
           Margins.Left = 5
@@ -238,8 +229,7 @@ object frmSysTray: TfrmSysTray
           BevelOuter = bvNone
           ParentColor = True
           TabOrder = 7
-          ExplicitLeft = -1
-          ExplicitTop = 292
+          ExplicitTop = 288
           object sgbBorder: TSharpeGaugeBox
             Left = 146
             Top = 5
@@ -274,7 +264,7 @@ object frmSysTray: TfrmSysTray
         object schColorBlendOptions: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 329
+          Top = 398
           Width = 423
           Height = 37
           Margins.Left = 5
@@ -287,13 +277,12 @@ object frmSysTray: TfrmSysTray
           DescriptionColor = clRed
           Align = alTop
           Color = clWindow
-          ExplicitLeft = -1
-          ExplicitTop = 339
+          ExplicitTop = 329
         end
         object pnlBlend: TPanel
           AlignWithMargins = True
           Left = 5
-          Top = 371
+          Top = 440
           Width = 423
           Height = 31
           Margins.Left = 5
@@ -304,8 +293,7 @@ object frmSysTray: TfrmSysTray
           BevelOuter = bvNone
           ParentColor = True
           TabOrder = 9
-          ExplicitLeft = 0
-          ExplicitTop = 380
+          ExplicitTop = 371
           object sgbBlend: TSharpeGaugeBox
             Left = 146
             Top = 5
@@ -339,7 +327,7 @@ object frmSysTray: TfrmSysTray
         object schColor: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 412
+          Top = 481
           Width = 423
           Height = 37
           Margins.Left = 5
@@ -352,12 +340,12 @@ object frmSysTray: TfrmSysTray
           DescriptionColor = clRed
           Align = alTop
           Color = clWindow
-          ExplicitTop = 388
+          ExplicitTop = 412
         end
         object Colors: TSharpEColorEditorEx
           AlignWithMargins = True
           Left = 5
-          Top = 454
+          Top = 523
           Width = 423
           Height = 80
           Margins.Left = 5
@@ -425,6 +413,44 @@ object frmSysTray: TfrmSysTray
           BackgroundTextColor = clBlack
           ContainerColor = clBlack
           ContainerTextColor = clBlack
+          ExplicitTop = 454
+        end
+        object schIconSizing: TSharpECenterHeader
+          AlignWithMargins = True
+          Left = 5
+          Top = 163
+          Width = 423
+          Height = 37
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 0
+          Title = 'Icon Sizing'
+          Description = 'Automatically size the tray icons to the current theme.'
+          TitleColor = clWindowText
+          DescriptionColor = clRed
+          Align = alTop
+          Color = clWindow
+          ExplicitLeft = 120
+          ExplicitTop = 152
+          ExplicitWidth = 185
+        end
+        object chkIconSizing: TJvXPCheckbox
+          AlignWithMargins = True
+          Left = 5
+          Top = 205
+          Width = 423
+          Height = 17
+          Margins.Left = 5
+          Margins.Top = 5
+          Margins.Right = 5
+          Margins.Bottom = 10
+          Caption = 'Enable Auto Sizing'
+          TabOrder = 13
+          Align = alTop
+          OnClick = chkIconSizingClick
+          ExplicitLeft = 0
+          ExplicitTop = 232
         end
       end
     end
