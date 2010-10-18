@@ -18,7 +18,7 @@ BEGIN
       BEGIN
          VALUE "ProductName",     "SharpEnviro\0"
          VALUE "CompanyName",     "SharpEnviro\0"
-         VALUE "InternalName",    "SetShell.exe\0"
+         VALUE "InternalName",    "MultimediaInput.dll\0"
          VALUE "FileDescription", "SharpEnviro Multimedia Input Service Library\0"
          VALUE "ProductVersion",   VER_PRODUCTVERSION_STR
          VALUE "FileVersion",      VER_FILEVERSION_STR
