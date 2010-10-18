@@ -116,6 +116,7 @@
 		<Y>83</Y>
 		<Alpha>255</Alpha>
 		<Align>1</Align>
+		<FontSize>8</FontSize>
 		<Data>{#FC_D1_DAYTEXT#}</Data>
 	</Day1Header>
 	<Day1High>
@@ -160,6 +161,7 @@
 		<Y>83</Y>
 		<Alpha>255</Alpha>
 		<Align>1</Align>
+		<FontSize>8</FontSize>
 		<Data>{#FC_D2_DAYTEXT#}</Data>
 	</Day2Header>
 	<Day2High>
@@ -202,6 +204,7 @@
 		<Y>83</Y>
 		<Alpha>255</Alpha>
 		<Align>1</Align>
+                <FontSize>8</FontSize>
 		<Data>{#FC_D3_DAYTEXT#}</Data>
 	</Day3Header>
 	<Day3High>
