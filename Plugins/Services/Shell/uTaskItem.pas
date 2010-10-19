@@ -41,46 +41,45 @@ uses
 
 type
   TTaskItem = class
-              protected
-                FTimeAdded : Int64;
-                FHandle : hwnd;
-                FIcon : hIcon;
-                FCaption : WideString;
-                FWndClass : String;
-                FFilePath : String;
-                FFileName : String;
-                FVisible  : boolean;
-                FLastVWM  : integer;
-                FPlacement: TWindowPlacement;
-                FUsed     : boolean;
-              private
-              public
-                constructor Create(pHandle : hwnd; pListMode : Boolean = False); reintroduce; overload;
-                constructor Create(pItem : TTaskItem); overload; 
-                destructor Destroy; override;
-                procedure UpdateFromHwnd;
-                procedure UpdateNonCriticalFromHwnd;
-                procedure UpdateCaption;
-                procedure UpdateWndClass;
-                procedure UpdateVisibleState;
-                procedure UpdatePlacement;
-                procedure UpdateIcon;
-                procedure UpdateFileInfo;
-                procedure Minimize;
-                procedure Restore;
+  protected
+    FTimeAdded : Int64;
+    FHandle : hwnd;
+    FIcon : hIcon;
+    FCaption : WideString;
+    FWndClass : String;
+    FFilePath : String;
+    FFileName : String;
+    FVisible  : boolean;
+    FLastVWM  : integer;
+    FPlacement: TWindowPlacement;
+    FUsed     : boolean;
+  public
+    constructor Create(pHandle : hwnd; pListMode : Boolean = False); reintroduce; overload;
+    constructor Create(pItem : TTaskItem); overload;
+    destructor Destroy; override;
+    procedure UpdateFromHwnd;
+    procedure UpdateNonCriticalFromHwnd;
+    procedure UpdateCaption;
+    procedure UpdateWndClass;
+    procedure UpdateVisibleState;
+    procedure UpdatePlacement;
+    procedure UpdateIcon;
+    procedure UpdateFileInfo;
+    procedure Minimize;
+    procedure Restore;
 
-                property Icon     : hIcon   read FIcon;
-                property Caption  : WideString  read FCaption;
-                property Handle   : hwnd    read FHandle;
-                property WndClass : String  read FWndClass;
-                property Visible  : boolean read FVisible;
-                property Placement : TWindowPlacement read FPlacement;
-                property TimeAdded : Int64  read FTimeAdded write FTimeAdded;
-                property FileName  : String read FFileName;
-                property FilePath  : String read FFilePath;
-                property LastVWM   : integer read FLastVWM write FLastVWM;
-                property Used      : boolean read FUsed write FUsed;
-              end;
+    property Icon     : hIcon   read FIcon;
+    property Caption  : WideString  read FCaption;
+    property Handle   : hwnd    read FHandle;
+    property WndClass : String  read FWndClass;
+    property Visible  : boolean read FVisible;
+    property Placement : TWindowPlacement read FPlacement;
+    property TimeAdded : Int64  read FTimeAdded write FTimeAdded;
+    property FileName  : String read FFileName;
+    property FilePath  : String read FFilePath;
+    property LastVWM   : integer read FLastVWM write FLastVWM;
+    property Used      : boolean read FUsed write FUsed;
+  end;
 
 function SwitchToThisWindow(Wnd : hwnd; fAltTab : boolean) : boolean; stdcall; external 'user32.dll';
 

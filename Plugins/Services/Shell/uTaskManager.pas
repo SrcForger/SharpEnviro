@@ -33,6 +33,7 @@ uses Windows,
      SysUtils,
      Contnrs,
      uTaskItem,
+     uWindows,
      SharpTypes,
      JclSysUtils,
      JclStrings,
@@ -43,60 +44,60 @@ type
   TTaskExChangeEvent = procedure(pItem1,pItem2 : TTaskItem; I1,I2 : integer) of object;
 
   TTaskManager = class
-                 protected
-                 private
-                   FEnabled        : Boolean;
-                   FListMode       : Boolean;
-                   FOnNewTask      : TTaskChangeEvent;
-                   FOnRemoveTask   : TTaskChangeEvent;
-                   FOnUpdateTask   : TTaskChangeEvent;
-                   FOnActivateTask : TTaskChangeEvent;
-                   FOnFlashTask    : TTaskChangeEvent;
-                   FOnTaskExChange : TTaskExChangeEvent;
-                   FItems          : TObjectList;
-                   FSortTasks      : Boolean;
-                   FSortType       : TSharpeTaskManagerSortType;
-                   FLastActiveTask : hwnd;
-                   FLastActiveTaskPos : TRect;
-                   FMultiThreading : boolean;
-                   FThreadList     : TObjectList;
-                 public
-                   procedure RemoveDeadTasks;
-                   procedure AddTask(pHandle : hwnd);
-                   procedure RemoveTask(pHandle : hwnd);
-                   procedure UpdateTask(pHandle : hwnd);
-                   procedure ActivateTask(pHandle : hwnd);
-                   procedure FlashTask(pHandle : hwnd);
-                   procedure GetMinRect;
-                   procedure DoSortTasks;
-                   procedure ExChangeTasks(pItem1,pItem2 : TTaskItem);
-                   procedure ResetVMWs;
-                   procedure CompleteRefresh;
-                   procedure HandleShellMessage(wparam,lparam : Cardinal);
-                   procedure SaveToStream(Stream : TStream);
-                   procedure LoadFromStream(Stream : TStream; pCount : integer);
-                   procedure InitList;
-                   function GetCount : integer;
-                   function GetItemByHandle(pHandle : hwnd) : TTaskItem;
-                   function GetItemByIndex(Index : integer) : TTaskItem;
-                   constructor Create; reintroduce;
-                   destructor Destroy; override;
+  protected
+  private
+    FEnabled        : Boolean;
+    FListMode       : Boolean;
+    FOnNewTask      : TTaskChangeEvent;
+    FOnRemoveTask   : TTaskChangeEvent;
+    FOnUpdateTask   : TTaskChangeEvent;
+    FOnActivateTask : TTaskChangeEvent;
+    FOnFlashTask    : TTaskChangeEvent;
+    FOnTaskExChange : TTaskExChangeEvent;
+    FItems          : TObjectList;
+    FSortTasks      : Boolean;
+    FSortType       : TSharpeTaskManagerSortType;
+    FLastActiveTask : hwnd;
+    FLastActiveTaskPos : TRect;
+    FMultiThreading : boolean;
+    FThreadList     : TObjectList;
+  public
+    procedure RemoveDeadTasks;
+    procedure AddTask(pHandle : hwnd);
+    procedure RemoveTask(pHandle : hwnd);
+    procedure UpdateTask(pHandle : hwnd);
+    procedure ActivateTask(pHandle : hwnd);
+    procedure FlashTask(pHandle : hwnd);
+    procedure GetMinRect;
+    procedure DoSortTasks;
+    procedure ExChangeTasks(pItem1,pItem2 : TTaskItem);
+    procedure ResetVMWs;
+    procedure CompleteRefresh;
+    procedure HandleShellMessage(wparam,lparam : Cardinal);
+    procedure SaveToStream(Stream : TStream);
+    procedure LoadFromStream(Stream : TStream; pCount : integer);
+    procedure InitList;
+    function GetCount : integer;
+    function GetItemByHandle(pHandle : hwnd) : TTaskItem;
+    function GetItemByIndex(Index : integer) : TTaskItem;
+    constructor Create; reintroduce;
+    destructor Destroy; override;
 
-                   property MultiThreading : boolean          read FMultiThreading write FMultiThreading;
-                   property Enabled        : boolean          read FEnabled write FEnabled;
-                   property ListMode       : boolean          read FListMode write FListMode;
-                   property SortTasks      : boolean          read FSortTasks write FSortTasks;
-                   property SortType       : TSharpeTaskManagerSortType read FSortType write FSortType;
-                   property OnNewTask      : TTaskChangeEvent read FOnNewTask write FOnNewTask;
-                   property OnRemoveTask   : TTaskChangeEvent read FOnRemoveTask write FOnRemoveTask;
-                   property OnUpdateTask   : TTaskChangeEvent read FOnUpdateTask write FOnUpdateTask;
-                   property OnActivateTask : TTaskChangeEvent read FOnActivateTask write FOnActivateTask;
-                   property OnFlashTask    : TTaskChangeEvent read FOnFlashTask write FOnFlashTask;
-                   property OnTaskExchange : TTaskExChangeEvent read FOnTaskExChange write FOnTaskExChange;
-                   property ItemCount      : integer          read GetCount;
-                   property LastActiveTask : hwnd             read FLastActiveTask write FLastActiveTask;
-                   property LastActiveTaskPos : TRect         read FLastActiveTaskPos write FLastActiveTaskPos;
-                 end;
+    property MultiThreading : boolean          read FMultiThreading write FMultiThreading;
+    property Enabled        : boolean          read FEnabled write FEnabled;
+    property ListMode       : boolean          read FListMode write FListMode;
+    property SortTasks      : boolean          read FSortTasks write FSortTasks;
+    property SortType       : TSharpeTaskManagerSortType read FSortType write FSortType;
+    property OnNewTask      : TTaskChangeEvent read FOnNewTask write FOnNewTask;
+    property OnRemoveTask   : TTaskChangeEvent read FOnRemoveTask write FOnRemoveTask;
+    property OnUpdateTask   : TTaskChangeEvent read FOnUpdateTask write FOnUpdateTask;
+    property OnActivateTask : TTaskChangeEvent read FOnActivateTask write FOnActivateTask;
+    property OnFlashTask    : TTaskChangeEvent read FOnFlashTask write FOnFlashTask;
+    property OnTaskExchange : TTaskExChangeEvent read FOnTaskExChange write FOnTaskExChange;
+    property ItemCount      : integer          read GetCount;
+    property LastActiveTask : hwnd             read FLastActiveTask write FLastActiveTask;
+    property LastActiveTaskPos : TRect         read FLastActiveTaskPos write FLastActiveTaskPos;
+  end;
 
   TTaskItemUpdateThread = class(TThread)
   protected
@@ -110,9 +111,31 @@ type
     destructor Destroy; override;
     property Item : TTaskItem read FItem;
     property UpdateEvent : TTaskChangeEvent read FUpdateEvent write FUpdateEvent;
-  end;                 
+  end;
+
+  TTaskMsgManager = Class(Tobject)
+  public
+    LastAppCommand : int64;
+
+    WndList : array of hwnd;
+    constructor Create; reintroduce;
+    destructor Destroy; override;
+
+    Procedure RegisterHook;
+    Procedure UnregisterHook;
+    Procedure DeleteWnd(Index : Integer);
+    Procedure DeleteWndByHandle(wnd : hwnd);
+    Procedure AddWnd(wnd : hwnd);
+    function FindWindow(wnd : hwnd) : integer;
+  end;            
+
+var
+  TaskMsgManager : TTaskMsgManager;
+  TaskManager : TTaskManager;
 
 implementation
+
+function RegisterShellHook(wnd : hwnd; param : dword) : boolean; stdcall; external 'shell32.dll' index 181;
 
 function CheckTaskWnd(pHandle : hwnd; IncludeInvisible : boolean): boolean;
 var
@@ -631,6 +654,92 @@ begin
   FItem.UpdateFromHwnd;
   if Assigned(FUpdateEvent) then
     Synchronize(DoUpdate);
+end;
+
+{ TTaskMsgManager }
+
+procedure TTaskMsgManager.AddWnd(wnd: hwnd);
+begin
+  if FindWindow(wnd) <> -1 then
+    exit;
+
+  setlength(WndList,length(WndList)+1);
+  WndList[High(WndList)] := wnd;
+end;
+
+constructor TTaskMsgManager.Create;
+begin
+  inherited Create;
+
+  lastappcommand := GetTickCount;
+  setlength(WndList,0);
+  SetTimer(WindowsClass.MsTaskSwWClass,1,500,nil);
+end;
+
+procedure TTaskMsgManager.DeleteWnd(Index: Integer);
+var
+  n : integer;
+begin
+  if (Index > High(WndList)) or (Index < Low(WndList)) then
+    exit;
+
+  for n := Index to High(WndList) - 1 do
+    WndList[n] := WndList[n+1];
+  setlength(WndList,length(WndList)-1);
+end;
+
+procedure TTaskMsgManager.DeleteWndByHandle(wnd: hwnd);
+var
+  Index : integer;
+begin
+  Index := FindWindow(wnd);
+  if Index <> -1 then
+    DeleteWnd(Index);
+end;
+
+destructor TTaskMsgManager.Destroy;
+begin
+  KillTimer(WindowsClass.MsTaskSwWClass,1);
+
+  UnregisterHook;
+
+  setlength(WndList,0);
+
+  inherited;
+end;
+
+function TTaskMsgManager.FindWindow(wnd: hwnd): integer;
+var
+  n : integer;
+begin
+  result := -1;
+  for n := 0 to High(WndList) do
+    if WndList[n] = wnd then
+    begin
+      result := n;
+      break;
+    end;
+end;
+
+procedure TTaskMsgManager.RegisterHook;
+var
+  mm: MINIMIZEDMETRICS;
+begin
+  FillChar(mm, SizeOf(MINIMIZEDMETRICS), 0);
+
+  mm.cbSize := SizeOf(MINIMIZEDMETRICS);
+  SystemParametersInfo(SPI_GETMINIMIZEDMETRICS, sizeof(MINIMIZEDMETRICS),@mm, 0);
+
+  mm.iArrange := mm.iArrange or ARW_HIDE;
+  SystemParametersInfo(SPI_SETMINIMIZEDMETRICS, sizeof(MINIMIZEDMETRICS),@mm, 0);
+
+  RegisterShellHook(WindowsClass.MsTaskSwWClass,1);
+  RegisterShellHook(WindowsClass.MsTaskSwWClass,3);
+end;
+
+procedure TTaskMsgManager.UnregisterHook;
+begin
+  RegisterShellHook(WindowsClass.MsTaskSwWClass,0);
 end;
 
 end.
