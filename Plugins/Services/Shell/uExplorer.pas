@@ -85,11 +85,8 @@ begin
       if FindWindow('TSharpExplorerForm', nil) <> 0 then
         SendMessage(FindWindow('TSharpExplorerForm', nil), WM_SHARPTERMINATE, 0, 0);
 
-      if FindWindow('TSharpExplorerForm', nil) <> 0 then
-      begin
-        while (FindWindow('TSharpExplorerForm', nil) <> 0) do
-          Sleep(16);
-      end;
+      while (FindWindow('TSharpExplorerForm', nil) <> 0) do
+        Sleep(16);
 
       EnterCriticalSection(CritSect);
       Started := False;

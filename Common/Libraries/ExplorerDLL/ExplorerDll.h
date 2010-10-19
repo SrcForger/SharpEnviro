@@ -17,11 +17,11 @@ class ExplorerDll
 {
 	public:
 		ExplorerDll();
-		~ExplorerDll();
 
 		static DWORD WINAPI ThreadFunc(LPVOID pvParam);
 
 		void Start();
+		void Stop();
 
 		void ShellReady();
 
@@ -42,4 +42,5 @@ class ExplorerDll
 };
 
 extern "C" DLLEXPORT void StartDesktop();
+extern "C" DLLEXPORT void StopDesktop();
 extern "C" DLLEXPORT void ShellReady();

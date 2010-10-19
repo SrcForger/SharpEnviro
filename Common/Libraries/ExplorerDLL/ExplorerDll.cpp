@@ -7,6 +7,11 @@ extern "C" DLLEXPORT void StartDesktop()
 	explorerDll.Start();
 }
 
+extern "C" DLLEXPORT void StopDesktop()
+{
+	explorerDll.Stop();
+}
+
 extern "C" DLLEXPORT void ShellReady()
 {
 	explorerDll.ShellReady();
@@ -21,7 +26,26 @@ ExplorerDll::ExplorerDll()
 	m_hThread = NULL;
 }
 
-ExplorerDll::~ExplorerDll()
+void ExplorerDll::Start()
+{
+	if(m_hThread)
+		return;
+
+	CoInitialize(NULL);
+
+	// Register the IShellDesktopTray COM Object
+	CoRegisterClassObject(IID_IShellDesktopTray, LPUNKNOWN(&explorerFactory), CLSCTX_LOCAL_SERVER, REGCLS_MULTIPLEUSE, &registerCookie);
+
+	// Create the ShellDesktopTray interface
+	iTray = CreateInstance();
+
+	hReadyEvent = CreateEvent(NULL, false, false, L"SharpExplorer_ShellReady");
+
+	// Create Desktop thread
+	m_hThread = CreateThread(NULL, 0, ThreadFunc, this, 0, &m_dwThreadID);
+}
+
+void ExplorerDll::Stop()
 {
 	// Send quit message to SHDesktopMessageLoop
 	if(m_dwThreadID)
@@ -30,7 +54,7 @@ ExplorerDll::~ExplorerDll()
 	// Terminate thread
 	if (m_hThread)
 	{
-		if (WaitForSingleObject(m_hThread, 1000) != WAIT_OBJECT_0)
+		if (WaitForSingleObject(m_hThread, INFINITE) != WAIT_OBJECT_0)
 			TerminateThread(m_hThread, 0);
 
 		CloseHandle(m_hThread);
@@ -65,25 +89,6 @@ ExplorerDll::~ExplorerDll()
 	CoRevokeClassObject(registerCookie);
 
 	CoUninitialize();
-}
-
-void ExplorerDll::Start()
-{
-	if(m_hThread)
-		return;
-
-	CoInitialize(NULL);
-
-	// Register the IShellDesktopTray COM Object
-	CoRegisterClassObject(IID_IShellDesktopTray, LPUNKNOWN(&explorerFactory), CLSCTX_LOCAL_SERVER, REGCLS_MULTIPLEUSE, &registerCookie);
-
-	// Create the ShellDesktopTray interface
-	iTray = CreateInstance();
-
-	hReadyEvent = CreateEvent(NULL, false, false, L"SharpExplorer_ShellReady");
-
-	// Create Desktop thread
-	m_hThread = CreateThread(NULL, 0, ThreadFunc, this, 0, &m_dwThreadID);
 }
 
 void ExplorerDll::ShellReady()

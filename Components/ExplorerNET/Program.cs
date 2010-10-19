@@ -22,7 +22,6 @@ namespace SharpEnviro.Explorer
     class Explorer
     {
         volatile static IntPtr hSharpDll;
-        volatile static bool bCanExit = false;
         volatile static bool bShellLoaded = false;
         volatile static SearchManager searchManager;
 
@@ -32,6 +31,36 @@ namespace SharpEnviro.Explorer
 	    {
             return (IntPtr.Size == 8);
 	    }
+
+        static void StartDesktop()
+        {
+            // Run the StartDesktop function
+            if (hSharpDll != IntPtr.Zero)
+            {
+                IntPtr fptr = PInvoke.GetProcAddress(hSharpDll, "StartDesktop");
+                if (fptr != IntPtr.Zero)
+                {
+                    _logger.Info("Invoking StartDesktop");
+                    FunctionInvoker sdi = (FunctionInvoker)Marshal.GetDelegateForFunctionPointer(fptr, typeof(FunctionInvoker));
+                    sdi();
+                }
+            }
+        }
+
+        static void StopDesktop()
+        {
+            // Run the StartDesktop function
+            if (hSharpDll != IntPtr.Zero)
+            {
+                IntPtr fptr = PInvoke.GetProcAddress(hSharpDll, "StopDesktop");
+                if (fptr != IntPtr.Zero)
+                {
+                    _logger.Info("Invoking StopDesktop");
+                    FunctionInvoker sdi = (FunctionInvoker)Marshal.GetDelegateForFunctionPointer(fptr, typeof(FunctionInvoker));
+                    sdi();
+                }
+            }
+        }
 
         static void ShellReady()
         {
@@ -139,16 +168,7 @@ namespace SharpEnviro.Explorer
                     hSharpDll = PInvoke.LoadLibrary("Explorer32.dll");
 
                 // Run the StartDesktop function
-                if (hSharpDll != IntPtr.Zero)
-                {
-                    IntPtr fptr = PInvoke.GetProcAddress(hSharpDll, "StartDesktop");
-                    if (fptr != IntPtr.Zero)
-                    {
-                        _logger.Info("Invoking StartDesktop");
-                        FunctionInvoker sdi = (FunctionInvoker)Marshal.GetDelegateForFunctionPointer(fptr, typeof(FunctionInvoker));
-                        sdi();
-                    }
-                }
+                StartDesktop();
 
                 // Signal that the shell is ready if the tray already exists
                 if ((PInvoke.FindWindow("Shell_TrayWnd", (string)null) != IntPtr.Zero))
@@ -176,13 +196,14 @@ namespace SharpEnviro.Explorer
                 while (wndThread.IsAlive)
                     System.Threading.Thread.Sleep(16);
 
+                StopDesktop();
+
                 searchManager.Dispose();
 				WPFRuntime.Instance.Stop();
 				ShellServices.Stop();
                 PInvoke.FreeLibrary(hSharpDll);
             }
 
-            bCanExit = true;
             bShellLoaded = false;
         }
 
