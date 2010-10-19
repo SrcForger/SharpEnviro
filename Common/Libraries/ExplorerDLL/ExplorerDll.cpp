@@ -80,18 +80,18 @@ void ExplorerDll::Start()
 	// Create the ShellDesktopTray interface
 	iTray = CreateInstance();
 
+	hReadyEvent = CreateEvent(NULL, false, false, L"SharpExplorer_ShellReady");
+
 	// Create Desktop thread
 	m_hThread = CreateThread(NULL, 0, ThreadFunc, this, 0, &m_dwThreadID);
 }
 
 void ExplorerDll::ShellReady()
 {
-	HANDLE hEv = CreateEvent(NULL, false, false, L"SharpExplorer_ShellReady");
-
-	if(hEv)
+	if(hReadyEvent)
 	{
-		SetEvent(hEv);
-		CloseHandle(hEv);
+		SetEvent(hReadyEvent);
+		CloseHandle(hReadyEvent);
 	}
 }
 
@@ -177,11 +177,10 @@ DWORD WINAPI ExplorerDll::ThreadFunc(LPVOID pvParam)
 	CloseHandle(CanRegisterEvent);
 
 	// Wait for SharpE to be loaded
-	HANDLE hEv = CreateEvent(NULL, false, false, L"SharpExplorer_ShellReady");
-	if(hEv)
+	if(pThis.hReadyEvent)
 	{
-		WaitForSingleObject(hEv, INFINITE);
-		CloseHandle(hEv);
+		WaitForSingleObject(pThis.hReadyEvent, INFINITE);
+		CloseHandle(pThis.hReadyEvent);
 	}
 
 	SHCREATEDESKTOP SHCreateDesktop = (SHCREATEDESKTOP)GetProcAddress(pThis.hShellDLL, MAKEINTRESOURCEA(200));

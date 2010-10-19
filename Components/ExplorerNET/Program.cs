@@ -41,6 +41,7 @@ namespace SharpEnviro.Explorer
                 IntPtr fptr = PInvoke.GetProcAddress(hSharpDll, "ShellReady");
                 if (fptr != IntPtr.Zero)
                 {
+                    _logger.Info("Invoking ShellReady");
                     FunctionInvoker sdi = (FunctionInvoker)Marshal.GetDelegateForFunctionPointer(fptr, typeof(FunctionInvoker));
                     sdi();
                 }
@@ -143,6 +144,7 @@ namespace SharpEnviro.Explorer
                     IntPtr fptr = PInvoke.GetProcAddress(hSharpDll, "StartDesktop");
                     if (fptr != IntPtr.Zero)
                     {
+                        _logger.Info("Invoking StartDesktop");
                         FunctionInvoker sdi = (FunctionInvoker)Marshal.GetDelegateForFunctionPointer(fptr, typeof(FunctionInvoker));
                         sdi();
                     }

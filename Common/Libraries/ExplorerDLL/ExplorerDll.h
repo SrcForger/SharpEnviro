@@ -37,6 +37,8 @@ class ExplorerDll
 
 		SHELLDDEINIT ShellDDEInit;
 		FILEICONINIT FileIconInit;
+
+		volatile HANDLE hReadyEvent;
 };
 
 extern "C" DLLEXPORT void StartDesktop();

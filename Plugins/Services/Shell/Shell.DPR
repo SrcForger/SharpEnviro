@@ -779,7 +779,7 @@ begin
     if (FindWindow('TSharpExplorerForm', nil) <> 0) then
 	  begin
       SharpApi.SendDebugMessage('Shell', 'Sending WM_SHARPSHELLREADY to Explorer', 0);
-      PostMessage(FindWindow('TSharpExplorerForm', nil), WM_SHARPSHELLREADY, 0, 0);
+      SendMessage(FindWindow('TSharpExplorerForm', nil), WM_SHARPSHELLREADY, 0, 0);
 	  end;
   end;
 
