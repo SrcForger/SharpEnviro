@@ -117,7 +117,7 @@ const
   WM_SHARPCENTERMESSAGE = WM_APP + 660;
 
   // Explorer
-  WM_SHARPSTARTEXPLORER = WM_APP + 661;
+  //WM_SHARPSTARTEXPLORER = WM_APP + 661;
 
   HR_NORECIEVERWINDOW = 2;
   HR_UNKNOWNERROR = 1;
@@ -289,7 +289,7 @@ type
 
 var
   // Global Vars
-  UseAppData : boolean = False;
+  UseAppData : boolean = True;
 
   // temp stuff
   i: integer;
@@ -1676,16 +1676,16 @@ var
   valid : boolean;
   AppDataDir,CommonAppDataDir : String;
 begin
+  valid := True;
   // Load Registry Settings
   Reg := TRegistry.Create;
   Reg.Access := KEY_READ; // read only
   try
     Reg.RootKey := HKEY_LOCAL_MACHINE;
-    valid := Reg.OpenKey(REGPATH,False);
-    if valid then
+    if Reg.OpenKey(REGPATH,False) then
       valid := Reg.ReadBool('UseAppData')
   except
-    valid := False;
+    valid := True;
   end;
   Reg.Free;
 

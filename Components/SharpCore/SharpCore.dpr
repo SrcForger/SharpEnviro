@@ -77,7 +77,6 @@ var
   lstComponents: TComponentList;
   hndWindow: THandle;
   TaskBarCreated: Integer;
-  hndEvent: THandle;
   shellInit : boolean;
 
 function ProcessMessage(var Msg: TMsg): Boolean;
@@ -260,6 +259,8 @@ begin
   end;
 
   SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));
+
+  SharpApi.SendDebugMessage('SharpCore', 'SharpEnviro was loaded successfully', 0);
 end;
 
 procedure StopAllServices;
@@ -577,16 +578,7 @@ begin
   hndWindow := CreateWindow(wclClass.lpszClassName, 'SharpCore', 0,
     10, 10, 340, 220, 0, 0, hInstance, nil);
 
-  if uVistaFuncs.IsWindowsVista then
-     hndEvent := OpenEvent(EVENT_MODIFY_STATE, False, 'ShellDesktopSwitchEvent')
-  else hndEvent := OpenEvent(EVENT_MODIFY_STATE, False, 'msgina: ShellReadyEvent');
-  if hndEvent > 0 then
-  begin
-    SetEvent(hndEvent);
-    CloseHandle(hndEvent);
-  end;
-
-  // Initialize COM library (some services might need it);
+  // Initialize COM library (some services might need it)
   CoInitialize(nil);
 
   RunAll;

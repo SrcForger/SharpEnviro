@@ -28,7 +28,7 @@ namespace SharpSearch
 
 			_databaseFilePath = databaseFilePath;
 			_connection = new SQLiteConnection(DatabaseConnectionString);
-			_connection.Open();
+            _connection.Open();
 		}
 
 		#endregion Constructors

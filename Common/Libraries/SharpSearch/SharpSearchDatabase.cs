@@ -10,6 +10,7 @@ using System.Diagnostics;
 using SharpEnviro;
 using SharpEnviro.Interop;
 using System.ComponentModel;
+using NLog;
 
 namespace SharpSearch
 {
@@ -35,10 +36,26 @@ namespace SharpSearch
 		/// <param name="databaseFilePath">The full path to the database file.</param>
 		public SharpSearchDatabase(string databaseFilePath)
 		{
-            Directory.CreateDirectory(Path.GetDirectoryName(databaseFilePath));
+            _logger.Info("Using database: " + databaseFilePath);
+            try
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(databaseFilePath));
+            }
+            catch (Exception e)
+            {
+                _logger.ErrorException("Could not create database directory", e);
+            }
 
 			_fullPath = databaseFilePath;
-			_database = new SQLiteDatabase(databaseFilePath);
+
+            try
+            {
+                _database = new SQLiteDatabase(databaseFilePath);
+            }
+            catch (Exception e)
+            {
+                _logger.ErrorException("Exception in SQLiteDatabase constructor", e);
+            }
 
 			InitializeDatabase();
 		}
@@ -342,6 +359,8 @@ namespace SharpSearch
 			//_database.CreateTable("SharpSearch", "Filename STRING(256)", "Description STRING(512)", "Location STRING(1024)", "Flag BOOLEAN");
 			//_database.CreateIndex("SharpSearch", "IX_Filename_Description", "Filename", "Description");
 		}
+
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
 
 		private SQLiteDatabase _database;
 		private string _tableName = "SharpSearch";

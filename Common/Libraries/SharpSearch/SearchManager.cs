@@ -9,6 +9,8 @@ using System.Xml.Serialization;
 using System.ComponentModel;
 using System.Reflection;
 
+using NLog;
+
 namespace SharpSearch
 {
 	/// <summary>
@@ -41,10 +43,12 @@ namespace SharpSearch
 				if (!args.Name.StartsWith("System.Data.SQLite,"))
 					return null;
 
+                string baseDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+
 				if (IntPtr.Size == 8)
-					return Assembly.LoadFrom(@"SQLite\x64\System.Data.SQLite.DLL");
+					return Assembly.LoadFrom(baseDir + "\\SQLite\\x64\\System.Data.SQLite.DLL");
 				else
-					return Assembly.LoadFrom(@"SQLite\x86\System.Data.SQLite.DLL");
+                    return Assembly.LoadFrom(baseDir + "\\SQLite\\x86\\System.Data.SQLite.DLL");
 			};
 
 			_database = new SharpSearchDatabase();
@@ -117,7 +121,7 @@ namespace SharpSearch
 		{
 			get
 			{
-				return _indexWorker.IsBusy;
+                return _indexWorker.IsBusy;
 			}
 		}
 
@@ -154,6 +158,8 @@ namespace SharpSearch
 
 			if (File.Exists(LocationsFilePath))
 			{
+                _logger.Info("Trying to load locations from: " + LocationsFilePath);
+
 				try
 				{
 					XmlSerializer serializer = new XmlSerializer(typeof(List<SearchLocation>));
@@ -210,6 +216,8 @@ namespace SharpSearch
 				_watchers.Add(watcher);
 			}
 		}
+
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
 
 		private List<SearchLocation> _searchLocations;
 		private ObservableCollection<ISearchData> _searchResults;

@@ -18,12 +18,17 @@ ExplorerDll::ExplorerDll()
 	ShellDDEInit = NULL;
 	FileIconInit = NULL;
 	iTray = NULL;
+	m_hThread = NULL;
 }
 
 ExplorerDll::~ExplorerDll()
 {
+	// Send quit message to SHDesktopMessageLoop
+	if(m_dwThreadID)
+		PostThreadMessage(m_dwThreadID, WM_QUIT, 0, 0);
+
 	// Terminate thread
-	if (m_hThread != NULL)
+	if (m_hThread)
 	{
 		if (WaitForSingleObject(m_hThread, 1000) != WAIT_OBJECT_0)
 			TerminateThread(m_hThread, 0);
@@ -64,6 +69,9 @@ ExplorerDll::~ExplorerDll()
 
 void ExplorerDll::Start()
 {
+	if(m_hThread)
+		return;
+
 	CoInitialize(NULL);
 
 	// Register the IShellDesktopTray COM Object
@@ -73,7 +81,7 @@ void ExplorerDll::Start()
 	iTray = CreateInstance();
 
 	// Create Desktop thread
-	m_hThread = CreateThread(NULL, 0, ThreadFunc, this, 0, NULL);
+	m_hThread = CreateThread(NULL, 0, ThreadFunc, this, 0, &m_dwThreadID);
 }
 
 void ExplorerDll::ShellReady()
@@ -106,14 +114,10 @@ DWORD WINAPI ExplorerDll::ThreadFunc(LPVOID pvParam)
 	RUNINSTALLUNINSTALLSTUBS RunInstallUninstallStubs = (RUNINSTALLUNINSTALLSTUBS)GetProcAddress(pThis.hShellDLL, MAKEINTRESOURCEA(885));
 	pThis.FileIconInit = (FILEICONINIT)GetProcAddress(pThis.hShellDLL, MAKEINTRESOURCEA(660));
 
-	// Create a mutex telling that this is the Explorer shell
-	HANDLE hIsShell = CreateMutex(NULL, false, L"Local\\ExplorerIsShellMutex");
-	WaitForSingleObject(hIsShell, INFINITE);
-
-	// Initialize IShellWindows
+	// Load RunInstallUninstallStubs function
 	// Try 7 Dll
 	pThis.hWinListDLL = LoadLibrary(L"ExplorerFrame.dll");
-	if (!pThis.hWinListDLL || GetProcAddress(pThis.hWinListDLL, MAKEINTRESOURCEA(110)) == NULL)
+	if (pThis.hWinListDLL || GetProcAddress(pThis.hWinListDLL, MAKEINTRESOURCEA(110)))
 	{
 		if (pThis.hWinListDLL)
 			FreeLibrary(pThis.hWinListDLL);
@@ -123,6 +127,36 @@ DWORD WINAPI ExplorerDll::ThreadFunc(LPVOID pvParam)
 		if (pThis.hWinListDLL && !RunInstallUninstallStubs)
 			RunInstallUninstallStubs = (RUNINSTALLUNINSTALLSTUBS)GetProcAddress(pThis.hWinListDLL, MAKEINTRESOURCEA(130));
 	}
+
+	// Create a mutex telling that this is the Explorer shell
+	HANDLE hIsShell = CreateMutex(NULL, false, L"Local\\ExplorerIsShellMutex");
+	WaitForSingleObject(hIsShell, INFINITE);
+
+	// Initialize DDE
+	if (pThis.ShellDDEInit)
+		pThis.ShellDDEInit(true);
+
+	SetProcessShutdownParameters(3, 0);
+
+	MSG msg;
+	PeekMessageW(&msg, 0, WM_QUIT, WM_QUIT, false);
+
+	// Wait for Scm to be created
+	HANDLE hGScmEvent = OpenEvent(0x100002, false, L"Global\\ScmCreatedEvent");
+	if (hGScmEvent == NULL)
+		hGScmEvent = OpenEvent(0x100000, false, L"Global\\ScmCreatedEvent");
+	if (hGScmEvent == NULL)
+		hGScmEvent = CreateEvent(NULL, true, false, L"Global\\ScmCreatedEvent");
+
+	if (hGScmEvent)
+	{
+		WaitForSingleObject(hGScmEvent, 6000);
+		CloseHandle(hGScmEvent);
+	}
+
+	// Initialize the file icon cache
+	if (pThis.FileIconInit)
+		pThis.FileIconInit(true);
 
 	// Initialize WinList functions
 	if (pThis.hWinListDLL)
@@ -134,30 +168,6 @@ DWORD WINAPI ExplorerDll::ThreadFunc(LPVOID pvParam)
 			WinList_Init();
 	}
 
-	// Initialize DDE
-	if (pThis.ShellDDEInit)
-		pThis.ShellDDEInit(true);
-
-	SetProcessShutdownParameters(2, 0);
-
-	// Wait for Scm to be created
-	HANDLE hGScmEvent = OpenEvent(0x100002, false, L"Global\\ScmCreatedEvent");
-	if (hGScmEvent == NULL)
-		hGScmEvent = OpenEvent(0x100000, false, L"Global\\ScmCreatedEvent");
-	if (hGScmEvent == NULL)
-		hGScmEvent = CreateEvent(NULL, true, false, L"Global\\ScmCreatedEvent");
-
-	hGScmEvent = OpenEvent(0x100000, false, L"Global\\ScmCreatedEvent");
-	if (hGScmEvent != NULL)
-	{
-		WaitForSingleObject(hGScmEvent, 6000);
-		CloseHandle(hGScmEvent);
-	}
-
-	// Initialize the file icon cache
-	if (pThis.FileIconInit)
-		pThis.FileIconInit(true);
-
 	// Event
 	HANDLE CanRegisterEvent = CreateEvent(NULL, true, true, L"Local\\_fCanRegisterWithShellService");
 
@@ -166,11 +176,13 @@ DWORD WINAPI ExplorerDll::ThreadFunc(LPVOID pvParam)
 
 	CloseHandle(CanRegisterEvent);
 
-
+	// Wait for SharpE to be loaded
 	HANDLE hEv = CreateEvent(NULL, false, false, L"SharpExplorer_ShellReady");
-
-	WaitForSingleObject(hEv, INFINITE);
-	CloseHandle(hEv);
+	if(hEv)
+	{
+		WaitForSingleObject(hEv, INFINITE);
+		CloseHandle(hEv);
+	}
 
 	SHCREATEDESKTOP SHCreateDesktop = (SHCREATEDESKTOP)GetProcAddress(pThis.hShellDLL, MAKEINTRESOURCEA(200));
 	SHDESKTOPMESSAGELOOP SHDesktopMessageLoop = (SHDESKTOPMESSAGELOOP)GetProcAddress(pThis.hShellDLL, MAKEINTRESOURCEA(201));

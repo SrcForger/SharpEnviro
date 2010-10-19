@@ -22,8 +22,11 @@ namespace SharpEnviro.Explorer
     class Explorer
     {
         volatile static IntPtr hSharpDll;
-        volatile static bool bShouldExit = false;
         volatile static bool bCanExit = false;
+        volatile static bool bShellLoaded = false;
+        volatile static SearchManager searchManager;
+
+        internal delegate void FunctionInvoker();
 
         static bool Is64Bit() 
 	    {
@@ -32,13 +35,13 @@ namespace SharpEnviro.Explorer
 
         static void ShellReady()
         {
-            // Run the StartDesktop function
+            // Run the ShellReady function
             if (hSharpDll != IntPtr.Zero)
             {
                 IntPtr fptr = PInvoke.GetProcAddress(hSharpDll, "ShellReady");
                 if (fptr != IntPtr.Zero)
                 {
-                    StartDesktopInvoker sdi = (StartDesktopInvoker)Marshal.GetDelegateForFunctionPointer(fptr, typeof(StartDesktopInvoker));
+                    FunctionInvoker sdi = (FunctionInvoker)Marshal.GetDelegateForFunctionPointer(fptr, typeof(FunctionInvoker));
                     sdi();
                 }
             }
@@ -47,21 +50,61 @@ namespace SharpEnviro.Explorer
         static IntPtr SharpWindowProc(IntPtr hWnd, uint uMsgm, IntPtr wParam, IntPtr lParam)
         {
             if (uMsgm == PInvoke.WM_SHARPSHELLREADY)
+            {
                 ShellReady();
 
-            if (uMsgm == PInvoke.WM_ENDSESSION || uMsgm == PInvoke.WM_CLOSE || uMsgm == PInvoke.WM_QUIT || uMsgm == PInvoke.WM_SHARPTERMINATE)
-            {
-                bShouldExit = true;
-                while (!bCanExit)
-                    System.Threading.Thread.Sleep(16);
+                return (IntPtr)0;
+            }
 
-                return (IntPtr)1;
+            if (uMsgm == PInvoke.WM_SHARPSHELLLOADED)
+            {
+                return (IntPtr)(bShellLoaded?1:0);
+            }
+
+            // Show the search window
+            if (uMsgm == PInvoke.WM_SHARPSEARCH)
+            {
+                _logger.Info("SharpSearch message received.");
+                WPFRuntime.Instance.Show<SearchWindow>();
+                _logger.Info("SharpSearch message processed.");
+
+                return (IntPtr)0;
+            }
+
+            // Start indexing
+            if (uMsgm == PInvoke.WM_SHARPSEARCH_INDEXING)
+            {
+                if (!searchManager.IsIndexing)
+                        searchManager.StartIndexing();
+
+                return (IntPtr)0;
+            }
+
+            if (uMsgm == PInvoke.WM_SHARPTERMINATE)
+            {
+                PInvoke.PostQuitMessage(0);
+
+                return (IntPtr)0;
             }
 
             return PInvoke.DefWindowProc(hWnd, uMsgm, wParam, lParam);
         }
 
-        internal delegate void StartDesktopInvoker();
+        static void WindowThread()
+        {
+            ClassParams classParams = new ClassParams();
+            classParams.Name = "TSharpExplorerForm";
+            classParams.WindowProc = SharpWindowProc;
+            CreateParamsEx createParams = new CreateParamsEx();
+            createParams.Caption = "SharpExplorerForm";
+            createParams.ClassName = classParams.Name;
+            createParams.ExStyle = (int)WindowStylesExtended.WS_EX_TOOLWINDOW;
+
+            NativeWindowEx explorerWindow = new NativeWindowEx(classParams, createParams);
+
+            // Start message pump
+            System.Windows.Threading.Dispatcher.Run();
+        }
 
         [STAThread]
         static void Main(string[] args)
@@ -69,7 +112,7 @@ namespace SharpEnviro.Explorer
 			AppDomain.CurrentDomain.UnhandledException +=
 				(s, a) =>
 				{
-					_logger.LogException(LogLevel.Error, "Explorer encountered and unhandled exception.", (Exception)a.ExceptionObject);
+					_logger.LogException(LogLevel.Error, "Encountered an unhandled exception", (Exception)a.ExceptionObject);
 				};
 
             // Make sure SharpExplorer isn't running already
@@ -81,15 +124,13 @@ namespace SharpEnviro.Explorer
             OperatingSystem osInfo = Environment.OSVersion;
             if (osInfo.Platform == System.PlatformID.Win32NT)
             {
-                ClassParams classParams = new ClassParams();
-                classParams.Name = "TSharpExplorerForm";
-                classParams.WindowProc = SharpWindowProc;
-                CreateParamsEx createParams = new CreateParamsEx();
-                createParams.Caption = "SharpExplorerForm";
-                createParams.ClassName = classParams.Name;
-				createParams.ExStyle = (int)WindowStylesExtended.WS_EX_TOOLWINDOW;
+                System.Threading.Thread wndThread = new System.Threading.Thread(new System.Threading.ThreadStart(WindowThread));
+                wndThread.Start();
 
-                NativeWindowEx explorerWindow = new NativeWindowEx(classParams, createParams);
+                // Wait for the native window to be created
+                while (wndThread.IsAlive && PInvoke.FindWindow("TSharpExplorerForm", (string)null) == IntPtr.Zero)
+                    System.Threading.Thread.Sleep(16);
+
 
                 if (Is64Bit())
                     hSharpDll = PInvoke.LoadLibrary("Explorer64.dll");
@@ -102,55 +143,45 @@ namespace SharpEnviro.Explorer
                     IntPtr fptr = PInvoke.GetProcAddress(hSharpDll, "StartDesktop");
                     if (fptr != IntPtr.Zero)
                     {
-                        StartDesktopInvoker sdi = (StartDesktopInvoker)Marshal.GetDelegateForFunctionPointer(fptr, typeof(StartDesktopInvoker));
+                        FunctionInvoker sdi = (FunctionInvoker)Marshal.GetDelegateForFunctionPointer(fptr, typeof(FunctionInvoker));
                         sdi();
                     }
                 }
 
-				ShellServices.Start();
-				WPFRuntime.Instance.Start();
+                // Signal that the shell is ready if the tray already exists
+                if ((PInvoke.FindWindow("Shell_TrayWnd", (string)null) != IntPtr.Zero))
+                    ShellReady();
 
-                if (PInvoke.FindWindow("Shell_TrayWnd", (string)null) != IntPtr.Zero)
+                bShellLoaded = true;
+
+                // Wait for the tray to show
+                while (PInvoke.FindWindow("Shell_TrayWnd", (string)null) == IntPtr.Zero)
                 {
-                    if (PInvoke.SendMessage(PInvoke.FindWindow("Shell_TrayWnd", (string)null), 33430, IntPtr.Zero, IntPtr.Zero) == 1)
-                        ShellReady();
+                    System.Threading.Thread.Sleep(16);
                 }
+
+                // Start shell services (tray icons etc)
+                ShellServices.Start();
+                WPFRuntime.Instance.Start();
 
 				// Check if the database file exists before creating the SearchManager as it automatically creates the file.
 				bool needsIndexing = !File.Exists(Path.Combine(SharpSearchDatabase.DefaultDatabaseDirectory, SharpSearchDatabase.DefaultDatabaseFilename));
-				SearchManager manager = new SearchManager(true);
+                searchManager = new SearchManager(true);
 
-				if (needsIndexing)
-					manager.StartIndexing();
+                if (needsIndexing)
+                    searchManager.StartIndexing();
 
-                while (!bShouldExit)
-                {
-                    MSG mMsg;
+                while (wndThread.IsAlive)
+                    System.Threading.Thread.Sleep(16);
 
-                    if (PInvoke.GetMessage(out mMsg, IntPtr.Zero, 0, 0))
-                    {
-                        if ((mMsg.message == PInvoke.WM_ENDSESSION) || (mMsg.message == PInvoke.WM_CLOSE) || (mMsg.message == PInvoke.WM_QUIT))
-                            break;
-
-                        if (mMsg.message == PInvoke.WM_SHARPSEARCH)
-						{
-							_logger.Info("SharpSearch message received.");
-							WPFRuntime.Instance.Show<SearchWindow>();
-							_logger.Info("SharpSearch message processed.");
-						}
-
-                        if (mMsg.message == PInvoke.WM_SHARPSEARCH_INDEXING)
-							if (!manager.IsIndexing) manager.StartIndexing();
-                    }
-                }
-
-				manager.Dispose();
+                searchManager.Dispose();
 				WPFRuntime.Instance.Stop();
 				ShellServices.Stop();
                 PInvoke.FreeLibrary(hSharpDll);
             }
 
             bCanExit = true;
+            bShellLoaded = false;
         }
 
 		private static Logger _logger = LogManager.GetCurrentClassLogger();

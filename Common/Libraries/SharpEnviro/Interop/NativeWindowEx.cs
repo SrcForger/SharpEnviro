@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -62,11 +63,10 @@ namespace SharpEnviro.Interop
 
         public void CreateHandle()
         {
-            IntPtr h;
-            h = PInvoke.CreateWindowEx((uint)CreateParams.ExStyle,
+            IntPtr h = PInvoke.CreateWindowEx((WindowStylesEx)CreateParams.ExStyle,
                                                      CreateParams.ClassName,
                                                      CreateParams.Caption,
-                                                     (uint)CreateParams.Style,
+                                                     (WindowStyles)CreateParams.Style,
                                                      CreateParams.X,
                                                      CreateParams.Y,
                                                      CreateParams.Width,
@@ -75,6 +75,10 @@ namespace SharpEnviro.Interop
                                                      (IntPtr)0,
                                                      CreateParams.HInstance,
                                                      (IntPtr)0); // no idea how to convert 'object param' properly
+
+            if(h == IntPtr.Zero)
+                throw new Win32Exception(Marshal.GetLastWin32Error());
+
             this.AssignHandle(h);
         }
     }

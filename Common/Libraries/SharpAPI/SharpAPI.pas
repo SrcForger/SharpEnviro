@@ -98,9 +98,6 @@ const
   // SharpCenter
   WM_SHARPCENTERMESSAGE = WM_APP + 660;
 
-  // Explorer
-  //WM_SHARPSTARTEXPLORER = WM_APP + 661;
-
   // SharpMenu
   WM_MENUID = WM_APP + 661;
 
@@ -108,6 +105,7 @@ const
   WM_SHARPSHELLREADY = WM_APP + 662;
   WM_SHARPSEARCH = WM_APP + 663;	
   WM_SHARPSEARCH_INDEXING = WM_APP + 664;
+  WM_SHARPSHELLLOADED = WM_APP + 665;
 
   // WM_BARCOMMAND messages param
   BC_ADD = 0;

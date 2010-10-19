@@ -26,12 +26,12 @@ namespace SharpEnviro.Interop
         [DllImport("user32.dll")]
         public static extern bool UnregisterClass(string lpClassName, IntPtr hInstance);
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
         public static extern IntPtr CreateWindowEx(
-           uint dwExStyle,
+           WindowStylesEx dwExStyle,
            string lpClassName,
            string lpWindowName,
-           uint dwStyle,
+           WindowStyles dwStyle,
            int x,
            int y,
            int nWidth,
@@ -188,13 +188,15 @@ namespace SharpEnviro.Interop
 
         #region Window Messages
         // Window Message declaration
-        public const int WM_ENDSESSION = 0x0016;
-        public const int WM_CLOSE = 0x0010;
-        public const int WM_QUIT = 0x0012;
-        public const int WM_SHARPTERMINATE = 0x8226;
-        public const int WM_SHARPSHELLREADY = 0x8296;
-        public const int WM_SHARPSEARCH = 0x8297;
-        public const int WM_SHARPSEARCH_INDEXING = 0x8298;
+        public const uint WM_NCCREATE = 0x0081;
+        public const uint WM_ENDSESSION = 0x0016;
+        public const uint WM_CLOSE = 0x0010;
+        public const uint WM_QUIT = 0x0012;
+        public const uint WM_SHARPTERMINATE = 0x8226;
+        public const uint WM_SHARPSHELLREADY = 0x8296;
+        public const uint WM_SHARPSEARCH = 0x8297;
+        public const uint WM_SHARPSEARCH_INDEXING = 0x8298;
+        public const uint WM_SHARPSHELLLOADED = 0x8299;
 
         [DllImport("User32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -206,6 +208,9 @@ namespace SharpEnviro.Interop
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        public static extern void PostQuitMessage(int nExitCode);
         #endregion
 
         #region DLL
@@ -724,5 +729,5 @@ namespace SharpEnviro.Interop
 		/// and is placed at the bottom of all other windows.
 		/// </summary>
 		public static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
-	}
+    }
 }

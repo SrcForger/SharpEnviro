@@ -19,5 +19,12 @@
 					 processorArchitecture="*"/>
 		</dependentAssembly>
 	</dependency>
-	<trustInfo xmlns="urn:schemas-microsoft-com:asm.v3"/>
+
+  <application>
+    <windowsSettings xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">
+      <dpiAware>true</dpiAware>
+    </windowsSettings>
+  </application>
+
+  <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3"/>
 </assembly>

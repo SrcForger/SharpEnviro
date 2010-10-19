@@ -26,7 +26,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 library Shell;
 
 uses
-//  VCLFixPack,
   MultiMon,
   uxtheme,
   math,
@@ -38,18 +37,20 @@ uses
   registry,
   messages,
   Contnrs,
+  ActiveX,
   JclSysInfo,
   JclSimpleXML,
   Jclstrings,
   MonitorList,
-  {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
+  DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',
   winver in 'winver.pas',
   declaration in 'declaration.pas',
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   uTaskManager in 'uTaskManager.pas',
   uTaskItem in 'uTaskItem.pas',
   VWMFunctions in '..\..\..\Common\Units\VWM\VWMFunctions.pas',
-  uSystemFuncs in '..\..\..\Common\Units\SystemFuncs\uSystemFuncs.pas';
+  uSystemFuncs in '..\..\..\Common\Units\SystemFuncs\uSystemFuncs.pas',
+  uExplorer in 'uExplorer.pas';
 
 type
   TTaskMsgManager = Class(Tobject)
@@ -146,7 +147,9 @@ var
   TaskManager : TTaskManager;
   TrayManager : TTrayManager;
   DeskAreaManager : TDeskAreaManager;
-  lastappcommand : int64;  
+  lastappcommand : int64;
+
+  ExplorerThread : TExplorerThread;
 
   WM_SHELLHOOK : integer;
 
@@ -156,8 +159,6 @@ var
   ReBarWindow32    : hwnd;
   MsTaskSwWClass   : hwnd;
   DeskAreaTimerWnd : hwnd;
-
-  ExplorerStarted: boolean;
 
   ShellTrayWndClass: TWndClass = (
     style: 0;
@@ -225,7 +226,6 @@ var
     hbrBackground: 1;
     lpszMenuName: nil;
     lpszClassName: 'DeskAreaTimerWnd');
-
 
 function GetWndCaption(pHandle: hwnd): string;
 var
@@ -321,22 +321,6 @@ begin
   finally
     List.Free;
   end;
-end;
-
-procedure StartExplorer;
-var
-  Dir : String;
-begin
-  Dir := IncludeTrailingBackslash(SharpAPI.GetSharpeDirectory);
-  if (NETFramework35) and (FileExists(Dir + 'Addons\Explorer.exe')) then
-    SharpExecute(Dir + 'Addons\Explorer.exe');
-end;
-
-procedure TerminateExplorer;
-begin
-  ExplorerStarted := False;
-
-  PostMessage(FindWindow('TSharpExplorerform', nil), WM_CLOSE, 0, 0);
 end;
 
 function ShellTrayWndProc(wnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall;
@@ -499,9 +483,6 @@ begin
         result := 1;
       end else result := 0;
     end;
-    WM_SHARPSHELLREADY: begin
-      result := Integer(ExplorerStarted);
-    end;   
     else Result := DefWindowProc(wnd, Msg, wParam, lParam);
   end;
 
@@ -732,38 +713,27 @@ begin
   end;
 end;
 
-procedure StartShellServices;
-begin
-  if not NETFramework35 then
-    SharpExecute(IncludeTrailingBackslash(SharpAPI.GetSharpeDirectory) + 'SharpShellServices.exe');
-end;
-
-procedure TerminateShellServices;
-var
-  PID : DWord;
-begin
-  PID := GetPidFromProcessNameCase('SharpShellServices.exe');
-  if PID <> INVALID_HANDLE_VALUE then
-    TerminateApp(PID,100);
-end;
-
 procedure Stop;
 begin
+  ExplorerThread.Terminate;
+  ExplorerThread.WaitFor;
+  ExplorerThread.Free;
+
   FreeAndNil(DeskAreaManager);
   FreeAndNil(TrayManager);
   FreeAndNil(TaskMsgManager);
   FreeAndNil(TaskManager);
 
   DesroyWindowStructure;
-  TerminateShellServices;
-  TerminateExplorer;
 end;
 
 function Start(owner: hwnd): hwnd;
 begin
   InitThemeLibrary;
 
-  ExplorerStarted := False;
+  ExplorerThread := TExplorerThread.Create(False);
+  ExplorerThread.Resume;
+  ExplorerThread.WaitStarted;
 
   TaskMsgManager := nil;
   TrayManager := nil;
@@ -780,13 +750,6 @@ begin
 
   SharpApi.SharpEBroadCast(WM_SHELLHOOKWINDOWCREATED,MsTaskSwWClass,0);
   TaskMsgManager.RegisterHook;
-
-  TerminateShellServices;
-  sleep(1000);
-  StartShellServices;
-
-  //if ShellInitialized then
-    StartExplorer;
 
   ServiceDone('Shell');
   Result := owner;
@@ -812,13 +775,12 @@ begin
   begin
     DeskAreaManager.SetDeskArea;
 
-    // Start Explorer
-    if (FindWindow('TSharpExplorerform', nil) <> 0) then
-	begin
-      SendMessage(FindWindow('TSharpExplorerform', nil), WM_SHARPSHELLREADY, 0, 0);
-	  
-	  ExplorerStarted := True;
-	end;
+    // Start Explorer Desktop
+    if (FindWindow('TSharpExplorerForm', nil) <> 0) then
+	  begin
+      SharpApi.SendDebugMessage('Shell', 'Sending WM_SHARPSHELLREADY to Explorer', 0);
+      PostMessage(FindWindow('TSharpExplorerForm', nil), WM_SHARPSHELLREADY, 0, 0);
+	  end;
   end;
 
   Result := 1;
@@ -1624,6 +1586,7 @@ begin
 end;
 
 begin
+
 end.
 
 
