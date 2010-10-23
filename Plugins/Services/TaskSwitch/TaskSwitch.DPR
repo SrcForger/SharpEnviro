@@ -30,7 +30,6 @@ library TaskSwitch;
 {$R *.RES}
 
 uses
-//  VCLFixPack,
   windows,
   Messages,
   SysUtils,
@@ -46,8 +45,12 @@ uses
   {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   uTaskSwitchGUI in 'uTaskSwitchGUI.pas',
   uTaskSwitchWnd in 'Forms\uTaskSwitchWnd.pas' {TaskSwitchWnd},
+  uDeskArea in '..\Shell\uDeskArea.pas',
   uTaskItem in '..\Shell\uTaskItem.pas',
   uTaskManager in '..\Shell\uTaskManager.pas',
+  uTray in '..\Shell\uTray.pas',
+  uTypes in '..\Shell\uTypes.pas',
+  uWindows in '..\Shell\uWindows.pas',
   SWCmdList in '..\..\..\Common\Units\TaskFilterList\SWCmdList.pas',
   TaskFilterList in '..\..\..\Common\Units\TaskFilterList\TaskFilterList.pas';
 

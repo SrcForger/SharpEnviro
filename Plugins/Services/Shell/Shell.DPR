@@ -42,7 +42,7 @@ uses
   JclSimpleXML,
   Jclstrings,
   MonitorList,
-  DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',
+  {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   uTypes in 'uTypes.pas',
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   uTaskManager in 'uTaskManager.pas',

@@ -30,7 +30,6 @@ library TaskBar;
 {$R *.res}
 
 uses
-//  VCLFixPack,
   Windows,
   Controls,
   SysUtils,
@@ -54,13 +53,17 @@ uses
   SharpIconUtils in '..\..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas',
   VWMFunctions in '..\..\..\Common\Units\VWM\VWMFunctions.pas',
   uSystemFuncs in '..\..\..\Common\Units\SystemFuncs\uSystemFuncs.pas',
+  uDeskArea in '..\..\Services\Shell\uDeskArea.pas',
   uTaskItem in '..\..\Services\Shell\uTaskItem.pas',
+  uTaskPreviewWnd in 'uTaskPreviewWnd.pas',
   uTaskManager in '..\..\Services\Shell\uTaskManager.pas',
+  uTray in '..\..\Services\Shell\uTray.pas',
+  uTypes in '..\..\Services\Shell\uTypes.pas',
+  uWindows in '..\..\Services\Shell\uWindows.pas',
   SWCmdList in '..\..\..\Common\Units\TaskFilterList\SWCmdList.pas',
   TaskFilterList in '..\..\..\Common\Units\TaskFilterList\TaskFilterList.pas',
   uInterfacedSharpBarModuleBase in '..\..\..\Components\SharpBar\uInterfacedSharpBarModuleBase.pas',
-  GR32Utils in '..\..\..\Common\Units\GR32Utils\GR32Utils.pas',
-  uTaskPreviewWnd in 'uTaskPreviewWnd.pas';
+  GR32Utils in '..\..\..\Common\Units\GR32Utils\GR32Utils.pas';
 
 type
   TInterfacedSharpBarModule = class(TInterfacedSharpBarModuleBase)

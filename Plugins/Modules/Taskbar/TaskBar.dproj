@@ -1,4 +1,5 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>{8eeb6410-45db-4594-ac01-e2fc3bc15b10}</ProjectGuid>
     <MainSource>TaskBar.dpr</MainSource>
@@ -62,8 +63,12 @@ if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
     <DCCReference Include="..\..\..\Common\Units\ToolTipApi\ToolTipApi.pas" />
     <DCCReference Include="..\..\..\Common\Units\VWM\VWMFunctions.pas" />
     <DCCReference Include="..\..\..\Components\SharpBar\uInterfacedSharpBarModuleBase.pas" />
+    <DCCReference Include="..\..\Services\Shell\uDeskArea.pas" />
     <DCCReference Include="..\..\Services\Shell\uTaskItem.pas" />
     <DCCReference Include="..\..\Services\Shell\uTaskManager.pas" />
+    <DCCReference Include="..\..\Services\Shell\uTray.pas" />
+    <DCCReference Include="..\..\Services\Shell\uTypes.pas" />
+    <DCCReference Include="..\..\Services\Shell\uWindows.pas" />
     <DCCReference Include="MainWnd.pas">
       <Form>MainForm</Form>
     </DCCReference>
