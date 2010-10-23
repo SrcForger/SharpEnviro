@@ -54,7 +54,7 @@ uses
   SharpGraphicsUtils in '..\..\..\Common\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas';
 
 {$R *.RES}
-{$R icons.res}
+{$R 'res\icons.res'}
 {$R 'VersionInfo.res'}
 // {$EXTENSION obj}
 

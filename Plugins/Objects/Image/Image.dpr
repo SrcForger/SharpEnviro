@@ -51,7 +51,7 @@ uses
   SharpImageUtils in '..\..\..\Common\Units\SharpImageUtils\SharpImageUtils.pas';
 
 {$R *.RES}
-{$R icons.res}
+{$R 'res\icons.res'}
 {$R 'VersionInfo.res'}
 
 const

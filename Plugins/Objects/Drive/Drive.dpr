@@ -52,7 +52,7 @@ uses
 
 {$R *.RES}
 {$R 'VersionInfo.res'}
-{$R icons.res}
+{$R 'res\icons.res'}
 // {$EXTENSION obj}
 
 const

@@ -56,7 +56,7 @@ uses
 
 {$R *.RES}
 {$R 'VersionInfo.res'}
-{$R icons.RES}
+{$R 'res\icons.res'}
 
 
 type

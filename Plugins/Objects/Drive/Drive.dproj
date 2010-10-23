@@ -38,23 +38,19 @@
 <BorlandProject><Delphi.Personality><Parameters><Parameters Name="HostApplication">..\..\..\..\SharpE\SharpDesk.exe</Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters><Parameters Name="DebugCWD">..\..\..\..\SharpE\</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">0</VersionInfo><VersionInfo Name="MinorVer">8</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">True</VersionInfo><VersionInfo Name="Locale">2057</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName">SharpE Development Team</VersionInfoKeys><VersionInfoKeys Name="FileDescription">Create links to all system drives</VersionInfoKeys><VersionInfoKeys Name="FileVersion">0.8.0.0</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright">SharpE Development Team</VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename">Drive.dll</VersionInfoKeys><VersionInfoKeys Name="ProductName">Drive Object</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">0.8.0.0</VersionInfoKeys><VersionInfoKeys Name="Author">Billi Berserker</VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">Drive.dpr</Source></Source><Excluded_Packages>
       
       
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
       <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Beispiele für gekapselte Komponenten für Automation Server</Excluded_Packages>
       <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Beispiele für gekapselte Komponenten für Automation Server</Excluded_Packages>
     </Excluded_Packages></Delphi.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
   <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
+  <PropertyGroup>
+    <PreBuildEvent>del "res\icons.res"
+del "VersionInfo.res"
+brcc32 -v "res\icons.rc"
+brcc32 -v "VersionInfo.rc"</PreBuildEvent>
+    <PostBuildEvent>if $(Configuration)==Debug "..\..\..\Common\3rd party\Jedi\MakeJclDbg.exe" -E "$(OUTPUTDIR)$(OUTPUTNAME).map"
+if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <DelphiCompile Include="Drive.dpr">
       <MainSource>MainSource</MainSource>
@@ -64,16 +60,9 @@
     <DCCReference Include="..\..\..\Common\Delphi Components\SharpEFontSelector\uSharpEFontSelector.pas" />
     <DCCReference Include="..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas" />
     <DCCReference Include="..\..\..\Common\Libraries\SharpDeskApi\SharpDeskApi.pas" />
+    <DCCReference Include="..\..\..\Common\Units\DebugDialog\DebugDialog.pas" />
     <DCCReference Include="..\..\..\Common\Units\SharpFX\SharpFX.pas" />
     <DCCReference Include="DriveObjectXMLSettings.pas" />
     <DCCReference Include="uDriveObjectLayer.pas" />
   </ItemGroup>
-  <PropertyGroup>
-    <PreBuildEvent>del "res\icons.res"
-del "VersionInfo.res"
-brcc32 -v "res\icons.rc"
-brcc32 -v "VersionInfo.rc"</PreBuildEvent>
-    <PostBuildEvent>if $(Configuration)==Debug "..\..\..\Common\3rd party\Jedi\MakeJclDbg.exe" -E "$(OUTPUTDIR)$(OUTPUTNAME).map"
-if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
-  </PropertyGroup>
 </Project>
