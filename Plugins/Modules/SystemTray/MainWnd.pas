@@ -182,7 +182,8 @@ begin
     RealignComponents;
 
     // After the bar is done realigning ensure we set focus back to the menu.
-    menuWnd.SetFocus;
+    if not menuWnd.Focused then
+      menuWnd.SetFocus;
     // Ensure this is disabled as focus is not lost when the bar is full screen.
     menuWnd.IgnoreNextKillFocus := False;
 
