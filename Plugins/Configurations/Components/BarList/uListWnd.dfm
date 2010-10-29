@@ -21,6 +21,10 @@ object frmListWnd: TfrmListWnd
     Top = 0
     Width = 418
     Height = 284
+    Margins.Left = 0
+    Margins.Top = 10
+    Margins.Right = 0
+    Margins.Bottom = 0
     Columns = <
       item
         Width = 20
@@ -87,7 +91,7 @@ object frmListWnd: TfrmListWnd
     AutosizeGrid = True
     Borderstyle = bsNone
     Ctl3d = False
-    Align = alTop
+    Align = alClient
   end
   object tmrUpdate: TTimer
     Interval = 1

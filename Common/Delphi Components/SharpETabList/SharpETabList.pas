@@ -345,7 +345,7 @@ begin
   FStatusUnSelectedColor := clGreen;
   FStatusSelectedColor := clGreen;
   FBkgColor := clWindow;
-  Height := 25;
+  Height := 24;
   FTextSpacingX := 8;
   FTextSpacingY := 6;
   FIconSpacingX := 4;
@@ -1057,8 +1057,6 @@ var
   rScrollButtons: TRect;
 begin
   inherited;
-  if ((Height <= 0) or (Width <= 0)) then
-    exit;
 
   FImage32.Top := 0;
   FImage32.Left := 0;
@@ -1068,7 +1066,7 @@ begin
   FImage32.Bitmap.Clear(Color32(FBkgColor));
 
 {$REGION 'Draw bottom border'}
-  if FBorder and FBottomBorder then
+  if FBorder and FBottomBorder and (Height > 0) then
   begin
     if FTabAlign = taLeftJustify then
       FImage32.Bitmap.Line(0, Self.Height - 1, Self.ClientWidth - 4, Self.Height - 1, Color32(FBorderColor))

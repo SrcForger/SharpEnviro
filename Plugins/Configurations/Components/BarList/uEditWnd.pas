@@ -104,8 +104,8 @@ type
 
     property BarItem: TBarItem read FBarItem write FBarItem;
 
-    procedure Init();
-    procedure Save();
+    procedure Init;
+    procedure Save;
 
     property PluginHost: ISharpCenterHost read FPluginHost write FPluginHost;
   end;
@@ -126,7 +126,7 @@ uses
 
 {$R *.dfm}
 
-procedure TfrmEditwnd.Init();
+procedure TfrmEditwnd.Init;
 var
   tmpItem: TSharpEListItem;
   tmpBar: TBarItem;
@@ -150,7 +150,8 @@ begin
           cbBasedOn.Items.AddObject('New Bar', nil);
 
           // Build list
-          for n := 0 to frmListWnd.lbBarList.Count - 1 do begin
+          for n := 0 to frmListWnd.lbBarList.Count - 1 do
+          begin
             tmpBar := TBarItem(frmListWnd.lbBarList.Item[n].Data);
             cbBasedOn.Items.AddObject(tmpBar.Name, tmpBar);
           end;
@@ -217,7 +218,7 @@ begin
   end;
 end;
 
-procedure TfrmEditwnd.Save();
+procedure TfrmEditwnd.Save;
 var
   xml: TJclSimpleXML;
   dir: string;
@@ -240,6 +241,8 @@ begin
           for n := 1 to 8 do
             newId := newId + inttostr(random(9) + 1);
         until not DirectoryExists(dir + newId);
+
+        CreateDirectory(PChar(dir + newId), nil);
 
         if cbBasedOn.ItemIndex > 0 then begin
           copyId := TBarItem(cbBasedOn.Items.Objects[cbBasedOn.ItemIndex]).BarID;

@@ -96,7 +96,6 @@ type
     procedure lbBarListGetCellCursor(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var ACursor: TCursor);
 
-    procedure lbBarListClickItem(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem);
     procedure lbBarListResize(Sender: TObject);
     procedure lbBarListGetCellImageIndex(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AImageIndex: Integer;
@@ -106,10 +105,13 @@ type
     procedure FormShow(Sender: TObject);
     procedure lbBarListDblClickItem(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem);
+    procedure lbBarListClickItem(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem);
 
   private
     FWinHandle: THandle;
     FPluginHost: ISharpCenterHost;
+
     function IsBarRunning(ID: integer): boolean;
 
     procedure CustomWndProc(var msg: TMessage);
@@ -167,6 +169,8 @@ begin
   else
     PointInRect := False;
 end;
+
+
 
 procedure TfrmListWnd.lbBarListClickItem(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem);
@@ -390,10 +394,7 @@ begin
 
         if tmpBar.Name <> '' then
           s := tmpBar.Name;
-        if tmpBar.ModuleCount = 0 then
-          AColText := format('<font color="%s">%s ',[colorToString(colItemTxt),s])
-        else if tmpBar.ModuleCount > 0 then
-          AColText := format('<font color="%s">%s (%d)<br><font color="%s">%s',
+        AColText := format('<font color="%s">%s (%d Modules)<br><font color="%s">%s',
             [colorToString(colItemTxt), s, tmpbar.ModuleCount, colorToString(colDescTxt), tmpBar.Modules]);
       end;
     colStartStop: begin
@@ -518,23 +519,37 @@ end;
 procedure TfrmListWnd.BuildBarList;
 var
   newItem: TSharpEListItem;
-  selectedIndex, i: Integer;
+  selectedIndex, i, bari: Integer;
   tmpBar: TBarItem;
 begin
-
-  // Get selected item
-  LockWindowUpdate(Self.Handle);
-  if lbBarList.ItemIndex <> -1 then
-    selectedIndex := TBarItem(lbBarList.Item[lbBarList.ItemIndex].Data).BarID
-  else
-    selectedIndex := -1;
-
   lbBarList.Clear;
   AddItemsToList(FBarList);
 
-  for i := 0 to FBarList.Count - 1 do begin
+  // Get selected item
+  LockWindowUpdate(Self.Handle);
+  if lbBarList.ItemIndex >= lbBarList.HeaderIndex[0] then
+     selectedIndex := TBarItem(lbBarList.Item[lbBarList.ItemIndex+2].Data).BarID
+  else if lbBarList.ItemIndex >= lbBarList.HeaderIndex[1] then
+    selectedIndex := TBarItem(lbBarList.Item[lbBarList.ItemIndex+1].Data).BarID
+  else
+    selectedIndex := -1;
+    
+  {if (lbBarList.ItemIndex <> -1) then
+    selectedIndex := TBarItem(lbBarList.Item[lbBarList.ItemIndex].Data).BarID
+  else
+    selectedIndex := -1; }
 
+  newItem := lbBarList.AddItem('Top Bars<hr>');
+  newItem.Data := nil;
+  newItem.Header := True;
+
+  // Add Top bars
+  bari := 0;
+  for i := 0 to FBarList.Count - 1 do
+  begin
     tmpBar := TBarItem(FBarList.Items[i]);
+    if tmpBar.VPos <> 0 then
+      continue;
 
     newItem := lbBarList.AddItem(tmpBar.Name);
     newItem.Data := tmpBar;
@@ -544,14 +559,41 @@ begin
     newItem.AddSubItem('');
 
     if tmpBar.BarID = selectedIndex then
-      lbBarList.ItemIndex := i;
+      lbBarList.ItemIndex := bari;
 
+    bari := bari + 1;
   end;
-  LockWindowUpdate(0);
 
-  if lbBarList.ItemIndex = -1 then
-    if lbBarList.Count <> 0 then
-      lbBarList.ItemIndex := 0;
+  newItem := lbBarList.AddItem('Bottom Bars<hr>');
+  newItem.Data := nil;
+  newItem.Header := True;
+
+  // Add Bottom bars
+  for i := 0 to FBarList.Count - 1 do
+  begin
+    tmpBar := TBarItem(FBarList.Items[i]);
+    if tmpBar.VPos <> 1 then
+      continue;
+
+    newItem := lbBarList.AddItem(tmpBar.Name);
+    newItem.Data := tmpBar;
+    newItem.AddSubItem('');
+    newItem.AddSubItem('');
+    newItem.AddSubItem('');
+    newItem.AddSubItem('');
+
+    if tmpBar.BarID = selectedIndex then
+      lbBarList.ItemIndex := bari;
+
+    bari := bari + 1;
+  end;
+
+  lbBarList.UpdateHeaders;
+
+  if (lbBarList.Count > 1) and (lbBarList.ItemIndex = -1) then
+    lbBarList.ItemIndex := 1;
+
+  LockWindowUpdate(0);
 
   FPluginHost.SetEditTabsVisibility( lbBarList.ItemIndex, lbBarList.Count );
   FPluginHost.Refresh;

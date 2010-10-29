@@ -101,11 +101,9 @@ begin
 
   tmpStringList := TStringList.Create;
   try
-
     FindFiles(tmpStringList, sBarDir, '*bar.xml');
     tmpStringList.Sort;
     result := tmpStringList.CommaText;
-
   finally
     tmpStringList.Free;
   end;
@@ -113,7 +111,9 @@ end;
 
 function TSharpCenterPlugin.Open: Cardinal;
 begin
-  if frmListWnd = nil then frmListWnd := TfrmListWnd.Create(nil);
+  if frmListWnd = nil then
+    frmListWnd := TfrmListWnd.Create(nil);
+    
   uVistaFuncs.SetVistaFonts(frmListWnd);
 
   frmListWnd.PluginHost := PluginHost;
@@ -122,10 +122,12 @@ end;
 
 function TSharpCenterPlugin.OpenEdit: Cardinal;
 begin
-  if frmEditWnd = nil then frmEditWnd := TfrmEditWnd.Create(nil);
-  frmEditWnd.PluginHost := Self.PluginHost;
+  if frmEditWnd = nil then
+    frmEditWnd := TfrmEditWnd.Create(nil);
+
   uVistaFuncs.SetVistaFonts(frmEditWnd);
 
+  frmEditWnd.PluginHost := Self.PluginHost;
   result := PluginHost.OpenEdit(frmEditWnd);
   frmEditWnd.Init;
 end;
@@ -136,19 +138,8 @@ begin
 end;
 
 procedure TSharpCenterPlugin.SetupValidators;
-//var
-//  tmp: TJvCustomValidator;
 begin
-  // Can not leave fields blank
   PluginHost.AddRequiredFieldValidator(frmEditWnd.edName,'Please enter a toolbar name','Text');
-//  PluginHost.AddRequiredFieldValidator( frmEditWnd.edCommand,'Please enter a command name','Text');
-//  PluginHost.AddRequiredFieldValidator( frmEditWnd.edHotkey,'Please enter hotkey','Text');
-//
-//  // Validator for checking duplicates
-//  tmp := PluginHost.AddCustomValidator( frmEditWnd.edName,'There is already a hotkey with this name','Text');
-//  tmp.OnValidate := ValidateNameExists;
-//  tmp := PluginHost.AddCustomValidator( frmEditWnd.edHotkey,'There is already a command with this hotkey','Text');
-//  tmp.OnValidate := ValidateHotkeyExists;
 end;
 
 function GetMetaData(): TMetaData;

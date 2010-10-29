@@ -1443,12 +1443,15 @@ begin
   if SCM.PluginTabs.Count <= 1 then
   begin
     pnlPluginContainer.TabList.Hide;
+    pnlPluginContainer.UpdateSize;
+
     sbPlugin.Margins.Top := 6;
     exit;
   end
   else
   begin
     pnlPluginContainer.TabList.Show;
+    pnlPluginContainer.UpdateSize;
     sbPlugin.Margins.Top := 32;
   end;
 

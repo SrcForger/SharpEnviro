@@ -107,6 +107,7 @@ type
     FOwner: TComponent;
     FSubItemCheckedStates: TList;
     FColor: TColor;
+    FHeader: Boolean;
 
     function GetSubItemText(ASubItem: Integer): string;
     procedure SetSubItemText(ASubItem: Integer; const Value: string);
@@ -156,6 +157,8 @@ type
     function SubItemCount: Integer;
     property Color: TColor read FColor write FColor;
     property SubItems: TStringList read FSubItems write FSubItems;
+
+    property Header: Boolean read FHeader write FHeader;
   end;
 
   TSharpEListBoxExOnClickCheck = procedure(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem; var AChecked: Boolean) of object;
@@ -188,6 +191,8 @@ type
     FOnDblClickItem: TSharpEListBoxExOnDblClickItem;
     FDefaultColumn: Integer;
 
+    FHeaderIDs: array of integer;
+
     procedure ResizeEvent(Sender: TObject);
     procedure DrawItemEvent(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
@@ -219,6 +224,8 @@ type
       ASelected: Boolean; AColumn: TSharpEListBoxExColumn);
     procedure DrawCheckedItem(AItem: TSharpEListItem;
       AChecked: Boolean; AColumn: TSharpEListBoxExColumn);
+
+    function GetHeaderIndex(AIndex: integer): integer;
   public
 
     constructor Create(Sender: TComponent); override;
@@ -240,6 +247,9 @@ type
 
     function GetItemAtCursorPos(ACursorPosition: TPoint): TSharpEListItem;
     function GetColumnAtMouseCursorPos: TSharpEListBoxExColumn;
+
+    procedure UpdateHeaders;
+    property HeaderIndex[AIndex: Integer]: integer read GetHeaderIndex;
 
   protected
     procedure Loaded; override;
@@ -332,6 +342,32 @@ begin
 end;
 
 { TSharpEListBoxEx }
+
+function TSharpEListBoxEx.GetHeaderIndex(AIndex: integer): integer;
+begin
+  if AIndex >= Length(FHeaderIDs) then
+    Result := 0
+  else
+    Result := FHeaderIDs[AIndex];
+end;
+
+procedure TSharpEListBoxEx.UpdateHeaders;
+var
+  i : integer;
+  tmpItem : TSharpEListItem;
+begin
+  SetLength(FHeaderIDs, 0);
+
+  for I := 0 to Items.Count - 1 do
+  begin
+    tmpItem := TSharpEListItem(Self.Items.Objects[i]);
+    if tmpItem.Header then
+    begin
+      SetLength(FHeaderIDs, Length(FHeaderIDs) + 1);
+      FHeaderIDs[Length(FHeaderIDs) - 1] := i;
+    end;
+  end;
+end;
 
 procedure TSharpEListBoxEx.WMDestroy(var Msg : TMessage);
 var
@@ -426,6 +462,8 @@ begin
   ItemHeight := 30;
   FItemOffset := Point(2, 2);
   Screen.Cursors[crHandPoint] := LoadCursor(0, IDC_HAND);
+
+  SetLength(FHeaderIDs, 0);
 end;
 
 procedure TSharpEListBoxEx.DeleteItem(AIndex: Integer);
@@ -467,41 +505,39 @@ begin
 
   bSelected := (Index = ItemIndex);
 
-  if Assigned(tmpItem) then begin
+  if Assigned(tmpItem) then
+  begin
     SetBkMode(Self.Canvas.Handle, TRANSPARENT);
 
     // Draw Selection
     DrawSelection(Rect, State, tmpItem, Index);
 
     // Draw Columns
-    for iCol := 0 to Pred(ColumnCount) do begin
-
+    for iCol := 0 to Pred(ColumnCount) do
+    begin
       tmpCol := Column[iCol];
       if (not (tmpItem = SelectedItem) and (tmpCol.VisibleOnSelectOnly)) then
         Continue;
 
-
       // Set the column rect
-      if ((iCol = DefaultColumn) and not(tmpItem = SelectedItem)) then begin
-
+      if ((iCol = DefaultColumn) and not(tmpItem = SelectedItem)) then
+      begin
         tmpCol.ColumnRect := Types.Rect(tmpCol.ColumnRect.Left + ItemOffset.X,
           Rect.Top, Self.Width-(ItemOffset.X*4), Rect.Bottom);
-
-      end else begin
-
+      end else
+      begin
         tmpCol.ColumnRect := Types.Rect(tmpCol.ColumnRect.Left + ItemOffset.X,
           Rect.Top, tmpCol.ColumnRect.Right, Rect.Bottom);
-
       end;
+      
       R := tmpCol.ColumnRect;
 
-      if (iCol <= tmpItem.SubItemCount - 1) then begin
-
+      if (iCol <= tmpItem.SubItemCount - 1) then
+      begin
         case tmpCol.ColumnType of
           ctDefault: DrawDefaultItem(tmpItem, bSelected, tmpCol);
           ctCheck: DrawCheckedItem(tmpItem, bSelected, tmpCol);
         end;
-
       end;
     end;
   end;
@@ -558,8 +594,8 @@ var
   col: TColor;
 begin
   // Init
-  if ((ACol >= 0) and (ACol < Aitem.SubItems.Count)) then begin
-
+  if ((ACol >= 0) and (ACol < Aitem.SubItems.Count)) then
+  begin
     sColText := Aitem.SubItemText[ACol];
     if Assigned(FOnGetCellText) then begin
       FOnGetCellText(Self, ACol, Aitem, sColText);
@@ -589,6 +625,9 @@ begin
 
     // Define Vertical Column Align
 {$REGION 'VerticalAlign'}
+  if AItem.Header then
+    Column[ACol].VAlign := taAlignTop;
+
     ACanvas.Font := Self.Font;
     iTextHeight := HTMLTextHeight(ACanvas, sColText, 100);
     case Column[ACol].VAlign of
@@ -655,7 +694,8 @@ begin
   y := 0;
 
   // Checked
-  if AItem.Checked then begin
+  if (AItem.Checked) or (AItem.Header) then
+  begin
     if not (Assigned(FOnGetCellColor)) then
       tmpColor := FColors.CheckColor;
   end;
@@ -668,15 +708,15 @@ begin
     ARect.Right - (ItemOffset.X), ARect.Bottom - itemoffset.Y, 10, 10);
 
   // Get Colours
-  if odSelected in AState then begin
+  if (odSelected in AState) then
+  begin
     tmpColor := Colors.ItemColorSelected;
 
     if Assigned(FOnGetCellColor) then
       FOnGetCellColor(Self, AItem, tmpColor);
 
-    if AItem.Checked then begin
+    if AItem.Checked then
       tmpColor := FColors.FCheckColorSelected;
-    end;
 
     Self.Canvas.Brush.Color := tmpColor;
     Self.Canvas.Pen.Color := tmpColor;
@@ -805,6 +845,7 @@ begin
   FSubItemImages := TList.Create;
   FSubItemSelectedImages := TList.Create;
   FSubItemCheckedStates := TList.Create;
+  FHeader := False;
 end;
 
 destructor TSharpEListItem.Destroy;
@@ -1076,9 +1117,11 @@ begin
 
         if ((tmpCol.VisibleOnSelectOnly) and not (tmpItem = SelectedItem)) then begin
 
-          if bCanSelect then begin
+          if bCanSelect then
+          begin
+            if not tmpItem.Header then
+              Self.ItemIndex := ItemNo;
 
-            Self.ItemIndex := ItemNo;
             if Assigned(FOnClickItem) then
               FOnClickItem(Self, DefaultColumn, tmpItem);
           end;
@@ -1098,8 +1141,10 @@ begin
 
         end;
 
-        if bCanSelect then begin
-          Self.ItemIndex := ItemNo;
+        if bCanSelect then
+        begin
+          if not tmpItem.Header then
+            Self.ItemIndex := ItemNo;
 
           if Assigned(FOnClickItem) then
             FOnClickItem(Self, tmpCol.ID, tmpItem);
@@ -1109,7 +1154,11 @@ begin
             ((ssCtrl in ShiftState) or (ssShift in ShiftState))) then
             BeginDrag(False);
         end
-        else begin
+        else
+        begin
+          if not tmpItem.Header then
+            Self.ItemIndex := ItemNo;
+
           if Assigned(FOnClickItem) then
             FOnClickItem(Self, tmpCol.ID, tmpItem);
         end;
@@ -1294,7 +1343,6 @@ var
   tmpPng: TPNGObject;
   r: TRect;
 begin
-
   iCol := AColumn.Index;
   r := AColumn.ColumnRect;
 

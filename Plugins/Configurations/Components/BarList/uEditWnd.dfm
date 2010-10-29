@@ -77,6 +77,7 @@ object frmEditwnd: TfrmEditwnd
     Description = 'Adjust to set the transparency'
     PopPosition = ppBottom
     PercentDisplay = False
+    MaxPercent = 100
     Formatting = '%d'
     OnChangeValue = sgbFixedWidthChangeValue
     BackgroundColor = clWindow
