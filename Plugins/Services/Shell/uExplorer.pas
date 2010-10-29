@@ -53,6 +53,8 @@ procedure TExplorerThread.Execute;
 var
   Dir : string;
   s : boolean;
+  iTimeout : integer;
+  MsgResult : DWORD;
 begin
   while True do
   begin
@@ -69,11 +71,46 @@ begin
       if (NETFramework35) and (FileExists(Dir + 'Addons\Explorer.exe')) then
         ShellExecute(0, nil, PChar(Dir + 'Addons\Explorer.exe'), nil, nil, SW_SHOWNORMAL);
 
-      while FindWindow('TSharpExplorerForm', nil) = 0 do
-        Sleep(16);
+      iTimeout := 10000;
+      while iTimeout > 0 do
+      begin
+        if FindWindow('TSharpExplorerForm', nil) <> 0 then
+          break;
 
-      while (FindWindow('TSharpExplorerForm', nil) <> 0) and (SendMessage(FindWindow('TSharpExplorerForm', nil), WM_SHARPSHELLLOADED, 0, 0) = 0) do
-        Sleep(16);
+        Sleep(100);
+        iTimeout := iTimeout - 100;
+      end;
+
+      if iTimeout <= 0 then
+      begin
+        SendDebugMessageEx(PChar('Shell'), PChar('Timed out waiting for Explorer to start'), 0, DMT_ERROR);
+        exit;
+      end;
+
+      iTimeout := 10000;
+      while iTimeout > 0 do
+      begin
+        if (FindWindow('TSharpExplorerForm', nil) = 0) then
+          break;
+
+        if SendMessageTimeout(FindWindow('TSharpExplorerForm', nil), WM_SHARPSHELLLOADED, 0, 0, SMTO_ABORTIFHUNG, 100, MsgResult) <> 0 then
+        begin
+          if MsgResult <> 0 then
+            break;
+
+          Sleep(100);
+          iTimeout := iTimeout - 100;
+        end else
+        begin
+          iTimeout := iTimeout - 100;
+        end;
+      end;
+
+      if iTimeout <= 0 then
+      begin
+        SendDebugMessageEx(PChar('Shell'), PChar('Timed out waiting for Explorer to start'), 0, DMT_ERROR);
+        exit;
+      end;
 
       EnterCriticalSection(CritSect);
       Started := True;
@@ -83,10 +120,23 @@ begin
     if Terminated then
     begin
       if FindWindow('TSharpExplorerForm', nil) <> 0 then
-        SendMessage(FindWindow('TSharpExplorerForm', nil), WM_SHARPTERMINATE, 0, 0);
+        PostMessage(FindWindow('TSharpExplorerForm', nil), WM_SHARPTERMINATE, 0, 0);
 
-      while (FindWindow('TSharpExplorerForm', nil) <> 0) do
-        Sleep(16);
+      iTimeout := 10000;
+      while iTimeout > 0 do
+      begin
+        if FindWindow('TSharpExplorerForm', nil) <> 0 then
+          break;
+
+        Sleep(100);
+        iTimeout := iTimeout - 100;
+      end;
+
+      if iTimeout <= 0 then
+      begin
+        SendDebugMessageEx(PChar('Shell'), PChar('Timed out waiting for Explorer to exit'), 0, DMT_ERROR);
+        exit;
+      end;
 
       EnterCriticalSection(CritSect);
       Started := False;
