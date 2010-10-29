@@ -11,13 +11,16 @@ type
   TExplorerThread = class(TThread)
   private
     Started : boolean;
+    Failed : boolean;
+
+    procedure SetStarted(s: boolean; f: boolean = false);
 
   protected
      procedure Execute; override;
 
   public
     constructor Create(CreateSuspended: Boolean);
-    procedure WaitStarted;
+    function WaitStarted: boolean;
 
   end;
 
@@ -31,9 +34,19 @@ begin
   inherited;
 
   Started := False;
+  Failed := False;
 end;
 
-procedure TExplorerThread.WaitStarted;
+procedure TExplorerThread.SetStarted(s: boolean; f: boolean = false);
+begin
+  EnterCriticalSection(CritSect);
+  Started := s;
+  if f then
+    Failed := True;
+  LeaveCriticalSection(CritSect);
+end;
+
+function TExplorerThread.WaitStarted: boolean;
 var
   s : boolean;
 begin
@@ -47,8 +60,10 @@ begin
 
     Sleep(16);
   end;
+  
+  Result := not Failed;
 end;
-                                        
+
 procedure TExplorerThread.Execute;
 var
   Dir : string;
@@ -84,6 +99,7 @@ begin
       if iTimeout <= 0 then
       begin
         SendDebugMessageEx(PChar('Shell'), PChar('Timed out waiting for Explorer to start'), 0, DMT_ERROR);
+        SetStarted(True, True);
         exit;
       end;
 
@@ -109,12 +125,11 @@ begin
       if iTimeout <= 0 then
       begin
         SendDebugMessageEx(PChar('Shell'), PChar('Timed out waiting for Explorer to start'), 0, DMT_ERROR);
+        SetStarted(True, True);
         exit;
       end;
 
-      EnterCriticalSection(CritSect);
-      Started := True;
-      LeaveCriticalSection(CritSect);
+      SetStarted(True);
     end;
 
     if Terminated then
@@ -135,12 +150,11 @@ begin
       if iTimeout <= 0 then
       begin
         SendDebugMessageEx(PChar('Shell'), PChar('Timed out waiting for Explorer to exit'), 0, DMT_ERROR);
+        SetStarted(True, True);
         exit;
       end;
 
-      EnterCriticalSection(CritSect);
-      Started := False;
-      LeaveCriticalSection(CritSect);
+      SetStarted(False);
 
       break;
     end;

@@ -119,7 +119,8 @@ begin
 
   ExplorerThread := TExplorerThread.Create(False);
   ExplorerThread.Resume;
-  ExplorerThread.WaitStarted;
+  if not ExplorerThread.WaitStarted then
+    FreeAndNil(ExplorerThread);
 
   TaskMsgManager := nil;
   TrayManager := nil;
@@ -145,9 +146,12 @@ end;
 
 procedure Stop;
 begin
-  ExplorerThread.Terminate;
-  ExplorerThread.WaitFor;
-  ExplorerThread.Free;
+  if ExplorerThread <> nil then
+  begin
+    ExplorerThread.Terminate;
+    ExplorerThread.WaitFor;
+  end;
+  FreeAndNil(ExplorerThread);
 
   FreeAndNil(DeskAreaManager);
   FreeAndNil(TrayManager);
