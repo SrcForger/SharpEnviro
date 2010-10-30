@@ -58,7 +58,7 @@ namespace SharpSearch.WPF
 				// Simulate the change event so that the MostLaunched will be displayed.
 				_keyPressedTimer.Change(TimeSpan.FromMilliseconds(0), TimeSpan.FromMilliseconds(-1));
 
-			QueryTextBox.Focus();
+			Keyboard.Focus(QueryTextBox);
 		}
 
 		private void OnClose(object sender, CancelEventArgs e)
@@ -314,6 +314,9 @@ namespace SharpSearch.WPF
             }
 
 			hWnd = IntPtr.Zero;
+
+			// Set the focus to the text box so the user can type right away.
+			Keyboard.Focus(QueryTextBox);
         }
 
 		private void Thumb_DragDelta(object sender, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
