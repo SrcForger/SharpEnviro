@@ -93,7 +93,7 @@ implementation
 
 uses SharpThemeApiEx,
      uSharpXMLUtils,
-     declaration;
+     uTypes;
 
 type
   TTrayWnd = class

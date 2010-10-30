@@ -29,7 +29,6 @@ library SystemTray;
 {$R *.res}
 
 uses
-//  VCLFixPack,
   Windows,
   Controls,
   SysUtils,
@@ -55,8 +54,8 @@ uses
   ToolTipApi in '..\..\..\Common\Units\ToolTipApi\ToolTipApi.pas',
   SharpGraphicsUtils in '..\..\..\Common\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas',
   SharpIconUtils in '..\..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas',
-  declaration in '..\..\Services\Shell\declaration.pas',
-  uInterfacedSharpBarModuleBase in '..\..\..\Components\SharpBar\uInterfacedSharpBarModuleBase.pas';
+  uInterfacedSharpBarModuleBase in '..\..\..\Components\SharpBar\uInterfacedSharpBarModuleBase.pas',
+  uTypes in '..\..\Services\Shell\uTypes.pas';
 
 type
   TInterfacedSharpBarModule = class(TInterfacedSharpBarModuleBase)
