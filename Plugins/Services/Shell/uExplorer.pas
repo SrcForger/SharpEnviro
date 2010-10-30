@@ -140,7 +140,7 @@ begin
       iTimeout := 10000;
       while iTimeout > 0 do
       begin
-        if FindWindow('TSharpExplorerForm', nil) <> 0 then
+        if FindWindow('TSharpExplorerForm', nil) = 0 then
           break;
 
         Sleep(100);

@@ -54,7 +54,7 @@ void ExplorerDll::Stop()
 	// Terminate thread
 	if (m_hThread)
 	{
-		if (WaitForSingleObject(m_hThread, INFINITE) != WAIT_OBJECT_0)
+		if (WaitForSingleObject(m_hThread, 1000) != WAIT_OBJECT_0)
 			TerminateThread(m_hThread, 0);
 
 		CloseHandle(m_hThread);
