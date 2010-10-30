@@ -1118,7 +1118,7 @@ object SharpCompileMainWnd: TSharpCompileMainWnd
           Left = 9
           Top = 31
           Width = 237
-          Height = 336
+          Height = 307
           Align = alClient
           BevelInner = bvNone
           BevelOuter = bvNone
@@ -1131,6 +1131,27 @@ object SharpCompileMainWnd: TSharpCompileMainWnd
           OnSelectionChange = ctvProjectsSelectionChange
           CheckBoxOptions.Style = cbsJVCL
           CheckBoxOptions.CascadeLevels = 99
+          ExplicitHeight = 336
+        end
+        object panSelection: TPanel
+          Left = 6
+          Top = 341
+          Width = 243
+          Height = 29
+          Align = alBottom
+          BevelOuter = bvNone
+          TabOrder = 2
+          ExplicitTop = 28
+          object btnToggleChecks: TButton
+            Tag = 1
+            Left = 80
+            Top = 3
+            Width = 75
+            Height = 22
+            Caption = 'Uncheck All'
+            TabOrder = 0
+            OnClick = btnToggleChecksClick
+          end
         end
       end
       object sepOptions: TSharpERoundPanel

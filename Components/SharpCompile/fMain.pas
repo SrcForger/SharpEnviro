@@ -9,7 +9,7 @@ uses
   JclSimpleXML, JvComCtrls, JvCheckTreeView, CheckLst, JvExCheckLst,
   JvCheckListBox, JvStatusBar, JvExStdCtrls, JvMemo, uCompiler, SharpEListBoxEx,
   SharpEPageControl, PngImageList, StrUtils, JvExControls, ToolWin,
-  JclFileUtils, JclCompression;
+  JclFileUtils, JclCompression, Buttons;
 
 type
   TCompileThread = class(TThread)
@@ -44,6 +44,8 @@ type
     pilStatus: TPngImageList;
     pilStates: TPngImageList;
     dlgSave: TSaveDialog;
+    panSelection: TPanel;
+    btnToggleChecks: TButton;
     procedure FormCreate(Sender: TObject);
     procedure tbOpenClick(Sender: TObject);
     procedure stlMainTabClick(ASender: TObject; const ATabIndex: Integer);
@@ -65,6 +67,7 @@ type
     procedure lbSummaryGetCellCursor(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var ACursor: TCursor);
     procedure clbOptionsClick(Sender: TObject);
+    procedure btnToggleChecksClick(Sender: TObject);
   private
     FCompileThread : TCompileThread;
 
@@ -78,6 +81,7 @@ type
     procedure LoadSettings();
     procedure ShowErrorDetail(AItem: TSharpEListItem);
     procedure UpdateCaption;
+    procedure SetCheckedState(checked : Boolean);
   public
     { Public declarations }
   end;
@@ -655,6 +659,31 @@ begin
   sTemp := mDetailed.Lines[mDetailed.Lines.Count - 1];
   if (RightStr(sTemp, Length(sTemp) - 9) <> CmdOutput) and (CmdOutput <> '') then
     Log(CmdOutput);
+end;
+
+procedure TSharpCompileMainWnd.SetCheckedState(checked : Boolean);
+var
+  node : TTreeNode;
+begin
+  for node in ctvProjects.Items do
+  begin
+    ctvProjects.SetChecked(node, checked);
+  end;
+end;
+
+procedure TSharpCompileMainWnd.btnToggleChecksClick(Sender: TObject);
+var
+  checked : Boolean;
+begin
+  checked := not Bool(btnToggleChecks.Tag);
+
+  SetCheckedState(checked);
+  btnToggleChecks.Tag := Integer(checked);
+  
+  if checked then
+    btnToggleChecks.Caption := 'Uncheck All'
+  else
+    btnToggleChecks.Caption := 'Check All';
 end;
 
 procedure TSharpCompileMainWnd.clbOptionsClick(Sender: TObject);
