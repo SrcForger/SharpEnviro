@@ -164,7 +164,8 @@ implementation
 
 {$R *.dfm}
 
-uses uSharpEMenuItem;
+uses uSharpEMenuItem,
+     uSharpEMenuDynamicContentThread;
 
 
 // has to be applied to the TBitmap32 before passing it to the API function
@@ -198,7 +199,22 @@ begin
   if FMenu.ParentMenuItem <> nil then
   begin
     if not FMenu.ParentMenuItem.isDynamicSubMenuInitialized then
-      FMenu.RefreshDynamicContent;
+    begin
+      if FMenu.DynamicContentThread.CurrentMenu <> FMenu then
+      begin
+        FMenu.ParentMenuItem.isDynamicSubMenuInitialized := True;
+        FMenu.RefreshDynamicContent;
+      end else
+      begin
+        EnterCriticalSection(CritSect);
+        if not FMenu.ParentMenuItem.isDynamicSubMenuInitialized then
+        begin
+          FMenu.RefreshDynamicContent;
+          FMenu.ParentMenuItem.isDynamicSubMenuInitialized := True;
+        end;
+        LeaveCriticalSection(CritSect);
+      end;
+    end;
   end else FMenu.RefreshDynamicContent;
 
   FMenu.RenderTo(FPicture);

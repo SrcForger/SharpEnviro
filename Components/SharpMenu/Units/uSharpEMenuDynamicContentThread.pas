@@ -43,25 +43,28 @@ type
     procedure Execute; override;
     procedure DoRefresh;
   public
+    CurrentMenu : TObject;
+
     constructor Create;
     destructor Destroy; override;
 
     procedure AddItem(pList : TObjectList);
   end;
 
+var
+  CritSect : TRTLCriticalSection;
+
 implementation
 
 uses
   uSharpEMenu;
-
-var
-  CritSect : TRTLCriticalSection;
 
 constructor TSharpEMenuDynamicContentThread.Create;
 begin
   inherited Create(True);
   FreeOnTerminate := False;
   FCOMInitialized := False;
+  CurrentMenu := nil;
 
   FList := TObjectList.Create;
 end;
@@ -103,8 +106,13 @@ begin
 
         EnterCriticalSection(CritSect);
         menu := TSharpEMenu(mnuObjs.Items[i]);
-        menu.RefreshDynamicContent;
-        menu.ParentMenuItem.isDynamicSubMenuInitialized := True;
+        CurrentMenu := menu;
+        if not menu.ParentMenuItem.isDynamicSubMenuInitialized then
+        begin
+          menu.RefreshDynamicContent;
+          menu.ParentMenuItem.isDynamicSubMenuInitialized := True;
+        end;
+        CurrentMenu := nil;
         LeaveCriticalSection(CritSect);
       end;
 
