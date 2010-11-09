@@ -55,11 +55,12 @@ type
     sShowLabel   : boolean;
     sIcon        : String; 
     sCaption     : String;
-    sMenu        : String;
+    sLeftClickMenu : String;
+    sRightClickMenu : string;
     procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
     procedure WMShellHook(var msg : TMessage); message WM_SHARPSHELLMESSAGE;    
 
-    procedure OpenMenu;
+    procedure OpenMenu(menu : string);
     procedure CheckMenu;
   public
     mInterface : ISharpBarModule;
@@ -83,7 +84,8 @@ uses
 
 procedure TMainForm.UpdateBangs;
 begin
-  SharpApi.RegisterActionEx(PChar('!OpenMenu: '+sMenu),'Modules',self.Handle,1);
+  SharpApi.RegisterActionEx(PChar('!OpenMenu: '+ sLeftClickMenu),'Modules',self.Handle,1);
+  SharpApi.RegisterActionEx(PChar('!OpenMenu2: ' + sRightClickMenu), 'Modules', Handle, 2);
 end;
 
 procedure TMainForm.UpdateComponentSkins;
@@ -94,7 +96,8 @@ end;
 procedure TMainForm.WMSharpEBang(var Msg : TMessage);
 begin
   case msg.LParam of
-    1: OpenMenu;
+    1: OpenMenu(sLeftClickMenu);
+    2: OpenMenu(sRightClickMenu);
   end;
 end;
 
@@ -125,7 +128,9 @@ begin
   sCaption     := 'Menu';
   sShowIcon    := True;
   sIcon        := 'icon.system.computer';
-  sMenu        := 'Menu.xml';
+  // Default to Menu.xml but without the extension.
+  sLeftClickMenu  := 'Menu';
+  sRightClickMenu := 'Menu';
 
   XML := TJclSimpleXML.Create;
   if LoadXMLFromSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
@@ -134,7 +139,8 @@ begin
       sShowLabel   := BoolValue('ShowLabel',sShowLabel);
       sShowIcon    := BoolValue('ShowIcon',sShowIcon);
       sIcon        := Value('Icon',sIcon);
-      sMenu        := Value('Menu',sMenu);
+      sLeftClickMenu := Value('Menu',sLeftClickMenu);
+      sRightClickMenu := Value('RightClickMenu', sRightClickMenu);
       sCaption     := Value('Caption',sCaption);
     end;
   XML.Free;
@@ -173,7 +179,7 @@ begin
 end;
 
 
-procedure TMainForm.OpenMenu;
+procedure TMainForm.OpenMenu(menu : string);
 var
   ActionStr, pdir : String;
   p : TPoint;
@@ -198,7 +204,7 @@ begin
 //    ActionStr := ActionStr + ' ' + inttostr(p.x) + ' ' + inttostr(p.y);
   ActionStr := inttostr(p.x) + ' ' + inttostr(p.y) + ' ' + pdir;
   ActionStr := ActionStr + ' "' + SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\';
-  ActionStr := ActionStr + sMenu + '.xml"';
+  ActionStr := ActionStr + menu + '.xml"';
   ShellApi.ShellExecute(Handle,'open',PChar(GetSharpEDirectory + 'SharpMenu.exe'),PChar(ActionStr),PChar(GetSharpEDirectory),SW_SHOWNORMAL);
   //SharpApi.SharpExecute(ActionStr);
 end;
@@ -209,6 +215,7 @@ var
   atm : Word;
   buf : PAnsiChar;
 begin
+  //TODO: Maybe update to handle RightClickMenu?
   wnd := FindWindow('TSharpEMenuWnd', 'Menu');
   if wnd <> 0 then
   begin
@@ -218,10 +225,10 @@ begin
     GlobalGetAtomName(atm, buf, 256);
     GlobalDeleteAtom(atm);
 
-    if buf <> sMenu then
+    if buf <> sLeftClickMenu then
     begin
       SendMessage(wnd, WM_SHARPTERMINATE, 0, 0);
-      OpenMenu;
+      OpenMenu(sLeftClickMenu);
     end;
   end;
 end;
@@ -230,9 +237,9 @@ procedure TMainForm.btnMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   if Button = mbLeft then
-  begin
-    OpenMenu;
-  end;
+    OpenMenu(sLeftClickMenu);
+  if Button = mbRight then
+    OpenMenu(sRightClickMenu);
 end;
 
 procedure TMainForm.CheckMenu;
@@ -241,6 +248,7 @@ var
   atm : Word;
   buf : PAnsiChar;
 begin
+  //TODO: Maybe update to handle RightClickMenu?
   wnd := FindWindow('TSharpEMenuWnd', 'Menu');
   if wnd <> 0 then
   begin
@@ -255,7 +263,7 @@ begin
     GlobalGetAtomName(atm, buf, 256);
     GlobalDeleteAtom(atm);
 
-    if buf = sMenu then
+    if buf = sLeftClickMenu then
     begin
       FLastMenuWnd := wnd;
       btn.ForceHover := True;
@@ -277,7 +285,8 @@ end;
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   UnRegisterShellHookReceiver(Handle);
-  SharpApi.UnRegisterAction(PChar('!OpenMenu: '+sMenu));
+  SharpApi.UnRegisterAction(PChar('!OpenMenu: ' + sLeftClickMenu));
+  SharpApi.UnRegisterAction(PChar('!OpenMenu2: '+ sRightClickMenu));
 end;
 
 procedure TMainForm.FormPaint(Sender: TObject);

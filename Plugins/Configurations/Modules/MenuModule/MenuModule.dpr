@@ -71,7 +71,8 @@ end;
 
 procedure TSharpCenterPlugin.Load;
 var
-  menuFile : string;
+  leftClickMenu : string;
+  rightClickMenu : string;
 begin
   PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
   if PluginHost.Xml.Load then
@@ -82,9 +83,12 @@ begin
       chkDisplayIcon.Checked := BoolValue('ShowIcon', true);
       editIcon.Text := Value('Icon','icon.system.computer');
 
-      menuFile := PathRemoveExtension(ExtractFileName(Value('Menu','Menu.xml')));
-      cbMenu.ItemIndex := cbMenu.Items.IndexOf(menuFile);
+      leftClickMenu := PathRemoveExtension(ExtractFileName(Value('Menu','Menu.xml')));
+      cbLeftClickMenu.ItemIndex := cbLeftClickMenu.Items.IndexOf(leftClickMenu);
 
+      rightClickMenu := PathRemoveExtension(ExtractFileName(Value('RightClickMenu','Menu.xml')));
+      cbRightClick.ItemIndex := cbRightClick.Items.IndexOf(rightClickMenu);
+      
       editCaption.Text := Value('Caption','Menu');
     end;
   end;
@@ -117,7 +121,8 @@ begin
     Add('ShowLabel', chkDisplayCaption.Checked);
     Add('ShowIcon', chkDisplayIcon.Checked);
     Add('Icon', editIcon.Text);
-    Add('Menu', cbMenu.Text);
+    Add('Menu', cbLeftClickMenu.Text);
+    Add('RightClickMenu', cbRightClick.Text);
     Add('Caption', editCaption.Text);
   end;
 

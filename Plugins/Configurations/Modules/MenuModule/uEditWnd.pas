@@ -55,7 +55,7 @@ type
     pnlMenu: TPanel;
     pnlIcon: TPanel;
     btnIconBrowse: TButton;
-    cbMenu: TComboBox;
+    cbLeftClickMenu: TComboBox;
     schMenu: TSharpECenterHeader;
     pnlDisplayOptions: TPanel;
     schDisplayOptions: TSharpECenterHeader;
@@ -63,6 +63,9 @@ type
     editCaption: TEdit;
     SharpECenterHeader2: TSharpECenterHeader;
     editIcon: TEdit;
+    lblLeftClick: TLabel;
+    cbRightClick: TComboBox;
+    lblRightClick: TLabel;
     procedure FormCreate(Sender: TObject);
 
     procedure SettingsChange(Sender: TObject);
@@ -106,17 +109,19 @@ var
   i: Integer;
   s: string;
 begin
-  cbMenu.Clear;
+  cbLeftClickMenu.Clear;
+  cbRightClick.Clear;
+  
   files := TStringList.Create;
   try
-
-  SharpFileUtils.FindFiles(files, GetSharpeUserSettingsPath + 'SharpMenu\','*.xml',False);
+    SharpFileUtils.FindFiles(files, GetSharpeUserSettingsPath + 'SharpMenu\','*.xml',False);
 
     for i := 0 to pred(files.Count) do begin
       s := files[i];
       setlength(s,length(s) - length(ExtractFileExt(s)));
 
-      cbMenu.Items.Add( PathRemoveExtension( ExtractFileName(s) ) );
+      cbLeftClickMenu.Items.Add(PathRemoveExtension(ExtractFileName(s)));
+      cbRightClick.Items.Add(PathRemoveExtension(ExtractFileName(s)));
     end;
 
   finally

@@ -29,7 +29,7 @@ object frmEdit: TfrmEdit
       Left = 5
       Top = 283
       Width = 410
-      Height = 21
+      Height = 52
       Margins.Left = 5
       Margins.Top = 0
       Margins.Right = 5
@@ -39,10 +39,24 @@ object frmEdit: TfrmEdit
       BevelOuter = bvNone
       ParentColor = True
       TabOrder = 3
-      object cbMenu: TComboBox
-        Left = 0
+      object lblLeftClick: TLabel
+        Left = 6
+        Top = 3
+        Width = 47
+        Height = 13
+        Caption = 'Left Click:'
+      end
+      object lblRightClick: TLabel
+        Left = 6
+        Top = 35
+        Width = 53
+        Height = 13
+        Caption = 'Right Click:'
+      end
+      object cbLeftClickMenu: TComboBox
+        Left = 75
         Top = 0
-        Width = 250
+        Width = 220
         Height = 21
         Margins.Left = 5
         Margins.Top = 10
@@ -52,6 +66,21 @@ object frmEdit: TfrmEdit
         Constraints.MaxWidth = 300
         ItemHeight = 13
         TabOrder = 0
+        OnChange = SettingsChange
+      end
+      object cbRightClick: TComboBox
+        Left = 75
+        Top = 31
+        Width = 220
+        Height = 21
+        Margins.Left = 5
+        Margins.Top = 10
+        Margins.Right = 5
+        Margins.Bottom = 0
+        Style = csDropDownList
+        Constraints.MaxWidth = 300
+        ItemHeight = 13
+        TabOrder = 1
         OnChange = SettingsChange
       end
     end
