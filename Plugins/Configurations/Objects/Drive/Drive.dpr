@@ -129,6 +129,7 @@ begin
       // Show caption?
       chkCaption.Checked := ShowCaption;
       frmSettings.DriveLetter := xmlSettings.Target;
+      frmSettings.edtIcon.Text := xmlSettings.IconFile;
       {$ENDREGION}
 
       // Load uic defaults
@@ -240,6 +241,8 @@ begin
 
       {$REGION 'Save custom options'}
       ShowCaption := chkCaption.Checked;
+      xmlSettings.CustomIcon := (length(trim(frmSettings.edtIcon.Text)) > 0);
+      xmlSettings.IconFile := frmSettings.edtIcon.Text;
       xmlSettings.Target := frmSettings.DriveLetter[1];
       if Length(xmlSettings.Caption) <= 1 then
         xmlSettings.Caption := xmlSettings.Target;

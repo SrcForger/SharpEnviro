@@ -128,7 +128,6 @@ type
     uicFontName: TSharpEUIC;
     cboFontName: TComboBox;
     uicTextSize: TSharpEUIC;
-    sgbTextSize: TSharpeGaugeBox;
     uicTextAlpha: TSharpEUIC;
     uicTextAlphaValue: TSharpEUIC;
     sgbTextAlphaValue: TSharpeGaugeBox;
@@ -193,8 +192,14 @@ type
     SharpECenterHeader16: TSharpECenterHeader;
     SharpECenterHeader17: TSharpECenterHeader;
     SharpECenterHeader2: TSharpECenterHeader;
-    cbDriveList: TComboBox;
+    Panel3: TPanel;
+    btnSelectIcon: TPngSpeedButton;
+    edtIcon: TEdit;
+    SharpECenterHeader6: TSharpECenterHeader;
     StaticText1: TStaticText;
+    Panel2: TPanel;
+    cbDriveList: TComboBox;
+    sgbTextSize: TSharpeGaugeBox;
     procedure FormCreate(Sender: TObject);
     procedure chkCaptionClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -245,6 +250,8 @@ type
       AItem: TSharpEListItem);
     procedure cbDriveListSelect(Sender: TObject);
     procedure sceColorExpandCollapse(ASender: TObject);
+    procedure btnSelectIconClick(Sender: TObject);
+    procedure edtIconChange(Sender: TObject);
   private
     FBlue32, FBlue48, FBlue64: TBitmap32;
     FWhite32, FWhite48, FWhite64: TBitmap32;
@@ -315,6 +322,18 @@ begin
   end;
 
   TempBmp.Free;
+end;
+
+procedure TfrmSettings.btnSelectIconClick(Sender: TObject);
+var
+  s: string;
+begin
+  s := SharpDialogs.IconDialog(cbDriveList.Text, SMI_ALL_ICONS, Mouse.CursorPos);
+  if length(trim(s)) > 0 then
+  begin
+    edtIcon.Text := s;
+    UpdateIcon;
+  end;
 end;
 
 procedure TfrmSettings.cbDriveListSelect(Sender: TObject);
@@ -604,6 +623,11 @@ end;
 procedure TfrmSettings.ClearList;
 begin
   cbDriveList.Items.Clear;
+end;
+
+procedure TfrmSettings.edtIconChange(Sender: TObject);
+begin
+  SendUpdate;
 end;
 
 procedure TfrmSettings.LoadResources;
