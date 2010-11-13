@@ -23,7 +23,7 @@ object frmSettings: TfrmSettings
     Top = 30
     Width = 445
     Height = 628
-    ActivePage = pagLink
+    ActivePage = pagIcon
     PropagateEnable = False
     Align = alClient
     object pagLink: TJvStandardPage
@@ -408,16 +408,16 @@ object frmSettings: TfrmSettings
         Left = 1
         Top = 1
         Width = 443
-        Height = 557
+        Height = 590
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
         TabOrder = 0
         object Panel1: TPanel
           Left = 0
-          Top = 275
+          Top = 286
           Width = 443
-          Height = 52
+          Height = 63
           Align = alTop
           AutoSize = True
           BevelOuter = bvNone
@@ -445,19 +445,19 @@ object frmSettings: TfrmSettings
             MonitorControl = chkIconAlpha
             OnReset = uicIconBlendReset
             object chkIconAlpha: TJvXPCheckbox
+              AlignWithMargins = True
               Left = 0
-              Top = 0
+              Top = 2
               Width = 141
-              Height = 27
-              Margins.Left = 4
+              Height = 23
+              Margins.Left = 0
               Margins.Top = 2
-              Margins.Right = 50
+              Margins.Right = 0
               Margins.Bottom = 2
               Caption = 'Apply icon visibility'
               TabOrder = 0
               Checked = True
               State = cbChecked
-              Align = alLeft
               OnClick = chkIconAlphaClick
             end
           end
@@ -483,15 +483,15 @@ object frmSettings: TfrmSettings
             MonitorControl = sgbIconAlpha
             OnReset = uicIconBlendReset
             object sgbIconAlpha: TSharpeGaugeBox
+              AlignWithMargins = True
               Left = 0
-              Top = 0
+              Top = 2
               Width = 250
-              Height = 27
-              Margins.Left = 4
+              Height = 23
+              Margins.Left = 0
               Margins.Top = 2
-              Margins.Right = 4
+              Margins.Right = 0
               Margins.Bottom = 2
-              Align = alLeft
               ParentBackground = False
               TabOrder = 0
               Min = 16
@@ -781,7 +781,7 @@ object frmSettings: TfrmSettings
           Left = 0
           Top = 176
           Width = 443
-          Height = 52
+          Height = 63
           Align = alTop
           AutoSize = True
           BevelOuter = bvNone
@@ -811,18 +811,17 @@ object frmSettings: TfrmSettings
             object chkIconBlendAlpha: TJvXPCheckbox
               AlignWithMargins = True
               Left = 0
-              Top = 0
+              Top = 2
               Width = 141
-              Height = 27
+              Height = 23
               Margins.Left = 0
-              Margins.Top = 0
-              Margins.Right = 50
-              Margins.Bottom = 0
+              Margins.Top = 2
+              Margins.Right = 0
+              Margins.Bottom = 2
               Caption = 'Colour blend the icon'
               TabOrder = 0
               Checked = True
               State = cbChecked
-              Align = alLeft
               OnClick = chkIconBlendAlphaClick
             end
           end
@@ -848,15 +847,15 @@ object frmSettings: TfrmSettings
             MonitorControl = sgbIconBlendAlpha
             OnReset = uicIconBlendReset
             object sgbIconBlendAlpha: TSharpeGaugeBox
+              AlignWithMargins = True
               Left = 0
-              Top = 0
+              Top = 2
               Width = 250
-              Height = 27
-              Margins.Left = 4
+              Height = 23
+              Margins.Left = 0
               Margins.Top = 2
-              Margins.Right = 4
+              Margins.Right = 0
               Margins.Bottom = 2
-              Align = alLeft
               ParentBackground = False
               TabOrder = 0
               Min = 16
@@ -875,9 +874,9 @@ object frmSettings: TfrmSettings
         end
         object Panel7: TPanel
           Left = 0
-          Top = 379
+          Top = 401
           Width = 443
-          Height = 52
+          Height = 63
           Align = alTop
           AutoSize = True
           BevelOuter = bvNone
@@ -904,19 +903,19 @@ object frmSettings: TfrmSettings
             MonitorControl = chkIconShadowAlpha
             OnReset = uicIconBlendReset
             object chkIconShadowAlpha: TJvXPCheckbox
+              AlignWithMargins = True
               Left = 0
-              Top = 0
+              Top = 2
               Width = 141
-              Height = 27
-              Margins.Left = 4
+              Height = 23
+              Margins.Left = 0
               Margins.Top = 2
-              Margins.Right = 50
+              Margins.Right = 0
               Margins.Bottom = 2
               Caption = 'Apply an icon shadow'
               TabOrder = 0
               Checked = True
               State = cbChecked
-              Align = alLeft
               OnClick = chkIconShadowAlphaClick
             end
           end
@@ -942,15 +941,15 @@ object frmSettings: TfrmSettings
             MonitorControl = sgbIconShadowAlpha
             OnReset = uicIconBlendReset
             object sgbIconShadowAlpha: TSharpeGaugeBox
+              AlignWithMargins = True
               Left = 0
-              Top = 0
+              Top = 2
               Width = 250
-              Height = 27
-              Margins.Left = 4
+              Height = 23
+              Margins.Left = 0
               Margins.Top = 2
-              Margins.Right = 4
+              Margins.Right = 0
               Margins.Bottom = 2
-              Align = alLeft
               ParentBackground = False
               TabOrder = 0
               Min = 16
@@ -970,7 +969,7 @@ object frmSettings: TfrmSettings
         object SharpECenterHeader3: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 238
+          Top = 249
           Width = 433
           Height = 37
           Margins.Left = 5
@@ -1018,7 +1017,7 @@ object frmSettings: TfrmSettings
         object SharpECenterHeader8: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 337
+          Top = 359
           Width = 433
           Height = 37
           Margins.Left = 5
@@ -1034,7 +1033,7 @@ object frmSettings: TfrmSettings
         object SharpECenterHeader9: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 441
+          Top = 474
           Width = 433
           Height = 37
           Margins.Left = 5
@@ -1050,7 +1049,7 @@ object frmSettings: TfrmSettings
         object uicIconBlendColor: TSharpEUIC
           AlignWithMargins = True
           Left = 5
-          Top = 488
+          Top = 521
           Width = 433
           Height = 32
           Margins.Left = 5
@@ -1119,7 +1118,7 @@ object frmSettings: TfrmSettings
         object uicIconShadowColor: TSharpEUIC
           AlignWithMargins = True
           Left = 5
-          Top = 520
+          Top = 553
           Width = 433
           Height = 32
           Margins.Left = 5
@@ -1194,7 +1193,7 @@ object frmSettings: TfrmSettings
         Left = 1
         Top = 1
         Width = 443
-        Height = 527
+        Height = 511
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
@@ -1204,7 +1203,7 @@ object frmSettings: TfrmSettings
           Left = 5
           Top = 47
           Width = 433
-          Height = 29
+          Height = 27
           Margins.Left = 5
           Margins.Top = 0
           Margins.Right = 5
@@ -1221,15 +1220,15 @@ object frmSettings: TfrmSettings
           MonitorControl = cboFontName
           OnReset = uicFontNameReset
           object cboFontName: TComboBox
+            AlignWithMargins = True
             Left = 0
-            Top = 0
+            Top = 2
             Width = 250
             Height = 23
-            Margins.Left = 4
+            Margins.Left = 0
             Margins.Top = 2
-            Margins.Right = 4
-            Margins.Bottom = 0
-            Align = alLeft
+            Margins.Right = 0
+            Margins.Bottom = 2
             Style = csOwnerDrawVariable
             Constraints.MaxWidth = 250
             DropDownCount = 12
@@ -1242,9 +1241,9 @@ object frmSettings: TfrmSettings
         object uicTextAlpha: TSharpEUIC
           AlignWithMargins = True
           Left = 5
-          Top = 217
+          Top = 215
           Width = 433
-          Height = 30
+          Height = 27
           Margins.Left = 5
           Margins.Top = 0
           Margins.Right = 5
@@ -1260,30 +1259,27 @@ object frmSettings: TfrmSettings
           AutoReset = False
           MonitorControl = chkTextAlpha
           OnReset = uicTextAlphaReset
-          ExplicitTop = 212
-          ExplicitHeight = 27
           object chkTextAlpha: TJvXPCheckbox
+            AlignWithMargins = True
             Left = 0
-            Top = 0
+            Top = 2
             Width = 149
-            Height = 29
-            Margins.Left = 4
+            Height = 23
+            Margins.Left = 0
             Margins.Top = 2
-            Margins.Right = 48
+            Margins.Right = 0
             Margins.Bottom = 2
             Caption = 'Apply font opacity'
             TabOrder = 0
-            Align = alLeft
             OnClick = chkTextAlphaClick
-            ExplicitHeight = 27
           end
         end
         object uicTextAlphaValue: TSharpEUIC
           AlignWithMargins = True
           Left = 5
-          Top = 252
+          Top = 247
           Width = 433
-          Height = 30
+          Height = 27
           Margins.Left = 5
           Margins.Top = 0
           Margins.Right = 5
@@ -1299,18 +1295,16 @@ object frmSettings: TfrmSettings
           AutoReset = False
           MonitorControl = sgbTextAlphaValue
           OnReset = uicFontNameReset
-          ExplicitTop = 244
-          ExplicitHeight = 27
           object sgbTextAlphaValue: TSharpeGaugeBox
+            AlignWithMargins = True
             Left = 0
-            Top = 0
+            Top = 2
             Width = 250
-            Height = 29
-            Margins.Left = 4
+            Height = 23
+            Margins.Left = 0
             Margins.Top = 2
-            Margins.Right = 4
+            Margins.Right = 0
             Margins.Bottom = 2
-            Align = alLeft
             ParentBackground = False
             TabOrder = 0
             Min = 0
@@ -1324,15 +1318,14 @@ object frmSettings: TfrmSettings
             Formatting = '%d'
             OnChangeValue = sgbTextAlphaValueChangeValue
             BackgroundColor = clWindow
-            ExplicitHeight = 27
           end
         end
         object uicTextBold: TSharpEUIC
           AlignWithMargins = True
           Left = 5
-          Top = 407
+          Top = 395
           Width = 433
-          Height = 31
+          Height = 27
           Margins.Left = 5
           Margins.Top = 5
           Margins.Right = 5
@@ -1348,28 +1341,25 @@ object frmSettings: TfrmSettings
           AutoReset = False
           MonitorControl = chkTextBold
           OnReset = uicFontNameReset
-          ExplicitTop = 380
-          ExplicitHeight = 27
           object chkTextBold: TJvXPCheckbox
+            AlignWithMargins = True
             Left = 0
-            Top = 0
+            Top = 2
             Width = 364
-            Height = 31
-            Margins.Left = 4
+            Height = 23
+            Margins.Left = 0
             Margins.Top = 2
-            Margins.Right = 48
+            Margins.Right = 0
             Margins.Bottom = 2
             Caption = 'Bold'
             TabOrder = 0
-            Align = alLeft
             OnClick = chkTextBoldClick
-            ExplicitHeight = 27
           end
         end
         object uicTextColor: TSharpEUIC
           AlignWithMargins = True
           Left = 5
-          Top = 495
+          Top = 479
           Width = 433
           Height = 32
           Margins.Left = 5
@@ -1387,7 +1377,7 @@ object frmSettings: TfrmSettings
           AutoReset = False
           MonitorControl = sceTextColor
           OnReset = uicFontNameReset
-          ExplicitTop = 464
+          ExplicitTop = 495
           object sceTextColor: TSharpEColorEditorEx
             AlignWithMargins = True
             Left = 0
@@ -1432,15 +1422,14 @@ object frmSettings: TfrmSettings
             BackgroundTextColor = clBlack
             ContainerColor = clBlack
             ContainerTextColor = clBlack
-            ExplicitWidth = 433
           end
         end
         object uicTextItalic: TSharpEUIC
           AlignWithMargins = True
           Left = 5
-          Top = 371
+          Top = 363
           Width = 433
-          Height = 31
+          Height = 27
           Margins.Left = 5
           Margins.Top = 5
           Margins.Right = 5
@@ -1456,28 +1445,25 @@ object frmSettings: TfrmSettings
           AutoReset = False
           MonitorControl = chkTextItalic
           OnReset = uicFontNameReset
-          ExplicitTop = 354
-          ExplicitHeight = 27
           object chkTextItalic: TJvXPCheckbox
+            AlignWithMargins = True
             Left = 0
-            Top = 0
+            Top = 2
             Width = 364
-            Height = 31
-            Margins.Left = 4
+            Height = 23
+            Margins.Left = 0
             Margins.Top = 2
-            Margins.Right = 48
+            Margins.Right = 0
             Margins.Bottom = 2
             Caption = 'Italic'
             TabOrder = 0
-            Align = alLeft
             OnClick = chkTextItalicClick
-            ExplicitHeight = 27
           end
         end
         object uicTextSize: TSharpEUIC
           AlignWithMargins = True
           Left = 5
-          Top = 133
+          Top = 131
           Width = 433
           Height = 27
           Margins.Left = 5
@@ -1496,15 +1482,15 @@ object frmSettings: TfrmSettings
           MonitorControl = sgbTextSize
           OnReset = uicFontNameReset
           object sgbTextSize: TSharpeGaugeBox
+            AlignWithMargins = True
             Left = 0
-            Top = 0
+            Top = 2
             Width = 250
-            Height = 27
+            Height = 23
             Margins.Left = 4
             Margins.Top = 2
             Margins.Right = 4
             Margins.Bottom = 2
-            Align = alLeft
             ParentBackground = False
             TabOrder = 0
             Min = 6
@@ -1523,7 +1509,7 @@ object frmSettings: TfrmSettings
         object uicTextUnderline: TSharpEUIC
           AlignWithMargins = True
           Left = 5
-          Top = 339
+          Top = 331
           Width = 433
           Height = 27
           Margins.Left = 5
@@ -1542,17 +1528,17 @@ object frmSettings: TfrmSettings
           MonitorControl = chkTextUnderline
           OnReset = uicFontNameReset
           object chkTextUnderline: TJvXPCheckbox
+            AlignWithMargins = True
             Left = 0
-            Top = 0
+            Top = 2
             Width = 364
-            Height = 27
-            Margins.Left = 4
+            Height = 23
+            Margins.Left = 0
             Margins.Top = 2
-            Margins.Right = 48
+            Margins.Right = 0
             Margins.Bottom = 2
             Caption = 'Underline'
             TabOrder = 0
-            Align = alLeft
             OnClick = chkTextUnderlineClick
           end
         end
@@ -1575,7 +1561,7 @@ object frmSettings: TfrmSettings
         object SharpECenterHeader14: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 86
+          Top = 84
           Width = 433
           Height = 37
           Margins.Left = 5
@@ -1587,11 +1573,12 @@ object frmSettings: TfrmSettings
           TitleColor = clWindowText
           DescriptionColor = clRed
           Align = alTop
+          ExplicitTop = 86
         end
         object SharpECenterHeader15: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 170
+          Top = 168
           Width = 433
           Height = 37
           Margins.Left = 5
@@ -1603,11 +1590,12 @@ object frmSettings: TfrmSettings
           TitleColor = clWindowText
           DescriptionColor = clRed
           Align = alTop
+          ExplicitTop = 170
         end
         object SharpECenterHeader16: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 292
+          Top = 284
           Width = 433
           Height = 37
           Margins.Left = 5
@@ -1619,11 +1607,12 @@ object frmSettings: TfrmSettings
           TitleColor = clWindowText
           DescriptionColor = clRed
           Align = alTop
+          ExplicitTop = 292
         end
         object SharpECenterHeader17: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 448
+          Top = 432
           Width = 433
           Height = 37
           Margins.Left = 5
@@ -1635,6 +1624,7 @@ object frmSettings: TfrmSettings
           TitleColor = clWindowText
           DescriptionColor = clRed
           Align = alTop
+          ExplicitTop = 448
         end
       end
     end
@@ -1648,7 +1638,7 @@ object frmSettings: TfrmSettings
         Left = 1
         Top = 1
         Width = 443
-        Height = 331
+        Height = 330
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
@@ -1658,7 +1648,7 @@ object frmSettings: TfrmSettings
           Left = 0
           Top = 74
           Width = 443
-          Height = 257
+          Height = 256
           Margins.Left = 0
           Margins.Top = 0
           Margins.Right = 0
@@ -1668,8 +1658,6 @@ object frmSettings: TfrmSettings
           BevelOuter = bvNone
           ParentColor = True
           TabOrder = 0
-          ExplicitTop = 68
-          ExplicitHeight = 246
           object SharpECenterHeader10: TSharpECenterHeader
             AlignWithMargins = True
             Left = 5
@@ -1691,7 +1679,7 @@ object frmSettings: TfrmSettings
             Left = 5
             Top = 57
             Width = 433
-            Height = 27
+            Height = 26
             Margins.Left = 5
             Margins.Top = 0
             Margins.Right = 5
@@ -1707,15 +1695,15 @@ object frmSettings: TfrmSettings
             MonitorControl = cboTextShadowType
             OnReset = uicTextShadowTypeReset
             object cboTextShadowType: TComboBox
+              AlignWithMargins = True
               Left = 0
-              Top = 0
+              Top = 2
               Width = 250
               Height = 21
-              Margins.Left = 4
+              Margins.Left = 0
               Margins.Top = 2
-              Margins.Right = 4
+              Margins.Right = 0
               Margins.Bottom = 2
-              Align = alLeft
               Style = csDropDownList
               ItemHeight = 13
               ItemIndex = 0
@@ -1731,7 +1719,7 @@ object frmSettings: TfrmSettings
           object SharpECenterHeader11: TSharpECenterHeader
             AlignWithMargins = True
             Left = 5
-            Top = 94
+            Top = 93
             Width = 433
             Height = 37
             Margins.Left = 5
@@ -1743,11 +1731,12 @@ object frmSettings: TfrmSettings
             TitleColor = clWindowText
             DescriptionColor = clRed
             Align = alTop
+            ExplicitTop = 94
           end
           object uicTextShadowAlpha: TSharpEUIC
             AlignWithMargins = True
             Left = 5
-            Top = 141
+            Top = 140
             Width = 433
             Height = 27
             Margins.Left = 5
@@ -1765,15 +1754,15 @@ object frmSettings: TfrmSettings
             MonitorControl = sgbTextShadowAlpha
             OnReset = uicTextShadowTypeReset
             object sgbTextShadowAlpha: TSharpeGaugeBox
+              AlignWithMargins = True
               Left = 0
-              Top = 0
+              Top = 2
               Width = 250
-              Height = 27
-              Margins.Left = 4
+              Height = 23
+              Margins.Left = 0
               Margins.Top = 2
-              Margins.Right = 4
+              Margins.Right = 0
               Margins.Bottom = 2
-              Align = alLeft
               Constraints.MaxWidth = 532
               ParentBackground = False
               TabOrder = 0
@@ -1793,7 +1782,7 @@ object frmSettings: TfrmSettings
           object SharpECenterHeader12: TSharpECenterHeader
             AlignWithMargins = True
             Left = 5
-            Top = 178
+            Top = 177
             Width = 433
             Height = 37
             Margins.Left = 5
@@ -1805,11 +1794,12 @@ object frmSettings: TfrmSettings
             TitleColor = clWindowText
             DescriptionColor = clRed
             Align = alTop
+            ExplicitTop = 178
           end
           object uicTextShadowColor: TSharpEUIC
             AlignWithMargins = True
             Left = 5
-            Top = 225
+            Top = 224
             Width = 433
             Height = 32
             Margins.Left = 5
@@ -1827,6 +1817,7 @@ object frmSettings: TfrmSettings
             AutoReset = False
             MonitorControl = sceTextShadowColor
             OnReset = uicTextShadowReset
+            ExplicitTop = 225
             object sceTextShadowColor: TSharpEColorEditorEx
               AlignWithMargins = True
               Left = 0
@@ -1896,17 +1887,17 @@ object frmSettings: TfrmSettings
           MonitorControl = chkTextShadow
           OnReset = uicTextShadowReset
           object chkTextShadow: TJvXPCheckbox
+            AlignWithMargins = True
             Left = 0
-            Top = 0
+            Top = 2
             Width = 113
-            Height = 27
-            Margins.Left = 4
+            Height = 23
+            Margins.Left = 0
             Margins.Top = 2
-            Margins.Right = 48
+            Margins.Right = 0
             Margins.Bottom = 2
             Caption = 'Font Shadow'
             TabOrder = 0
-            Align = alLeft
             OnClick = chkTextShadowClick
           end
         end
