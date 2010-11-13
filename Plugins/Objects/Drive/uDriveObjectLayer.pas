@@ -355,16 +355,18 @@ var
   iconStr : string;
   iconSize : integer;
   TempBitmap : TBitmap32;
+  Success : boolean;
 begin
   Result := False;
 
   {SharpE Icon}
+  Success := True;
   if FSettings.CustomIcon then
   begin
     TempBitmap := TBitmap32.Create;
     try
       iconSize := FSettings.Theme[DS_ICONSIZE].IntValue;
-      IconStringToIcon(FSettings.IconFile, FSettings.Target, TempBitmap, GetNearestIconSize(iconSize));
+      Success := IconStringToIcon(FSettings.IconFile, FSettings.Target + ':\', TempBitmap, GetNearestIconSize(iconSize));
 
       FPicture.SetSize(iconSize, iconSize);
       FPicture.Clear(color32(0,0,0,0));
@@ -374,8 +376,11 @@ begin
 
     TempBitmap.Free;
 
-    Result := True;
-    exit;
+    if Success then
+    begin
+      Result := True;
+      exit;
+    end;
   end;
 
   if (GetDiskIn(FSettings.Target[1])) then
@@ -403,7 +408,7 @@ begin
   TempBitmap := TBitmap32.Create;
   try
     iconSize := FSettings.Theme[DS_ICONSIZE].IntValue;
-    IconStringToIcon(iconStr, FSettings.Target, TempBitmap, GetNearestIconSize(iconSize));
+    IconStringToIcon(iconStr, FSettings.Target + ':\', TempBitmap, GetNearestIconSize(iconSize));
 
     FPicture.SetSize(iconSize, iconSize);
     FPicture.Clear(color32(0,0,0,0));
@@ -500,7 +505,7 @@ begin
   FParentImage.BeginUpdate;
   BeginUpdate;
 
-  FIconSettings.Icon := FPicture;
+  FIconSettings.Icon.Assign(FPicture);
 
   TempBitmap := TBitmap32.Create;
   TempBitmap.DrawMode := dmBlend;
