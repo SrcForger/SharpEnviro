@@ -63,7 +63,7 @@ begin
   with FXMLRoot.Items do
   begin
     Icon         := Value('Icon','icon.application');
-    Caption      := Value('Caption','');
+    Caption      := Value('Caption','Link');
     Target       := Value('Target','explorer');
     CaptionAlign := IntValue('CaptionAlign',2);
     MLineCaption := BoolValue('MLineCaption',False);

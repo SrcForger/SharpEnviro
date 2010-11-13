@@ -337,6 +337,7 @@ begin
   FObjectId := id;
   scaled := false;
   FSettings := TLinkXMLSettings.Create(FObjectId,nil,'Link');
+  FSettings.Caption := 'Link';
   FHLTimer := TTimer.Create(nil);
   FHLTimer.Interval := 20;
   FHLTimer.Tag      := 0;
