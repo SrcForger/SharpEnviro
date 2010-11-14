@@ -58,10 +58,36 @@ type
   function ColorToColor32Alpha(Color : TColor; Alpha : integer) : TColor32;
   function LightenColor32(Color : TColor32; Amount : integer) : TColor32;
 
-  function GetColorAverage(Src : TBitmap32) : integer;  
+  function GetColorAverage(Src : TBitmap32) : integer;
+  function HasVisiblePixel(Src : TBitmap32) : boolean;
 
 implementation
 
+function HasVisiblePixel(Src : TBitmap32) : boolean;
+var
+  PSrc : PColor32;
+  R,G,B,A : byte;
+  X,Y : integer;
+begin
+  result := False;
+  if (Src.Height = 0) or (Src.Width = 0) then
+    exit;
+
+  PSrc := Src.PixelPtr[0, 0];
+  for Y := 0 to Src.Height - 1 do
+  begin
+    for X := 0 to Src.Width - 1 do
+    begin
+      Color32ToRGBA(PSrc^,R,G,B,A);
+      if (A > 0) then
+      begin
+        result := True;
+        exit;
+      end;
+      inc(PSrc);
+    end;
+  end;
+end;
 
 function GetColorAverage(Src : TBitmap32) : integer;
 var
