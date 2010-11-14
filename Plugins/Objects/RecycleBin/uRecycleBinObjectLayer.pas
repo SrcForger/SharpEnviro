@@ -1,6 +1,6 @@
 {
-Source Name: uLinkObjectLayer.pas
-Description: Link object layer class
+Source Name: uRecycleBinObjectLayer.pas
+Description: RecycleBin object layer class
 Copyright (C) Martin Krämer <MartinKraemer@gmx.net>
 
 Source Forge Site
@@ -32,7 +32,6 @@ uses
   gr32,GR32_Image, GR32_Layers, GR32_BLEND,GR32_Transforms, GR32_Filters,
   JvSimpleXML, SharpDeskApi, JclShell, Types,
   RecycleBinObjectXMLSettings,
-  RecylceBinObjectSettingsWnd,
   uSharpDeskDebugging,
   uSharpDeskFunctions,
   uSharpDeskObjectSettings,
@@ -104,9 +103,6 @@ type
      property BinItems  : integer read FBinItems;
   private
   end;
-
-var
-  SettingsWnd : TSettingsWnd;
 
 implementation
 

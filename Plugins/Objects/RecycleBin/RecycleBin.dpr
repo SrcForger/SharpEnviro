@@ -26,7 +26,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 library RecycleBin;
 
 uses
-//  VCLFixPack,
   Forms,
   windows,
   graphics,
@@ -48,11 +47,9 @@ uses
   PngImageList,
   SharpApi,
   SharpDeskApi,
-  {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
+  DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',
   uRecycleBinObjectLayer in 'uRecycleBinObjectLayer.pas',
-  RecylceBinObjectSettingsWnd in 'RecylceBinObjectSettingsWnd.pas' {SettingsWnd},
   RecycleBinObjectXMLSettings in 'RecycleBinObjectXMLSettings.pas',
-  mlinewnd in 'mlinewnd.pas' {mlineform},
   uSharpDeskObjectSettings in '..\..\..\Common\Units\XML\uSharpDeskObjectSettings.pas',
   SharpGraphicsUtils in '..\..\..\Common\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas';
 
@@ -134,55 +131,6 @@ begin
                             PChar( Format( 'Delphi%8.8x', 
                                            [GetCurrentProcessID])))); 
 end;
-
-
-function StartSettingsWnd(ObjectID : integer; Handle : hwnd) : hwnd;
-var
-   n : integer;
-   Layer : TLayer;
-begin
-  if not FirstStart then
-  begin
-    Layer := nil;
-    for n := 0 to LayerList.Count - 1 do
-    begin
-      if TLayer(LayerList.Items[n]).ObjectID = ObjectID then
-      begin
-        Layer := TLayer(LayerList.Items[n]);
-        break;
-      end;
-    end;
-    if Layer <> nil then Layer.RecycleBinLayer.EndHL;    
-  end;
-
-  if SettingsWnd=nil then SettingsWnd := TSettingsWnd.Create(nil);
-  SettingsWnd.ParentWindow:=Handle;
-  SettingsWnd.Left:=0;
-  SettingsWnd.Top:=0;
-  SettingsWnd.BorderStyle:=bsNone;
-  SettingsWnd.ObjectID:=ObjectID;
-  SettingsWnd.LoadSettings;
-  SettingsWnd.Show;
-  result:=SettingsWnd.Handle;
-end;
-
-function CloseSettingsWnd(ObjectID : integer; SaveSettings : boolean) : boolean;
-begin
-  try
-    if (SaveSettings) and (ObjectID<>0) then
-    begin
-      SettingsWnd.ObjectID:=ObjectID;
-      SettingsWnd.SaveSettings;
-    end;
-    SettingsWnd.Close;
-    SettingsWnd.Free;
-    SettingsWnd:=nil;
-    result:=True;
-  except
-    result:=False;
-  end;
-end;
-
 
 procedure SharpDeskMessage(pObjectID : integer; pLayer : TBitmapLayer; DeskMessage,P1,P2,P3 : integer);
 var
@@ -273,9 +221,7 @@ end;
 
 
 Exports
-  CloseSettingsWnd,
   CreateLayer,
-  StartSettingsWnd,
   SharpDeskMessage,
   InitSettings;
 

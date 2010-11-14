@@ -37,6 +37,18 @@
     <Borland.ProjectType />
     <BorlandProject>
 <BorlandProject><Delphi.Personality><Parameters><Parameters Name="RunParams">-ext .dll</Parameters><Parameters Name="HostApplication">..\..\..\..\SharpE\SharpDesk.exe</Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">0</VersionInfo><VersionInfo Name="MinorVer">8</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">True</VersionInfo><VersionInfo Name="Locale">2057</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName">SharpE Development Team</VersionInfoKeys><VersionInfoKeys Name="FileDescription">Create links to directories/files/urls</VersionInfoKeys><VersionInfoKeys Name="FileVersion">0.8.0.0</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright">SharpE Development Team</VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename">link.dll</VersionInfoKeys><VersionInfoKeys Name="ProductName">Link Object</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">0.8.0.0</VersionInfoKeys><VersionInfoKeys Name="Author">Billi Berserker</VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">RecycleBin.dpr</Source></Source><Excluded_Packages>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
       <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Beispiele für gekapselte Komponenten für Automation Server</Excluded_Packages>
       <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Beispiele für gekapselte Komponenten für Automation Server</Excluded_Packages>
     </Excluded_Packages></Delphi.Personality></BorlandProject></BorlandProject>
@@ -57,13 +69,7 @@ if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
     <DCCReference Include="..\..\..\Common\Units\DebugDialog\DebugDialog.pas" />
     <DCCReference Include="..\..\..\Common\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas" />
     <DCCReference Include="..\..\..\Common\Units\XML\uSharpDeskObjectSettings.pas" />
-    <DCCReference Include="mlinewnd.pas">
-      <Form>mlineform</Form>
-    </DCCReference>
     <DCCReference Include="RecycleBinObjectXMLSettings.pas" />
-    <DCCReference Include="RecylceBinObjectSettingsWnd.pas">
-      <Form>SettingsWnd</Form>
-    </DCCReference>
     <DCCReference Include="uRecycleBinObjectLayer.pas" />
   </ItemGroup>
 </Project>
