@@ -2050,35 +2050,33 @@ end;
 
 procedure TSharpBarMainForm.HideBar;
 begin
-  if not SharpEBar.DisableHideBar then
+  if (not SharpEBar.DisableHideBar) and (not SharpEBar.AutoHide) then
+    exit;
+
+  if (SharpEbar.VertPos = vpBottom) then
   begin
-    //BarHideForm.Color := SkinManager.Scheme.Throbberback;
-    if (SharpEbar.VertPos = vpBottom) then
-    begin
-      BarHideForm.Left := Left;
-      BarHideForm.Width := Width;
-      BarHideForm.Height := 1;
-      BarHideForm.Top := Top + Height - 1;
-      ShowWindow(SharpEBar.abackground.Handle, SW_HIDE);
-      SharpBarMainForm.Hide;
-      BarHideForm.Show;
-      SharpApi.ServiceMsg('Shell', 'DeskAreaUpdate');
-    end
-    else if (SharpEBar.VertPos = vpTop) then
-    begin
-      BarHideForm.Left := Left;
-      BarHideForm.Width := Width;
-      BarHideForm.Height := 1;
-      BarHideForm.Top := Top;
-      ShowWindow(SharpEBar.abackground.Handle, SW_HIDE);
-      SharpBarMainForm.Hide;
-      BarHideForm.Show;
-      SharpApi.ServiceMsg('Shell', 'DeskAreaUpdate');
-    end;
+    BarHideForm.Left := Left;
+    BarHideForm.Width := Width;
+    BarHideForm.Height := 1;
+    BarHideForm.Top := Top + Height - 1;
+    ShowWindow(SharpEBar.abackground.Handle, SW_HIDE);
+    SharpBarMainForm.Hide;
+    BarHideForm.Show;
+    SharpApi.ServiceMsg('Shell', 'DeskAreaUpdate');
+  end else if (SharpEBar.VertPos = vpTop) then
+  begin
+    BarHideForm.Left := Left;
+    BarHideForm.Width := Width;
+    BarHideForm.Height := 1;
+    BarHideForm.Top := Top;
+    ShowWindow(SharpEBar.abackground.Handle, SW_HIDE);
+    SharpBarMainForm.Hide;
+    BarHideForm.Show;
+    SharpApi.ServiceMsg('Shell', 'DeskAreaUpdate');
   end;
 
   // Display a Tooltop if bar was hidden for the first time
-  if (FFirstHide) and not(SharpEBar.DisableHideBar)  then
+  if (FFirstHide) then
   begin
     ShowNotify('The SharpBar is now invisible because you left clicked the screen border. You can show the SharpBar again by left clicking the screen border another time.',True);
     FFirstHide := False;
