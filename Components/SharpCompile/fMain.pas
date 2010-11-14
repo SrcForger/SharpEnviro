@@ -9,14 +9,20 @@ uses
   JclSimpleXML, JvComCtrls, JvCheckTreeView, CheckLst, JvExCheckLst,
   JvCheckListBox, JvStatusBar, JvExStdCtrls, JvMemo, uCompiler, SharpEListBoxEx,
   SharpEPageControl, PngImageList, StrUtils, JvExControls, ToolWin,
-  JclFileUtils, JclCompression, Buttons;
+  JclFileUtils, JclCompression, Buttons, JclBorlandTools;
 
 type
   TCompileThread = class(TThread)
+  private
+    FInstaller : TJclBorRADToolInstallations;
+
   protected
     procedure Execute; override;
+
   public
     constructor Create(CreateSuspended: Boolean);
+    destructor Destroy; override;
+    
   end;
 
   TSharpCompileMainWnd = class(TForm)
@@ -240,6 +246,13 @@ end;
 constructor TCompileThread.Create(CreateSuspended: Boolean);
 begin
   inherited Create(CreateSuspended);
+
+  FInstaller := TJclBorRADToolInstallations.Create;
+end;
+
+destructor TCompileThread.Destroy;
+begin
+  FInstaller.Free;
 end;
 
 procedure TCompileThread.Execute;
@@ -248,6 +261,7 @@ var
   iPercent: integer;
   sPackage: String;
   buildStart, buildEnd : TDateTime;
+  bCloseIDE : boolean;
 begin
   SharpCompileMainWnd.tbCompile.Caption := 'Cancel';
   SharpCompileMainWnd.tbCompile.ImageIndex := 4;
@@ -277,6 +291,7 @@ begin
   begin
     if Terminated then
       break;
+      
     sleep(50); // give a little time between projects
 
     if SharpCompileMainWnd.ctvProjects.Checked[SharpCompileMainWnd.ctvProjects.Items[i]] then
@@ -285,6 +300,35 @@ begin
       begin
         iStatus := iStatus + 1;
         iPercent := Round(iStatus * 100 / iProjCount);
+
+        bCloseIDE := False;
+        if IsClassName(SharpCompileMainWnd.ctvProjects.Items[i].Data, 'TCSharpSolution') then
+          bCloseIDE := TCSharpSolution(SharpCompileMainWnd.ctvProjects.Items[i].Data).CloseIDE
+        else if IsClassName(SharpCompileMainWnd.ctvProjects.Items[i].Data, 'TDelphiProject') then
+          bCloseIDE := TDelphiProject(SharpCompileMainWnd.ctvProjects.Items[i].Data).CloseIDE
+        else if IsClassName(SharpCompileMainWnd.ctvProjects.Items[i].Data, 'TResourceBat') then
+          bCloseIDE := TResourceBat(SharpCompileMainWnd.ctvProjects.Items[i].Data).CloseIDE
+        else if IsClassName(SharpCompileMainWnd.ctvProjects.Items[i].Data, 'TCommand') then
+          bCloseIDE := TCommand(SharpCompileMainWnd.ctvProjects.Items[i].Data).CloseIDE;
+
+        while bCloseIDE do
+        begin
+          if not FInstaller.AnyInstanceRunning then
+            break;
+
+          if MessageBox(SharpCompileMainWnd.Handle, 'To continue with the compile you need to close all running instances of the Delphi IDE.', 'Close Delphi IDE', MB_RETRYCANCEL) = IDCANCEL then
+          begin
+            buildEnd := Now;
+            Log('Build cancelled.');
+            Log('Total build time was ' + FormatDateTime('hh:nn:ss', Frac(buildEnd) - Frac(buildStart)));
+
+            SharpCompileMainWnd.tbCompile.Caption := 'Compile';
+            SharpCompileMainWnd.tbCompile.ImageIndex := 3;
+
+            Terminate;
+            exit;
+          end;
+        end;
 
         if IsClassName(SharpCompileMainWnd.ctvProjects.Items[i].Data, 'TCSharpSolution') then
         begin
@@ -331,18 +375,19 @@ begin
     Log('Zipping contents of output directory.');
     ZipDirectory(sOutputPath, '..\SharpE_Builds\SharpE-' + FormatDateTime('yyyymmddhhnnss', Now) + '.7z');
   end;
-  
+
   buildEnd := Now;
   if Terminated then
-    Log('Build canceled.')
+    Log('Build cancelled.')
   else
     Log('Build finished.');
+
   Log('Total build time was ' + FormatDateTime('hh:nn:ss', Frac(buildEnd) - Frac(buildStart)));
 
   SharpCompileMainWnd.tbCompile.Caption := 'Compile';
   SharpCompileMainWnd.tbCompile.ImageIndex := 3;
 
-  Self.Terminate;
+  Terminate;
 end;
 
 procedure TSharpCompileMainWnd.FormCreate(Sender: TObject);
@@ -351,6 +396,7 @@ begin
   lbSummary.DoubleBuffered := True;
   sepLog.DoubleBuffered := True;
   panMain.DoubleBuffered := True;
+
   {$WARN SYMBOL_PLATFORM OFF} sSettingsFile := IncludeTrailingBackSlash(ExtractFileDir(Application.ExeName)) + 'SharpCompile-Settings.xml'; {$WARN SYMBOL_PLATFORM ON}
   LoadSettings;
   
@@ -711,6 +757,7 @@ var
   nProject,nComponent: TTreeNode;
   sPackage: String;
   sProjectName, sProjectType, sPlatform : string;
+  bCloseIDE : boolean;
 begin
   ctvProjects.Items.Clear;
   xFile := TJclSimpleXML.Create;
@@ -742,26 +789,27 @@ begin
               sProjectName := Properties.Value('Name', 'error');
               sProjectType := Properties.Value('Type', 'Application');
               sPlatform := Properties.Value('Platform', '');
+              bCloseIDE := Properties.BoolValue('CloseIDE', false);
               nComponent := ctvProjects.Items.AddChild(nProject, sProjectName);
 
               if sProjectType = 'Solution' then
               begin
-                nComponent.Data := TCSharpSolution.Create(sPath + Value, sProjectName, sPlatform);
+                nComponent.Data := TCSharpSolution.Create(sPath + Value, sProjectName, sPlatform, bCloseIDE);
                 TCSharpSolution(nComponent.Data).Package := sPackage;
               end
               else if sProjectType = 'Resource' then
               begin
-                nComponent.Data := TResourceBat.Create(sPath + Value, sProjectName);
+                nComponent.Data := TResourceBat.Create(sPath + Value, sProjectName, bCloseIDE);
                 TResourceBat(nComponent.Data).Package := sPackage;
               end
               else if sProjectType = 'CommandLine' then
               begin
-                nComponent.Data := TCommand.Create(sPath, sProjectName, Value);
+                nComponent.Data := TCommand.Create(sPath, sProjectName, Value, bCloseIDE);
                 TCommand(nComponent.Data).Package := sPackage;
               end
               else
               begin
-                nComponent.Data := TDelphiProject.Create(sPath + Value, sProjectName);
+                nComponent.Data := TDelphiProject.Create(sPath + Value, sProjectName, bCloseIDE);
                 TDelphiProject(nComponent.Data).Package := sPackage;
               end;
 

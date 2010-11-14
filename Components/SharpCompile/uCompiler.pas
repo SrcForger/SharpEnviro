@@ -44,6 +44,8 @@ type
     FSummaryIndex : Integer;
     FDetailIndex : Integer;
     FPlatform : string;
+    FCloseIDE : boolean;
+
   public
     property Name : string read FName;
     property Path : string read FPath;
@@ -51,9 +53,12 @@ type
     property SummaryIndex : Integer read FSummaryIndex write FSummaryIndex;
     property DetailIndex : Integer read FDetailIndex write FDetailIndex;
     property Platform : string read FPlatform;
+    property CloseIDE : boolean read FCloseIDE;
+
   published
-    constructor Create(csharpSolutionFile : string; name, platform : string); reintroduce;
+    constructor Create(csharpSolutionFile : string; name, platform : string; bCloseIDE: boolean = false); reintroduce;
     destructor Destroy; override;
+
   end;
 
   TDelphiProject = class
@@ -71,6 +76,8 @@ type
     FDIndex       : Integer;
     FDataSize     : Integer;
     FPackage      : String;
+    FCloseIDE : boolean;
+
     procedure LoadFromFile(pBDSProjFile : String);
 
   public
@@ -87,9 +94,10 @@ type
     property DIndex      : Integer read FDIndex write FDIndex;
     property DataSize    : Integer read FDataSize write FDataSize;
     property Package     : String  read FPackage write FPackage;
+    property CloseIDE : boolean read FCloseIDE;
 
   published
-    constructor Create(pBDSProjFile: String; sName: String); reintroduce;
+    constructor Create(pBDSProjFile: String; sName: String; bCloseIDE: boolean = false); reintroduce;
     destructor Destroy; override;
 
   end;
@@ -101,15 +109,20 @@ type
     FPackage : string;
     FSummaryIndex : Integer;
     FDetailIndex : Integer;
+    FCloseIDE : boolean;
+
   public
     property Name : string read FName;
     property Path : string read FPath;
     property Package : string read FPackage write FPackage;
     property SummaryIndex : Integer read FSummaryIndex write FSummaryIndex;
     property DetailIndex : Integer read FDetailIndex write FDetailIndex;
+    property CloseIDE : boolean read FCloseIDE;
+
   published
-    constructor Create(path, name : string); reintroduce;
+    constructor Create(path, name : string; bCloseIDE: boolean = false); reintroduce;
     destructor Destroy; override;
+
   end;
 
   TCommand = class
@@ -120,6 +133,8 @@ type
     FPackage : string;
     FSummaryIndex : Integer;
     FDetailIndex : Integer;
+    FCloseIDE : boolean;
+    
   public
     property Name : string read FName;
     property Path : string read FPath;
@@ -127,8 +142,10 @@ type
     property Package : string read FPackage write FPackage;
     property SummaryIndex : Integer read FSummaryIndex write FSummaryIndex;
     property DetailIndex : Integer read FDetailIndex write FDetailIndex;
+    property CloseIDE : boolean read FCloseIDE;
+
   published
-    constructor Create(path, name, command : string); reintroduce;
+    constructor Create(path, name, command : string; bCloseIDE: boolean = false); reintroduce;
     destructor Destroy; override;
   end;
 
@@ -210,13 +227,14 @@ end;
 
 {$REGION 'TCSharpSolution'}
 
-constructor TCSharpSolution.Create(csharpSolutionFile: string; name, platform: string);
+constructor TCSharpSolution.Create(csharpSolutionFile: string; name, platform: string; bCloseIDE: boolean);
 begin
   inherited Create;
 
   FName := name;
   FPlatform := platform;
   FPath := csharpSolutionFile;
+  FCloseIDE := bCloseIDE;
 end;
 
 destructor TCSharpSolution.Destroy;
@@ -284,13 +302,14 @@ end;
 
 {$REGION 'TDelphiProject'}
 
-constructor TDelphiProject.Create(pBDSProjFile: String; sName: String);
+constructor TDelphiProject.Create(pBDSProjFile: String; sName: String; bCloseIDE: boolean);
 begin
   Inherited Create;
 
   FPath := pBDSProjFile;
   FName := sName;
   FDir  := IncludeTrailingPathDelimiter(ExtractFileDir(FPath));
+  FCloseIDE := bCloseIDE;
 
   LoadFromFile(pBDSProjFile);
 end;
@@ -607,12 +626,13 @@ end;
 {$ENDREGION 'TDelphiCompiler'}
 
 {$Region 'TResourceBat'}
-constructor TResourceBat.Create(path, name: string);
+constructor TResourceBat.Create(path, name: string; bCloseIDE: boolean);
 begin
   inherited Create;
 
   FName := name;
   FPath := path;
+  FCloseIDE := bCloseIDE;
 end;
 
 destructor TResourceBat.Destroy;
@@ -668,13 +688,14 @@ end;
 
 {$Region 'TCommand'}
 
-constructor TCommand.Create(path, name, command: string);
+constructor TCommand.Create(path, name, command: string; bCloseIDE: boolean);
 begin
   inherited Create;
 
   FName := name;
   FPath := path;
   FCommand := command;
+  FCloseIDE := bCloseIDE;
 end;
 
 destructor TCommand.Destroy;

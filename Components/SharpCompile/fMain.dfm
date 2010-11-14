@@ -1131,7 +1131,6 @@ object SharpCompileMainWnd: TSharpCompileMainWnd
           OnSelectionChange = ctvProjectsSelectionChange
           CheckBoxOptions.Style = cbsJVCL
           CheckBoxOptions.CascadeLevels = 99
-          ExplicitHeight = 336
         end
         object panSelection: TPanel
           Left = 6
@@ -1141,7 +1140,6 @@ object SharpCompileMainWnd: TSharpCompileMainWnd
           Align = alBottom
           BevelOuter = bvNone
           TabOrder = 2
-          ExplicitTop = 28
           object btnToggleChecks: TButton
             Tag = 1
             Left = 80
@@ -1414,7 +1412,7 @@ object SharpCompileMainWnd: TSharpCompileMainWnd
     Left = 496
     Top = 416
     Bitmap = {
-      494C010105001400340010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101050014003C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
