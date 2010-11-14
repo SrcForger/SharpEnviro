@@ -54,6 +54,9 @@ type
     chkResetOnDisplayChange: TJvXPCheckbox;
     SharpECenterHeader6: TSharpECenterHeader;
     chkToolWindows: TJvXPCheckbox;
+    SharpECenterHeader7: TSharpECenterHeader;
+    chkEnable: TJvXPCheckbox;
+    pnlEnabled: TPanel;
     procedure sgbVwmCountChangeValue(Sender: TObject; Value: Integer);
     procedure SettingsChanged(Sender: TObject);
   private

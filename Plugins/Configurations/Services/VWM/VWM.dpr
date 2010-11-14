@@ -35,6 +35,7 @@ uses
   Graphics,
   SharpApi,
   SharpCenterApi,
+  uComponentMan in '..\..\..\..\Components\SharpCore\uComponentMan.pas',
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uSharpCenterPluginScheme,
@@ -49,7 +50,10 @@ uses
 type
   TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin )
   private
+    FComponentList : TComponentList;
+
     procedure Load;
+    procedure UpdateService;
   public
     constructor Create( APluginHost: ISharpCenterHost );
 
@@ -65,15 +69,25 @@ type
 procedure TSharpCenterPlugin.Close;
 begin
   FreeAndNil(frmSettings);
+  FComponentList.Free;
 end;
 
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
+
+  FComponentList := TComponentList.Create;
 end;
 
 procedure TSharpCenterPlugin.Load;
+var
+  i : integer;
 begin
+  FComponentList.BuildList('.dll', false, true);
+  FComponentList.Sort(CustomSort);
+
+  frmSettings.chkEnable.Checked := True;
+
   PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpCore\Services\VWM\VWM.xml';
   if PluginHost.Xml.Load then begin
     with PluginHost.Xml.XmlRoot, frmSettings do begin
@@ -85,6 +99,17 @@ begin
       chkResetOnDisplayChange.Checked := Items.BoolValue('ResetOnDisplayChange', True);      
     end;
   end;
+
+  for i := 0 to FComponentList.Count - 1 do
+  begin
+    if TComponentData(FComponentList[i]).MetaData.Name = 'VWM' then
+    begin
+      if (TComponentData(FComponentList[i]).Disabled) then
+        frmSettings.chkEnable.Checked := False;
+    end;
+  end;
+
+  frmSettings.pnlEnabled.Visible := frmSettings.chkEnable.Checked;
 end;
 
 function TSharpCenterPlugin.Open: Cardinal;
@@ -116,6 +141,37 @@ begin
     Add('ResetOnDisplayChange',chkResetOnDisplayChange.Checked);
   end;
   PluginHost.Xml.Save;
+
+  UpdateService;
+
+  frmSettings.pnlEnabled.Visible := frmSettings.chkEnable.Checked;
+end;
+
+procedure TSharpCenterPlugin.UpdateService;
+var
+  i : integer;
+  tmp : TComponentData;
+begin
+  for i := 0 to FComponentList.Count - 1 do
+  begin
+    tmp := TComponentData(FComponentList[i]);
+    if tmp.MetaData.Name = 'VWM' then
+    begin
+      if (not frmSettings.chkEnable.Checked) then
+      begin
+        if not tmp.Disabled then
+          tmp.Disabled := True;
+
+        ServiceStop(tmp.MetaData.Name);
+      end else if (frmSettings.chkEnable.Checked) then
+      begin
+        if tmp.Disabled then
+          tmp.Disabled := False;
+
+        ServiceStart(tmp.MetaData.Name);
+      end;
+    end;
+  end;
 end;
 
 function GetMetaData(): TMetaData;
