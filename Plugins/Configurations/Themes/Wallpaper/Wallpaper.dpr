@@ -110,6 +110,9 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
+
+  if (length(trim(PluginHost.pluginID)) = 0) then
+    PluginHost.pluginID := SharpThemeApiEx.GetCurrentTheme.Info.Name;  
   
   FTheme := TSharpETheme.Create(PluginHost.PluginID);
   FTheme.LoadTheme([tpWallpaper,tpSkinScheme]);
@@ -305,10 +308,13 @@ end;
 
 function GetPluginData(pluginID : String): TPluginData;
 begin
+  if (length(trim(pluginID)) = 0) then
+    pluginID := SharpThemeApiEx.GetCurrentTheme.Info.Name;
+
   with Result do
   begin
 	  Name := 'Wallpaper';
-    Description := Format('Wallpaper Configuration for "%s"',[pluginID]);
+    Description := Format('Wallpaper Configuration for Theme "%s"',[pluginID]);
 	  Status := '';
   end;
 end;

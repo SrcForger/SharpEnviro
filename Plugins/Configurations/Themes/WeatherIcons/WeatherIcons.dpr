@@ -150,6 +150,9 @@ var
   i : integer;
   dirs, files: TStringList;
 begin
+  if (length(trim(pluginID)) = 0) then
+    pluginID := SharpThemeApiEx.GetCurrentTheme.Info.Name;
+
   with Result do
   begin
   	Name := 'Weather Icons';

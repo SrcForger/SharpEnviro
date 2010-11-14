@@ -83,6 +83,9 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
+
+  if (length(trim(PluginHost.pluginID)) = 0) then
+    PluginHost.pluginID := SharpThemeApiEx.GetCurrentTheme.Info.Name;  
   
   FTheme := TSharpETheme.Create(APluginHost.PluginId);
   FTheme.LoadTheme([tpSkinScheme]);
@@ -202,8 +205,8 @@ function GetMetaData(): TMetaData;
 begin
   with result do
   begin
-    Name := 'Glass';
-    Description := 'Glass Skin Configuration';
+    Name := 'Glass Effect';
+    Description := 'Glass Effect Skin Configuration';
     Author := 'Lee Green (lee@sharpenviro.com)';
     Version := '0.8.0.0';
     DataType := tteConfig;
@@ -215,10 +218,13 @@ end;
 
 function GetPluginData(pluginID : String): TPluginData;
 begin
+  if (length(trim(pluginID)) = 0) then
+    pluginID := SharpThemeApiEx.GetCurrentTheme.Info.Name;
+
   with Result do
   begin
-  	Name := 'Glass';
-    Description := Format('Glass Skin Configuration for "%s"', [pluginID]);
+  	Name := 'Glass Effect';
+    Description := Format('Glass Skin Configuration for Theme "%s"', [pluginID]);
 	  Status := '';
   end;
 end;

@@ -82,7 +82,12 @@ var
   cursor: string;
   i: integer;
 begin
-  with PluginHost, PluginHost.Xml do begin
+  with PluginHost, PluginHost.Xml do
+  begin
+    if length(trim(PluginId)) = 0 then
+      PluginId := SharpThemeApiEx.GetCurrentTheme.Info.Name;
+    
+
     XmlFilename := GetSharpeUserSettingsPath + 'Themes\' + PluginId + '\Cursor.xml';
 
     if Xml.Load then begin
@@ -111,7 +116,6 @@ begin
 
   Load;
   result := PluginHost.Open(frmSettingsWnd);
-
 end;
 
 procedure TSharpCenterPlugin.Refresh(Theme : TCenterThemeInfo; AEditing: Boolean);
@@ -125,7 +129,11 @@ var
 begin
   if (frmSettingsWnd.lbCursorList.SelectedItem = nil ) then exit;
 
-  with PluginHost.Xml do begin
+  with PluginHost.Xml do
+  begin
+    if length(trim(PluginHost.PluginId)) = 0 then
+      PluginHost.PluginId := SharpThemeApiEx.GetCurrentTheme.Info.Name;
+
 
     XmlRoot.Clear;
     XmlRoot.Name := 'SharpEThemeCursor';
@@ -167,10 +175,13 @@ function GetPluginData(pluginID : String): TPluginData;
 var
   files: TStringList;
 begin
+  if (length(trim(pluginID)) = 0) then
+    pluginID := SharpThemeApiEx.GetCurrentTheme.Info.Name;
+
   with Result do
   begin
   	Name := 'Cursors';
-    Description := Format('Cursor Configuration for "%s"',[pluginID]);
+    Description := Format('Cursor Configuration for Theme "%s"',[pluginID]);
 	  Status := '';
 
     files := TStringList.Create;

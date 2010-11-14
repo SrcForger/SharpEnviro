@@ -106,6 +106,9 @@ constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
 
+  if (length(trim(PluginHost.pluginID)) = 0) then
+    PluginHost.pluginID := SharpThemeApiEx.GetCurrentTheme.Info.Name;  
+
   FTheme := TSharpETheme.Create(PluginHost.PluginID);
   FTheme.LoadTheme([tpSkinFont]);  
 end;
@@ -260,11 +263,14 @@ end;
 
 function GetPluginData(pluginID: String): TPluginData;
 begin
+  if (length(trim(pluginID)) = 0) then
+    pluginID := SharpThemeApiEx.GetCurrentTheme.Info.Name;
+
   with Result do
   begin
-	Name := 'Skin Font';
-    Description := Format('Skin Font Configuration for "%s"', [pluginID]);
-	Status := '';
+    Name := 'Skin Font';
+    Description := Format('Skin Font Configuration for Theme "%s"', [pluginID]);
+    Status := '';
   end;
 end;
 

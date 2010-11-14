@@ -78,6 +78,9 @@ constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
 
+  if (length(trim(PluginHost.pluginID)) = 0) then
+    PluginHost.pluginID := SharpThemeApiEx.GetCurrentTheme.Info.Name;
+
   FTheme := TSharpETheme.Create(APluginHost.PluginId);
   FTheme.LoadTheme([tpSkinScheme]);
 end;
@@ -136,10 +139,13 @@ var
   i : integer;
   dirs, files: TStringList;
 begin
+  if (length(trim(pluginID)) = 0) then
+    pluginID := SharpThemeApiEx.GetCurrentTheme.Info.Name;
+
   with Result do
   begin
   	Name := 'Skins';
-    Description := Format('Skin Configuration for "%s"',[pluginID]);
+    Description := Format('Skin Configuration for Theme "%s"',[pluginID]);
   	Status := '';
 
     files := TStringList.Create;

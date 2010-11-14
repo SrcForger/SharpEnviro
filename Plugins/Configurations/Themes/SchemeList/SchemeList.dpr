@@ -93,6 +93,9 @@ constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
 
+  if (length(trim(PluginHost.pluginID)) = 0) then
+    PluginHost.pluginID := SharpThemeApiEx.GetCurrentTheme.Info.Name;  
+
   Theme := TSharpETheme.Create(PluginHost.PluginID);
   Theme.LoadTheme([tpSkinScheme]);
 end;
@@ -224,10 +227,13 @@ var
   sl: TStringList;
   gTheme : ISharpETheme;
 begin
+  if (length(trim(pluginID)) = 0) then
+    pluginID := SharpThemeApiEx.GetCurrentTheme.Info.Name;
+
   with Result do
   begin
 	  Name := 'Schemes';
-    Description := Format('Scheme Configuration for "%s"',[pluginID]);
+    Description := Format('Scheme Configuration for Theme "%s"',[pluginID]);
    	Status := '';
 
     sl := TstringList.Create;

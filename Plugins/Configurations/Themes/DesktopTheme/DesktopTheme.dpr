@@ -107,6 +107,9 @@ constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
 
+  if (length(trim(PluginHost.pluginID)) = 0) then
+    PluginHost.pluginID := SharpThemeApiEx.GetCurrentTheme.Info.Name;
+
   FXmlDeskSettings := TDeskSettings.Create(nil);
   FTheme := TSharpETheme.Create(APluginHost.PluginID);
   FTheme.LoadTheme([tpDesktop,tpSkinScheme]);
@@ -291,11 +294,14 @@ end;
 
 function GetPluginData(pluginID : String): TPluginData;
 begin
+  if (length(trim(pluginID)) = 0) then
+    pluginID := SharpThemeApiEx.GetCurrentTheme.Info.Name;
+
   with Result do
   begin
-	Name := 'Desktop';
-    Description := Format('Desktop Configuration for "%s"', [pluginID]);
-	Status := '';
+    Name := 'Desktop';
+    Description := Format('Desktop Configuration for Theme "%s"', [pluginID]);
+    Status := '';
   end;
 end;
 

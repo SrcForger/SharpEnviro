@@ -82,6 +82,9 @@ constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
 
+  if (length(trim(PluginHost.PluginId)) = 0) then
+    PluginHost.PLuginId := SharpThemeApiEx.GetCurrentTheme.Info.Name;  
+
   FTheme := TSharpETheme.Create(PluginHost.PluginId);
   FTheme.LoadTheme([tpIconSet]);
 end;
@@ -139,7 +142,7 @@ function GetMetaData(): TMetaData;
 begin
   with result do
   begin
-    Name := 'Icon List';
+    Name := 'Icons';
     Description := 'Icon List Theme Configuration';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
     Version := '0.8.0.0';
@@ -153,10 +156,13 @@ function GetPluginData(pluginID : String): TPluginData;
 var
   files: TStringList;
 begin
+  if (length(trim(pluginID)) = 0) then
+    pluginID := SharpThemeApiEx.GetCurrentTheme.Info.Name;
+
   with Result do
   begin
-	  Name := 'Icon List';
-    Description := Format('Icon Set Configuration for "%s"',[pluginID]);
+	  Name := 'Icons';
+    Description := Format('Icon Set Configuration for Theme "%s"',[pluginID]);
 	  Status := '';
 
     files := TStringList.Create;
