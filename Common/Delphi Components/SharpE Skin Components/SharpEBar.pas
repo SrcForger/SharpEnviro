@@ -96,7 +96,9 @@ type
     FDisableHideThrobber: Boolean;
     FDisableHideBar     : Boolean;
     FStartHidden : Boolean;
-    //FSpecialHideForm    : Boolean;
+    FAutoHide : Boolean;
+    FAutoHideTime : integer;
+
     procedure PC_NoAlpha(F: TColor32; var B: TColor32; M: TColor32);
     procedure FormPaint(Sender: TObject);
     procedure SetBitmapSizes(NewWidth : integer = - 1);
@@ -140,6 +142,8 @@ type
     property ForceAlwaysOnTop: Boolean read FForceAlwaysOnTop write SetForceAlwaysOnTop;
     property FixedWidthEnabled: Boolean read FFixedWidthEnabled write SetFixedWidthEnabled;
     property FixedWidth: integer read FFixedWidth write SetFixedWidth;
+    property AutoHide: boolean read FAutoHide write FAutoHide;
+    property AutoHideTime: integer read FAutoHideTime write FAutoHideTime;
 
     property ShowThrobber: Boolean read FShowThrobber write SetShowThrobber;
     property DisableHideBar: Boolean read FDisableHideBar write FDisableHideBar;

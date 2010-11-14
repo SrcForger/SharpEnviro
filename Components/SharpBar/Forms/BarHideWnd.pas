@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, MonitorList;
+  Dialogs, MonitorList, uSystemFuncs;
 
 type
   TBarHideForm = class(TForm)
@@ -77,6 +77,7 @@ begin
      begin
        SharpBarMainForm.Show;
        SharpBarMainForm.Repaint;
+       ForceForegroundWindow(SharpBarMainForm.Handle);
        SharpApi.ServiceMsg('Shell','DeskAreaUpdate');
        if not (SharpBarMainForm.SharpEBar.SpecialHideForm) then
        begin

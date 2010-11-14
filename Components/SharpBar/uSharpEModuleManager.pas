@@ -358,12 +358,14 @@ begin
       Items.Add('AutoStart', FBar.AutoStart);
       Items.Add('ShowThrobber', FBar.ShowThrobber);
       Items.Add('DisableHideBar', FBar.DisableHideBar);
-      Items.Add('StartHidden', not FBar.aform.Visible);
+      Items.Add('StartHidden', (not FBar.aform.Visible) and (not FBar.AutoHide));
       Items.Add('AlwaysOnTop', FBar.AlwaysOnTop);
       Items.Add('ForceAlwaysOnTop', FBar.ForceAlwaysOnTop);
       Items.Add('ShowMiniThrobbers', ModuleManager.ShowMiniThrobbers);
       Items.Add('FixedWidthEnabled', FBar.FixedWidthEnabled);
       Items.Add('FixedWidth', FBar.FixedWidth);
+      Items.Add('AutoHide', FBar.AutoHide);
+      Items.Add('AutoHideTime', FBar.AutoHideTime);
     end;
 
     // Save the Module List

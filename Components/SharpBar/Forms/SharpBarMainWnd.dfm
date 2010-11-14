@@ -678,4 +678,17 @@ object SharpBarMainForm: TSharpBarMainForm
     Left = 272
     Top = 144
   end
+  object tmrAutoHide: TTimer
+    Enabled = False
+    OnTimer = tmrAutoHideTimer
+    Left = 232
+    Top = 144
+  end
+  object tmrCursorPos: TTimer
+    Enabled = False
+    Interval = 1
+    OnTimer = tmrCursorPosTimer
+    Left = 192
+    Top = 144
+  end
 end

@@ -89,6 +89,8 @@ type
     N201: TMenuItem;
     Custom1: TMenuItem;
     ForceAlwaysOnTop1: TMenuItem;
+    tmrAutoHide: TTimer;
+    tmrCursorPos: TTimer;
     procedure ShowMiniThrobbers1Click(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ThemeHideTimerTimer(Sender: TObject);
@@ -142,6 +144,8 @@ type
     procedure ForceAlwaysOnTop1Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure CreateParams(var Params: TCreateParams); override;
+    procedure tmrAutoHideTimer(Sender: TObject);
+    procedure tmrCursorPosTimer(Sender: TObject);
   private
     { Private-Deklarationen }
     FUser32DllHandle: THandle;
@@ -335,6 +339,8 @@ begin
         SharpEBar.ForceAlwaysOnTop := Items.BoolValue('ForceAlwaysOnTop', False);
         SharpEBar.FixedWidthEnabled := Items.BoolValue('FixedWidthEnabled', False);
         SharpEBar.FixedWidth := Max(10,Min(90,Items.IntValue('FixedWidth', 50)));
+        SharpEBar.AutoHide := Items.BoolValue('AutoHide', False);
+        SharpEBar.AutoHideTime := Items.IntValue('AutoHideTime', 1000);
       end;
 
     if (FixedWidthEnabledTemp <> SharpEBar.FixedWidthEnabled)
@@ -1170,6 +1176,8 @@ begin
         SharpEBar.ForceAlwaysOnTop := Items.BoolValue('ForceAlwaysOnTop', False);
         SharpEBar.FixedWidthEnabled := Items.BoolValue('FixedWidthEnabled', False);
         SharpEBar.FixedWidth := Max(10,Min(90,Items.IntValue('FixedWidth', 50)));
+        SharpEBar.AutoHide := Items.BoolValue('AutoHide', False);
+        SharpEBar.AutoHideTime := Items.IntValue('AutoHideTime', 1000);
 
         ModuleManager.BarName := FBarName;
         // Set Main Window Title to SharpBar_ID!
@@ -1178,6 +1186,10 @@ begin
       end;
     UpdateBGZone;
     LoadBarModules(xml.root);
+
+    tmrCursorPos.Enabled := SharpEBar.AutoHide;
+    tmrAutoHide.Enabled := False;
+    tmrAutoHide.Interval := SharpEBar.AutoHideTime;
   end
   else begin
     // file is damaged... try to reconstruct
@@ -1197,6 +1209,8 @@ begin
   FSharpEBar := TSharpEBar.CreateRuntime(self, SkinInterface.SkinManager);
   FSharpEBar.AutoPosition := True;
   FSharpEBar.AutoStart := True;
+  FSharpEBar.AutoHide := True;
+  FSharpEBar.AutoHideTime := 1000;
   FSharpEBar.DisableHideBar := True;
   FSharpEBar.StartHidden := False;
   FSharpEBar.HorizPos := hpMiddle;
@@ -1779,6 +1793,7 @@ begin
 
   if BarHideForm <> nil then
     BarHideForm.UpdateStatus;
+
   ModuleManager.RefreshMiniThrobbers;
 end;
 
@@ -2092,6 +2107,7 @@ begin
         end;
       end;
     end;
+    
   if (Button = mbLeft) and ((Y = 0) or (Y = Height - 1)) then
     HideBar;
 end;
@@ -2337,6 +2353,49 @@ begin
   SetLayeredWindowAttributes(Handle, 0, 255, LWA_ALPHA);
   SetLayeredWindowAttributes(Handle, RGB(255, 0, 254), 255, LWA_COLORKEY);
   SharpEBar.abackground.Alpha := 255;
+end;
+
+procedure TSharpBarMainForm.tmrAutoHideTimer(Sender: TObject);
+begin
+  tmrAutoHide.Enabled := False;
+  HideBar;
+end;
+
+procedure TSharpBarMainForm.tmrCursorPosTimer(Sender: TObject);
+var
+  pt : TPoint;
+begin
+  GetCursorPos(pt);
+
+  if (pt.X >= Self.Left) and (pt.X < Self.Left + Self.Width) then
+  begin
+    // Top bar
+    if (Self.Top < Monitor.Top + (Monitor.Height div 2)) then
+    begin
+      if (not Self.Visible) and (pt.Y >= Self.Top) and (pt.Y < Self.Top + 1) then
+      begin
+        BarHideForm.FormClick(nil);
+      end else
+      begin
+        if pt.Y > Self.Top + Self.Height then
+          tmrAutoHide.Enabled := True
+        else
+          tmrAutoHide.Enabled := False;
+      end;
+    end else
+    begin
+      if (not Self.Visible) and (pt.Y >= Self.Top + Self.Height - 1) and (pt.Y < Self.Top + Self.Height) then
+      begin
+        BarHideForm.FormClick(nil);
+      end else
+      begin
+        if pt.Y < Self.Top then
+          tmrAutoHide.Enabled := True
+        else
+          tmrAutoHide.Enabled := False;
+      end;
+    end;
+  end;
 end;
 
 procedure TSharpBarMainForm.FormKeyDown(Sender: TObject; var Key: Word;
