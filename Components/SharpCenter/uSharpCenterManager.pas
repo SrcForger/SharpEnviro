@@ -488,6 +488,16 @@ begin
         if (sRec.Name = '.') or (sRec.Name = '..') then
           Continue;
 
+        sName        := '';
+        sIcon        := '';
+        sPng         := '';
+        sPath        := '';
+        sHelp        := '';
+        sDll         := '';
+        sStatus      := '';
+        sTitle       := '';
+        sDescription := '';
+
         if CompareText(ExtractFileExt(sRec.Name), SCE_CON_EXT) = 0 then
         begin
 
@@ -507,6 +517,9 @@ begin
 
                 if Items.ItemNamed['Help'] <> nil then
                   sHelp := sPath + Items.ItemNamed['Help'].Value;
+
+                if Items.ItemNamed['Name'] <> nil then
+                  sName := Items.ItemNamed['Name'].Value;                  
               end;
             end
             else
@@ -524,11 +537,14 @@ begin
             end;
 
             sPath := ExtractFilePath(APath + sRec.Name);
-            sName := '';
-            sStatus := '';
-            sTitle := '';
-            sDescription := '';
-            GetItemText(sPath + sDll, SCM.ActivePluginID, sName, sStatus, sDescription);
+            if FileExists(sPath + sDll) then
+            begin
+              sName := '';
+              sStatus := '';
+              sTitle := '';
+              sDescription := '';
+              GetItemText(sPath + sDll, SCM.ActivePluginID, sName, sStatus, sDescription);
+            end;
           finally
             Xml.Free;
           end;
