@@ -304,6 +304,19 @@ begin
     end;
   end;
 
+  if not SharpGraphicsUtils.HasVisiblePixel(tempBmp) then
+  begin
+    tempBmp.SetSize(tempBmp.TextWidth('Invalid Image') + 20,tempBmp.TextHeight('Invalid Image') + 20);
+    tempBmp.Clear(color32(196,196,196,196));
+    tempBmp.RenderText(10,10,'Invalid Image',0,color32(0,0,0,255));
+  end;
+
+  if FAlphaBlend then
+    tempBmp.MasterAlpha := FAlphaValue
+  else tempBmp.MasterAlpha := 255;
+  tempBmp.DrawMode := dmBlend;
+  tempBmp.CombineMode := cmMerge;
+
   TLinearResampler.Create(tempBmp);
   if FSettings.LocationType in [ilFile, ilURL] then
   begin
