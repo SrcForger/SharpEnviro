@@ -120,7 +120,7 @@ object frmSettings: TfrmSettings
             Margins.Top = 34
             Margins.Right = 8
             Margins.Bottom = 8
-            ActivePage = pageurl
+            ActivePage = pageDirectory
             PropagateEnable = False
             Align = alTop
             ParentBackground = True
@@ -677,16 +677,16 @@ object frmSettings: TfrmSettings
         Left = 1
         Top = 1
         Width = 506
-        Height = 301
+        Height = 309
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
         TabOrder = 0
         object Panel3: TPanel
           Left = 0
-          Top = 194
+          Top = 198
           Width = 506
-          Height = 65
+          Height = 69
           Margins.Left = 0
           Margins.Top = 0
           Margins.Right = 0
@@ -701,7 +701,7 @@ object frmSettings: TfrmSettings
             Left = 5
             Top = 0
             Width = 496
-            Height = 28
+            Height = 27
             Margins.Left = 5
             Margins.Top = 0
             Margins.Right = 5
@@ -719,15 +719,15 @@ object frmSettings: TfrmSettings
             MonitorControl = cbcolorblend
             OnReset = UIC_Reset
             object cbcolorblend: TCheckBox
+              AlignWithMargins = True
               Left = 0
-              Top = 0
+              Top = 2
               Width = 177
-              Height = 28
-              Margins.Left = 4
-              Margins.Top = 4
-              Margins.Right = 4
-              Margins.Bottom = 0
-              Align = alLeft
+              Height = 23
+              Margins.Left = 0
+              Margins.Top = 2
+              Margins.Right = 0
+              Margins.Bottom = 2
               Caption = 'Enable image colour blending'
               TabOrder = 0
               OnClick = cbcolorblendClick
@@ -736,9 +736,9 @@ object frmSettings: TfrmSettings
           object UIC_ColorAlpha: TSharpEUIC
             AlignWithMargins = True
             Left = 5
-            Top = 33
+            Top = 32
             Width = 496
-            Height = 28
+            Height = 27
             Margins.Left = 5
             Margins.Top = 0
             Margins.Right = 5
@@ -755,16 +755,17 @@ object frmSettings: TfrmSettings
             DefaultValue = '100'
             MonitorControl = sbgimagencblendalpha
             OnReset = UIC_Reset
+            ExplicitTop = 33
             object sbgimagencblendalpha: TSharpeGaugeBox
+              AlignWithMargins = True
               Left = 0
-              Top = 0
+              Top = 2
               Width = 300
-              Height = 28
-              Margins.Left = 4
-              Margins.Top = 4
-              Margins.Right = 4
-              Margins.Bottom = 4
-              Align = alLeft
+              Height = 23
+              Margins.Left = 0
+              Margins.Top = 2
+              Margins.Right = 0
+              Margins.Bottom = 2
               ParentBackground = False
               TabOrder = 0
               Min = 16
@@ -785,7 +786,7 @@ object frmSettings: TfrmSettings
           Left = 0
           Top = 77
           Width = 506
-          Height = 60
+          Height = 64
           Align = alTop
           AutoSize = True
           BevelOuter = bvNone
@@ -796,7 +797,7 @@ object frmSettings: TfrmSettings
             Left = 5
             Top = 0
             Width = 496
-            Height = 28
+            Height = 27
             Margins.Left = 5
             Margins.Top = 0
             Margins.Right = 5
@@ -814,15 +815,15 @@ object frmSettings: TfrmSettings
             MonitorControl = cbalphablend
             OnReset = UIC_Reset
             object cbalphablend: TCheckBox
+              AlignWithMargins = True
               Left = 0
-              Top = 0
+              Top = 2
               Width = 177
-              Height = 28
-              Margins.Left = 4
-              Margins.Top = 4
-              Margins.Right = 4
-              Margins.Bottom = 0
-              Align = alLeft
+              Height = 23
+              Margins.Left = 0
+              Margins.Top = 2
+              Margins.Right = 0
+              Margins.Bottom = 2
               Caption = 'Enable image alpha blending'
               TabOrder = 0
               OnClick = cbalphablendClick
@@ -831,9 +832,9 @@ object frmSettings: TfrmSettings
           object UIC_blendalpha: TSharpEUIC
             AlignWithMargins = True
             Left = 5
-            Top = 33
+            Top = 32
             Width = 496
-            Height = 28
+            Height = 27
             Margins.Left = 5
             Margins.Top = 0
             Margins.Right = 5
@@ -850,16 +851,17 @@ object frmSettings: TfrmSettings
             DefaultValue = '100'
             MonitorControl = sgbiconalpha
             OnReset = UIC_Reset
+            ExplicitTop = 33
             object sgbiconalpha: TSharpeGaugeBox
+              AlignWithMargins = True
               Left = 0
-              Top = 0
+              Top = 2
               Width = 300
-              Height = 28
-              Margins.Left = 4
-              Margins.Top = 4
-              Margins.Right = 4
-              Margins.Bottom = 4
-              Align = alLeft
+              Height = 23
+              Margins.Left = 0
+              Margins.Top = 2
+              Margins.Right = 0
+              Margins.Bottom = 2
               ParentBackground = False
               TabOrder = 0
               Min = 16
@@ -995,7 +997,7 @@ object frmSettings: TfrmSettings
         object SharpECenterHeader7: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 147
+          Top = 151
           Width = 496
           Height = 37
           Margins.Left = 5
@@ -1007,11 +1009,12 @@ object frmSettings: TfrmSettings
           TitleColor = clWindowText
           DescriptionColor = clRed
           Align = alTop
+          ExplicitTop = 153
         end
         object UIC_Colors: TSharpEUIC
           AlignWithMargins = True
           Left = 2
-          Top = 259
+          Top = 267
           Width = 499
           Height = 32
           Margins.Left = 2
@@ -1028,6 +1031,7 @@ object frmSettings: TfrmSettings
           AutoReset = False
           DefaultValue = '0'
           MonitorControl = IconColors
+          ExplicitTop = 271
           object IconColors: TSharpEColorEditorEx
             AlignWithMargins = True
             Left = 0
@@ -1072,7 +1076,6 @@ object frmSettings: TfrmSettings
             BackgroundTextColor = clBlack
             ContainerColor = clBlack
             ContainerTextColor = clBlack
-            ExplicitWidth = 465
           end
         end
       end
