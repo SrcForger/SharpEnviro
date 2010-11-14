@@ -146,7 +146,7 @@ const
   StartFuncEx: TStartFuncEx = nil;
 begin
   Result := 1;
-  if (modData.MetaData.DataType = tteService) and (not modData.Running) then
+  if (modData.MetaData.DataType = tteService) and (not modData.Running) and (not modData.Disabled) then
   begin
     modData.FileHandle := LoadLibrary(PChar(modData.FileName));
     @StartFunc   := GetProcAddress(modData.FileHandle, 'Start');
@@ -431,10 +431,12 @@ begin
 
         cdsData := PCopyDataStruct(lParam)^;
         tmdData := PMsgData(cdsData.lpData)^;
-        if LowerCase(tmdData.Command) = '_servicestart' then {//start service} begin
+        if LowerCase(tmdData.Command) = '_servicestart' then {//start service}
+        begin
           iIndex := lstComponents.FindByName(tmdData.Parameters);
           if (iIndex < lstComponents.Count) and (iIndex > -1) then begin
             modData := lstComponents.Items[iIndex];
+
             StartService(modData);
             if modData.Running then
               result := MR_STARTED
@@ -446,6 +448,7 @@ begin
           iIndex := lstComponents.FindByName(tmdData.Parameters);
           if (iIndex < lstComponents.Count) and (iIndex > -1) then begin
             modData := lstComponents.Items[iIndex];
+
             StopService(modData);
             if modData.Running then
               result := MR_STARTED
