@@ -1,6 +1,6 @@
 ﻿{
-Source Name: Link
-Description: Link Object Config Dll
+Source Name: RecycleBin
+Description: RecycleBin Object Config Dll
 Copyright (C) Martin Krämer (MartinKraemer@gmx.net)
 
 Source Forge Site
