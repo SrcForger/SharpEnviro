@@ -160,8 +160,8 @@ function GetMetaData(): TMetaData;
 begin
   with result do
   begin
-    Name := 'Desktop';
-    Description := 'Desktop Configuration';
+    Name := 'Desktop Behaviour';
+    Description := 'Desktop Behaviour Configuration';
     Author := 'Lee Green (lee@sharpenviro.com)';
     Version := '0.8.0.0';
     DataType := tteConfig;
@@ -174,7 +174,7 @@ function GetPluginData(pluginID : String): TPluginData;
 begin
   with result do
   begin
-    Name := 'Desktop';
+    Name := 'Desktop Behaviour';
     Description := 'Define advanced desktop and wallpaper functionality.';
     Status := '';
   end;
