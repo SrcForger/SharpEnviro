@@ -1,12 +1,12 @@
 <SharpCompile OutputPath="..\SharpE" Version="0.8.0.0">
   <package Name="Resources - Common">
 	<!-- If you have the Delphi IDE open then building the SharpE (Skin) Components will fail. -->
-	<project Name="SharpE Skin Components" Type="Application">Common\Packages\SharpE Skin Components\SharpESkinComponents.dproj</project>
-	<project Name="SharpE Components" Type="Application">Common\Packages\SharpE Components\SharpEComponents.dproj</project>
-	<project Name="SharpNotify" Type="Resource">Common\Units\SharpNotify\res\buildressource.bat</project>
+	<project Name="SharpE Skin Components" Type="Application" CloseIDE="-1">Common\Packages\SharpE Skin Components\SharpESkinComponents.dproj</project>
+	<project Name="SharpE Components" Type="Application" CloseIDE="-1">Common\Packages\SharpE Components\SharpEComponents.dproj</project>
+	<project Name="SharpNotify" Type="Resource" CloseIDE="-1">Common\Units\SharpNotify\res\buildressource.bat</project>
   </package>
   <package Name="Resources - Plugins">
-	<project Name="Weather" Type="Resource">Plugins\Objects\Weather\res\buildressource.bat</project>
+	<project Name="Weather" Type="Resource" CloseIDE="-1">Plugins\Objects\Weather\res\buildressource.bat</project>
    </package>
   <package Name="Configurations - Components">
     <project Name="Toolbar List" Type="DLL">Plugins\Configurations\Components\Barlist\BarList.dproj</project>
