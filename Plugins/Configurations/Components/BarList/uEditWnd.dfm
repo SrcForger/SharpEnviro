@@ -28,20 +28,12 @@ object frmEditwnd: TfrmEditwnd
     Caption = 'Monitor:'
     Transparent = True
   end
-  object JvLabel3: TLabel
-    Left = 242
-    Top = 44
-    Width = 78
-    Height = 13
-    Caption = 'Horizontal Align:'
-    Transparent = True
-  end
   object JvLabel2: TLabel
     Left = 242
     Top = 12
-    Width = 65
+    Width = 27
     Height = 13
-    Caption = 'Vertical Align:'
+    Caption = 'Align:'
     Transparent = True
   end
   object Label3: TLabel
@@ -52,27 +44,106 @@ object frmEditwnd: TfrmEditwnd
     Caption = 'Template:'
     Transparent = True
   end
-  object cbFixedWidth: TJvXPCheckbox
-    Left = 242
-    Top = 72
-    Width = 90
-    Height = 17
-    Caption = 'Fixed Width'
-    TabOrder = 6
-    OnClick = cbFixedWidthClick
+  object Label2: TLabel
+    Left = 18
+    Top = 12
+    Width = 31
+    Height = 13
+    Caption = 'Name:'
+    Transparent = True
   end
-  object sgbFixedWidth: TSharpeGaugeBox
-    Left = 336
-    Top = 71
-    Width = 131
+  object Panel1: TPanel
+    Left = 360
+    Top = 8
+    Width = 107
+    Height = 26
+    Anchors = [akLeft, akTop, akRight]
+    BevelOuter = bvNone
+    TabOrder = 8
+    object cobo_halign: TComboBox
+      Left = 0
+      Top = 0
+      Width = 107
+      Height = 21
+      Align = alRight
+      Style = csDropDownList
+      ItemHeight = 13
+      ItemIndex = 3
+      TabOrder = 0
+      Text = 'Full Screen'
+      OnSelect = cbBasedOnSelect
+      Items.Strings = (
+        'Left'
+        'Middle'
+        'Right'
+        'Full Screen')
+    end
+    object cobo_valign: TComboBox
+      Left = 0
+      Top = 0
+      Width = 73
+      Height = 21
+      Align = alLeft
+      Style = csDropDownList
+      ItemHeight = 13
+      ItemIndex = 1
+      TabOrder = 1
+      Text = 'Bottom'
+      OnSelect = cbBasedOnSelect
+      Items.Strings = (
+        'Top'
+        'Bottom')
+    end
+  end
+  object sgbAutoHide: TSharpeGaugeBox
+    Left = 360
+    Top = 72
+    Width = 107
     Height = 21
     Anchors = [akLeft, akTop, akRight]
     ParentBackground = False
     TabOrder = 7
+    Min = 1
+    Max = 60
+    Value = 10
+    Suffix = ' Second(s)'
+    Description = 'Adjust to set the auto-hide timeout'
+    PopPosition = ppBottom
+    PercentDisplay = False
+    MaxPercent = 0
+    Formatting = '%d'
+    OnChangeValue = sgbFixedWidthChangeValue
+    BackgroundColor = clWindow
+  end
+  object chkAutoHide: TJvXPCheckbox
+    Left = 240
+    Top = 74
+    Width = 90
+    Height = 17
+    Caption = 'Auto-Hide'
+    TabOrder = 6
+    OnClick = chkAutoHideClick
+  end
+  object cbFixedWidth: TJvXPCheckbox
+    Left = 240
+    Top = 42
+    Width = 90
+    Height = 17
+    Caption = 'Fixed Width'
+    TabOrder = 4
+    OnClick = cbFixedWidthClick
+  end
+  object sgbFixedWidth: TSharpeGaugeBox
+    Left = 360
+    Top = 40
+    Width = 107
+    Height = 21
+    Anchors = [akLeft, akTop, akRight]
+    ParentBackground = False
+    TabOrder = 5
     Min = 10
     Max = 90
     Value = 50
-    Prefix = 'Fixed Width: '
     Suffix = '%'
     Description = 'Adjust to set the transparency'
     PopPosition = ppBottom
@@ -83,13 +154,12 @@ object frmEditwnd: TfrmEditwnd
     BackgroundColor = clWindow
   end
   object edName: TLabeledEdit
-    Left = 56
+    Left = 76
     Top = 8
-    Width = 157
+    Width = 137
     Height = 21
-    EditLabel.Width = 31
+    EditLabel.Width = 3
     EditLabel.Height = 13
-    EditLabel.Caption = 'Name:'
     LabelPosition = lpLeft
     LabelSpacing = 6
     TabOrder = 0
@@ -115,54 +185,21 @@ object frmEditwnd: TfrmEditwnd
     TabOrder = 2
     OnSelect = cbBasedOnSelect
   end
-  object cobo_valign: TComboBox
-    Left = 320
-    Top = 8
-    Width = 147
-    Height = 21
-    Style = csDropDownList
-    Anchors = [akLeft, akTop, akRight]
-    ItemHeight = 13
-    ItemIndex = 0
-    TabOrder = 3
-    Text = 'Top'
-    OnSelect = cbBasedOnSelect
-    Items.Strings = (
-      'Top'
-      'Bottom')
-  end
-  object cobo_halign: TComboBox
-    Left = 336
-    Top = 40
-    Width = 131
-    Height = 21
-    Style = csDropDownList
-    Anchors = [akLeft, akTop, akRight]
-    ItemHeight = 13
-    ItemIndex = 0
-    TabOrder = 4
-    Text = 'Left'
-    OnSelect = cbBasedOnSelect
-    Items.Strings = (
-      'Left'
-      'Middle'
-      'Right'
-      'Full Screen')
-  end
   object pnlBarSpace: TPanel
     Left = 8
     Top = 8
-    Width = 459
-    Height = 88
+    Width = 0
+    Height = 0
     Anchors = [akLeft, akTop, akRight, akBottom]
     BevelOuter = bvNone
     ParentBackground = False
     ParentColor = True
-    TabOrder = 5
+    TabOrder = 3
+    Visible = False
     object Label1: TLabel
       Left = 0
       Top = 13
-      Width = 459
+      Width = 0
       Height = 26
       Align = alTop
       Caption = 
@@ -175,7 +212,7 @@ object frmEditwnd: TfrmEditwnd
     object JvLabel4: TLabel
       Left = 0
       Top = 0
-      Width = 459
+      Width = 0
       Height = 13
       Align = alTop
       Caption = 'Error:'

@@ -350,7 +350,16 @@ begin
     ModuleManager.BarName := FBarName;
     SharpEBar.UpdatePosition;
     UpdateBGZone;
-  end else SharpApi.SendDebugMessageEx('SharpBar',PChar('(WMBarReposition): Error loading '+ Dir + 'Bar.xml'), clred, DMT_ERROR);
+
+    if (not Visible) and (tmrCursorPos.Enabled) and (not SharpEBar.AutoHide) then
+      BarHideForm.FormClick(nil);
+
+    tmrCursorPos.Enabled := SharpEBar.AutoHide;
+    tmrAutoHide.Enabled := False;
+    tmrAutoHide.Interval := SharpEBar.AutoHideTime;
+
+  end else
+    SharpApi.SendDebugMessageEx('SharpBar',PChar('(WMBarReposition): Error loading '+ Dir + 'Bar.xml'), clred, DMT_ERROR);
 
   xml.Free;
 end;
@@ -1187,7 +1196,7 @@ begin
     UpdateBGZone;
     LoadBarModules(xml.root);
 
-    tmrCursorPos.Enabled := SharpEBar.AutoHide;
+    tmrCursorPos.Enabled := false;
     tmrAutoHide.Enabled := False;
     tmrAutoHide.Interval := SharpEBar.AutoHideTime;
   end
@@ -1209,7 +1218,7 @@ begin
   FSharpEBar := TSharpEBar.CreateRuntime(self, SkinInterface.SkinManager);
   FSharpEBar.AutoPosition := True;
   FSharpEBar.AutoStart := True;
-  FSharpEBar.AutoHide := True;
+  FSharpEBar.AutoHide := False;
   FSharpEBar.AutoHideTime := 1000;
   FSharpEBar.DisableHideBar := True;
   FSharpEBar.StartHidden := False;
@@ -1795,6 +1804,8 @@ begin
     BarHideForm.UpdateStatus;
 
   ModuleManager.RefreshMiniThrobbers;
+
+  tmrCursorPos.Enabled := SharpEBar.AutoHide;
 end;
 
 function PointInRect(P: TPoint; Rect: TRect): boolean;

@@ -83,6 +83,8 @@ type
     ShowThrobber: boolean;
     StartHidden: boolean;
     AlwaysOnTop: boolean;
+    AutoHide: Boolean;
+    AutoHideTime: integer;
   end;
 
   TfrmListWnd = class(TForm)
@@ -668,6 +670,8 @@ begin
               ShowThrobber := BoolValue('ShowThrobber', True);
               StartHidden := BoolValue('StartHidden', False);
               AlwaysOnTop := BoolValue('AlwaysOnTop', False);
+              AutoHide := BoolValue('AutoHide', False);
+              AutoHideTime := IntValue('AutoHideTime', 1000);
             end;
           end;
 

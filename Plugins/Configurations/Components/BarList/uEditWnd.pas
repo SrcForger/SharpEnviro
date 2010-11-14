@@ -72,7 +72,6 @@ type
     cbBasedOn: TComboBox;
     cobo_valign: TComboBox;
     cobo_halign: TComboBox;
-    JvLabel3: TLabel;
     JvLabel2: TLabel;
     JvLabel1: TLabel;
     Label3: TLabel;
@@ -81,6 +80,10 @@ type
     JvLabel4: TLabel;
     cbFixedWidth: TJvXPCheckbox;
     sgbFixedWidth: TSharpeGaugeBox;
+    chkAutoHide: TJvXPCheckbox;
+    sgbAutoHide: TSharpeGaugeBox;
+    Label2: TLabel;
+    Panel1: TPanel;
     procedure valBarNameValidate(Sender: TObject; ValueToValidate: Variant;
       var Valid: Boolean);
     procedure cbBasedOnSelect(Sender: TObject);
@@ -90,6 +93,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure cbFixedWidthClick(Sender: TObject);
     procedure sgbFixedWidthChangeValue(Sender: TObject; Value: Integer);
+    procedure chkAutoHideClick(Sender: TObject);
   private
     FBarItem: TBarItem;
     FUpdating: Boolean;
@@ -138,12 +142,17 @@ begin
     case FPluginHost.EditMode of
       sceAdd: begin
 
-          if not (frmListWnd.BarSpaceCheck) then begin
+          if not (frmListWnd.BarSpaceCheck) then
+          begin
+            pnlBarSpace.Width := Self.Width;
+            pnlBarSpace.Height := Self.Height;
             pnlBarSpace.Show;
             Exit;
           end;
 
           pnlBarSpace.Hide;
+          pnlBarSpace.Width := 0;
+          pnlBarSpace.Height := 0;
           edName.Text := '';
 
           cbBasedOn.Items.Clear;
@@ -168,6 +177,8 @@ begin
           if frmListWnd.lbBarList.ItemIndex <> -1 then begin
 
             pnlBarSpace.Hide;
+            pnlBarSpace.Width := 0;
+            pnlBarSpace.Height := 0;
             tmpItem := frmListWnd.lbBarList.SelectedItem;
             FBarItem := TBarItem(tmpItem.Data);
 
@@ -192,6 +203,8 @@ begin
               FBarItem.StartHidden := False;
               FBarItem.ShowThrobber := True;
               FBarItem.AlwaysOnTop := False;
+              FBarItem.AutoHide := False;
+              FBarItem.AutoHideTime := 1000;
             end;
 
             BuildMonList;
@@ -204,6 +217,10 @@ begin
 
             sgbFixedWidth.Value := FBarItem.FixedWidth;
             cbFixedWidth.Checked := FBarITem.FixedWidthEnabled;
+
+            chkAutoHide.Checked := FBarItem.AutoHide;
+            if FBarITem.AutoHideTime > 0 then
+              sgbAutoHide.Value := FBarITem.AutoHideTime div 1000;
 
             cbBasedOn.Items.Clear;
             cbBasedOn.Items.AddObject('Not Applicable', nil);
@@ -276,7 +293,8 @@ begin
             if ItemNamed['Settings'] = nil then
               Add('Settings');
   
-            with ItemNamed['Settings'].Items do begin
+            with ItemNamed['Settings'].Items do
+            begin
               clear;
               Add('ID', newId);
               Add('Name', edName.Text);
@@ -294,6 +312,8 @@ begin
               Add('FixedWidthEnabled', cbFixedWidth.Checked);
               Add('ShowMiniThrobbers', False);
               Add('AlwaysOnTop', False);
+              Add('AutoHide', chkAutoHide.Checked);
+              Add('AutoHideTime', sgbAutoHide.Value * 1000);
             end;
   
             if ItemNamed['Modules'] = nil then
@@ -337,6 +357,8 @@ begin
               Add('FixedWidthEnabled', cbFixedWidth.Checked);
               Add('ShowMiniThrobbers', FBarItem.MiniThrobbers);
               Add('AlwaysOnTop', FBarItem.AlwaysOnTop);
+              Add('AutoHide', chkAutoHide.Checked);
+              Add('AutoHideTime', sgbAutoHide.Value * 1000);
             end;
           end;
           SaveXMLToSharedFile(XML,dir + inttostr(copyId) + '\Bar.xml',True);
@@ -450,6 +472,14 @@ begin
 
   if not (FUpdating) then
     FPluginHost.Editing := true;  
+end;
+
+procedure TfrmEditwnd.chkAutoHideClick(Sender: TObject);
+begin
+  sgbAutoHide.Enabled := chkAutoHide.Checked;
+
+  if not (FUpdating) then
+    FPluginHost.Editing := true;
 end;
 
 procedure TfrmEditwnd.ClearMonList;
