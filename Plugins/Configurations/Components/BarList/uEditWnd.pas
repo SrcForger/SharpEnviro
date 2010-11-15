@@ -67,7 +67,7 @@ type
     errorinc: TJvErrorIndicator;
     pilError: TPngImageList;
     valBarName: TJvCustomValidator;
-    edName: TLabeledEdit;
+    edName: TEdit;
     cobo_monitor: TComboBox;
     cbBasedOn: TComboBox;
     cobo_valign: TComboBox;

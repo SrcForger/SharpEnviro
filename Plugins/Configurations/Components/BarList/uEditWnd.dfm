@@ -153,15 +153,11 @@ object frmEditwnd: TfrmEditwnd
     OnChangeValue = sgbFixedWidthChangeValue
     BackgroundColor = clWindow
   end
-  object edName: TLabeledEdit
+  object edName: TEdit
     Left = 76
     Top = 8
     Width = 137
     Height = 21
-    EditLabel.Width = 3
-    EditLabel.Height = 13
-    LabelPosition = lpLeft
-    LabelSpacing = 6
     TabOrder = 0
     OnKeyPress = edThemeNameKeyPress
   end
