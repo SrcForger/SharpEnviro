@@ -1166,7 +1166,7 @@ begin
     GetControlByHandle(SCM.PluginWndHandle).Width := pnlPlugin.Width;
   end;
 
-  if SCM.EditWndHandle <> 0 then
+  if (SCM.EditWndHandle <> 0) and (IsWindow(SCM.EditWndHandle))then
   begin
     pnlEditContainer.Minimized := False;
     pnlEditPluginContainer.Visible := True;
