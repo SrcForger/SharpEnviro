@@ -146,6 +146,8 @@ begin
           begin
             pnlBarSpace.Width := Self.Width;
             pnlBarSpace.Height := Self.Height;
+            Label1.Width := Self.Width;
+            Label1.Height := Self.Height;
             pnlBarSpace.Show;
             Exit;
           end;
@@ -161,6 +163,9 @@ begin
           // Build list
           for n := 0 to frmListWnd.lbBarList.Count - 1 do
           begin
+            if not Assigned(frmListWnd.lbBarList.Item[n].Data) then
+              continue;
+              
             tmpBar := TBarItem(frmListWnd.lbBarList.Item[n].Data);
             cbBasedOn.Items.AddObject(tmpBar.Name, tmpBar);
           end;

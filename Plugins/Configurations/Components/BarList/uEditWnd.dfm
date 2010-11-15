@@ -202,6 +202,7 @@ object frmEditwnd: TfrmEditwnd
       Width = 0
       Height = 26
       Align = alTop
+      AutoSize = False
       Caption = 
         'Reduce the size of already existing bars or disable another Shar' +
         'pBar to free some screen space. There is no space left to create' +

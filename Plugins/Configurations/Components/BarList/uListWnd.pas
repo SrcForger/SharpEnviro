@@ -66,27 +66,6 @@ type
   end;
 
 type
-  TBarItem = class
-    Name: string;
-    BarID: integer;
-    Monitor: integer;
-    PMonitor: boolean;
-    HPos: integer;
-    VPos: integer;
-    AutoStart: boolean;
-    ModuleCount: Integer;
-    Modules: string;
-    FixedWidthEnabled: boolean;
-    FixedWidth: integer;
-    MiniThrobbers: boolean;
-    DisableHideBar: boolean;
-    ShowThrobber: boolean;
-    StartHidden: boolean;
-    AlwaysOnTop: boolean;
-    AutoHide: Boolean;
-    AutoHideTime: integer;
-  end;
-
   TfrmListWnd = class(TForm)
     lbBarList: TSharpEListBoxEx;
     tmrUpdate: TTimer;

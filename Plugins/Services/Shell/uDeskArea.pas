@@ -28,10 +28,11 @@ unit uDeskArea;
 interface
 
 uses Windows, Messages, Math, Classes, ShellApi, SysUtils,
-     UxTheme, JclSimpleXml,
-     SharpApi,
+     UxTheme, JclSimpleXml, JclStrings,
+     SharpApi, SharpTypes,
      MonitorList, 
-     uTypes, uTray;
+     uTypes, uTray,
+     uSystemFuncs;
 
 type
   TDeskAreaManager = class
@@ -60,6 +61,50 @@ var
 implementation
 
 uses uWindows;
+
+function GetBarAutoHide(Index : integer): boolean;
+var
+  ha : THandleArray;
+  Text : String;
+  BarID : integer;
+  xml : TJclSimpleXml;
+
+  function ExtractBarID(WndName: string): String;
+  var
+    s: string;
+    n: Integer;
+  begin
+    s := WndName;
+    n := JclStrings.StrLastPos('_', s);
+    s := Copy(s, n + 1, length(s));
+    result := s;
+  end;
+begin
+  Result := False;
+
+  Index := abs(Index);
+  ha := FindAllWindows('TSharpBarMainForm');
+  if Index <= High(ha) then
+  begin
+    SetLength(Text, 255);
+    SetLength(Text, GetWindowText(ha[Index], PChar(Text), Length(Text)));
+    SharpApi.SendDebugMessage('Shell', ExtractBarID(Text), 0);
+    TryStrToInt(ExtractBarID(Text), BarID);
+
+    xml := TJclSimpleXml.Create;
+    try
+      xml.LoadFromFile(GetSharpeUserSettingsPath + 'SharpBar\Bars\' + IntToStr(BarID) + '\Bar.xml');
+      if xml.Root.Items.ItemNamed['Settings'] <> nil then
+        with xml.Root.Items.ItemNamed['Settings'].Items do
+        begin
+          Result := BoolValue('AutoHide', False);
+        end;
+    finally
+      xml.Free;
+    end;
+  end;
+  setlength(ha,0);
+end;
 
 function PointInRect(P : TPoint; Rect : TRect) : boolean;
 begin
@@ -105,7 +150,7 @@ end;
 
 procedure TDeskAreaManager.SetDeskArea;
 var
-  n,i,k : integer;
+  n,i : integer;
   BR : array of TBarRect;
   Area : TRect;
   am : boolean;
@@ -114,6 +159,7 @@ var
   ABItem : TAppBarItem;
   r : Cardinal;
   MonCount : integer;
+  b : boolean;
 begin
   setlength(BR,0);
   for n := 0 to SharpApi.GetSharpBarCount - 1 do
@@ -147,7 +193,8 @@ begin
     begin
       for i := 0 to High(BR) do
       begin
-        if IsWindowVisible(BR[i].wnd) then
+        b := GetBarAutoHide(i);
+        if (IsWindowVisible(BR[i].wnd)) and (not b) then
            if PointInRect(Point(BR[i].R.Left + (BR[i].R.Right - BR[i].R.Left) div 2,
                                 BR[i].R.Top + (BR[i].R.Bottom - BR[i].R.Top) div 2),
                           MonList.Monitors[n].BoundsRect) then
@@ -194,15 +241,12 @@ begin
       end;
     end;
 
-    k := 0;
     if (Area.Left <> MonList.Monitors[n].WorkareaRect.Left) or
        (Area.Right <> MonList.Monitors[n].WorkareaRect.Right) or
        (Area.Top <> MonList.Monitors[n].WorkareaRect.Top) or
        (Area.Bottom <> MonList.Monitors[n].WorkareaRect.Bottom) then
     begin
-      SystemParametersInfo(SPI_SETWORKAREA, k, @Area, SPIF_UPDATEINIFILE);
-  //      SharpEBroadCast(WM_SETTINGCHANGE,SPI_SETWORKAREA, 0)
-  //      SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, SPI_SETWORKAREA, 0);
+      SystemParametersInfo(SPI_SETWORKAREA, 1, @Area, SPIF_UPDATEINIFILE);
       SendMessageTimeOut(HWND_BROADCAST, WM_SETTINGCHANGE, SPI_SETWORKAREA, 0,SMTO_ABORTIFHUNG,20,r);
     end
   end;
