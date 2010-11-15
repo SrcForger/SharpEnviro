@@ -88,8 +88,12 @@ begin
   begin
     SetLength(Text, 255);
     SetLength(Text, GetWindowText(ha[Index], PChar(Text), Length(Text)));
-    SharpApi.SendDebugMessage('Shell', ExtractBarID(Text), 0);
-    TryStrToInt(ExtractBarID(Text), BarID);
+
+    if not TryStrToInt(ExtractBarID(Text), BarID) then
+      exit;
+
+    if not FileExists(GetSharpeUserSettingsPath + 'SharpBar\Bars\' + IntToStr(BarID) + '\Bar.xml') then
+      exit;
 
     xml := TJclSimpleXml.Create;
     try
