@@ -107,9 +107,10 @@ type
     function BitmapToCursor(Bitmap: TBitmap; HotSpot: TPoint): HCursor;
     function Bitmap32ToCursor(Bitmap: TBitmap32;HotSpot: TPoint): HCursor;
 
-    procedure CursorOnTimer(Sender: TObject);
+    procedure AnimOnTimer(Sender: TObject);
+    
   public
-    UpdTimer: TTimer;
+    AnimTimer: TTimer;
     CurrentCursor: integer;
 
     FCursorInfo: TCursorInfo;
@@ -191,8 +192,8 @@ begin
   FIsValid := false;
   FHasAlpha := false;
 
-  FBitmap := TBitmap32.Create();
-  FCurBitmap := TBitmap32.Create();
+  FBitmap := TBitmap32.Create;
+  FCurBitmap := TBitmap32.Create;
   FhCursor := 0;
 
   FCurFrame := 0;
@@ -211,17 +212,17 @@ end;
 
 procedure TCursor.ReplaceColors(clist : Array of integer);
 begin
-  if FReplaceColor then
-  begin
-    // Replace colors & alpha
-    if FHasAlpha <> true then
-      ReplaceColor32(FBitmap, color32(0,0,0,255), color32(0,0,0,0));
+  if not FReplaceColor then
+    exit;
 
-    ReplaceColor32(FBitmap, color32(255,0,0,255), color32(GetRValue(clist[0]),GetGValue(clist[0]),GetBValue(clist[0]),255));
-    ReplaceColor32(FBitmap, color32(0,0,255,255), color32(GetRValue(clist[1]),GetGValue(clist[1]),GetBValue(clist[1]),255));
-    ReplaceColor32(FBitmap, color32(0,255,0,255), color32(GetRValue(clist[2]),GetGValue(clist[2]),GetBValue(clist[2]),255));
-    ReplaceColor32(FBitmap, color32(255,255,0,255), color32(GetRValue(clist[3]),GetGValue(clist[3]),GetBValue(clist[3]),255));
-  end;
+  // Replace colors & alpha
+  if FHasAlpha <> true then
+    ReplaceColor32(FBitmap, color32(0,0,0,255), color32(0,0,0,0));
+
+  ReplaceColor32(FBitmap, color32(255,0,0,255), color32(GetRValue(clist[0]),GetGValue(clist[0]),GetBValue(clist[0]),255));
+  ReplaceColor32(FBitmap, color32(0,0,255,255), color32(GetRValue(clist[1]),GetGValue(clist[1]),GetBValue(clist[1]),255));
+  ReplaceColor32(FBitmap, color32(0,255,0,255), color32(GetRValue(clist[2]),GetGValue(clist[2]),GetBValue(clist[2]),255));
+  ReplaceColor32(FBitmap, color32(255,255,0,255), color32(GetRValue(clist[3]),GetGValue(clist[3]),GetBValue(clist[3]),255));
 end;
 
 function TCursor.Load(path: string; Settings: TCursorsSettings): boolean;
@@ -235,10 +236,7 @@ begin
   try
     // Check if the file is in cursor format (.ani or .cur)
     FhCursor := LoadCursorFromFile(PAnsiChar(path));
-    if FhCursor <> 0 then
-    begin
-      FIsValid := true;
-    end else
+    if FhCursor = 0 then
     begin
       // convert to scheme colors
       setlength(clist,length(Settings.Colors));
@@ -252,8 +250,8 @@ begin
         // the new transparent color...
         if clist[n] = 0 then
           clist[n] := 1
-          else if clist[n] = clFuchsia then
-            clist[n] := 0;
+        else if clist[n] = clFuchsia then
+          clist[n] := 0;
       end;
 
       // Assign Bitmaps
@@ -262,7 +260,9 @@ begin
       try
         if CompareText(ExtractFileExt(path),'.bmp') = 0 then
           FBitmap.LoadFromFile(path)
-        else LoadBitmap32FromPng(FBitmap, path, FHasAlpha);
+        else
+          LoadBitmap32FromPng(FBitmap, path, FHasAlpha);
+          
         ReplaceColors(clist);
       except
         FIsValid := false;
@@ -271,7 +271,8 @@ begin
       setlength(clist,0);
 
       Result := True;
-    end;
+    end else
+      FIsValid := true;
 
   except
     on E: Exception do
@@ -282,7 +283,7 @@ begin
   end;
 end;
 
-function TCursor.GetBitmap(): TBitmap32;
+function TCursor.GetBitmap: TBitmap32;
 var
   sRect: Windows.TRect;
 begin
@@ -355,7 +356,7 @@ begin
   end;
 end;
 
-procedure TCursorsManager.CursorOnTimer(Sender: TObject);
+procedure TCursorsManager.AnimOnTimer(Sender: TObject);
 var
   i: integer;
 begin
@@ -376,7 +377,7 @@ begin
       Debug('Error In OnTimer function, stopping the timer. Please restart the Cursor service.', DMT_ERROR);
       Debug(E.Message, DMT_ERROR);
 
-      UpdTimer.Enabled := false;
+      AnimTimer.Enabled := false;
     end;
   end;
 end;
@@ -417,9 +418,9 @@ constructor TCursorsManager.Create;
 begin
   inherited Create;
 
-  UpdTimer := TTimer.Create(nil);
-  UpdTimer.OnTimer := CursorOnTimer;
-  UpdTimer.Enabled := False;
+  AnimTimer := TTimer.Create(nil);
+  AnimTimer.OnTimer := AnimOnTimer;
+  AnimTimer.Enabled := False;
 
   FCursorInfo := TCursorInfo.Create;
   SetLength(FCursorInfo.Cursors, 0);
@@ -436,7 +437,7 @@ destructor TCursorsManager.Destroy;
 var
   i: integer;
 begin
-  UpdTimer.Enabled := false;
+  AnimTimer.Free;
 
   for i := Low(FCursorInfo.Cursors) to High(FCursorInfo.Cursors) do
     FCursorInfo.Cursors[i].Free;
@@ -478,7 +479,7 @@ var
   I, C : integer;
   IName : string;
 begin
-  UpdTimer.Enabled := false;
+  AnimTimer.Enabled := false;
 
   XML := TJvSimpleXML.Create(nil);
 
@@ -514,10 +515,11 @@ begin
                         FCursorInfo.Author := Value('Author','');
                         FCursorInfo.OtherInfo := Value('Info','');
                       end;
-					if ItemNamed['Animation'] <> nil then
+
+					          if ItemNamed['Animation'] <> nil then
                       with ItemNamed['Animation'].Items do
                       begin
-                        UpdTimer.Interval := IntValue('Interval', 1000);
+                        AnimTimer.Interval := IntValue('Interval', 1000);
                       end;
 	
                    C := 0;
@@ -571,7 +573,7 @@ begin
                                     FCursorInfo.Cursors[C].Point := Value('Point', '');
                                     FCursorInfo.Cursors[C].NumFrames := IntValue('NumFrames', 1);
                                     FCursorInfo.Cursors[C].CType := GetCursorID(IName);
-                                    UpdTimer.Enabled := FCursorInfo.Cursors[C].Load(FCursorInfo.Path + Value('File', ''), FCursorsSettings);
+                                    AnimTimer.Enabled := FCursorInfo.Cursors[C].Load(FCursorInfo.Path + Value('File', ''), FCursorsSettings);
 
                                     C := C + 1;
                                   end;

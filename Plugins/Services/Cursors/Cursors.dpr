@@ -67,27 +67,17 @@ begin
 end;
 
 function SCMsg(msg: string): integer;
-var
-  i : integer;
-  s : string;
 begin
   result := 0;
-  SharpApi.SendDebugMessage('Cursors','Received message : '+msg,0);
-  i := length('Load Cursor:');
-  if (LeftStr(msg,i) = 'Load Cursor:') then
+
+  if IsStarted then
   begin
-    if IsStarted then
+    if msg = '_reload' then
     begin
-      try
-        s := RightStr(msg,length(msg)-i);
-        SharpApi.SendDebugMessage('Cursors','Loading Cursor with ID '+s+ ' by message' ,0);
-        CursorsManager.FCursorsSettings.CurrentSkin := s;
-        CursorsManager.FCursorsSettings.Save;
-        CursorsManager.UpdateCursorInfo;
-        CursorsManager.ApplySkin;
-      except
-      end;
-    end;
+      CursorsManager.UpdateCursorInfo;
+      CursorsManager.ApplySkin;
+    end else
+      SharpApi.SendDebugMessage('Cursors','Received unhandled message : ' + msg,0);
   end;
 end;
 
