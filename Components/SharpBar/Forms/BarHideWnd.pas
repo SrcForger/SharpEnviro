@@ -4,20 +4,29 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, MonitorList, uSystemFuncs;
+  Dialogs, MonitorList, uSystemFuncs, ExtCtrls;
 
 type
   TBarHideForm = class(TForm)
+    curPosTimer: TTimer;
     procedure FormMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure FormCreate(Sender: TObject);
-    procedure FormClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure CreateParams(var Params: TCreateParams); override;
+    procedure FormMouseEnter(Sender: TObject);
+    procedure FormMouseLeave(Sender: TObject);
+    procedure FormMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure curPosTimerTimer(Sender: TObject);
   private
+    FDragging : Boolean;
+
     procedure WMMove(var msg : TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
   public
     procedure UpdateStatus;
+    procedure ShowBar;
+    procedure HideBar;
   end;
 
 var
@@ -42,6 +51,41 @@ begin
 //  msg.WindowPos.y := self.Top;
 end;
 
+procedure TBarHideForm.curPosTimerTimer(Sender: TObject);
+var
+  pt : TPoint;
+begin
+  if (SharpBarMainForm.SharpEBar.DisableHideBar) or (SharpBarMainForm.SharpEBar.AutoHide) or (not FDragging) then
+  begin
+    curPosTimer.Enabled := False;
+    exit;
+  end;
+
+  GetCursorPos(pt);
+  if (pt.X >= Self.Left) and (pt.X < Self.Left + Self.Width) then
+  begin
+    // Top Bar
+    if SharpBarMainForm.SharpEBar.VertPos = vpTop then
+    begin
+      if pt.Y >= SharpBarMainForm.Height - 1 then
+      begin
+        Self.Cursor := crDefault;
+        ShowBar;
+        FDragging := False;
+      end;
+    // Bottom Bar
+    end else if SharpBarMainForm.SharpEBar.VertPos = vpBottom then
+    begin
+      if pt.Y < Monitor.Top + Monitor.Height - SharpBarMainForm.Height - 1 then
+      begin
+        Self.Cursor := crDefault;
+        ShowBar;
+        FDragging := False;
+      end;
+    end;
+  end;
+end;
+
 procedure TBarHideForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   if not Closing then
@@ -53,39 +97,34 @@ begin
      end;
 end;
 
-procedure TBarHideForm.FormClick(Sender: TObject);
+procedure TBarHideForm.ShowBar;
 begin
-  if Closing then exit;
-
-  if SharpBarMainForm.Visible then
+  SharpBarMainForm.Show;
+  SharpBarMainForm.Repaint;
+  ForceForegroundWindow(SharpBarMainForm.Handle);
+  SharpApi.ServiceMsg('Shell','DeskAreaUpdate');
+  if not (SharpBarMainForm.SharpEBar.SpecialHideForm) then
   begin
-    if not SharpBarMainForm.SharpEBar.DisableHideBar then
+    Close;
+    exit;
+  end;
+end;
+
+procedure TBarHideForm.HideBar;
+begin
+  if not SharpBarMainForm.SharpEBar.DisableHideBar then
+  begin
+    SharpBarMainForm.Hide;
+    // Display a Tooltop if bar was hidden for the first time
+    if SharpBarMainForm.FirstHide then
     begin
-      SharpBarMainForm.Hide;
-      // Display a Tooltop if bar was hidden for the first time
-      if SharpBarMainForm.FirstHide then
-      begin
-        SharpBarMainForm.ShowNotify('The SharpBar is now invisible because you left clicked the screen border. You can show the SharpBar again by left clicking the screen border another time.',True);
-        SharpBarMainForm.FirstHide := False;
-        SharpBarMainForm.SaveBarTooltipSettings;
-      end;
-      
-      SharpApi.ServiceMsg('Shell','DeskAreaUpdate');
+      SharpBarMainForm.ShowNotify('The SharpBar is now invisible because you left clicked the screen border. You can show the SharpBar again by left clicking the screen border another time.',True);
+      SharpBarMainForm.FirstHide := False;
+      SharpBarMainForm.SaveBarTooltipSettings;
     end;
-  end
-     else
-     begin
-       SharpBarMainForm.Show;
-       SharpBarMainForm.Repaint;
-       ForceForegroundWindow(SharpBarMainForm.Handle);
-       SharpApi.ServiceMsg('Shell','DeskAreaUpdate');
-       if not (SharpBarMainForm.SharpEBar.SpecialHideForm) then
-       begin
-         Close;
-         exit;
-       end;
-     end;
-  UpdateStatus;
+
+    SharpApi.ServiceMsg('Shell','DeskAreaUpdate');
+  end;
 end;
 
 procedure TBarHideForm.UpdateStatus;
@@ -95,13 +134,6 @@ begin
   if Closing then exit;
   if SharpBarMainForm.SharpEBar = nil then
     exit;
-  
-
-  {if SharpBarMainForm.SharpEBar.AlwaysOnTop then
-    SetWindowPos(Handle, HWND_TOPMOST, -1, -2, -3, -4,
-                 SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW)
-  else SetWindowPos(Handle, HWND_NOTOPMOST, -1, -2, -3, -4,
-                 SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);  }
 
   mon := MonList.MonitorFromWindow(SharpBarMainForm.Handle);
   if mon = nil then mon := MonList.MonitorFromPoint(Point(SharpBarMainForm.Left,SharpBarMainForm.Top));
@@ -137,6 +169,35 @@ begin
   height := 1;
   left := -4096;
   top := -4096;
+
+  FDragging := False;
+end;
+
+procedure TBarHideForm.FormMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if (SharpBarMainForm.SharpEBar.DisableHideBar) or (SharpBarMainForm.SharpEBar.AutoHide) then
+    exit;
+
+  if (Button = mbLeft) and (Self.Cursor = crSizeNS) and (not FDragging) then
+  begin
+    FDragging := True;
+    curPosTimer.Enabled := True;
+  end;
+end;
+
+procedure TBarHideForm.FormMouseEnter(Sender: TObject);
+begin
+  if (SharpBarMainForm.SharpEBar.DisableHideBar) or (SharpBarMainForm.SharpEBar.AutoHide) then
+    exit;
+
+  if not SharpBarMainForm.Visible then
+    Self.Cursor := crSizeNS;
+end;
+
+procedure TBarHideForm.FormMouseLeave(Sender: TObject);
+begin
+  Self.Cursor := crDefault;
 end;
 
 procedure TBarHideForm.FormMouseUp(Sender: TObject; Button: TMouseButton;

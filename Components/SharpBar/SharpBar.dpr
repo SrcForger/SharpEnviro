@@ -384,8 +384,11 @@ begin
        Mon := MonList.Monitors[n];
        if PointInRect(Point(x,y),Mon.BoundsRect) then
        begin
-         if y > Mon.Top + Mon.Height div 2 then SharpBarMainForm.SharpEBar.VertPos := vpBottom
-            else SharpBarMainForm.SharpEBar.VertPos := vpTop;
+         if y > Mon.Top + (Mon.Height div 2) then
+          SharpBarMainForm.SharpEBar.VertPos := vpBottom
+         else
+          SharpBarMainForm.SharpEBar.VertPos := vpTop;
+          
          if x < Mon.Left + Mon.Width div 2 - 25 then SharpBarMainForm.SharpEBar.HorizPos := hpLeft
          else if x > Mon.Left + Mon.Width div 2 + 25 then SharpBarMainForm.SharpEBar.HorizPos := hpRight
          else if x < Mon.Left + Mon.Width div 2 - 50 then SharpBarMainForm.SharpEBar.HorizPos := hpMiddle;

@@ -1,10 +1,10 @@
 object SharpBarMainForm: TSharpBarMainForm
   Left = 20
   Top = 20
-  BorderStyle = bsNone
+  BorderStyle = bsSingle
   Caption = 'SharpBarMainForm'
-  ClientHeight = 210
-  ClientWidth = 434
+  ClientHeight = 182
+  ClientWidth = 428
   Color = 13290186
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,6 +20,9 @@ object SharpBarMainForm: TSharpBarMainForm
   OnDestroy = FormDestroy
   OnHide = FormHide
   OnKeyDown = FormKeyDown
+  OnMouseDown = FormMouseDown
+  OnMouseLeave = FormMouseLeave
+  OnMouseMove = FormMouseMove
   OnMouseUp = FormMouseUp
   OnPaint = FormPaint
   OnResize = FormResize

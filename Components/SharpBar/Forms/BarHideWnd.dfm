@@ -16,10 +16,19 @@ object BarHideForm: TBarHideForm
   Font.Style = []
   FormStyle = fsStayOnTop
   OldCreateOrder = False
-  OnClick = FormClick
   OnClose = FormClose
   OnCreate = FormCreate
+  OnMouseDown = FormMouseDown
+  OnMouseEnter = FormMouseEnter
+  OnMouseLeave = FormMouseLeave
   OnMouseUp = FormMouseUp
   PixelsPerInch = 96
   TextHeight = 13
+  object curPosTimer: TTimer
+    Enabled = False
+    Interval = 1
+    OnTimer = curPosTimerTimer
+    Left = 400
+    Top = 16
+  end
 end
