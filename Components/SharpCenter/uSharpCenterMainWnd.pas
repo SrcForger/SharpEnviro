@@ -544,7 +544,7 @@ begin
                 currentItem := nil;
                 if (CompareText(Item[n].Name,'Image') = 0) then
                 begin
-                  s := HelpDir + Item[n].Value;
+                  s := SharpApi.GetCenterDirectory + 'Images\' + Item[n].Value;
                   if FileExists(s) then
                   begin
                     imgItem := TImage32.Create(pnlSbHelpContent);
