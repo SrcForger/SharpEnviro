@@ -13,7 +13,7 @@
     <Desktop> 
 	  <Section>Themes</Section>
       <File>DesktopTheme.dll</File>
-      <Icon>Desktop.png</Icon>
+      <Icon>DesktopTheme.png</Icon>
     </Desktop>
     <Cursor> 
 	  <Section>Themes</Section>

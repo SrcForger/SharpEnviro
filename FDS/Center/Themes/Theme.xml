@@ -6,7 +6,7 @@
     </Icons>
       <Desktop> 
       <File>DesktopTheme.dll</File>
-      <Icon>Desktop.png</Icon>
+      <Icon>DesktopTheme.png</Icon>
     </Desktop>
     <Curses> 
       <File>CursorList.dll</File>
