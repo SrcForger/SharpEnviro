@@ -503,29 +503,27 @@ var
   selectedIndex, i, bari: Integer;
   tmpBar: TBarItem;
 begin
-  lbBarList.Clear;
-  AddItemsToList(FBarList);
+  selectedIndex := -1;
 
   // Get selected item
   LockWindowUpdate(Self.Handle);
-  if lbBarList.ItemIndex >= lbBarList.HeaderIndex[0] then
-     selectedIndex := TBarItem(lbBarList.Item[lbBarList.ItemIndex+2].Data).BarID
-  else if lbBarList.ItemIndex >= lbBarList.HeaderIndex[1] then
-    selectedIndex := TBarItem(lbBarList.Item[lbBarList.ItemIndex+1].Data).BarID
-  else
-    selectedIndex := -1;
-    
-  {if (lbBarList.ItemIndex <> -1) then
-    selectedIndex := TBarItem(lbBarList.Item[lbBarList.ItemIndex].Data).BarID
-  else
-    selectedIndex := -1; }
+  if lbBarList.Count > 0 then
+  begin
+    if lbBarList.Item[lbBarList.ItemIndex].Header then
+      selectedIndex := TBarItem(lbBarList.Item[lbBarList.ItemIndex + 1].Data).BarID
+    else
+      selectedIndex := TBarItem(lbBarList.Item[lbBarList.ItemIndex].Data).BarID
+  end;
+
+  lbBarList.Clear;
+  AddItemsToList(FBarList);
 
   newItem := lbBarList.AddItem('Top Bars<hr>');
   newItem.Data := nil;
   newItem.Header := True;
 
   // Add Top bars
-  bari := 0;
+  bari := 1;
   for i := 0 to FBarList.Count - 1 do
   begin
     tmpBar := TBarItem(FBarList.Items[i]);
@@ -548,6 +546,8 @@ begin
   newItem := lbBarList.AddItem('Bottom Bars<hr>');
   newItem.Data := nil;
   newItem.Header := True;
+
+  bari := bari + 1;
 
   // Add Bottom bars
   for i := 0 to FBarList.Count - 1 do
