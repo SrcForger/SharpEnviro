@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpCenter>
+  <Sections>
+    <Hotkeys>
+      <File>HotkeyList.dll</File>
+      <Icon>HotkeyList.png</Icon>
+      <Help>Hotkeys.xml</Help>
+    </Hotkeys>
+  </Sections>
+</SharpCenter>

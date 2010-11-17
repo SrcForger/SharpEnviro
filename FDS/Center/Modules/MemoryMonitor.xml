@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpCenter>
+  <Sections>
+    <MemoryMonitor>
+      <File>MemoryMonitor.dll</File>
+      <Icon>MemoryMonitor.png</Icon>
+    </MemoryMonitor>
+  </Sections>
+</SharpCenter>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpCenter>
+  <Sections>
+    <DeskArea>
+      <File>DeskArea.dll</File>
+      <Icon>DeskArea.png</Icon>
+      <Help>DeskArea.xml</Help>
+    </DeskArea>
+  </Sections>
+</SharpCenter>

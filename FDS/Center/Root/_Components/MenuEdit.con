@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<SharpCenter>
-  <Sections>
-    <MenuEdit>
-      <Dll>_ComponentDlls\MenuEdit.dll</Dll>
-      <Icon>_ComponentDlls\MenuEdit.png</Icon>
-    </MenuEdit>
-  </Sections>
-</SharpCenter>

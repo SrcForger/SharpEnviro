@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<SharpCenter>
-  <Sections>
-    <BatteryMonitor>
-      <Dll>_ModuleDlls\BatteryMonitor.dll</Dll>
-      <Icon>_ModuleDlls\BatteryMonitor.png</Icon>
-    </BatteryMonitor>
-  </Sections>
-</SharpCenter>

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<SharpCenter>
-  <Sections>
-    <VWM>
-      <Dll>_Services\_ServiceDlls\VWM.dll</Dll>
-      <Icon>_Services\_ServiceDlls\VWMService.png</Icon>
-    </VWM>
-  </Sections>
-</SharpCenter>

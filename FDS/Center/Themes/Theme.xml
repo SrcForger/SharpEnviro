@@ -1,0 +1,36 @@
+<SharpCenter>
+  <Sections>
+    <Icons> 
+      <File>IconList.dll</File>
+      <Icon>IconList.png</Icon>
+    </Icons>
+      <Desktop> 
+      <File>DesktopTheme.dll</File>
+      <Icon>Desktop.png</Icon>
+    </Desktop>
+    <Curses> 
+      <File>CursorList.dll</File>
+      <Icon>Cursor.png</Icon>
+    </Curses>
+    <Skin> 
+      <File>SkinList.dll</File>
+      <Icon>ThemeSkinList.png</Icon>
+    </Skin>
+	<Glass> 
+      <File>Glass.dll</File>
+      <Icon>Glass.png</Icon>
+    </Glass>
+    <Scheme> 
+      <File>SchemeList.dll</File>
+      <Icon>Scheme.png</Icon>
+    </Scheme>
+    <Wallpaper> 
+      <File>Wallpaper.dll</File>
+	  <Icon>Wallpaper.png</Icon>
+    </Wallpaper>
+    <Font> 
+      <File>Font.dll</File>
+      <Icon>font.png</Icon>
+    </Font>
+  </Sections> 
+</SharpCenter>

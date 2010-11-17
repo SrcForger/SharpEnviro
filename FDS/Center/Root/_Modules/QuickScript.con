@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<SharpCenter>
-  <Sections>
-    <QuickScript>
-      <Dll>_ModuleDlls\QuickScript.dll</Dll>
-      <Icon>_ModuleDlls\QuickScript.png</Icon>
-    </QuickScript>
-  </Sections>
-</SharpCenter>

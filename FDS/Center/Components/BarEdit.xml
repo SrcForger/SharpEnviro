@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpCenter>
+  <Sections>
+    <ModuleManager>
+      <File>ModuleList.dll</File>
+      <Icon>ModuleAdd.png</Icon>
+    </ModuleManager>
+  </Sections>
+</SharpCenter>

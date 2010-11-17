@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpCenter>
+  <Sections>
+    <Notes>
+      <File>ShowDesktop.dll</File>
+      <Icon>ShowDesktop.png</Icon>
+      <Help>ShowDesktop.xml</Help>
+    </Notes>
+  </Sections>
+</SharpCenter>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpCenter>
+  <Sections>
+    <ButtonBarList>
+      <File>ButtonBarList.dll</File>
+      <Icon>ButtonBar.png</Icon>
+    </ButtonBarList>
+   <ButtonBarOptions>
+      <File>ButtonBarOptions.dll</File>
+    </ButtonBarOptions>
+  </Sections>
+</SharpCenter>

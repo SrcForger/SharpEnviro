@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpCenter>
+  <Sections>
+    <SharpDesk>
+	  <Section>Components</Section>
+      <File>DesktopSettings.dll</File>
+      <Help>DesktopSettings.xml</Help>
+      <Icon>desktopEdit.png</Icon>
+    </SharpDesk>
+    <SharpDeskArea>
+	  <Section>Services</Section>
+      <File>DeskArea.dll</File>
+      <Icon>DeskArea.png</Icon>
+      <Help>DeskArea.xml</Help>
+    </SharpDeskArea>
+  </Sections>
+</SharpCenter>

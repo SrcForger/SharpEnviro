@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpCenter>
+  <Sections>
+    <RecycleBin>
+      <File>RecycleBin.dll</File>
+      <Icon>RecycleBin.png</Icon>
+    </RecycleBin>
+  </Sections>
+</SharpCenter>

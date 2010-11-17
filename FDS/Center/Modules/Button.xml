@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpCenter>
+  <Sections>
+    <ButtonModule>
+      <File>ButtonModule.dll</File>
+      <Icon>Button.png</Icon>
+    </ButtonModule>
+  </Sections>
+</SharpCenter>

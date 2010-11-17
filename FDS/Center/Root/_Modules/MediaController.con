@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<SharpCenter>
-  <Sections>
-    <MenuModule>
-      <Dll>_ModuleDlls\MediaController.dll</Dll>
-      <Icon>_ModuleDlls\MediaController.png</Icon>
-    </MenuModule>
-  </Sections>
-</SharpCenter>

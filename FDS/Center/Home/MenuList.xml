@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpCenter>
+  <Sections>
+    <MenuList>
+	  <Section>Components</Section>
+      <File>MenuList.dll</File>
+      <Icon>MenuEdit.png</Icon>
+    </MenuList>
+    <Options>
+	  <Section>Components</Section>
+      <File>MenuSettings.dll</File>
+      <Help>MenuSettings.xml</Help>
+      <Icon>Settings.png</Icon>
+      <Name>Menu Options</Name>
+    </Options>
+  </Sections>
+</SharpCenter>

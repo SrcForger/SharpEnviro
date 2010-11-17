@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<SharpCenter>
-  <Sections>
-    <Notes>
-      <Dll>_ModuleDlls\Notes.dll</Dll>
-      <Icon>_ModuleDlls\Notes.png</Icon>
-    </Notes>
-  </Sections>
-</SharpCenter>

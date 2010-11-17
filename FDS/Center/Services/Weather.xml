@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpCenter>
+  <Sections>
+    <Weather>
+      <File>Weather.dll</File>
+      <Icon>Weather.png</Icon>
+    </Weather>
+  </Sections>
+</SharpCenter>

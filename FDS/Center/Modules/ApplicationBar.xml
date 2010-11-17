@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpCenter>
+  <Sections>
+    <AppBarList>
+      <File>AppBarList.dll</File>
+      <Icon>ApplicationBar.png</Icon>
+    </AppBarList>
+    <AppBarOptions>
+      <File>AppBarOptions.dll</File>
+      <Icon>settings.png</Icon>
+    </AppBarOptions>
+  </Sections>
+</SharpCenter>

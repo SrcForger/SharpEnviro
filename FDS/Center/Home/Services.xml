@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpCenter>
+  <Sections>
+    <Services>
+	  <Section>Components</Section>
+      <File>ServiceList.dll</File>
+      <Icon>Services.png</Icon>
+    </Services>
+  </Sections>
+</SharpCenter>

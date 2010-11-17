@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpCenter>
+  <Sections>
+    <Weather>
+      <File>Weather.dll</File>
+      <Icon>Weather.png</Icon>
+    </Weather>
+    <WeatherList>
+	  <Section>Services</Section>
+      <File>Weather.dll</File>
+      <Icon>locations.png</Icon>
+      <Name>Locations</Name>
+    </WeatherList>
+	<WeatherIcons>
+	  <Section>Themes</Section>
+      <File>WeatherIcons.dll</File>
+      <Icon>ThemeSkinList.png</Icon>
+      <Name>Icon Set</Name>
+    </WeatherIcons>
+  </Sections>
+</SharpCenter>

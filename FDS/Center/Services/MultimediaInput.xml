@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpCenter>
+  <Sections>
+    <MultimediaInput>
+      <File>MultimediaInput.dll</File>
+      <Icon>MultimediaInput.png</Icon>
+    </MultimediaInput>
+    <MultimediaCommandList>
+      <File>MultimediaInputList.dll</File>
+      <Icon>MultimediaInputList.png</Icon>
+    </MultimediaCommandList>
+  </Sections>
+</SharpCenter>

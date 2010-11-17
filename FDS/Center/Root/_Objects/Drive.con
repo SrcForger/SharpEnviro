@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<SharpCenter>
-  <Sections>
-    <Link>
-      <Dll>_ObjectDlls\Drive.dll</Dll>
-      <Icon>_ObjectDlls\Drive.png</Icon>
-    </Link>
-  </Sections>
-</SharpCenter>

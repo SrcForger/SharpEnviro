@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<SharpCenter>
-  <Sections>
-    <Clock>
-      <Dll>_ModuleDlls\Clock.dll</Dll>
-      <Icon>_ModuleDlls\Clock.png</Icon>
-    </Clock>
-  </Sections>
-</SharpCenter>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpCenter>
+  <Sections>
+    <MiniScmd>
+      <File>MiniScmd.dll</File>
+      <Icon>MiniScmd.png</Icon>
+    </MiniScmd>
+	<Aliases>
+	  <Section>Services</Section>
+      <File>AliasList.dll</File>
+      <Icon>AliasList.png</Icon>
+    </Aliases>
+  </Sections>
+</SharpCenter>

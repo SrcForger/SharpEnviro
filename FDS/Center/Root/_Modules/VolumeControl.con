@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<SharpCenter>
-  <Sections>
-    <VolumeControl>
-      <Dll>_ModuleDlls\VolumeControl.dll</Dll>
-      <Icon>_ModuleDlls\VolumeControl.png</Icon>
-    </VolumeControl>
-  </Sections>
-</SharpCenter>

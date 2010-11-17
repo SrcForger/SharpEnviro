@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<SharpCenter>
-  <Sections>
-    <KeyboardLayout>
-      <Dll>_ModuleDlls\KeyboardLayout.dll</Dll>
-      <Icon>_ModuleDlls\KeyboardLayout.png</Icon>
-    </KeyboardLayout>
-  </Sections>
-</SharpCenter>

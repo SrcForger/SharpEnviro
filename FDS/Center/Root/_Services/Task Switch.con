@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<SharpCenter>
-  <Sections>
-    <TaskSwitchList>
-      <Dll>_ServiceDlls\TaskSwitchList.dll</Dll>
-	  <Icon>..\_Modules\_ModuleDlls\TaskBar.png</Icon>
-    </TaskSwitchList>
-  </Sections>
-</SharpCenter>

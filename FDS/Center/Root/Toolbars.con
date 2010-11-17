@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<SharpCenter>
-  <Sections>
-    <SharpBarList>
-      <Dll>_Components\_Componentdlls\BarList.dll</Dll>
-      <Icon>toolbarEdit.png</Icon>
-    </SharpBarList>
-  </Sections>
-</SharpCenter>

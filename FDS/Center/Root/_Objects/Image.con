@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<SharpCenter>
-  <Sections>
-    <Image>
-      <Dll>_ObjectDlls\Image.dll</Dll>
-      <Icon>_ObjectDlls\Image.png</Icon>
-    </Image>
-  </Sections>
-</SharpCenter>
