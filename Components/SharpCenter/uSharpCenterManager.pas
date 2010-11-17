@@ -1062,6 +1062,7 @@ begin
         if Assigned(FOnUpdateTheme) then
           FOnUpdateTheme(Self);
 
+        SCM.ActivePluginID := '';
         Result := True;
       end;
     end;
