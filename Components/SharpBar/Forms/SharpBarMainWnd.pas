@@ -1104,11 +1104,11 @@ begin
 end;
 
 procedure TSharpBarMainForm.Custom1Click(Sender: TObject);
-var
-  cfile: string;
 begin
-  cfile := SharpApi.GetCenterDirectory + 'Toolbars.con';
-  SharpCenterApi.CenterCommand(sccLoadSetting,PChar(cfile),'');
+  SharpCenterApi.CenterCommand(sccLoadSetting,
+    PChar('Home'),
+	  PChar('Toolbars'),
+	  '');
 end;
 
 procedure TSharpBarMainForm.LoadBarTooltipSettings;
@@ -1379,11 +1379,11 @@ begin
 end;
 
 procedure TSharpBarMainForm.BarManagment1Click(Sender: TObject);
-var
-  cfile: string;
 begin
-  cfile := SharpApi.GetCenterDirectory + 'Toolbars.con';
-  SharpCenterApi.CenterCommand(sccLoadSetting,PChar(cfile),'');
+  SharpCenterApi.CenterCommand(sccLoadSetting,
+    PChar('Home'),
+	  PChar('Toolbars'),
+	  '');
 end;
 
 procedure TSharpBarMainForm.Bottom1Click(Sender: TObject);
@@ -1550,7 +1550,7 @@ procedure TSharpBarMainForm.OnQuickAddModuleItemClick(Sender: TObject);
 var
   i: integer;
   tempModule: TModule;
-  s,cfile : string;
+  s : string;
 begin
   if not (Sender is TMenuItem) then
     exit;
@@ -1566,12 +1566,11 @@ begin
 
   s := ExtractFileName(tempModule.ModuleFile.FileName);
   setlength(s, length(s) - length(ExtractFileExt(s)));
-  cfile := SharpApi.GetCenterDirectory + '_Modules\' + s + '.con';
 
-  if FileExists(cfile) then
-    SharpCenterApi.CenterCommand(sccLoadSetting,
-      PChar(cfile),
-      PChar(inttostr(FBarID) + ':' + inttostr(tempModule.mInterface.ID)));
+ SharpCenterApi.CenterCommand(sccLoadSetting,
+    PChar('Modules'),
+	  PChar(s),
+    PChar(inttostr(FBarID) + ':' + inttostr(tempModule.mInterface.ID)));
 
 end;
 
@@ -1789,12 +1788,10 @@ begin
 end;
 
 procedure TSharpBarMainForm.PluginManager1Click(Sender: TObject);
-var
-  cfile: string;
 begin
-  cfile := SharpApi.GetCenterDirectory + '_Components\BarEdit.con';
   SharpCenterApi.CenterCommand(sccLoadSetting,
-    PChar(cfile),
+    PChar('Components'),
+	  PChar('BarEdit'),
     PChar(inttostr(FBarID)));
 end;
 
@@ -2182,7 +2179,6 @@ var
   mThrobber: TSharpEMiniThrobber;
   tempModule: TModule;
   s: string;
-  cfile: string;
 begin
   mThrobber := TSharpEMiniThrobber(ThrobberPopUp.popupcomponent);
   if mThrobber = nil then
@@ -2193,12 +2189,11 @@ begin
 
   s := ExtractFileName(tempModule.ModuleFile.FileName);
   setlength(s, length(s) - length(ExtractFileExt(s)));
-  cfile := SharpApi.GetCenterDirectory + '_Modules\' + s + '.con';
 
-  if FileExists(cfile) then
-    SharpCenterApi.CenterCommand(sccLoadSetting,
-      PChar(cfile),
-      PChar(inttostr(FBarID) + ':' + inttostr(tempModule.mInterface.ID)));
+  SharpCenterApi.CenterCommand(sccLoadSetting,
+    PChar('Modules'),
+	  PChar(s),
+    PChar(inttostr(FBarID) + ':' + inttostr(tempModule.mInterface.ID)));
 end;
 
 procedure TSharpBarMainForm.Delete1Click(Sender: TObject);

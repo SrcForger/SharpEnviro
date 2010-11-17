@@ -291,6 +291,8 @@ function GetSharpeGlobalSettingsPath: String; external 'SharpAPI.dll' name 'GetS
 function GetCenterDirectory: String; external 'SharpAPI.dll' name 'GetCenterDirectory';
 function UseAppDataSettingsDir: Boolean; external 'SharpApi.dll' name 'UseAppDataSettingsDir';
 
+function GetCenterConfigExt: String; external 'SharpAPI.dll' name 'GetCenterConfigExt';
+
 function ServiceMsg(ServiceName, Command: String): hresult; external 'SharpAPI.dll' name 'ServiceMsg';
 function ServiceStart(ServiceName: String): hresult; external 'SharpAPI.dll' name 'ServiceStart';
 function ServiceStop(ServiceName: String): hresult; external 'SharpAPI.dll' name 'ServiceStop';

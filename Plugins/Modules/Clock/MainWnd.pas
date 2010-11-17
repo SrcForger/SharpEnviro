@@ -270,14 +270,10 @@ begin
 end;
 
 procedure TMainForm.Configure1Click(Sender: TObject);
-var
-  cfile : string;
 begin
-  cfile := SharpApi.GetCenterDirectory + '_Modules\Clock.con';
-
-  if FileExists(cfile) then
-    SharpCenterApi.CenterCommand(sccLoadSetting,
-      PChar(cfile),
+  SharpCenterApi.CenterCommand(sccLoadSetting,
+      PChar('Modules'),
+	  PChar('Clock'),
       PChar(inttostr(mInterface.BarInterface.BarID) + ':' + inttostr(mInterface.ID)));
 end;
 

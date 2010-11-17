@@ -39,7 +39,6 @@ type
   TEditTabID = (tidAdd, tidEdit, tidDelete);
 
 const
-  SCE_CON_EXT = '.con';
   SCE_ICON_FOLDER = 1;
   SCE_ICON_ITEM = 0;
 
@@ -307,7 +306,7 @@ begin
 
     ActivePluginID := FUnloadCommand.PluginID;
     ActiveHelpFile := FUnloadCommand.HelpFile;    
-    if CompareText(ExtractFileExt(FUnloadCommand.Param), '.con') = 0 then
+    if CompareText(ExtractFileExt(FUnloadCommand.Param), SharpApi.GetCenterConfigExt) = 0 then
     begin
       BuildNavFromFile(FUnloadCommand.Param);
     end else
@@ -357,11 +356,12 @@ var
   i: Integer;
   pngfile: string;
   sName, sHelp, sStatus, sTitle, sDescription, sDll, sIcon: string;
-  sPath: string;
+  sSection: string;
   sFirstNavFile, sFirstPluginID, sFirstHelpFile: string;
   newItem: TSharpCenterManagerItem;
 begin
-  if not fileexists(AFile) then exit;
+  if not fileexists(AFile) then
+    exit;
 
   LockWindowUpdate(Application.MainForm.Handle);
 
@@ -386,24 +386,27 @@ begin
           newItem := TSharpCenterManagerItem.Create;
           newItem.ItemType := itmDll;
 
-          sPath := ExtractFilePath(AFile);
+          sSection := ExtractFilePath(AFile);
+          if Items.Item[i].Items.ItemNamed['Section'] <> nil then
+            sSection := SharpApi.GetCenterDirectory + Items.Item[i].Items.ItemNamed['Section'].Value + '\';
+
           sDll := '';
-          if Items.Item[i].Items.ItemNamed['Dll'] <> nil then
-            sDll := Items.Item[i].Items.ItemNamed['Dll'].Value;
+          if Items.Item[i].Items.ItemNamed['File'] <> nil then
+            sDll := sSection + 'DLL\' + Items.Item[i].Items.ItemNamed['File'].Value;
 
           sIcon := '';
           if Items.Item[i].Items.ItemNamed['Icon'] <> nil then
-            sIcon := Items.Item[i].Items.ItemNamed['Icon'].Value;
+            sIcon := SharpApi.GetCenterDirectory + 'Icons\' + Items.Item[i].Items.ItemNamed['Icon'].Value;
 
           sHelp := '';
           if Items.Item[i].Items.ItemNamed['Help'] <> nil then
-            sHelp := sPath + Items.Item[i].Items.ItemNamed['Help'].Value;
+            sHelp := sSection + 'Help\' + Items.Item[i].Items.ItemNamed['Help'].Value;
 
           sName := '';
           sStatus := '';
           sTitle := '';
           sDescription := '';
-          GetItemText(sPath + sDll, SCM.ActivePluginID, sName, sStatus, sDescription);
+          GetItemText(sDll, SCM.ActivePluginID, sName, sStatus, sDescription);
 
           if Items.Item[i].Items.ItemNamed['Name'] <> nil then
             sName := Items.Item[i].Items.ItemNamed['Name'].Value;
@@ -413,16 +416,17 @@ begin
           else
             newItem.Caption := sName;
 
-          newItem.Filename := sPath + sDll;
+          newItem.Filename := sDll;
           newItem.HelpFile := sHelp;
           newItem.PluginID := SCM.ActivePluginID;
           newItem.Description := sDescription;
           NewItem.Status := sStatus;
 
-          pngfile := sPath + sIcon;
+          pngfile := sIcon;
           SCM.AssignIconIndex(pngfile, newItem);
 
-          if Assigned(FOnAddNavItem) then begin
+          if Assigned(FOnAddNavItem) then
+          begin
             FOnAddNavItem(newItem, newItem.IconIndex);
           end;
 
@@ -467,6 +471,7 @@ var
   sStatus: string;
   sTitle: string;
   sDescription: string;
+  sSection: string;
 begin
   // Unload the dll first
   Unload;
@@ -483,11 +488,8 @@ begin
   try
     APath := PathAddSeparator(APath);
 
-    if FindFirst(APath + '*.*', SysUtils.faAnyFile, SRec) = 0 then
+    if FindFirst(APath + '*' + SharpApi.GetCenterConfigExt, SysUtils.faAnyFile, SRec) = 0 then
       repeat
-        if (sRec.Name = '.') or (sRec.Name = '..') then
-          Continue;
-
         sName        := '';
         sIcon        := '';
         sPng         := '';
@@ -497,26 +499,27 @@ begin
         sStatus      := '';
         sTitle       := '';
         sDescription := '';
+        sSection := APath;
 
-        if CompareText(ExtractFileExt(sRec.Name), SCE_CON_EXT) = 0 then
-        begin
-
-          xml := TJvSimpleXML.Create(nil);
-          try
+        xml := TJvSimpleXML.Create(nil);
+        try
             Xml.LoadFromFile(APath + sRec.Name);
 
             if xml.Root.Items.ItemNamed['Default'] <> nil then
             begin
               with xml.Root.Items.ItemNamed['Default'] do
               begin
-                if Items.ItemNamed['Dll'] <> nil then
-                  sDll := Items.ItemNamed['Dll'].Value;
+                if Items.ItemNamed['Section'] <> nil then
+                  sSection := SharpApi.GetCenterDirectory + Items.ItemNamed['Section'].Value + '\';
+
+                if Items.ItemNamed['File'] <> nil then
+                  sDll := sSection + 'DLL\' + Items.ItemNamed['File'].Value;
 
                 if Items.ItemNamed['Icon'] <> nil then
-                  sIcon := APath + Items.ItemNamed['Icon'].Value;
+                  sIcon := SharpApi.GetCenterDirectory + 'Icons\' + Items.ItemNamed['Icon'].Value;
 
                 if Items.ItemNamed['Help'] <> nil then
-                  sHelp := sPath + Items.ItemNamed['Help'].Value;
+                  sHelp := sSection + 'Help\' + Items.ItemNamed['Help'].Value;
 
                 if Items.ItemNamed['Name'] <> nil then
                   sName := Items.ItemNamed['Name'].Value;                  
@@ -527,23 +530,26 @@ begin
               if xml.Root.Items.ItemNamed['Sections'] <> nil then
                 if xml.Root.Items.ItemNamed['Sections'].items.Item[0] <> nil then
                 begin
-                  sDll := xml.Root.Items.ItemNamed['Sections'].items.Item[0].Items.ItemNamed['Dll'].Value;
+                  if xml.Root.Items.ItemNamed['Sections'].Items.Item[0].Items.ItemNamed['Section'] <> nil then
+                    sSection := SharpApi.GetCenterDirectory + xml.Root.Items.ItemNamed['Sections'].Items.Item[0].Items.ItemNamed['Section'].Value + '\';
+
+                  if xml.Root.Items.ItemNamed['Sections'].items.Item[0].Items.ItemNamed['File'] <> nil then
+                    sDll := sSection + 'DLL\' + xml.Root.Items.ItemNamed['Sections'].items.Item[0].Items.ItemNamed['File'].Value;
                   if xml.Root.Items.ItemNamed['Sections'].Items.Item[0].Items.ItemNamed['Help'] <> nil then
-                    sHelp := sPath + xml.Root.Items.ItemNamed['Sections'].Items.Item[0].Items.ItemNamed['Help'].Value;
+                    sHelp := sSection + 'Help\' + xml.Root.Items.ItemNamed['Sections'].Items.Item[0].Items.ItemNamed['Help'].Value;
                 end;
 
-              //sName := PathRemoveExtension(sRec.Name);
-              sIcon := APath + PathRemoveExtension(sRec.Name) + '.png';
+              sIcon := SharpApi.GetCenterDirectory + 'Icons\' + PathRemoveExtension(sRec.Name) + '.png';
             end;
 
             sPath := ExtractFilePath(APath + sRec.Name);
-            if FileExists(sPath + sDll) then
+            if FileExists(sDll) then
             begin
               sName := '';
               sStatus := '';
               sTitle := '';
               sDescription := '';
-              GetItemText(sPath + sDll, SCM.ActivePluginID, sName, sStatus, sDescription);
+              GetItemText(sDll, SCM.ActivePluginID, sName, sStatus, sDescription);
             end;
           finally
             Xml.Free;
@@ -562,24 +568,6 @@ begin
             FOnAddNavItem(newItem, -1);
             Inc(iCount);
           end;
-        end
-        else if IsDirectory(APath + sRec.Name) then
-        begin
-          if Copy(sRec.Name, 0, 1) <> '_' then
-          begin
-            newItem := TSharpCenterManagerItem.Create;
-            newItem.Caption := PathRemoveExtension(sRec.Name);
-            newItem.Path := APath + sRec.Name;
-            newItem.ItemType := itmFolder;
-            sPng := APath + PathRemoveExtension(sRec.Name) + '.png';
-            AssignIconIndex(sPng, newItem);
-
-            if Assigned(FOnAddNavItem) then begin
-              FOnAddNavItem(newItem, -1);
-              Inc(iCount);
-            end;
-          end;
-        end;
       until FindNext(SRec) <> 0;
   finally
     FindClose(sRec);
@@ -605,10 +593,11 @@ begin
   end;
 end;
 
-function TSharpCenterManager.ExecuteCommand(ACommand: TSCC_COMMAND_ENUM; AParam,
+function TSharpCenterManager.ExecuteCommand(ACommand: TSCC_COMMAND_ENUM; APAram,
   APluginID, AHelpFile: string; APluginTabIndex: Integer): Boolean;
 begin
   Result := True;
+
   if ACommand = sccChangeFolder then
   begin
     UnloadDllCommand(sccChangeFolder, AParam, APluginID, AHelpFile, APluginTabIndex);
@@ -656,33 +645,57 @@ procedure TSharpCenterManager.BuildNavFromCommandLine;
 var
   iSections: Integer;
   sDll: string;
-  strl: TStringList;
+  dirList, fileList: TStringList;
   xml: TJvSimpleXML;
   sConFile: string;
-  i: Integer;
+  i, a: Integer;
+  sDllDir : string;
 begin
-  strl := Tstringlist.Create;
+  
+  dirList := TStringList.Create;
   xml := TJvSimpleXML.Create(nil);
   sConFile := '';
   try
-    AdvBuildFileList(GetCenterDirectory + '*.con', faNormalFile, strl, amAny, [flRecursive, flFullNames], '', nil);
-    for i := 0 to Pred(strl.Count) do
-    begin
-      xml.LoadFromFile(strl[i]);
-      for iSections := 0 to Pred(xml.Root.Items[0].Items.Count) do
-      begin
-        sDll := ExtractFilePath(strl[0]) + xml.Root.Items[0].Items[iSections].Items.Value('Dll', '');
-        if CompareText(ExtractFileName(FUnloadCommand.Param), ExtractFileName(sDll)) = 0 then
+    AdvBuildFileList(GetCenterDirectory + '*', faDirectory, dirList, amAny, [], '', nil);
+
+    for a := 0 to Pred(dirList.Count) do
+    begin 
+      fileList := TStringlist.Create;
+    
+      try
+        AdvBuildFileList(GetCenterDirectory + dirList[a] + '\*' + SharpApi.GetCenterConfigExt, faNormalFile, fileList, amAny, [flFullNames], '', nil);
+        for i := 0 to Pred(fileList.Count) do
         begin
-          sConFile := strl[i];
-          break;
+          xml.LoadFromFile(fileList[i]);
+          for iSections := 0 to Pred(xml.Root.Items[0].Items.Count) do
+          begin
+            sDllDir := IncludeTrailingBackslash(SharpApi.GetCenterDirectory);
+
+            if Length(xml.Root.Items[0].Items[iSections].Items.Value('Section', '')) > 0 then
+              sDllDir := sDllDir + xml.Root.Items[0].Items[iSections].Items.Value('Section', '')
+            else
+              sDllDir := sDllDir + dirList[a] + '\';
+
+            sDll := sDllDir + xml.Root.Items[0].Items[iSections].Items.Value('File', '');
+            if CompareText(ExtractFileName(FUnloadCommand.Param), ExtractFileName(sDll)) = 0 then
+            begin
+              sConFile := fileList[i];
+              break;
+            end;
+          end;
+
+          if sConfile <> '' then
+            break;
         end;
+      finally
+        fileList.Free;
       end;
-      if sConfile <> '' then
+
+      if sConFile <> '' then
         break;
     end;
   finally
-    strl.Free;
+    dirList.Free;
     xml.Free;
   end;
 
@@ -721,7 +734,7 @@ begin
   FHistory := TSharpCenterHistoryList.Create(True);
 
   // Set the active root path
-  FRoot := GetCenterDirectory;
+  FRoot := GetCenterDirectory + 'Home\';
 
   // Get the plugin version
   SharpAPI.GetComponentMetaData( GetSharpeDirectory + 'SharpCore.exe', meta, priority, delay);
@@ -1016,7 +1029,7 @@ var
 begin
   Result := False;
   Xml := TJvSimpleXML.Create(nil);
-  sFile := GetCenterDirectory + '_home\home.dll';
+  sFile := GetCenterDirectory + 'Home\DLL\Home.dll';
   try
     if FileExists(sFile) then
     begin
@@ -1028,7 +1041,7 @@ begin
         FPlugin.PluginInterface.CanDestroy := false;
         FPluginHandle := FPlugin.PluginInterface.Open;
         FPluginHost.PluginOwner.ParentWindow := FPluginHandle;
-        FActiveHelpFile := GetCenterDirectory + '_home\home.xml';
+        FActiveHelpFile := GetCenterDirectory + 'Home\Help\Home.xml';
         if not FileExists(FActiveHelpFile) then
           FActiveHelpFile := '';
 

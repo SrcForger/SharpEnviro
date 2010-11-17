@@ -98,7 +98,7 @@ Type
 function BroadcastCenterMessage(wpar: wparam; lpar: lparam): boolean;
   external 'SharpCenterAPI.dll' name 'BroadcastCenterMessage';
 
-function CenterCommand(ACommand: TSCC_COMMAND_ENUM; AParam, APluginID :PChar): hresult;
+function CenterCommand(ACommand: TSCC_COMMAND_ENUM; ASection, AName, APluginID :PChar): hresult;
   external 'SharpCenterAPI.dll' name 'CenterCommand';
 
 function CenterCommandAsText(ACommand: TSCC_COMMAND_ENUM): string;

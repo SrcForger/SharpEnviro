@@ -143,8 +143,10 @@ begin
   case ACol of
     colEdit: begin
       if tmpMetaData.HasConfig then
-          CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
-            + '\_Services\' + sName + '.con'), '');
+          CenterCommand(sccLoadSetting,
+						PChar('Services'),
+						PChar(sName),
+						'');
       end;
     colStartStop: begin
 
@@ -189,8 +191,10 @@ begin
   case ACol of
     colName: begin
       if tmpMetaData.HasConfig then
-          CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
-            + '\_Services\' + sName + '.con'), '');
+          CenterCommand(sccLoadSetting,
+						PChar('Services'),
+						PChar(sName),
+						'');
       end;
   end;
 end;

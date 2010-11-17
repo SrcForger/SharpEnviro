@@ -194,9 +194,9 @@ var
   sConfigDir: string;
 
 begin
-  sConfigDir := GetCenterDirectory + '_Services\';
   Result := False;
-  if FileExists(sConfigDir + MetaData.Name + '.con') then
+  sConfigDir := GetCenterDirectory + 'Services\';
+  if FileExists(sConfigDir + MetaData.Name + SharpApi.GetCenterConfigExt) then
     Result := True;
 end;
 

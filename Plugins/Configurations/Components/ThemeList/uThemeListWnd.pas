@@ -463,18 +463,23 @@ var
   tmpItem: TSharpEListItem;
   sTheme: string;
 begin
-  tmpItem := lbThemeList.GetItemAtCursorPos(Mouse.CursorPos);
-  if tmpItem <> nil then begin
-    sTheme := TThemeListItemClass(tmpItem.Data).Name;
-    CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
-      + '_Themes\Theme.con'), pchar(sTheme))
-  end;
+	tmpItem := lbThemeList.GetItemAtCursorPos(Mouse.CursorPos);
+	if tmpItem <> nil then
+	begin
+		sTheme := TThemeListItemClass(tmpItem.Data).Name;
+		CenterCommand(sccLoadSetting,
+					  PChar('Themes'),
+					  PChar('Theme'),
+					  PChar(sTheme));
+	end;
 end;
 
 procedure TfrmList.EditTheme(name: String);
 begin
-  CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
-     + '_Themes\Theme.con'), pchar(name))
+  CenterCommand(sccLoadSetting,
+				PChar('Themes'),
+				PChar('Theme'),
+				PChar(name));
 end;
 
 procedure TfrmList.GenerateMask;

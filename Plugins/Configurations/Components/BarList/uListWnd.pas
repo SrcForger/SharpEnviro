@@ -180,8 +180,10 @@ begin
   case ACol of
     colEdit: begin
         if (IsBarRunning(tmpBar.BarID)) then
-          CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
-            + '\_Components\BarEdit.con'), pchar(inttostr(tmpBar.BarID)));
+          CenterCommand(sccLoadSetting,
+						PChar('Components'),
+						PChar('BarEdit'),
+						PChar(inttostr(tmpBar.BarID)));
       end;
     colStartStop: begin
         if not (IsBarRunning(tmpBar.BarID)) then begin
@@ -276,8 +278,10 @@ begin
   case ACol of
     colName: begin
         if (IsBarRunning(tmpBar.BarID)) then
-          CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
-            + '\_Components\BarEdit.con'), pchar(inttostr(tmpBar.BarID)));
+          CenterCommand(sccLoadSetting,
+						PChar('Components'),
+						PChar('BarEdit'),
+						PChar(inttostr(tmpBar.BarID)));
     end;
   end;
 end;

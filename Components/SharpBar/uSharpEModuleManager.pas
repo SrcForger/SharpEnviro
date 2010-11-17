@@ -1127,7 +1127,7 @@ begin
   // settings menu item has .tag = -1
   s := ExtractFileName(tempModule.ModuleFile.FileName);
   setlength(s,length(s) - length(ExtractFileExt(s)));
-  cfile := SharpApi.GetCenterDirectory + '_Modules\' + s + '.con';
+  cfile := SharpApi.GetCenterDirectory + 'Modules\' + s + SharpApi.GetCenterConfigExt;
 
   for n := 0 to FThrobberMenu.Items.Count - 1 do
   begin

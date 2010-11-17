@@ -380,14 +380,10 @@ begin
 end;
 
 procedure TMainForm.mnuRightConfigClick(Sender: TObject);
-var
-  cfile : string;
 begin
-  cfile := SharpApi.GetCenterDirectory + '_Modules\AlarmClock.con';
-
-  if FileExists(cfile) then
-    SharpCenterApi.CenterCommand(sccLoadSetting,
-      PChar(cfile),
+  SharpCenterApi.CenterCommand(sccLoadSetting,
+      PChar('Modules'),
+	  PChar('AlarmClock'),
       PChar(inttostr(mInterface.BarInterface.BarID) + ':' + inttostr(mInterface.ID)));
 end;
 

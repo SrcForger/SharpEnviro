@@ -160,8 +160,10 @@ begin
   tmpItem := lbList.GetItemAtCursorPos(Mouse.CursorPos);
   if tmpItem <> nil then begin
     sName := TTaskSwitchItem(tmpItem.Data).Name;
-    CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
-      + '_Services\TaskSwitchEdit.con'), pchar(sName))
+    CenterCommand(sccLoadSetting,
+					PChar('Services'),
+					PChar('TaskSwitchEdit'),
+					PChar(sName))
   end;
 end;
 

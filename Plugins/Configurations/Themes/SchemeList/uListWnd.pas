@@ -228,12 +228,18 @@ end;
 
 procedure TfrmListWnd.EditScheme(tmpSchemeItem: TSchemeItem);
 begin
-  CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory + '\_Themes\SchemeEdit.con'), pchar(FSchemeManager.PluginID + ':' + tmpSchemeItem.Name));
+  CenterCommand(sccLoadSetting,
+				PChar('Themes'),
+				PChar('SchemeEdit'),
+				PChar(FSchemeManager.PluginID + ':' + tmpSchemeItem.Name));
 end;
 
 procedure TfrmListWnd.EditScheme(name: String);
 begin
-  CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory + '\_Themes\SchemeEdit.con'), pchar(FSchemeManager.PluginID + ':' + name));
+  CenterCommand(sccLoadSetting,
+				PChar('Themes'),
+				PChar('SchemeEdit'),
+				PChar(FSchemeManager.PluginID + ':' + name));
 end;
 
 procedure TfrmListWnd.EventsMessageHandler(var Msg: TMessage);

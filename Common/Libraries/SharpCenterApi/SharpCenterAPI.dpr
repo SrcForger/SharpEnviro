@@ -75,7 +75,7 @@ begin
   end
 end;
 
-function CenterCommand(ACommand: TSCC_COMMAND_ENUM; AParam, APluginID: PChar): hresult;
+function CenterCommand(ACommand: TSCC_COMMAND_ENUM; ASection, AName, APluginID: PChar): hresult;
 var
   cds: TCopyDataStruct;
   wnd: hWnd;
@@ -106,9 +106,10 @@ begin
 
   try
 
-    SendDebugMessageEx('SharpApi', pchar(format('Config Msg Received: %s - %s',
-      [sCommand, AParam])), 0, DMT_INFO);
-    msg.Parameter := AParam;
+    SendDebugMessageEx('SharpApi', pchar(format('Config Msg Received: %s - %s, %s',
+      [sCommand, ASection, AName])), 0, DMT_INFO);
+      
+    msg.Parameter := ASection + '|' + AName;
     msg.Command := sCommand;
     msg.PluginID := APluginID;
 
@@ -127,11 +128,6 @@ begin
       wnd := FindWindow('TSharpCenterWnd', nil);
       if wnd <> 0 then
       begin
-        SendDebugMessageEx('SharpApi',
-          pchar(format('SharpCenter Mutex Exists, Sending Msg: %s - %s',
-          [sCommand, AParam])),
-          0,
-          DMT_STATUS);
         result := sendmessage(wnd, WM_COPYDATA, 0, Cardinal(@cds));
       end;
       CloseHandle(MuteXHandle);
@@ -149,7 +145,7 @@ begin
             'SharpCenter.exe'])), 0, DMT_STATUS);
         ShellExecute(wnd, 'open', pchar(Path + 'SharpCenter.exe'), Pchar('-api "'
           +
-          IntToStr(Integer(ACommand)) + '|' + AParam + '|' + APluginID + '"'),
+          IntToStr(Integer(ACommand)) + '|' + ASection + '|' + AName + '|' + APluginID + '"'),
           pchar(path), SW_SHOWNORMAL);
 
       end
@@ -231,7 +227,8 @@ end;
 function LoadConfig(AConfig, AType: string; ABarID, AIntID : integer): hresult;
 begin
   Result := CenterCommand(sccLoadSetting,
-      PChar(SharpApi.GetCenterDirectory + '_' + AType + '\' + AConfig + '.con'),
+      PChar(AType),
+      PChar(AConfig),
       PChar(inttostr(ABarID) + ':' + inttostr(AIntID)));
 end;
 

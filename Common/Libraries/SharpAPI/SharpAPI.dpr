@@ -145,7 +145,8 @@ const
 
   REGPATH = 'Software\SharpEnviro\';
   APPDATASUBDIR = 'SharpEnviro';
-  CENTERDIR = 'Center\Root';
+  CENTERDIR = 'Center';
+  CENTERCONEXT = '.xml';
   DEFAULTSETTINGSDIR = '#Default#';
   DEFAULTSETTINGSDIRGLOBAL = '#DefaultGlobal#';
 
@@ -441,6 +442,11 @@ begin
   stemp := IncludeTrailingBackslash(SharpEDir) +
     IncludeTrailingBackslash(CenterDir);
   result := stemp;
+end;
+
+function GetCenterConfigExt: String;
+begin
+  Result := CenterConExt;
 end;
 
 function ServiceStart(ServiceName: String): hresult;
@@ -1758,6 +1764,8 @@ exports
   GetSharpeUserSettingsPath,
   GetSharpeGlobalSettingsPath,
   UseAppDataSettingsDir,
+
+  GetCenterConfigExt,
 
   SendMessageTo,
 

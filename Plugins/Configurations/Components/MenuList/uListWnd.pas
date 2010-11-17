@@ -248,8 +248,10 @@ end;
 
 procedure TfrmList.EditMenu(name: string);
 begin
-  CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
-    + '\_Components\MenuEdit.con'), pchar(name));
+  CenterCommand(sccLoadSetting,
+				PChar('Components'),
+				PChar('MenuEdit'),
+				PChar(name));
 end;
 
 procedure TfrmList.FormCreate(Sender: TObject);

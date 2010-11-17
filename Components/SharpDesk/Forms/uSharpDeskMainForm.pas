@@ -438,7 +438,8 @@ begin
       s := OFile.filename;
       setlength(s,length(s) - length(ExtractFileExt(s)));
       SharpCenterApi.CenterCommand(sccLoadSetting,
-                                   PChar(SharpApi.GetCenterDirectory + '_Objects\' + s + '.con'),
+                                   PChar('Objects'),
+								   PChar(s),
                                    PChar(inttostr(SetItem.ObjectID)));
     end;
   end;
@@ -1219,7 +1220,8 @@ begin
   s := obj.owner.filename;
   setlength(s,length(s) - length(ExtractFileExt(s)));
   SharpCenterApi.CenterCommand(sccLoadSetting,
-                               PChar(SharpApi.GetCenterDirectory + '_Objects\' + s + '.con'),
+                               PChar('Objects'),
+							   PChar(s),
                                PChar(inttostr(obj.Settings.ObjectID)));
   SharpDesk.UnselectAll;
 end;

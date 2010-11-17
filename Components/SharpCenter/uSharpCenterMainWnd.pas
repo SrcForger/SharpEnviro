@@ -194,7 +194,7 @@ type
     procedure ToggleHelp(Update : boolean);
     procedure UpdateHelpHeight;
 
-    function GetCommandLineParams(var enumCommandType : TSCC_COMMAND_ENUM; var sCmd, sPluginID : string) : boolean;
+    function GetCommandLineParams(var enumCommandType : TSCC_COMMAND_ENUM; var sSection, sName, sPluginID : string) : boolean;
 
     procedure EnabledWM(var Msg: TMessage); message CM_ENABLEDCHANGED;
 
@@ -306,11 +306,25 @@ procedure TSharpCenterWnd.GetCopyData(var Msg: TMessage);
 var
   tmpMsg: TsharpE_DataStruct;
   command: TSCC_COMMAND_ENUM;
+
+  strlTokens: TStringList;
+  sSection, sName, sParam: string;
 begin
   tmpMsg := PSharpE_DataStruct(PCopyDataStruct(msg.lParam)^.lpData)^;
 
+  strlTokens := TStringlist.Create;
+  try
+    StrTokenToStrings(tmpMsg.Parameter, '|', strlTokens);
+    sSection := strlTokens[0];
+    sName := strlTokens[1];
+  finally
+    strlTokens.Free;
+  end;
+
+  sParam := SharpApi.GetCenterDirectory + sSection + '\' + sName + SharpApi.GetCenterConfigExt;
+
   command := CenterCommandAsEnum(tmpMsg.Command);
-  SCM.ExecuteCommand(command, tmpMsg.Parameter, tmpMsg.PluginID, '', 0);
+  SCM.ExecuteCommand(command, sParam, tmpMsg.PluginID, '', 0);
 
   // Force window to front
   if command = sccLoadSetting then
@@ -323,7 +337,7 @@ begin
   ToggleHelp(True);
 end;
 
-function TSharpCenterWnd.GetCommandLineParams(var enumCommandType : TSCC_COMMAND_ENUM; var sCmd, sPluginID : string) : boolean;
+function TSharpCenterWnd.GetCommandLineParams(var enumCommandType : TSCC_COMMAND_ENUM; var sSection, sName, sPluginID : string) : boolean;
 var
   strlTokens: TStringList;
   sApiParam: string;
@@ -340,12 +354,11 @@ begin
     try
       StrTokenToStrings(sApiParam, '|', strlTokens);
       enumCommandType := TSCC_COMMAND_ENUM(StrToInt(strlTokens[0]));
-      sCmd := strlTokens[1];
-
-      StrReplace(sCmd, '{CenterDirectory}', SharpApi.GetCenterDirectory);
+      sSection := strlTokens[1];
+      sName := strlTokens[2];
 
       if 2 < strlTokens.Count then
-        sPluginID := strlTokens[2];
+        sPluginID := strlTokens[3];
 
       StrReplace(sPluginID, '{CurrentTheme}', GetCurrentTheme.Info.Name);
     finally
@@ -360,13 +373,15 @@ procedure TSharpCenterWnd.InitCommandLine;
 var
   enumCommandType: TSCC_COMMAND_ENUM;
   sPluginID: string;
-  sCmd: string;
+  sSection, sName, sParam: string;
 begin
   {$WARN SYMBOL_PLATFORM OFF} SendDebugMessage('SharpCenter',cmdline,0); {$WARN SYMBOL_PLATFORM ON}
 
-  if GetCommandLineParams(enumCommandType, sCmd, sPluginID) then
-    SCM.ExecuteCommand(enumCommandType, scmd, sPluginID, '', 0)
-  else
+  if GetCommandLineParams(enumCommandType, sSection, sName, sPluginID) then
+  begin
+    sParam := SharpApi.GetCenterDirectory + sSection + '\' + sName + SharpApi.GetCenterConfigExt;
+    SCM.ExecuteCommand(enumCommandType, sParam, sPluginID, '', 0);
+  end else
     SCM.BuildNavRoot;
 end;
 

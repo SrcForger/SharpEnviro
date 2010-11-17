@@ -72,7 +72,7 @@ var
 
   enumCommandType: TSCC_COMMAND_ENUM;
   sPluginID: string;
-  sCmd: string;
+  sSection, sName: string;
 begin
   Application.Initialize;
   {$IFDEF VER185} Application.MainFormOnTaskBar := True; {$ENDIF}
@@ -81,8 +81,10 @@ begin
 
   if CheckMutex then
   begin
-    if SharpCenterWnd.GetCommandLineParams(enumCommandType, sCmd, sPluginID) then
-      SharpCenterApi.CenterCommand(enumCommandType, PAnsiChar(sCmd), PAnsiChar(sPluginID));
+    if SharpCenterWnd.GetCommandLineParams(enumCommandType, sSection, sName, sPluginID) then
+    begin
+      SharpCenterApi.CenterCommand(enumCommandType, PChar(sSection), PChar(sName), PAnsiChar(sPluginID));
+    end;
 
     CenterWnd := FindWindow('TSharpCenterWnd', 'SharpCenter');
     SetForegroundWindow(CenterWnd);

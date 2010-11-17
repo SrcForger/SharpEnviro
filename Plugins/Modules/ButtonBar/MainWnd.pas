@@ -483,14 +483,10 @@ begin
 end;
 
 procedure TMainForm.sb_configClick(Sender: TObject);
-var
-  cfile : String;
 begin
-  cfile := SharpApi.GetCenterDirectory + '_Modules\ButtonBar.con';
-
-  if FileExists(cfile) then
-    SharpCenterApi.CenterCommand(sccLoadSetting,
-      PChar(cfile),
+  SharpCenterApi.CenterCommand(sccLoadSetting,
+      PChar('Modules'),
+	  PChar('ButtonBar'),
       PChar(inttostr(mInterface.BarInterface.BarID) + ':' + inttostr(mInterface.ID)));
 end;
 

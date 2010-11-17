@@ -176,7 +176,6 @@ var
   tmpModule: TModuleItem;
   wnd: THandle;
   s: string;
-  cFile: string;
 begin
   LockWindowUpdate(Self.Handle);
   try
@@ -207,11 +206,10 @@ begin
         if AItem.SubItemText[ACol] <> '' then begin
           s := tmpModule.MFile;
           setlength(s, length(s) - length(ExtractFileExt(s)));
-          cfile := SharpApi.GetCenterDirectory + '_Modules\' + s + '.con';
 
-          if FileExists(cfile) then
-            SharpCenterApi.CenterCommand(sccLoadSetting,
-              PChar(cfile),
+          SharpCenterApi.CenterCommand(sccLoadSetting,
+              PChar('Modules'),
+			  PChar(s),
               PChar(PluginHost.PluginId + ':' + inttostr(tmpModule.ID)))
         end;
       end;
@@ -289,7 +287,7 @@ procedure TfrmListWnd.lbModulesLeftDblClickItem(Sender: TObject;
 var
   tmpModule: TModuleItem;
   wnd: THandle;
-  s,cfile : String;
+  s : String;
 begin
   tmpModule := TModuleItem(AItem.Data);
   if tmpModule = nil then
@@ -306,12 +304,11 @@ begin
       begin
         s := tmpModule.MFile;
         setlength(s, length(s) - length(ExtractFileExt(s)));
-        cfile := SharpApi.GetCenterDirectory + '_Modules\' + s + '.con';
 
-        if FileExists(cfile) then
-          SharpCenterApi.CenterCommand(sccLoadSetting,
-                                       PChar(cfile),
-                                       PChar(PluginHost.PluginId + ':' + inttostr(tmpModule.ID)));
+        SharpCenterApi.CenterCommand(sccLoadSetting,
+                                    PChar('Modules'),
+									PChar(s),
+                                    PChar(PluginHost.PluginId + ':' + inttostr(tmpModule.ID)));
       end;
     end;
   end;
@@ -481,7 +478,7 @@ begin
                   Position := Item[j].Items.IntValue('Position', -1);
 
                   newItem.Configure := False;
-                  if FileExists(SharpApi.GetCenterDirectory + '_Modules\' + newItem.Name + '.con') then
+                  if FileExists(SharpApi.GetCenterDirectory + 'Modules\' + newItem.Name + SharpApi.GetCenterConfigExt) then
                     newItem.Configure := True;
                 end;
                 AList.Add(newItem);
