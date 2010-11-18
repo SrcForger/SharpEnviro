@@ -202,8 +202,18 @@ end;
 
 procedure TTaskItemUpdateThread.Add(Item: TTaskItem; UpdateEvent: TTaskChangeEvent);
 var
+  i : integer;
   ThreadItem : TTaskThreadItem;
 begin
+  // Only allow one item
+  EnterCriticalSection(TaskCritSect);
+  if FItems.Count > 0 then
+  begin
+    LeaveCriticalSection(TaskCritSect);
+    exit;
+  end;
+  LeaveCriticalSection(TaskCritSect);
+
   ThreadItem := TTaskThreadItem.Create;
   ThreadItem.Item := Item;
   ThreadItem.UpdateEvent := UpdateEvent;
@@ -406,7 +416,9 @@ begin
     if (not IsWindow(pItem.Handle)) then
     begin
       FItems.Extract(pItem);
-      if Assigned(OnRemoveTask) then OnRemoveTask(pItem,n);
+      if Assigned(OnRemoveTask) then
+        OnRemoveTask(pItem,n);
+
       pItem.Free;
     end;
   end;
@@ -453,12 +465,12 @@ begin
         bUsingThread := False;
         if not FListMode then
         begin
-          if (FMultiThreading and Assigned(FOnActivateTask)) then
+          {if (FMultiThreading and Assigned(FOnActivateTask)) then
           begin
             FUpdateThread.Add(pItem, FOnActivateTask);
             FUpdateThread.Resume;
             bUsingThread := True;
-          end else pItem.UpdateFromHwnd;
+          end else} pItem.UpdateFromHwnd;
         end else pItem.UpdateNonCriticalFromHwnd;
         if Assigned(OnActivateTask) and (not bUsingThread) then
           FOnActivateTask(pItem,n);
@@ -535,11 +547,13 @@ begin
     begin
       // call the onremove event before actually removing the item
       // this makes it possible for the application to use the still existing
-      // TTaskItem to gather informations about which window will be removed
+      // TTaskItem to gather information about which window will be removed
       FItems.Extract(pItem);
-      if Assigned(OnRemoveTask) then OnRemoveTask(pItem,n);
+      if Assigned(OnRemoveTask) then
+        OnRemoveTask(pItem,n);
+
       pItem.Free;
-      exit;
+      break;
     end;
   end;
   RemoveDeadTasks;
