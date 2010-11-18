@@ -103,10 +103,10 @@ begin
   FTimeAdded := pItem.TimeAdded;
   FHandle := pItem.Handle;
   FIcon := pItem.Icon;
-  FCaption := pItem.Caption;
-  FWndClass := pItem.WndClass;
-  FFilePath := pItem.FilePath;
-  FFileName := pItem.FileName;
+  FCaption := PWideChar(pItem.Caption);
+  FWndClass := PChar(pItem.WndClass);
+  FFilePath := PChar(pItem.FilePath);
+  FFileName := PChar(pItem.FileName);
   FVisible := pItem.Visible;
   FLastVWM := pItem.LastVWM;
   FPlacement := pItem.Placement;

@@ -202,7 +202,6 @@ end;
 
 procedure TTaskItemUpdateThread.Add(Item: TTaskItem; UpdateEvent: TTaskChangeEvent);
 var
-  i : integer;
   ThreadItem : TTaskThreadItem;
 begin
   // Only allow one item
@@ -215,7 +214,7 @@ begin
   LeaveCriticalSection(TaskCritSect);
 
   ThreadItem := TTaskThreadItem.Create;
-  ThreadItem.Item := Item;
+  ThreadItem.Item := TTaskItem.Create(Item);
   ThreadItem.UpdateEvent := UpdateEvent;
   
   EnterCriticalSection(TaskCritSect);
@@ -246,8 +245,8 @@ begin
       FCurItem.Item.UpdateFromHwnd;
       DoUpdate;
 
-      FCurItem.Free;
-      FCurItem := nil;
+      FreeAndNil(FCurItem.Item);
+      FreeAndNil(FCurItem);
 
       Sleep(500);
     end else
