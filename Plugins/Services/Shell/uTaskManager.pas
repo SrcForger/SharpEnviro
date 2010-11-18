@@ -34,6 +34,7 @@ uses Windows,
      Contnrs,
      uTaskItem,
      uWindows,
+     SharpApi,
      SharpTypes,
      JclSysUtils,
      JclStrings,
@@ -233,7 +234,7 @@ begin
     if Assigned(FCurItem) then
     begin
       FCurItem.Item.UpdateFromHwnd;
-      Synchronize(DoUpdate);
+      DoUpdate;
 
       FCurItem.Free;
       FCurItem := nil;
@@ -452,9 +453,9 @@ begin
         bUsingThread := False;
         if not FListMode then
         begin
-          if (FMultiThreading and Assigned(FOnUpdateTask)) then
+          if (FMultiThreading and Assigned(FOnActivateTask)) then
           begin
-            FUpdateThread.Add(pItem, FOnUpdateTask);
+            FUpdateThread.Add(pItem, FOnActivateTask);
             FUpdateThread.Resume;
             bUsingThread := True;
           end else pItem.UpdateFromHwnd;
