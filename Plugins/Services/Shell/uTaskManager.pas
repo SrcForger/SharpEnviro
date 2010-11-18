@@ -238,7 +238,7 @@ begin
       FCurItem.Free;
       FCurItem := nil;
 
-      Sleep(16);
+      Sleep(500);
     end else
       Suspend;
       
