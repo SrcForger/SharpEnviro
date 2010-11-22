@@ -166,7 +166,9 @@ var
   item: TDownloadItem;
   Stream: TMemoryStream;
   HTTPReqResp1: THTTPReqResp;
+  NoConnectionTimeOut : integer;
 begin
+  NoConnectionTimeOut := 16;
   while true do
   begin
     if self.Terminated then
@@ -183,7 +185,7 @@ begin
       if self.Terminated then
         break;
 
-      Sleep(16);
+      Sleep(NoConnectionTimeOut);
 
       EnterCriticalSection(DownloadCritical);
       item := TDownloadItem(FDownloadItems.Items[i]);
@@ -192,8 +194,9 @@ begin
       if not InternetCheckConnection(PAnsiChar(item.UrlTarget), 1, 0) then
       begin
         Debug('No internet connection could be established');
+        NoConnectionTimeOut := 60000; // wait one minute before trying again
         continue;
-      end;
+      end else NoConnectionTimeOut := 16;
 
       Stream := TMemoryStream.Create;
       HTTPReqResp1 := THTTPReqResp.Create(nil);
