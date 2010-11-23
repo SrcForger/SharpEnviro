@@ -132,6 +132,7 @@ type
     FBlendColor : integer;
     FBlendColorStr : String;
     FBlendAlpha : Byte;
+    FAlpha : integer;
     procedure SetDrawIcon(Value : Boolean); stdcall;    
     function GetDrawIcon : Boolean; stdcall;
     function GetDimension : TPoint; stdcall;
@@ -153,6 +154,7 @@ type
     property BlendColor : integer read FBlendColor write FBlendColor;
     property BlendColorStr : String read FBlendColorStr write FBlendColorStr;
     property BlendAlpha : Byte read FBlendAlpha write FBlendAlpha;
+    property Alpha : integer read FAlpha write FAlpha;
     property SelfInterface : ISharpESkinIcon read FInterface write FInterface;
 
     procedure DrawTo(Dst,Src : TBitmap32; x,y : integer); stdcall;
@@ -2240,6 +2242,7 @@ begin
   FBlendAlpha := 255;
   FLighten := False;
   FLightenAmount := 48;
+  FAlpha := 255;
 end;
 
 constructor TSkinIcon.Create(OwnsInterface : Boolean);
@@ -2303,6 +2306,7 @@ begin
   FBlendColorStr := Value.BlendColorStr;
   FBlendColor := Value.BlendColor;
   FBlendAlpha := Value.BlendAlpha;
+  FAlpha := Value.Alpha;
 end;
 
 procedure TSkinIcon.SaveToStream(Stream: TStream);
@@ -2315,6 +2319,7 @@ begin
   StringSaveToStream(BoolToStr(FBlend),Stream);
   StringSaveToStream(FBlendColorStr,Stream);
   Stream.WriteBuffer(FBlendAlpha, SizeOf(FBlendAlpha));
+  Stream.WriteBuffer(FAlpha, SizeOf(FAlpha));
 end;
 
 procedure TSkinIcon.SetDrawIcon(Value: Boolean);
@@ -2332,6 +2337,7 @@ begin
   FBlend := StrToBool(StringLoadFromStream(Stream));
   FBlendColorStr := StringLoadFromStream(Stream);
   Stream.ReadBuffer(FBlendAlpha, SizeOf(FBlendAlpha));
+  Stream.ReadBuffer(FAlpha, SizeOf(FAlpha));
 end;
 
 procedure TSkinIcon.LoadFromXML(xml: TJvSimpleXMLElem);
@@ -2354,6 +2360,8 @@ begin
       FBlendColorStr := Value('blendcolor','0');
     if ItemNamed['blendalpha'] <> nil then
       FBlendAlpha := IntValue('blendalpha',255);
+    if ItemNamed['alpha'] <> nil then
+      FAlpha := IntValue('alpha',255);
   end;
 end;
 
@@ -2372,8 +2380,6 @@ begin
    exit;
 
   icon := TBitmap32.Create;
-  icon.DrawMode := dmBlend;
-  icon.CombineMode := cmMerge;
   icon.Clear(color32(0,0,0,0));
   IWidth := FSize.XAsInt;
   IHeight := FSize.YAsInt;
@@ -2407,6 +2413,10 @@ begin
   if FLighten then
     LightenBitmap(icon,FLightenAmount);
 
+  icon.DrawMode := dmBlend;
+  icon.CombineMode := cmMerge;
+  icon.MasterAlpha := FAlpha;
+  
   icon.DrawTo(dst,x,y);
   icon.free;
 end;
