@@ -499,6 +499,9 @@ end;
 
 procedure TSharpEBar.UpdateAlwaysOnTop;
 begin
+  if not aform.Visible then
+    exit;
+
   if (FAlwaysOnTop) then
   begin
     SetWindowPos(aform.handle, HWND_TOPMOST, 0, 0, 0, 0,

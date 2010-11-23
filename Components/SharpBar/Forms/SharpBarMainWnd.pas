@@ -344,13 +344,16 @@ begin
         SharpEBar.DisableHideBar := Items.BoolValue('DisableHideBar', True);
         SharpEBar.StartHidden := Items.BoolValue('StartHidden', False);
         ModuleManager.ShowMiniThrobbers := Items.BoolValue('ShowMiniThrobbers', True);
+        SharpEBar.AutoHide := Items.BoolValue('AutoHide', False);
+        SharpEBar.AutoHideTime := Items.IntValue('AutoHideTime', 1000);
         SharpEBar.AlwaysOnTop := Items.BoolValue('AlwaysOnTop', False);
         SharpEBar.ForceAlwaysOnTop := Items.BoolValue('ForceAlwaysOnTop', False);
         SharpEBar.FixedWidthEnabled := Items.BoolValue('FixedWidthEnabled', False);
         SharpEBar.FixedWidth := Max(10,Min(90,Items.IntValue('FixedWidth', 50)));
-        SharpEBar.AutoHide := Items.BoolValue('AutoHide', False);
-        SharpEBar.AutoHideTime := Items.IntValue('AutoHideTime', 1000);
       end;
+      
+    if SharpEBar.AutoHide then
+      SharpEBar.AlwaysOnTop := True;
 
     if (FixedWidthEnabledTemp <> SharpEBar.FixedWidthEnabled)
       or (FixedWidthTemp <> SharpEBar.FixedWidth) then
@@ -1197,6 +1200,9 @@ begin
         SharpEBar.AutoHide := Items.BoolValue('AutoHide', False);
         SharpEBar.AutoHideTime := Items.IntValue('AutoHideTime', 1000);
 
+        if SharpEBar.AutoHide then
+          SharpEBar.AlwaysOnTop := True;
+
         ModuleManager.BarName := FBarName;
         // Set Main Window Title to SharpBar_ID!
         // The bar with the given ID is now loaded =)
@@ -1500,9 +1506,12 @@ begin
   if FSuspended then
     Exit;
     
-  if (Visible) and ((SharpEBar.AlwaysOnTop) or (foregroundWindowIsFullscreen)) then
+  if ((SharpEBar.AlwaysOnTop) or (foregroundWindowIsFullscreen)) then
   begin
     wnd := GetForegroundWindow;
+    if (GetParent(wnd) <> 0) then
+      wnd := GetParent(wnd);
+
     if (wnd <> 0) and (wnd <> Handle) then
     begin
       GetClassName(wnd, wndClass, SizeOf(wndClass));
@@ -1526,15 +1535,17 @@ begin
           ((style and WS_BORDER) <> WS_BORDER) and
           (not SharpEBar.ForceAlwaysOnTop) then
         begin
+          if SharpEBar.AutoHide then
+            HideBar;
+
           // The window is fullscreen so disable always on top.
           SharpEBar.AlwaysOnTop := False;
           foregroundWindowIsFullscreen := True;
+
           // Now bring the fullscreen window to the top in front of the bar.
-          //SetWindowPos(SharpEBar.aform.Handle, wnd, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
-          //SetWindowPos(SharpEBar.abackground.Handle, SharpEBar.aform.Handle, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
           BringWindowToTop(wnd);
         end
-        else if not SharpEBar.AlwaysOnTop then
+        else if (not SharpEBar.AlwaysOnTop) then
         begin
           // The window is no longer fullscreen so make sure we change our settings back.
           // If the window was never fullscreen we'll also hit here which is ok.
@@ -2058,7 +2069,7 @@ end;
 
 procedure TSharpBarMainForm.HideBar;
 begin
-  if (SharpEBar.DisableHideBar) and (not SharpEBar.AutoHide) then
+  if (Visible) and (SharpEBar.DisableHideBar) and (not SharpEBar.AutoHide) then
     exit;
 
   if (SharpEbar.VertPos = vpBottom) then
@@ -2361,6 +2372,8 @@ procedure TSharpBarMainForm.AlwaysOnTop1Click(Sender: TObject);
 begin
   AlwaysOnTop1.Checked := not AlwaysOnTop1.Checked;
   SharpEBar.AlwaysOnTop := AlwaysOnTop1.Checked;
+  if SharpEBar.AutoHide then
+    SharpEBar.AlwaysOnTop := True;
   SaveBarSettings;
 
   ForceAlwaysOnTop1.Enabled := AlwaysOnTop1.Checked;
@@ -2422,6 +2435,9 @@ procedure TSharpBarMainForm.tmrCursorPosTimer(Sender: TObject);
 var
   pt : TPoint;
 begin
+  if foregroundWindowIsFullscreen then
+    exit;
+
   GetCursorPos(pt);
 
   if (pt.X >= Self.Left) and (pt.X < Self.Left + Self.Width) then
