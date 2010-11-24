@@ -24,6 +24,7 @@ namespace SharpEnviro.Explorer
         volatile static IntPtr hSharpDll;
         volatile static bool bShellLoaded = false;
         volatile static SearchManager searchManager;
+        volatile static bool bEnableSearch = false;
 
         internal delegate void FunctionInvoker();
 
@@ -94,9 +95,12 @@ namespace SharpEnviro.Explorer
             // Show the search window
             if (uMsgm == PInvoke.WM_SHARPSEARCH)
             {
-                _logger.Info("SharpSearch message received.");
-                WPFRuntime.Instance.Show<SearchWindow>();
-                _logger.Info("SharpSearch message processed.");
+                if (bEnableSearch)
+                {
+                    _logger.Info("SharpSearch message received.");
+                    WPFRuntime.Instance.Show<SearchWindow>();
+                    _logger.Info("SharpSearch message processed.");
+                }
 
                 return (IntPtr)0;
             }
@@ -104,8 +108,11 @@ namespace SharpEnviro.Explorer
             // Start indexing
             if (uMsgm == PInvoke.WM_SHARPSEARCH_INDEXING)
             {
-                if (!searchManager.IsIndexing)
+                if (bEnableSearch)
+                {
+                    if (!searchManager.IsIndexing)
                         searchManager.StartIndexing();
+                }
 
                 return (IntPtr)0;
             }
@@ -187,18 +194,24 @@ namespace SharpEnviro.Explorer
                 WPFRuntime.Instance.Start();
 
 				// Check if the database file exists before creating the SearchManager as it automatically creates the file.
-				bool needsIndexing = !File.Exists(Path.Combine(SharpSearchDatabase.DefaultDatabaseDirectory, SharpSearchDatabase.DefaultDatabaseFilename));
-                searchManager = new SearchManager(true);
+                if (bEnableSearch)
+                {
+                    bool needsIndexing = !File.Exists(Path.Combine(SharpSearchDatabase.DefaultDatabaseDirectory, SharpSearchDatabase.DefaultDatabaseFilename));
+                    searchManager = new SearchManager(true);
 
-                if (needsIndexing)
-                    searchManager.StartIndexing();
+                    if (needsIndexing)
+                        searchManager.StartIndexing();
+                }
 
                 while (wndThread.IsAlive)
                     System.Threading.Thread.Sleep(16);
 
                 StopDesktop();
 
-                searchManager.Dispose();
+                if (bEnableSearch)
+                {
+                    searchManager.Dispose();
+                }
 				WPFRuntime.Instance.Stop();
 				ShellServices.Stop();
                 PInvoke.FreeLibrary(hSharpDll);
