@@ -315,8 +315,14 @@ begin
   strlTokens := TStringlist.Create;
   try
     StrTokenToStrings(tmpMsg.Parameter, '|', strlTokens);
-    sSection := strlTokens[0];
-    sName := strlTokens[1];
+    
+    sSection := '';
+    if strlTokens.Count > 0 then
+      sSection := strlTokens[0];
+
+    sName := '';
+    if strlTokens.Count > 1 then
+      sName := strlTokens[1];
   finally
     strlTokens.Free;
   end;
@@ -353,11 +359,21 @@ begin
     strlTokens := TStringlist.Create;
     try
       StrTokenToStrings(sApiParam, '|', strlTokens);
-      enumCommandType := TSCC_COMMAND_ENUM(StrToInt(strlTokens[0]));
-      sSection := strlTokens[1];
-      sName := strlTokens[2];
 
-      if 2 < strlTokens.Count then
+      enumCommandType := sccLoadSetting;
+      if strlTokens.Count > 0 then
+        enumCommandType := TSCC_COMMAND_ENUM(StrToInt(strlTokens[0]));
+
+      sSection := '';
+      if strlTokens.Count > 1 then
+        sSection := strlTokens[1];
+
+      sName := '';
+      if strlTokens.Count > 2 then
+        sName := strlTokens[2];
+
+      sPluginID := '';
+      if strlTokens.Count > 3 then
         sPluginID := strlTokens[3];
 
       StrReplace(sPluginID, '{CurrentTheme}', GetCurrentTheme.Info.Name);
