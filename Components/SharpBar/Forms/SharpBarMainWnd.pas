@@ -2126,8 +2126,11 @@ begin
   Self.Cursor := crDefault;
 
   // Start auto-hide
-  GetCursorPos(pt);
-  StartAutoHide(WindowFromPoint(pt));
+  if SharpEBar.AutoHide then
+  begin
+    GetCursorPos(pt);
+    StartAutoHide(WindowFromPoint(pt));
+  end;
 end;
 
 procedure TSharpBarMainForm.FormMouseMove(Sender: TObject; Shift: TShiftState;
@@ -2477,18 +2480,18 @@ begin
       // Auto-Hide
       if (not Self.Visible) and (pt.Y >= Self.Top) and (pt.Y < Self.Top + 1) then
         BarHideForm.ShowBar
-      else if (pt.Y > Self.Top + Self.Height) then
+      else if (Self.Visible) and (pt.Y > Self.Top + Self.Height) then
         StartAutoHide
       else
         tmrAutoHide.Enabled := False;
 
     // Bottom Bar
-    end else if SharpBarMainForm.SharpEBar.VertPos = vpBottom then        
+    end else if SharpBarMainForm.SharpEBar.VertPos = vpBottom then
     begin
       // Auto-Hide
       if (not Self.Visible) and (pt.Y >= Self.Top + Self.Height - 1) and (pt.Y < Self.Top + Self.Height) then
         BarHideForm.ShowBar
-      else if (pt.Y < Self.Top) then
+      else if (Self.Visible) and (pt.Y < Self.Top) then
         StartAutoHide
       else
         tmrAutoHide.Enabled := False;
