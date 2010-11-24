@@ -2445,6 +2445,7 @@ end;
 procedure TSharpBarMainForm.StartAutoHide(wnd : HWND);
 var
   className : array [0..256] of Char;
+  wndCaption : array [0..256] of Char;
 begin
   if wnd = 0 then
     wnd := GetForegroundWindow;
@@ -2453,9 +2454,9 @@ begin
     wnd := GetParent(wnd);
 
   GetClassName(wnd, className, sizeof(className));
-  SharpApi.SendDebugMessage('SharpBar', className, 0);
+  GetWindowText(wnd, wndCaption, sizeof(wndCaption));
   // Don't hide if a menu is the foreground window
-  if (CompareText(className, 'TSharpEMenuWnd') <> 0) and (CompareText(className, 'TSharpBarMainForm') <> 0) then
+  if (CompareText(className, 'TSharpEMenuWnd') <> 0) and (CompareText(wndCaption, Self.Caption) <> 0) then
     tmrAutoHide.Enabled := True;
 end;
 
