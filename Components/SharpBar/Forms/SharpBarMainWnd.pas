@@ -179,6 +179,8 @@ type
     procedure CreateNewBar;
     procedure LoadBarModules(XMLElem: TJclSimpleXMlElem);
 
+    procedure StartAutoHide(wnd : HWND = 0);
+
     procedure WMDeskClosing(var msg: TMessage); message WM_DESKCLOSING;
 
     // Bad Show/Hide Messages
@@ -1824,6 +1826,9 @@ begin
 
   ModuleManager.RefreshMiniThrobbers;
 
+  if (SharpEBar.AutoHide) and (not tmrAutoHide.Enabled) then
+    tmrAutoHide.Enabled := True;
+    
   tmrCursorPos.Enabled := SharpEBar.AutoHide;
 end;
 
@@ -2114,9 +2119,15 @@ begin
 end;
 
 procedure TSharpBarMainForm.FormMouseLeave(Sender: TObject);
+var
+  pt : TPoint;
 begin
   FDragging := False;
   Self.Cursor := crDefault;
+
+  // Start auto-hide
+  GetCursorPos(pt);
+  StartAutoHide(WindowFromPoint(pt));
 end;
 
 procedure TSharpBarMainForm.FormMouseMove(Sender: TObject; Shift: TShiftState;
@@ -2431,6 +2442,23 @@ begin
   HideBar;
 end;
 
+procedure TSharpBarMainForm.StartAutoHide(wnd : HWND);
+var
+  className : array [0..256] of Char;
+begin
+  if wnd = 0 then
+    wnd := GetForegroundWindow;
+    
+  while GetParent(wnd) <> 0 do
+    wnd := GetParent(wnd);
+
+  GetClassName(wnd, className, sizeof(className));
+  SharpApi.SendDebugMessage('SharpBar', className, 0);
+  // Don't hide if a menu is the foreground window
+  if (CompareText(className, 'TSharpEMenuWnd') <> 0) and (CompareText(className, 'TSharpBarMainForm') <> 0) then
+    tmrAutoHide.Enabled := True;
+end;
+
 procedure TSharpBarMainForm.tmrCursorPosTimer(Sender: TObject);
 var
   pt : TPoint;
@@ -2448,8 +2476,8 @@ begin
       // Auto-Hide
       if (not Self.Visible) and (pt.Y >= Self.Top) and (pt.Y < Self.Top + 1) then
         BarHideForm.ShowBar
-      else if pt.Y > Self.Top + Self.Height then
-        tmrAutoHide.Enabled := True
+      else if (pt.Y > Self.Top + Self.Height) then
+        StartAutoHide
       else
         tmrAutoHide.Enabled := False;
 
@@ -2459,8 +2487,8 @@ begin
       // Auto-Hide
       if (not Self.Visible) and (pt.Y >= Self.Top + Self.Height - 1) and (pt.Y < Self.Top + Self.Height) then
         BarHideForm.ShowBar
-      else if pt.Y < Self.Top then
-        tmrAutoHide.Enabled := True
+      else if (pt.Y < Self.Top) then
+        StartAutoHide
       else
         tmrAutoHide.Enabled := False;
     end;

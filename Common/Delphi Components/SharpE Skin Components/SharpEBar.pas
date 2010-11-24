@@ -505,14 +505,14 @@ begin
   if (FAlwaysOnTop) then
   begin
     SetWindowPos(aform.handle, HWND_TOPMOST, 0, 0, 0, 0,
-                 SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
+                 SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW or SWP_NOACTIVATE);
     abackground.SetZOrder;                 
   end else
   begin
     if (GetWindowLong(aform.handle, GWL_EXSTYLE) and WS_EX_TOOLWINDOW) = WS_EX_TOOLWINDOW then
     begin
       SetWindowPos(aform.handle, HWND_NOTOPMOST, 0, 0, 0, 0,
-                   SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
+                   SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW or SWP_NOACTIVATE);
       abackground.SetZOrder;
     end;
   end;
