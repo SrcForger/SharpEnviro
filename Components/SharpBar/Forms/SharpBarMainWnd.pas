@@ -2159,6 +2159,9 @@ end;
 procedure TSharpBarMainForm.FormMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
+  if Button = mbLeft then
+    FDragging := False;
+    
   if Button = mbRight then
     if (Y = Height - 1) and (SharpEBar.VertPos = vpBottom)
       or (Y = 0) and (SharpEBar.VertPos = vpTop) then begin
