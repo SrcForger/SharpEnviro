@@ -14,6 +14,7 @@ function IsWow64(): boolean;
 function NETFramework35: Boolean;
 function FindAllWindows(const WindowClass: string): THandleArray;
 function ForceForegroundWindow(hwnd: THandle): Boolean;
+function GetMouseDown(vKey: Integer): Boolean;
 
 implementation
 
@@ -195,5 +196,15 @@ begin
     Result := (GetForegroundWindow = hwnd);
   end;
 end; { ForceForegroundWindow }
+
+function GetMouseDown(vKey: Integer): Boolean;
+begin
+  if (vKey = VK_RIGHT) and (GetSystemMetrics(SM_SWAPBUTTON) <> 0) then
+    vKey := VK_LEFT
+  else if (vKey = VK_LEFT) and (GetSystemMetrics(SM_SWAPBUTTON) <> 0) then
+    vKey := VK_RIGHT;
+
+  Result := GetAsyncKeyState(vKey) <> 0;
+end;
 
 end.

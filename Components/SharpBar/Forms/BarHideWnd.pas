@@ -14,10 +14,6 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure CreateParams(var Params: TCreateParams); override;
-    procedure FormMouseEnter(Sender: TObject);
-    procedure FormMouseLeave(Sender: TObject);
-    procedure FormMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
     procedure curPosTimerTimer(Sender: TObject);
   private
     FDragging : Boolean;
@@ -25,8 +21,10 @@ type
     procedure WMMove(var msg : TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
   public
     procedure UpdateStatus;
-    procedure ShowBar;
+    procedure ShowBar(fromDrag : Boolean = False);
     procedure HideBar;
+    procedure StartDrag;
+
   end;
 
 var
@@ -55,32 +53,46 @@ procedure TBarHideForm.curPosTimerTimer(Sender: TObject);
 var
   pt : TPoint;
 begin
-  if (SharpBarMainForm.SharpEBar.DisableHideBar) or (SharpBarMainForm.SharpEBar.AutoHide) or (not FDragging) then
-  begin
-    curPosTimer.Enabled := False;
-    exit;
-  end;
-
   GetCursorPos(pt);
   if (pt.X >= Self.Left) and (pt.X < Self.Left + Self.Width) then
   begin
     // Top Bar
     if SharpBarMainForm.SharpEBar.VertPos = vpTop then
     begin
-      if pt.Y >= SharpBarMainForm.Height - 1 then
+      if (not SharpBarMainForm.SharpEBar.DisableHideBar) and (not SharpBarMainForm.SharpEBar.AutoHide) and (not SharpBarMainForm.Visible) then
       begin
-        Self.Cursor := crDefault;
-        ShowBar;
-        FDragging := False;
+        if (pt.Y >= SharpBarMainForm.Top) and (pt.Y < SharpBarMainForm.Top + 1) and (GetMouseDown(VK_LBUTTON)) and (Screen.Cursor = crSizeNS) then
+          FDragging := True
+        else if (not GetMouseDown(VK_LBUTTON)) then
+          FDragging := False;
+
+        if (pt.Y >= SharpBarMainForm.Top + (SharpBarMainForm.Height div 2)) and (FDragging) then
+        begin
+          ShowBar(True);
+          FDragging := False;
+        end;
+
+        if (FDragging) or ((pt.Y >= SharpBarMainForm.Top) and (pt.Y < SharpBarMainForm.Top + 1)) then
+        begin
+          Self.Cursor := crSizeNS;
+          Screen.Cursor := crSizeNS;
+        end else if not FDragging then
+        begin
+          Self.Cursor := crDefault;
+          Screen.Cursor := crDefault;
+        end;
       end;
     // Bottom Bar
     end else if SharpBarMainForm.SharpEBar.VertPos = vpBottom then
     begin
-      if pt.Y < Monitor.Top + Monitor.Height - SharpBarMainForm.Height - 1 then
+      if (not SharpBarMainForm.SharpEBar.DisableHideBar) and (not SharpBarMainForm.SharpEBar.AutoHide) and (not SharpBarMainForm.Visible) then
       begin
-        Self.Cursor := crDefault;
-        ShowBar;
-        FDragging := False;
+        if pt.Y < Monitor.Top + Monitor.Height - SharpBarMainForm.Height - 1 then
+        begin
+          Self.Cursor := crDefault;
+          ShowBar;
+          FDragging := False;
+        end;
       end;
     end;
   end;
@@ -97,12 +109,16 @@ begin
      end;
 end;
 
-procedure TBarHideForm.ShowBar;
+procedure TBarHideForm.ShowBar(fromDrag : Boolean);
 begin
   SharpBarMainForm.Show;
+  if fromDrag then
+    SharpBarMainForm.StartDrag;
+
   SharpBarMainForm.Repaint;
   ForceForegroundWindow(SharpBarMainForm.Handle);
   SharpApi.ServiceMsg('Shell','DeskAreaUpdate');
+
   if not (SharpBarMainForm.SharpEBar.SpecialHideForm) then
   begin
     Close;
@@ -161,6 +177,13 @@ begin
   else Hide;
 end;
 
+procedure TBarHideForm.StartDrag;
+begin
+  FDragging := True;
+  curPosTimer.Enabled := True;
+  Self.Cursor := crSizeNS;
+end;
+
 procedure TBarHideForm.FormCreate(Sender: TObject);
 begin
   SetWindowLong(Application.Handle, GWL_EXSTYLE, GetWindowLong(Application.Handle, GWL_EXSTYLE) or WS_EX_TOOLWINDOW or WS_EX_LAYERED and not WS_EX_APPWINDOW);
@@ -171,33 +194,6 @@ begin
   top := -4096;
 
   FDragging := False;
-end;
-
-procedure TBarHideForm.FormMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-begin
-  if (SharpBarMainForm.SharpEBar.DisableHideBar) or (SharpBarMainForm.SharpEBar.AutoHide) then
-    exit;
-
-  if (Button = mbLeft) and (Self.Cursor = crSizeNS) and (not FDragging) then
-  begin
-    FDragging := True;
-    curPosTimer.Enabled := True;
-  end;
-end;
-
-procedure TBarHideForm.FormMouseEnter(Sender: TObject);
-begin
-  if (SharpBarMainForm.SharpEBar.DisableHideBar) or (SharpBarMainForm.SharpEBar.AutoHide) then
-    exit;
-
-  if not SharpBarMainForm.Visible then
-    Self.Cursor := crSizeNS;
-end;
-
-procedure TBarHideForm.FormMouseLeave(Sender: TObject);
-begin
-  Self.Cursor := crDefault;
 end;
 
 procedure TBarHideForm.FormMouseUp(Sender: TObject; Button: TMouseButton;

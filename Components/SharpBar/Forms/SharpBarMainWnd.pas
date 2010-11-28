@@ -148,10 +148,7 @@ type
     procedure tmrCursorPosTimer(Sender: TObject);
     procedure FormCanResize(Sender: TObject; var NewWidth, NewHeight: Integer;
       var Resize: Boolean);
-    procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure FormMouseLeave(Sender: TObject);
-    procedure FormMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
 
   private
     { Private-Deklarationen }
@@ -231,9 +228,10 @@ type
     procedure UpdateBGZone;
     procedure UpdateBGImage(NewWidth: integer = -1);
     procedure InitBar;
-    procedure HideBar;
+    procedure HideBar(fromDrag : Boolean = False);
     procedure ShowNotify(pCaption : String; pScreenBorder : boolean = False);
     procedure UpdateMonitor;
+    procedure StartDrag;
 
     property BGImage: TBitmap32 read FBGImage;
     property SharpEBar: TSharpEBar read FSharpEBar;
@@ -368,7 +366,7 @@ begin
     if (not Visible) and (tmrCursorPos.Enabled) and (not SharpEBar.AutoHide) then
       BarHideForm.ShowBar;
 
-    tmrCursorPos.Enabled := SharpEBar.AutoHide;
+    tmrCursorPos.Enabled := True;
     tmrAutoHide.Enabled := False;
     tmrAutoHide.Interval := SharpEBar.AutoHideTime;
 
@@ -1829,7 +1827,7 @@ begin
   if (SharpEBar.AutoHide) and (not tmrAutoHide.Enabled) then
     tmrAutoHide.Enabled := True;
     
-  tmrCursorPos.Enabled := SharpEBar.AutoHide;
+  tmrCursorPos.Enabled := True;
 end;
 
 function PointInRect(P: TPoint; Rect: TRect): boolean;
@@ -2072,7 +2070,7 @@ begin
     BarMove := False;
 end;
 
-procedure TSharpBarMainForm.HideBar;
+procedure TSharpBarMainForm.HideBar(fromDrag : Boolean);
 begin
   if (Visible) and (SharpEBar.DisableHideBar) and (not SharpEBar.AutoHide) then
     exit;
@@ -2083,21 +2081,20 @@ begin
     BarHideForm.Width := Width;
     BarHideForm.Height := 1;
     BarHideForm.Top := Top + Height - 1;
-    ShowWindow(SharpEBar.abackground.Handle, SW_HIDE);
-    SharpBarMainForm.Hide;
-    BarHideForm.Show;
-    SharpApi.ServiceMsg('Shell', 'DeskAreaUpdate');
   end else if (SharpEBar.VertPos = vpTop) then
   begin
     BarHideForm.Left := Left;
     BarHideForm.Width := Width;
     BarHideForm.Height := 1;
     BarHideForm.Top := Top;
-    ShowWindow(SharpEBar.abackground.Handle, SW_HIDE);
-    SharpBarMainForm.Hide;
-    BarHideForm.Show;
-    SharpApi.ServiceMsg('Shell', 'DeskAreaUpdate');
   end;
+
+  ShowWindow(SharpEBar.abackground.Handle, SW_HIDE);
+  SharpBarMainForm.Hide;
+  BarHideForm.Show;
+  if fromDrag then
+    BarHideForm.StartDrag;
+  SharpApi.ServiceMsg('Shell', 'DeskAreaUpdate');
 
   // Display a Tooltop if bar was hidden for the first time
   if (FFirstHide) then
@@ -2108,23 +2105,10 @@ begin
   end;
 end;
 
-procedure TSharpBarMainForm.FormMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-begin
-  if (SharpEBar.DisableHideBar) or (SharpEBar.AutoHide) then
-    exit;
-
-  if (Button = mbLeft) and (Self.Cursor = crSizeNS) and (not FDragging) then
-    FDragging := true;
-end;
-
 procedure TSharpBarMainForm.FormMouseLeave(Sender: TObject);
 var
   pt : TPoint;
 begin
-  FDragging := False;
-  Self.Cursor := crDefault;
-
   // Start auto-hide
   if SharpEBar.AutoHide then
   begin
@@ -2133,35 +2117,9 @@ begin
   end;
 end;
 
-procedure TSharpBarMainForm.FormMouseMove(Sender: TObject; Shift: TShiftState;
-  X, Y: Integer);
-begin
-  if (SharpEBar.DisableHideBar) or (SharpEBar.AutoHide) then
-    exit;
-
-  if (FDragging) and (((Y = 0) and (SharpBarMainForm.SharpEBar.VertPos = vpTop)) or
-                      ((Y = Height - 1) and (SharpBarMainForm.SharpEBar.VertPos = vpBottom)))
-  then
-  begin
-    HideBar;
-    FDragging := False;
-  end;
-
-  if (FDragging) or
-      (((Y < 5) and (SharpBarMainForm.SharpEBar.VertPos = vpBottom)) or
-      ((Y >= Self.Height - 5) and (SharpBarMainForm.SharpEBar.VertPos = vpTop)))
-  then
-    Self.Cursor := crSizeNS
-  else
-    Self.Cursor := crDefault;
-end;
-
 procedure TSharpBarMainForm.FormMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  if Button = mbLeft then
-    FDragging := False;
-    
   if Button = mbRight then
     if (Y = Height - 1) and (SharpEBar.VertPos = vpBottom)
       or (Y = 0) and (SharpEBar.VertPos = vpTop) then begin
@@ -2466,6 +2424,12 @@ begin
     tmrAutoHide.Enabled := True;
 end;
 
+procedure TSharpBarMainForm.StartDrag;
+begin
+  FDragging := True;
+  Self.Cursor := crSizeNS;
+end;
+
 procedure TSharpBarMainForm.tmrCursorPosTimer(Sender: TObject);
 var
   pt : TPoint;
@@ -2480,24 +2444,54 @@ begin
     // Top Bar
     if SharpBarMainForm.SharpEBar.VertPos = vpTop then
     begin
+      if (not SharpEBar.DisableHideBar) and (not SharpEBar.AutoHide) and (Self.Visible) then
+      begin
+        if (pt.Y >= Self.Top) and (pt.Y < Self.Top + Self.Height) and (GetMouseDown(VK_LBUTTON)) and (Screen.Cursor = crSizeNS) then
+          FDragging := True
+        else if (not GetMouseDown(VK_LBUTTON)) then
+          FDragging := False;
+
+        if (pt.Y = Self.Top) and (FDragging) then
+        begin
+          HideBar(True);
+          FDragging := False;
+        end;
+
+        if (FDragging) or ((pt.Y >= Self.Top + Self.Height - 5) and (pt.Y < Self.Top + Self.Height)) then
+        begin
+          Self.Cursor := crSizeNS;
+          Screen.Cursor := crSizeNS;
+        end else if not FDragging then         
+        begin
+          Self.Cursor := crDefault;
+          Screen.Cursor := crDefault;
+        end;
+      end;
+
       // Auto-Hide
-      if (not Self.Visible) and (pt.Y >= Self.Top) and (pt.Y < Self.Top + 1) then
-        BarHideForm.ShowBar
-      else if (Self.Visible) and (pt.Y > Self.Top + Self.Height) then
-        StartAutoHide
-      else
-        tmrAutoHide.Enabled := False;
+      if SharpEBar.AutoHide then
+      begin
+        if (not Self.Visible) and (pt.Y >= Self.Top) and (pt.Y < Self.Top + 1) then
+          BarHideForm.ShowBar
+        else if (Self.Visible) and (pt.Y > Self.Top + Self.Height) then
+          StartAutoHide
+        else
+          tmrAutoHide.Enabled := False;
+      end;
 
     // Bottom Bar
     end else if SharpBarMainForm.SharpEBar.VertPos = vpBottom then
     begin
       // Auto-Hide
-      if (not Self.Visible) and (pt.Y >= Self.Top + Self.Height - 1) and (pt.Y < Self.Top + Self.Height) then
-        BarHideForm.ShowBar
-      else if (Self.Visible) and (pt.Y < Self.Top) then
-        StartAutoHide
-      else
-        tmrAutoHide.Enabled := False;
+      if SharpEBar.AutoHide then
+      begin
+        if (not Self.Visible) and (pt.Y >= Self.Top + Self.Height - 1) and (pt.Y < Self.Top + Self.Height) then
+          BarHideForm.ShowBar
+        else if (Self.Visible) and (pt.Y < Self.Top) then
+          StartAutoHide
+        else
+          tmrAutoHide.Enabled := False;
+      end;
     end;
   end;
 end;

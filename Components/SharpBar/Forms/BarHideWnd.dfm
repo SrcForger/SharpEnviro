@@ -18,14 +18,10 @@ object BarHideForm: TBarHideForm
   OldCreateOrder = False
   OnClose = FormClose
   OnCreate = FormCreate
-  OnMouseDown = FormMouseDown
-  OnMouseEnter = FormMouseEnter
-  OnMouseLeave = FormMouseLeave
   OnMouseUp = FormMouseUp
   PixelsPerInch = 96
   TextHeight = 13
   object curPosTimer: TTimer
-    Enabled = False
     Interval = 1
     OnTimer = curPosTimerTimer
     Left = 400
