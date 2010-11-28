@@ -63,6 +63,7 @@ type
     destructor Destroy; override;
 
     procedure Add(Item: TTaskItem; UpdateEvent: TTaskChangeEvent);
+    procedure Remove(wnd : HWND);
   end;
   
   TTaskManager = class
@@ -204,21 +205,33 @@ procedure TTaskItemUpdateThread.Add(Item: TTaskItem; UpdateEvent: TTaskChangeEve
 var
   ThreadItem : TTaskThreadItem;
 begin
-  // Only allow one item
-  EnterCriticalSection(TaskCritSect);
-  if FItems.Count > 0 then
-  begin
-    LeaveCriticalSection(TaskCritSect);
-    exit;
-  end;
-  LeaveCriticalSection(TaskCritSect);
-
   ThreadItem := TTaskThreadItem.Create;
   ThreadItem.Item := TTaskItem.Create(Item);
   ThreadItem.UpdateEvent := UpdateEvent;
   
   EnterCriticalSection(TaskCritSect);
   FItems.Add(ThreadItem);
+  LeaveCriticalSection(TaskCritSect);
+end;
+
+procedure TTaskItemUpdateThread.Remove(wnd : HWND);
+var
+  i : integer;
+begin
+  i := 0;
+
+  EnterCriticalSection(TaskCritSect);
+  while True do
+  begin
+    if i >= FItems.Count then
+      break;
+
+    if TTaskThreadItem(FItems.Items[i]).Item.Handle = wnd then
+    begin
+      FItems.Remove(FItems.Items[i]);
+    end else
+      i := i + 1;
+  end;
   LeaveCriticalSection(TaskCritSect);
 end;
 
@@ -550,6 +563,8 @@ begin
       FItems.Extract(pItem);
       if Assigned(OnRemoveTask) then
         OnRemoveTask(pItem,n);
+
+      FUpdateThread.Remove(pItem.Handle);
 
       pItem.Free;
       break;
