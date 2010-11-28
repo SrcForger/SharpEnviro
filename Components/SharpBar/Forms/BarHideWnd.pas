@@ -87,11 +87,25 @@ begin
     begin
       if (not SharpBarMainForm.SharpEBar.DisableHideBar) and (not SharpBarMainForm.SharpEBar.AutoHide) and (not SharpBarMainForm.Visible) then
       begin
-        if pt.Y < Monitor.Top + Monitor.Height - SharpBarMainForm.Height - 1 then
+        if (pt.Y >= Monitor.Top + Monitor.Height - 1) and (pt.Y < Monitor.Top + Monitor.Height) and (GetMouseDown(VK_LBUTTON)) and (Screen.Cursor = crSizeNS) then
+          FDragging := True
+        else if (not GetMouseDown(VK_LBUTTON)) then
+          FDragging := False;
+
+        if (pt.Y <= Monitor.Top + Monitor.Height - (SharpBarMainForm.Height div 2)) and (FDragging) then
+        begin
+          ShowBar(True);
+          FDragging := False;
+        end;
+
+        if (FDragging) or ((pt.Y >= Monitor.Top + Monitor.Height - 1) and (pt.Y < Monitor.Top + Monitor.Height)) then
+        begin
+          Self.Cursor := crSizeNS;
+          Screen.Cursor := crSizeNS;
+        end else if not FDragging then
         begin
           Self.Cursor := crDefault;
-          ShowBar;
-          FDragging := False;
+          Screen.Cursor := crDefault;
         end;
       end;
     end;

@@ -2482,6 +2482,30 @@ begin
     // Bottom Bar
     end else if SharpBarMainForm.SharpEBar.VertPos = vpBottom then
     begin
+      if (not SharpEBar.DisableHideBar) and (not SharpEBar.AutoHide) and (Self.Visible) then
+      begin
+        if (pt.Y >= Self.Top) and (pt.Y < Self.Top + Self.Height) and (GetMouseDown(VK_LBUTTON)) and (Screen.Cursor = crSizeNS) then
+          FDragging := True
+        else if (not GetMouseDown(VK_LBUTTON)) then
+          FDragging := False;
+
+        if (pt.Y = Self.Top + Self.Height - 1) and (FDragging) then
+        begin
+          HideBar(True);
+          FDragging := False;
+        end;
+
+        if (FDragging) or ((pt.Y >= Self.Top) and (pt.Y < Self.Top + 5)) then
+        begin
+          Self.Cursor := crSizeNS;
+          Screen.Cursor := crSizeNS;
+        end else if not FDragging then         
+        begin
+          Self.Cursor := crDefault;
+          Screen.Cursor := crDefault;
+        end;
+      end;
+
       // Auto-Hide
       if SharpEBar.AutoHide then
       begin
