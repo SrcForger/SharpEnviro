@@ -39,7 +39,6 @@ uses
   Forms,
   gr32,
   ISharpESkinComponents,
-  SharpEAnimationTimers,
   SharpEBase,
   SharpEDefault,
   SharpESkin,
@@ -91,11 +90,6 @@ type
     property HandleThemeApiUpdates : boolean read FHandleThemeApiUpdates write FHandleThemeApiUpdates;
     property onSkinChanged: TNotifyEvent read FOnSkinChanged write FOnSkinChanged;
     property SkinItems : TSharpESkinItems read GetSkinItems write SetSkinItems;
-
-    // ISharpESkinManager Interface
-    function AnimationHasScriptRunning(pComponent : TObject) : boolean; stdcall;
-    procedure AnimationStopScript(pComponent : TObject); stdcall;
-    function AnimationIsTimerActive : boolean; stdcall;
 
     function ParseColor(src : String) : integer; stdcall;
 
@@ -336,21 +330,6 @@ begin
        if (MainForm.Components[i] is TCustomSharpEControl) then
          (MainForm.Components[i] as TCustomSharpEControl).UpdateSkin(self);
   end;
-end;
-
-function TSharpESkinManager.AnimationHasScriptRunning(pComponent: TObject): boolean;
-begin
-  result := SharpEAnimManager.HasScriptRunning(pComponent);
-end;
-
-function TSharpESkinManager.AnimationIsTimerActive: boolean;
-begin
-  result := SharpEAnimManager.TimerActive;
-end;
-
-procedure TSharpESkinManager.AnimationStopScript(pComponent: TObject);
-begin
-  SharpEAnimManager.StopScript(pComponent);
 end;
 
 procedure TSharpESkinManager.ComponentSkinUpdated;

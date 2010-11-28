@@ -48,11 +48,6 @@ type
     property Colors : TSharpEColorSet read GetColors write SetColors;
   end;
 
-  ISharpESkinAnimTimerCallback = interface
-    ['{8F0F28EA-09A7-4161-B3D2-8598D0F966BC}']
-    procedure TimerFinished; stdcall;
-  end;
-
   ISharpESkinText = interface
     ['{8A116794-9019-4E66-8865-88DD34A81E1F}']
     function GetDim(CompRect: TRect) : TPoint; stdcall;
@@ -153,10 +148,6 @@ type
     function GetDrawText : Boolean; stdcall;
     function CreateThemedSkinText : ISharpESkinText; stdcall;
     procedure UpdateDynamicProperties(Scheme : ISharpEScheme); stdcall;
-    procedure ExecuteScript(pComponent : TObject;
-                           pScript : String;
-                           pScheme : ISharpEScheme;
-                           pAnimTimerCallback : ISharpESkinAnimTimerCallback); stdcall;
 
     property Empty : Boolean read GetEmpty;
     property Dimension : TPoint read GetDimension; // Only access for skin parts where it's sure
@@ -559,10 +550,6 @@ type
 
   ISharpESkinManager = interface
     ['{FDC09533-F3A9-49B8-8AC0-C64486537A50}']
-    function AnimationHasScriptRunning(pComponent : TObject) : boolean; stdcall;
-    procedure AnimationStopScript(pComponent : TObject); stdcall;
-    function AnimationIsTimerActive : boolean; stdcall;
-
     function ParseColor(src : String) : integer; stdcall;
 
     procedure RefreshControls; stdcall;

@@ -387,10 +387,6 @@ type
 
     // ISharpESkinPart Interface
     procedure DrawTo(Bmp: TBitmap32; Scheme: ISharpEScheme); stdcall;
-    procedure ExecuteScript(pComponent : TObject;
-                           pScript : String;
-                           pScheme : ISharpEScheme;
-                           pAnimTimerCallback : ISharpESkinAnimTimerCallback); stdcall;
     property Empty : Boolean read GetEmpty;
     property Dimension : TPoint read GetDimension;
     property DrawText : Boolean read GetDrawText;
@@ -439,7 +435,6 @@ implementation
 uses Sysutils,
      SharpEDefault,
      gr32_png,
-     SharpEAnimationTimers,
      SharpThemeApiEx,
      uThemeConsts,
      uISharpETheme;
@@ -1981,12 +1976,6 @@ end;
 procedure TSkinPart.DrawTo(Bmp: TBitmap32; Scheme : ISharpEScheme);
 begin
   Draw(Bmp, Scheme);
-end;
-
-procedure TSkinPart.ExecuteScript(pComponent: TObject; pScript: String;
-  pScheme: ISharpEScheme; pAnimTimerCallback : ISharpESkinAnimTimerCallback);
-begin
-  SharpEAnimManager.ExecuteScript(pComponent,pScript,self,pScheme,pAnimTimerCallback);
 end;
 
 function TSkinPart.LoadFromXML(xml: TJvSimpleXMLElem; path: string; Text: TSkinText): boolean;

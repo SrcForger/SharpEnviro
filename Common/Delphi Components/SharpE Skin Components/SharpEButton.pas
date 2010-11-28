@@ -256,12 +256,7 @@ begin
     exit;
   end;
 
-  if HasNormalHoverScript then
-     FManager.Skin.Button.Normal.ExecuteScript(self,
-                                               FManager.Skin.Button.OnNormalMouseEnterScript,
-                                               FManager.Scheme,
-                                               nil)
-     else UpdateSkin;
+  UpdateSkin;
 end;
 
 procedure TSharpEButton.SMouseLeave;
@@ -272,12 +267,7 @@ begin
     exit;
   end;
 
-  if HasNormalHoverScript then
-     FManager.Skin.Button.Normal.ExecuteScript(self,
-                                               FManager.Skin.Button.OnNormalMouseLeaveScript,
-                                               FManager.Scheme,
-                                               nil)
-     else UpdateSkin;
+  UpdateSkin;
 end;
 
 function TSharpEButton.HasNormalHoverScript : boolean;
