@@ -652,9 +652,10 @@ begin
               DisableHideBar := BoolValue('DisableHideBar', True);
               ShowThrobber := BoolValue('ShowThrobber', True);
               StartHidden := BoolValue('StartHidden', False);
-              AlwaysOnTop := BoolValue('AlwaysOnTop', False);
+              AlwaysOnTop := BoolValue('AlwaysOnTop', True);
               AutoHide := BoolValue('AutoHide', False);
               AutoHideTime := IntValue('AutoHideTime', 1000);
+              ForceAlwaysOnTop := BoolValue('ForceAlwaysOnTop', False);
             end;
           end;
 

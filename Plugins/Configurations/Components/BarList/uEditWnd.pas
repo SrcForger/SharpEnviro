@@ -84,6 +84,12 @@ type
     sgbAutoHide: TSharpeGaugeBox;
     Label2: TLabel;
     Panel1: TPanel;
+    chkShowThrobber: TJvXPCheckbox;
+    chkAlwaysOnTop: TJvXPCheckbox;
+    Panel2: TPanel;
+    Panel3: TPanel;
+    Panel4: TPanel;
+    Panel5: TPanel;
     procedure valBarNameValidate(Sender: TObject; ValueToValidate: Variant;
       var Valid: Boolean);
     procedure cbBasedOnSelect(Sender: TObject);
@@ -94,6 +100,7 @@ type
     procedure cbFixedWidthClick(Sender: TObject);
     procedure sgbFixedWidthChangeValue(Sender: TObject; Value: Integer);
     procedure chkAutoHideClick(Sender: TObject);
+    procedure chkShowThrobberClick(Sender: TObject);
   private
     FBarItem: TBarItem;
     FUpdating: Boolean;
@@ -207,9 +214,10 @@ begin
               FBarItem.MiniThrobbers := False;
               FBarItem.StartHidden := False;
               FBarItem.ShowThrobber := True;
-              FBarItem.AlwaysOnTop := False;
+              FBarItem.AlwaysOnTop := True;
               FBarItem.AutoHide := False;
               FBarItem.AutoHideTime := 1000;
+              FBarItem.ForceAlwaysOnTop := False;
             end;
 
             BuildMonList;
@@ -231,6 +239,9 @@ begin
             cbBasedOn.Items.AddObject('Not Applicable', nil);
             cbBasedOn.ItemIndex := 0;
             cbBasedOn.Enabled := False;
+
+            chkAlwaysOnTop.Checked := FBarItem.ForceAlwaysOnTop;
+            chkShowThrobber.Checked := FBarItem.ShowThrobber;
           end;
         end;
     end;
@@ -303,7 +314,7 @@ begin
               clear;
               Add('ID', newId);
               Add('Name', edName.Text);
-              Add('ShowThrobber', True);
+              Add('ShowThrobber', chkShowThrobber.Checked);
               Add('DisableHideBar', True);
               Add('AutoStart', True);
               Add('AutoPosition', True);
@@ -316,9 +327,10 @@ begin
               Add('FixedWidth', sgbFixedWidth.Value);
               Add('FixedWidthEnabled', cbFixedWidth.Checked);
               Add('ShowMiniThrobbers', False);
-              Add('AlwaysOnTop', False);
+              Add('AlwaysOnTop', True);
               Add('AutoHide', chkAutoHide.Checked);
               Add('AutoHideTime', sgbAutoHide.Value * 1000);
+              Add('ForceAlwaysOnTop', False);
             end;
   
             if ItemNamed['Modules'] = nil then
@@ -348,7 +360,7 @@ begin
               Add('ID', newId);
               Add('Name', edName.Text);
               Add('AutoPosition', True);
-              Add('ShowThrobber', FBarItem.ShowThrobber);
+              Add('ShowThrobber', chkShowThrobber.Checked);
               Add('DisableHideBar', FBarItem.DisableHideBar);
               Add('AutoStart', FBarItem.AutoStart);
               Add('AutoPosition', True);
@@ -361,9 +373,10 @@ begin
               Add('FixedWidth', sgbFixedWidth.Value);
               Add('FixedWidthEnabled', cbFixedWidth.Checked);
               Add('ShowMiniThrobbers', FBarItem.MiniThrobbers);
-              Add('AlwaysOnTop', FBarItem.AlwaysOnTop);
+              Add('AlwaysOnTop', True{FBarItem.AlwaysOnTop});
               Add('AutoHide', chkAutoHide.Checked);
               Add('AutoHideTime', sgbAutoHide.Value * 1000);
+              Add('ForceAlwaysOnTop', chkAlwaysOnTop.Checked);
             end;
           end;
           SaveXMLToSharedFile(XML,dir + inttostr(copyId) + '\Bar.xml',True);
@@ -483,6 +496,12 @@ procedure TfrmEditwnd.chkAutoHideClick(Sender: TObject);
 begin
   sgbAutoHide.Enabled := chkAutoHide.Checked;
 
+  if not (FUpdating) then
+    FPluginHost.Editing := true;
+end;
+
+procedure TfrmEditwnd.chkShowThrobberClick(Sender: TObject);
+begin
   if not (FUpdating) then
     FPluginHost.Editing := true;
 end;

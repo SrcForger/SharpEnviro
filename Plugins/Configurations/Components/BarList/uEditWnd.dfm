@@ -3,7 +3,7 @@ object frmEditwnd: TfrmEditwnd
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmEditwnd'
-  ClientHeight = 104
+  ClientHeight = 126
   ClientWidth = 475
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -17,181 +17,21 @@ object frmEditwnd: TfrmEditwnd
   OnDestroy = FormDestroy
   DesignSize = (
     475
-    104)
+    126)
   PixelsPerInch = 96
   TextHeight = 13
-  object JvLabel1: TLabel
-    Left = 18
-    Top = 75
-    Width = 40
-    Height = 13
-    Caption = 'Monitor:'
-    Transparent = True
-  end
-  object JvLabel2: TLabel
-    Left = 242
-    Top = 12
-    Width = 27
-    Height = 13
-    Caption = 'Align:'
-    Transparent = True
-  end
-  object Label3: TLabel
-    Left = 18
-    Top = 44
-    Width = 48
-    Height = 13
-    Caption = 'Template:'
-    Transparent = True
-  end
-  object Label2: TLabel
-    Left = 18
-    Top = 12
-    Width = 31
-    Height = 13
-    Caption = 'Name:'
-    Transparent = True
-  end
-  object Panel1: TPanel
-    Left = 360
-    Top = 8
-    Width = 107
-    Height = 26
-    Anchors = [akLeft, akTop, akRight]
-    BevelOuter = bvNone
-    TabOrder = 8
-    object cobo_halign: TComboBox
-      Left = 0
-      Top = 0
-      Width = 107
-      Height = 21
-      Align = alRight
-      Style = csDropDownList
-      ItemHeight = 13
-      ItemIndex = 3
-      TabOrder = 0
-      Text = 'Full Screen'
-      OnSelect = cbBasedOnSelect
-      Items.Strings = (
-        'Left'
-        'Middle'
-        'Right'
-        'Full Screen')
-    end
-    object cobo_valign: TComboBox
-      Left = 0
-      Top = 0
-      Width = 73
-      Height = 21
-      Align = alLeft
-      Style = csDropDownList
-      ItemHeight = 13
-      ItemIndex = 1
-      TabOrder = 1
-      Text = 'Bottom'
-      OnSelect = cbBasedOnSelect
-      Items.Strings = (
-        'Top'
-        'Bottom')
-    end
-  end
-  object sgbAutoHide: TSharpeGaugeBox
-    Left = 360
-    Top = 72
-    Width = 107
-    Height = 21
-    Anchors = [akLeft, akTop, akRight]
-    ParentBackground = False
-    TabOrder = 7
-    Min = 1
-    Max = 60
-    Value = 10
-    Suffix = ' Second(s)'
-    Description = 'Adjust to set the auto-hide timeout'
-    PopPosition = ppBottom
-    PercentDisplay = False
-    MaxPercent = 0
-    Formatting = '%d'
-    OnChangeValue = sgbFixedWidthChangeValue
-    BackgroundColor = clWindow
-  end
-  object chkAutoHide: TJvXPCheckbox
-    Left = 240
-    Top = 74
-    Width = 90
-    Height = 17
-    Caption = 'Auto-Hide'
-    TabOrder = 6
-    OnClick = chkAutoHideClick
-  end
-  object cbFixedWidth: TJvXPCheckbox
-    Left = 240
-    Top = 42
-    Width = 90
-    Height = 17
-    Caption = 'Fixed Width'
-    TabOrder = 4
-    OnClick = cbFixedWidthClick
-  end
-  object sgbFixedWidth: TSharpeGaugeBox
-    Left = 360
-    Top = 40
-    Width = 107
-    Height = 21
-    Anchors = [akLeft, akTop, akRight]
-    ParentBackground = False
-    TabOrder = 5
-    Min = 10
-    Max = 90
-    Value = 50
-    Suffix = '%'
-    Description = 'Adjust to set the transparency'
-    PopPosition = ppBottom
-    PercentDisplay = False
-    MaxPercent = 100
-    Formatting = '%d'
-    OnChangeValue = sgbFixedWidthChangeValue
-    BackgroundColor = clWindow
-  end
-  object edName: TEdit
-    Left = 76
-    Top = 8
-    Width = 137
-    Height = 21
-    TabOrder = 0
-    OnKeyPress = edThemeNameKeyPress
-  end
-  object cobo_monitor: TComboBox
-    Left = 76
-    Top = 72
-    Width = 137
-    Height = 21
-    Style = csDropDownList
-    ItemHeight = 13
-    TabOrder = 1
-    OnSelect = cbBasedOnSelect
-  end
-  object cbBasedOn: TComboBox
-    Left = 76
-    Top = 40
-    Width = 137
-    Height = 21
-    Style = csDropDownList
-    ItemHeight = 13
-    TabOrder = 2
-    OnSelect = cbBasedOnSelect
-  end
   object pnlBarSpace: TPanel
     Left = 8
     Top = 8
     Width = 0
-    Height = 0
+    Height = 22
     Anchors = [akLeft, akTop, akRight, akBottom]
     BevelOuter = bvNone
     ParentBackground = False
     ParentColor = True
-    TabOrder = 3
+    TabOrder = 0
     Visible = False
+    ExplicitHeight = 0
     object Label1: TLabel
       Left = 0
       Top = 13
@@ -223,10 +63,264 @@ object frmEditwnd: TfrmEditwnd
       ExplicitWidth = 31
     end
   end
+  object Panel2: TPanel
+    AlignWithMargins = True
+    Left = 10
+    Top = 10
+    Width = 285
+    Height = 116
+    Margins.Left = 10
+    Margins.Top = 10
+    Margins.Right = 10
+    Margins.Bottom = 0
+    Align = alLeft
+    AutoSize = True
+    BevelOuter = bvNone
+    Constraints.MinWidth = 260
+    TabOrder = 1
+    DesignSize = (
+      285
+      116)
+    object Label3: TLabel
+      Left = 0
+      Top = 30
+      Width = 48
+      Height = 13
+      Caption = 'Template:'
+      Transparent = True
+    end
+    object Label2: TLabel
+      Left = 0
+      Top = 3
+      Width = 31
+      Height = 13
+      Caption = 'Name:'
+      Transparent = True
+    end
+    object JvLabel2: TLabel
+      Left = 0
+      Top = 84
+      Width = 27
+      Height = 13
+      Caption = 'Align:'
+      Transparent = True
+    end
+    object JvLabel1: TLabel
+      Left = 0
+      Top = 57
+      Width = 40
+      Height = 13
+      Caption = 'Monitor:'
+      Transparent = True
+    end
+    object Panel1: TPanel
+      Left = 62
+      Top = 81
+      Width = 223
+      Height = 23
+      Anchors = [akLeft, akTop, akRight]
+      BevelOuter = bvNone
+      Constraints.MinWidth = 173
+      TabOrder = 3
+      object cobo_halign: TComboBox
+        AlignWithMargins = True
+        Left = 75
+        Top = 0
+        Width = 98
+        Height = 21
+        Margins.Left = 2
+        Margins.Top = 0
+        Margins.Right = 0
+        Margins.Bottom = 0
+        Align = alLeft
+        Style = csDropDownList
+        ItemHeight = 13
+        ItemIndex = 3
+        TabOrder = 1
+        Text = 'Full Screen'
+        OnSelect = cbBasedOnSelect
+        Items.Strings = (
+          'Left'
+          'Middle'
+          'Right'
+          'Full Screen')
+      end
+      object cobo_valign: TComboBox
+        Left = 0
+        Top = 0
+        Width = 73
+        Height = 21
+        Align = alLeft
+        Style = csDropDownList
+        ItemHeight = 13
+        ItemIndex = 1
+        TabOrder = 0
+        Text = 'Bottom'
+        OnSelect = cbBasedOnSelect
+        Items.Strings = (
+          'Top'
+          'Bottom')
+      end
+    end
+    object edName: TEdit
+      Left = 62
+      Top = 0
+      Width = 173
+      Height = 21
+      TabOrder = 0
+      OnKeyPress = edThemeNameKeyPress
+    end
+    object cobo_monitor: TComboBox
+      Left = 62
+      Top = 54
+      Width = 173
+      Height = 21
+      Style = csDropDownList
+      ItemHeight = 13
+      TabOrder = 2
+      OnSelect = cbBasedOnSelect
+    end
+    object cbBasedOn: TComboBox
+      Left = 62
+      Top = 27
+      Width = 173
+      Height = 21
+      Style = csDropDownList
+      ItemHeight = 13
+      TabOrder = 1
+      OnSelect = cbBasedOnSelect
+    end
+  end
+  object Panel3: TPanel
+    AlignWithMargins = True
+    Left = 215
+    Top = 10
+    Width = 260
+    Height = 106
+    Margins.Left = 10
+    Margins.Top = 10
+    Margins.Right = 0
+    Margins.Bottom = 10
+    Align = alRight
+    AutoSize = True
+    BevelOuter = bvNone
+    Constraints.MinWidth = 260
+    TabOrder = 2
+    ExplicitLeft = 263
+    DesignSize = (
+      260
+      106)
+    object chkAlwaysOnTop: TJvXPCheckbox
+      AlignWithMargins = True
+      Left = 10
+      Top = 81
+      Width = 244
+      Height = 21
+      Margins.Left = 10
+      Margins.Top = 0
+      Margins.Right = 0
+      Margins.Bottom = 0
+      Caption = 'Always On-Top'
+      TabOrder = 3
+      OnClick = chkShowThrobberClick
+    end
+    object chkShowThrobber: TJvXPCheckbox
+      Left = 10
+      Top = 54
+      Width = 244
+      Height = 21
+      Caption = 'Show Throbber'
+      TabOrder = 2
+      OnClick = chkShowThrobberClick
+    end
+    object Panel4: TPanel
+      Left = 10
+      Top = 25
+      Width = 244
+      Height = 21
+      Anchors = [akLeft, akTop, akRight]
+      BevelOuter = bvNone
+      TabOrder = 1
+      ExplicitWidth = 202
+      object sgbAutoHide: TSharpeGaugeBox
+        Left = 128
+        Top = 0
+        Width = 116
+        Height = 21
+        Align = alRight
+        ParentBackground = False
+        TabOrder = 1
+        TabStop = True
+        Min = 1
+        Max = 60
+        Value = 10
+        Suffix = ' Second(s)'
+        Description = 'Adjust to set the auto-hide timeout'
+        PopPosition = ppBottom
+        PercentDisplay = False
+        MaxPercent = 0
+        Formatting = '%d'
+        OnChangeValue = sgbFixedWidthChangeValue
+        BackgroundColor = clWindow
+      end
+      object chkAutoHide: TJvXPCheckbox
+        Left = 0
+        Top = 0
+        Width = 90
+        Height = 21
+        Caption = 'Auto-Hide'
+        TabOrder = 0
+        Align = alLeft
+        OnClick = chkAutoHideClick
+        ExplicitLeft = 95
+      end
+    end
+    object Panel5: TPanel
+      Left = 10
+      Top = 0
+      Width = 244
+      Height = 21
+      Anchors = [akLeft, akTop, akRight]
+      BevelOuter = bvNone
+      TabOrder = 0
+      ExplicitWidth = 202
+      object cbFixedWidth: TJvXPCheckbox
+        Left = 0
+        Top = 0
+        Width = 90
+        Height = 21
+        Caption = 'Fixed Width'
+        TabOrder = 0
+        Align = alLeft
+        OnClick = cbFixedWidthClick
+      end
+      object sgbFixedWidth: TSharpeGaugeBox
+        Left = 128
+        Top = 0
+        Width = 116
+        Height = 21
+        Align = alRight
+        ParentBackground = False
+        TabOrder = 1
+        TabStop = True
+        Min = 10
+        Max = 90
+        Value = 50
+        Suffix = '%'
+        Description = 'Adjust to set the transparency'
+        PopPosition = ppBottom
+        PercentDisplay = False
+        MaxPercent = 100
+        Formatting = '%d'
+        OnChangeValue = sgbFixedWidthChangeValue
+        BackgroundColor = clWindow
+      end
+    end
+  end
   object vals: TJvValidators
     ErrorIndicator = errorinc
-    Left = 168
-    Top = 88
+    Left = 80
+    Top = 152
     object valBarName: TJvCustomValidator
       ControlToValidate = edName
       PropertyToValidate = 'Text'
@@ -238,8 +332,8 @@ object frmEditwnd: TfrmEditwnd
     BlinkStyle = ebsNeverBlink
     Images = pilError
     ImageIndex = 0
-    Left = 152
-    Top = 72
+    Left = 40
+    Top = 152
   end
   object pilError: TPngImageList
     PngImages = <
@@ -272,8 +366,8 @@ object frmEditwnd: TfrmEditwnd
         Name = 'PngImage0'
         Background = clWindow
       end>
-    Left = 108
-    Top = 64
+    Left = 4
+    Top = 152
     Bitmap = {}
   end
 end
