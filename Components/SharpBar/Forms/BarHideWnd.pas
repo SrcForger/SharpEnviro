@@ -17,6 +17,7 @@ type
     procedure curPosTimerTimer(Sender: TObject);
   private
     FDragging : Boolean;
+    FDragEdge : Boolean;
 
     procedure WMMove(var msg : TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
   public
@@ -61,22 +62,25 @@ begin
     begin
       if (not SharpBarMainForm.SharpEBar.DisableHideBar) and (not SharpBarMainForm.SharpEBar.AutoHide) and (not SharpBarMainForm.Visible) then
       begin
-        FDragging := (GetMouseDown(VK_LBUTTON)) and (Self.Cursor = crSizeNS);
+        FDragging := (GetMouseDown(VK_LBUTTON)) and (FDragEdge);
 
         if (pt.Y >= SharpBarMainForm.Top + (SharpBarMainForm.Height div 2)) and (FDragging) then
         begin
+          FDragEdge := False;
           ShowBar(True);
-          FDragging := False;
+          Exit;
         end;
 
         if (FDragging) or ((pt.Y >= SharpBarMainForm.Top) and (pt.Y < SharpBarMainForm.Top + 1) and (not GetMouseDown(VK_LBUTTON))) then
         begin
           Self.Cursor := crSizeNS;
           Screen.Cursor := crSizeNS;
-        end else if (not FDragging) and (Self.Cursor = crSizeNS) then
+          FDragEdge := True;
+        end else if (not FDragging) and (FDragEdge) then
         begin
           Self.Cursor := crDefault;
           Screen.Cursor := crDefault;
+          FDragEdge := False;
         end;
       end;
     // Bottom Bar
@@ -84,22 +88,25 @@ begin
     begin
       if (not SharpBarMainForm.SharpEBar.DisableHideBar) and (not SharpBarMainForm.SharpEBar.AutoHide) and (not SharpBarMainForm.Visible) then
       begin
-        FDragging := (GetMouseDown(VK_LBUTTON)) and (Self.Cursor = crSizeNS);
+        FDragging := (GetMouseDown(VK_LBUTTON)) and (FDragEdge);
 
         if (pt.Y <= Monitor.Top + Monitor.Height - (SharpBarMainForm.Height div 2)) and (FDragging) then
         begin
+          FDragEdge := False;
           ShowBar(True);
-          FDragging := False;
+          Exit;
         end;
 
         if (FDragging) or ((pt.Y >= Monitor.Top + Monitor.Height - 1) and (pt.Y < Monitor.Top + Monitor.Height) and (not GetMouseDown(VK_LBUTTON))) then
         begin
           Self.Cursor := crSizeNS;
           Screen.Cursor := crSizeNS;
-        end else if (not FDragging) and (Self.Cursor = crSizeNS) then
+          FDragEdge := True;
+        end else if (not FDragging) and (FDragEdge) then
         begin
           Self.Cursor := crDefault;
           Screen.Cursor := crDefault;
+          FDragEdge := False;
         end;
       end;
     end;
@@ -188,6 +195,7 @@ end;
 procedure TBarHideForm.StartDrag;
 begin
   FDragging := True;
+  FDragEdge := True;
   curPosTimer.Enabled := True;
   Self.Cursor := crSizeNS;
 end;
@@ -202,6 +210,7 @@ begin
   top := -4096;
 
   FDragging := False;
+  FDragEdge := False;
 end;
 
 procedure TBarHideForm.FormMouseUp(Sender: TObject; Button: TMouseButton;
