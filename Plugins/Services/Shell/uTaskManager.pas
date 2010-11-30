@@ -210,8 +210,11 @@ begin
   ThreadItem.UpdateEvent := UpdateEvent;
   
   EnterCriticalSection(TaskCritSect);
-  FItems.Add(ThreadItem);
-  LeaveCriticalSection(TaskCritSect);
+  try
+    FItems.Add(ThreadItem);
+  finally
+    LeaveCriticalSection(TaskCritSect);
+  end;
 end;
 
 procedure TTaskItemUpdateThread.Remove(wnd : HWND);
@@ -221,18 +224,21 @@ begin
   i := 0;
 
   EnterCriticalSection(TaskCritSect);
-  while True do
-  begin
-    if i >= FItems.Count then
-      break;
-
-    if TTaskThreadItem(FItems.Items[i]).Item.Handle = wnd then
+  try
+    while True do
     begin
-      FItems.Remove(FItems.Items[i]);
-    end else
-      i := i + 1;
+      if i >= FItems.Count then
+        break;
+
+      if TTaskThreadItem(FItems.Items[i]).Item.Handle = wnd then
+      begin
+        FItems.Remove(FItems.Items[i]);
+      end else
+        i := i + 1;
+    end;
+  finally
+    LeaveCriticalSection(TaskCritSect);
   end;
-  LeaveCriticalSection(TaskCritSect);
 end;
 
 procedure TTaskItemUpdateThread.DoUpdate;
@@ -246,12 +252,15 @@ begin
   while not Terminated do
   begin
     EnterCriticalSection(TaskCritSect);
-    if FItems.Count > 0 then
-    begin
-      FCurItem := TTaskThreadItem(FItems.Extract(FItems.Items[0]));
-    end else
-      FCurItem := nil;
-    LeaveCriticalSection(TaskCritSect);
+    try
+      if FItems.Count > 0 then
+      begin
+        FCurItem := TTaskThreadItem(FItems.Extract(FItems.Items[0]));
+      end else
+        FCurItem := nil;
+    finally
+      LeaveCriticalSection(TaskCritSect);
+    end;
 
     if Assigned(FCurItem) then
     begin
@@ -341,8 +350,11 @@ begin
           FUpdateThread.Add(pItem, FOnUpdateTask);
           FUpdateThread.Resume;
           bUsingThread := True;
-        end else pItem.UpdateFromHwnd;
-      end else pItem.UpdateNonCriticalFromHwnd;
+        end else
+          pItem.UpdateFromHwnd;
+      end else
+        pItem.UpdateNonCriticalFromHwnd;
+        
       if Assigned(FOnUpdateTask) and (not bUsingThread) then
         FOnUpdateTask(pItem,n);
     end;
@@ -461,7 +473,6 @@ var
   pItem : TTaskItem;
   n : integer;
   wndclass : String;
-  bUsingThread : boolean;
 begin
   if not FEnabled then exit;
 
@@ -474,18 +485,15 @@ begin
       begin
         FLastActiveTask := pHandle;
         GetWindowRect(FLastActiveTask,FLastActiveTaskPos);
-        bUsingThread := False;
+
         if not FListMode then
-        begin
-          {if (FMultiThreading and Assigned(FOnActivateTask)) then
-          begin
-            FUpdateThread.Add(pItem, FOnActivateTask);
-            FUpdateThread.Resume;
-            bUsingThread := True;
-          end else} pItem.UpdateFromHwnd;
-        end else pItem.UpdateNonCriticalFromHwnd;
-        if Assigned(OnActivateTask) and (not bUsingThread) then
+          pItem.UpdateFromHwnd
+        else
+          pItem.UpdateNonCriticalFromHwnd;
+          
+        if Assigned(OnActivateTask) then
           FOnActivateTask(pItem,n);
+          
         exit;
       end;
     end;
@@ -565,6 +573,7 @@ begin
         OnRemoveTask(pItem,n);
 
       FUpdateThread.Remove(pItem.Handle);
+      FUpdateThread.Resume;
 
       pItem.Free;
       break;
