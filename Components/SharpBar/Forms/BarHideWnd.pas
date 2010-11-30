@@ -9,8 +9,6 @@ uses
 type
   TBarHideForm = class(TForm)
     curPosTimer: TTimer;
-    procedure FormMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure CreateParams(var Params: TCreateParams); override;
@@ -66,6 +64,7 @@ begin
 
         if (pt.Y >= SharpBarMainForm.Top + (SharpBarMainForm.Height div 2)) and (FDragging) then
         begin
+          Self.Cursor := crDefault;
           FDragEdge := False;
           ShowBar(True);
           Exit;
@@ -92,6 +91,7 @@ begin
 
         if (pt.Y <= Monitor.Top + Monitor.Height - (SharpBarMainForm.Height div 2)) and (FDragging) then
         begin
+          Self.Cursor := crDefault;
           FDragEdge := False;
           ShowBar(True);
           Exit;
@@ -126,6 +126,7 @@ end;
 
 procedure TBarHideForm.ShowBar(fromDrag : Boolean);
 begin
+  BarHideForm.Hide;
   SharpBarMainForm.Show;
   if fromDrag then
     SharpBarMainForm.StartDrag;
@@ -149,7 +150,7 @@ begin
     // Display a Tooltop if bar was hidden for the first time
     if SharpBarMainForm.FirstHide then
     begin
-      SharpBarMainForm.ShowNotify('The SharpBar is now invisible because you left clicked the screen border. You can show the SharpBar again by left clicking the screen border another time.',True);
+      SharpBarMainForm.ShowNotify('The bar is now invisible because you dragged the border. You can show the bar again by dragging the bar downwards or upwards depending on what position the bar is in.',True);
       SharpBarMainForm.FirstHide := False;
       SharpBarMainForm.SaveBarTooltipSettings;
     end;
@@ -211,43 +212,6 @@ begin
 
   FDragging := False;
   FDragEdge := False;
-end;
-
-procedure TBarHideForm.FormMouseUp(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-begin
-  if Button = mbRight then
-   if (Y=Height-1) and (SharpBarMainForm.SharpEBar.VertPos = vpBottom)
-      or (Y=0) and (SharpBarMainForm.SharpEBar.VertPos = vpTop) then
-   begin
-     if ssShift in Shift then
-     begin
-       // Toggle Mini Throbbers
-       ModuleManager.ShowMiniThrobbers := not ModuleManager.ShowMiniThrobbers;
-       ModuleManager.ReCalculateModuleSize;
-       SharpBarMainForm.SharpEBar.Throbber.Repaint;
-     end else
-     begin
-       // Toggle Main Throbber
-       if ModuleManager.Modules.Count = 0 then
-       begin
-         SharpBarMainForm.SharpEBar.ShowThrobber := True;
-         exit;
-       end;
-       SharpBarMainForm.SharpEBar.ShowThrobber := not SharpBarMainForm.SharpEBar.ShowThrobber;
-       ModuleManager.ReCalculateModuleSize;
-       if SharpBarMainForm.SharpEBar.ShowThrobber then SharpBarMainForm.SharpEBar.Throbber.Repaint;
-       ModuleManager.BroadcastPluginUpdate(suBackground);
-
-       // Display a tooltip if throbber was hidden for the first time
-       if not SharpBarMainForm.SharpEBar.ShowThrobber and SharpBarMainForm.FirstThrobberHide then
-       begin
-         SharpBarMainForm.ShowNotify('The Main Button of the SharpBar was disabled because you right clicked the screen border. You can show the Button again by right clicking the screen border another time.',False);
-         SharpBarMainForm.FirstThrobberHide := False;
-         SharpBarMainForm.SaveBarTooltipSettings;
-       end;
-     end;
-   end;
 end;
 
 end.

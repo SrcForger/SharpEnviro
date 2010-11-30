@@ -106,8 +106,6 @@ type
     procedure miLeftModuleClick(Sender: TObject);
     procedure Delete1Click(Sender: TObject);
     procedure SettingsClick(Sender: TObject);
-    procedure FormMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
     procedure SharpEBar1ThrobberMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure SharpEBar1ThrobberMouseUp(Sender: TObject; Button: TMouseButton;
@@ -2101,7 +2099,7 @@ begin
   // Display a Tooltop if bar was hidden for the first time
   if (FFirstHide) then
   begin
-    ShowNotify('The SharpBar is now invisible because you left clicked the screen border. You can show the SharpBar again by left clicking the screen border another time.',True);
+    ShowNotify('The bar is now invisible because you dragged the border. You can show the bar again by dragging the bar downwards or upwards depending on what position the bar is in.',True);
     FFirstHide := False;
     SaveBarTooltipSettings;
   end;
@@ -2117,40 +2115,6 @@ begin
     GetCursorPos(pt);
     StartAutoHide(WindowFromPoint(pt));
   end;
-end;
-
-procedure TSharpBarMainForm.FormMouseUp(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-begin
-  if Button = mbRight then
-    if (Y = Height - 1) and (SharpEBar.VertPos = vpBottom)
-      or (Y = 0) and (SharpEBar.VertPos = vpTop) then begin
-      if ssShift in Shift then begin
-        // Toggle Mini Throbbers
-        ModuleManager.ShowMiniThrobbers := not ModuleManager.ShowMiniThrobbers;
-        ModuleManager.ReCalculateModuleSize;
-        SharpEBar.Throbber.Repaint;
-      end
-      else begin
-        // Toggle Main Throbber
-        if ModuleManager.Modules.Count = 0 then begin
-          SharpEBar.ShowThrobber := True;
-          exit;
-        end;
-        SharpEBar.ShowThrobber := not SharpEBar.ShowThrobber;
-        ModuleManager.ReCalculateModuleSize;
-        if SharpEBar.ShowThrobber then
-          SharpEBar.Throbber.Repaint;
-
-        // Display a tooltip if throbber was hidden for the first time
-        if not SharpEBar.ShowThrobber and FirstThrobberHide then
-        begin
-          ShowNotify('The Main Button of the SharpBar was disabled because you right clicked the screen border. You can show the Button again by right clicking the screen border another time.',False);
-          FirstThrobberHide := False;
-          SaveBarTooltipSettings;
-        end;
-      end;
-    end;
 end;
 
 procedure TSharpBarMainForm.FormPaint(Sender: TObject);
@@ -2453,12 +2417,13 @@ begin
 
         if (pt.Y = Self.Top) and (FDragging) then
         begin
+          Self.Cursor := crDefault;
           FDragEdge := False;
           HideBar(True);
           exit;
         end;
 
-        if (FDragging) or ((pt.Y >= Self.Top + Self.Height - 5) and (pt.Y < Self.Top + Self.Height) and (not GetMouseDown(VK_LBUTTON))) then
+        if (FDragging) or ((pt.Y >= Self.Top + Self.Height - 3) and (pt.Y < Self.Top + Self.Height) and (not GetMouseDown(VK_LBUTTON))) then
         begin
           Self.Cursor := crSizeNS;
           Screen.Cursor := crSizeNS;
@@ -2491,12 +2456,13 @@ begin
 
         if (pt.Y = Self.Top + Self.Height - 1) and (FDragging) then
         begin
+          Self.Cursor := crDefault;
           FDragEdge := False;
           HideBar(True);
           Exit;
         end;
 
-        if (FDragging) or ((pt.Y >= Self.Top) and (pt.Y < Self.Top + 5) and (not GetMouseDown(VK_LBUTTON))) then
+        if (FDragging) or ((pt.Y >= Self.Top) and (pt.Y < Self.Top + 3) and (not GetMouseDown(VK_LBUTTON))) then
         begin
           Self.Cursor := crSizeNS;
           Screen.Cursor := crSizeNS;
