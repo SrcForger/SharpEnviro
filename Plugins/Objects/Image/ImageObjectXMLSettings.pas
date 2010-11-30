@@ -47,6 +47,7 @@ type
       LocationType : ImageLocationType;
       ImageHeight : Integer;
       ImageWidth : Integer;
+      ImageRandomize : Boolean;
       procedure LoadSettings; override;
       procedure SaveSettings(SaveToFile : boolean); reintroduce;
 
@@ -68,6 +69,7 @@ begin
     LocationType := ImageLocationType(IntValue('LocationType', Int64(ilFile)));
     ImageHeight := IntValue('ImageHeight', 500);
     ImageWidth := IntValue('ImageWidth', 500);
+    ImageRandomize := BoolValue('ImageRandomize', True);
   end;
 end;
 
@@ -86,6 +88,7 @@ begin
     Add('LocationType', Int64(LocationType));
     Add('ImageHeight', ImageHeight);
     Add('ImageWidth', ImageWidth);
+    Add('ImageRandomize', ImageRandomize);
   end;
 
   inherited FinishSaveSettings(SaveToFile);

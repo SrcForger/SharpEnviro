@@ -296,7 +296,11 @@ begin
     begin
       if FDirectoryImages.Count > 0 then
       begin
-        FDirectoryImageIndex := FDirectoryImageIndex + 1;
+        if FSettings.ImageRandomize then
+          FDirectoryImageIndex := Random(FDirectoryImages.Count)
+        else
+          FDirectoryImageIndex := FDirectoryImageIndex + 1;
+          
         if FDirectoryImageIndex = FDirectoryImages.Count then
           FDirectoryImageIndex := 0;
         LoadImage(FDirectoryImages[FDirectoryImageIndex], tempBmp);

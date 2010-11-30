@@ -133,6 +133,7 @@ begin
         sgbDirectoryInterval.Value := RefreshInterval;
         sgbDirectoryHeight.Value := ImageHeight;
         sgbDirectoryWidth.Value := ImageWidth;
+        chkDirectoryRandomize.Checked := ImageRandomize;
       end;
     end;
     ITheme := GetCurrentTheme;
@@ -210,6 +211,7 @@ begin
       begin
         ImageHeight := sgbDirectoryHeight.Value;
         ImageWidth := sgbDirectoryWidth.Value;
+        ImageRandomize := chkDirectoryRandomize.Checked;
         LocationType := ilDirectory;
         RefreshInterval := sgbDirectoryInterval.Value;
         Path := imageDirectory.Text;

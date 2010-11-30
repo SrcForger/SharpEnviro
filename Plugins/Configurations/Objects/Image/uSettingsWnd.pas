@@ -121,9 +121,9 @@ type
     pageDirectory: TJvStandardPage;
     pnlDirectory: TPanel;
     imageDirectory: TEdit;
-    pnlDirectoryInterval: TPanel;
+    pnlDirectoryOptions: TPanel;
     sgbDirectoryInterval: TSharpeGaugeBox;
-    schDirectoryInterval: TSharpECenterHeader;
+    schDirectoryOptions: TSharpECenterHeader;
     schDirectory: TSharpECenterHeader;
     schDirectoryDimensions: TSharpECenterHeader;
     pnlDirectoryDimensions: TPanel;
@@ -133,6 +133,7 @@ type
     schURLScaling: TSharpECenterHeader;
     pnlURLScaling: TPanel;
     sgbURLScaling: TSharpeGaugeBox;
+    chkDirectoryRandomize: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure sgbFileScalingChangeValue(Sender: TObject; Value: Integer);
     procedure UIC_Reset(Sender: TObject);
@@ -153,6 +154,7 @@ type
     procedure sgbDirectoryWidthChangeValue(Sender: TObject; Value: Integer);
     procedure sgbDirectoryIntervalChangeValue(Sender: TObject; Value: Integer);
     procedure IconColorsExpandCollapse(ASender: TObject);
+    procedure chkDirectoryRandomizeClick(Sender: TObject);
   private
     FPluginHost: ISharpCenterHost;
     function GetChangedControlCount: integer;
@@ -203,6 +205,11 @@ procedure TfrmSettings.sgbDirectoryIntervalChangeValue(Sender: TObject;
   Value: Integer);
 begin
  UpdateSettingsChanged;
+end;
+
+procedure TfrmSettings.chkDirectoryRandomizeClick(Sender: TObject);
+begin
+  UpdateSettingsChanged;
 end;
 
 procedure TfrmSettings.sgbDirectoryWidthChangeValue(Sender: TObject;
