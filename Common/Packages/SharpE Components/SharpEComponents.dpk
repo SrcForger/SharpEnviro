@@ -54,7 +54,9 @@ requires
   JvCtrlsD11R,
   JvInterpreterD11R,
   JvPageCompsD11R,
-  JvXPCtrlsD11R;
+  JvXPCtrlsD11R,
+  GR32_RS2007,
+  SharpESkinComponents;
 
 contains
   SharpEFontSelector in '..\..\Delphi Components\SharpEFontSelector\SharpEFontSelector.pas',
