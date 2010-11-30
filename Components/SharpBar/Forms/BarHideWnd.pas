@@ -61,10 +61,7 @@ begin
     begin
       if (not SharpBarMainForm.SharpEBar.DisableHideBar) and (not SharpBarMainForm.SharpEBar.AutoHide) and (not SharpBarMainForm.Visible) then
       begin
-        if (pt.Y >= SharpBarMainForm.Top) and (pt.Y < SharpBarMainForm.Top + 1) and (GetMouseDown(VK_LBUTTON)) and (Screen.Cursor = crSizeNS) then
-          FDragging := True
-        else if (not GetMouseDown(VK_LBUTTON)) then
-          FDragging := False;
+        FDragging := (GetMouseDown(VK_LBUTTON)) and (Self.Cursor = crSizeNS);
 
         if (pt.Y >= SharpBarMainForm.Top + (SharpBarMainForm.Height div 2)) and (FDragging) then
         begin
@@ -72,11 +69,11 @@ begin
           FDragging := False;
         end;
 
-        if (FDragging) or ((pt.Y >= SharpBarMainForm.Top) and (pt.Y < SharpBarMainForm.Top + 1)) then
+        if (FDragging) or ((pt.Y >= SharpBarMainForm.Top) and (pt.Y < SharpBarMainForm.Top + 1) and (not GetMouseDown(VK_LBUTTON))) then
         begin
           Self.Cursor := crSizeNS;
           Screen.Cursor := crSizeNS;
-        end else if not FDragging then
+        end else if (not FDragging) and (Self.Cursor = crSizeNS) then
         begin
           Self.Cursor := crDefault;
           Screen.Cursor := crDefault;
@@ -87,10 +84,7 @@ begin
     begin
       if (not SharpBarMainForm.SharpEBar.DisableHideBar) and (not SharpBarMainForm.SharpEBar.AutoHide) and (not SharpBarMainForm.Visible) then
       begin
-        if (pt.Y >= Monitor.Top + Monitor.Height - 1) and (pt.Y < Monitor.Top + Monitor.Height) and (GetMouseDown(VK_LBUTTON)) and (Screen.Cursor = crSizeNS) then
-          FDragging := True
-        else if (not GetMouseDown(VK_LBUTTON)) then
-          FDragging := False;
+        FDragging := (GetMouseDown(VK_LBUTTON)) and (Self.Cursor = crSizeNS);
 
         if (pt.Y <= Monitor.Top + Monitor.Height - (SharpBarMainForm.Height div 2)) and (FDragging) then
         begin
@@ -98,11 +92,11 @@ begin
           FDragging := False;
         end;
 
-        if (FDragging) or ((pt.Y >= Monitor.Top + Monitor.Height - 1) and (pt.Y < Monitor.Top + Monitor.Height)) then
+        if (FDragging) or ((pt.Y >= Monitor.Top + Monitor.Height - 1) and (pt.Y < Monitor.Top + Monitor.Height) and (not GetMouseDown(VK_LBUTTON))) then
         begin
           Self.Cursor := crSizeNS;
           Screen.Cursor := crSizeNS;
-        end else if not FDragging then
+        end else if (not FDragging) and (Self.Cursor = crSizeNS) then
         begin
           Self.Cursor := crDefault;
           Screen.Cursor := crDefault;

@@ -2446,10 +2446,7 @@ begin
     begin
       if (not SharpEBar.DisableHideBar) and (not SharpEBar.AutoHide) and (Self.Visible) then
       begin
-        if (pt.Y >= Self.Top) and (pt.Y < Self.Top + Self.Height) and (GetMouseDown(VK_LBUTTON)) and (Screen.Cursor = crSizeNS) then
-          FDragging := True
-        else if (not GetMouseDown(VK_LBUTTON)) then
-          FDragging := False;
+        FDragging := (GetMouseDown(VK_LBUTTON)) and (Self.Cursor = crSizeNS);
 
         if (pt.Y = Self.Top) and (FDragging) then
         begin
@@ -2457,11 +2454,11 @@ begin
           FDragging := False;
         end;
 
-        if (FDragging) or ((pt.Y >= Self.Top + Self.Height - 5) and (pt.Y < Self.Top + Self.Height)) then
+        if (FDragging) or ((pt.Y >= Self.Top + Self.Height - 5) and (pt.Y < Self.Top + Self.Height) and (not GetMouseDown(VK_LBUTTON))) then
         begin
           Self.Cursor := crSizeNS;
           Screen.Cursor := crSizeNS;
-        end else if not FDragging then         
+        end else if (not FDragging) and (Self.Cursor = crSizeNS) then         
         begin
           Self.Cursor := crDefault;
           Screen.Cursor := crDefault;
@@ -2484,10 +2481,7 @@ begin
     begin
       if (not SharpEBar.DisableHideBar) and (not SharpEBar.AutoHide) and (Self.Visible) then
       begin
-        if (pt.Y >= Self.Top) and (pt.Y < Self.Top + Self.Height) and (GetMouseDown(VK_LBUTTON)) and (Screen.Cursor = crSizeNS) then
-          FDragging := True
-        else if (not GetMouseDown(VK_LBUTTON)) then
-          FDragging := False;
+        FDragging := (GetMouseDown(VK_LBUTTON)) and (Self.Cursor = crSizeNS);
 
         if (pt.Y = Self.Top + Self.Height - 1) and (FDragging) then
         begin
@@ -2495,11 +2489,11 @@ begin
           FDragging := False;
         end;
 
-        if (FDragging) or ((pt.Y >= Self.Top) and (pt.Y < Self.Top + 5)) then
+        if (FDragging) or ((pt.Y >= Self.Top) and (pt.Y < Self.Top + 5) and (not GetMouseDown(VK_LBUTTON))) then
         begin
           Self.Cursor := crSizeNS;
           Screen.Cursor := crSizeNS;
-        end else if not FDragging then         
+        end else if (not FDragging) and (Self.Cursor = crSizeNS) then
         begin
           Self.Cursor := crDefault;
           Screen.Cursor := crDefault;
