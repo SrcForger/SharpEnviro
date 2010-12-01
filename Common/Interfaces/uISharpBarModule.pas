@@ -19,6 +19,7 @@ type
     function SetTopHeight(Top,Height : integer) : HRESULT; stdcall;
     function UpdateMessage(part : TSU_UPDATE_ENUM; param : integer) : HRESULT; stdcall;
     function InitModule : HRESULT; stdcall;
+    function Loaded : HRESULT; stdcall;
     function ModuleMessage(msg: string) : HRESULT; stdcall;    
 
     function GetSkinInterface : ISharpESkinInterface; stdcall;

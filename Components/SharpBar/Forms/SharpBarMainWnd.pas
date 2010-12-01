@@ -437,9 +437,10 @@ begin
     else
       break;
   end;
-  ModuleManager.LoadModule(msg.WParam, msg.LParam, LastPos, LastIndex);
+  tempModule := ModuleManager.LoadModule(msg.WParam, msg.LParam, LastPos, LastIndex);
   ModuleManager.ReCalculateModuleSize;
   ModuleManager.FixModulePositions;
+  tempModule.mInterface.Loaded;
   SaveBarSettings;
 end;
 
@@ -1029,6 +1030,7 @@ begin
     end;
   ModuleManager.ReCalculateModuleSize;
   RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
+  ModuleManager.ModulesLoaded;
 end;
 
 procedure TSharpBarMainForm.SaveBarSettings;

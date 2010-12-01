@@ -169,6 +169,7 @@ type
                      function CreateModule(MFID : integer; Position : integer; wnd : HWND = 0) : TModule;
                      function LoadModule(ID : integer; Module : String; Position,Index : integer) : TModule; overload;
                      function LoadModule(ID : integer; FromBar: integer; Position,Index : integer) : TModule; overload;
+                     procedure ModulesLoaded;
                      procedure LoadFromDirectory(pDirectory : String);
                      procedure RefreshFromDirectory(pDirectory : String);
                      procedure FixModulePositions(ForceUpdate : boolean = False);
@@ -661,6 +662,7 @@ begin
   tempModuleFile := TModuleFile(FModuleFiles.Items[MFID]);
   result := LoadModule(GenerateModuleID,ExtractFileName(tempModuleFile.FFileName),Position,-1);
   ReCalculateModuleSize;
+  result.mInterface.Loaded;
 end;
 
 // Special load funtion which copies a module from another bar!
@@ -719,6 +721,16 @@ begin
     end;
   end;
   SortModulesByPosition;
+end;
+
+procedure TModuleManager.ModulesLoaded;
+var
+  n: Integer;
+begin
+  for n := 0 to FModules.Count - 1 do
+  begin
+    TModule(FModules[n]).mInterface.Loaded;
+  end;
 end;
 
 function TModuleManager.GetModuleFileByFileName(pFileName : String) : TModuleFile;

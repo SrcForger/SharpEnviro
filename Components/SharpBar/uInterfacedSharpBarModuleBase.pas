@@ -42,6 +42,7 @@ type
     function SetTopHeight(Top,Height : integer) : HRESULT; virtual; stdcall;
     function UpdateMessage(part : TSU_UPDATE_ENUM; param : integer) : HRESULT; virtual; stdcall;
     function InitModule : HRESULT; virtual; stdcall;
+    function Loaded : HRESULT; virtual; stdcall;
     function ModuleMessage(msg: string) : HRESULT; virtual; stdcall;
 
     function GetSkinInterface : ISharpESkinInterface; stdcall;
@@ -173,6 +174,11 @@ function TInterfacedSharpBarModuleBase.InitModule : HRESULT;
 begin
   FInitialized := True;
   result := S_OK;
+end;
+
+function TInterfacedSharpBarModuleBase.Loaded : HRESULT;
+begin
+  Result := S_OK;
 end;
 
 function TInterfacedSharpBarModuleBase.ModuleMessage(msg: string) : HRESULT;
