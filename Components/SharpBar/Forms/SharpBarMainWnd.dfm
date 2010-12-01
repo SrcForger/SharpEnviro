@@ -155,12 +155,12 @@ object SharpBarMainForm: TSharpBarMainForm
     object Settings1: TMenuItem
       Caption = 'Settings'
       ImageIndex = 5
-      object AlwaysOnTop1: TMenuItem
-        Caption = 'Always On-Top'
-        OnClick = AlwaysOnTop1Click
+      object AutoHide1: TMenuItem
+        Caption = 'Auto-Hide'
+        OnClick = AutoHide1Click
       end
       object ForceAlwaysOnTop1: TMenuItem
-        Caption = 'Force Always On-Top'
+        Caption = 'Always On-Top'
         OnClick = ForceAlwaysOnTop1Click
       end
       object AutoStart1: TMenuItem

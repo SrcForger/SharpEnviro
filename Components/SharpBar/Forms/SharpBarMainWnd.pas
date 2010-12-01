@@ -75,7 +75,7 @@ type
     ColorScheme1: TMenuItem;
     ThemeHideTimer: TTimer;
     ShowMiniThrobbers1: TMenuItem;
-    AlwaysOnTop1: TMenuItem;
+    AutoHide1: TMenuItem;
     LaunchSharpCenter1: TMenuItem;
     N7: TMenuItem;
     FullscreenCheckTimer: TTimer;
@@ -130,7 +130,7 @@ type
     procedure OnSkinSelectItemClick(Sender: TObject);
     procedure OnSchemeSelectItemClick(Sender: TObject);
     procedure OnBackgroundPaint(Sender: TObject; Target: TBitmap32; x: integer);
-    procedure AlwaysOnTop1Click(Sender: TObject);
+    procedure AutoHide1Click(Sender: TObject);
     procedure BarManagment1Click(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure LaunchSharpCenter1Click(Sender: TObject);
@@ -345,7 +345,7 @@ begin
         ModuleManager.ShowMiniThrobbers := Items.BoolValue('ShowMiniThrobbers', True);
         SharpEBar.AutoHide := Items.BoolValue('AutoHide', False);
         SharpEBar.AutoHideTime := Items.IntValue('AutoHideTime', 1000);
-        SharpEBar.AlwaysOnTop := Items.BoolValue('AlwaysOnTop', False);
+        SharpEBar.AlwaysOnTop := Items.BoolValue('AlwaysOnTop', True);
         SharpEBar.ForceAlwaysOnTop := Items.BoolValue('ForceAlwaysOnTop', False);
         SharpEBar.FixedWidthEnabled := Items.BoolValue('FixedWidthEnabled', False);
         SharpEBar.FixedWidth := Max(10,Min(90,Items.IntValue('FixedWidth', 50)));
@@ -356,7 +356,9 @@ begin
 
     if (FixedWidthEnabledTemp <> SharpEBar.FixedWidthEnabled)
       or (FixedWidthTemp <> SharpEBar.FixedWidth) then
-      ModuleManager.ReCalculateModuleSize(True,True);
+      ModuleManager.ReCalculateModuleSize(True,True)
+    else
+      ModuleManager.ReCalculateModuleSize;
 
     ModuleManager.BarName := FBarName;
     SharpEBar.UpdatePosition;
@@ -1637,10 +1639,8 @@ begin
   AutoStart1.Checked := SharpEBar.AutoStart;
   DisableBarHiding1.Checked := SharpEBar.DisableHideBar;
   ShowMiniThrobbers1.Checked := ModuleManager.ShowMiniThrobbers;
-  AlwaysOnTop1.Checked := SharpEBar.AlwaysOnTop;
-  ForceAlwaysOnTop1.Enabled := AlwaysOnTop1.Checked;
-  if AlwaysOnTop1.Checked then
-    ForceAlwaysOnTop1.Checked := SharpEBar.ForceAlwaysOnTop;
+  AutoHide1.Checked := SharpEBar.AutoHide;
+  ForceAlwaysOnTop1.Checked := SharpEBar.ForceAlwaysOnTop;
 
   // Build Skin List
   Skin1.Clear;
@@ -2311,22 +2311,15 @@ begin
   ModuleManager.ReCalculateModuleSize;
 end;
 
-procedure TSharpBarMainForm.AlwaysOnTop1Click(Sender: TObject);
+procedure TSharpBarMainForm.AutoHide1Click(Sender: TObject);
 begin
-  AlwaysOnTop1.Checked := not AlwaysOnTop1.Checked;
-  SharpEBar.AlwaysOnTop := AlwaysOnTop1.Checked;
-  if SharpEBar.AutoHide then
-    SharpEBar.AlwaysOnTop := True;
+  AutoHide1.Checked := not AutoHide1.Checked;
+  SharpEBar.AutoHide := AutoHide1.Checked;
   SaveBarSettings;
-
-  ForceAlwaysOnTop1.Enabled := AlwaysOnTop1.Checked;
 end;
 
 procedure TSharpBarMainForm.ForceAlwaysOnTop1Click(Sender: TObject);
 begin
-  if not AlwaysOnTop1.Checked then
-    exit;
-
   ForceAlwaysOnTop1.Checked := not ForceAlwaysOnTop1.Checked;
   SharpEBar.ForceAlwaysOnTop := ForceAlwaysOnTop1.Checked;
   SaveBarSettings;
