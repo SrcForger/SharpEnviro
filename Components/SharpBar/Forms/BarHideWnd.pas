@@ -132,7 +132,7 @@ begin
     SharpBarMainForm.StartDrag;
 
   SharpBarMainForm.Repaint;
-  ForceForegroundWindow(SharpBarMainForm.Handle);
+  SharpBarMainForm.BringToFront;
   SharpApi.ServiceMsg('Shell','DeskAreaUpdate');
 
   if not (SharpBarMainForm.SharpEBar.SpecialHideForm) then
