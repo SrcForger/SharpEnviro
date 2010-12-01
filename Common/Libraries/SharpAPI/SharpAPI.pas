@@ -201,6 +201,7 @@ type
     AlwaysOnTop: boolean;
     AutoHide: Boolean;
     AutoHideTime: integer;
+    ForceAlwaysOnTop: Boolean;
   end;
 
   PSharpE_DataStruct = ^TSharpE_DataStruct;
