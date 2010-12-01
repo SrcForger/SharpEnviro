@@ -45,8 +45,11 @@ type
     pagNotes: TJvStandardPage;
     SharpECenterHeader1: TSharpECenterHeader;
     cb_icon: TJvXPCheckbox;
+    schNotifications: TSharpECenterHeader;
+    cbNotifications: TJvXPCheckbox;
     procedure FormCreate(Sender: TObject);
     procedure cb_iconClick(Sender: TObject);
+    procedure cbNotificationsClick(Sender: TObject);
   private
     FPluginHost: ISharpCenterHost;
     procedure UpdateSettings;
@@ -60,6 +63,11 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TfrmBMon.cbNotificationsClick(Sender: TObject);
+begin
+  UpdateSettings;
+end;
 
 procedure TfrmBMon.cb_iconClick(Sender: TObject);
 begin

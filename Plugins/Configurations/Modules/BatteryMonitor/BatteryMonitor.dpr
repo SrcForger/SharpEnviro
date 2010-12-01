@@ -80,6 +80,7 @@ begin
     Items.Clear;
 
     Items.Add('showicon', frmBMon.cb_icon.Checked);
+    Items.Add('ShowNotifications', frmBMon.cbNotifications.Checked);
 
     PluginHost.Xml.Save;
   end;
@@ -93,6 +94,7 @@ begin
     with PluginHost.Xml.XmlRoot do
     begin
       frmBMon.cb_icon.Checked := Items.BoolValue('showicon', True);
+      frmBMon.cbNotifications.Checked := Items.BoolValue('ShowNotifications', True);
     end;
   end;
 end;

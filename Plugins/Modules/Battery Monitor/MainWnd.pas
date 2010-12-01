@@ -28,10 +28,10 @@ unit MainWnd;
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls, Forms,
+  Windows, SysUtils, Classes, Controls, Forms, Types,
   Dialogs, StdCtrls, SharpEBaseControls, GR32_Resamplers,
   ExtCtrls, SharpEProgressBar, GR32, uISharpBarModule,
-  JclSimpleXML, SharpApi, Menus, Math, SharpESkinLabel;
+  JclSimpleXML, SharpApi, Menus, Math, SharpESkinLabel, SharpNotify;
 
 
 type
@@ -53,6 +53,9 @@ type
     FBStatus1 : TBitmap32;
     FBStatus2 : TBitmap32;
     FLastIcon : TBitmap32;
+    FLastStatus : Integer;
+    FShowNotifications : Boolean;
+    FInitialized : Boolean;
   public
     mInterface : ISharpBarModule;
     procedure LoadSettings;
@@ -62,6 +65,7 @@ type
     procedure RenderIcon(pRepaint : boolean = True);
     procedure LoadIcons;
     property LastIcon : TBitmap32 read FLastIcon write FLastIcon;
+    property Initialized : Boolean read FInitialized write FInitialized;
   end;
 
 
@@ -73,49 +77,23 @@ uses
 
 {$R *.dfm}
 
-function GetPowerStatus(var HasBattery: Boolean; var LoadStatusString: String;
- var LoadstatusPercent: Integer): DWORD;
+function GetPowerStatus(var HasBattery: Boolean; var LoadstatusPercent: Integer; var Charging : Boolean): DWORD;
 var
- SystemPowerStatus: TSystemPowerStatus;
- Text: string;
-resourcestring
- rsLoadStatusUnknown = 'UnKnown Status';
- rsLoadStatusNoBattery = 'No Battery';
- rsLoadStatusHigh = 'High Status';
- rsLoadStatusLow = 'Low Status';
- rsLoadStatusCritical = 'Critical Status';
- rsLoadStatusLoading = 'Loading Status';
- rsLoadSatusUnknownLoading = 'UnKnown Status';
+  SystemPowerStatus: TSystemPowerStatus;
 begin
- SetLastError(0);
- if GetSystemPowerStatus(SystemPowerStatus) then
-   with SystemPowerStatus do
-   begin
-     HasBattery := ACLineStatus = 0;
+  SetLastError(0);
+  if GetSystemPowerStatus(SystemPowerStatus) then
+    with SystemPowerStatus do
+    begin
+      HasBattery := ACLineStatus = 0;
+      Charging := (BatteryFlag and 8 = 8);
 
-     if (BatteryFlag = 255) then
-       Text := rsLoadStatusUnknown
-     else if (BatteryFlag and 128 = 128) then
-       Text := rsLoadStatusNoBattery
-     else
-     begin
-       case (BatteryFlag and (1 or 2 or 4)) of
-         1: Text := rsLoadStatusHigh;
-         2: Text := rsLoadStatusLow;
-         4: Text := rsLoadStatusCritical;
-       else
-         Text := rsLoadSatusUnknownLoading
-       end;
-       if (BatteryFlag and 8 = 8) then
-         LoadStatusString := Text + rsLoadStatusLoading;
-     end;
-
-     if (BatteryLifePercent <> 255) then
-       LoadstatusPercent := BatteryLifePercent
-     else
-       LoadstatusPercent := -1;
- end;
- Result := GetLastError;
+      if (BatteryLifePercent <> 255) then
+        LoadstatusPercent := BatteryLifePercent
+      else
+        LoadstatusPercent := -1;
+  end;
+  Result := GetLastError;
 end;
 
 procedure TMainForm.LoadIcons;
@@ -184,6 +162,7 @@ begin
       sShowPBar := BoolValue('showpbar',sShowPBar);
       sShowInfo := BoolValue('showinfo',sShowInfo);
       sShowPC   := BoolValue('showpc',sShowPC);
+      FShowNotifications := BoolValue('ShowNotifications', FShowNotifications);
     end;
   XML.Free;
   if UpdateTimer.Enabled then
@@ -207,61 +186,58 @@ end;
 procedure TMainForm.ReAlignComponents(Broadcast : boolean = True);
 var
   newWidth : integer;
-  o1,o2,o3,o4 : integer;
-  i : integer;
+  iconWidth,o2,topWidth,bottomWidth : integer;
 begin
   self.Caption := 'Battery Monitor';
 
-  o1 := 4;
+  iconWidth := 0;
   o2 := (Height - 2 - 4) div 2;
-  o3 := 2;
-  o4 := 0;
+  topWidth := 0;
+  bottomWidth := 0;
+
   if sShowIcon then
   begin
     FLastIcon := nil;
     RenderIcon;
-    o1 := o1 + Height - 4 + 2;
+    iconWidth := iconWidth + Height;
+    topWidth := iconWidth;
+    bottomWidth := iconWidth;
   end;
+
   if sShowInfo then
   begin
     lb_info.Visible := True;
-    lb_info.Left := o1-5;
+    lb_info.Left := topWidth - 2;
     lb_info.LabelStyle := lsSmall;
     lb_info.UpdateSkin;
     lb_info.Top := 2 + (o2 div 2) - (lb_info.Height div 2);
-    if CompareText(lb_info.Caption,'Battery') = 0 then
-    begin
-      lb_info.Caption := 'AC Power';
-      i := lb_info.Textwidth;
-      lb_info.Caption := 'Battery';
-    end else i := lb_info.Textwidth;
-    o3 := lb_info.Left + i + 12;
-    o4 := o3;
+    topWidth := topWidth + lb_info.Width - 2;
     lb_info.Visible := True;
   end else lb_Info.Visible := False;
+
   if sShowPC then
   begin
     lb_pc.Visible := True;
     lb_pc.LabelStyle := lsSmall;
+    lb_pc.Left := topWidth;
     lb_pc.UpdateSkin;
-    if sShowInfo then lb_pc.Left := o3 - 8
-       else lb_pc.Left := o3 - 5;
     lb_pc.Top := 2 + (o2 div 2) - (lb_pc.Height div 2);
-    o4 := max(o4,lb_pc.Left + lb_pc.Width + 2);
+    topWidth := topWidth + lb_pc.Width;
     lb_pc.Visible := True;
   end else lb_pc.Visible := False;
+
   if sShowPBar then
   begin
     pbar.AutoSize := False;
     pbar.Height := o2;
-    if sShowIcon then pbar.Width := o3 - 24
-       else pbar.Width := o4-10;
-    pbar.Left := o1;
+    pbar.Width := max(topWidth - iconWidth, 50);
+    pbar.Left := bottomWidth + 2;
     pbar.Top := Height - 2 - pbar.Height;
+    bottomWidth := bottomWidth + pbar.Width + 2;
     pbar.Visible := True;
   end else pbar.Visible := False;
 
-  NewWidth := max(o1,max(o3,o4));
+  NewWidth := max(topWidth, bottomWidth);
   mInterface.MinSize := NewWidth;
   mInterface.MaxSize := NewWidth;
   if (newWidth <> Width) and (Broadcast) then
@@ -272,12 +248,14 @@ end;
 procedure TMainForm.UpdateTimerTimer(Sender: TObject);
 var
   dwResult: DWORD;
-  HasBattery: Boolean;
-  LoadStatusString: String;
-  LoadstatusPercent: Integer;
+  HasBattery, Charging : Boolean;
+  LoadStatusPercent: Integer;
   s : String;
+  x, y : Integer;
+  edge : TSharpNotifyEdge;
+  p : TPoint;
 begin
-  dwResult := GetPowerStatus(HasBattery, LoadStatusString, LoadStatusPercent);
+  dwResult := GetPowerStatus(HasBattery, LoadStatusPercent, Charging);
   if dwResult = 0 then
   begin
     if HasBattery then
@@ -285,18 +263,54 @@ begin
     else
       s := 'AC Power';
 
-//    if length(LoadStatusString) > 0 then
-//       s := s + ' (' + LoadStatusString +')';
+    // Reset the last status to something higher then 100 when
+    // the battery is charging so that we send notifications again
+    // when the battery is no longer charging.
+    if Charging then
+      FLastStatus := 255;
 
+    // Only send a notification when we are not charging and the
+    // percentage dips below 10, 20 or 50.  Only send the notification
+    // once at each level.
+    if (not Charging) and (LoadStatusPercent >= 0) and (FInitialized) and (FShowNotifications) then
+    begin
+      // Get the cordinates on the screen where the notification window should appear.
+      p := Self.ClientToScreen(Point(0, Self.Height));
+      x := Left + (Width div 2);
+      if p.Y > Monitor.Top + Monitor.Height div 2 then
+      begin
+        edge := neBottomCenter;
+        y := p.Y - Self.Height;
+      end
+      else
+      begin
+        edge := neTopCenter;
+        y := p.Y;
+      end;
+
+      if (LoadStatusPercent <= 10) and (FLastStatus > 10) then
+        CreateNotifyWindow(0, nil, x, y, 'Battery is getting critically low, less than 10%.', niError, edge, mInterface.SkinInterface.SkinManager, 10000, Monitor.WorkareaRect)
+      else if (LoadStatusPercent <= 20) and (FLastStatus > 20) then
+        CreateNotifyWindow(0, nil, x, y, 'Battery is getting low, less than 20%.', niWarning, edge, mInterface.SkinInterface.SkinManager, 10000, Monitor.WorkareaRect)
+      else if (LoadStatusPercent <= 50) and (FLastStatus > 50) then
+        CreateNotifyWindow(0, nil, x, y, 'Battery is below 50% charged.', niInfo, edge, mInterface.SkinInterface.SkinManager, 5000, Monitor.WorkareaRect);
+    end;
+
+    FLastStatus := LoadStatusPercent;
+    
     if lb_info.Visible then
-       if CompareText(lb_info.Caption,s) <> 0 then lb_info.Caption := s;
+      if CompareText(lb_info.Caption,s) <> 0 then
+        lb_info.Caption := s;
 
     if lb_pc.Visible then
     begin
       if LoadStatusPercent >= 0 then
       begin
-        if CompareText(lb_pc.Caption,s+'%') <> 0 then lb_pc.Caption := IntToStr(LoadStatusPercent)+'%';
-      end else if CompareText(lb_pc.Caption,'') <> 0 then lb_pc.Caption := '';
+        if CompareText(lb_pc.Caption,s+'%') <> 0 then
+          lb_pc.Caption := IntToStr(LoadStatusPercent)+'%';
+      end
+      else if CompareText(lb_pc.Caption,'') <> 0 then
+        lb_pc.Caption := '';
     end;
 
     if pbar.Visible then
@@ -339,6 +353,9 @@ begin
   FLastIcon := nil;
   FBStatus1 := TBitmap32.Create;
   FBStatus2 := TBitmap32.Create;
+  FLastStatus := -1;
+
+  FShowNotifications := True;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);

@@ -58,6 +58,7 @@ type
       function SetTopHeight(Top,Height : integer) : HRESULT; override;
       function UpdateMessage(part : TSU_UPDATE_ENUM; param : integer) : HRESULT; override;
       function InitModule : HRESULT; override;
+      function Loaded : HRESULT; override;
 
       procedure SetSkinInterface(Value : ISharpESkinInterface); override;
       procedure SetSize(Value : integer); override;
@@ -109,10 +110,20 @@ begin
 
   if Form <> nil then
   begin
-    TMainForm(Form).UpdateTimer.Enabled := True;
     TMainForm(Form).LoadSettings;
-    TMainForm(Form).UpdateTimerTimer(TMainForm(Form).UpdateTimer);    
+    TMainForm(Form).UpdateTimerTimer(TMainForm(Form).UpdateTimer);
     TMainForm(Form).RealignComponents;
+  end;
+end;
+
+function TInterfacedSharpBarModule.Loaded : HRESULT;
+begin
+  Result := inherited Loaded;
+
+  if Form <> nil then
+  begin
+    TMainForm(Form).UpdateTimer.Enabled := True;
+    TMainForm(Form).Initialized := True;
   end;
 end;
 

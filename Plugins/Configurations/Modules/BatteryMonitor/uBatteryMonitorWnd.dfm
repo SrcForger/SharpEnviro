@@ -57,6 +57,8 @@ object frmBMon: TfrmBMon
         Margins.Bottom = 10
         Caption = 'Display the icon'
         TabOrder = 1
+        Checked = True
+        State = cbChecked
         Align = alTop
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
@@ -65,8 +67,50 @@ object frmBMon: TfrmBMon
         Font.Style = []
         ParentFont = False
         OnClick = cb_iconClick
-        ExplicitLeft = 20
-        ExplicitWidth = 635
+      end
+      object schNotifications: TSharpECenterHeader
+        AlignWithMargins = True
+        Left = 5
+        Top = 74
+        Width = 650
+        Height = 37
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 10
+        Title = 'Notifications'
+        Description = 
+          'Would you like to be notified when the power status goes below 5' +
+          '0, 20 and 10 percent?'
+        TitleColor = clWindowText
+        DescriptionColor = clGrayText
+        Align = alTop
+        Color = clWindow
+        ExplicitTop = 111
+      end
+      object cbNotifications: TJvXPCheckbox
+        AlignWithMargins = True
+        Left = 5
+        Top = 121
+        Width = 650
+        Height = 17
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 10
+        Caption = 'Display notifications'
+        TabOrder = 3
+        Checked = True
+        State = cbChecked
+        Align = alTop
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        OnClick = cbNotificationsClick
+        ExplicitTop = 148
       end
     end
   end

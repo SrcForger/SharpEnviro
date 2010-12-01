@@ -22,7 +22,6 @@ object MainForm: TMainForm
     Width = 12
     Height = 21
     AutoSize = True
-    Caption = '.'
     AutoPos = apTop
     LabelStyle = lsMedium
   end
@@ -43,7 +42,6 @@ object MainForm: TMainForm
     Width = 12
     Height = 21
     AutoSize = True
-    Caption = '.'
     AutoPos = apTop
     LabelStyle = lsMedium
   end
