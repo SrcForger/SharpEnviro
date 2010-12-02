@@ -47,6 +47,8 @@ type
   TTaskThreadItem = class
     Item: TTaskItem;
     UpdateEvent: TTaskChangeEvent;
+    constructor Create; reintroduce;
+    destructor Destroy; override;
   end;
 
   TTaskItemUpdateThread = class(TThread)
@@ -104,6 +106,7 @@ type
     function GetCount : integer;
     function GetItemByHandle(pHandle : hwnd) : TTaskItem;
     function GetItemByIndex(Index : integer) : TTaskItem;
+    function GetCurrentUpdateThreadHandle : hwnd;
     constructor Create; reintroduce;
     destructor Destroy; override;
 
@@ -121,6 +124,7 @@ type
     property ItemCount      : integer          read GetCount;
     property LastActiveTask : hwnd             read FLastActiveTask write FLastActiveTask;
     property LastActiveTaskPos : TRect         read FLastActiveTaskPos write FLastActiveTaskPos;
+    property CurrentUpdateThreadHandle : hwnd  read GetCurrentUpdateThreadHandle;
   end;
 
   TTaskMsgManager = Class(Tobject)
@@ -185,7 +189,7 @@ begin
   inherited Create(True);
 
   FItems := TObjectList.Create;
-  FItems.OwnsObjects := False;
+  FItems.OwnsObjects := True;
   FCurItem := nil;
 end;
 
@@ -193,8 +197,8 @@ destructor TTaskItemUpdateThread.Destroy;
 var
   i : integer;
 begin
-  for i := 0 to FItems.Count - 1 do
-    FItems.Items[i].Free;
+  for i := FItems.Count - 1 downto 0 do
+    FItems.Delete(i);
 
   FItems.Free;
 
@@ -221,24 +225,9 @@ procedure TTaskItemUpdateThread.Remove(wnd : HWND);
 var
   i : integer;
 begin
-  i := 0;
-
-  EnterCriticalSection(TaskCritSect);
-  try
-    while True do
-    begin
-      if i >= FItems.Count then
-        break;
-
-      if TTaskThreadItem(FItems.Items[i]).Item.Handle = wnd then
-      begin
-        FItems.Remove(FItems.Items[i]);
-      end else
-        i := i + 1;
-    end;
-  finally
-    LeaveCriticalSection(TaskCritSect);
-  end;
+  for i := FItems.Count - 1 downto 0 do
+    if TTaskThreadItem(FItems.Items[i]).Item.Handle = wnd then
+      FItems.Delete(i);
 end;
 
 procedure TTaskItemUpdateThread.DoUpdate;
@@ -254,10 +243,8 @@ begin
     EnterCriticalSection(TaskCritSect);
     try
       if FItems.Count > 0 then
-      begin
-        FCurItem := TTaskThreadItem(FItems.Extract(FItems.Items[0]));
-      end else
-        FCurItem := nil;
+        FCurItem := TTaskThreadItem(FItems.Extract(FItems.Items[0]))
+      else FCurItem := nil;
     finally
       LeaveCriticalSection(TaskCritSect);
     end;
@@ -265,15 +252,13 @@ begin
     if Assigned(FCurItem) then
     begin
       FCurItem.Item.UpdateFromHwnd;
-      DoUpdate;
+      Synchronize(DoUpdate); // Synchronize with an eventual VCL GUI thread
 
-      FreeAndNil(FCurItem.Item);
+      EnterCriticalSection(TaskCritSect);
       FreeAndNil(FCurItem);
-
-      Sleep(500);
-    end else
-      Suspend;
-      
+      FCurItem := nil;
+      LeaveCriticalSection(TaskCritSect);
+    end else Suspend;
   end;
 end;
 
@@ -315,6 +300,24 @@ begin
   result := FItems.Count;
 end;
 
+function TTaskManager.GetCurrentUpdateThreadHandle: hwnd;
+begin
+  result := 0;
+
+  if FUpdateThread = nil then
+    exit;
+
+  EnterCriticalSection(TaskCritSect);
+  try
+    if FUpdateThread.FCurItem = nil then
+      exit;
+
+    result := FUpdateThread.FCurItem.Item.Handle;
+  finally
+    LeaveCriticalSection(TaskCritSect);
+  end;
+end;
+
 function TTaskManager.GetItemByIndex(Index : integer) : TTaskItem;
 begin
   result := nil;
@@ -350,10 +353,8 @@ begin
           FUpdateThread.Add(pItem, FOnUpdateTask);
           FUpdateThread.Resume;
           bUsingThread := True;
-        end else
-          pItem.UpdateFromHwnd;
-      end else
-        pItem.UpdateNonCriticalFromHwnd;
+        end else pItem.UpdateFromHwnd;
+      end else pItem.UpdateNonCriticalFromHwnd;
         
       if Assigned(FOnUpdateTask) and (not bUsingThread) then
         FOnUpdateTask(pItem,n);
@@ -569,11 +570,17 @@ begin
       // this makes it possible for the application to use the still existing
       // TTaskItem to gather information about which window will be removed
       FItems.Extract(pItem);
+
+      if ((not FListMode) and Multithreading) then
+      begin
+        EnterCriticalSection(TaskCritSect);
+        FUpdateThread.Remove(pItem.Handle);
+        LeaveCriticalSection(TaskCritSect);
+        FUpdateThread.Resume;
+      end;      
+
       if Assigned(OnRemoveTask) then
         OnRemoveTask(pItem,n);
-
-      FUpdateThread.Remove(pItem.Handle);
-      FUpdateThread.Resume;
 
       pItem.Free;
       break;
@@ -817,6 +824,21 @@ end;
 procedure TTaskMsgManager.UnregisterHook;
 begin
   RegisterShellHook(WindowsClass.MsTaskSwWClass,0);
+end;
+
+{ TTaskThreadItem }
+
+constructor TTaskThreadItem.Create;
+begin
+  Item := nil;
+end;
+
+destructor TTaskThreadItem.Destroy;
+begin
+  if Assigned(Item) then
+    Item.Free;
+
+  inherited;
 end;
 
 end.
