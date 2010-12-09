@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Curses>
+  <Info>
+	<name>DMZ White</name>
+    <author>Jakub Steiner</author>
+    <Website>http://jimmac.musichall.cz/themes.php?skin=7</Website>
+    <Info>DZM White cursors</Info>
+    <version>0.8</version>
+  </Info>
+  <Cursors>
+	<AppStarting>
+		<File>Busy.ani</File>
+		<ReplaceColor>0</ReplaceColor>
+	</AppStarting>
+	<Hand>
+		<File>Link Select.cur</File>
+		<ReplaceColor>0</ReplaceColor>
+	</Hand>
+	<IBeam>
+		<File>Text Select.cur</File>
+		<ReplaceColor>0</ReplaceColor>
+	</IBeam>
+	<No>
+		<File>Unavailable.cur</File>
+		<ReplaceColor>0</ReplaceColor>
+	</No>
+	<Normal>
+		<File>Normal Select.cur</File>
+		<ReplaceColor>0</ReplaceColor>
+	</Normal>
+	<SizeAll>
+		<File>Precision Select.cur</File>
+		<ReplaceColor>0</ReplaceColor>
+	</SizeAll>
+	<SizeNESW>
+		<File>Diagonal Resize 2.cur</File>
+		<ReplaceColor>0</ReplaceColor>
+	</SizeNESW>
+	<SizeNS>
+		<File>Vertical Resize.cur</File>
+		<ReplaceColor>0</ReplaceColor>
+	</SizeNS>
+	<SizeNWSE>
+		<File>Diagonal Resize 1.cur</File>
+		<ReplaceColor>0</ReplaceColor>
+	</SizeNWSE>
+	<SizeWE>
+		<File>Horizontal Resize.cur</File>
+		<ReplaceColor>0</ReplaceColor>
+	</SizeWE>
+	<Wait>
+		<File>Working In Background.ani</File>
+		<ReplaceColor>0</ReplaceColor>
+	</Wait>
+  </Cursors>
+</Curses>
