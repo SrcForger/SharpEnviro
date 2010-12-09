@@ -474,10 +474,12 @@ var
   pItem : TTaskItem;
   n : integer;
   wndclass : String;
+  bUsingThread : boolean;
 begin
   if not FEnabled then exit;
 
   RemoveDeadTasks;
+  bUsingthread := False;  
   if FItems.Count > 0 then
     for n := 0 to FItems.Count -1 do
     begin
@@ -488,11 +490,16 @@ begin
         GetWindowRect(FLastActiveTask,FLastActiveTaskPos);
 
         if not FListMode then
-          pItem.UpdateFromHwnd
-        else
-          pItem.UpdateNonCriticalFromHwnd;
+        begin
+          if (FMultiThreading and Assigned(FOnUpdateTask)) then
+          begin
+            FUpdateThread.Add(pItem, FOnUpdateTask);
+            FUpdateThread.Resume;
+            bUsingThread := True;
+          end else pItem.UpdateFromHwnd;
+        end else pItem.UpdateNonCriticalFromHwnd;
           
-        if Assigned(OnActivateTask) then
+        if (Assigned(OnActivateTask)) and (not bUsingthread) then
           FOnActivateTask(pItem,n);
           
         exit;
@@ -640,10 +647,8 @@ begin
           FUpdateThread.Add(pItem, FOnUpdateTask);
           FUpdateThread.Resume;
           bUsingThread := True;
-        end else
-          pItem.UpdateFromHwnd;
-      end else
-        pItem.UpdateNonCriticalFromHwnd;
+        end else pItem.UpdateFromHwnd;
+      end else pItem.UpdateNonCriticalFromHwnd;
         
       if FSortTasks then
         DoSortTasks;

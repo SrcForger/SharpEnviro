@@ -53,6 +53,7 @@ type
     FLastVWM  : integer;
     FPlacement: TWindowPlacement;
     FUsed     : boolean;
+    FDontFreeIcon : boolean;
   public
     constructor Create(pHandle : hwnd; pListMode : Boolean = False); reintroduce; overload;
     constructor Create(pItem : TTaskItem); overload;
@@ -67,6 +68,7 @@ type
     procedure UpdateFileInfo;
     procedure Minimize;
     procedure Restore;
+    procedure Assign(pItem : TTaskItem);
 
     property Icon     : hIcon   read FIcon;
     property Caption  : WideString  read FCaption;
@@ -79,6 +81,7 @@ type
     property FilePath  : String read FFilePath;
     property LastVWM   : integer read FLastVWM write FLastVWM;
     property Used      : boolean read FUsed write FUsed;
+    property DontFreeIcon : boolean read FDontFreeIcon write FDontFreeIcon;
   end;
 
 function SwitchToThisWindow(Wnd : hwnd; fAltTab : boolean) : boolean; stdcall; external 'user32.dll';
@@ -90,18 +93,22 @@ constructor TTaskItem.Create(pHandle : hwnd; pListMode : Boolean = False);
 begin
   inherited Create;
   FHandle := pHandle;
+  FIcon := 0;  
   FUsed := True;
-  if not pListMode then  
+  FDontFreeIcon := False;
+  if not pListMode then
     UpdateFromHwnd
   else UpdateNonCriticalFromHwnd;
   FTimeAdded := DateTimeToUnix(Now);
   FLastVWM := SharpApi.GetCurrentVWM;
 end;
 
-constructor TTaskItem.Create(pItem: TTaskItem);
+procedure TTaskItem.Assign(pItem: TTaskItem);
 begin
   FTimeAdded := pItem.TimeAdded;
   FHandle := pItem.Handle;
+  if (FIcon <> 0) then
+    DestroyIcon(FIcon);
   FIcon := pItem.Icon;
   FCaption := PWideChar(pItem.Caption);
   FWndClass := PChar(pItem.WndClass);
@@ -113,9 +120,14 @@ begin
   FUsed := pItem.Used;
 end;
 
+constructor TTaskItem.Create(pItem: TTaskItem);
+begin
+  Assign(pItem);
+end;
+
 destructor TTaskItem.Destroy;
 begin
-  if FIcon <> 0 then
+  if (FIcon <> 0) and (not FDontFreeIcon) then
     DestroyIcon(FIcon);
     
   inherited Destroy;

@@ -1486,6 +1486,7 @@ end;
 procedure TMainForm.UpdateTask(pItem : TTaskItem; Index : integer);
 var
   pTaskItem : TSharpETaskItem;
+  sourceItem : TTaskItem;
   n : integer;
 begin
   DebugOutPutInfo('TMainForm.UpdateTask (Procedure)');
@@ -1501,6 +1502,12 @@ begin
     end;
 
   if pTaskItem = nil then exit;
+  sourceItem := TM.GetItemByHandle(pItem.Handle);
+  if (sourceItem <> nil) and (sourceItem <> pItem) then
+  begin
+    sourceItem.Assign(pItem);
+    pItem.DontFreeIcon := True;
+  end;
 
   UpdateIcon(pTaskItem,pItem);
   pTaskItem.Caption := pItem.Caption;
