@@ -225,9 +225,14 @@ procedure TTaskItemUpdateThread.Remove(wnd : HWND);
 var
   i : integer;
 begin
-  for i := FItems.Count - 1 downto 0 do
-    if TTaskThreadItem(FItems.Items[i]).Item.Handle = wnd then
-      FItems.Delete(i);
+  EnterCriticalSection(TaskCritSect);
+  try
+    for i := FItems.Count - 1 downto 0 do
+      if TTaskThreadItem(FItems.Items[i]).Item.Handle = wnd then
+        FItems.Delete(i);
+  finally
+    LeaveCriticalSection(TaskCritSect);
+  end;
 end;
 
 procedure TTaskItemUpdateThread.DoUpdate;
