@@ -15,8 +15,32 @@ function NETFramework35: Boolean;
 function FindAllWindows(const WindowClass: string): THandleArray;
 function ForceForegroundWindow(hwnd: THandle): Boolean;
 function GetMouseDown(vKey: Integer): Boolean;
+function IsHungAppWindow(wnd : hwnd) : bool;
 
 implementation
+
+// returns true if a window is not responding for messages longer than 5 seconds
+function IsHungAppWindow(wnd : hwnd) : bool;
+type
+  TIsHungAppWindow = function(wnd : hwnd): boolean; stdcall;
+var
+  dllhandle : THandle;
+  IsHungAppWindowFunction : TIsHungAppWindow;
+begin
+  dllhandle := LoadLibrary('user32.dll');
+
+  result := False;
+  try
+    if dllhandle <> 0 then
+    begin
+      @IsHungAppWindowFunction := GetProcAddress(dllhandle, 'IsHungAppWindow');
+      if Assigned(IsHungAppWindowFunction) then
+        result := IsHungAppWindowFunction(wnd);
+    end;
+  finally
+    FreeLibrary(dllhandle);
+  end;
+end;
 
 procedure SetForegroundWindowEx(Wnd: HWND);
 var
