@@ -134,6 +134,7 @@ begin
   TaskManager := TTaskManager.Create;
   TaskManager.ListMode := True;
   TaskManager.Enabled := True;
+  TaskManager.MultiThreading := False;
   TaskManager.InitList;
 
   SharpApi.SharpEBroadCast(WM_SHELLHOOKWINDOWCREATED,WindowsClass.MsTaskSwWClass,0);
