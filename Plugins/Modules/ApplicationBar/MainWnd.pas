@@ -51,6 +51,7 @@ uses
   uTaskPreviewWnd,
   uKnownFolders,
   uVistaFuncs,
+  uSystemFuncs,
   VWMFunctions,
   MonitorList,
   SharpIconUtils, ImgList, PngImageList, ExtCtrls, JvDragDrop, JvComponentBase;
@@ -848,6 +849,9 @@ var
   VWMCount : integer;
   pItem : TTaskItem;
 begin
+  if (uSystemFuncs.IsHungAppWindow(pBtn.wnd)) then
+    exit;
+
   if not (isWindow(pBtn.wnd)) then
     exit;
 

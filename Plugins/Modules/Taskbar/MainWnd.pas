@@ -579,6 +579,9 @@ var
   pItem : TTaskItem;
 begin
   DebugOutPutInfo('TMainForm.DisplaySystemMenu (Procedure)');
+
+  if (uSystemFuncs.IsHungAppWindow(pHandle)) then
+    exit;
   if not (isWindow(pHandle)) then
     exit;
 
