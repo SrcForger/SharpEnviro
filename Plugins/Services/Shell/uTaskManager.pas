@@ -498,7 +498,7 @@ begin
         begin
           if (FMultiThreading and Assigned(FOnUpdateTask)) then
           begin
-            FUpdateThread.Add(pItem, FOnUpdateTask);
+            FUpdateThread.Add(pItem, FOnActivateTask);
             FUpdateThread.Resume;
             bUsingThread := True;
           end else pItem.UpdateFromHwnd;

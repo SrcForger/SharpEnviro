@@ -1805,8 +1805,8 @@ begin
   CurrentVWM := SharpApi.GetCurrentVWM;
 
   FPreviewWnds := TObjectList.Create(True);
-
   FTM := TTaskManager.Create;
+  FTM.MultiThreading := True;
   FTM.OnNewTask := OnNewTask;
   FTM.OnRemoveTask := OnRemoveTask;
   FTM.OnUpdateTask := OnUpdateTask;
