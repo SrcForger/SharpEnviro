@@ -1204,6 +1204,8 @@ var
   n : integer;
   s : String;
 begin
+  if FTM.MultiThreading then
+    FTM.UpdateItem(pItem);
   for n := 0 to High(FButtonList) do
   begin
     if CompareText(pItem.FileName, FButtonList[n].exename) = 0 then

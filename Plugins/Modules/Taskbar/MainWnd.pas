@@ -1489,7 +1489,6 @@ end;
 procedure TMainForm.UpdateTask(pItem : TTaskItem; Index : integer);
 var
   pTaskItem : TSharpETaskItem;
-  sourceItem : TTaskItem;
   n : integer;
 begin
   DebugOutPutInfo('TMainForm.UpdateTask (Procedure)');
@@ -1505,12 +1504,8 @@ begin
     end;
 
   if pTaskItem = nil then exit;
-  sourceItem := TM.GetItemByHandle(pItem.Handle);
-  if (sourceItem <> nil) and (sourceItem <> pItem) then
-  begin
-    sourceItem.Assign(pItem);
-    pItem.DontFreeIcon := True;
-  end;
+  if TM.MultiThreading then
+    TM.UpdateItem(pItem);
 
   UpdateIcon(pTaskItem,pItem);
   pTaskItem.Caption := pItem.Caption;
