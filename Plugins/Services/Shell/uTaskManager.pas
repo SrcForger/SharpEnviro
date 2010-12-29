@@ -99,6 +99,7 @@ type
     procedure ExChangeTasks(pItem1,pItem2 : TTaskItem);
     procedure ResetVMWs;
     procedure CompleteRefresh;
+    procedure UpdateItem(pSrc : TTaskItem);
     procedure HandleShellMessage(wparam,lparam : Cardinal);
     procedure SaveToStream(Stream : TStream);
     procedure LoadFromStream(Stream : TStream; pCount : integer);
@@ -627,6 +628,21 @@ begin
     Stream.WriteBuffer(pItem.TimeAdded,sizeof(pItem.TimeAdded));
     Stream.WriteBuffer(pItem.LastVWM,sizeof(pItem.LastVWM));
   end;
+end;
+
+procedure TTaskManager.UpdateItem(pSrc: TTaskItem);
+var
+  pDst : TTaskItem;
+begin
+  if pSrc = nil then
+    exit;
+
+  pDst := self.GetItemByHandle(pSrc.Handle);
+  if (pDst = nil) or (pDst = pSrc) then
+    exit;
+
+  pDst.Assign(pSrc);
+  pSrc.DontFreeIcon := True;
 end;
 
 procedure TTaskManager.UpdateTask(pHandle : hwnd);
