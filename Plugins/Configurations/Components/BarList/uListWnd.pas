@@ -511,7 +511,8 @@ begin
 
   // Get selected item
   LockWindowUpdate(Self.Handle);
-  if lbBarList.Count > 0 then
+  // We need to account for the Top and Bottom headers before setting the selectedIndex
+  if lbBarList.Count > 2 then
   begin
     if lbBarList.Item[lbBarList.ItemIndex].Header then
       selectedIndex := TBarItem(lbBarList.Item[lbBarList.ItemIndex + 1].Data).BarID
@@ -575,7 +576,8 @@ begin
 
   lbBarList.UpdateHeaders;
 
-  if (lbBarList.Count > 1) and (lbBarList.ItemIndex = -1) then
+  // When setting the ItemIndex account for the Top and Bottom headers
+  if (lbBarList.Count > 2) and (lbBarList.ItemIndex = -1) then
     lbBarList.ItemIndex := 1;
 
   LockWindowUpdate(0);
