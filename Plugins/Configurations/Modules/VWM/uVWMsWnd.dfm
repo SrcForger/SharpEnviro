@@ -24,18 +24,16 @@ object frmVWM: TfrmVWM
     PropagateEnable = False
     Align = alClient
     ParentBackground = True
-    ExplicitHeight = 614
     object pagVWM: TJvStandardPage
       Left = 0
       Top = 0
       Width = 435
       Height = 465
-      ExplicitHeight = 614
       object pnlVWM: TPanel
-        Left = 1
-        Top = 1
-        Width = 433
-        Height = 460
+        Left = 0
+        Top = 0
+        Width = 435
+        Height = 461
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
@@ -44,7 +42,7 @@ object frmVWM: TfrmVWM
           AlignWithMargins = True
           Left = 5
           Top = 47
-          Width = 423
+          Width = 425
           Height = 17
           Margins.Left = 5
           Margins.Top = 0
@@ -56,13 +54,12 @@ object frmVWM: TfrmVWM
           State = cbChecked
           Align = alTop
           OnClick = cb_numbersClick
-          ExplicitLeft = 0
         end
         object Colors: TSharpEColorEditorEx
           AlignWithMargins = True
           Left = 5
-          Top = 332
-          Width = 423
+          Top = 333
+          Width = 425
           Height = 128
           Margins.Left = 5
           Margins.Top = 10
@@ -157,15 +154,14 @@ object frmVWM: TfrmVWM
           BackgroundTextColor = clBlack
           ContainerColor = clBlack
           ContainerTextColor = clBlack
-          ExplicitLeft = -1
-          ExplicitTop = 434
+          ExplicitTop = 332
         end
         object Panel1: TPanel
           AlignWithMargins = True
           Left = 5
-          Top = 253
-          Width = 423
-          Height = 22
+          Top = 245
+          Width = 425
+          Height = 31
           Margins.Left = 5
           Margins.Top = 0
           Margins.Right = 5
@@ -174,18 +170,16 @@ object frmVWM: TfrmVWM
           BevelOuter = bvNone
           ParentColor = True
           TabOrder = 2
-          ExplicitTop = 391
           object sgb_background: TSharpeGaugeBox
             AlignWithMargins = True
             Left = 0
-            Top = 0
+            Top = 8
             Width = 159
-            Height = 22
+            Height = 23
             Margins.Left = 0
-            Margins.Top = 0
-            Margins.Right = 5
+            Margins.Top = 8
+            Margins.Right = 8
             Margins.Bottom = 0
-            Align = alLeft
             ParentBackground = False
             TabOrder = 0
             Min = 0
@@ -205,8 +199,8 @@ object frmVWM: TfrmVWM
         object Panel2: TPanel
           AlignWithMargins = True
           Left = 5
-          Top = 222
-          Width = 423
+          Top = 214
+          Width = 425
           Height = 31
           Margins.Left = 5
           Margins.Top = 0
@@ -216,8 +210,7 @@ object frmVWM: TfrmVWM
           BevelOuter = bvNone
           ParentColor = True
           TabOrder = 3
-          ExplicitLeft = 6
-          ExplicitTop = 105
+          ExplicitTop = 222
           object sgb_border: TSharpeGaugeBox
             AlignWithMargins = True
             Left = 0
@@ -228,7 +221,6 @@ object frmVWM: TfrmVWM
             Margins.Top = 8
             Margins.Right = 8
             Margins.Bottom = 0
-            Align = alLeft
             ParentBackground = False
             TabOrder = 0
             Min = 0
@@ -248,8 +240,8 @@ object frmVWM: TfrmVWM
         object Panel3: TPanel
           AlignWithMargins = True
           Left = 5
-          Top = 191
-          Width = 423
+          Top = 183
+          Width = 425
           Height = 31
           Margins.Left = 5
           Margins.Top = 0
@@ -259,8 +251,7 @@ object frmVWM: TfrmVWM
           BevelOuter = bvNone
           ParentColor = True
           TabOrder = 4
-          ExplicitLeft = 6
-          ExplicitTop = 105
+          ExplicitTop = 191
           object sgb_foreground: TSharpeGaugeBox
             AlignWithMargins = True
             Left = 0
@@ -271,7 +262,6 @@ object frmVWM: TfrmVWM
             Margins.Top = 8
             Margins.Right = 8
             Margins.Bottom = 0
-            Align = alLeft
             ParentBackground = False
             TabOrder = 0
             Min = 0
@@ -291,8 +281,8 @@ object frmVWM: TfrmVWM
         object Panel4: TPanel
           AlignWithMargins = True
           Left = 5
-          Top = 160
-          Width = 423
+          Top = 152
+          Width = 425
           Height = 31
           Margins.Left = 5
           Margins.Top = 0
@@ -302,8 +292,7 @@ object frmVWM: TfrmVWM
           BevelOuter = bvNone
           ParentColor = True
           TabOrder = 5
-          ExplicitLeft = 6
-          ExplicitTop = 105
+          ExplicitTop = 160
           object sgb_highlight: TSharpeGaugeBox
             AlignWithMargins = True
             Left = 0
@@ -314,7 +303,6 @@ object frmVWM: TfrmVWM
             Margins.Top = 8
             Margins.Right = 8
             Margins.Bottom = 0
-            Align = alLeft
             ParentBackground = False
             TabOrder = 0
             Min = 0
@@ -335,18 +323,16 @@ object frmVWM: TfrmVWM
           AlignWithMargins = True
           Left = 5
           Top = 121
-          Width = 423
+          Width = 425
           Height = 31
           Margins.Left = 5
           Margins.Top = 0
           Margins.Right = 5
-          Margins.Bottom = 8
+          Margins.Bottom = 0
           Align = alTop
           BevelOuter = bvNone
           ParentColor = True
           TabOrder = 6
-          ExplicitLeft = 6
-          ExplicitTop = 105
           object sgb_text: TSharpeGaugeBox
             AlignWithMargins = True
             Left = 0
@@ -376,8 +362,8 @@ object frmVWM: TfrmVWM
         object schColorSelection: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 285
-          Width = 423
+          Top = 286
+          Width = 425
           Height = 37
           Margins.Left = 5
           Margins.Top = 10
@@ -390,13 +376,13 @@ object frmVWM: TfrmVWM
           TitleColor = clWindowText
           DescriptionColor = clRed
           Align = alTop
-          ExplicitTop = 438
+          ExplicitTop = 285
         end
         object schColorVisibility: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
           Top = 74
-          Width = 423
+          Width = 425
           Height = 37
           Margins.Left = 5
           Margins.Top = 10
@@ -410,14 +396,12 @@ object frmVWM: TfrmVWM
           DescriptionColor = clRed
           Align = alTop
           Color = clWindow
-          ExplicitLeft = 6
-          ExplicitTop = 58
         end
         object schNumbers: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
           Top = 0
-          Width = 423
+          Width = 425
           Height = 37
           Margins.Left = 5
           Margins.Top = 0
@@ -431,8 +415,6 @@ object frmVWM: TfrmVWM
           DescriptionColor = clRed
           Align = alTop
           Color = clWindow
-          ExplicitLeft = 6
-          ExplicitTop = 1
         end
       end
     end
@@ -440,7 +422,7 @@ object frmVWM: TfrmVWM
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
     PopulateThemeColors = True
-    Width = 390
+    Width = 392
     ShowCaptions = True
     SwatchHeight = 16
     SwatchWidth = 16
