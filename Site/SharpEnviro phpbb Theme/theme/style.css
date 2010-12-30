@@ -1,0 +1,78 @@
+/* Kane Styles - KaneSP - www.kanestyles.com/
+   CSS Edits and Changes
+	 KS Serious v1.0.0
+	 Base: 3.0.6
+---------------------------------------- */
+
+html {
+	color: #827352;
+	background: #e5e5e5;
+}
+
+body {
+	width: 100%;
+	border: 1px #fff solid;
+	border-top: 0px;
+	color: #694F46;
+	background: #F3F4F8 url("{T_THEME_PATH}/images/bg_body.png") repeat-x 0 0;
+}
+
+#site-description h1 {
+  margin-top: 0px;
+}
+
+a#logo img {
+  margin-left: -10px;
+}
+
+#search-box {
+  margin-top: 0px;
+	margin-right: 0px;
+}
+
+ul#menu  {
+	margin-bottom: 20px;;
+	margin-left: -20px;
+	margin-right: -20px;
+	padding: 0;
+	list-style-type: none;
+	width: auto;
+	position: relative;
+	display: block;
+	height: 30px;
+	font-size: 12px;
+	font-weight: bold;
+	background: transparent url("{T_THEME_PATH}/images/nav_bg.png") repeat-x top left;
+	border-bottom: 1px solid #000000;
+	border-top: 1px solid #000000;
+}
+
+ul#menu li  {
+	display: block;
+	float: left;
+	margin: 0;
+	padding: 0;
+}
+	
+ul#menu li a  {
+	display: block;
+	float: left;
+	color: #999;
+	text-decoration: none;
+	font-weight: bold;
+	padding: 8px 20px 0 20px;
+}
+	
+ul#menu li a:hover  {	
+	color: #111;
+	height: 22px;
+	background: transparent url("{T_THEME_PATH}/images/nav_bg.png") 0px -30px no-repeat;		
+}
+
+ul#menu li a.current  {
+	display: inline;
+	height: 22px;
+	background: transparent url("{T_THEME_PATH}/images/nav_bg.png") 0px -30px no-repeat;	
+	float: left;
+	margin: 0;
+}
