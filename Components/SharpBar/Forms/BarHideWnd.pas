@@ -9,6 +9,8 @@ uses
 type
   TBarHideForm = class(TForm)
     curPosTimer: TTimer;
+    procedure FormMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure CreateParams(var Params: TCreateParams); override;
@@ -212,6 +214,23 @@ begin
 
   FDragging := False;
   FDragEdge := False;
+end;
+
+procedure TBarHideForm.FormMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if Button = mbRight then
+   if (Y=Height-1) and (SharpBarMainForm.SharpEBar.VertPos = vpBottom)
+      or (Y=0) and (SharpBarMainForm.SharpEBar.VertPos = vpTop) then
+   begin
+     if ssShift in Shift then
+     begin
+       // Toggle Mini Throbbers
+       ModuleManager.ShowMiniThrobbers := not ModuleManager.ShowMiniThrobbers;
+       ModuleManager.ReCalculateModuleSize;
+       SharpBarMainForm.SharpEBar.Throbber.Repaint;
+     end;
+   end;
 end;
 
 end.

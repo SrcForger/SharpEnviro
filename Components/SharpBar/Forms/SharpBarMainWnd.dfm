@@ -21,6 +21,7 @@ object SharpBarMainForm: TSharpBarMainForm
   OnHide = FormHide
   OnKeyDown = FormKeyDown
   OnMouseLeave = FormMouseLeave
+  OnMouseUp = FormMouseUp
   OnPaint = FormPaint
   OnResize = FormResize
   OnShow = FormShow

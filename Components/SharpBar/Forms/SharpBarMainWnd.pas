@@ -106,6 +106,8 @@ type
     procedure miLeftModuleClick(Sender: TObject);
     procedure Delete1Click(Sender: TObject);
     procedure SettingsClick(Sender: TObject);
+    procedure FormMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure SharpEBar1ThrobberMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure SharpEBar1ThrobberMouseUp(Sender: TObject; Button: TMouseButton;
@@ -2117,6 +2119,21 @@ begin
     GetCursorPos(pt);
     StartAutoHide(WindowFromPoint(pt));
   end;
+end;
+
+procedure TSharpBarMainForm.FormMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if Button = mbRight then
+    if (Y = Height - 1) and (SharpEBar.VertPos = vpBottom)
+      or (Y = 0) and (SharpEBar.VertPos = vpTop) then begin
+      if ssShift in Shift then begin
+        // Toggle Mini Throbbers
+        ModuleManager.ShowMiniThrobbers := not ModuleManager.ShowMiniThrobbers;
+        ModuleManager.ReCalculateModuleSize;
+        SharpEBar.Throbber.Repaint;
+      end;
+    end;
 end;
 
 procedure TSharpBarMainForm.FormPaint(Sender: TObject);
