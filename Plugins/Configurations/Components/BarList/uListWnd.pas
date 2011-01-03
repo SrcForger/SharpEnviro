@@ -523,7 +523,7 @@ begin
   lbBarList.Clear;
   AddItemsToList(FBarList);
 
-  newItem := lbBarList.AddItem('Top Bars<hr>');
+  newItem := lbBarList.AddItem('<br>Top Bars<hr>');
   newItem.Data := nil;
   newItem.Header := True;
 
@@ -548,7 +548,7 @@ begin
     bari := bari + 1;
   end;
 
-  newItem := lbBarList.AddItem('Bottom Bars<hr>');
+  newItem := lbBarList.AddItem('<br>Bottom Bars<hr>');
   newItem.Data := nil;
   newItem.Header := True;
 

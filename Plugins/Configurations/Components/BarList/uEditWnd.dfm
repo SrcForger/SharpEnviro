@@ -3,7 +3,7 @@ object frmEditwnd: TfrmEditwnd
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmEditwnd'
-  ClientHeight = 126
+  ClientHeight = 120
   ClientWidth = 475
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -17,58 +17,15 @@ object frmEditwnd: TfrmEditwnd
   OnDestroy = FormDestroy
   DesignSize = (
     475
-    126)
+    120)
   PixelsPerInch = 96
   TextHeight = 13
-  object pnlBarSpace: TPanel
-    Left = 8
-    Top = 8
-    Width = 0
-    Height = 22
-    Anchors = [akLeft, akTop, akRight, akBottom]
-    BevelOuter = bvNone
-    ParentBackground = False
-    ParentColor = True
-    TabOrder = 0
-    Visible = False
-    ExplicitHeight = 0
-    object Label1: TLabel
-      Left = 0
-      Top = 13
-      Width = 0
-      Height = 26
-      Align = alTop
-      AutoSize = False
-      Caption = 
-        'Reduce the size of already existing bars or disable another Shar' +
-        'pBar to free some screen space. There is no space left to create' +
-        ' another SharpBar at any possible position.'
-      WordWrap = True
-      ExplicitWidth = 431
-    end
-    object JvLabel4: TLabel
-      Left = 0
-      Top = 0
-      Width = 0
-      Height = 13
-      Align = alTop
-      Caption = 'Error:'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-      Transparent = True
-      ExplicitWidth = 31
-    end
-  end
   object Panel2: TPanel
     AlignWithMargins = True
     Left = 10
     Top = 10
     Width = 285
-    Height = 116
+    Height = 110
     Margins.Left = 10
     Margins.Top = 10
     Margins.Right = 10
@@ -78,9 +35,10 @@ object frmEditwnd: TfrmEditwnd
     BevelOuter = bvNone
     Constraints.MinWidth = 260
     TabOrder = 1
+    ExplicitHeight = 116
     DesignSize = (
       285
-      116)
+      110)
     object Label3: TLabel
       Left = 0
       Top = 30
@@ -196,7 +154,7 @@ object frmEditwnd: TfrmEditwnd
     Left = 215
     Top = 10
     Width = 260
-    Height = 106
+    Height = 100
     Margins.Left = 10
     Margins.Top = 10
     Margins.Right = 0
@@ -205,11 +163,12 @@ object frmEditwnd: TfrmEditwnd
     AutoSize = True
     BevelOuter = bvNone
     Constraints.MinWidth = 260
+    ParentColor = True
     TabOrder = 2
-    ExplicitLeft = 263
+    ExplicitHeight = 106
     DesignSize = (
       260
-      106)
+      100)
     object chkAlwaysOnTop: TJvXPCheckbox
       AlignWithMargins = True
       Left = 10
@@ -240,8 +199,8 @@ object frmEditwnd: TfrmEditwnd
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       BevelOuter = bvNone
+      ParentColor = True
       TabOrder = 1
-      ExplicitWidth = 202
       object sgbAutoHide: TSharpeGaugeBox
         Left = 128
         Top = 0
@@ -272,7 +231,6 @@ object frmEditwnd: TfrmEditwnd
         TabOrder = 0
         Align = alLeft
         OnClick = chkAutoHideClick
-        ExplicitLeft = 95
       end
     end
     object Panel5: TPanel
@@ -282,8 +240,8 @@ object frmEditwnd: TfrmEditwnd
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       BevelOuter = bvNone
+      ParentColor = True
       TabOrder = 0
-      ExplicitWidth = 202
       object cbFixedWidth: TJvXPCheckbox
         Left = 0
         Top = 0
@@ -315,6 +273,49 @@ object frmEditwnd: TfrmEditwnd
         OnChangeValue = sgbFixedWidthChangeValue
         BackgroundColor = clWindow
       end
+    end
+  end
+  object pnlBarSpace: TPanel
+    Left = 8
+    Top = 8
+    Width = 0
+    Height = 16
+    Anchors = [akLeft, akTop, akRight, akBottom]
+    BevelOuter = bvNone
+    ParentBackground = False
+    ParentColor = True
+    TabOrder = 0
+    Visible = False
+    ExplicitHeight = 22
+    object Label1: TLabel
+      Left = 0
+      Top = 13
+      Width = 0
+      Height = 26
+      Align = alTop
+      AutoSize = False
+      Caption = 
+        'Reduce the size of already existing bars or disable another Shar' +
+        'pBar to free some screen space. There is no space left to create' +
+        ' another SharpBar at any possible position.'
+      WordWrap = True
+      ExplicitWidth = 431
+    end
+    object JvLabel4: TLabel
+      Left = 0
+      Top = 0
+      Width = 0
+      Height = 13
+      Align = alTop
+      Caption = 'Error:'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      Transparent = True
+      ExplicitWidth = 31
     end
   end
   object vals: TJvValidators

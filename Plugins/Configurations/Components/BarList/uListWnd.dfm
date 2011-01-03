@@ -22,7 +22,7 @@ object frmListWnd: TfrmListWnd
     Width = 418
     Height = 284
     Margins.Left = 0
-    Margins.Top = 10
+    Margins.Top = 0
     Margins.Right = 0
     Margins.Bottom = 0
     Columns = <
@@ -92,6 +92,8 @@ object frmListWnd: TfrmListWnd
     Borderstyle = bsNone
     Ctl3d = False
     Align = alClient
+    ExplicitLeft = -5
+    ExplicitTop = -20
   end
   object tmrUpdate: TTimer
     Interval = 1
