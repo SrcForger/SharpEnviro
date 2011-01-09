@@ -3,10 +3,17 @@ unit uSystemFuncs;
 interface
 
 uses
-  Types, Registry, Windows, Classes, SysUtils, ShellApi, SharpTypes;
+  Types, Registry, Windows, Classes, SysUtils, ShellApi, SharpTypes, MonitorList;
 const
   // new shell hook param
   HSHELL_SYSMENU = 9;
+  HSHELL_WINDOWREPLACED = 13;
+  HSHELL_WINDOWREPLACING = 14;
+  HSHELL_APPCOMMAND = 12;
+  HSHELL_HIGHBIT = $8000;
+  HSHELL_FLASH = (HSHELL_REDRAW or HSHELL_HIGHBIT);
+  HSHELL_RUDEAPPACTIVATED = (HSHELL_WINDOWACTIVATED or HSHELL_HIGHBIT);
+  HSHELL_ENDTASK = 10;
 
 procedure SetForegroundWindowEx(Wnd: HWND);
 function HasWriteAccess(pFile : String) : boolean;  
@@ -15,12 +22,141 @@ function NETFramework35: Boolean;
 function FindAllWindows(const WindowClass: string): THandleArray;
 function ForceForegroundWindow(hwnd: THandle): Boolean;
 function GetMouseDown(vKey: Integer): Boolean;
-function IsHungAppWindow(wnd : hwnd) : bool;
+function IsHungAppWindow(wnd : hwnd) : Boolean;
+function IsWindowFullScreen(wnd : hwnd; targetmonitor : TMonitorItem) : Boolean;
+function HasFullScreenWindow(rootwnd : hwnd; targetmonitor : TMonitorItem) : Boolean;
+function GetWndClass(pHandle: hwnd): string;
 
 implementation
 
+function GetWndClass(pHandle: hwnd): string;
+var
+  buf: array[0..254] of Char;
+begin
+  GetClassName(pHandle, buf, SizeOf(buf));
+  result := buf;
+end;
+
+// check if a window is full screen
+// if target monitor is set then the wnd must exist on that monitor
+function IsWindowFullScreen(wnd: hwnd; targetmonitor : TMonitorItem) : Boolean;
+var
+  R : TRect;
+  P : TPoint;
+  w,h : integer;
+  wndmon : TMonitorItem;
+  style : cardinal;
+begin
+  result := False;
+
+  // on multi monitor systems:
+  // check if the window size is significantly larger than the monitor size.
+  if (targetmonitor <> nil) and (MonList.MonitorCount > 1) then
+  begin
+    if Windows.GetClientRect(wnd,R) then
+    begin
+      if ((R.Right - R.Left) + 32 > targetmonitor.Width) or
+        ((R.Bottom - R.Top) + 32 > targetmonitor.Height) then
+        targetmonitor := nil;
+    end;
+  end;
+
+  // get monitor of the window
+  wndmon := MonList.MonitorFromWindow(wnd);
+  if (wndmon = nil) then
+    exit;
+
+  // If the window is on the same monitor as the bar then check if it is fullscreen.
+  if (targetmonitor = nil) or (wndmon.MonitorNum = targetmonitor.MonitorNum) then
+  begin
+    // check if the client area is full screen
+    if Windows.GetClientRect(wnd,R) then
+    begin
+      w := R.Right - R.Left;
+      h := R.Bottom - R.Top;
+      P := Point(R.Left,R.Top);
+      Windows.ClientToScreen(wnd,P);
+      if (P.x = wndmon.Left) and (P.y = wndmon.Top)
+        and (w = wndmon.Width) and (h = wndmon.Height) then
+      begin
+        result := True;
+        exit;
+      end;
+    end;
+
+    // http://support.microsoft.com/kb/179363/en-us
+    // If WS_CAPTION or WS_THICKFRAME is not set, check also for window rect
+    style := GetWindowLong(wnd, GWL_STYLE);
+    if ((style and WS_CAPTION) <> WS_CAPTION)
+      or ((style and WS_THICKFRAME) <> WS_THICKFRAME) then
+    begin
+      if not GetWindowRect(wnd,R) then
+        exit;
+        
+      if (R.Left = wndmon.Left) and (R.Top = wndmon.Top)
+        and (R.Right = wndmon.Left + wndmon.Width)
+        and (R.Bottom = wndmon.Top + wndmon.Height) then
+      begin
+        result := True;
+        exit;
+      end;
+    end;
+  end;
+end;
+
+// check if the thread of the given window has any full screen window
+// method will be checking all non child windows of the thread that owns the
+// given window handle.
+// if target monitor is set then the wnd must exist on that monitor
+function HasFullScreenWindow(rootwnd : hwnd; targetmonitor : TMonitorItem) : Boolean;
+type
+  THwndArray = array of hwnd;
+  PParam = ^TParam;
+  TParam = record
+    wndlist: THwndArray;
+  end;
+var
+  EnumParam : TParam;
+  PID: DWORD;
+  n : integer;
+  wnditem : hwnd;
+
+  function EnumThreadWindowsProc(wnd: hwnd; param: lParam): boolean; export; stdcall;
+  begin
+    with PParam(Param)^ do
+    begin
+      setlength(wndlist,length(wndlist)+1);
+      wndlist[High(wndlist)] := wnd;
+    end;
+    result := true;
+  end; 
+begin
+  result := False;
+
+  if (not IsWindow(rootwnd)) then
+    exit;
+
+  // get all windows of the specific thread and check each window
+  PID := GetWindowThreadProcessId(rootwnd, nil);
+  setlength(EnumParam.wndlist,0);
+  EnumThreadWindows(PID,@EnumThreadWindowsProc,Integer(@EnumParam));
+  for n := 0 to High(EnumParam.wndlist) do
+  begin
+    wnditem := EnumParam.wndlist[n];
+    if IsWindowVisible(wnditem) then // we will ignore invisible fullscreen windows
+    begin
+      if IsWindowFullScreen(wnditem, targetmonitor) then
+      begin
+        result := True;
+        exit;
+      end;
+    end;
+  end;
+  setlength(EnumParam.wndlist,0);
+end;
+
 // returns true if a window is not responding for messages longer than 5 seconds
-function IsHungAppWindow(wnd : hwnd) : bool;
+function IsHungAppWindow(wnd : hwnd) : Boolean;
 type
   TIsHungAppWindow = function(wnd : hwnd): boolean; stdcall;
 var
@@ -133,14 +269,6 @@ type
   end;
 var
   Rec: TParam;
-
-  function GetWndClass(pHandle: hwnd): string;
-  var
-    buf: array[0..254] of Char;
-  begin
-    GetClassName(pHandle, buf, SizeOf(buf));
-    result := buf;
-  end;
 
   function _EnumProc(_hWnd: HWND; _LParam: LPARAM): LongBool; stdcall;
   begin
