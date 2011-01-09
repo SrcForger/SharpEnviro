@@ -166,7 +166,7 @@ begin
     AddUrl('Tango','http://tango.freedesktop.org','Icon Collection');
   end else begin
     // Support Urls
-    AddUrl('Homepage','http://www.sharpe-shell.org','SharpE Homepage',true);
+    AddUrl('Homepage','http://www.sharpenviro.com','SharpEnviro Homepage',true);
     AddUrl('Sourceforge','http://sourceforge.net/projects/sharpe/','Project Page, SVN Repositry,...',true);
     AddUrl('Sourceforge','http://sourceforge.net/projects/sharpe/support','Tickets',true);
   end;
@@ -196,14 +196,14 @@ var
 begin
   FUsers.Clear;
   //AddUser('Bruno', 'Skizo', 'bruno@sharpenviro.com', 'Graphics, New Guy.');
-  AddUser('CoCo', 'Silentpyjamas', 'coco@sharpenviro.com', 'PR, Community + Support');
+  //AddUser('CoCo', 'Silentpyjamas', 'coco@sharpenviro.com', 'PR, Community + Support');
   //AddUser('David', 'Glacialfury', 'nathan@sharpenviro.com', 'Lead Tester + Support.');
   //AddUser('Florian', 'Captain Herisson', 'florian@sharpenviro.com', 'Graphics + Design.');
   AddUser('James', 'brum74', 'james@sharpenviro.com', 'Main Developer');
+  AddUser('Lee', 'Pixol', 'lee@sharpenviro.com', 'Main Developer');
+  AddUser('Martin', 'Billiberserker', 'martin@sharpenviro.com', 'Lead Developer');  
   AddUser('Mathias', 'HomerSp', 'mathias@sharpenviro.com', 'Main Developer');
-  AddUser('Lee', 'Pixol', 'lee@sharpenviro.com', 'Main Developer, Website');
-  AddUser('Martin', 'Billiberserker', 'martin@sharpenviro.com', 'Lead Developer');
-  AddUser('Nathan', 'Mc', 'nathan@sharpenviro.com', 'Admin, Developer');
+  //AddUser('Nathan', 'Mc', 'nathan@sharpenviro.com', 'Admin, Developer');
   //AddUser('David', 'Yay', 'davidw@sharpenviro.com', 'Content + Site Moderator.');
 
   lbUsers.Clear;
