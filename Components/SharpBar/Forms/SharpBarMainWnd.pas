@@ -78,7 +78,6 @@ type
     AutoHide1: TMenuItem;
     LaunchSharpCenter1: TMenuItem;
     N7: TMenuItem;
-    FullscreenCheckTimer: TTimer;
     FixedWidth1: TMenuItem;
     EnabledFixedSize1: TMenuItem;
     N8: TMenuItem;
@@ -88,7 +87,7 @@ type
     N301: TMenuItem;
     N201: TMenuItem;
     Custom1: TMenuItem;
-    ForceAlwaysOnTop1: TMenuItem;
+    AlwaysOnTop1: TMenuItem;
     tmrAutoHide: TTimer;
     tmrCursorPos: TTimer;
     procedure ShowMiniThrobbers1Click(Sender: TObject);
@@ -137,11 +136,10 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure LaunchSharpCenter1Click(Sender: TObject);
     procedure FormPaint(Sender: TObject);
-    procedure FullscreenCheckTimerTimer(Sender: TObject);
     procedure EnabledFixedSize1Click(Sender: TObject);
     procedure N501Click(Sender: TObject);
     procedure Custom1Click(Sender: TObject);
-    procedure ForceAlwaysOnTop1Click(Sender: TObject);
+    procedure AlwaysOnTop1Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure CreateParams(var Params: TCreateParams); override;
     procedure tmrAutoHideTimer(Sender: TObject);
@@ -166,6 +164,9 @@ type
     FSharpEBar: TSharpEBar;
     FBarName: string;
     FRegisteredSessionNotification : Boolean;
+    FRegisterShellHookRecevier : Boolean;
+
+    FFullScreenWnd : hwnd;
 
     FDragging : boolean;
     FDragEdge : Boolean;
@@ -218,6 +219,8 @@ type
     procedure WMUpdateBarWidth(var msg: TMessage); message WM_UPDATEBARWIDTH;
     procedure WMGetCopyData(var msg: TMessage); message WM_COPYDATA;
     procedure WMUpdateSettings(var msg: TMessage); message WM_SHARPEUPDATESETTINGS;
+
+    procedure WMShellHook(var msg: TMessage); message WM_SHARPSHELLMESSAGE;
 
     procedure OnBarPositionUpdate(Sender: TObject; var X, Y: Integer);
 
@@ -348,7 +351,6 @@ begin
         SharpEBar.AutoHide := Items.BoolValue('AutoHide', False);
         SharpEBar.AutoHideTime := Items.IntValue('AutoHideTime', 1000);
         SharpEBar.AlwaysOnTop := Items.BoolValue('AlwaysOnTop', True);
-        SharpEBar.ForceAlwaysOnTop := Items.BoolValue('ForceAlwaysOnTop', False);
         SharpEBar.FixedWidthEnabled := Items.BoolValue('FixedWidthEnabled', False);
         SharpEBar.FixedWidth := Max(10,Min(90,Items.IntValue('FixedWidth', 50)));
       end;
@@ -491,11 +493,84 @@ begin
   Close;
 end;
 
+procedure TSharpBarMainForm.WMShellHook(var msg: TMessage);
+const
+  HSHELL_HIGHBIT = $8000;
+var
+  wnd : hwnd;
+  barmon : TMonitorItem;
+  wndclass : String;
+  ignorewnd : boolean;
+begin
+  if not SharpEBar.AlwaysOnTop then
+    exit;
+
+  wnd := msg.LParam;
+  if (msg.WParam = HSHELL_FLASH) then
+    exit;
+
+  wndclass := GetWndClass(wnd);
+  ignorewnd := False;
+  if (CompareText(wndclass,'Progman') = 0)
+    or (CompareText(wndclass,'TSharpDeskMainForm') = 0) then
+    ignorewnd := True;
+
+  if (msg.WParam = HSHELL_RUDEAPPACTIVATED) then //((msg.WParam and HSHELL_HIGHBIT) = HSHELL_HIGHBIT) then
+  begin
+    // get monitor of the bar
+    if MonList.IsValidMonitorIndex(SharpEBar.MonitorIndex) then
+      barmon := MonList.Monitors[SharpEBar.MonitorIndex]
+    else barmon := MonList.MonitorFromWindow(Handle);
+
+    if (FFullScreenWnd = 0) then
+    begin
+      if (not ignorewnd) and (HasFullScreenWindow(wnd, barmon)) then
+      begin
+        SetProp(Handle,'FullScreenAppActive',1);
+        ShowWindow(Handle,SW_HIDE);
+        FFullScreenWnd := wnd;
+        SharpApi.SendDebugMessage('SharpBar',inttostr(Handle)+':'+'FullScreenAppActive',0);
+      end;
+    end else
+      SharpApi.SendDebugMessage('SharpBar',inttostr(Handle)+':'+'FullScreenWnd <> 0',0);
+      if not (HasFullScreenWindow(FFullScreenWnd, barmon)) then
+      begin
+        SharpApi.SendDebugMessage('SharpBar',inttostr(Handle)+':'+'HasFullScreenWindow',0);
+        SetProp(Handle,'FullScreenAppActive',0);
+        FFullScreenWnd := 0;      
+        ShowWindow(Handle, SW_SHOWNA);
+      end;
+  end else
+  begin
+    // If there was previously a fullscreen app active, check if it's still
+    // fullscreen and if not show the bar again
+    if (FFullScreenWnd <> 0) then
+    begin
+      SharpApi.SendDebugMessage('SharpBar',inttostr(Handle)+':'+'NoHighBit-FullScreenWnd <> 0',0);
+      // get monitor of the bar
+      if MonList.IsValidMonitorIndex(SharpEBar.MonitorIndex) then
+        barmon := MonList.Monitors[SharpEBar.MonitorIndex]
+      else barmon := MonList.MonitorFromWindow(Handle);
+
+      if not HasFullScreenWindow(FFullScreenWnd,barmon) then
+      begin
+        SharpApi.SendDebugMessage('SharpBar',inttostr(Handle)+':'+'NoHighBit-HasFullScreenWindow',0);
+        SetProp(Handle,'FullScreenAppActive',0);
+        FFullScreenWnd := 0;
+        ShowWindow(Handle,SW_SHOWNA);
+      end;
+    end;
+  end;
+end;
+
 // The shell hook window has been created, all modules or windows which
 // need to receive shell hooks should now register with the service
 
 procedure TSharpBarMainForm.WMShellHookWindowCreate(var msg: TMessage);
 begin
+  if not FRegisterShellHookRecevier then
+    FRegisterShellHookRecevier := RegisterShellHookReceiver(Handle);
+
   if ModuleManager = nil then
     exit;
   ModuleManager.BroadcastPluginMessage('MM_SHELLHOOKWINDOWCREATED');
@@ -1199,7 +1274,6 @@ begin
         SharpEBar.StartHidden := Items.BoolValue('StartHidden', False);
         ModuleManager.ShowMiniThrobbers := Items.BoolValue('ShowMiniThrobbers', True);
         SharpEBar.AlwaysOnTop := Items.BoolValue('AlwaysOnTop', False);
-        SharpEBar.ForceAlwaysOnTop := Items.BoolValue('ForceAlwaysOnTop', False);
         SharpEBar.FixedWidthEnabled := Items.BoolValue('FixedWidthEnabled', False);
         SharpEBar.FixedWidth := Max(10,Min(90,Items.IntValue('FixedWidth', 50)));
         SharpEBar.AutoHide := Items.BoolValue('AutoHide', False);
@@ -1331,6 +1405,9 @@ begin
   if FUser32DllHandle <> 0 then
     @PrintWindow := GetProcAddress(FUser32DllHandle, 'PrintWindow');
 
+  FFullScreenWnd := 0;
+  SetProp(Handle,'FullScreenAppActive',0);
+
   FSuspended := False;
   FShellBCInProgress := False;
 
@@ -1341,6 +1418,7 @@ begin
 
   // Register for notifications of this session (0), 1 = all sessions.
   FRegisteredSessionNotification := RegisterSessionNotification(Handle, 0);
+  FRegisterShellHookRecevier := RegisterShellHookReceiver(Handle);
 
   ShowWindow(Handle, SW_HIDE);
 end;
@@ -1349,10 +1427,14 @@ procedure TSharpBarMainForm.FormDestroy(Sender: TObject);
 begin
   if FRegisteredSessionNotification then
     UnRegisterSesssionNotification(Handle);
+  if FRegisterShellHookRecevier then
+    UnRegisterShellHookReceiver(Handle);
 
   FreeLibrary(FUser32DllHandle);
   FUser32DllHandle := 0;
   @PrintWindow := nil;
+
+  RemoveProp(Handle,'FullScreenAppActive');
 
   SetLayeredWindowAttributes(Handle, 0, 0, LWA_ALPHA);
   SharpEBar.abackground.Alpha := 0;
@@ -1501,68 +1583,6 @@ begin
   SaveBarSettings;
 end;
 
-procedure TSharpBarMainForm.FullscreenCheckTimerTimer(Sender: TObject);
-var
-  wnd : HWND;
-  wndRect : TRect;
-  mon : TMonitorItem;
-  wndClass : array[0..255] of Char;
-  style : Integer;
-begin
-  if FSuspended then
-    Exit;
-    
-  if ((SharpEBar.AlwaysOnTop) or (foregroundWindowIsFullscreen)) then
-  begin
-    wnd := GetForegroundWindow;
-    if (GetParent(wnd) <> 0) then
-      wnd := GetParent(wnd);
-
-    if (wnd <> 0) and (wnd <> Handle) then
-    begin
-      GetClassName(wnd, wndClass, SizeOf(wndClass));
-
-      // The desktops are fullscreen so check for them and exit if it is the foreground window.
-      if (CompareText(wndClass, 'Progman') = 0) or
-        (CompareText(wndClass, 'TSharpDeskMainForm') = 0) then
-        Exit;
-
-      GetWindowRect(wnd, wndRect);
-      if not MonList.IsValidMonitorIndex(SharpEBar.MonitorIndex) then
-        UpdateMonitor;
-
-      mon := MonList.Monitors[SharpEBar.MonitorIndex];
-      // If the window is on the same monitor as the bar then check if it is fullscreen.
-      if MonList.MonitorFromRect(wndRect).MonitorNum = mon.MonitorNum then
-      begin
-        style := GetWindowLong(wnd, GWL_STYLE);
-        if (wndRect.Bottom - wndRect.Top >= mon.Height) and
-          (wndRect.Right - wndRect.Left >= mon.Width) and
-          ((style and WS_BORDER) <> WS_BORDER) and
-          (not SharpEBar.ForceAlwaysOnTop) then
-        begin
-          if SharpEBar.AutoHide then
-            HideBar;
-
-          // The window is fullscreen so disable always on top.
-          SharpEBar.AlwaysOnTop := False;
-          foregroundWindowIsFullscreen := True;
-
-          // Now bring the fullscreen window to the top in front of the bar.
-          BringWindowToTop(wnd);
-        end
-        else if (not SharpEBar.AlwaysOnTop) then
-        begin
-          // The window is no longer fullscreen so make sure we change our settings back.
-          // If the window was never fullscreen we'll also hit here which is ok.
-          SharpEBar.AlwaysOnTop := True;
-          foregroundWindowIsFullscreen := False;
-        end;
-      end;
-    end;
-  end;
-end;
-
 procedure TSharpBarMainForm.OnQuickAddModuleItemClick(Sender: TObject);
 var
   i: integer;
@@ -1642,7 +1662,7 @@ begin
   DisableBarHiding1.Checked := SharpEBar.DisableHideBar;
   ShowMiniThrobbers1.Checked := ModuleManager.ShowMiniThrobbers;
   AutoHide1.Checked := SharpEBar.AutoHide;
-  ForceAlwaysOnTop1.Checked := SharpEBar.ForceAlwaysOnTop;
+  AlwaysOnTop1.Checked := SharpEBar.AlwaysOnTop;
 
   // Build Skin List
   Skin1.Clear;
@@ -2335,10 +2355,10 @@ begin
   SaveBarSettings;
 end;
 
-procedure TSharpBarMainForm.ForceAlwaysOnTop1Click(Sender: TObject);
+procedure TSharpBarMainForm.AlwaysOnTop1Click(Sender: TObject);
 begin
-  ForceAlwaysOnTop1.Checked := not ForceAlwaysOnTop1.Checked;
-  SharpEBar.ForceAlwaysOnTop := ForceAlwaysOnTop1.Checked;
+  AlwaysOnTop1.Checked := not AlwaysOnTop1.Checked;
+  SharpEBar.AlwaysOnTop := AlwaysOnTop1.Checked;
   SaveBarSettings;
 end;
 

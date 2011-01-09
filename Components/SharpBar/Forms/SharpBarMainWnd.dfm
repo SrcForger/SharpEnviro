@@ -160,9 +160,9 @@ object SharpBarMainForm: TSharpBarMainForm
         Caption = 'Auto-Hide'
         OnClick = AutoHide1Click
       end
-      object ForceAlwaysOnTop1: TMenuItem
+      object AlwaysOnTop1: TMenuItem
         Caption = 'Always On-Top'
-        OnClick = ForceAlwaysOnTop1Click
+        OnClick = AlwaysOnTop1Click
       end
       object AutoStart1: TMenuItem
         Caption = 'Launch At Start-Up'
@@ -672,11 +672,6 @@ object SharpBarMainForm: TSharpBarMainForm
     Interval = 5000
     OnTimer = ThemeHideTimerTimer
     Left = 312
-    Top = 144
-  end
-  object FullscreenCheckTimer: TTimer
-    OnTimer = FullscreenCheckTimerTimer
-    Left = 272
     Top = 144
   end
   object tmrAutoHide: TTimer

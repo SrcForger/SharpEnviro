@@ -91,7 +91,6 @@ type
     FMonitorIndex: integer;
     FAutoStart: boolean;
     FAlwaysOnTop : boolean;
-    FForceAlwaysOnTop : boolean;
     FShowThrobber: Boolean;
     FDisableHideThrobber: Boolean;
     FDisableHideBar     : Boolean;
@@ -110,7 +109,6 @@ type
     procedure SetAutoStart(Value: boolean);
     procedure SetShowThrobber(Value: boolean);
     procedure SetAlwaysOnTop(Value: boolean);
-    procedure SetForceAlwaysOnTop(Value: boolean);
     procedure SetFixedWidth(Value : integer);
     procedure SetFixedWidthEnabled(Value : boolean);
     function GetSpecialHideForm : boolean;
@@ -139,7 +137,6 @@ type
     property MonitorIndex: integer read FMonitorIndex write SetMonitorIndex;
     property AutoStart: Boolean read FAutoStart write SetAutoStart;
     property AlwaysOnTop: Boolean read FAlwaysOnTop write SetAlwaysOnTop;
-    property ForceAlwaysOnTop: Boolean read FForceAlwaysOnTop write SetForceAlwaysOnTop;
     property FixedWidthEnabled: Boolean read FFixedWidthEnabled write SetFixedWidthEnabled;
     property FixedWidth: integer read FFixedWidth write SetFixedWidth;
     property AutoHide: boolean read FAutoHide write FAutoHide;
@@ -664,18 +661,6 @@ begin
   if Value <> FAlwaysOnTop then
   begin
     FAlwaysOnTop := Value;
-    UpdateAlwaysOnTop;
-  end;
-end;
-
-procedure TSharpEBar.SetForceAlwaysOnTop(Value: boolean);
-begin
-  if not FAlwaysOnTop then
-    exit;
-
-  if Value <> FForceAlwaysOnTop then
-  begin
-    FForceAlwaysOnTop := Value;
     UpdateAlwaysOnTop;
   end;
 end;
