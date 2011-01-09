@@ -52,8 +52,6 @@
     <project Name="Multimedia Input List" Type="DLL">Plugins\Configurations\Services\MultimediaInputList\MultimediaInputList.dproj</project>
     <project Name="VWM" Type="DLL">Plugins\Configurations\Services\VWM\VWM.dproj</project>
     <project Name="Weather" Type="DLL">Plugins\Configurations\Services\Weather\Weather.dproj</project>
-    <project Name="TaskSwitch Edit" Type="DLL">Plugins\Configurations\Services\TaskSwitchEdit\TaskSwitchEdit.dproj</project>
-    <project Name="TaskSwitch List" Type="DLL">Plugins\Configurations\Services\TaskSwitchList\TaskSwitchList.dproj</project>
   </package>
   <package Name="Configurations - Themes">
     <project Name="Cursor List" Type="DLL">Plugins\Configurations\Themes\CursorList\CursorList.dproj</project>
@@ -144,7 +142,6 @@
     <project Name="Skin" Type="DLL" >Plugins\Services\Skin\SkinController.dproj</project>
     <project Name="Startup" Type="DLL" >Plugins\Services\StartupApps\Startup.dproj</project>
     <project Name="SystemActions" Type="DLL" >Plugins\Services\SystemActions\SystemActions.dproj</project>
-    <project Name="TaskSwitch" Type="DLL" >Plugins\Services\TaskSwitch\TaskSwitch.dproj</project>
     <project Name="VWM" Type="DLL" >Plugins\Services\VWM\VWM.dproj</project>
     <project Name="Weather" Type="DLL">Plugins\Services\Weather\Weather.dproj</project>
   </package>
