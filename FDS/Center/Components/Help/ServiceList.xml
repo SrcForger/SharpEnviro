@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<ConfigHelp size="full">
+  <Label bold="1">Global Services</Label>
+  <Label>This config lists all services which are currently installed into your desktop environment. Services are mini applications which are running in the background while providing key shell functionality in order for a desktop environment to function properly. </Label>
+  <Sep/>
+  <Label bold="1">Disabling and Restarting Services</Label>
+  <Label>Some services, if not used, can be disable in order to free up system ressources. If you for example do not use the virtual window manager (VWM) or weather functionality then you can simply disable those services. Be carefull however to not disable important services which are still used by the shell. Disabled services will be listed on the 'Disabled' tab, those services won't be automatically started. If you want to just restart a service then there is no need to disable it, simply click on 'Stop' and click the 'Start' link afterwards.</Label>
+  <Sep/>
+  <Label bold="1">Configuring Services</Label>
+  <Label>Some services can be configured further. In order to configure a service go to the 'Configurable' tab which is listing all services that can be configured. Then click the service you want to configure and click the 'edit' link.</Label>
+</ConfigHelp>

@@ -2,9 +2,10 @@
 <SharpCenter>
   <Sections>
     <Services>
-	  <Section>Components</Section>
+      <Section>Components</Section>
       <File>ServiceList.dll</File>
       <Icon>Services.png</Icon>
+      <Help>ServiceList.xml</Help>
     </Services>
   </Sections>
 </SharpCenter>
