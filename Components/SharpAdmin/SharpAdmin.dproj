@@ -15,20 +15,20 @@
     <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
     <DCC_Define>RELEASE</DCC_Define>
     <DCC_ExeOutput>..\..\..\SharpE\</DCC_ExeOutput>
-    <DCC_UnitSearchPath>..\..\Common\Units\SystemFuncs;..\..\Common\Units\SharpTypes;..\..\Common\Units\DebugDialog</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\Common\Units\SystemFuncs;..\..\Common\Units\SharpTypes;..\..\Common\Units\DebugDialog</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\Common\Units\SystemFuncs;..\..\Common\Units\SharpTypes;..\..\Common\Units\DebugDialog</DCC_ObjPath>
-    <DCC_IncludePath>..\..\Common\Units\SystemFuncs;..\..\Common\Units\SharpTypes;..\..\Common\Units\DebugDialog</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\..\Common\Units\SystemFuncs;..\..\Common\Units\SharpTypes;..\..\Common\Units\DebugDialog;..\..\Common\Units\MonitorList</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\Common\Units\SystemFuncs;..\..\Common\Units\SharpTypes;..\..\Common\Units\DebugDialog;..\..\Common\Units\MonitorList</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\Common\Units\SystemFuncs;..\..\Common\Units\SharpTypes;..\..\Common\Units\DebugDialog;..\..\Common\Units\MonitorList</DCC_ObjPath>
+    <DCC_IncludePath>..\..\Common\Units\SystemFuncs;..\..\Common\Units\SharpTypes;..\..\Common\Units\DebugDialog;..\..\Common\Units\MonitorList</DCC_IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
     <DCC_Define>DEBUG</DCC_Define>
     <DCC_ExeOutput>..\..\..\SharpE\</DCC_ExeOutput>
     <DCC_Optimize>False</DCC_Optimize>
-    <DCC_UnitSearchPath>..\..\Common\Units\SystemFuncs;..\..\Common\Units\SharpTypes;..\..\Common\Units\DebugDialog</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\Common\Units\SystemFuncs;..\..\Common\Units\SharpTypes;..\..\Common\Units\DebugDialog</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\Common\Units\SystemFuncs;..\..\Common\Units\SharpTypes;..\..\Common\Units\DebugDialog</DCC_ObjPath>
-    <DCC_IncludePath>..\..\Common\Units\SystemFuncs;..\..\Common\Units\SharpTypes;..\..\Common\Units\DebugDialog</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\..\Common\Units\SystemFuncs;..\..\Common\Units\SharpTypes;..\..\Common\Units\DebugDialog;..\..\Common\Units\MonitorList</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\Common\Units\SystemFuncs;..\..\Common\Units\SharpTypes;..\..\Common\Units\DebugDialog;..\..\Common\Units\MonitorList</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\Common\Units\SystemFuncs;..\..\Common\Units\SharpTypes;..\..\Common\Units\DebugDialog;..\..\Common\Units\MonitorList</DCC_ObjPath>
+    <DCC_IncludePath>..\..\Common\Units\SystemFuncs;..\..\Common\Units\SharpTypes;..\..\Common\Units\DebugDialog;..\..\Common\Units\MonitorList</DCC_IncludePath>
     <DCC_MapFile>3</DCC_MapFile>
   </PropertyGroup>
   <ProjectExtensions>
@@ -36,6 +36,12 @@
     <Borland.ProjectType />
     <BorlandProject>
 <BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters><Parameters Name="RunParams">'F:\SharpE\SharpAdmin.exe -DeleteKeyValue HKCU,SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce,test1,0^'</Parameters><Parameters Name="HostApplication">..\..\..\..\SharpE\SharpAdmin.exe</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">0</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1031</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription"></VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName"></VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">SharpAdmin.dpr</Source></Source><Excluded_Packages>
+      
+      
+      
+      
+      
+      
       <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
       <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
     </Excluded_Packages></Delphi.Personality></BorlandProject></BorlandProject>

@@ -16,19 +16,19 @@
     <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
     <DCC_ExeOutput>..\..\..\..\SharpE\</DCC_ExeOutput>
     <DCC_Define>RELEASE</DCC_Define>
-    <DCC_UnitSearchPath>..\..\Units\DebugDialog</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\Units\DebugDialog</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\Units\DebugDialog</DCC_ObjPath>
-    <DCC_IncludePath>..\..\Units\DebugDialog</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\..\Units\DebugDialog;..\..\Units\MonitorList</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\Units\DebugDialog;..\..\Units\MonitorList</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\Units\DebugDialog;..\..\Units\MonitorList</DCC_ObjPath>
+    <DCC_IncludePath>..\..\Units\DebugDialog;..\..\Units\MonitorList</DCC_IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
     <DCC_ExeOutput>..\..\..\..\SharpE\</DCC_ExeOutput>
     <DCC_Define>DEBUG</DCC_Define>
-    <DCC_UnitSearchPath>..\..\Units\DebugDialog</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\Units\DebugDialog</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\Units\DebugDialog</DCC_ObjPath>
-    <DCC_IncludePath>..\..\Units\DebugDialog</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\..\Units\DebugDialog;..\..\Units\MonitorList</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\Units\DebugDialog;..\..\Units\MonitorList</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\Units\DebugDialog;..\..\Units\MonitorList</DCC_ObjPath>
+    <DCC_IncludePath>..\..\Units\DebugDialog;..\..\Units\MonitorList</DCC_IncludePath>
     <DCC_MapFile>3</DCC_MapFile>
   </PropertyGroup>
   <ProjectExtensions>
