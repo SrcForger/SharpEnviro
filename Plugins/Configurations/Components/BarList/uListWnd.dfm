@@ -92,8 +92,6 @@ object frmListWnd: TfrmListWnd
     Borderstyle = bsNone
     Ctl3d = False
     Align = alClient
-    ExplicitLeft = -5
-    ExplicitTop = -20
   end
   object tmrUpdate: TTimer
     Interval = 1

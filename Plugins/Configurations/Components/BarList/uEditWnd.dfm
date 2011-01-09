@@ -35,7 +35,6 @@ object frmEditwnd: TfrmEditwnd
     BevelOuter = bvNone
     Constraints.MinWidth = 260
     TabOrder = 1
-    ExplicitHeight = 116
     DesignSize = (
       285
       110)
@@ -165,7 +164,6 @@ object frmEditwnd: TfrmEditwnd
     Constraints.MinWidth = 260
     ParentColor = True
     TabOrder = 2
-    ExplicitHeight = 106
     DesignSize = (
       260
       100)
@@ -286,7 +284,6 @@ object frmEditwnd: TfrmEditwnd
     ParentColor = True
     TabOrder = 0
     Visible = False
-    ExplicitHeight = 22
     object Label1: TLabel
       Left = 0
       Top = 13

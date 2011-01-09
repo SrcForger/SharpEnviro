@@ -217,7 +217,6 @@ begin
               FBarItem.AlwaysOnTop := True;
               FBarItem.AutoHide := False;
               FBarItem.AutoHideTime := 1000;
-              FBarItem.ForceAlwaysOnTop := False;
             end;
 
             BuildMonList;
@@ -240,7 +239,7 @@ begin
             cbBasedOn.ItemIndex := 0;
             cbBasedOn.Enabled := False;
 
-            chkAlwaysOnTop.Checked := FBarItem.ForceAlwaysOnTop;
+            chkAlwaysOnTop.Checked := FBarItem.AlwaysOnTop;
             chkShowThrobber.Checked := FBarItem.ShowThrobber;
           end;
         end;
@@ -330,7 +329,6 @@ begin
               Add('AlwaysOnTop', True);
               Add('AutoHide', chkAutoHide.Checked);
               Add('AutoHideTime', sgbAutoHide.Value * 1000);
-              Add('ForceAlwaysOnTop', False);
             end;
   
             if ItemNamed['Modules'] = nil then
@@ -373,10 +371,9 @@ begin
               Add('FixedWidth', sgbFixedWidth.Value);
               Add('FixedWidthEnabled', cbFixedWidth.Checked);
               Add('ShowMiniThrobbers', FBarItem.MiniThrobbers);
-              Add('AlwaysOnTop', True{FBarItem.AlwaysOnTop});
+              Add('AlwaysOnTop', chkAlwaysOnTop.Checked);
               Add('AutoHide', chkAutoHide.Checked);
               Add('AutoHideTime', sgbAutoHide.Value * 1000);
-              Add('ForceAlwaysOnTop', chkAlwaysOnTop.Checked);
             end;
           end;
           SaveXMLToSharedFile(XML,dir + inttostr(copyId) + '\Bar.xml',True);
