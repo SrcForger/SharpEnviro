@@ -82,7 +82,7 @@ begin
 
     if not s then
     begin
-      Dir := IncludeTrailingBackslash(SharpAPI.GetSharpeDirectory);
+      {$WARNINGS OFF} Dir := IncludeTrailingBackslash(SharpAPI.GetSharpeDirectory); {$WARNINGS ON}
       if (NETFramework35) and (FileExists(Dir + 'Addons\Explorer.exe')) then
         ShellExecute(0, nil, PChar(Dir + 'Addons\Explorer.exe'), nil, nil, SW_SHOWNORMAL);
 

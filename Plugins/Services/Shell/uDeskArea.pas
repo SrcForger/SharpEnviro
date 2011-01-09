@@ -198,7 +198,8 @@ begin
       for i := 0 to High(BR) do
       begin
         b := GetBarAutoHide(i);
-        if (IsWindowVisible(BR[i].wnd)) and (not b) then
+        if (IsWindowVisible(BR[i].wnd) or (GetProp(BR[i].wnd,'FullScreenAppActive') = 1))
+          and (not b) then
            if PointInRect(Point(BR[i].R.Left + (BR[i].R.Right - BR[i].R.Left) div 2,
                                 BR[i].R.Top + (BR[i].R.Bottom - BR[i].R.Top) div 2),
                           MonList.Monitors[n].BoundsRect) then

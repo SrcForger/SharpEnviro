@@ -272,6 +272,8 @@ begin
   end;
   if ShellTrayWnd <> 0 then
   begin
+    RemoveProp(ShellTrayWnd,'AllowConsentToStealFocus');
+    RemoveProp(ShellTrayWnd,'TaskBandHWND');    
     DestroyWindow(ShellTrayWnd);
     Windows.UnregisterClass(PChar('Shell_TrayWnd'),hinstance)
   end;

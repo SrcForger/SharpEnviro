@@ -151,7 +151,9 @@ var
 
 implementation
 
+{$WARNINGS OFF}
 function RegisterShellHook(wnd : hwnd; param : dword) : boolean; stdcall; external 'shell32.dll' index 181;
+{$WARNINGS ON}
 
 function CheckTaskWnd(pHandle : hwnd; IncludeInvisible : boolean): boolean;
 var
