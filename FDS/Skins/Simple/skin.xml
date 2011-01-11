@@ -559,7 +559,24 @@
         <draw>1</draw>
         <size>16,16</size>
         <location>5,6</location>
-      </icon>    
+      </icon> 
+      <highlightsettings>
+        <blendicon>
+          <apply>1</apply>
+          <max>120</max>
+          <min>0</min>
+          <value>0</value>
+          <change>20</change>
+          <color>$IconHighlightComp</color>
+        </blendicon>
+        <lighten>
+          <apply>1</apply>
+          <max>30</max>
+          <min>-60</min>
+          <value>-60</value>
+          <change>15</change>
+        </lighten>
+      </highlightsettings>
       <location>0,0</location>
       <dimension>160,27</dimension>
       <spacing>1</spacing>
@@ -677,10 +694,10 @@
       </downhover>
       <highlight>
         <icon>
-          <lighten>1</lighten>
+          <lighten>0</lighten>
           <lightenamount>48</lightenamount>
-        </icon>     
-        <skinpart>
+        </icon>
+         <skinpart>
           <location>0,0</location>
           <dimension>1,h</dimension>
           <image>images/empty.png</image>
@@ -699,9 +716,9 @@
           <dimension>w-1,h</dimension>
           <image>images/bgempty.png</image>
           <gradienttype>vertical</gradienttype>
-          <gradientcolor>$IconHighlight,$IconHighlight-96</gradientcolor>
+          <gradientcolor>$IconHighlightComp+32,$IconHighlightComp-64</gradientcolor>
           <gradientalpha>255,255</gradientalpha>
-          <alpha>128</alpha>
+          <alpha>164</alpha>
         </skinpart>
         <skinpart>
           <location>1,0</location>
@@ -712,9 +729,9 @@
         </skinpart>
       </highlight>
       <highlighthover>
-         <icon>
+        <icon>
           <lighten>1</lighten>
-          <lightenamount>64</lightenamount>
+          <lightenamount>24</lightenamount>
         </icon>
         <skinpart>
           <location>0,0</location>
@@ -735,18 +752,18 @@
           <dimension>w-1,h</dimension>
           <image>images/bgempty.png</image>
           <gradienttype>vertical</gradienttype>
-          <gradientcolor>$IconHighlight,$IconHighlight-96</gradientcolor>
+          <gradientcolor>$IconHighlightComp+32,$IconHighlightComp-64</gradientcolor>
           <gradientalpha>255,255</gradientalpha>
-          <alpha>128</alpha>
+          <alpha>164</alpha>
         </skinpart>
         <skinpart>
           <location>1,0</location>
           <dimension>w-2,h</dimension>
           <image>images/empty.png</image>
           <color>clWhite</color>
-          <alpha>64</alpha>
+          <alpha>32</alpha>
         </skinpart>
-      </highlighthover>  
+      </highlighthover>   
     </full>
     <compact>
       <text>
@@ -762,6 +779,23 @@
         <shadowtype>Right</shadowtype>
         <shadowalpha>128</shadowalpha>
       </text>
+      <highlightsettings>
+        <blendicon>
+          <apply>1</apply>
+          <max>120</max>
+          <min>0</min>
+          <value>0</value>
+          <change>20</change>
+          <color>$IconHighlightComp</color>
+        </blendicon>
+        <lighten>
+          <apply>1</apply>
+          <max>30</max>
+          <min>-60</min>
+          <value>-60</value>
+          <change>15</change>
+        </lighten>
+      </highlightsettings>
       <icon>
         <draw>1</draw>
         <size>16,16</size>
@@ -884,10 +918,10 @@
       </downhover>
       <highlight>
         <icon>
-          <lighten>1</lighten>
+          <lighten>0</lighten>
           <lightenamount>48</lightenamount>
-        </icon>     
-        <skinpart>
+        </icon>
+         <skinpart>
           <location>0,0</location>
           <dimension>1,h</dimension>
           <image>images/empty.png</image>
@@ -906,9 +940,9 @@
           <dimension>w-1,h</dimension>
           <image>images/bgempty.png</image>
           <gradienttype>vertical</gradienttype>
-          <gradientcolor>$IconHighlight,$IconHighlight-96</gradientcolor>
+          <gradientcolor>$IconHighlightComp+32,$IconHighlightComp-64</gradientcolor>
           <gradientalpha>255,255</gradientalpha>
-          <alpha>128</alpha>
+          <alpha>164</alpha>
         </skinpart>
         <skinpart>
           <location>1,0</location>
@@ -919,9 +953,9 @@
         </skinpart>
       </highlight>
       <highlighthover>
-         <icon>
+        <icon>
           <lighten>1</lighten>
-          <lightenamount>64</lightenamount>
+          <lightenamount>24</lightenamount>
         </icon>
         <skinpart>
           <location>0,0</location>
@@ -942,18 +976,18 @@
           <dimension>w-1,h</dimension>
           <image>images/bgempty.png</image>
           <gradienttype>vertical</gradienttype>
-          <gradientcolor>$IconHighlight,$IconHighlight-96</gradientcolor>
+          <gradientcolor>$IconHighlightComp+32,$IconHighlightComp-64</gradientcolor>
           <gradientalpha>255,255</gradientalpha>
-          <alpha>128</alpha>
+          <alpha>164</alpha>
         </skinpart>
         <skinpart>
           <location>1,0</location>
           <dimension>w-2,h</dimension>
           <image>images/empty.png</image>
           <color>clWhite</color>
-          <alpha>64</alpha>
+          <alpha>32</alpha>
         </skinpart>
-      </highlighthover>  
+      </highlighthover>         
     </compact>
     <mini>
       <text>
@@ -971,6 +1005,23 @@
         <shadowtype>Right</shadowtype>
         <shadowalpha>255</shadowalpha>
       </overlaytext>
+      <highlightsettings>
+        <blendicon>
+          <apply>1</apply>
+          <max>120</max>
+          <min>0</min>
+          <value>0</value>
+          <change>20</change>
+          <color>$IconHighlightComp</color>
+        </blendicon>
+        <lighten>
+          <apply>1</apply>
+          <max>30</max>
+          <min>-60</min>
+          <value>-60</value>
+          <change>15</change>
+        </lighten>
+      </highlightsettings>
       <icon>
         <draw>1</draw>
         <size>22,22</size>
@@ -1154,10 +1205,10 @@
       </downhover>
       <highlight>
         <icon>
-          <lighten>1</lighten>
+          <lighten>0</lighten>
           <lightenamount>48</lightenamount>
         </icon>
-        <skinpart>
+         <skinpart>
           <location>0,0</location>
           <dimension>1,h</dimension>
           <image>images/empty.png</image>
@@ -1176,15 +1227,15 @@
           <dimension>w-1,h</dimension>
           <image>images/bgempty.png</image>
           <gradienttype>vertical</gradienttype>
-          <gradientcolor>$Special+32,$Special-32</gradientcolor>
+          <gradientcolor>$IconHighlightComp+32,$IconHighlightComp-64</gradientcolor>
           <gradientalpha>255,255</gradientalpha>
-          <alpha>148</alpha>
+          <alpha>164</alpha>
         </skinpart>
       </highlight>
       <highlighthover>
         <icon>
           <lighten>1</lighten>
-          <lightenamount>64</lightenamount>
+          <lightenamount>24</lightenamount>
         </icon>
         <skinpart>
           <location>0,0</location>
@@ -1205,7 +1256,7 @@
           <dimension>w-1,h</dimension>
           <image>images/bgempty.png</image>
           <gradienttype>vertical</gradienttype>
-          <gradientcolor>$Special+64,$Special-64</gradientcolor>
+          <gradientcolor>$IconHighlightComp+32,$IconHighlightComp-64</gradientcolor>
           <gradientalpha>255,255</gradientalpha>
           <alpha>164</alpha>
         </skinpart>

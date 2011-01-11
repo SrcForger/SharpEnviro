@@ -58,4 +58,11 @@
     <Default>clWhite</Default>
     <type>Dynamic</type>
   </item>
+  <item>
+    <Name>Icon Highlight Complementary</Name>
+    <Tag>$IconHighlightComp</Tag>
+    <Info>Complementary Icon Highlight Color</Info>
+    <Default>clWhite</Default>
+    <type>Dynamic</type>
+  </item>
 </SharpESkinScheme>
