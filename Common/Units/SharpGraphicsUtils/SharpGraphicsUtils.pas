@@ -48,6 +48,8 @@ type
   procedure HSLChangeImage(bmp : Tbitmap32; HMod,SMod,LMod : integer);
   function ChangeBrightnessHSL32(Src : TColor32; Amount : integer) : TColor32;  
 
+  function ComplementaryColor(Src : TColor32) : TColor32;
+
   procedure VGradient(Bmp : TBitmap32; color1,color2 : TColor; st,et : byte; Rect : TRect);
   procedure HGradient(Bmp : TBitmap32; color1,color2 : TColor; st,et : byte; Rect : TRect);
   procedure ApplyGradient(Bmp : TBitmap32; gtype : TThemeWallpaperGradientType;
@@ -62,6 +64,19 @@ type
   function HasVisiblePixel(Src : TBitmap32) : boolean;
 
 implementation
+
+function ComplementaryColor(Src : TColor32) : TColor32;
+var
+  h,s,l : byte;
+  newhue : integer;
+begin
+  RGBtoHSL(Src,h,s,l);
+  newhue := h + 128;
+  if newhue > 255 then
+    h := newhue-255
+  else h := newhue;
+  result := HSLtoRGB(h,s,l);
+end;
 
 function HasVisiblePixel(Src : TBitmap32) : boolean;
 var
