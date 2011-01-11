@@ -48,6 +48,56 @@ type
     property Colors : TSharpEColorSet read GetColors write SetColors;
   end;
 
+  ISharpESkinHighlightItem = interface
+  ['{034F4C7A-4762-4060-9188-042B0610C642}']
+    function GetValue  : integer; stdcall;
+    function GetChange : integer; stdcall;
+    function GetApply  : boolean; stdcall;
+    function GetMax    : integer; stdcall;
+    function GetMin    : integer; stdcall;
+    function GetColor  : integer; stdcall;
+    function GetColorStr : String; stdcall;    
+
+    procedure SetValue(NewValue : integer); stdcall;
+    procedure SetChange(NewValue : integer); stdcall;
+    procedure SetApply(NewValue : boolean); stdcall;
+    procedure SetMax(NewValue : integer); stdcall;
+    procedure SetMin(NewValue : integer); stdcall;
+    procedure SetColor(NewValue : integer); stdcall;
+    procedure SetColorStr(NewValue : String); stdcall;
+
+    procedure UpdateDynamicProperties(cs: ISharpEScheme); stdcall;    
+    procedure Assign(Src : ISharpESkinHighlightItem); overload; stdcall;
+
+    property Value  : integer read GetValue write SetValue;
+    property Change : integer read GetChange write SetChange;
+    property Apply  : boolean read GetApply write SetApply;
+    property Max    : integer read GetMax write SetMax;
+    property Min    : integer read GetMin write SetMin;
+    property Color  : integer read GetColor write SetColor;
+    property ColorString : String read GetColorStr write SetColorStr;   
+  end;    
+
+  ISharpESkinHighlightSettings = interface
+  ['{902D41A7-6DC0-4BE7-8336-B6363EDA6A2E}']
+    function GetLighten     : ISharpESkinHighlightItem; stdcall;
+    function GetLightenIcon : ISharpESkinHighlightItem; stdcall;
+    function GetAlpha       : ISharpESkinHighlightItem; stdcall;
+    function GetAlphaIcon   : ISharpESkinHighlightItem; stdcall;
+    function GetBlend       : ISharpESkinHighlightItem; stdcall;
+    function GetBlendIcon   : ISharpESkinHighlightItem; stdcall;
+
+    procedure UpdateDynamicProperties(cs: ISharpEScheme); stdcall;
+    procedure Assign(Src : ISharpESkinHighlightSettings); overload; stdcall;
+
+    property Lighten     : ISharpESkinHighlightItem read GetLighten;
+    property LightenIcon : ISharpESkinHighlightItem read GetLightenIcon;
+    property Alpha       : ISharpESkinHighlightItem read GetAlpha;
+    property AlphaIcon   : ISharpESkinHighlightItem read GetAlphaIcon;
+    property Blend       : ISharpESkinHighlightItem read GetBlend;
+    property BlendIcon   : ISharpESkinHighlightItem read GetBlendIcon;
+  end;
+
   ISharpESkinText = interface
     ['{8A116794-9019-4E66-8865-88DD34A81E1F}']
     function GetDim(CompRect: TRect) : TPoint; stdcall;
@@ -395,14 +445,7 @@ type
     function GetSpacing : integer; stdcall;
     function GetDimension : TPoint; stdcall;
 
-    function GetOnNormalMouseEnterScript    : String; stdcall;
-    function GetOnNormalMouseLeaveScript    : String; stdcall;
-    function GetOnDownMouseEnterScript      : String; stdcall;
-    function GetOnDownMouseLeaveScript      : String; stdcall;
-    function GetOnHighlightMouseEnterScript : String; stdcall;
-    function GetOnHighlightMouseLeaveScript : String; stdcall;
-    function GetOnHighlightStepStartScript  : String; stdcall;
-    function GetOnHighlightStepEndScrtipt   : String; stdcall;
+    function GetHighlightSettings : ISharpESkinHighlightSettings; stdcall;
 
     property Normal         : ISharpESkinPartEx read GetNormal;
     property NormalHover    : ISharpESkinPartEx read GetNormalHover;
@@ -414,21 +457,13 @@ type
     property SpecialHover   : ISharpESkinPartEx read GetSpecialHover;
 
     property OverlayText : ISharpESkinText read GetOverlayText;
+    property HighlightSettings : ISharpESkinHighlightSettings read GetHighlightSettings;
 
     property HasSpecial : boolean read GetHasSpecial;
     property HasOverlay : boolean read GetHasOverlay;
     property Location : TPoint read GetLocation;
     property Spacing : integer read GetSpacing;
     property Dimension : TPoint read GetDimension;
-
-    property OnNormalMouseEnterScript  : String read GetOnNormalMouseEnterScript;
-    property OnNormalMouseLeaveScript  : String read GetOnNormalMouseLeaveScript;
-    property OnDownMouseEnterScript    : String read GetOnDownMouseEnterScript;
-    property OnDownMouseLeaveScript    : String read GetOnDownMouseLeaveScript;
-    property OnHighlightMouseEnterScript : String read GetOnHighlightMouseEnterScript;
-    property OnHighlightMouseLeaveScript : String read GetOnHighlightMouseLeaveScript;
-    property OnHighlightStepStartScript  : String read GetOnHighlightStepStartScript;
-    property OnHighlightStepEndScript    : String read GetOnHighlightStepEndScrtipt;
   end;
 
   ISharpETaskItemSkin = interface

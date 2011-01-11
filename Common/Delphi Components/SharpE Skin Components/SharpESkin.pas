@@ -245,14 +245,11 @@ type
     FHasSpecial     : boolean;
     FSpacing        : integer;
     FSkinDim        : TSkinDim;
-    FOnNormalMouseEnterScript    : String;
-    FOnNormalMouseLeaveScript    : String;
-    FOnDownMouseEnterScript      : String;
-    FOnDownMouseLeaveScript      : String;
-    FOnHighlightMouseEnterScript : String;
-    FOnHighlightMouseLeaveScript : String;
-    FOnHighlightStepStartScript  : String;
-    FOnHighlightStepEndScript    : String;
+
+    FHighlightSettings : TSharpESkinHighlightSettings;
+    FHighlightSettingsInterface: ISharpESkinHighlightSettings;
+
+    function GetHighlightSettings : ISharpESkinHighlightSettings; stdcall;
 
     function GetNormal         : ISharpESkinPartEx; stdcall;
     function GetNormalHover    : ISharpESkinPartEx; stdcall;
@@ -270,15 +267,6 @@ type
     function GetLocation : TPoint; stdcall;    
     function GetSpacing : integer; stdcall;
     function GetDimension : TPoint; stdcall;
-
-    function GetOnNormalMouseEnterScript  : String; stdcall;
-    function GetOnNormalMouseLeaveScript  : String; stdcall;
-    function GetOnDownMouseEnterScript    : String; stdcall;
-    function GetOnDownMouseLeaveScript    : String; stdcall;
-    function GetOnHighlightMouseEnterScript : String; stdcall;
-    function GetOnHighlightMouseLeaveScript : String; stdcall;
-    function GetOnHighlightStepStartScript  : String; stdcall;
-    function GetOnHighlightStepEndScrtipt   : String; stdcall;                           
   public
     constructor Create(BmpList : TSkinBitmapList); reintroduce;
     destructor Destroy; override;
@@ -301,20 +289,13 @@ type
 
     property OverlayText : ISharpESkinText read GetOverlayText;
 
+    property HighlightSettings : ISharpESkinHighlightSettings read GetHighlightSettings;
+
     property HasSpecial : boolean read GetHasSpecial;
     property HasOverlay : boolean read GetHasOverlay;
     property Location : TPoint read GetLocation;
     property Spacing : integer read GetSpacing;
     property Dimension : TPoint read GetDimension;
-
-    property OnNormalMouseEnterScript    : String read GetOnNormalMouseEnterScript;
-    property OnNormalMouseLeaveScript    : String read GetOnNormalMouseLeaveScript;
-    property OnDownMouseEnterScript      : String read GetOnDownMouseEnterScript;
-    property OnDownMouseLeaveScript      : String read GetOnDownMouseLeaveScript;
-    property OnHighlightMouseEnterScript : String read GetOnHighlightMouseEnterScript;
-    property OnHighlightMouseLeaveScript : String read GetOnHighlightMouseLeaveScript;
-    property OnHighlightStepStartScript  : String read GetOnHighlightStepStartScript;
-    property OnHighlightStepEndScript    : String read GetOnHighlightStepEndScrtipt;
   end;
 
   TSharpETaskItemSkin = class(TInterfacedObject, ISharpETaskItemSkin)
@@ -3727,15 +3708,8 @@ begin
   FHighlightHover.Clear;
   FSpecial.Clear;
   FOverlayText.Clear;
+  FHighlightSettings.Clear;
   FSpacing := 2;
-  FOnNormalMouseEnterScript    := '';
-  FOnNormalMouseLeaveScript    := '';
-  FOnDownMouseEnterScript      := '';
-  FOnDownMouseLeaveScript      := '';
-  FOnHighlightMouseEnterScript := '';
-  FOnHighlightMouseLeaveScript := '';
-  FOnHighlightStepStartScript  := '';
-  FOnHighlightStepEndScript    := '';
 end;
 
 constructor TSharpETaskItemState.Create(BmpList : TSkinBitmapList);
@@ -3751,6 +3725,8 @@ begin
   FSpecial        := TSkinPartEx.Create(BmpList);
   FSpecialHover   := TSkinPartEx.Create(BmpList);
 
+  FHighlightSettings := TSharpESkinHighlightSettings.Create;
+
   FOverlayText := TSkinText.Create(False);
 
   FNormalInterface         := FNormal;
@@ -3761,6 +3737,8 @@ begin
   FHighlightHoverInterface := FHighlightHover;
   FSpecialInterface        := FSpecial;
   FSpecialHoverInterface   := FSpecialHover;
+
+  FHighlightSettingsInterface := FHighlightSettings;
 
   FOverlayTextInterface := FOverlayText;
 
@@ -3779,6 +3757,8 @@ begin
   FHighlightHoverInterface := nil;
   FSpecialInterface        := nil;
   FSpecialHoverInterface   := nil;
+  
+  FHighlightSettingsInterface := nil;
 
   FOverlayTextInterface   := nil;
 
@@ -3820,29 +3800,14 @@ begin
   result := FHighlightHoverInterface;
 end;
 
+function TSharpETaskItemState.GetHighlightSettings: ISharpESkinHighlightSettings;
+begin
+  result := FHighlightSettingsInterface;
+end;
+
 function TSharpETaskItemState.GetLocation: TPoint;
 begin
   result := Point(FSkinDim.XAsInt,FSkinDim.YAsInt);
-end;
-
-function TSharpETaskItemState.GetOnHighlightMouseEnterScript: String;
-begin
-  result := FOnHighlightMouseEnterScript;
-end;
-
-function TSharpETaskItemState.GetOnHighlightMouseLeaveScript: String;
-begin
-  result := FOnHighlightMouseLeaveScript;
-end;
-
-function TSharpETaskItemState.GetOnHighlightStepEndScrtipt: String;
-begin
-  result := FOnHighlightStepEndScript;
-end;
-
-function TSharpETaskItemState.GetOnHighlightStepStartScript: String;
-begin
-  result := FOnHighlightStepStartScript;
 end;
 
 function TSharpETaskItemState.GetNormal: ISharpESkinPartEx;
@@ -3853,26 +3818,6 @@ end;
 function TSharpETaskItemState.GetNormalHover: ISharpESkinPartEx;
 begin
   result := FNormalHoverInterface;
-end;
-
-function TSharpETaskItemState.GetOnDownMouseEnterScript: String;
-begin
-  result := FOnDownMouseEnterScript;
-end;
-
-function TSharpETaskItemState.GetOnDownMouseLeaveScript: String;
-begin
-  result := FOnDownMouseLeaveScript;
-end;
-
-function TSharpETaskItemState.GetOnNormalMouseEnterScript: String;
-begin
-  result := FOnNormalMouseEnterScript;
-end;
-
-function TSharpETaskItemState.GetOnNormalMouseLeaveScript: String;
-begin
-  result := FOnNormalMouseLeaveScript;
 end;
 
 function TSharpETaskItemState.GetOverlayText: ISharpESkinText;
@@ -3907,18 +3852,11 @@ begin
   FSpecial.LoadFromStream(Stream);
   FSpecialHover.LoadFromStream(Stream);
 
+  FHighlightSettings.LoadFromStream(Stream);
+  
   FOverlayText.LoadFromStream(Stream);
 
   FSpacing := StrToInt(StringLoadFromStream(Stream));
-
-  FOnNormalMouseEnterScript    := StringLoadFromStream(Stream);
-  FOnNormalMouseLeaveScript    := StringLoadFromStream(Stream);
-  FOnDownMouseEnterScript      := StringLoadFromStream(Stream);
-  FOnDownMouseLeaveScript      := StringLoadFromStream(Stream);
-  FOnHighlightMouseEnterScript := StringLoadFromStream(Stream);
-  FOnHighlightMouseLeaveScript := StringLoadFromStream(Stream);
-  FOnHighlightStepStartScript  := StringLoadFromStream(Stream);
-  FOnHighlightStepEndScript    := StringLoadFromStream(Stream);
 
   if StringLoadFromStream(Stream) = '1' then FHasSpecial := True
      else FHasSpecial := False;
@@ -3971,26 +3909,10 @@ begin
          FSkinDim.SetDimension(Value('dimension', 'w,h'));
       if ItemNamed['location'] <> nil then
          FSkinDim.SetLocation(Value('location','0,0'));
-     {$WARNINGS OFF}
-      if ItemNamed['OnNormalMouseEnter'] <> nil then
-         FOnNormalMouseEnterScript := LoadScriptFromFile(IncludeTrailingBackSlash(Path) + Value('OnNormalMouseEnter',''));
-      if ItemNamed['OnNormalMouseLeave'] <> nil then
-         FOnNormalMouseLeaveScript := LoadScriptFromFile(IncludeTrailingBackSlash(Path) + Value('OnNormalMouseLeave',''));
-      if ItemNamed['OnDownMouseEnter'] <> nil then
-         FOnDownMouseEnterScript := LoadScriptFromFile(IncludeTrailingBackSlash(Path) + Value('OnDownMouseEnter',''));
-      if ItemNamed['OnDownMouseLeave'] <> nil then
-         FOnDownMouseLeaveScript := LoadScriptFromFile(IncludeTrailingBackSlash(Path) + Value('OnDownMouseLeave',''));
-      if ItemNamed['OnHighlightMouseEnter'] <> nil then
-         FOnHighlightMouseEnterScript := LoadScriptFromFile(IncludeTrailingBackSlash(Path) + Value('OnHighlightMouseEnter',''));
-      if ItemNamed['OnHighlightMouseLeave'] <> nil then
-         FOnHighlightMouseLeaveScript := LoadScriptFromFile(IncludeTrailingBackSlash(Path) + Value('OnHighlightMouseLeave',''));
-      if ItemNamed['OnHighlightStepStart'] <> nil then
-         FOnHighlightStepStartScript := LoadScriptFromFile(IncludeTrailingBackSlash(Path) + Value('OnHighlightStepStart',''));
-      if ItemNamed['OnHighlightStepEnd'] <> nil then
-         FOnHighlightStepEndScript := LoadScriptFromFile(IncludeTrailingBackSlash(Path) + Value('OnHighlightStepEnd',''));
-      {$WARNINGS ON}
       if ItemNamed['spacing'] <> nil then
          FSpacing := IntValue('spacing',2);
+      if ItemNamed['highlightsettings']  <> nil then
+        FHighlightSettings.LoadFromXML(ItemNamed['highlightsettings']);
     end;
   finally
     SkinText.SelfInterface := nil;
@@ -4010,18 +3932,11 @@ begin
   FSpecial.SaveToStream(Stream);
   FSpecialHover.SaveToStream(Stream);
 
+  FHighlightSettings.SaveToStream(Stream);
+  
   FOverlayText.SaveToStream(Stream);
 
   StringSaveToStream(inttostr(FSpacing),Stream);
-
-  StringSaveToStream(FOnNormalMouseEnterScript,Stream);
-  StringSaveToStream(FOnNormalMouseLeaveScript,Stream);
-  StringSaveToStream(FOnDownMouseEnterScript,Stream);
-  StringSaveToStream(FOnDownMouseLeaveScript,Stream);
-  StringSaveToStream(FOnHighlightMouseEnterScript,Stream);
-  StringSaveToStream(FOnHighlightMouseLeaveScript,Stream);
-  StringSaveToStream(FOnHighlightStepStartScript,Stream);
-  StringSaveToStream(FOnHighlightStepEndScript,Stream);
 
   if FHasSpecial then StringSavetoStream('1', Stream)
      else StringSavetoStream('0', Stream);
@@ -4039,7 +3954,8 @@ begin
   FHighlightHover.UpdateDynamicProperties(cs);
   FSpecial.UpdateDynamicProperties(cs);
   FSpecialHover.UpdateDynamicProperties(cs);
-  FOverlayText.UpdateDynamicProperties(cs); 
+  FOverlayText.UpdateDynamicProperties(cs);
+  FHighlightSettings.UpdateDynamicProperties(cs);
 end;
 
 initialization

@@ -33,6 +33,7 @@ uses
   Classes,
   Graphics,
   Controls,
+  ExtCtrls,
   Forms,
   StdCtrls,
   uThemeConsts,
@@ -41,6 +42,7 @@ uses
   SharpGraphicsUtils,
   SharpEBase,
   SharpEBaseControls,
+  SharpESkinPart,
   SharpEDefault,
   ISharpESkinComponents,
   SharpTypes,
@@ -58,7 +60,6 @@ type
     FSpecial : boolean;       
     FUseSpecial : boolean;
     FFlashing : boolean;
-    FFlashState : boolean;
     FState : TSharpETaskItemStates;
     FGlyph32FileName: TGlyph32FileName;
     FGlyph32: TBitmap32;
@@ -78,6 +79,9 @@ type
     FOverlay : TBitmap32;
     FOverlayPos : TPoint;
     FGlyphColor : integer;
+    FHighlightTimer : TTimer;
+    FHighlightSettings : TSharpESkinHighlightSettings;
+    procedure OnHighlightTimer(Sender : TObject);
     procedure CMDialogKey(var Message: TCMDialogKey); message CM_DIALOGKEY;
     procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
     procedure CMFocusChanged(var Message: TCMFocusChanged); message CM_FOCUSCHANGED;
@@ -93,7 +97,6 @@ type
     procedure SetDown(Value: Boolean);
     procedure SetState(Value: TSharpETaskItemStates);
     procedure SetFlashing(Value : Boolean);
-    procedure SetFlashState(Value : Boolean);
     procedure SetSpecial(Value : Boolean);
   protected
     procedure DrawDefaultSkin(bmp: TBitmap32; Scheme: ISharpEScheme); override;
@@ -141,7 +144,6 @@ type
     property Down: Boolean read FDown write SetDown;
     property State: TSharpETaskItemStates read FState write SetState;
     property Flashing: Boolean read FFlashing write SetFlashing;
-    property FlashState: Boolean read FFlashState write SetFlashState;
     property Handle: Cardinal read FHandle write FHandle;
     property Overlay: TBitmap32 read FOverlay;
     property OverlayPos: TPoint read FOverlayPos write FOverlayPos;
@@ -160,6 +162,13 @@ begin
   inherited Create(AOwner);
   Width := 75;
   Height := 25;
+
+  FHighlightTimer := TTimer.Create(nil);
+  FHighlightTimer.Enabled := False;
+  FHighlightTimer.Interval := 100;
+  FHighlightTimer.OnTimer := OnHighlightTimer;
+
+  FHighlightSettings := TSharpESkinHighlightSettings.Create;
 
   FGlyph32 := TBitmap32.Create;
   FOverlay := TBitmap32.Create;
@@ -187,18 +196,6 @@ begin
     Click;
 end;
 
-procedure TSharpETaskItem.SetFlashState(Value : Boolean);
-begin
-
-  if Value <> FFlashState then
-  begin
-    FFlashState := Value;
-    if FManager = nil then
-      exit;    
-    UpdateSkin;
-  end;
-end;
-
 function TSharpETaskItem.GetCurrentStateItem : ISharpETaskItemStateSkin;
 begin
   if not assigned(FManager) then
@@ -215,11 +212,24 @@ begin
 end;
 
 procedure TSharpETaskItem.SetFlashing(Value : Boolean);
+var
+  CurrentState : ISharpETaskItemStateSkin; 
 begin
   if Value <> FFlashing then
   begin
     FFlashing := Value;
     if not assigned(FManager) then exit;
+
+    case FState of
+      tisCompact : CurrentState := FManager.Skin.TaskItem.Compact;
+      tisMini    : CurrentState := FManager.Skin.TaskItem.Mini;
+      else CurrentState := FManager.Skin.TaskItem.Full;
+    end;
+    // Assign defaults
+    if FFlashing then
+      FHighlightSettings.Assign(CurrentState.HighlightSettings);
+
+    FHighlightTimer.Enabled := FFlashing;
     UpdateSkin;
   end;
 end;
@@ -313,6 +323,48 @@ begin
   inherited;
   if (not FDestroying) then  
     UpdateSkin;
+end;
+
+procedure TSharpETaskItem.OnHighlightTimer(Sender: TObject);
+var
+  ItemChanged : boolean;
+
+  procedure ApplyHighlight(item : ISharpESkinHighlightItem);
+  begin
+    with item do
+    begin
+      if Apply then
+      begin
+        ItemChanged := True;
+        Value := Value + Change;
+        if Value >= Max then
+        begin
+          Value := Max;
+          Change := -1 * Change;
+        end else if Value <= Min then
+        begin
+          Value := Min;
+          Change := -1 * Change;
+        end;
+      end;
+    end;
+  end;
+
+begin
+  ItemChanged := False;
+  with FHighlightSettings do
+  begin
+    ApplyHighlight(Lighten);
+    ApplyHighlight(LightenIcon);
+    ApplyHighlight(Blend);
+    ApplyHighlight(BlendIcon);
+    ApplyHighlight(Alpha);
+    ApplyHighlight(AlphaIcon);
+    if ItemChanged then
+    begin
+      UpdateSkin();
+    end;
+  end;
 end;
 
 procedure TSharpETaskItem.SMouseEnter;
@@ -461,9 +513,11 @@ var
   SkinText : ISharpESkinText;
   SkinIcon : ISharpESkinIcon;
   DrawPart : ISharpESkinPartEx;
+  TempBmp : TBitmap32;
+  HasChanged : Boolean;
+  CompColor : integer;
 begin
   CompRect := Rect(0, 0, width, height);
-
   if not Assigned(FManager) then
   begin
     DrawDefaultSkin(bmp, DefaultSharpEScheme);
@@ -499,23 +553,40 @@ begin
       FButtonOver := False;
     end;
 
+    HasChanged := False;
     i := Scheme.GetColorIndexByTag('$IconHighlight');
     if (i > -1) and (i <= High(Scheme.Colors)) then
-    begin
       if Scheme.Colors[i].SchemeType = stDynamic then
         if Scheme.Colors[i].Color <> FGlyphColor then
         begin
           Scheme.Colors[i].Color := FGlyphColor;
-          CurrentState.Normal.UpdateDynamicProperties(Scheme);
-          CurrentState.NormalHover.UpdateDynamicProperties(Scheme);
-          CurrentState.Down.UpdateDynamicProperties(Scheme);
-          CurrentState.DownHover.UpdateDynamicProperties(Scheme);
-          CurrentState.Highlight.UpdateDynamicProperties(Scheme);
-          CurrentState.HighlightHover.UpdateDynamicProperties(Scheme);
-          CurrentState.Special.UpdateDynamicProperties(Scheme);
-          CurrentState.SpecialHover.UpdateDynamicProperties(Scheme);
+          HasChanged := True;
         end;
-    end;    
+
+    i := Scheme.GetColorIndexByTag('$IconHighlightComp');
+    if (i > -1) and (i <= High(Scheme.Colors)) then
+      if Scheme.Colors[i].SchemeType = stDynamic then
+      begin
+        CompColor := ComplementaryColor(FGlyphColor);
+        if Scheme.Colors[i].Color <> CompColor then
+        begin
+          Scheme.Colors[i].Color := CompColor;
+          HasChanged := True;
+        end;
+      end;
+
+    if HasChanged then
+    begin
+      CurrentState.Normal.UpdateDynamicProperties(Scheme);
+      CurrentState.NormalHover.UpdateDynamicProperties(Scheme);
+      CurrentState.Down.UpdateDynamicProperties(Scheme);
+      CurrentState.DownHover.UpdateDynamicProperties(Scheme);
+      CurrentState.Highlight.UpdateDynamicProperties(Scheme);
+      CurrentState.HighlightHover.UpdateDynamicProperties(Scheme);
+      CurrentState.Special.UpdateDynamicProperties(Scheme);
+      CurrentState.SpecialHover.UpdateDynamicProperties(Scheme);
+      CurrentState.HighlightSettings.UpdateDynamicProperties(Scheme);
+    end;
 
     FSkin.Clear(Color32(0, 0, 0, 0));
     if (FFlashing) and (not CurrentState.Highlight.Empty) then
@@ -563,6 +634,30 @@ begin
 
     SkinText.AssignFontTo(bmp.Font,Scheme);
     DrawPart.DrawTo(bmp, Scheme);
+
+    if FFlashing then
+    with FHighlightSettings do
+    begin
+      if Lighten.Apply then
+        SharpGraphicsUtils.LightenBitmap(bmp, Lighten.Value);
+      if Blend.Apply then
+        SharpGraphicsUtils.BlendImageC(bmp, Blend.Color, Blend.Value);
+      if Alpha.Apply then
+      begin
+        TempBmp := TBitmap32.Create;
+        try
+          TempBmp.Assign(bmp);
+          bmp.clear(color32(0,0,0,0));
+          TempBmp.MasterAlpha := Alpha.Value;
+          TempBmp.DrawMode := dmBlend;
+          TempBmp.CombineMode := cmMerge;
+          TempBmp.DrawTo(bmp);
+        finally
+          TempBmp.Free;
+        end;
+      end;                 
+    end;
+
     if (SkinText.DrawText) and (length(Caption) > 0) then
     begin
       mw := SkinText.GetDim(CompRect).x;
@@ -577,7 +672,29 @@ begin
       TextSize.Y := bmp.TextHeightW(caption);
 
       GlyphPos := SkinIcon.GetXY(TextRect,CompRect);
-      SkinIcon.DrawTo(bmp,FGlyph32,GlyphPos.X,GlyphPos.Y);
+      if FFlashing then
+      begin
+        with FHighlightSettings do
+        begin
+          TempBmp := TBitmap32.Create;
+          try
+            TempBmp.SetSize(bmp.width,bmp.height);
+            TempBmp.DrawMode := dmBlend;
+            TempBmp.CombineMode := cmMerge;
+            TempBmp.Clear(color32(0,0,0,0));
+            SkinIcon.DrawTo(TempBmp,FGlyph32,GlyphPos.X,GlyphPos.Y);
+            if LightenIcon.Apply then
+              SharpGraphicsUtils.LightenBitmap(TempBmp, LightenIcon.Value);
+            if BlendIcon.Apply then
+              SharpGraphicsUtils.BlendImageC(TempBmp, BlendIcon.Color, BlendIcon.Value);
+            if AlphaIcon.Apply then
+              TempBmp.MasterAlpha := AlphaIcon.Value; 
+            TempBmp.DrawTo(bmp);
+          finally
+            TempBmp.Free;
+          end;
+        end;
+      end else SkinIcon.DrawTo(bmp,FGlyph32,GlyphPos.X,GlyphPos.Y);
     end;
 
     if ((SkinText <> nil) and (SkinText.DrawText)) then
@@ -649,6 +766,9 @@ end;
 destructor TSharpETaskItem.Destroy;
 begin
   inherited;
+  FHighlightTimer.Enabled := False;
+  FHighlightTimer.Free;
+  FHighlightSettings.Free;
   FDestroying := True;
   if FPrecacheBmp <> nil then FreeAndNil(FPrecacheBmp);
   if FPrecacheText <> nil then FPrecacheText := nil;

@@ -55,6 +55,93 @@ type
   TLayerMode = (lmBlend, lmAdd, lmSubtract, lmModule, lmMin, lmMax,
     lmDifference, lmExclusion);
 
+  TSharpESkinHighlightItem = class(TInterfacedObject, ISharpESkinHighlightItem)
+  private
+    FValue  : integer;
+    FChange : integer;
+    FApply  : boolean;
+    FMax    : integer;
+    FMin    : integer;
+    FColor  : integer;
+    FColorString : String;
+
+    function GetValue  : integer; stdcall;
+    function GetChange : integer; stdcall;
+    function GetApply  : boolean; stdcall;
+    function GetMax    : integer; stdcall;
+    function GetMin    : integer; stdcall;
+    function GetColor  : integer; stdcall;
+    function GetColorStr : String; stdcall;
+
+    procedure SetValue(NewValue : integer); stdcall;
+    procedure SetChange(NewValue : integer); stdcall;
+    procedure SetApply(NewValue : boolean); stdcall;
+    procedure SetMax(NewValue : integer); stdcall;
+    procedure SetMin(NewValue : integer); stdcall;
+    procedure SetColor(NewValue : integer); stdcall;
+    procedure SetColorStr(NewValue : String); stdcall;
+  public
+    constructor Create; reintroduce;
+    procedure LoadFromXML(xml: TJvSimpleXmlElem; parentItem: ISharpESkinHighlightItem); overload;
+    procedure LoadFromXML(xml: TJvSimpleXmlElem); overload;
+    procedure LoadFromStream(Stream : TStream);
+    procedure SaveToStream(Stream : TStream);
+    procedure Clear;
+
+    procedure UpdateDynamicProperties(cs: ISharpEScheme); stdcall;
+    procedure Assign(Src : ISharpESkinHighlightItem); overload; stdcall;
+
+    property Value  : integer read GetValue write SetValue;
+    property Change : integer read GetChange write SetChange;
+    property Apply  : boolean read GetApply write SetApply;
+    property Max    : integer read GetMax write SetMax;
+    property Min    : integer read GetMin write SetMin;
+    property Color  : integer read GetColor write SetColor;
+    property ColorString : String read GetColorStr write SetColorStr;
+  end;
+
+  TSharpESkinHighlightSettings = class(TInterfacedObject, ISharpESkinHighlightSettings)
+  private
+    FLighten        : TSharpESkinHighlightItem;
+    FLightenIcon    : TSharpESkinHighlightItem;
+    FAlpha          : TSharpESkinHighlightItem;
+    FAlphaIcon      : TSharpESkinHighlightItem;
+    FBlend          : TSharpESkinHighlightItem;
+    FBlendIcon      : TSharpESkinHighlightItem;
+
+    FLightenInterface     : ISharpESkinHighlightItem;
+    FLightenIconInterface : ISharpESkinHighlightItem;
+    FAlphaInterface       : ISharpESkinHighlightItem;
+    FAlphaIconInterface   : ISharpESkinHighlightItem;
+    FBlendInterface       : ISharpESkinHighlightItem;
+    FBlendIconInterface   : ISharpESkinHighlightItem;
+
+    function GetLighten     : ISharpESkinHighlightItem; stdcall;
+    function GetLightenIcon : ISharpESkinHighlightItem; stdcall;
+    function GetAlpha       : ISharpESkinHighlightItem; stdcall;
+    function GetAlphaIcon   : ISharpESkinHighlightItem; stdcall;
+    function GetBlend       : ISharpESkinHighlightItem; stdcall;
+    function GetBlendIcon   : ISharpESkinHighlightItem; stdcall;
+  public
+    constructor Create; reintroduce;
+    destructor Destroy; override;
+    procedure LoadFromXML(xml: TJvSimpleXmlElem; parentItem: TSharpESkinHighlightSettings); overload;
+    procedure LoadFromXML(xml: TJvSimpleXmlElem); overload;
+    procedure LoadFromStream(Stream : TStream);
+    procedure SaveToStream(Stream : TStream);
+    procedure Clear;
+
+    procedure Assign(Src : ISharpESkinHighlightSettings); overload; stdcall;
+    procedure UpdateDynamicProperties(cs: ISharpEScheme); stdcall;
+
+    property Lighten     : ISharpESkinHighlightItem read GetLighten;
+    property LightenIcon : ISharpESkinHighlightItem read GetLightenIcon;
+    property Alpha       : ISharpESkinHighlightItem read GetAlpha;
+    property AlphaIcon   : ISharpESkinHighlightItem read GetAlphaIcon;
+    property Blend       : ISharpESkinHighlightItem read GetBlend;
+    property BlendIcon   : ISharpESkinHighlightItem read GetBlendIcon;
+  end;
+
   TSkinPoint = class
   private
     FX: string;
@@ -2191,6 +2278,18 @@ begin
   inherited Destroy;
 end;
 
+procedure TSkinPart.DoCombine(F: TColor32; var B: TColor32; M: TColor32);
+begin
+  Case FLayerMode of
+    lmSubtract: B := ColorSub (F, B);
+    lmModule: B := ColorModulate(F, B);
+    lmMin: B := ColorMin(F, B);
+    lmMax: B := ColorMax(F, B);
+    lmDifference: B := ColorDifference(F, B);
+    lmExclusion:  B := ColorExclusion(F, B);
+  End;
+end;
+
 function TSkinPart.GetBitmap: TBitmap32;
 begin
   if (FBitmapId >= 0) then
@@ -2488,9 +2587,300 @@ begin
   end;
 end;
 
-//**********************************
-//* Other
-//**********************************
+{ TSharpESkinHighlightItem }
+
+procedure TSharpESkinHighlightItem.Assign(Src: ISharpESkinHighlightItem);
+begin
+  FValue := Src.Value;
+  FMax := Src.Max;
+  FMin := Src.Min;
+  FApply := Src.Apply;
+  FChange := Src.Change;
+  FColor := Src.Color;
+  FColorString := Src.ColorString;
+end;
+
+procedure TSharpESkinHighlightItem.Clear;
+begin
+  FValue := 0;
+  FMax := 0;
+  FMin := 0;
+  FApply := False;
+  FChange := 0;
+  FColor := 0;
+end;
+
+constructor TSharpESkinHighlightItem.Create;
+begin
+  inherited Create;
+
+  Clear();
+end;
+
+function TSharpESkinHighlightItem.GetApply: boolean;
+begin
+  result := FApply;
+end;
+
+function TSharpESkinHighlightItem.GetChange: integer;
+begin
+  result := FChange;
+end;
+
+function TSharpESkinHighlightItem.GetColor: integer;
+begin
+  result := FColor;
+end;
+
+function TSharpESkinHighlightItem.GetColorStr: String;
+begin
+  result := FColorString;
+end;
+
+function TSharpESkinHighlightItem.GetMax: integer;
+begin
+  result := FMax;
+end;
+
+function TSharpESkinHighlightItem.GetMin: integer;
+begin
+  result := FMin;
+end;
+
+function TSharpESkinHighlightItem.GetValue: integer;
+begin
+  result := FValue;
+end;
+
+procedure TSharpESkinHighlightItem.LoadFromStream(Stream: TStream);
+begin
+  Stream.ReadBuffer(FValue, sizeof(FValue));
+  Stream.ReadBuffer(FChange, sizeof(FChange));
+  Stream.ReadBuffer(FMax, sizeof(FMax));
+  Stream.ReadBuffer(FMin, sizeof(FMin));
+  FColorString := StringLoadFromStream(Stream);
+  FApply := StrToBool(StringLoadFromStream(Stream));
+end;
+
+procedure TSharpESkinHighlightItem.LoadFromXML(xml: TJvSimpleXmlElem);
+var
+  parent : ISharpESkinHighlightItem;
+begin
+  parent := TSharpESkinHighlightItem.Create;
+  LoadFromXML(xml,parent);
+  parent := nil;
+end;
+
+procedure TSharpESkinHighlightItem.LoadFromXML(xml: TJvSimpleXmlElem; parentItem: ISharpESkinHighlightItem);
+begin
+  with xml.items do
+  begin
+    if ItemNamed['Value'] <> nil then
+      self.FValue := IntValue('Value', parentItem.Value);
+    if ItemNamed['Change'] <> nil then
+      FChange := IntValue('Change', parentItem.Change);
+    if ItemNamed['Max'] <> nil then
+      FMax := IntValue('Max', parentItem.Max);
+    if ItemNamed['Min'] <> nil then
+      FMin := IntValue('Min', parentItem.Min);
+    if ItemNamed['Apply'] <> nil then
+      FApply := BoolValue('Apply', parentItem.Apply);
+    if ItemNamed['Color'] <> nil then
+      FColorString := Value('Color', parentItem.ColorString);
+  end;
+end;
+
+procedure TSharpESkinHighlightItem.SaveToStream(Stream: TStream);
+begin
+  Stream.WriteBuffer(FValue, sizeof(FValue));
+  Stream.WriteBuffer(FChange, sizeof(FChange));
+  Stream.WriteBuffer(FMax, sizeof(FMax));
+  Stream.WriteBuffer(FMin, sizeof(FMin));
+  StringSaveToStream(FColorString, Stream);
+  StringSaveToStream(BoolToStr(FApply),Stream);
+end;
+
+procedure TSharpESkinHighlightItem.SetApply(NewValue: boolean);
+begin
+  FApply := NewValue;
+end;
+
+procedure TSharpESkinHighlightItem.SetChange(NewValue: integer);
+begin
+  FChange := NewValue;
+end;
+
+procedure TSharpESkinHighlightItem.SetColor(NewValue: integer);
+begin
+  FColor := NewValue;
+end;
+
+procedure TSharpESkinHighlightItem.SetColorStr(NewValue: String);
+begin
+  FColorString := NewValue;
+end;
+
+procedure TSharpESkinHighlightItem.SetMax(NewValue: integer);
+begin
+  FMax := NewValue;
+end;
+
+procedure TSharpESkinHighlightItem.SetMin(NewValue: integer);
+begin
+  FMin := NewValue;
+end;
+
+procedure TSharpESkinHighlightItem.SetValue(NewValue: integer);
+begin
+  FValue := NewValue;
+end;
+
+procedure TSharpESkinHighlightItem.UpdateDynamicProperties(cs: ISharpEScheme);
+begin
+  FColor := ParseColor(FColorString,cs);
+end;
+
+{ TSharpESkinHighlightSettings }
+
+procedure TSharpESkinHighlightSettings.Assign(Src: ISharpESkinHighlightSettings);
+begin
+  FLighten.Assign(src.Lighten);
+  FLightenIcon.Assign(src.LightenIcon);
+  FBlend.Assign(src.Blend);
+  FBlendIcon.Assign(src.BlendIcon);
+  FAlpha.Assign(src.Alpha);
+  FAlphaIcon.Assign(src.AlphaIcon);
+end;
+
+procedure TSharpESkinHighlightSettings.Clear;
+begin
+  FLighten.Clear();
+  FLightenIcon.Clear();
+  FAlpha.Clear();
+  FAlphaIcon.Clear();
+  FBlend.Clear();
+  FBlendIcon.Clear();
+end;
+
+constructor TSharpESkinHighlightSettings.Create;
+begin
+  Inherited Create;
+
+  FLighten     := TSharpESkinHighlightItem.Create;
+  FLightenIcon := TSharpESkinHighlightItem.Create;
+  FBlend       := TSharpESkinHighlightItem.Create;
+  FBlendIcon   := TSharpESkinHighlightItem.Create;
+  FAlpha       := TSharpESkinHighlightItem.Create;
+  FAlphaIcon   := TSharpESkinHighlightItem.Create;
+
+  FLightenInterface     := FLighten;
+  FLightenIconInterface := FLightenIcon;
+  FAlphaInterface       := FBlend;
+  FAlphaIconInterface   := FBlendIcon;
+  FBlendInterface       := FAlpha;
+  FBlendIconInterface   := FAlphaIcon;
+end;
+
+destructor TSharpESkinHighlightSettings.Destroy;
+begin
+  FLightenInterface := nil;
+  FLightenIconInterface := nil;
+  FBlendInterface := nil;
+  FBlendIconInterface := nil;
+  FAlphaInterface := nil;
+  FAlphaIconInterface := nil;
+
+  Inherited Destroy;
+end;
+
+function TSharpESkinHighlightSettings.GetAlpha: ISharpESkinHighlightItem;
+begin
+  result := FAlpha;
+end;
+
+function TSharpESkinHighlightSettings.GetAlphaIcon: ISharpESkinHighlightItem;
+begin
+  result := FAlphaIcon;
+end;
+
+function TSharpESkinHighlightSettings.GetBlend: ISharpESkinHighlightItem;
+begin
+  result := FBlend;
+end;
+
+function TSharpESkinHighlightSettings.GetBlendIcon: ISharpESkinHighlightItem;
+begin
+  result := FBlendIcon;
+end;
+
+function TSharpESkinHighlightSettings.GetLighten: ISharpESkinHighlightItem;
+begin
+  result := FLighten;
+end;
+
+function TSharpESkinHighlightSettings.GetLightenIcon: ISharpESkinHighlightItem;
+begin
+  result := FLightenIcon;
+end;
+
+procedure TSharpESkinHighlightSettings.LoadFromStream(Stream: TStream);
+begin
+  FLighten.LoadFromStream(Stream);
+  FLightenIcon.LoadFromStream(Stream);
+  FBlend.LoadFromStream(Stream);
+  FBlendIcon.LoadFromStream(Stream);
+  FAlpha.LoadFromStream(Stream);
+  FAlphaIcon.LoadFromStream(Stream);
+end;
+
+procedure TSharpESkinHighlightSettings.LoadFromXML(xml: TJvSimpleXmlElem;
+  parentItem: TSharpESkinHighlightSettings);
+begin
+  with xml.items do
+  begin
+    if ItemNamed['Lighten'] <> nil then
+      FLighten.LoadFromXML(ItemNamed['Lighten'], parentItem.Lighten);
+    if ItemNamed['LightenIcon'] <> nil then
+      FLightenIcon.LoadFromXML(ItemNamed['LightenIcon'], parentItem.LightenIcon);
+    if ItemNamed['Blend'] <> nil then
+      FBlend.LoadFromXML(ItemNamed['Blend'], parentItem.Blend);
+    if ItemNamed['BlendIcon'] <> nil then
+      FBlendIcon.LoadFromXML(ItemNamed['BlendIcon'], parentItem.BlendIcon);
+    if ItemNamed['Alpha'] <> nil then
+      FAlpha.LoadFromXML(ItemNamed['Alpha'], parentItem.Alpha);
+    if ItemNamed['AlphaIcon'] <> nil then
+      FAlphaIcon.LoadFromXML(ItemNamed['AlphaIcon'], parentItem.AlphaIcon);
+  end;
+end;
+
+procedure TSharpESkinHighlightSettings.LoadFromXML(xml: TJvSimpleXmlElem);
+var
+  parent : TSharpESkinHighlightSettings;
+begin
+  parent := TSharpESkinHighlightSettings.Create;
+  LoadFromXML(xml, parent);
+  parent.Free;
+end;
+
+procedure TSharpESkinHighlightSettings.SaveToStream(Stream: TStream);
+begin
+  FLighten.SaveToStream(Stream);
+  FLightenIcon.SaveToStream(Stream);
+  FBlend.SaveToStream(Stream);
+  FBlendIcon.SaveToStream(Stream);
+  FAlpha.SaveToStream(Stream);
+  FAlphaIcon.SaveToStream(Stream);
+end;
+
+procedure TSharpESkinHighlightSettings.UpdateDynamicProperties(cs: ISharpEScheme);
+begin
+  FLighten.UpdateDynamicProperties(cs);
+  FLightenIcon.UpdateDynamicProperties(cs);
+  FBlend.UpdateDynamicProperties(cs);
+  FBlendIcon.UpdateDynamicProperties(cs);
+  FAlpha.UpdateDynamicProperties(cs);
+  FAlphaIcon.UpdateDynamicProperties(cs);
+end;
 
 procedure TSkinPart.TileDraw(Src,Dest : TBitmap32; DestRect : TRect);
 var
@@ -2520,7 +2910,7 @@ begin
      lmBlend: begin  
        temp.OnPixelCombine := nil;  
        temp.DrawMode := dmBlend;  
-     end;  
+     end;
      lmAdd: temp.OnPixelCombine := nil;  
    end;  
  
@@ -2532,6 +2922,9 @@ begin
   end;
 end;
 
+//**********************************
+//* Other
+//**********************************
 
 function EvaluateValue(str: string; cs: ISharpEScheme) : integer;
 var
@@ -2621,7 +3014,7 @@ begin
     
   p := min(p1,p2);
   color := copy(src,0,p-1);
-  
+
   s := copy(src,p,length(src)-p+1);
   modvalue := EvaluateValue(s,nil);
 end;
@@ -2883,18 +3276,6 @@ begin
   end;
 end;
 
-procedure TSkinPart.DoCombine(F: TColor32; var B: TColor32; M: TColor32);
-begin
-  Case FLayerMode of
-    lmSubtract: B := ColorSub (F, B);
-    lmModule: B := ColorModulate(F, B);
-    lmMin: B := ColorMin(F, B);
-    lmMax: B := ColorMax(F, B);
-    lmDifference: B := ColorDifference(F, B);
-    lmExclusion:  B := ColorExclusion(F, B);
-  End;
-end;
-
 function ParseCoordinate(s: string; tw, th, cw, ch, iw, ih: integer): integer;
 var i: integer;
   tmp: string;
@@ -3014,3 +3395,5 @@ begin
 end;
 
 end.
+
+
