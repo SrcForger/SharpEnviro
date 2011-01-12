@@ -90,6 +90,7 @@ type
     AlwaysOnTop1: TMenuItem;
     tmrAutoHide: TTimer;
     tmrCursorPos: TTimer;
+    FullScreenCheck: TTimer;
     procedure ShowMiniThrobbers1Click(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ThemeHideTimerTimer(Sender: TObject);
@@ -147,6 +148,7 @@ type
     procedure FormCanResize(Sender: TObject; var NewWidth, NewHeight: Integer;
       var Resize: Boolean);
     procedure FormMouseLeave(Sender: TObject);
+    procedure FullScreenCheckTimer(Sender: TObject);
 
   private
     { Private-Deklarationen }
@@ -529,13 +531,11 @@ begin
         SetProp(Handle,'FullScreenAppActive',1);
         ShowWindow(Handle,SW_HIDE);
         FFullScreenWnd := wnd;
-        SharpApi.SendDebugMessage('SharpBar',inttostr(Handle)+':'+'FullScreenAppActive',0);
       end;
     end else
       SharpApi.SendDebugMessage('SharpBar',inttostr(Handle)+':'+'FullScreenWnd <> 0',0);
       if not (HasFullScreenWindow(FFullScreenWnd, barmon)) then
       begin
-        SharpApi.SendDebugMessage('SharpBar',inttostr(Handle)+':'+'HasFullScreenWindow',0);
         SetProp(Handle,'FullScreenAppActive',0);
         FFullScreenWnd := 0;      
         ShowWindow(Handle, SW_SHOWNA);
@@ -1581,6 +1581,25 @@ begin
   SharpApi.SharpEBroadCast(WM_UPDATEBARWIDTH, 0, 0);
   ModuleManager.FixModulePositions;
   SaveBarSettings;
+end;
+
+procedure TSharpBarMainForm.FullScreenCheckTimer(Sender: TObject);
+var
+  barmon : TMonitorItem;
+begin
+  if (FFullScreenWnd <> 0) then
+  begin
+    if MonList.IsValidMonitorIndex(SharpEBar.MonitorIndex) then
+      barmon := MonList.Monitors[SharpEBar.MonitorIndex]
+    else barmon := MonList.MonitorFromWindow(Handle);
+
+    if not HasFullScreenWindow(FFullScreenWnd,barmon) then
+    begin
+      SetProp(Handle,'FullScreenAppActive',0);
+      FFullScreenWnd := 0;
+      ShowWindow(Handle,SW_SHOWNA);
+    end;
+  end;
 end;
 
 procedure TSharpBarMainForm.OnQuickAddModuleItemClick(Sender: TObject);
