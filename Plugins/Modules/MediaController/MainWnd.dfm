@@ -450,4 +450,7 @@ object MainForm: TMainForm
     ForceDown = False
     ForceHover = False
   end
+  object DdeClientConvPlayer: TDdeClientConv
+    Left = 112
+  end
 end

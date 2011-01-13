@@ -32,7 +32,7 @@ uses
   Dialogs, StdCtrls, SharpEButton, SharpApi, Menus, Math, MultiMon,
   ShellApi, MediaPlayerList, GR32, GR32_PNG, Types, SharpEBaseControls, ExtCtrls,
   Registry, uSharpEMenuWnd, uSharpEMenu, uSharpEMenuSettings, uSharpEMenuItem,
-  uISharpBarModule, SharpIconUtils;
+  uISharpBarModule, SharpIconUtils, DdeMan;
 
 type
   TControlCommandType = (cctPlay,cctPause,cctStop,cctNext,cctPrev);
@@ -46,6 +46,7 @@ type
     btn_stop: TSharpEButton;
     btn_play: TSharpEButton;
     btn_pselect: TSharpEButton;
+    DdeClientConvPlayer: TDdeClientConv;
     procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -466,6 +467,7 @@ var
   mitem : TMediaPlayerItem;
   param : word;
   sparam : string;
+  Service, Topic: string;
 begin
   mitem := FMPlayers.GetItem(sPlayer);
   if mitem <> nil then
@@ -511,6 +513,25 @@ begin
             SendMessage(wnd, WM_KEYUP, VkKeyScan(Chr(param)), 0);
           end;
         end;
+      end;
+    end else if (Pos('|', mitem.DDELink) > 0) then
+    begin
+      case pType of
+        cctPlay  : sparam := mitem.cmdPlay;
+        cctPause : sparam := mitem.cmdPause;
+        cctStop  : sparam := mitem.cmdStop;
+        cctNext  : sparam := mitem.cmdNext;
+        cctPrev  : sparam := mitem.cmdPrev;
+        else sparam := '';
+      end;
+
+      if sparam <> '' then
+      begin
+        Service := Copy(mitem.DDELink, 1, Pos('|', mitem.DDELink) - 1);
+        Topic := Copy(mitem.DDELink, Pos('|', mitem.DDELink) + 1, MaxInt);
+
+        DdeClientConvPlayer.SetLink(Service, Topic);
+        DdeClientConvPlayer.ExecuteMacro(PAnsiChar(sparam), false);
       end;
     end else
     begin

@@ -62,6 +62,9 @@ type
     cmdNext : string;
     cmdPrev : string;
 
+    // DDE
+    DDELink : string;
+
     constructor Create(pXML : TJclSimpleXMLElems);
     destructor Destroy; override;
   end;
@@ -241,6 +244,9 @@ begin
   cmdStop := pXML.Value('cmdStop', '');
   cmdNext := pXML.Value('cmdNext', '');
   cmdPrev := pXML.Value('cmdPrev', '');
+
+  // DDE
+  DDELink := pXML.Value('DDELink', '');
 
   Icon := TBitmap32.Create;
   Icon.SetSize(16,16);
