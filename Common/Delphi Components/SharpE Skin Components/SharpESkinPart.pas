@@ -506,6 +506,7 @@ type
 function get_location(str: string): TRect;
 function ParseColor(src : String; cs : ISharpEScheme) : integer;
 function EvaluateValue(str: string; cs: ISharpEScheme) : integer;
+function GetColorFromTerm(src : string) : string;
 procedure EvaluateColor(src: string; out color : String; out modvalue : integer);
 function SchemedStringToColor(str: string; cs: ISharpEScheme): TColor;
 procedure doBlend(Dest: TBitmap32; source: TBitmap32; color: TColor);
@@ -1959,12 +1960,13 @@ begin
   end else Dst.Draw(DstRect,SrcRect,Src);
 end;
 
-procedure TSkinPart.draw(bmp: TBitmap32; cs: ISharpEScheme);
+procedure TSkinPart.Draw(bmp: TBitmap32; cs: ISharpEScheme);
 var temp: Tbitmap32;
   FBitmap: Tbitmap32;
   i: integer;
   r: Trect;
   isEmptyImage: boolean;
+  usedyncolor : boolean;
 begin
   if not FEnabled then exit;
   if FIsEmpty then exit;
@@ -1995,7 +1997,16 @@ begin
       temp.DrawMode := dmBlend;
       temp.CombineMode := cmMerge;
       try
-        doBlend(temp, FBitmap, BlendColor);
+        usedyncolor := False;
+        i := cs.GetColorIndexByTag(GetColorFromTerm(BlendColorString));
+        if (i > -1) and (i <= High(cs.Colors)) then
+          if cs.Colors[i].SchemeType = stDynamic then
+          begin
+            usedyncolor := true;
+            doBlend(temp, FBitmap, ParseColor(BlendColorString,cs));
+          end;
+        if not usedyncolor then
+          doBlend(temp, FBitmap, BlendColor);
         temp.MasterAlpha := FMasterAlpha;
         if FDrawMode = sdmStretch then CustomDraw(temp, bmp, rect(0,0, temp.width, temp.height), r)
            else TileDraw(temp,bmp,r);
@@ -2034,21 +2045,33 @@ begin
     temp.DrawMode := dmBlend;
     temp.CombineMode := cmMerge;
     try
-      if GradientType = 'horizontal' then
-         HGradient(temp,
-                 FGradientColor.XAsInt,
-                 FGradientColor.YAsInt,
-                 FGradientAlpha.XAsInt,
-                 FGradientAlpha.YAsInt,
-                 r)
-       else VGradient(temp,
-                 FGradientColor.XAsInt,
-                 FGradientColor.YAsInt,
-                 FGradientAlpha.XAsInt,
-                 FGradientAlpha.YAsInt,
-                 r);
-       temp.MasterAlpha := FMasterAlpha;
-       temp.DrawTo(Bmp);
+      usedyncolor := False;
+      // check if any of the both colors is a dynamic color
+      i := cs.GetColorIndexByTag(GetColorFromTerm(FGradientColorS.FX));
+      if (i > -1) and (i <= High(cs.Colors)) then
+        if cs.Colors[i].SchemeType = stDynamic then
+          usedyncolor := true;
+      i := cs.GetColorIndexByTag(GetColorFromTerm(FGradientColorS.FY));
+      if (i > -1) and (i <= High(cs.Colors)) then
+        if cs.Colors[i].SchemeType = stDynamic then
+          usedyncolor := true;          
+
+      if usedyncolor then
+      begin
+        if GradientType = 'horizontal' then
+           HGradient(temp,ParseColor(FGradientColorS.FX,cs),ParseColor(FGradientColorS.FY,cs),
+                          FGradientAlpha.XAsInt,FGradientAlpha.YAsInt,r)
+         else VGradient(temp,ParseColor(FGradientColorS.FX,cs),ParseColor(FGradientColorS.FY,cs),
+                             FGradientAlpha.XAsInt,FGradientAlpha.YAsInt,r);
+      end else begin
+        if GradientType = 'horizontal' then
+           HGradient(temp,FGradientColor.XAsInt,FGradientColor.YAsInt,
+                          FGradientAlpha.XAsInt,FGradientAlpha.YAsInt,r)
+         else VGradient(temp,FGradientColor.XAsInt,FGradientColor.YAsInt,
+                             FGradientAlpha.XAsInt,FGradientAlpha.YAsInt,r);      
+      end;
+      temp.MasterAlpha := FMasterAlpha;
+      temp.DrawTo(Bmp);
     finally
       temp.Free;
     end;
@@ -2982,6 +3005,35 @@ begin
       if trystrtoint(tmp,k) then result := result + k;
     end;
   end;
+end;
+
+function GetColorFromTerm(src : string) : string;
+var
+  i : integer;
+  p1,p2,p : integer;
+begin
+  if trystrtoint(src,i) then
+  begin
+    result := src;
+    exit;
+  end;
+
+  src := StringReplace(src,' ','',[rfReplaceAll]);
+  p1 := Pos('+',src);
+  p2 := Pos('-',src);
+  if (p1 = 0) and (p2 = 0) then
+  begin
+    result := src;
+    exit;
+  end;
+
+  if p1 = 0 then
+    p1 := length(src);
+  if p2 = 0 then
+    p2 := length(src);
+    
+  p := min(p1,p2);
+  result := copy(src,0,p-1);
 end;
 
 procedure EvaluateColor(src: string; out color : String; out modvalue : integer);

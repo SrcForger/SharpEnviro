@@ -50,7 +50,8 @@ type
   public
     constructor Create(OwnsInterface : boolean = False); reintroduce;
     destructor Destroy; override;
-    procedure Assign(Source: TSharpEScheme);
+    procedure Assign(Source: TSharpEScheme); overload;
+    procedure Assign(Source: ISharpEScheme); overload;
     procedure AddColor(Name,Tag,Info : String; Color : integer; sType : TSharpESchemeType); overload;
     procedure AddColor(Color : TSharpESkinColor); overload;
     procedure ClearColors;
@@ -106,6 +107,16 @@ begin
   setlength(FColors,length(ss.Colors));
   for n := 0 to High(ss.Colors) do
       FColors[n] := ss.Colors[n];
+end;
+
+procedure TSharpEScheme.Assign(Source: ISharpEScheme);
+var
+  n : integer;
+begin
+  ClearColors;
+  setlength(FColors,length(Source.Colors));
+  for n := 0 to High(Source.Colors) do
+      FColors[n] := Source.Colors[n];
 end;
 
 procedure TSharpEScheme.AddColor(Color : TSharpESkinColor);

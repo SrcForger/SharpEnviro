@@ -43,6 +43,7 @@ uses
   SharpEBase,
   SharpEBaseControls,
   SharpESkinPart,
+  SharpEScheme,
   SharpEDefault,
   ISharpESkinComponents,
   SharpTypes,
@@ -514,8 +515,8 @@ var
   SkinIcon : ISharpESkinIcon;
   DrawPart : ISharpESkinPartEx;
   TempBmp : TBitmap32;
-  HasChanged : Boolean;
   CompColor : integer;
+  CustomScheme : TSharpEScheme;
 begin
   CompRect := Rect(0, 0, width, height);
   if not Assigned(FManager) then
@@ -553,40 +554,23 @@ begin
       FButtonOver := False;
     end;
 
-    HasChanged := False;
-    i := Scheme.GetColorIndexByTag('$IconHighlight');
-    if (i > -1) and (i <= High(Scheme.Colors)) then
-      if Scheme.Colors[i].SchemeType = stDynamic then
-        if Scheme.Colors[i].Color <> FGlyphColor then
-        begin
-          Scheme.Colors[i].Color := FGlyphColor;
-          HasChanged := True;
-        end;
+    // prepare custom scheme
+    CustomScheme := TSharpEScheme.Create(True);
+    CustomScheme.Assign(Scheme);
+
+    i := CustomScheme.GetColorIndexByTag('$IconHighlight');
+    if (i > -1) and (i <= High(CustomScheme.Colors)) then
+      if CustomScheme.Colors[i].SchemeType = stDynamic then
+          CustomScheme.Colors[i].Color := FGlyphColor;
 
     i := Scheme.GetColorIndexByTag('$IconHighlightComp');
-    if (i > -1) and (i <= High(Scheme.Colors)) then
-      if Scheme.Colors[i].SchemeType = stDynamic then
+    if (i > -1) and (i <= High(CustomScheme.Colors)) then
+      if CustomScheme.Colors[i].SchemeType = stDynamic then
       begin
         CompColor := ComplementaryColor(FGlyphColor);
-        if Scheme.Colors[i].Color <> CompColor then
-        begin
-          Scheme.Colors[i].Color := CompColor;
-          HasChanged := True;
-        end;
+        CompColor := DominantColor(CompColor);
+        CustomScheme.Colors[i].Color := CompColor;
       end;
-
-    if HasChanged then
-    begin
-      CurrentState.Normal.UpdateDynamicProperties(Scheme);
-      CurrentState.NormalHover.UpdateDynamicProperties(Scheme);
-      CurrentState.Down.UpdateDynamicProperties(Scheme);
-      CurrentState.DownHover.UpdateDynamicProperties(Scheme);
-      CurrentState.Highlight.UpdateDynamicProperties(Scheme);
-      CurrentState.HighlightHover.UpdateDynamicProperties(Scheme);
-      CurrentState.Special.UpdateDynamicProperties(Scheme);
-      CurrentState.SpecialHover.UpdateDynamicProperties(Scheme);
-      CurrentState.HighlightSettings.UpdateDynamicProperties(Scheme);
-    end;
 
     FSkin.Clear(Color32(0, 0, 0, 0));
     if (FFlashing) and (not CurrentState.Highlight.Empty) then
@@ -632,8 +616,8 @@ begin
       IconRect := Rect(0,0,SkinIcon.Dimension.X,SkinIcon.Dimension.Y)
     else IconRect := Rect(0,0,0,0);
 
-    SkinText.AssignFontTo(bmp.Font,Scheme);
-    DrawPart.DrawTo(bmp, Scheme);
+    SkinText.AssignFontTo(bmp.Font,CustomScheme);
+    DrawPart.DrawTo(bmp, CustomScheme);
 
     if FFlashing then
     with FHighlightSettings do
@@ -700,7 +684,7 @@ begin
     if ((SkinText <> nil) and (SkinText.DrawText)) then
     begin
       if length(trim(Caption))>0 then
-         SkinText.RenderToW(bmp,TextPos.X,TextPos.Y,DrawCaption,Scheme,
+         SkinText.RenderToW(bmp,TextPos.X,TextPos.Y,DrawCaption,CustomScheme,
                            FPrecacheText,FPrecacheBmp,FPrecacheCaption);
     end;
 
@@ -709,6 +693,8 @@ begin
 
     if (FOverlay <> nil) and (FOverlay.Width > 0) and (FOverlay.Height > 0) then
       FOverlay.DrawTo(bmp,FOverlayPos.X,FOverlayPos.Y);
+
+    CustomScheme.SelfInterface := nil;
   end
   else
     DrawDefaultSkin(bmp, DefaultSharpEScheme);
