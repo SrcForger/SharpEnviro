@@ -49,6 +49,7 @@ type
   function ChangeBrightnessHSL32(Src : TColor32; Amount : integer) : TColor32;  
 
   function ComplementaryColor(Src : TColor32) : TColor32;
+  function DominantColor(Src : TColor) : TColor;
 
   procedure VGradient(Bmp : TBitmap32; color1,color2 : TColor; st,et : byte; Rect : TRect);
   procedure HGradient(Bmp : TBitmap32; color1,color2 : TColor; st,et : byte; Rect : TRect);
@@ -76,6 +77,34 @@ begin
     h := newhue-255
   else h := newhue;
   result := HSLtoRGB(h,s,l);
+end;
+
+function DominantColor(Src : TColor) : TColor;
+var
+  cr,cb,cg : byte;
+  m : byte;
+begin
+  cr := GetRValue(Src);
+  cb := GetGValue(Src);
+  cg := GetBValue(Src);
+  m := max(cr,max(cb,cg));
+  if cr = m then
+  begin
+    cr := 255;
+    cb := 64;
+    cg := 64;
+  end else if cb = m then
+  begin
+    cb := 255;
+    cr := 64;
+    cg := 64;
+  end else if cg = m then
+  begin
+    cg := 255;
+    cr := 64;
+    cb := 64;
+  end;
+  result := RGB(cr,cg,cb);
 end;
 
 function HasVisiblePixel(Src : TBitmap32) : boolean;
