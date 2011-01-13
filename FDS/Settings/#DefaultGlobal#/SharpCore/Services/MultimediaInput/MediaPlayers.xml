@@ -135,4 +135,14 @@
     <RegPath>SOFTWARE\Microsoft\Multimedia\WMPlayer</RegPath>
     <RegValue>Player.Path</RegValue>
   </item>   
+  <item>
+    <Name>XMPlay</Name>
+    <DDELink>XMPlay|XMPlay</DDELink>
+    <cmdPlay>key80</cmdPlay>
+    <cmdPause>key80</cmdPause>
+    <cmdStop>key81</cmdStop>
+    <cmdNext>key128</cmdNext>
+    <cmdPrev>key129</cmdPrev>
+    <Icon>XMPlay.png</Icon>
+  </item> 
 </MediaPlayers>
