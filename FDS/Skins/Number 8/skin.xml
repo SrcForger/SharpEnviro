@@ -668,6 +668,15 @@
         <size>32,32</size>
         <location>7,3</location>
       </icon>    
+      <highlightsettings>
+        <lighten>
+          <value>0</value>
+          <min>-50</min>
+          <max>20</max>
+          <change>15</change>
+          <apply>1</apply>
+        </lighten>
+      </highlightsettings>
       <location>0,0</location>
       <dimension>200,38</dimension>
       <spacing>2</spacing>
@@ -953,28 +962,28 @@
       <highlight>
         <icon>
           <lighten>1</lighten>
-          <lightenamount>48</lightenamount>
+          <lightenamount>24</lightenamount>
         </icon>
         <skinpart>
           <location>0,0</location>
           <dimension>w,h</dimension>
           <image>images/Empty.png</image>
-	  <color>$Highlight</color>
-          <alpha>148</alpha>
+	  <color>$IconHighlight</color>
+          <alpha>196</alpha>
         </skinpart>
         <skinpart>
           <location>2,0</location>
           <dimension>56,29</dimension>
           <image>images/Button-Overlay-Top-Left.png</image>
 	  <color>$Special</color>
-          <alpha>$BAlpha+32</alpha>
+          <alpha>$BAlpha</alpha>
         </skinpart>
         <skinpart>
           <location>w-28,h-16</location>
           <dimension>26,16</dimension>
           <image>images/Button-Overlay-Bottom-Right.png</image>
 	  <color>$Special</color>
-          <alpha>$BAlpha+32</alpha>
+          <alpha>$BAlpha</alpha>
         </skinpart>
         <skinpart>
           <location>0,0</location>
@@ -1008,14 +1017,14 @@
       <highlighthover>
          <icon>
           <lighten>1</lighten>
-          <lightenamount>24</lightenamount>
+          <lightenamount>48</lightenamount>
         </icon>
         <skinpart>
           <location>0,0</location>
           <dimension>w,h</dimension>
           <image>images/Empty.png</image>
-	  <color>$Highlight</color>
-          <alpha>92</alpha>
+	  <color>$IconHighlight</color>
+          <alpha>196</alpha>
         </skinpart>
         <skinpart>
           <location>2,0</location>
@@ -1080,6 +1089,15 @@
         <size>16,16</size>
         <location>wh-iwh,3</location>
       </icon>    
+      <highlightsettings>
+        <lighten>
+          <value>0</value>
+          <min>-50</min>
+          <max>20</max>
+          <change>15</change>
+          <apply>1</apply>
+        </lighten>
+      </highlightsettings>
       <location>0,0</location>
       <dimension>64,38</dimension>
       <spacing>2</spacing>
@@ -1365,28 +1383,28 @@
       <highlight>
         <icon>
           <lighten>1</lighten>
-          <lightenamount>48</lightenamount>
+          <lightenamount>24</lightenamount>
         </icon>
         <skinpart>
           <location>0,0</location>
           <dimension>w,h</dimension>
           <image>images/Empty.png</image>
-	  <color>$Highlight</color>
-          <alpha>148</alpha>
+	  <color>$IconHighlight</color>
+          <alpha>196</alpha>
         </skinpart>
         <skinpart>
           <location>2,0</location>
           <dimension>56,29</dimension>
           <image>images/Button-Overlay-Top-Left.png</image>
 	  <color>$Special</color>
-          <alpha>$BAlpha+32</alpha>
+          <alpha>$BAlpha</alpha>
         </skinpart>
         <skinpart>
           <location>w-28,h-16</location>
           <dimension>26,16</dimension>
           <image>images/Button-Overlay-Bottom-Right.png</image>
 	  <color>$Special</color>
-          <alpha>$BAlpha+32</alpha>
+          <alpha>$BAlpha</alpha>
         </skinpart>
         <skinpart>
           <location>0,0</location>
@@ -1420,14 +1438,14 @@
       <highlighthover>
          <icon>
           <lighten>1</lighten>
-          <lightenamount>24</lightenamount>
+          <lightenamount>48</lightenamount>
         </icon>
         <skinpart>
           <location>0,0</location>
           <dimension>w,h</dimension>
           <image>images/Empty.png</image>
-	  <color>$Highlight</color>
-          <alpha>92</alpha>
+	  <color>$IconHighlight</color>
+          <alpha>196</alpha>
         </skinpart>
         <skinpart>
           <location>2,0</location>
@@ -1494,6 +1512,15 @@
         <size>32,32</size>
         <location>cw-16,2</location>
       </icon>      
+      <highlightsettings>
+        <lighten>
+          <value>0</value>
+          <min>-50</min>
+          <max>20</max>
+          <change>15</change>
+          <apply>1</apply>
+        </lighten>
+      </highlightsettings>
       <location>0,0</location>
       <dimension>45,38</dimension>
       <spacing>2</spacing>
@@ -1790,28 +1817,28 @@
       <highlight>
         <icon>
           <lighten>1</lighten>
-          <lightenamount>48</lightenamount>
+          <lightenamount>24</lightenamount>
         </icon>
         <skinpart>
           <location>0,0</location>
           <dimension>w,h</dimension>
           <image>images/Empty.png</image>
-	  <color>$Highlight</color>
-          <alpha>148</alpha>
+	  <color>$IconHighlight</color>
+          <alpha>196</alpha>
         </skinpart>
         <skinpart>
           <location>2,0</location>
           <dimension>56,29</dimension>
           <image>images/Button-Overlay-Top-Left.png</image>
 	  <color>$Special</color>
-          <alpha>$BAlpha+32</alpha>
+          <alpha>$BAlpha</alpha>
         </skinpart>
         <skinpart>
           <location>w-28,h-16</location>
           <dimension>26,16</dimension>
           <image>images/Button-Overlay-Bottom-Right.png</image>
 	  <color>$Special</color>
-          <alpha>$BAlpha+32</alpha>
+          <alpha>$BAlpha</alpha>
         </skinpart>
         <skinpart>
           <location>0,0</location>
@@ -1845,14 +1872,14 @@
       <highlighthover>
          <icon>
           <lighten>1</lighten>
-          <lightenamount>24</lightenamount>
+          <lightenamount>48</lightenamount>
         </icon>
         <skinpart>
           <location>0,0</location>
           <dimension>w,h</dimension>
           <image>images/Empty.png</image>
-	  <color>$Highlight</color>
-          <alpha>92</alpha>
+	  <color>$IconHighlight</color>
+          <alpha>196</alpha>
         </skinpart>
         <skinpart>
           <location>2,0</location>
