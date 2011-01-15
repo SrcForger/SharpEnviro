@@ -406,7 +406,14 @@ begin
           sStatus := '';
           sTitle := '';
           sDescription := '';
-          GetItemText(sDll, SCM.ActivePluginID, sName, sStatus, sDescription);
+
+          // Load the informations only for those configs from the dll which
+          // really require it
+          if Items.Item[i].Items.ItemNamed['StatusFromDll'] <> nil then
+          begin
+            if Items.Item[i].Items.ItemNamed['StatusFromDll'].BoolValue then
+              GetItemText(sDll, SCM.ActivePluginID, sName, sStatus, sDescription);
+          end else GetItemText(sDll, SCM.ActivePluginID, sName, sStatus, sDescription);
 
           if Items.Item[i].Items.ItemNamed['Name'] <> nil then
             sName := Items.Item[i].Items.ItemNamed['Name'].Value;
@@ -669,7 +676,7 @@ begin
           xml.LoadFromFile(fileList[i]);
           for iSections := 0 to Pred(xml.Root.Items[0].Items.Count) do
           begin
-            sDllDir := IncludeTrailingBackslash(SharpApi.GetCenterDirectory);
+            {$WARNINGS OFF} sDllDir := IncludeTrailingBackslash(SharpApi.GetCenterDirectory); {$WARNINGS ON}
 
             if Length(xml.Root.Items[0].Items[iSections].Items.Value('Section', '')) > 0 then
               sDllDir := sDllDir + xml.Root.Items[0].Items[iSections].Items.Value('Section', '')
