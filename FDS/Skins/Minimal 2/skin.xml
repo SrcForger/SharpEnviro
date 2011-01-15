@@ -406,6 +406,22 @@
         <size>16,16</size>
         <location>3,3</location>
       </icon>    
+      <highlightsettings>
+        <lighten>
+          <apply>1</apply>
+          <value>0</value>
+          <min>-50</min>
+          <max>50</max>
+          <change>10</change>
+        </lighten>
+        <lightenicon>
+          <apply>1</apply>
+          <value>0</value>
+          <min>-25</min>
+          <max>25</max>
+          <change>5</change>
+        </lightenicon>
+      </highlightsettings>
       <location>0,1</location>
       <dimension>128,22</dimension>
       <spacing>2</spacing>
@@ -512,8 +528,15 @@
           <color>$Text</color>
           <shadowalpha>196</shadowalpha>
         </text>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>w,h</dimension>
+          <image>images/Empty.png</image>
+          <color>$IconHighlight</color>
+          <alpha>$SAlpha</alpha>
+        </skinpart>
         <icon>
-          <lighten>1</lighten>
+          <lighten>0</lighten>
           <lightenamount>48</lightenamount>
         </icon>     
         <skinpart>
@@ -558,6 +581,13 @@
           <lighten>1</lighten>
           <lightenamount>24</lightenamount>
         </icon>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>w,h</dimension>
+          <image>images/Empty.png</image>
+          <color>$IconHighlight</color>
+          <alpha>$SAlpha</alpha>
+        </skinpart>
         <skinpart>
           <ID>0</ID>
           <location>1,0</location>
@@ -610,6 +640,22 @@
         <size>16,16</size>
         <location>3,3</location>
       </icon>    
+      <highlightsettings>
+        <lighten>
+          <apply>1</apply>
+          <value>0</value>
+          <min>-50</min>
+          <max>50</max>
+          <change>10</change>
+        </lighten>
+        <lightenicon>
+          <apply>1</apply>
+          <value>0</value>
+          <min>-25</min>
+          <max>25</max>
+          <change>5</change>
+        </lightenicon>
+      </highlightsettings>
       <location>0,1</location>
       <dimension>70,22</dimension>
       <spacing>2</spacing>
@@ -717,9 +763,16 @@
           <shadowalpha>196</shadowalpha>
         </text>
         <icon>
-          <lighten>1</lighten>
+          <lighten>0</lighten>
           <lightenamount>48</lightenamount>
         </icon>     
+        <skinpart>
+          <location>0,0</location>
+          <dimension>w,h</dimension>
+          <image>images/Empty.png</image>
+          <color>$IconHighlight</color>
+          <alpha>$SAlpha</alpha>
+        </skinpart>
         <skinpart>
           <ID>0</ID>
           <location>1,0</location>
@@ -762,6 +815,13 @@
           <lighten>1</lighten>
           <lightenamount>24</lightenamount>
         </icon>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>w,h</dimension>
+          <image>images/Empty.png</image>
+          <color>$IconHighlight</color>
+          <alpha>$SAlpha</alpha>
+        </skinpart>
         <skinpart>
           <ID>0</ID>
           <location>1,0</location>
@@ -811,6 +871,22 @@
       <normal>
 	<empty>1</empty>      
       </normal>
+      <highlightsettings>
+        <lighten>
+          <apply>1</apply>
+          <value>0</value>
+          <min>-50</min>
+          <max>50</max>
+          <change>10</change>
+        </lighten>
+        <lightenicon>
+          <apply>1</apply>
+          <value>0</value>
+          <min>-25</min>
+          <max>25</max>
+          <change>5</change>
+        </lightenicon>
+      </highlightsettings>
       <normalhover>
         <icon>
           <lighten>1</lighten>
@@ -904,9 +980,16 @@
           <shadowalpha>196</shadowalpha>
         </text>
         <icon>
-          <lighten>1</lighten>
-          <lightenamount>48</lightenamount>
+          <lighten>0</lighten>
+          <lightenamount>24</lightenamount>
         </icon>     
+        <skinpart>
+          <location>0,0</location>
+          <dimension>w,h</dimension>
+          <image>images/Empty.png</image>
+          <color>$IconHighlight</color>
+          <alpha>$SAlpha</alpha>
+        </skinpart>
         <skinpart>
           <ID>0</ID>
           <location>1,0</location>
@@ -949,6 +1032,13 @@
           <lighten>1</lighten>
           <lightenamount>24</lightenamount>
         </icon>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>w,h</dimension>
+          <image>images/Empty.png</image>
+          <color>$IconHighlight</color>
+          <alpha>$SAlpha</alpha>
+        </skinpart>
         <skinpart>
           <ID>0</ID>
           <location>1,0</location>

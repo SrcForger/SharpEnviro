@@ -58,4 +58,11 @@
     <Default>196</Default>
     <type>Integer</type>
   </item>
+  <item>
+    <Name>Icon Highlight</Name>
+    <Tag>$IconHighlight</Tag>
+    <Info>Icon Highlight Color</Info>
+    <Default>clWhite</Default>
+    <type>Dynamic</type>
+  </item>
 </SharpESkinScheme>
