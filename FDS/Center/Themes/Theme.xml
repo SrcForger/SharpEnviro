@@ -4,9 +4,10 @@
       <File>IconList.dll</File>
       <Icon>IconList.png</Icon>
     </Icons>
-      <Desktop> 
+    <Desktop> 
       <File>DesktopTheme.dll</File>
       <Icon>DesktopTheme.png</Icon>
+      <StatusFromDll>0</StatusFromDll>
     </Desktop>
     <Curses> 
       <File>CursorList.dll</File>
@@ -16,9 +17,10 @@
       <File>SkinList.dll</File>
       <Icon>ThemeSkinList.png</Icon>
     </Skin>
-	<Glass> 
+    <Glass> 
       <File>Glass.dll</File>
       <Icon>Glass.png</Icon>
+      <StatusFromDll>0</StatusFromDll>
     </Glass>
     <Scheme> 
       <File>SchemeList.dll</File>
@@ -26,11 +28,13 @@
     </Scheme>
     <Wallpaper> 
       <File>Wallpaper.dll</File>
-	  <Icon>Wallpaper.png</Icon>
+      <Icon>Wallpaper.png</Icon>
+      <StatusFromDll>0</StatusFromDll>
     </Wallpaper>
     <Font> 
       <File>Font.dll</File>
       <Icon>font.png</Icon>
+      <StatusFromDll>0</StatusFromDll>
     </Font>
   </Sections> 
 </SharpCenter>

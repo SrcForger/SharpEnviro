@@ -6,44 +6,48 @@
   </Default>
   <Sections>
     <Icons> 
-	  <Section>Themes</Section>
+      <Section>Themes</Section>
       <File>IconList.dll</File>
       <Icon>IconList.png</Icon>
     </Icons>
     <Desktop> 
-	  <Section>Themes</Section>
+      <Section>Themes</Section>
       <File>DesktopTheme.dll</File>
       <Icon>DesktopTheme.png</Icon>
+      <StatusFromDll>0</StatusFromDll>
     </Desktop>
     <Cursor> 
-	  <Section>Themes</Section>
+      <Section>Themes</Section>
       <File>CursorList.dll</File>
       <Icon>Cursor.png</Icon>
     </Cursor>
     <Skin> 
-	  <Section>Themes</Section>
+      <Section>Themes</Section>
       <File>SkinList.dll</File>
       <Icon>ThemeSkinList.png</Icon>
     </Skin>
-	<Glass> 
-	  <Section>Themes</Section>
+    <Glass> 
+      <Section>Themes</Section>
       <File>Glass.dll</File>
       <Icon>Glass.png</Icon>
+      <StatusFromDll>0</StatusFromDll>
     </Glass>
     <Scheme> 
-	  <Section>Themes</Section>
+      <Section>Themes</Section>
       <File>SchemeList.dll</File>
       <Icon>Scheme.png</Icon>
     </Scheme>
     <Wallpaper>
-	  <Section>Themes</Section>
+      <Section>Themes</Section>
       <File>Wallpaper.dll</File>
-	  <Icon>Wallpaper.png</Icon>
+      <Icon>Wallpaper.png</Icon>
+      <StatusFromDll>0</StatusFromDll>
     </Wallpaper>
     <Font> 
-	  <Section>Themes</Section>
+      <Section>Themes</Section>
       <File>Font.dll</File>
       <Icon>font.png</Icon>
+      <StatusFromDll>0</StatusFromDll>
     </Font>
   </Sections> 
 </SharpCenter>

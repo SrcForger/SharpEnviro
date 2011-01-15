@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <SharpCenter>
+  <Default>
+      <Icon>VWM.png</Icon>
+      <Name>Virtual Desktops</Name>
+  </Default>
   <Sections>
     <VWM>
-	  <Section>Services</Section>
+      <Section>Services</Section>
       <File>VWM.dll</File>
       <Icon>VWMService.png</Icon>
     </VWM>
