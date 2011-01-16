@@ -35,6 +35,7 @@ uses
   SysUtils,
   uSystemFuncs,
   Registry,
+  StrUtils,
   JclShell,
   JclFileUtils,
   JclStrings;
@@ -201,7 +202,14 @@ var
   n : integer;
   LastValid,FileName : String;
 begin
-  if FileExists(pTarget) or DirectoryExists(pTarget) then
+  // Check if pTarget is a drive
+  if (AnsiRightStr(pTarget, 2) = ':\') or (AnsiRightStr(pTarget, 1) = ':') then
+  begin
+    result := pTarget;
+    exit;
+  end;
+
+  if (FileExists(pTarget) or DirectoryExists(pTarget)) then
   begin
     result := pTarget;
     exit;
