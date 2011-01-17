@@ -514,7 +514,12 @@ begin
           pItem.LastVWM := vwm; // Update the VWM of the task and forward it to all modules
           for n := High(TaskMsgManager.WndList) downto 0 do
             if IsWindow(TaskMsgManager.WndList[n]) then
-              PostMessage(TaskMsgManager.WndList[n],WM_TASKVWMCHANGE,pItem.Handle,pItem.LastVWM)
+            begin
+              PostMessage(TaskMsgManager.WndList[n],WM_TASKVWMCHANGE,pItem.Handle,pItem.LastVWM);
+
+              // Hack for fullscreen check
+              PostMessage(TaskMsgManager.WndList[n],WM_SHARPSHELLMESSAGE,HSHELL_WINDOWACTIVATED + 32768,GetForegroundWindow);
+            end
             else TaskMsgManager.DeleteWnd(n);
         end;
       end;
@@ -542,6 +547,8 @@ begin
             vwm := VWMGetWindowVWM(GetCurrentVWM,GetVWMCount,h);
             if vwm <> pItem.LastVWM then
             begin
+              SharpApi.SendDebugMessage('Shell', 'Bla2', 0);
+
               pItem.LastVWM := vwm;
               for n := High(TaskMsgManager.WndList) downto 0 do
                 if IsWindow(TaskMsgManager.WndList[n]) then
