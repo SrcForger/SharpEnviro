@@ -504,7 +504,7 @@ var
   wndclass : String;
   ignorewnd : boolean;
 begin
-  if not SharpEBar.AlwaysOnTop then
+  if (not SharpEBar.AlwaysOnTop) or ((not Self.Visible) and (BarHideForm.Visible)) then
     exit;
 
   wnd := msg.LParam;
