@@ -688,6 +688,7 @@ object SharpBarMainForm: TSharpBarMainForm
     Top = 144
   end
   object FullScreenCheck: TTimer
+    Enabled = False
     Interval = 500
     OnTimer = FullScreenCheckTimer
     Left = 272
