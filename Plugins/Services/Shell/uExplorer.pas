@@ -83,8 +83,13 @@ begin
     if not s then
     begin
       {$WARNINGS OFF} Dir := IncludeTrailingBackslash(SharpAPI.GetSharpeDirectory); {$WARNINGS ON}
-      if (NETFramework35) and (FileExists(Dir + 'Addons\Explorer.exe')) then
-        ShellExecute(0, nil, PChar(Dir + 'Addons\Explorer.exe'), nil, nil, SW_SHOWNORMAL);
+      if IsWow64 then
+        Dir := Dir + 'Addons\x64\Explorer.exe'
+      else
+        Dir := Dir + 'Addons\x86\Explorer.exe';
+
+      if (NETFramework35) and (FileExists(Dir)) then
+        ShellExecute(0, nil, PChar(Dir), nil, nil, SW_SHOWNORMAL);
 
       iTimeout := 10000;
       while iTimeout > 0 do

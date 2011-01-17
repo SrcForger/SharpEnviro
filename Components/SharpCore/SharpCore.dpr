@@ -568,6 +568,11 @@ begin
       Exit;
     end;
 
+  // Initialize COM library (some services might need it)
+  CoInitialize(nil);
+
+  RunAll;
+
   DebugMsg('Creating main window');
   wclClass.lpszClassName := 'TSharpCoreMainWnd';
   wclClass.lpfnWndProc := @WindowProc;
@@ -580,11 +585,6 @@ begin
 
   hndWindow := CreateWindow(wclClass.lpszClassName, 'SharpCore', 0,
     10, 10, 340, 220, 0, 0, hInstance, nil);
-
-  // Initialize COM library (some services might need it)
-  CoInitialize(nil);
-
-  RunAll;
 
   shellInit := True;
 

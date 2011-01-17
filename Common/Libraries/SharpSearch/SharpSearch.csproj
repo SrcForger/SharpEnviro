@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{E486FC30-8F5D-4405-991D-4FE56547046F}</ProjectGuid>
@@ -14,31 +14,47 @@
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\..\SharpE\Addons\x64\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>..\..\..\SharpE\Addons\x64\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\..\SharpE\Addons\x86\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>..\..\..\SharpE\Addons\x86\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <Choose>
-    <When Condition="$(PROCESSOR_ARCHITEW6432) == 'AMD64'">
+    <When Condition="'$(Platform)' == 'x64'">
       <ItemGroup>
         <Reference Include="System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=AMD64">
           <SpecificVersion>False</SpecificVersion>
           <HintPath>..\..\3rd party\SQLite.NET\x64\System.Data.SQLite.DLL</HintPath>
           <Private>False</Private>
         </Reference>
+		<Content Include="..\..\3rd party\SQLite.NET\x64\System.Data.SQLite.dll">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
       </ItemGroup>
     </When>
     <Otherwise>
@@ -48,6 +64,9 @@
           <HintPath>..\..\3rd party\SQLite.NET\x86\System.Data.SQLite.DLL</HintPath>
           <Private>False</Private>
         </Reference>
+		<Content Include="..\..\3rd party\SQLite.NET\x86\System.Data.SQLite.dll">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
       </ItemGroup>
     </Otherwise>
   </Choose>
@@ -80,16 +99,6 @@
       <Project>{6341A0DF-6F28-433F-90ED-432BD1D0908C}</Project>
       <Name>SharpEnviro</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\..\3rd party\SQLite.NET\x64\System.Data.SQLite.DLL">
-      <Link>SQLite\x64\System.Data.SQLite.DLL</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\3rd party\SQLite.NET\x86\System.Data.SQLite.dll">
-      <Link>SQLite\x86\System.Data.SQLite.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

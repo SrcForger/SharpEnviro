@@ -75,7 +75,8 @@
     <project Name="Weather" Type="DLL">Plugins\Configurations\Objects\Weather\Weather.dproj</project>
   </package>
   <package Name="Components">
-    <project Name="ExplorerNET" Type="Solution">Components\ExplorerNET\Explorer.sln</project>
+    <project Name="ExplorerNET 32-Bit" Type="Solution" Platform="x86">Components\ExplorerNET\Explorer.sln</project>
+	<project Name="ExplorerNET 64-Bit" Type="Solution" Platform="x64">Components\ExplorerNET\Explorer.sln</project>
     <project Name="SetShell" Type="Application">Components\SetShell\SetShell.dproj</project>
     <project Name="SharpAdmin" Type="Application">Components\SharpAdmin\SharpAdmin.dproj</project>
     <project Name="SharpBar" Type="Application">Components\SharpBar\SharpBar.dproj</project>
@@ -89,8 +90,6 @@
     <project Name="SharpSkin" Type="Application">Components\SharpSkin\SharpSkin.dproj</project>
   </package>
   <package Name="Libraries">
-	<project Name="ExplorerDLL 32-Bit" Type="Solution" Platform="Win32">Common\Libraries\ExplorerDLL\ExplorerDll.sln</project>
-	<project Name="ExplorerDLL 64-Bit" Type="Solution" Platform="x64">Common\Libraries\ExplorerDLL\ExplorerDll.sln</project>
     <project Name="SharpApi" Type="DLL" >Common\Libraries\SharpAPI\SharpApi.dproj</project>
     <project Name="SharpApiEx" Type="DLL">Common\Libraries\SharpApiEx\SharpApiEx.dproj</project>
     <project Name="SharpCenterApi" Type="DLL">Common\Libraries\SharpCenterApi\SharpCenterApi.dproj</project>

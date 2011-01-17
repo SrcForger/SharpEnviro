@@ -23,6 +23,7 @@ namespace SharpEnviro.Explorer
     {
         volatile static IntPtr hSharpDll;
         volatile static bool bShellLoaded = false;
+        volatile static bool bShellReady = false;
         volatile static SearchManager searchManager;
         volatile static bool bEnableSearch = false;
 
@@ -65,6 +66,9 @@ namespace SharpEnviro.Explorer
 
         static void ShellReady()
         {
+            if (bShellReady)
+                return;
+
             // Run the ShellReady function
             if (hSharpDll != IntPtr.Zero)
             {
@@ -74,6 +78,8 @@ namespace SharpEnviro.Explorer
                     _logger.Info("Invoking ShellReady");
                     FunctionInvoker sdi = (FunctionInvoker)Marshal.GetDelegateForFunctionPointer(fptr, typeof(FunctionInvoker));
                     sdi();
+
+                    bShellReady = true;
                 }
             }
         }
@@ -169,16 +175,13 @@ namespace SharpEnviro.Explorer
                     System.Threading.Thread.Sleep(16);
 
 
-                if (Is64Bit())
-                    hSharpDll = PInvoke.LoadLibrary("Explorer64.dll");
-                else
-                    hSharpDll = PInvoke.LoadLibrary("Explorer32.dll");
+                hSharpDll = PInvoke.LoadLibrary("Explorer.dll");
 
                 // Run the StartDesktop function
                 StartDesktop();
 
                 // Signal that the shell is ready if the tray already exists
-                if ((PInvoke.FindWindow("Shell_TrayWnd", (string)null) != IntPtr.Zero))
+                if ((PInvoke.FindWindow("Shell_TrayWnd", (string)null) != IntPtr.Zero) || (PInvoke.FindWindow("TSharpCoreMainWnd", (string)null) != IntPtr.Zero))
                     ShellReady();
 
                 bShellLoaded = true;

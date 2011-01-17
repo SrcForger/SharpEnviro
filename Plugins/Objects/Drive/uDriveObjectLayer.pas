@@ -116,14 +116,14 @@ var
 begin
   try
     driveno := Ord(UpCase(Drive)) - Ord('A') + 1;
-    a := Disksize(driveno) / 1048576;
+    a := Disksize(driveno);
     if a = -1 then
     begin
       result := 0;
       exit;
     end;
 
-    b := floattostrf(a, ffFixed, 10, 0);
+    b := floattostrf(a / 1048576, ffFixed, 10, 0);
     Result := StrToInt(b);
   except
     result:=0;
@@ -138,14 +138,14 @@ var
 begin
   try
     driveno := Ord(UpCase(Drive)) - Ord('A') + 1;
-    a := DiskFree(driveno) / 1048576;
+    a := DiskFree(driveno);
     if a = -1 then
     begin
       result := 0;
       exit;
     end;
 
-    b := floattostrf(a, ffFixed, 10, 0);
+    b := floattostrf(a / 1048576, ffFixed, 10, 0);
     Result := StrToInt(b);
   except
     result := 0;
