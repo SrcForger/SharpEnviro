@@ -367,9 +367,6 @@ begin
           szTip := 'SharpCore';
         end;
         Shell_NotifyIcon(NIM_ADD, @nidTray);
-        SharpApi.GetSharpeUserSettingsPath; // initialize the user settings path
-        lstComponents := TComponentList.Create;
-        lstComponents.BuildList(strExtension); //enumerate services and components
         BuildMenu;
       end;
 
@@ -567,6 +564,10 @@ begin
       CloseHandle(hndMutex);
       Exit;
     end;
+
+  SharpApi.GetSharpeUserSettingsPath; // initialize the user settings path
+  lstComponents := TComponentList.Create;
+  lstComponents.BuildList(strExtension); //enumerate services and components
 
   // Initialize COM library (some services might need it)
   CoInitialize(nil);
