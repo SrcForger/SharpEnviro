@@ -98,6 +98,9 @@ type
     FAutoHide : Boolean;
     FAutoHideTime : integer;
 
+    // If we have a fullscreen window
+    FFullScreenWnd : Boolean;
+
     procedure PC_NoAlpha(F: TColor32; var B: TColor32; M: TColor32);
     procedure FormPaint(Sender: TObject);
     procedure SetBitmapSizes(NewWidth : integer = - 1);
@@ -141,6 +144,8 @@ type
     property FixedWidth: integer read FFixedWidth write SetFixedWidth;
     property AutoHide: boolean read FAutoHide write FAutoHide;
     property AutoHideTime: integer read FAutoHideTime write FAutoHideTime;
+
+    property FullScreenWnd: Boolean read FFullScreenWnd write FFullScreenWnd;
 
     property ShowThrobber: Boolean read FShowThrobber write SetShowThrobber;
     property DisableHideBar: Boolean read FDisableHideBar write FDisableHideBar;
@@ -447,6 +452,8 @@ begin
   FDisableHideThrobber := False;
   FDisableHideBar  := False;
 
+  FFullScreenWnd := False;
+
   if not (csDesigning in ComponentState) then
   begin
     form := AOwner as TForm;
@@ -496,7 +503,7 @@ end;
 
 procedure TSharpEBar.UpdateAlwaysOnTop;
 begin
-  if not aform.Visible then
+  if (not aform.Visible) or (FFullScreenWnd) then
     exit;
 
   if (FAlwaysOnTop) then

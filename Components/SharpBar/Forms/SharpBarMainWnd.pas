@@ -90,6 +90,7 @@ type
     AlwaysOnTop1: TMenuItem;
     tmrAutoHide: TTimer;
     tmrCursorPos: TTimer;
+    FullScreenCheck: TTimer;
     procedure ShowMiniThrobbers1Click(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ThemeHideTimerTimer(Sender: TObject);
@@ -147,6 +148,7 @@ type
     procedure FormCanResize(Sender: TObject; var NewWidth, NewHeight: Integer;
       var Resize: Boolean);
     procedure FormMouseLeave(Sender: TObject);
+    procedure FullScreenCheckTimer(Sender: TObject);
 
   private
     { Private-Deklarationen }
@@ -165,8 +167,6 @@ type
     FBarName: string;
     FRegisteredSessionNotification : Boolean;
     FRegisterShellHookRecevier : Boolean;
-
-    FFullScreenWnd : hwnd;
 
     FDragging : boolean;
     FDragEdge : Boolean;
@@ -493,68 +493,77 @@ begin
   Close;
 end;
 
-procedure TSharpBarMainForm.WMShellHook(var msg: TMessage);
-const
-  HSHELL_HIGHBIT = $8000;
+procedure TSharpBarMainForm.FullScreenCheckTimer(Sender: TObject);
 var
-  wnd : hwnd;
   barmon : TMonitorItem;
-  wndclass : String;
-  ignorewnd : boolean;
 begin
-  if (not SharpEBar.AlwaysOnTop) or ((not Self.Visible) and (BarHideForm.Visible)) then
-    exit;
-
-  wnd := msg.LParam;
-  if (msg.WParam = HSHELL_FLASH) then
-    exit;
-
-  wndclass := GetWndClass(wnd);
-  ignorewnd := False;
-  if (CompareText(wndclass,'Progman') = 0)
-    or (CompareText(wndclass,'TSharpDeskMainForm') = 0)
-    or (CompareText(wndclass, 'SWT_Window0') = 0) then
-    ignorewnd := True;
-
-  if (msg.WParam = HSHELL_RUDEAPPACTIVATED) then //((msg.WParam and HSHELL_HIGHBIT) = HSHELL_HIGHBIT) then
+  if SharpEBar.FullScreenWnd then
   begin
-    // get monitor of the bar
     if MonList.IsValidMonitorIndex(SharpEBar.MonitorIndex) then
       barmon := MonList.Monitors[SharpEBar.MonitorIndex]
     else barmon := MonList.MonitorFromWindow(Handle);
 
-    if FFullScreenWnd = 0 then
+    if not (HasFullScreenWindow(barmon)) then
     begin
-      if (not ignorewnd) and (HasFullScreenWindow(wnd, barmon)) then
+      SharpApi.SendDebugMessage('SharpBar', '!Fullscreen', 0);
+
+      SharpEBar.FullScreenWnd := False;
+      SharpEBar.UpdateAlwaysOnTop;
+      FullScreenCheck.Enabled := False;
+    end;
+  end;
+end;
+
+procedure TSharpBarMainForm.WMShellHook(var msg: TMessage);
+const
+  HSHELL_HIGHBIT = $8000;
+var
+  barmon : TMonitorItem;
+begin
+  if (not SharpEBar.AlwaysOnTop) or ((not Self.Visible) and (BarHideForm.Visible)) then
+    exit;
+
+  if (msg.WParam = HSHELL_FLASH) then
+    exit;
+
+  // get monitor of the bar
+  if MonList.IsValidMonitorIndex(SharpEBar.MonitorIndex) then
+    barmon := MonList.Monitors[SharpEBar.MonitorIndex]
+  else
+    barmon := MonList.MonitorFromWindow(Handle);
+
+  if (msg.WParam = HSHELL_RUDEAPPACTIVATED) then //((msg.WParam and HSHELL_HIGHBIT) = HSHELL_HIGHBIT) then
+  begin
+    if not SharpEBar.FullScreenWnd then
+    begin
+      if (HasFullScreenWindow(barmon)) then
       begin
-        SetProp(Handle,'FullScreenAppActive',1);
-        ShowWindow(Handle,SW_HIDE);
-        FFullScreenWnd := wnd;
+        SharpEBar.FullScreenWnd := True;
+
+        SetWindowPos(Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
+        SetWindowPos(SharpEBar.abackground.Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOSENDCHANGING);
+
+        FullScreenCheck.Enabled := True;
       end;
-    end else if not (HasFullScreenWindow(FFullScreenWnd, barmon)) then
+    end else if not (HasFullScreenWindow(barmon)) then
     begin
-      SetProp(Handle,'FullScreenAppActive',0);
-      ShowWindow(Handle, SW_SHOWNA);
-      FFullScreenWnd := 0;
+      FullScreenCheck.Enabled := False;
+
+      SharpEBar.FullScreenWnd := False;
+      SharpEBar.UpdateAlwaysOnTop;
     end;
   end else
   begin
     // If there was previously a fullscreen app active, check if it's still
     // fullscreen and if not show the bar again
-    if (FFullScreenWnd <> 0) then
+    if (SharpEBar.FullScreenWnd) then
     begin
-      SharpApi.SendDebugMessage('SharpBar',inttostr(Handle)+':'+'NoHighBit-FullScreenWnd <> 0',0);
-      // get monitor of the bar
-      if MonList.IsValidMonitorIndex(SharpEBar.MonitorIndex) then
-        barmon := MonList.Monitors[SharpEBar.MonitorIndex]
-      else barmon := MonList.MonitorFromWindow(Handle);
-
-      if not HasFullScreenWindow(FFullScreenWnd,barmon) then
+      if not HasFullScreenWindow(barmon) then
       begin
-        SharpApi.SendDebugMessage('SharpBar',inttostr(Handle)+':'+'NoHighBit-HasFullScreenWindow',0);
-        SetProp(Handle,'FullScreenAppActive',0);
-        FFullScreenWnd := 0;
-        ShowWindow(Handle,SW_SHOWNA);
+        FullScreenCheck.Enabled := False;
+
+        SharpEBar.FullScreenWnd := False;
+        SharpEBar.UpdateAlwaysOnTop;
       end;
     end;
   end;
@@ -1402,9 +1411,6 @@ begin
   if FUser32DllHandle <> 0 then
     @PrintWindow := GetProcAddress(FUser32DllHandle, 'PrintWindow');
 
-  FFullScreenWnd := 0;
-  SetProp(Handle,'FullScreenAppActive',0);
-
   FSuspended := False;
   FShellBCInProgress := False;
 
@@ -1430,8 +1436,6 @@ begin
   FreeLibrary(FUser32DllHandle);
   FUser32DllHandle := 0;
   @PrintWindow := nil;
-
-  RemoveProp(Handle,'FullScreenAppActive');
 
   SetLayeredWindowAttributes(Handle, 0, 0, LWA_ALPHA);
   SharpEBar.abackground.Alpha := 0;
@@ -1835,6 +1839,8 @@ begin
 end;
 
 procedure TSharpBarMainForm.FormShow(Sender: TObject);
+var
+  barmon : TMonitorItem;
 begin
   ShowWindow(Application.Handle, SW_HIDE);
   if FSuspended then
@@ -1849,6 +1855,23 @@ begin
     tmrAutoHide.Enabled := True;
     
   tmrCursorPos.Enabled := True;
+
+
+  // Check for fullscreen window
+  if MonList.IsValidMonitorIndex(SharpEBar.MonitorIndex) then
+    barmon := MonList.Monitors[SharpEBar.MonitorIndex]
+  else
+    barmon := MonList.MonitorFromWindow(Handle);
+
+  if (HasFullScreenWindow(barmon)) then
+  begin
+    SharpEBar.FullScreenWnd := True;
+
+    SetWindowPos(Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
+    SetWindowPos(SharpEBar.abackground.Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOSENDCHANGING);
+
+    FullScreenCheck.Enabled := True;
+  end;
 end;
 
 function PointInRect(P: TPoint; Rect: TRect): boolean;

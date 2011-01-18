@@ -24,7 +24,7 @@ function ForceForegroundWindow(hwnd: THandle): Boolean;
 function GetMouseDown(vKey: Integer): Boolean;
 function IsHungAppWindow(wnd : hwnd) : Boolean;
 function IsWindowFullScreen(wnd : hwnd; targetmonitor : TMonitorItem) : Boolean;
-function HasFullScreenWindow(rootwnd : hwnd; targetmonitor : TMonitorItem) : Boolean;
+function HasFullScreenWindow(targetmonitor : TMonitorItem) : Boolean;
 function GetWndClass(pHandle: hwnd): string;
 
 implementation
@@ -53,8 +53,8 @@ begin
   begin
     if Windows.GetClientRect(wnd,R) then
     begin
-      if ((R.Right - R.Left) + 32 > targetmonitor.Width) or
-        ((R.Bottom - R.Top) + 32 > targetmonitor.Height) then
+      if ((R.Right - R.Left) - 32 > targetmonitor.Width) or
+        ((R.Bottom - R.Top) - 32 > targetmonitor.Height) then
         targetmonitor := nil;
     end;
   end;
@@ -80,7 +80,7 @@ begin
     UnionRect(RDest, R, Mon);
     if EqualRect(RDest, R) then
     begin
-      if GetWindowThreadProcessId(wnd) = GetWindowThreadProcessId(GetForegroundWindow) then
+      if (GetProp(wnd, 'NonRudeHWND') = 0) and (GetWindowThreadProcessId(wnd) = GetWindowThreadProcessId(GetForegroundWindow)) then
       begin
         result := True;
         exit;
@@ -93,7 +93,7 @@ end;
 // method will be checking all non child windows of the thread that owns the
 // given window handle.
 // if target monitor is set then the wnd must exist on that monitor
-function HasFullScreenWindow(rootwnd : hwnd; targetmonitor : TMonitorItem) : Boolean;
+function HasFullScreenWindow(targetmonitor : TMonitorItem) : Boolean;
 type
   THwndArray = array of hwnd;
   PParam = ^TParam;
@@ -106,27 +106,34 @@ var
   wnditem : hwnd;
 
   function EnumWindowsProc(wnd: hwnd; param: lParam): boolean; export; stdcall;
+  var
+    wndclass : String;
   begin
+    result := true;
+
     with PParam(Param)^ do
     begin
+      // Explorer Desktop, SharpDesk and Eclipse should be ignored
+      wndclass := GetWndClass(wnd);
+      if (CompareText(wndclass,'Progman') = 0)
+        or (CompareText(wndclass,'TSharpDeskMainForm') = 0)
+        or (CompareText(wndclass, 'SWT_Window0') = 0) then
+        exit;
+
       setlength(wndlist,length(wndlist)+1);
       wndlist[High(wndlist)] := wnd;
     end;
-    result := true;
   end; 
 begin
   result := False;
 
-  if (not IsWindow(rootwnd)) then
-    exit;
-
   // get all windows of the specific thread and check each window
   setlength(EnumParam.wndlist,0);
-  EnumWindows(@EnumWindowsProc,Integer(@EnumParam));
+  EnumWindows(@EnumWindowsProc, Integer(@EnumParam));
   for n := 0 to High(EnumParam.wndlist) do
   begin
     wnditem := EnumParam.wndlist[n];
-    if (IsWindowVisible(wnditem)) and (GetProp(wnditem, 'NonRudeHWND') = 0) then // we will ignore invisible fullscreen windows
+    if (IsWindowVisible(wnditem)) then // we will ignore invisible fullscreen windows
     begin
       if IsWindowFullScreen(wnditem, targetmonitor) then
       begin
