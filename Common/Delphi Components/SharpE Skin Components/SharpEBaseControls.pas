@@ -41,7 +41,6 @@ uses Windows,
   SysUtils;
 
 type
-  TParentControl = class(TWinControl);
   TCustomSharpEGraphicControl = class(TGraphicControl)
   private
     FMouseEventRegistered: Boolean;
@@ -382,71 +381,6 @@ begin
   end;
 end;
 
-procedure CopyParentImage(Control: TControl; Dest: TCanvas);
-var
-  I, Count, X, Y, SaveIndex: Integer;
-  DC: HDC;
-  R, SelfR, CtlR: TRect;
-begin
-  if (Control = nil) or (Control.Parent = nil) then Exit;
-  Count := Control.Parent.ControlCount;
-  DC := Dest.Handle;
-{$IFDEF WIN32}
-  with Control.Parent do ControlState := ControlState + [csPaintCopy];
-  try
-{$ENDIF}
-    with Control do begin
-      SelfR := Bounds(Left, Top, Width, Height);
-      X := -Left; Y := -Top;
-    end;
-    { Copy parent control image }
-    SaveIndex := SaveDC(DC);
-    try
-      SetViewportOrgEx(DC, X, Y, nil);
-      IntersectClipRect(DC, 0, 0, Control.Parent.ClientWidth,
-        Control.Parent.ClientHeight);
-      with TParentControl(Control.Parent) do begin
-        Perform(WM_ERASEBKGND, DC, 0);
-        PaintWindow(DC);
-      end;
-    finally
-      RestoreDC(DC, SaveIndex);
-    end;
-    { Copy images of graphic controls }
-    for I := 0 to Count - 1 do begin
-      if Control.Parent.Controls[I] = Control then Break
-      else if (Control.Parent.Controls[I] <> nil) and
-        (Control.Parent.Controls[I] is TGraphicControl) then
-      begin
-        with TGraphicControl(Control.Parent.Controls[I]) do begin
-          CtlR := Bounds(Left, Top, Width, Height);
-          if Bool(IntersectRect(R, SelfR, CtlR)) and Visible then begin
-{$IFDEF WIN32}
-            ControlState := ControlState + [csPaintCopy];
-{$ENDIF}
-            SaveIndex := SaveDC(DC);
-            try
-              SaveIndex := SaveDC(DC);
-              SetViewportOrgEx(DC, Left + X, Top + Y, nil);
-              IntersectClipRect(DC, 0, 0, Width, Height);
-              Perform(WM_PAINT, DC, 0);
-            finally
-              RestoreDC(DC, SaveIndex);
-{$IFDEF WIN32}
-              ControlState := ControlState - [csPaintCopy];
-{$ENDIF}
-            end;
-          end;
-        end;
-      end;
-    end;
-{$IFDEF WIN32}
-  finally
-    with Control.Parent do ControlState := ControlState - [csPaintCopy];
-  end;
-{$ENDIF}
-end;
-
 procedure TCustomSharpEGraphicControl.Paint;
 begin
   SetBitmapSizes;
@@ -454,11 +388,9 @@ begin
   FBackground.Clear(Color32(0,0,0,0));
   if FSpecialBackground = nil then
   begin
-    CopyParentImage(self,FBackground.Canvas);
-//    Windows.BitBlt(FBackground.Canvas.Handle, 0, 0,
- //     FBackground.Width, FBackground.Height,
- //     Canvas.Handle, 100, 0, SRCCOPY);
-      //FBackground.SaveToFile('C:\Daten\1.bmp');
+    Windows.BitBlt(FBackground.Canvas.Handle, 0, 0,
+      FBackground.Width, FBackground.Height,
+      Canvas.Handle, 0, 0, SRCCOPY);
   end else
   begin
     FBackground.Draw(0,0,Rect(Left,Top,Left+Width,Top+Height),FSpecialBackground);
