@@ -234,20 +234,31 @@ SectionEnd
 
 Section "!Core Files" SEC01
   SectionIn RO # Section can't be disabled
-  
-  # Addons
+
   SetOutPath "$INSTDIR\Addons\"
-  File "..\..\SharpE\Addons\Explorer.exe"
-  File "..\..\SharpE\Addons\Explorer32.dll"
-  File "..\..\SharpE\Addons\Explorer64.dll"
-  File "..\..\SharpE\Addons\SharpEnviro.dll"
-  File "..\..\SharpE\Addons\SharpSearch.dll"
-  File "..\..\SharpE\Addons\SharpSearch.WPF.dll"
   File "..\..\SharpE\Addons\SharpTwitter.dll"
-  SetOutPath "$INSTDIR\Addons\SQLite\x64\"
-  File "..\..\SharpE\Addons\SQLite\x64\System.Data.SQLite.dll"
-  SetOutPath "$INSTDIR\Addons\SQLite\x86\"
-  File "..\..\SharpE\Addons\SQLite\x86\System.Data.SQLite.dll"
+  
+  # Addons x86
+  SetOutPath "$INSTDIR\Addons\x86\"
+  File "..\..\SharpE\Addons\x86\Explorer.exe"
+  File "..\..\SharpE\Addons\x86\Explorer.dll"
+  File "..\..\SharpE\Addons\x86\SharpEnviro.dll"
+  File "..\..\SharpE\Addons\x86\SharpSearch.dll"
+  File "..\..\SharpE\Addons\x86\SharpSearch.WPF.dll"
+  File "..\..\SharpE\Addons\x86\nlog.dll"
+  File "..\..\SharpE\Addons\x86\Explorer.exe.config"
+  File "..\..\SharpE\Addons\x86\System.Data.SQLite.dll"
+  
+  # Addons x64
+  SetOutPath "$INSTDIR\Addons\x64\"
+  File "..\..\SharpE\Addons\x64\Explorer.exe"
+  File "..\..\SharpE\Addons\x64\Explorer.dll"
+  File "..\..\SharpE\Addons\x64\SharpEnviro.dll"
+  File "..\..\SharpE\Addons\x64\SharpSearch.dll"
+  File "..\..\SharpE\Addons\x64\SharpSearch.WPF.dll"
+  File "..\..\SharpE\Addons\x64\nlog.dll"
+  File "..\..\SharpE\Addons\x64\Explorer.exe.config"
+  File "..\..\SharpE\Addons\x64\System.Data.SQLite.dll"
   
   # Center
   SetOutPath "$INSTDIR\Center\"
@@ -729,6 +740,8 @@ Section /o -un.Main UNSEC0000
     
     # Delete the cursors that we install, leave any the user may have added
     RmDir /r "$INSTDIR\Cursors\Cony Island\"
+    RmDir /r "$INSTDIR\Cursors\DMZ Black\"
+    RmDir /r "$INSTDIR\Cursors\DMZ White\"
     RmDir /r "$INSTDIR\Cursors\GNOME\"
     RmDir /r "$INSTDIR\Cursors\MoonShine\"
     RmDir /r "$INSTDIR\Cursors\Nabla\"
