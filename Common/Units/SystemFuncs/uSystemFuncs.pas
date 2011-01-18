@@ -3,7 +3,7 @@ unit uSystemFuncs;
 interface
 
 uses
-  Types, Registry, Windows, Classes, SysUtils, ShellApi, SharpApi, SharpTypes, MonitorList;
+  Types, Registry, Windows, Classes, SysUtils, ShellApi, SharpTypes, MonitorList;
 const
   // new shell hook param
   HSHELL_SYSMENU = 9;
