@@ -3,7 +3,7 @@ unit uSystemFuncs;
 interface
 
 uses
-  Types, Registry, Windows, Classes, SysUtils, ShellApi, SharpTypes, MonitorList;
+  Types, Registry, Windows, Classes, SysUtils, ShellApi, SharpApi, SharpTypes, MonitorList;
 const
   // new shell hook param
   HSHELL_SYSMENU = 9;
@@ -41,9 +41,7 @@ end;
 // if target monitor is set then the wnd must exist on that monitor
 function IsWindowFullScreen(wnd: hwnd; targetmonitor : TMonitorItem) : Boolean;
 var
-  R : TRect;
-  P : TPoint;
-  w,h : integer;
+  Mon, R, RDest : TRect;
   wndmon : TMonitorItem;
   style : cardinal;
 begin
@@ -69,33 +67,20 @@ begin
   // If the window is on the same monitor as the bar then check if it is fullscreen.
   if (targetmonitor = nil) or (wndmon.MonitorNum = targetmonitor.MonitorNum) then
   begin
-    // check if the client area is full screen
-    if Windows.GetClientRect(wnd,R) then
-    begin
-      w := R.Right - R.Left;
-      h := R.Bottom - R.Top;
-      P := Point(R.Left,R.Top);
-      Windows.ClientToScreen(wnd,P);
-      if (P.x = wndmon.Left) and (P.y = wndmon.Top)
-        and (w = wndmon.Width) and (h = wndmon.Height) then
-      begin
-        result := True;
-        exit;
-      end;
-    end;
+    Mon := Rect(wndmon.Left, wndmon.Top, wndmon.Left + wndmon.Width, wndmon.Top + wndmon.Height);
 
-    // http://support.microsoft.com/kb/179363/en-us
-    // If WS_CAPTION or WS_THICKFRAME is not set, check also for window rect
     style := GetWindowLong(wnd, GWL_STYLE);
-    if ((style and WS_CAPTION) <> WS_CAPTION)
-      or ((style and WS_THICKFRAME) <> WS_THICKFRAME) then
+    if (style and (WS_CAPTION or WS_THICKFRAME)) = (WS_CAPTION or WS_THICKFRAME) then
     begin
-      if not GetWindowRect(wnd,R) then
-        exit;
-        
-      if (R.Left = wndmon.Left) and (R.Top = wndmon.Top)
-        and (R.Right = wndmon.Left + wndmon.Width)
-        and (R.Bottom = wndmon.Top + wndmon.Height) then
+      Windows.GetClientRect(wnd, R);
+      MapWindowPoints(wnd, 0, R, 2);
+    end else
+      Windows.GetWindowRect(wnd, R);
+
+    UnionRect(RDest, R, Mon);
+    if EqualRect(RDest, R) then
+    begin
+      if GetWindowThreadProcessId(wnd) = GetWindowThreadProcessId(GetForegroundWindow) then
       begin
         result := True;
         exit;
@@ -117,11 +102,10 @@ type
   end;
 var
   EnumParam : TParam;
-  PID: DWORD;
   n : integer;
   wnditem : hwnd;
 
-  function EnumThreadWindowsProc(wnd: hwnd; param: lParam): boolean; export; stdcall;
+  function EnumWindowsProc(wnd: hwnd; param: lParam): boolean; export; stdcall;
   begin
     with PParam(Param)^ do
     begin
@@ -137,13 +121,12 @@ begin
     exit;
 
   // get all windows of the specific thread and check each window
-  PID := GetWindowThreadProcessId(rootwnd, nil);
   setlength(EnumParam.wndlist,0);
-  EnumThreadWindows(PID,@EnumThreadWindowsProc,Integer(@EnumParam));
+  EnumWindows(@EnumWindowsProc,Integer(@EnumParam));
   for n := 0 to High(EnumParam.wndlist) do
   begin
     wnditem := EnumParam.wndlist[n];
-    if IsWindowVisible(wnditem) then // we will ignore invisible fullscreen windows
+    if (IsWindowVisible(wnditem)) and (GetProp(wnditem, 'NonRudeHWND') = 0) then // we will ignore invisible fullscreen windows
     begin
       if IsWindowFullScreen(wnditem, targetmonitor) then
       begin
