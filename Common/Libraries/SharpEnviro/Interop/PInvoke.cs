@@ -17,6 +17,13 @@ namespace SharpEnviro.Interop
 	/// </summary>
 	public static class PInvoke
     {
+        #region Events
+
+        [DllImport("Kernel32.dll", SetLastError = true)]
+        public static extern IntPtr OpenEvent(uint dwDesiredAccess, bool bInheritHandle, string lpName);
+
+        #endregion
+
         #region CreateWindowEx and Class Registration
 
         [DllImport("user32.dll")]
