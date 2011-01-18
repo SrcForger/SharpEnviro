@@ -181,7 +181,7 @@ namespace SharpEnviro.Explorer
                 StartDesktop();
 
                 // Signal that the shell is ready if the tray already exists
-                if ((PInvoke.FindWindow("Shell_TrayWnd", (string)null) != IntPtr.Zero) || (PInvoke.FindWindow("TSharpCoreMainWnd", (string)null) != IntPtr.Zero))
+                if ((PInvoke.FindWindow("Shell_TrayWnd", (string)null) != IntPtr.Zero) || (PInvoke.OpenEvent(0, false, "Global\\SharpEnviroStarted") != IntPtr.Zero))
                     ShellReady();
 
                 bShellLoaded = true;

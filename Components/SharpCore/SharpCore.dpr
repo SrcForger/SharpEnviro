@@ -569,11 +569,6 @@ begin
   lstComponents := TComponentList.Create;
   lstComponents.BuildList(strExtension); //enumerate services and components
 
-  // Initialize COM library (some services might need it)
-  CoInitialize(nil);
-
-  RunAll;
-
   DebugMsg('Creating main window');
   wclClass.lpszClassName := 'TSharpCoreMainWnd';
   wclClass.lpfnWndProc := @WindowProc;
@@ -590,6 +585,13 @@ begin
   shellInit := True;
 
   Application.Initialize;
+
+  // Initialize COM library (some services might need it)
+  CoInitialize(nil);
+
+  RunAll;
+
+  CreateEvent(nil, true, true, 'Global\\SharpEnviroStarted');
 
   try
     while GetMessage(wndMsg, 0, 0, 0) do
