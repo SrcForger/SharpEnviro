@@ -55,6 +55,9 @@ begin
   end;
   ServiceDone('Startup');
   Result := Application.Handle;
+
+  // Stop since there's no reason why it should be running in the background
+  ServiceStop('Startup');
 end;
 
 procedure Stop;

@@ -243,35 +243,31 @@ begin
 end;
 
 procedure TStartup.InitialiseKeys;
-var
-  i:integer;
-  hk: Array[0..2] of cardinal;
-  hks: Array[0..2] of string;
-  x64: Array[0..2] of boolean;
-
 begin
-  hk[0] := HKEY_CURRENT_USER;
-  hk[1] := HKEY_LOCAL_MACHINE;
-  hk[2] := HKEY_LOCAL_MACHINE;
-  hks[0] := 'HKCU';
-  hks[1] := 'HKLM';
-  hks[2] := 'HKLM';
-  x64[0] := false;
-  x64[1] := false;
-  x64[2] := true;
+  AddRegistryStartupItem(HKEY_CURRENT_USER,'HKCU','Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run',false, false);
+  AddRegistryStartupItem(HKEY_CURRENT_USER,'HKCU','Software\Microsoft\Windows\CurrentVersion\Run',false, false);
+  AddRegistryStartupItem(HKEY_CURRENT_USER,'HKCU','Software\Microsoft\Windows\CurrentVersion\RunOnce',false, true);
+  AddRegistryStartupItem(HKEY_CURRENT_USER,'HKCU','Software\Microsoft\Windows\CurrentVersion\RunServices',false, false);
+  AddRegistryStartupItem(HKEY_CURRENT_USER,'HKCU','Software\Microsoft\Windows\CurrentVersion\RunServicesOnce',false, true);
+  AddRegistryStartupItem(HKEY_CURRENT_USER,'HKCU','Software\Microsoft\Windows NT\CurrentVersion\Windows',false, false);
 
-  for i := 0 to 2 do begin
+  AddRegistryStartupItem(HKEY_LOCAL_MACHINE,'HKLM','Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run',false, false);
+  AddRegistryStartupItem(HKEY_LOCAL_MACHINE,'HKLM','Software\Microsoft\Windows\CurrentVersion\Run',false, false);
+  AddRegistryStartupItem(HKEY_LOCAL_MACHINE,'HKLM','Software\Microsoft\Windows\CurrentVersion\RunOnce',false, true);
+  AddRegistryStartupItem(HKEY_LOCAL_MACHINE,'HKLM','Software\Microsoft\Windows\CurrentVersion\RunOnceEx',false, true);
+  AddRegistryStartupItem(HKEY_LOCAL_MACHINE,'HKLM','Software\Microsoft\Windows\CurrentVersion\RunServices',false, false);
+  AddRegistryStartupItem(HKEY_LOCAL_MACHINE,'HKLM','Software\Microsoft\Windows\CurrentVersion\RunServicesOnce',false, true);
+  AddRegistryStartupItem(HKEY_LOCAL_MACHINE,'HKLM','Software\Microsoft\Windows NT\CurrentVersion\Winlogon\Userinit',false, false);
 
-    if ( (i = 2) and (not(IsWow64))) then exit;
-
-    AddRegistryStartupItem(hk[i],hks[i],'SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run',x64[i], false);
-    AddRegistryStartupItem(hk[i],hks[i],'SOFTWARE\Microsoft\Windows\CurrentVersion\RunServicesOnce',x64[i], true);
-    AddRegistryStartupItem(hk[i],hks[i],'SOFTWARE\Microsoft\Windows\CurrentVersion\RunServices',x64[i], false);
-    AddRegistryStartupItem(hk[i],hks[i],'SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnceEx',x64[i], true);
-    AddRegistryStartupItem(hk[i],hks[i],'SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce\Setup',x64[i], true);
-    AddRegistryStartupItem(hk[i],hks[i],'SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce',x64[i], true);
-    AddRegistryStartupItem(hk[i],hks[i],'SOFTWARE\Microsoft\Windows\CurrentVersion\RunEx',x64[i], false);
-    AddRegistryStartupItem(hk[i],hks[i],'SOFTWARE\Microsoft\Windows\CurrentVersion\Run',x64[i], false);
+  if IsWow64 then
+  begin
+    AddRegistryStartupItem(HKEY_LOCAL_MACHINE,'HKLM','Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run', true, false);
+    AddRegistryStartupItem(HKEY_LOCAL_MACHINE,'HKLM','Software\Microsoft\Windows\CurrentVersion\Run', true, false);
+    AddRegistryStartupItem(HKEY_LOCAL_MACHINE,'HKLM','Software\Microsoft\Windows\CurrentVersion\RunOnce', true, true);
+    AddRegistryStartupItem(HKEY_LOCAL_MACHINE,'HKLM','Software\Microsoft\Windows\CurrentVersion\RunOnceEx', true, true);
+    AddRegistryStartupItem(HKEY_LOCAL_MACHINE,'HKLM','Software\Microsoft\Windows\CurrentVersion\RunServices', true, false);
+    AddRegistryStartupItem(HKEY_LOCAL_MACHINE,'HKLM','Software\Microsoft\Windows\CurrentVersion\RunServicesOnce', true, true);
+    AddRegistryStartupItem(HKEY_LOCAL_MACHINE,'HKLM','Software\Microsoft\Windows NT\CurrentVersion\Winlogon\Userinit', true, false);
   end;
 end;
 
@@ -483,7 +479,6 @@ end;
 procedure TStartup.RunDir(dir: string);
 var
   sr: TSearchRec;
-  lpShortcut: TShellLink;
 begin
   if not DirectoryExists(dir) then
     exit;
@@ -498,10 +493,7 @@ begin
       if assigned(FOnAddDirEvent) then
         FOnAddDirEvent(dir + sr.Name);
 
-      JclShell.ShellLinkResolve(dir + sr.Name,lpShortcut);
-
-      if (not FindTask(lpShortcut.Target)) and (not Debug) then
-        ServiceMsg('exec',pchar('_nohist,' + dir + '\' + sr.Name));
+      ServiceMsg('exec',pchar('_nohist,' + dir + '\' + sr.Name));
     end;
   until FindNext(sr) <> 0;
   FindClose(sr);
@@ -523,6 +515,13 @@ begin
       reg.ValueKey := list[i];
 
       s := RegReadValue(reg.FHkey,reg.subKey,list[i], process64);
+
+      // Replace x86 enviro vars with 64bit
+      if (process64) then
+      begin
+        s := AnsiReplaceStr(s, '%ProgramFiles%', '%ProgramW6432%');
+        s := AnsiReplaceStr(s, '%CommonProgramFiles%', '%CommonProgramW6432%');
+      end;
       if s <> '' then
       begin
         if Assigned(FOnAddRegEvent) then
@@ -618,7 +617,6 @@ begin
     if continue then
       SharpExecute(admin);
   end;
-
 end;
 
 { TPathStartupItem }
