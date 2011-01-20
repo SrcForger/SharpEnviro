@@ -210,7 +210,7 @@ end;
 constructor TRunOnceTimer.Create;
 begin
   FModData := TObjectList.Create;
-  FModData.OwnsObjects := True;
+  FModData.OwnsObjects := False;
 
   FTimer := TTimer.Create(nil);
   FTimer.Enabled := False;
@@ -232,6 +232,12 @@ begin
   for i := 0 to FModData.Count - 1 do
   begin
     modData := TComponentData(FModData.Items[i]);
+    if not Assigned(modData) then
+    begin
+      FModData.Remove(modData);
+      continue;
+    end;
+    
     if ServiceIsDone(modData) then
     begin
       DebugMsg('RunOnce service finished');
@@ -246,14 +252,10 @@ begin
 end;
 
 procedure TRunOnceTimer.Check(modData: TComponentData);
-var
-  tmp : TComponentData;
 begin
   DebugMsg('Checking RunOnce service ' + modData.MetaData.Name);
 
-  tmp := TComponentData.Create(modData);
-
-  FModData.Add(TObject(tmp));
+  FModData.Add(TObject(modData));
   FTimer.Enabled := True;
 end;
 
