@@ -26,6 +26,7 @@ function IsHungAppWindow(wnd : hwnd) : Boolean;
 function IsWindowFullScreen(wnd : hwnd; targetmonitor : TMonitorItem) : Boolean;
 function HasFullScreenWindow(targetmonitor : TMonitorItem) : Boolean;
 function GetWndClass(pHandle: hwnd): string;
+function GetWndText(pHandle: hwnd): string;
 
 implementation
 
@@ -37,37 +38,27 @@ begin
   result := buf;
 end;
 
+function GetWndText(pHandle: hwnd): string;
+var
+  buf: array[0..254] of Char;
+begin
+  GetWindowText(pHandle, buf, SizeOf(buf));
+  result := buf;
+end;
+
 // check if a window is full screen
 // if target monitor is set then the wnd must exist on that monitor
 function IsWindowFullScreen(wnd: hwnd; targetmonitor : TMonitorItem) : Boolean;
 var
   Mon, R, RDest : TRect;
-  wndmon : TMonitorItem;
   style : cardinal;
 begin
   result := False;
 
-  // on multi monitor systems:
-  // check if the window size is significantly larger than the monitor size.
-  if (targetmonitor <> nil) and (MonList.MonitorCount > 1) then
-  begin
-    if Windows.GetClientRect(wnd,R) then
-    begin
-      if ((R.Right - R.Left) - 32 > targetmonitor.Width) or
-        ((R.Bottom - R.Top) - 32 > targetmonitor.Height) then
-        targetmonitor := nil;
-    end;
-  end;
-
-  // get monitor of the window
-  wndmon := MonList.MonitorFromWindow(wnd);
-  if (wndmon = nil) then
-    exit;
-
   // If the window is on the same monitor as the bar then check if it is fullscreen.
-  if (targetmonitor = nil) or (wndmon.MonitorNum = targetmonitor.MonitorNum) then
+  if (targetmonitor <> nil) then
   begin
-    Mon := Rect(wndmon.Left, wndmon.Top, wndmon.Left + wndmon.Width, wndmon.Top + wndmon.Height);
+    Mon := Rect(targetmonitor.Left, targetmonitor.Top, targetmonitor.Left + targetmonitor.Width, targetmonitor.Top + targetmonitor.Height);
 
     style := GetWindowLong(wnd, GWL_STYLE);
     if (style and (WS_CAPTION or WS_THICKFRAME)) = (WS_CAPTION or WS_THICKFRAME) then

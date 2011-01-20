@@ -497,17 +497,20 @@ procedure TSharpBarMainForm.FullScreenCheckTimer(Sender: TObject);
 var
   barmon : TMonitorItem;
 begin
-  if SharpEBar.FullScreenWnd then
+  if SharpEBar.FullScreenWnd <> 0 then
   begin
     if MonList.IsValidMonitorIndex(SharpEBar.MonitorIndex) then
       barmon := MonList.Monitors[SharpEBar.MonitorIndex]
     else barmon := MonList.MonitorFromWindow(Handle);
 
+    if (barmon.MonitorNum <> MonList.MonitorFromWindow(SharpEBar.ActiveWnd).MonitorNum) then
+      exit;
+
     if not (HasFullScreenWindow(barmon)) then
     begin
       SharpApi.SendDebugMessage('SharpBar', '!Fullscreen', 0);
 
-      SharpEBar.FullScreenWnd := False;
+      SharpEBar.FullScreenWnd := 0;
       SharpEBar.UpdateAlwaysOnTop;
       FullScreenCheck.Enabled := False;
     end;
@@ -534,11 +537,17 @@ begin
 
   if (msg.WParam = HSHELL_RUDEAPPACTIVATED) then //((msg.WParam and HSHELL_HIGHBIT) = HSHELL_HIGHBIT) then
   begin
-    if not SharpEBar.FullScreenWnd then
+    SharpEBar.ActiveWnd := msg.LParam;
+
+    // Skip windows that aren't part of this monitor
+    if (barmon.MonitorNum <> MonList.MonitorFromWindow(SharpEBar.ActiveWnd).MonitorNum) then
+      exit;
+
+    if SharpEBar.FullScreenWnd = 0 then
     begin
       if (HasFullScreenWindow(barmon)) then
       begin
-        SharpEBar.FullScreenWnd := True;
+        SharpEBar.FullScreenWnd := msg.LParam;
 
         SetWindowPos(Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
         SetWindowPos(SharpEBar.abackground.Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOSENDCHANGING);
@@ -549,22 +558,8 @@ begin
     begin
       FullScreenCheck.Enabled := False;
 
-      SharpEBar.FullScreenWnd := False;
+      SharpEBar.FullScreenWnd := 0;
       SharpEBar.UpdateAlwaysOnTop;
-    end;
-  end else
-  begin
-    // If there was previously a fullscreen app active, check if it's still
-    // fullscreen and if not show the bar again
-    if (SharpEBar.FullScreenWnd) then
-    begin
-      if not HasFullScreenWindow(barmon) then
-      begin
-        FullScreenCheck.Enabled := False;
-
-        SharpEBar.FullScreenWnd := False;
-        SharpEBar.UpdateAlwaysOnTop;
-      end;
     end;
   end;
 end;
@@ -1867,7 +1862,7 @@ begin
 
   if (HasFullScreenWindow(barmon)) then
   begin
-    SharpEBar.FullScreenWnd := True;
+    SharpEBar.FullScreenWnd := GetForegroundWindow;
 
     SetWindowPos(Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
     SetWindowPos(SharpEBar.abackground.Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOSENDCHANGING);

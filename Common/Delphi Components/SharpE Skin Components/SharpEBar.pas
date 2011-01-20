@@ -48,7 +48,8 @@ uses
   SharpGraphicsUtils,
   SharpEBase,
   SharpEBaseControls,
-  SharpApi;
+  SharpApi,
+  uSystemFuncs;
 
 type
   TSharpEThrobber = class;
@@ -99,7 +100,8 @@ type
     FAutoHideTime : integer;
 
     // If we have a fullscreen window
-    FFullScreenWnd : Boolean;
+    FFullScreenWnd : HWND;
+    FActiveWnd: HWND;
 
     procedure PC_NoAlpha(F: TColor32; var B: TColor32; M: TColor32);
     procedure FormPaint(Sender: TObject);
@@ -145,7 +147,8 @@ type
     property AutoHide: boolean read FAutoHide write FAutoHide;
     property AutoHideTime: integer read FAutoHideTime write FAutoHideTime;
 
-    property FullScreenWnd: Boolean read FFullScreenWnd write FFullScreenWnd;
+    property FullScreenWnd: HWND read FFullScreenWnd write FFullScreenWnd;
+    property ActiveWnd: HWND read FActiveWnd write FActiveWnd;
 
     property ShowThrobber: Boolean read FShowThrobber write SetShowThrobber;
     property DisableHideBar: Boolean read FDisableHideBar write FDisableHideBar;
@@ -452,7 +455,8 @@ begin
   FDisableHideThrobber := False;
   FDisableHideBar  := False;
 
-  FFullScreenWnd := False;
+  FFullScreenWnd := 0;
+  FActiveWnd := 0;
 
   if not (csDesigning in ComponentState) then
   begin
@@ -503,7 +507,7 @@ end;
 
 procedure TSharpEBar.UpdateAlwaysOnTop;
 begin
-  if (not aform.Visible) or (FFullScreenWnd) then
+  if (not aform.Visible) or (FFullScreenWnd <> 0) then
     exit;
 
   if (FAlwaysOnTop) then
@@ -940,6 +944,9 @@ begin
       begin
         if msg.WParam > 0 then
         begin
+          if FFullScreenWnd <> 0 then
+            exit;
+
 //          ShowWindow(FBackGround.Handle, sw_ShowNormal);
           SetWindowPos(aBackground.handle,
                        aform.handle,
