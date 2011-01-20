@@ -518,7 +518,7 @@ begin
               PostMessage(TaskMsgManager.WndList[n],WM_TASKVWMCHANGE,pItem.Handle,pItem.LastVWM);
 
               // Hack for fullscreen check
-              PostMessage(TaskMsgManager.WndList[n],WM_SHARPSHELLMESSAGE,HSHELL_WINDOWACTIVATED + 32768,GetForegroundWindow);
+              //PostMessage(TaskMsgManager.WndList[n],WM_SHARPSHELLMESSAGE,HSHELL_WINDOWACTIVATED + 32768,GetForegroundWindow);
             end
             else TaskMsgManager.DeleteWnd(n);
         end;
