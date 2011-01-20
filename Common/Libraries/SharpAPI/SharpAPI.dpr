@@ -270,6 +270,13 @@ type
     ExtraData: String[255];
   end;
 
+  TExtraMetaData = record
+    Priority: Integer;
+    Delay: Integer;
+    RunOnce: Boolean;
+    Startup: Boolean;
+  end;
+
   // SharpCenter types
   TSCC_COMMAND_ENUM = (sccLoadSetting, sccChangeFolder, sccUnloadDll, sccLoadDll);
   TSCB_BUTTON_ENUM = (scbMoveUp, scbMoveDown, scbImport, scbExport, scbClear,
@@ -608,6 +615,35 @@ begin
         result := MR_STARTED
       else
         result := MR_STOPPED;
+    end
+    else
+      result := HR_NORECIEVERWINDOW;
+  except
+    result := HR_UNKNOWNERROR;
+  end;
+end;
+
+function IsServiceDone(ServiceName: String): hresult;
+var
+  cds: TCopyDataStruct;
+  wnd: hWnd;
+  msg: TManagerCmd;
+begin
+  try
+    //Prepare TCopyDataStruct
+    msg.Parameters := ServiceName;
+    msg.Command := '_isservicedone';
+    with cds do
+    begin
+      dwData := 0;
+      cbData := SizeOf(TManagerCmd);
+      lpData := @msg;
+    end;
+    //Find the window
+    wnd := FindWindow('TSharpCoreMainWnd', nil);
+    if wnd <> 0 then
+    begin
+      result := sendmessage(wnd, WM_COPYDATA, 0, Cardinal(@cds));
     end
     else
       result := HR_NORECIEVERWINDOW;
@@ -1308,7 +1344,7 @@ begin
     result := 1; //couldn't open file
 end;
 
-function GetComponentMetaDataEx(hndFile: THandle; var MetaData: TMetaData; var Priority: Integer; var Delay: Integer) : Integer;
+function GetComponentMetaDataEx(hndFile: THandle; var MetaData: TMetaData; var ExtraMetaData: TExtraMetaData) : Integer;
 var
   stlData: TStrings;
   i: Integer;
@@ -1362,7 +1398,7 @@ begin
           begin
             s := RightStr(stlData[i], Length(stlData[i]) - Length('priority:'));
             s := Trim(s);
-            Priority := StrToInt(s);
+            ExtraMetaData.Priority := StrToInt(s);
           end;
 
           if Pos('delay:', LowerCase(stlData[i])) > 0 then
@@ -1370,7 +1406,23 @@ begin
             stlData[i] := Trim(stlData[i]);
             s := RightStr(stlData[i], Length(stlData[i]) - Length('delay:'));
             s := Trim(s);
-            Delay := StrToInt(s);
+            ExtraMetaData.Delay := StrToInt(s);
+          end;
+
+          if Pos('runonce:', LowerCase(stlData[i])) > 0 then
+          begin
+            stlData[i] := Trim(stlData[i]);
+            s := RightStr(stlData[i], Length(stlData[i]) - Length('runonce:'));
+            s := Trim(s);
+            ExtraMetaData.RunOnce := StrToBool(s);
+          end;
+
+          if Pos('startup:', LowerCase(stlData[i])) > 0 then
+          begin
+            stlData[i] := Trim(stlData[i]);
+            s := RightStr(stlData[i], Length(stlData[i]) - Length('startup:'));
+            s := Trim(s);
+            ExtraMetaData.Startup := StrToBool(s);
           end;
         end;
       end else
@@ -1426,7 +1478,7 @@ begin
     result := 1; //couldn't open file
 end;
 
-function GetServiceMetaDataEx(hndFile: THandle; var MetaData: TMetaData; var Priority: Integer; var Delay: Integer) : Integer;
+function GetServiceMetaDataEx(hndFile: THandle; var MetaData: TMetaData; var ExtraMetaData: TExtraMetaData) : Integer;
 type
   TMetaDataFunc = function(): TMetaData;
 const
@@ -1456,7 +1508,7 @@ begin
               stlData[i] := Trim(stlData[i]);
               s := RightStr(stlData[i], Length(stlData[i]) - Length('priority:'));
               s := Trim(s);
-              Priority := StrToInt(s);
+              ExtraMetaData.Priority := StrToInt(s);
             end;
 
             if Pos('delay:', LowerCase(stlData[i])) > 0 then
@@ -1464,7 +1516,23 @@ begin
               stlData[i] := Trim(stlData[i]);
               s := RightStr(stlData[i], Length(stlData[i]) - Length('delay:'));
               s := Trim(s);
-              Delay := StrToInt(s);
+              ExtraMetaData.Delay := StrToInt(s);
+            end;
+            
+            if Pos('runonce:', LowerCase(stlData[i])) > 0 then
+            begin
+              stlData[i] := Trim(stlData[i]);
+              s := RightStr(stlData[i], Length(stlData[i]) - Length('runonce:'));
+              s := Trim(s);
+              ExtraMetaData.RunOnce := StrToBool(s);
+            end;
+
+            if Pos('startup:', LowerCase(stlData[i])) > 0 then
+            begin
+              stlData[i] := Trim(stlData[i]);
+              s := RightStr(stlData[i], Length(stlData[i]) - Length('startup:'));
+              s := Trim(s);
+              ExtraMetaData.Startup := StrToBool(s);
             end;
           end;
         end else
@@ -1530,7 +1598,7 @@ begin
     result := 1; //couldn't open file
 end;
 
-function GetComponentMetaData(strFile: String; var MetaData: TMetaData; var Priority: Integer; var Delay: Integer) : Integer;
+function GetComponentMetaData(strFile: String; var MetaData: TMetaData; var ExtraMetaData: TExtraMetaData) : Integer;
 var
   hndFile: THandle;
 begin
@@ -1539,7 +1607,7 @@ begin
   begin
     hndFile := LoadLibraryEx(PChar(strFile), 0, LOAD_LIBRARY_AS_DATAFILE);
     try
-      Result := GetComponentMetaDataEx(hndFile, MetaData, Priority, Delay);
+      Result := GetComponentMetaDataEx(hndFile, MetaData, ExtraMetaData);
     finally
       FreeLibrary(hndFile);
     end;
@@ -1562,7 +1630,7 @@ begin
   end;
 end;
 
-function GetServiceMetaData(strFile: String; var MetaData: TMetaData; var Priority: Integer; var Delay: Integer) : Integer;
+function GetServiceMetaData(strFile: String; var MetaData: TMetaData; var ExtraMetaData: TExtraMetaData) : Integer;
 var
   hndFile: THandle;
 begin
@@ -1570,7 +1638,7 @@ begin
   begin
     hndFile := LoadLibrary(PChar(strFile));
     try
-      Result := GetServiceMetaDataEx(hndFile, MetaData, Priority, Delay);
+      Result := GetServiceMetaDataEx(hndFile, MetaData, ExtraMetaData);
     finally
       FreeLibrary(hndFile);
     end;
@@ -1744,6 +1812,7 @@ exports
   ServiceStop,
   ServiceStart,
   IsServiceStarted,
+  IsServiceDone,
   ServiceDone,
 
   BarMsg,

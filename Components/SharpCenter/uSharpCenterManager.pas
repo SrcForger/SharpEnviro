@@ -727,7 +727,7 @@ end;
 constructor TSharpCenterManager.Create;
 var
   meta: TMetaData;
-  priority, delay: Integer;
+  extraMeta: TExtraMetaData;
 begin
   // Create the host interface
   FThemeManager := TCenterThemeManager.Create;
@@ -744,7 +744,7 @@ begin
   FRoot := GetCenterDirectory + 'Home\';
 
   // Get the plugin version
-  SharpAPI.GetComponentMetaData( GetSharpeDirectory + 'SharpCore.exe', meta, priority, delay);
+  SharpAPI.GetComponentMetaData( GetSharpeDirectory + 'SharpCore.exe', meta, extraMeta);
   FPluginVersion := meta.Version;
 
   FUnloadCommand := TSharpCenterHistoryItem.Create;

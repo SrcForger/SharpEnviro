@@ -17,12 +17,13 @@ type
     procedure SetDisabled(const Value: Boolean);
   public
     MetaData: TMetaData;
-    Priority: Integer;
-    Delay: Integer;
+    ExtraMetaData: TExtraMetaData;
     ID: Integer;
     FileName: string;
     FileHandle: THandle;
     Running: Boolean;
+
+    constructor Create(from: TComponentData); overload;
 
     property HasConfig: Boolean read GetHasConfig;
     property Disabled: Boolean read GetDisabled write SetDisabled;
@@ -71,11 +72,11 @@ end;
 function CheckLocation(Item1, Item2: TComponentData): Integer; //function to sort by priority
 begin
   result := 0;
-  if Item1.Priority < Item2.Priority then
+  if Item1.ExtraMetaData.Priority < Item2.ExtraMetaData.Priority then
     result := -1
-  else if Item1.Priority = Item2.Priority then
+  else if Item1.ExtraMetaData.Priority = Item2.ExtraMetaData.Priority then
     result := 0
-  else if Item1.Priority > Item2.Priority then
+  else if Item1.ExtraMetaData.Priority > Item2.ExtraMetaData.Priority then
     result := 1;
 end;
 
@@ -133,7 +134,7 @@ begin
     cdComponent := TComponentData.Create;
     cdComponent.FileName := sPath + srFile.Name;
     if getComponentData then  
-      GetServiceMetaData(sPath + srFile.Name, cdComponent.MetaData, cdComponent.Priority, cdComponent.Delay);
+      GetServiceMetaData(sPath + srFile.Name, cdComponent.MetaData, cdComponent.ExtraMetaData);
     cdComponent.ID := Count + 50; //add 50 to ID to make sure it's unique
 
     Add(cdComponent);
@@ -149,7 +150,7 @@ begin
       cdComponent := TComponentData.Create;
       cdComponent.FileName := sPath + srFile.Name;
       //wrap in an if statement so we don't get blank entries for non-sharpe executables that might be in the folder
-      if GetComponentMetaData(sPath + srFile.Name, cdComponent.MetaData, cdComponent.Priority, cdComponent.Delay) = 0 then begin
+      if GetComponentMetaData(sPath + srFile.Name, cdComponent.MetaData, cdComponent.ExtraMetaData) = 0 then begin
         cdComponent.ID := Count + 50;
         Add(cdComponent);
       end;
@@ -176,6 +177,18 @@ begin
 end;
 
 { TComponentData }
+
+constructor TComponentData.Create(from: TComponentData);
+begin
+  inherited Create;
+
+  MetaData := from.MetaData;
+  ExtraMetaData := from.ExtraMetaData;
+  ID := from.ID;
+  FileName := PChar(from.FileName);
+  FileHandle := from.FileHandle;
+  Running := from.Running;
+end;
 
 function TComponentData.GetDisabled: Boolean;
 var

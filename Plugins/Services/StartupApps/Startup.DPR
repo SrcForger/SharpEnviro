@@ -55,9 +55,6 @@ begin
   end;
   ServiceDone('Startup');
   Result := Application.Handle;
-
-  // Stop since there's no reason why it should be running in the background
-  ServiceStop('Startup');
 end;
 
 procedure Stop;
@@ -73,7 +70,7 @@ begin
     Author := 'Lee Green (Pixol@sharpe-shell.org)';
     Version := '0.8.0.0';
     DataType := tteService;
-    ExtraData := 'priority: 160| delay: 0';
+    ExtraData := 'priority: 160| delay: 0| runonce: 1| startup: 1';
   end;
 end;
 

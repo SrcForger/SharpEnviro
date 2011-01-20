@@ -116,10 +116,10 @@ end;
 function GetMetaData(): TMetaData;
 var
   meta: TMetaData;
-  priority, delay: integer;
+  extraMeta: TExtraMetaData;
   tmp: string;
 begin
-  SharpAPI.GetComponentMetaData( GetSharpeDirectory + 'SharpCore.exe', meta, priority, delay);
+  SharpAPI.GetComponentMetaData( GetSharpeDirectory + 'SharpCore.exe', meta, extraMeta);
   tmp := format('Welcome to SharpEnviro (%s)',[meta.Version]);
 
   with result do
@@ -137,10 +137,10 @@ end;
 function GetPluginData(pluginID : String): TPluginData;
 var
   meta: TMetaData;
-  priority, delay: integer;
+  extraMeta: TExtraMetaData;
   tmp: string;
 begin
-  SharpAPI.GetComponentMetaData( GetSharpeDirectory + 'SharpCore.exe', meta, priority, delay);
+  SharpAPI.GetComponentMetaData( GetSharpeDirectory + 'SharpCore.exe', meta, extraMeta);
   tmp := format('Welcome to SharpEnviro (%s)',[meta.Version]);
 
   with result do

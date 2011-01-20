@@ -241,6 +241,13 @@ type
     ExtraData: String[255];
   end;
 
+  TExtraMetaData = record
+    Priority: Integer;
+    Delay: Integer;
+    RunOnce: Boolean;
+    Startup: Boolean; 
+  end;
+
   TMsgData = record
     Command: String[255];
     Parameters: String[255];
@@ -298,6 +305,7 @@ function ServiceMsg(ServiceName, Command: String): hresult; external 'SharpAPI.d
 function ServiceStart(ServiceName: String): hresult; external 'SharpAPI.dll' name 'ServiceStart';
 function ServiceStop(ServiceName: String): hresult; external 'SharpAPI.dll' name 'ServiceStop';
 function IsServiceStarted(ServiceName: String): hresult; external 'SharpAPI.dll' name 'IsServiceStarted';
+function IsServiceDone(ServiceName: String): hresult; external 'SharpAPI.dll' name 'IsServiceDone';
 function ServiceDone(ServiceName: String): hresult; external 'SharpAPI.dll' name 'ServiceDone';
 function SendDebugMessage(app: string; msg: string; color: integer): hresult; external 'SharpAPI.dll';
 function SendDebugMessageEx(module: String; msg: String; color: integer; MessageType: Integer): hresult; external 'SharpApi.dll';
@@ -332,13 +340,13 @@ function SwitchToVWM(Index : integer; ExceptWnd : hwnd = 0) : boolean; external 
 function GetConfigPluginData(dllHandle: Thandle; var PluginData: TPluginData; pluginID : String) : Integer; external 'SharpApi.dll' name 'GetConfigPluginData';
 
 //meta data functions
-function GetComponentMetaData(strFile: String; var MetaData: TMetaData; var Priority: Integer; var Delay: Integer) : Integer; external 'SharpApi.dll' name 'GetComponentMetaData';
-function GetServiceMetaData(strFile: String; var MetaData: TMetaData; var Priority: Integer; var Delay: Integer) : Integer; external 'SharpApi.dll' name 'GetServiceMetaData';
+function GetComponentMetaData(strFile: String; var MetaData: TMetaData; var ExtraMetaData: TExtraMetaData) : Integer; external 'SharpApi.dll' name 'GetComponentMetaData';
+function GetServiceMetaData(strFile: String; var MetaData: TMetaData; var ExtraMetaData: TExtraMetaData) : Integer; external 'SharpApi.dll' name 'GetServiceMetaData';
 function GetConfigMetaData(strFile: String; var MetaData: TMetaData; var ConfigMode: TSC_MODE_ENUM; var ConfigType: TSU_UPDATE_ENUM) : Integer; external 'SharpApi.dll' name 'GetConfigMetaData';
 function GetModuleMetaData(strFile: String; Preview: TBitmap32; var MetaData: TMetaData; var HasPreview: Boolean) : Integer; external 'SharpApi.dll' name 'GetModuleMetaData';
 
-function GetComponentMetaDataEx(dllHandle: Thandle; var MetaData: TMetaData; var Priority: Integer; var Delay: Integer) : Integer; external 'SharpApi.dll' name 'GetComponentMetaDataEx';
-function GetServiceMetaDataEx(dllHandle: Thandle; var MetaData: TMetaData; var Priority: Integer; var Delay: Integer) : Integer; external 'SharpApi.dll' name 'GetServiceMetaDataEx';
+function GetComponentMetaDataEx(dllHandle: Thandle; var MetaData: TMetaData; var ExtraMetaData: TExtraMetaData) : Integer; external 'SharpApi.dll' name 'GetComponentMetaDataEx';
+function GetServiceMetaDataEx(dllHandle: Thandle; var MetaData: TMetaData; var ExtraMetaData: TExtraMetaData) : Integer; external 'SharpApi.dll' name 'GetServiceMetaDataEx';
 function GetConfigMetaDataEx(dllHandle: Thandle; var MetaData: TMetaData; var ConfigMode: TSC_MODE_ENUM; var ConfigType: TSU_UPDATE_ENUM) : Integer; external 'SharpApi.dll' name 'GetConfigMetaDataEx';
 function GetModuleMetaDataEx(dllHandle: Thandle; Preview: TBitmap32; var MetaData: TMetaData; var HasPreview: Boolean) : Integer; external 'SharpApi.dll' name 'GetModuleMetaDataEx';
 

@@ -25,14 +25,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 program SharpCore;
 
-{$R 'metadata.res'}
-{$R 'VersionInfo.res'}
+
 {$R *.res}
 
 uses
-//  VCLFixPack,
   Forms,
   Windows,
+  Contnrs,
+  ExtCtrls,
   Messages,
   ActiveX,
   ShellAPI,
@@ -46,8 +46,24 @@ uses
   uVistaFuncs,
   uSharpESkinInterface,
   uISharpESkin,
-  {$IFDEF DEBUG}DebugDialog in '..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
+  DebugDialog in '..\..\Common\Units\DebugDialog\DebugDialog.pas',
   uComponentMan in 'uComponentMan.pas';
+
+type
+  TRunOnceTimer = class
+  public
+    constructor Create;
+    destructor Destroy; override;
+    
+    procedure Check(modData: TComponentData);
+
+    procedure TimerOnTimer(Sender: TObject);
+
+  private
+    FModData: TObjectList;
+    FTimer : TTimer;
+    
+  end;
 
 const
   WM_ICONTRAY = WM_USER + 1;
@@ -78,6 +94,7 @@ var
   hndWindow: THandle;
   TaskBarCreated: Integer;
   shellInit : boolean;
+  runOnceTimer : TRunOnceTimer;
 
 function ProcessMessage(var Msg: TMsg): Boolean;
 var
@@ -159,6 +176,9 @@ begin
       else StartFuncEx(hndWindow, ISkinInterface);
       CheckMenuItem(menServices, modData.ID, MF_CHECKED);
       modData.Running := True;
+
+      if modData.ExtraMetaData.RunOnce then
+        runOnceTimer.Check(modData);
     end;
   end;
 end;
@@ -182,13 +202,66 @@ begin
   end;
 end;
 
+function ServiceIsDone(modData: TComponentData): Boolean;
+begin
+  result := (OpenMutex(MUTEX_ALL_ACCESS, False, PChar('started_' + modData.MetaData.Name)) <> 0);
+end;
+
+constructor TRunOnceTimer.Create;
+begin
+  FModData := TObjectList.Create;
+  FModData.OwnsObjects := True;
+
+  FTimer := TTimer.Create(nil);
+  FTimer.Enabled := False;
+  FTimer.Interval := 100;
+  FTimer.OnTimer := TimerOnTimer;
+end;
+
+destructor TRunOnceTimer.Destroy;
+begin
+  FreeAndNil(FTimer);
+  FreeAndNil(FModData);
+end;
+
+procedure TRunOnceTimer.TimerOnTimer(Sender: TObject);
+var
+  i : integer;
+  modData: TComponentData;
+begin
+  for i := 0 to FModData.Count - 1 do
+  begin
+    modData := TComponentData(FModData.Items[i]);
+    if ServiceIsDone(modData) then
+    begin
+      DebugMsg('RunOnce service finished');
+
+      StopService(modData);
+      FModData.Remove(modData);
+    end;
+  end;
+
+  if FModData.Count <= 0 then
+    FTimer.Enabled := True;
+end;
+
+procedure TRunOnceTimer.Check(modData: TComponentData);
+var
+  tmp : TComponentData;
+begin
+  DebugMsg('Checking RunOnce service ' + modData.MetaData.Name);
+
+  tmp := TComponentData.Create(modData);
+
+  FModData.Add(TObject(tmp));
+  FTimer.Enabled := True;
+end;
+
 function RunAll(): Integer;
 var
   modData: TComponentData;
   i : Integer;
   iTimeout: Integer;
-  modName: String;
-  modMutex: THandle;
 type
   TStartFunc = function(owner: hwnd): hwnd;
 const
@@ -198,61 +271,57 @@ begin
   for i := 0 to lstComponents.Count - 1 do
   begin
     modData := TComponentData(lstComponents.Items[i]);
-    if (modData.MetaData.Name = 'Startup') and not bDoStartup then Continue;
-    if (modData.MetaData.DataType = tteService) and (modData.Priority > 0) then
+    if not bDoStartup and modData.ExtraMetaData.Startup then Continue;
+    if (modData.MetaData.DataType = tteService) and (modData.ExtraMetaData.Priority > 0) then
     begin
       if not modData.Disabled then
       begin
-        Sleep(modData.Delay);
+        Sleep(modData.ExtraMetaData.Delay);
         StartService(modData);
         iTimeout := 10000;
-        modName := modData.MetaData.Name;
         while iTimeout > 0 do
         begin
-          modMutex := OpenMutex(MUTEX_ALL_ACCESS, False, PChar('started_' + modName));
-          if not (modMutex > 0) then
+          if not ServiceIsDone(modData) then
           begin
             Sleep(100);
             iTimeout := iTimeout - 100;
             if iTimeout = 0 then
-              DebugMsg('Timed out waiting for ' + modName);
+              DebugMsg('Timed out waiting for ' + modData.MetaData.Name);
           end
           else
           begin
             iTimeout := 0;
             modData.Running := True;
-            DebugMsg('Started ' + modName);
+            DebugMsg('Started ' + modData.MetaData.Name);
           end;
         end;
       end
       else
         DebugMsg('Unable to start, as service is disabled');
     end
-    else if (modData.MetaData.DataType = tteComponent) and (modData.Priority > 0) then
+    else if (modData.MetaData.DataType = tteComponent) and (modData.ExtraMetaData.Priority > 0) then
     begin
-      Sleep(modData.Delay);
+      Sleep(modData.ExtraMetaData.Delay);
       DebugMsg('Starting ' + modData.MetaData.Name);
       modData.Running := False;
       ShellExecute(0, nil, PChar(modData.FileName), '', PChar(ExtractFilePath(modData.FileName)), SW_SHOWNORMAL);
       iTimeout := 10000;
-      modName := modData.MetaData.Name;
       while iTimeout > 0 do
       begin
         while ProcessMessage(WndMsg) do {loop};
 
-        modMutex := OpenMutex(MUTEX_ALL_ACCESS, False, PChar('started_' + modName));
-        if not (modMutex > 0) then
+        if not ServiceIsDone(modData) then
         begin
           Sleep(100);
           iTimeout := iTimeout - 100;
           if iTimeout = 0 then
-            DebugMsg('Timed out waiting for ' + modName);
+            DebugMsg('Timed out waiting for ' + modData.MetaData.Name);
         end
         else
         begin
           iTimeout := 0;
           modData.Running := True;
-          DebugMsg('Started ' + modName);
+          DebugMsg('Started ' + modData.MetaData.Name);
         end;
       end;
     end;
@@ -463,6 +532,16 @@ begin
               result := MR_STOPPED;
           end;
         end
+        else if LowerCase(tmdData.Command) = '_isservicedone' then begin
+          iIndex := lstComponents.FindByName(tmdData.Parameters);
+          if (iIndex < lstComponents.Count) and (iIndex > -1) then begin
+            modData := lstComponents.Items[iIndex];
+            if ServiceIsdone(modData) then
+              result := MR_STARTED
+            else
+              result := MR_STOPPED;
+          end;
+        end
         else if LowerCase(tmdData.Command) = '_servicemsg' then {//send a service message} begin
           iPos := Pos('.', tmdData.Parameters);
           sName := Copy(tmdData.Parameters, 0, iPos - 1);
@@ -494,6 +573,8 @@ begin
   ISkinInterface := SkinInterface;
 
   stlCmdLine := TStringList.Create;
+
+  runOnceTimer := TRunOnceTimer.Create;
 
   sAction := '';
   bDebug := False;
@@ -604,6 +685,8 @@ begin
   end;
 
   CoUninitialize;
-  
+
+  FreeAndNil(runOnceTimer);
+
   end.
 
