@@ -495,21 +495,14 @@ end;
 
 procedure TSharpBarMainForm.FullScreenCheckTimer(Sender: TObject);
 var
-  barmon : TMonitorItem;
+  monitor : TMonitorItem;
 begin
   if SharpEBar.FullScreenWnd <> 0 then
   begin
-    if MonList.IsValidMonitorIndex(SharpEBar.MonitorIndex) then
-      barmon := MonList.Monitors[SharpEBar.MonitorIndex]
-    else barmon := MonList.MonitorFromWindow(Handle);
+    monitor := MonList.MonitorFromWindow(SharpEBar.FullScreenWnd);
 
-    if (barmon.MonitorNum <> MonList.MonitorFromWindow(SharpEBar.ActiveWnd).MonitorNum) then
-      exit;
-
-    if not (HasFullScreenWindow(barmon)) then
+    if (not IsWindowFullScreen(SharpEBar.FullScreenWnd, monitor, SharpEBar.FullScreenWnd)) then
     begin
-      SharpApi.SendDebugMessage('SharpBar', '!Fullscreen', 0);
-
       SharpEBar.FullScreenWnd := 0;
       SharpEBar.UpdateAlwaysOnTop;
       FullScreenCheck.Enabled := False;
@@ -522,6 +515,7 @@ const
   HSHELL_HIGHBIT = $8000;
 var
   barmon : TMonitorItem;
+  wnditem : HWND;
 begin
   if (not SharpEBar.AlwaysOnTop) or ((not Self.Visible) and (BarHideForm.Visible)) then
     exit;
@@ -540,21 +534,22 @@ begin
     SharpEBar.ActiveWnd := msg.LParam;
 
     // Skip windows that aren't part of this monitor
-    if (barmon.MonitorNum <> MonList.MonitorFromWindow(SharpEBar.ActiveWnd).MonitorNum) then
+    if (barmon.MonitorNum <> MonList.MonitorFromWindow(SharpEBar.ActiveWnd).MonitorNum) or (IsWindowFullScreen(SharpEBar.FullScreenWnd)) then
       exit;
 
+    wnditem := HasFullScreenWindow(barmon);
     if SharpEBar.FullScreenWnd = 0 then
     begin
-      if (HasFullScreenWindow(barmon)) then
+      if (wnditem <> 0) then
       begin
-        SharpEBar.FullScreenWnd := msg.LParam;
+        SharpEBar.FullScreenWnd := wnditem;
 
         SetWindowPos(Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
         SetWindowPos(SharpEBar.abackground.Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOSENDCHANGING);
 
         FullScreenCheck.Enabled := True;
       end;
-    end else if not (HasFullScreenWindow(barmon)) then
+    end else if (wnditem = 0) then
     begin
       FullScreenCheck.Enabled := False;
 
@@ -1860,7 +1855,7 @@ begin
   else
     barmon := MonList.MonitorFromWindow(Handle);
 
-  if (HasFullScreenWindow(barmon)) then
+  if (HasFullScreenWindow(barmon) <> 0) then
   begin
     SharpEBar.FullScreenWnd := GetForegroundWindow;
 

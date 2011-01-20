@@ -23,8 +23,8 @@ function FindAllWindows(const WindowClass: string): THandleArray;
 function ForceForegroundWindow(hwnd: THandle): Boolean;
 function GetMouseDown(vKey: Integer): Boolean;
 function IsHungAppWindow(wnd : hwnd) : Boolean;
-function IsWindowFullScreen(wnd : hwnd; targetmonitor : TMonitorItem) : Boolean;
-function HasFullScreenWindow(targetmonitor : TMonitorItem) : Boolean;
+function IsWindowFullScreen(wnd : hwnd; targetmonitor : TMonitorItem = nil; wndToCheck: HWND = 0) : Boolean;
+function HasFullScreenWindow(targetmonitor : TMonitorItem) : HWND;
 function GetWndClass(pHandle: hwnd): string;
 function GetWndText(pHandle: hwnd): string;
 
@@ -48,15 +48,21 @@ end;
 
 // check if a window is full screen
 // if target monitor is set then the wnd must exist on that monitor
-function IsWindowFullScreen(wnd: hwnd; targetmonitor : TMonitorItem) : Boolean;
+function IsWindowFullScreen(wnd: hwnd; targetmonitor : TMonitorItem; wndToCheck: HWND) : Boolean;
 var
   Mon, R, RDest : TRect;
   style : cardinal;
 begin
   result := False;
 
+  if targetmonitor = nil then
+    targetmonitor := MonList.MonitorFromWindow(wnd);
+
+  if wndToCheck = 0 then
+    wndToCheck := GetForegroundWindow;
+
   // If the window is on the same monitor as the bar then check if it is fullscreen.
-  if (targetmonitor <> nil) then
+  if (targetmonitor <> nil) and (IsWindow(wnd)) then
   begin
     Mon := Rect(targetmonitor.Left, targetmonitor.Top, targetmonitor.Left + targetmonitor.Width, targetmonitor.Top + targetmonitor.Height);
 
@@ -71,7 +77,7 @@ begin
     UnionRect(RDest, R, Mon);
     if EqualRect(RDest, R) then
     begin
-      if (GetProp(wnd, 'NonRudeHWND') = 0) and (GetWindowThreadProcessId(wnd) = GetWindowThreadProcessId(GetForegroundWindow)) then
+      if (GetProp(wnd, 'NonRudeHWND') = 0) and (GetWindowThreadProcessId(wnd) = GetWindowThreadProcessId(wndToCheck)) then
       begin
         result := True;
         exit;
@@ -84,7 +90,7 @@ end;
 // method will be checking all non child windows of the thread that owns the
 // given window handle.
 // if target monitor is set then the wnd must exist on that monitor
-function HasFullScreenWindow(targetmonitor : TMonitorItem) : Boolean;
+function HasFullScreenWindow(targetmonitor : TMonitorItem) : HWND;
 type
   THwndArray = array of hwnd;
   PParam = ^TParam;
@@ -116,7 +122,7 @@ var
     end;
   end; 
 begin
-  result := False;
+  result := 0;
 
   // get all windows of the specific thread and check each window
   setlength(EnumParam.wndlist,0);
@@ -128,7 +134,7 @@ begin
     begin
       if IsWindowFullScreen(wnditem, targetmonitor) then
       begin
-        result := True;
+        result := wnditem;
         exit;
       end;
     end;
