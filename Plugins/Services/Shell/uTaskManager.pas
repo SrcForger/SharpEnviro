@@ -38,7 +38,8 @@ uses Windows,
      SharpTypes,
      JclSysUtils,
      JclStrings,
-     JclSysInfo;
+     JclSysInfo,
+     uSystemFuncs;
 
 type
   TTaskChangeEvent = procedure(pItem : TTaskItem; Index : integer) of object;
@@ -158,21 +159,24 @@ function RegisterShellHook(wnd : hwnd; param : dword) : boolean; stdcall; extern
 function CheckTaskWnd(pHandle : hwnd; IncludeInvisible : boolean): boolean;
 var
   ownerWnd : HWND;
+  rc: TRect;
 begin
   Result := False;
 
-  if IsWindowVisible(pHandle) or (IncludeInvisible) then
+  GetClientRect(pHandle, rc);
+
+  if  (IsWindowVisible(pHandle) or (IncludeInvisible)) and
+      ((GetWindowLong(pHandle, GWL_EXSTYLE) and WS_EX_TOOLWINDOW) = 0) and
+      (rc.Right > 0) and
+      (rc.Bottom > 0) then
 	begin
-		if (GetWindowLong(pHandle, GWL_EXSTYLE) and WS_EX_TOOLWINDOW) = 0 then
-		begin
-			if GetParent(pHandle) = 0 then
-			begin
-				ownerWnd := GetWindow(pHandle, GW_OWNER);
-				if ((ownerWnd = 0) or
-					  ((GetWindowLong(ownerWnd, GWL_STYLE) and (WS_VISIBLE or WS_CLIPCHILDREN)) <> (WS_VISIBLE or WS_CLIPCHILDREN)) or
-					  (GetWindowLong(ownerWnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW <> 0)) then
-          Result := True;
-			end;
+    if GetParent(pHandle) = 0 then
+    begin
+      ownerWnd := GetWindow(pHandle, GW_OWNER);
+      if  ((ownerWnd = 0) or
+          ((GetWindowLong(ownerWnd, GWL_STYLE) and (WS_VISIBLE or WS_CLIPCHILDREN)) <> (WS_VISIBLE or WS_CLIPCHILDREN)) or
+          (GetWindowLong(ownerWnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW <> 0)) then
+        Result := True;
 		end;
 	end;
 end;
@@ -393,6 +397,7 @@ type
 var
   EnumParam : TParam;
   n : integer;
+  i : integer;
 
   function EnumWindowsProc(Wnd: HWND; LParam: LPARAM): BOOL; stdcall;
   begin
@@ -405,10 +410,17 @@ var
     result := True;
   end;
 begin
+  // Clear out list
+  for i := FItems.Count - 1 downto 0 do
+    FItems.Delete(i);
+
+  FItems.Clear;
+
   setlength(EnumParam.wndlist,0);
   EnumWindows(@EnumWindowsProc, Integer(@EnumParam));
   for n := 0 to High(EnumParam.wndlist) do
     AddTask(EnumParam.wndlist[n]);
+
   setlength(EnumParam.wndlist,0);
 end;
 
@@ -825,6 +837,9 @@ var
   n : integer;
 begin
   result := -1;
+  if not IsWindow(wnd) then
+    exit;
+
   for n := 0 to High(WndList) do
     if WndList[n] = wnd then
     begin

@@ -156,6 +156,10 @@ begin
   begin
     TMainForm(Form).CurrentVWM := SharpApi.GetCurrentVWM;
     TMainForm(Form).CheckFilterAll;
+  end
+  else if CompareText(msg,'MM_TASKBARREFRESH') = 0 then
+  begin
+    TMainForm(Form).CompleteRefresh;
   end;
 end;
 

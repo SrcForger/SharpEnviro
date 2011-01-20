@@ -166,7 +166,6 @@ type
     FSharpEBar: TSharpEBar;
     FBarName: string;
     FRegisteredSessionNotification : Boolean;
-    FRegisterShellHookRecevier : Boolean;
 
     FDragging : boolean;
     FDragEdge : Boolean;
@@ -220,6 +219,7 @@ type
     procedure WMGetCopyData(var msg: TMessage); message WM_COPYDATA;
     procedure WMUpdateSettings(var msg: TMessage); message WM_SHARPEUPDATESETTINGS;
 
+    // Shell hooks
     procedure WMShellHook(var msg: TMessage); message WM_SHARPSHELLMESSAGE;
 
     procedure OnBarPositionUpdate(Sender: TObject; var X, Y: Integer);
@@ -574,12 +574,15 @@ end;
 
 procedure TSharpBarMainForm.WMShellHookWindowCreate(var msg: TMessage);
 begin
-  if not FRegisterShellHookRecevier then
-    FRegisterShellHookRecevier := RegisterShellHookReceiver(Handle);
+  UnRegisterShellHookReceiver(Handle);
+  RegisterShellHookReceiver(Handle);
 
   if ModuleManager = nil then
     exit;
   ModuleManager.BroadcastPluginMessage('MM_SHELLHOOKWINDOWCREATED');
+
+  // Also update taskbar
+  ModuleManager.BroadcastPluginMessage('MM_TASKBARREFRESH');
 end;
 
 // System Input Language Changed -> broadcast a message to all modules
@@ -1421,7 +1424,7 @@ begin
 
   // Register for notifications of this session (0), 1 = all sessions.
   FRegisteredSessionNotification := RegisterSessionNotification(Handle, 0);
-  FRegisterShellHookRecevier := RegisterShellHookReceiver(Handle);
+  RegisterShellHookReceiver(Handle);
 
   ShowWindow(Handle, SW_HIDE);
 end;
@@ -1430,8 +1433,7 @@ procedure TSharpBarMainForm.FormDestroy(Sender: TObject);
 begin
   if FRegisteredSessionNotification then
     UnRegisterSesssionNotification(Handle);
-  if FRegisterShellHookRecevier then
-    UnRegisterShellHookReceiver(Handle);
+  UnRegisterShellHookReceiver(Handle);
 
   FreeLibrary(FUser32DllHandle);
   FUser32DllHandle := 0;

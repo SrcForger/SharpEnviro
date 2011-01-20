@@ -547,8 +547,6 @@ begin
             vwm := VWMGetWindowVWM(GetCurrentVWM,GetVWMCount,h);
             if vwm <> pItem.LastVWM then
             begin
-              SharpApi.SendDebugMessage('Shell', 'Bla2', 0);
-
               pItem.LastVWM := vwm;
               for n := High(TaskMsgManager.WndList) downto 0 do
                 if IsWindow(TaskMsgManager.WndList[n]) then

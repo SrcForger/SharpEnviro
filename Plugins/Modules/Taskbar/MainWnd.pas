@@ -1004,6 +1004,7 @@ begin
      ToolTipApi.DeleteToolTip(FTipWnd,Self,TSharpETaskItem(IList[n]).Handle);
   FLocked := True;
   IList.Clear;
+  TM.InitList;
   TM.CompleteRefresh;
   FLocked := False;
   RealignComponents(True);
