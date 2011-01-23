@@ -26,7 +26,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 program SharpCore;
 
 
-{$R *.res}
+{$R *.RES}
+{$R metadata.RES}
+{$R VersionInfo.RES}
 
 uses
   Forms,
