@@ -121,7 +121,10 @@ var
   cdComponent: TComponentData;
   sPath: string;
   I : Integer;
+  buf : array[0..MAX_PATH] of char;
 begin
+  GetModuleFileName(0, buf, SizeOf(buf));
+
   for I := Count - 1 downto 0 do
     TComponentData(Items[I]).Free;
 
@@ -147,14 +150,16 @@ begin
     sPath := GetSharpeDirectory;
     intFound := FindFirst(sPath + '*.exe', faAnyFile, srFile); //then we loop through components
     while intFound = 0 do begin
-      cdComponent := TComponentData.Create;
-      cdComponent.FileName := sPath + srFile.Name;
-      //wrap in an if statement so we don't get blank entries for non-sharpe executables that might be in the folder
-      if GetComponentMetaData(sPath + srFile.Name, cdComponent.MetaData, cdComponent.ExtraMetaData) = 0 then begin
-        cdComponent.ID := Count + 50;
-        Add(cdComponent);
+      if AnsiCompareStr(buf, SharpApi.GetSharpeDirectory + srFile.Name) <> 0 then
+      begin
+        cdComponent := TComponentData.Create;
+        cdComponent.FileName := sPath + srFile.Name;
+        //wrap in an if statement so we don't get blank entries for non-sharpe executables that might be in the folder
+        if GetComponentMetaData(sPath + srFile.Name, cdComponent.MetaData, cdComponent.ExtraMetaData) = 0 then begin
+          cdComponent.ID := Count + 50;
+          Add(cdComponent);
+        end;
       end;
-      //cdComponent.Free;
       intFound := FindNext(srFile);
     end;
     FindClose(srFile);
