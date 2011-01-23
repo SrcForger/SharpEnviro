@@ -41,6 +41,10 @@ type
     FOffsetList : array of TRect;
     FMonIDList : array of integer;
     FScreenChange : Boolean;
+
+  protected
+    procedure MaximizeWindows;
+
   public
     constructor Create; reintroduce;
     destructor Destroy; override;
@@ -152,6 +156,22 @@ begin
   SetFullScreenArea;
 end;
 
+procedure TDeskAreaManager.MaximizeWindows;
+  function EnumWindowsProc(Wnd: HWND; LParam: LPARAM): BOOL; stdcall;
+  begin
+    if ((GetWindowLong(wnd, GWL_STYLE) and WS_MAXIMIZE) = WS_MAXIMIZE) and
+        (IsWindowVisible(Wnd)) then
+    begin
+      SetWindowLong(Wnd, GWL_STYLE, GetWindowLong(Wnd, GWL_STYLE) and not WS_MAXIMIZE);
+      ShowWindow(wnd, SW_MAXIMIZE);
+    end;
+      
+    result := True;
+  end;
+begin
+  EnumWindows(@EnumWindowsProc, 0);
+end;
+
 procedure TDeskAreaManager.SetDeskArea;
 var
   n,i : integer;
@@ -161,7 +181,6 @@ var
   MonID : integer;
   Index : integer;
   ABItem : TAppBarItem;
-  r : Cardinal;
   MonCount : integer;
   b : boolean;
 begin
@@ -198,7 +217,7 @@ begin
       for i := 0 to High(BR) do
       begin
         b := GetBarAutoHide(i);
-        if (IsWindowVisible(BR[i].wnd) or (GetProp(BR[i].wnd,'FullScreenAppActive') = 1))
+        if (IsWindowVisible(BR[i].wnd))
           and (not b) then
            if PointInRect(Point(BR[i].R.Left + (BR[i].R.Right - BR[i].R.Left) div 2,
                                 BR[i].R.Top + (BR[i].R.Bottom - BR[i].R.Top) div 2),
@@ -251,8 +270,10 @@ begin
        (Area.Top <> MonList.Monitors[n].WorkareaRect.Top) or
        (Area.Bottom <> MonList.Monitors[n].WorkareaRect.Bottom) then
     begin
-      SystemParametersInfo(SPI_SETWORKAREA, 1, @Area, SPIF_UPDATEINIFILE);
-      SendMessageTimeOut(HWND_BROADCAST, WM_SETTINGCHANGE, SPI_SETWORKAREA, 0,SMTO_ABORTIFHUNG,20,r);
+      SharpApi.SendDebugMessage('Shell', Format('Setting workarea to: Left %d, Right %d Top %d, Bottom %d, ', [Area.Left, Area.Right, Area.Top, Area.Bottom]), 0);
+
+      SystemParametersInfo(SPI_SETWORKAREA, 1, @Area, SPIF_SENDWININICHANGE);
+      MaximizeWindows;
     end
   end;
   setlength(BR,0);
