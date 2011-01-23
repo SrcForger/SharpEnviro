@@ -1398,7 +1398,7 @@ begin
           begin
             s := RightStr(stlData[i], Length(stlData[i]) - Length('priority:'));
             s := Trim(s);
-            ExtraMetaData.Priority := StrToInt(s);
+            TryStrToInt(s, ExtraMetaData.Priority);
           end;
 
           if Pos('delay:', LowerCase(stlData[i])) > 0 then
@@ -1406,7 +1406,7 @@ begin
             stlData[i] := Trim(stlData[i]);
             s := RightStr(stlData[i], Length(stlData[i]) - Length('delay:'));
             s := Trim(s);
-            ExtraMetaData.Delay := StrToInt(s);
+            TryStrToInt(s, ExtraMetaData.Delay);
           end;
 
           if Pos('runonce:', LowerCase(stlData[i])) > 0 then
@@ -1414,7 +1414,7 @@ begin
             stlData[i] := Trim(stlData[i]);
             s := RightStr(stlData[i], Length(stlData[i]) - Length('runonce:'));
             s := Trim(s);
-            ExtraMetaData.RunOnce := StrToBool(s);
+            TryStrToBool(s, ExtraMetaData.RunOnce);
           end;
 
           if Pos('startup:', LowerCase(stlData[i])) > 0 then
@@ -1422,7 +1422,7 @@ begin
             stlData[i] := Trim(stlData[i]);
             s := RightStr(stlData[i], Length(stlData[i]) - Length('startup:'));
             s := Trim(s);
-            ExtraMetaData.Startup := StrToBool(s);
+            TryStrToBool(s, ExtraMetaData.Startup);
           end;
         end;
       end else
@@ -1505,10 +1505,9 @@ begin
           begin
             if Pos('priority:', LowerCase(stlData[i])) > 0 then
             begin
-              stlData[i] := Trim(stlData[i]);
               s := RightStr(stlData[i], Length(stlData[i]) - Length('priority:'));
               s := Trim(s);
-              ExtraMetaData.Priority := StrToInt(s);
+              TryStrToInt(s, ExtraMetaData.Priority);
             end;
 
             if Pos('delay:', LowerCase(stlData[i])) > 0 then
@@ -1516,15 +1515,15 @@ begin
               stlData[i] := Trim(stlData[i]);
               s := RightStr(stlData[i], Length(stlData[i]) - Length('delay:'));
               s := Trim(s);
-              ExtraMetaData.Delay := StrToInt(s);
+              TryStrToInt(s, ExtraMetaData.Delay);
             end;
-            
+
             if Pos('runonce:', LowerCase(stlData[i])) > 0 then
             begin
               stlData[i] := Trim(stlData[i]);
               s := RightStr(stlData[i], Length(stlData[i]) - Length('runonce:'));
               s := Trim(s);
-              ExtraMetaData.RunOnce := StrToBool(s);
+              TryStrToBool(s, ExtraMetaData.RunOnce);
             end;
 
             if Pos('startup:', LowerCase(stlData[i])) > 0 then
@@ -1532,7 +1531,7 @@ begin
               stlData[i] := Trim(stlData[i]);
               s := RightStr(stlData[i], Length(stlData[i]) - Length('startup:'));
               s := Trim(s);
-              ExtraMetaData.Startup := StrToBool(s);
+              TryStrToBool(s, ExtraMetaData.Startup);
             end;
           end;
         end else
@@ -1555,6 +1554,7 @@ var
   stlData: TStrings;
   i: Integer;
   s: String;
+  tmp: integer;
 begin
   result := 0;
   if hndFile <> 0 then
@@ -1576,7 +1576,8 @@ begin
               stlData[i] := Trim(stlData[i]);
               s := RightStr(stlData[i], Length(stlData[i]) - Length('configmode:'));
               s := Trim(s);
-              ConfigMode := TSC_MODE_ENUM(StrToInt(s));
+              if TryStrToInt(s, tmp) then
+                ConfigMode := TSC_MODE_ENUM(tmp);
             end;
 
             if Pos('configtype:', LowerCase(stlData[i])) > 0 then
@@ -1584,7 +1585,8 @@ begin
               stlData[i] := Trim(stlData[i]);
               s := RightStr(stlData[i], Length(stlData[i]) - Length('configtype:'));
               s := Trim(s);
-              ConfigType := TSU_UPDATE_ENUM(StrToInt(s));
+              if TryStrToInt(s, tmp) then
+                ConfigType := TSU_UPDATE_ENUM(tmp);
             end;
           end;
         end else
@@ -1602,6 +1604,18 @@ function GetComponentMetaData(strFile: String; var MetaData: TMetaData; var Extr
 var
   hndFile: THandle;
 begin
+  // Initialize meta-data
+  MetaData.Name := '';
+  MetaData.Description := '';
+  MetaData.Author := '';
+  MetaData.Version := '';
+  MetaData.ExtraData := '';
+
+  ExtraMetaData.Priority := 0;
+  ExtraMetaData.Delay := 0;
+  ExtraMetaData.RunOnce := False;
+  ExtraMetaData.Startup := False;
+
   result := 0;
   if FileExists(strFile) then
   begin
@@ -1618,6 +1632,14 @@ function GetModuleMetaData(strFile: String; Preview: TBitmap32; var MetaData: TM
 var
   hndFile: THandle;
 begin
+  // Initialize meta-data
+  MetaData.Name := '';
+  MetaData.Description := '';
+  MetaData.Author := '';
+  MetaData.Version := '';
+  MetaData.ExtraData := '';
+  HasPreview := False;
+
   result := 0;
   if FileExists(strFile) then
   begin
@@ -1634,6 +1656,18 @@ function GetServiceMetaData(strFile: String; var MetaData: TMetaData; var ExtraM
 var
   hndFile: THandle;
 begin
+  // Initialize meta-data
+  MetaData.Name := '';
+  MetaData.Description := '';
+  MetaData.Author := '';
+  MetaData.Version := '';
+  MetaData.ExtraData := '';
+
+  ExtraMetaData.Priority := 0;
+  ExtraMetaData.Delay := 0;
+  ExtraMetaData.RunOnce := False;
+  ExtraMetaData.Startup := False;
+
   if FileExists(strFile) then
   begin
     hndFile := LoadLibrary(PChar(strFile));
@@ -1651,6 +1685,15 @@ function GetConfigMetaData(strFile: String; var MetaData: TMetaData; var ConfigM
 var
   hndFile: THandle;
 begin
+  // Initialize meta-data
+  MetaData.Name := '';
+  MetaData.Description := '';
+  MetaData.Author := '';
+  MetaData.Version := '';
+  MetaData.ExtraData := '';
+  ConfigMode := TSC_MODE_ENUM(0);
+  ConfigType := TSU_UPDATE_ENUM(0);
+
   if FileExists(strFile) then
   begin
     hndFile := LoadLibrary(PChar(strFile));
