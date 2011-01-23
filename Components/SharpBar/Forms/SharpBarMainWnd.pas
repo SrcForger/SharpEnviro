@@ -514,7 +514,7 @@ procedure TSharpBarMainForm.WMShellHook(var msg: TMessage);
 const
   HSHELL_HIGHBIT = $8000;
 var
-  barmon : TMonitorItem;
+  barmon, activeMon : TMonitorItem;
   wnditem : HWND;
 begin
   if (not SharpEBar.AlwaysOnTop) or ((not Self.Visible) and (BarHideForm.Visible)) then
@@ -534,7 +534,11 @@ begin
     SharpEBar.ActiveWnd := msg.LParam;
 
     // Skip windows that aren't part of this monitor
-    if (barmon.MonitorNum <> MonList.MonitorFromWindow(SharpEBar.ActiveWnd).MonitorNum) or (IsWindowFullScreen(SharpEBar.FullScreenWnd)) then
+    activeMon := MonList.MonitorFromWindow(SharpEBar.ActiveWnd);
+    if activeMon = nil then
+      exit;
+
+    if (barmon.MonitorNum <> activeMon.MonitorNum) or (IsWindowFullScreen(SharpEBar.FullScreenWnd)) then
       exit;
 
     wnditem := HasFullScreenWindow(barmon);
