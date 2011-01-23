@@ -167,8 +167,9 @@ begin
 
   if  (IsWindowVisible(pHandle) or (IncludeInvisible)) and
       ((GetWindowLong(pHandle, GWL_EXSTYLE) and WS_EX_TOOLWINDOW) = 0) and
-      (rc.Right > 0) and
-      (rc.Bottom > 0) then
+      (((rc.Right > 0) and
+      (rc.Bottom > 0)) or
+      (GetWindowLong(pHandle, GWL_STYLE) and (WS_MINIMIZE) = WS_MINIMIZE)) then
 	begin
     if GetParent(pHandle) = 0 then
     begin
