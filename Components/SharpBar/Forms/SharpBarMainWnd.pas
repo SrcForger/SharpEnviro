@@ -538,7 +538,7 @@ begin
     if activeMon = nil then
       exit;
 
-    if (barmon.MonitorNum <> activeMon.MonitorNum) or (IsWindowFullScreen(SharpEBar.FullScreenWnd)) then
+    if (barmon.MonitorNum <> activeMon.MonitorNum) or (IsWindowFullScreen(SharpEBar.FullScreenWnd, barmon, SharpEBar.FullScreenWnd)) then
       exit;
 
     wnditem := HasFullScreenWindow(barmon);
@@ -555,6 +555,7 @@ begin
       end;
     end else if (wnditem = 0) then
     begin
+      SharpApi.SendDebugMessage('SharpBar', 'Fullscreen', 0);
       FullScreenCheck.Enabled := False;
 
       SharpEBar.FullScreenWnd := 0;
