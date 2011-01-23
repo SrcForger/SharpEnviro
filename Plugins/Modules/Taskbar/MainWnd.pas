@@ -67,6 +67,8 @@ type
     procedure FormCreate(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure PreviewCheckTimerTimer(Sender: TObject);
+    procedure OnPreviewClick(Sender : TObject);
+    procedure OnPreviewMouseMove(Sender : TObject);
     procedure ses_MouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
     procedure ses_togallClick(Sender: TObject);
@@ -403,6 +405,26 @@ begin
   pitem := TM.GetItemByHandle(TSharpETaskItem(Sender.Control).Handle);
   if pitem <> nil then
      pitem.Restore; 
+end;
+
+procedure TMainForm.OnPreviewClick(Sender: TObject);
+begin
+  if FPreviewWnd <> nil then
+  begin
+    PreviewCheckTimer.Enabled := False;
+    FPreviewWnd.HideWindow(True);
+    FPreviewWnd.Free;
+    FPreviewWnd := nil;
+  end;
+end;
+
+procedure TMainForm.OnPreviewMouseMove(Sender: TObject);
+begin
+  if (PreviewCheckTimer.Enabled) then
+  begin
+    PreviewCheckTimer.Enabled := False;
+    PreviewCheckTimer.Enabled := True;
+  end;
 end;
 
 procedure TMainForm.AlignSpecialButtons;
@@ -800,7 +822,9 @@ begin
                                               mInterface.SkinInterface.SkinManager,
                                               item.Caption,
                                               Animate,
-                                              False);
+                                              True);
+        FPreviewWnd.OnPreviewClick := OnPreviewClick;
+        FPreviewWnd.OnPreviewMouseMove := OnPreviewMouseMove;
         PreviewCheckTimer.Enabled := True;
       end;
     end;
@@ -809,7 +833,13 @@ begin
 
   if GetCursorPosSecure(cursorPos) then
     CPos := ScreenToClient(cursorPos)
-  else exit;  
+  else exit;
+
+  if PreviewCheckTimer.Enabled then
+  begin
+    PreviewCheckTimer.Enabled := False;
+    PreviewCheckTimer.Enabled := True;
+  end;
 
   for n := 0 to IList.Count - 1 do
   begin
@@ -855,6 +885,7 @@ end;
 procedure TMainForm.PreviewCheckTimerTimer(Sender: TObject);
 var
   CPos,cursorPos : TPoint;
+  R : TRect;
 begin
   if GetCursorPosSecure(cursorPos) then
     CPos := ScreenToClient(cursorPos)
@@ -862,14 +893,18 @@ begin
 
   if not PointInRect(CPos,Rect(-10,-10,Width+10,Height+10)) then
   begin
-    PreviewCheckTimer.Enabled := False;
+    FPreviewWndHandle := 0;
     if FPreviewWnd <> nil then
     begin
-      FPreviewWnd.HideWindow(True); 
-      FPreviewWnd.Free;
-      FPreviewWnd := nil;
-    end;
-    FPreviewWndHandle := 0;    
+      GetWindowRect(FPreviewWnd.Wnd,R);
+      if not PointInRect(cursorPos,R) then
+      begin
+        FPreviewWnd.HideWindow(True);
+        FPreviewWnd.Free;
+        FPreviewWnd := nil;
+        PreviewCheckTimer.Enabled := False;
+      end;
+    end else PreviewCheckTimer.Enabled := False;
   end;  
 end;
 
@@ -1535,6 +1570,7 @@ begin
       FPreviewWnd := nil;
     end;
     pItem.UpdateVisibleState;
+    PreviewCheckTimer.Enabled := True;
     if (not pItem.Visible) or (TM.LastActiveTask <> TSharpETaskItem(Sender).Handle) then
     begin
       TSharpETaskItem(Sender).Down := True;
