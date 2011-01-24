@@ -245,7 +245,7 @@ object frmListWnd: TfrmListWnd
       Margins.Right = 5
       Margins.Bottom = 5
       Align = alLeft
-      Caption = 'Left Alligned Modules'
+      Caption = 'Left Aligned Modules'
       Layout = tlCenter
       ExplicitHeight = 13
     end
@@ -301,7 +301,7 @@ object frmListWnd: TfrmListWnd
       Margins.Right = 5
       Margins.Bottom = 5
       Align = alLeft
-      Caption = 'Right Alligned Modules'
+      Caption = 'Right Aligned Modules'
       Layout = tlCenter
       ExplicitHeight = 13
     end
