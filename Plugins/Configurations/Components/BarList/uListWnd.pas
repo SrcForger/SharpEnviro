@@ -56,6 +56,7 @@ uses
   Types,
   JclStrings,
   MonitorList,
+  uSharpBar,
 
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit;
@@ -709,11 +710,10 @@ end;
 
 procedure AddItemsToList(AList: TObjectList);
 var
-  xml: TJclSimpleXML;
   newItem: TBarItem;
   dir: string;
-  slBars, slModules: TStringList;
-  n,i, j: Integer;
+  slBars: TStringList;
+  n, i: Integer;
 
   function ExtractBarID(ABarXmlFileName: string): String;
   var
@@ -730,10 +730,7 @@ begin
   AList.Clear;
   dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
 
-  newItem := nil;
   slBars := TStringList.Create;
-  slModules := TStringList.Create;
-  xml := TJclSimpleXML.Create;
   try
     // build list of bar.xml files
     AdvBuildFileList(dir + '*bar.xml', faAnyFile, slBars, amAny, [flFullNames, flRecursive]);
@@ -741,53 +738,12 @@ begin
     begin
       if TryStrToInt(ExtractBarID(slBars[i]),n) then
       begin
-        xml.LoadFromFile(slBars[i]);
-        if xml.Root.Items.ItemNamed['Settings'] <> nil then
-          with xml.Root.Items.ItemNamed['Settings'].Items do
-          begin
-            newItem := TBarItem.Create;
-            with newItem do
-            begin
-              Name := Value('Name', 'Toolbar');
-              BarID := StrToInt(ExtractBarID(slBars[i]));
-              Monitor := IntValue('MonitorIndex', 0);
-              PMonitor := BoolValue('PrimaryMonitor', True);
-              HPos := IntValue('HorizPos', 0);
-              VPos := IntValue('VertPos', 0);
-              AutoStart := BoolValue('AutoStart', True);
-              FixedWidthEnabled := BoolValue('FixedWidthEnabled', False);
-              FixedWidth := Min(90,Max(10,IntValue('FixedWidth', 50)));
-              MiniThrobbers := BoolValue('ShowMiniThrobbers', False);
-              DisableHideBar := BoolValue('DisableHideBar', True);
-              ShowThrobber := BoolValue('ShowThrobber', True);
-              StartHidden := BoolValue('StartHidden', False);
-              AlwaysOnTop := BoolValue('AlwaysOnTop', True);
-              AutoHide := BoolValue('AutoHide', False);
-              AutoHideTime := IntValue('AutoHideTime', 1000);
-            end;
-          end;
-
-          slModules.Clear;
-          if xml.Root.Items.ItemNamed['Modules'] <> nil then
-          with xml.Root.Items.ItemNamed['Modules'] do
-          begin
-            newItem.ModuleCount := Items.Count;
-            for j := 0 to Pred(Items.Count) do
-            begin
-              if Items.Item[j].Items.Value('Module') <> '' then
-                slModules.Add(PathRemoveExtension(Items.Item[j].Items.Value('Module')))
-            end;
-
-            if slModules.Count <> 0 then
-              newItem.Modules := slModules.CommaText;
-          end;
-          AList.Add(newItem);
+        newItem := TBarItem.Create(n);
+        AList.Add(newItem);
       end;
     end;
   finally
     slBars.Free;
-    slModules.Free;
-    xml.Free;
   end;
 end;
 

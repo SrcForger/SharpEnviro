@@ -57,6 +57,7 @@ uses
   SharpCenterApi,
   SharpEListBoxEx,
   uListWnd,
+  uSharpBar,
 
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit, SharpEGaugeBoxEdit, JvXPCore, JvXPCheckCtrls;
@@ -198,26 +199,7 @@ begin
             edName.SetFocus;
 
             if FBarItem = nil then
-            begin
               FBarItem := TBarItem.Create;
-
-              FBarItem.Name := 'Toolbar';
-              FBarItem.BarID := FBarItem.BarID;
-              FBarItem.Monitor := FBarItem.Monitor;
-              FBarItem.PMonitor := FBarItem.PMonitor;
-              FBarItem.HPos := 1;
-              FBarItem.VPos := 0;
-              FBarItem.AutoStart := True;
-              FBarItem.FixedWidthEnabled := False;
-              FBarItem.FixedWidth := 50;
-              FBarItem.DisableHideBar := True;
-              FBarItem.MiniThrobbers := False;
-              FBarItem.StartHidden := False;
-              FBarItem.ShowThrobber := True;
-              FBarItem.AlwaysOnTop := True;
-              FBarItem.AutoHide := False;
-              FBarItem.AutoHideTime := 1000;
-            end;
 
             BuildMonList;
             if FBarItem.PMonitor then

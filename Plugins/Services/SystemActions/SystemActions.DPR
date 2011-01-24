@@ -37,6 +37,7 @@ uses
   uSystemFuncs,
   dialogs,
   JCLLocales,
+  JclFileUtils,
   VWMFunctions,
   {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   uShutdown in '..\..\..\Common\Units\Shutdown\uShutdown.pas';
@@ -74,6 +75,8 @@ var
   RunFileDlgA : TRunFileDlgA;
   RunFileDlgW : TRunFileDlgW;
 
+  ActionBarList: TStringList;
+
 const
   cRestartIdx = 0;
   cShutdownIdx = 1;
@@ -107,8 +110,11 @@ const
   cConfigWallpaperIdx = 28;
 
   cSearchIdx = 29;
-  
+
   cKeyboardLayoutIdx = 99;
+
+  cStartBarIdx = 200;
+  cStopBarIdx = 300;
 
   RFF_NOBROWSE = 1; //Removes the browse button.
   RFF_NODEFAULT = 2; // No default item selected.
@@ -204,7 +210,27 @@ begin
 end;
 
 procedure RegisterActions;
+var
+  slBars: TStringList;
+  i : integer;
 begin
+  // Get list of bars
+  ActionBarList.Clear;
+  slBars := TStringList.Create;
+  try
+    AdvBuildFileList(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\*', faDirectory, slBars, amAny, []);
+    for i := 0 to Pred(slBars.Count) do
+    begin
+      if not FileExists(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + slBars[i] + '\bar.xml') then
+        continue;
+
+      ActionBarList.Add(slBars[i]);
+    end;
+  finally
+    slBars.Free;
+  end;
+  
+
   RegisterActionEx('!Restart', 'Shutdown', h, cRestartIdx);
   RegisterActionEx('!Shutdown', 'Shutdown', h, cShutdownIdx);
   RegisterActionEx('!Logout', 'Shutdown', h, cLogoutIdx);
@@ -228,6 +254,12 @@ begin
 
   RegisterActionEx('!ToggleAllBars', 'SharpBar', h, cToggleAllBarsIdx);
 
+  for i := 0 to Pred(ActionBarList.Count) do
+  begin
+    RegisterActionEx('!StartBar (' + ActionBarList[i] + ')', 'SharpBar', h, cStartBarIdx + i);
+    RegisterActionEx('!StopBar (' + ActionBarList[i] + ')', 'SharpBar', h, cStopBarIdx + i);
+  end;
+
   RegisterActionEx('!RunDlg', 'Misc', h, cRunDlgIdx);
   RegisterActionEx('!Search', 'Misc', h, cSearchIdx);
   
@@ -250,6 +282,8 @@ begin
   LocalsList := TJclKeyboardLayoutList.Create;
   LocalsList.Refresh;
 
+  ActionBarList := TStringList.Create;
+
   RegisterActions;
 
   hRunFileDll := LoadLibrary('shell32.dll');
@@ -262,6 +296,8 @@ end;
 // Service is stopped
 
 procedure Stop;
+var
+  i : integer;
 begin
   SetLength(FWndList, 0);
 
@@ -292,7 +328,13 @@ begin
   UnRegisterAction('!MinimizeAllMonitors');
   UnRegisterAction('!ToggleAllMonitors');
 
-  UnRegisterAction('!ToggleAllBars');  
+  UnRegisterAction('!ToggleAllBars');
+
+  for i := 0 to Pred(ActionBarList.Count) do
+  begin
+    UnregisterAction('!StartBar (' + ActionBarList[i] + ')');
+    UnregisterAction('!StopBar (' + ActionBarList[i] + ')');
+  end;
 
   UnRegisterAction('!RunDlg');
 
@@ -352,6 +394,9 @@ var
   BarList: THandleArray;
   BarHidden: boolean;
   AL: TJclKeyboardLayout;
+
+  wnd : HWND;
+  i: integer;
 begin
   if msg.Msg = WM_INPUTLANGCHANGE then
   begin
@@ -364,6 +409,32 @@ begin
   else if msg.Msg = WM_SHARPEACTIONMESSAGE then
   begin
     lParam := Msg.LParam;
+
+    // Start/Stop bars
+    if (msg.LParam >= cStartBarIdx) and (msg.LParam < cStopBarIdx) then
+    begin
+      for i := 0 to Pred(ActionBarList.Count) do
+      begin
+        if msg.LParam = cStartBarIdx + i then
+        begin
+          SharpApi.SharpExecute('_nohist,' + SharpApi.GetSharpeDirectory + 'SharpBar.exe' +
+                                ' -load:' + ActionBarList[i] +
+                                ' -noREB' +
+                                ' -noLASB');
+        end;
+      end;
+    end else if (msg.LParam >= cStopBarIdx) and (msg.LParam < cStopBarIdx + 100) then
+    begin
+      for i := 0 to Pred(ActionBarList.Count) do
+      begin
+        if msg.LParam = cStopBarIdx + i then
+        begin
+          wnd := FindWindow(nil, PChar('SharpBar_' + ActionBarList[i]));
+          if wnd <> 0 then
+            SendMessage(wnd, WM_SHARPTERMINATE, 0, 0);
+        end;
+      end;
+    end;
 
     // Keyboard layout
     if (Msg.LParam = cKeyboardLayoutIdx) then

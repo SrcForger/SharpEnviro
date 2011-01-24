@@ -182,28 +182,6 @@ const
   SCC_LOAD_DLL = '_loaddll';
 
 type
-  TBarItem = class
-    Name: string;
-    BarID: integer;
-    Monitor: integer;
-    PMonitor: boolean;
-    HPos: integer;
-    VPos: integer;
-    AutoStart: boolean;
-    ModuleCount: Integer;
-    Modules: string;
-    FixedWidthEnabled: boolean;
-    FixedWidth: integer;
-    MiniThrobbers: boolean;
-    DisableHideBar: boolean;
-    ShowThrobber: boolean;
-    StartHidden: boolean;
-    AlwaysOnTop: boolean;
-    AutoHide: Boolean;
-    AutoHideTime: integer;
-    ForceAlwaysOnTop: Boolean;
-  end;
-
   PSharpE_DataStruct = ^TSharpE_DataStruct;
   TSharpE_DataStruct = record
     Command: String[255];

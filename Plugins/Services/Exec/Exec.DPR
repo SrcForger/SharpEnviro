@@ -115,7 +115,7 @@ begin
 				if bNoHist then
 					msg := Copy(msg, Length(NoHistoryParam) + 1, Length(msg) - Length(NoHistoryParam) + 1);
 				if bProperties then
-					msg := Copy(msg, Length(PropertiesParam) + 1, Length(msg) - Length(NoHistoryParam) + 1);
+					msg := Copy(msg, Length(PropertiesParam) + 1, Length(msg) - Length(PropertiesParam) + 1);
 
 
 				SharpExec.AddProcessString(msg, Not(bNoHist), bElevate, bProperties);
