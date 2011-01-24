@@ -841,11 +841,19 @@ var
 begin
   ModuleManager.DebugOutput('WM_CopyData', 2, 1);
 
-  if msg.WParam = WM_BARCOMMAND then begin
+  if msg.WParam = WM_BARCOMMAND then
+  begin
     sedata := pSharpE_DataStruct(PCopyDataStruct(msg.lParam)^.lpData)^;
-    if sedata.LParam = BC_ADD then begin
+    if sedata.LParam = BC_ADD then
+    begin
+      // Refresh module list
+      ModuleManager.RefreshFromDirectory(ModuleManager.ModuleDirectory);
+
       mIndex := ModuleManager.GetModuleFileIndexByFileName(sedata.Module);
-      if mIndex <> -1 then begin
+      if mIndex <> -1 then
+      begin
+        ModuleManager.DebugOutput('Adding new module ' + sedata.Module, 2, 1);
+
         wnd := sedata.Handle;
         if wnd = 0 then
           wnd := Application.Handle;
@@ -857,7 +865,8 @@ begin
         // Send refresh message to the calling window
         if wnd <> Application.Handle then
           SendMessage(wnd, WM_SHARPSHELLMESSAGE, 0, 0);
-      end;
+      end else
+        ModuleManager.DebugOutput('Failed to add ' + sedata.Module, 2, 1);
     end;
   end
   else begin
