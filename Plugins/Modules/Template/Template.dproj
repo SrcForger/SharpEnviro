@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{8eeb6410-45db-4594-ac01-e2fc3bc15b10}</ProjectGuid>
+    <MainSource>Template.dpr</MainSource>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <DCC_EnabledPackages>true</DCC_EnabledPackages>
+    <DCC_UsePackage>vcl;rtl</DCC_UsePackage>
+    <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+    <DCC_DependencyCheckOutputName>..\..\..\..\SharpE\Modules\Template.dll</DCC_DependencyCheckOutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_DebugInformation>False</DCC_DebugInformation>
+    <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
+    <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+    <DCC_ExeOutput>..\..\..\..\SharpE\Modules</DCC_ExeOutput>
+    <DCC_UnitSearchPath>..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Units\MouseTimer;..\..\..\Common\Units\SharpFX;..\..\..\Components\SharpBar;..\..\..\Common\Libraries\SharpDialogs\;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Libraries\SharpCenterAPI;..\..\..\Common\Units\SharpTypes;..\..\..\Common\Interfaces\;..\..\..\Common\Units\SharpNotify\;..\..\..\Common\Units\GR32Utils;..\..\..\Common\Units\SharpImageUtils\;..\..\..\Common\Units\SharpIconUtils\;..\..\..\Common\Units\SharpFileUtils\;..\..\..\Common\Units\MonitorList\;..\..\..\Common\Delphi Components\SharpEListBoxEx;..\..\..\Common\3rd Party\cbaudioplay;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML;..\..\..\Common\Units\SystemFuncs</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Units\MouseTimer;..\..\..\Common\Units\SharpFX;..\..\..\Components\SharpBar;..\..\..\Common\Libraries\SharpDialogs\;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Libraries\SharpCenterAPI;..\..\..\Common\Units\SharpTypes;..\..\..\Common\Interfaces\;..\..\..\Common\Units\SharpNotify\;..\..\..\Common\Units\GR32Utils;..\..\..\Common\Units\SharpImageUtils\;..\..\..\Common\Units\SharpIconUtils\;..\..\..\Common\Units\SharpFileUtils\;..\..\..\Common\Units\MonitorList\;..\..\..\Common\Delphi Components\SharpEListBoxEx;..\..\..\Common\3rd Party\cbaudioplay;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML;..\..\..\Common\Units\SystemFuncs</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Units\MouseTimer;..\..\..\Common\Units\SharpFX;..\..\..\Components\SharpBar;..\..\..\Common\Libraries\SharpDialogs\;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Libraries\SharpCenterAPI;..\..\..\Common\Units\SharpTypes;..\..\..\Common\Interfaces\;..\..\..\Common\Units\SharpNotify\;..\..\..\Common\Units\GR32Utils;..\..\..\Common\Units\SharpImageUtils\;..\..\..\Common\Units\SharpIconUtils\;..\..\..\Common\Units\SharpFileUtils\;..\..\..\Common\Units\MonitorList\;..\..\..\Common\Delphi Components\SharpEListBoxEx;..\..\..\Common\3rd Party\cbaudioplay;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML;..\..\..\Common\Units\SystemFuncs</DCC_ObjPath>
+    <DCC_IncludePath>..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Units\MouseTimer;..\..\..\Common\Units\SharpFX;..\..\..\Components\SharpBar;..\..\..\Common\Libraries\SharpDialogs\;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Libraries\SharpCenterAPI;..\..\..\Common\Units\SharpTypes;..\..\..\Common\Interfaces\;..\..\..\Common\Units\SharpNotify\;..\..\..\Common\Units\GR32Utils;..\..\..\Common\Units\SharpImageUtils\;..\..\..\Common\Units\SharpIconUtils\;..\..\..\Common\Units\SharpFileUtils\;..\..\..\Common\Units\MonitorList\;..\..\..\Common\Delphi Components\SharpEListBoxEx;..\..\..\Common\3rd Party\cbaudioplay;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML;..\..\..\Common\Units\SystemFuncs</DCC_IncludePath>
+    <DCC_Define>RELEASE</DCC_Define>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_ExeOutput>..\..\..\..\SharpE\Modules</DCC_ExeOutput>
+    <DCC_UnitSearchPath>..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Units\MouseTimer;..\..\..\Common\Units\SharpFX;..\..\..\Components\SharpBar;..\..\..\Common\Libraries\SharpDialogs\;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Libraries\SharpCenterAPI;..\..\..\Common\Units\SharpTypes;..\..\..\Common\Interfaces\;..\..\..\Common\Units\SharpNotify\;..\..\..\Common\Units\GR32Utils;..\..\..\Common\Units\SharpImageUtils\;..\..\..\Common\Units\SharpIconUtils\;..\..\..\Common\Units\SharpFileUtils\;..\..\..\Common\Units\MonitorList\;..\..\..\Common\Delphi Components\SharpEListBoxEx;..\..\..\Common\3rd Party\cbaudioplay;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML;..\..\..\Common\Units\SystemFuncs</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Units\MouseTimer;..\..\..\Common\Units\SharpFX;..\..\..\Components\SharpBar;..\..\..\Common\Libraries\SharpDialogs\;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Libraries\SharpCenterAPI;..\..\..\Common\Units\SharpTypes;..\..\..\Common\Interfaces\;..\..\..\Common\Units\SharpNotify\;..\..\..\Common\Units\GR32Utils;..\..\..\Common\Units\SharpImageUtils\;..\..\..\Common\Units\SharpIconUtils\;..\..\..\Common\Units\SharpFileUtils\;..\..\..\Common\Units\MonitorList\;..\..\..\Common\Delphi Components\SharpEListBoxEx;..\..\..\Common\3rd Party\cbaudioplay;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML;..\..\..\Common\Units\SystemFuncs</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Units\MouseTimer;..\..\..\Common\Units\SharpFX;..\..\..\Components\SharpBar;..\..\..\Common\Libraries\SharpDialogs\;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Libraries\SharpCenterAPI;..\..\..\Common\Units\SharpTypes;..\..\..\Common\Interfaces\;..\..\..\Common\Units\SharpNotify\;..\..\..\Common\Units\GR32Utils;..\..\..\Common\Units\SharpImageUtils\;..\..\..\Common\Units\SharpIconUtils\;..\..\..\Common\Units\SharpFileUtils\;..\..\..\Common\Units\MonitorList\;..\..\..\Common\Delphi Components\SharpEListBoxEx;..\..\..\Common\3rd Party\cbaudioplay;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML;..\..\..\Common\Units\SystemFuncs</DCC_ObjPath>
+    <DCC_IncludePath>..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Units\MouseTimer;..\..\..\Common\Units\SharpFX;..\..\..\Components\SharpBar;..\..\..\Common\Libraries\SharpDialogs\;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Libraries\SharpCenterAPI;..\..\..\Common\Units\SharpTypes;..\..\..\Common\Interfaces\;..\..\..\Common\Units\SharpNotify\;..\..\..\Common\Units\GR32Utils;..\..\..\Common\Units\SharpImageUtils\;..\..\..\Common\Units\SharpIconUtils\;..\..\..\Common\Units\SharpFileUtils\;..\..\..\Common\Units\MonitorList\;..\..\..\Common\Delphi Components\SharpEListBoxEx;..\..\..\Common\3rd Party\cbaudioplay;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML;..\..\..\Common\Units\SystemFuncs</DCC_IncludePath>
+    <DCC_Define>DEBUG</DCC_Define>
+    <DCC_MapFile>3</DCC_MapFile>
+  </PropertyGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Delphi.Personality</Borland.Personality>
+    <Borland.ProjectType />
+    <BorlandProject>
+<BorlandProject><Delphi.Personality><Parameters><Parameters Name="RunParams">-load:19343478</Parameters><Parameters Name="HostApplication">C:\Program Files (x86)\sharpe\SharpCenter.exe</Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="DebugCWD">C:\Program Files (x86)\sharpe\</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">0</VersionInfo><VersionInfo Name="MinorVer">7</VersionInfo><VersionInfo Name="Release">6</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1033</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription">SharpE Recycle Bin Module</VersionInfoKeys><VersionInfoKeys Name="FileVersion">0.7.6.0</VersionInfoKeys><VersionInfoKeys Name="InternalName">Recycle Bin</VersionInfoKeys><VersionInfoKeys Name="LegalCopyright">SharpE Development Team</VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename">Template.dll</VersionInfoKeys><VersionInfoKeys Name="ProductName">SharpE Recycle Bin Module</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">0.7.6.0</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">Template.dpr</Source></Source><Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+    </Excluded_Packages></Delphi.Personality><ModelSupport>False</ModelSupport></BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
+  <PropertyGroup>
+    <PreBuildEvent>del "res\alarmglyphs.res"
+del "VersionInfo.res"
+brcc32 -v "res\alarmglyphs.rc"
+brcc32 -v "VersionInfo.rc"</PreBuildEvent>
+    <PostBuildEvent>if $(Configuration)==Debug "..\..\..\Common\3rd party\Jedi\MakeJclDbg.exe" -E "$(OUTPUTDIR)$(OUTPUTNAME).map"
+if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
+  </PropertyGroup>
+  <ItemGroup>
+    <DelphiCompile Include="Template.dpr">
+      <MainSource>MainSource</MainSource>
+    </DelphiCompile>
+    <DCCReference Include="..\..\..\Common\Units\DebugDialog\DebugDialog.pas" />
+    <DCCReference Include="MainWnd.pas">
+      <Form>MainForm</Form>
+    </DCCReference>
+  </ItemGroup>
+</Project>
