@@ -35,7 +35,7 @@ object frmListWnd: TfrmListWnd
       Margins.Bottom = 0
       Columns = <
         item
-          Width = 25
+          Width = 31
           HAlign = taLeftJustify
           VAlign = taVerticalCenter
           ColumnAlign = calLeft
@@ -43,15 +43,6 @@ object frmListWnd: TfrmListWnd
           ColumnType = ctDefault
           VisibleOnSelectOnly = False
           Images = StatusImages
-        end
-        item
-          Width = 50
-          HAlign = taCenter
-          VAlign = taVerticalCenter
-          ColumnAlign = calRight
-          StretchColumn = False
-          ColumnType = ctDefault
-          VisibleOnSelectOnly = True
         end
         item
           Width = 63
@@ -63,7 +54,7 @@ object frmListWnd: TfrmListWnd
           VisibleOnSelectOnly = True
         end
         item
-          Width = 44
+          Width = 79
           HAlign = taCenter
           VAlign = taVerticalCenter
           ColumnAlign = calRight
@@ -72,7 +63,16 @@ object frmListWnd: TfrmListWnd
           VisibleOnSelectOnly = True
         end
         item
-          Width = 44
+          Width = 55
+          HAlign = taCenter
+          VAlign = taVerticalCenter
+          ColumnAlign = calRight
+          StretchColumn = False
+          ColumnType = ctDefault
+          VisibleOnSelectOnly = True
+        end
+        item
+          Width = 55
           HAlign = taLeftJustify
           VAlign = taVerticalCenter
           ColumnAlign = calRight

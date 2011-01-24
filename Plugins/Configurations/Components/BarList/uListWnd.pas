@@ -55,6 +55,7 @@ uses
   Contnrs,
   Types,
   JclStrings,
+  MonitorList,
 
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit;
@@ -388,6 +389,8 @@ var
   s, sScreen, sHPos, sVPos: string;
   colItemTxt, colDescTxt, colBtnTxt, colBtnDisabledTxt: TColor;
 
+  monName: string;
+
   i : integer;
   b : Boolean;
 
@@ -457,8 +460,14 @@ begin
 
         if tmpBar.Name <> '' then
           s := tmpBar.Name;
-        AColText := format('<font color="%s">%s (%d Modules)<br><font color="%s">%s',
-            [colorToString(colItemTxt), s, tmpbar.ModuleCount, colorToString(colDescTxt), tmpBar.Modules]);
+
+        if MonList.Monitors[tmpBar.Monitor].Primary then
+          monName := 'Primary Monitor'
+        else
+          monName := 'Monitor ' + IntToStr(tmpBar.Monitor);
+
+        AColText := format('<font color="%s">%s (%d Modules)<br><font color="%s">Bar #%d on %s',
+            [colorToString(colItemTxt), s, tmpBar.ModuleCount, colorToString(colDescTxt), tmpBar.BarID, monName]);
       end;
     colStartStop: begin
 
