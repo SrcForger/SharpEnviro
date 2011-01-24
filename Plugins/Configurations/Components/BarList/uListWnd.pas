@@ -70,6 +70,7 @@ type
     lbBarList: TSharpEListBoxEx;
     tmrUpdate: TTimer;
     StatusImages: TPngImageList;
+    pnlBarList: TPanel;
     procedure tmrUpdateTimer(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -88,6 +89,8 @@ type
       AItem: TSharpEListItem);
     procedure lbBarListClickItem(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem);
+    procedure lbBarListGetCellWidth(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem; var AColWidth: Integer);
 
   private
     FWinHandle: THandle;
@@ -163,6 +166,8 @@ var
   XML: TJclSimpleXML;
   tmpBar: TBarItem;
   bDelete: Boolean;
+  i : integer;
+  bShouldStart : Boolean;
 
   function CtrlDown: Boolean;
   var
@@ -174,8 +179,49 @@ var
 
 begin
   tmpBar := TBarItem(AItem.Data);
-  if tmpBar = nil then
+  if (tmpBar = nil) and (AItem.ID <> -1) then
     exit;
+
+  if (AItem.ID = -1) then
+  begin
+    if ACol = colEdit then
+    begin
+      bShouldStart := True;
+      for i := 0 to FBarList.Count - 1 do
+      begin
+        if IsBarRunning(TBarItem(FBarList.Items[i]).BarID) then
+          bShouldStart := False;
+      end;
+    
+      if bShouldStart then
+      begin
+        for i := 0 to FBarList.Count - 1 do
+        begin
+          if not IsBarRunning(TBarItem(FBarList.Items[i]).BarID) then
+          begin
+            SharpApi.SharpExecute('_nohist,' + SharpApi.GetSharpeDirectory + 'SharpBar.exe' +
+                                ' -load:' + inttostr(TBarItem(FBarList.Items[i]).BarID) +
+                                ' -noREB' +
+                                ' -noLASB');
+          end;
+        end;
+      end else
+      begin
+        for i := 0 to FBarList.Count - 1 do
+        begin
+          if IsBarRunning(TBarItem(FBarList.Items[i]).BarID) then
+          begin
+            wnd := FindWindow(nil, PChar('SharpBar_' + inttostr(TBarItem(FBarList.Items[i]).BarID)));
+            if wnd <> 0 then
+              SendMessage(wnd, WM_SHARPTERMINATE, 0, 0);
+          end;
+        end;
+      end;
+    end;
+
+    tmrUpdate.Enabled := True;
+    exit;
+  end;
 
   case ACol of
     colEdit: begin
@@ -293,8 +339,16 @@ var
 begin
 
   tmpBar := TBarItem(AItem.Data);
-  if tmpBar = nil then
+  if (tmpBar = nil) and (AItem.ID <> -1) then
     exit;
+
+  if (AItem.ID = -1) then
+  begin
+    if (ACol = colEdit) then
+      ACursor := crHandPoint;
+      
+    exit;
+  end;
 
   case ACol of
     colStartStop, colEnableDisable, colDelete: ACursor := crHandPoint;
@@ -334,6 +388,9 @@ var
   s, sScreen, sHPos, sVPos: string;
   colItemTxt, colDescTxt, colBtnTxt, colBtnDisabledTxt: TColor;
 
+  i : integer;
+  b : Boolean;
+
   function GetBarID: string;
   begin
     case tmpBar.HPos of
@@ -364,13 +421,34 @@ var
       Result := 'ID: ' + IntToStr(tmpBar.BarID);
   end;
 begin
-
   tmpBar := TBarItem(AItem.Data);
-  if tmpBar = nil then
+  if (tmpBar = nil) and (AItem.ID <> -1) then
     exit;
 
  // Assign theme colours
   AssignThemeToListBoxItemText(FPluginHost.Theme, AItem, colItemTxt, colDescTxt, colBtnTxt, colBtnDisabledTxt);
+
+  if AItem.ID = -1 then
+  begin
+    case ACol of
+      colEdit:
+      begin
+        b := False;
+
+        for i := 0 to FBarList.Count - 1 do
+        begin
+          if (TBarItem(FBarList.Items[i]).AutoStart) and (IsBarRunning(TBarItem(FBarList.Items[i]).BarID)) then
+            b := True;
+        end;
+        if b then
+          AColText := format('<font color="%s"><u>%s</u>',[ColorToString(colBtnTxt),'Stop All'])
+        else
+          AColText := format('<font color="%s"><u>%s</u>',[ColorToString(colBtnTxt),'Start All']);
+      end;
+    end;
+
+    exit;
+  end;
 
   case ACol of
     colName: begin
@@ -410,9 +488,24 @@ begin
 
 end;
 
+procedure TfrmListWnd.lbBarListGetCellWidth(Sender: TObject;
+  const ACol: Integer; AItem: TSharpEListItem; var AColWidth: Integer);
+begin
+  if AItem.ID = -1 then
+  begin
+    case ACol of
+      colEdit:
+      begin
+        AColWidth := 60;
+      end;
+    end;
+  end;
+end;
+
 procedure TfrmListWnd.lbBarListResize(Sender: TObject);
 begin
-  Self.Height := lbBarList.Height;
+  pnlBarList.Height := lbBarList.Height;
+  Self.Height := pnlBarList.Height;
 end;
 
 procedure TfrmListWnd.FormCreate(Sender: TObject);
@@ -526,6 +619,11 @@ begin
   newItem := lbBarList.AddItem('<br>Top Bars<hr>');
   newItem.Data := nil;
   newItem.Header := True;
+  newItem.ID := -1;
+  newItem.AddSubItem('');
+  newItem.AddSubItem('');
+  newItem.AddSubItem('');
+  newItem.AddSubItem('');
 
   // Add Top bars
   bari := 1;

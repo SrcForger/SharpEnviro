@@ -48,8 +48,7 @@ uses
   SharpGraphicsUtils,
   SharpEBase,
   SharpEBaseControls,
-  SharpApi,
-  uSystemFuncs;
+  SharpApi;
 
 type
   TSharpEThrobber = class;

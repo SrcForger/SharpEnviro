@@ -2,96 +2,106 @@ object frmListWnd: TfrmListWnd
   Left = 0
   Top = 0
   Caption = 'frmListWnd'
-  ClientHeight = 284
-  ClientWidth = 418
+  ClientHeight = 371
+  ClientWidth = 547
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -11
+  Font.Height = -14
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
-  PixelsPerInch = 96
-  TextHeight = 13
-  object lbBarList: TSharpEListBoxEx
+  PixelsPerInch = 120
+  TextHeight = 17
+  object pnlBarList: TPanel
     Left = 0
     Top = 0
-    Width = 418
-    Height = 284
-    Margins.Left = 0
-    Margins.Top = 0
-    Margins.Right = 0
-    Margins.Bottom = 0
-    Columns = <
-      item
-        Width = 20
-        HAlign = taLeftJustify
-        VAlign = taVerticalCenter
-        ColumnAlign = calLeft
-        StretchColumn = True
-        ColumnType = ctDefault
-        VisibleOnSelectOnly = False
-        Images = StatusImages
-      end
-      item
-        Width = 40
-        HAlign = taCenter
-        VAlign = taVerticalCenter
-        ColumnAlign = calRight
-        StretchColumn = False
-        ColumnType = ctDefault
-        VisibleOnSelectOnly = True
-      end
-      item
-        Width = 50
-        HAlign = taCenter
-        VAlign = taVerticalCenter
-        ColumnAlign = calRight
-        StretchColumn = False
-        ColumnType = ctDefault
-        VisibleOnSelectOnly = True
-      end
-      item
-        Width = 35
-        HAlign = taCenter
-        VAlign = taVerticalCenter
-        ColumnAlign = calRight
-        StretchColumn = False
-        ColumnType = ctDefault
-        VisibleOnSelectOnly = True
-      end
-      item
-        Width = 35
-        HAlign = taLeftJustify
-        VAlign = taVerticalCenter
-        ColumnAlign = calRight
-        StretchColumn = False
-        ColumnType = ctDefault
-        VisibleOnSelectOnly = True
-        Images = StatusImages
-      end>
-    Colors.BorderColor = clBtnFace
-    Colors.BorderColorSelected = clBtnShadow
-    Colors.ItemColor = clWindow
-    Colors.ItemColorSelected = clBtnFace
-    Colors.CheckColorSelected = clBtnFace
-    Colors.CheckColor = 15528425
-    Colors.DisabledColor = clBlack
-    DefaultColumn = 0
-    OnResize = lbBarListResize
-    ItemHeight = 40
-    OnClickItem = lbBarListClickItem
-    OnDblClickItem = lbBarListDblClickItem
-    OnGetCellCursor = lbBarListGetCellCursor
-    OnGetCellText = lbBarListGetCellText
-    OnGetCellImageIndex = lbBarListGetCellImageIndex
-    AutosizeGrid = True
-    Borderstyle = bsNone
-    Ctl3d = False
+    Width = 547
+    Height = 371
     Align = alClient
+    BevelOuter = bvNone
+    TabOrder = 0
+    object lbBarList: TSharpEListBoxEx
+      Left = 0
+      Top = 0
+      Width = 547
+      Height = 371
+      Margins.Left = 0
+      Margins.Top = 0
+      Margins.Right = 0
+      Margins.Bottom = 0
+      Columns = <
+        item
+          Width = 25
+          HAlign = taLeftJustify
+          VAlign = taVerticalCenter
+          ColumnAlign = calLeft
+          StretchColumn = True
+          ColumnType = ctDefault
+          VisibleOnSelectOnly = False
+          Images = StatusImages
+        end
+        item
+          Width = 50
+          HAlign = taCenter
+          VAlign = taVerticalCenter
+          ColumnAlign = calRight
+          StretchColumn = False
+          ColumnType = ctDefault
+          VisibleOnSelectOnly = True
+        end
+        item
+          Width = 63
+          HAlign = taCenter
+          VAlign = taVerticalCenter
+          ColumnAlign = calRight
+          StretchColumn = False
+          ColumnType = ctDefault
+          VisibleOnSelectOnly = True
+        end
+        item
+          Width = 44
+          HAlign = taCenter
+          VAlign = taVerticalCenter
+          ColumnAlign = calRight
+          StretchColumn = False
+          ColumnType = ctDefault
+          VisibleOnSelectOnly = True
+        end
+        item
+          Width = 44
+          HAlign = taLeftJustify
+          VAlign = taVerticalCenter
+          ColumnAlign = calRight
+          StretchColumn = False
+          ColumnType = ctDefault
+          VisibleOnSelectOnly = True
+          Images = StatusImages
+        end>
+      Colors.BorderColor = clBtnFace
+      Colors.BorderColorSelected = clBtnShadow
+      Colors.ItemColor = clWindow
+      Colors.ItemColorSelected = clBtnFace
+      Colors.CheckColorSelected = clBtnFace
+      Colors.CheckColor = 15528425
+      Colors.DisabledColor = clBlack
+      DefaultColumn = 0
+      OnResize = lbBarListResize
+      ItemHeight = 40
+      OnClickItem = lbBarListClickItem
+      OnDblClickItem = lbBarListDblClickItem
+      OnGetCellCursor = lbBarListGetCellCursor
+      OnGetCellText = lbBarListGetCellText
+      OnGetCellWidth = lbBarListGetCellWidth
+      OnGetCellImageIndex = lbBarListGetCellImageIndex
+      AutosizeGrid = True
+      Borderstyle = bsNone
+      Ctl3d = False
+      Align = alClient
+    end
   end
   object tmrUpdate: TTimer
     Interval = 1

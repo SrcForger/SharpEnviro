@@ -168,6 +168,7 @@ type
   TSharpEListBoxExGetItemColor = procedure(Sender: TObject; const AItem: TSharpEListItem; var AColor: TColor) of object;
   TSharpEListBoxExGetColCursor = procedure(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem; var ACursor: TCursor) of object;
   TSharpEListBoxExGetColText = procedure(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem; var AColText: string) of object;
+  TSharpEListBoxExGetColWidth = procedure(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem; var AColWidth: integer) of object;
   TSharpEListBoxExGetColImageIndex = procedure(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem; var AImageIndex: integer; const ASelected: Boolean) of object;
   TSharpEListBoxExGetColClickable = procedure(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem; var AClickable: Boolean) of object;
 
@@ -183,6 +184,7 @@ type
     FOnGetCellColor: TSharpEListBoxExGetItemColor;
     FAutoSizeGrid: Boolean;
     FOnGetCellText: TSharpEListBoxExGetColText;
+    FOnGetCellWidth: TSharpEListBoxExGetColWidth;
     FOnGetCellImageIndex: TSharpEListBoxExGetColImageIndex;
 
     FOnGetCellClickable: TSharpEListBoxExGetColClickable;
@@ -226,6 +228,9 @@ type
       AChecked: Boolean; AColumn: TSharpEListBoxExColumn);
 
     function GetHeaderIndex(AIndex: integer): integer;
+
+    procedure MeasureItemEvent(Control: TWinControl; Index: Integer; var Height: Integer);
+
   public
 
     constructor Create(Sender: TComponent); override;
@@ -276,6 +281,7 @@ type
     property OnGetCellCursor: TSharpEListBoxExGetColCursor read FOnGetCellCursor write FOnGetCellCursor stored True;
     property OnGetCellColor: TSharpEListBoxExGetItemColor read FOnGetCellColor write FOnGetCellColor;
     property OnGetCellText: TSharpEListBoxExGetColText read FOnGetCellText write FOnGetCellText;
+    property OnGetCellWidth: TSharpEListBoxExGetColWidth read FOnGetCellWidth write FOnGetCellWidth;
     property OnGetCellImageIndex: TSharpEListBoxExGetColImageIndex read FOnGetCellImageIndex write FOnGetCellImageIndex;
     property OnGetCellClickable: TSharpEListBoxExGetColClickable read FOnGetCellClickable write FOnGetCellClickable;
 
@@ -338,7 +344,7 @@ end;
 
 procedure TSharpEListBoxExColumn.SetWidth(const Value: Integer);
 begin
-  FWidth := Value;
+  FWidth := MulDiv(Value, Screen.PixelsPerInch, 96);
 end;
 
 { TSharpEListBoxEx }
@@ -437,6 +443,10 @@ begin
   inherited;
 end;
 
+procedure TSharpEListBoxEx.MeasureItemEvent(Control: TWinControl; Index: Integer; var Height: Integer);
+begin
+  Height := MulDiv(Height, Screen.PixelsPerInch, 96);
+end;
 constructor TSharpEListBoxEx.Create(Sender: TComponent);
 begin
   inherited;
@@ -448,6 +458,7 @@ begin
   OnResize := ResizeEvent;
   OnMouseMove := MouseMoveEvent;
   Color := clWindow;
+  OnMeasureItem := MeasureItemEvent;
 
   FColors := TSharpEListBoxExColors.Create;
   FColors.ItemColor := clWindow;
@@ -498,6 +509,7 @@ var
   iCol: Integer;
   bSelected: Boolean;
   tmpItem: TSharpEListItem;
+  iColWidth: integer;
 begin
   UpdateColumnSizes;
   tmpItem := TSharpEListItem(Self.Items.Objects[Index]);
@@ -516,18 +528,33 @@ begin
     for iCol := 0 to Pred(ColumnCount) do
     begin
       tmpCol := Column[iCol];
-      if (not (tmpItem = SelectedItem) and (tmpCol.VisibleOnSelectOnly)) then
+      if (not (tmpItem = SelectedItem) and (tmpCol.VisibleOnSelectOnly) and (tmpItem.ID <> -1)) then
         Continue;
 
       // Set the column rect
+      iColWidth := -1;
+      if Assigned(FOnGetCellWidth) then
+        FOnGetCellWidth(Self, iCol, tmpItem, iColWidth);
+
+      if iColWidth <> -1 then
+        iColWidth := MulDiv(iColWidth, Screen.PixelsPerInch, 96);
+
       if ((iCol = DefaultColumn) and not(tmpItem = SelectedItem)) then
       begin
-        tmpCol.ColumnRect := Types.Rect(tmpCol.ColumnRect.Left + ItemOffset.X,
-          Rect.Top, Self.Width-(ItemOffset.X*4), Rect.Bottom);
+        if iColWidth <> -1 then
+          tmpCol.ColumnRect := Types.Rect(tmpCol.ColumnRect.Left + ItemOffset.X,
+                                          Rect.Top, tmpCol.ColumnRect.Left + ItemOffset.X + iColWidth, Rect.Bottom)
+        else
+          tmpCol.ColumnRect := Types.Rect(tmpCol.ColumnRect.Left + ItemOffset.X,
+                                          Rect.Top, Self.Width-(ItemOffset.X*4), Rect.Bottom);
       end else
       begin
-        tmpCol.ColumnRect := Types.Rect(tmpCol.ColumnRect.Left + ItemOffset.X,
-          Rect.Top, tmpCol.ColumnRect.Right, Rect.Bottom);
+        if iColWidth <> -1 then
+          tmpCol.ColumnRect := Types.Rect(tmpCol.ColumnRect.Left + ItemOffset.X,
+                                          Rect.Top, tmpCol.ColumnRect.Left + ItemOffset.X + iColWidth, Rect.Bottom)
+        else
+          tmpCol.ColumnRect := Types.Rect(tmpCol.ColumnRect.Left + ItemOffset.X,
+                                          Rect.Top, tmpCol.ColumnRect.Right, Rect.Bottom);
       end;
       
       R := tmpCol.ColumnRect;
@@ -625,8 +652,8 @@ begin
 
     // Define Vertical Column Align
 {$REGION 'VerticalAlign'}
-  if AItem.Header then
-    Column[ACol].VAlign := taAlignTop;
+    if AItem.Header then
+      Column[ACol].VAlign := taVerticalCenter;
 
     ACanvas.Font := Self.Font;
     iTextHeight := HTMLTextHeight(ACanvas, sColText, 100);
@@ -1115,7 +1142,7 @@ begin
         if assigned(FOnGetCellClickable) then
           FOnGetCellClickable(Self, tmpCol.ID, tmpItem, bCanSelect);
 
-        if ((tmpCol.VisibleOnSelectOnly) and not (tmpItem = SelectedItem)) then begin
+        if ((tmpCol.VisibleOnSelectOnly) and not (tmpItem = SelectedItem) and (tmpItem.ID <> -1)) then begin
 
           if bCanSelect then
           begin
@@ -1258,7 +1285,7 @@ begin
 
   for iCol := 0 to Pred(ColumnCount) do begin
 
-    if ((Column[iCol].VisibleOnSelectOnly) and not (tmpItem = SelectedItem)) then begin
+    if ((Column[iCol].VisibleOnSelectOnly) and not (tmpItem = SelectedItem) and (tmpItem.ID <> -1)) then begin
       Self.Cursor := crDefault;
       exit;
     end;
