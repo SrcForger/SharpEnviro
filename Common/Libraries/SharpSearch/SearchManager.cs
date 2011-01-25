@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 using System.ComponentModel;
 using System.Reflection;
 
-using NLog;
+using SharpEnviro;
 
 namespace SharpSearch
 {
@@ -158,7 +158,7 @@ namespace SharpSearch
 
 			if (File.Exists(LocationsFilePath))
 			{
-                _logger.Info("Trying to load locations from: " + LocationsFilePath);
+                SharpDebug.Info("SharpSearch", "Trying to load locations from: " + LocationsFilePath);
 
 				try
 				{
@@ -216,8 +216,6 @@ namespace SharpSearch
 				_watchers.Add(watcher);
 			}
 		}
-
-        private static Logger _logger = LogManager.GetCurrentClassLogger();
 
 		private List<SearchLocation> _searchLocations;
 		private ObservableCollection<ISearchData> _searchResults;

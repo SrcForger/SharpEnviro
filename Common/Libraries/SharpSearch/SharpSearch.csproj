@@ -52,7 +52,7 @@
           <HintPath>..\..\3rd party\SQLite.NET\x64\System.Data.SQLite.DLL</HintPath>
           <Private>False</Private>
         </Reference>
-		<Content Include="..\..\3rd party\SQLite.NET\x64\System.Data.SQLite.dll">
+        <Content Include="..\..\3rd party\SQLite.NET\x64\System.Data.SQLite.dll">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
       </ItemGroup>
@@ -64,16 +64,13 @@
           <HintPath>..\..\3rd party\SQLite.NET\x86\System.Data.SQLite.DLL</HintPath>
           <Private>False</Private>
         </Reference>
-		<Content Include="..\..\3rd party\SQLite.NET\x86\System.Data.SQLite.dll">
+        <Content Include="..\..\3rd party\SQLite.NET\x86\System.Data.SQLite.dll">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
       </ItemGroup>
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Reference Include="NLog">
-      <HintPath>..\..\3rd party\NLog\NLog-1.0-NET-2.0\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />

@@ -91,12 +91,22 @@ namespace SharpEnviro
             }
         }
 
+        public static void Info(string module, string msg, int MessageType = DMT_INFO)
+        {
+            DebugEx(module, msg, MessageType);
+        }
+
+        public static void Exception(string module, string msg, Exception exc, int MessageType = DMT_ERROR)
+        {
+            DebugEx(module, msg + " - " + exc.Message, MessageType);
+        }
+
         // message types to use with DebugEx
-        public static int DMT_INFO = 0;
-        public static int DMT_STATUS = 1;
-        public static int DMT_WARN = 2;
-        public static int DMT_ERROR = 3;
-        public static int DMT_TRACE = 4;
-        public static int DMT_NONE = -1;
+        public const int DMT_INFO = 0;
+        public const int DMT_STATUS = 1;
+        public const int DMT_WARN = 2;
+        public const int DMT_ERROR = 3;
+        public const int DMT_TRACE = 4;
+        public const int DMT_NONE = -1;
     }
 }

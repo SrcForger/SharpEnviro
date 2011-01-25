@@ -16,7 +16,6 @@ using SharpEnviro.Interop;
 using SharpEnviro.Interop.Enums;
 using SharpSearch;
 using SharpSearch.WPF;
-using NLog;
 
 namespace SharpEnviro.Explorer
 {
@@ -43,7 +42,7 @@ namespace SharpEnviro.Explorer
                 IntPtr fptr = PInvoke.GetProcAddress(hSharpDll, "StartDesktop");
                 if (fptr != IntPtr.Zero)
                 {
-                    _logger.Info("Invoking StartDesktop");
+                    SharpDebug.Info("Explorer", "Invoking StartDesktop");
                     FunctionInvoker sdi = (FunctionInvoker)Marshal.GetDelegateForFunctionPointer(fptr, typeof(FunctionInvoker));
                     sdi();
                 }
@@ -58,7 +57,7 @@ namespace SharpEnviro.Explorer
                 IntPtr fptr = PInvoke.GetProcAddress(hSharpDll, "StopDesktop");
                 if (fptr != IntPtr.Zero)
                 {
-                    _logger.Info("Invoking StopDesktop");
+                    SharpDebug.Info("Explorer", "Invoking StopDesktop");
                     FunctionInvoker sdi = (FunctionInvoker)Marshal.GetDelegateForFunctionPointer(fptr, typeof(FunctionInvoker));
                     sdi();
                 }
@@ -76,7 +75,7 @@ namespace SharpEnviro.Explorer
                 IntPtr fptr = PInvoke.GetProcAddress(hSharpDll, "ShellReady");
                 if (fptr != IntPtr.Zero)
                 {
-                    _logger.Info("Invoking ShellReady");
+                    SharpDebug.Info("Explorer", "Invoking ShellReady");
                     FunctionInvoker sdi = (FunctionInvoker)Marshal.GetDelegateForFunctionPointer(fptr, typeof(FunctionInvoker));
                     sdi();
 
@@ -104,9 +103,9 @@ namespace SharpEnviro.Explorer
             {
                 if (bEnableSearch)
                 {
-                    _logger.Info("SharpSearch message received.");
+                    SharpDebug.Info("Explorer", "SharpSearch message received.");
                     WPFRuntime.Instance.Show<SearchWindow>();
-                    _logger.Info("SharpSearch message processed.");
+                    SharpDebug.Info("Explorer", "SharpSearch message processed.");
                 }
 
                 return (IntPtr)0;
@@ -150,19 +149,13 @@ namespace SharpEnviro.Explorer
             System.Windows.Threading.Dispatcher.Run();
         }
 
-        public static byte[] StrToByteArray(string str)
-        {
-            System.Text.UTF8Encoding encoding = new System.Text.UTF8Encoding();
-            return encoding.GetBytes(str);
-        }
-
         [STAThread]
         static void Main(string[] args)
         {
 			AppDomain.CurrentDomain.UnhandledException +=
 				(s, a) =>
 				{
-					_logger.LogException(LogLevel.Error, "Encountered an unhandled exception", (Exception)a.ExceptionObject);
+					SharpDebug.Exception("Explorer", "Encountered an unhandled exception", (Exception)a.ExceptionObject);
 				};
 
             // Make sure SharpExplorer isn't running already
@@ -229,8 +222,6 @@ namespace SharpEnviro.Explorer
 
             bShellLoaded = false;
         }
-
-		private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         #region Win32
 

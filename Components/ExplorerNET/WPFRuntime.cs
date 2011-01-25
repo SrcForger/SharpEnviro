@@ -5,7 +5,8 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Forms.Integration;
 using System.Windows.Threading;
-using NLog;
+
+using SharpEnviro;
 
 namespace Explorer
 {
@@ -17,7 +18,7 @@ namespace Explorer
 			_thread = new Thread(Run);
 			_thread.SetApartmentState(ApartmentState.STA);
 
-			_logger.Info("WPFRuntime created.");
+			SharpDebug.Info("SharpSearch.WPF", "WPFRuntime created.");
 		}
 
 		private Window _window;
@@ -43,21 +44,21 @@ namespace Explorer
 
 		private void Run()
 		{
-			_logger.Info("WPFRuntime.Run enter.");
+			SharpDebug.Info("SharpSearch.WPF", "WPFRuntime.Run enter.");
 			// Create the WPF application
 			_application = new Application();
 			// Create a new empty window
 			_window = new Window();
 			// Start the WPF message loop
 			_application.Run();
-			_logger.Info("WPFRuntime.Run exit.");
+			SharpDebug.Info("SharpSearch.WPF", "WPFRuntime.Run exit.");
 		}
 
 		public void Start()
 		{
 			// Start the WPFRuntime thread
 			_thread.Start();
-			_logger.Info("WPFRuntime thread started.");
+			SharpDebug.Info("SharpSearch.WPF", "WPFRuntime thread started.");
 		}
 
 		public void Stop()
@@ -72,7 +73,7 @@ namespace Explorer
 				_windowInstance.Close();
 			// End the WPF thread by closing the main (hidden) window
 			_window.Close();
-			_logger.Info("WPFRuntime window closed.");
+			SharpDebug.Info("SharpSearch.WPF", "WPFRuntime window closed.");
 		}
 
 		public void Show<T>() where T : Window
@@ -89,7 +90,7 @@ namespace Explorer
 			{
 				// Create a new instance of the window
 				_windowInstance = Activator.CreateInstance<T>();
-				_logger.Info("WPFRuntime window created.");
+				SharpDebug.Info("SharpSearch.WPF", "WPFRuntime window created.");
 			}
 
 			_windowInstance.WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -104,9 +105,7 @@ namespace Explorer
 				_windowInstance.Activate();
 			}
 
-			_logger.Info("WPFRuntime.InternalShow exit.");
+			SharpDebug.Info("SharpSearch.WPF", "WPFRuntime.InternalShow exit.");
 		}
-
-		private static Logger _logger = LogManager.GetCurrentClassLogger();
 	}
 }
