@@ -447,6 +447,7 @@ procedure TSharpEListBoxEx.MeasureItemEvent(Control: TWinControl; Index: Integer
 begin
   Height := MulDiv(Height, Screen.PixelsPerInch, 96);
 end;
+
 constructor TSharpEListBoxEx.Create(Sender: TComponent);
 begin
   inherited;
@@ -485,7 +486,7 @@ begin
   Self.Items.Delete(AIndex);
 
   if FAutoSizeGrid then
-    Self.Height := (Self.Count) * Self.ItemHeight;
+    Self.Height := (Self.Count) * round(Screen.PixelsPerInch / 96 * Self.ItemHeight);
 end;
 
 destructor TSharpEListBoxEx.Destroy;
@@ -805,7 +806,7 @@ begin
   FAutoSizeGrid := Value;
 
   if not (csDesigning in ComponentState) and FAutoSizeGrid then
-    Self.Height := Self.Count * Self.ItemHeight;
+    Self.Height := Self.Count * round(Screen.PixelsPerInch / 96 * Self.ItemHeight);
 end;
 
 procedure TSharpEListBoxEx.SetColors(const Value: TSharpEListBoxExColors);
@@ -988,7 +989,7 @@ begin
   Result.ID := Self.Items.AddObject(AText, Result);
 
   if FAutoSizeGrid then
-    Self.Height := (Self.Count) * Self.ItemHeight;
+    Self.Height := (Self.Count) * round(Screen.PixelsPerInch / 96 * Self.ItemHeight);
 end;
 
 function TSharpEListBoxEx.AddItem(AText: string;
@@ -1000,7 +1001,7 @@ begin
   Result.ID := Self.Items.AddObject(AText, Result);
 
   if FAutoSizeGrid then
-    Self.Height := (Self.Count) * Self.ItemHeight;
+    Self.Height := (Self.Count) * round(Screen.PixelsPerInch / 96 * Self.ItemHeight);
 end;
 
 procedure TSharpEListItem.SetSubItemSelectedImageIndex(ASubItemIndex: Integer;
@@ -1369,6 +1370,7 @@ var
   iCol: Integer;
   tmpPng: TPNGObject;
   r: TRect;
+  dpiPosShiftY: integer;
 begin
   iCol := AColumn.Index;
   r := AColumn.ColumnRect;
@@ -1380,9 +1382,12 @@ begin
   if assigned(FOnGetCellImageIndex) then
     FOnGetCellImageIndex(Self, iCol, AItem, iSelImgIdx, True);
 
+  dpiPosShiftY := (MulDiv(r.Bottom - r.Top,Screen.PixelsPerInch,96) - (r.Bottom - r.Top)) div 2;
+  r.top := r.top + dpiPosShiftY;
   // Check Draw Selected
   if ((ASelected) and (AColumn.SelectedImages <> nil) and
-    (IsImageIndexValid(AItem, iCol, iSelImgIdx, ASelected))) then begin
+    (IsImageIndexValid(AItem, iCol, iSelImgIdx, ASelected))) then
+  begin
 
     tmpPng := nil;
     if iSelImgIdx <> -1 then
