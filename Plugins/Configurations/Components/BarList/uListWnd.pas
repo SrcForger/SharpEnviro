@@ -462,7 +462,7 @@ begin
         if tmpBar.Name <> '' then
           s := tmpBar.Name;
 
-        if MonList.Monitors[tmpBar.Monitor].Primary then
+        if (tmpBar.Monitor < MonList.MonitorCount) and (MonList.Monitors[tmpBar.Monitor].Primary) then
           monName := 'Primary Monitor'
         else
           monName := 'Monitor ' + IntToStr(tmpBar.Monitor);
