@@ -39,8 +39,7 @@ uses
 type
   TDebugLog = class(TObject)
     private
-      FErrorLog : THandle;
-      procedure WriteString(Handle : THandle; Text : String);
+      procedure WriteString(Text : String);
     public
       constructor Create; reintroduce;
       destructor Destroy; override;
@@ -182,29 +181,12 @@ end;
 { TDebugList }
 
 constructor TDebugLog.Create;
-var
-  Dir : String;
-  LogErrorFile : String;
 begin
   Inherited Create;
-
-  Dir := SharpApi.GetSharpeUserSettingsPath + 'Logs\';
-  ForceDirectories(Dir);
-
-  LogErrorFile := Dir + 'Error.txt';
-  if not FileExists(LogErrorFile) then
-    FileClose(FileCreate(LogErrorFile));
-
-  FErrorLog := FileOpen(LogErrorFile,fmOpenReadWrite or fmShareDenyWrite);
-  if FErrorLog > 0 then
-    FileSeek(FErrorLog,0,2);
 end;
 
 destructor TDebugLog.Destroy;
 begin
-  if FErrorLog > 0 then
-    FileClose(FErrorLog);
-
   inherited Destroy;
 end;
 
@@ -212,27 +194,43 @@ procedure TDebugLog.WriteLog(Module, Msg: String; msgType: integer);
 var
   Text : String;
 begin
-  // Currently we only handle DMT_ERROR
-  if msgType <> DMT_ERROR then
-    exit;
-  if FErrorLog <= 0 then
-    exit;
-
   Text := FormatDateTime('dd/mm/yyyy hh:nn:ss', now) + '|';
-  Text := Text + Module + '|' + Msg + #13#10;
 
   case msgType of
-    DMT_ERROR: WriteString(FErrorLog,Text);
+    DMT_INFO: Text := Text + 'INFO|';
+    DMT_STATUS: Text := Text + 'STATUS|';
+    DMT_WARN: Text := Text + 'WARN|';
+    DMT_ERROR: Text := Text + 'ERROR|';
+    DMT_TRACE: Text := Text + 'TRACE|';
   end;
+
+  Text := Text + Module + '|' + Msg + #13#10;
+
+  WriteString(Text);
 end;
 
-procedure TDebugLog.WriteString(Handle: THandle; Text: String);
+procedure TDebugLog.WriteString(Text: String);
 var
+  Dir, LogFile : String;
+  Log: THandle;
   Len : Word;
 begin
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'Logs\';
+  ForceDirectories(Dir);
+
+  LogFile := Dir + 'Log';
+  LogFile := LogFile + '-' + FormatDateTime('yyyy-mm-dd', now);
+  LogFile := LogFile + '.log';
+  if not FileExists(LogFile) then
+    FileClose(FileCreate(LogFile));
+
+  Log := FileOpen(LogFile,fmOpenReadWrite or fmShareDenyWrite);
+  if Log > 0 then
+    FileSeek(Log,0,2);
+
   Len := Length(Text);
   if Len > 0 then
-    FileWrite(Handle,Pointer(Text)^,Len);
+    FileWrite(Log,Pointer(Text)^,Len);
 end;
 
 begin
