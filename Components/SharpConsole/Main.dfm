@@ -3,12 +3,12 @@ object SharpConsoleWnd: TSharpConsoleWnd
   Top = 363
   AlphaBlend = True
   Caption = 'SharpConsole'
-  ClientHeight = 420
-  ClientWidth = 608
+  ClientHeight = 480
+  ClientWidth = 695
   Color = clWindow
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
-  Font.Height = -11
+  Font.Height = -14
   Font.Name = 'Arial'
   Font.Style = []
   FormStyle = fsStayOnTop
@@ -19,11 +19,11 @@ object SharpConsoleWnd: TSharpConsoleWnd
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnPaint = FormPaint
-  PixelsPerInch = 96
-  TextHeight = 14
+  PixelsPerInch = 120
+  TextHeight = 16
   object bug: TImage
-    Left = 520
-    Top = 40
+    Left = 594
+    Top = 46
     Width = 15
     Height = 15
     AutoSize = True
@@ -50,8 +50,8 @@ object SharpConsoleWnd: TSharpConsoleWnd
     Visible = False
   end
   object notSmile: TImage
-    Left = 540
-    Top = 40
+    Left = 617
+    Top = 46
     Width = 14
     Height = 14
     AutoSize = True
@@ -82,8 +82,8 @@ object SharpConsoleWnd: TSharpConsoleWnd
     Visible = False
   end
   object blink: TImage
-    Left = 560
-    Top = 44
+    Left = 640
+    Top = 50
     Width = 14
     Height = 14
     AutoSize = True
@@ -114,8 +114,8 @@ object SharpConsoleWnd: TSharpConsoleWnd
     Visible = False
   end
   object P: TImage
-    Left = 564
-    Top = 60
+    Left = 645
+    Top = 69
     Width = 14
     Height = 14
     AutoSize = True
@@ -146,8 +146,8 @@ object SharpConsoleWnd: TSharpConsoleWnd
     Visible = False
   end
   object angry: TImage
-    Left = 536
-    Top = 56
+    Left = 613
+    Top = 64
     Width = 14
     Height = 14
     AutoSize = True
@@ -178,8 +178,8 @@ object SharpConsoleWnd: TSharpConsoleWnd
     Visible = False
   end
   object mail: TImage
-    Left = 524
-    Top = 68
+    Left = 599
+    Top = 78
     Width = 14
     Height = 14
     AutoSize = True
@@ -196,8 +196,8 @@ object SharpConsoleWnd: TSharpConsoleWnd
     Visible = False
   end
   object smilemore: TImage
-    Left = 556
-    Top = 72
+    Left = 635
+    Top = 82
     Width = 14
     Height = 14
     AutoSize = True
@@ -228,8 +228,8 @@ object SharpConsoleWnd: TSharpConsoleWnd
     Visible = False
   end
   object smile: TImage
-    Left = 572
-    Top = 72
+    Left = 654
+    Top = 82
     Width = 14
     Height = 14
     AutoSize = True
@@ -260,16 +260,16 @@ object SharpConsoleWnd: TSharpConsoleWnd
     Visible = False
   end
   object warning: TImage
-    Left = 556
-    Top = 96
-    Width = 7
-    Height = 15
+    Left = 635
+    Top = 110
+    Width = 8
+    Height = 17
     Transparent = True
     Visible = False
   end
   object imgError: TImage
-    Left = 216
-    Top = 64
+    Left = 247
+    Top = 73
     Width = 14
     Height = 14
     AutoSize = True
@@ -300,8 +300,8 @@ object SharpConsoleWnd: TSharpConsoleWnd
     Visible = False
   end
   object imgInfo: TImage
-    Left = 232
-    Top = 64
+    Left = 265
+    Top = 73
     Width = 14
     Height = 14
     AutoSize = True
@@ -333,9 +333,9 @@ object SharpConsoleWnd: TSharpConsoleWnd
   end
   object sbMain: TStatusBar
     Left = 0
-    Top = 401
-    Width = 608
-    Height = 19
+    Top = 458
+    Width = 695
+    Height = 22
     Color = clWhite
     Panels = <
       item
@@ -359,8 +359,8 @@ object SharpConsoleWnd: TSharpConsoleWnd
     AlignWithMargins = True
     Left = 6
     Top = 6
-    Width = 596
-    Height = 389
+    Width = 683
+    Height = 446
     Margins.Left = 6
     Margins.Top = 6
     Margins.Right = 6
@@ -371,20 +371,18 @@ object SharpConsoleWnd: TSharpConsoleWnd
     ParentBackground = False
     TabOrder = 1
     object Splitter1: TSplitter
-      Left = 161
+      Left = 184
       Top = 0
-      Width = 9
-      Height = 389
+      Width = 10
+      Height = 446
       ResizeStyle = rsUpdate
-      ExplicitLeft = 193
-      ExplicitTop = 6
-      ExplicitHeight = 430
+      ExplicitHeight = 445
     end
     object pnlSelection: TPanel
       Left = 0
       Top = 0
-      Width = 161
-      Height = 389
+      Width = 184
+      Height = 446
       Align = alLeft
       BevelOuter = bvNone
       Color = clWindow
@@ -395,9 +393,9 @@ object SharpConsoleWnd: TSharpConsoleWnd
       object pnlModuleList: TSharpERoundPanel
         AlignWithMargins = True
         Left = 4
-        Top = 138
-        Width = 157
-        Height = 248
+        Top = 155
+        Width = 180
+        Height = 288
         Margins.Left = 4
         Margins.Top = 0
         Margins.Right = 0
@@ -410,18 +408,20 @@ object SharpConsoleWnd: TSharpConsoleWnd
         TabOrder = 0
         DrawMode = srpNormal
         NoTopBorder = False
+        NoBottomBorder = False
         RoundValue = 10
         BorderColor = 12709113
         Border = True
         BackgroundColor = clWindow
+        BottomSideBorder = False
         DesignSize = (
-          157
-          248)
+          180
+          288)
         object pnlModuleTitle: TSharpERoundPanel
           Left = 6
           Top = 6
-          Width = 145
-          Height = 20
+          Width = 168
+          Height = 23
           Align = alTop
           BevelOuter = bvNone
           Caption = 'SharpERoundPanel2'
@@ -430,15 +430,17 @@ object SharpConsoleWnd: TSharpConsoleWnd
           TabOrder = 0
           DrawMode = srpNormal
           NoTopBorder = False
+          NoBottomBorder = False
           RoundValue = 10
           BorderColor = clBtnFace
           Border = False
           BackgroundColor = 14875898
+          BottomSideBorder = False
           object Label3: TLabel
             Left = 0
             Top = 0
-            Width = 145
-            Height = 20
+            Width = 168
+            Height = 23
             Align = alClient
             Alignment = taCenter
             Caption = 'Module List'
@@ -446,15 +448,15 @@ object SharpConsoleWnd: TSharpConsoleWnd
             ParentColor = False
             Transparent = True
             Layout = tlCenter
-            ExplicitWidth = 54
-            ExplicitHeight = 14
+            ExplicitWidth = 72
+            ExplicitHeight = 16
           end
         end
         object chkRefreshModules: TCheckBox
-          Left = 7
-          Top = 217
-          Width = 97
-          Height = 17
+          Left = 8
+          Top = 248
+          Width = 111
+          Height = 19
           Anchors = [akLeft, akBottom]
           Caption = 'Refresh on click'
           Checked = True
@@ -468,9 +470,9 @@ object SharpConsoleWnd: TSharpConsoleWnd
         object clbModuleList: TJvgCheckListBox
           AlignWithMargins = True
           Left = 6
-          Top = 32
-          Width = 142
-          Height = 207
+          Top = 35
+          Width = 165
+          Height = 244
           Margins.Left = 0
           Margins.Top = 6
           Align = alClient
@@ -520,8 +522,8 @@ object SharpConsoleWnd: TSharpConsoleWnd
         AlignWithMargins = True
         Left = 4
         Top = 4
-        Width = 157
-        Height = 125
+        Width = 180
+        Height = 142
         Margins.Left = 4
         Margins.Top = 4
         Margins.Right = 0
@@ -535,18 +537,20 @@ object SharpConsoleWnd: TSharpConsoleWnd
         TabOrder = 1
         DrawMode = srpNormal
         NoTopBorder = False
+        NoBottomBorder = False
         RoundValue = 10
         BorderColor = 16244164
         Border = True
         BackgroundColor = clWindow
+        BottomSideBorder = False
         DesignSize = (
-          157
-          125)
+          180
+          142)
         object chkRefreshDebug: TCheckBox
-          Left = 7
-          Top = -36
-          Width = 99
-          Height = 17
+          Left = 8
+          Top = -41
+          Width = 113
+          Height = 19
           Anchors = [akLeft, akBottom]
           Caption = 'Refresh on click'
           Checked = True
@@ -560,8 +564,8 @@ object SharpConsoleWnd: TSharpConsoleWnd
         object pnlDebugLevelTitle: TSharpERoundPanel
           Left = 6
           Top = 6
-          Width = 145
-          Height = 20
+          Width = 168
+          Height = 23
           Align = alTop
           BevelOuter = bvNone
           Caption = 'pnlDebugLevelTitle'
@@ -570,30 +574,32 @@ object SharpConsoleWnd: TSharpConsoleWnd
           TabOrder = 0
           DrawMode = srpNormal
           NoTopBorder = False
+          NoBottomBorder = False
           RoundValue = 10
           BorderColor = clBtnFace
           Border = False
           BackgroundColor = 16510947
+          BottomSideBorder = False
           object Label2: TLabel
             Left = 0
             Top = 0
-            Width = 145
-            Height = 20
+            Width = 168
+            Height = 23
             Align = alClient
             Alignment = taCenter
             Caption = 'Debug Level'
             Transparent = True
             Layout = tlCenter
-            ExplicitWidth = 60
-            ExplicitHeight = 14
+            ExplicitWidth = 80
+            ExplicitHeight = 16
           end
         end
         object clbDebugLevel: TJvgCheckListBox
           AlignWithMargins = True
           Left = 6
-          Top = 32
-          Width = 142
-          Height = 84
+          Top = 35
+          Width = 165
+          Height = 98
           Margins.Left = 0
           Margins.Top = 6
           Align = alClient
@@ -641,10 +647,10 @@ object SharpConsoleWnd: TSharpConsoleWnd
       end
     end
     object pnlLog: TPanel
-      Left = 170
+      Left = 194
       Top = 0
-      Width = 426
-      Height = 389
+      Width = 489
+      Height = 446
       Align = alClient
       BevelOuter = bvNone
       Color = clWindow
@@ -654,8 +660,8 @@ object SharpConsoleWnd: TSharpConsoleWnd
         AlignWithMargins = True
         Left = 0
         Top = 0
-        Width = 422
-        Height = 356
+        Width = 485
+        Height = 413
         Margins.Left = 0
         Margins.Top = 0
         Margins.Right = 4
@@ -667,21 +673,21 @@ object SharpConsoleWnd: TSharpConsoleWnd
         ParentCtl3D = False
         TabOrder = 0
         object Label1: TLabel
-          Left = 8
-          Top = 8
-          Width = 86
-          Height = 14
+          Left = 9
+          Top = 9
+          Width = 105
+          Height = 16
           Caption = 'No items available'
           Font.Charset = ANSI_CHARSET
           Font.Color = 12303291
-          Font.Height = -11
+          Font.Height = -13
           Font.Name = 'Arial'
           Font.Style = []
           ParentFont = False
         end
         object imgDebugTrace: TImage
-          Left = 8
-          Top = 280
+          Left = 9
+          Top = 320
           Width = 14
           Height = 14
           AutoSize = True
@@ -712,8 +718,8 @@ object SharpConsoleWnd: TSharpConsoleWnd
           Visible = False
         end
         object imgDebugInfo: TImage
-          Left = 24
-          Top = 280
+          Left = 27
+          Top = 320
           Width = 14
           Height = 14
           AutoSize = True
@@ -744,8 +750,8 @@ object SharpConsoleWnd: TSharpConsoleWnd
           Visible = False
         end
         object imgDebugError: TImage
-          Left = 40
-          Top = 280
+          Left = 46
+          Top = 320
           Width = 14
           Height = 14
           AutoSize = True
@@ -776,8 +782,8 @@ object SharpConsoleWnd: TSharpConsoleWnd
           Visible = False
         end
         object imgDebugStatus: TImage
-          Left = 56
-          Top = 280
+          Left = 64
+          Top = 320
           Width = 14
           Height = 14
           AutoSize = True
@@ -808,8 +814,8 @@ object SharpConsoleWnd: TSharpConsoleWnd
           Visible = False
         end
         object imgDebugWarn: TImage
-          Left = 72
-          Top = 280
+          Left = 82
+          Top = 320
           Width = 14
           Height = 14
           AutoSize = True
@@ -840,10 +846,10 @@ object SharpConsoleWnd: TSharpConsoleWnd
           Visible = False
         end
         object TrayMain: TImage
-          Left = 40
-          Top = 308
-          Width = 32
-          Height = 32
+          Left = 46
+          Top = 352
+          Width = 40
+          Height = 40
           AutoSize = True
           Picture.Data = {
             055449636F6E0000010008001010000001000800680500008600000010100000
@@ -2262,9 +2268,9 @@ object SharpConsoleWnd: TSharpConsoleWnd
         end
         object TrayFlash: TImage
           Left = 0
-          Top = 308
-          Width = 32
-          Height = 32
+          Top = 352
+          Width = 40
+          Height = 40
           AutoSize = True
           Picture.Data = {
             055449636F6E0000010008001010000001000800680500008600000010100000
@@ -3684,8 +3690,8 @@ object SharpConsoleWnd: TSharpConsoleWnd
         object pcLog: TSharpEPageControl
           Left = 0
           Top = 0
-          Width = 422
-          Height = 356
+          Width = 485
+          Height = 413
           Align = alClient
           Color = clWindow
           DoubleBuffered = False
@@ -3724,13 +3730,13 @@ object SharpConsoleWnd: TSharpConsoleWnd
           PageBackgroundColor = clWindow
           OnTabChange = tlLogTabChange
           DesignSize = (
-            422
-            356)
+            485
+            413)
           object prgRefresh: TProgressBar
             Left = 0
-            Top = 346
-            Width = 422
-            Height = 10
+            Top = 401
+            Width = 485
+            Height = 12
             Align = alBottom
             TabOrder = 0
             Visible = False
@@ -3739,8 +3745,8 @@ object SharpConsoleWnd: TSharpConsoleWnd
             AlignWithMargins = True
             Left = 6
             Top = 30
-            Width = 410
-            Height = 310
+            Width = 473
+            Height = 365
             Margins.Left = 6
             Margins.Top = 30
             Margins.Right = 6
@@ -3751,26 +3757,28 @@ object SharpConsoleWnd: TSharpConsoleWnd
             object pagRoLog: TJvStandardPage
               Left = 0
               Top = 0
-              Width = 410
-              Height = 310
+              Width = 473
+              Height = 365
               Caption = 'pagRoLog'
+              ExplicitWidth = 469
+              ExplicitHeight = 354
             end
             object pagTextLog: TJvStandardPage
               Left = 0
               Top = 0
-              Width = 410
-              Height = 310
+              Width = 473
+              Height = 365
               Caption = 'pagTextLog'
               object mmoCopy: TMemo
-                Left = 0
-                Top = 0
-                Width = 410
-                Height = 310
+                Left = 1
+                Top = 1
+                Width = 471
+                Height = 363
                 Align = alClient
                 BorderStyle = bsNone
                 Font.Charset = ANSI_CHARSET
                 Font.Color = clWindowText
-                Font.Height = -11
+                Font.Height = -13
                 Font.Name = 'Segoe UI'
                 Font.Style = []
                 ParentFont = False
@@ -3784,13 +3792,13 @@ object SharpConsoleWnd: TSharpConsoleWnd
       end
       object tbLog: TToolBar
         Left = 0
-        Top = 359
-        Width = 426
+        Top = 416
+        Width = 489
         Height = 30
         Align = alBottom
         AutoSize = True
         ButtonHeight = 30
-        ButtonWidth = 72
+        ButtonWidth = 83
         Caption = 'tbLog'
         Ctl3D = False
         EdgeInner = esNone
@@ -3812,14 +3820,14 @@ object SharpConsoleWnd: TSharpConsoleWnd
           OnClick = tbPauseClick
         end
         object tbRefresh: TToolButton
-          Left = 54
+          Left = 60
           Top = 0
           Caption = 'Refresh'
           ImageIndex = 2
           OnClick = tbRefreshClick
         end
         object tbCopy: TToolButton
-          Left = 126
+          Left = 143
           Top = 0
           AutoSize = True
           Caption = 'Copy'
@@ -3829,7 +3837,7 @@ object SharpConsoleWnd: TSharpConsoleWnd
           OnClick = tbCopyTextClick
         end
         object sbClear: TToolButton
-          Left = 203
+          Left = 232
           Top = 0
           AutoSize = True
           Caption = 'Clear'
@@ -3845,7 +3853,7 @@ object SharpConsoleWnd: TSharpConsoleWnd
     Left = 188
     Top = 156
     Bitmap = {
-      494C01010B000E00040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01010B000E00080010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       0000000000000000000000000000000000000000000000000000000000000000
       00000000000000000000DEBDAD00CEB5AD00C6ADA500D6B5A500000000000000

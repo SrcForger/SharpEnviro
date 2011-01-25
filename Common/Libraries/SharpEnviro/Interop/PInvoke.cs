@@ -220,6 +220,22 @@ namespace SharpEnviro.Interop
         public static extern void PostQuitMessage(int nExitCode);
         #endregion
 
+        #region CopyData Message
+        public const uint WM_COPYDATA = 0x004A;
+
+        //Copy Data Structure
+        public struct COPYDATASTRUCT
+        {
+            public IntPtr dwData;
+            public int cbData;
+            public IntPtr lpData;
+        }
+
+        [DllImport("user32.dll", CharSet = CharSet.Ansi, EntryPoint = "SendMessageA", ExactSpelling = true)]
+        public static extern int SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, ref COPYDATASTRUCT lParam);
+
+        #endregion
+
         #region DLL
         [DllImport("kernel32.dll")]
         public static extern IntPtr LoadLibrary(string dllToLoad);

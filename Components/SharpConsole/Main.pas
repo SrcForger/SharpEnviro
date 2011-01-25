@@ -149,6 +149,7 @@ type
     FUpdateList : TObjectList;
     FDebugList: TDebugList;
 
+    procedure ParseCopyData(str: string; var module, msg: string);
     procedure GetCopyData(var Msg: TMessage); message wm_CopyData;
     procedure UpdateLog(Sender: TObject);
     procedure UpdateModulesList;
@@ -538,15 +539,18 @@ begin
   DeleteHistory;
 end;
 
+procedure TSharpConsoleWnd.ParseCopyData(str: string; var module, msg: string);
+begin
+  module := Copy(str, 0, Pos('||', str) - 1);
+  msg := Copy(str, Length(module) + 3);
+end;
+
 procedure TSharpConsoleWnd.GetCopyData(var Msg: TMessage);
 var
-  cmsg: TConsoleMsg;
-  t2: string;
+  t1, t2: string;
 begin
-  cmsg := PConsoleMsg(PCopyDataStruct(msg.lParam)^.lpData)^;
-
   // Extract the manager Cmd to use
-  t2 := cmsg.msg;
+  ParseCopyData(PChar(PCopyDataStruct(msg.lParam)^.lpData), t1, t2);
 
   // Output text to file
   case msg.wParam of

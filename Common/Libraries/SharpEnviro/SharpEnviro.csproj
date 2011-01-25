@@ -88,6 +88,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SharpDebug.cs" />
     <Compile Include="Interop\COM.cs" />
     <Compile Include="Interop\Enums\ClassStyles.cs" />
     <Compile Include="Interop\Enums\MSI.cs" />

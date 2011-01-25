@@ -196,12 +196,6 @@ type
     Msg: String[255];
   end;
 
-  PConsoleMsg = ^TConsoleMsg;
-  TConsoleMsg = record
-    module: String[255];
-    msg: String[255];
-  end;
-
   TPluginData = record
     Name: String[255];
     Status: String[255];

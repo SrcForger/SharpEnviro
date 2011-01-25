@@ -41,7 +41,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, SysUtils, Classes, Controls, Forms,
-  JvComponentBase, JvErrorIndicator, JvVCL5Utils;
+  JvComponentBase, JvErrorIndicator, JvJVCLUtils;
 
 type
   EValidatorError = class(Exception);

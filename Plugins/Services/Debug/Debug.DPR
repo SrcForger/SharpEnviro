@@ -49,6 +49,7 @@ type
   end;
 
   TActionEvent = class(TObject)
+    procedure ParseCopyData(str: string; var module, msg: string);
     procedure MessageHandler(var msg: TMessage);
   end;
 
@@ -160,14 +161,20 @@ exports
 
 { TActionEvent }
 
+procedure TActionEvent.ParseCopyData(str: string; var module, msg: string);
+begin
+  module := Copy(str, 0, Pos('||', str) - 1);
+  msg := Copy(str, Length(module) + 3);
+end;
+
 procedure TActionEvent.MessageHandler(var msg: TMessage);
 var
-  cmsg: TConsoleMsg;
+  module, mess: string;
 begin
   if msg.Msg = WM_COPYDATA then
   begin
-    cmsg := PConsoleMsg(PCopyDataStruct(msg.lParam)^.lpData)^;
-    DebugLog.WriteLog(cmsg.module,cmsg.msg,msg.WParam);
+    ParseCopyData(PChar(PCopyDataStruct(msg.lParam)^.lpData), module, mess);
+    DebugLog.WriteLog(module,mess,msg.WParam);
   end;
 end;
 

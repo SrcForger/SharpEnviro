@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Interop;
 using System.Windows.Forms;
 using Microsoft.Win32;
+using System.ComponentModel;
 
 using Explorer;
 using Explorer.ShellServices;
@@ -147,6 +148,12 @@ namespace SharpEnviro.Explorer
 
             // Start message pump
             System.Windows.Threading.Dispatcher.Run();
+        }
+
+        public static byte[] StrToByteArray(string str)
+        {
+            System.Text.UTF8Encoding encoding = new System.Text.UTF8Encoding();
+            return encoding.GetBytes(str);
         }
 
         [STAThread]

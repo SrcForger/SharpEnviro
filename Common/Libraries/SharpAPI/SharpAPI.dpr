@@ -193,12 +193,6 @@ type
     WorkArealight: Tcolor;
   end;
 
-  PConsoleMsg = ^TConsoleMsg;
-  TConsoleMsg = record
-    module: String[255];
-    msg: String[255];
-  end;
-
   PManagerCmd = ^TManagerCmd;
   TManagerCmd = record
     Command: String[255];
@@ -660,15 +654,15 @@ function SendConsoleMessage(msg: String): hresult;
 var
   wnd: hwnd;
   cds: TCopyDataStruct;
-  cmsg: TConsoleMsg;
+  data: string;
 begin
   try
-    cmsg.msg := msg;
+    data := ' ||' + msg;
     with cds do
     begin
       dwData := 0;
-      cbData := SizeOf(TConsoleMsg);
-      lpData := @cmsg;
+      cbData := Length(data) + 1;
+      lpData := PChar(data);
     end;
 
     wnd := FindWindow('TSharpConsoleWnd', nil);
@@ -692,7 +686,7 @@ function SendDebugMessage(module: String; msg: String; color: integer): hresult;
 var
   wnd: hwnd;
   cds: TCopyDataStruct;
-  cmsg: TConsoleMsg;
+  data: string;
 begin
   try
     if module <> '' then
@@ -702,13 +696,12 @@ begin
 
     msg := '<B><FONT COLOR=$B06C48>' + module + '</FONT></B>' + msg;
 
-    cmsg.module := module;
-    cmsg.msg := msg;
+    data := module + '||' + msg;
     with cds do
     begin
       dwData := 0;
-      cbData := SizeOf(TConsoleMsg);
-      lpData := @cmsg;
+      cbData := Length(data) + 1;
+      lpData := PChar(data);
     end;
 
     wnd := FindWindow('TSharpConsoleWnd', nil);
@@ -729,15 +722,14 @@ procedure SendDebugServiceMessage(module: String; msg: String; MessageType: inte
 var
   wnd: hwnd;
   cds: TCopyDataStruct;
-  cmsg: TConsoleMsg;
+  data: string;
 begin
-  cmsg.module := module;
-  cmsg.msg := msg;
+  data := module + '||' + msg;
   with cds do
   begin
     dwData := 0;
-    cbData := SizeOf(TConsoleMsg);
-    lpData := @cmsg;
+    cbData := Length(data) + 1;
+    lpData := PChar(data);
   end;
 
   wnd := FindWindow('TSharpEDebugWnd', nil);
@@ -750,7 +742,7 @@ function SendDebugMessageEx(module: String; msg: String; Color: TColor;
 var
   wnd: hwnd;
   cds: TCopyDataStruct;
-  cmsg: TConsoleMsg;
+  data: string;
 begin
   if (MessageType = DMT_Error) then
     SendDebugServiceMessage(module,msg,messagetype);
@@ -763,13 +755,12 @@ begin
 
     msg := '' + module + '</FONT></B>' + msg;
 
-    cmsg.module := module;
-    cmsg.msg := msg;
+    data := module + '||' + msg;
     with cds do
     begin
       dwData := 0;
-      cbData := SizeOf(TConsoleMsg);
-      lpData := @cmsg;
+      cbData := Length(data) + 1;
+      lpData := PChar(data);
     end;
 
     wnd := FindWindow('TSharpConsoleWnd', nil);
