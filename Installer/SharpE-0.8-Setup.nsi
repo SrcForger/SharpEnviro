@@ -245,7 +245,7 @@ Section "!Core Files" SEC01
   File "..\..\SharpE\Addons\x86\SharpEnviro.dll"
   File "..\..\SharpE\Addons\x86\SharpSearch.dll"
   File "..\..\SharpE\Addons\x86\SharpSearch.WPF.dll"
-  File "..\..\SharpE\Addons\x86\nlog.dll"
+  # File "..\..\SharpE\Addons\x86\nlog.dll"
   File "..\..\SharpE\Addons\x86\Explorer.exe.config"
   File "..\..\SharpE\Addons\x86\System.Data.SQLite.dll"
   
@@ -256,7 +256,7 @@ Section "!Core Files" SEC01
   File "..\..\SharpE\Addons\x64\SharpEnviro.dll"
   File "..\..\SharpE\Addons\x64\SharpSearch.dll"
   File "..\..\SharpE\Addons\x64\SharpSearch.WPF.dll"
-  File "..\..\SharpE\Addons\x64\nlog.dll"
+  # File "..\..\SharpE\Addons\x64\nlog.dll"
   File "..\..\SharpE\Addons\x64\Explorer.exe.config"
   File "..\..\SharpE\Addons\x64\System.Data.SQLite.dll"
   
