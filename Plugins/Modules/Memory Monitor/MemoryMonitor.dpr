@@ -168,7 +168,6 @@ begin
     Name := 'Memory Monitor';
     Author := 'Martin Krämer <Martin@SharpEnviro.com>';
     Description := 'Monitors memory and swap file usage ';
-    Version := '0.8.0.0';
     ExtraData := 'preview: False';
     DataType := tteModule;
   end;

@@ -176,7 +176,6 @@ begin
     Name := 'Quick Script';
     Author := 'Martin Krämer <Martin@SharpEnviro.com>';
     Description := 'Displays a Button which will open a menu for quick access to all your scripts';
-    Version := '0.8.0.0';
     ExtraData := 'preview: false';
     DataType := tteModule;
 

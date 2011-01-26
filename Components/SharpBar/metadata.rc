@@ -1,7 +1,6 @@
 #define IDS_NAME 666
 #define IDS_DESCRIPTION 667
 #define IDS_AUTHOR 668
-#define IDS_VERSION 669
 #define IDS_EXTRADATA 670
 
 STRINGTABLE
@@ -9,6 +8,5 @@ STRINGTABLE
   IDS_NAME "SharpBar"
   IDS_DESCRIPTION "The toolbars displayed on screen"
   IDS_AUTHOR "Martin Krämer (MartinKraemer@gmx.net)"
-  IDS_VERSION "0.8.0.0"
   IDS_EXTRADATA "priority: 140|delay: 0"
 }

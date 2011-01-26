@@ -129,7 +129,6 @@ begin
     Name := 'Template';
     Description := 'Template Module Configuration';
     Author := 'Mathias Tillman (mathias@sharpenviro.com)';
-    Version := '0.8.0.0';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
       Integer(suModule)]);

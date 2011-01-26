@@ -179,7 +179,6 @@ begin
     Name := 'Media Controller';
     Author := 'Martin Krämer <Martin@SharpEnviro.com>';
     Description := 'Displays a remote control for common media players';
-    Version := '0.8.0.0';
     ExtraData := 'preview: false';
     DataType := tteModule;
   end;

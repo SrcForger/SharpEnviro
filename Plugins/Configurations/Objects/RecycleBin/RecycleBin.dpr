@@ -423,7 +423,6 @@ begin
     Name := 'Recycle Bin';
     Description := 'Recycle Bin Object Configuration';
     Author := 'Martin KrÃ¤mer (MartinKraemer@gmx.net)';
-    Version := '0.8.0.0';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
       Integer(suDesktopObject)]);

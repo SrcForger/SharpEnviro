@@ -182,7 +182,6 @@ begin
     Name := 'RecycleBin';
     Author := 'Mathias Tillman <mathias@sharpenviro.com>';
     Description := 'Allows quick access to the Recycle Bin';
-    Version := '0.8.0.0';
     ExtraData := 'preview: False';
     DataType := tteModule;
   end;

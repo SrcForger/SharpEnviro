@@ -1,7 +1,6 @@
 #define IDS_NAME 666
 #define IDS_DESCRIPTION 667
 #define IDS_AUTHOR 668
-#define IDS_VERSION 669
 #define IDS_EXTRADATA 670
 
 STRINGTABLE
@@ -9,6 +8,5 @@ STRINGTABLE
   IDS_NAME "SharpShellServices"
   IDS_DESCRIPTION "Manages shell service objects"
   IDS_AUTHOR "Malx (Malx@sharpe-shell.org)"
-  IDS_VERSION "0.8.0.0"
   IDS_EXTRADATA "priority: 0|delay: 0"
 }

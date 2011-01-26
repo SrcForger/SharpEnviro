@@ -131,7 +131,6 @@ begin
     Name := 'Interfaced Module';
     Author := 'Martin Krämer <Martin@SharpEnviro.com>';
     Description := 'Template Module with new Module Interface';
-    Version := '0.7.6.0';
     ExtraData := 'preview: false';
     DataType := tteModule;
   end;

@@ -174,7 +174,6 @@ begin
     Name := 'Volume Control';
     Author := 'Martin Krämer <Martin@SharpEnviro.com>';
     Description := 'Controls system sound volume.';
-    Version := '0.8.0.0';
     ExtraData := 'preview: false';
     DataType := tteModule;
   end;

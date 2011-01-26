@@ -193,7 +193,6 @@ begin
     Name := 'Battery Monitor';
     Author := 'Martin Krämer <Martin@SharpEnviro.com>';
     Description := 'Battery usage and status monitor';
-    Version := '0.8.0.0';
     ExtraData := 'preview: False';
     DataType := tteModule;
   end;

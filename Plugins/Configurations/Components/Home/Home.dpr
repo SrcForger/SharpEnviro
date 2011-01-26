@@ -39,6 +39,7 @@ uses
   uHomeWnd in 'uHomeWnd.pas' {frmHome},
   SharpCenterApi,
   SharpApi,
+  SharpFileUtils,
   uSharpCenterPluginScheme,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit;
@@ -115,19 +116,15 @@ end;
 
 function GetMetaData(): TMetaData;
 var
-  meta: TMetaData;
-  extraMeta: TExtraMetaData;
   tmp: string;
 begin
-  SharpAPI.GetComponentMetaData( GetSharpeDirectory + 'SharpCore.exe', meta, extraMeta);
-  tmp := format('Welcome to SharpEnviro (%s)',[meta.Version]);
+  tmp := format('Welcome to SharpEnviro (%s)',[SharpFileUtils.GetFileVersion(GetSharpeDirectory + 'SharpCore.exe')]);
 
   with result do
   begin
     Name := 'Home';
     Description := tmp;
     Author := 'Lee Green (lee@sharpenviro.com)';
-    Version := '0.8.0.0';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
       Integer(suCenter)]);
@@ -136,12 +133,9 @@ end;
 
 function GetPluginData(pluginID : String): TPluginData;
 var
-  meta: TMetaData;
-  extraMeta: TExtraMetaData;
   tmp: string;
 begin
-  SharpAPI.GetComponentMetaData( GetSharpeDirectory + 'SharpCore.exe', meta, extraMeta);
-  tmp := format('Welcome to SharpEnviro (%s)',[meta.Version]);
+  tmp := format('Welcome to SharpEnviro (%s)',[SharpFileUtils.GetFileVersion(GetSharpeDirectory + 'SharpCore.exe')]);
 
   with result do
   begin

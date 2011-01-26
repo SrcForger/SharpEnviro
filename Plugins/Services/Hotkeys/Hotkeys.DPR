@@ -73,7 +73,6 @@ begin
     Name := 'Hotkeys';
     Description := 'Manages system-wide hotkeys';
     Author := 'Lee Green (Pixol@sharpe-shell.org)';
-    Version := '0.8.0.0';
     DataType := tteService;
     ExtraData := 'priority: 80| delay: 0';
   end;

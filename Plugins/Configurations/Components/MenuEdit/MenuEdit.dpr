@@ -153,7 +153,6 @@ begin
     Name := 'Menu Editor';
     Description := 'Menu Editor Configuration';
     Author := 'Lee Green (lee@sharpenviro.com)';
-    Version := '0.8.0.0';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
       Integer(suCenter)]);

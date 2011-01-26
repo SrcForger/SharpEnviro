@@ -60,7 +60,6 @@ begin
     Name := 'Template';
     Description := 'Template';
     Author := 'Author (E-Mail)';
-    Version := '0.7.4.0';
     DataType := tteService;
     ExtraData := 'priority: 170| delay: 0';
   end;

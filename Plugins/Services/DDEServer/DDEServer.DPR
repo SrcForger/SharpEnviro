@@ -79,7 +79,6 @@ begin
     Name := 'DDEServer';
     Description := 'Loads System DDE Server';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.8.0.0';
     DataType := tteService;
     ExtraData := 'priority: 19| delay: 0';
   end;

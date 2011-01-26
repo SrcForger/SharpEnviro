@@ -174,7 +174,6 @@ begin
     Name := 'Show Desktop';
     Author := 'Martin Krämer <Martin@SharpEnviro.com>';
     Description := 'Displays a Button to show/toggle the desktops';
-    Version := '0.8.0.0';
     ExtraData := 'preview: False';
     DataType := tteModule;
   end;

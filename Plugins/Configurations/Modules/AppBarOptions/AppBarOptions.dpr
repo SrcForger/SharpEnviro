@@ -155,7 +155,6 @@ begin
     Name := 'Application Bar Module Options';
     Description := 'Application Bar Module Options Config';
     Author := 'Lee Green (lee@sharpenviro.com)';
-    Version := '0.8.0.0';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
       Integer(suModule)]);

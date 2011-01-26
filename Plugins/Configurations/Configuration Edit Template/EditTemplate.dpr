@@ -129,7 +129,6 @@ begin
     Name := 'Edit Template';
     Description := '<Type> List Edit Configuration';
     Author := '<Author> (<Email>)';
-    Version := '0.7.5.2';
     DataType := tteConfig;
 
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),

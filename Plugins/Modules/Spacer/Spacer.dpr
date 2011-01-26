@@ -181,7 +181,6 @@ begin
     Name := 'Spacer';
     Author := 'Mathias Tillman <mathias@sharpenviro.com>';
     Description := 'Spacer module';
-    Version := '0.8.0.0';
     ExtraData := 'preview: False';
     DataType := tteModule;
   end;

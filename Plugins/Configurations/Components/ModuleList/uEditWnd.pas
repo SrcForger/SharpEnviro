@@ -127,7 +127,7 @@ begin
     GetModuleMetaData(FName, Bmp, moduleinfo, bHasPreview);
 
     lbDescription.Caption := moduleinfo.Description;
-    lbAuthor.Caption := 'Version ' + moduleinfo.Version + ' by ' + moduleinfo.Author;
+    lbAuthor.Caption := 'Created by ' + moduleinfo.Author;
     lbAuthor.Visible := True;
     if bHasPreview then
     begin

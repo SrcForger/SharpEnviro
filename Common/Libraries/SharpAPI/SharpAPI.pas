@@ -213,7 +213,6 @@ type
     Name: String[255];
     Description: String[255];
     Author: String[255];
-    Version: String[255];
     DataType: TTypeEnum;
     ExtraData: String[255];
   end;

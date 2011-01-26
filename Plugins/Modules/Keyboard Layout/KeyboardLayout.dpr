@@ -181,7 +181,6 @@ begin
     Name := 'Keyboard Layout';
     Author := 'Martin Krämer <Martin@SharpEnviro.com>';
     Description := 'Keyboard Layout Switcher';
-    Version := '0.8.0.0';
     ExtraData := 'preview: False';
     DataType := tteModule;
   end;

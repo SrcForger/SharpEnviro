@@ -185,7 +185,6 @@ begin
     Name := 'Menu';
     Author := 'Martin Krämer <Martin@SharpEnviro.com>';
     Description := 'Displays a button that will run SharpMenu';
-    Version := '0.8.0.0';
     ExtraData := 'preview: false';
     DataType := tteModule;
   end;

@@ -183,7 +183,6 @@ begin
     Name := 'Clock';
     Author := 'Martin Krämer <Martin@SharpEnviro.com>';
     Description := 'A Clock Module';
-    Version := '0.8.0.0';
     ExtraData := 'preview: False';
     DataType := tteModule;
   end;

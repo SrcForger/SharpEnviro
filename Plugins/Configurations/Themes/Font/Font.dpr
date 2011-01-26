@@ -254,7 +254,6 @@ begin
     Name := 'Skin Font';
     Description := 'Skin Font Theme Configuration';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.8.0.0';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d', [Integer(scmApply),
       Integer(suSkinFont)]);

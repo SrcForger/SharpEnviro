@@ -259,7 +259,6 @@ type
     Name: String[255];
     Description: String[255];
     Author: String[255];
-    Version: String[255];
     DataType: TMetaTypeEnum;
     ExtraData: String[255];
   end;
@@ -1343,7 +1342,6 @@ var
   pcName: PChar;
   pcDescription: PChar;
   pcAuthor: PChar;
-  pcVersion: PChar;
   pcExtraData: PChar;
 begin
   result := 0;
@@ -1366,11 +1364,6 @@ begin
       if LoadString(hndFile, IDS_AUTHOR, pcAuthor, 255) <> 0 then
         MetaData.Author := String(pcAuthor);
       StrDispose(pcAuthor);
-
-      pcVersion := StrAlloc(255);
-      if LoadString(hndFile, IDS_VERSION, pcVersion, 255) <> 0 then
-        MetaData.Version := String(pcVersion);
-      StrDispose(pcVersion);
 
       pcExtraData := StrAlloc(255);
       if LoadString(hndFile, IDS_EXTRADATA, pcExtraData, 255) <> 0 then
@@ -1599,7 +1592,6 @@ begin
   MetaData.Name := '';
   MetaData.Description := '';
   MetaData.Author := '';
-  MetaData.Version := '';
   MetaData.ExtraData := '';
 
   ExtraMetaData.Priority := 0;
@@ -1627,7 +1619,6 @@ begin
   MetaData.Name := '';
   MetaData.Description := '';
   MetaData.Author := '';
-  MetaData.Version := '';
   MetaData.ExtraData := '';
   HasPreview := False;
 
@@ -1651,7 +1642,6 @@ begin
   MetaData.Name := '';
   MetaData.Description := '';
   MetaData.Author := '';
-  MetaData.Version := '';
   MetaData.ExtraData := '';
 
   ExtraMetaData.Priority := 0;
@@ -1680,7 +1670,6 @@ begin
   MetaData.Name := '';
   MetaData.Description := '';
   MetaData.Author := '';
-  MetaData.Version := '';
   MetaData.ExtraData := '';
   ConfigMode := TSC_MODE_ENUM(0);
   ConfigType := TSU_UPDATE_ENUM(0);

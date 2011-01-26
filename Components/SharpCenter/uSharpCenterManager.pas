@@ -110,7 +110,6 @@ type
     FThemeManager: TCenterThemeManager;
 
     FPluginTabIndex: Integer;
-    FPluginVersion: string;
 
     // Dll Methods
 
@@ -188,7 +187,6 @@ type
     property PluginWndHandle: THandle read FPluginHandle write FPluginHandle;
     property EditWndHandle: THandle read FEditHandle write FEditHandle;
     property Theme: TCenterThemeInfo read GetTheme;
-    property PluginVersion: string read FPluginVersion write FPluginVersion;
 
     property ThemeManager: TCenterThemeManager read FThemeManager write FThemeManager;
     property OnInitNavigation: TNotifyEvent read FOnInitNavigation write FOnInitNavigation;
@@ -725,9 +723,6 @@ begin
 end;
 
 constructor TSharpCenterManager.Create;
-var
-  meta: TMetaData;
-  extraMeta: TExtraMetaData;
 begin
   // Create the host interface
   FThemeManager := TCenterThemeManager.Create;
@@ -742,10 +737,6 @@ begin
 
   // Set the active root path
   FRoot := GetCenterDirectory + 'Home\';
-
-  // Get the plugin version
-  SharpAPI.GetComponentMetaData( GetSharpeDirectory + 'SharpCore.exe', meta, extraMeta);
-  FPluginVersion := meta.Version;
 
   FUnloadCommand := TSharpCenterHistoryItem.Create;
 

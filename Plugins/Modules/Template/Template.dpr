@@ -181,7 +181,6 @@ begin
     Name := 'Template';
     Author := 'Mathias Tillman <mathias@sharpenviro.com>';
     Description := 'Template module';
-    Version := '0.8.0.0';
     ExtraData := 'preview: False';
     DataType := tteModule;
   end;
