@@ -13,7 +13,6 @@ object frmEditwnd: TfrmEditwnd
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = False
-  OnCreate = FormCreate
   OnDestroy = FormDestroy
   DesignSize = (
     475

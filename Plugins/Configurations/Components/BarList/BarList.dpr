@@ -187,8 +187,10 @@ end;
 
 procedure TSharpCenterPlugin.SetupValidators;
 begin
-  PluginHost.AddCustomValidator(frmEditWnd.edName, frmEditWnd.BarItem.Name, 'Text').OnValidate := ValidateNameEvent;
-  //PluginHost.AddRequiredFieldValidator(frmEditWnd.edName,'Please enter a toolbar name','Text');
+  if Assigned(frmEditWnd.BarItem) then
+    PluginHost.AddCustomValidator(frmEditWnd.edName, frmEditWnd.BarItem.Name, 'Text').OnValidate := ValidateNameEvent
+  else
+    PluginHost.AddCustomValidator(frmEditWnd.edName, '', 'Text').OnValidate := ValidateNameEvent;
 end;
 
 function GetMetaData(): TMetaData;
