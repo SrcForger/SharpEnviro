@@ -13,6 +13,7 @@ object frmEditwnd: TfrmEditwnd
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = False
+  OnCreate = FormCreate
   OnDestroy = FormDestroy
   DesignSize = (
     475
@@ -312,16 +313,6 @@ object frmEditwnd: TfrmEditwnd
       ParentFont = False
       Transparent = True
       ExplicitWidth = 31
-    end
-  end
-  object vals: TJvValidators
-    ErrorIndicator = errorinc
-    Left = 80
-    Top = 152
-    object valBarName: TJvCustomValidator
-      ControlToValidate = edName
-      PropertyToValidate = 'Text'
-      OnValidate = valBarNameValidate
     end
   end
   object errorinc: TJvErrorIndicator

@@ -64,10 +64,8 @@ uses
 
 type
   TfrmEditwnd = class(TForm)
-    vals: TJvValidators;
     errorinc: TJvErrorIndicator;
     pilError: TPngImageList;
-    valBarName: TJvCustomValidator;
     edName: TEdit;
     cobo_monitor: TComboBox;
     cbBasedOn: TComboBox;
@@ -91,8 +89,7 @@ type
     Panel3: TPanel;
     Panel4: TPanel;
     Panel5: TPanel;
-    procedure valBarNameValidate(Sender: TObject; ValueToValidate: Variant;
-      var Valid: Boolean);
+
     procedure cbBasedOnSelect(Sender: TObject);
 
     procedure edThemeNameKeyPress(Sender: TObject; var Key: Char);
@@ -101,7 +98,10 @@ type
     procedure sgbFixedWidthChangeValue(Sender: TObject; Value: Integer);
     procedure chkAutoHideClick(Sender: TObject);
     procedure chkShowThrobberClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
+    FBars: TBarItems;
+    FOrigName: String;
 
     // Pointer to Bar Item in listwnd
     FBarItem: TBarItem;
@@ -119,6 +119,8 @@ type
 
     procedure Init;
     procedure Save;
+
+    procedure ValidateNameEvent(Sender: TObject; Value: Variant; var Valid: Boolean);
 
     property PluginHost: ISharpCenterHost read FPluginHost write FPluginHost;
   end;
@@ -145,6 +147,8 @@ var
   tmpBar: TBarItem;
   n: integer;
 begin
+  FBars.Update;
+
   FUpdating := True;
   try
 
@@ -169,7 +173,7 @@ begin
           cbBasedOn.Items.Clear;
           cbBasedOn.Items.AddObject('New Bar', nil);
 
-          // Build list
+          // Build based on list
           for n := 0 to frmListWnd.lbBarList.Count - 1 do
           begin
             if not Assigned(frmListWnd.lbBarList.Item[n].Data) then
@@ -230,6 +234,10 @@ begin
   finally
     cbFixedWidthClick(nil);
     FUpdating := False;
+
+    FOrigName := '';
+    if Assigned(FBarItem) then
+      FOrigName := FBarItem.Name;
   end;
 end;
 
@@ -334,14 +342,31 @@ end;
 
 procedure TfrmEditwnd.BuildMonList;
 var
-  n: integer;
+  n, i, j: integer;
   s: string;
   Mon: TMonitor;
-
 begin
   ClearMonList;
-  for n := 0 to Screen.MonitorCount - 1 do begin
+  for n := 0 to Screen.MonitorCount - 1 do
+  begin
     Mon := Screen.Monitors[n];
+
+    j := 0;
+    for i := 0 to FBars.Count - 1 do
+    begin
+      if FBars.Bars[i].Monitor = Mon.MonitorNum then
+        j := j + 1;
+    end;
+
+    if (j >= 2) then
+    begin
+      if not Assigned(FBarItem) then
+        continue;
+
+      if FBarItem.Monitor <> Mon.MonitorNum then
+        continue;
+    end;
+
     if Mon.Primary then
       s := 'Primary'
     else
@@ -360,6 +385,11 @@ begin
     FPluginHost.Editing := true;
 end;
 
+procedure TfrmEditwnd.FormCreate(Sender: TObject);
+begin
+  FBars := TBarItems.Create;
+end;
+
 procedure TfrmEditwnd.FormDestroy(Sender: TObject);
 begin
   ClearMonList;
@@ -367,12 +397,11 @@ end;
 
 function TfrmEditwnd.ValidateWindow(AEditMode: TSCE_EDITMODE_ENUM): Boolean;
 begin
+  Result := True;
+  
   errorinc.BeginUpdate;
   try
     errorinc.ClearErrors;
-    vals.ValidationSummary := nil;
-
-    Result := vals.Validate;
   finally
     errorinc.EndUpdate;
   end;
@@ -447,31 +476,35 @@ begin
   end;
 end;
 
-procedure TfrmEditwnd.valBarNameValidate(Sender: TObject;
-  ValueToValidate: Variant; var Valid: Boolean);
+procedure TfrmEditwnd.ValidateNameEvent(Sender: TObject; Value: Variant; var Valid: Boolean);
 var
-  n: integer;
+  name: string;
+  i : integer;
 begin
-  if (pnlBarSpace.Visible) then begin
-    Valid := True;
-    exit;
-  end;
-
-  if length(trim(ValueToValidate)) = 0 then begin
-    valBarName.ErrorMessage := 'Please enter a valid name!';
-    Valid := False;
-    exit;
-  end;
-
-  for n := 0 to frmListWnd.lbBarList.Count - 1 do
-    if FBarItem <> TBarItem(frmListWnd.lbBarList.Item[n].Data) then
-      if CompareText(frmListWnd.lbBarList.Item[n].SubItemText[1], ValueToValidate) = 0 then begin
-        valBarName.ErrorMessage := 'Another Bar with the same name already exists!';
-        Valid := False;
-        exit;
-      end;
-
   Valid := True;
+
+  // Make sure no other bar exists the same name
+  name := Value;
+
+  // Use ErrorMessage as a placeholder for the original name
+  if name = FOrigName then
+    Exit;
+
+  if Length(Trim(name)) = 0 then
+  begin
+    MessageBox(frmEditWnd.Handle, 'Please enter a valid name.', 'Change Name', MB_OK);
+    Valid := False;
+    Exit;
+  end;
+
+  for i := 0 to FBars.Count - 1 do
+  begin
+    if name = FBars.Bars[i].Name then
+      Valid := False;
+  end;
+
+  if not Valid then
+    MessageBox(frmEditWnd.Handle, PChar('A bar with the name ''' + name + ''' already exists.' + sLineBreak + 'Please choose another name.'), 'Change Name', MB_OK);
 end;
 
 { TIntObject }
