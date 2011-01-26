@@ -616,25 +616,30 @@ begin
     AppMenu := GetSystemMenu(pHandle, False);
   end;
 
+  // Minimized
   if IsIconic(pHandle) then
   begin
     EnableMenuItem(AppMenu, SC_Restore,  mf_bycommand or mf_enabled);
     EnableMenuItem(AppMenu, SC_Move,     mf_bycommand or mf_grayed);
     EnableMenuItem(AppMenu, SC_Size,     mf_bycommand or mf_grayed);
     EnableMenuItem(AppMenu, SC_Minimize, mf_bycommand or mf_grayed);
+    EnableMenuItem(AppMenu, SC_Maximize, mf_bycommand or mf_grayed);
   end else
+  // Maximized
   if IsZoomed(pHandle) then
   begin
     EnableMenuItem(AppMenu, SC_Restore,  mf_bycommand or mf_enabled);
     EnableMenuItem(AppMenu, SC_Move,     mf_bycommand or mf_grayed);
     EnableMenuItem(AppMenu, SC_Size,     mf_bycommand or mf_grayed);
     EnableMenuItem(AppMenu, SC_Maximize, mf_bycommand or mf_grayed);
+    EnableMenuItem(AppMenu, SC_Minimize, mf_bycommand or mf_enabled);
   end else
   begin
     EnableMenuItem(AppMenu, SC_Restore,  mf_bycommand or mf_grayed);
     EnableMenuItem(AppMenu, SC_Move,     mf_bycommand or mf_enabled);
     EnableMenuItem(AppMenu, SC_Size,     mf_bycommand or mf_enabled);
     EnableMenuItem(AppMenu, SC_Minimize, mf_bycommand or mf_enabled);
+    EnableMenuItem(AppMenu, SC_Maximize, mf_bycommand or mf_enabled);
   end;
 
   AppBars := FindAppBars;

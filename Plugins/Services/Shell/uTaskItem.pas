@@ -37,7 +37,8 @@ uses
   DateUtils,
   JclSysUtils,
   JclSysInfo,
-  SharpApi;
+  SharpApi,
+  uSystemFuncs;
 
 type
   TTaskItem = class
@@ -217,12 +218,18 @@ end;
 procedure TTaskItem.Minimize;
 begin
   FLastVWM := SharpApi.GetCurrentVWM;
-//  CloseWindow(FHandle);
-  ShowWindow(FHandle, SW_MINIMIZE);
-  //PostMessage(FHandle,WM_SYSCOMMAND,SC_MINIMIZE,0);
-  UpdateCaption;
-  UpdateVisibleState;
-  UpdatePlacement;
+
+  {if  (IsWindow(FHandle)) and
+      (not IsIconic(FHandle)) and
+      (IsWindowEnabled(FHandle)) and
+      ((GetWindowLong(FHandle, GWL_STYLE) and (WS_CAPTION or WS_SYSMENU)) = (WS_CAPTION or WS_SYSMENU))
+  then
+  begin }
+    ShowWindow(FHandle, SW_MINIMIZE);
+    UpdateCaption;
+    UpdateVisibleState;
+    UpdatePlacement;
+  //end;
 end;
 
 procedure TTaskItem.Restore;
@@ -232,9 +239,17 @@ begin
   FLastVWM := SharpApi.GetCurrentVWM;
 //  if IsIconic(FHandle) then SendMessage(FHandle, WM_SYSCOMMAND, SC_RESTORE, 0)
   //   else
-  SwitchToThisWindow(FHandle,True);
-  UpdateCaption;
-  UpdateVisibleState;
+
+  if IsWindow(FHandle) then
+  begin
+    if (IsIconic(FHandle)) and (not IsWindowEnabled(FHandle)) then
+      ShowWindowAsync(FHandle, SW_RESTORE)
+    else
+      SwitchToThisWindow(FHandle, True);
+
+    UpdateCaption;
+    UpdateVisibleState;
+  end;
 end;
 
 procedure TTaskItem.UpdatePlacement;
