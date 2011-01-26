@@ -168,8 +168,9 @@ type
     FBarName: string;
     FRegisteredSessionNotification : Boolean;
 
-    FDragging : boolean;
-    FDragEdge : Boolean;
+    FDragging : boolean;  // When the mouse is over the border
+    FDragEdge : Boolean;  // When dragging
+    FDragSize : Integer;  // Size of drag area
 
     // Info Tooltips
     FFirstHide : Boolean;
@@ -253,6 +254,8 @@ type
     // Tooltips
     property FirstHide: boolean read FFirstHide write FFirstHide;
     property FirstThrobberHide: boolean read FFirstThrobberHide write FFirstThrobberHide;
+
+    property DragSize: integer read FDragSize;
   end;
 
 const
@@ -1443,6 +1446,7 @@ begin
 
   FDragging := false;
   FDragEdge := False;
+  FDragSize := 5;
 
   // Register for notifications of this session (0), 1 = all sessions.
   FRegisteredSessionNotification := RegisterSessionNotification(Handle, 0);
@@ -1453,6 +1457,10 @@ end;
 
 procedure TSharpBarMainForm.FormDestroy(Sender: TObject);
 begin
+  // Reset cursor (Just in case)
+  SetCursor(Screen.Cursors[crDefault]);
+  Self.Cursor := crDefault;
+
   if FRegisteredSessionNotification then
     UnRegisterSesssionNotification(Handle);
   UnRegisterShellHookReceiver(Handle);
@@ -2503,15 +2511,15 @@ begin
           exit;
         end;
 
-        if (FDragging) or ((pt.Y >= Self.Top + Self.Height - 3) and (pt.Y < Self.Top + Self.Height) and (not GetMouseDown(VK_LBUTTON))) then
+        if (FDragging) or ((pt.Y >= Self.Top + Self.Height - FDragSize) and (pt.Y < Self.Top + Self.Height) and (not GetMouseDown(VK_LBUTTON))) then
         begin
+          SetCursor(Screen.Cursors[crSizeNS]);
           Self.Cursor := crSizeNS;
-          Screen.Cursor := crSizeNS;
           FDragEdge := True;
         end else if (not FDragging) and (FDragEdge) then         
         begin
+          SetCursor(Screen.Cursors[crDefault]);
           Self.Cursor := crDefault;
-          Screen.Cursor := crDefault;
           FDragEdge := False;
         end;
       end;
@@ -2542,15 +2550,15 @@ begin
           Exit;
         end;
 
-        if (FDragging) or ((pt.Y >= Self.Top) and (pt.Y < Self.Top + 3) and (not GetMouseDown(VK_LBUTTON))) then
+        if (FDragging) or ((pt.Y >= Self.Top) and (pt.Y < Self.Top + FDragSize) and (not GetMouseDown(VK_LBUTTON))) then
         begin
+          SetCursor(Screen.Cursors[crSizeNS]);
           Self.Cursor := crSizeNS;
-          Screen.Cursor := crSizeNS;
           FDragEdge := True;
         end else if (not FDragging) and (FDragEdge) then
         begin
+          SetCursor(Screen.Cursors[crDefault]);
           Self.Cursor := crDefault;
-          Screen.Cursor := crDefault;
           FDragEdge := False;
         end;
       end;

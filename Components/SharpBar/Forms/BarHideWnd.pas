@@ -72,15 +72,15 @@ begin
           Exit;
         end;
 
-        if (FDragging) or ((pt.Y >= SharpBarMainForm.Top) and (pt.Y < SharpBarMainForm.Top + 1) and (not GetMouseDown(VK_LBUTTON))) then
+        if (FDragging) or ((pt.Y >= SharpBarMainForm.Top) and (pt.Y < SharpBarMainForm.Top + SharpBarMainForm.DragSize) and (not GetMouseDown(VK_LBUTTON))) then
         begin
+          SetCursor(Screen.Cursors[crSizeNS]);
           Self.Cursor := crSizeNS;
-          Screen.Cursor := crSizeNS;
           FDragEdge := True;
         end else if (not FDragging) and (FDragEdge) then
         begin
+          SetCursor(Screen.Cursors[crDefault]);
           Self.Cursor := crDefault;
-          Screen.Cursor := crDefault;
           FDragEdge := False;
         end;
       end;
@@ -99,15 +99,15 @@ begin
           Exit;
         end;
 
-        if (FDragging) or ((pt.Y >= Monitor.Top + Monitor.Height - 1) and (pt.Y < Monitor.Top + Monitor.Height) and (not GetMouseDown(VK_LBUTTON))) then
+        if (FDragging) or ((pt.Y >= Monitor.Top + Monitor.Height - SharpBarMainForm.DragSize) and (pt.Y < Monitor.Top + Monitor.Height) and (not GetMouseDown(VK_LBUTTON))) then
         begin
+          SetCursor(Screen.Cursors[crSizeNS]);
           Self.Cursor := crSizeNS;
-          Screen.Cursor := crSizeNS;
           FDragEdge := True;
         end else if (not FDragging) and (FDragEdge) then
         begin
+          SetCursor(Screen.Cursors[crDefault]);
           Self.Cursor := crDefault;
-          Screen.Cursor := crDefault;
           FDragEdge := False;
         end;
       end;
