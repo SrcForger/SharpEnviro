@@ -1276,6 +1276,9 @@ begin
     SCM.PluginHost.Refresh( rtAll );
     UpdateSize;
     sbPlugin.SetFocus;
+
+    SetToolbarTabVisible(tidHistory, SCM.History.Count > 1);
+
     LockWindowUpdate(0);
   end;
 
