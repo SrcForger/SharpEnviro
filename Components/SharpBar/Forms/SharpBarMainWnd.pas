@@ -35,7 +35,8 @@ uses
   uSystemFuncs, Types, SharpESkin, Registry, SharpTypes, SharpNotify,
   SharpGraphicsUtils, Math, SharpCenterApi, ImgList, GR32_Backends,
   uSharpESkinInterface, uSharpBarInterface, MonitorList,
-  SharpSharedFileAccess, GR32Utils;
+  SharpSharedFileAccess, GR32Utils,
+  uSharpBar;
 
 type
   TSharpBarMainForm = class(TForm)
@@ -174,6 +175,9 @@ type
     FFirstHide : Boolean;
     FFirstThrobberHide : Boolean;
 
+    // Current bar item
+    FBarItem: TBarItem;
+
     procedure CreateNewBar;
     procedure LoadBarModules(XMLElem: TJclSimpleXMlElem);
 
@@ -223,6 +227,8 @@ type
     procedure WMShellHook(var msg: TMessage); message WM_SHARPSHELLMESSAGE;
 
     procedure OnBarPositionUpdate(Sender: TObject; var X, Y: Integer);
+
+    procedure RegisterActions;
 
   public
     procedure LoadBarFromID(ID: integer);
@@ -476,7 +482,7 @@ begin
     exit;
   ModuleManager.BroadcastPluginMessage('MM_SHARPEUPDATEACTIONS');
 
-  SharpApi.RegisterActionEx(PChar('!FocusBar (' + inttostr(FBarID) + ')'), 'SharpBar', Handle, 1);
+  RegisterActions;
 end;
 
 procedure TSharpBarMainForm.WMSharpEBang(var Msg: TMessage);
@@ -1314,6 +1320,18 @@ begin
   xml.Free;
 end;
 
+procedure TSharpBarMainForm.RegisterActions;
+begin
+  if Assigned(FBarItem) then
+  begin
+    SharpApi.UnRegisterAction('!FocusBar: ' + FBarItem.Name);
+    FreeAndNil(FBarItem);
+  end;
+
+  FBarItem := TBarItem.Create(FBarID);
+  SharpApi.RegisterActionEx(PChar('!FocusBar: ' + FBarItem.Name), 'SharpBar', Handle, 1);
+end;
+
 // Init all skin and module management classes
 
 procedure TSharpBarMainForm.InitBar;
@@ -1390,7 +1408,7 @@ begin
     mfParamID := -255;
   end;
 
-  SharpApi.RegisterActionEx(PChar('!FocusBar (' + inttostr(FBarID) + ')'), 'SharpBar', Handle, 1);
+  RegisterActions;
   SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));
 end;
 
@@ -1446,7 +1464,11 @@ begin
   SetLayeredWindowAttributes(Handle, 0, 0, LWA_ALPHA);
   SharpEBar.abackground.Alpha := 0;
 
-  SharpApi.UnRegisterAction(PChar('!FocusBar (' + inttostr(FBarID) + ')'));  
+  if Assigned(FBarItem) then
+  begin
+    SharpApi.UnRegisterAction(PChar('!FocusBar: ' + FBarItem.Name));
+    FreeAndNil(FBarItem);
+  end;
 
   if BarHideForm <> nil then begin
     if BarHideForm.Visible then

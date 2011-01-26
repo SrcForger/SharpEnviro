@@ -37,10 +37,10 @@ uses
   uSystemFuncs,
   dialogs,
   JCLLocales,
-  JclFileUtils,
   VWMFunctions,
   {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
-  uShutdown in '..\..\..\Common\Units\Shutdown\uShutdown.pas';
+  uShutdown in '..\..\..\Common\Units\Shutdown\uShutdown.pas',
+  uSharpBar in '..\..\..\Components\SharpBar\uSharpBar.pas';
 
 type
   TActionEvent = class(Tobject)
@@ -75,7 +75,7 @@ var
   RunFileDlgA : TRunFileDlgA;
   RunFileDlgW : TRunFileDlgW;
 
-  ActionBarList: TStringList;
+  ActionBarList: TBarItems;
 
 const
   cRestartIdx = 0;
@@ -209,28 +209,30 @@ begin
     UnRegisterAction(PChar('!KL' + LocalsList[n].DisplayName));
 end;
 
-procedure RegisterActions;
+procedure RegisterBarActions;
 var
-  slBars: TStringList;
   i : integer;
 begin
-  // Get list of bars
-  ActionBarList.Clear;
-  slBars := TStringList.Create;
-  try
-    AdvBuildFileList(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\*', faDirectory, slBars, amAny, []);
-    for i := 0 to Pred(slBars.Count) do
-    begin
-      if not FileExists(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + slBars[i] + '\bar.xml') then
-        continue;
-
-      ActionBarList.Add(slBars[i]);
-    end;
-  finally
-    slBars.Free;
+  for i := 0 to Pred(ActionBarList.Count) do
+  begin
+    RegisterActionEx('!StartBar: ' + ActionBarList.Bars[i].Name, 'SharpBar', h, cStartBarIdx + i);
+    RegisterActionEx('!StopBar: ' + ActionBarList.Bars[i].Name, 'SharpBar', h, cStopBarIdx + i);
   end;
-  
+end;
 
+procedure UnregisterBarActions;
+var
+  i : integer;
+begin
+  for i := 0 to Pred(ActionBarList.Count) do
+  begin
+    UnregisterAction('!StartBar: ' + ActionBarList.Bars[i].Name);
+    UnregisterAction('!StopBar: ' + ActionBarList.Bars[i].Name);
+  end;
+end;
+
+procedure RegisterActions;
+begin
   RegisterActionEx('!Restart', 'Shutdown', h, cRestartIdx);
   RegisterActionEx('!Shutdown', 'Shutdown', h, cShutdownIdx);
   RegisterActionEx('!Logout', 'Shutdown', h, cLogoutIdx);
@@ -254,11 +256,7 @@ begin
 
   RegisterActionEx('!ToggleAllBars', 'SharpBar', h, cToggleAllBarsIdx);
 
-  for i := 0 to Pred(ActionBarList.Count) do
-  begin
-    RegisterActionEx('!StartBar (' + ActionBarList[i] + ')', 'SharpBar', h, cStartBarIdx + i);
-    RegisterActionEx('!StopBar (' + ActionBarList[i] + ')', 'SharpBar', h, cStopBarIdx + i);
-  end;
+  RegisterBarActions;
 
   RegisterActionEx('!RunDlg', 'Misc', h, cRunDlgIdx);
   RegisterActionEx('!Search', 'Misc', h, cSearchIdx);
@@ -282,7 +280,7 @@ begin
   LocalsList := TJclKeyboardLayoutList.Create;
   LocalsList.Refresh;
 
-  ActionBarList := TStringList.Create;
+  ActionBarList := TBarItems.Create;
 
   RegisterActions;
 
@@ -296,8 +294,6 @@ end;
 // Service is stopped
 
 procedure Stop;
-var
-  i : integer;
 begin
   SetLength(FWndList, 0);
 
@@ -330,11 +326,7 @@ begin
 
   UnRegisterAction('!ToggleAllBars');
 
-  for i := 0 to Pred(ActionBarList.Count) do
-  begin
-    UnregisterAction('!StartBar (' + ActionBarList[i] + ')');
-    UnregisterAction('!StopBar (' + ActionBarList[i] + ')');
-  end;
+  UnregisterBarActions;
 
   UnRegisterAction('!RunDlg');
 
@@ -404,8 +396,19 @@ begin
     LocalsList.Refresh;
     RegisterKeyBoardLocals;
   end
-  else if msg.Msg = WM_SHARPEUPDATEACTIONS then
-    RegisterActions
+  else if (msg.Msg = WM_SHARPEUPDATEACTIONS) then
+  begin
+    RegisterActions;
+  end
+  else if (msg.Msg = WM_BARUPDATED) then
+  begin
+    // Unregister old actions first
+    UnregisterBarActions;
+
+    // Update and register new actions
+    ActionBarList.Update;
+    RegisterBarActions;
+  end
   else if msg.Msg = WM_SHARPEACTIONMESSAGE then
   begin
     lParam := Msg.LParam;
@@ -418,7 +421,7 @@ begin
         if msg.LParam = cStartBarIdx + i then
         begin
           SharpApi.SharpExecute('_nohist,' + SharpApi.GetSharpeDirectory + 'SharpBar.exe' +
-                                ' -load:' + ActionBarList[i] +
+                                ' -load:' + IntToStr(ActionBarList.Bars[i].BarID) +
                                 ' -noREB' +
                                 ' -noLASB');
         end;
@@ -429,7 +432,7 @@ begin
       begin
         if msg.LParam = cStopBarIdx + i then
         begin
-          wnd := FindWindow(nil, PChar('SharpBar_' + ActionBarList[i]));
+          wnd := FindWindow(nil, PChar('SharpBar_' + IntToStr(ActionBarList.Bars[i].BarID)));
           if wnd <> 0 then
             SendMessage(wnd, WM_SHARPTERMINATE, 0, 0);
         end;

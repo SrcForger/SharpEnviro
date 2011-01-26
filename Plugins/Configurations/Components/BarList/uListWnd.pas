@@ -104,15 +104,13 @@ type
     function PointInRect(P: TPoint; Rect: TRect): boolean;
     procedure BuildBarList;
   public
-    FBarList: TObjectList;
+    FBarList: TBarItems;
 
     function BarSpaceCheck: boolean;
 
     property PluginHost: ISharpCenterHost read FPluginHost write FPluginHost;
 
   end;
-
-procedure AddItemsToList(AList: TObjectList);
 
 var
   frmListWnd: TfrmListWnd;
@@ -191,7 +189,7 @@ begin
       bShouldStart := True;
       for i := 0 to FBarList.Count - 1 do
       begin
-        if IsBarRunning(TBarItem(FBarList.Items[i]).BarID) then
+        if IsBarRunning(FBarList.Bars[i].BarID) then
           bShouldStart := False;
       end;
     
@@ -199,10 +197,10 @@ begin
       begin
         for i := 0 to FBarList.Count - 1 do
         begin
-          if not IsBarRunning(TBarItem(FBarList.Items[i]).BarID) then
+          if not IsBarRunning(FBarList.Bars[i].BarID) then
           begin
             SharpApi.SharpExecute('_nohist,' + SharpApi.GetSharpeDirectory + 'SharpBar.exe' +
-                                ' -load:' + inttostr(TBarItem(FBarList.Items[i]).BarID) +
+                                ' -load:' + inttostr(FBarList.Bars[i].BarID) +
                                 ' -noREB' +
                                 ' -noLASB');
           end;
@@ -211,9 +209,9 @@ begin
       begin
         for i := 0 to FBarList.Count - 1 do
         begin
-          if IsBarRunning(TBarItem(FBarList.Items[i]).BarID) then
+          if IsBarRunning(FBarList.Bars[i].BarID) then
           begin
-            wnd := FindWindow(nil, PChar('SharpBar_' + inttostr(TBarItem(FBarList.Items[i]).BarID)));
+            wnd := FindWindow(nil, PChar('SharpBar_' + inttostr(FBarList.Bars[i].BarID)));
             if wnd <> 0 then
               SendMessage(wnd, WM_SHARPTERMINATE, 0, 0);
           end;
@@ -441,7 +439,7 @@ begin
 
         for i := 0 to FBarList.Count - 1 do
         begin
-          if (TBarItem(FBarList.Items[i]).AutoStart) and (IsBarRunning(TBarItem(FBarList.Items[i]).BarID)) then
+          if (FBarList.Bars[i].AutoStart) and (IsBarRunning(FBarList.Bars[i].BarID)) then
             b := True;
         end;
         if b then
@@ -521,7 +519,7 @@ end;
 procedure TfrmListWnd.FormCreate(Sender: TObject);
 begin
   FWinHandle := Classes.AllocateHWND(CustomWndProc);
-  FBarList := TObjectList.Create(True);
+  FBarList := TBarItems.Create;
   Self.DoubleBuffered := true;
   lbBarList.DoubleBuffered := true;
 end;
@@ -624,7 +622,7 @@ begin
   end;
 
   lbBarList.Clear;
-  AddItemsToList(FBarList);
+  FBarList.Update;
 
   newItem := lbBarList.AddItem('<br>Top Bars<hr>');
   newItem.Data := nil;
@@ -639,7 +637,7 @@ begin
   bari := 1;
   for i := 0 to FBarList.Count - 1 do
   begin
-    tmpBar := TBarItem(FBarList.Items[i]);
+    tmpBar := FBarList.Bars[i];
     if tmpBar.VPos <> 0 then
       continue;
 
@@ -665,7 +663,7 @@ begin
   // Add Bottom bars
   for i := 0 to FBarList.Count - 1 do
   begin
-    tmpBar := TBarItem(FBarList.Items[i]);
+    tmpBar := FBarList.Bars[i];
     if tmpBar.VPos <> 1 then
       continue;
 
@@ -704,47 +702,6 @@ begin
 
   FPluginHost.SetEditTabsVisibility( lbBarList.ItemIndex, lbBarList.Count );
   FPluginHost.Refresh;
-end;
-
-{ TBarItem }
-
-procedure AddItemsToList(AList: TObjectList);
-var
-  newItem: TBarItem;
-  dir: string;
-  slBars: TStringList;
-  n, i: Integer;
-
-  function ExtractBarID(ABarXmlFileName: string): String;
-  var
-    s: string;
-    n: Integer;
-  begin
-    s := PathRemoveSeparator(ExtractFilePath(ABarXmlFileName));
-    n := JclStrings.StrLastPos('\', s);
-    s := Copy(s, n + 1, length(s));
-    result := s;
-  end;
-
-begin
-  AList.Clear;
-  dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
-
-  slBars := TStringList.Create;
-  try
-    // build list of bar.xml files
-    AdvBuildFileList(dir + '*bar.xml', faAnyFile, slBars, amAny, [flFullNames, flRecursive]);
-    for i := 0 to Pred(slBars.Count) do
-    begin
-      if TryStrToInt(ExtractBarID(slBars[i]),n) then
-      begin
-        newItem := TBarItem.Create(n);
-        AList.Add(newItem);
-      end;
-    end;
-  finally
-    slBars.Free;
-  end;
 end;
 
 end.

@@ -82,6 +82,7 @@ const
   WM_UNLOCKBARWINDOW      = WM_APP + 612;
   WM_BARINSERTMODULE      = WM_APP + 613;
   WM_BARREPOSITION        = WM_APP + 614;
+  WM_BARUPDATED           = WM_APP + 615;   // Sent when a bar is updated, created or deleted
 
   // VWM Functions
   WM_VWMSWITCHDESKTOP      = WM_APP + 620;

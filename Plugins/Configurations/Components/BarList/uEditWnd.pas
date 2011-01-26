@@ -97,12 +97,13 @@ type
 
     procedure edThemeNameKeyPress(Sender: TObject; var Key: Char);
     procedure FormDestroy(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure cbFixedWidthClick(Sender: TObject);
     procedure sgbFixedWidthChangeValue(Sender: TObject; Value: Integer);
     procedure chkAutoHideClick(Sender: TObject);
     procedure chkShowThrobberClick(Sender: TObject);
   private
+
+    // Pointer to Bar Item in listwnd
     FBarItem: TBarItem;
     FUpdating: Boolean;
     FPluginHost: ISharpCenterHost;
@@ -187,19 +188,19 @@ begin
           edName.SetFocus;
         end;
       sceEdit: begin
-          if frmListWnd.lbBarList.ItemIndex <> -1 then begin
-
+          if frmListWnd.lbBarList.ItemIndex <> -1 then
+          begin
             pnlBarSpace.Hide;
             pnlBarSpace.Width := 0;
             pnlBarSpace.Height := 0;
             tmpItem := frmListWnd.lbBarList.SelectedItem;
+            if tmpItem.Data = nil then
+              Exit;
+
             FBarItem := TBarItem(tmpItem.Data);
 
             edName.Text := FBarItem.Name;
             edName.SetFocus;
-
-            if FBarItem = nil then
-              FBarItem := TBarItem.Create;
 
             BuildMonList;
             if FBarItem.PMonitor then
@@ -234,17 +235,15 @@ end;
 
 procedure TfrmEditwnd.Save;
 var
-  xml: TJclSimpleXML;
   dir: string;
   newId: string;
   copyId: integer;
   n: integer;
   wnd: hwnd;
   sr: TSearchRec;
-  fileLoaded: boolean;
+  newItem: TBarItem;
 begin
   dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
-  copyId := 0;
 
   case FPluginHost.EditMode of
     sceAdd: begin
@@ -270,97 +269,46 @@ begin
           FindClose(sr);
         end;
 
-        xml := TJclSimpleXML.Create;
+        newItem := TBarItem.Create(StrToInt(newID));
         try
-          if FileCheck(dir + newId + '\Bar.xml', True) then begin
-            try
-              xml.LoadFromFile(dir + newId + '\Bar.xml');
-              fileLoaded := True;
-            except
-              fileLoaded := False;
-            end;
-          end
-          else
-            fileLoaded := False;
-  
-          if not fileLoaded then
-            xml.Root.Name := 'SharpBar';
-  
-          with xml.Root.Items do begin
-            if ItemNamed['Settings'] = nil then
-              Add('Settings');
-  
-            with ItemNamed['Settings'].Items do
-            begin
-              clear;
-              Add('ID', newId);
-              Add('Name', edName.Text);
-              Add('ShowThrobber', chkShowThrobber.Checked);
-              Add('DisableHideBar', True);
-              Add('AutoStart', True);
-              Add('AutoPosition', True);
-              Add('StartHidden', False);
-              Add('MiniThrobbers', False);
-              Add('PrimaryMonitor', (cobo_monitor.ItemIndex = 0));
-              Add('MonitorIndex', TIntObject(cobo_monitor.Items.Objects[cobo_monitor.ItemIndex]).Value);
-              Add('HorizPos', cobo_halign.ItemIndex);
-              Add('VertPos', cobo_valign.ItemIndex);
-              Add('FixedWidth', sgbFixedWidth.Value);
-              Add('FixedWidthEnabled', cbFixedWidth.Checked);
-              Add('ShowMiniThrobbers', False);
-              Add('AlwaysOnTop', True);
-              Add('AutoHide', chkAutoHide.Checked);
-              Add('AutoHideTime', sgbAutoHide.Value * 1000);
-            end;
-  
-            if ItemNamed['Modules'] = nil then
-              Add('Modules');
-          end;
-          ForceDirectories(dir + newId);
-          if FileCheck(dir + newId + '\Bar.xml') then
-            xml.SaveToFile(dir + newId + '\Bar.xml');
+          newItem.BarID := StrToInt(newID);
+          newItem.Name := edName.Text;
+          newItem.ShowThrobber := chkShowThrobber.Checked;
+          newItem.PMonitor := (cobo_monitor.ItemIndex = 0);
+          newItem.Monitor := TIntObject(cobo_monitor.Items.Objects[cobo_monitor.ItemIndex]).Value;
+          newItem.HPos := cobo_halign.ItemIndex;
+          newItem.VPos := cobo_valign.ItemIndex;
+          newItem.FixedWidth := sgbFixedWidth.Value;
+          newItem.FixedWidthEnabled := cbFixedWidth.Checked;
+          newItem.AutoHide := chkAutoHide.Checked;
+          newItem.AutoHideTime := sgbAutoHide.Value * 1000;
+
+          newItem.Save;
         finally
-          xml.Free;
+          newItem.Free;
         end;
+
+        // Send update message
+        SharpApi.SharpEBroadCast(WM_BARUPDATED, 0, StrToInt(newId));
       end;
     sceEdit:
       begin
-        copyId := TBarItem(FBarItem).BarID;
-        xml := TJclSimpleXML.Create;
-        if LoadXMLFromSharedFile(XML,dir + inttostr(copyId) + '\Bar.xml',False) then
-        begin
-          with xml.Root.Items do
-          begin
-            if ItemNamed['Settings'] = nil then
-              Add('Settings');
+        FBarItem.Name := edName.Text;
+        FBarItem.ShowThrobber := chkShowThrobber.Checked;
+        FBarItem.PMonitor := (cobo_monitor.ItemIndex = 0);
+        FBarItem.Monitor := TIntObject(cobo_monitor.Items.Objects[cobo_monitor.ItemIndex]).Value;
+        FBarItem.HPos := cobo_halign.ItemIndex;
+        FBarItem.VPos := cobo_valign.ItemIndex;
+        FBarItem.FixedWidth := sgbFixedWidth.Value;
+        FBarItem.FixedWidthEnabled := cbFixedWidth.Checked;
+        FBarItem.AlwaysOnTop := chkAlwaysOnTop.Checked;
+        FBarItem.AutoHide := chkAutoHide.Checked;
+        FBarItem.AutoHideTime := sgbAutoHide.Value * 1000;
 
-            with ItemNamed['Settings'].Items do
-            begin
-              Clear;
-              Add('ID', newId);
-              Add('Name', edName.Text);
-              Add('AutoPosition', True);
-              Add('ShowThrobber', chkShowThrobber.Checked);
-              Add('DisableHideBar', FBarItem.DisableHideBar);
-              Add('AutoStart', FBarItem.AutoStart);
-              Add('AutoPosition', True);
-              Add('StartHidden', FBarItem.StartHidden);
-              Add('MiniThrobbers', FBarItem.MiniThrobbers);
-              Add('PrimaryMonitor', (cobo_monitor.ItemIndex = 0));
-              Add('MonitorIndex', TIntObject(cobo_monitor.Items.Objects[cobo_monitor.ItemIndex]).Value);
-              Add('HorizPos', cobo_halign.ItemIndex);
-              Add('VertPos', cobo_valign.ItemIndex);
-              Add('FixedWidth', sgbFixedWidth.Value);
-              Add('FixedWidthEnabled', cbFixedWidth.Checked);
-              Add('ShowMiniThrobbers', FBarItem.MiniThrobbers);
-              Add('AlwaysOnTop', chkAlwaysOnTop.Checked);
-              Add('AutoHide', chkAutoHide.Checked);
-              Add('AutoHideTime', sgbAutoHide.Value * 1000);
-            end;
-          end;
-          SaveXMLToSharedFile(XML,dir + inttostr(copyId) + '\Bar.xml',True);
-        end;
-        xml.Free;        
+        FBarItem.Save;
+
+        // Send update message
+        SharpApi.SharpEBroadCast(WM_BARUPDATED, 0, FBarItem.BarID);
       end;
   end;
 
@@ -370,7 +318,7 @@ begin
       ' -noREB' +
       ' -noLASB')
   else if FPluginHost.EditMode = sceEdit then begin
-    wnd := FindWindow(nil, PChar('SharpBar_' + inttostr(copyId)));
+    wnd := FindWindow(nil, PChar('SharpBar_' + inttostr(FBarItem.BarID)));
     if wnd <> 0 then
       SendMessage(wnd, WM_BARREPOSITION, 0, 0);
   end;
@@ -410,11 +358,6 @@ procedure TfrmEditwnd.edThemeNameKeyPress(Sender: TObject; var Key: Char);
 begin
   if not (FUpdating) then
     FPluginHost.Editing := true;
-end;
-
-procedure TfrmEditwnd.FormCreate(Sender: TObject);
-begin
-  FBarItem := TBarItem.Create;
 end;
 
 procedure TfrmEditwnd.FormDestroy(Sender: TObject);

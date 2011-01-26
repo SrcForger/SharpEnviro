@@ -59,8 +59,13 @@ type
   TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin, ISharpCenterPluginEdit,
     ISharpCenterPluginValidation )
   private
+    FBars: TBarItems;
+
+    procedure ValidateNameEvent(Sender: TObject; Value: Variant; var Valid: Boolean);
+
   public
     constructor Create( APluginHost: ISharpCenterHost );
+    destructor Destroy; override;
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
@@ -83,7 +88,11 @@ end;
 procedure TSharpCenterPlugin.CloseEdit(AApply: Boolean);
 begin
   if AApply then
+  begin
     frmEditWnd.Save;
+
+    FBars.Update;
+  end;
 
   FreeAndNil(frmEditWnd);
 end;
@@ -91,6 +100,13 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
 begin
   PluginHost := APluginHost;
+
+  FBars := TBarItems.Create;
+end;
+
+destructor TSharpCenterPlugin.Destroy;
+begin
+  FreeAndNil(FBars);
 end;
 
 function XmlGetBarListAsCommaText: string;
@@ -138,9 +154,41 @@ begin
   AssignThemeToForms(frmListWnd,frmEditWnd,AEditing,Theme);
 end;
 
+procedure TSharpCenterPlugin.ValidateNameEvent(Sender: TObject; Value: Variant; var Valid: Boolean);
+var
+  name: string;
+  i : integer;
+begin
+  Valid := True;
+
+  // Make sure no other bar exists the same name
+  name := Value;
+
+  // Use ErrorMessage as a placeholder for the original name
+  if name = TJvCustomValidator(Sender).ErrorMessage then
+    Exit;
+
+  if Length(Trim(name)) = 0 then
+  begin
+    MessageBox(frmEditWnd.Handle, 'Please enter a valid name.', 'Change Name', MB_OK);
+    Valid := False;
+    Exit;
+  end;
+
+  for i := 0 to FBars.Count - 1 do
+  begin
+    if name = FBars.Bars[i].Name then
+      Valid := False;
+  end;
+
+  if not Valid then
+    MessageBox(frmEditWnd.Handle, PChar('A bar with the name ''' + name + ''' already exists.' + sLineBreak + 'Please choose another name.'), 'Change Name', MB_OK);
+end;
+
 procedure TSharpCenterPlugin.SetupValidators;
 begin
-  PluginHost.AddRequiredFieldValidator(frmEditWnd.edName,'Please enter a toolbar name','Text');
+  PluginHost.AddCustomValidator(frmEditWnd.edName, frmEditWnd.BarItem.Name, 'Text').OnValidate := ValidateNameEvent;
+  //PluginHost.AddRequiredFieldValidator(frmEditWnd.edName,'Please enter a toolbar name','Text');
 end;
 
 function GetMetaData(): TMetaData;
