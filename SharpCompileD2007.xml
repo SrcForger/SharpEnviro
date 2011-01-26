@@ -38,6 +38,7 @@
     <project Name="Notes" Type="DLL">Plugins\Configurations\Modules\Notes\Notes.dproj</project>
     <project Name="RSS Reader" Type="DLL">Plugins\Configurations\Modules\RSS Reader\RSSReader.dproj</project>
     <project Name="Show Desktop" Type="DLL">Plugins\Configurations\Modules\ShowDesktop\ShowDesktop.dproj</project>
+	<project Name="Spacer" Type="DLL">Plugins\Configurations\Modules\Spacer\Spacer.dproj</project>
     <project Name="System Tray" Type="DLL">Plugins\Configurations\Modules\SystemTray\SystemTray.dproj</project>
     <project Name="Task" Type="DLL">Plugins\Configurations\Modules\TaskModule\TaskModule.dproj</project>
     <project Name="Volume Control" Type="DLL">Plugins\Configurations\Modules\VolumeControl\VolumeControl.dproj</project>
@@ -115,6 +116,7 @@
     <project Name="Recycle Bin" Type="DLL" >Plugins\Modules\RecycleBin\RecycleBin.dproj</project>
     <project Name="RSS Reader" Type="DLL" >Plugins\Modules\RSS Reader\RSSReader.dproj</project>
     <project Name="Show Desktop" Type="DLL" >Plugins\Modules\ShowDesktop\ShowDesktop.dproj</project>
+	<project Name="Spacer" Type="DLL" >Plugins\Modules\Spacer\Spacer.dproj</project>
     <project Name="System Tray" Type="DLL" >Plugins\Modules\SystemTray\SystemTray.dproj</project>
     <project Name="Taskbar" Type="DLL" >Plugins\Modules\Taskbar\Taskbar.dproj</project>
     <project Name="Volume Control" Type="DLL" >Plugins\Modules\VolumeControl\VolumeControl.dproj</project>
