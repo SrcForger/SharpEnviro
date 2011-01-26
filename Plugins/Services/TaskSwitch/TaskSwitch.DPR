@@ -30,6 +30,7 @@ library TaskSwitch;
 {$R *.RES}
 
 uses
+  ShareMem,
   windows,
   Messages,
   SysUtils,

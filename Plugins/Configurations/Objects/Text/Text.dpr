@@ -28,7 +28,7 @@ library Text;
 {$R *.res}
 
 uses
-//  VCLFixPack,
+  ShareMem,
   Controls,
   Classes,
   Windows,

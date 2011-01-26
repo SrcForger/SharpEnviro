@@ -40,7 +40,7 @@ program SharpMenu;
 {$R *.res}
 
 uses
-//  VCLFixPack,
+  ShareMem,
   Forms,
   Windows,
   Messages,

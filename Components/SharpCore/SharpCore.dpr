@@ -31,6 +31,7 @@ program SharpCore;
 {$R VersionInfo.RES}
 
 uses
+  ShareMem,
   Forms,
   Windows,
   Contnrs,

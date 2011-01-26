@@ -29,7 +29,7 @@ library MediaController;
 {$R 'VersionInfo.res'}
 
 uses
-//  VCLFixPack,
+  ShareMem,
   Windows,
   Controls,
   SysUtils,

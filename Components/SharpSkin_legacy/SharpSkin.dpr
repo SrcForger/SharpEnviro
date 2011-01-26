@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 program SharpSkin;
 
 uses
-//  VCLFixPack,
+  ShareMem,
   Forms,
   MainForm in 'Forms\MainForm.pas' {Form1},
   Defaults in 'Units\Defaults.pas',

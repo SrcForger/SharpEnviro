@@ -1,7 +1,7 @@
 program ExecTest;
 
 uses
-//  VCLFixPack,
+  ShareMem,
   Forms,
   uExecTest in 'uExecTest.pas' {Form1},
   uExecServiceAliasList in 'uExecServiceAliasList.pas',

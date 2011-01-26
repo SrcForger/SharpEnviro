@@ -30,7 +30,7 @@ library Link;
 {$R *.res}
 
 uses
-//  VCLFixPack,
+  ShareMem,
   Controls,
   Classes,
   Windows,

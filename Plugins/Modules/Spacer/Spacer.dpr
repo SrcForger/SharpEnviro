@@ -29,7 +29,7 @@ library Spacer;
 {$R *.res}
 
 uses
-//  VCLFixPack,
+  ShareMem,
   Windows,
   Controls,
   SysUtils,

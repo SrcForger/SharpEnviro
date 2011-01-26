@@ -30,7 +30,7 @@ program SetShell;
 {$R *.res}
 
 uses
-//  VCLFixPack,
+  ShareMem,
   Forms,
   SharpApi,
   {$IFDEF DEBUG}DebugDialog in '..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}

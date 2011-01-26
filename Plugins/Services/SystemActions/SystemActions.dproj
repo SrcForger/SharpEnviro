@@ -3,7 +3,7 @@
   <PropertyGroup>
     <ProjectGuid>{6f1f752e-ee1c-43b1-b74d-38cadd5979c5}</ProjectGuid>
     <MainSource>SystemActions.DPR</MainSource>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_EnabledPackages>true</DCC_EnabledPackages>
     <DCC_UsePackage>vcl;rtl</DCC_UsePackage>
@@ -16,10 +16,10 @@
     <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
     <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
     <DCC_ExeOutput>..\..\..\..\SharpE\Services\</DCC_ExeOutput>
-    <DCC_UnitSearchPath>..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Units\Shutdown;..\..\..\Common\Units\SharpTypes;..\..\..\Common\Units\SystemFuncs;..\..\..\Common\Units\VWM;..\..\..\Common\Units\MonitorList;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Units\SharpIconUtils\;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Units\DebugDialog</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Units\Shutdown;..\..\..\Common\Units\SharpTypes;..\..\..\Common\Units\SystemFuncs;..\..\..\Common\Units\VWM;..\..\..\Common\Units\MonitorList;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Units\SharpIconUtils\;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Units\DebugDialog</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Units\Shutdown;..\..\..\Common\Units\SharpTypes;..\..\..\Common\Units\SystemFuncs;..\..\..\Common\Units\VWM;..\..\..\Common\Units\MonitorList;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Units\SharpIconUtils\;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Units\DebugDialog</DCC_ObjPath>
-    <DCC_IncludePath>..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Units\Shutdown;..\..\..\Common\Units\SharpTypes;..\..\..\Common\Units\SystemFuncs;..\..\..\Common\Units\VWM;..\..\..\Common\Units\MonitorList;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Units\SharpIconUtils\;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Units\DebugDialog</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Units\Shutdown;..\..\..\Common\Units\SharpTypes;..\..\..\Common\Units\SystemFuncs;..\..\..\Common\Units\VWM;..\..\..\Common\Units\MonitorList;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Units\SharpIconUtils\;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Units\Shutdown;..\..\..\Common\Units\SharpTypes;..\..\..\Common\Units\SystemFuncs;..\..\..\Common\Units\VWM;..\..\..\Common\Units\MonitorList;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Units\SharpIconUtils\;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Units\Shutdown;..\..\..\Common\Units\SharpTypes;..\..\..\Common\Units\SystemFuncs;..\..\..\Common\Units\VWM;..\..\..\Common\Units\MonitorList;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Units\SharpIconUtils\;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML</DCC_ObjPath>
+    <DCC_IncludePath>..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Units\Shutdown;..\..\..\Common\Units\SharpTypes;..\..\..\Common\Units\SystemFuncs;..\..\..\Common\Units\VWM;..\..\..\Common\Units\MonitorList;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Units\SharpIconUtils\;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Libraries\SharpThemeApiEx;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Units\DebugDialog;..\..\..\Common\Units\XML</DCC_IncludePath>
     <DCC_Define>RELEASE</DCC_Define>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

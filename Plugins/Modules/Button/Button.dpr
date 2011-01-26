@@ -30,7 +30,7 @@ library Button;
 {$R *.res}
 
 uses
-//  VCLFixPack,
+  ShareMem,
   Windows,
   Controls,
   SysUtils,

@@ -28,7 +28,7 @@ library iDrop;
 
 
 uses
-//  VCLFixPack,
+  ShareMem,
   Windows,
   Controls,
   Dialogs,

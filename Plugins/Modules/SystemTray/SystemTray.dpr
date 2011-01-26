@@ -29,6 +29,7 @@ library SystemTray;
 {$R *.res}
 
 uses
+  ShareMem,
   Windows,
   Controls,
   SysUtils,

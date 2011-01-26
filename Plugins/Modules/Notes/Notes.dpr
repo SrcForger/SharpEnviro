@@ -31,6 +31,7 @@ library Notes;
 {$R *.res}
 
 uses
+  ShareMem,
   Windows,
   Controls,
   SysUtils,

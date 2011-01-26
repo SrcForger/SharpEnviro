@@ -1,7 +1,7 @@
 program StartupTest;
 
 uses
-//  VCLFixPack,
+  ShareMem,
   Forms,
   uStartupTest in 'uStartupTest.pas' {Form1},
   uStartup in 'uStartup.pas',

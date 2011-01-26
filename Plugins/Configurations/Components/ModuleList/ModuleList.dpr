@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library ModuleList;
 uses
-//  VCLFixPack,
+  ShareMem,
   Controls,
   Classes,
   Contnrs,

@@ -30,7 +30,7 @@ program SharpConsole;
 {$R *.res}
 
 uses
-//  VCLFixPack,
+  ShareMem,
   Forms,
   uVistaFuncs,
   {$IFDEF DEBUG}DebugDialog in '..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}

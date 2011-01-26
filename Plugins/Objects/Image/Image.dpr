@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 library Image;
 
 uses
-//  VCLFixPack,
+  ShareMem,
   windows,
   graphics,
   Contnrs,

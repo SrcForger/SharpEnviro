@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 library DesktopSettings;
 
 uses
-//  VCLFixPack,
+  ShareMem,
   Controls,
   Classes,
   Windows,

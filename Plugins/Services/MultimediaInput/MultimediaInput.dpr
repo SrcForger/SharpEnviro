@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 library MultimediaInput;
 
 uses
-//  VCLFixPack,
+  ShareMem,
   windows,
   SysUtils,
   Messages,

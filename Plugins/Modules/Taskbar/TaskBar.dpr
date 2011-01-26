@@ -30,6 +30,7 @@ library TaskBar;
 {$R *.res}
 
 uses
+  ShareMem,
   Windows,
   Controls,
   SysUtils,

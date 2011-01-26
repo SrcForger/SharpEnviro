@@ -30,7 +30,7 @@ library Weather;
 {$R *.res}
 
 uses
-//  VCLFixPack,
+  ShareMem,
   Controls,
   Classes,
   Windows,

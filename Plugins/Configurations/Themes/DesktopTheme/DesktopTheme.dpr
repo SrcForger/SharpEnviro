@@ -30,7 +30,7 @@ library DesktopTheme;
 {$R *.res}
 
 uses
-//  VCLFixPack,
+  ShareMem,
   Controls,
   Classes,
   Windows,

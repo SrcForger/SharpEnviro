@@ -30,7 +30,7 @@ library ApplicationBar;
 {$R *.res}
 
 uses
-//  VCLFixPack,
+  ShareMem,
   Windows,
   Controls,
   SysUtils,

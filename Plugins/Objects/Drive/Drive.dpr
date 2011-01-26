@@ -25,6 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library Drive;
 uses
+  ShareMem,
   Forms,
   windows,
   graphics,

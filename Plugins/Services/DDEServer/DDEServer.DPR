@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 library DDEServer;
 
 uses
-//  VCLFixPack,
+  ShareMem,
   windows,
   {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   SharpApi;

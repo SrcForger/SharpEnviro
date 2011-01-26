@@ -30,7 +30,7 @@ program SharpCenter;
 {$R *.res}
 
 uses
-//  VCLFixPack,
+  ShareMem,
   Forms,
   Windows,
   SharpApi,

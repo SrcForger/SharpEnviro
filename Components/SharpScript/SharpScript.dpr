@@ -30,7 +30,7 @@ program SharpScript;
 {$R *.res}
 
 uses
-//  VCLFixPack,
+  ShareMem,
   Forms,
   SysUtils,
   JvInterpreter,

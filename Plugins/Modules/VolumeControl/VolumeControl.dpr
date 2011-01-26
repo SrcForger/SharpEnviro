@@ -30,7 +30,7 @@ library VolumeControl;
 {$R *.res}
 
 uses
-//  VCLFixPack,
+  ShareMem,
   Windows,
   Controls,
   SysUtils,

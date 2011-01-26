@@ -31,7 +31,7 @@ library SharpCenterAPI;
 {$WARN SYMBOL_PLATFORM OFF}
 
 uses
-//  VCLFixPack,
+  ShareMem,
   windows,
   messages,
   SysUtils,

@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library ButtonModule;
 uses
-//  VCLFixPack,
+  ShareMem,
   Controls,
   Classes,
   Windows,

@@ -32,7 +32,7 @@ program SharpAdmin;
 {$R 'VistaElevated.res'}
 
 uses
-//  VCLFixPack,
+  ShareMem,
   Windows,
   SysUtils,
   Classes,

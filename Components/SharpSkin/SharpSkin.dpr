@@ -1,6 +1,7 @@
 program SharpSkin;
 
 uses
+  ShareMem,
   Forms,
   MainWnd in 'MainWnd.pas' {MainForm};
 

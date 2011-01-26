@@ -35,7 +35,7 @@ program SharpDesk;
 {$R *.res}
 
 uses
-//  VCLFixPack,
+  ShareMem,
   Forms,
   windows,
   Messages,

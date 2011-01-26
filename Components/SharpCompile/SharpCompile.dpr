@@ -5,6 +5,7 @@ program SharpCompile;
 {$R *.res}
 
 uses
+  ShareMem,
   Forms,
   SharpApi,
   DebugDialog in '..\..\Common\Units\DebugDialog\DebugDialog.pas',

@@ -30,7 +30,7 @@ program SharpBar;
 {$R *.res}
 
 uses
-//  VCLFixPack,
+  ShareMem,
   Forms,
   Windows,
   SysUtils,

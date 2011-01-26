@@ -28,7 +28,7 @@ library Screenshot;
 
 
 uses
-//  VCLFixPack,
+  ShareMem,
   // Default Units
   Windows, Controls, SysUtils, Forms, Classes, Contnrs, StdCtrls,
   // Custom Units

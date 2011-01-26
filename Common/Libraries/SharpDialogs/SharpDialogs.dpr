@@ -30,7 +30,7 @@ library SharpDialogs;
 {$R *.res}
 
 uses
-//  VCLFixPack,
+  ShareMem,
   Windows,
   Messages,
   Graphics,
