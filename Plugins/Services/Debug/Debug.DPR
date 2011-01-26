@@ -231,6 +231,8 @@ begin
   Len := Length(Text);
   if Len > 0 then
     FileWrite(Log,Pointer(Text)^,Len);
+
+  FileClose(Log);
 end;
 
 begin
