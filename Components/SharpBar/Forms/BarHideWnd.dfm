@@ -6,12 +6,12 @@ object BarHideForm: TBarHideForm
   BorderIcons = [biSystemMenu]
   BorderStyle = bsNone
   Caption = 'BarHideForm'
-  ClientHeight = 48
-  ClientWidth = 434
+  ClientHeight = 63
+  ClientWidth = 568
   Color = clBlack
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -11
+  Font.Height = -14
   Font.Name = 'Tahoma'
   Font.Style = []
   FormStyle = fsStayOnTop
@@ -19,8 +19,8 @@ object BarHideForm: TBarHideForm
   OnClose = FormClose
   OnCreate = FormCreate
   OnMouseUp = FormMouseUp
-  PixelsPerInch = 96
-  TextHeight = 13
+  PixelsPerInch = 120
+  TextHeight = 17
   object curPosTimer: TTimer
     Interval = 1
     OnTimer = curPosTimerTimer

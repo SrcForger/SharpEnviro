@@ -226,6 +226,7 @@ type
 
     // Shell hooks
     procedure WMShellHook(var msg: TMessage); message WM_SHARPSHELLMESSAGE;
+    procedure WMFullscreen(var msg: TMessage); message WM_ENTERFULLSCREEN;
 
     procedure OnBarPositionUpdate(Sender: TObject; var X, Y: Integer);
 
@@ -503,10 +504,10 @@ begin
 end;
 
 procedure TSharpBarMainForm.FullScreenCheckTimer(Sender: TObject);
-var
-  monitor : TMonitorItem;
+{var
+  monitor : TMonitorItem; }
 begin
-  if SharpEBar.FullScreenWnd <> 0 then
+  {if SharpEBar.FullScreenWnd <> 0 then
   begin
     monitor := MonList.MonitorFromWindow(SharpEBar.FullScreenWnd);
 
@@ -516,15 +517,41 @@ begin
       SharpEBar.UpdateAlwaysOnTop;
       FullScreenCheck.Enabled := False;
     end;
+  end;  }
+end;
+
+procedure TSharpBarMainForm.WMFullscreen(var msg: TMessage);
+var
+  barmon: TMonitorItem;
+begin
+  barmon := MonList.MonitorFromWindow(Handle);
+  if barmon <> nil then
+  begin
+    // Check if the fullscreen event happened on this monitor
+    if barmon.MonitorNum <> msg.LParam then
+      exit;
+
+    if (msg.WParam = 1) and (GetProp(Handle, 'HasFullscreenApp') = 0) then
+    begin
+      SetWindowPos(Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
+      SetWindowPos(SharpEBar.abackground.Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOSENDCHANGING);
+
+      SetProp(Handle, 'HasFullscreenApp', 1);
+    end else if (msg.WParam = 0) and (GetProp(Handle, 'HasFullscreenApp') = 1) then
+    begin
+      SharpEBar.UpdateAlwaysOnTop;
+
+      SetProp(Handle, 'HasFullscreenApp', 0);
+    end;
   end;
 end;
 
 procedure TSharpBarMainForm.WMShellHook(var msg: TMessage);
-const
+{const
   HSHELL_HIGHBIT = $8000;
 var
   barmon, activeMon : TMonitorItem;
-  wnditem : HWND;
+  wnditem : HWND;   }
 begin
   if (not SharpEBar.AlwaysOnTop) or ((not Self.Visible) and (BarHideForm.Visible)) then
     exit;
@@ -533,7 +560,7 @@ begin
     exit;
 
   // get monitor of the bar
-  if MonList.IsValidMonitorIndex(SharpEBar.MonitorIndex) then
+  {if MonList.IsValidMonitorIndex(SharpEBar.MonitorIndex) then
     barmon := MonList.Monitors[SharpEBar.MonitorIndex]
   else
     barmon := MonList.MonitorFromWindow(Handle);
@@ -551,7 +578,7 @@ begin
       exit;
 
     wnditem := HasFullScreenWindow(barmon);
-    if SharpEBar.FullScreenWnd = 0 then
+    if (SharpEBar.FullScreenWnd = 0) and (GetProp(Handle, 'HasFullscreenApp') = 0) then
     begin
       if (wnditem <> 0) then
       begin
@@ -561,16 +588,17 @@ begin
         SetWindowPos(SharpEBar.abackground.Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOSENDCHANGING);
 
         FullScreenCheck.Enabled := True;
+        SetProp(Handle, 'HasFullscreenApp', 1); 
       end;
-    end else if (wnditem = 0) then
+    end else if (wnditem = 0) and (GetProp(Handle, 'HasFullscreenApp') = 1) then
     begin
-      SharpApi.SendDebugMessage('SharpBar', 'Fullscreen', 0);
+      SetProp(Handle, 'HasFullscreenApp', 0); 
       FullScreenCheck.Enabled := False;
 
       SharpEBar.FullScreenWnd := 0;
       SharpEBar.UpdateAlwaysOnTop;
     end;
-  end;
+  end;}
 end;
 
 // The shell hook window has been created, all modules or windows which
@@ -1430,6 +1458,8 @@ procedure TSharpBarMainForm.FormCreate(Sender: TObject);
 begin
   ModuleManager.DebugOutput('Setting Form properties', 2, 1);
 
+  SetProp(Handle, 'HasFullscreenApp', 0); 
+
   foregroundWindowIsFullscreen := False;
   Closing := False;
   DoubleBuffered := True;
@@ -1875,8 +1905,8 @@ begin
 end;
 
 procedure TSharpBarMainForm.FormShow(Sender: TObject);
-var
-  barmon : TMonitorItem;
+{var
+  barmon : TMonitorItem;}
 begin
   ShowWindow(Application.Handle, SW_HIDE);
   if FSuspended then
@@ -1891,23 +1921,6 @@ begin
     tmrAutoHide.Enabled := True;
     
   tmrCursorPos.Enabled := True;
-
-
-  // Check for fullscreen window
-  if MonList.IsValidMonitorIndex(SharpEBar.MonitorIndex) then
-    barmon := MonList.Monitors[SharpEBar.MonitorIndex]
-  else
-    barmon := MonList.MonitorFromWindow(Handle);
-
-  if (HasFullScreenWindow(barmon) <> 0) then
-  begin
-    SharpEBar.FullScreenWnd := GetForegroundWindow;
-
-    SetWindowPos(Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
-    SetWindowPos(SharpEBar.abackground.Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOSENDCHANGING);
-
-    FullScreenCheck.Enabled := True;
-  end;
 end;
 
 function PointInRect(P: TPoint; Rect: TRect): boolean;

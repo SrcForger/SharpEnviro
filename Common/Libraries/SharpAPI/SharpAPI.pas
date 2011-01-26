@@ -108,6 +108,10 @@ const
   WM_SHARPSEARCH_INDEXING = WM_APP + 664;
   WM_SHARPSHELLLOADED = WM_APP + 665;
 
+  // Fullscreen
+  WM_ENTERFULLSCREEN        = WM_APP + 666; // wParam = enter/leave (1/0), lParam = monitor id
+  WM_CHECKFULLSCREEN        = WM_APP + 667; // lParam = monitor id to reset
+
   // WM_BARCOMMAND messages param
   BC_ADD = 0;
   BC_DELETE = 1;
