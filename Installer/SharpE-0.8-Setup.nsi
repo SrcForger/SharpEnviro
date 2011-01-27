@@ -246,7 +246,7 @@ Section "!Core Files" SEC01
   File "..\..\SharpE\Addons\x86\SharpSearch.dll"
   File "..\..\SharpE\Addons\x86\SharpSearch.WPF.dll"
   # File "..\..\SharpE\Addons\x86\nlog.dll"
-  File "..\..\SharpE\Addons\x86\Explorer.exe.config"
+  # File "..\..\SharpE\Addons\x86\Explorer.exe.config"
   File "..\..\SharpE\Addons\x86\System.Data.SQLite.dll"
   
   # Addons x64
@@ -257,7 +257,7 @@ Section "!Core Files" SEC01
   File "..\..\SharpE\Addons\x64\SharpSearch.dll"
   File "..\..\SharpE\Addons\x64\SharpSearch.WPF.dll"
   # File "..\..\SharpE\Addons\x64\nlog.dll"
-  File "..\..\SharpE\Addons\x64\Explorer.exe.config"
+  # File "..\..\SharpE\Addons\x64\Explorer.exe.config"
   File "..\..\SharpE\Addons\x64\System.Data.SQLite.dll"
   
   # Center
@@ -373,6 +373,7 @@ Section "!Core Files" SEC01
   File "..\..\SharpE\SharpSplash.exe"
   
   # Other Files
+  File "..\FDS\BorlndMM.dll"
   File "..\FDS\rtl100.bpl"
   File "..\FDS\vcl100.bpl"
   File "..\FDS\splash.png"
@@ -703,6 +704,7 @@ Section /o -un.Main UNSEC0000
     Delete "$INSTDIR\SharpMenu.exe"
     Delete "$INSTDIR\SharpSplash.exe"
     Delete "$INSTDIR\SharpCompile.exe"
+    Delete "$INSTDIR\BorlndMM.dll"
     Delete "$INSTDIR\rtl100.bpl"
     Delete "$INSTDIR\vcl100.bpl"
     Delete "$INSTDIR\splash.png"
