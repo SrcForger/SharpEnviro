@@ -531,17 +531,14 @@ begin
     if barmon.MonitorNum <> msg.LParam then
       exit;
 
-    if (msg.WParam = 1) and (GetProp(Handle, 'HasFullscreenApp') = 0) then
+    if (msg.WParam = 1) then
     begin
-      SetWindowPos(Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
-      SetWindowPos(SharpEBar.abackground.Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOSENDCHANGING);
-
-      SetProp(Handle, 'HasFullscreenApp', 1);
-    end else if (msg.WParam = 0) and (GetProp(Handle, 'HasFullscreenApp') = 1) then
+      SharpEBar.UpdateFullscreen;
+      SharpEBar.FullScreenWnd := True;
+    end else if (msg.WParam = 0) then
     begin
+      SharpEBar.FullScreenWnd := False;
       SharpEBar.UpdateAlwaysOnTop;
-
-      SetProp(Handle, 'HasFullscreenApp', 0);
     end;
   end;
 end;
@@ -1457,8 +1454,6 @@ end;
 procedure TSharpBarMainForm.FormCreate(Sender: TObject);
 begin
   ModuleManager.DebugOutput('Setting Form properties', 2, 1);
-
-  SetProp(Handle, 'HasFullscreenApp', 0); 
 
   foregroundWindowIsFullscreen := False;
   Closing := False;

@@ -97,10 +97,7 @@ type
     FStartHidden : Boolean;
     FAutoHide : Boolean;
     FAutoHideTime : integer;
-
-    // If we have a fullscreen window
-    FFullScreenWnd : HWND;
-    FActiveWnd: HWND;
+    FFullScreenWnd : Boolean;
 
     procedure PC_NoAlpha(F: TColor32; var B: TColor32; M: TColor32);
     procedure FormPaint(Sender: TObject);
@@ -127,6 +124,8 @@ type
     procedure UpdateSkin(NewWidth : integer = -1); reintroduce;
     procedure UpdatePosition(NewWidth : integer = -1);
     procedure UpdateAlwaysOnTop;
+    procedure UpdateFullscreen;
+
     property aform: TForm read form;
     property abackground: TSharpEBarBackground read FBackGround;
     property Throbber: TSharpEThrobber read FThrobber write FThrobber;
@@ -146,8 +145,7 @@ type
     property AutoHide: boolean read FAutoHide write FAutoHide;
     property AutoHideTime: integer read FAutoHideTime write FAutoHideTime;
 
-    property FullScreenWnd: HWND read FFullScreenWnd write FFullScreenWnd;
-    property ActiveWnd: HWND read FActiveWnd write FActiveWnd;
+    property FullScreenWnd: Boolean read FFullScreenWnd write FFullScreenWnd;
 
     property ShowThrobber: Boolean read FShowThrobber write SetShowThrobber;
     property DisableHideBar: Boolean read FDisableHideBar write FDisableHideBar;
@@ -454,8 +452,7 @@ begin
   FDisableHideThrobber := False;
   FDisableHideBar  := False;
 
-  FFullScreenWnd := 0;
-  FActiveWnd := 0;
+  FFullScreenWnd := False;
 
   if not (csDesigning in ComponentState) then
   begin
@@ -506,14 +503,14 @@ end;
 
 procedure TSharpEBar.UpdateAlwaysOnTop;
 begin
-  if (not aform.Visible) or (FFullScreenWnd <> 0) then
+  if (not aform.Visible) or (FFullScreenWnd) then
     exit;
 
   if (FAlwaysOnTop) then
   begin
     SetWindowPos(aform.handle, HWND_TOPMOST, 0, 0, 0, 0,
-                 SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW or SWP_NOACTIVATE);
-    abackground.SetZOrder;                 
+                 SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
+    abackground.SetZOrder;
   end else
   begin
     if (GetWindowLong(aform.handle, GWL_EXSTYLE) and WS_EX_TOOLWINDOW) = WS_EX_TOOLWINDOW then
@@ -522,6 +519,19 @@ begin
                    SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW or SWP_NOACTIVATE);
       abackground.SetZOrder;
     end;
+  end;
+end;
+
+procedure TSharpEBar.UpdateFullscreen;
+begin
+  if (not aform.Visible) or (FFullScreenWnd) then
+    exit;
+
+  if (FAlwaysOnTop) then
+  begin
+    SetWindowPos(aform.handle, HWND_BOTTOM, 0, 0, 0, 0,
+                 SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
+    abackground.SetZOrder;                 
   end;
 end;
 
@@ -943,9 +953,6 @@ begin
       begin
         if msg.WParam > 0 then
         begin
-          if FFullScreenWnd <> 0 then
-            exit;
-
 //          ShowWindow(FBackGround.Handle, sw_ShowNormal);
           SetWindowPos(aBackground.handle,
                        aform.handle,
