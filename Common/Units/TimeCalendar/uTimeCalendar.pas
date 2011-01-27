@@ -27,7 +27,7 @@ unit uTimeCalendar;
 
 interface
 
-uses Windows, Forms, Classes, ActiveX, ComObj, SysUtils;
+uses Windows, Forms, Classes, ActiveX, ComObj, SysUtils, MonitorList;
 
 const
   Class_TimeDateCPL: TGUID =
@@ -52,6 +52,7 @@ type
   private
     FTimeDateCPL: ITimeDateCPL;
 
+    function IsVista: Boolean;
   public
     constructor Create;
     destructor Destroy; override;
@@ -81,11 +82,22 @@ begin
   CoUninitialize;
 end;
 
+function TTimeCalendar.IsVista: Boolean;
+var
+  osVerInfo: TOSVersionInfo;
+begin
+  Result := False;
+
+  osVerInfo.dwOSVersionInfoSize := SizeOf(TOSVersionInfo);
+  if GetVersionEx(osVerInfo) then
+    Result := ((osVerInfo.dwMajorVersion = 6) and (osVerInfo.dwMinorVersion = 0)) or (osVerInfo.dwMajorVersion < 6);
+end;
+
 procedure TTimeCalendar.Show(wnd: TForm);
 var
   rc, clockRc, clockClientRc: TRect;
+  clockMon: TMonitorItem;
 
-  osVerInfo: TOSVersionInfo;
   clockWnd: HWND;
   w, h: integer;
   ptDiff: TPoint;
@@ -98,6 +110,8 @@ begin
   FTimeDateCPL.UpdateCalendar;
   FTimeDateCPL.ShowCalendar(0, @rc);
 
+  clockMon := MonList.MonitorFromWindow(wnd.Handle);
+
   // Fix Vista positioning
   clockWnd := FindWindowA('ClockFlyoutWindow', nil);
   GetClientRect(clockWnd, clockClientRc);
@@ -105,13 +119,11 @@ begin
 
   ptDiff.X := 15;
   ptDiff.Y := 15;
-  osVerInfo.dwOSVersionInfoSize := SizeOf(TOSVersionInfo);
-  if GetVersionEx(osVerInfo) then
-    if osVerInfo.dwMajorVersion <> 7 then
-    begin
-      ptDiff.X := 0;
-      ptDiff.Y := 0;
-    end;
+  if IsVista then
+  begin
+    ptDiff.X := 0;
+    ptDiff.Y := 0;
+  end;
 
   w := (clockRc.Right - clockRc.Left);
   h := (clockRc.Bottom - clockRc.Top);
@@ -122,14 +134,14 @@ begin
   else
     clockRc.Top := rc.Top + (rc.Bottom - rc.Top) + ptDiff.Y;
 
-  if clockRc.Top <= 0 then
-    clockRc.Top := rc.Top + (rc.Bottom - rc.Top) + ptDiff.Y;
-  if clockRc.Top > wnd.Monitor.Height - h - ptDiff.Y then
-    clockRc.Top := wnd.Monitor.Height - h - ptDiff.Y;
-  if clockRc.Left <= 0 then
-    clockRc.Left := ptDiff.X;
-  if clockRc.Left > wnd.Monitor.Width - w - ptDiff.X then
-    clockRc.Left := wnd.Monitor.Width - w - ptDiff.X;
+  if clockRc.Top <= clockMon.Top then
+    clockRc.Top := clockMon.Top + rc.Top + (rc.Bottom - rc.Top) + ptDiff.Y;
+  if clockRc.Top > clockMon.Top + clockMon.Height - h - ptDiff.Y then
+    clockRc.Top := clockMon.Top + clockMon.Height - h - ptDiff.Y;
+  if clockRc.Left <= clockMon.Left then
+    clockRc.Left := clockMon.Left + ptDiff.X;
+  if clockRc.Left > clockMon.Left + clockMon.Width - w - ptDiff.X then
+    clockRc.Left := clockMon.Left + clockMon.Width - w - ptDiff.X;
 
   SetWindowPos(clockWnd, 0, clockRc.Left, clockRc.Top, w, h, SWP_NOACTIVATE or SWP_NOZORDER);
 end;
