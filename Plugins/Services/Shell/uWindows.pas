@@ -81,7 +81,7 @@ var
 begin
   ActiveWnd := 0;
   SetLength(FullscreenWnds, MonList.MonitorCount);
-  for i := 0 to Length(FullscreenWnds) do
+  for i := Low(FullscreenWnds) to High(FullscreenWnds) do
   begin
     FullscreenWnds[i].wnd := 0;
     FullscreenWnds[i].monitorID := 0;
@@ -296,6 +296,8 @@ begin
     DestroyWindow(ShellTrayWnd);
     Windows.UnregisterClass(PChar('Shell_TrayWnd'),hinstance)
   end;
+
+  SetLength(FullscreenWnds, 0);
 end;
 
 function DeskAreaTimerWndProc(wnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall;
@@ -510,6 +512,20 @@ var
   wndItem: HWND;
   fullMon, activeMon: TMonitorItem;
 begin
+  // Check if monitor count has changed
+  if Length(WindowsClass.FullscreenWnds) <> MonList.MonitorCount then
+  begin
+    // Reset all fullscreen windows
+    // [TODO: Reset only the ones that are no longer part of any monitor]
+    for i := Low(WindowsClass.FullscreenWnds) to High(WindowsClass.FullscreenWnds) do
+    begin
+      WindowsClass.FullscreenWnds[i].wnd := 0;
+      WindowsClass.FullscreenWnds[i].monitorID := 0;
+    end;
+
+    SetLength(WindowsClass.FullscreenWnds, MonList.MonitorCount);
+  end;
+
   // Fullscreen check
   for i := 0 to MonList.MonitorCount - 1 do
   begin
@@ -567,7 +583,7 @@ begin
   begin
     if (Msg = WM_TIMER) and (wParam = 1) then
     begin
-      CheckFullscreenWindow;
+      //CheckFullscreenWindow;
 
       if IsWindow(TaskManager.LastActiveTask) then
       begin
@@ -644,7 +660,7 @@ begin
     case Msg of
       WM_CHECKFULLSCREEN:
       begin
-        for i := 0 to Length(WindowsClass.FullscreenWnds) do
+        for i := Low(WindowsClass.FullscreenWnds) to High(WindowsClass.FullscreenWnds) do
         begin
           if WindowsClass.FullscreenWnds[i].monitorID = LParam then
           begin
