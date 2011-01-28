@@ -21,12 +21,13 @@ namespace SharpEnviro
 
             PInvoke.COPYDATASTRUCT cds = new PInvoke.COPYDATASTRUCT();
             cds.dwData = IntPtr.Zero;
-            cds.cbData = module.Length + message.Length + 3;
+            cds.cbData = a.Length + 1;
             cds.lpData = Marshal.StringToHGlobalAnsi(a);
             try
             {
                 IntPtr wnd = PInvoke.FindWindow("TSharpEDebugWnd", null);
-                PInvoke.SendMessage(wnd, PInvoke.WM_COPYDATA, (IntPtr)MessageType, ref cds);
+                if (wnd != IntPtr.Zero)
+                    PInvoke.SendMessage(wnd, PInvoke.WM_COPYDATA, (IntPtr)MessageType, ref cds);
             }
             finally
             {
@@ -48,12 +49,13 @@ namespace SharpEnviro
 
             PInvoke.COPYDATASTRUCT cds = new PInvoke.COPYDATASTRUCT();
             cds.dwData = IntPtr.Zero;
-            cds.cbData = module.Length + message.Length + 3;
+            cds.cbData = a.Length + 1;
             cds.lpData = Marshal.StringToHGlobalAnsi(a);
             try
             {
                 IntPtr wnd = PInvoke.FindWindow("TSharpConsoleWnd", null);
-                PInvoke.SendMessage(wnd, PInvoke.WM_COPYDATA, IntPtr.Zero, ref cds);
+                if(wnd != IntPtr.Zero)
+                    PInvoke.SendMessage(wnd, PInvoke.WM_COPYDATA, IntPtr.Zero, ref cds);
             }
             finally
             {
@@ -78,12 +80,13 @@ namespace SharpEnviro
 
             PInvoke.COPYDATASTRUCT cds = new PInvoke.COPYDATASTRUCT();
             cds.dwData = IntPtr.Zero;
-            cds.cbData = module.Length + message.Length + 3;
+            cds.cbData = a.Length + 1;
             cds.lpData = Marshal.StringToHGlobalAnsi(a);
             try
             {
                 IntPtr wnd = PInvoke.FindWindow("TSharpConsoleWnd", null);
-                PInvoke.SendMessage(wnd, PInvoke.WM_COPYDATA, (IntPtr)MessageType, ref cds);
+                if (wnd != IntPtr.Zero)
+                    PInvoke.SendMessage(wnd, PInvoke.WM_COPYDATA, (IntPtr)MessageType, ref cds);
             }
             finally
             {

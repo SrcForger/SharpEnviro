@@ -194,7 +194,7 @@ type
     procedure ToggleHelp(Update : boolean);
     procedure UpdateHelpHeight;
 
-    function GetCommandLineParams(var enumCommandType : TSCC_COMMAND_ENUM; var sSection, sName, sPluginID : string) : boolean;
+    function GetCommandLineParams(var enumCommandType : TSCC_COMMAND_ENUM; var sSection, sName, sPluginID: string) : boolean;
 
     procedure EnabledWM(var Msg: TMessage); message CM_ENABLEDCHANGED;
 
@@ -343,7 +343,7 @@ begin
   ToggleHelp(True);
 end;
 
-function TSharpCenterWnd.GetCommandLineParams(var enumCommandType : TSCC_COMMAND_ENUM; var sSection, sName, sPluginID : string) : boolean;
+function TSharpCenterWnd.GetCommandLineParams(var enumCommandType : TSCC_COMMAND_ENUM; var sSection, sName, sPluginID: string) : boolean;
 var
   strlTokens: TStringList;
   sApiParam: string;
@@ -396,6 +396,11 @@ begin
   if GetCommandLineParams(enumCommandType, sSection, sName, sPluginID) then
   begin
     sParam := SharpApi.GetCenterDirectory + sSection + '\' + sName + SharpApi.GetCenterConfigExt;
+
+    // Try to load dll directly
+    if (enumCommandType = sccLoadDll) and (not FileExists(sParam)) then
+      sParam := SharpApi.GetCenterDirectory + sSection + '\DLL\' + sName + '.dll';
+
     SCM.ExecuteCommand(enumCommandType, sParam, sPluginID, '', 0);
   end else
     SCM.BuildNavRoot;

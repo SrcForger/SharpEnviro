@@ -550,9 +550,9 @@ begin
       cSearchIdx:
          PostMessage(FindWindow('TSharpExplorerForm', nil), WM_SHARPSEARCH, 0, 0);
       cConfigThemeIdx:
-        SharpApi.SharpExecute(SharpApi.GetSharpeDirectory + 'SharpCenter.exe -api "0|{CenterDirectory}_Themes\Theme.con|{CurrentTheme}"');
+        SharpApi.SharpExecute(SharpApi.GetSharpeDirectory + 'SharpCenter.exe -api "0|Themes|Theme|{CurrentTheme}"');
       cConfigWallpaperIdx:
-        SharpApi.SharpExecute(SharpApi.GetSharpeDirectory + 'SharpCenter.exe -api "0|{CenterDirectory}_Themes\_themedlls\Wallpaper.dll|{CurrentTheme}"');
+        SharpApi.SharpExecute(SharpApi.GetSharpeDirectory + 'SharpCenter.exe -api "3|Themes|Wallpaper|{CurrentTheme}"');
     end;
 
   end
