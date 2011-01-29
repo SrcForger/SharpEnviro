@@ -204,6 +204,7 @@ type
     FTheme: ISharpETheme;
     procedure UpdateWpItem;
 
+    procedure UpdateSize;
   public
     procedure UpdateGUIFromWPItem(AWPItem: TWPItem);
     procedure UpdateWPItemFromGUI;
@@ -306,16 +307,32 @@ begin
   FPluginHost.SetSettingsChanged;
 end;
 
+procedure TfrmSettingsWnd.UpdateSize;
+begin
+  if pagWallpaper.Visible then
+  begin
+    Self.Height := pnlWallpaper.Height + pnlMonitor.Height + 50;
+  end else
+  begin
+    Self.Height := pnlMonitor.Height + 50;
+    if pnlColorHSL.Visible then
+      Self.Height := Self.Height + pnlColor.Height;
+    if pnlGrad.Visible then
+      Self.Height := Self.Height + pnlGradient.Height;
+    if pnlWallpaperDirectoryPath.Visible then
+      Self.Height := Self.Height + pnlWallpaperDirectoryPath.Height;
+  end;
+
+  FPluginHost.Refresh(rtSize);
+end;
+
 procedure TfrmSettingsWnd.UpdateColorPage;
 begin
   if not pagColor.Visible then
     exit;
 
   pnlColorHSL.Visible := chkApplyColor.Checked;
-
-  Self.Height := pnlColor.Height + pnlMonitor.Height + 50;
-
-  FPluginHost.Refresh(rtSize);
+  UpdateSize;
 end;
 
 procedure TfrmSettingsWnd.UpdateGradientPage;
@@ -324,20 +341,12 @@ begin
     exit;
 
   pnlGrad.Visible := chkApplyGrad.Checked;
-
-  Self.Height := pnlGradient.Height + pnlMonitor.Height + 50;
-
-  FPluginHost.Refresh(rtSize);
+  UpdateSize;
 end;
 
 procedure TfrmSettingsWnd.UpdateWallpaperPage;
 begin
-  if not pagWallpaper.Visible then
-    exit;
-
-  Self.Height := pnlWallpaper.Height + pnlMonitor.Height + 50;
-
-  FPluginHost.Refresh(rtSize);
+  UpdateSize;
 end;
 
 
@@ -451,7 +460,9 @@ procedure TfrmSettingsWnd.chkAutoWallpaperClick(Sender: TObject);
 begin
   pnlWallpaperFilePath.Visible := not chkAutoWallpaper.Checked;
   pnlWallpaperDirectoryPath.Visible := chkAutoWallpaper.Checked;
-  UpdateWpItem;  
+  
+  UpdateWpItem;
+  UpdateSize;
 end;
 
 procedure TfrmSettingsWnd.chkWpRandomizeClick(Sender: TObject);
