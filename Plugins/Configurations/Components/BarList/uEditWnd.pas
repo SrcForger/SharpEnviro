@@ -342,7 +342,7 @@ end;
 
 procedure TfrmEditwnd.BuildMonList;
 var
-  n, i, j: integer;
+  n: integer;
   s: string;
   Mon: TMonitor;
 begin
@@ -350,22 +350,6 @@ begin
   for n := 0 to Screen.MonitorCount - 1 do
   begin
     Mon := Screen.Monitors[n];
-
-    j := 0;
-    for i := 0 to FBars.Count - 1 do
-    begin
-      if FBars.Bars[i].Monitor = Mon.MonitorNum then
-        j := j + 1;
-    end;
-
-    if (j >= 2) then
-    begin
-      if not Assigned(FBarItem) then
-        continue;
-
-      if FBarItem.Monitor <> Mon.MonitorNum then
-        continue;
-    end;
 
     if Mon.Primary then
       s := 'Primary'
