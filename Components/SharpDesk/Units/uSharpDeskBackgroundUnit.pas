@@ -31,25 +31,26 @@ uses Windows,Graphics,SysUtils,Forms,SharpApi,Classes,Dialogs,Types,ExtCtrls, St
      GR32,Math,GR32_blend,GR32_Image, GR32_resamplers,GR32_Backends,
      PngImage, Registry,Messages, SharpThemeApiEx, uThemeConsts,
      GR32_PNG, Jpeg, uISharpETheme,
+     MonitorList,
      SharpSharedFileAccess,
      SharpGraphicsUtils,
      SharpImageUtils;
 
 type
-  TWallpaperTimer = class
-  private
-    WallTimer : TTimer;
-  public
-    constructor Create(const Interval: integer; Event: TNotifyEvent; const Tag: integer);
-    destructor Destroy; override;
-
-    property Timer: TTimer read WallTimer write WallTimer;
+  TWallpapers = record
+    OldTime: uint;
+    Interval: uint;
+    MonitorID: integer;
   end;
 
-  TBackground = Object
+  TBackground = class
+  private
+    FWallpaperTimer : TTimer;
+    FWallpapers: array of TWallpapers;
+    
   public
-    procedure Create;
-    procedure Destroy;
+    constructor Create;
+    destructor Destroy; override;
 
     function ReloadMonitor(PMon : TMonitor; monID : integer; isSchemeChange : boolean) : boolean;
     procedure ReloadWindows;
@@ -57,11 +58,11 @@ type
 
     procedure ApplyEffects(var Bmp : TBitmap32; Mon : TThemeWallpaperItem);
 
-    procedure LoadWallpaperChanger(Event: TNotifyEvent);
-    procedure UnloadWallpaperChanger;
+    procedure LoadWallpaperChanger;
 
-  private
-    WallpaperTimer : Array of TWallpaperTimer;
+    property WallpaperTimer: TTimer read FWallpaperTimer write FWallpaperTimer;
+  protected
+    procedure WallpaperTimerOnTimer(Sender: TObject);
 
   end;
 
@@ -69,26 +70,6 @@ Implementation
 
 
 uses uSharpDeskMainForm;
-
-
-
-constructor TWallpaperTimer.Create(const Interval: integer; Event: TNotifyEvent; const Tag: integer);
-begin
-  WallTimer := TTimer.Create(nil);
-  WallTimer.Enabled := False;
-  WallTimer.Tag := Tag;
-  WallTimer.Interval := Interval;
-  WallTimer.OnTimer := Event;
-end;
-
-destructor TWallpaperTimer.Destroy;
-begin
-  WallTimer.Enabled := False;
-  WallTimer.Free;
-  WallTimer := nil;
-
-  inherited;
-end;
 
 // ######################################
 
@@ -104,71 +85,105 @@ end;
 // ######################################
 
 
-procedure TBackground.Create;
+constructor TBackground.Create;
 begin
-  SetLength(WallpaperTimer, 0);
-//  LaodSettings;
-  Reload(False);
+  SetLength(FWallpapers, 0);
+
+  FWallpaperTimer := TTimer.Create(nil);
+  FWallpaperTimer.Enabled := False;
+  FWallpaperTimer.OnTimer := WallpaperTimerOnTimer;
+  FWallpaperTimer.Interval := 1000;
 end;
 
 
 // ######################################
 
 
-procedure TBackground.Destroy;
+destructor TBackground.Destroy;
 begin
-  Disabled:=True;
+  SetLength(FWallpapers, 0);
+
+  if Assigned(FWallpaperTimer) then
+    FreeAndNil(FWallpaperTimer);
+
+  Disabled := True;
   SharpDeskMainForm.BackgroundImage.Layers.Clear;
 
-  UnloadWallpaperChanger;
+  inherited;
 end;
 
-procedure TBackground.LoadWallpaperChanger(Event : TNotifyEvent);
+procedure TBackground.WallpaperTimerOnTimer(Sender: TObject);
 var
-  i, n : Integer;
-
-  Theme : ISharpETheme;
-  PMon : TMonitor;
-  MonID : Integer;
-  WP : TThemeWallpaperItem;
+  i: integer;
+  hasChanged: boolean;
 begin
-  SharpDeskMainForm.Monitor; // make it update the TScren Monitor Data
-
-  Theme := GetCurrentTheme;
-  for i := 0 to Screen.MonitorCount - 1 do
+  if Length(FWallpapers) <> Screen.MonitorCount then
   begin
-    PMon := Screen.Monitors[i];
-    if PMon.Primary then
-       MonID := -100
-    else
-      MonID := PMon.MonitorNum;
-    WP := Theme.Wallpaper.GetMonitorWallpaper(MonID);
+    // Reload wallpapers
+    GetCurrentTheme.LoadTheme([tpWallpaper]);
+    LoadWallpaperChanger;
+    exit;
+  end;
 
-    if (WP.SwitchTimer > 0) and (WP.Switch) then
+  hasChanged := False;
+  for i := Low(FWallpapers) to High(FWallpapers) do
+  begin
+    if GetCurrentTime - FWallpapers[i].OldTime >= FWallpapers[i].Interval then
     begin
-      n := Length(WallpaperTimer);
+      if GetCurrentTheme.Wallpaper.UpdateAutomaticWallpaper(FWallpapers[i].MonitorID) then
+        hasChanged := True;
 
-      SetLength(WallpaperTimer, n + 1);
-
-      WallpaperTimer[n] := TWallpaperTimer.Create(WP.SwitchTimer, Event, MonID); 
+      FWallpapers[i].OldTime := GetCurrentTime;
     end;
   end;
 
-  // Enable the timers
-  for i := Length(WallpaperTimer) - 1 downto 0 do
-    WallpaperTimer[i].Timer.Enabled := True;
+  if hasChanged then
+  begin
+    Reload(false);
+
+    if not SharpDeskMainForm.Visible then
+      SharpDeskMainForm.BackgroundImage.Bitmap.SetSize(0, 0);
+
+    SharpDeskMainForm.BackgroundImage.ForceFullInvalidate;
+    if SharpDesk.BackgroundLayer <> nil then
+    begin
+      SharpDesk.BackgroundLayer.Update;
+      SharpDesk.BackgroundLayer.Changed;
+    end;
+    SharpApi.BroadcastGlobalUpdateMessage(suDesktopBackgroundChanged,-1,True);
+  end;
 end;
 
-procedure TBackground.UnloadWallpaperChanger;
+procedure TBackground.LoadWallpaperChanger;
 var
-  i : integer;
+  MonID : Integer;
+  WP : TThemeWallpaperItem;
+  hasTimer: Boolean;
+  i: integer;
 begin
-  for i := Length(WallpaperTimer) - 1 downto 0 do
+  // Clear out old wallpapers
+  SetLength(FWallpapers, 0);
+  SetLength(FWallpapers, Screen.MonitorCount);
+
+  hasTimer := False;
+  for i := Low(FWallpapers) to High(FWallpapers) do
   begin
-    WallpaperTimer[i].Free;
-    WallpaperTimer[i] := nil;
+    if Screen.Monitors[i].Primary then
+      MonID := -100
+    else
+      MonID := Screen.Monitors[i].MonitorNum;
+
+    WP := GetCurrentTheme.Wallpaper.GetMonitorWallpaper(MonID);
+    if (WP.Switch) and (WP.SwitchTimer > 0) then
+    begin
+      FWallpapers[i].OldTime := GetCurrentTime;
+      FWallpapers[i].Interval := WP.SwitchTimer;
+      FWallpapers[i].MonitorID := MonID;
+      hasTimer := True;
+    end;
   end;
-  SetLength(WallpaperTimer, 0);
+
+  FWallpaperTimer.Enabled := hasTimer;
 end;
 
 // ######################################
@@ -450,6 +465,7 @@ begin
 
     if (ReloadMonitor(PMon, MonID, isSchemeChange)) and (not WPChanged) then
       WPChanged := true;
+
   end;
 
   if WPChanged then
