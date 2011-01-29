@@ -450,6 +450,8 @@ begin
 end;
 
 procedure TSharpDeskMainForm.WMSharpEBang(var Msg : TMessage);
+var
+  i : integer;
 begin
   case msg.LParam of
    1 : WMCloseDesk(msg);        // !CloseSharpDesk
@@ -460,6 +462,11 @@ begin
        end;
    3 : Visible := False;        // !DeskExplorer
    4 : Visible := True;         // !DeskSharpE
+   5 :  // !NextWallpaper
+   begin
+    for i := Low(Background.Wallpapers) to High(Background.Wallpapers) do
+      Background.Wallpapers[i].ShouldSkip := True;
+   end;
   end;
 end;
 
@@ -628,7 +635,7 @@ begin
   SharpDeskMainForm.SendMessageToConsole('Loading Theme',COLOR_OK,DMT_STATUS);
 
   try
-    Background.WallpaperTimer.Enabled := False;;
+    Background.WallpaperTimer.Enabled := False;
 
     GetCurrentTheme.LoadTheme(ALL_THEME_PARTS);
     SharpDesk.DeskSettings.ReloadSettings;
@@ -1722,6 +1729,7 @@ begin
   SharpApi.RegisterActionEx('!ToggleDesktop','SharpDesk',SharpDeskMainForm.Handle,2);
   SharpApi.RegisterActionEx('!DeskExplorer','SharpDesk',SharpDeskMainForm.Handle,3);
   SharpApi.RegisterActionEx('!DeskSharpE','SharpDesk',SharpDeskMainForm.Handle,4);
+  SharpApi.RegisterActionEx('!NextWallpaper', 'SharpDesk', SharpDeskMainForm.Handle,5);
 end;
 
 procedure TSharpDeskMainForm.All1Click(Sender: TObject);

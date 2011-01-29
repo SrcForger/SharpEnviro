@@ -37,16 +37,19 @@ uses Windows,Graphics,SysUtils,Forms,SharpApi,Classes,Dialogs,Types,ExtCtrls, St
      SharpImageUtils;
 
 type
-  TWallpapers = record
+  TWallpaper = record
+    Enabled: Boolean;
     OldTime: uint;
     Interval: uint;
     MonitorID: integer;
+    ShouldSkip: Boolean; // Used for !NextWallpaper
   end;
+  TWallpapers = array of TWallpaper;
 
   TBackground = class
   private
     FWallpaperTimer : TTimer;
-    FWallpapers: array of TWallpapers;
+    FWallpapers: TWallpapers;
     
   public
     constructor Create;
@@ -60,7 +63,9 @@ type
 
     procedure LoadWallpaperChanger;
 
+    property Wallpapers: TWallpapers read FWallpapers write FWallpapers;
     property WallpaperTimer: TTimer read FWallpaperTimer write FWallpaperTimer;
+    
   protected
     procedure WallpaperTimerOnTimer(Sender: TObject);
 
@@ -128,12 +133,15 @@ begin
   hasChanged := False;
   for i := Low(FWallpapers) to High(FWallpapers) do
   begin
-    if GetCurrentTime - FWallpapers[i].OldTime >= FWallpapers[i].Interval then
+    if (FWallpapers[i].Enabled) and
+          ((GetCurrentTime - FWallpapers[i].OldTime >= FWallpapers[i].Interval) or
+            (FWallpapers[i].ShouldSkip)) then
     begin
       if GetCurrentTheme.Wallpaper.UpdateAutomaticWallpaper(FWallpapers[i].MonitorID) then
         hasChanged := True;
 
       FWallpapers[i].OldTime := GetCurrentTime;
+      FWallpapers[i].ShouldSkip := False;
     end;
   end;
 
@@ -166,7 +174,7 @@ begin
   SetLength(FWallpapers, Screen.MonitorCount);
 
   hasTimer := False;
-  for i := Low(FWallpapers) to High(FWallpapers) do
+  for i := 0 to High(FWallpapers) do
   begin
     if Screen.Monitors[i].Primary then
       MonID := -100
@@ -176,11 +184,14 @@ begin
     WP := GetCurrentTheme.Wallpaper.GetMonitorWallpaper(MonID);
     if (WP.Switch) and (WP.SwitchTimer > 0) then
     begin
+      FWallpapers[i].Enabled := True;
       FWallpapers[i].OldTime := GetCurrentTime;
       FWallpapers[i].Interval := WP.SwitchTimer;
       FWallpapers[i].MonitorID := MonID;
+      FWallpapers[i].ShouldSkip := False;
       hasTimer := True;
-    end;
+    end else
+      FWallpapers[i].Enabled := False;
   end;
 
   FWallpaperTimer.Enabled := hasTimer;
