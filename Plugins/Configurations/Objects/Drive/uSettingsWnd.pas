@@ -252,6 +252,7 @@ type
     procedure sceColorExpandCollapse(ASender: TObject);
     procedure btnSelectIconClick(Sender: TObject);
     procedure edtIconChange(Sender: TObject);
+    procedure sceExpandCollapse(ASender: TObject);
   private
     FBlue32, FBlue48, FBlue64: TBitmap32;
     FWhite32, FWhite48, FWhite64: TBitmap32;
@@ -708,6 +709,11 @@ procedure TfrmSettings.sceIconBlendColorChangeColor(ASender: TObject; AValue: In
 begin
   uicIconBlendColor.UpdateStatus;
   SendUpdate;
+end;
+
+procedure TfrmSettings.sceExpandCollapse(ASender: TObject);
+begin
+  UpdatePageUI;
 end;
 
 procedure TfrmSettings.sceTextColorChangeColor(ASender: TObject; AValue: Integer);

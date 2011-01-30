@@ -933,6 +933,7 @@ object frmSettings: TfrmSettings
                 Tag = 0
               end>
             SwatchManager = SharpESwatchManager1
+			OnExpandCollapse = sceExpandCollapse
             OnChangeColor = sceIconBlendColorChangeColor
             BorderColor = clBlack
             BackgroundColor = clBlack
@@ -1001,6 +1002,7 @@ object frmSettings: TfrmSettings
               end>
             SwatchManager = SharpESwatchManager1
             OnChangeColor = sceIconShadowColorChangeColor
+			OnExpandCollapse = sceExpandCollapse
             BorderColor = clBlack
             BackgroundColor = clBlack
             BackgroundTextColor = clBlack
@@ -1244,6 +1246,7 @@ object frmSettings: TfrmSettings
                 Tag = 0
               end>
             SwatchManager = SharpESwatchManager1
+			OnExpandCollapse = sceExpandCollapse
             OnChangeColor = sceTextColorChangeColor
             BorderColor = clBlack
             BackgroundColor = clBlack
@@ -1687,6 +1690,7 @@ object frmSettings: TfrmSettings
                 end>
               SwatchManager = SharpESwatchManager1
               OnChangeColor = sceTextShadowColorChangeColor
+			  OnExpandCollapse = sceExpandCollapse
               BorderColor = clBlack
               BackgroundColor = clBlack
               BackgroundTextColor = clBlack
