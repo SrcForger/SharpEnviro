@@ -170,6 +170,8 @@ const
   SCC_UNLOAD_DLL = '_unloaddll';
   SCC_LOAD_DLL = '_loaddll';
 
+  SEND_MESSAGE_TIMEOUT = 1000;
+
 type
   TColor = -$7FFFFFFF - 1..$7FFFFFFF;
 
@@ -300,11 +302,12 @@ var
   lpara: lparam;
   stemp: string;
   bsm: boolean;
+  bsmtimeout: boolean;
 
 function AllowSetForegroundWindow(ProcessID : DWORD) : boolean; stdcall; external 'user32.dll' name 'AllowSetForegroundWindow';
 
 function GetSharpeDirectory: String; forward;
-function SharpEBroadCast(msg: integer; wpar: wparam; lpar: lparam; pSendMessage: boolean = False): integer; forward;
+function SharpEBroadCast(msg: integer; wpar: wparam; lpar: lparam; pSendMessage: boolean = False; pTimeout: boolean = False): integer; forward;
 
 { HELPER FUNCTIONS }
 
@@ -911,21 +914,27 @@ begin
   end;
 end;
 
-function SharpEBroadCast(msg: integer; wpar: wparam; lpar: lparam; pSendMessage: boolean = False): integer;
+function SharpEBroadCast(msg: integer; wpar: wparam; lpar: lparam; pSendMessage: boolean = False; pTimeout: boolean = False): integer;
 var
   ha : THandleArray;
   n : integer;
   wnd : hwnd;
   ThreadID : dword;
+  ret: Cardinal;
 
   function EnumThreadWindowsProc(Wnd: hwnd; param: lParam): boolean; export; stdcall;
+  var
+    ret: Cardinal;
   begin
     // make sure to not send to the main window again
     if messwnd <> wnd then
     begin
-      if bsm then
+      if (bsm) and (bsmTimeout) then
+        SendMessageTimeout(wnd, mess, wpara, lpara, SMTO_ABORTIFHUNG, SEND_MESSAGE_TIMEOUT, ret)
+      else if bsm then
         SendMessage(wnd, mess, wpara, lpara)
-      else PostMessage(wnd, mess, wpara, lpara);
+      else
+        PostMessage(wnd, mess, wpara, lpara);
     end;      
     inc(i);
     result := true;
@@ -968,15 +977,19 @@ begin
   wpara := wpar;
   lpara := lpar;
   bsm := pSendMessage;
+  bsmTimeout := pTimeout;
   i := 0;  
 
   for n := High(ha) downto 0 do
   begin
     messwnd := ha[n];
     // send first to main window
-    if bsm then
+    if (bsm) and (bsmTimeout) then
+      SendMessageTimeout(messwnd, mess, wpara, lpara, SMTO_ABORTIFHUNG, SEND_MESSAGE_TIMEOUT, ret)
+    else if bsm then
       SendMessage(messwnd, mess, wpara, lpara)
-    else PostMessage(messwnd, mess, wpara, lpara);
+    else
+      PostMessage(messwnd, mess, wpara, lpara);
     
     ThreadID := GetWindowThreadProcessId(ha[n],nil);
     if ThreadID <> 0 then

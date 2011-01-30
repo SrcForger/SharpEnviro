@@ -288,7 +288,7 @@ function SendDebugMessageEx(module: String; msg: String; color: integer; Message
 
 function SendConsoleMessage(msg: string): hresult; external 'SharpAPI.dll';
 function SharpExecute(data: string): hresult; external 'SharpAPI.dll';
-function SharpEBroadCast(msg: integer; wpar: wparam; lpar: lparam; pSendMessage: boolean = False): integer; external 'SharpAPI.dll';
+function SharpEBroadCast(msg: integer; wpar: wparam; lpar: lparam; pSendMessage: boolean = False; pTimeout: boolean = False): integer; external 'SharpAPI.dll';
 
 function SendMessageTo(WndName: string; msg: integer; wpar: wparam; lpar: lparam): boolean; external 'SharpAPI.dll';
 
