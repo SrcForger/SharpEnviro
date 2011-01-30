@@ -11,13 +11,14 @@ type
   TFullscreenWnd = record
     monitorID: integer;
     wnd: HWND;
+    MonitorChanged: Boolean;
   end;
 
   TFullscreenThread = class(TThread)
   private
-    FActiveWnd: HWND;
-    FTmpActiveWnd: HWND;  // Used when settiing ActiveWnd (instead of using a critical section)
-    
+    FActiveWnd: HWND;         // The current active (foreground) window
+    FActiveMonitor: Integer;  // The monitor which the window was at when the window was activated (used to check when you move a window to another monitor)
+
     FFullscreenWnds: array of TFullscreenWnd;
 
   protected
@@ -31,7 +32,7 @@ type
     constructor Create(CreateSuspended: Boolean);
     destructor Destroy; override;
 
-    procedure ResetMonitor(monitorID: integer);
+    procedure ResetMonitor(monitorID: integer; monitorChanged: Boolean = false);
     
     property ActiveWnd: HWND read GetActiveWnd write SetActiveWnd;
 
@@ -49,13 +50,14 @@ begin
   inherited;
 
   FActiveWnd := 0;
-  FTmpActiveWnd := 0;
+  FActiveMonitor := -1;
 
   SetLength(FFullscreenWnds, MonList.MonitorCount);
   for i := Low(FFullscreenWnds) to High(FFullscreenWnds) do
   begin
     FFullscreenWnds[i].wnd := 0;
-    FFullscreenWnds[i].monitorID := 0;
+    FFullscreenWnds[i].monitorID := -1;
+    FFullscreenWnds[i].MonitorChanged := False;
   end;
 end;
 
@@ -68,17 +70,24 @@ end;
 
 function TFullscreenThread.GetActiveWnd: HWND;
 begin
-  Result := FTmpActiveWnd;
+  EnterCriticalSection(critSect);
+  Result := FActiveWnd;
+  LeaveCriticalSection(critSect);
 end;
 
 procedure TFullscreenThread.SetActiveWnd(wnd: HWND);
 begin
   EnterCriticalSection(critSect);
   FActiveWnd := wnd;
+
+  FActiveMonitor := -1;
+  if MonList.MonitorFromWindow(FActiveWnd) <> nil then
+    FActiveMonitor := MonList.MonitorFromWindow(FActiveWnd).MonitorNum;
+    
   LeaveCriticalSection(critSect);
 end;
 
-procedure TFullscreenThread.ResetMonitor(monitorID: integer);
+procedure TFullscreenThread.ResetMonitor(monitorID: integer; monitorChanged: Boolean);
 var
   i : integer;
 begin
@@ -87,8 +96,9 @@ begin
   begin
     if FFullscreenWnds[i].monitorID = monitorID then
     begin
-      FFullscreenWnds[i].monitorID := 0;
+      FFullscreenWnds[i].monitorID := -1;
       FFullscreenWnds[i].wnd := 0;
+      FFullscreenWnds[i].MonitorChanged := monitorChanged;
     end;
   end;
   LeaveCriticalSection(critSect);
@@ -100,12 +110,6 @@ var
   wndItem: HWND;
   fullMon, activeMon: TMonitorItem;
 begin
-  if FTmpActiveWnd <> FActiveWnd then
-  begin
-    FActiveWnd := FTmpActiveWnd;
-    FTmpActiveWnd := 0;
-  end;
-
   // Check if monitor count has changed
   if Length(FFullscreenWnds) <> MonList.MonitorCount then
   begin
@@ -114,10 +118,25 @@ begin
     for i := Low(FFullscreenWnds) to High(FFullscreenWnds) do
     begin
       FFullscreenWnds[i].wnd := 0;
-      FFullscreenWnds[i].monitorID := 0;
+      FFullscreenWnds[i].monitorID := -1;
     end;
 
     SetLength(FFullscreenWnds, MonList.MonitorCount);
+  end;
+
+  // Check if window has moved to other monitor
+  if FActiveWnd <> 0 then
+  begin
+    activeMon := MonList.MonitorFromWindow(FActiveWnd);
+    if activeMon <> nil then
+    begin
+      if activeMon.MonitorNum <> FActiveMonitor then
+      begin
+        ResetMonitor(activeMon.MonitorNum, True);
+        ResetMonitor(FActiveMonitor);
+        FActiveMonitor := activeMon.MonitorNum;
+      end;
+    end;
   end;
 
   // Fullscreen check
@@ -131,7 +150,7 @@ begin
       // Check if saved fullscreen window still is fullscreen
       if (fullMon <> nil) and (activeMon <> nil) then
       begin
-        // Don't ask me about this calculation :P
+        // Don't ask me about this calculation, can't remember :P
         if  (IsWindowFullscreen(FFullscreenWnds[i].wnd, nil, FFullscreenWnds[i].wnd)) and
             ((fullMon.MonitorNum <> activeMon.MonitorNum) or
             (GetWindowThreadProcessId(FFullscreenWnds[i].wnd) = GetWindowThreadProcessId(FActiveWnd)))
@@ -146,15 +165,19 @@ begin
       // We have fullscreen
       FFullscreenWnds[i].wnd := wndItem;
       FFullscreenWnds[i].monitorID := MonList.Monitors[i].MonitorNum;
+      FFullscreenWnds[i].MonitorChanged := False;
+
       SharpApi.SharpEBroadCast(WM_ENTERFULLSCREEN, 1, MonList.Monitors[i].MonitorNum, True, True);
       SharpApi.SendDebugMessage('Shell', 'Has Fullscreen: ' + GetWndClass(wndItem), 0);
-    end else if FFullscreenWnds[i].wnd <> 0 then
+    end else if (FFullscreenWnds[i].wnd <> 0) or (FFullscreenWnds[i].MonitorChanged) then
     begin
       // Don't have fullscreen anymore
       SharpApi.SharpEBroadCast(WM_ENTERFULLSCREEN, 0, MonList.Monitors[i].MonitorNum, True, True);
-      FFullscreenWnds[i].wnd := 0;
-      FFullscreenWnds[i].monitorID := 0;
       SharpApi.SendDebugMessage('Shell', 'No Fullscreen', 0);
+      
+      FFullscreenWnds[i].wnd := 0;
+      FFullscreenWnds[i].monitorID := -1;
+      FFullscreenWnds[i].MonitorChanged := False;
     end;
   end;
 end;
