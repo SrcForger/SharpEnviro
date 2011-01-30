@@ -539,6 +539,7 @@ type
   TSharpEButtonSkin = class(TInterfacedObject, ISharpEButtonSkin)
   private
     FSkinDim : TSkinDim;
+    FSkinDimBottom : TSkinDim;
     
     FNormal  : TSkinPartEx;
     FDown    : TSkinPartEx;
@@ -550,17 +551,11 @@ type
 
     FWidthMod : integer;
 
-    FOnNormalMouseEnterScript : String;
-    FOnNormalMouseLeaveScript : String;
-
     function GetNormal : ISharpESkinPartEx; stdcall;
     function GetDown   : ISharpESkinPartEx; stdcall;
     function GetHover  : ISharpESkinPartEx; stdcall;
 
     function GetWidthMod : integer; stdcall;
-
-    function GetOnNormalMouseEnterScript : String; stdcall;
-    function GetOnNormalMouseLeaveScript : String; stdcall;      
   public
     constructor Create(BmpList : TSkinBitmapList);
     destructor Destroy; override;
@@ -578,12 +573,13 @@ type
     property Hover  : ISharpESkinPartEx read GetHover;
 
     property SkinDim: TSkinDim read FSkinDim;
-    property OnNormalMouseEnterScript : String read GetOnNormalMouseEnterScript;
-    property OnNormalMouseLeaveScript : String read GetOnNormalMouseLeaveScript;
+    property SkinDimBottom : TSkinDim read FSkinDimBottom;
 
-    function GetLocation : TPoint; stdcall;    
+    function GetLocation : TPoint; stdcall;
+    function GetLocationBottom : TPoint; stdcall;
     function GetValid : Boolean; stdcall;
-    property Location : TPoint read GetLocation;    
+    property Location : TPoint read GetLocation;
+    property LocationBottom : TPoint read GetLocationBottom;
     property Valid : Boolean read GetValid;
  end;
 
@@ -841,27 +837,6 @@ uses SharpESkinManager,
      SharpApi,
      gr32_png;
 
-
-function LoadScriptFromFile(FileName : String) : String;
-var
-  SList : TStringList;
-begin
-  result := '';
-  if not FileExists(FileName) then exit;
-  SList := TStringList.Create;
-  SList.Clear;
-  try
-    SList.LoadFromFile(FileName);
-    result := SList.CommaText;
-  except
-    on E: Exception do
-    begin
-      SharpApi.SendDebugMessageEx('SharpESkin','Error loading script from file: ' + FileName,clred,DMT_ERROR);
-      SharpApi.SendDebugMessageEx('SharpESkin',E.Message,clred,DMT_ERROR);
-    end;
-  end;
-  SList.Free;
-end;
 
 //***************************************
 //* TSharpESkin
@@ -2087,7 +2062,11 @@ constructor TSharpEButtonSkin.Create(BmpList : TSkinBitmapList);
 begin
   FSkinDim := TSkinDim.Create;
   FSkinDim.SetLocation('0','0');
-  FSkinDim.SetDimension('w', 'h');
+  FSkinDim.SetDimension('w','h');
+
+  FSkinDimBottom := TSkinDim.Create;
+  FSkinDimBottom.SetLocation('0','0');
+  FSkinDimBottom.SetDimension('w','h');
 
   FNormal := TSkinPartEx.Create(BmpList);
   FDown   := TSkinPartEx.Create(BmpList);
@@ -2097,8 +2076,6 @@ begin
   FDownInterface   := FDown;
   FHoverInterface  := FHover;
 
-  FOnNormalMouseEnterScript   := '';
-  FOnNormalMouseLeaveScript   := '';
   FWidthMod := 0;
 end;
 
@@ -2113,6 +2090,7 @@ begin
   FHover  := nil;
 
   FSkinDim.Free;
+  FSkinDimBottom.Free;
 end;
 
 procedure TSharpEButtonSkin.UpdateDynamicProperties(cs: ISharpEScheme);
@@ -2125,22 +2103,20 @@ end;
 procedure TSharpEButtonSkin.SaveToStream(Stream: TStream);
 begin
   FSkinDim.SaveToStream(Stream);
+  FSkinDimBottom.SaveToStream(Stream);
   FNormal.SaveToStream(Stream);
   FDown.SaveToStream(Stream);
   FHover.SaveToStream(Stream);
-  StringSaveToStream(FOnNormalMouseEnterScript,Stream);
-  StringSaveToStream(FOnNormalMouseLeaveScript,Stream);
   Stream.WriteBuffer(FWidthMod,SizeOf(FWidthMod));
 end;
 
 procedure TSharpEButtonSkin.LoadFromStream(Stream: TStream);
 begin
   FSkinDim.LoadFromStream(Stream);
+  FSkinDimBottom.LoadFromStream(Stream);
   FNormal.LoadFromStream(Stream);
   FDown.LoadFromStream(Stream);
   FHover.LoadFromStream(Stream);
-  FOnNormalMouseEnterScript := StringLoadFromStream(Stream);
-  FOnNormalMouseLeaveScript := StringLoadFromStream(Stream);
   Stream.ReadBuffer(FWidthMod,SizeOf(FWidthMod));
 end;
 
@@ -2151,8 +2127,8 @@ begin
   FHover.Clear;
   FSkinDim.SetLocation('0','0');
   FSkinDim.SetDimension('w', 'h');
-  FOnNormalMouseEnterScript   := '';
-  FOnNormalMouseLeaveScript   := '';
+  FSkinDimBottom.SetLocation('0','0');
+  FSkinDimBottom.SetDimension('w','h');
   FWidthMod := 0;
 end;
 
@@ -2182,16 +2158,14 @@ begin
       if ItemNamed['dimension'] <> nil then
         FSkinDim.SetDimension(Value('dimension', 'w,h'));
       if ItemNamed['location'] <> nil then
+      begin
         FSkinDim.SetLocation(Value('location','0,0'));
+        FSkinDimBottom.SetLocation(Value('location','0,0'));
+      end;
+      if ItemNamed['locationbottom'] <> nil then
+        FSkinDimBottom.SetLocation(Value('locationbottom','0,0'));        
 
-      {$WARNINGS OFF}
-      if ItemNamed['OnNormalMouseEnter'] <> nil then
-        FOnNormalMouseEnterScript := LoadScriptFromFile(IncludeTrailingBackSlash(Path) + Value('OnNormalMouseEnter',''));
-      if ItemNamed['OnNormalMouseLeave'] <> nil then
-        FOnNormalMouseLeaveScript := LoadScriptFromFile(IncludeTrailingBackSlash(Path) + Value('OnNormalMouseLeave',''));
-      {$WARNINGS ON}
-
-      FWidthMod := IntValue('WidthMod',20);      
+      FWidthMod := IntValue('WidthMod',20);
     end;
   finally
     SkinText.SelfInterface := nil;
@@ -2209,6 +2183,11 @@ begin
   result := Point(FSkinDim.XAsInt,FSkinDim.YAsInt);
 end;
 
+function TSharpEButtonSkin.GetLocationBottom: TPoint;
+begin
+  result := Point(FSkinDimBottom.XAsInt,FSkinDimBottom.YAsInt);
+end;
+
 function TSharpEButtonSkin.GetDown: ISharpESkinPartEx;
 begin
   result := FDownInterface;
@@ -2222,16 +2201,6 @@ end;
 function TSharpEButtonSkin.GetNormal: ISharpESkinPartEx;
 begin
   result := FNormalInterface;
-end;
-
-function TSharpEButtonSkin.GetOnNormalMouseEnterScript: String;
-begin
-  result := FOnNormalMouseEnterScript;
-end;
-
-function TSharpEButtonSkin.GetOnNormalMouseLeaveScript: String;
-begin
-  result := FOnNormalMouseLeaveScript;
 end;
 
 function TSharpEButtonSkin.GetValid: boolean;

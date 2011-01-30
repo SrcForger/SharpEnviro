@@ -267,21 +267,17 @@ type
     function GetDown   : ISharpESkinPartEx; stdcall;
     function GetHover  : ISharpESkinPartEx; stdcall;
 
-    function GetOnNormalMouseEnterScript : String; stdcall;
-    function GetOnNormalMouseLeaveScript : String; stdcall;
-
     property Normal : ISharpESkinPartEx read GetNormal;
     property Down   : ISharpESkinPartEx read GetDown;
     property Hover  : ISHarpESkinPartEx read GetHover;
 
-    property OnNormalMouseEnterScript : String read GetOnNormalMouseEnterScript;
-    property OnNormalMouseLeaveScript : String read GetOnNormalMouseLeaveScript;
-
-    function GetLocation : TPoint; stdcall;    
+    function GetLocation : TPoint; stdcall;
+    function GetLocationBottom : TPoint; stdcall;  
     function GetValid : Boolean; stdcall;
     function GetWidthMod : integer; stdcall;
 
-    property Location : TPoint read GetLocation;    
+    property Location : TPoint read GetLocation;
+    property LocationBottom : TPoint read GetLocationBottom;    
     property Valid : Boolean read GetValid;
     property WidthMod : integer read GetWidthMod;
   end;

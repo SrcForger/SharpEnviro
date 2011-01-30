@@ -93,7 +93,6 @@ type
     procedure Resize; override;
     destructor Destroy; override;
     procedure UpdateAutoPosition;
-    function HasNormalHoverScript : boolean;
     procedure CalculateGlyphColor;    
   published
     //property Align;
@@ -270,16 +269,6 @@ begin
   UpdateSkin;
 end;
 
-function TSharpEButton.HasNormalHoverScript : boolean;
-begin
-  result := False;
-  if not assigned(FManager) then exit;
-
-  if (length(Trim(FManager.Skin.Button.OnNormalMouseEnterScript)) > 0)
-     and (length(Trim(FManager.Skin.Button.OnNormalMouseLeaveScript)) > 0) then result := True
-     else result := False;
-end;
-
 procedure TSharpEButton.DrawDefaultSkin(bmp: TBitmap32; Scheme: ISharpEScheme);
 var
   r: TRect;
@@ -407,7 +396,7 @@ begin
     end;
     if (FButtonDown or FForceDown) and not (FManager.Skin.Button.Down.Empty) then
       result := FManager.Skin.Button.Down.Icon.Dimension.X
-    else if ((FButtonOver or FForceHover) and not (FManager.Skin.Button.Hover.Empty) and not (HasNormalHoverScript)) then
+    else if ((FButtonOver or FForceHover) and not (FManager.Skin.Button.Hover.Empty)) then
       result := FManager.Skin.Button.Hover.Icon.Dimension.X
     else
       result := FManager.Skin.Button.Normal.Icon.Dimension.X;
@@ -474,7 +463,7 @@ begin
       SkinText := FManager.Skin.Button.Down.CreateThemedSkinText;
       SkinIcon := FManager.Skin.Button.Down.Icon;
     end
-    else if ((FButtonOver or FForceHover) and not (FManager.Skin.Button.Hover.Empty) and not (HasNormalHoverScript)) then
+    else if ((FButtonOver or FForceHover) and not (FManager.Skin.Button.Hover.Empty)) then
     begin
       FManager.Skin.Button.Hover.DrawTo(bmp, Scheme);
       SkinText := FManager.Skin.Button.Hover.CreateThemedSkinText;
@@ -559,13 +548,30 @@ begin
 end;
 
 procedure TSharpEButton.UpdateAutoPosition;
+var
+  p : TPoint;
+  Mon : TMonitor;
+  newTop : integer;
 begin
   if (FAutoPosition) then
   begin
     if (Assigned(FManager)) then
     begin
-      if Top <> FManager.Skin.Button.Location.Y then
-         Top := FManager.Skin.Button.Location.Y;
+      newTop := FManager.Skin.Button.Location.Y;
+
+      // check if the bar is aligned at the bottom, if so user alternative location
+      Mon := nil;
+      if (parent <> nil) then
+        Mon := TForm(parent).Monitor;
+      if Mon <> nil then
+      begin
+        p := ClientToScreen(Point(0,0));
+        if p.y > Mon.Top + Mon.Height div 2 then
+          newTop := FManager.Skin.Button.LocationBottom.Y
+      end;
+      
+      if Top <> newTop then
+         Top := newTop;
     end;
   end;
 end;
