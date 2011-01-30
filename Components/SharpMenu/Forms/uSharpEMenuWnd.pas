@@ -477,6 +477,17 @@ procedure TSharpEMenuWnd.FormMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
   dragPath : string;
+  pt: TPoint;
+  rc: TRect;
+
+  function PointInRect(P : TPoint; Rect : TRect) : boolean;
+  begin
+    if (P.X>=Rect.Left) and (P.X<=Rect.Right)
+      and (P.Y>=Rect.Top) and (P.Y<=Rect.Bottom) then
+        Result := True
+      else
+        Result := False;
+  end;
 begin
   if FIsClosing then exit;
   if FMenu = nil then exit;
@@ -495,11 +506,19 @@ begin
     if (dragPath <> '') then
     begin
       FDropFileSource.Files.Add(dragPath);
+      FDropFileSource.DragTypes := [dtCopy, dtLink];
+      FDropFileSource.PreferredDropEffect := DROPEFFECT_COPY;
       // Start the drag operation.
       FDropFileSource.Execute;
 
-      Close;
-      exit;
+      GetCursorPos(pt);
+      GetWindowRect(Handle, rc);
+      
+      if not PointInRect(pt, rc) then
+      begin
+        Close;
+        exit;
+      end;
     end;
   end;
 
