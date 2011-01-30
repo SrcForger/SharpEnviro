@@ -164,7 +164,7 @@ begin
       break;
     end;
 
-    Sleep(1000);
+    Suspend;
   end;
 end;
 

@@ -31,14 +31,10 @@ uses Windows, Messages, Classes, SysUtils,
      SharpAPI,
      MonitorList, VWMFunctions,
      uTypes, uDeskArea, uTray, uTaskItem,
-     uSystemFuncs;
+     uSystemFuncs,
+     uFullscreen;
 
 type
-  TFullscreenWnd = record
-    monitorID: integer;
-    wnd: HWND;
-  end;
-
   TWindowStructureClass = class
   public
     ShellTrayWnd     : hwnd;
@@ -57,15 +53,13 @@ type
 
     WM_SHELLHOOK : integer;
 
-    ActiveWnd: HWND;
-    FullscreenWnds: array of TFullscreenWnd;
-
     constructor Create; reintroduce;
     destructor Destroy; override;
   end;
 
 var
   WindowsClass : TWindowStructureClass;
+  FullscreenThread : TFullscreenThread;
 
 function DeskAreaTimerWndProc(wnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall;
 function ShellTrayWndProc(wnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall;
@@ -76,17 +70,7 @@ implementation
 uses uTaskManager;
 
 constructor TWindowStructureClass.Create;
-var
-  i : integer;
 begin
-  ActiveWnd := 0;
-  SetLength(FullscreenWnds, MonList.MonitorCount);
-  for i := Low(FullscreenWnds) to High(FullscreenWnds) do
-  begin
-    FullscreenWnds[i].wnd := 0;
-    FullscreenWnds[i].monitorID := 0;
-  end;
-
   WM_SHELLHOOK := RegisterWindowMessage('SHELLHOOK');
 
   with ShellTrayWndClass do
@@ -296,8 +280,6 @@ begin
     DestroyWindow(ShellTrayWnd);
     Windows.UnregisterClass(PChar('Shell_TrayWnd'),hinstance)
   end;
-
-  SetLength(FullscreenWnds, 0);
 end;
 
 function DeskAreaTimerWndProc(wnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall;
@@ -506,65 +488,6 @@ begin
     Result := 1
 end;
 
-procedure CheckFullscreenWindow;
-var
-  i: integer;
-  wndItem: HWND;
-  fullMon, activeMon: TMonitorItem;
-begin
-  // Check if monitor count has changed
-  if Length(WindowsClass.FullscreenWnds) <> MonList.MonitorCount then
-  begin
-    // Reset all fullscreen windows
-    // [TODO: Reset only the ones that are no longer part of any monitor]
-    for i := Low(WindowsClass.FullscreenWnds) to High(WindowsClass.FullscreenWnds) do
-    begin
-      WindowsClass.FullscreenWnds[i].wnd := 0;
-      WindowsClass.FullscreenWnds[i].monitorID := 0;
-    end;
-
-    SetLength(WindowsClass.FullscreenWnds, MonList.MonitorCount);
-  end;
-
-  // Fullscreen check
-  for i := 0 to MonList.MonitorCount - 1 do
-  begin
-    if  (WindowsClass.FullscreenWnds[i].wnd <> 0) then
-    begin
-      fullMon := MonList.MonitorFromWindow(WindowsClass.FullscreenWnds[i].wnd);
-      activeMon := MonList.MonitorFromWindow(WindowsClass.ActiveWnd);
-
-      // Check if saved fullscreen window still is fullscreen
-      if (fullMon <> nil) and (activeMon <> nil) then
-      begin
-        // Don't ask me about this calculation :P
-        if  (IsWindowFullscreen(WindowsClass.FullscreenWnds[i].wnd, nil, WindowsClass.FullscreenWnds[i].wnd)) and
-            ((fullMon.MonitorNum <> activeMon.MonitorNum) or
-            (GetWindowThreadProcessId(WindowsClass.FullscreenWnds[i].wnd) = GetWindowThreadProcessId(WindowsClass.ActiveWnd)))
-         then
-          continue;
-      end;
-    end;
-    
-    wndItem := HasFullScreenWindow(MonList.Monitors[i]);
-    if wndItem <> 0 then
-    begin
-      // We have fullscreen
-      WindowsClass.FullscreenWnds[i].wnd := wndItem;
-      WindowsClass.FullscreenWnds[i].monitorID := MonList.Monitors[i].MonitorNum;
-      SharpApi.SharpEBroadCast(WM_ENTERFULLSCREEN, 1, MonList.Monitors[i].MonitorNum);
-      //SharpApi.SendDebugMessage('Shell', 'Has Fullscreen: ' + GetWndClass(wndItem), 0);
-    end else if WindowsClass.FullscreenWnds[i].wnd <> 0 then
-    begin
-      // Don't have fullscreen anymore
-      SharpApi.SharpEBroadCast(WM_ENTERFULLSCREEN, 0, MonList.Monitors[i].MonitorNum);
-      WindowsClass.FullscreenWnds[i].wnd := 0;
-      WindowsClass.FullscreenWnds[i].monitorID := 0;
-      //SharpApi.SendDebugMessage('Shell', 'No Fullscreen: ' + GetWndClass(WindowsClass.FullscreenWnds[i]), 0);
-    end;
-  end;
-end;
-
 function MsTaskSwWClassWndProc(wnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall;
 var
   n : integer;
@@ -576,15 +499,12 @@ var
   deskswitch : boolean;
   b : integer;
   R : TRect;
-  i : integer;
 begin
   result := 0;
   if TaskMsgManager <> nil then
   begin
     if (Msg = WM_TIMER) and (wParam = 1) then
     begin
-      //CheckFullscreenWindow;
-
       if IsWindow(TaskManager.LastActiveTask) then
       begin
         pItem := TaskManager.GetItemByHandle(TaskManager.LastActiveTask);
@@ -609,7 +529,7 @@ begin
       deskswitch := False;
       if (wparam = HSHELL_WINDOWACTIVATED) or (wparam = HSHELL_WINDOWACTIVATED + 32768) then
       begin
-        WindowsClass.ActiveWnd := GetForegroundWindow;
+        FullscreenThread.ActiveWnd := GetForegroundWindow;
 
         h := Cardinal(lparam);
         pItem := TaskManager.GetItemByHandle(h);
@@ -660,14 +580,7 @@ begin
     case Msg of
       WM_CHECKFULLSCREEN:
       begin
-        for i := Low(WindowsClass.FullscreenWnds) to High(WindowsClass.FullscreenWnds) do
-        begin
-          if WindowsClass.FullscreenWnds[i].monitorID = LParam then
-          begin
-            WindowsClass.FullscreenWnds[i].monitorID := 0;
-            WindowsClass.FullscreenWnds[i].wnd := 0;
-          end;
-        end;
+        FullscreenThread.ResetMonitor(lParam);
       end;
       WM_REGISTERSHELLHOOK: TaskMsgManager.AddWnd(Cardinal(WParam));
       WM_UNREGISTERSHELLHOOK: TaskMsgManager.DeleteWndByHandle(Cardinal(WParam));

@@ -53,7 +53,8 @@ uses
   uExplorer in 'uExplorer.pas',
   uWindows in 'uWindows.pas',
   uDeskArea in 'uDeskArea.pas',
-  uTray in 'uTray.pas';
+  uTray in 'uTray.pas',
+  uFullscreen in 'uFullscreen.pas';
 
 {$R 'VersionInfo.res'}
 {$R *.RES}
@@ -128,6 +129,8 @@ begin
   DeskAreaManager := nil;
   
   WindowsClass := TWindowStructureClass.Create;
+  FullscreenThread := TFullscreenThread.Create(False);
+
   TaskMsgManager     := TTaskMsgManager.Create;
   TrayManager     := TTrayManager.Create;
   DeskAreaManager := TDeskAreaManager.Create;
@@ -151,9 +154,17 @@ begin
   if ExplorerThread <> nil then
   begin
     ExplorerThread.Terminate;
+    ExplorerThread.Resume;
     ExplorerThread.WaitFor;
   end;
   FreeAndNil(ExplorerThread);
+
+  if FullscreenThread <> nil then
+  begin
+    FullscreenThread.Terminate;
+    FullscreenThread.WaitFor;
+  end;
+  FreeAndNil(FullscreenThread);
 
   FreeAndNil(DeskAreaManager);
   FreeAndNil(TrayManager);
