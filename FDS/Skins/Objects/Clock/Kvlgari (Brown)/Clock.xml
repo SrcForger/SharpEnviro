@@ -24,8 +24,8 @@
 			<FontColor>0</FontColor>
 			<FontAALevel>0</FontAALevel>
 			<FontBold>0</FontBold>
-			<XMod>18</XMod>
-			<YMod>20</YMod>
+			<X>18</X>
+			<Y>20</Y>
 		</text>
 	</ClockSkin>
 	
@@ -54,8 +54,8 @@
 			<FontColor>0</FontColor>
 			<FontAALevel>0</FontAALevel>
 			<FontBold>0</FontBold>
-			<XMod>18</XMod>
-			<YMod>20</YMod>
+			<X>18</X>
+			<Y>20</Y>
 		</text>
 	</ClockSkin>
 	
@@ -84,8 +84,8 @@
 			<FontColor>0</FontColor>
 			<FontAALevel>0</FontAALevel>
 			<FontBold>0</FontBold>
-			<XMod>18</XMod>
-			<YMod>20</YMod>
+			<X>18</X>
+			<Y>20</Y>
 		</text>
 	</ClockSkin>
 </ClockSkins>

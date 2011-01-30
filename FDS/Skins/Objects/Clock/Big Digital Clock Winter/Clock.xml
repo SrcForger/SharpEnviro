@@ -8,18 +8,14 @@
 			<Category>Digital</Category>
 			<Filter>Big</Filter>
 		</Info>
-		<Skin>
-			<Width>350</Width>
-			<Height>250</Height>
-		</Skin>
 		<Text>
 			<Caption>{hh}.{nn}</Caption>
 			<FontSize>80</FontSize>
 			<FontColor>RGB(52,53,58)</FontColor>
 			<FontAlpha>255</FontAlpha>
 			<ClearType>1</ClearType>
-			<XMod>0</XMod>
-			<YMod>50</YMod>
+			<X>0</X>
+			<Y>50</Y>
 		</Text>
 		<Text>
 			<Caption>:{ss}</Caption>
@@ -27,8 +23,8 @@
 			<FontColor>RGB(150,150,150)</FontColor>
 			<FontAlpha>255</FontAlpha>
 			<ClearType>1</ClearType>
-			<XMod>280</XMod>
-			<YMod>100</YMod>
+			<X>280</X>
+			<Y>100</Y>
 		</Text>
 		<Text>
 			<Caption>{dddd}</Caption>
@@ -36,8 +32,8 @@
 			<FontColor>RGB(150,150,150)</FontColor>
 			<FontAlpha>255</FontAlpha>
 			<ClearType>1</ClearType>
-			<XMod>15</XMod>
-			<YMod>150</YMod>
+			<X>15</X>
+			<Y>150</Y>
 		</Text>
 	</ClockSkin>
 </ClockSkins>

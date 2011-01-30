@@ -66,8 +66,8 @@ type
     FontAlpha : integer;
     FontStyle : string;
 
-    XMod : integer;
-    YMod : integer;
+    X : integer;
+    Y : integer;
     Caption : string;
     ClearType : boolean;
     Align : TClockSkinTextAlign;
@@ -88,6 +88,10 @@ type
     FShadowColor : integer;
     FObjectId    : integer;
     FParentImage : TImage32;
+
+    FFixedWidth : integer;
+    FFixedHeight : integer;
+
     FClockBack   : TBitmap32;
     FClockOverlay   : TBitmap32;
     FHArrow      : TBitmap32;
@@ -135,6 +139,22 @@ type
   end;
 
 implementation
+
+procedure LoadBitmap32FromPNGDPI(dstBitmap: TBitmap32; fileName: string; out alphaChannelAvailable: Boolean);
+var
+  tmp: TBitmap32;
+begin
+  tmp := TBitmap32.Create;
+  TKernelResampler.Create(tmp).Kernel := TMitchellKernel.Create;
+
+  LoadBitmap32FromPNG(tmp, fileName, alphaChannelAvailable);
+
+  dstBitmap.SetSize(MulDiv(tmp.Width, Screen.PixelsPerInch, 96), MulDiv(tmp.Height, Screen.PixelsPerInch, 96));
+  dstBitmap.Clear;
+
+  tmp.DrawTo(dstBitmap, Rect(0, 0, dstBitmap.Width, dstBitmap.Height),
+                        Rect(0, 0, tmp.Width, tmp.Height));
+end;
 
 
 procedure TClockLayer.RotateBitmap(Src, Dst : TBitmap32; Alpha: Single);
@@ -285,6 +305,7 @@ var
 
   b : boolean;
   i, n, n1 : integer;
+  w, h: integer;
 
   XML: TJclSimpleXML;
 
@@ -297,6 +318,9 @@ begin
   begin
     FSettings.DrawText := False;
   end;
+
+  w := 0;
+  h := 0;
 
   FClockBack.SetSize(0,0);
   FClockOverlay.SetSize(0,0);
@@ -325,31 +349,28 @@ begin
           begin
             SkinStr := Value('Background','');
             if (SkinStr <> '') and (FileExists(SkinDir + SkinStr)) then
-              LoadBitmap32FromPNG(FClockBack, SkinDir + SkinStr, b);
+              LoadBitmap32FromPNGDPI(FClockBack, SkinDir + SkinStr, b);
 
             SkinStr := Value('Overlay','');
             if (SkinStr <> '') and (FileExists(SkinDir + SkinStr)) then
-              LoadBitmap32FromPNG(FClockOverlay, SkinDir + SkinStr, b);
+              LoadBitmap32FromPNGDPI(FClockOverlay, SkinDir + SkinStr, b);
 
             SkinStr := Value('HandHour','');
             if (SkinStr <> '') and (FileExists(SkinDir + SkinStr)) then
-              LoadBitmap32FromPNG(FHArrow, SkinDir + SkinStr, b);
+              LoadBitmap32FromPNGDPI(FHArrow, SkinDir + SkinStr, b);
 
             SkinStr := Value('HandMinute','');
             if (SkinStr <> '') and (FileExists(SkinDir + SkinStr)) then
-              LoadBitmap32FromPNG(FMArrow, SkinDir + SkinStr, b);
+              LoadBitmap32FromPNGDPI(FMArrow, SkinDir + SkinStr, b);
 
             SkinStr := Value('HandSecond','');
             if (SkinStr <> '') and (FileExists(SkinDir + SkinStr)) then
-              LoadBitmap32FromPNG(FSArrow, SkinDir + SkinStr, b);
+              LoadBitmap32FromPNGDPI(FSArrow, SkinDir + SkinStr, b);
 
-            if (IntValue('Width') > -1) and (IntValue('Height') > -1) then
-            begin
-              FClockBack.SetSize(IntValue('Width'), IntValue('Height')); 
-              FClockBack.Clear(Color32(0,0,0,0));
-            end;
-          end;
-        end;
+            FFixedWidth := IntValue('Width', 0);
+            FFixedHeight := IntValue('Height', 0);
+          end;  // XML.Root.Items.Item[n].Items.ItemNamed['Skin'].Items
+        end;  // XML.Root.Items.Item[n].Items.ItemNamed['Skin'] <> nil
 
         if FSettings.DrawText then
         begin
@@ -367,24 +388,27 @@ begin
                 FClockTexts[n1].FontAlpha := IntValue('FontAlpha',0);
                 FClockTexts[n1].FontStyle := Value('FontStyle', '');
 
-                FClockTexts[n1].XMod := IntValue('XMod', 0);
-                FClockTexts[n1].YMod := IntValue('YMod', 0);
+                FClockTexts[n1].X := MulDiv(IntValue('X', 0), Screen.PixelsPerInch, 96);
+                FClockTexts[n1].Y := MulDiv(IntValue('Y', 0), Screen.PixelsPerInch, 96);
                 FClockTexts[n1].Caption := Value('Caption', 'none');
                 FClockTexts[n1].ClearType := BoolValue('ClearType', true);
                 FClockTexts[n1].Align := TClockSkinTextAlign(IntValue('Align', Int64(caLeft)));
               end;
             end;
-        end;
-      end;
-    end;
+        end;  // FSettings.DrawText
+      end;  // XML.Root.Items.Item[n].Name = 'ClockSkin'
+    end;  // n := 0 to XML.Root.Items.Count - 1
   end else
     SharpApi.SendDebugMessageEx('Clock.Object','Failed to Load Settings from' + SkinDir + 'Skin.xml',0,DMT_ERROR);
 
   DebugFree(XML);
+
+  FPicture.SetSize(w, h);
 end;
 
 procedure TClockLayer.DrawClock;
 var
+  w, h: integer;
   n, x : integer;
   formattedCaption : string;
   TempBmp : TBitmap32;
@@ -401,12 +425,49 @@ begin
   FSArrow.DrawMode := dmBlend;
   FSArrow.CombineMode := cmMerge;
 
-  FPicture.SetSize(FClockBack.Width,FClockBack.Height);
+  // Get picture size
+  if (FFixedWidth = 0) and (FFixedHeight = 0) then
+  begin
+    w := FClockBack.Width;
+    h := FClockBack.Height;
+
+    if w < FClockOverlay.Width then
+      w := FClockOverlay.Width;
+    if h < FClockOverlay.Height then
+      h := FClockOverlay.Height;
+
+    for n := 0 to Length(FClockTexts) - 1 do
+    begin
+      FPicture.Font.Name := FClockTexts[n].FontName;
+      FPicture.Font.Size := FClockTexts[n].FontSize;
+
+      FPicture.Font.Style := [];
+      if AnsiContainsText(FClockTexts[n].FontStyle, 'Bold') then
+        FPicture.Font.Style := FPicture.Font.Style + [fsBold];
+      if AnsiContainsText(FClockTexts[n].FontStyle, 'Italic') then
+        FPicture.Font.Style := FPicture.Font.Style + [fsItalic];
+      if AnsiContainsText(FClockTexts[n].FontStyle, 'Underline') then
+        FPicture.Font.Style := FPicture.Font.Style + [fsUnderline];
+      if AnsiContainsText(FClockTexts[n].FontStyle, 'Strikeout') then
+        FPicture.Font.Style := FPicture.Font.Style + [fsStrikeout];
+
+      if FClockTexts[n].X + FPicture.TextWidth(FormatCaption(FClockTexts[n].Caption)) > w then
+        w := FClockTexts[n].X + FPicture.TextWidth(FormatCaption(FClockTexts[n].Caption));
+      if FClockTexts[n].Y + FPicture.TextHeight(FormatCaption(FClockTexts[n].Caption)) > h then
+        h := FClockTexts[n].Y + FPicture.TextHeight(FormatCaption(FClockTexts[n].Caption));
+    end;
+  end else
+  begin
+    w := FFixedWidth;
+    h := FFixedHeight;
+  end;
+
+  FPicture.SetSize(w, h);
   FPicture.Clear(color32(0,0,0,0));
 
   //Draw background
   if FClockBack.Width <> 0 then
-    FClockBack.DrawTo(FPicture);
+    FClockBack.DrawTo(FPicture, 0, 0);
 
   // Draw texts
   for n := 0 to Length(FClockTexts) - 1 do
@@ -435,12 +496,12 @@ begin
     x := 0;
     
     case FClockTexts[n].Align of
-      caLeft: x := FClockTexts[n].XMod;
-      caCenter: x := FClockTexts[n].XMod - Round(FPicture.TextWidth(formattedCaption) div 2);
-      caRight: x := FClockTexts[n].XMod - FPicture.TextWidth(formattedCaption);
+      caLeft: x := FClockTexts[n].X;
+      caCenter: x := FClockTexts[n].X - Round(FPicture.TextWidth(formattedCaption) div 2);
+      caRight: x := FClockTexts[n].X - FPicture.TextWidth(formattedCaption);
     end;
 
-    FPicture.RenderText(x, FClockTexts[n].YMod, formattedCaption, AALevel, color32(GetRValue(FClockTexts[n].FontColor), GetGValue(FClockTexts[n].FontColor), GetBValue(FClockTexts[n].FontColor), FClockTexts[n].FontAlpha));
+    FPicture.RenderText(x, FClockTexts[n].Y, formattedCaption, AALevel, color32(GetRValue(FClockTexts[n].FontColor), GetGValue(FClockTexts[n].FontColor), GetBValue(FClockTexts[n].FontColor), FClockTexts[n].FontAlpha));
   end;
 
   TempBmp := TBitmap32.Create;
@@ -508,7 +569,7 @@ begin
     if FClockTexts[n].ClearType then
       AALevel := -2;
 
-    FPicture.RenderText(FClockTexts[n].XMod, FClockTexts[n].YMod, FClockTexts[n].Caption, AALevel, color32(GetRValue(FClockTexts[n].FontColor), GetGValue(FClockTexts[n].FontColor), GetBValue(FClockTexts[n].FontColor), FClockTexts[n].FontAlpha));
+    FPicture.RenderText(FClockTexts[n].X, FClockTexts[n].Y, FClockTexts[n].Caption, AALevel, color32(GetRValue(FClockTexts[n].FontColor), GetGValue(FClockTexts[n].FontColor), GetBValue(FClockTexts[n].FontColor), FClockTexts[n].FontAlpha));
   end;
 
   FLastHour := HourOf(Now);
@@ -645,6 +706,11 @@ begin
   Alphahit := False;
   FObjectId := id;
   scaled := false;
+
+  FPicture := TBitmap32.Create;
+  FPicture.DrawMode := dmBlend;
+  FPicture.CombineMode := cmMerge;
+
   FClockBack := TBitmap32.Create;
   FClockOverlay := TBitmap32.Create;
   FHArrow := TBitmap32.Create;
@@ -667,9 +733,6 @@ begin
 
   FAffineTrans := TAffineTransformation.Create;
 
-  FPicture := TBitmap32.Create;
-  FPicture.DrawMode := dmBlend;
-  FPicture.CombineMode := cmMerge;
   fTimer := TTimer.Create(nil);
   fTimer.Interval := 1000;
   fTimer.OnTimer := fTimer1TimerNormal;
@@ -690,6 +753,7 @@ destructor TClockLayer.Destroy;
 begin
   fTimer.Enabled:=False;
   fTimer.Destroy;
+  
   DebugFree(FPicture);
   DebugFree(FClockBack);
   DebugFree(FClockOverlay);

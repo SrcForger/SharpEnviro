@@ -36,8 +36,8 @@
 			<FontAlpha>255</FontAlpha>
 			<ClearType>1</ClearType>
 			<Align>1</Align>
-			<XMod>110</XMod>
-			<YMod>5</YMod>
+			<X>110</X>
+			<Y>5</Y>
 		</Text>
 		<Text>
 			<Caption>{dddddd}</Caption>
@@ -46,8 +46,8 @@
 			<FontAlpha>255</FontAlpha>
 			<ClearType>0</ClearType>
 			<Align>1</Align>
-			<XMod>110</XMod>
-			<YMod>55</YMod>
+			<X>110</X>
+			<Y>55</Y>
 		</Text>
 	</ClockSkin>
 </ClockSkins>
