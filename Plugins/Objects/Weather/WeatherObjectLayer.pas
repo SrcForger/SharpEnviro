@@ -55,6 +55,7 @@ type
 
   TWeatherSkinItem = class
     x,y : integer;
+    Width, Height : integer;
     DataType : string;
     Data : String;
     Size : integer;
@@ -274,12 +275,18 @@ begin
          mx := pItem.Bitmap.Width + pItem.x;
       if pItem.Bitmap.Height + pItem.y > my then
          my := pItem.Bitmap.Height + pItem.y;
-    end else
+    end else if (pItem.DataType = 'Text') then       
     begin
       if outBmp.TextWidth(pItem.data) + pItem.x > mx then
          mx := outBmp.TextWidth(pItem.data) + pItem.x;
       if outBmp.TextHeight(pItem.data) + pItem.y > my then
          my := outBmp.TextHeight(pItem.data) + pItem.y;
+    end else if (pItem.DataType = 'Background') then
+    begin
+      if pItem.Width + pItem.x > mx then
+        mx := pItem.Width + pItem.x;
+      if pItem.Height + pItem.y > my then
+        my := pItem.Height + pItem.y;
     end;
   end;
   outBmp.SetSize(mx,my);
@@ -379,6 +386,8 @@ begin
         pItem.BlendB                := BoolValue('BlendB',False);
         pItem.BlendValueB           := IntValue('BlendValueB',255);
         pItem.Align                 := TWeatherSkinItemAlign(IntValue('Align', Int64(waLeft)));
+        pItem.Width                 := IntValue('Width', 0);
+        pItem.Height                := IntValue('Height', 0);
 
         // Normal image
         if (pItem.DataType = 'Image') and (FileExists(skinDir + pItem.Data)) then
@@ -507,6 +516,15 @@ begin
   if maxpos > 0 then ReplaceSpacer(pSList);
 end;
 
+function GetAverageTemp(High, Low: String): string;
+var
+  iLow, iHigh: integer;
+begin
+  Result := '';
+  if (TryStrToInt(High, iHigh)) and (TryStrToInt(Low, iLow)) then
+    Result := IntToStr((iHigh + iLow) div 2);
+end;
+
 function TWeatherLayer.ReplaceDataInString(pString : String) : String;
 var
   n : integer;
@@ -538,6 +556,15 @@ begin
     pString := StringReplace(pString,'{#FC_D'+d+'_LOWTEMP#}',            FWeatherParser.wxml.Forecast.Days[n].LowTemp,[rfReplaceAll,rfIgnoreCase]);
     pString := StringReplace(pString,'{#FC_D'+d+'_TIMESUNSET#}',         FWeatherParser.wxml.Forecast.Days[n].TimeSunset,[rfReplaceAll,rfIgnoreCase]);
     pString := StringReplace(pString,'{#FC_D'+d+'_TIMESUNRISE#}',        FWeatherParser.wxml.Forecast.Days[n].TimeSunrise,[rfReplaceAll,rfIgnoreCase]);
+
+    pString := StringReplace(pString,'{#FC_D'+d+'_TEMPERATURE#}',        GetAverageTemp(FWeatherParser.wxml.Forecast.Days[n].HighTemp, FWeatherParser.wxml.Forecast.Days[n].LowTemp),[rfReplaceAll,rfIgnoreCase]);
+
+    if n = 0 then
+      pString := StringReplace(pString,'{#FC_D'+d+'_DAYTEXT2#}',         'Today',[rfReplaceAll,rfIgnoreCase])
+    else if n = 1 then
+      pString := StringReplace(pString,'{#FC_D'+d+'_DAYTEXT2#}',         'Tomorrow',[rfReplaceAll,rfIgnoreCase])
+    else
+      pString := StringReplace(pString,'{#FC_D'+d+'_DAYTEXT2#}',         FWeatherParser.wxml.Forecast.Days[n].DayText,[rfReplaceAll,rfIgnoreCase]);
   end;
 
   pString := StringReplace(pString,'{#LATITUE#}',     FWeatherParser.wxml.HeadLoc.Latitude,[rfReplaceAll,rfIgnoreCase]);
@@ -570,6 +597,8 @@ begin
   pString := StringReplace(pString,'{#ICON#}',        uWeatherParser.GetWeatherIcon(FWeatherParser.wxml.CurrentCondition.IconCode),[rfReplaceAll,rfIgnoreCase]);
   pString := StringReplace(pString,'{#CONDITION#}',   FWeatherParser.wxml.CurrentCondition.ConditionTxt,[rfReplaceAll,rfIgnoreCase]);
   pString := StringReplace(pString,'{#OBSSTATION#}',  FWeatherParser.wxml.CurrentCondition.ObservationStation,[rfReplaceAll,rfIgnoreCase]);
+  pString := StringReplace(pString,'{#DAYTEXT#}',     FWeatherParser.wxml.Forecast.Days[0].DayText,[rfReplaceAll,rfIgnoreCase]);
+  pString := StringReplace(pString,'{#DAYTEXT2#}',    'Today',[rfReplaceAll,rfIgnoreCase]);
   result := pString;
 end;
 
