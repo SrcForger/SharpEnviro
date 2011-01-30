@@ -28,7 +28,9 @@ unit SharpGraphicsUtils;
 
 interface
 
-uses Windows, Graphics, GR32, GR32_Blend, GR32_Backends, Math, uThemeConsts;
+uses Windows, Classes, Graphics, Forms,
+    GR32, GR32_Blend, GR32_Resamplers, GR32_PNG, GR32_Backends,
+    Math, uThemeConsts;
 
 type
   THSLColor = record
@@ -63,6 +65,8 @@ type
 
   function GetColorAverage(Src : TBitmap32) : integer;
   function HasVisiblePixel(Src : TBitmap32) : boolean;
+
+  procedure LoadBitmap32FromPNGDPI(dstBitmap: TBitmap32; fileName: string; out alphaChannelAvailable: Boolean);
 
 implementation
 
@@ -812,5 +816,25 @@ begin
   end;
 end;
 
+
+procedure LoadBitmap32FromPNGDPI(dstBitmap: TBitmap32; fileName: string; out alphaChannelAvailable: Boolean);
+var
+  tmp: TBitmap32;
+begin
+  tmp := TBitmap32.Create;
+  try
+    TLinearResampler.Create(tmp);
+
+    LoadBitmap32FromPNG(tmp, fileName, alphaChannelAvailable);
+
+    dstBitmap.SetSize(MulDiv(tmp.Width, Screen.PixelsPerInch, 96), MulDiv(tmp.Height, Screen.PixelsPerInch, 96));
+    dstBitmap.Clear;
+
+    tmp.DrawTo(dstBitmap, Rect(0, 0, dstBitmap.Width, dstBitmap.Height),
+                          Rect(0, 0, tmp.Width, tmp.Height));
+  finally
+    tmp.Free;
+  end;
+end;
 
 end.

@@ -140,23 +140,6 @@ type
 
 implementation
 
-procedure LoadBitmap32FromPNGDPI(dstBitmap: TBitmap32; fileName: string; out alphaChannelAvailable: Boolean);
-var
-  tmp: TBitmap32;
-begin
-  tmp := TBitmap32.Create;
-  TKernelResampler.Create(tmp).Kernel := TMitchellKernel.Create;
-
-  LoadBitmap32FromPNG(tmp, fileName, alphaChannelAvailable);
-
-  dstBitmap.SetSize(MulDiv(tmp.Width, Screen.PixelsPerInch, 96), MulDiv(tmp.Height, Screen.PixelsPerInch, 96));
-  dstBitmap.Clear;
-
-  tmp.DrawTo(dstBitmap, Rect(0, 0, dstBitmap.Width, dstBitmap.Height),
-                        Rect(0, 0, tmp.Width, tmp.Height));
-end;
-
-
 procedure TClockLayer.RotateBitmap(Src, Dst : TBitmap32; Alpha: Single);
 var
   SrcR: Integer;

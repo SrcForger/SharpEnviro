@@ -328,7 +328,6 @@ var
   s : string;
   a : boolean;
   skinDir, weatherDir : string;
-  TempBitmap : TBitmap32;
 begin
   Result := True;
 
@@ -352,13 +351,13 @@ begin
       with XML.Root.Items.Item[n].Items do
       begin
         pItem := TWeatherSkinItem.Create;
-        pItem.x := IntValue('X',0);
-        pItem.y := IntValue('Y',0);
+        pItem.x := MulDiv(IntValue('X',0), Screen.PixelsPerInch, 96);
+        pItem.y := MulDiv(IntValue('Y',0), Screen.PixelsPerInch, 96);
         pItem.DataType := Value('DataType','');
         pItem.data  := Value('Data','');
         pItem.data := ReplaceDataInString(pItem.data);
         pItem.alpha := IntValue('Alpha',255);
-        pItem.Size := IntValue('Size', 32);
+        pItem.Size := MulDiv(IntValue('Size', 32), Screen.PixelsPerInch, 96);
 
         s := Value('FontColor',inttostr(FFontSettings.Color));
         pItem.Font.Color := GetCurrentTheme.Scheme.ParseColor(s);
@@ -378,7 +377,7 @@ begin
         pItem.Font.Underline        := BoolValue('FontUnderline',FFontSettings.Underline);
         pItem.Font.ClearType        := BoolValue('ClearType',FFontSettings.ClearType);
         pItem.Font.Alpha            := IntValue('FontAlpha',FFontSettings.Alpha);
-        pItem.Font.Size             := IntValue('FontSize',FFontSettings.Size);
+        pItem.Font.Size             := MulDiv(IntValue('FontSize',FFontSettings.Size), Screen.PixelsPerInch, 96);
         pItem.Font.ShadowAlphaValue := IntValue('ShadowAlphaValue',FFontSettings.ShadowAlphaValue);
         pItem.Font.Shadow           := BoolValue('FontShadow',FFontSettings.Shadow);
         pItem.BlendA                := BoolValue('BlendA',False);
@@ -394,7 +393,7 @@ begin
         begin
           pItem.Bitmap := TBitmap32.Create;
           try
-            LoadBitmap32FromPNG(pItem.Bitmap, skinDir + pItem.data, a);
+            LoadBitmap32FromPNGDPI(pItem.Bitmap, skinDir + pItem.data, a);
           except
             pItem.Bitmap.Free;
             pItem.Bitmap := nil;
@@ -402,23 +401,13 @@ begin
         end;
 
         // Weather icon
-        weatherDir := SharpAPI.GetSharpeDirectory + 'Icons\Weather\' + FWeatherOptions.IconSet +
-                      '\' + IntToStr(GetNearestIconSize(pItem.Size)) + '\';
-        if (pItem.DataType = 'WeatherImage') and (FileExists(weatherDir + pItem.Data)) then
+        if (pItem.DataType = 'WeatherImage') then
         begin
-          TempBitmap := TBitmap32.Create;
           pItem.Bitmap := TBitmap32.Create;
-          try
-            LoadBitmap32FromPNG(TempBitmap, weatherDir + pItem.data, a);
-
-            pItem.Bitmap.SetSize(pItem.size, pItem.Size);
-            pItem.Bitmap.Clear(color32(0,0,0,0));
-            TempBitmap.DrawTo(pItem.Bitmap, Rect(0, 0, pItem.Size, pItem.Size));
-          except
-            pItem.Bitmap.Free;
-            pItem.Bitmap := nil;
+          if not LoadIconFromPNG(pItem.Bitmap, 'Weather\' + FWeatherOptions.IconSet, pItem.Data, pItem.Size) then
+          begin
+            FreeAndNil(pItem.Bitmap);
           end;
-          TempBitmap.Free;
         end;
 
         FWeatherSkinItems.Add(pItem);

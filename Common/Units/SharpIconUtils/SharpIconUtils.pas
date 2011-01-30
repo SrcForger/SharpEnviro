@@ -35,6 +35,7 @@ uses Windows,
      SysUtils,
      Classes,
      ShellApi,
+     SharpAPI,
      SharpThemeApiEx,
      uThemeConsts,
      uISharpETheme,
@@ -43,6 +44,7 @@ uses Windows,
      GR32,
      GR32_PNG,
      GR32_Filters,
+     GR32_Resamplers,
      SharpFileUtils;
 
 procedure IconToImage(Bmp : TBitmap32; const icon : hicon);
@@ -55,6 +57,7 @@ function IconStringToIcon(Icon,Target : String; Bmp : TBitmap32) : boolean; over
 function IconStringToIcon(Icon,Target : String; Bmp : TBitmap32; Size : integer) : boolean; overload;
 function GetNearestIconSize(Height : integer) : integer;
 function CreateIconFromBitmap(Bitmap: TBitmap32; TransparentColor: TColor): TIcon;
+function LoadIconFromPNG(outBitmap: TBitmap32; Dir, pngFile: String; Size: Integer): Boolean;
 
 implementation
 
@@ -410,6 +413,33 @@ begin
     end;
   finally
     bmp.Free;
+  end;
+end;
+
+function LoadIconFromPNG(outBitmap: TBitmap32; Dir, pngFile: String; Size: Integer): Boolean;
+var
+  iconFile: String;
+  TempBitmap: TBitmap32;
+  a: Boolean;
+begin
+  Result := False;
+
+  iconFile := SharpAPI.GetSharpeDirectory + 'Icons\' + Dir + '\' + IntToStr(GetNearestIconSize(Size)) + '\' + pngFile;
+  if FileExists(iconFile) then
+  begin
+    TempBitmap := TBitmap32.Create;
+    TLinearResampler.Create(TempBitmap);
+    try
+      LoadBitmap32FromPNG(TempBitmap, iconFile, a);
+
+      outBitmap.SetSize(Size, Size);
+      outBitmap.Clear(color32(0,0,0,0));
+      TempBitmap.DrawTo(outBitmap, Rect(0, 0, Size, Size));
+
+      Result := True;
+    finally
+      TempBitmap.Free;
+    end;
   end;
 end;
 
