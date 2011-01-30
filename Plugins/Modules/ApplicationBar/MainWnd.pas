@@ -491,7 +491,10 @@ begin
     FButtonList[n].btn.Tag := count;
 
     if count = 0 then
+    begin
       FButtonList[n].wnd := 0;
+      FButtonList[n].btn.Flashing := False;
+    end;
     if oldcount <> count then
       UpdateButtonIcon(FButtonList[n]);
   end;
@@ -1180,6 +1183,7 @@ begin
           FButtonList[n].btn.Tag := 0;
           FButtonList[n].btn.Down := False;          
           FButtonList[n].btn.Special := False;
+          FButtonList[n].btn.Flashing := False;
         end else UpdateButtonIcon(FButtonList[n]);
 
         if FButtonList[n].btn.Tag > 1 then
