@@ -70,6 +70,7 @@ type
 
     function GetModule(i: integer): TModuleItem;
     function GetModuleCount: integer;
+    function GetRunning: Boolean;
 
     procedure Init;
     procedure Load(sBarID: integer);
@@ -98,6 +99,8 @@ type
     property ModuleCount: integer read GetModuleCount;
     property Modules[index: integer]: TModuleItem read GetModule;
 
+    property Running: Boolean read GetRunning;
+
     procedure AddModule(item: TModuleItem);
     procedure RemoveModule(i: integer);
 
@@ -106,6 +109,9 @@ type
     destructor Destroy; override;
 
     function Save: boolean;
+
+    function Start: Boolean;
+    procedure Stop;
 
   end;
 
@@ -234,6 +240,11 @@ begin
     Result := FModules.Count
   else
     Result := 0;
+end;
+
+function TBarItem.GetRunning: Boolean;
+begin
+  Result := (FindWindow('TSharpBarMainForm', PChar('SharpBar_' + IntToStr(BarID))) <> 0);
 end;
 
 procedure TBarItem.Init;
@@ -399,6 +410,26 @@ begin
   finally
     xml.Free;
   end;
+end;
+
+function TBarItem.Start: Boolean;
+begin
+  Result := False;
+
+  if not Running then
+    Result := SharpApi.SharpExecute('_nohist,' + SharpApi.GetSharpeDirectory + 'SharpBar.exe' +
+                                    ' -load:' + IntToStr(BarID) +
+                                    ' -noREB' +
+                                    ' -noLASB') = HR_OK;
+end;
+
+procedure TBarItem.Stop;
+var
+  wnd: HWND;
+begin
+  wnd := FindWindow(nil, PChar('SharpBar_' + IntToStr(BarID)));
+  if wnd <> 0 then
+    SendMessage(wnd, WM_SHARPTERMINATE, 0, 0);
 end;
 
 end.

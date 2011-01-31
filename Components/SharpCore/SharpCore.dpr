@@ -49,7 +49,8 @@ uses
   uVistaFuncs,
   uSharpESkinInterface,
   uISharpESkin,
-  DebugDialog in '..\..\Common\Units\DebugDialog\DebugDialog.pas',
+  uSharpBar in '..\SharpBar\uSharpBar.pas',
+  {$IFDEF DEBUG}DebugDialog in '..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   uComponentMan in 'uComponentMan.pas';
 
 type
@@ -81,9 +82,7 @@ var
   wclClass: TWndClass;
   wndMsg: TMsg;
   nidTray: TNotifyIconData;
-  menPopup: HMenu;
   curPoint: TPoint;
-  menServices: HMenu;
   hndMutex: THandle;
   stlCmdLine: TStringList;
   i: Integer;
@@ -98,6 +97,9 @@ var
   TaskBarCreated: Integer;
   shellInit : boolean;
   runOnceTimer : TRunOnceTimer;
+
+  // Popup menu related
+  menPopup, menServices, menComponents: HMenu;
 
 function ProcessMessage(var Msg: TMsg): Boolean;
 var
@@ -132,23 +134,58 @@ begin
   SendDebugMessageEx(PChar('SharpCore'), PChar(Msg), 0, MsgType);
 end;
 
-procedure BuildMenu();
+procedure BuildMenu;
 var
   strName: string;
   i: integer;
   modData: TComponentData;
+  barItems: TBarItems;
 begin
-  DebugMsg('Creating popup menu');
-  menPopup := CreatePopupMenu; // Create menu and submenu for services
-  menServices := CreatePopupMenu;
+  // Destroy old menus
+  if (menPopup <> 0) then
+    DestroyMenu(menPopup);
+  if (menComponents <> 0) then
+    DestroyMenu(menComponents);
+  if (menServices <> 0) then
+    DestroyMenu(menServices);
 
+  menPopup := CreatePopupMenu; // Create menu and submenu for services
+
+  // Create Components popup
+  menComponents := CreatePopupMenu;
+
+  // Desk
+  AppendMenu(menComponents, 0, lstComponents.Count + 50 + 1, PChar('SharpDesk'));
+  if SharpApi.IsComponentRunning('SharpDesk') then
+    CheckMenuItem(menComponents, lstComponents.Count + 50 + 1, MF_CHECKED);
+
+  // Bars
+  barItems := TBarItems.Create;
+  try
+    for i := 0 to barItems.Count - 1 do
+    begin
+      AppendMenu(menComponents, 0, lstComponents.Count + 50 + (i + 2), PChar('SharpBar: ' + barItems.Bars[i].Name));
+      if barItems.Bars[i].Running then
+        CheckMenuItem(menComponents, lstComponents.Count + 50 + (i + 2), MF_CHECKED);
+    end;
+  finally
+    barItems.Free;
+  end;
+
+  // Create services popup
+  menServices := CreatePopupMenu;
   for i := 0 to lstComponents.Count - 1 do begin
     modData := TComponentData(lstComponents.Items[i]);
     strName := modData.MetaData.Name;
-    if modData.MetaData.DataType = tteService then // we only want to list services
+    if modData.MetaData.DataType = tteService then
+    begin
       AppendMenu(menServices, 0, modData.ID, PChar(strName));
+      if SharpApi.IsServiceStarted(strName) = MR_STARTED then
+        CheckMenuItem(menServices, modData.ID, MF_CHECKED);
+    end;
   end;
 
+  AppendMenu(menPopup, MF_POPUP, menComponents, 'Components');
   AppendMenu(menPopup, MF_POPUP, menServices, 'Services');
   AppendMenu(menPopup, 0, ID_SHELLSWITCH, 'Change Shell');
   AppendMenu(menPopup, MF_SEPARATOR, 0, nil);
@@ -177,7 +214,6 @@ begin
       if Assigned(StartFunc) then
         StartFunc(hndWindow)
       else StartFuncEx(hndWindow, ISkinInterface);
-      CheckMenuItem(menServices, modData.ID, MF_CHECKED);
       modData.Running := True;
 
       if modData.ExtraMetaData.RunOnce then
@@ -198,7 +234,6 @@ begin
     DebugMsg('Stopping ' + modData.MetaData.Name);
     StopFunc();
     modData.Running := False;
-    CheckMenuItem(menServices, modData.ID, MF_UNCHECKED);
     FreeLibrary(modData.FileHandle);
     modData.FileHandle := 0;
     result := 0;
@@ -262,7 +297,7 @@ begin
   FTimer.Enabled := True;
 end;
 
-function RunAll(): Integer;
+function RunAll: Integer;
 var
   modData: TComponentData;
   i : Integer;
@@ -381,6 +416,8 @@ var
   iPos: Integer;
   iIndex: Integer;
   Theme : ISharpETheme;
+  barItems: TBarItems;
+  barItem: TBarItem;
 begin
   result := 0;
   if Msg = TaskBarCreated then begin // system tray created/updated, add icon again
@@ -441,12 +478,13 @@ begin
           szTip := 'SharpCore';
         end;
         Shell_NotifyIcon(NIM_ADD, @nidTray);
-        BuildMenu;
       end;
 
     WM_ICONTRAY: begin // User clicked tray icon, lParam stores which button they used
         case lParam of
           WM_RBUTTONDOWN: begin
+            BuildMenu;
+
               GetCursorPos(curPoint); // Cursor position so we know where to put the menu
               SetForegroundWindow(hWnd);
               TrackPopupMenu(menPopup, 0, curPoint.X, curPoint.Y, 0, hWnd, nil); // Display menu
@@ -476,7 +514,37 @@ begin
                 RunAll;
               end;
           else
-            if LoWord(wParam) >= 50 then {//user clicked a service} begin
+            // Components
+
+            // Desk
+            if LoWord(wParam) = lstComponents.Count + 51 then
+            begin
+              if SharpApi.IsComponentRunning('SharpDesk') then
+                SendMessage(FindComponent('SharpDesk'), WM_SHARPTERMINATE, 0, 0)
+              else
+                SharpApi.SharpExecute('_nohist,' + SharpApi.GetSharpeDirectory + 'SharpDesk.exe');
+            end;
+
+            // Bars
+            if LoWord(wParam) >= lstComponents.Count + 52 then
+            begin
+              barItems := TBarItems.Create;
+              try
+                if (wParam - (lstComponents.Count + 52) >= 0) and (wParam - (lstComponents.Count + 52) < barItems.Count) then
+                begin
+                  barItem := barItems.Bars[wParam - (lstComponents.Count + 51)];
+                  if barItem.Running then
+                    barItem.Stop
+                  else
+                    barItem.Start;
+                end;
+              finally
+                barItems.Free;
+              end;
+
+            // Services
+            end else if LoWord(wParam) >= 50 then
+            begin
               iIndex := lstComponents.FindByID(LoWord(wParam));
               if (iIndex < lstComponents.Count) and (iIndex > -1) then begin
                 modData := TComponentData(lstComponents.Items[iIndex]);
@@ -580,6 +648,11 @@ begin
   stlCmdLine := TStringList.Create;
 
   runOnceTimer := TRunOnceTimer.Create;
+
+
+  menPopup := 0;
+  menComponents := 0;
+  menServices := 0;
 
   sAction := '';
   bDebug := False;
@@ -693,5 +766,13 @@ begin
 
   FreeAndNil(runOnceTimer);
 
-  end.
+  // Destroy old menus
+  if (menPopup <> 0) then
+    DestroyMenu(menPopup);
+  if (menComponents <> 0) then
+    DestroyMenu(menComponents);
+  if (menServices <> 0) then
+    DestroyMenu(menServices);
+
+end.
 
