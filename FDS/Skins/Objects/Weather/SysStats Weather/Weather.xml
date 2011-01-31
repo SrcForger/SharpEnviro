@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="preview.xsl"?>
+<WeatherSkin>
+	<Info>
+		<Name>SysStats Weather</Name>
+		<author>KWilliams</author>
+		<Website>http://kwilliams.deviantart.com/art/SysStats-Weather-11867807</Website>
+	</Info>
+
+	<Background>
+		<DataType>Background</DataType>
+		<Width>204</Width>
+		<Height>234</Height>
+	</Background>
+	<Background>
+		<DataType>Image</DataType>
+		<Data>Background.png</Data>
+		<X>40</X>
+		<Y>40</Y>
+	</Background>
+	
+	<!-- Today -->
+	<Condition>
+		<DataType>Text</DataType>
+		<X>200</X>
+		<Y>66</Y>
+		<Alpha>255</Alpha>
+		<FontSize>9</FontSize>
+		<Align>2</Align>
+		<Data>{#CONDITION#}</Data>
+	</Condition>
+	<Temp>
+		<DataType>Text</DataType>
+		<X>200</X>
+		<Y>38</Y>
+		<Alpha>255</Alpha>
+		<ClearType>1</ClearType>
+		<FontSize>14</FontSize>
+		<Align>2</Align>
+		<Data>{#TEMPERATURE#}°</Data>
+	</Temp>
+	<Image>
+		<DataType>WeatherImage</DataType>
+		<X>10</X>
+		<Y>0</Y>
+		<Alpha>255</Alpha>
+		<Size>110</Size>
+		<Align>0</Align>
+		<Data>{#ICON#}</Data>
+	</Image>
+	
+	<!-- Tomorrow -->
+	<Condition>
+		<DataType>Text</DataType>
+		<X>84</X>
+		<Y>128</Y>
+		<Alpha>255</Alpha>
+		<FontSize>8</FontSize>
+		<Align>1</Align>
+		<Data>{#FC_D1_DAYTEXT2#}</Data>
+	</Condition>
+	<Temp>
+		<DataType>Text</DataType>
+		<X>120</X>
+		<Y>95</Y>
+		<Alpha>255</Alpha>
+		<ClearType>1</ClearType>
+		<FontSize>10</FontSize>
+		<Align>2</Align>
+		<Data>{#FC_D1_TEMPERATURE#}°</Data>
+	</Temp>
+	<Image>
+		<DataType>WeatherImage</DataType>
+		<X>50</X>
+		<Y>100</Y>
+		<Alpha>255</Alpha>
+		<Size>32</Size>
+		<Align>0</Align>
+		<Data>{#FC_D1_DAY_DAYICON#}</Data>
+	</Image>
+	
+	<!-- Day 3 -->
+	<Condition>
+		<DataType>Text</DataType>
+		<X>160</X>
+		<Y>128</Y>
+		<Alpha>255</Alpha>
+		<FontSize>8</FontSize>
+		<Align>1</Align>
+		<Data>{#FC_D2_DAYTEXT2#}</Data>
+	</Condition>
+	<Temp>
+		<DataType>Text</DataType>
+		<X>200</X>
+		<Y>95</Y>
+		<Alpha>255</Alpha>
+		<ClearType>1</ClearType>
+		<FontSize>10</FontSize>
+		<Align>2</Align>
+		<Data>{#FC_D2_TEMPERATURE#}°</Data>
+	</Temp>
+	<Image>
+		<DataType>WeatherImage</DataType>
+		<X>130</X>
+		<Y>100</Y>
+		<Alpha>255</Alpha>
+		<Size>32</Size>
+		<Align>0</Align>
+		<Data>{#FC_D2_DAY_DAYICON#}</Data>
+	</Image>
+	
+	<!-- Day 4 -->
+	<Condition>
+		<DataType>Text</DataType>
+		<X>84</X>
+		<Y>188</Y>
+		<Alpha>255</Alpha>
+		<FontSize>8</FontSize>
+		<Align>1</Align>
+		<Data>{#FC_D3_DAYTEXT2#}</Data>
+	</Condition>
+	<Temp>
+		<DataType>Text</DataType>
+		<X>120</X>
+		<Y>155</Y>
+		<Alpha>255</Alpha>
+		<ClearType>1</ClearType>
+		<FontSize>10</FontSize>
+		<Align>2</Align>
+		<Data>{#FC_D3_TEMPERATURE#}°</Data>
+	</Temp>
+	<Image>
+		<DataType>WeatherImage</DataType>
+		<X>50</X>
+		<Y>160</Y>
+		<Alpha>255</Alpha>
+		<Size>32</Size>
+		<Align>0</Align>
+		<Data>{#FC_D3_DAY_DAYICON#}</Data>
+	</Image>
+	
+	<!-- Day 5 -->
+	<Condition>
+		<DataType>Text</DataType>
+		<X>160</X>
+		<Y>188</Y>
+		<Alpha>255</Alpha>
+		<FontSize>8</FontSize>
+		<Align>1</Align>
+		<Data>{#FC_D4_DAYTEXT2#}</Data>
+	</Condition>
+	<Temp>
+		<DataType>Text</DataType>
+		<X>200</X>
+		<Y>155</Y>
+		<Alpha>255</Alpha>
+		<ClearType>1</ClearType>
+		<FontSize>10</FontSize>
+		<Align>2</Align>
+		<Data>{#FC_D4_TEMPERATURE#}°</Data>
+	</Temp>
+	<Image>
+		<DataType>WeatherImage</DataType>
+		<X>130</X>
+		<Y>160</Y>
+		<Alpha>255</Alpha>
+		<Size>32</Size>
+		<Align>0</Align>
+		<Data>{#FC_D4_DAY_DAYICON#}</Data>
+	</Image>
+</WeatherSkin>
