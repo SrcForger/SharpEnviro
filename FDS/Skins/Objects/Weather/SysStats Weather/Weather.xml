@@ -44,7 +44,7 @@
 		<X>10</X>
 		<Y>0</Y>
 		<Alpha>255</Alpha>
-		<Size>110</Size>
+		<Size>100</Size>
 		<Align>0</Align>
 		<Data>{#ICON#}</Data>
 	</Image>
