@@ -37,12 +37,12 @@
 	</Condition>
 	<Temp>
 		<DataType>Text</DataType>
-		<X>140</X>
+		<X>120</X>
 		<Y>6</Y>
 		<Alpha>255</Alpha>
 		<ClearType>1</ClearType>
 		<FontSize>11</FontSize>
-		<Align>2</Align>
+		<Align>1</Align>
 		<Data>{#TEMPERATURE#}°{#UNITTEMP#}</Data>
 	</Temp>
 	<Image>
@@ -77,12 +77,12 @@
 	</Condition>
 	<Temp>
 		<DataType>Text</DataType>
-		<X>140</X>
+		<X>120</X>
 		<Y>56</Y>
 		<Alpha>255</Alpha>
 		<ClearType>1</ClearType>
 		<FontSize>11</FontSize>
-		<Align>2</Align>
+		<Align>1</Align>
 		<Data>{#FC_D1_TEMPERATURE#}°{#UNITTEMP#}</Data>
 	</Temp>
 	<Image>
@@ -117,12 +117,12 @@
 	</Condition>
 	<Temp>
 		<DataType>Text</DataType>
-		<X>140</X>
+		<X>120</X>
 		<Y>106</Y>
 		<Alpha>255</Alpha>
 		<ClearType>1</ClearType>
 		<FontSize>11</FontSize>
-		<Align>2</Align>
+		<Align>1</Align>
 		<Data>{#FC_D2_TEMPERATURE#}°{#UNITTEMP#}</Data>
 	</Temp>
 	<Image>
@@ -157,12 +157,12 @@
 	</Condition>
 	<Temp>
 		<DataType>Text</DataType>
-		<X>140</X>
+		<X>120</X>
 		<Y>156</Y>
 		<Alpha>255</Alpha>
 		<ClearType>1</ClearType>
 		<FontSize>11</FontSize>
-		<Align>2</Align>
+		<Align>1</Align>
 		<Data>{#FC_D3_TEMPERATURE#}°{#UNITTEMP#}</Data>
 	</Temp>
 	<Image>

@@ -89,6 +89,7 @@ type
     FIconSettings    : TDeskIcon;
     FWeatherSkinItems : TObjectList;
     FWeatherOptions : TWeatherOptions;
+    FModX: integer;
 
   protected
      procedure OnTimer(Sender: TObject);
@@ -289,7 +290,7 @@ begin
         my := pItem.Height + pItem.y;
     end;
   end;
-  outBmp.SetSize(mx,my);
+  outBmp.SetSize(mx + FModX,my);
   outBmp.Clear(color32(0,0,0,0));
   for n := 0 to FWeatherSkinItems.Count - 1 do
   begin
@@ -327,7 +328,9 @@ var
   n : integer;
   s : string;
   a : boolean;
-  skinDir, weatherDir : string;
+  skinDir : string;
+
+  tempBmp: TBitmap32;
 begin
   Result := True;
 
@@ -344,7 +347,7 @@ begin
     Result := False;
     exit;
   end;
-  
+
   for n := 0 to XML.Root.Items.Count - 1 do
     if XML.Root.Items.Item[n].Name <> 'Info' then
     begin
@@ -414,6 +417,60 @@ begin
       end;
     end;
   XML.Free;
+
+
+  FModX := 0;
+
+  tempBmp := TBitmap32.Create;
+  for n := 0 to FWeatherSkinItems.Count - 1 do
+  begin
+    pItem := TWeatherSkinItem(FWeatherSkinItems.Items[n]);
+    if (Assigned(pItem.Bitmap)) and ((pItem.DataType = 'Image') or (pItem.DataType = 'WeatherImage')) then
+    begin
+      tempBmp.Assign(pItem.Bitmap);
+      tempBmp.DrawMode := dmBlend;
+      tempBmp.CombineMode := cmMerge;
+      if pItem.BlendA then
+         BlendImageA(tempBmp,pItem.BlendColorA,pItem.BlendValueA);
+      if pItem.BlendB then
+         BlendImageA(tempBmp,pItem.BlendColorB,pItem.BlendValueB);
+      tempBmp.MasterAlpha := pItem.alpha;
+    end else
+    begin
+      SharpDeskApi.RenderText(tempBmp,pItem.Font,pItem.data,taRight,0);
+      tempBmp.MasterAlpha := pItem.alpha;
+    end;
+
+    case pItem.Align of
+      waLeft:
+      begin
+        if pItem.x < FModX then
+          FModX := (pItem.x);
+      end;
+      waCenter:
+      begin
+        if pItem.x - Round(tempBmp.Width div 2) < FModX then
+          FModX := (pItem.x - Round(tempBmp.Width div 2));
+      end;
+      waRight:
+      begin
+        if pItem.x - tempBmp.Width < FModX then
+          FModX := (pItem.x - tempBmp.Width);
+      end;
+    end;
+  end;
+  tempBmp.Free;
+
+  FModX := -FModX;
+
+  // X Modifier is higher than 0, apply it to all elements
+  if FModX > 0 then
+  begin
+    for n := 0 to FWeatherSkinItems.Count - 1 do
+    begin
+      TWeatherSkinItem(FWeatherSkinItems.Items[n]).x := TWeatherSkinItem(FWeatherSkinItems.Items[n]).x + FModX;
+    end;
+  end;
 end;
 
 procedure TWeatherLayer.BuildOutput;
