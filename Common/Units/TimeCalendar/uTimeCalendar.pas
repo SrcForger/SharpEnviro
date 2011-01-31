@@ -27,7 +27,8 @@ unit uTimeCalendar;
 
 interface
 
-uses Windows, Forms, Classes, ActiveX, ComObj, SysUtils, MonitorList;
+uses  Windows, Forms, Classes, ExtCtrls,
+      ActiveX, ComObj, SysUtils, MonitorList;
 
 const
   Class_TimeDateCPL: TGUID =
@@ -39,6 +40,18 @@ const
   TimeCalendarHeight: integer = 241;
 
 type
+  TShowingThread = class(TThread)
+  private
+    FOwnerClass: TObject;
+
+  public
+    constructor Create(owner: TObject);
+
+  protected
+    procedure Execute; override;
+
+  end;
+
   ITimeDateCPL = interface(IUnknown)
       ['{4376DF10-A662-420B-B30D-958881461EF9}']
       function ShowCalendar(position: integer; rcPos: PRect): Integer; stdcall;
@@ -50,18 +63,60 @@ type
 
   TTimeCalendar = class
   private
+    FShowingThread: TShowingThread;
+
     FTimeDateCPL: ITimeDateCPL;
+    FShowing: Boolean;
 
     function IsVista: Boolean;
+
   public
     constructor Create;
     destructor Destroy; override;
 
     procedure Show(wnd: TForm);
+
+    property Showing: Boolean read FShowing write FShowing;
     
   end;
 
 implementation
+
+var
+  CritSect: TRTLCriticalSection;
+
+constructor TShowingThread.Create(owner: TObject);
+begin
+  inherited Create(True);
+
+  FOwnerClass := owner;
+end;
+
+procedure TShowingThread.Execute;
+var
+  oldtime: Cardinal;
+begin
+  while not Terminated do
+  begin
+    while FindWindowA('ClockFlyoutWindow', nil) <> 0 do
+      Sleep(100);
+
+    // Sleep for one second
+    oldTime := GetCurrentTime;
+    while (GetCurrentTime - oldTime < 1000) do
+      Sleep(1);
+
+    if FindWindowA('ClockFlyoutWindow', nil) = 0 then
+    begin
+      EnterCriticalSection(CritSect);
+      if FOwnerClass is TTimeCalendar then
+        (FOwnerClass as TTimeCalendar).Showing := False;
+      LeaveCriticalSection(CritSect);
+    end;
+
+    Suspend;
+  end;
+end;
 
 constructor TTimeCalendar.Create;
 begin
@@ -73,12 +128,20 @@ begin
       ITimeDateCPL,
       FTimeDateCPL) <> S_OK then
     FTimeDateCPL := nil;
+
+  FShowingThread := TShowingThread.Create(Self);
 end;
 
 destructor TTimeCalendar.Destroy;
 begin
-  FTimeDateCPL := nil;
+  FShowingThread.Terminate;
+  if FShowingThread.Suspended then
+    FShowingThread.Resume;
 
+  FShowingThread.WaitFor;
+  FreeAndNil(FShowingThread);
+
+  FTimeDateCPL := nil;
   CoUninitialize;
 end;
 
@@ -101,9 +164,20 @@ var
   clockWnd: HWND;
   w, h: integer;
   ptDiff: TPoint;
+  b : Boolean;
 begin
   if not Assigned(FTimeDateCPL) then
     exit;
+
+  EnterCriticalSection(CritSect);
+  b := FShowing;
+  LeaveCriticalSection(CritSect);
+
+  if (FindWindowA('ClockFlyoutWindow', nil) <> 0) or (b) then
+  begin
+    FTimeDateCPL.Quit;
+    Exit;
+  end;
 
   GetWindowRect(wnd.Handle, rc);
 
@@ -114,6 +188,7 @@ begin
 
   // Fix Vista positioning
   clockWnd := FindWindowA('ClockFlyoutWindow', nil);
+  ShowWindow(clockWnd, SW_HIDE);
   GetClientRect(clockWnd, clockClientRc);
   GetWindowRect(clockWnd, clockRc);
 
@@ -143,7 +218,18 @@ begin
   if clockRc.Left > clockMon.Left + clockMon.Width - w - ptDiff.X then
     clockRc.Left := clockMon.Left + clockMon.Width - w - ptDiff.X;
 
-  SetWindowPos(clockWnd, 0, clockRc.Left, clockRc.Top, w, h, SWP_NOACTIVATE or SWP_NOZORDER);
+  SetWindowPos(clockWnd, 0, clockRc.Left, clockRc.Top, w, h, SWP_NOACTIVATE or SWP_NOZORDER or SWP_SHOWWINDOW);
+
+  EnterCriticalSection(CritSect);
+  FShowing := True;
+  LeaveCriticalSection(CritSect);
+  FShowingThread.Resume;
 end;
+
+initialization
+  InitializeCriticalSection(CritSect);
+
+finalization
+  DeleteCriticalSection(CritSect);
 
 end.
