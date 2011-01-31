@@ -286,8 +286,11 @@ begin
   for n := High(FWndList) downto 0 do
   begin
     if FWndList[n].wasIconic <> IsIconic(FWndList[n].wnd) then
-     SendMessage(FWndList[n].wnd, WM_SYSCOMMAND, SC_RESTORE, 0); // use Send Message to have it in the right order
-     // SwitchToThisWindow(FWndList[n].wnd,True);
+    begin
+      ShowWindow(FWndList[n].wnd, SW_SHOWNOACTIVATE);
+      if IsIconic(FWndList[n].wnd) then
+        SendMessage(FWndList[n].wnd, WM_SYSCOMMAND, SC_RESTORE, 0);
+    end;
   end;
 end;
 
@@ -302,7 +305,11 @@ begin
     begin
       BuildWndList;
       for n := 0 to High(FWndList) do
-        PostMessage(FWndList[n].wnd,WM_SYSCOMMAND,SC_MINIMIZE,0);
+      begin
+        ShowWindow(FWndList[n].wnd, SW_SHOWMINNOACTIVE);
+        if not IsIconic(FWndList[n].wnd) then
+          PostMessage(FWndList[n].wnd,WM_SYSCOMMAND,SC_MINIMIZE,0);
+      end;
       FDoShow := False;
     end else
     begin
