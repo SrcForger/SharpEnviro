@@ -112,7 +112,7 @@
     <Compile Include="Interop\Structs\WIN32_FIND_DATAW.cs" />
     <Compile Include="Interop\Structs\WindowPos.cs" />
     <Compile Include="Interop\Structs\WNDCLASSEX.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="..\..\..\Components\ExplorerNET\Properties\AssemblyInfo.cs" />
     <Compile Include="SharpSettings.cs" />
   </ItemGroup>
   <ItemGroup>

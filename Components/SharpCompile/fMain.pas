@@ -184,7 +184,7 @@ begin
   end;
 end;
 
-procedure UpdateVersionInfoFile(path : string);
+procedure UpdateVersionInfoFile(path : string; fileName : string);
 var
   versionInfoFilePath : string;
   versionInfoBackupFilePath : string;
@@ -192,10 +192,7 @@ var
   versionInfoBackupFile : TextFile;
   line : string;
 begin
-  if bDev then
-    Exit;
-    
-  versionInfoFilePath := IncludeTrailingBackslash(path) + 'VersionInfo.rc';
+  versionInfoFilePath := IncludeTrailingBackslash(path) + fileName;
   versionInfoBackupFilePath := versionInfoFilePath + '.bak';
 
   if FileExists(versionInfoFilePath) then
@@ -210,6 +207,14 @@ begin
       while not Eof(versionInfoBackupFile) do
       begin
         Readln(versionInfoBackupFile, line);
+
+        // Don't change file version if we are dev
+        if (bDev) and ((AnsiContainsStr(line, 'VER_FILEVERSION')) or (AnsiContainsStr(line, 'AssemblyFileVersion'))) then
+        begin
+          Writeln(versionInfoFile, line);
+          continue;
+        end;
+          
         // The version in the build xml should be using '.' for seprators.
         // We replace 0.0.0.0 with the version from the xml.
         line := ReplaceStr(line, '0.0.0.0', sVersion);
@@ -225,15 +230,12 @@ begin
   end;
 end;
 
-procedure RestoreVersionInfoFile(path : string);
+procedure RestoreVersionInfoFile(path : string; fileName: string);
 var
   versionInfoFilePath : string;
   versionInfoBackupFilePath : string;
 begin
-  if bDev then
-    Exit;
-    
-  versionInfoFilePath := IncludeTrailingBackslash(path) + 'VersionInfo.rc';
+  versionInfoFilePath := IncludeTrailingBackslash(path) + fileName;
   versionInfoBackupFilePath := versionInfoFilePath + '.bak';
   
   if FileExists(versionInfoBackupFilePath) then
@@ -523,7 +525,9 @@ begin
   lbSummary.ItemIndex := lbSummary.Count - 1;
   Project.SummaryIndex := lbSummary.Count - 1;
   LockWindowUpdate(0);
-    
+
+  UpdateVersionInfoFile(Project.Dir, 'Properties\AssemblyInfo.cs');
+
   compiler := TCSharpCompiler.Create;
   compiler.OnCompilerCmdOutput := CompilerNewLine;
   
@@ -534,6 +538,8 @@ begin
   
   succeeded := compiler.CompileSolution(Project, bDebug);
   buildEnd := Now;
+
+  RestoreVersionInfoFile(Project.Dir, 'Properties\AssemblyInfo.cs');
 
   if succeeded then
   begin
@@ -575,7 +581,7 @@ begin
 
   Project.DIndex := mDetailed.Lines.Count -1;
 
-  UpdateVersionInfoFile(Project.Dir);
+  UpdateVersionInfoFile(Project.Dir, 'VersionInfo.rc');
   
   dCompiler := TDelphiCompiler.Create;
   dCompiler.OnCompilerCmdOutput := CompilerNewLine;
@@ -583,7 +589,7 @@ begin
   succeeded := dCompiler.CompileProject(Project, bDebug);
   dtEnd := Now;
 
-  RestoreVersionInfoFile(Project.Dir);
+  RestoreVersionInfoFile(Project.Dir, 'VersionInfo.rc');
   
   if succeeded then
   begin

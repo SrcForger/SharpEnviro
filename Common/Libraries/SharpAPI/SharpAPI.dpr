@@ -34,6 +34,7 @@ uses
   ShareMem,
   windows,
   messages,
+  Forms,
   SysUtils,
   shellAPI,
   jclfileutils,
@@ -303,6 +304,8 @@ var
   stemp: string;
   bsm: boolean;
   bsmtimeout: boolean;
+
+  currentVersion: String;
 
 function AllowSetForegroundWindow(ProcessID : DWORD) : boolean; stdcall; external 'user32.dll' name 'AllowSetForegroundWindow';
 
@@ -1329,6 +1332,39 @@ begin
   result := (swnd <> 0);
 end;
 
+function GetVersion(strFile: String): String;
+var
+  n, Len: Cardinal;
+  Buf, Value: PChar;
+begin
+  Result := '';
+
+  // Get current version
+  n := GetFileVersionInfoSize(PChar(strFile), n) ;
+  if n > 0 then
+  begin
+    Buf := AllocMem(n);
+    try
+      GetFileVersionInfo(PChar(strFile), 0, n, Buf) ;
+
+      if VerQueryValue(Buf, PChar('StringFileInfo\040904E4\ProductVersion'), Pointer(Value), Len) then
+        Result := Value;
+    finally
+      FreeMem(Buf, n);
+    end;
+  end;
+
+  Result := Copy(Result, 1, 3);
+end;
+
+function CheckMetaDataVersion(strFile: String): Boolean;
+begin
+  Result := False;
+
+  if (GetVersion(strFile) = currentVersion) then
+    Result := True;
+end;
+
 function GetConfigPluginData(dllHandle: Thandle; var PluginData: TPluginData; pluginID : String) : Integer;
 type
   TPluginDataFunc = function(pluginID : String): TPluginData;
@@ -1613,7 +1649,7 @@ begin
   ExtraMetaData.Startup := False;
 
   result := 0;
-  if FileExists(strFile) then
+  if (FileExists(strFile)) and (CheckMetaDataVersion(strFile)) then
   begin
     hndFile := LoadLibraryEx(PChar(strFile), 0, LOAD_LIBRARY_AS_DATAFILE);
     try
@@ -1636,7 +1672,7 @@ begin
   HasPreview := False;
 
   result := 0;
-  if FileExists(strFile) then
+  if (FileExists(strFile)) and (CheckMetaDataVersion(strFile)) then
   begin
     hndFile := LoadLibrary(PChar(strFile));
     try
@@ -1662,7 +1698,7 @@ begin
   ExtraMetaData.RunOnce := False;
   ExtraMetaData.Startup := False;
 
-  if FileExists(strFile) then
+  if (FileExists(strFile))  and (CheckMetaDataVersion(strFile)) then
   begin
     hndFile := LoadLibrary(PChar(strFile));
     try
@@ -1687,7 +1723,7 @@ begin
   ConfigMode := TSC_MODE_ENUM(0);
   ConfigType := TSU_UPDATE_ENUM(0);
 
-  if FileExists(strFile) then
+  if (FileExists(strFile))  and (CheckMetaDataVersion(strFile)) then
   begin
     hndFile := LoadLibrary(PChar(strFile));
     try
@@ -1894,6 +1930,8 @@ exports
 
   GetConfigPluginData,
 
+  CheckMetaDataVersion,
+
   GetComponentMetaData,
   GetServiceMetaData,
   GetConfigMetaData,
@@ -1908,9 +1946,10 @@ exports
   FileCheck,
   GetCursorPosSecure;
 
-
 begin
   DllProc := @EntryPointProc;
   EntryPointProc(DLL_PROCESS_ATTACH);
+
+  currentVersion := GetVersion(Application.ExeName);
 end.
 

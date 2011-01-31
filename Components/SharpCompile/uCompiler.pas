@@ -40,6 +40,7 @@ type
   private
     FName : string;
     FPath : string;
+    FDir : string;
     FPackage : string;
     FSummaryIndex : Integer;
     FDetailIndex : Integer;
@@ -49,6 +50,7 @@ type
   public
     property Name : string read FName;
     property Path : string read FPath;
+    property Dir  : String  read FDir;
     property Package : string read FPackage write FPackage;
     property SummaryIndex : Integer read FSummaryIndex write FSummaryIndex;
     property DetailIndex : Integer read FDetailIndex write FDetailIndex;
@@ -234,6 +236,7 @@ begin
   FName := name;
   FPlatform := platform;
   FPath := csharpSolutionFile;
+  FDir := IncludeTrailingPathDelimiter(ExtractFileDir(FPath));
   FCloseIDE := bCloseIDE;
 end;
 

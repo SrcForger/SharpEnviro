@@ -316,6 +316,8 @@ function SwitchToVWM(Index : integer; ExceptWnd : hwnd = 0) : boolean; external 
 function GetConfigPluginData(dllHandle: Thandle; var PluginData: TPluginData; pluginID : String) : Integer; external 'SharpApi.dll' name 'GetConfigPluginData';
 
 //meta data functions
+function CheckMetaDataVersion(strFile: String): Boolean; external 'SharpApi.dll' name 'CheckMetaDataVersion';
+
 function GetComponentMetaData(strFile: String; var MetaData: TMetaData; var ExtraMetaData: TExtraMetaData) : Integer; external 'SharpApi.dll' name 'GetComponentMetaData';
 function GetServiceMetaData(strFile: String; var MetaData: TMetaData; var ExtraMetaData: TExtraMetaData) : Integer; external 'SharpApi.dll' name 'GetServiceMetaData';
 function GetConfigMetaData(strFile: String; var MetaData: TMetaData; var ConfigMode: TSC_MODE_ENUM; var ConfigType: TSU_UPDATE_ENUM) : Integer; external 'SharpApi.dll' name 'GetConfigMetaData';

@@ -134,13 +134,18 @@ begin
   sPath := GetSharpeDirectory + 'Services\';
   intFound := FindFirst(sPath + '*' + strExtension, faAnyFile, srFile); //first we loop through the services
   while intFound = 0 do begin
-    cdComponent := TComponentData.Create;
-    cdComponent.FileName := sPath + srFile.Name;
-    if getComponentData then  
-      GetServiceMetaData(sPath + srFile.Name, cdComponent.MetaData, cdComponent.ExtraMetaData);
-    cdComponent.ID := Count + 50; //add 50 to ID to make sure it's unique
 
-    Add(cdComponent);
+    if SharpApi.CheckMetaDataVersion(sPath + srFile.Name) then
+    begin
+      cdComponent := TComponentData.Create;
+      cdComponent.FileName := sPath + srFile.Name;
+      if getComponentData then
+        GetServiceMetaData(sPath + srFile.Name, cdComponent.MetaData, cdComponent.ExtraMetaData);
+      cdComponent.ID := Count + 50; //add 50 to ID to make sure it's unique
+
+      Add(cdComponent);
+    end else
+          SharpApi.SendDebugMessage('ComponentList', 'Not adding Service ' + srFile.Name + ' - Outdated', 0);
 
     intFound := FindNext(srFile);
   end;
@@ -152,13 +157,17 @@ begin
     while intFound = 0 do begin
       if AnsiCompareStr(buf, SharpApi.GetSharpeDirectory + srFile.Name) <> 0 then
       begin
-        cdComponent := TComponentData.Create;
-        cdComponent.FileName := sPath + srFile.Name;
-        //wrap in an if statement so we don't get blank entries for non-sharpe executables that might be in the folder
-        if GetComponentMetaData(sPath + srFile.Name, cdComponent.MetaData, cdComponent.ExtraMetaData) = 0 then begin
-          cdComponent.ID := Count + 50;
-          Add(cdComponent);
-        end;
+        if CheckMetaDataVersion(sPath + srFile.Name) then
+        begin
+          cdComponent := TComponentData.Create;
+          cdComponent.FileName := sPath + srFile.Name;
+          //wrap in an if statement so we don't get blank entries for non-sharpe executables that might be in the folder
+          if GetComponentMetaData(sPath + srFile.Name, cdComponent.MetaData, cdComponent.ExtraMetaData) = 0 then begin
+            cdComponent.ID := Count + 50;
+            Add(cdComponent);
+          end;
+        end else
+          SharpApi.SendDebugMessage('ComponentList', 'Not adding Component ' + srFile.Name + ' - Outdated', 0);
       end;
       intFound := FindNext(srFile);
     end;
