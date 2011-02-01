@@ -880,7 +880,7 @@ begin
         TM.ExChangeTasks(item1,item2);
 
         // Move to right
-        FStartDrag := Point(item.Left + FDragMod, FStartDrag.Y);
+        FStartDrag := Point(item.Left + item.Width - FDragMod, FStartDrag.Y);
 
         break;
       end;
