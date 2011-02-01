@@ -15,7 +15,7 @@ object frmSettingsWnd: TfrmSettingsWnd
   Position = poDesigned
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  PixelsPerInch = 120
+  PixelsPerInch = 96
   TextHeight = 17
   object plConfig: TJvPageList
     AlignWithMargins = True

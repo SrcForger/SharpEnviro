@@ -41,370 +41,380 @@ object frmSettingsWnd: TfrmSettingsWnd
       Width = 434
       Height = 565
       Caption = 'pagFont'
-      object uicFontSize: TSharpEUIC
-        AlignWithMargins = True
-        Left = 5
-        Top = 127
-        Width = 424
-        Height = 22
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 5
-        Margins.Bottom = 10
+	  object pnlFont: TPanel
+        Left = 1
+        Top = 1
+        Width = 566
+        Height = 580
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
-        Caption = 'uicFontSize'
-        Color = clWhite
-        ParentBackground = False
-        TabOrder = 1
-        HasChanged = False
-        AutoReset = True
-        DefaultValue = '0'
-        MonitorControl = sgbFontSize
-        OnReset = UIC_Reset
-        object sgbFontSize: TSharpeGaugeBox
-          Left = 0
-          Top = 0
-          Width = 250
-          Height = 22
-          Margins.Left = 0
-          Margins.Top = 0
-          Margins.Right = 0
-          Margins.Bottom = 5
-          Align = alLeft
-          ParentBackground = False
-          TabOrder = 0
-          Min = -8
-          Max = 8
-          Value = 0
-          Suffix = ' px'
-          Description = 'Change font size by'
-          PopPosition = ppBottom
-          PercentDisplay = False
-          Formatting = '%d'
-          OnChangeValue = SgbUicValueChanged
-          BackgroundColor = clWindow
-        end
-      end
-      object uicFontType: TSharpEUIC
-        AlignWithMargins = True
-        Left = 5
-        Top = 47
-        Width = 424
-        Height = 23
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 5
-        Margins.Bottom = 10
-        Align = alTop
-        AutoSize = True
-        BevelOuter = bvNone
-        Color = clWhite
-        ParentBackground = False
         TabOrder = 0
-        HasChanged = False
-        AutoReset = False
-        DefaultValue = '-1'
-        MonitorControl = cboFontName
-        OnReset = UIC_Reset
-        object cboFontName: TComboBox
-          Left = 0
-          Top = 0
-          Width = 250
-          Height = 25
-          Margins.Left = 0
-          Margins.Top = 0
-          Margins.Right = 0
-          Margins.Bottom = 0
-          Align = alLeft
-          Style = csOwnerDrawVariable
-          DropDownCount = 20
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -13
-          Font.Name = 'Tahoma'
-          Font.Style = []
-          ItemHeight = 19
-          ParentFont = False
-          TabOrder = 0
-          OnChange = controlUicValueChanged
-          OnDrawItem = cboFontNameDrawItem
-        end
-      end
-      object uicAlpha: TSharpEUIC
-        AlignWithMargins = True
-        Left = 5
-        Top = 206
-        Width = 424
-        Height = 22
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 5
-        Margins.Bottom = 10
-        Align = alTop
-        AutoSize = True
-        BevelOuter = bvNone
-        Caption = 'UIC_Size'
-        Color = clWhite
-        ParentBackground = False
-        TabOrder = 2
-        HasChanged = False
-        AutoReset = True
-        DefaultValue = '0'
-        MonitorControl = sgbFontVisibility
-        OnReset = UIC_Reset
-        object sgbFontVisibility: TSharpeGaugeBox
-          Left = 0
-          Top = 0
-          Width = 250
-          Height = 22
-          Margins.Left = 0
-          Margins.Top = 0
-          Margins.Right = 0
-          Margins.Bottom = 5
-          Align = alLeft
-          ParentBackground = False
-          TabOrder = 0
-          Min = -255
-          Max = 255
-          Value = 0
-          Suffix = '% visible'
-          Description = 'Change font opacity'
-          PopPosition = ppBottom
-          PercentDisplay = True
-          Formatting = '%d'
-          OnChangeValue = SgbUicValueChanged
-          BackgroundColor = clWindow
-        end
-      end
-      object uicBold: TSharpEUIC
-        AlignWithMargins = True
-        Left = 5
-        Top = 417
-        Width = 424
-        Height = 22
-        Margins.Left = 5
-        Margins.Top = 5
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Align = alTop
-        AutoSize = True
-        BevelOuter = bvNone
-        Color = clWhite
-        ParentBackground = False
-        TabOrder = 6
-        HasChanged = False
-        AutoReset = False
-        DefaultValue = 'False'
-        MonitorControl = chkBold
-        OnReset = UIC_Reset
-        object chkBold: TJvXPCheckbox
-          Left = 0
-          Top = 0
-          Width = 49
-          Height = 22
-          Margins.Left = 0
-          Margins.Top = 0
-          Margins.Right = 0
-          Margins.Bottom = 5
-          Caption = 'Bold'
-          TabOrder = 0
-          Align = alLeft
-          OnClick = controlUicValueChanged
-        end
-      end
-      object uicItalic: TSharpEUIC
-        AlignWithMargins = True
-        Left = 5
-        Top = 357
-        Width = 424
-        Height = 25
-        Margins.Left = 5
-        Margins.Top = 5
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Align = alTop
-        AutoSize = True
-        BevelOuter = bvNone
-        Color = clWhite
-        ParentBackground = False
-        TabOrder = 4
-        HasChanged = False
-        AutoReset = False
-        DefaultValue = 'False'
-        MonitorControl = chkItalic
-        OnReset = UIC_Reset
-        object chkItalic: TJvXPCheckbox
-          Left = 0
-          Top = 0
-          Width = 53
-          Height = 25
-          Margins.Left = 0
-          Margins.Top = 0
-          Margins.Right = 0
-          Margins.Bottom = 5
-          Caption = 'Italic'
-          TabOrder = 0
-          Align = alLeft
-          OnClick = controlUicValueChanged
-        end
-      end
-      object uicUnderline: TSharpEUIC
-        AlignWithMargins = True
-        Left = 5
-        Top = 387
-        Width = 424
-        Height = 25
-        Margins.Left = 5
-        Margins.Top = 5
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Align = alTop
-        AutoSize = True
-        BevelOuter = bvNone
-        Caption = 'UIC_Size'
-        Color = clWhite
-        ParentBackground = False
-        TabOrder = 5
-        HasChanged = False
-        AutoReset = False
-        DefaultValue = 'False'
-        MonitorControl = chkUnderline
-        OnReset = UIC_Reset
-        object chkUnderline: TJvXPCheckbox
-          Left = 0
-          Top = 0
-          Width = 73
-          Height = 25
-          Margins.Left = 0
-          Margins.Top = 0
-          Margins.Right = 0
-          Margins.Bottom = 5
-          Caption = 'Underline'
-          TabOrder = 0
-          Align = alLeft
-          OnClick = controlUicValueChanged
-        end
-      end
-      object uicCleartype: TSharpEUIC
-        AlignWithMargins = True
-        Left = 5
-        Top = 280
-        Width = 424
-        Height = 25
-        Margins.Left = 5
-        Margins.Top = 5
-        Margins.Right = 5
-        Margins.Bottom = 10
-        Align = alTop
-        AutoSize = True
-        BevelOuter = bvNone
-        Color = clWhite
-        ParentBackground = False
-        TabOrder = 3
-        HasChanged = False
-        AutoReset = False
-        DefaultValue = '0'
-        MonitorControl = chkCleartype
-        OnReset = UIC_Reset
-        object chkCleartype: TJvXPCheckbox
-          Left = 0
-          Top = 0
-          Width = 141
-          Height = 25
-          Margins.Left = 0
-          Margins.Top = 0
-          Margins.Right = 0
-          Margins.Bottom = 5
-          Caption = 'Apply cleartype fonts'
-          TabOrder = 0
-          Align = alLeft
-          OnClick = controlUicValueChanged
-        end
-      end
-      object SharpECenterHeader1: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 5
-        Top = 0
-        Width = 424
-        Height = 37
-        Margins.Left = 5
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Title = 'Font Type'
-        Description = 
-          'Define the font face that you would like to use for the current ' +
-          'skin'
-        TitleColor = clWindowText
-        DescriptionColor = clRed
-        Align = alTop
-      end
-      object SharpECenterHeader11: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 5
-        Top = 80
-        Width = 424
-        Height = 37
-        Margins.Left = 5
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Title = 'Font Size'
-        Description = 'Define by how much you want to adjust the skins font size'
-        TitleColor = clWindowText
-        DescriptionColor = clRed
-        Align = alTop
-      end
-      object SharpECenterHeader2: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 5
-        Top = 159
-        Width = 424
-        Height = 37
-        Margins.Left = 5
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Title = 'Font Visibility'
-        Description = 'Define how visible the font is when applied to the skin'
-        TitleColor = clWindowText
-        DescriptionColor = clRed
-        Align = alTop
-      end
-      object SharpECenterHeader3: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 5
-        Top = 238
-        Width = 424
-        Height = 37
-        Margins.Left = 5
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Title = 'Clear Font'
-        Description = 'Define whether to use Cleartype for the current skins font'
-        TitleColor = clWindowText
-        DescriptionColor = clRed
-        Align = alTop
-      end
-      object SharpECenterHeader13: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 5
-        Top = 315
-        Width = 424
-        Height = 37
-        Margins.Left = 5
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Title = 'Font Style'
-        Description = 'Define which styles are applied to the font'
-        TitleColor = clWindowText
-        DescriptionColor = clRed
-        Align = alTop
-      end
+		  object uicFontSize: TSharpEUIC
+			AlignWithMargins = True
+			Left = 5
+			Top = 127
+			Width = 424
+			Height = 22
+			Margins.Left = 5
+			Margins.Top = 10
+			Margins.Right = 5
+			Margins.Bottom = 10
+			Align = alTop
+			AutoSize = True
+			BevelOuter = bvNone
+			Caption = 'uicFontSize'
+			Color = clWhite
+			ParentBackground = False
+			TabOrder = 1
+			HasChanged = False
+			AutoReset = True
+			DefaultValue = '0'
+			MonitorControl = sgbFontSize
+			OnReset = UIC_Reset
+			object sgbFontSize: TSharpeGaugeBox
+			  Left = 0
+			  Top = 0
+			  Width = 250
+			  Height = 22
+			  Margins.Left = 0
+			  Margins.Top = 0
+			  Margins.Right = 0
+			  Margins.Bottom = 5
+			  Align = alLeft
+			  ParentBackground = False
+			  TabOrder = 0
+			  Min = -8
+			  Max = 8
+			  Value = 0
+			  Suffix = ' px'
+			  Description = 'Change font size by'
+			  PopPosition = ppBottom
+			  PercentDisplay = False
+			  Formatting = '%d'
+			  OnChangeValue = SgbUicValueChanged
+			  BackgroundColor = clWindow
+			end
+		  end
+		  object uicFontType: TSharpEUIC
+			AlignWithMargins = True
+			Left = 5
+			Top = 47
+			Width = 424
+			Height = 23
+			Margins.Left = 5
+			Margins.Top = 10
+			Margins.Right = 5
+			Margins.Bottom = 10
+			Align = alTop
+			AutoSize = True
+			BevelOuter = bvNone
+			Color = clWhite
+			ParentBackground = False
+			TabOrder = 0
+			HasChanged = False
+			AutoReset = False
+			DefaultValue = '-1'
+			MonitorControl = cboFontName
+			OnReset = UIC_Reset
+			object cboFontName: TComboBox
+			  Left = 0
+			  Top = 0
+			  Width = 250
+			  Height = 25
+			  Margins.Left = 0
+			  Margins.Top = 0
+			  Margins.Right = 0
+			  Margins.Bottom = 0
+			  Align = alLeft
+			  Style = csOwnerDrawVariable
+			  DropDownCount = 20
+			  Font.Charset = DEFAULT_CHARSET
+			  Font.Color = clWindowText
+			  Font.Height = -13
+			  Font.Name = 'Tahoma'
+			  Font.Style = []
+			  ItemHeight = 19
+			  ParentFont = False
+			  TabOrder = 0
+			  OnChange = controlUicValueChanged
+			  OnDrawItem = cboFontNameDrawItem
+			end
+		  end
+		  object uicAlpha: TSharpEUIC
+			AlignWithMargins = True
+			Left = 5
+			Top = 206
+			Width = 424
+			Height = 22
+			Margins.Left = 5
+			Margins.Top = 10
+			Margins.Right = 5
+			Margins.Bottom = 10
+			Align = alTop
+			AutoSize = True
+			BevelOuter = bvNone
+			Caption = 'UIC_Size'
+			Color = clWhite
+			ParentBackground = False
+			TabOrder = 2
+			HasChanged = False
+			AutoReset = True
+			DefaultValue = '0'
+			MonitorControl = sgbFontVisibility
+			OnReset = UIC_Reset
+			object sgbFontVisibility: TSharpeGaugeBox
+			  Left = 0
+			  Top = 0
+			  Width = 250
+			  Height = 22
+			  Margins.Left = 0
+			  Margins.Top = 0
+			  Margins.Right = 0
+			  Margins.Bottom = 5
+			  Align = alLeft
+			  ParentBackground = False
+			  TabOrder = 0
+			  Min = -255
+			  Max = 255
+			  Value = 0
+			  Suffix = '% visible'
+			  Description = 'Change font opacity'
+			  PopPosition = ppBottom
+			  PercentDisplay = True
+			  Formatting = '%d'
+			  OnChangeValue = SgbUicValueChanged
+			  BackgroundColor = clWindow
+			end
+		  end
+		  object uicBold: TSharpEUIC
+			AlignWithMargins = True
+			Left = 5
+			Top = 417
+			Width = 424
+			Height = 22
+			Margins.Left = 5
+			Margins.Top = 5
+			Margins.Right = 5
+			Margins.Bottom = 0
+			Align = alTop
+			AutoSize = True
+			BevelOuter = bvNone
+			Color = clWhite
+			ParentBackground = False
+			TabOrder = 6
+			HasChanged = False
+			AutoReset = False
+			DefaultValue = 'False'
+			MonitorControl = chkBold
+			OnReset = UIC_Reset
+			object chkBold: TJvXPCheckbox
+			  Left = 0
+			  Top = 0
+			  Width = 49
+			  Height = 22
+			  Margins.Left = 0
+			  Margins.Top = 0
+			  Margins.Right = 0
+			  Margins.Bottom = 5
+			  Caption = 'Bold'
+			  TabOrder = 0
+			  Align = alLeft
+			  OnClick = controlUicValueChanged
+			end
+		  end
+		  object uicItalic: TSharpEUIC
+			AlignWithMargins = True
+			Left = 5
+			Top = 357
+			Width = 424
+			Height = 25
+			Margins.Left = 5
+			Margins.Top = 5
+			Margins.Right = 5
+			Margins.Bottom = 0
+			Align = alTop
+			AutoSize = True
+			BevelOuter = bvNone
+			Color = clWhite
+			ParentBackground = False
+			TabOrder = 4
+			HasChanged = False
+			AutoReset = False
+			DefaultValue = 'False'
+			MonitorControl = chkItalic
+			OnReset = UIC_Reset
+			object chkItalic: TJvXPCheckbox
+			  Left = 0
+			  Top = 0
+			  Width = 53
+			  Height = 25
+			  Margins.Left = 0
+			  Margins.Top = 0
+			  Margins.Right = 0
+			  Margins.Bottom = 5
+			  Caption = 'Italic'
+			  TabOrder = 0
+			  Align = alLeft
+			  OnClick = controlUicValueChanged
+			end
+		  end
+		  object uicUnderline: TSharpEUIC
+			AlignWithMargins = True
+			Left = 5
+			Top = 387
+			Width = 424
+			Height = 25
+			Margins.Left = 5
+			Margins.Top = 5
+			Margins.Right = 5
+			Margins.Bottom = 0
+			Align = alTop
+			AutoSize = True
+			BevelOuter = bvNone
+			Caption = 'UIC_Size'
+			Color = clWhite
+			ParentBackground = False
+			TabOrder = 5
+			HasChanged = False
+			AutoReset = False
+			DefaultValue = 'False'
+			MonitorControl = chkUnderline
+			OnReset = UIC_Reset
+			object chkUnderline: TJvXPCheckbox
+			  Left = 0
+			  Top = 0
+			  Width = 73
+			  Height = 25
+			  Margins.Left = 0
+			  Margins.Top = 0
+			  Margins.Right = 0
+			  Margins.Bottom = 5
+			  Caption = 'Underline'
+			  TabOrder = 0
+			  Align = alLeft
+			  OnClick = controlUicValueChanged
+			end
+		  end
+		  object uicCleartype: TSharpEUIC
+			AlignWithMargins = True
+			Left = 5
+			Top = 280
+			Width = 424
+			Height = 25
+			Margins.Left = 5
+			Margins.Top = 5
+			Margins.Right = 5
+			Margins.Bottom = 10
+			Align = alTop
+			AutoSize = True
+			BevelOuter = bvNone
+			Color = clWhite
+			ParentBackground = False
+			TabOrder = 3
+			HasChanged = False
+			AutoReset = False
+			DefaultValue = '0'
+			MonitorControl = chkCleartype
+			OnReset = UIC_Reset
+			object chkCleartype: TJvXPCheckbox
+			  Left = 0
+			  Top = 0
+			  Width = 141
+			  Height = 25
+			  Margins.Left = 0
+			  Margins.Top = 0
+			  Margins.Right = 0
+			  Margins.Bottom = 5
+			  Caption = 'Apply cleartype fonts'
+			  TabOrder = 0
+			  Align = alLeft
+			  OnClick = controlUicValueChanged
+			end
+		  end
+		  object SharpECenterHeader1: TSharpECenterHeader
+			AlignWithMargins = True
+			Left = 5
+			Top = 0
+			Width = 424
+			Height = 37
+			Margins.Left = 5
+			Margins.Top = 0
+			Margins.Right = 5
+			Margins.Bottom = 0
+			Title = 'Font Type'
+			Description = 
+			  'Define the font face that you would like to use for the current ' +
+			  'skin'
+			TitleColor = clWindowText
+			DescriptionColor = clRed
+			Align = alTop
+		  end
+		  object SharpECenterHeader11: TSharpECenterHeader
+			AlignWithMargins = True
+			Left = 5
+			Top = 80
+			Width = 424
+			Height = 37
+			Margins.Left = 5
+			Margins.Top = 0
+			Margins.Right = 5
+			Margins.Bottom = 0
+			Title = 'Font Size'
+			Description = 'Define by how much you want to adjust the skins font size'
+			TitleColor = clWindowText
+			DescriptionColor = clRed
+			Align = alTop
+		  end
+		  object SharpECenterHeader2: TSharpECenterHeader
+			AlignWithMargins = True
+			Left = 5
+			Top = 159
+			Width = 424
+			Height = 37
+			Margins.Left = 5
+			Margins.Top = 0
+			Margins.Right = 5
+			Margins.Bottom = 0
+			Title = 'Font Visibility'
+			Description = 'Define how visible the font is when applied to the skin'
+			TitleColor = clWindowText
+			DescriptionColor = clRed
+			Align = alTop
+		  end
+		  object SharpECenterHeader3: TSharpECenterHeader
+			AlignWithMargins = True
+			Left = 5
+			Top = 238
+			Width = 424
+			Height = 37
+			Margins.Left = 5
+			Margins.Top = 0
+			Margins.Right = 5
+			Margins.Bottom = 0
+			Title = 'Clear Font'
+			Description = 'Define whether to use Cleartype for the current skins font'
+			TitleColor = clWindowText
+			DescriptionColor = clRed
+			Align = alTop
+		  end
+		  object SharpECenterHeader13: TSharpECenterHeader
+			AlignWithMargins = True
+			Left = 5
+			Top = 315
+			Width = 424
+			Height = 37
+			Margins.Left = 5
+			Margins.Top = 0
+			Margins.Right = 5
+			Margins.Bottom = 0
+			Title = 'Font Style'
+			Description = 'Define which styles are applied to the font'
+			TitleColor = clWindowText
+			DescriptionColor = clRed
+			Align = alTop
+		  end
+	  end
     end
     object pagFontShadow: TJvStandardPage
       Left = 0
@@ -412,176 +422,187 @@ object frmSettingsWnd: TfrmSettingsWnd
       Width = 434
       Height = 565
       Caption = 'pagFontShadow'
-      object uicShadow: TSharpEUIC
-        AlignWithMargins = True
-        Left = 5
-        Top = 0
-        Width = 424
-        Height = 25
-        Margins.Left = 5
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 10
+	  object pnlFontShadow: TPanel
+        Left = 1
+        Top = 1
+        Width = 566
+        Height = 246
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
-        Caption = 'UIC_Size'
-        Color = clWhite
-        ParentBackground = False
         TabOrder = 0
-        HasChanged = False
-        AutoReset = False
-        DefaultValue = 'False'
-        MonitorControl = chkShadow
-        OnReset = UIC_Reset
-        object chkShadow: TJvXPCheckbox
-          Left = 0
-          Top = 0
-          Width = 177
-          Height = 25
-          Margins.Left = 5
-          Margins.Top = 5
-          Margins.Right = 0
-          Margins.Bottom = 5
-          Caption = 'Override font shadow options'
-          TabOrder = 0
-          Align = alLeft
-          DragKind = dkDock
-          OnClick = controlUicValueChanged
-        end
-      end
-      object textpanel: TPanel
-        Left = 0
-        Top = 35
-        Width = 434
-        Height = 530
-        Align = alClient
-        BevelOuter = bvNone
-        ParentColor = True
-        TabOrder = 1
-        object uicShadowType: TSharpEUIC
-          AlignWithMargins = True
-          Left = 5
-          Top = 47
-          Width = 424
-          Height = 25
-          Margins.Left = 5
-          Margins.Top = 10
-          Margins.Right = 5
-          Margins.Bottom = 10
-          Align = alTop
-          AutoSize = True
-          BevelOuter = bvNone
-          Color = clWhite
-          ParentBackground = False
-          TabOrder = 0
-          HasChanged = True
-          AutoReset = False
-          DefaultValue = '-1'
-          MonitorControl = cboShadowType
-          OnReset = UIC_Reset
-          object cboShadowType: TComboBox
-            Left = 0
-            Top = 0
-            Width = 250
-            Height = 23
-            Margins.Left = 5
-            Margins.Top = 5
-            Margins.Right = 0
-            Margins.Bottom = 5
-            Align = alLeft
-            Style = csOwnerDrawFixed
-            DropDownCount = 12
-            ItemHeight = 17
-            ItemIndex = 0
-            TabOrder = 0
-            Text = 'Left'
-            OnChange = controlUicValueChanged
-            Items.Strings = (
-              'Left'
-              'Right'
-              'Outline')
-          end
-        end
-        object uicShadowAlpha: TSharpEUIC
-          AlignWithMargins = True
-          Left = 5
-          Top = 129
-          Width = 424
-          Height = 22
-          Margins.Left = 5
-          Margins.Top = 10
-          Margins.Right = 5
-          Margins.Bottom = 8
-          Align = alTop
-          AutoSize = True
-          BevelOuter = bvNone
-          Color = clWhite
-          ParentBackground = False
-          TabOrder = 1
-          HasChanged = False
-          AutoReset = True
-          DefaultValue = '0'
-          MonitorControl = sgbShadowAlpha
-          OnReset = UIC_Reset
-          object sgbShadowAlpha: TSharpeGaugeBox
-            Left = 0
-            Top = 0
-            Width = 250
-            Height = 22
-            Margins.Left = 5
-            Margins.Top = 5
-            Margins.Right = 0
-            Margins.Bottom = 5
-            Align = alLeft
-            ParentBackground = False
-            TabOrder = 0
-            Min = -255
-            Max = 255
-            Value = 0
-            Suffix = '% visible'
-            Description = 'Change shadow opacity'
-            PopPosition = ppBottom
-            PercentDisplay = True
-            Formatting = '%d'
-            OnChangeValue = SgbUicValueChanged
-            BackgroundColor = clWindow
-          end
-        end
-        object SharpECenterHeader5: TSharpECenterHeader
-          AlignWithMargins = True
-          Left = 5
-          Top = 0
-          Width = 424
-          Height = 37
-          Margins.Left = 5
-          Margins.Top = 0
-          Margins.Right = 5
-          Margins.Bottom = 0
-          Title = 'Font shadow type'
-          Description = 'Define the type of shadow effect to apply to the skins font'
-          TitleColor = clWindowText
-          DescriptionColor = clRed
-          Align = alTop
-        end
-        object SharpECenterHeader6: TSharpECenterHeader
-          AlignWithMargins = True
-          Left = 5
-          Top = 82
-          Width = 424
-          Height = 37
-          Margins.Left = 5
-          Margins.Top = 0
-          Margins.Right = 5
-          Margins.Bottom = 0
-          Title = 'Font shadow visiblity'
-          Description = 'Define how visible the font shadow is when applied to the skin'
-          TitleColor = clWindowText
-          DescriptionColor = clRed
-          Align = alTop
-        end
-      end
-    end
+		  object uicShadow: TSharpEUIC
+			AlignWithMargins = True
+			Left = 5
+			Top = 0
+			Width = 424
+			Height = 25
+			Margins.Left = 5
+			Margins.Top = 0
+			Margins.Right = 5
+			Margins.Bottom = 10
+			Align = alTop
+			AutoSize = True
+			BevelOuter = bvNone
+			Caption = 'UIC_Size'
+			Color = clWhite
+			ParentBackground = False
+			TabOrder = 0
+			HasChanged = False
+			AutoReset = False
+			DefaultValue = 'False'
+			MonitorControl = chkShadow
+			OnReset = UIC_Reset
+			object chkShadow: TJvXPCheckbox
+			  Left = 0
+			  Top = 0
+			  Width = 177
+			  Height = 25
+			  Margins.Left = 5
+			  Margins.Top = 5
+			  Margins.Right = 0
+			  Margins.Bottom = 5
+			  Caption = 'Override font shadow options'
+			  TabOrder = 0
+			  Align = alLeft
+			  DragKind = dkDock
+			  OnClick = controlUicValueChanged
+			end
+		  end
+		  object textpanel: TPanel
+			Left = 0
+			Top = 35
+			Width = 434
+			Height = 530
+			Align = alTop
+			BevelOuter = bvNone
+			ParentColor = True
+			TabOrder = 1
+			AutoSize = True
+			object uicShadowType: TSharpEUIC
+			  AlignWithMargins = True
+			  Left = 5
+			  Top = 47
+			  Width = 424
+			  Height = 25
+			  Margins.Left = 5
+			  Margins.Top = 10
+			  Margins.Right = 5
+			  Margins.Bottom = 10
+			  Align = alTop
+			  AutoSize = True
+			  BevelOuter = bvNone
+			  Color = clWhite
+			  ParentBackground = False
+			  TabOrder = 0
+			  HasChanged = True
+			  AutoReset = False
+			  DefaultValue = '-1'
+			  MonitorControl = cboShadowType
+			  OnReset = UIC_Reset
+			  object cboShadowType: TComboBox
+				Left = 0
+				Top = 0
+				Width = 250
+				Height = 23
+				Margins.Left = 5
+				Margins.Top = 5
+				Margins.Right = 0
+				Margins.Bottom = 5
+				Align = alLeft
+				Style = csOwnerDrawFixed
+				DropDownCount = 12
+				ItemHeight = 17
+				ItemIndex = 0
+				TabOrder = 0
+				Text = 'Left'
+				OnChange = controlUicValueChanged
+				Items.Strings = (
+				  'Left'
+				  'Right'
+				  'Outline')
+			  end
+			end
+			object uicShadowAlpha: TSharpEUIC
+			  AlignWithMargins = True
+			  Left = 5
+			  Top = 129
+			  Width = 424
+			  Height = 22
+			  Margins.Left = 5
+			  Margins.Top = 10
+			  Margins.Right = 5
+			  Margins.Bottom = 8
+			  Align = alTop
+			  AutoSize = True
+			  BevelOuter = bvNone
+			  Color = clWhite
+			  ParentBackground = False
+			  TabOrder = 1
+			  HasChanged = False
+			  AutoReset = True
+			  DefaultValue = '0'
+			  MonitorControl = sgbShadowAlpha
+			  OnReset = UIC_Reset
+			  object sgbShadowAlpha: TSharpeGaugeBox
+				Left = 0
+				Top = 0
+				Width = 250
+				Height = 22
+				Margins.Left = 5
+				Margins.Top = 5
+				Margins.Right = 0
+				Margins.Bottom = 5
+				Align = alLeft
+				ParentBackground = False
+				TabOrder = 0
+				Min = -255
+				Max = 255
+				Value = 0
+				Suffix = '% visible'
+				Description = 'Change shadow opacity'
+				PopPosition = ppBottom
+				PercentDisplay = True
+				Formatting = '%d'
+				OnChangeValue = SgbUicValueChanged
+				BackgroundColor = clWindow
+			  end
+			end
+			object SharpECenterHeader5: TSharpECenterHeader
+			  AlignWithMargins = True
+			  Left = 5
+			  Top = 0
+			  Width = 424
+			  Height = 37
+			  Margins.Left = 5
+			  Margins.Top = 0
+			  Margins.Right = 5
+			  Margins.Bottom = 0
+			  Title = 'Font shadow type'
+			  Description = 'Define the type of shadow effect to apply to the skins font'
+			  TitleColor = clWindowText
+			  DescriptionColor = clRed
+			  Align = alTop
+			end
+			object SharpECenterHeader6: TSharpECenterHeader
+			  AlignWithMargins = True
+			  Left = 5
+			  Top = 82
+			  Width = 424
+			  Height = 37
+			  Margins.Left = 5
+			  Margins.Top = 0
+			  Margins.Right = 5
+			  Margins.Bottom = 0
+			  Title = 'Font shadow visiblity'
+			  Description = 'Define how visible the font shadow is when applied to the skin'
+			  TitleColor = clWindowText
+			  DescriptionColor = clRed
+			  Align = alTop
+			end
+		  end
+		end
+	end
   end
   object Panel2: TPanel
     AlignWithMargins = True

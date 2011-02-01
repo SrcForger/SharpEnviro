@@ -91,9 +91,7 @@ begin
     tmpPag := TJvStandardPage(ATab.FObject);
     tmpPag.Show;
 
-    if tmpPag = frmSettingsWnd.pagFont then
-      frmSettingsWnd.Height := 500 else
-      frmSettingsWnd.Height := 220;
+    frmSettingsWnd.UpdatePageUI;
   end;
 end;
 

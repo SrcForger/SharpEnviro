@@ -106,6 +106,8 @@ type
     Image1: TImage;
     Label1: TLabel;
     btnRevert: TPngSpeedButton;
+    pnlFontShadow: TPanel;
+    pnlFont: TPanel;
     procedure FormCreate(Sender: TObject);
     procedure SgbUicValueChanged(Sender: TObject; Value: Integer);
     procedure cboFontNameDrawItem(Control: TWinControl; Index: Integer;
@@ -123,6 +125,7 @@ type
     procedure UpdateSettingsChanged;
   public
     procedure RefreshFontList;
+    procedure UpdatePageUI;
 
     property PluginHost: ISharpCenterHost read FPluginHost write FPluginHost;
     property IsUpdating: boolean read FIsUpdating write FIsUpdating;
@@ -202,9 +205,11 @@ begin
     end;
   end;
 
-  if uic <> nil then begin
+  if uic <> nil then
+  begin
     uic.UpdateStatus;
     UpdateSettingsChanged;
+    UpdatePageUI;
   end;
 
 end;
@@ -273,6 +278,21 @@ begin
 
   btnRevert.Visible := (GetChangedControlCount <> 0);
   textpanel.Visible := chkShadow.Checked;
+end;
+
+procedure TFrmSettingsWnd.UpdatePageUI;
+begin
+  if pagFont.Visible then
+    Self.Height := pnlFont.Height + 50
+  else
+  begin
+    if textpanel.Visible then
+      Self.Height := pnlFontShadow.Height + textpanel.Height + 50
+    else
+      Self.Height := pnlFontShadow.Height + 50;
+  end;
+
+  FPluginHost.Refresh(rtSize);
 end;
 
 end.
