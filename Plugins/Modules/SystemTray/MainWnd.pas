@@ -89,8 +89,10 @@ type
     mInterface : ISharpBarModule;
     procedure ShowHideMenu;
     procedure RepaintIcons(pRepaint : boolean = True);
+
     procedure LoadSettings;
     procedure SaveSettings;
+
     procedure ReAlignComponents;
     procedure UpdateComponentSkins;
   end;
@@ -431,6 +433,7 @@ begin
       FTrayClient.IconSpacing := IntValue('IconSpacing', 1);
       sIconAutoSize := BoolValue('IconAutoSize', sIconAutoSize);
       sEnableIconHiding   := BoolValue('iconhiding', True);
+      FTrayClient.StartHidden := BoolValue('StartHidden', False);
 
       // Import old list
       FTrayClient.UpdateTrayIcons;
@@ -634,8 +637,8 @@ begin
   p := point(x - ShowHideButton.Width, y);
   if (button = mbLeft) and (not sDragging) then
   begin
-    sBeginDragPos := p;
     sDragging := True;
+    sBeginDragPos := p;
   end;
 
   if ssDouble in Shift then
@@ -657,7 +660,7 @@ begin
   modx := x - ShowHideButton.Width;
 
   // Send mouse down message
-  if (sDragging) and (sDraggingItem = nil) then
+  if (sDraggingItem = nil) then
   begin
     case Button of
       mbRight: FTrayClient.PerformIconAction(x - ShowHideButton.Width,y,p.x,p.y,0,WM_RBUTTONDOWN,self);

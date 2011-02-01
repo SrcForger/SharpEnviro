@@ -46,6 +46,8 @@ uses Windows, Dialogs, SysUtils, Classes,
      uSystemFuncs;
 
 type
+  TOnSaveSettings = procedure of Object;
+
     TTrayChangeEvent = (tceIcon,tceTip,tceVersion);
     TTrayChangeEvents = Set of TTrayChangeEvent;
 
@@ -156,6 +158,9 @@ type
 
                    FItems : TObjectList;
                    FStartItems: TObjectList;   // Used when starting up
+                   FStartHidden     : boolean;
+
+                   FOnSaveSettings: TOnSaveSettings;
 
                    procedure FOnBallonClick(wnd: hwnd; ID: Cardinal; Data: TObject;  Msg: integer);
                    procedure FOnBallonShow(wnd: hwnd; ID: Cardinal; Data: TObject);
@@ -235,6 +240,10 @@ type
 
                    property Items : TObjectList read FItems;
                    property StartItems: TObjectList read FStartItems;
+
+                   property StartHidden: Boolean read FStartHidden write FStartHidden;
+
+                   property OnSaveSettings: TOnSaveSettings read FOnSaveSettings write FOnSaveSettings;
                  end;
 
 function AllowSetForegroundWindow(ProcessID : DWORD) : boolean; stdcall; external 'user32.dll' name 'AllowSetForegroundWindow';
@@ -443,6 +452,7 @@ begin
   
   FItems := TObjectList.Create;
   FStartItems := TObjectList.Create(True);
+  FStartHidden := False;
 
   FBitmap := Tbitmap32.Create;
   FWinVersion := GetWinVer;
@@ -834,31 +844,43 @@ begin
   UpdateTrayIcons;
 end;
 
+function StartSort(AItem, BItem: TTrayStartItem):Integer;
+begin
+  Result := 0;
+  if (AItem.Position < BItem.Position) then
+    Result := 1
+  else if AItem.Position > BItem.Position then
+    Result := -1
+end;
+
 procedure TTrayClient.UpdateStartItemPositions;
 var
   i, a: integer;
   iMod : integer;
+  pItem: TTrayStartItem;
 begin
   iMod := 1;
 
-  // -1 items should be to the left
-  for i := 0 to FItems.Count - 1 do
+  // -1 items should be to the left, same with hidden items
+  for i := FStartItems.Count - 1 downto 0 do
   begin
-    if TTrayItem(FStartItems.Items[i]).Position < 0 then
+    pItem := TTrayStartItem(FStartItems.Items[i]);
+    if (pItem.Position < 0) then
     begin
-      TTrayItem(FStartItems.Items[i]).Position := FStartItems.Count + iMod;
+      pItem.Position := FStartItems.Count + iMod;
       iMod := iMod + 1;
     end;
   end;
 
-  FStartItems.Sort(@Sort);
+  FStartItems.Sort(@StartSort);
 
   // Sort in sequential order
-  a := FStartItems.Count - 1;
-  for i := 0 to FStartItems.Count - 1 do
+  a := 0;
+  for i := FStartItems.Count - 1 downto 0 do
   begin
-    TTrayItem(FStartItems.Items[i]).Position := a;
-    a := a - 1;
+    pItem := TTrayStartItem(FStartItems.Items[i]);
+    pItem.Position := a;
+    a := a + 1;
   end;
 end;
 
@@ -869,7 +891,11 @@ begin
   tempItem := TTrayItem.Create(NIDv6, FIconSize);
   tempItem.Owner := self;
   tempItem.TipIndex := GetFreeTipIndex;
-  tempItem.HiddenByClient := GetHiddenStatus(NIDv6);
+
+  if not FStartHidden then
+    tempItem.HiddenByClient := GetHiddenStatus(NIDv6)
+  else
+    tempItem.HiddenByClient := True;
 
   AddTrayIcon(tempItem);
 end;
@@ -887,11 +913,13 @@ begin
     begin
       item.Position := TTrayStartItem(FStartItems[i]).Position;
       item.HiddenByClient := TTrayStartItem(FStartItems[i]).HiddenByClient;
-      FStartItems.Delete(i);
       break;
     end;
   end;
 
+  if (item.Position < 0) then
+    item.Position := FItems.Count;
+  
   if addItem then
     FItems.Add(item);
 
@@ -916,6 +944,10 @@ begin
                                            FIconSize+FTopOffset));
   end;
   RenderIcons;
+
+  // Save callback
+  if Assigned(FOnSaveSettings) then
+    FOnSaveSettings;
 end;
 
 function  TTrayClient.GetTrayIcon(pWnd : THandle; UID : Cardinal) : TTrayItem;

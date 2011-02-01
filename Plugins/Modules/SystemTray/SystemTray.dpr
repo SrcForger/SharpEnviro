@@ -169,6 +169,7 @@ begin
 
     TMainForm(Form).mInterface := self;
     TMainForm(Form).FTrayClient := FTrayClient;
+    TMainForm(Form).FTrayClient.OnSaveSettings := TMainForm(Form).SaveSettings;
 
   except
     on E:Exception do

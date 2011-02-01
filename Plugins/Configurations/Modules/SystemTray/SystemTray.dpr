@@ -95,6 +95,11 @@ begin
     else
       Add('IconSpacing', sgbIconSpacing.Value);
 
+    if ItemNamed['StartHidden'] <> nil then
+      ItemNamed['StartHidden'].BoolValue := chkStartHidden.Checked
+    else
+      Add('StartHidden', chkStartHidden.Checked);
+
     if ItemNamed['skin'] <> nil then
     begin
       if ItemNamed['skin'].Items.ItemNamed[skin] = nil then
@@ -161,6 +166,7 @@ begin
       chkIconHiding.Checked := BoolValue('iconhiding',true);
       chkIconSizing.Checked := BoolValue('IconAutoSize', False);
       sgbIconSpacing.Value := Intvalue('IconSpacing', 1);
+      chkStartHidden.Checked := BoolValue('StartHidden', False);
       if ItemNamed['skin'] <> nil then
       begin
          if ItemNamed['skin'].Items.ItemNamed[skin] <> nil then

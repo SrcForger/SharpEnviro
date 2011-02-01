@@ -55,7 +55,7 @@ type
     chkBackground: TJvXPCheckbox;
     chkBorder: TJvXPCheckbox;
     chkBlend: TJvXPCheckbox;
-    chkIconHiding: TJvXPCheckbox;
+    chkStartHidden: TJvXPCheckbox;
     SharpECenterHeader1: TSharpECenterHeader;
     pnlSysTray: TPanel;
     Panel1: TPanel;
@@ -64,6 +64,7 @@ type
     SharpECenterHeader2: TSharpECenterHeader;
     sgbIconSpacing: TSharpeGaugeBox;
     Panel2: TPanel;
+    chkIconHiding: TJvXPCheckbox;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure cb_numbersClick(Sender: TObject);

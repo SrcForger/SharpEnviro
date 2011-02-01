@@ -33,7 +33,7 @@ object frmSysTray: TfrmSysTray
         Left = 1
         Top = 1
         Width = 433
-        Height = 719
+        Height = 755
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
@@ -56,12 +56,12 @@ object frmSysTray: TfrmSysTray
           DescriptionColor = clRed
           Align = alTop
           Color = clWindow
-          ExplicitTop = 18
+          ExplicitTop = 13
         end
         object schIconVisibility: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 93
+          Top = 129
           Width = 423
           Height = 42
           Margins.Left = 5
@@ -74,28 +74,28 @@ object frmSysTray: TfrmSysTray
           DescriptionColor = clRed
           Align = alTop
           Color = clWindow
-          ExplicitTop = 101
+          ExplicitTop = 96
         end
-        object chkIconHiding: TJvXPCheckbox
+        object chkStartHidden: TJvXPCheckbox
           AlignWithMargins = True
           Left = 5
-          Top = 62
+          Top = 98
           Width = 423
           Height = 21
           Margins.Left = 5
           Margins.Top = 5
           Margins.Right = 5
           Margins.Bottom = 10
-          Caption = 'Enable Icon Hiding'
+          Caption = 'Hide New Icons by Default'
           TabOrder = 2
           Align = alTop
           OnClick = cbBackgroundClick
-          ExplicitTop = 70
+          ExplicitTop = 65
         end
         object schBackgroundVisibility: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 328
+          Top = 364
           Width = 423
           Height = 42
           Margins.Left = 5
@@ -110,12 +110,12 @@ object frmSysTray: TfrmSysTray
           DescriptionColor = clRed
           Align = alTop
           Color = clWindow
-          ExplicitTop = 320
+          ExplicitTop = 331
         end
         object Panel1: TPanel
           AlignWithMargins = True
           Left = 0
-          Top = 140
+          Top = 176
           Width = 433
           Height = 23
           Margins.Left = 0
@@ -126,7 +126,7 @@ object frmSysTray: TfrmSysTray
           AutoSize = True
           BevelOuter = bvNone
           TabOrder = 4
-          ExplicitTop = 148
+          ExplicitTop = 143
           object sgbIconAlpha: TSharpeGaugeBox
             AlignWithMargins = True
             Left = 5
@@ -157,7 +157,7 @@ object frmSysTray: TfrmSysTray
         object pnlBackground: TPanel
           AlignWithMargins = True
           Left = 5
-          Top = 375
+          Top = 411
           Width = 423
           Height = 31
           Margins.Left = 5
@@ -168,7 +168,7 @@ object frmSysTray: TfrmSysTray
           BevelOuter = bvNone
           ParentColor = True
           TabOrder = 5
-          ExplicitTop = 367
+          ExplicitTop = 378
           object sgbBackground: TSharpeGaugeBox
             Left = 146
             Top = 5
@@ -203,7 +203,7 @@ object frmSysTray: TfrmSysTray
         object schBorderVisibility: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 416
+          Top = 452
           Width = 423
           Height = 42
           Margins.Left = 5
@@ -216,12 +216,12 @@ object frmSysTray: TfrmSysTray
           DescriptionColor = clRed
           Align = alTop
           Color = clWindow
-          ExplicitTop = 408
+          ExplicitTop = 419
         end
         object pnlBorder: TPanel
           AlignWithMargins = True
           Left = 5
-          Top = 463
+          Top = 499
           Width = 423
           Height = 31
           Margins.Left = 5
@@ -232,7 +232,7 @@ object frmSysTray: TfrmSysTray
           BevelOuter = bvNone
           ParentColor = True
           TabOrder = 7
-          ExplicitTop = 455
+          ExplicitTop = 466
           object sgbBorder: TSharpeGaugeBox
             Left = 146
             Top = 5
@@ -267,7 +267,7 @@ object frmSysTray: TfrmSysTray
         object schColorBlendOptions: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 504
+          Top = 540
           Width = 423
           Height = 42
           Margins.Left = 5
@@ -280,12 +280,12 @@ object frmSysTray: TfrmSysTray
           DescriptionColor = clRed
           Align = alTop
           Color = clWindow
-          ExplicitTop = 496
+          ExplicitTop = 507
         end
         object pnlBlend: TPanel
           AlignWithMargins = True
           Left = 5
-          Top = 551
+          Top = 587
           Width = 423
           Height = 31
           Margins.Left = 5
@@ -296,7 +296,7 @@ object frmSysTray: TfrmSysTray
           BevelOuter = bvNone
           ParentColor = True
           TabOrder = 9
-          ExplicitTop = 543
+          ExplicitTop = 554
           object sgbBlend: TSharpeGaugeBox
             Left = 146
             Top = 5
@@ -330,7 +330,7 @@ object frmSysTray: TfrmSysTray
         object schColor: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 592
+          Top = 628
           Width = 423
           Height = 42
           Margins.Left = 5
@@ -343,12 +343,12 @@ object frmSysTray: TfrmSysTray
           DescriptionColor = clRed
           Align = alTop
           Color = clWindow
-          ExplicitTop = 584
+          ExplicitTop = 595
         end
         object Colors: TSharpEColorEditorEx
           AlignWithMargins = True
           Left = 5
-          Top = 639
+          Top = 675
           Width = 423
           Height = 80
           Margins.Left = 5
@@ -416,12 +416,12 @@ object frmSysTray: TfrmSysTray
           BackgroundTextColor = clBlack
           ContainerColor = clBlack
           ContainerTextColor = clBlack
-          ExplicitTop = 631
+          ExplicitTop = 642
         end
         object schIconSizing: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 173
+          Top = 209
           Width = 423
           Height = 42
           Margins.Left = 5
@@ -434,12 +434,12 @@ object frmSysTray: TfrmSysTray
           DescriptionColor = clRed
           Align = alTop
           Color = clWindow
-          ExplicitTop = 181
+          ExplicitTop = 176
         end
         object chkIconSizing: TJvXPCheckbox
           AlignWithMargins = True
           Left = 5
-          Top = 220
+          Top = 256
           Width = 423
           Height = 17
           Margins.Left = 5
@@ -450,12 +450,12 @@ object frmSysTray: TfrmSysTray
           TabOrder = 13
           Align = alTop
           OnClick = chkIconSizingClick
-          ExplicitTop = 228
+          ExplicitTop = 223
         end
         object SharpECenterHeader2: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 247
+          Top = 283
           Width = 423
           Height = 42
           Margins.Left = 5
@@ -468,12 +468,12 @@ object frmSysTray: TfrmSysTray
           DescriptionColor = clRed
           Align = alTop
           Color = clWindow
-          ExplicitTop = 255
+          ExplicitTop = 250
         end
         object Panel2: TPanel
           AlignWithMargins = True
           Left = 0
-          Top = 294
+          Top = 330
           Width = 433
           Height = 24
           Margins.Left = 0
@@ -484,6 +484,7 @@ object frmSysTray: TfrmSysTray
           AutoSize = True
           BevelOuter = bvNone
           TabOrder = 15
+          ExplicitTop = 297
           object sgbIconSpacing: TSharpeGaugeBox
             AlignWithMargins = True
             Left = 5
@@ -511,6 +512,21 @@ object frmSysTray: TfrmSysTray
             OnChangeValue = sgbIconAlphaChangeValue
             BackgroundColor = clWindow
           end
+        end
+        object chkIconHiding: TJvXPCheckbox
+          AlignWithMargins = True
+          Left = 5
+          Top = 62
+          Width = 423
+          Height = 21
+          Margins.Left = 5
+          Margins.Top = 5
+          Margins.Right = 5
+          Margins.Bottom = 10
+          Caption = 'Enable Icon Hiding'
+          TabOrder = 16
+          Align = alTop
+          OnClick = cbBackgroundClick
         end
       end
     end
