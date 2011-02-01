@@ -490,7 +490,7 @@ begin
   if mInterface.SkinInterface = nil then
     exit;
 
-  size := 16{mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y};
+  size := mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y;
   TempBmp := TBitmap32.Create;
   TempBmp.SetSize(size,size);
 
@@ -499,13 +499,13 @@ begin
   // Change arrow depending on what position the bar has
   GetWindowRect(mInterface.BarInterface.BarWnd, rc);
   if rc.Top <= 0 then
-    IconStringToIcon('icon.tray.arrow.down', '', TempBmp, size)
+    IconStringToIcon('icon.tray.arrow.down', '', TempBmp, 16)
   else
-    IconStringToIcon('icon.tray.arrow.up', '', TempBmp, size);
+    IconStringToIcon('icon.tray.arrow.up', '', TempBmp, 16);
 
   ShowHideButton.Glyph32.Clear(color32(0,0,0,0));
   ShowHideButton.Glyph32.SetSize(16, mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y);
-  TempBmp.DrawTo(ShowHideButton.Glyph32, 0, 1 + (ShowHideButton.Height - TempBmp.Height) div 2);
+  TempBmp.DrawTo(ShowHideButton.Glyph32, 0, Floor((mInterface.SkinInterface.SkinManager.Skin.Button.Normal.Icon.Dimension.Y - 16) div 2));
   ShowHideButton.UpdateSkin;
 
   TempBmp.Free;
