@@ -89,7 +89,12 @@ begin
       ItemNamed['IconAutoSize'].BoolValue := chkIconSizing.Checked
     else
       Add('IconAutoSize', chkIconSizing.Checked);
-      
+
+    if ItemNamed['IconSpacing'] <> nil then
+      ItemNamed['IconSpacing'].IntValue := sgbIconSpacing.Value
+    else
+      Add('IconSpacing', sgbIconSpacing.Value);
+
     if ItemNamed['skin'] <> nil then
     begin
       if ItemNamed['skin'].Items.ItemNamed[skin] = nil then
@@ -155,6 +160,7 @@ begin
     begin
       chkIconHiding.Checked := BoolValue('iconhiding',true);
       chkIconSizing.Checked := BoolValue('IconAutoSize', False);
+      sgbIconSpacing.Value := Intvalue('IconSpacing', 1);
       if ItemNamed['skin'] <> nil then
       begin
          if ItemNamed['skin'].Items.ItemNamed[skin] <> nil then

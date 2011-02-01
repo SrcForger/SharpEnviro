@@ -440,6 +440,7 @@ begin
 
       FTrayClient.HiddenList.Clear;
 
+      FTrayClient.IconSpacing := IntValue('IconSpacing', 1);
       sIconAutoSize := BoolValue('IconAutoSize', sIconAutoSize);
       sEnableIconHiding   := BoolValue('iconhiding', True);
       if (ItemNamed['Hidden'] <> nil) and (sEnableIconHiding) then

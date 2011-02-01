@@ -33,7 +33,7 @@ object frmSysTray: TfrmSysTray
         Left = 1
         Top = 1
         Width = 433
-        Height = 603
+        Height = 719
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
@@ -43,7 +43,7 @@ object frmSysTray: TfrmSysTray
           Left = 5
           Top = 10
           Width = 423
-          Height = 37
+          Height = 42
           Margins.Left = 5
           Margins.Top = 10
           Margins.Right = 5
@@ -56,13 +56,14 @@ object frmSysTray: TfrmSysTray
           DescriptionColor = clRed
           Align = alTop
           Color = clWindow
+          ExplicitTop = 18
         end
         object schIconVisibility: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 88
+          Top = 93
           Width = 423
-          Height = 37
+          Height = 42
           Margins.Left = 5
           Margins.Top = 0
           Margins.Right = 5
@@ -73,11 +74,12 @@ object frmSysTray: TfrmSysTray
           DescriptionColor = clRed
           Align = alTop
           Color = clWindow
+          ExplicitTop = 101
         end
         object chkIconHiding: TJvXPCheckbox
           AlignWithMargins = True
           Left = 5
-          Top = 57
+          Top = 62
           Width = 423
           Height = 21
           Margins.Left = 5
@@ -88,14 +90,14 @@ object frmSysTray: TfrmSysTray
           TabOrder = 2
           Align = alTop
           OnClick = cbBackgroundClick
-          ExplicitLeft = 10
+          ExplicitTop = 70
         end
         object schBackgroundVisibility: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 232
+          Top = 328
           Width = 423
-          Height = 37
+          Height = 42
           Margins.Left = 5
           Margins.Top = 0
           Margins.Right = 5
@@ -108,12 +110,12 @@ object frmSysTray: TfrmSysTray
           DescriptionColor = clRed
           Align = alTop
           Color = clWindow
-          ExplicitTop = 200
+          ExplicitTop = 320
         end
         object Panel1: TPanel
           AlignWithMargins = True
           Left = 0
-          Top = 130
+          Top = 140
           Width = 433
           Height = 23
           Margins.Left = 0
@@ -124,6 +126,7 @@ object frmSysTray: TfrmSysTray
           AutoSize = True
           BevelOuter = bvNone
           TabOrder = 4
+          ExplicitTop = 148
           object sgbIconAlpha: TSharpeGaugeBox
             AlignWithMargins = True
             Left = 5
@@ -154,7 +157,7 @@ object frmSysTray: TfrmSysTray
         object pnlBackground: TPanel
           AlignWithMargins = True
           Left = 5
-          Top = 274
+          Top = 375
           Width = 423
           Height = 31
           Margins.Left = 5
@@ -165,7 +168,7 @@ object frmSysTray: TfrmSysTray
           BevelOuter = bvNone
           ParentColor = True
           TabOrder = 5
-          ExplicitTop = 205
+          ExplicitTop = 367
           object sgbBackground: TSharpeGaugeBox
             Left = 146
             Top = 5
@@ -200,9 +203,9 @@ object frmSysTray: TfrmSysTray
         object schBorderVisibility: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 315
+          Top = 416
           Width = 423
-          Height = 37
+          Height = 42
           Margins.Left = 5
           Margins.Top = 0
           Margins.Right = 5
@@ -213,12 +216,12 @@ object frmSysTray: TfrmSysTray
           DescriptionColor = clRed
           Align = alTop
           Color = clWindow
-          ExplicitTop = 246
+          ExplicitTop = 408
         end
         object pnlBorder: TPanel
           AlignWithMargins = True
           Left = 5
-          Top = 357
+          Top = 463
           Width = 423
           Height = 31
           Margins.Left = 5
@@ -229,7 +232,7 @@ object frmSysTray: TfrmSysTray
           BevelOuter = bvNone
           ParentColor = True
           TabOrder = 7
-          ExplicitTop = 288
+          ExplicitTop = 455
           object sgbBorder: TSharpeGaugeBox
             Left = 146
             Top = 5
@@ -264,9 +267,9 @@ object frmSysTray: TfrmSysTray
         object schColorBlendOptions: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 398
+          Top = 504
           Width = 423
-          Height = 37
+          Height = 42
           Margins.Left = 5
           Margins.Top = 0
           Margins.Right = 5
@@ -277,12 +280,12 @@ object frmSysTray: TfrmSysTray
           DescriptionColor = clRed
           Align = alTop
           Color = clWindow
-          ExplicitTop = 329
+          ExplicitTop = 496
         end
         object pnlBlend: TPanel
           AlignWithMargins = True
           Left = 5
-          Top = 440
+          Top = 551
           Width = 423
           Height = 31
           Margins.Left = 5
@@ -293,7 +296,7 @@ object frmSysTray: TfrmSysTray
           BevelOuter = bvNone
           ParentColor = True
           TabOrder = 9
-          ExplicitTop = 371
+          ExplicitTop = 543
           object sgbBlend: TSharpeGaugeBox
             Left = 146
             Top = 5
@@ -327,9 +330,9 @@ object frmSysTray: TfrmSysTray
         object schColor: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 481
+          Top = 592
           Width = 423
-          Height = 37
+          Height = 42
           Margins.Left = 5
           Margins.Top = 0
           Margins.Right = 5
@@ -340,12 +343,12 @@ object frmSysTray: TfrmSysTray
           DescriptionColor = clRed
           Align = alTop
           Color = clWindow
-          ExplicitTop = 412
+          ExplicitTop = 584
         end
         object Colors: TSharpEColorEditorEx
           AlignWithMargins = True
           Left = 5
-          Top = 523
+          Top = 639
           Width = 423
           Height = 80
           Margins.Left = 5
@@ -413,14 +416,14 @@ object frmSysTray: TfrmSysTray
           BackgroundTextColor = clBlack
           ContainerColor = clBlack
           ContainerTextColor = clBlack
-          ExplicitTop = 454
+          ExplicitTop = 631
         end
         object schIconSizing: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 163
+          Top = 173
           Width = 423
-          Height = 37
+          Height = 42
           Margins.Left = 5
           Margins.Top = 0
           Margins.Right = 5
@@ -431,14 +434,12 @@ object frmSysTray: TfrmSysTray
           DescriptionColor = clRed
           Align = alTop
           Color = clWindow
-          ExplicitLeft = 120
-          ExplicitTop = 152
-          ExplicitWidth = 185
+          ExplicitTop = 181
         end
         object chkIconSizing: TJvXPCheckbox
           AlignWithMargins = True
           Left = 5
-          Top = 205
+          Top = 220
           Width = 423
           Height = 17
           Margins.Left = 5
@@ -449,8 +450,67 @@ object frmSysTray: TfrmSysTray
           TabOrder = 13
           Align = alTop
           OnClick = chkIconSizingClick
-          ExplicitLeft = 0
-          ExplicitTop = 232
+          ExplicitTop = 228
+        end
+        object SharpECenterHeader2: TSharpECenterHeader
+          AlignWithMargins = True
+          Left = 5
+          Top = 247
+          Width = 423
+          Height = 42
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 0
+          Title = 'Icon Spacing'
+          Description = 'Allows you to specify the space between each tray icon'
+          TitleColor = clWindowText
+          DescriptionColor = clRed
+          Align = alTop
+          Color = clWindow
+          ExplicitTop = 255
+        end
+        object Panel2: TPanel
+          AlignWithMargins = True
+          Left = 0
+          Top = 294
+          Width = 433
+          Height = 24
+          Margins.Left = 0
+          Margins.Top = 5
+          Margins.Right = 0
+          Margins.Bottom = 10
+          Align = alTop
+          AutoSize = True
+          BevelOuter = bvNone
+          TabOrder = 15
+          object sgbIconSpacing: TSharpeGaugeBox
+            AlignWithMargins = True
+            Left = 5
+            Top = 0
+            Width = 159
+            Height = 24
+            Margins.Left = 5
+            Margins.Top = 0
+            Margins.Right = 5
+            Margins.Bottom = 0
+            Align = alLeft
+            Color = clWindow
+            ParentBackground = False
+            TabOrder = 0
+            Min = 0
+            Max = 25
+            Value = 1
+            Prefix = 'Spacing: '
+            Suffix = 'px'
+            Description = 'Adjust transparency'
+            PopPosition = ppBottom
+            PercentDisplay = False
+            MaxPercent = 100
+            Formatting = '%d'
+            OnChangeValue = sgbIconAlphaChangeValue
+            BackgroundColor = clWindow
+          end
         end
       end
     end

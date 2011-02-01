@@ -61,6 +61,9 @@ type
     Panel1: TPanel;
     schIconSizing: TSharpECenterHeader;
     chkIconSizing: TJvXPCheckbox;
+    SharpECenterHeader2: TSharpECenterHeader;
+    sgbIconSpacing: TSharpeGaugeBox;
+    Panel2: TPanel;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure cb_numbersClick(Sender: TObject);
