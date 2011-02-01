@@ -130,6 +130,9 @@ var
   TrayItem : TTrayItem;
   menu : TSharpEMenu;
   menuWnd : TSharpEMenuWnd;
+
+  R: TRect;
+  P: TPoint;
 begin
   CanClose := False;
 
@@ -173,9 +176,26 @@ begin
 
     menuwnd.IgnoreNextDeactivate := True;
 
-    menu.RenderBackground(menuwnd.Left,menuwnd.Top,false,menu.SpecialBackgroundSource);
+    menu.RenderBackground(menuwnd.Left,menuwnd.Top,false,menu.SpecialBackgroundSource, True);
     menu.RenderNormalMenu;
     menu.RenderTo(menuwnd.Picture);
+
+    // Recalculate position (Only change top position, otherwise it'll look weird)
+    GetWindowRect(mInterface.BarInterface.BarWnd,R);
+    p := ClientToScreen(Point(0, self.Height + self.Top));
+    p.y := R.Top;
+    if p.Y < Monitor.Top + Monitor.Height div 2 then
+      menuwnd.Top := R.Bottom + mInterface.SkinInterface.SkinManager.Skin.Menu.LocationOffset.Y
+    else begin
+      menuwnd.Top := R.Top - menuwnd.Picture.Height - mInterface.SkinInterface.SkinManager.Skin.Menu.LocationOffset.Y;
+    end;
+    if menuwnd.Top < Monitor.Top then
+    begin
+      if menuwnd.Picture.Height > Monitor.Height then
+        menuwnd.Height := Monitor.Height;
+      menuwnd.Top := 0;
+    end;
+
     menuwnd.PreMul(menuwnd.Picture);
     menuwnd.DrawWindow;
     menuwnd.Realign;

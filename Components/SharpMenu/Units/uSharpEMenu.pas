@@ -101,7 +101,7 @@ type
     function AddUListItem(pType,pCount : integer; pDynamic : boolean; pInsertPos: Integer=-1) : TObject;
 
     // Rendering
-    procedure RenderBackground(pLeft, pTop : integer; isRunThreaded : boolean = False; BGBmp : TBitmap32 = nil);
+    procedure RenderBackground(pLeft, pTop : integer; isRunThreaded : boolean = False; BGBmp : TBitmap32 = nil; heightOnly: Boolean = false);
     procedure RenderNormalMenu;
     procedure RenderTo(Dst : TBitmap32); overload;
     procedure RenderTo(Dst : TBitmap32; pLeft,pTop : integer); overload;
@@ -978,7 +978,7 @@ begin
 
 end;
 
-procedure TSharpEMenu.RenderBackground(pLeft,pTop : integer; isRunThreaded : boolean = False; BGBmp : TBitmap32 = nil);
+procedure TSharpEMenu.RenderBackground(pLeft,pTop : integer; isRunThreaded : boolean = False; BGBmp : TBitmap32 = nil; heightOnly: Boolean = false);
 const
   CAPTUREBLT = $40000000;
 var
@@ -992,7 +992,9 @@ begin
 
   if not isRunThreaded then // Do not run this when executed threaded
   begin
-    UpdateItemWidth;
+    // Check if we only want to change the height
+    if not heightOnly then
+      UpdateItemWidth;
     UpdateItemsHeight;
   end;
 
@@ -1001,6 +1003,7 @@ begin
   if (FOldWH.X = -1) or (FOldWH.Y = -1) or (FOldItemCount <> FItems.Count) then
   begin
     FOldWH := Point(FItemWidth, Max(1,GetItemsHeight(StartIndex, FWrapCount)));
+      
     FOldItemCount := FItems.Count;
   end;
 
