@@ -41,7 +41,8 @@ uses Windows, Dialogs, SysUtils, Classes,
      SharpThemeApiEx,
      SharpGraphicsUtils,
      SharpIconUtils,
-     SharpNotify;
+     SharpNotify,
+     uSystemFuncs;
 
 type
     TTrayChangeEvent = (tceIcon,tceTip,tceVersion);
@@ -72,9 +73,12 @@ type
                    FBInfoFlags : DWORD;
                    FOwner : TObject;
                    FTipIndex : integer;
-                   FHiddenByClient : boolean;
                    FIsHovering : boolean;
                    FVersion : integer;
+
+                   FPosition : integer;
+                   FHiddenByClient : boolean;
+
                  public
                    FTip : ArrayWideChar128;
                    FInfo : ArrayWideChar256;
@@ -93,10 +97,28 @@ type
                    property BInfoFlags : DWORD read FBInfoFlags;
                    property Owner : TObject read FOwner write FOwner;
                    property TipIndex : integer read FTipIndex write FTipIndex;
-                   property HiddenByClient : boolean read FHiddenByClient write FHiddenByClient;
                    property IsHovering : boolean read FIsHovering write FIsHovering;
                    property Version : integer read FVersion write FVersion;
+
+                   property Position: integer read FPosition write FPosition;
+                   property HiddenByClient : boolean read FHiddenByClient write FHiddenByClient;
                  end;
+
+  TTrayStartItem = class
+  private
+    FUID : Cardinal;
+    FWndClass : String;
+    FExeName : String;
+    FPosition : integer;
+    FHiddenByClient : boolean;
+
+  public
+    property UID: Cardinal read FUID write FUID;
+    property WndClass: String read FWndClass write FWndClass;
+    property ExeName: String read FExeName write FExeName;
+    property Position: Integer read FPosition write FPosition;
+    property HiddenByClient: Boolean read FHiddenByClient write FHiddenByClient;
+  end;
 
   TTrayClient = class
                  private
@@ -109,7 +131,6 @@ type
                    FIconSpacing : integer;
                    FTopSpacing  : integer;
                    FTopOffset   : integer;
-                   FItems : TObjectList;
                    FBitmap : TBitmap32;
                    FWinVersion : Cardinal;
                    FTipTimer : TTimer;
@@ -129,17 +150,20 @@ type
                    FRepaintHash     : integer;
                    FScreenPos       : TPoint;
                    FLastMessage     : Int64;
-                   FHiddenList      : TStringList;
                    FArrowWidth      : integer;
                    FArrowHeight     : integer;
+
+                   FItems : TObjectList;
+                   FStartItems: TObjectList;   // Used when starting up
+
                    procedure FOnBallonClick(wnd: hwnd; ID: Cardinal; Data: TObject;  Msg: integer);
                    procedure FOnBallonShow(wnd: hwnd; ID: Cardinal; Data: TObject);
                    procedure FOnBallonTimeOut(wnd: hwnd; ID: Cardinal; Data: TObject);
                    procedure FOnTipTimer(Sender : TObject);
                    procedure NewRepaintHash;
+
                  public
                    function GetHiddenStatus(NIDv6 : TNotifyIconDataV7) : boolean;
-                   procedure UpdateHiddenStatus;
                    function GetTrayIconIndex(pWnd : THandle; UID : Cardinal) : integer;
                    function GetTrayIcon(pWnd : THandle; UID : Cardinal) : TTrayItem;
                    procedure AddOrModifyTrayIcon(NIDv6 : TNotifyIconDataV7);
@@ -148,13 +172,19 @@ type
                    procedure ModifyTrayIcon(NIDv6 : TNotifyIconDataV7);
                    procedure DeleteTrayIcon(NIDv6 : TNotifyIconDataV7);
                    procedure DeleteTrayIconByIndex(index : integer);
+
                    procedure UpdateTrayIcons;
+                   procedure UpdatePositions;
+
                    procedure RenderIcons;
                    function PerformIconAction(x,y,gx,gy,imod : integer; msg : uint; parent : TForm) : boolean;
                    procedure StartTipTimer(x,y,gx,gy : integer);
                    procedure StopTipTimer;
                    procedure CloseVistaInfoTip;
-                   function  GetIconPos(item : TTrayItem) : TPoint;
+
+                   function GetIconPos(item : TTrayItem) : TPoint;
+                   function GetIconAtPos(pt : TPoint) : TTrayItem;
+
                    function  IconExists(item : TTrayItem) : Boolean;
                    procedure RegisterWithTray;
                    procedure ClearTrayIcons;
@@ -170,10 +200,10 @@ type
                    procedure InitToolTips(wnd : TObject);
                    procedure DeleteToolTips;
                    function GetFreeTipIndex : integer;
+                   
                    constructor Create; reintroduce;
                    destructor  Destroy; override;
 
-                   property Items : TObjectList read FItems;
                    property Bitmap : TBitmap32 read FBitmap;
                    property IconAlpha : integer read FIconAlpha write SetIconAlpha;
                    property IconAutoSize : Boolean read FIconAutoSize write SetIconAutoSize;
@@ -196,10 +226,13 @@ type
                    property LastTipItem    : TTrayItem read FLastTipItem;
                    property TipGPoint      : TPoint read FTipGPoint;
                    property TipWnd         : hwnd read FTipWnd;
-                   property TipForm        : TForm read FTipForm;      
-                   property HiddenList     : TStringList read FHiddenList;
+                   property TipForm        : TForm read FTipForm;
+
                    property ArrowWidth     : integer read FArrowWidth write FArrowWidth;
                    property ArrowHeight    : integer read FArrowHeight write FArrowHeight;
+
+                   property Items : TObjectList read FItems;
+                   property StartItems: TObjectList read FStartItems;
                  end;
 
 function AllowSetForegroundWindow(ProcessID : DWORD) : boolean; stdcall; external 'user32.dll' name 'AllowSetForegroundWindow';
@@ -322,8 +355,11 @@ begin
   FIconSize := IconSize;
   FBitmap := TBitmap32.Create;
   FBitmap.SetSize(FIconSize,FIconSize);
-  FHiddenByClient := False;
   FIsHovering := False;
+
+  FPosition := -1;
+  FHiddenByClient := False;
+
   // If the size is the default size or less use the TLinearResampler,
   // when scaling up use TKernelResampler for better quality.
   if FIconSize <= 16 then
@@ -331,6 +367,7 @@ begin
   else
     TKernelResampler.Create(FBitmap).Kernel := TLanczosKernel.Create;
   AssignFromNIDv6(NIDv6);
+
   Inherited Create;
 end;
 
@@ -388,9 +425,6 @@ begin
 
   Randomize;
   NewRepaintHash;
-  FHiddenList := TStringList.Create;
-  FHiddenList.CaseSensitive := False;
-  FHiddenList.Clear;
   FColorBlend := False;
   FIconAlpha  := 255;
   FBlendAlpha := 255;
@@ -401,11 +435,13 @@ begin
   FBorderAlpha := 255;
   FIconAutoSize := False;
   FIconSize := 16;
-  FIconSpacing := 1;
+  FIconSpacing := 2;
   FTopSpacing  := 2;
   FLastMessage := DateTimeToUnix(now);
+  
   FItems := TObjectList.Create;
-  FItems.Clear;
+  FStartItems := TObjectList.Create(True);
+
   FBitmap := Tbitmap32.Create;
   FWinVersion := GetWinVer;
   FTipTimer := TTimer.Create(nil);
@@ -435,9 +471,8 @@ begin
   FTipForm := TMainForm(wnd);
   FTipWnd := ToolTipApi.RegisterToolTip(TMainForm(wnd));
 
-  ToolTipApi.AddToolTip(FTipWnd, FTipForm, 0, Rect(0, 0, FArrowWidth, FArrowHeight), 'Hide/Show Icons');
+  ToolTipApi.AddToolTip(FTipWnd, FTipForm, 0, Rect(0, 0, FArrowWidth, FArrowHeight), 'Hidden Icons');
 
-  UpdateHiddenStatus;
   UpdateTrayIcons;
 end;
 
@@ -542,9 +577,11 @@ begin
   SharpNotifyEvent.OnTimeout := nil;
   DeleteToolTips;
   FMsgWnd.Free;
+  
   FItems.Free;
+  FStartItems.Free;
+
   FBitmap.Free;
-  FHiddenList.Free;
   FTipTimer.Enabled := False;
   FTipTimer.Free;
   inherited Destroy;
@@ -579,6 +616,31 @@ begin
     end;
     x := x + FIconSize + FIconSpacing;
   end;
+end;
+
+function TTrayClient.GetIconAtPos(pt : TPoint) : TTrayItem;
+var
+  i : integer;
+  x: integer;
+  rc: TRect;
+begin
+  x := 0;
+  for i := 0 to Fitems.Count - 1 do
+  begin
+    if TTrayItem(FItems.Items[i]).HiddenByClient then
+      continue;
+
+    rc := Rect(x, FTopSpacing, x + FIconSize + FIconSpacing, FTopSpacing + FIconSize);
+    if PointInRect(pt, rc) then
+    begin
+      Result := TTrayItem(FItems.Items[i]);
+      exit;
+    end;
+    
+    x := x + FIconSize + FIconSpacing;
+  end;
+
+  Result := nil;
 end;
 
 procedure TTrayClient.ClearTrayIcons;
@@ -682,34 +744,6 @@ begin
   FLastTipItem := nil;
 end;
 
-procedure TTrayClient.UpdateHiddenStatus;
-var
-  n,i : integer;
-  TrayItem : TTrayItem;
-  found : boolean;
-  s : String;
-begin
-  for i := 0 to FItems.Count - 1 do
-  begin
-    TrayItem := TTrayItem(FItems.Items[i]);
-    found := False;
-    for n := 0 to HiddenList.Count - 1 do
-    begin
-      s := GetProcessNameFromWnd(TrayItem.Wnd) + ':' + inttostr(TrayItem.UID);
-      if CompareText(s, HiddenList[n]) = 0 then
-      begin
-        if not TrayItem.HiddenByClient then
-          TrayItem.HiddenByClient := True;
-
-        found := True;
-      end;
-    end;
-    
-    if (not found) and (TrayItem.HiddenByClient) then
-      TrayItem.HiddenByClient := False;
-  end;
-end;
-
 procedure TTrayClient.UpdateTrayIcons;
 var
   i, a : integer;
@@ -764,17 +798,52 @@ end;
 
 function TTrayClient.GetHiddenStatus(NIDv6: TNotifyIconDataV7): boolean;
 var
-  hstring : String;
+  s, sCheck : String;
+  i : integer;
 begin
   result := False;
   
-  hstring := GetProcessNameFromWnd(NIDv6.Wnd);
-  if length(trim(hstring)) > 0 then
+  s := GetWndClass(NIDv6.Wnd) + ':' + inttostr(NIDv6.UID);
+  for i := 0 to FItems.Count - 1 do
   begin
-    hstring := hstring + ':' + inttostr(NIDv6.uID);
-    if HiddenList.IndexOf(hstring) >= 0 then
-      result := True;
+    sCheck := GetWndClass(TTrayItem(FItems[i]).Wnd) + ':' + IntToStr(TTrayItem(FItems[i]).UID);
+    if (CompareText(s, sCheck) = 0) and (TTrayItem(FItems[i]).HiddenByClient) then
+    begin
+      Result := True;
+      break;
     end;
+  end;
+end;
+
+function Sort(AItem, BItem: TTrayItem):Integer;
+begin
+  Result := 0;
+  if (AItem.Position < BItem.Position) then
+    Result := 1
+  else if AItem.Position > BItem.Position then
+    Result := -1;
+end;
+
+
+procedure TTrayClient.UpdatePositions;
+var
+  i, iMod : integer;
+begin
+  iMod := 1;
+
+  // -1 items should be to the left
+  for i := 0 to FItems.Count - 1 do
+  begin
+    if TTrayItem(FItems.Items[i]).Position < 0 then
+    begin
+      TTrayItem(FItems.Items[i]).Position := FItems.Count + iMod;
+      iMod := iMod + 1;
+    end;
+  end;
+
+  FItems.Sort(@Sort);
+
+  UpdateTrayIcons;
 end;
 
 procedure TTrayClient.AddTrayIcon(NIDv6 : TNotifyIconDataV7);
@@ -792,9 +861,25 @@ end;
 procedure TTrayClient.AddTrayIcon(item : TTrayItem; addItem : boolean);
 var
   n,truecount : integer;
+  i : integer;
 begin
+  for i := 0 to FStartItems.Count - 1 do
+  begin
+    if (TTrayStartItem(FStartItems[i]).FUID = item.UID) and
+        (CompareText(TTrayStartItem(FStartItems[i]).WndClass, GetWndClass(item.Wnd)) = 0) and
+        (CompareText(TTrayStartItem(FStartItems[i]).ExeName, ExtractFileName(GetProcessNameFromWnd(item.Wnd))) = 0) then
+    begin
+      item.Position := TTrayStartItem(FStartItems[i]).Position;
+      item.HiddenByClient := TTrayStartItem(FStartItems[i]).HiddenByClient;
+      FStartItems.Delete(i);
+      break;
+    end;
+  end;
+
   if addItem then
     FItems.Add(item);
+
+  UpdatePositions;
 
   truecount := 0;
   for n := 0 to FItems.Count - 1 do
@@ -1033,16 +1118,16 @@ begin
           BlendImageA(tempBmp,FBlendColor,FBlendAlpha);
           tempBmp.MasterAlpha := FIconAlpha;
           tempBmp.DrawTo(FBitmap,
-                          Rect(FTopSpacing + (n - hcount) * (FIconSize + FIconSpacing),
+                          Rect((FTopSpacing + (n - hcount) * (FIconSize + FIconSpacing)),
                           FTopSpacing,
-                          FTopSpacing + (n - hcount) * (FIconSize + FIconSpacing) + FIconSize,
+                          (FTopSpacing + (n - hcount) * (FIconSize + FIconSpacing) + FIconSize),
                           FIconSize + FTopSpacing));
         end else
           tempItem.Bitmap.DrawTo(FBitmap,
-                                  Rect(FTopSpacing + (n - hcount) * (FIconSize + FIconSpacing),
-                                  FTopSpacing,
-                                  FTopSpacing + (n - hcount) * (FIconSize + FIconSpacing) + FIconSize,
-                                  FIconSize + FTopSpacing));
+                          Rect((FTopSpacing + (n - hcount) * (FIconSize + FIconSpacing)),
+                                FTopSpacing,
+                                (FTopSpacing + (n - hcount) * (FIconSize + FIconSpacing) + FIconSize),
+                                FIconSize + FTopSpacing));
       end;
     end;
     NewRepaintHash;

@@ -34,7 +34,8 @@ uses
   TrayIconsManager, Math, GR32, SharpECustomSkinSettings, SharpESkinLabel,
   ToolTipApi,Commctrl, uISharpBarModule, SharpIconUtils, GR32_PNG,
   uSharpEMenu, uSharpEMenuWnd, uSharpEMenuSettings, uSharpEMenuItem, pngimage,
-  ExtCtrls, StrUtils;
+  ExtCtrls, StrUtils,
+  uSystemFuncs;
 
 
 type
@@ -49,8 +50,9 @@ type
     procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure mnOnClick(pItem: TSharpEMenuItem; pMenuWnd : TObject; var CanClose: boolean);
     procedure ShowHideButtonClick(Sender: TObject);
+
+    procedure mnOnClick(pItem: TSharpEMenuItem; pMenuWnd : TObject; var CanClose: boolean);
   protected
   private
     sEnableIconHiding   : Boolean;
@@ -72,6 +74,11 @@ type
     doubleclick         : boolean;
     refreshed           : boolean;
     FCustomSkinSettings : TSharpECustomSkinSettings;
+
+    sDragging           : Boolean;
+    sBeginDragPos       : TPoint;
+    sDraggingItem       : TTrayItem;
+
     procedure CMMOUSELEAVE(var msg : TMessage); message CM_MOUSELEAVE;
     procedure WMNotify(var msg : TWMNotify); message WM_NOTIFY;
 
@@ -143,35 +150,10 @@ begin
     menu := TSharpEMenu(pItem.OwnerMenu);
     menuwnd := TSharpEMenuWnd(pMenuWnd);
 
-    if pItem.PropList.GetBool('Hide') then
-    begin
-      FTrayClient.HiddenList.Add(GetProcessNameFromWnd(TrayItem.Wnd) + ':' + inttostr(TrayItem.UID));
-      TrayItem.HiddenByClient := True;
-      TSharpEMenu(pItem.OwnerMenu).Items.Extract(pItem);
-      menu.Items.Insert(menu.items.count,pItem);      
-      //TSharpEMenu(TSharpEMenuItem(TSharpEMenu(TSharpEMenu(pItem.OwnerMenu).ParentMenuItem.OwnerMenu).Items.Items[1]).SubMenu).Items.Add(pItem);
-      //pItem.OwnerMenu := TSharpEMenu(TSharpEMenuItem(TSharpEMenu(TSharpEMenu(pItem.OwnerMenu).ParentMenuItem.OwnerMenu).Items.Items[1]).SubMenu);
-      pItem.PropList.Add('Hide',False);
-    end else
-    begin
-      n := FTrayClient.HiddenList.IndexOf(GetProcessNameFromWnd(TrayItem.Wnd) + ':' + inttostr(TrayItem.UID));
-      if n >= 0 then
-        FTrayClient.HiddenList.Delete(n);
-      TrayItem.HiddenByClient := False;
-      TSharpEMenu(pItem.OwnerMenu).Items.Extract(pItem);
-      for n := menu.items.Count - 1 downto 0 do
-        if TSharpEMenuItem(menu.items.items[n]).ItemType = mtLabel then
-        begin
-          menu.Items.Insert(n-1,pItem);
-          break;
-        end;
-        
-      //TSharpEMenu(TSharpEMenuItem(TSharpEMenu(TSharpEMenu(pItem.OwnerMenu).ParentMenuItem.OwnerMenu).Items.Items[0]).SubMenu).Items.Add(pItem);
-      //pItem.OwnerMenu := TSharpEMenu(TSharpEMenuItem(TSharpEMenu(TSharpEMenu(pItem.OwnerMenu).ParentMenuItem.OwnerMenu).Items.Items[0]).SubMenu);
-      pItem.PropList.Add('Hide',True);
-    end;
-    FTrayClient.UpdateHiddenStatus;
-    FTrayClient.UpdateTrayIcons;
+    TrayItem.HiddenByClient := False;
+    menu.Items.Extract(pItem);
+
+    FTrayClient.UpdatePositions;
     FTrayClient.RenderIcons;
 
     // If the bar is not full screen then it will resize when you hide/unhide icons
@@ -188,11 +170,13 @@ begin
     menuWnd.IgnoreNextKillFocus := False;
 
     menuwnd.IgnoreNextDeactivate := True;
+
     menu.RenderBackground(menuwnd.Left,menuwnd.Top,false,menu.SpecialBackgroundSource);
     menu.RenderNormalMenu;
     menu.RenderTo(menuwnd.Picture);
     menuwnd.PreMul(menuwnd.Picture);
     menuwnd.DrawWindow;
+    menuwnd.Realign;
 
     SaveSettings;
   end;
@@ -211,14 +195,36 @@ begin
   end;
   with xml.Root.Items do
   begin
-    if (ItemNamed['Hidden'] = nil) then
+    // Remove old Hidden values
+    if (ItemNamed['Hidden'] <> nil) then
+      xml.Root.Items.Remove(ItemNamed['Hidden']);
+
+    if ItemNamed['List'] <> nil then
+      Remove(ItemNamed['List']);
+
+    with Add('List').Items do
+    begin
+      for n := 0 to FTrayClient.Items.Count - 1 do
+      begin
+        with Add('Item').Items do
+        begin
+          Add('Class', GetWndClass(TTrayItem(FTrayClient.Items[n]).Wnd));
+          Add('ExeName', ExtractFileName(GetProcessNameFromWnd(TTrayItem(FTrayClient.Items[n]).Wnd)));
+          Add('UID', inttostr(TTrayItem(FTrayClient.Items[n]).UID));
+          Add('Hidden', TTrayItem(FTrayClient.Items[n]).HiddenByClient);
+          Add('Position', TTrayItem(FTrayClient.Items[n]).Position);
+        end; 
+      end;
+    end;
+
+    {if (ItemNamed['Hidden'] = nil) then
       Add('Hidden');
     with ItemNamed['Hidden'].Items do
     begin
       Clear;
       for n := 0 to FTrayClient.HiddenList.Count - 1 do
         Add('item',FTrayClient.HiddenList[n]);
-    end;
+    end;  }
   end;
   if not SaveXMLToSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
     SharpApi.SendDebugMessageEx('SystemTray',PChar('Failed to Save Settings to File: ' + mInterface.BarInterface.GetModuleXMLFile(mInterface.ID)), clred, DMT_ERROR);
@@ -234,17 +240,14 @@ var
   p : TPoint;
   mn : TSharpEMenu;
   ms : TSharpEMenuSettings;
-  wnd : TSharpEMenuWnd;
-  n: integer;
+  wnd: TSharpEMenuWnd;
+  n, n2: integer;
   item : TSharpEMenuItem;
   R : TRect;
   Bmp : TBitmap32;
   TrayItem : TTrayItem;
   s : String;
 begin
-  if FindWindow('TSharpEMenuWnd',nil) <> 0 then
-    exit;
-
   ms := TSharpEMenuSettings.Create;
   ms.LoadFromXML;
   ms.WrapMenu := False;
@@ -259,49 +262,35 @@ begin
 
   Bmp := TBitmap32.Create;
 
-  mn.AddLabelItem('Visible Icons',False);
+  mn.AddLabelItem('Hidden Icons',False);
+  n2 := 1;
   for n := 0 to FTrayClient.Items.Count - 1 do
   begin
     TrayItem := TTrayItem(FTrayClient.Items.Items[n]);
     if IsWindow(TrayItem.wnd) then
     begin
-      IconToImage(Bmp,TrayItem.Icon);
-      s := StringReplace(TrayItem.FTip, sLineBreak, ', ', [rfReplaceAll, rfIgnoreCase]);
-      { + ' (' + ExtractFileName(GetProcessNameFromWnd(TrayItem.Wnd)) + ')'}
-      if not TrayItem.HiddenByClient then
+      if TrayItem.HiddenByClient then
       begin
-        item := TSharpEMenuItem(mn.AddCustomItem(s,'customicon:'+inttostr(n),Bmp));
+        IconToImage(Bmp,TrayItem.Icon);
+        s := TrayItem.FTip;
+
+        item := TSharpEMenuItem(mn.AddCustomItem(s,'customicon:'+inttostr(n2),Bmp));
         item.PropList.Add('wnd',TrayItem.wnd);
         item.PropList.Add('uID',TrayItem.UID);
         item.PropList.Add('Hide',not TrayItem.HiddenByClient);
         item.OnClick := mnOnClick;
+
+        n2 := n2 + 1;
       end;
     end;
   end;
-  mn.AddSeparatorItem(False);
-  mn.AddLabelItem('Hidden Icons',False);
-  for n := 0 to FTrayClient.Items.Count - 1 do
-  begin
-    TrayItem := TTrayItem(FTrayClient.Items.Items[n]);
-    if IsWindow(TrayItem.wnd) then
-    begin
-      IconToImage(Bmp,TrayItem.Icon);
-      s := TrayItem.FTip;
-      { + ' (' + ExtractFileName(GetProcessNameFromWnd(TrayItem.Wnd)) + ')'}
-      if TrayItem.HiddenByClient then
-      begin
-        item := TSharpEMenuItem(mn.AddCustomItem(s,'customicon:'+inttostr(n),Bmp));
-        item.PropList.Add('wnd',TrayItem.wnd);
-        item.PropList.Add('uID',TrayItem.UID);
-        item.PropList.Add('Hide',not TrayItem.HiddenByClient);
-        item.OnClick := mnOnClick;
-      end;
-    end;
-  end;  
 
   Bmp.Free;
 
-  mn.RenderBackground(0,0);  
+  mn.RenderBackground(0,0);
+
+  if Assigned(wnd) then
+    FreeAndNil(wnd);
 
   wnd := TSharpEMenuWnd.Create(self,mn);
   wnd.FreeMenu := True; // menu will free itself when closed
@@ -391,6 +380,7 @@ var
   XML : TJclSimpleXML;
   skin : String;
   n : integer;
+  startItem: TTrayStartItem;
 begin
   // Load Skin custom settings as default
   sShowBackground     := False;
@@ -438,16 +428,27 @@ begin
       skin := GetCurrentTheme.Skin.Name;
       skin := StringReplace(skin,' ','_',[rfReplaceAll]);
 
-      FTrayClient.HiddenList.Clear;
-
       FTrayClient.IconSpacing := IntValue('IconSpacing', 1);
       sIconAutoSize := BoolValue('IconAutoSize', sIconAutoSize);
       sEnableIconHiding   := BoolValue('iconhiding', True);
-      if (ItemNamed['Hidden'] <> nil) and (sEnableIconHiding) then
-        with ItemNamed['Hidden'].Items do
-        for n := 0 to Count - 1 do
-          FTrayClient.HiddenList.Add(Item[n].Value);
-      FTrayClient.UpdateHiddenStatus;
+
+      // Import old list
+      FTrayClient.UpdateTrayIcons;
+
+      if (ItemNamed['List'] <> nil) then
+      begin
+        with ItemNamed['List'] do
+        for n := 0 to Items.Count - 1 do
+        begin
+          startItem := TTrayStartItem.Create;
+          startItem.UID := Items[n].Items.IntValue('UID', 0);
+          startItem.WndClass := Items[n].Items.Value('Class', '');
+          startItem.ExeName := Items[n].Items.Value('ExeName', '');
+          startItem.Position := Items[n].Items.IntValue('Position', -1);
+          startItem.HiddenByClient := Items[n].Items.BoolValue('Hidden', False);
+          FTrayClient.StartItems.Add(startItem);
+        end;
+      end;
 
       if ItemNamed['skin'] <> nil then
          if ItemNamed['skin'].Items.ItemNamed[skin] <> nil then
@@ -624,29 +625,20 @@ procedure TMainForm.FormMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
   p : TPoint;
-  modx : integer;
 begin
   if lb_servicenotrunning.Visible then
     exit;
 
-  p := ClientToScreen(point(x,y));
-  modx := x - ShowHideButton.Width;
+  p := point(x - ShowHideButton.Width, y);
+  if (button = mbLeft) and (not sDragging) then
+  begin
+    sBeginDragPos := p;
+    sDragging := True;
+  end;
 
   if ssDouble in Shift then
   begin
     doubleclick := True;
-    case Button of
-      mbRight: FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_RBUTTONDBLCLK,self);
-      mbMiddle: FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_MBUTTONDBLCLK,self);
-      mbLeft: FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_LBUTTONDBLCLK,self);
-    end;
-  end else
-  begin
-    case Button of
-      mbRight: FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_RBUTTONDOWN,self);
-      mbMiddle: FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_MBUTTONDOWN,self);
-      mbLeft: FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_LBUTTONDOWN,self);
-    end;
   end;
 end;
 
@@ -659,19 +651,51 @@ begin
   if lb_servicenotrunning.Visible then
     exit;
 
-  if doubleclick then
-  begin
-    doubleclick := False;
-    exit;
-  end;
-
   p := ClientToScreen(point(x,y));
   modx := x - ShowHideButton.Width;
 
-  case Button of
-    mbRight:  FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_RBUTTONUP,self);
-    mbMiddle: FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_MBUTTONUP,self);
-    mbLeft:   FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_LBUTTONUP,self);
+  // Send mouse down message
+  if (sDragging) and (sDraggingItem = nil) then
+  begin
+    case Button of
+      mbRight: FTrayClient.PerformIconAction(x - ShowHideButton.Width,y,p.x,p.y,0,WM_RBUTTONDOWN,self);
+      mbMiddle: FTrayClient.PerformIconAction(x - ShowHideButton.Width,y,p.x,p.y,0,WM_MBUTTONDOWN,self);
+      mbLeft: FTrayClient.PerformIconAction(x - ShowHideButton.Width,y,p.x,p.y,0,WM_LBUTTONDOWN,self);
+    end;
+  end;
+
+  sDragging := False;
+  sBeginDragPos := Point(0, 0);
+  if sDraggingItem <> nil then
+  begin
+    if x <= 0 then
+    begin
+      sDraggingItem.HiddenByClient := True;
+      FTrayClient.UpdatePositions;
+      FTrayClient.RenderIcons;
+    end;
+
+    sDraggingItem := nil;
+
+    SaveSettings;
+    exit;
+  end;
+
+  if doubleclick then
+  begin
+    doubleclick := False;
+    case Button of
+      mbRight: FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_RBUTTONDBLCLK,self);
+      mbMiddle: FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_MBUTTONDBLCLK,self);
+      mbLeft: FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_LBUTTONDBLCLK,self);
+    end;
+  end else
+  begin
+    case Button of
+      mbRight:  FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_RBUTTONUP,self);
+      mbMiddle: FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_MBUTTONUP,self);
+      mbLeft:   FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_LBUTTONUP,self);
+    end;
   end;
 end;
 
@@ -679,7 +703,10 @@ procedure TMainForm.FormMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 var
   p : TPoint;
-  modx : integer;
+  modx: integer;
+
+  curItem: TTrayItem;
+  pos1, pos2: integer;
 begin
   if lb_servicenotrunning.Visible then
     exit;
@@ -688,6 +715,31 @@ begin
   begin
     refreshed := False;
     exit;
+  end;
+
+  // Check if we have moved
+  if (sDragging) and (sDraggingItem = nil) and (sBeginDragPos.X <> x - ShowHideButton.Width) then
+    sDraggingItem := FTrayClient.GetIconAtPos(Point(x - ShowHideButton.Width, y));
+
+  if (sDraggingItem <> nil) then
+  begin
+    curItem := FTrayClient.GetIconAtPos(point(x - ShowHideButton.Width, y));
+    if curItem <> nil then
+    begin
+      if sDraggingItem.Position <> curItem.Position then
+      begin
+        pos1 := sDraggingItem.Position;
+        pos2 := curItem.Position;
+
+        curItem.Position := pos1;
+        sDraggingItem.Position := pos2;
+
+        FTrayClient.UpdatePositions;
+        FTrayClient.RenderIcons;
+
+        sBeginDragPos := point(x - ShowHideButton.Width, y);
+      end;
+    end;
   end;
 
   p := ClientToScreen(point(x,y));

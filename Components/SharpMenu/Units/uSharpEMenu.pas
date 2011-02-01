@@ -67,6 +67,7 @@ type
     FDynamicContentThread : TSharpEMenuDynamicContentThread;
     FOffset : integer;
     FOldWH : TPoint;
+    FOldItemCount : integer;
     FWrapCount : integer;
     FPosition : TPoint;
     FRedrawBG : boolean;
@@ -196,6 +197,7 @@ begin
   FItemIndex := -1;
   FOffset := 0;
   FOldWH := Point(-1, -1);
+  FOldItemCount := -1;
   FPosition := Point(-1, -1);
   FRedrawBG := True;
 
@@ -252,9 +254,10 @@ begin
   w := FItemWidth;
   h := Max(1,GetItemsHeight(StartIndex, FWrapCount));
 
-  if (FOldWH.X <> w) or (FOldWH.Y <> h) then
+  if ((FOldWH.X <> w) or (FOldWH.Y <> h) or (FOldItemCount <> FItems.Count)) then
   begin
     FOldWH := Point(w, h);
+    FOldItemCount := FItems.Count;
 
     RenderBackground(FPosition.X, FPosition.Y);
   end;
@@ -995,8 +998,11 @@ begin
 
   menuskin := FSkinManager.Skin.Menu;
 
-  if (FOldWH.X = -1) or (FOldWH.Y = -1) then
+  if (FOldWH.X = -1) or (FOldWH.Y = -1) or (FOldItemCount <> FItems.Count) then
+  begin
     FOldWH := Point(FItemWidth, Max(1,GetItemsHeight(StartIndex, FWrapCount)));
+    FOldItemCount := FItems.Count;
+  end;
 
   w := FOldWH.X;
   h := FOldWH.Y;
@@ -1250,8 +1256,11 @@ begin
   ImageCheck(FNormalMenu,Point(255,32));
   if FSkinManager = nil then exit;
 
-  if (FOldWH.X = -1) or (FOldWH.Y = -1) then
+  if (FOldWH.X = -1) or (FOldWH.Y = -1) or (FOldItemCount <> FItems.Count) then
+  begin
     FOldWH := Point(FItemWidth, Max(1,GetItemsHeight(StartIndex, FWrapCount)));
+    FOldItemCount := FItems.Count;
+  end;
 
   FNormalMenu.SetSize(FOldWH.X,FOldWH.Y);
   FNormalMenu.Clear(color32(0,0,0,0));
