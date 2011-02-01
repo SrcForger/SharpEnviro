@@ -28,6 +28,7 @@ unit TrayIconsManager;
 interface
 
 uses Windows, Dialogs, SysUtils, Classes,
+     CommCtrl,
      Forms, Controls, Messages, Types, Graphics, Contnrs, ExtCtrls,
      GR32,
      SharpApi,
@@ -175,6 +176,7 @@ type
 
                    procedure UpdateTrayIcons;
                    procedure UpdatePositions;
+                   procedure UpdateStartItemPositions;
 
                    procedure RenderIcons;
                    function PerformIconAction(x,y,gx,gy,imod : integer; msg : uint; parent : TForm) : boolean;
@@ -471,7 +473,8 @@ begin
   FTipForm := TMainForm(wnd);
   FTipWnd := ToolTipApi.RegisterToolTip(TMainForm(wnd));
 
-  ToolTipApi.AddToolTip(FTipWnd, FTipForm, 0, Rect(0, 0, FArrowWidth, FArrowHeight), 'Hidden Icons');
+  ToolTipApi.AddToolTip(FTipWnd, FTipForm, 0, Rect(0, 0, FArrowWidth, FArrowHeight), 'Hidden Icons' + sLineBreak + 'Drop icons here to hide them');
+   SendMessage(FTipWnd, TTM_SETMAXTIPWIDTH, 0, 300);
 
   UpdateTrayIcons;
 end;
@@ -821,29 +824,42 @@ begin
   if (AItem.Position < BItem.Position) then
     Result := 1
   else if AItem.Position > BItem.Position then
-    Result := -1;
+    Result := -1
 end;
 
 
 procedure TTrayClient.UpdatePositions;
+begin
+  FItems.Sort(@Sort);
+  UpdateTrayIcons;
+end;
+
+procedure TTrayClient.UpdateStartItemPositions;
 var
-  i, iMod : integer;
+  i, a: integer;
+  iMod : integer;
 begin
   iMod := 1;
 
   // -1 items should be to the left
   for i := 0 to FItems.Count - 1 do
   begin
-    if TTrayItem(FItems.Items[i]).Position < 0 then
+    if TTrayItem(FStartItems.Items[i]).Position < 0 then
     begin
-      TTrayItem(FItems.Items[i]).Position := FItems.Count + iMod;
+      TTrayItem(FStartItems.Items[i]).Position := FStartItems.Count + iMod;
       iMod := iMod + 1;
     end;
   end;
 
-  FItems.Sort(@Sort);
+  FStartItems.Sort(@Sort);
 
-  UpdateTrayIcons;
+  // Sort in sequential order
+  a := FStartItems.Count - 1;
+  for i := 0 to FStartItems.Count - 1 do
+  begin
+    TTrayItem(FStartItems.Items[i]).Position := a;
+    a := a - 1;
+  end;
 end;
 
 procedure TTrayClient.AddTrayIcon(NIDv6 : TNotifyIconDataV7);

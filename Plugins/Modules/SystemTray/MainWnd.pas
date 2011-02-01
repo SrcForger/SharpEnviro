@@ -448,6 +448,8 @@ begin
           startItem.HiddenByClient := Items[n].Items.BoolValue('Hidden', False);
           FTrayClient.StartItems.Add(startItem);
         end;
+
+        FTrayClient.UpdateStartItemPositions;
       end;
 
       if ItemNamed['skin'] <> nil then
@@ -668,7 +670,7 @@ begin
   sBeginDragPos := Point(0, 0);
   if sDraggingItem <> nil then
   begin
-    if x <= 0 then
+    if (sEnableIconHiding) and (x < ShowHideButton.Width) then
     begin
       sDraggingItem.HiddenByClient := True;
       FTrayClient.UpdatePositions;
