@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Curses>
+  <Info>
+	<name>Gaia 10</name>
+    <author>Gaia 10</author>
+    <Website>http://www.gaia10.us/gallery/gallery-cursors/</Website>
+    <Info>Gaia 10 cursors</Info>
+    <version>0.8</version>
+  </Info>
+  <Cursors>
+	<AppStarting>
+		<File>Busy.ani</File>
+		<ReplaceColor>0</ReplaceColor>
+	</AppStarting>
+	<Hand>
+		<File>Link.cur</File>
+		<ReplaceColor>0</ReplaceColor>
+	</Hand>
+	<IBeam>
+		<File>Beam.cur</File>
+		<ReplaceColor>0</ReplaceColor>
+	</IBeam>
+	<No>
+		<File>No.cur</File>
+		<ReplaceColor>0</ReplaceColor>
+	</No>
+	<Normal>
+		<File>Regular.cur</File>
+		<ReplaceColor>0</ReplaceColor>
+	</Normal>
+	<SizeAll>
+		<File>Cross.cur</File>
+		<ReplaceColor>0</ReplaceColor>
+	</SizeAll>
+	<SizeNESW>
+		<File>Diagonal Resize 2.cur</File>
+		<ReplaceColor>0</ReplaceColor>
+	</SizeNESW>
+	<SizeNS>
+		<File>Vertical Resize.cur</File>
+		<ReplaceColor>0</ReplaceColor>
+	</SizeNS>
+	<SizeNWSE>
+		<File>Diagonal Resize 1.cur</File>
+		<ReplaceColor>0</ReplaceColor>
+	</SizeNWSE>
+	<SizeWE>
+		<File>Horizontal Resize.cur</File>
+		<ReplaceColor>0</ReplaceColor>
+	</SizeWE>
+	<Wait>
+		<File>Load.ani</File>
+		<ReplaceColor>0</ReplaceColor>
+	</Wait>
+  </Cursors>
+</Curses>

@@ -1,0 +1,41 @@
+;Gaia10 Cursors
+
+[Version]
+signature="$CHICAGO$"
+
+[DefaultInstall]
+CopyFiles = Scheme.Cur
+AddReg    = Scheme.Reg
+
+[DestinationDirs]
+Scheme.Cur = 10,"%CUR_DIR%"
+
+[Scheme.Reg]
+HKCU,"Control Panel\Cursors\Schemes","%SCHEME_NAME%",,"%10%\%CUR_DIR%\%pointer%,%10%\%CUR_DIR%\%help%,%10%\%CUR_DIR%\%work%,%10%\%CUR_DIR%\%busy%,%10%\%CUR_DIR%\%Cross%,%10%\%CUR_DIR%\%Text%,%10%\%CUR_DIR%\%Hand%,%10%\%CUR_DIR%\%Unavailiable%,%10%\%CUR_DIR%\%Vert%,%10%\%CUR_DIR%\%Horz%,%10%\%CUR_DIR%\%Dgn1%,%10%\%CUR_DIR%\%Dgn2%,%10%\%CUR_DIR%\%move%,%10%\%CUR_DIR%\%alternate%,%10%\%CUR_DIR%\%link%"
+
+[Scheme.Cur]
+Regular.cur
+Load.ani
+Cross.cur
+Link.cur
+Help.cur
+Link.cur
+Regular.cur
+Beam.cur
+No.cur
+Busy.ani
+
+[Strings]
+CUR_DIR       = "Cursors\Gaia10"
+SCHEME_NAME   = "Gaia10"
+alternate     = "Regular.cur"
+busy          = "Busy.ani"
+hand          = "Regular.cur"
+help          = "Help.cur"
+link          = "Link.cur"ur"
+pointer       = "Regular.cur"
+text          = "Beamer.cur"
+unavailiable  = "No.cur"
+work          = "Load.ani"
+
+;EOF
