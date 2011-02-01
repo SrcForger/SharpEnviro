@@ -102,7 +102,11 @@ type
     FTipWnd : hwnd;
     FLastDragItem : TSharpETaskItem; // Only a pointer, don't free it...
     FLastDragMinimized : Boolean;
+
     FMoveItem : TSharpETaskItem;
+    FStartDrag: TPoint;
+    FDragMod: integer;      // Used to position the taskbar item when moving
+
     FHasMoved : boolean;
     FRefreshOnNextMouseMove : boolean;
     FPreviewWnd : TTaskPreviewWnd;
@@ -123,7 +127,10 @@ type
     procedure UpdateComponentSkins;
     procedure InitHook;
     procedure CalculateItemWidth(ItemCount : integer);
+
+    procedure AlignTask(pTaskItem: TSharpETaskItem);
     procedure AlignTaskComponents;
+
     procedure LoadSettings;
     procedure ReAlignComponents(BroadCast : boolean = True);
     procedure NewTask(pItem : TTaskItem; Index : integer);
@@ -191,7 +198,8 @@ var
   n : integer;
 begin
   for n := 0 to IList.Count - 1 do
-      TSharpETaskItem(IList.Items[n]).Repaint;
+    TSharpETaskItem(IList.Items[n]).Repaint;
+
   ses_minall.Repaint;
   ses_maxall.Repaint;
   ses_togall.Repaint;
@@ -745,7 +753,16 @@ procedure TMainForm.OnTaskItemMouseDown(Sender: TObject; Button: TMouseButton; S
 begin
   FHasMoved := False;
   if not sSort then
+  begin
     FMoveItem := TSharpETaskItem(Sender);
+    FMoveItem.BringToFront;
+    if GetCursorPosSecure(FStartDrag) then
+      FStartDrag := ScreenToClient(FStartDrag)
+    else
+      FStartDrag := Point(0, 0);
+
+    FDragMod := (FMoveItem.Left + FMoveItem.Width) - (FStartDrag.X);
+  end;
 end;
 
 procedure TMainForm.OnTaskItemMouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -838,7 +855,8 @@ begin
 
   if GetCursorPosSecure(cursorPos) then
     CPos := ScreenToClient(cursorPos)
-  else exit;
+  else
+    exit;
 
   if PreviewCheckTimer.Enabled then
   begin
@@ -860,16 +878,31 @@ begin
         item1 := TM.GetItemByHandle(FMoveItem.Handle);
         item2 := TM.GetItemByHandle(item.Handle);
         TM.ExChangeTasks(item1,item2);
-        exit;
+
+        // Move to right
+        FStartDrag := Point(item.Left + FDragMod, FStartDrag.Y);
+
+        break;
       end;
   end;
+
+  FMoveItem.ModX := CPos.X - FStartDrag.X;
+  AlignTaskComponents;
+  RepaintComponents;
 end;
 
 procedure TMainForm.OnTaskItemMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
 begin
   DebugOutPutInfo('TMainForm.OnTaskItemMouseUp (Procedure)');
 
-  FMoveItem := nil;
+  if Assigned(FMoveItem) then
+  begin
+    FMoveItem.ModX := 0;
+    FMoveItem := nil;
+    AlignTaskComponents;
+    RepaintComponents;
+  end;
+  FStartDrag := Point(0, 0);
 
   if (Sender = nil) or (FHasMoved) then
     exit;
@@ -1110,7 +1143,7 @@ end;
 
 procedure LockWindow(const Handle: HWND); 
 begin 
-  SendMessage(Handle, WM_SETREDRAW, 0, 0); 
+  SendMessage(Handle, WM_SETREDRAW, 0, 0);
 end; 
 
 procedure UnlockWindow(const Handle: HWND); 
@@ -1118,6 +1151,37 @@ begin
   SendMessage(Handle, WM_SETREDRAW, 1, 0); 
   RedrawWindow(Handle, nil, 0,
     RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
+end;
+
+procedure TMainForm.AlignTask(pTaskItem: TSharpETaskItem);
+var
+  n : integer;
+begin
+  n := IList.IndexOf(pTaskItem);
+
+  if not pTaskItem.Visible then
+    pTaskItem.Visible := True;
+  if sCurrentWidth < sMaxWidth then
+  begin
+    pTaskItem.AutoSize := False;
+    pTaskItem.Left := FSpecialButtonWidth + (n * (sCurrentWidth + sSpacing)) + pTaskItem.ModX;
+    pTaskItem.Width := sCurrentWidth;
+    pTaskItem.Height := sAutoHeight;
+  end else
+  begin
+    pTaskItem.Left := FSpecialButtonWidth + (n * (sMaxWidth + sSpacing)) + pTaskItem.ModX;
+    pTaskItem.AutoSize := True;
+  end;
+
+  if pTaskItem.Left < 0 then
+    pTaskItem.Left := 0;
+  if pTaskItem.Left + pTaskItem.Width > Self.Width then
+    pTaskItem.Left := Self.Width - pTaskItem.Width;
+
+  ToolTipApi.UpdateToolTipRect(FTipWnd,Self,pTaskItem.Handle,
+                              Rect(pTaskItem.Left,pTaskItem.Top,
+                              pTaskItem.Left + pTaskItem.Width,
+                              pTaskItem.Top + pTaskItem.Height));
 end;
 
 procedure TMainForm.AlignTaskComponents;
@@ -1132,25 +1196,16 @@ begin
     pTaskItem := TSharpETaskItem(IList.Items[n]);
     if pTaskItem <> nil then
     begin
-      if not pTaskItem.Visible then
-        pTaskItem.Visible := True;
-      if sCurrentWidth < sMaxWidth then
-      begin
-        pTaskItem.AutoSize := False;
-        pTaskItem.Left := FSpecialButtonWidth + n*sCurrentWidth + n*sSpacing;
-        pTaskItem.Width := sCurrentWidth;
-        pTaskItem.Height := sAutoHeight;
-      end else
-      begin
-        pTaskItem.Left := FSpecialButtonWidth + n*sMaxWidth + n*sSpacing;
-        pTaskItem.AutoSize := True;
-      end;
-      ToolTipApi.UpdateToolTipRect(FTipWnd,Self,pTaskItem.Handle,
-                                   Rect(pTaskItem.Left,pTaskItem.Top,
-                                        pTaskItem.Left + pTaskItem.Width,
-                                        pTaskItem.Top + pTaskItem.Height));
+      if (FMoveItem = pTaskItem) then
+        continue;
+
+      AlignTask(pTaskItem);
     end;
   end;
+
+  if FMoveItem <> nil then
+    AlignTask(FMoveItem);
+    
   UnlockWindow(Handle);
 end;
 
@@ -1491,9 +1546,13 @@ begin
   if ((index1 = - 1) or (index2 = -1))
      or ((index1 = index2)) then exit;
   IList.Exchange(index1,index2);
-  AlignTaskComponents;
-  TSharpETaskItem(IList.Items[index1]).Repaint;
-  TSharpETaskItem(IList.Items[index2]).Repaint;  
+
+  if FMoveItem = nil then
+  begin
+    AlignTaskComponents;
+    TSharpETaskItem(IList.Items[index1]).Repaint;
+    TSharpETaskItem(IList.Items[index2]).Repaint;
+  end;
 end;
 
 procedure TMainForm.Timer1Timer(Sender: TObject);

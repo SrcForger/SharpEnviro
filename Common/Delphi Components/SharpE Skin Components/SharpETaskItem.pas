@@ -82,6 +82,8 @@ type
     FGlyphColor : integer;
     FHighlightTimer : TTimer;
     FHighlightSettings : TSharpESkinHighlightSettings;
+    FModX: integer;
+
     procedure OnHighlightTimer(Sender : TObject);
     procedure CMDialogKey(var Message: TCMDialogKey); message CM_DIALOGKEY;
     procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
@@ -99,6 +101,7 @@ type
     procedure SetState(Value: TSharpETaskItemStates);
     procedure SetFlashing(Value : Boolean);
     procedure SetSpecial(Value : Boolean);
+
   protected
     procedure DrawDefaultSkin(bmp: TBitmap32; Scheme: ISharpEScheme); override;
     procedure DrawManagedSkin(bmp: TBitmap32; Scheme: ISharpEScheme); override;
@@ -106,12 +109,14 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure SMouseEnter; override;
     procedure SMouseLeave; override;
+
   public
     constructor Create(AOwner: TComponent); override;
     procedure Resize; override;
     destructor Destroy; override;
     function GetCurrentStateItem : ISharpETaskItemStateSkin;
     procedure CalculateGlyphColor;
+
   published
     //property Align;
     property Anchors;
@@ -150,6 +155,7 @@ type
     property OverlayPos: TPoint read FOverlayPos write FOverlayPos;
     property UseSpecial: boolean read FUseSpecial write FUseSpecial;
     property Special: boolean read FSpecial write SetSpecial;
+    property ModX: integer read FModX write FModX;
    { Published declarations }
   end;
 
@@ -187,6 +193,7 @@ begin
   FButtonDown := False;
   FFlashing := False;
   Tag := 0;
+  FModX := 0;
 
   CalculateGlyphColor;
 end;
