@@ -2,6 +2,8 @@
 #define DLLEXPORT __declspec(dllexport)
 
 // Function definitions
+typedef int (WINAPI *SETEXPLORERSERVERMODE)(int mode);
+
 typedef int (WINAPI *WINLIST_INIT)();
 typedef int (WINAPI *WINLIST_TERMINATE)();
 

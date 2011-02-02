@@ -107,12 +107,38 @@ DWORD WINAPI ExplorerDll::ThreadFunc(LPVOID pvParam)
 
 	ExplorerDll pThis = *static_cast<ExplorerDll*>(pvParam);
 
-	SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
+	SetProcessDEPPolicy(PROCESS_DEP_ENABLE);
+	HeapSetInformation(NULL, HeapEnableTerminationOnCorruption, NULL, 0);
+
+	// Create ActiveX context
+	wchar_t szPath[ 2048 ];
+	GetWindowsDirectory( szPath, 2048 );
+	wcscat_s(szPath, L"\\explorer.exe");
+
+	ACTCTX Actx;
+	memset(&Actx, 0, sizeof(ACTCTX));
+
+	Actx.cbSize = sizeof(ACTCTX);
+	Actx.dwFlags = ACTCTX_FLAG_HMODULE_VALID | ACTCTX_FLAG_RESOURCE_NAME_VALID;
+	Actx.lpSource = szPath;
+	Actx.lpResourceName = MAKEINTRESOURCE(0x76);
+
+	HANDLE hActx = CreateActCtx(&Actx);
 
 	// Load the shell32 dll
 	pThis.hShellDLL = LoadLibrary(L"shell32.dll");
 	if (!pThis.hShellDLL)
 		return 0;
+
+	// Unknown
+	SETEXPLORERSERVERMODE SetExplorerServerMode = (SETEXPLORERSERVERMODE)GetProcAddress(pThis.hShellDLL, MAKEINTRESOURCEA(899));
+	if(SetExplorerServerMode)
+		SetExplorerServerMode(3);
+
+
+	UINT r = SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOOPENFILEERRORBOX);
+	r = SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOOPENFILEERRORBOX);
+	SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
 
 	// Initialize various functions
 	pThis.ShellDDEInit = (SHELLDDEINIT)GetProcAddress(pThis.hShellDLL, MAKEINTRESOURCEA(188));
