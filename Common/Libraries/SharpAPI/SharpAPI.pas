@@ -112,6 +112,10 @@ const
   WM_ENTERFULLSCREEN        = WM_APP + 666; // wParam = enter/leave (1/0), lParam = monitor id
   WM_CHECKFULLSCREEN        = WM_APP + 667; // lParam = monitor id to reset
 
+  // Window
+  WM_MINIMIZEALLWINDOWS     = WM_APP + 680;	// wParam = MonitorNum, lParam = minimize all monitors
+  WM_RESTOREALLWINDOWS      = WM_APP + 681;	// wParam = MonitorNum, lParam = restore all monitors
+
   // WM_BARCOMMAND messages param
   BC_ADD = 0;
   BC_DELETE = 1;

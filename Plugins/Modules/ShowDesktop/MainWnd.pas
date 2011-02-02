@@ -64,7 +64,6 @@ type
     sAllMonitors : boolean;
     FIconShow    : TBitmap32;
     FIconRestore : TBitmap32;
-    FWndList     : array of TWndItem;
     FDoShow      : boolean;
     FTipWnd      : hwnd;
     procedure WMNotify(var msg: TWMNotify); message WM_NOTIFY;
@@ -76,8 +75,6 @@ type
     procedure ReAlignComponents;
     procedure UpdateComponentSkins;
     procedure UpdateSize;
-    procedure BuildWndList;
-    procedure RestoreWndList;
   end;
 
 function SwitchToThisWindow(Wnd : hwnd; fAltTab : boolean) : boolean; stdcall; external 'user32.dll';  
@@ -216,7 +213,6 @@ begin
   sCustomIcons := False;
   sAllMonitors := False;
 
-  setlength(FWndList,0);
   FDoShow := True;
 
   XML := TJclSimpleXML.Create;
@@ -279,21 +275,6 @@ begin
     mInterface.BarInterface.UpdateModuleSize;
 end;
 
-procedure TMainForm.RestoreWndList;
-var
-  n : integer;
-begin
-  for n := High(FWndList) downto 0 do
-  begin
-    if FWndList[n].wasIconic <> IsIconic(FWndList[n].wnd) then
-    begin
-      ShowWindow(FWndList[n].wnd, SW_SHOWNOACTIVATE);
-      if IsIconic(FWndList[n].wnd) then
-        SendMessage(FWndList[n].wnd, WM_SYSCOMMAND, SC_RESTORE, 0);
-    end;
-  end;
-end;
-
 procedure TMainForm.btnMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
@@ -303,63 +284,21 @@ begin
   begin
     if FDoShow then
     begin
-      BuildWndList;
-      for n := 0 to High(FWndList) do
-      begin
-        ShowWindow(FWndList[n].wnd, SW_SHOWMINNOACTIVE);
-        if not IsIconic(FWndList[n].wnd) then
-          PostMessage(FWndList[n].wnd,WM_SYSCOMMAND,SC_MINIMIZE,0);
-      end;
+      PostMessage(FindWindow('Shell_TrayWnd', nil), WM_MINIMIZEALLWINDOWS, Screen.MonitorFromWindow(Handle).MonitorNum, integer(sAllMonitors));
       FDoShow := False;
     end else
     begin
-      RestoreWndList;
+      PostMessage(FindWindow('Shell_TrayWnd', nil), WM_RESTOREALLWINDOWS, Screen.MonitorFromWindow(Handle).MonitorNum, integer(sAllMonitors));
       FDoShow := True;
-      setlength(FWndList,0);
     end;
     UpdateIcon;
   end else begin
     if not FDoShow then
     begin
+      PostMessage(FindWindow('Shell_TrayWnd', nil), WM_RESTOREALLWINDOWS, Screen.MonitorFromWindow(Handle).MonitorNum, integer(sAllMonitors));
       FDoShow := True;
-      setlength(FWndList,0);
-      UpdateIcon;    
+      UpdateIcon;
     end;
-  end;
-end;
-
-procedure TMainForm.BuildWndList;
-
-  procedure AddMonitor(var list : TWndArray; Mon : TMonitor);
-  var
-    i : integer;
-    tmp : TWndArray;
-  begin
-    tmp := VWMGetWindowList(Mon.BoundsRect);
-    for i := 0 to High(tmp) do
-    begin
-      setlength(list,length(list)+1);
-      list[high(list)] := tmp[i];
-    end;      
-  end;
-
-var
-  list : TWndArray;
-  n : integer;
-begin
-  setlength(list,0);
-  if sAllMonitors then
-  begin
-    for n := 0 to Screen.MonitorCount - 1 do
-      AddMonitor(list,Screen.Monitors[n]);
-  end else AddMonitor(list,Monitor);
-
-  setlength(FWndList,length(list));
-
-  for n := 0 to High(list) do
-  begin
-    FWndList[n].wnd := list[n];
-    FWNdList[n].wasIconic := isIconic(list[n]);
   end;
 end;
 
@@ -369,7 +308,6 @@ begin
 
   FIconShow := TBitmap32.Create;
   FIconRestore := TBitmap32.Create;
-  setlength(FWndList,0);
 
   FDoShow := True;
 
@@ -379,7 +317,6 @@ end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
-  setlength(FWndList,0);
   FIconShow.Free;
   FIconRestore.Free;
 

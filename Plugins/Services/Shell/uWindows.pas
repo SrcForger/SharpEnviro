@@ -27,14 +27,33 @@ unit uWindows;
 
 interface
 
-uses Windows, Messages, Classes, SysUtils,
+uses Windows, Messages, Classes, SysUtils, Forms,
+     ShlObj, ShellApi, ActiveX, ComObj, UxTheme,
      SharpAPI,
      MonitorList, VWMFunctions,
      uTypes, uDeskArea, uTray, uTaskItem,
      uSystemFuncs,
      uFullscreen;
 
+const
+  Class_HxHelpPane: TGUID =
+      '{8cec58e7-07a1-11d9-b15e-000d56bfe6ee}';
+  IID_HxHelpPane : TGUID =
+      '{8CEC5884-07A1-11D9-B15E-000D56BFE6EE}';
+
 type
+  TSHFindFiles = function(pidlRoot: PItemIDList; pidlSavedSearch: PItemIDList): HRESULT; stdcall;
+  TSHFindComputer = function(pidlRoot: PItemIDList; pidlSavedSearch: PItemIDList): HRESULT; stdcall;
+  TExitWindowsDialog = function(parentWnd: HWND): HRESULT; stdcall;
+
+  TMonitorWnds = record
+    MonitorID: integer;
+    Wnds: TWndArray;
+  end;
+  TMonitorWndsArray = array of TMonitorWnds;
+  PMonitorWnds = ^TMonitorWnds;
+
+
   TWindowStructureClass = class
   public
     ShellTrayWnd     : hwnd;
@@ -53,8 +72,20 @@ type
 
     WM_SHELLHOOK : integer;
 
+    FWndList: TMonitorWndsArray;  // Used for minimize all and restore all
+
+    FShellHandle: THandle;
+    FSHFindFiles: TSHFindFiles;
+    FSHFindComputer: TSHFindComputer;
+    FExitWindowsDialog: TExitWindowsDialog;
+
     constructor Create; reintroduce;
     destructor Destroy; override;
+  end;
+
+  IHxHelpPane = interface
+  ['{8cec58e7-07a1-11d9-b15e-000d56bfe6ee}']
+    function ShowHelp(address : PWideChar): HRESULT; stdcall;
   end;
 
 var
@@ -69,8 +100,204 @@ implementation
 
 uses uTaskManager;
 
+
+// Window related functions
+function GetWndList(Monitor: TMonitor): TWndArray;
+
+  procedure AddMonitor(var list : TWndArray; Mon : TMonitor);
+  var
+    i : integer;
+    tmp : TWndArray;
+  begin
+    tmp := VWMGetWindowList(Mon.BoundsRect);
+    for i := 0 to High(tmp) do
+    begin
+      setlength(list,length(list)+1);
+      list[high(list)] := tmp[i];
+    end;      
+  end;
+
+begin
+  setlength(Result,0);
+  AddMonitor(Result, Monitor);
+end;
+
+procedure MinimizeAllWindows(Monitor: TMonitor; sAllMonitors: Boolean = False);
+var
+  n, i: integer;
+  pItem: PMonitorWnds;
+begin
+  if sAllMonitors then
+  begin
+    SetLength(WindowsClass.FWndList, Screen.MonitorCount);
+
+    for n := 0 to High(WindowsClass.FWndList) do
+    begin
+      pItem := @WindowsClass.FWndList[n];
+      pItem.MonitorID := Screen.Monitors[n].MonitorNum;
+      pItem.Wnds := GetWndList(Screen.Monitors[n]);
+
+      for i := 0 to High(pItem.Wnds) do
+      begin
+        if IsWindowNotMinimized(pItem.Wnds[i]) then
+        begin
+          ShowWindow(pItem.Wnds[i], SW_SHOWMINNOACTIVE);
+          if not IsIconic(pItem.Wnds[i]) then
+            PostMessage(pItem.Wnds[i],WM_SYSCOMMAND,SC_MINIMIZE,0);
+        end;
+      end;
+    end;
+
+    exit;
+  end;
+
+  pItem := nil;
+  for n := 0 to High(WindowsClass.FWndList) do
+    if (WindowsClass.FWndList[n].MonitorID = Monitor.MonitorNum) or (WindowsClass.FWndList[n].MonitorID = -1) then
+    begin
+      pItem := @WindowsClass.FWndList[n];
+      break;
+    end;
+
+  if pItem = nil then
+  begin
+    SetLength(WindowsClass.FWndList, Length(WindowsClass.FWndList) + 1);
+    pItem := @WindowsClass.FWndList[High(WindowsClass.FWndList)];
+  end;
+
+  pItem.MonitorID := Monitor.MonitorNum;
+  pItem.Wnds := GetWndList(Monitor);
+
+  for n := 0 to High(pItem.Wnds) do
+  begin
+    if IsWindowNotMinimized(pItem.Wnds[n]) then
+    begin
+      ShowWindow(pItem.Wnds[n], SW_SHOWMINNOACTIVE);
+      if not IsIconic(pItem.Wnds[n]) then
+        PostMessage(pItem.Wnds[n],WM_SYSCOMMAND,SC_MINIMIZE,0);
+    end;
+  end;
+end;
+
+procedure RestoreAllWindows(Monitor: TMonitor; sAllMonitors: Boolean = False);
+var
+  n, i: integer;
+  pItem: PMonitorWnds;
+begin
+  if sAllMonitors then
+  begin
+    for n := 0 to Screen.MonitorCount - 1 do
+    begin
+      pItem := nil;
+      for i := 0 to High(WindowsClass.FWndList) do
+        if WindowsClass.FWndList[i].MonitorID = Screen.Monitors[n].MonitorNum then
+        begin
+          pItem := @WindowsClass.FWndList[i];
+          break;
+        end;
+
+      if pItem = nil then
+        continue;
+
+      for i := 0 to High(pItem.Wnds) do
+      begin
+        if IsIconic(pItem.Wnds[i]) then
+        begin
+          ShowWindow(pItem.Wnds[i], SW_SHOWNOACTIVATE);
+          if IsIconic(pItem.Wnds[i]) then
+            SendMessage(pItem.Wnds[i], WM_SYSCOMMAND, SC_RESTORE, 0);
+        end;
+      end;
+
+      pItem.MonitorID := -1;
+      SetLength(pItem.Wnds, 0);
+    end;
+
+    exit;
+  end;
+
+  pItem := nil;
+  for n := Low(WindowsClass.FWndList) to High(WindowsClass.FWndList) do
+    if WindowsClass.FWndList[n].MonitorID = Monitor.MonitorNum then
+    begin
+      pItem := @WindowsClass.FWndList[n];
+      break;
+    end;
+
+  if pItem = nil then
+    exit;
+
+  for n := 0 to High(pItem.Wnds) do
+  begin
+    if IsIconic(pItem.Wnds[n]) then
+    begin
+      ShowWindow(pItem.Wnds[n], SW_SHOWNOACTIVATE);
+      if IsIconic(pItem.Wnds[n]) then
+        SendMessage(pItem.Wnds[n], WM_SYSCOMMAND, SC_RESTORE, 0);
+    end;
+  end;
+
+  pItem.MonitorID := -1;
+  SetLength(pItem.Wnds, 0);
+end;
+
+// Show or hide task switcher
+function DwmpStartOrStopFlip3D: Boolean;
+type
+  TDwmpStartOrStopFlip3D = function: HRESULT; stdcall;
+var
+  h: THandle;
+  FDwmpStartOrStopFlip3D: TDwmpStartOrStopFlip3D;
+begin
+  Result := False;
+
+  if not IsCompositionActive then
+    exit;
+
+  h := LoadLibrary('dwmapi.dll');
+  if h = 0 then
+    exit;
+
+  @FDwmpStartOrStopFlip3D := GetProcAddress(h, PChar(105));
+  if not Assigned(FDwmpStartOrStopFlip3D) then
+  begin
+    FreeLibrary(h);
+    exit;
+  end;
+
+  Result := (FDwmpStartOrStopFlip3D = 0);
+  FreeLibrary(h);
+end;
+
+procedure ShowHelp(address: string);
+var
+  FComObject : IHxHelpPane;
+  wAddress: PWideChar;
+begin
+  GetMem(wAddress, sizeof(WideChar) * Succ(Length(address)));
+  try
+    StringToWideChar(address, wAddress, Succ(Length(address)));
+
+    CoInitialize(nil);
+    if CoCreateInstance(Class_HxHelpPane, nil, CLSCTX_REMOTE_SERVER or CLSCTX_INPROC_SERVER, IID_HxHelpPane, FComObject) = 0 then
+      FComObject.ShowHelp(wAddress);
+  finally
+    FreeMem(wAddress);
+  end;
+end;
+
 constructor TWindowStructureClass.Create;
 begin
+  SetLength(FWndList, 0);
+
+  FShellHandle := LoadLibrary('shell32.dll');
+  if FShellHandle <> 0 then
+  begin
+    @FSHFindFiles := GetProcAddress(FShellHandle, PAnsiChar(90));
+    @FSHFindComputer := GetProcAddress(FShellHandle, PAnsiChar(91));
+    @FExitWindowsDialog := GetProcAddress(FShellHandle, PAnsiChar(60));
+  end;
+
   WM_SHELLHOOK := RegisterWindowMessage('SHELLHOOK');
 
   with ShellTrayWndClass do
@@ -160,7 +387,7 @@ begin
   if Windows.RegisterClass(ShellTrayWndClass) <> 0 then
   begin
     // Shell_TrayWnd
-    ShellTrayWnd := CreateWindowEx(WS_EX_TOOLWINDOW, ShellTrayWndClass.lpszClassName, 'Shell_TrayWnd', WS_POPUP or WS_CLIPCHILDREN, 0, 0, 0, 0, 0, 0, hInstance, nil);
+    ShellTrayWnd := CreateWindowEx(WS_EX_TOOLWINDOW, ShellTrayWndClass.lpszClassName, '', WS_POPUP or WS_CLIPCHILDREN, 0, 0, 0, 0, 0, 0, hInstance, nil);
     if ShellTrayWnd <> 0 then
     begin
       // TrayNotifyWnd
@@ -243,6 +470,8 @@ begin
 end;
 
 destructor TWindowStructureClass.Destroy;
+var
+  i : integer;
 begin
   if DeskAreaTimerWnd <> 0 then
   begin
@@ -280,6 +509,14 @@ begin
     DestroyWindow(ShellTrayWnd);
     Windows.UnregisterClass(PChar('Shell_TrayWnd'),hinstance)
   end;
+
+  if FShellHandle <> 0 then
+    FreeLibrary(FShellHandle);
+
+  for i := 0 to High(FWndList) do
+    SetLength(FWndList[i].Wnds, 0);
+
+  SetLength(FWndList, 0);
 end;
 
 function DeskAreaTimerWndProc(wnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall;
@@ -337,6 +574,8 @@ var
   wpos: PWindowPos;
   sstruct : PStyleStruct;
   cpos : TPoint;
+
+  shellApp: Variant;
 begin
   if TrayManager = nil then
   begin
@@ -480,6 +719,65 @@ begin
         result := 1;
       end else result := 0;
     end;
+
+    // These are sent by Shell.Application OLE object
+    WM_COMMAND: begin
+      case wParam of
+        // Run Dialog, .FileRun
+        $191: begin
+          SharpApi.SharpExecute('!RunDlg');
+        end;
+        // Set Time, .SetTime
+        $198: begin
+          shellApp := CreateOleObject('Shell.Application');
+          shellApp.ControlPanelItem('timedate.cpl');
+        end;
+        // Window Switcher, .WindowSwitcher
+        $19B: begin
+          if not DwmpStartOrStopFlip3D then
+          begin
+            PostMessage(FindWindow('AltTab_KeyHookWnd', nil), WM_USER, $50494C46, 0);
+          end;
+        end;
+        // Minimize all, .MinimizeAll
+        $19F: begin
+          SendMessage(WindowsClass.MsTaskSwWClass, WM_MINIMIZEALLWINDOWS, MonList.MonitorFromWindow(GetForegroundWindow).MonitorNum, 0);
+        end;
+        // Restore all, .UndoMinimizeALL
+        $1A0: begin
+          SendMessage(WindowsClass.MsTaskSwWClass, WM_RESTOREALLWINDOWS, MonList.MonitorFromWindow(GetForegroundWindow).MonitorNum, 0);
+        end;
+        // Show Help, .Help
+        $1F7: begin
+          ShowHelp('mshelp://help/?id=home');
+        end;
+        // Shut down dialog, .ShutdownWindows
+        $1FA: begin
+          if Assigned(WindowsClass.FExitWindowsDialog) then
+            WindowsClass.FExitWindowsDialog(0);
+        end;
+        // Windows security dialog, .WindowsSecurity
+        $1389: begin
+
+        end;
+        // Find Files .FindFiles
+        $A085: begin
+          if Assigned(WindowsClass.FSHFindFiles) then
+            WindowsClass.FSHFindFiles(nil, nil);
+        end;
+        // Find Computer .FindComputer
+        $A086: begin
+          if Assigned(WindowsClass.FSHFindComputer) then
+            WindowsClass.FSHFindComputer(nil, nil);
+        end;
+      end;
+      
+      Result := 1;
+    end;
+    WM_MINIMIZEALLWINDOWS, WM_RESTOREALLWINDOWS: begin
+      PostMessage(WindowsClass.MsTaskSwWClass, Msg, wParam, lParam);
+      Result := 1;
+    end
     else Result := DefWindowProc(wnd, Msg, wParam, lParam);
   end;
 
@@ -606,6 +904,22 @@ begin
               PostMessage(TaskMsgManager.WndList[n],WM_TASKVWMCHANGE,WParam,LParam)
             else TaskMsgManager.DeleteWnd(n);     
         end;
+      end;
+      WM_MINIMIZEALLWINDOWS: begin
+        for n := 0 to Screen.MonitorCount - 1 do
+          if Screen.Monitors[n].MonitorNum = wParam then
+            break;
+
+        if (n < Screen.MonitorCount) or (lParam = 1) then
+          MinimizeAllWindows(Screen.Monitors[n], (lParam = 1));
+      end;
+      WM_RESTOREALLWINDOWS: begin
+        for n := 0 to Screen.MonitorCount - 1 do
+          if Screen.Monitors[n].MonitorNum = wParam then
+            break;
+
+        if (n < Screen.MonitorCount) or (lParam = 1) then
+          RestoreAllWindows(Screen.Monitors[n], (lParam = 1));
       end;
     end;
   end;

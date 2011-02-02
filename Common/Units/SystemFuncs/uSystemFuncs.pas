@@ -27,6 +27,7 @@ function IsWindowFullScreen(wnd : hwnd; targetmonitor : TMonitorItem = nil; wndT
 function HasFullScreenWindow(targetmonitor : TMonitorItem) : HWND;
 function GetWndClass(pHandle: hwnd): string;
 function GetWndText(pHandle: hwnd): string;
+function IsWindowNotMinimized(wnd: hwnd): Boolean;
 
 implementation
 
@@ -44,6 +45,32 @@ var
 begin
   GetWindowText(pHandle, buf, SizeOf(buf));
   result := buf;
+end;
+
+function IsWindowNotMinimized(wnd: hwnd): Boolean;
+var
+  rc: TRect;
+  style: integer;
+begin
+  Result := False;
+  if (not IsWindowVisible(wnd)) or (IsIconic(wnd)) or (not IsWindowEnabled(wnd)) or (GetParent(wnd) <> 0) then
+    exit;
+
+  style := GetWindowLong(wnd, GWL_STYLE);
+  if ((style and WS_MINIMIZEBOX) <> WS_MINIMIZEBOX) then
+    exit;
+
+  if ((style and (WS_CAPTION or WS_SYSMENU)) <> (WS_CAPTION or WS_SYSMENU)) then
+  begin
+    if (GetMenuState(GetSystemMenu(wnd, False), SC_MINIMIZE, MF_BYCOMMAND) <> $FF) then
+      exit;
+  end;
+
+  GetClientRect(wnd, rc);
+  if (rc.Right = 0) and (rc.Bottom = 0) then
+    exit;
+
+  Result := True;
 end;
 
 // check if a window is full screen

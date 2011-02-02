@@ -63,7 +63,6 @@ type
   TRunFileDlgW = procedure(hWndOwner : HWND; Icon : HICON; Directory,Title,Description : PWideChar; Flags : UInt); stdcall;
 
 var
-  FWndList : TWndItems;
   OwnerWnd : HWND;
   AE: TActionEvent;
   h: THandle;
@@ -104,12 +103,15 @@ const
   cRunDlgIdx = 24;
 
   cMinimizeAllMonitorsIdx = 25;
+  cRestoreAllMonitorsIdx = 30;
   cToggleAllMonitorsIdx = 26;
 
   cConfigThemeIdx = 27;
   cConfigWallpaperIdx = 28;
 
   cSearchIdx = 29;
+
+  // Last = 30
 
   cKeyboardLayoutIdx = 99;
 
@@ -126,64 +128,6 @@ const
 {$R *.RES}
 
 function SwitchToThisWindow(Wnd: hwnd; fAltTab: boolean): boolean; stdcall; external 'user32.dll';
-
-procedure BuildWndList(var list : TWndItems; AllMonitors : Boolean = false);
-
-  procedure AddMonitor(var list : TWndArray; Mon : TMonitor);
-  var
-    i : integer;
-    tmp : TWndArray;
-  begin
-    tmp := VWMGetWindowList(Mon.BoundsRect);
-    for i := 0 to High(tmp) do
-    begin
-      setlength(list,length(list)+1);
-      list[high(list)] := tmp[i];
-    end;      
-  end;
-var
-  n : integer;
-  tmpList : TWndArray;
-
-begin
-  SetLength(tmpList, 0);
-  if AllMonitors then
-  begin
-    for n := 0 to Screen.MonitorCount - 1 do
-      AddMonitor(tmpList,Screen.Monitors[n]);
-  end else
-    AddMonitor(tmpList,Screen.MonitorFromWindow(GetForegroundWindow));
-
-  setlength(list, length(tmpList));
-  for n := 0 to High(tmpList) do
-  begin
-    list[n].wnd := tmpList[n];
-    list[n].wasMinimized := ((GetWindowLong(tmpList[n], GWL_STYLE) and WS_MINIMIZE) = WS_MINIMIZE);
-  end;
-  SetLength(tmpList, 0);
-end;
-
-procedure MinimizeAll(var WndArray: TWndItems);
-var
-  i: Integer;
-begin
-  for i := 0 to High(WndArray) do
-  begin
-    if not WndArray[i].wasMinimized then
-      PostMessage(WndArray[i].wnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
-  end;
-end;
-
-procedure RestoreAll(var WndArray: TWndItems);
-var
-  i: Integer;
-begin
-  for i := High(WndArray) downto 0 do
-  begin
-    if (not WndArray[i].wasMinimized) and ((GetWindowLong(WndArray[i].wnd, GWL_STYLE) and WS_MINIMIZE) = WS_MINIMIZE) then
-      SendMessage(WndArray[i].wnd, WM_SYSCOMMAND, SC_RESTORE, 0);
-  end;
-end;
 
 procedure RegisterKeyBoardLocals;
 var
@@ -252,6 +196,7 @@ begin
   RegisterActionEx('!ToggleAll', 'Window Management', h, cToggleAllIdx);
 
   RegisterActionEx('!MinimizeAllMonitors', 'Window Management', h, cMinimizeAllMonitorsIdx);
+  RegisterActionEx('!RestoreAllMonitors', 'Window Management', h, cRestoreAllMonitorsIdx);
   RegisterActionEx('!ToggleAllMonitors', 'Window Management', h, cToggleAllMonitorsIdx);
 
   RegisterActionEx('!ToggleAllBars', 'SharpBar', h, cToggleAllBarsIdx);
@@ -295,8 +240,6 @@ end;
 
 procedure Stop;
 begin
-  SetLength(FWndList, 0);
-
   DeallocateHWnd(h);
   AE.Free;
 
@@ -322,6 +265,7 @@ begin
   UnRegisterAction('!ToggleAll');
 
   UnRegisterAction('!MinimizeAllMonitors');
+  UnregisterAction('!RestoreAllMonitors');
   UnRegisterAction('!ToggleAllMonitors');
 
   UnRegisterAction('!ToggleAllBars');
@@ -506,25 +450,19 @@ begin
             ShutDown.Free;
           end;
         end;
-      cMinimizeAllIdx, cRestoreAllIdx, cMinimizeAllMonitorsIdx: begin
+      cMinimizeAllIdx, cRestoreAllIdx, cMinimizeAllMonitorsIdx, cRestoreAllMonitorsIdx: begin
           if (lParam = cMinimizeAllIdx) or (lParam = cMinimizeAllMonitorsIdx) then
           begin
-            SetLength(FWndList, 0);
-            
-            BuildWndList(FWndList, (lParam = cMinimizeAllMonitorsIdx));
-            MinimizeAll(FWndList);
+            PostMessage(FindWindow('Shell_TrayWnd', nil), WM_MINIMIZEALLWINDOWS, Screen.MonitorFromWindow(GetForegroundWindow).MonitorNum, Integer(lParam = cMinimizeAllMonitorsIdx));
           end else
-            RestoreAll(FWndList);
+            PostMessage(FindWindow('Shell_TrayWnd', nil), WM_RESTOREALLWINDOWS, Screen.MonitorFromWindow(GetForegroundWindow).MonitorNum, Integer(lParam = cRestoreAllMonitorsIdx));
         end;
       cToggleAllIdx, cToggleAllMonitorsIdx: begin
           if WindowToggle then
           begin
-            SetLength(FWndList, 0);
-
-            BuildWndList(FWndList, (lParam = cToggleAllMonitorsIdx));
-            MinimizeAll(FWndList);
+            PostMessage(FindWindow('Shell_TrayWnd', nil), WM_MINIMIZEALLWINDOWS, Screen.MonitorFromWindow(GetForegroundWindow).MonitorNum, Integer(lParam = cToggleAllMonitorsIdx));
           end else
-            RestoreAll(FWndList);
+            PostMessage(FindWindow('Shell_TrayWnd', nil), WM_RESTOREALLWINDOWS, Screen.MonitorFromWindow(GetForegroundWindow).MonitorNum, Integer(lParam = cToggleAllMonitorsIdx));
 
           // Toggle (Show/Hide) all windows
           WindowToggle := not (WindowToggle);
