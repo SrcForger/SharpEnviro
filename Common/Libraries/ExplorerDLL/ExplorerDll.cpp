@@ -34,7 +34,7 @@ void ExplorerDll::Start()
 	CoInitialize(NULL);
 
 	// Register the IShellDesktopTray COM Object
-	CoRegisterClassObject(IID_IShellDesktopTray, LPUNKNOWN(&explorerFactory), CLSCTX_LOCAL_SERVER, REGCLS_MULTIPLEUSE, &registerCookie);
+	HRESULT r = CoRegisterClassObject(IID_IShellDesktopTray, LPUNKNOWN(&explorerFactory), CLSCTX_LOCAL_SERVER, REGCLS_MULTIPLEUSE, &registerCookie);
 
 	// Create the ShellDesktopTray interface
 	iTray = CreateInstance();
@@ -122,7 +122,7 @@ DWORD WINAPI ExplorerDll::ThreadFunc(LPVOID pvParam)
 	// Load RunInstallUninstallStubs function
 	// Try 7 Dll
 	pThis.hWinListDLL = LoadLibrary(L"ExplorerFrame.dll");
-	if (pThis.hWinListDLL || GetProcAddress(pThis.hWinListDLL, MAKEINTRESOURCEA(110)))
+	if (!pThis.hWinListDLL || !GetProcAddress(pThis.hWinListDLL, MAKEINTRESOURCEA(110)))
 	{
 		if (pThis.hWinListDLL)
 			FreeLibrary(pThis.hWinListDLL);
@@ -158,6 +158,9 @@ DWORD WINAPI ExplorerDll::ThreadFunc(LPVOID pvParam)
 		WaitForSingleObject(hGScmEvent, 6000);
 		CloseHandle(hGScmEvent);
 	}
+
+	// Ole is needed after this
+	OleInitialize(NULL);
 
 	// Initialize the file icon cache
 	if (pThis.FileIconInit)
@@ -223,6 +226,7 @@ DWORD WINAPI ExplorerDll::ThreadFunc(LPVOID pvParam)
 		SHDesktopMessageLoop(hDesktop);
 	}
 
+	OleUninitialize();
 	CoUninitialize();
 
 	return 0;
