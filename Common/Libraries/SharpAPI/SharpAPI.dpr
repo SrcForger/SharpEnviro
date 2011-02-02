@@ -1361,7 +1361,7 @@ function CheckMetaDataVersion(strFile: String): Boolean;
 begin
   Result := False;
 
-  if (GetVersion(strFile) = currentVersion) then
+  if (GetVersion(strFile) = currentVersion) or (GetVersion(strFile) = '0.0') then
     Result := True;
 end;
 
