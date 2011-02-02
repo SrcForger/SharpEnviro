@@ -142,7 +142,7 @@ begin
   TrayItem := nil;
   for n := 0 to FTrayClient.Items.Count - 1 do
   begin
-    TrayItem := TTrayItem(FTrayClient.Items.Items[n]);
+    TrayItem := TTrayItem(FTrayClient.Items[n]);
     if (TrayItem.Wnd = pItem.PropList.GetInt('Wnd'))
       and (TrayItem.UID = pItem.PropList.GetInt('uID')) then
         break;
@@ -156,6 +156,12 @@ begin
     menuwnd := TSharpEMenuWnd(pMenuWnd);
 
     TrayItem.HiddenByClient := False;
+    TrayItem.Position := FTrayClient.Items.Count;
+    for n := 0 to FTrayClient.Items.Count - 1 do
+      if TTrayItem(FTrayClient.Items[n]).HiddenByClient then
+        TrayItem.Position := TrayItem.Position - 1;
+      
+
     menu.Items.Extract(pItem);
 
     FTrayClient.UpdatePositions;
@@ -230,7 +236,7 @@ begin
       begin
         with Add('Item').Items do
         begin
-          Add('Class', GetWndClass(TTrayItem(FTrayClient.Items[n]).Wnd));
+          {Add('Class', GetWndClass(TTrayItem(FTrayClient.Items[n]).Wnd));}
           Add('ExeName', ExtractFileName(GetProcessNameFromWnd(TTrayItem(FTrayClient.Items[n]).Wnd)));
           Add('UID', inttostr(TTrayItem(FTrayClient.Items[n]).UID));
           Add('Hidden', TTrayItem(FTrayClient.Items[n]).HiddenByClient);
@@ -238,15 +244,6 @@ begin
         end; 
       end;
     end;
-
-    {if (ItemNamed['Hidden'] = nil) then
-      Add('Hidden');
-    with ItemNamed['Hidden'].Items do
-    begin
-      Clear;
-      for n := 0 to FTrayClient.HiddenList.Count - 1 do
-        Add('item',FTrayClient.HiddenList[n]);
-    end;  }
   end;
   if not SaveXMLToSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
     SharpApi.SendDebugMessageEx('SystemTray',PChar('Failed to Save Settings to File: ' + mInterface.BarInterface.GetModuleXMLFile(mInterface.ID)), clred, DMT_ERROR);
@@ -465,7 +462,7 @@ begin
         begin
           startItem := TTrayStartItem.Create;
           startItem.UID := Items[n].Items.IntValue('UID', 0);
-          startItem.WndClass := Items[n].Items.Value('Class', '');
+          {startItem.WndClass := Items[n].Items.Value('Class', '');}
           startItem.ExeName := Items[n].Items.Value('ExeName', '');
           startItem.Position := Items[n].Items.IntValue('Position', -1);
           startItem.HiddenByClient := Items[n].Items.BoolValue('Hidden', False);
@@ -694,14 +691,12 @@ begin
   if sDraggingItem <> nil then
   begin
     if (sEnableIconHiding) and (x < ShowHideButton.Width) then
-    begin
       sDraggingItem.HiddenByClient := True;
-      FTrayClient.UpdatePositions;
-      FTrayClient.RenderIcons;
-    end;
 
     sDraggingItem := nil;
 
+    FTrayClient.UpdatePositions;
+    FTrayClient.RenderIcons;
     SaveSettings;
     exit;
   end;
@@ -731,7 +726,7 @@ var
   modx: integer;
 
   curItem: TTrayItem;
-  pos1, pos2: integer;
+  pos: integer;
 begin
   if lb_servicenotrunning.Visible then
     exit;
@@ -753,13 +748,12 @@ begin
     begin
       if sDraggingItem.Position <> curItem.Position then
       begin
-        pos1 := sDraggingItem.Position;
-        pos2 := curItem.Position;
+        pos := curItem.Position;
 
-        curItem.Position := pos1;
-        sDraggingItem.Position := pos2;
+        curItem.Position := sDraggingItem.Position;
+        sDraggingItem.Position := pos;
 
-        FTrayClient.UpdatePositions;
+        FTrayClient.Items.Exchange(FTrayClient.Items.IndexOf(curItem), FTrayClient.Items.IndexOf(sDraggingItem));
         FTrayClient.RenderIcons;
 
         sBeginDragPos := point(x - ShowHideButton.Width, y);

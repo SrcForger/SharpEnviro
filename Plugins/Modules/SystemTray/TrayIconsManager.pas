@@ -169,7 +169,6 @@ type
                    procedure NewRepaintHash;
 
                  public
-                   function GetHiddenStatus(NIDv6 : TNotifyIconDataV7) : boolean;
                    function GetTrayIconIndex(pWnd : THandle; UID : Cardinal) : integer;
                    function GetTrayIcon(pWnd : THandle; UID : Cardinal) : TTrayItem;
                    procedure AddOrModifyTrayIcon(NIDv6 : TNotifyIconDataV7);
@@ -809,25 +808,6 @@ begin
   result := i;
 end;
 
-function TTrayClient.GetHiddenStatus(NIDv6: TNotifyIconDataV7): boolean;
-var
-  s, sCheck : String;
-  i : integer;
-begin
-  result := False;
-  
-  s := GetWndClass(NIDv6.Wnd) + ':' + inttostr(NIDv6.UID);
-  for i := 0 to FItems.Count - 1 do
-  begin
-    sCheck := GetWndClass(TTrayItem(FItems[i]).Wnd) + ':' + IntToStr(TTrayItem(FItems[i]).UID);
-    if (CompareText(s, sCheck) = 0) and (TTrayItem(FItems[i]).HiddenByClient) then
-    begin
-      Result := True;
-      break;
-    end;
-  end;
-end;
-
 function Sort(AItem, BItem: TTrayItem):Integer;
 begin
   Result := 0;
@@ -839,7 +819,23 @@ end;
 
 
 procedure TTrayClient.UpdatePositions;
+var
+  i, n: integer;
 begin
+  // Update hidden status
+  for i := 0 to FItems.Count - 1 do
+    for n := 0 to FStartItems.Count - 1 do
+    begin
+      if  (TTrayItem(FItems.Items[i]).FUID = TTrayStartItem(FStartItems.Items[n]).UID) and
+          (CompareText(TTrayStartItem(FStartItems[n]).ExeName, ExtractFileName(GetProcessNameFromWnd(TTrayItem(FItems.Items[i]).Wnd))) = 0)
+      then
+      begin
+        TTrayStartItem(FStartItems.Items[n]).HiddenByClient := TTrayItem(FItems.Items[i]).HiddenByClient;
+        TTrayStartItem(FStartItems.Items[n]).Position := TTrayItem(FItems.Items[i]).Position;
+        break;
+      end;
+    end;
+
   FItems.Sort(@Sort);
   UpdateTrayIcons;
 end;
@@ -891,11 +887,7 @@ begin
   tempItem := TTrayItem.Create(NIDv6, FIconSize);
   tempItem.Owner := self;
   tempItem.TipIndex := GetFreeTipIndex;
-
-  if not FStartHidden then
-    tempItem.HiddenByClient := GetHiddenStatus(NIDv6)
-  else
-    tempItem.HiddenByClient := True;
+  tempItem.HiddenByClient := False;
 
   AddTrayIcon(tempItem);
 end;
@@ -908,7 +900,7 @@ begin
   for i := 0 to FStartItems.Count - 1 do
   begin
     if (TTrayStartItem(FStartItems[i]).FUID = item.UID) and
-        (CompareText(TTrayStartItem(FStartItems[i]).WndClass, GetWndClass(item.Wnd)) = 0) and
+        {(CompareText(TTrayStartItem(FStartItems[i]).WndClass, GetWndClass(item.Wnd)) = 0) and}
         (CompareText(TTrayStartItem(FStartItems[i]).ExeName, ExtractFileName(GetProcessNameFromWnd(item.Wnd))) = 0) then
     begin
       item.Position := TTrayStartItem(FStartItems[i]).Position;
@@ -917,8 +909,12 @@ begin
     end;
   end;
 
-  if (item.Position < 0) then
+  // New item, set position to to last and change HiddenByClient according to StartHidden
+  if (item.Position < 0) and (not item.HiddenByClient) then
+  begin
+    item.HiddenByClient := FStartHidden;
     item.Position := FItems.Count;
+  end;
   
   if addItem then
     FItems.Add(item);
