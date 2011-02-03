@@ -38,7 +38,6 @@ namespace SharpEnviro.Explorer
         // Global vars
         volatile static bool bShellLoaded = false;
         volatile static bool bShellReady = false;
-        volatile static NativeWindowEx hExplorerWindow;
 
 #if SEARCH_ENABLED
         volatile static SearchManager searchManager;
@@ -105,6 +104,22 @@ namespace SharpEnviro.Explorer
             return PInvoke.DefWindowProc(hWnd, uMsgm, wParam, lParam);
         }
 
+        static void WindowThread()
+        {
+            ClassParams classParams = new ClassParams();
+            classParams.Name = "TSharpExplorerForm";
+            classParams.WindowProc = SharpWindowProc;
+            CreateParamsEx createParams = new CreateParamsEx();
+            createParams.Caption = "SharpExplorerForm";
+            createParams.ClassName = classParams.Name;
+            createParams.ExStyle = (int)WindowStylesExtended.WS_EX_TOOLWINDOW;
+
+            NativeWindowEx explorerWindow = new NativeWindowEx(classParams, createParams);
+
+            // Start message pump
+            System.Windows.Threading.Dispatcher.Run();
+        }
+
         [STAThread]
         static void Main(string[] args)
         {
@@ -123,19 +138,12 @@ namespace SharpEnviro.Explorer
             OperatingSystem osInfo = Environment.OSVersion;
             if (osInfo.Platform == System.PlatformID.Win32NT)
             {
-                // Create main window
-                ClassParams classParams = new ClassParams();
-                classParams.Name = "TSharpExplorerForm";
-                classParams.WindowProc = SharpWindowProc;
-                CreateParamsEx createParams = new CreateParamsEx();
-                createParams.Caption = "SharpExplorerForm";
-                createParams.ClassName = classParams.Name;
-                createParams.ExStyle = (int)WindowStylesExtended.WS_EX_TOOLWINDOW;
-
-                hExplorerWindow = new NativeWindowEx(classParams, createParams);
+                // Create main window thread
+                System.Threading.Thread wndThread = new System.Threading.Thread(new System.Threading.ThreadStart(WindowThread));
+                wndThread.Start();
 
                 // Wait for the native window to be created
-                while (PInvoke.FindWindow("TSharpExplorerForm", (string)null) == IntPtr.Zero)
+                while (wndThread.IsAlive && PInvoke.FindWindow("TSharpExplorerForm", (string)null) == IntPtr.Zero)
                     System.Threading.Thread.Sleep(16);
 
                 // Run the StartDesktop function
@@ -166,12 +174,8 @@ namespace SharpEnviro.Explorer
                     searchManager.StartIndexing();
 #endif
 
-                PInvoke.NativeMessage msg;
-                while (PInvoke.GetMessage(out msg, IntPtr.Zero, 0, 0) != 0)
-                {
-                    PInvoke.TranslateMessage(ref msg);
-                    PInvoke.DispatchMessage(ref msg);
-                }
+                while (wndThread.IsAlive)
+                    System.Threading.Thread.Sleep(1000);
 
                 StopDesktop();
 
