@@ -205,19 +205,36 @@ namespace SharpEnviro.Interop
         public const uint WM_SHARPSEARCH_INDEXING = 0x8298;
         public const uint WM_SHARPSHELLLOADED = 0x8299;
 
+        [StructLayout(LayoutKind.Sequential)]
+        public struct NativeMessage
+        {
+            public IntPtr handle;
+            public uint msg;
+            public IntPtr wParam;
+            public IntPtr lParam;
+            public uint time;
+            public System.Drawing.Point p;
+        }
+
         [DllImport("User32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool PeekMessage(out MSG message, IntPtr handle, uint filterMin, uint filterMax, uint flags);
+        public static extern bool PeekMessage(out NativeMessage message, IntPtr handle, uint filterMin, uint filterMax, uint flags);
 
+        [System.Security.SuppressUnmanagedCodeSecurity]
         [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool GetMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
+        public static extern int GetMessage(out NativeMessage lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam);
 
         [DllImport("user32.dll")]
         public static extern void PostQuitMessage(int nExitCode);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool TranslateMessage(ref NativeMessage lpMsg);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern Int32 DispatchMessage(ref NativeMessage lpMsg);
         #endregion
 
         #region CopyData Message

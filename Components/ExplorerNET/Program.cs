@@ -1,4 +1,6 @@
-﻿using System;
+﻿//#define SEARCH_ENABLED
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -14,8 +16,10 @@ using Explorer;
 using Explorer.ShellServices;
 using SharpEnviro.Interop;
 using SharpEnviro.Interop.Enums;
+#if SEARCH_ENABLED
 using SharpSearch;
 using SharpSearch.WPF;
+#endif
 
 namespace SharpEnviro.Explorer
 {
@@ -34,8 +38,11 @@ namespace SharpEnviro.Explorer
         // Global vars
         volatile static bool bShellLoaded = false;
         volatile static bool bShellReady = false;
+        volatile static NativeWindowEx hExplorerWindow;
+
+#if SEARCH_ENABLED
         volatile static SearchManager searchManager;
-        volatile static bool bEnableSearch = false;
+#endif
 
         internal delegate void FunctionInvoker();
 
@@ -68,14 +75,12 @@ namespace SharpEnviro.Explorer
             }
 
             // Show the search window
+#if SEARCH_ENABLED
             if (uMsgm == PInvoke.WM_SHARPSEARCH)
             {
-                if (bEnableSearch)
-                {
-                    SharpDebug.Info("Explorer", "SharpSearch message received.");
-                    WPFRuntime.Instance.Show<SearchWindow>();
-                    SharpDebug.Info("Explorer", "SharpSearch message processed.");
-                }
+                SharpDebug.Info("Explorer", "SharpSearch message received.");
+                WPFRuntime.Instance.Show<SearchWindow>();
+                SharpDebug.Info("Explorer", "SharpSearch message processed.");
 
                 return (IntPtr)0;
             }
@@ -83,14 +88,12 @@ namespace SharpEnviro.Explorer
             // Start indexing
             if (uMsgm == PInvoke.WM_SHARPSEARCH_INDEXING)
             {
-                if (bEnableSearch)
-                {
-                    if (!searchManager.IsIndexing)
-                        searchManager.StartIndexing();
-                }
+                if (!searchManager.IsIndexing)
+                    searchManager.StartIndexing();
 
                 return (IntPtr)0;
             }
+#endif
 
             if (uMsgm == PInvoke.WM_SHARPTERMINATE)
             {
@@ -100,22 +103,6 @@ namespace SharpEnviro.Explorer
             }
 
             return PInvoke.DefWindowProc(hWnd, uMsgm, wParam, lParam);
-        }
-
-        static void WindowThread()
-        {
-            ClassParams classParams = new ClassParams();
-            classParams.Name = "TSharpExplorerForm";
-            classParams.WindowProc = SharpWindowProc;
-            CreateParamsEx createParams = new CreateParamsEx();
-            createParams.Caption = "SharpExplorerForm";
-            createParams.ClassName = classParams.Name;
-            createParams.ExStyle = (int)WindowStylesExtended.WS_EX_TOOLWINDOW;
-
-            NativeWindowEx explorerWindow = new NativeWindowEx(classParams, createParams);
-
-            // Start message pump
-            System.Windows.Threading.Dispatcher.Run();
         }
 
         [STAThread]
@@ -136,11 +123,19 @@ namespace SharpEnviro.Explorer
             OperatingSystem osInfo = Environment.OSVersion;
             if (osInfo.Platform == System.PlatformID.Win32NT)
             {
-                System.Threading.Thread wndThread = new System.Threading.Thread(new System.Threading.ThreadStart(WindowThread));
-                wndThread.Start();
+                // Create main window
+                ClassParams classParams = new ClassParams();
+                classParams.Name = "TSharpExplorerForm";
+                classParams.WindowProc = SharpWindowProc;
+                CreateParamsEx createParams = new CreateParamsEx();
+                createParams.Caption = "SharpExplorerForm";
+                createParams.ClassName = classParams.Name;
+                createParams.ExStyle = (int)WindowStylesExtended.WS_EX_TOOLWINDOW;
+
+                hExplorerWindow = new NativeWindowEx(classParams, createParams);
 
                 // Wait for the native window to be created
-                while (wndThread.IsAlive && PInvoke.FindWindow("TSharpExplorerForm", (string)null) == IntPtr.Zero)
+                while (PInvoke.FindWindow("TSharpExplorerForm", (string)null) == IntPtr.Zero)
                     System.Threading.Thread.Sleep(16);
 
                 // Run the StartDesktop function
@@ -163,24 +158,26 @@ namespace SharpEnviro.Explorer
                 WPFRuntime.Instance.Start();
 
 				// Check if the database file exists before creating the SearchManager as it automatically creates the file.
-                if (bEnableSearch)
+#if SEARCH_ENABLED
+                bool needsIndexing = !File.Exists(Path.Combine(SharpSearchDatabase.DefaultDatabaseDirectory, SharpSearchDatabase.DefaultDatabaseFilename));
+                searchManager = new SearchManager(true);
+
+                if (needsIndexing)
+                    searchManager.StartIndexing();
+#endif
+
+                PInvoke.NativeMessage msg;
+                while (PInvoke.GetMessage(out msg, IntPtr.Zero, 0, 0) != 0)
                 {
-                    bool needsIndexing = !File.Exists(Path.Combine(SharpSearchDatabase.DefaultDatabaseDirectory, SharpSearchDatabase.DefaultDatabaseFilename));
-                    searchManager = new SearchManager(true);
-
-                    if (needsIndexing)
-                        searchManager.StartIndexing();
+                    PInvoke.TranslateMessage(ref msg);
+                    PInvoke.DispatchMessage(ref msg);
                 }
-
-                while (wndThread.IsAlive)
-                    System.Threading.Thread.Sleep(16);
 
                 StopDesktop();
 
-                if (bEnableSearch)
-                {
-                    searchManager.Dispose();
-                }
+#if SEARCH_ENABLED
+                searchManager.Dispose();
+#endif
 
 				WPFRuntime.Instance.Stop();
 				ShellServices.Stop();
@@ -188,9 +185,5 @@ namespace SharpEnviro.Explorer
 
             bShellLoaded = false;
         }
-
-        #region Win32
-
-        #endregion
     }
 }
