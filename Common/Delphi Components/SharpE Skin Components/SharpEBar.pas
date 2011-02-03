@@ -39,6 +39,7 @@ uses
   Graphics,
   Dialogs,
   StdCtrls,
+  ExtCtrls,
   GR32,
   GR32_Backends,
   Math,
@@ -500,7 +501,6 @@ begin
   inherited;
 end;
 
-
 procedure TSharpEBar.UpdateAlwaysOnTop;
 begin
   if (not aform.Visible) or (FFullScreenWnd) then
@@ -508,6 +508,9 @@ begin
 
   if (FAlwaysOnTop) then
   begin
+    // Need to set no-topmost first or topmost won't always work
+    SetWindowPos(aform.handle, HWND_NOTOPMOST, 0, 0, 0, 0,
+                   SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW or SWP_NOACTIVATE);
     SetWindowPos(aform.handle, HWND_TOPMOST, 0, 0, 0, 0,
                  SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
     abackground.SetZOrder;
