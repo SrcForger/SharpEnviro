@@ -3,47 +3,83 @@ object frmEditWnd: TfrmEditWnd
   Top = 0
   BorderStyle = bsNone
   Caption = 'Create/Edit Color Scheme'
-  ClientHeight = 36
+  ClientHeight = 58
   ClientWidth = 498
   Color = clBtnFace
-  Font.Charset = ANSI_CHARSET
+  Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'Arial'
+  Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
   Position = poDesigned
   OnCreate = FormCreate
-  DesignSize = (
-    498
-    36)
   PixelsPerInch = 96
-  TextHeight = 14
-  object edAuthor: TLabeledEdit
-    Left = 280
-    Top = 8
-    Width = 189
-    Height = 22
-    Anchors = [akLeft, akTop, akRight]
-    EditLabel.Width = 16
-    EditLabel.Height = 14
-    EditLabel.Caption = 'By:'
-    LabelPosition = lpLeft
-    LabelSpacing = 6
-    TabOrder = 1
-    OnChange = EditChange
-  end
-  object edName: TLabeledEdit
-    Left = 50
-    Top = 8
-    Width = 179
-    Height = 22
-    EditLabel.Width = 30
-    EditLabel.Height = 14
-    EditLabel.Caption = 'Name:'
-    LabelPosition = lpLeft
-    LabelSpacing = 6
+  TextHeight = 13
+  object pnlEdit: TPanel
+    AlignWithMargins = True
+    Left = 2
+    Top = 5
+    Width = 494
+    Height = 24
+    Margins.Left = 2
+    Margins.Top = 5
+    Margins.Right = 2
+    Margins.Bottom = 5
+    Align = alTop
+    AutoSize = True
+    BevelOuter = bvNone
     TabOrder = 0
-    OnChange = EditChange
+    DesignSize = (
+      494
+      24)
+    object pnlName: TPanel
+      Left = 0
+      Top = 0
+      Width = 211
+      Height = 24
+      Anchors = [akLeft, akTop, akRight]
+      AutoSize = True
+      BevelOuter = bvNone
+      TabOrder = 0
+      object Label1: TLabel
+        Left = 0
+        Top = 3
+        Width = 40
+        Height = 16
+        Caption = 'Name:'
+      end
+      object edName: TEdit
+        Left = 62
+        Top = 0
+        Width = 149
+        Height = 24
+        TabOrder = 0
+      end
+    end
+    object pnlAuthor: TPanel
+      Left = 248
+      Top = 0
+      Width = 207
+      Height = 24
+      Anchors = [akLeft, akTop, akRight]
+      AutoSize = True
+      BevelOuter = bvNone
+      TabOrder = 1
+      object Label2: TLabel
+        Left = 0
+        Top = 3
+        Width = 20
+        Height = 16
+        Caption = 'By:'
+      end
+      object edAuthor: TEdit
+        Left = 42
+        Top = 0
+        Width = 165
+        Height = 24
+        TabOrder = 0
+      end
+    end
   end
 end

@@ -310,18 +310,11 @@ end;
 procedure TfrmSettingsWnd.UpdateSize;
 begin
   if pagWallpaper.Visible then
-  begin
-    Self.Height := pnlWallpaper.Height + pnlMonitor.Height + 50;
-  end else
-  begin
-    Self.Height := pnlMonitor.Height + 50;
-    if pnlColorHSL.Visible then
-      Self.Height := Self.Height + pnlColor.Height;
-    if pnlGrad.Visible then
-      Self.Height := Self.Height + pnlGradient.Height;
-    if pnlWallpaperDirectoryPath.Visible then
-      Self.Height := Self.Height + pnlWallpaperDirectoryPath.Height;
-  end;
+    Self.Height := pnlWallpaper.Height + pnlMonitor.Height + 50
+  else if pagColor.Visible then
+    Self.Height := pnlColor.Height + pnlMonitor.Height + 50
+  else if pagGradient.Visible then
+    Self.Height := pnlGradient.Height + pnlMonitor.Height + 50;
 
   FPluginHost.Refresh(rtSize);
 end;

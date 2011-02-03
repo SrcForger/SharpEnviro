@@ -8,7 +8,7 @@ object frmSettingsWnd: TfrmSettingsWnd
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -14
+  Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
@@ -16,13 +16,13 @@ object frmSettingsWnd: TfrmSettingsWnd
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 96
-  TextHeight = 17
+  TextHeight = 13
   object plConfig: TJvPageList
     AlignWithMargins = True
     Left = 0
-    Top = 94
+    Top = 105
     Width = 642
-    Height = 646
+    Height = 635
     Margins.Left = 0
     Margins.Top = 0
     Margins.Right = 0
@@ -30,20 +30,20 @@ object frmSettingsWnd: TfrmSettingsWnd
     ActivePage = pagWallpaper
     PropagateEnable = False
     Align = alClient
-    ExplicitTop = 96
-    ExplicitHeight = 644
+    ExplicitTop = 94
+    ExplicitHeight = 646
     object pagWallpaper: TJvStandardPage
       Left = 0
       Top = 0
       Width = 642
-      Height = 646
+      Height = 635
       Caption = 'pagWallpaper'
-      ExplicitHeight = 644
+      ExplicitHeight = 646
       object pnlWallpaper: TPanel
         Left = 1
         Top = 1
         Width = 640
-        Height = 598
+        Height = 560
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
@@ -53,7 +53,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Left = 5
           Top = 0
           Width = 630
-          Height = 55
+          Height = 42
           Margins.Left = 5
           Margins.Top = 0
           Margins.Right = 5
@@ -69,7 +69,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         object chkAutoWallpaper: TJvXPCheckbox
           AlignWithMargins = True
           Left = 5
-          Top = 65
+          Top = 52
           Width = 630
           Height = 23
           Margins.Left = 5
@@ -83,7 +83,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         object pnlWallpaperOptions: TPanel
           AlignWithMargins = True
           Left = 5
-          Top = 101
+          Top = 88
           Width = 630
           Height = 103
           Margins.Left = 5
@@ -216,9 +216,9 @@ object frmSettingsWnd: TfrmSettingsWnd
         object SharpECenterHeader7: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 214
+          Top = 201
           Width = 630
-          Height = 55
+          Height = 42
           Margins.Left = 5
           Margins.Top = 10
           Margins.Right = 5
@@ -232,7 +232,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         object Panel7: TPanel
           AlignWithMargins = True
           Left = 5
-          Top = 279
+          Top = 253
           Width = 630
           Height = 30
           Margins.Left = 5
@@ -290,9 +290,9 @@ object frmSettingsWnd: TfrmSettingsWnd
         object SharpECenterHeader8: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 319
+          Top = 293
           Width = 630
-          Height = 55
+          Height = 42
           Margins.Left = 5
           Margins.Top = 10
           Margins.Right = 5
@@ -306,7 +306,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         object Panel8: TPanel
           AlignWithMargins = True
           Left = 5
-          Top = 384
+          Top = 345
           Width = 630
           Height = 30
           Margins.Left = 5
@@ -342,9 +342,9 @@ object frmSettingsWnd: TfrmSettingsWnd
         object SharpECenterHeader9: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 424
+          Top = 385
           Width = 630
-          Height = 55
+          Height = 42
           Margins.Left = 5
           Margins.Top = 10
           Margins.Right = 5
@@ -360,7 +360,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         object Panel9: TPanel
           AlignWithMargins = True
           Left = 5
-          Top = 489
+          Top = 437
           Width = 630
           Height = 29
           Margins.Left = 5
@@ -401,9 +401,9 @@ object frmSettingsWnd: TfrmSettingsWnd
         object SharpECenterHeader10: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 528
+          Top = 476
           Width = 630
-          Height = 55
+          Height = 42
           Margins.Left = 5
           Margins.Top = 10
           Margins.Right = 5
@@ -429,9 +429,9 @@ object frmSettingsWnd: TfrmSettingsWnd
         object secWpColor: TSharpEColorEditorEx
           AlignWithMargins = True
           Left = 1
-          Top = 593
+          Top = 528
           Width = 634
-          Height = 39
+          Height = 32
           Margins.Left = 1
           Margins.Top = 10
           Margins.Right = 5
@@ -476,8 +476,9 @@ object frmSettingsWnd: TfrmSettingsWnd
       Left = 0
       Top = 0
       Width = 642
-      Height = 646
+      Height = 635
       Caption = 'pagColor'
+      ExplicitHeight = 646
       object pnlColor: TPanel
         Left = 1
         Top = 1
@@ -664,8 +665,9 @@ object frmSettingsWnd: TfrmSettingsWnd
       Left = 0
       Top = 0
       Width = 642
-      Height = 646
+      Height = 635
       Caption = 'pagGradient'
+      ExplicitHeight = 646
       object pnlGradient: TPanel
         Left = 1
         Top = 1
@@ -728,10 +730,10 @@ object frmSettingsWnd: TfrmSettingsWnd
               Left = 0
               Top = 0
               Width = 327
-              Height = 25
+              Height = 21
               Align = alLeft
               Style = csDropDownList
-              ItemHeight = 17
+              ItemHeight = 13
               TabOrder = 0
               OnSelect = cboGradTypeSelect
               Items.Strings = (
@@ -739,6 +741,7 @@ object frmSettingsWnd: TfrmSettingsWnd
                 'Vertical'
                 'Left/Right Horizontal'
                 'Top/Bottom Vertical')
+              ExplicitHeight = 25
             end
           end
           object Panel11: TPanel
@@ -950,7 +953,7 @@ object frmSettingsWnd: TfrmSettingsWnd
     Left = 0
     Top = 0
     Width = 642
-    Height = 84
+    Height = 95
     Margins.Left = 0
     Margins.Top = 0
     Margins.Right = 0
@@ -972,7 +975,7 @@ object frmSettingsWnd: TfrmSettingsWnd
     object pnlMonitorList: TSharpERoundPanel
       AlignWithMargins = True
       Left = 5
-      Top = 60
+      Top = 47
       Width = 632
       Height = 25
       Margins.Left = 5
@@ -993,8 +996,7 @@ object frmSettingsWnd: TfrmSettingsWnd
       Border = False
       BackgroundColor = clBtnFace
       BottomSideBorder = False
-      ExplicitTop = 53
-      ExplicitHeight = 21
+      ExplicitTop = 60
       object cboMonitor: TComboBox
         Left = 0
         Top = 0
@@ -1008,7 +1010,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         Style = csDropDownList
         Constraints.MaxWidth = 327
         DropDownCount = 12
-        ItemHeight = 17
+        ItemHeight = 0
         TabOrder = 0
         OnChange = MonitorChangeEvent
       end
@@ -1018,7 +1020,7 @@ object frmSettingsWnd: TfrmSettingsWnd
       Left = 5
       Top = 0
       Width = 632
-      Height = 55
+      Height = 42
       Margins.Left = 5
       Margins.Top = 0
       Margins.Right = 5

@@ -131,7 +131,7 @@ object frmSettingsWnd: TfrmSettingsWnd
 			  DropDownCount = 20
 			  Font.Charset = DEFAULT_CHARSET
 			  Font.Color = clWindowText
-			  Font.Height = -13
+			  Font.Height = -11
 			  Font.Name = 'Tahoma'
 			  Font.Style = []
 			  ItemHeight = 19

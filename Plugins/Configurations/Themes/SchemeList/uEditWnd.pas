@@ -50,8 +50,13 @@ uses
 
 type
   TfrmEditWnd = class(TForm)
-    edAuthor: TLabeledEdit;
-    edName: TLabeledEdit;
+    pnlEdit: TPanel;
+    edName: TEdit;
+    Label1: TLabel;
+    edAuthor: TEdit;
+    Label2: TLabel;
+    pnlName: TPanel;
+    pnlAuthor: TPanel;
 
     procedure FormCreate(Sender: TObject);
     procedure EditChange(Sender: TObject);
@@ -126,6 +131,10 @@ begin
       end;
   end;
   finally
+    // Update height
+    Self.Height := pnlEdit.Height + 30;
+    FPluginHost.Refresh(rtSize);
+
     FUpdating := False;
   end;
 end;
