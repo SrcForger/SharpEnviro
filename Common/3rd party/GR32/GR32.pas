@@ -5622,18 +5622,17 @@ begin
 
   { TODO : Optimize Clipping here }
   B := TBitmap32.Create;
-  with B do
   try
     if AALevel <= 0 then
     begin
       Sz := Self.TextExtent(PaddedText);
       if Sz.cX>Self.Width then Sz.cX:=Self.Width;
       if Sz.cY>Self.Height then Sz.cX:=Self.Height;
-      SetSize(Sz.cX, Sz.cY);
-      Font := Self.Font;
-      Clear(0);
-      Font.Color := clWhite;
-      Textout(0, 0, Text);
+      B.SetSize(Sz.cX, Sz.cY);
+      B.Font := Self.Font;
+      B.Clear(0);
+      B.Font.Color := clWhite;
+      B.Textout(0, 0, Text);
       TextBlueToAlpha(B, Color);
     end
     else
@@ -5657,13 +5656,13 @@ begin
       end;
     end;
 
-    DrawMode := dmBlend;
-    MasterAlpha := Alpha;
-    CombineMode := CombineMode;
+    B.DrawMode := dmBlend;
+    B.MasterAlpha := Alpha;
+    B.CombineMode := CombineMode;
 
-    DrawTo(Self, X, Y);
+    B.DrawTo(Self, X, Y);
   finally
-    Free;
+    B.Free;
   end;
 
   SetFontAntialiasing(Font, DEFAULT_QUALITY);
