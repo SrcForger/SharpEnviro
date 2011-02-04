@@ -559,6 +559,35 @@ begin
   end;
 end;
 
+function ServiceStopping(ServiceName: String): hresult;
+var
+  cds: TCopyDataStruct;
+  wnd: hWnd;
+  msg: TManagerCmd;
+begin
+  try
+    //Prepare TCopyDataStruct
+    msg.Parameters := ServiceName;
+    msg.Command := '_isservicestopping';
+    with cds do
+    begin
+      dwData := 0;
+      cbData := SizeOf(TManagerCmd);
+      lpData := @msg;
+    end;
+    //Find the window
+    wnd := FindWindow('TSharpCoreMainWnd', nil);
+    if wnd <> 0 then
+    begin
+      result := sendmessage(wnd, WM_COPYDATA, 0, Cardinal(@cds));
+    end
+    else
+      result := HR_NORECIEVERWINDOW;
+  except
+    result := HR_UNKNOWNERROR;
+  end;
+end;
+
 function BarMsg(PluginName, Command: String): hresult;
 var
   cds: TCopyDataStruct;
@@ -1358,10 +1387,13 @@ begin
 end;
 
 function CheckMetaDataVersion(strFile: String): Boolean;
+var
+  ver: string;
 begin
   Result := False;
 
-  if (GetVersion(strFile) = currentVersion) or (GetVersion(strFile) = '0.0') then
+  ver := GetVersion(strFile);
+  if (currentVersion = '0.0') or (GetVersion(strFile) = '0.0') or (ver = currentVersion) then
     Result := True;
 end;
 
@@ -1886,6 +1918,7 @@ exports
   IsServiceStarted,
   IsServiceDone,
   ServiceDone,
+  ServiceStopping,
 
   BarMsg,
 

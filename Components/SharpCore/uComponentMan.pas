@@ -22,6 +22,7 @@ type
     FileName: string;
     FileHandle: THandle;
     Running: Boolean;
+    Stopping: Boolean;
 
     constructor Create(from: TComponentData); overload;
 
@@ -202,6 +203,7 @@ begin
   FileName := PChar(from.FileName);
   FileHandle := from.FileHandle;
   Running := from.Running;
+  Stopping := from.Stopping;
 end;
 
 function TComponentData.GetDisabled: Boolean;

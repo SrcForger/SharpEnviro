@@ -183,7 +183,7 @@ begin
     Parent := Self;
     Top := 0;
     Left := 0;
-    Height := 24;
+    Height := MulDiv(24, Screen.PixelsPerInch, 96);
     Width := Self.Width;
     BottomBorder := True;
     BorderColor := clBlack;
@@ -371,7 +371,7 @@ end;
 procedure TSharpEPageControl.UpdateSize;
 begin
   FTabList.Width := Self.Width;
-  FTabList.Height := 25;
+  FTabList.Height := MulDiv(25, Screen.PixelsPerInch, 96);
 
   FPnlContent.Left := 0;
   FPnlContent.Width := Self.Width;

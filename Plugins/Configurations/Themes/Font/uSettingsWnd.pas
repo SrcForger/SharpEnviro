@@ -283,7 +283,7 @@ end;
 procedure TFrmSettingsWnd.UpdatePageUI;
 begin
   if pagFont.Visible then
-    Self.Height := pnlFont.Height + 50
+    Self.Height := pnlFont.Height + MulDiv(50, Screen.PixelsPerInch, 96)
   else
   begin
     if textpanel.Visible then

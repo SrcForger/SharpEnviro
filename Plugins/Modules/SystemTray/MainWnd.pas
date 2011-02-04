@@ -216,6 +216,7 @@ procedure TMainForm.AddIcon;
 begin
   if sDraggingItem <> nil then
   begin
+    sDraggingItem.ModX := 0;
     sDraggingItem := nil;
 
     FTrayClient.UpdatePositions;
@@ -250,7 +251,7 @@ begin
       begin
         with Add('Item').Items do
         begin
-          Add('Name', ExtractFileName(GetProcessNameFromWnd(TTrayItem(FTrayClient.Items[n]).Wnd)) + ':' + inttostr(TTrayItem(FTrayClient.Items[n]).UID));
+          Add('Name', TTrayItem(FTrayClient.Items[n]).Name);
           Add('Hidden', False);
         end;
       end;
@@ -259,7 +260,7 @@ begin
       begin
         with Add('Item').Items do
         begin
-          Add('Name', ExtractFileName(GetProcessNameFromWnd(TTrayItem(FTrayClient.HiddenItems[n]).Wnd)) + ':' + inttostr(TTrayItem(FTrayClient.HiddenItems[n]).UID));
+          Add('Name', TTrayItem(FTrayClient.HiddenItems[n]).Name);
           Add('Hidden', True);
         end;
       end;
@@ -305,7 +306,7 @@ begin
     if IsWindow(TrayItem.wnd) then
     begin
       s := TrayItem.FTip;
-      id := Format('customicon: %s:%d', [ExtractFileName(GetProcessNameFromWnd(TrayItem.Wnd)), TrayItem.UID]);
+      id := 'customicon: ' + TrayItem.Name;
 
       item := TSharpEMenuItem(mn.AddCustomItem(s, id, TrayItem.Bitmap));
       item.PropList.Add('index', n);
@@ -478,8 +479,6 @@ begin
             nCount := nCount - 1;
           end;
         end;
-
-        FTrayClient.UpdateStartItemPositions;
       end;
 
       if ItemNamed['skin'] <> nil then

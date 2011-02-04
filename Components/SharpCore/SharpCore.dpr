@@ -232,7 +232,9 @@ begin
   @StopFunc := GetProcAddress(modData.FileHandle, 'Stop');
   if Assigned(StopFunc) then begin
     DebugMsg('Stopping ' + modData.MetaData.Name);
+    modData.Stopping := True;
     StopFunc();
+    modData.Stopping := False;
     modData.Running := False;
     FreeLibrary(modData.FileHandle);
     modData.FileHandle := 0;
@@ -628,7 +630,16 @@ begin
                 Result := SCMsgFunc(sParams);
             end;
           end;
-        end
+        end else if LowerCase(tmdData.Command) = '_isservicestopping' then begin
+          iIndex := lstComponents.FindByName(tmdData.Parameters);
+          if (iIndex < lstComponents.Count) and (iIndex > -1) then begin
+            modData := lstComponents.Items[iIndex];
+
+            result := 0;
+            if modData.Stopping then
+              result := MR_STOPPING;
+          end;
+        end;
       end;
   else
     Result := DefWindowProc(hWnd, Msg, wParam, lParam);

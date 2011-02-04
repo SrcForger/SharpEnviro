@@ -139,6 +139,7 @@ const
   MR_INCOMPATIBLE = 4;
   MR_ERRORSTOPPING = 5;
   MR_FORCECONFIGDISABLE = 6;
+  MR_STOPPING = 7;
 
   // Action Results
   MR_ACTIONSERVICE_NOT_AVAIL = 6;
@@ -284,6 +285,7 @@ function GetCenterConfigExt: String; external 'SharpAPI.dll' name 'GetCenterConf
 function ServiceMsg(ServiceName, Command: String): hresult; external 'SharpAPI.dll' name 'ServiceMsg';
 function ServiceStart(ServiceName: String): hresult; external 'SharpAPI.dll' name 'ServiceStart';
 function ServiceStop(ServiceName: String): hresult; external 'SharpAPI.dll' name 'ServiceStop';
+function ServiceStopping(ServiceName: String): hresult; external 'SharpAPI.dll' name 'ServiceStopping';
 function IsServiceStarted(ServiceName: String): hresult; external 'SharpAPI.dll' name 'IsServiceStarted';
 function IsServiceDone(ServiceName: String): hresult; external 'SharpAPI.dll' name 'IsServiceDone';
 function ServiceDone(ServiceName: String): hresult; external 'SharpAPI.dll' name 'ServiceDone';

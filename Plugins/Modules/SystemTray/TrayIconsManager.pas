@@ -77,6 +77,7 @@ type
 
   TTrayItem = class
   private
+    FName: String;
     FUID: Cardinal;
     FWnd: Thandle;
     FCallbackMessage: UINT;
@@ -101,6 +102,7 @@ type
     constructor Create(NIDv6: TNotifyIconDataV7; IconSize: Integer); reintroduce;
     destructor Destroy; override;
 
+    property Name: String read FName write FName;
     property UID: Cardinal read FUID;
     property Wnd: THandle read FWnd;
     property Bitmap: TBitmap32 read FBitmap;
@@ -177,7 +179,6 @@ type
 
     procedure UpdateTrayIcons;
     procedure UpdatePositions;
-    procedure UpdateStartItemPositions;
 
     procedure RenderIcons;
     function PerformIconAction(x, y, gx, gy, imod: integer; msg: uint; parent: TForm): boolean;
@@ -401,6 +402,7 @@ begin
     TKernelResampler.Create(FBitmap).Kernel := TLanczosKernel.Create
   end;
   AssignFromNIDv6(NIDv6);
+  FName := ExtractFileName(GetProcessNameFromWnd(FWnd)) + ':' + InttoStr(FUID);
 
   Inherited Create;
 end;
@@ -890,28 +892,6 @@ begin
   end
 end;
 
-procedure TTrayClient.UpdateStartItemPositions;
-var
-  i: integer;
-  iMod: integer;
-  pItem: TTrayStartItem;
-begin
-  iMod := 1;
-
-  // -1 items should be to the left, same with hidden items
-  for i := FStartItems.Count - 1 downto 0 do
-  begin
-    pItem := TTrayStartItem(FStartItems.Items[i]);
-    if (pItem.Position < 0) then
-    begin
-      pItem.Position := FStartItems.Count + iMod;
-      iMod := iMod + 1;
-    end;
-  end;
-
-  FStartItems.Sort(@StartSort);
-end;
-
 procedure TTrayClient.AddTrayIcon(NIDv6: TNotifyIconDataV7);
 var
   tempItem: TTrayItem;
@@ -932,7 +912,7 @@ begin
   pStartItem := nil;
   for i := 0 to FStartItems.Count - 1 do
   begin
-    if (CompareText(TTrayStartItem(FStartItems[i]).Name, ExtractFileName(GetProcessNameFromWnd(item.Wnd)) + ':' + InttoStr(item.UID)) = 0) then
+    if (CompareText(TTrayStartItem(FStartItems[i]).Name, item.Name) = 0) then
     begin
       pStartItem := TTrayStartItem(FStartItems.Extract(FStartItems[i]));
       break;
@@ -941,7 +921,7 @@ begin
 
   if (addItem) and (pStartItem = nil) then
   begin
-    item.Position := -1;
+    item.Position := FItems.Count;
     FItems.Add(item);
   end else if addItem then
   begin
@@ -1149,6 +1129,11 @@ procedure TTrayClient.DeleteTrayIcon(NIDv6: TNotifyIconDataV7);
 var
   n: integer;
 begin
+  // To stop the tray from removing the Explorer icons when shutting down the Shell service we need
+  // to check if the shell service is stopping
+  if SharpAPI.ServiceStopping('Shell') = MR_STOPPING then
+    exit;
+
   n := GetTrayIconIndex(NIDv6.Wnd, NIDv6.UID);
   if (n <> -1) and (n < FItems.Count) then
   begin
@@ -1161,6 +1146,10 @@ var
   i: integer;
   temp: TTrayItem;
 begin
+  // See DeleteTrayIcon
+  if SharpAPI.ServiceStopping('Shell') = MR_STOPPING then
+    exit;
+
   if index > FItems.Count - 1 then
   begin
     exit
