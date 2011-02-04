@@ -85,6 +85,9 @@ type
 function TInterfacedSharpBarModule.CloseModule: HRESULT;
 begin
   try
+    // Save before quitting
+    TMainForm(Form).SaveSettings;
+
     FUpdateTimer.Free;
     FUpdateTimer := nil;
 
@@ -115,6 +118,10 @@ begin
     hr := SharpApi.IsServiceStarted('Shell');
     if hr <> MR_STARTED then
     begin
+      // Save settings (Shell service not running anymore)
+      if (FServiceRunning) and (FTrayClient.Items.Count > 0) then
+        TMainForm(Form).SaveSettings;
+
       FTrayClient.ClearTrayIcons;
       if FServiceRunning then
         Flastrepaint := -1;      
@@ -122,6 +129,10 @@ begin
     end
     else
     begin
+      // Reload settings (Shell service just started)
+      if (FServiceRunning) and (FTrayClient.Items.Count = 0) then
+        TMainForm(Form).LoadSettings;
+
       if not FServiceRunning then
         Flastrepaint := -1;
       FServiceRunning := True;
@@ -169,7 +180,6 @@ begin
 
     TMainForm(Form).mInterface := self;
     TMainForm(Form).FTrayClient := FTrayClient;
-    TMainForm(Form).FTrayClient.OnSaveSettings := TMainForm(Form).SaveSettings;
 
   except
     on E:Exception do
@@ -226,8 +236,8 @@ procedure TInterfacedSharpBarModule.SetSize(Value: integer);
 begin
   inherited SetSize(Value);
 
-  FTrayClient.RenderIcons;
   TMainForm(Form).RepaintIcons;
+  FTrayClient.RenderIcons;
 end;
 
 function TInterfacedSharpBarModule.SetTopHeight(Top, Height: integer): HRESULT;
@@ -239,15 +249,15 @@ begin
     if Initialized then
       TMainForm(Form).RealignComponents;
 
+    if Initialized then
+      TMainForm(Form).RepaintIcons;
+
     if FTrayClient.IconAutoSize then
       FTrayClient.IconSize := Height - 6;
 
     FTrayClient.TopOffset := (Height - FTrayClient.IconSize) div 2;
     FTrayClient.RenderIcons;
     FTrayClient.UpdateTrayIcons;
-
-    if Initialized then
-      TMainForm(Form).RepaintIcons;
   end;
 end;
 

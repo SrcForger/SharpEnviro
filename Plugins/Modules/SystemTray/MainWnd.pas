@@ -53,6 +53,7 @@ type
     procedure ShowHideButtonClick(Sender: TObject);
 
     procedure mnOnClick(pItem: TSharpEMenuItem; pMenuWnd : TObject; var CanClose: boolean);
+
   protected
   private
     sEnableIconHiding   : Boolean;
@@ -77,12 +78,16 @@ type
 
     sDragging           : Boolean;
     sBeginDragPos       : TPoint;
+    sDragMod            : integer;
     sDraggingItem       : TTrayItem;
+    sToolTipTimer       : TTimer;
 
     procedure CMMOUSELEAVE(var msg : TMessage); message CM_MOUSELEAVE;
     procedure WMNotify(var msg : TWMNotify); message WM_NOTIFY;
 
     procedure LoadIcons;
+
+    procedure ToolTipOnTimer(Sender: TObject);
   public
     FTrayClient : TTrayClient;
     Buffer     : TBitmap32;
@@ -95,6 +100,8 @@ type
 
     procedure ReAlignComponents;
     procedure UpdateComponentSkins;
+
+    procedure AddIcon;
   end;
 
 
@@ -140,14 +147,13 @@ begin
     exit;
 
   TrayItem := nil;
-  for n := 0 to FTrayClient.Items.Count - 1 do
+  for n := 0 to FTrayClient.HiddenItems.Count - 1 do
   begin
-    TrayItem := TTrayItem(FTrayClient.Items[n]);
-    if (TrayItem.Wnd = pItem.PropList.GetInt('Wnd'))
-      and (TrayItem.UID = pItem.PropList.GetInt('uID')) then
-        break;
-        
-    TrayItem := nil;
+    if (n = pItem.PropList.GetInt('index')) then
+    begin
+      TrayItem := TTrayItem(FTrayClient.HiddenItems.Extract(FTrayClient.HiddenItems[n]));
+      break;
+    end;
   end;
   
   if TrayItem <> nil then
@@ -155,12 +161,8 @@ begin
     menu := TSharpEMenu(pItem.OwnerMenu);
     menuwnd := TSharpEMenuWnd(pMenuWnd);
 
-    TrayItem.HiddenByClient := False;
-    TrayItem.Position := FTrayClient.Items.Count;
-    for n := 0 to FTrayClient.Items.Count - 1 do
-      if TTrayItem(FTrayClient.Items[n]).HiddenByClient then
-        TrayItem.Position := TrayItem.Position - 1;
-      
+    TrayItem.Position := -1;
+    FTrayClient.Items.Add(TrayItem);
 
     menu.Items.Extract(pItem);
 
@@ -210,6 +212,18 @@ begin
   end;
 end;
 
+procedure TMainForm.AddIcon;
+begin
+  if sDraggingItem <> nil then
+  begin
+    sDraggingItem := nil;
+
+    FTrayClient.UpdatePositions;
+    FTrayClient.RenderIcons;
+    SaveSettings;
+  end;
+end;
+
 procedure TMainForm.SaveSettings;
 var
   XML : TJclSimpleXML;
@@ -232,16 +246,22 @@ begin
 
     with Add('List').Items do
     begin
-      for n := 0 to FTrayClient.Items.Count - 1 do
+      for n := FTrayClient.Items.Count - 1 downto 0 do
       begin
         with Add('Item').Items do
         begin
-          {Add('Class', GetWndClass(TTrayItem(FTrayClient.Items[n]).Wnd));}
-          Add('ExeName', ExtractFileName(GetProcessNameFromWnd(TTrayItem(FTrayClient.Items[n]).Wnd)));
-          Add('UID', inttostr(TTrayItem(FTrayClient.Items[n]).UID));
-          Add('Hidden', TTrayItem(FTrayClient.Items[n]).HiddenByClient);
-          Add('Position', TTrayItem(FTrayClient.Items[n]).Position);
-        end; 
+          Add('Name', ExtractFileName(GetProcessNameFromWnd(TTrayItem(FTrayClient.Items[n]).Wnd)) + ':' + inttostr(TTrayItem(FTrayClient.Items[n]).UID));
+          Add('Hidden', False);
+        end;
+      end;
+
+      for n := FTrayClient.HiddenItems.Count - 1 downto 0 do
+      begin
+        with Add('Item').Items do
+        begin
+          Add('Name', ExtractFileName(GetProcessNameFromWnd(TTrayItem(FTrayClient.HiddenItems[n]).Wnd)) + ':' + inttostr(TTrayItem(FTrayClient.HiddenItems[n]).UID));
+          Add('Hidden', True);
+        end;
       end;
     end;
   end;
@@ -260,12 +280,11 @@ var
   mn : TSharpEMenu;
   ms : TSharpEMenuSettings;
   wnd: TSharpEMenuWnd;
-  n, n2: integer;
+  n: integer;
   item : TSharpEMenuItem;
   R : TRect;
-  Bmp : TBitmap32;
   TrayItem : TTrayItem;
-  s : String;
+  s, id : String;
 begin
   ms := TSharpEMenuSettings.Create;
   ms.LoadFromXML;
@@ -279,32 +298,22 @@ begin
 
   SharpEMenuIcons.Items.Clear;
 
-  Bmp := TBitmap32.Create;
-
   mn.AddLabelItem('Hidden Icons',False);
-  n2 := 1;
-  for n := 0 to FTrayClient.Items.Count - 1 do
+  for n := 0 to FTrayClient.HiddenItems.Count - 1 do
   begin
-    TrayItem := TTrayItem(FTrayClient.Items.Items[n]);
+    TrayItem := TTrayItem(FTrayClient.HiddenItems.Items[n]);
     if IsWindow(TrayItem.wnd) then
     begin
-      if TrayItem.HiddenByClient then
-      begin
-        IconToImage(Bmp,TrayItem.Icon);
-        s := TrayItem.FTip;
+      s := TrayItem.FTip;
+      id := Format('customicon: %s:%d', [ExtractFileName(GetProcessNameFromWnd(TrayItem.Wnd)), TrayItem.UID]);
 
-        item := TSharpEMenuItem(mn.AddCustomItem(s,'customicon:'+inttostr(n2),Bmp));
-        item.PropList.Add('wnd',TrayItem.wnd);
-        item.PropList.Add('uID',TrayItem.UID);
-        item.PropList.Add('Hide',not TrayItem.HiddenByClient);
-        item.OnClick := mnOnClick;
-
-        n2 := n2 + 1;
-      end;
+      item := TSharpEMenuItem(mn.AddCustomItem(s, id, TrayItem.Bitmap));
+      item.PropList.Add('index', n);
+      item.OnClick := mnOnClick;
     end;
   end;
 
-  Bmp.Free;
+
 
   mn.RenderBackground(0,0);
 
@@ -398,7 +407,7 @@ procedure TMainForm.LoadSettings;
 var
   XML : TJclSimpleXML;
   skin : String;
-  n : integer;
+  n, nCount : integer;
   startItem: TTrayStartItem;
 begin
   // Load Skin custom settings as default
@@ -452,21 +461,22 @@ begin
       sEnableIconHiding   := BoolValue('iconhiding', True);
       FTrayClient.StartHidden := BoolValue('StartHidden', False);
 
-      // Import old list
-      FTrayClient.UpdateTrayIcons;
-
+      FTrayClient.StartItems.Clear;
       if (ItemNamed['List'] <> nil) then
       begin
         with ItemNamed['List'] do
-        for n := 0 to Items.Count - 1 do
         begin
-          startItem := TTrayStartItem.Create;
-          startItem.UID := Items[n].Items.IntValue('UID', 0);
-          {startItem.WndClass := Items[n].Items.Value('Class', '');}
-          startItem.ExeName := Items[n].Items.Value('ExeName', '');
-          startItem.Position := Items[n].Items.IntValue('Position', -1);
-          startItem.HiddenByClient := Items[n].Items.BoolValue('Hidden', False);
-          FTrayClient.StartItems.Add(startItem);
+          nCount := Items.Count - 1;
+          for n := 0 to Items.Count - 1 do
+          begin
+            startItem := TTrayStartItem.Create;
+            startItem.Name := Items[n].Items.Value('Name', '');
+            startItem.Position := nCount;
+            startItem.HiddenByClient := Items[n].Items.BoolValue('Hidden', False);
+            FTrayClient.StartItems.Add(startItem);
+
+            nCount := nCount - 1;
+          end;
         end;
 
         FTrayClient.UpdateStartItemPositions;
@@ -607,16 +617,14 @@ begin
      else PointInRect:=False;
 end;
 
-procedure TMainForm.RepaintIcons(pRepaint : boolean = True); 
+procedure TMainForm.RepaintIcons(pRepaint : boolean = True);
 begin
   Buffer.Assign(mInterface.Background);
   if FTrayClient = nil then
     exit;
-    
+
   FTrayClient.Bitmap.DrawMode := dmBlend;
   FTrayClient.Bitmap.DrawTo(Buffer,ShowHideButton.Width,Height div 2 - FTrayClient.Bitmap.Height div 2);
-
-  //ShowHideButton.Glyph32.DrawTo(Buffer, 0, 0);
 
   if pRepaint then
      Repaint;
@@ -630,6 +638,11 @@ begin
   Buffer := TBitmap32.Create;
   Buffer.DrawMode := dmBlend;
   Buffer.CombineMode := cmMerge;
+
+  sToolTipTimer := TTimer.Create(Self);
+  sToolTipTimer.Enabled := False;
+  sToolTipTimer.Interval := 1000;
+  sToolTipTimer.OnTimer := ToolTipOnTimer;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -691,13 +704,22 @@ begin
   if sDraggingItem <> nil then
   begin
     if (sEnableIconHiding) and (x < ShowHideButton.Width) then
-      sDraggingItem.HiddenByClient := True;
+    begin
+      FTrayClient.HiddenItems.Add(FTrayClient.Items.Extract(sDraggingItem));
 
+      if ShowHideButton.ForceDown then
+      begin
+        SendMessage(FTrayClient.TipWnd, TTM_POP, 0, 0);
+        ToolTipApi.UpdateToolTipText(FTrayClient.TipWnd, FTrayClient.TipForm, 0, 'Hidden Icons' + sLineBreak + 'Drop icons here to hide them');
+      end;
+      ShowHideButton.ForceDown := False;
+    end;
+
+    sDraggingItem.ModX := 0;
     sDraggingItem := nil;
 
     FTrayClient.UpdatePositions;
     FTrayClient.RenderIcons;
-    SaveSettings;
     exit;
   end;
 
@@ -719,6 +741,15 @@ begin
   end;
 end;
 
+procedure TMainForm.ToolTipOnTimer(Sender: TObject);
+begin
+  // Check if we should display the tooltip
+  if ShowHideButton.ForceDown then
+    SendMessage(FTrayClient.TipWnd, TTM_POPUP, 1, 0);
+
+  sToolTipTimer.Enabled := False;
+end;
+
 procedure TMainForm.FormMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 var
@@ -737,32 +768,64 @@ begin
     exit;
   end;
 
+  modx := x - ShowHideButton.Width;
+
   // Check if we have moved
-  if (sDragging) and (sDraggingItem = nil) and (sBeginDragPos.X <> x - ShowHideButton.Width) then
-    sDraggingItem := FTrayClient.GetIconAtPos(Point(x - ShowHideButton.Width, y));
+  if (sDragging) and (sDraggingItem = nil) and (sBeginDragPos.X <> modx) then
+  begin
+    sDraggingItem := FTrayClient.GetIconAtPos(Point(modx, y));
+    sDragMod := ((FTrayClient.Items.IndexOf(sDraggingItem) + 1) * (FTrayClient.IconSize + FTrayClient.IconSpacing)) - sBeginDragPos.X;
+  end;
 
   if (sDraggingItem <> nil) then
   begin
-    curItem := FTrayClient.GetIconAtPos(point(x - ShowHideButton.Width, y));
+    sDraggingItem.ModX := (modx - sBeginDragPos.X);
+
+    // Check if we are over the hide button
+    if (sEnableIconHiding) and (x < ShowHideButton.Width) then
+    begin
+      if (not ShowHideButton.ForceDown) then
+      begin
+        ToolTipApi.UpdateToolTipText(FTrayClient.TipWnd, FTrayClient.TipForm, 0, 'Drop the icon here to hide it');
+        sToolTipTimer.Enabled := True;
+      end;
+
+      ShowHideButton.ForceDown := True;
+    end else if (ShowHidebutton.ForceDown) then
+    begin
+      SendMessage(FTrayClient.TipWnd, TTM_POP, 0, 0);
+      ToolTipApi.UpdateToolTipText(FTrayClient.TipWnd, FTrayClient.TipForm, 0, 'Hidden Icons' + sLineBreak + 'Drop icons here to hide them');
+
+      ShowHideButton.ForceDown := False;
+    end;
+
+    curItem := nil;
+    if (FTrayClient.Items.IndexOf(sDraggingItem) > 0) and (modx < (FTrayClient.Items.IndexOf(sDraggingItem) * (FTrayClient.IconSize + FTrayClient.IconSpacing))) then
+      curItem := TTrayItem(FTrayClient.Items[FTrayClient.Items.IndexOf(sDraggingItem) - 1])
+    else if (FTrayClient.Items.IndexOf(sDraggingItem) < FTrayClient.Items.Count - 1) and (modx >= ((FTrayClient.Items.IndexOf(sDraggingItem) + 1) * (FTrayClient.IconSize + FTrayClient.IconSpacing))) then
+      curItem := TTrayItem(FTrayClient.Items[FTrayClient.Items.IndexOf(sDraggingItem) + 1]);
+
     if curItem <> nil then
     begin
-      if sDraggingItem.Position <> curItem.Position then
+      if FTrayClient.Items.IndexOf(sDraggingItem) <> FTrayClient.Items.IndexOf(curItem) then
       begin
-        pos := curItem.Position;
-
-        curItem.Position := sDraggingItem.Position;
-        sDraggingItem.Position := pos;
+        pos := sDraggingItem.Position;
+        sDraggingItem.Position := curItem.Position;
+        curItem.Position := pos;
 
         FTrayClient.Items.Exchange(FTrayClient.Items.IndexOf(curItem), FTrayClient.Items.IndexOf(sDraggingItem));
         FTrayClient.RenderIcons;
 
-        sBeginDragPos := point(x - ShowHideButton.Width, y);
+        sBeginDragPos := point(((FTrayClient.Items.IndexOf(sDraggingItem) + 1) * (FTrayClient.IconSize + FTrayClient.IconSpacing)) - sDragMod, y);
+
+        sDraggingItem.ModX := (modx - sBeginDragPos.X);
       end;
     end;
+
+    FTrayClient.RenderIcons;
   end;
 
   p := ClientToScreen(point(x,y));
-  modx := x - ShowHideButton.Width;
   FTrayClient.PerformIconAction(modx,y,p.x + ShowHideButton.Width,p.y,0,WM_MOUSEMOVE,self);
 end;
 
