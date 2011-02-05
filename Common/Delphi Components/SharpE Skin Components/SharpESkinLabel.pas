@@ -165,7 +165,7 @@ begin
     if Mon <> nil then
     begin
       p := ClientToScreen(Point(0,0));
-      if p.y < Mon.Top + Mon.Height div 2 then
+      if p.y > Mon.Top + Mon.Height div 2 then
         isBottom := True;
     end;
   end;
@@ -173,7 +173,7 @@ begin
     apTop: begin
              if (isBottom) then
                newTop := FManager.Skin.TextPosBottomTL.Y - DPIMod
-             else newTop := FManager.Skin.TextPosBottomTL.Y - DPIMod;
+             else newTop := FManager.Skin.TextPosTL.Y - DPIMod;
              if  Top <> newTop then
              Top := newTop;
            end;
@@ -181,7 +181,7 @@ begin
                 Top := parent.Height div 2 - (FTHeight + 10) div 2 + TextPos.Y div 2 - DPIMod div 2;
     apBottom: begin
                 if (isBottom) then
-                  newTop := FManager.Skin.TextPosBL.Y - DPIMod
+                  newTop := FManager.Skin.TextPosBottomBL.Y - DPIMod
                 else newTop := FManager.Skin.TextPosBL.Y - DPIMod;
                 if  Top <> newTop then
                   Top := newTop;
