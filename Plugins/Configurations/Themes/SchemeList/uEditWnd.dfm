@@ -55,6 +55,7 @@ object frmEditWnd: TfrmEditWnd
         Width = 149
         Height = 24
         TabOrder = 0
+        OnChange = EditChange
       end
     end
     object pnlAuthor: TPanel
