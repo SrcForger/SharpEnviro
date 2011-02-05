@@ -30,6 +30,7 @@ uses
   Windows,
   Messages,
   SysUtils,
+  Forms,
   Classes,
   Controls,
   StdCtrls,
@@ -128,6 +129,10 @@ var
   TextPos: TPoint;
   SkinText : ISharpESkinText;
   DPIMod : integer;
+  p : TPoint;
+  Mon : TMonitor;
+  newTop : integer;
+  isBottom : boolean;
 begin
   if not Assigned(FManager) then
   begin
@@ -150,13 +155,37 @@ begin
   FTHeight := Bmp.TextHeight(Caption);
 
   DPIMod := round((FManager.DPIScaleFactor - 1)* 6);
+  Mon := nil;
+  isBottom := False;
+  if not (FAutoPos = apCenter) then
+  begin
+    // check if the bar is aligned at the bottom, if so user alternative location
+    if (parent <> nil) then
+      Mon := TForm(parent).Monitor;
+    if Mon <> nil then
+    begin
+      p := ClientToScreen(Point(0,0));
+      if p.y < Mon.Top + Mon.Height div 2 then
+        isBottom := True;
+    end;
+  end;
   case FAutoPos of
-    apTop: if Top <> FManager.Skin.TextPosTL.Y - DPIMod then
-             Top := FManager.Skin.TextPosTL.Y - DPIMod;
+    apTop: begin
+             if (isBottom) then
+               newTop := FManager.Skin.TextPosBottomTL.Y - DPIMod
+             else newTop := FManager.Skin.TextPosBottomTL.Y - DPIMod;
+             if  Top <> newTop then
+             Top := newTop;
+           end;
     apCenter: if Top <> parent.Height div 2 - (FTHeight + 10) div 2 + TextPos.Y div 2 - DPIMod div 2 then
                 Top := parent.Height div 2 - (FTHeight + 10) div 2 + TextPos.Y div 2 - DPIMod div 2;
-    apBottom: if Top <> FManager.Skin.TextPosBL.Y - DPIMod then
-             Top := FManager.Skin.TextPosBL.Y - DPIMod;
+    apBottom: begin
+                if (isBottom) then
+                  newTop := FManager.Skin.TextPosBL.Y - DPIMod
+                else newTop := FManager.Skin.TextPosBL.Y - DPIMod;
+                if  Top <> newTop then
+                  Top := newTop;
+              end;
   end;
 
   if (FAutoSize) then

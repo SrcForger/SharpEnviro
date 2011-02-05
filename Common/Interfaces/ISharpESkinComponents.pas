@@ -557,6 +557,8 @@ type
 
     function GetTextPosTL : TPoint; stdcall;
     function GetTextPosBL : TPoint; stdcall;
+    function GetTextPosBottomTL : TPoint; stdcall;
+    function GetTextPosBottomBL : TPoint; stdcall;
 
     property Button       : ISharpEButtonSkin read GetButtonSkin;
     property Edit         : ISharpEEditSkin read GetEditSkin;
@@ -575,8 +577,10 @@ type
     property LargeText  : ISharpESkinText read GetLargeText;
     property OSDText    : ISharpEskinText read GetOSDText;
 
-    property TextPosTL : TPoint read GetTextPosTL;
-    property TextPosBL : TPoint read GetTextPosBL;
+    property TextPosTL       : TPoint read GetTextPosTL;
+    property TextPosBL       : TPoint read GetTextPosBL;
+    property TextPosBottomTL : TPoint read GetTextPosBottomTL;
+    property TextPosBottomBL : TPoint read GetTextPosBottomBL;    
   end;
 
   ISharpESkinManager = interface

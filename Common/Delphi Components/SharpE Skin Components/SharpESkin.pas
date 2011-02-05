@@ -73,6 +73,8 @@ type
     FSkinText: TSkinText;
     FTextPosTL : TSkinPoint;
     FTextPosBL : TSkinPoint;
+    FTextPosBottomTL : TSkinPoint;
+    FTextPosBottomBL : TSkinPoint;    
     FSkinVersion: Double;
     FBitmapList: TSkinBitmapList;
     FLoadSkins : TSharpESkinItems;
@@ -141,8 +143,10 @@ type
     function GetLargeText  : ISharpESkinText; stdcall;
     function GetOSDText    : ISharpESkinText; stdcall;
 
-    function GetTextPosTL : TPoint; stdcall;
-    function GetTextPosBL : TPoint; stdcall;    
+    function GetTextPosTL       : TPoint; stdcall;
+    function GetTextPosBL       : TPoint; stdcall;
+    function GetTextPosBottomTL : TPoint; stdcall;
+    function GetTextPosBottomBL : TPoint; stdcall;      
   protected
   public
     constructor Create; overload;
@@ -175,8 +179,10 @@ type
     property LargeText  : ISharpESkinText read GetLargeText;
     property OSDText    : ISharpESkinText read GetOSDText;
 
-    property TextPosTL : TPoint read GetTextPosTL;
-    property TextPosBL : TPoint read GetTextPosBL;    
+    property TextPosTL       : TPoint read GetTextPosTL;
+    property TextPosBL       : TPoint read GetTextPosBL;
+    property TextPosBottomTL : TPoint read GetTextPosBottomTL;
+    property TextPosBottomBL : TPoint read GetTextPosBottomBL;
 
     property OnNotify: TSkinEvent read FOnNotify write FOnNotify;
     property BarSkin: TSharpEBarSkin read FBarSkin;
@@ -895,6 +901,8 @@ begin
 
   FTextPosTL  := TSkinPoint.Create;
   FTextPosBL  := TSkinPoint.Create;
+  FTextPosBottomTL  := TSkinPoint.Create;
+  FTextPosBottomBL  := TSkinPoint.Create;  
   FSkinHeader := TSharpeSkinHeader.Create;
   if scMiniThrobber in FLoadSkins then
   begin
@@ -973,6 +981,8 @@ begin
 
   FTextPosTL.Free;
   FTextPosBL.Free;
+  FTextPosBottomTL.Free;
+  FTextPosBottomBL.Free;  
   FSkinHeader.Free;
   if FMiniThrobberSkin <> nil then
   begin
@@ -1195,6 +1205,8 @@ begin
   FOSDText.SaveToStream(Stream);
   FTextPosTL.SaveToStream(Stream);
   FTextPosBL.SaveToStream(Stream);
+  FTextPosBottomTL.SaveToStream(Stream);
+  FTextPosBottomBL.SaveToStream(Stream);  
   Stream.WriteBuffer(SaveBitmap, sizeof(SaveBitmap));
   if SaveBitmap then
     FBitmapList.SaveToStream(Stream);
@@ -1371,6 +1383,8 @@ begin
     FOSDText.LoadFromStream(Stream);
     FTextPosTL.LoadFromStream(Stream);
     FTextPosBL.LoadFromStream(Stream);
+    FTextPosBottomTL.LoadFromStream(Stream);
+    FTextPosBottomBL.LoadFromStream(Stream);    
     Stream.ReadBuffer(BmpListInStream, sizeof(BmpListInStream));
     if BmpListInStream then
       FBitmapList.LoadFromStream(Stream);
@@ -1456,6 +1470,8 @@ begin
   FBitmapList.Clear;
   FTextPosTL.Clear;
   FTextPosBL.Clear;
+  FTextPosBottomTL.Clear;
+  FTextPosBottomBL.Clear;  
 
   FOSDText.Name := 'Verdana';
   FOSDText.ColorString := 'clwhite';
@@ -1523,9 +1539,19 @@ begin
      with FXml.Root.Items.ItemNamed['font'].Items do
      begin
        if ItemNamed['locationTL'] <> nil then
+       begin
           FTextPosTL.SetPoint(ItemNamed['locationTL'].Value);
+          FTextPosBottomTL.SetPoint(ItemNamed['locationTL'].Value); // use as default
+       end;
        if ItemNamed['locationBL'] <> nil then
+       begin
           FTextPosBL.SetPoint(ItemNamed['locationBL'].Value);
+          FTextPosBottomBL.SetPoint(ItemNamed['locationBL'].Value); // use as default
+       end;
+       if ItemNamed['locationBottomTL'] <> nil then
+          FTextPosBottomTL.SetPoint(ItemNamed['locationBottomTL'].Value);
+       if ItemNamed['locationBottomBL'] <> nil then
+          FTextPosBottomBL.SetPoint(ItemNamed['locationBottomBL'].Value);
        if ItemNamed['small'] <> nil then
           FSmallText.LoadFromXML(ItemNamed['small'],FontList);
        if ItemNamed['medium'] <> nil then
@@ -3382,6 +3408,16 @@ end;
 function TSharpESkin.GetTextPosBL: TPoint;
 begin
   result := Point(FTextPosBL.XAsInt,FTextPosBL.YAsInt);
+end;
+
+function TSharpESkin.GetTextPosBottomBL: TPoint;
+begin
+  result := Point(FTextPosBottomBL.XAsInt,FTextPosBottomBL.YAsInt);
+end;
+
+function TSharpESkin.GetTextPosBottomTL: TPoint;
+begin
+  result := Point(FTextPosBottomTL.XAsInt,FTextPosBottomTL.YAsInt);
 end;
 
 function TSharpESkin.GetTextPosTL: TPoint;
