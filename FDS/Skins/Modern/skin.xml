@@ -466,27 +466,27 @@
           <lighten>1</lighten>
           <lightenamount>48</lightenamount>
         </icon>
-        <skinpart>
+	 <skinpart>
           <location>0,0</location>
-          <dimension>4,26</dimension>
-          <image>images/Button-Left.png</image>
-	  <color>$Highlight</color>          
-          <alpha>$Alpha+0</alpha>
-        </skinpart>  
-        <skinpart>
-          <location>4,0</location>
-          <dimension>w-8,26</dimension>
-          <image>images/Button-Middle.png</image>
-	  <color>$Highlight</color>
-          <alpha>$Alpha+0</alpha>
-        </skinpart>  
-        <skinpart>
-          <location>w-4,0</location>
-          <dimension>4,26</dimension>
-          <image>images/Button-Right.png</image>
-	  <color>$Highlight</color>
-          <alpha>$Alpha+0</alpha>
-        </skinpart>
+          <dimension>7,28</dimension>
+          <image>images/TaskbarLeft.png</image>
+          <color>$Background+64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart> 
+	 <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <image>images/TaskbarMiddle.png</image>
+          <color>$Background+64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart> 
+	 <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <image>images/TaskbarRight.png</image>
+          <color>$Background+64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart> 
       </specialhover>
       <normal>
 	 <skinpart>
@@ -517,7 +517,7 @@
           <dimension>7,28</dimension>
           <image>images/TaskbarLeft.png</image>
           <color>$Background+32</color>
-          <alpha>$Alpha-64</alpha>
+          <alpha>$Alpha^-64</alpha>
         </skinpart> 
 	 <skinpart>
           <location>7,0</location>
@@ -539,21 +539,21 @@
           <dimension>7,28</dimension>
           <image>images/TaskbarLeft.png</image>
           <color>$Special</color>
-          <alpha>$Alpha-32</alpha>
+          <alpha>$Alpha</alpha>
         </skinpart> 
 	 <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
           <image>images/TaskbarMiddle.png</image>
           <color>$Special</color>
-          <alpha>$Alpha-32</alpha>
+          <alpha>$Alpha</alpha>
         </skinpart> 
 	 <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
           <image>images/TaskbarRight.png</image>
           <color>$Special</color>
-          <alpha>$Alpha-32</alpha>
+          <alpha>$Alpha</alpha>
         </skinpart> 
       </normalhover>
       <down>        
@@ -583,22 +583,22 @@
           <location>0,0</location>
           <dimension>7,28</dimension>
           <image>images/TaskbarLeft.png</image>
-          <color>$IconHighlight-32</color>
-          <alpha>$Alpha-64</alpha>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha-32</alpha>
         </skinpart> 
 	 <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
           <image>images/TaskbarMiddle.png</image>
-          <color>$IconHighlight-32</color>
-          <alpha>$Alpha-64</alpha>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha-32</alpha>
         </skinpart> 
 	 <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
           <image>images/TaskbarRight.png</image>
-          <color>$IconHighlight-32</color>
-          <alpha>$Alpha-64</alpha>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha-32</alpha>
         </skinpart> 
       </down>
       <downhover>
@@ -632,22 +632,22 @@
           <location>0,0</location>
           <dimension>7,28</dimension>
           <image>images/TaskbarLeft.png</image>
-          <color>$IconHighlight</color>
-          <alpha>$Alpha-64</alpha>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha</alpha>
         </skinpart> 
 	 <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
           <image>images/TaskbarMiddle.png</image>
-          <color>$IconHighlight</color>
-          <alpha>$Alpha-64</alpha>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha</alpha>
         </skinpart> 
 	 <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
           <image>images/TaskbarRight.png</image>
-          <color>$IconHighlight</color>
-          <alpha>$Alpha-64</alpha>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha</alpha>
         </skinpart> 
       </downhover>
       <highlight>
@@ -681,22 +681,22 @@
           <location>0,0</location>
           <dimension>7,28</dimension>
           <image>images/TaskbarLeft.png</image>
-          <color>$IconHighlight-32</color>
-          <alpha>$Alpha-32</alpha>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha</alpha>
         </skinpart> 
 	 <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
           <image>images/TaskbarMiddle.png</image>
-          <color>$IconHighlight-32</color>
-          <alpha>$Alpha-32</alpha>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha</alpha>
         </skinpart> 
 	 <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
           <image>images/TaskbarRight.png</image>
-          <color>$IconHighlight-32</color>
-          <alpha>$Alpha-32</alpha>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha</alpha>
         </skinpart> 
       </highlight>
       <highlighthover>
@@ -730,24 +730,24 @@
           <location>0,0</location>
           <dimension>7,28</dimension>
           <image>images/TaskbarLeft.png</image>
-          <color>$IconHighlight-32</color>
-          <alpha>$Alpha</alpha>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha+32</alpha>
         </skinpart> 
 	 <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
           <image>images/TaskbarMiddle.png</image>
-          <color>$IconHighlight-32</color>
-          <alpha>$Alpha</alpha>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha+32</alpha>
         </skinpart> 
 	 <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
           <image>images/TaskbarRight.png</image>
-          <color>$IconHighlight-32</color>
-          <alpha>$Alpha</alpha>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha+32</alpha>
         </skinpart> 
-      </highlighthover>     
+      </highlighthover>   
     </full>
     <compact>
       <text>
@@ -796,27 +796,27 @@
           <lighten>1</lighten>
           <lightenamount>48</lightenamount>
         </icon>
-        <skinpart>
+	 <skinpart>
           <location>0,0</location>
-          <dimension>4,26</dimension>
-          <image>images/Button-Left.png</image>
-	  <color>$Highlight</color>          
-          <alpha>$Alpha+0</alpha>
-        </skinpart>  
-        <skinpart>
-          <location>4,0</location>
-          <dimension>w-8,26</dimension>
-          <image>images/Button-Middle.png</image>
-	  <color>$Highlight</color>
-          <alpha>$Alpha+0</alpha>
-        </skinpart>  
-        <skinpart>
-          <location>w-4,0</location>
-          <dimension>4,26</dimension>
-          <image>images/Button-Right.png</image>
-	  <color>$Highlight</color>
-          <alpha>$Alpha+0</alpha>
-        </skinpart>
+          <dimension>7,28</dimension>
+          <image>images/TaskbarLeft.png</image>
+          <color>$Background+64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart> 
+	 <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <image>images/TaskbarMiddle.png</image>
+          <color>$Background+64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart> 
+	 <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <image>images/TaskbarRight.png</image>
+          <color>$Background+64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart> 
       </specialhover>
       <normal>
 	 <skinpart>
@@ -847,7 +847,7 @@
           <dimension>7,28</dimension>
           <image>images/TaskbarLeft.png</image>
           <color>$Background+32</color>
-          <alpha>$Alpha-64</alpha>
+          <alpha>$Alpha^-64</alpha>
         </skinpart> 
 	 <skinpart>
           <location>7,0</location>
@@ -869,21 +869,21 @@
           <dimension>7,28</dimension>
           <image>images/TaskbarLeft.png</image>
           <color>$Special</color>
-          <alpha>$Alpha-32</alpha>
+          <alpha>$Alpha</alpha>
         </skinpart> 
 	 <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
           <image>images/TaskbarMiddle.png</image>
           <color>$Special</color>
-          <alpha>$Alpha-32</alpha>
+          <alpha>$Alpha</alpha>
         </skinpart> 
 	 <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
           <image>images/TaskbarRight.png</image>
           <color>$Special</color>
-          <alpha>$Alpha-32</alpha>
+          <alpha>$Alpha</alpha>
         </skinpart> 
       </normalhover>
       <down>        
@@ -913,22 +913,22 @@
           <location>0,0</location>
           <dimension>7,28</dimension>
           <image>images/TaskbarLeft.png</image>
-          <color>$IconHighlight-32</color>
-          <alpha>$Alpha-64</alpha>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha-32</alpha>
         </skinpart> 
 	 <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
           <image>images/TaskbarMiddle.png</image>
-          <color>$IconHighlight-32</color>
-          <alpha>$Alpha-64</alpha>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha-32</alpha>
         </skinpart> 
 	 <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
           <image>images/TaskbarRight.png</image>
-          <color>$IconHighlight-32</color>
-          <alpha>$Alpha-64</alpha>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha-32</alpha>
         </skinpart> 
       </down>
       <downhover>
@@ -962,24 +962,24 @@
           <location>0,0</location>
           <dimension>7,28</dimension>
           <image>images/TaskbarLeft.png</image>
-          <color>$IconHighlight</color>
-          <alpha>$Alpha-64</alpha>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha</alpha>
         </skinpart> 
 	 <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
           <image>images/TaskbarMiddle.png</image>
-          <color>$IconHighlight</color>
-          <alpha>$Alpha-64</alpha>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha</alpha>
         </skinpart> 
 	 <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
           <image>images/TaskbarRight.png</image>
-          <color>$IconHighlight</color>
-          <alpha>$Alpha-64</alpha>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha</alpha>
         </skinpart> 
-      </downhover>
+      </downhover>    
       <highlight>
         <icon>
           <lighten>0</lighten>
@@ -1011,22 +1011,22 @@
           <location>0,0</location>
           <dimension>7,28</dimension>
           <image>images/TaskbarLeft.png</image>
-          <color>$IconHighlight-32</color>
-          <alpha>$Alpha-32</alpha>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha</alpha>
         </skinpart> 
 	 <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
           <image>images/TaskbarMiddle.png</image>
-          <color>$IconHighlight-32</color>
-          <alpha>$Alpha-32</alpha>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha</alpha>
         </skinpart> 
 	 <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
           <image>images/TaskbarRight.png</image>
-          <color>$IconHighlight-32</color>
-          <alpha>$Alpha-32</alpha>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha</alpha>
         </skinpart> 
       </highlight>
       <highlighthover>
@@ -1060,24 +1060,24 @@
           <location>0,0</location>
           <dimension>7,28</dimension>
           <image>images/TaskbarLeft.png</image>
-          <color>$IconHighlight-32</color>
-          <alpha>$Alpha</alpha>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha+32</alpha>
         </skinpart> 
 	 <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
           <image>images/TaskbarMiddle.png</image>
-          <color>$IconHighlight-32</color>
-          <alpha>$Alpha</alpha>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha+32</alpha>
         </skinpart> 
 	 <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
           <image>images/TaskbarRight.png</image>
-          <color>$IconHighlight-32</color>
-          <alpha>$Alpha</alpha>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha+32</alpha>
         </skinpart> 
-      </highlighthover>     
+      </highlighthover>   
     </compact>
     <mini>
       <text>
@@ -1085,9 +1085,9 @@
       </text>
       <overlaytext>
         <draw>1</draw>
-        <location>2,-2</location>
+        <location>3,-2</location>
         <name>Calibri</name>
-        <size>9</size>
+        <size>10</size>
         <cleartype>1</cleartype>
         <color>$Text</color>
         <shadow>1</shadow>
@@ -1182,7 +1182,7 @@
           <dimension>7,28</dimension>
           <image>images/TaskbarLeft.png</image>
           <color>$Background+32</color>
-          <alpha>$Alpha-64</alpha>
+          <alpha>$Alpha^-64</alpha>
         </skinpart> 
 	 <skinpart>
           <location>7,0</location>
@@ -1204,25 +1204,25 @@
           <dimension>7,28</dimension>
           <image>images/TaskbarLeft.png</image>
           <color>$Special</color>
-          <alpha>$Alpha-32</alpha>
+          <alpha>$Alpha</alpha>
         </skinpart> 
 	 <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
           <image>images/TaskbarMiddle.png</image>
           <color>$Special</color>
-          <alpha>$Alpha-32</alpha>
+          <alpha>$Alpha</alpha>
         </skinpart> 
 	 <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
           <image>images/TaskbarRight.png</image>
           <color>$Special</color>
-          <alpha>$Alpha-32</alpha>
+          <alpha>$Alpha</alpha>
         </skinpart> 
       </normalhover>
       <down>        
-	 <skinpart>
+	<skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
           <image>images/TaskbarLeft.png</image>
@@ -1248,22 +1248,22 @@
           <location>0,0</location>
           <dimension>7,28</dimension>
           <image>images/TaskbarLeft.png</image>
-          <color>$IconHighlight-32</color>
-          <alpha>$Alpha-64</alpha>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha-32</alpha>
         </skinpart> 
 	 <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
           <image>images/TaskbarMiddle.png</image>
-          <color>$IconHighlight-32</color>
-          <alpha>$Alpha-64</alpha>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha-32</alpha>
         </skinpart> 
 	 <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
           <image>images/TaskbarRight.png</image>
-          <color>$IconHighlight-32</color>
-          <alpha>$Alpha-64</alpha>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha-32</alpha>
         </skinpart> 
       </down>
       <downhover>
@@ -1297,22 +1297,22 @@
           <location>0,0</location>
           <dimension>7,28</dimension>
           <image>images/TaskbarLeft.png</image>
-          <color>$IconHighlight</color>
-          <alpha>$Alpha-64</alpha>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha</alpha>
         </skinpart> 
 	 <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
           <image>images/TaskbarMiddle.png</image>
-          <color>$IconHighlight</color>
-          <alpha>$Alpha-64</alpha>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha</alpha>
         </skinpart> 
 	 <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
           <image>images/TaskbarRight.png</image>
-          <color>$IconHighlight</color>
-          <alpha>$Alpha-64</alpha>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha</alpha>
         </skinpart> 
       </downhover>
       <highlight>
@@ -1346,22 +1346,22 @@
           <location>0,0</location>
           <dimension>7,28</dimension>
           <image>images/TaskbarLeft.png</image>
-          <color>$IconHighlight-32</color>
-          <alpha>$Alpha-32</alpha>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha</alpha>
         </skinpart> 
 	 <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
           <image>images/TaskbarMiddle.png</image>
-          <color>$IconHighlight-32</color>
-          <alpha>$Alpha-32</alpha>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha</alpha>
         </skinpart> 
 	 <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
           <image>images/TaskbarRight.png</image>
-          <color>$IconHighlight-32</color>
-          <alpha>$Alpha-32</alpha>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha</alpha>
         </skinpart> 
       </highlight>
       <highlighthover>
@@ -1395,22 +1395,22 @@
           <location>0,0</location>
           <dimension>7,28</dimension>
           <image>images/TaskbarLeft.png</image>
-          <color>$IconHighlight-32</color>
-          <alpha>$Alpha</alpha>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha+32</alpha>
         </skinpart> 
 	 <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
           <image>images/TaskbarMiddle.png</image>
-          <color>$IconHighlight-32</color>
-          <alpha>$Alpha</alpha>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha+32</alpha>
         </skinpart> 
 	 <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
           <image>images/TaskbarRight.png</image>
-          <color>$IconHighlight-32</color>
-          <alpha>$Alpha</alpha>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha+32</alpha>
         </skinpart> 
       </highlighthover>   
     </mini>
@@ -1620,6 +1620,8 @@
   <font>
     <locationTL>0,-5</locationTL>
     <locationBL>0,8</locationBL>
+    <locationBottomTL>0,-7</locationBottomTL>
+    <locationBottomBL>0,6</locationBottomBL>
     <small>
       <bold>0</bold>
       <name>Calibri</name>
@@ -1630,14 +1632,14 @@
       <shadowcolor>$TextShadow</shadowcolor>
       <shadowtype>Right</shadowtype>
       <shadowalpha>128</shadowalpha>
-      <location>0,0</location>
+      <location>0,-1</location>
     </small>
     <medium>
-      <name>Calibri</name>
-      <size>10</size>
       <bold>0</bold>
+      <name>Calibri</name>
+      <size>11</size>
+      <cleartype>1</cleartype>
       <color>$Text</color>
-      <cleartype>1/</cleartype>	
       <shadow>1</shadow>
       <shadowcolor>$TextShadow</shadowcolor>
       <shadowtype>Right</shadowtype>
@@ -1646,7 +1648,7 @@
     </medium>
     <big>
       <name>Calibri</name>
-      <size>12</size>
+      <size>13</size>
       <bold>0</bold>
       <color>$Text</color>
       <cleartype>1/</cleartype>	
