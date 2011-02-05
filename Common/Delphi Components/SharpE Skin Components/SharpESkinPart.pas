@@ -792,6 +792,8 @@ end;
 function TSkinText.CreateThemedSkinText : ISharpESkinText;
 var
   Theme : ISharpETheme;
+  dc : hdc;
+  dpi : integer;
 begin
   result := TSkinText.Create(False);
   result.Assign(self);
@@ -799,8 +801,20 @@ begin
   Theme := GetCurrentTheme;
   with Theme.Skin.SkinFont do
   begin
+    // Check dpi settings
+    dc := GetDC(0);
+    if (dc <> 0) then
+    begin
+      dpi := GetDeviceCaps(dc, LOGPIXELSX);
+      ReleaseDC(0, dc);
+    end else dpi := 96;
+
     if ModSize then
       result.Size := result.Size + ValueSize;
+
+    if dpi > 108 then
+      result.Size := result.Size - 1; // compensate automatic dpi scaling
+
     if ModName then
       result.Name := ValueName;
     if ModAlpha then
