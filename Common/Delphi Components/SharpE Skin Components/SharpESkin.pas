@@ -594,6 +594,9 @@ type
     FSkinDim: TSkinDim;
     FSkinDimTL: TSkinDim;
     FSkinDimBL: TSkinDim;
+    FSkinDimBottom: TSkinDim;
+    FSkinDimBottomTL: TSkinDim;
+    FSkinDimBottomBL: TSkinDim;
 
     FBackground      : TSkinPart;
     FBackgroundSmall : TSkinPart;
@@ -620,7 +623,7 @@ type
     procedure SaveToStream(Stream: TStream);
     procedure LoadFromStream(Stream: TStream);
     procedure LoadFromXML(xml: TJclSimpleXmlElem; path: string);
-    function GetAutoDim(r: TRect; vpos : TSharpEBarAutoPos): TRect; stdcall;
+    function GetAutoDim(r: TRect; vpos : TSharpEBarAutoPos; isBarBottom : boolean = false): TRect; stdcall;
     procedure UpdateDynamicProperties(cs: ISharpEScheme);
 
     property Background      : ISharpESkinPart read GetBackground;
@@ -748,6 +751,7 @@ type
   TSharpEEditSkin = class(TInterfacedObject, ISharpEEditSkin)
   private
     FSkinDim: TSkinDim;
+    FSkinDimBottom: TSkinDim;
 
     FNormal: TSkinPart;
     FFocus: TSkinPart;
@@ -764,6 +768,7 @@ type
     function GetHover  : ISharpESkinPart; stdcall;
     function GetFocus  : ISharpESkinPart; stdcall;
     function GetDimension : TPoint; stdcall;
+    function GetDimensionBottom : TPoint; stdcall;    
     function GetEditXOffsets : TPoint; stdcall;
     function GetEditYOffsets : TPoint; stdcall;
     function GetValid : Boolean; stdcall;
@@ -774,14 +779,15 @@ type
     procedure SaveToStream(Stream: TStream);
     procedure LoadFromStream(Stream: TStream);
     procedure LoadFromXML(xml: TJclSimpleXmlElem; path: string);
-    function GetAutoDim(r: TRect): TRect; stdcall;
+    function GetAutoDim(r: TRect; isBarBottom : boolean = false): TRect; stdcall;
     procedure UpdateDynamicProperties(cs: ISharpEScheme);
 
     property Normal : ISharpESkinPart read GetNormal;
     property Hover  : ISharpESkinPart read GetHover;
     property Focus  : ISharpESkinPart read GetFocus;
 
-    property Dimension : TPoint read GetDimension;    
+    property Dimension : TPoint read GetDimension;
+    property DimensionBottom : TPoint read GetDimensionBottom;    
     property EditXOffsets : TPoint read GetEditXOffsets;
     property EditYOffsets : TPoint read GetEditYOffsets;
     property Valid : Boolean read GetValid;
@@ -2489,8 +2495,7 @@ end;
 constructor TSharpEEditSkin.Create(BmpList : TSkinBitmapList);
 begin
   FSkinDim := TSkinDim.Create;
-  FSkinDim.SetDimension('w', 'h');
-  FSkinDim.SetLocation('0','0');
+  FSkinDimBottom := TSkinDim.Create;  
 
   FNormal := TSkinPart.Create(BmpList);
   FFocus  := TSkinPart.Create(BmpList);
@@ -2502,6 +2507,8 @@ begin
 
   FEditXOffsets := TSkinPoint.Create;
   FEditYOffsets := TSkinPoint.Create;
+
+  Clear;
 end;
 
 destructor TSharpEEditSkin.Destroy;
@@ -2513,6 +2520,7 @@ begin
   FEditXOffsets.Free;
   FEditYOffsets.Free;
   FSkinDim.Free;
+  FSkinDimBottom.Free;  
 end;
 
 procedure TSharpEEditSkin.UpdateDynamicProperties(cs: ISharpEScheme);
@@ -2525,6 +2533,7 @@ end;
 procedure TSharpEEditSkin.SaveToStream(Stream: TStream);
 begin
   FSkinDim.SaveToStream(Stream);
+  FSkinDimBottom.SaveToStream(Stream);  
   FNormal.SaveToStream(Stream);
   FFocus.SaveToStream(Stream);
   FHover.SaveToStream(Stream);
@@ -2535,6 +2544,7 @@ end;
 procedure TSharpEEditSkin.LoadFromStream(Stream: TStream);
 begin
   FSkinDim.LoadFromStream(Stream);
+  FSkinDimBottom.LoadFromStream(Stream);  
   FNormal.LoadFromStream(Stream);
   FFocus.LoadFromStream(Stream);
   FHover.LoadFromStream(Stream);
@@ -2551,6 +2561,8 @@ begin
   FEditYOffsets.Clear;
   FSkinDim.SetLocation('0','0');
   FSkinDim.SetDimension('w', 'h');
+  FSkinDimBottom.SetLocation('0','0');
+  FSkinDimBottom.SetDimension('w', 'h');  
 end;
 
 procedure TSharpEEditSkin.LoadFromXML(xml: TJclSimpleXmlElem; path: string);
@@ -2568,7 +2580,12 @@ begin
       if ItemNamed['focus'] <> nil then
         FFocus.LoadFromXML(ItemNamed['focus'], path, SkinText, FontList);
       if ItemNamed['dimension'] <> nil then
+      begin
         FSkinDim.SetDimension(Value('dimension', 'w,h'));
+        FSkinDimBottom.SetDimension(Value('dimension', 'w,h')); // use as default
+      end;
+      if ItemNamed['dimensionbottom'] <> nil then
+        FSkinDimBottom.SetDimension(Value('dimensionbottom', 'w,h'));
       if ItemNamed['hover'] <> nil then
         FHover.LoadFromXMl(ItemNamed['hover'], path, SkinText, FontList);
       if ItemNamed['editxoffsets'] <> nil then
@@ -2576,21 +2593,33 @@ begin
       if ItemNamed['edityoffsets'] <> nil then
         FEditYOffsets.SetPoint(Value('edityoffsets', '2,2'));
       if ItemNamed['location'] <> nil then
+      begin
         FSkinDim.SetLocation(Value('location', '0,0'));
+        FSkinDimBottom.SetLocation(Value('location', '0,0')); // use as default
+      end;
+      if ItemNamed['locationbottom'] <> nil then
+        FSkinDimBottom.SetLocation(Value('locationbottom', '0,0'));
     end;
   finally
     SkinText.SelfInterface := nil;
   end;
 end;
 
-function  TSharpEEditSkin.GetAutoDim(r: Trect): TRect;
+function  TSharpEEditSkin.GetAutoDim(r: Trect; isBarBottom : boolean = false): TRect;
 begin
-  result := FSkinDim.GetRect(r);
+  if (isBarBottom) then
+    result := FSkinDimBottom.GetRect(r)
+  else result := FSkinDim.GetRect(r);
 end;
 
 function TSharpEEditSkin.GetDimension: TPoint;
 begin
   result := Point(FSkinDim.XAsInt,FSkinDim.YAsInt);
+end;
+
+function TSharpEEditSkin.GetDimensionBottom: TPoint;
+begin
+  result := Point(FSkinDimBottom.XAsInt,FSkinDimBottom.YAsInt);
 end;
 
 function TSharpEEditSkin.GetEditXOffsets: TPoint;
@@ -2634,6 +2663,9 @@ begin
   FSkinDim := TSkinDim.Create;
   FSkinDimTL := TSkinDim.Create;
   FSkinDimBL := TSkinDim.Create;
+  FSkinDimBottom := TSkinDim.Create;
+  FSkinDimBottomTL := TSkinDim.Create;
+  FSkinDimBottomBL := TSkinDim.Create;  
 
   FBackground      := TSkinPart.Create(BmpList);
   FProgress        := TSkinPart.Create(BmpList);
@@ -2659,6 +2691,9 @@ begin
   FSkinDim.Free;
   FSkinDimTL.Free;
   FSkinDimBL.Free;
+  FSkinDimBottom.Free;
+  FSkinDimBottomTL.Free;
+  FSkinDimBottomBL.Free;  
   FSmallModeOffset.Free;
 
   inherited Destroy;
@@ -2677,6 +2712,9 @@ begin
   FSkinDim.SaveToStream(Stream);
   FSkinDimTL.SaveToStream(Stream);
   FSkinDimBL.SaveToStream(Stream);
+  FSkinDimBottom.SaveToStream(Stream);
+  FSkinDimBottomTL.SaveToStream(Stream);
+  FSkinDimBottomBL.SaveToStream(Stream);  
   FBackGround.SaveToStream(Stream);
   FProgress.SaveToStream(Stream);
   FBackgroundSmall.SaveToStream(Stream);
@@ -2689,6 +2727,9 @@ begin
   FSkinDim.LoadFromStream(Stream);
   FSkinDimTL.LoadFromStream(Stream);
   FSkinDimBL.LoadFromStream(Stream);
+  FSkinDimBottom.LoadFromStream(Stream);
+  FSkinDimBottomTL.LoadFromStream(Stream);
+  FSkinDimBottomBL.LoadFromStream(Stream);  
   FBackGround.LoadFromStream(Stream);
   FProgress.LoadFromStream(Stream);
   FBackgroundSmall.LoadFromStream(Stream);
@@ -2709,6 +2750,12 @@ begin
   FSkinDimTL.SetLocation('0', '0');
   FSkinDimBL.SetDimension('w', 'h');
   FSkinDimBL.SetLocation('0', '0');
+  FSkinDimBottom.SetDimension('w', 'h');
+  FSkinDimBottom.SetLocation('0', '0');
+  FSkinDimBottomTL.SetDimension('w', 'h');
+  FSkinDimBottomTL.SetLocation('0', '0');
+  FSkinDimBottomBL.SetDimension('w', 'h');
+  FSkinDimBottomBL.SetLocation('0', '0');  
   FSmallModeOffset.SetPoint('0', '0');
 end;
 
@@ -2726,19 +2773,49 @@ begin
         FProgress.LoadFromXML(ItemNamed['progress'], path, SkinText);
 
       if ItemNamed['location'] <> nil then
+      begin
         FSkinDim.SetLocation(Value('location', '0,0'));
+        FSkinDimBottom.SetLocation(Value('location', '0,0'));
+      end;
       if ItemNamed['dimension'] <> nil then
+      begin
         FSkinDim.SetDimension(Value('dimension', 'w,h'));
+        FSkinDimBottom.SetDimension(Value('dimension', 'w,h'));
+      end;
+      if ItemNamed['locationbottom'] <> nil then
+        FSkinDimBottom.SetLocation(Value('locationbottom', '0,0'));
+      if ItemNamed['dimensionbottom'] <> nil then
+        FSkinDimBottom.SetDimension(Value('dimensionbottom', 'w,h'));
 
       if ItemNamed['locationTL'] <> nil then
+      begin
         FSkinDimTL.SetLocation(Value('locationTL', '0,0'));
+        FSkinDimBottomTL.SetLocation(Value('locationTL', '0,0'));
+      end;
       if ItemNamed['dimensionTL'] <> nil then
+      begin
         FSkinDimTL.SetDimension(Value('dimensionTL', 'w,h'));
-        
+        FSkinDimBottomTL.SetDimension(Value('dimensionTL', 'w,h'));
+      end;
+      if ItemNamed['locationbottomTL'] <> nil then
+        FSkinDimBottomTL.SetLocation(Value('locationbottomTL', '0,0'));
+      if ItemNamed['dimensionbottomTL'] <> nil then
+        FSkinDimBottomTL.SetDimension(Value('dimensionbottomTL', 'w,h'));
+
       if ItemNamed['locationBL'] <> nil then
+      begin
         FSkinDimBL.SetLocation(Value('locationBL', '0,0'));
+        FSkinDimBottomBL.SetLocation(Value('locationBL', '0,0'));
+      end;
       if ItemNamed['dimensionBL'] <> nil then
+      begin
         FSkinDimBL.SetDimension(Value('dimensionBL', 'w,h'));
+        FSkinDimBottomBL.SetDimension(Value('dimensionBL', 'w,h'));
+      end;
+      if ItemNamed['locationbottomBL'] <> nil then
+        FSkinDimBottomBL.SetLocation(Value('locationbottomBL', '0,0'));
+      if ItemNamed['dimensionbottomBL'] <> nil then
+        FSkinDimBottomTL.SetDimension(Value('dimensionbottomBL', 'w,h'));
 
       if ItemNamed['smallbackground'] <> nil then
         FBackGroundSmall.LoadFromXML(ItemNamed['smallbackground'], path,
@@ -2753,12 +2830,21 @@ begin
   end;
 end;
 
-function TSharpEProgressBarSkin.GetAutoDim(r: Trect; vpos : TSharpEBarAutoPos): TRect;
+function TSharpEProgressBarSkin.GetAutoDim(r: Trect; vpos : TSharpEBarAutoPos; isBarBottom : boolean = false): TRect;
 begin
-  case vpos of
-    apTop   : result := FSkinDimTL.GetRect(r);
-    apBottom: result := FSkinDimBL.GetRect(r)
-    else result := FSkinDim.GetRect(r);
+  if (isBarBottom) then
+  begin
+    case vpos of
+      apTop   : result := FSkinDimBottomTL.GetRect(r);
+      apBottom: result := FSkinDimBottomBL.GetRect(r)
+      else result := FSkinDimBottom.GetRect(r);
+    end;
+  end else begin
+    case vpos of
+      apTop   : result := FSkinDimTL.GetRect(r);
+      apBottom: result := FSkinDimBL.GetRect(r)
+      else result := FSkinDim.GetRect(r);
+    end;  
   end;
 end;
 

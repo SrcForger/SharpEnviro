@@ -34,6 +34,7 @@ uses
   Classes,
   Controls,
   Forms,
+  Types,
   StdCtrls,
   gr32,
   Graphics,
@@ -154,6 +155,9 @@ procedure TSharpEProgressBar.DrawManagedSkin(bmp: TBitmap32; Scheme: ISharpESche
 var
   r, CompRect: TRect;
   temp: TBitmap32;
+  Mon : TMonitor;
+  isBarBottom : boolean;
+  p : TPoint;
 begin
   if (Width = 0) or (Height = 0)  then
     exit;
@@ -171,7 +175,19 @@ begin
     begin
       if FAutoSize or (FAutoPos <> apNone) then
       begin
-        r := FManager.Skin.ProgressBar.GetAutoDim(CompRect,FAutoPos);
+        // check if the bar is aligned at the bottom, if so user alternative location
+        Mon := nil;
+        isBarBottom := False;        
+        if (parent <> nil) then
+          Mon := TForm(parent).Monitor;
+        if Mon <> nil then
+        begin
+          p := ClientToScreen(Point(0,0));
+          if p.y > Mon.Top + Mon.Height div 2 then
+            isBarBottom := True;
+        end;
+
+        r := FManager.Skin.ProgressBar.GetAutoDim(CompRect,FAutoPos,isBarBottom);
         if (r.Right <> width) or (r.Bottom - r.Top <> height) or (r.Top <> top) then
         begin
           top := r.Top;
@@ -184,8 +200,8 @@ begin
       if not (FManager.Skin.ProgressBar.BackGround.Empty) then
       begin
         if (not FManager.Skin.ProgressBar.BackgroundSmall.Empty) and
-           (Bmp.Height <= FManager.Skin.ProgressBar.SmallModeOffset.Y) then
-           FManager.Skin.ProgressBar.BackgroundSmall.DrawTo(bmp, Scheme)
+          (Bmp.Height <= FManager.Skin.ProgressBar.SmallModeOffset.Y) then
+          FManager.Skin.ProgressBar.BackgroundSmall.DrawTo(bmp, Scheme)
         else
           FManager.Skin.ProgressBar.BackGround.DrawTo(bmp, Scheme);
       end;

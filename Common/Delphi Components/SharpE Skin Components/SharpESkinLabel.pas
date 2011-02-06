@@ -146,29 +146,27 @@ begin
     else SkinText := FManager.Skin.MediumText.CreateThemedSkinText;
   end;
 
+  Mon := nil;
+  isBottom := False;
+  // check if the bar is aligned at the bottom, if so user alternative location
+  if (parent <> nil) then
+    Mon := TForm(parent).Monitor;
+  if Mon <> nil then
+  begin
+    p := ClientToScreen(Point(0,0));
+    if p.y > Mon.Top + Mon.Height div 2 then
+      isBottom := True;
+  end;
+
   CompRect := Rect(0, 0, width, height);
   SkinText.AssignFontTo(Bmp.Font,Scheme);
   TextRect := Rect(0, 0, bmp.TextWidth(Caption), bmp.TextHeight(Caption));
-  TextPos := SkinText.GetXY(TextRect, CompRect, Rect(0,0,0,0));
+  TextPos := SkinText.GetXY(TextRect, CompRect, Rect(0,0,0,0), isBottom);
 
   FTWidth := Bmp.TextWidth(Caption);
   FTHeight := Bmp.TextHeight(Caption);
 
   DPIMod := round((FManager.DPIScaleFactor - 1)* 6);
-  Mon := nil;
-  isBottom := False;
-  if not (FAutoPos = apCenter) then
-  begin
-    // check if the bar is aligned at the bottom, if so user alternative location
-    if (parent <> nil) then
-      Mon := TForm(parent).Monitor;
-    if Mon <> nil then
-    begin
-      p := ClientToScreen(Point(0,0));
-      if p.y > Mon.Top + Mon.Height div 2 then
-        isBottom := True;
-    end;
-  end;
   case FAutoPos of
     apTop: begin
              if (isBottom) then

@@ -261,7 +261,9 @@ type
   private
     FInterface : ISharpESkinText;
     FX: string;
+    FXBottom : string;
     FY: string;
+    FYBottom: string;
     FWidth: string;
     FHeight: string;
     FName: string;
@@ -283,6 +285,8 @@ type
 
     function GetX : String; stdcall;
     function GetY : String; stdcall;
+    function GetXBottom : String; stdcall;
+    function GetYBottom : String; stdcall;    
     function GetWidth : String; stdcall;
     function GetHeight : String; stdcall;
     function GetName : String; stdcall;
@@ -304,6 +308,8 @@ type
 
     procedure SetX(Value : String); stdcall;
     procedure SetY(Value : String); stdcall;
+    procedure SetXBottom(Value : String); stdcall;
+    procedure SetYBottom(Value : String); stdcall;    
     procedure SetWidth(Value : String); stdcall;
     procedure SetHeight(Value : String); stdcall;
     procedure SetName(Value : String); stdcall;
@@ -330,6 +336,8 @@ type
     procedure Assign(Value: TSkinTextRecord); overload;
     procedure SetLocation(x, y: string); overload;
     procedure SetLocation(str: string); overload;
+    procedure SetLocationBottom(x, y: string); overload;
+    procedure SetLocationBottom(str: string); overload;    
     procedure SetDimension(width, height : String); overload;
     procedure SetDimension(str : string); overload;
 
@@ -341,7 +349,7 @@ type
     procedure UpdateDynamicProperties(cs: ISharpEScheme); stdcall;
 
     procedure LoadFromXML(xml: TJvSimpleXMLElem; pFontList : TFontList);
-    function GetXY(TextRect,CompRect,IconRect: TRect): TPoint; stdcall;
+    function GetXY(TextRect,CompRect,IconRect: TRect; isBarBottom : boolean = False): TPoint; stdcall;
     function GetDim(CompRect: TRect): TPoint; stdcall;
     function GetFont(cs: ISharpEScheme): TFont;
     procedure AssignFontTo(pFont : TFont; cs: ISharpEScheme); stdcall;
@@ -354,6 +362,8 @@ type
 
     property X : String read GetX write SetX;
     property Y : String read GetY write SetY;
+    property XBottom : String read GetXBottom write SetXBottom;
+    property YBottom : String read GetYBottom write SetYBottom;
     property Width : String read GetWidth write SetWidth;
     property Height : String read GetHeight write SetHeight;
     property Name : String read GetName write SetName;
@@ -848,6 +858,8 @@ procedure TSkinText.Clear;
 begin
   FX := '';
   FY := '';
+  FXBottom := '';
+  FYBottom := '';
   FWidth := 'w';
   FHeight := 'h';
   FStyleBold := False;
@@ -870,6 +882,8 @@ procedure TSkinText.SaveToStream(Stream: TStream);
 begin
   StringSaveToStream(FX, Stream);
   StringSaveToStream(FY, Stream);
+  StringSaveToStream(FXBottom, Stream);
+  StringSaveToStream(FYBottom, Stream);  
   StringSaveToStream(FWidth,Stream);
   StringSaveToStream(FHeight,Stream);
   StringSaveToStream(FName, Stream);
@@ -898,6 +912,8 @@ var
 begin
   FX := StringLoadFromStream(Stream);
   FY := StringLoadFromStream(Stream);
+  FXBottom := StringLoadFromStream(Stream);
+  FYBottom := StringLoadFromStream(Stream);  
   FWidth := StringLoadFromStream(Stream);
   FHeight := StringLoadFromStream(Stream);
   FName := StringLoadFromStream(Stream);
@@ -923,6 +939,8 @@ procedure TSkinText.Assign(Value: ISharpESkinText);
 begin
   X := Value.X;
   Y := Value.Y;
+  FXBottom := Value.XBottom;
+  FYBottom := Value.YBottom;
   Width := Value.Width;
   Height := Value.Height;
   Name := Value.Name;
@@ -1100,16 +1118,31 @@ begin
 end;
 
 procedure TSkinText.SetLocation(str: string);
-var position: integer;
+var
+  position: integer;
 begin
   position := Pos(',', str);
   if (position > 0) and (position < length(str)) then
   begin
-    SetLocation(Copy(str, 1, position - 1), Copy(str, position + 1,
-      length(str)));
-  end
-  else
-    SetLocation('', '');
+    SetLocation(Copy(str, 1, position - 1), Copy(str, position + 1,length(str)));
+  end else SetLocation('', '');
+end;
+
+procedure TSkinText.SetLocationBottom(x, y: string);
+begin
+  FXBottom := x;
+  FYBottom := y;
+end;
+
+procedure TSkinText.SetLocationBottom(str: string);
+var
+  position: integer;
+begin
+  position := Pos(',', str);
+  if (position > 0) and (position < length(str)) then
+  begin
+    SetLocationBottom(Copy(str, 1, position - 1), Copy(str, position + 1,length(str)));
+  end else SetLocationBottom('', '');
 end;
 
 procedure TSkinText.SetName(Value: String);
@@ -1172,9 +1205,19 @@ begin
   FX := Value;
 end;
 
+procedure TSkinText.SetXBottom(Value: String);
+begin
+  FXBottom := Value;
+end;
+
 procedure TSkinText.SetY(Value: String);
 begin
   FY := Value;
+end;
+
+procedure TSkinText.SetYBottom(Value: String);
+begin
+  FYBottom := Value;
 end;
 
 procedure TSkinText.UpdateDynamicProperties(cs: ISharpEScheme);
@@ -1201,7 +1244,12 @@ begin
     if ItemNamed['color'] <> nil then
       FColorString := Value('color', '$000000');
     if ItemNamed['location'] <> nil then
+    begin
       SetLocation(Value('location', '0,0'));
+      SetLocationBottom(Value('location', '0,0')); // use as default
+    end;
+    if ItemNamed['locationbottom'] <> nil then
+      SetLocationBottom(Value('locationbottom', '0,0'));
     if ItemNamed['bold'] <> nil then
       FStyleBold := BoolValue('bold',false);
     if ItemNamed['italic'] <> nil then
@@ -1282,7 +1330,12 @@ begin
   result := FX;
 end;
 
-function TSkinText.GetXY(TextRect,CompRect,IconRect: Trect): TPoint;
+function TSkinText.GetXBottom: String;
+begin
+  result := FXBottom;
+end;
+
+function TSkinText.GetXY(TextRect,CompRect,IconRect: Trect; isBarBottom : boolean = false): TPoint;
 var
   cw, ch: integer;
   tw, th: integer;
@@ -1295,14 +1348,26 @@ begin
   iw := IconRect.Right - IconRect.Left;
   ih := IconRect.Bottom - IconRect.Top;
 
-  result.X := ParseCoordinate(FX, tw, th, cw, ch, iw, ih);
-  result.Y := ParseCoordinate(FY, tw, th, cw, ch, iw, ih);
+  if (isBarBottom) then
+  begin
+    result.X := ParseCoordinate(FXBottom, tw, th, cw, ch, iw, ih);
+    result.Y := ParseCoordinate(FYBottom, tw, th, cw, ch, iw, ih);  
+  end else
+  begin
+    result.X := ParseCoordinate(FX, tw, th, cw, ch, iw, ih);
+    result.Y := ParseCoordinate(FY, tw, th, cw, ch, iw, ih);
+  end;
 end;
 
 
 function TSkinText.GetY: String;
 begin
   result := FY;
+end;
+
+function TSkinText.GetYBottom: String;
+begin
+  result := FYBottom;
 end;
 
 procedure TSkinText.RenderTo(Bmp : TBitmap32; X,Y : integer; Caption : String;  cs : ISharpEScheme);

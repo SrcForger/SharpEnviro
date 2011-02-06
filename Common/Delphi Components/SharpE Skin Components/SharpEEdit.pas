@@ -34,6 +34,7 @@ uses
   Classes,
   Controls,
   Forms,
+  Types,
   StdCtrls,
   gr32,
   GR32_Backends,
@@ -821,18 +822,43 @@ var
   EditRect : TRect;
   bmp : TBitmap32;
   SkinText : ISharpESkinText;
+  Mon : TMonitor;
+  isBarBottom : boolean;
+  newTop : integer;
+  p : TPoint;  
 begin
   if (not Assigned(FManager)) or (Width = 0) or (Height = 0) then exit;
 
   CompRect := Rect(0, 0, width, height);
 
+  isBarBottom := False;  
+  if (FAutoPosition or FAutoSize) then
+  begin
+      // check if the bar is aligned at the bottom, if so user alternative location
+    Mon := nil;
+    if (parent <> nil) then
+      Mon := TForm(parent).Monitor;
+    if Mon <> nil then
+    begin
+      p := ClientToScreen(Point(0,0));
+      if p.y > Mon.Top + Mon.Height div 2 then
+        isBarBottom := True;
+    end;
+  end;
+
   if FAutoPosition then
-     if Top <> FManager.Skin.Edit.Dimension.Y then
-        Top := FManager.Skin.Edit.Dimension.Y;
+  begin
+    if isBarBottom then
+      newTop := FManager.Skin.Edit.DimensionBottom.Y
+    else newTop := FManager.Skin.Edit.Dimension.Y;
+
+    if Top <> newTop then
+       Top := newTop;
+  end;
 
   if FAutoSize then
     begin
-      r := FManager.Skin.Edit.GetAutoDim(CompRect);
+      r := FManager.Skin.Edit.GetAutoDim(CompRect, isBarBottom);
       if (r.Right <> width) or (r.Bottom <> height) then
       begin
         width := r.Right;

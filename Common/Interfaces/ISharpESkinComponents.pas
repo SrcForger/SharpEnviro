@@ -101,7 +101,7 @@ type
   ISharpESkinText = interface
     ['{8A116794-9019-4E66-8865-88DD34A81E1F}']
     function GetDim(CompRect: TRect) : TPoint; stdcall;
-    function GetXY(TextRect,CompRect,IconRect: TRect): TPoint; stdcall;    
+    function GetXY(TextRect,CompRect,IconRect: TRect; isBarBottom : boolean = False): TPoint; stdcall;    
     procedure Assign(Value: ISharpESkinText); overload; stdcall;
     function CreateThemedSkinText : ISharpESkinText; stdcall;    
     procedure UpdateDynamicProperties(cs: ISharpEScheme); stdcall;    
@@ -115,6 +115,8 @@ type
 
     function GetX : String; stdcall;
     function GetY : String; stdcall;
+    function GetXBottom : String; stdcall;
+    function GetYBottom : String; stdcall;      
     function GetWidth : String; stdcall;
     function GetHeight : String; stdcall;
     function GetName : String; stdcall;
@@ -136,6 +138,8 @@ type
 
     procedure SetX(Value : String); stdcall;
     procedure SetY(Value : String); stdcall;
+    procedure SetXBottom(Value : String); stdcall;
+    procedure SetYBottom(Value : String); stdcall;     
     procedure SetWidth(Value : String); stdcall;
     procedure SetHeight(Value : String); stdcall;
     procedure SetName(Value : String); stdcall;
@@ -157,6 +161,8 @@ type
 
     property X : String read GetX write SetX;
     property Y : String read GetY write SetY;
+    property XBottom : String read GetXBottom write SetXBottom;
+    property YBottom : String read GetYBottom write SetYBottom;    
     property Width : String read GetWidth write SetWidth;
     property Height : String read GetHeight write SetHeight;
     property Name : String read GetName write SetName;
@@ -217,7 +223,7 @@ type
 
   ISharpEEditSkin = interface
     ['{00818CB9-477E-46E5-8FEB-74432607EAC4}']
-    function GetAutoDim(r: TRect): TRect; stdcall;
+    function GetAutoDim(r: TRect;  isBarBottom : boolean = false): TRect; stdcall;
 
     function GetNormal : ISharpESkinPart; stdcall;
     function GetHover  : ISharpESkinPart; stdcall;
@@ -228,11 +234,13 @@ type
     property Focus  : ISharpESkinPart read GetFocus;
 
     function GetDimension : TPoint; stdcall;
+    function GetDimensionBottom : TPoint; stdcall;  
     function GetEditXOffsets : TPoint; stdcall;
     function GetEditYOffsets : TPoint; stdcall;
     function GetValid : Boolean; stdcall;    
 
-    property Dimension : TPoint read GetDimension;    
+    property Dimension : TPoint read GetDimension;
+    property DimensionBottom : TPoint read GetDimensionBottom;  
     property EditXOffsets : TPoint read GetEditXOffsets;
     property EditYOffsets : TPoint read GetEditYOffsets;
     property Valid : Boolean read GetValid;
@@ -240,7 +248,7 @@ type
 
   ISharpEProgressBarSkin = interface
     ['{0276F5EC-FDA8-48B5-8531-D71FD7379CC7}']
-    function GetAutoDim(r: TRect; vpos : TSharpEBarAutoPos): TRect; stdcall;
+    function GetAutoDim(r: TRect; vpos : TSharpEBarAutoPos; isBarBottom : boolean = false): TRect; stdcall;
 
     function GetBackground      : ISharpESkinPart; stdcall;
     function GetProgress        : ISharpESkinPart; stdcall;
