@@ -8,8 +8,8 @@
     <payoffsets>0,3</payoffsets>
     <paxoffsetsbottom>25,4</paxoffsetsbottom>
     <payoffsetsbottom>3,0</payoffsetsbottom>
-    <ncyoffsets>0,1</ncyoffsets>
-    <ncyoffsetsbottom>1,2</ncyoffsetsbottom>
+    <ncyoffsets>3,1</ncyoffsets>
+    <ncyoffsetsbottom>1,3</ncyoffsetsbottom>
     <enablevflip>1</enablevflip>
     <specialhideform>0</specialhideform>
     <glasseffect>1</glasseffect>
@@ -1612,6 +1612,7 @@
       <shadowtype>Right</shadowtype>
       <shadowalpha>128</shadowalpha>
       <location>0,-1</location>
+      <locationbottom>0,-4</locationbottom>
     </small>
     <medium>
       <bold>0</bold>
@@ -1624,6 +1625,7 @@
       <shadowtype>Right</shadowtype>
       <shadowalpha>128</shadowalpha>
       <location>0,-1</location>
+      <locationbottom>0,-4</locationbottom>
     </medium>
     <big>
       <name>Calibri</name>
@@ -1636,14 +1638,18 @@
       <shadowtype>Right</shadowtype>
       <shadowalpha>128</shadowalpha>
       <location>0,0</location>
+      <locationbottom>0,-5</locationbottom>
     </big>
   </font>
   <progressbar>
-    <location>0,8,</location>
+    <location>0,8</location>
+    <locationBottom>0,6</locationBottom>
     <dimension>w,14</dimension>
     <locationTL>0,2</locationTL>
+    <locationBottomTL>0,1</locationBottomTL>
     <dimensionTL>w,10</dimensionTL>
     <locationBL>0,16</locationBL>
+    <locationBottomBL>0,14</locationBottomBL>
     <dimensionBL>w,10</dimensionBL>
     <background>
       <skinpart>
@@ -1779,152 +1785,216 @@
     </progress>
   </progressbar>
   <edit>
-    <dimension>w,18</dimension>
-    <location>0,3</location>
+    <dimension>w,16</dimension>
+    <location>0,5</location>
+    <locationbottom>0,3</locationbottom>
     <editxoffsets>1,1</editxoffsets>
-    <edityoffsets>1,3</edityoffsets>
+    <edityoffsets>2,3</edityoffsets>
     <text>
-      <color>$Text-32</color>
+      <color>$Text</color>
       <name>Calibri</name>
-      <size>9</size>
+      <size>10</size>
     </text>
     <normal>
       <skinpart>
-        <location>1,1</location>
-        <dimension>56,29</dimension>
-        <image>images/Button-Overlay-Top-Left.png</image>
-	<color>$Special</color>
-        <alpha>$BAlpha-64</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-27,h-16</location>
-        <dimension>26,16</dimension>
-        <image>images/Button-Overlay-Bottom-Right.png</image>
-	<color>$Special</color>
-        <alpha>$BAlpha-64</alpha>
-      </skinpart>
-      <skinpart>
         <location>0,0</location>
-        <dimension>1,h</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border+32</color>
-        <alpha>$BAlpha+32</alpha>
+        <dimension>4,4</dimension>
+        <image>images/ProgressBarBackgroundTopLeft.png</image>
+        <color>$Background+12+64</color>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
-        <location>1,0</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border+32</color>
-        <alpha>$BAlpha+32</alpha>
+        <location>4,0</location>
+        <dimension>w-8,4</dimension>
+        <image>images/ProgressBarBackgroundTop.png</image>
+        <color>$Background+12+64</color>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
-        <location>w-1,0</location>
-        <dimension>1,h</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border+32</color>
-        <alpha>$BAlpha+32</alpha>
+        <location>w-4,0</location>
+        <dimension>4,4</dimension>
+        <image>images/ProgressBarBackgroundTopRight.png</image>
+        <color>$Background+12+64</color>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
-        <location>1,h-1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border+32</color>
-        <alpha>$BAlpha+32</alpha>
+        <location>0,4</location>
+        <dimension>4,h-8</dimension>
+        <image>images/ProgressBarBackgroundLeft.png</image>
+        <color>$Background+12+64</color>
+        <alpha>$Alpha</alpha>
       </skinpart>
+      <skinpart>
+        <location>4,4</location>
+        <dimension>w-8,h-8</dimension>
+        <image>images/ProgressBarBackgroundMiddle.png</image>
+        <color>$Background+12+64</color>
+        <alpha>$Alpha</alpha>
+      </skinpart>
+      <skinpart>
+        <location>w-4,4</location>
+        <dimension>4,h-8</dimension>
+        <image>images/ProgressBarBackgroundRight.png</image>
+        <color>$Background+12+64</color>
+        <alpha>$Alpha</alpha>
+      </skinpart>
+      <skinpart>
+        <location>0,h-4</location>
+        <dimension>4,4</dimension>
+        <image>images/ProgressBarBackgroundBottomLeft.png</image>
+        <color>$Background+12+64</color>
+        <alpha>$Alpha</alpha>
+      </skinpart>
+      <skinpart>
+        <location>4,h-4</location>
+        <dimension>w-8,4</dimension>
+        <image>images/ProgressBarBackgroundBottom.png</image>
+        <color>$Background+12+64</color>
+        <alpha>$Alpha</alpha>
+      </skinpart>
+      <skinpart>
+        <location>w-4,h-4</location>
+        <dimension>4,4</dimension>
+        <image>images/ProgressBarBackgroundBottomRight.png</image>
+        <color>$Background+12+64</color>
+        <alpha>$Alpha</alpha>
+      </skinpart>  
     </normal>
     <focus>
       <text>
         <color>$Text</color>
       </text>
       <skinpart>
-        <location>1,1</location>
-        <dimension>56,29</dimension>
-        <image>images/Button-Overlay-Top-Left.png</image>
-	<color>$Special</color>
-        <alpha>$BAlpha-32</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-27,h-16</location>
-        <dimension>26,16</dimension>
-        <image>images/Button-Overlay-Bottom-Right.png</image>
-	<color>$Special</color>
-        <alpha>$BAlpha-32</alpha>
-      </skinpart>
-      <skinpart>
         <location>0,0</location>
-        <dimension>1,h</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border+32</color>
-        <alpha>$BAlpha+16+32</alpha>
+        <dimension>4,4</dimension>
+        <image>images/ProgressBarBackgroundTopLeft.png</image>
+        <color>$Background+12+64</color>
+        <alpha>$Alpha+32</alpha>
       </skinpart>
       <skinpart>
-        <location>1,0</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border+32</color>
-        <alpha>$BAlpha+16+32</alpha>
+        <location>4,0</location>
+        <dimension>w-8,4</dimension>
+        <image>images/ProgressBarBackgroundTop.png</image>
+        <color>$Background+12+64</color>
+        <alpha>$Alpha+32</alpha>
       </skinpart>
       <skinpart>
-        <location>w-1,0</location>
-        <dimension>1,h</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border+32</color>
-        <alpha>$BAlpha+16+32</alpha>
+        <location>w-4,0</location>
+        <dimension>4,4</dimension>
+        <image>images/ProgressBarBackgroundTopRight.png</image>
+        <color>$Background+12+64</color>
+        <alpha>$Alpha+32</alpha>
       </skinpart>
       <skinpart>
-        <location>1,h-1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border+32</color>
-        <alpha>$BAlpha+16+32</alpha>
-      </skinpart>     
+        <location>0,4</location>
+        <dimension>4,h-8</dimension>
+        <image>images/ProgressBarBackgroundLeft.png</image>
+        <color>$Background+12+64</color>
+        <alpha>$Alpha+32</alpha>
+      </skinpart>
+      <skinpart>
+        <location>4,4</location>
+        <dimension>w-8,h-8</dimension>
+        <image>images/ProgressBarBackgroundMiddle.png</image>
+        <color>$Background+12+64</color>
+        <alpha>$Alpha+32</alpha>
+      </skinpart>
+      <skinpart>
+        <location>w-4,4</location>
+        <dimension>4,h-8</dimension>
+        <image>images/ProgressBarBackgroundRight.png</image>
+        <color>$Background+12+64</color>
+        <alpha>$Alpha+32</alpha>
+      </skinpart>
+      <skinpart>
+        <location>0,h-4</location>
+        <dimension>4,4</dimension>
+        <image>images/ProgressBarBackgroundBottomLeft.png</image>
+        <color>$Background+12+64</color>
+        <alpha>$Alpha+32</alpha>
+      </skinpart>
+      <skinpart>
+        <location>4,h-4</location>
+        <dimension>w-8,4</dimension>
+        <image>images/ProgressBarBackgroundBottom.png</image>
+        <color>$Background+12+64</color>
+        <alpha>$Alpha+32</alpha>
+      </skinpart>
+      <skinpart>
+        <location>w-4,h-4</location>
+        <dimension>4,4</dimension>
+        <image>images/ProgressBarBackgroundBottomRight.png</image>
+        <color>$Background+12+64</color>
+        <alpha>$Alpha+32</alpha>
+      </skinpart>
     </focus>
     <hover>
       <text>
         <color>$Text</color>
       </text>
       <skinpart>
-        <location>1,1</location>
-        <dimension>56,29</dimension>
-        <image>images/Button-Overlay-Top-Left.png</image>
-	<color>$Special</color>
-        <alpha>$BAlpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-27,h-16</location>
-        <dimension>26,16</dimension>
-        <image>images/Button-Overlay-Bottom-Right.png</image>
-	<color>$Special</color>
-        <alpha>$BAlpha-48</alpha>
-      </skinpart>
-      <skinpart>
         <location>0,0</location>
-        <dimension>1,h</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border+32</color>
-        <alpha>$BAlpha+16+32</alpha>
+        <dimension>4,4</dimension>
+        <image>images/ProgressBarBackgroundTopLeft.png</image>
+        <color>$Background+12+64+20</color>
+        <alpha>$Alpha+32</alpha>
       </skinpart>
       <skinpart>
-        <location>1,0</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border+32</color>
-        <alpha>$BAlpha+16+32</alpha>
+        <location>4,0</location>
+        <dimension>w-8,4</dimension>
+        <image>images/ProgressBarBackgroundTop.png</image>
+        <color>$Background+12+64+20</color>
+        <alpha>$Alpha+32</alpha>
       </skinpart>
       <skinpart>
-        <location>w-1,0</location>
-        <dimension>1,h</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border+32</color>
-        <alpha>$BAlpha+16+32</alpha>
+        <location>w-4,0</location>
+        <dimension>4,4</dimension>
+        <image>images/ProgressBarBackgroundTopRight.png</image>
+        <color>$Background+12+64+20</color>
+        <alpha>$Alpha+32</alpha>
       </skinpart>
       <skinpart>
-        <location>1,h-1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border+32</color>
-        <alpha>$BAlpha+16+32</alpha>
-      </skinpart> 
+        <location>0,4</location>
+        <dimension>4,h-8</dimension>
+        <image>images/ProgressBarBackgroundLeft.png</image>
+        <color>$Background+12+64+20</color>
+        <alpha>$Alpha+32</alpha>
+      </skinpart>
+      <skinpart>
+        <location>4,4</location>
+        <dimension>w-8,h-8</dimension>
+        <image>images/ProgressBarBackgroundMiddle.png</image>
+        <color>$Background+12+64+20</color>
+        <alpha>$Alpha+32</alpha>
+      </skinpart>
+      <skinpart>
+        <location>w-4,4</location>
+        <dimension>4,h-8</dimension>
+        <image>images/ProgressBarBackgroundRight.png</image>
+        <color>$Background+12+64+20</color>
+        <alpha>$Alpha+32</alpha>
+      </skinpart>
+      <skinpart>
+        <location>0,h-4</location>
+        <dimension>4,4</dimension>
+        <image>images/ProgressBarBackgroundBottomLeft.png</image>
+        <color>$Background+12+64+20</color>
+        <alpha>$Alpha+32</alpha>
+      </skinpart>
+      <skinpart>
+        <location>4,h-4</location>
+        <dimension>w-8,4</dimension>
+        <image>images/ProgressBarBackgroundBottom.png</image>
+        <color>$Background+12+64+20</color>
+        <alpha>$Alpha+32</alpha>
+      </skinpart>
+      <skinpart>
+        <location>w-4,h-4</location>
+        <dimension>4,4</dimension>
+        <image>images/ProgressBarBackgroundBottomRight.png</image>
+        <color>$Background+12+64+20</color>
+        <alpha>$Alpha+32</alpha>
+      </skinpart>
     </hover>
   </edit>
   <notify>
