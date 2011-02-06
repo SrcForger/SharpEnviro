@@ -2007,7 +2007,7 @@
       <dimension>w-32-4-4-4,h</dimension>
       <location>40,ch+1</location>
       <name>Calibri</name>
-      <size>10</size>
+      <size>11</size>
       <cleartype>1</cleartype>
       <color>$Text</color>
       <shadow>1</shadow>
