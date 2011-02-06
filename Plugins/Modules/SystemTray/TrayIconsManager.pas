@@ -878,20 +878,6 @@ begin
   UpdateTrayIcons;
 end;
 
-function StartSort(AItem, BItem: TTrayStartItem): Integer;
-begin
-  Result := 0;
-  if (AItem.Position < BItem.Position) then
-  begin
-    Result := 1
-  end
-  else
-  if AItem.Position > BItem.Position then
-  begin
-    Result := -1
-  end
-end;
-
 procedure TTrayClient.AddTrayIcon(NIDv6: TNotifyIconDataV7);
 var
   tempItem: TTrayItem;
@@ -921,15 +907,26 @@ begin
 
   if (addItem) and (pStartItem = nil) then
   begin
-    item.Position := FItems.Count;
-    FItems.Add(item);
+    if FStartHidden then
+    begin
+      item.Position := -1;
+      FHiddenItems.Add(item);
+    end else
+    begin
+      item.Position := -(FItems.Count);
+      FItems.Add(item);
+    end;
   end else if addItem then
   begin
-    item.Position := pStartItem.Position;
     if (pStartItem.HiddenByClient) or ((pStartItem.Position < 0) and (FStartHidden)) then
+    begin
+      item.Position := -1;
       FHiddenItems.Add(item)
-    else
+    end else
+    begin
+      item.Position := pStartItem.Position;
       FItems.Add(item);
+    end;
   end;
 
   UpdatePositions;
@@ -1179,8 +1176,19 @@ begin
           FTopSpacing + (i - 1) * (FIconSize + FIconSpacing) + FIconSize,
           FIconSize + FTopOffset))
       end;
+
+      if (TTrayItem(FItems.Items[index]).Position < 0) then
+      begin
+        for i := 0 to index do
+          TTrayItem(FItems[i]).Position := TTrayItem(FItems[i]).Position + 1
+      end else if (TTrayItem(FItems.Items[index]).Position < 0) then
+      begin
+        for i := index + 1 to FItems.Count - 1 do
+          TTrayItem(FItems[i]).Position := TTrayItem(FItems[i]).Position - 1;
+      end;
     end;
   end;
+  
   FItems.Extract(temp);
   FreeAndNil(Temp);
   RenderIcons;

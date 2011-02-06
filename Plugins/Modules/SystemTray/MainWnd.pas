@@ -161,7 +161,7 @@ begin
     menu := TSharpEMenu(pItem.OwnerMenu);
     menuwnd := TSharpEMenuWnd(pMenuWnd);
 
-    TrayItem.Position := -1;
+    TrayItem.Position := -(FTrayClient.Items.Count);
     FTrayClient.Items.Add(TrayItem);
 
     menu.Items.Extract(pItem);
@@ -467,15 +467,18 @@ begin
       begin
         with ItemNamed['List'] do
         begin
-          nCount := Items.Count - 1;
+          nCount := 0;
+          for n := 0 to Items.Count - 1 do
+            if not Items[n].Items.BoolValue('Hidden', False) then
+            nCount := nCount + 1;
+
           for n := 0 to Items.Count - 1 do
           begin
             startItem := TTrayStartItem.Create;
             startItem.Name := Items[n].Items.Value('Name', '');
-            startItem.Position := nCount;
             startItem.HiddenByClient := Items[n].Items.BoolValue('Hidden', False);
+            startItem.Position := nCount;
             FTrayClient.StartItems.Add(startItem);
-
             nCount := nCount - 1;
           end;
         end;
@@ -681,6 +684,7 @@ procedure TMainForm.FormMouseUp(Sender: TObject; Button: TMouseButton;
 var
   p : TPoint;
   modx : integer;
+  item: TTrayItem;
 begin
   if lb_servicenotrunning.Visible then
     exit;
@@ -704,7 +708,9 @@ begin
   begin
     if (sEnableIconHiding) and (x < ShowHideButton.Width) then
     begin
-      FTrayClient.HiddenItems.Add(FTrayClient.Items.Extract(sDraggingItem));
+      item := TTrayItem(FTrayClient.Items.Extract(sDraggingItem));
+      item.Position := -1;
+      FTrayClient.HiddenItems.Add(item);
 
       if ShowHideButton.ForceDown then
       begin
