@@ -93,6 +93,7 @@ var
   mfile : String;
   Pos : TPoint;
   i : integer;
+  MenuID : String;
   popupdir : integer;
   st : Int64;
   MutexHandle : THandle;
@@ -187,7 +188,9 @@ begin
        popupdir := i;
     if ParamCount = 5 then
       if CompareText('-nomenuid',ParamStr(4)) = 0 then
-        nomenuid := True;      
+        nomenuid := True
+      else
+        MenuID := ParamStr(4);
   end;
 
   // Parse the menu file param before setting iconcachefile
@@ -238,7 +241,7 @@ begin
   // MuteX and Timeout settings of the main window
   wnd.MuteXHandle := MutexHandle;
   if not nomenuid then
-    wnd.MenuID := mfile
+    wnd.MenuID := MenuID
   else wnd.MenuID := '-1';
   wnd.HideTimeout := menusettings.HideTimeout;
 

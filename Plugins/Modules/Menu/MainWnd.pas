@@ -57,6 +57,8 @@ type
     sCaption     : String;
     sLeftClickMenu : String;
     sRightClickMenu : string;
+    sMenuID : string;
+
     procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
     procedure WMShellHook(var msg : TMessage); message WM_SHARPSHELLMESSAGE;    
 
@@ -203,6 +205,7 @@ begin
 //    ActionStr := ActionStr + 'SharpMenu.exe';
 //    ActionStr := ActionStr + ' ' + inttostr(p.x) + ' ' + inttostr(p.y);
   ActionStr := inttostr(p.x) + ' ' + inttostr(p.y) + ' ' + pdir;
+  ActionStr := ActionStr + ' ' + sMenuID;
   ActionStr := ActionStr + ' "' + SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\';
   ActionStr := ActionStr + menu + '.xml"';
   ShellApi.ShellExecute(Handle,'open',PChar(GetSharpEDirectory + 'SharpMenu.exe'),PChar(ActionStr),PChar(GetSharpEDirectory),SW_SHOWNORMAL);
@@ -222,13 +225,16 @@ begin
     atm := SendMessage(wnd, WM_MENUID, 0, 0);
 
     buf := StrAlloc(256);
-    GlobalGetAtomName(atm, buf, 256);
-    GlobalDeleteAtom(atm);
+    try
+      GlobalGetAtomName(atm, buf, 256);
+      GlobalDeleteAtom(atm);
 
-    if buf <> sLeftClickMenu then
-    begin
       SendMessage(wnd, WM_SHARPTERMINATE, 0, 0);
-      OpenMenu(sLeftClickMenu);
+      if buf <> sMenuID then
+        OpenMenu(sLeftClickMenu);
+
+    finally
+      StrDispose(buf);
     end;
   end;
 end;
@@ -260,15 +266,19 @@ begin
     atm := SendMessage(wnd, WM_MENUID, 0, 0);
 
     buf := StrAlloc(256);
-    GlobalGetAtomName(atm, buf, 256);
-    GlobalDeleteAtom(atm);
+    try
+      GlobalGetAtomName(atm, buf, 256);
+      GlobalDeleteAtom(atm);
 
-    if buf = sLeftClickMenu then
-    begin
-      FLastMenuWnd := wnd;
-      btn.ForceHover := True;
-    end else
-      btn.ForceHover := False;
+      if buf = sMenuID then
+      begin
+        FLastMenuWnd := wnd;
+        btn.ForceHover := True;
+      end else
+        btn.ForceHover := False;
+    finally
+      StrDispose(buf);
+    end;
   end else
   begin
     btn.ForceHover := False;
@@ -277,9 +287,18 @@ begin
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
+var
+  i, num : integer;
 begin
   DoubleBuffered := True;
   FLastMenuWnd := 0;
+
+  sMenuID := '';
+  for i := 0 to 3 do
+  begin
+    num := Random(256);
+    sMenuID := sMenuID + inttohex(num, 2);
+  end;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);

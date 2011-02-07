@@ -291,8 +291,7 @@ end;
 
 procedure TSharpEMenuWnd.SetMenuID(path : string);
 begin
-  FMenuID := ExtractFileName(path);
-  SetLength(FMenuID, Length(FMenuID) - Length(ExtractFileExt(FMenuID)));
+  FMenuID := path;
 end;
 
 function TSharpEMenuWnd.GetHideTimeout;
