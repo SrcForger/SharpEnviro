@@ -279,7 +279,7 @@
         <alpha>$MAlpha-32</alpha>
       </skinpart>
       <skinpart>
-        <location>w-7-2,1</location>
+        <location>w-7-4,1</location>
         <dimension>7,25</dimension>
         <image>images/ButtonRight.png</image>
         <color>$Background+32</color>
@@ -287,7 +287,7 @@
       </skinpart>
       <skinpart>
         <location>7+2,1</location>
-        <dimension>w-14-4,25</dimension>
+        <dimension>w-14-6,25</dimension>
         <image>images/ButtonMiddle.png</image>
         <color>$Background+32</color>
         <alpha>$MAlpha-32</alpha>
@@ -312,7 +312,7 @@
         <alpha>$MAlpha-32</alpha>
       </skinpart>
       <skinpart>
-        <location>w-7-2,1</location>
+        <location>w-7-4,1</location>
         <dimension>7,25</dimension>
         <image>images/ButtonRightInvert.png</image>
         <color>$Background+32</color>
@@ -320,7 +320,7 @@
       </skinpart>
       <skinpart>
         <location>7+2,1</location>
-        <dimension>w-14-4,25</dimension>
+        <dimension>w-14-6,25</dimension>
         <image>images/ButtonMiddleInvert.png</image>
         <color>$Background+32</color>
         <alpha>$MAlpha-32</alpha>
