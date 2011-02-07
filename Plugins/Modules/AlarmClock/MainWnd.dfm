@@ -23,6 +23,8 @@ object MainForm: TMainForm
     Height = 25
     AutoSize = True
     OnMouseUp = btnAlarmOnClick
+    OnMouseEnter = btnAlarmMouseEnter
+    OnMouseLeave = btnAlarmMouseLeave
     Glyph32.ResamplerClassName = 'TNearestResampler'
     Layout = blGlyphLeft
     AutoPosition = True

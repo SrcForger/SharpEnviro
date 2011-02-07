@@ -29,21 +29,33 @@ interface
 
 uses
   Windows, SysUtils, Classes, Forms, Dialogs, Types, DateUtils, SharpIconUtils,
-  uISharpBarModule, ISharpESkinComponents, JclShell, Graphics,
+  uISharpBarModule, ISharpESkinComponents, JclShell, JclStrings, Graphics,
   SharpApi, SharpCenterApi, Menus, SharpEButton, ExtCtrls, SharpEBaseControls, Controls,
   GR32, GR32_PNG, GR32_Image, JclSimpleXML, IXmlBaseUnit, cbAudioPlay, DirectShow,
-  ImgList, PngImageList;
+  ImgList, PngImageList,
+  SharpNotify;
 
 type
+  TAlarmTimeRecord = record
+    Second, Minute, Hour : integer;
+    Day, Month, Year: integer;
+  end;
+
+  PAlarmTimeRecord = ^TAlarmTimeRecord;
+
   TAlarmTime = class
   private
     wParent : TWinControl;
-
-    iSec, iMin, iHou : integer;
-    iDay, iMon, iYea: integer;
-
     IsTemp : boolean;
 
+    FStart: TAlarmTimeRecord; 
+    FCurrent: TAlarmTimeRecord;
+
+    FName: String;
+    FIsOn, FIsAlarming : boolean;
+    FSnoozeCount : integer;
+
+    // Audio
     Sound: TcbAudioPlay;
     FDeviceIdx : integer;
 
@@ -51,23 +63,28 @@ type
     constructor Create(par : TWinControl); reintroduce;
     destructor Destroy; reintroduce;
 
-    procedure SetTime(sSec, sMin, sHou, sDay, sMon, sYea : string);
+    function GetTime: TDateTime;
 
-    function Compare(t : TDateTime) : boolean; overload;
+    procedure SetTime(item: PAlarmTimeRecord; sSec, sMin, sHou, sDay, sMon, sYea : integer); overload;
+    procedure SetTime(sSec, sMin, sHou, sDay, sMon, sYea : string); overload;
+    procedure SetTime(t : TDateTime); overload;
+    procedure SetCurrent(t : TDateTime);
+
     function Compare(alarm : TAlarmTime) : boolean; overload;
+    function Compare(t : TDateTime) : boolean; overload;
 
     procedure SoundLoad(s : string);
     procedure SoundClose;
     procedure SoundPlay;
     procedure SoundStop;
 
-    property Sec: integer read iSec write iSec;
-    property Min: integer read iMin write iMin;
-    property Hou: integer read iHou write iHou;
+    property Start: TAlarmTimeRecord read FStart write FStart;
+    property Current: TAlarmTimeRecord read FCurrent write FCurrent;
 
-    property Day: integer read iDay write iDay;
-    property Mon: integer read iMon write iMon;
-    property Yea: integer read iYea write iYea;
+    property Name: String read FName write FName;
+    property IsOn: Boolean read FIsOn write FIsOn;
+    property IsAlarming: Boolean read FIsAlarming write FIsAlarming;
+    property SnoozeCount: integer read FSnoozeCount write FSnoozeCount;
 
   end;
 
@@ -78,11 +95,8 @@ type
   end;
 
   TAlarmSettings = record
-    IsOn, IsAlarming : boolean;
     Timeout, Snooze : integer;
-
     Sound : string;
-
     Alarm: TAlarmTime;
   end;
 
@@ -112,8 +126,18 @@ type
     procedure mnuRightTurnOffClick(Sender: TObject);
     procedure mnuRightDisableClick(Sender: TObject);
     procedure mnuRightConfigClick(Sender: TObject);
+    procedure btnAlarmMouseEnter(Sender: TObject);
+    procedure btnAlarmMouseLeave(Sender: TObject);
+
+  private
+    procedure ShowNotify(ATimeout: integer = 0);
+    procedure UpdateNotify;
+
   public
     alarmSettings : TAlarmSettings;
+
+    FNotifyWnd : TNotifyItem;
+    FNotifyText : String;
 
     mInterface : ISharpBarModule;
     procedure LoadSettings;
@@ -143,6 +167,7 @@ begin
   wParent := par;
   Sound := nil;
   IsTemp := False;
+  FSnoozeCount := 0;
 end;
 
 destructor TAlarmTime.Destroy;
@@ -151,14 +176,66 @@ begin
   FreeAndNil(Sound);
 end;
 
+function TAlarmTime.GetTime: TDateTime;
+var
+  tMili, tSec, tMin, tHou: word;
+  tDay, tMon, tYea: word;
+  tmp, tmp2: TDateTime;
+begin
+  DecodeDateTime(Now, tYea, tMon, tDay, tHou, tMin, tSec, tMili);
+
+  if FCurrent.Year > 0  then
+    tYea := FCurrent.Year;
+  if FCurrent.Month > 0  then
+    tMon := FCurrent.Month;
+  if FCurrent.Day > 0  then
+    tDay := FCurrent.Day;
+  if (FCurrent.Hour >= 0) and (FCurrent.Hour < 24)  then
+    tHou := FCurrent.Hour;
+  if (FCurrent.Minute >= 0) and (FCurrent.Minute < 60)  then
+    tMin := FCurrent.Minute;
+  if (FCurrent.Second >= 0) and (FCurrent.Second < 60)  then
+    tSec := FCurrent.Second;
+
+  tmp := EncodeDateTime(tYea, tMon, tDay, tHou, tMin, tSec, 0);
+  tmp2 := EncodeDateTime(tYea, tMon, tDay, 23, 59, 59, 0);
+  if (FStart.Day <= 0) and ((CompareTime(Now, tmp) > 0)) and (CompareTime(tmp, tmp2) < 0) then
+    tDay := tDay + 1;
+
+  Result := EncodeDateTime(tYea, tMon, tDay, tHou, tMin, tSec, 0);
+end;
+
+procedure TAlarmTime.SetTime(item: PAlarmTimeRecord; sSec, sMin, sHou, sDay, sMon, sYea : integer);
+begin
+  item.Second := sSec;
+  item.Minute := sMin;
+  item.Hour := sHou;
+  item.Day := sDay;
+  item.Month := sMon;
+  item.Year := sYea;
+end;
+
 procedure TAlarmTime.SetTime(sSec, sMin, sHou, sDay, sMon, sYea : string);
 begin
-  iSec := StrToInt(sSec);
-  iMin := StrToInt(sMin);
-  iHou := StrToInt(sHou);
-  iDay := StrToInt(sDay);
-  iMon := StrToInt(sMon);
-  iYea := StrToInt(sYea);
+  SetTime(@FStart, StrToInt(sSec), StrToInt(sMin), StrToInt(sHou), StrToInt(sDay), StrToInt(sMon), StrToInt(sYea));
+end;
+
+procedure TAlarmTime.SetTime(t : TDateTime);
+var
+  tMili, tSec, tMin, tHou: word;
+  tDay, tMon, tYea: word;
+begin
+  DecodeDateTime(t, tYea, tMon, tDay, tHou, tMin, tSec, tMili);
+  SetTime(@FStart, tSec, tMin, tHou, tDay, tMon, tYea);
+end;
+
+procedure TAlarmTime.SetCurrent(t : TDateTime);
+var
+  tMili, tSec, tMin, tHou: word;
+  tDay, tMon, tYea: word;
+begin
+  DecodeDateTime(t, tYea, tMon, tDay, tHou, tMin, tSec, tMili);
+  SetTime(@FCurrent, tSec, tMin, tHou, tDay, tMon, tYea);
 end;
 
 function TAlarmTime.Compare(t : TDateTime) : boolean;
@@ -168,23 +245,23 @@ var
 begin
   DecodeDateTime(t, tYea, tMon, tDay, tHou, tMin, tSec, tMili);
 
-  Result := ((iSec < 0) or (iSec = tSec)) and
-            ((iMin < 0) or (iMin = tMin)) and
-            ((iHou < 0) or (iHou = tHou)) and
-            ((iDay <= 0) or (iDay = tDay)) and
-            ((iMon <= 0) or (iMon = tMon)) and
-            ((iYea <= 0) or (iYea = tYea));
+  Result := ((FStart.Second < 0) or (FStart.Second = tSec)) and
+            ((FStart.Minute < 0) or (FStart.Minute = tMin)) and
+            ((FStart.Hour < 0) or (FStart.Hour = tHou)) and
+            ((FStart.Day <= 0) or (FStart.Day = tDay)) and
+            ((FStart.Month <= 0) or (FStart.Month = tMon)) and
+            ((FStart.Year <= 0) or (FStart.Year = tYea));
 end;
 
 
 function TAlarmTime.Compare(alarm : TAlarmTime) : boolean;
 begin
-  Result := ((iSec < 0) or (iSec = alarm.Sec)) and
-            ((iMin < 0) or (iMin = alarm.Min)) and
-            ((iHou < 0) or (iHou = alarm.Hou)) and
-            ((iDay <= 0) or (iDay = alarm.Day)) and
-            ((iMon <= 0) or (iMon = alarm.Mon)) and
-            ((iYea <= 0) or (iYea = alarm.Yea));
+  Result := ((FStart.Second < 0) or (FStart.Second = alarm.Start.Second)) and
+            ((FStart.Minute < 0) or (FStart.Minute = alarm.Start.Minute)) and
+            ((FStart.Hour < 0) or (FStart.Hour = alarm.Start.Hour)) and
+            ((FStart.Day <= 0) or (FStart.Day = alarm.Start.Day)) and
+            ((FStart.Month <= 0) or (FStart.Month = alarm.Start.Month)) and
+            ((FStart.Year <= 0) or (FStart.Year = alarm.Start.Year));
 end;
 
 procedure TAlarmTime.SoundLoad(s : string);
@@ -257,6 +334,111 @@ end;
 
 
 {TMainForm}
+procedure TMainForm.ShowNotify(ATimeout: integer);
+var
+  BmpToDisplay: TBitmap32;
+  NS: ISharpENotifySkin;
+  SkinText: ISharpESkinText;
+
+  sList : TStringList;
+  n: integer;
+
+  edge : TSharpNotifyEdge;
+  LineWidth, LineHeight: integer;
+  ypos : integer;
+begin
+  if Assigned(FNotifyWnd) then
+    SharpNotify.CloseNotifyWindow(FNotifyWnd);
+      
+  FNotifyWnd := nil;
+
+  BmpToDisplay := TBitmap32.Create;
+  BmpToDisplay.DrawMode := dmBlend;
+  BmpToDisplay.CombineMode := cmMerge;
+
+  NS := mInterface.SkinInterface.SkinManager.Skin.Notify;
+  SkinText := NS.Background.CreateThemedSkinText;
+  SkinText.AssignFontTo(BmpToDisplay.Font, mInterface.SkinInterface.SkinManager.Scheme);
+
+  sList := TStringList.Create;
+  try
+    StrToStrings(FNotifyText, sLineBreak, sList);
+
+    LineWidth := 0;
+    LineHeight := 0;
+    for n := 0 to sList.Count - 1 do
+    begin
+      if LineWidth < BmpToDisplay.TextWidth(sList[n]) then
+        LineWidth := BmpToDisplay.TextWidth(sList[n]);
+      if LineHeight < BmpToDisplay.TextHeight(sList[n]) then
+        LineHeight := BmpToDisplay.TextHeight(sList[n]);
+    end;
+
+    BmpToDisplay.SetSize(LineWidth + 8, (LineHeight * sList.Count) + 8);
+
+    ypos := 4;
+    for n := 0 to sList.Count - 1 do
+    begin
+      SkinText.RenderToW(BmpToDisplay, 4, ypos, sList[n], mInterface.SkinInterface.SkinManager.Scheme);
+      ypos := ypos + LineHeight;
+    end;
+  finally
+    sList.Free;
+  end;
+
+  if Top < Monitor.Top + Monitor.Height div 2 then
+  begin
+    edge := neTopLeft;
+    ypos := Monitor.Top + Height - 1;
+  end else
+  begin
+    edge := neBottomLeft;
+    ypos := Monitor.Top + Monitor.Height - Height;
+  end;
+
+  FNotifyWnd := SharpNotify.CreateNotifyWindowBitmap(
+    0,
+    nil,
+    Left,
+    ypos,
+    BmpToDisplay,
+    edge,
+    mInterface.SkinInterface.SkinManager,
+    ATimeout,
+    Monitor.BoundsRect);
+
+  BmpToDisplay.Free;
+end;
+
+procedure TMainForm.UpdateNotify;
+var
+  tmpTime: TDateTime;
+  t: TAlarmTime;
+begin
+  if (alarmSettings.Alarm.IsOn) then
+  begin
+    tmpTime := alarmSettings.Alarm.GetTime;
+    t := TAlarmTime.Create(Self);
+    t.SetCurrent(tmpTime);
+
+    if alarmSettings.Alarm.IsAlarming then
+      FNotifyText := Format(alarmSettings.Alarm.Name + ' %d/%.2d/%.2d %.2d:%.2d:%.2d' + sLineBreak + 'Click the icon to Snooze',
+            [t.Current.Year, t.Current.Month, t.Current.Day,
+            t.Current.Hour, t.Current.Minute, t.Current.Second])
+    else
+    begin
+      if alarmSettings.Alarm.SnoozeCount > 0 then
+        FNotifyText := Format(alarmSettings.Alarm.Name + ' snoozed until %.2d:%.2d:%.2d', [t.Current.Hour, t.Current.Minute, t.Current.Second])
+      else
+        FNotifyText := Format(alarmSettings.Alarm.Name + ' set at %d/%.2d/%.2d %.2d:%.2d:%.2d',
+            [t.Current.Year, t.Current.Month, t.Current.Day,
+            t.Current.Hour, t.Current.Minute, t.Current.Second]);
+
+      t.Free;
+    end;
+  end else
+    FNotifyText := 'Alarm is disabled';
+end;
 
 procedure TMainForm.LoadIcons;
 var
@@ -276,9 +458,9 @@ begin
 
       TempBmp.Clear(color32(0,0,0,0));
 
-      if alarmSettings.IsAlarming then
+      if alarmSettings.Alarm.IsAlarming then
         IconName := 'icon.alarm.active'
-      else if not alarmSettings.IsOn then
+      else if not alarmSettings.Alarm.IsOn then
         IconName := 'icon.alarm.off'
       else
         IconName := 'icon.alarm.on';
@@ -300,7 +482,8 @@ var
   XML : TJclSimpleXML;
   n : integer;
 begin
-  alarmSettings.IsAlarming := False;
+  alarmSettings.Alarm.SnoozeCount := 0;
+  alarmSettings.Alarm.IsAlarming := False;
   alarmSettings.Timeout := 60 * 1000;
   alarmSettings.Snooze := 60 * 90 * 1000;
   alarmSettings.Alarm.SetTime('0', '0', '0', '0', '0', '0');
@@ -320,24 +503,28 @@ begin
           alarmSettings.Snooze := IntValue('Snooze', 60*9) * 1000;
         end else if XML.Root.Items.Item[n].Name = 'Time' then
         begin
-          alarmSettings.IsAlarming := False;
-          alarmSettings.IsOn := (alarmSettings.IsOn) or (BoolValue('AutoStart', False));
+          alarmSettings.Alarm.IsAlarming := False;
+          alarmSettings.Alarm.IsOn := (alarmSettings.Alarm.IsOn) or (BoolValue('AutoStart', False));
 
+          alarmSettings.Alarm.Name := Value('Name', 'Alarm #' + IntToStr(n));
           alarmSettings.Alarm.SetTime(Value('Second', '0'),
                                       Value('Minute', '0'),
                                       Value('Hour', '0'),
                                       Value('Day', '0'),
                                       Value('Month', '0'),
                                       Value('Year', '0'));
+                                      
+          alarmSettings.Alarm.Current := alarmSettings.Alarm.Start;
 
           alarmSettings.Sound := Value('Sound', 'Default');
-          alarmUpdTimer.Enabled := alarmSettings.IsOn;
+          alarmUpdTimer.Enabled := alarmSettings.Alarm.IsOn;
         end;
       end;
     end;
   XML.Free;
 
   LoadIcons;
+  UpdateNotify;
 end;
 
 procedure TMainForm.SaveSettings;
@@ -362,15 +549,16 @@ begin
     Items.Add('Time');
     with Items.ItemNamed['Time'].Items do
     begin
-      Add('AutoStart', alarmSettings.IsOn);
+      Add('AutoStart', alarmSettings.Alarm.IsOn);
       Add('Sound', alarmSettings.Sound);
 
-      Add('Second', alarmSettings.Alarm.Sec);
-      Add('Minute', alarmSettings.Alarm.Min);
-      Add('Hour', alarmSettings.Alarm.Hou);
-      Add('Day', alarmSettings.Alarm.Day);
-      Add('Month', alarmSettings.Alarm.Mon);
-      Add('Year', alarmSettings.Alarm.Yea);
+      Add('Name', alarmSettings.Alarm.Name);
+      Add('Second', alarmSettings.Alarm.Start.Second);
+      Add('Minute', alarmSettings.Alarm.Start.Minute);
+      Add('Hour', alarmSettings.Alarm.Start.Hour);
+      Add('Day', alarmSettings.Alarm.Start.Day);
+      Add('Month', alarmSettings.Alarm.Start.Month);
+      Add('Year', alarmSettings.Alarm.Start.Year);
     end;
   end;
 
@@ -389,17 +577,17 @@ end;
 
 procedure TMainForm.mnuRightDisableClick(Sender: TObject);
 begin
-  if alarmSettings.IsOn then
+  if alarmSettings.Alarm.IsOn then
   begin
-    alarmSettings.IsOn := False;
-    alarmSettings.IsAlarming := False;
+    alarmSettings.Alarm.IsOn := False;
+    alarmSettings.Alarm.IsAlarming := False;
 
     alarmTimeoutTimer.Enabled := False;
     alarmSnoozeTimer.Enabled := False;
     alarmUpdTimer.Enabled := False;
   end else
   begin
-    alarmSettings.IsOn := True;
+    alarmSettings.Alarm.IsOn := True;
     LoadSettings;
   end;
 
@@ -413,7 +601,9 @@ end;
 
 procedure TMainForm.mnuRightTurnOffClick(Sender: TObject);
 begin
-  alarmSettings.IsAlarming := False;
+  alarmSettings.Alarm.Current := alarmSettings.Alarm.Start;
+  alarmSettings.Alarm.SnoozeCount := 0;
+  alarmSettings.Alarm.IsAlarming := False;
   alarmTimeoutTimer.Enabled := False;
   alarmSnoozeTimer.Enabled := False;
 
@@ -455,7 +645,7 @@ end;
 
 procedure TMainForm.alarmOnTimeoutTimer(Sender: TObject);
 begin
-  alarmSettings.IsAlarming := True;
+  alarmSettings.Alarm.IsAlarming := True;
   alarmTimeoutTimer.Enabled := False;
   alarmSnoozeTimer.Enabled := False;
 
@@ -465,7 +655,7 @@ end;
 
 procedure TMainForm.alarmOnSnoozeTimer(Sender: TObject);
 begin
-  alarmSettings.IsAlarming := True;
+  alarmSettings.Alarm.IsAlarming := True;
   alarmTimeoutTimer.Enabled := False;
   alarmSnoozeTimer.Enabled := False;
 
@@ -475,10 +665,11 @@ end;
 
 procedure TMainForm.alarmOnTimer(Sender: TObject);
 begin
-  if alarmSettings.Alarm.Compare(Now) and not alarmSettings.IsAlarming then
+  if alarmSettings.Alarm.Compare(Now) and not alarmSettings.Alarm.IsAlarming then
   begin
-    alarmSettings.IsAlarming := true;
+    alarmSettings.Alarm.IsAlarming := true;
     UpdateAlarm;
+    UpdateNotify;
 
     Timeout;
   end;
@@ -486,12 +677,16 @@ end;
 
 procedure TMainForm.UpdateAlarm;
 begin
-  if alarmSettings.IsAlarming then
+  if alarmSettings.Alarm.IsAlarming then
   begin
+    UpdateNotify;
+    ShowNotify(5000);
+  
     alarmSettings.Alarm.SoundLoad(alarmSettings.Sound);
     alarmSettings.Alarm.SoundPlay;
   end else
   begin
+    UpdateNotify;
     alarmSettings.Alarm.SoundStop;
     alarmSettings.Alarm.SoundClose;
   end;
@@ -502,23 +697,44 @@ end;
 
 procedure TMainForm.Timeout;
 begin
-  if (not alarmSettings.IsOn) then
+  if (not alarmSettings.Alarm.IsOn) then
     exit;
 
+  alarmSnoozeTimer.Enabled := False;
   alarmTimeoutTimer.Interval := alarmSettings.Timeout;
   alarmTimeoutTimer.Enabled := True;
+
+  UpdateNotify;
 end;
 
 procedure TMainForm.Snooze;
 begin
-  if (not alarmSettings.IsOn) or (not alarmSettings.IsAlarming) then
+  if (not alarmSettings.Alarm.IsOn) or (not alarmSettings.Alarm.IsAlarming) then
     exit;
 
-  alarmSettings.IsAlarming := False;
+  alarmSettings.Alarm.SetCurrent(IncMilliSecond(Now, alarmSettings.Snooze));
+  alarmSettings.Alarm.SnoozeCount := alarmSettings.Alarm.SnoozeCount + 1;
+  alarmSettings.Alarm.IsAlarming := False;
+  
   alarmSnoozeTimer.Interval := alarmSettings.Snooze;
   alarmSnoozeTimer.Enabled := True;
+  alarmTimeoutTimer.Enabled := False;
 
   UpdateAlarm;
+  UpdateNotify;
+end;
+
+procedure TMainForm.btnAlarmMouseEnter(Sender: TObject);
+begin
+  ShowNotify;
+end;
+
+procedure TMainForm.btnAlarmMouseLeave(Sender: TObject);
+begin
+  if Assigned(FNotifyWnd) then
+    SharpNotify.CloseNotifyWindow(FNotifyWnd);
+
+  FNotifyWnd := nil;
 end;
 
 procedure TMainForm.btnAlarmOnClick(Sender: TObject; Button: TMouseButton;
@@ -541,13 +757,13 @@ begin
       p.Y := p.Y - Self.Height;
 
     m := mnuRight.Items[0];
-    m.Enabled := (alarmSettings.IsAlarming);
+    m.Enabled := (alarmSettings.Alarm.IsAlarming);
 
     m := mnuRight.Items[1];
-    m.Enabled := (alarmSettings.IsAlarming) or (alarmTimeoutTimer.Enabled) or (alarmSnoozeTimer.Enabled);
+    m.Enabled := (alarmSettings.Alarm.IsAlarming) or (alarmTimeoutTimer.Enabled) or (alarmSnoozeTimer.Enabled);
 
     m := mnuRight.Items[2];
-    if alarmSettings.IsOn then
+    if alarmSettings.Alarm.IsOn then
     begin
       m.ImageIndex := 3;
       m.Caption := 'Disable'
@@ -567,7 +783,8 @@ begin
   DoubleBuffered := True;
 
   alarmSettings.Alarm := TAlarmTime.Create(Self);
-  alarmSettings.IsOn := False;
+  alarmSettings.Alarm.IsOn := False;
+  FNotifyText := '';
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
