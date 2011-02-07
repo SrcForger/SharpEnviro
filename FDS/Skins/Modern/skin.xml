@@ -388,7 +388,7 @@
       <dimension>w,6</dimension>     
       <skinpart>
         <location>0,3</location>
-        <dimension>w,1</dimension>
+        <dimension>w-3,1</dimension>
         <image>images/Empty.png</image>
         <color>$Background-16</color>
         <alpha>$MAlpha</alpha>
@@ -396,9 +396,9 @@
     </separator>
     <label>
       <text>
-        <dimension>w-20,h</dimension>
+        <dimension>w-22,h</dimension>
         <location>cw+14,1</location>
-	<shadowtype>Outline</shadowtype>
+	      <shadowtype>Outline</shadowtype>
       </text>
       <dimension>w,22</dimension>
       <widthmod>20</widthmod>
