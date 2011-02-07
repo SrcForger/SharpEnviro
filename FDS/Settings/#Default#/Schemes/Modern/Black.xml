@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpESkinScheme>
+  <Info>
+    <Name>Black</Name>
+    <Author>Martin Kr&#xE4;mer</Author>
+  </Info>
+  <Item>
+    <Tag>$Background</Tag>
+    <Color>1447446</Color>
+  </Item>
+  <Item>
+    <Tag>$Special</Tag>
+    <Color>15636034</Color>
+  </Item>
+  <Item>
+    <Tag>$Text</Tag>
+    <Color>16777215</Color>
+  </Item>
+  <Item>
+    <Tag>$TextShadow</Tag>
+    <Color>0</Color>
+  </Item>
+  <Item>
+    <Tag>$Alpha</Tag>
+    <Color>200</Color>
+  </Item>
+  <Item>
+    <Tag>$MAlpha</Tag>
+    <Color>230</Color>
+  </Item>
+</SharpESkinScheme>
