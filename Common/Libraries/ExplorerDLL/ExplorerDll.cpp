@@ -94,10 +94,7 @@ void ExplorerDll::Stop()
 void ExplorerDll::ShellReady()
 {
 	if(hReadyEvent)
-	{
 		SetEvent(hReadyEvent);
-		CloseHandle(hReadyEvent);
-	}
 }
 
 DWORD WINAPI ExplorerDll::ThreadFunc(LPVOID pvParam)
@@ -107,7 +104,6 @@ DWORD WINAPI ExplorerDll::ThreadFunc(LPVOID pvParam)
 
 	ExplorerDll pThis = *static_cast<ExplorerDll*>(pvParam);
 
-	SetProcessDEPPolicy(PROCESS_DEP_ENABLE);
 	HeapSetInformation(NULL, HeapEnableTerminationOnCorruption, NULL, 0);
 
 	// Create ActiveX context
@@ -226,6 +222,8 @@ DWORD WINAPI ExplorerDll::ThreadFunc(LPVOID pvParam)
 		HANDLE hDesktop = SHCreateDesktop(pThis.iTray);
 
 		SendMessage(GetDesktopWindow(), 0x400, 0, 0);
+
+		ReleaseMutex(hIsShell);
 
 		// Switching shell event
 		HANDLE hEv = OpenEvent(EVENT_MODIFY_STATE, false, L"Global\\msgina: ShellReadyEvent");
