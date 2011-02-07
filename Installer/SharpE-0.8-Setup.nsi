@@ -21,7 +21,7 @@ RequestExecutionLevel highest
 # General Symbol Definitions
 !define REGKEY "SOFTWARE\$(^Name)"
 !define VERSION 0.8-RC2
-!define COMPANY "SharpE Development Team"
+!define COMPANY "SharpEnviroopment Team"
 !define URL www.sharpenviro.com
 
 # MUI Symbol Definitions
@@ -319,6 +319,10 @@ Section "!Core Files" SEC01
   # Skins - Minimal 2
   SetOutPath "$INSTDIR\Skins\Minimal 2\"
   File /r "..\..\SharpE\Skins\Minimal 2\*.*"
+  
+  # Skins - Modern
+  SetOutPath "$INSTDIR\Skins\Modern\"
+  File /r "..\..\SharpE\Skins\Modern\*.*"
   
   # Skins - Number 7
   SetOutPath "$INSTDIR\Skins\Number 7\"
@@ -744,6 +748,7 @@ Section /o -un.Main UNSEC0000
     RmDir /r "$INSTDIR\Cursors\Cony Island\"
     RmDir /r "$INSTDIR\Cursors\DMZ Black\"
     RmDir /r "$INSTDIR\Cursors\DMZ White\"
+    RmDir /r "$INSTDIR\Cursors\Gaia 10\"
     RmDir /r "$INSTDIR\Cursors\GNOME\"
     RmDir /r "$INSTDIR\Cursors\MoonShine\"
     RmDir /r "$INSTDIR\Cursors\Nabla\"
@@ -769,6 +774,7 @@ Section /o -un.Main UNSEC0000
     # Delete the skins that we install, leave any the user may have added
     RmDir /r "$INSTDIR\Skins\Minimal\"
     RmDir /r "$INSTDIR\Skins\Minimal 2\"
+    RmDir /r "$INSTDIR\Skins\Modern\"
     RmDir /r "$INSTDIR\Skins\Number 7\"
     RmDir /r "$INSTDIR\Skins\Number 8\"
     RmDir /r "$INSTDIR\Skins\Objects\"
