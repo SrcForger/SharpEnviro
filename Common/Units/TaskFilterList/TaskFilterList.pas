@@ -20,7 +20,7 @@ type
   TFilterItem = class(TPersistent)
   public
     Id: Integer;
-      Name: string;
+    Name: string;
     FileName: string;
     WndClassName: string;
     FilterType: TFilterItemType;
