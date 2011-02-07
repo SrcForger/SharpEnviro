@@ -62,6 +62,7 @@ type
     SubMenuCloseTimer: TTimer;
     HideTimer: TTimer;
     ScrollMenuTimer: TTimer;
+    SearchTimer: TTimer;
     procedure ApplicationEvents1Message(var Msg: tagMSG; var Handled: Boolean);
     procedure FormMouseWheelUp(Sender: TObject; Shift: TShiftState;
       MousePos: TPoint; var Handled: Boolean);
@@ -89,6 +90,7 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure ScrollMenuTimerTimer(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
+    procedure SearchTimerTimer(Sender: TObject);
 
   private
     FMenu : TSharpEMenu;
@@ -116,7 +118,7 @@ type
     procedure UpdateWndLayer;
     procedure ScrollMenu(num: integer; noParent: boolean = false);
     procedure ScrollMenuOffset(num: integer; noParent: boolean = false);
-    procedure ScrollMenuKey(key: char; noParent: boolean);
+    procedure ScrollMenuString(str: String; noParent: boolean);
 
   protected
     procedure WMActivate(var Msg : TMessage); message WM_ACTIVATE;
@@ -129,6 +131,7 @@ type
 
   public
     MuteXHandle : THandle;
+    SearchStr : String;
 
     procedure DrawWindow;
     procedure PreMul(Bitmap: TBitmap32);
@@ -142,7 +145,7 @@ type
     procedure SetHideTimeout(n : integer);
     procedure EnableHideTimeout;
     procedure DisableHideTimeout;
-    
+
   published
     property SharpEMenu : TSharpEMenu read FMenu;
     property SharpESubMenu : TSharpEMenuWnd read FSubMenu write FSubMenu;
@@ -155,6 +158,7 @@ type
     property IgnoreNextKillFocus : boolean read FIgnoreNextKillFocus write FIgnoreNextKillFocus;
     property MenuID : string read FMenuID write SetMenuID;
     property HideTimeout : integer read GetHideTimeout write SetHideTimeout;
+    
   end;
 
 const
@@ -294,6 +298,12 @@ end;
 function TSharpEMenuWnd.GetHideTimeout;
 begin
   Result := HideTimer.Interval;
+end;
+
+procedure TSharpEMenuWnd.SearchTimerTimer(Sender: TObject);
+begin
+  SearchStr := '';
+  SearchTimer.Enabled := False;
 end;
 
 procedure TSharpEMenuWnd.SetHideTimeout(n : integer);
@@ -477,6 +487,7 @@ procedure TSharpEMenuWnd.FormMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
   dragPath : string;
+  ret: TDragResult;
   pt: TPoint;
   rc: TRect;
 
@@ -491,6 +502,13 @@ var
 begin
   if FIsClosing then exit;
   if FMenu = nil then exit;
+
+  if FMenu.PerformMouseDown(self,Button, X,Y) then
+  begin
+    FMenu.RenderTo(FPicture);
+    PreMul(FPicture);
+    DrawWindow;
+  end;
 
   if (DragDetectPlus(TWinControl(Sender))) then
   begin
@@ -508,25 +526,23 @@ begin
       FDropFileSource.Files.Add(dragPath);
       FDropFileSource.DragTypes := [dtCopy, dtLink];
       FDropFileSource.PreferredDropEffect := DROPEFFECT_COPY;
+
       // Start the drag operation.
-      FDropFileSource.Execute;
-
-      GetCursorPos(pt);
-      GetWindowRect(Handle, rc);
-      
-      if not PointInRect(pt, rc) then
+      ret := FDropFileSource.Execute;
+      if (ret = drDropCopy) or (ret = drDropMove) then
       begin
-        Close;
-        exit;
-      end;
+        GetCursorPos(pt);
+        GetWindowRect(Handle, rc);
+      
+        if not PointInRect(pt, rc) then
+        begin
+          Close;
+          exit;
+        end else
+          FormMouseUp(Sender, Button, Shift, pt.X, pt.Y);
+      end else
+        FormMouseUp(Sender, Button, Shift, pt.X, pt.Y);
     end;
-  end;
-
-  if FMenu.PerformMouseDown(self,Button, X,Y) then
-  begin
-    FMenu.RenderTo(FPicture);
-    PreMul(FPicture);
-    DrawWindow;
   end;
 end;
 
@@ -937,9 +953,42 @@ begin
 end;
 
 procedure TSharpEMenuWnd.FormKeyPress(Sender: TObject; var Key: Char);
+var
+  noParent: Boolean;
 begin
-  if Key in ['a'..'z'] + ['A'..'Z'] + ['0'..'9'] then
-    ScrollMenuKey(Char(Key), false);
+  noParent := False;
+  if ((Mouse.CursorPos.x >= Left) and (Mouse.CursorPos.x < Left + Width)) then
+    noParent := true;
+
+  if Key = Char($08) then
+  begin
+    if noParent then
+    begin
+      if Length(SearchStr) >= 1 then
+        SetLength(SearchStr, Length(SearchStr) - 1);
+    end else
+    begin
+      if Length(FParentMenu.SearchStr) >= 1 then
+        SetLength(FParentMenu.SearchStr, Length(FParentMenu.SearchStr) - 1);
+    end;
+  end;
+
+  if Key >= Char($20) then
+  begin
+    if noParent then
+    begin
+      SearchStr := SearchStr + Key;
+      ScrollMenuString(SearchStr, noParent);  
+      SearchTimer.Enabled := False;
+      SearchTimer.Enabled := True;
+    end else
+    begin
+      FParentMenu.SearchStr := FParentMenu.SearchStr + Key;
+      ScrollMenuString(FParentMenu.SearchStr, noParent);
+      FParentMenu.SearchTimer.Enabled := False;
+      FParentMenu.SearchTimer.Enabled := True;
+    end;
+  end;
 end;
 
 procedure TSharpEMenuWnd.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -1022,40 +1071,66 @@ begin
   ScrollMenu(scroll, noParent);
 end;
 
-procedure TSharpEMenuWnd.ScrollMenuKey(key: char; noParent: boolean);
+procedure TSharpEMenuWnd.ScrollMenuString(str: string; noParent: Boolean);
 var
-  n : integer;
-  num, numMax : integer;
+  n, i : integer;
+  num, numMax, nID : integer;
+  nLen, nMaxLen : integer;
   cap : string;
 begin
   if (not noParent) and ((Mouse.CursorPos.x >= Left) and (Mouse.CursorPos.x < Left + Width)) then
-      noParent := true;
+    noParent := true;
 
   if noParent then
     numMax := FMenu.Items.Count - 1
   else
     numMax := FParentMenu.SharpEMenu.Items.Count - 1;
-      
+
+  nMaxLen := 0;
+  nID := 0;
   num := -1;
   for n := 0 to numMax do
   begin
     if noParent then
-      cap := AnsiUpperCase(TSharpEMenuItem(FMenu.Items.Items[n]).Caption)
+      cap := TSharpEMenuItem(FMenu.Items.Items[n]).Caption
     else
-      cap := AnsiUpperCase(TSharpEMenuItem(FParentMenu.SharpEMenu.Items.Items[n]).Caption);
+      cap := TSharpEMenuItem(FParentMenu.SharpEMenu.Items.Items[n]).Caption;
       
     if Length(cap) <= 0 then
       continue;
 
-    if (cap[1] = AnsiUpperCase(key)[1]) then
-      break;
+    nLen := 0;
+    for i := 1 to Min(Length(cap), Length(str)) do
+    begin
+      if CompareText(str[i], cap[i]) <> 0 then
+        break;
 
+      nLen := nLen + 1;
+    end;
+
+    if nLen > nMaxLen then
+    begin
+      nMaxLen := nLen;
+      nID := n;
+    end;
+  end;
+
+  for n := 0 to nID - 1 do
+  begin
+    if noParent then
+      cap := TSharpEMenuItem(FMenu.Items.Items[n]).Caption
+    else
+      cap := TSharpEMenuItem(FParentMenu.SharpEMenu.Items.Items[n]).Caption;
+      
+    if Length(cap) <= 0 then
+      continue;
+  
     if noParent then
       num := num + FMenu.ItemsHeight[n]
     else
       num := num + FParentMenu.SharpEMenu.ItemsHeight[n];
   end;
-
+  
   if num >= 0 then
     ScrollMenu(num, noParent);
 end;

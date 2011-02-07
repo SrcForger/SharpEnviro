@@ -75,4 +75,10 @@ object SharpEMenuWnd: TSharpEMenuWnd
     Left = 112
     Top = 136
   end
+  object SearchTimer: TTimer
+    Enabled = False
+    OnTimer = SearchTimerTimer
+    Left = 144
+    Top = 136
+  end
 end
