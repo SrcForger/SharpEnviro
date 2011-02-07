@@ -170,33 +170,33 @@
     <location>-2,-1</location>
     <widthlimit>200,350</widthlimit>
     <tboffset>8,8</tboffset>
-    <lroffset>6,7</lroffset>
+    <lroffset>6,4</lroffset>
     <background>
       <skinpart>
         <location>0,0</location>
         <dimension>12,12</dimension>
-        <image>images/BackgroundTopLeft.png</image>
+        <image>images/BackgroundTopLeftSmall.png</image>
         <color>$Background</color>
         <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>0,12</location>
         <dimension>12,h-24</dimension>
-        <image>images/BackgroundLeftCaption.png</image>
+        <image>images/BackgroundLeftSmall.png</image>
         <color>$Background</color>
         <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>0,h-12</location>
         <dimension>12,12</dimension>
-        <image>images/BackgroundBottomLeft.png</image>
+        <image>images/BackgroundBottomLeftSmall.png</image>
         <color>$Background</color>
         <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>12,0</location>
         <dimension>w-24-1,12</dimension>
-        <image>images/BackgroundTop.png</image>
+        <image>images/BackgroundTopSmall.png</image>
         <color>$Background</color>
         <alpha>$MAlpha</alpha>
       </skinpart>
@@ -210,28 +210,28 @@
       <skinpart>
         <location>12,h-12</location>
         <dimension>w-24-1,12</dimension>
-        <image>images/BackgroundBottom.png</image>
+        <image>images/BackgroundBottomSmall.png</image>
         <color>$Background</color>
         <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>w-12-1,0</location>
         <dimension>12,12</dimension>
-        <image>images/BackgroundTopRight.png</image>
+        <image>images/BackgroundTopRightSmall.png</image>
         <color>$Background</color>
         <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>w-12-1,12</location>
         <dimension>12,h-24</dimension>
-        <image>images/BackgroundRightCaption.png</image>
+        <image>images/BackgroundRightSmall.png</image>
         <color>$Background</color>
         <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>w-12-1,h-12</location>
         <dimension>12,12</dimension>
-        <image>images/BackgroundBottomRight.png</image>
+        <image>images/BackgroundBottomRightSmall.png</image>
         <color>$Background</color>
         <alpha>$MAlpha</alpha>
       </skinpart>
@@ -296,7 +296,7 @@
     <down>
       <text>
         <color>$Text</color>
-	<shadowalpha>196</shadowalpha>
+	      <shadowalpha>196</shadowalpha>
       </text>
       <icon>
         <lighten>1</lighten>
@@ -330,11 +330,25 @@
       <dimension>w,28</dimension>
       <widthmod>48</widthmod>
       <skinpart>
-        <location>w-11,11</location>
+        <location>w-5,8</location>
         <dimension>4,4</dimension>
-        <image>images/Empty.png</image>
-        <color>$Background-16</color>
-        <alpha>$MAlpha</alpha>
+        <image>images/ProgressBarBackgroundTopLeft.png</image>
+        <color>$Background+12</color>
+        <alpha>$MAlpha-32</alpha>
+      </skinpart>
+      <skinpart>
+        <location>w-5,12</location>
+        <dimension>4,4</dimension>
+        <image>images/ProgressBarBackgroundLeft.png</image>
+        <color>$Background+12</color>
+        <alpha>$MAlpha-32</alpha>
+      </skinpart>
+      <skinpart>
+        <location>w-5,16</location>
+        <dimension>4,4</dimension>
+        <image>images/ProgressBarBackgroundBottomLeft.png</image>
+        <color>$Background+12</color>
+        <alpha>$MAlpha-32</alpha>
       </skinpart>
     </normalsub>
     <hoversub>
@@ -342,7 +356,7 @@
       <widthmod>48</widthmod>
       <text>
         <color>$Text</color>
-	<shadowalpha>196</shadowalpha>
+	      <shadowalpha>196</shadowalpha>
       </text>
       <icon>
         <lighten>1</lighten>
@@ -360,21 +374,14 @@
         <dimension>7,25</dimension>
         <image>images/ButtonRight.png</image>
         <color>$Background+32</color>
-        <alpha>$MAlpha-32</alpha>
+        <alpha>0</alpha>
       </skinpart>
       <skinpart>
         <location>7+2,1</location>
-        <dimension>w-14-4,25</dimension>
+        <dimension>w-10,25</dimension>
         <image>images/ButtonMiddle.png</image>
         <color>$Background+32</color>
         <alpha>$MAlpha-32</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-11,11</location>
-        <dimension>4,4</dimension>
-        <image>images/Empty.png</image>
-        <color>$Background-16</color>
-        <alpha>$MAlpha</alpha>
       </skinpart>
     </hoversub>
     <separator>

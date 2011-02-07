@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <SharpESkinScheme>
   <item>
-    <Name>Border</Name>
-    <Tag>$Border</Tag>
-    <Info>Border Color</Info>
-    <Default>10658466</Default>
-  </item>
-  <item>
     <Name>Background</Name>
     <Tag>$Background</Tag>
     <Info>Background Color</Info>
-    <Default>4079166</Default>
+    <Default>1447446</Default>
   </item>
   <item>
     <Name>Special</Name>
@@ -41,14 +35,7 @@
     <Name>Menu Alpha</Name>
     <Tag>$MAlpha</Tag>
     <Info>Menu, Task Switch and Notification Alpha</Info>
-    <Default>224</Default>
-    <type>Integer</type>
-  </item>
-  <item>
-    <Name>Border Alpha</Name>
-    <Tag>$BAlpha</Tag>
-    <Info>Alpha for Borders</Info>
-    <Default>255</Default>
+    <Default>230</Default>
     <type>Integer</type>
   </item>
   <item>

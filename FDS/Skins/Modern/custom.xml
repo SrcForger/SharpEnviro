@@ -11,9 +11,9 @@
     <backgroundcolor>$Background</backgroundcolor>
     <backgroundalpha>0</backgroundalpha>
     <bordercolor>$Special</bordercolor>
-    <borderalpha>142</borderalpha>
-    <blendcolor>$Border</blendcolor>
-    <blendalpha>255</blendalpha>
+    <borderalpha>0</borderalpha>
+    <blendcolor>$Special</blendcolor>
+    <blendalpha>0</blendalpha>
     <iconalpha>255</iconalpha>
   </systemtray>
 </SharpECustomSkinSettings>
