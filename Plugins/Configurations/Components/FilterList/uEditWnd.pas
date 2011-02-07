@@ -229,7 +229,7 @@ begin
                 cbFilterBy.ItemIndex := 2;
 
                 rbProcess.Checked := true;
-                rbCurrentVWM.Checked := false;                
+                rbWindow.Checked := false;                
 
                 tabSelect.Show;
               end;
