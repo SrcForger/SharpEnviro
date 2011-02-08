@@ -1786,7 +1786,8 @@ begin
   FindClose(sr);
 
   if n <= 0 then
-    ColorScheme1.Enabled := False;
+    ColorScheme1.Enabled := False
+  else ColorScheme1.Enabled := True;
 
   case SharpEBar.VertPos of
     vpTop: Top1.Checked := True;
