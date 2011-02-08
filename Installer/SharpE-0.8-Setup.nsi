@@ -21,7 +21,7 @@ RequestExecutionLevel highest
 # General Symbol Definitions
 !define REGKEY "SOFTWARE\$(^Name)"
 !define VERSION 0.8-RC2
-!define COMPANY "SharpEnviroopment Team"
+!define COMPANY "SharpEnviro Development Team"
 !define URL www.sharpenviro.com
 
 # MUI Symbol Definitions
@@ -307,6 +307,12 @@ Section "!Core Files" SEC01
   # Objects
   SetOutPath "$INSTDIR\Objects\"
   File "..\..\SharpE\Objects\*.dll"
+  
+  # Check for old file and remove if already exists
+  IfFileExists "$INSTDIR\Services\TaskSwitch.dll" TaskSwitchExists PastTaskSwitchExists
+  TaskSwitchExists:
+    Delete "$INSTDIR\Services\TaskSwitch.dll"
+  PastTaskSwitchExists:
   
   # Services
   SetOutPath "$INSTDIR\Services\"
