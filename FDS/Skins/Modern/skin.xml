@@ -409,7 +409,7 @@
       <text>
         <draw>1</draw>
         <location>29,ch-1</location>
-	<dimension>w-32,h</dimension>
+	      <dimension>w-32,h</dimension>
         <name>Calibri</name>
         <size>11</size>
         <cleartype>1</cleartype>
@@ -452,140 +452,302 @@
           <lighten>1</lighten>
           <lightenamount>48</lightenamount>
         </icon>
-	 <skinpart>
+	      <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$Background+64</color>
           <alpha>$Alpha</alpha>
         </skinpart> 
-	 <skinpart>
+	       <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$Background+64</color>
           <alpha>$Alpha</alpha>
         </skinpart> 
-	 <skinpart>
+	      <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$Background+64</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
+        </skinpart>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$Background+64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$Background+64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$Background+64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
       </specialhover>
       <normal>
-	 <skinpart>
+	      <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha</alpha>
         </skinpart> 
-	 <skinpart>
+	      <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha</alpha>
         </skinpart> 
-	 <skinpart>
+	      <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
-      </normal>
-      <normalhover>
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+      </normal>
+      <normalhover>
+	      <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha^-64</alpha>
         </skinpart> 
-	 <skinpart>
+	      <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
         </skinpart> 
-	 <skinpart>
+	      <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
-
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha^-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$Special</color>
           <alpha>$Alpha</alpha>
         </skinpart> 
-	 <skinpart>
+	      <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$Special</color>
           <alpha>$Alpha</alpha>
         </skinpart> 
-	 <skinpart>
+	      <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$Special</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
+        </skinpart>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$Special</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$Special</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$Special</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
       </normalhover>
       <down>        
-	 <skinpart>
+	      <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
         </skinpart> 
-	 <skinpart>
+	      <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
         </skinpart> 
-	 <skinpart>
+	      <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
+        </skinpart>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
 
-	<skinpart>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$IconHighlight-64</color>
           <alpha>$Alpha-32</alpha>
         </skinpart> 
-	 <skinpart>
+	      <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$IconHighlight-64</color>
           <alpha>$Alpha-32</alpha>
         </skinpart> 
-	 <skinpart>
+	      <skinpart>
           <location>w-7,0</location>
-          <dimension>7,28</dimension>
+          <dimension>7,28</dimension>         
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$IconHighlight-64</color>
           <alpha>$Alpha-32</alpha>
-        </skinpart> 
+        </skinpart>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha-32</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha-32</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha-32</alpha>
+        </skinpart>
       </down>
       <downhover>
         <icon>
@@ -595,151 +757,313 @@
       	<skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
         </skinpart> 
-	 <skinpart>
+	      <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
         </skinpart> 
-	 <skinpart>
+	      <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
-
-	<skinpart>
+        </skinpart>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$IconHighlight-64</color>
           <alpha>$Alpha</alpha>
         </skinpart> 
-	 <skinpart>
+	      <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$IconHighlight-64</color>
           <alpha>$Alpha</alpha>
         </skinpart> 
-	 <skinpart>
+	      <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$IconHighlight-64</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
+        </skinpart>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
       </downhover>
       <highlight>
         <icon>
           <lighten>0</lighten>
           <lightenamount>48</lightenamount>
         </icon>
-	<skinpart>
+	      <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
         </skinpart> 
-	 <skinpart>
+	       <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
         </skinpart> 
-	 <skinpart>
+	      <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
+        </skinpart>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
 
-	<skinpart>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$IconHighlightComp-64</color>
           <alpha>$Alpha</alpha>
         </skinpart> 
-	 <skinpart>
+	       <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+           <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$IconHighlightComp-64</color>
           <alpha>$Alpha</alpha>
         </skinpart> 
-	 <skinpart>
+	       <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$IconHighlightComp-64</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
+        </skinpart>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
       </highlight>
       <highlighthover>
         <icon>
           <lighten>1</lighten>
           <lightenamount>24</lightenamount>
         </icon>
-	<skinpart>
+	      <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
         </skinpart> 
-	 <skinpart>
+	      <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
         </skinpart> 
-	 <skinpart>
+	      <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
+        </skinpart>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
 
-	<skinpart>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$IconHighlightComp-64</color>
           <alpha>$Alpha+32</alpha>
         </skinpart> 
-	 <skinpart>
+	      <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$IconHighlightComp-64</color>
           <alpha>$Alpha+32</alpha>
         </skinpart> 
-	 <skinpart>
+	      <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$IconHighlightComp-64</color>
           <alpha>$Alpha+32</alpha>
-        </skinpart> 
+        </skinpart>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha+32</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha+32</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha+32</alpha>
+        </skinpart>
       </highlighthover>   
     </full>
     <compact>
       <text>
         <draw>1</draw>
         <location>29,ch-1</location>
-	<dimension>w-32,h</dimension>
+	      <dimension>w-32,h</dimension>
         <name>Calibri</name>
         <size>11</size>
         <cleartype>1</cleartype>
@@ -782,288 +1106,612 @@
           <lighten>1</lighten>
           <lightenamount>48</lightenamount>
         </icon>
-	 <skinpart>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$Background+64</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$Background+64</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$Background+64</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
+        </skinpart>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$Background+64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$Background+64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$Background+64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
       </specialhover>
       <normal>
-	 <skinpart>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
-      </normal>
-      <normalhover>
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+      </normal>
+      <normalhover>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha^-64</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
-
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha^-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$Special</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$Special</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$Special</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
+        </skinpart>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$Special</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$Special</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$Special</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
       </normalhover>
-      <down>        
-	 <skinpart>
+      <down>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
+        </skinpart>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
 
-	<skinpart>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$IconHighlight-64</color>
           <alpha>$Alpha-32</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$IconHighlight-64</color>
           <alpha>$Alpha-32</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$IconHighlight-64</color>
           <alpha>$Alpha-32</alpha>
-        </skinpart> 
+        </skinpart>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha-32</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha-32</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha-32</alpha>
+        </skinpart>
       </down>
       <downhover>
         <icon>
           <lighten>1</lighten>
           <lightenamount>24</lightenamount>
-        </icon>            
-      	<skinpart>
+        </icon>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
+        </skinpart>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
 
-	<skinpart>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$IconHighlight-64</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$IconHighlight-64</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$IconHighlight-64</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
-      </downhover>    
+        </skinpart>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+      </downhover>
       <highlight>
         <icon>
           <lighten>0</lighten>
           <lightenamount>48</lightenamount>
         </icon>
-	<skinpart>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
+        </skinpart>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
 
-	<skinpart>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$IconHighlightComp-64</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$IconHighlightComp-64</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$IconHighlightComp-64</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
+        </skinpart>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
       </highlight>
       <highlighthover>
         <icon>
           <lighten>1</lighten>
           <lightenamount>24</lightenamount>
         </icon>
-	<skinpart>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
+        </skinpart>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
 
-	<skinpart>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$IconHighlightComp-64</color>
           <alpha>$Alpha+32</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$IconHighlightComp-64</color>
           <alpha>$Alpha+32</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$IconHighlightComp-64</color>
           <alpha>$Alpha+32</alpha>
-        </skinpart> 
-      </highlighthover>   
+        </skinpart>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha+32</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha+32</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha+32</alpha>
+        </skinpart>
+      </highlighthover>
     </compact>
     <mini>
       <text>
@@ -1108,7 +1756,7 @@
       </icon>      
       <location>0,0</location>
       <dimension>32,28</dimension>
-      <spacing>1</spacing>     
+      <spacing>1</spacing>
       <special>
         <empty>1</empty>
       </special>
@@ -1117,288 +1765,612 @@
           <lighten>1</lighten>
           <lightenamount>48</lightenamount>
         </icon>
-	 <skinpart>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$Background+64</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$Background+64</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$Background+64</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
+        </skinpart>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$Background+64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$Background+64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$Background+64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
       </specialhover>
       <normal>
-	 <skinpart>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
-      </normal>
-      <normalhover>
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+      </normal>
+      <normalhover>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha^-64</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
-
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha^-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$Special</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$Special</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$Special</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
+        </skinpart>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$Special</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$Special</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$Special</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
       </normalhover>
-      <down>        
-	<skinpart>
+      <down>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
+        </skinpart>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
 
-	<skinpart>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$IconHighlight-64</color>
           <alpha>$Alpha-32</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$IconHighlight-64</color>
           <alpha>$Alpha-32</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$IconHighlight-64</color>
           <alpha>$Alpha-32</alpha>
-        </skinpart> 
+        </skinpart>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha-32</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha-32</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha-32</alpha>
+        </skinpart>
       </down>
       <downhover>
         <icon>
           <lighten>1</lighten>
           <lightenamount>24</lightenamount>
-        </icon>            
-      	<skinpart>
+        </icon>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
+        </skinpart>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
 
-	<skinpart>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$IconHighlight-64</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$IconHighlight-64</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$IconHighlight-64</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
+        </skinpart>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$IconHighlight-64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
       </downhover>
       <highlight>
         <icon>
           <lighten>0</lighten>
           <lightenamount>48</lightenamount>
         </icon>
-	<skinpart>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
+        </skinpart>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
 
-	<skinpart>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$IconHighlightComp-64</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$IconHighlightComp-64</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$IconHighlightComp-64</color>
           <alpha>$Alpha</alpha>
-        </skinpart> 
+        </skinpart>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha</alpha>
+        </skinpart>
       </highlight>
       <highlighthover>
         <icon>
           <lighten>1</lighten>
           <lightenamount>24</lightenamount>
         </icon>
-	<skinpart>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$Background+32</color>
           <alpha>$Alpha-64</alpha>
-        </skinpart> 
+        </skinpart>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$Background+32</color>
+          <alpha>$Alpha-64</alpha>
+        </skinpart>
 
-	<skinpart>
+        <skinpart>
           <location>0,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$IconHighlightComp-64</color>
           <alpha>$Alpha+32</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>7,0</location>
           <dimension>w-14,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarMiddle.png</image>
           <color>$IconHighlightComp-64</color>
           <alpha>$Alpha+32</alpha>
-        </skinpart> 
-	 <skinpart>
+        </skinpart>
+        <skinpart>
           <location>w-7,0</location>
           <dimension>7,28</dimension>
+          <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarRight.png</image>
           <color>$IconHighlightComp-64</color>
           <alpha>$Alpha+32</alpha>
-        </skinpart> 
-      </highlighthover>   
+        </skinpart>
+        <skinpart>
+          <location>0,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarLeftInvert.png</image>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha+32</alpha>
+        </skinpart>
+        <skinpart>
+          <location>7,0</location>
+          <dimension>w-14,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarMiddleInvert.png</image>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha+32</alpha>
+        </skinpart>
+        <skinpart>
+          <location>w-7,0</location>
+          <dimension>7,28</dimension>
+          <enabled>$IsBarTop</enabled>
+          <image>images/TaskbarRightInvert.png</image>
+          <color>$IconHighlightComp-64</color>
+          <alpha>$Alpha+32</alpha>
+        </skinpart>
+      </highlighthover>
     </mini>
   </taskitem>
   <minithrobber>
