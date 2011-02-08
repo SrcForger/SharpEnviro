@@ -3,12 +3,12 @@
   <Image align="left" span="full">Banner.png</Image>
   <Label bold="1">Welcome to SharpEnviro</Label>
   <Label>Thank you for using the SharpEnviro shell replacement system.</Label>
-  <Label>At the moment you are using SharpCenter, the global configuration tool of SharpE. With SharpCenter you can configure all settings with just one application. On the left you can find navigation links which will bring you quickly to the configuration pages of the major SharpE components. Most of the configuration pages will also contain sub pages with which you can customize the shell even more.</Label>
+  <Label>At the moment you are using SharpCenter, the global configuration tool of SharpEnviro. With SharpCenter you can configure all settings with just one application. On the left you can find navigation links which will bring you quickly to the configuration pages of the major SharpE components. Most of the configuration pages will also contain sub pages where you can customize the shell even more.</Label>
   <Sep size=""></Sep>
   <Image align="left" span="none" mleft="0" mtop="2">Help.png</Image>
-  <Label>To help you with the configuration a live help system is integrated into SharpCenter and you did already activate it by clicking the help button on the top right. Many configuration pages will have such a help button to explain some of the more complex settings to you.</Label>
+  <Label>To help you with the configuration a live help system is integrated into SharpCenter and you activate it by clicking the help button on the top right. Many configuration pages will have such a help button to explain some of the more complex settings to you.</Label>
   <Sep></Sep>
-  <Label>The best way however to discover all the possibilities SharpEnviro offers is to just use and explore it.</Label>
+  <Label>However, the best way to discover all the possibilities SharpEnviro has to offer is to just use and explore it.</Label>
   <Sep></Sep>
   <Label bold="1">We hope that you will enjoy your new desktop environment!</Label>
 </ConfigHelp>

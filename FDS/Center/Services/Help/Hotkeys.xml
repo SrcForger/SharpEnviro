@@ -3,7 +3,7 @@
   <Label bold="1">Hotkeys</Label>
   <Label>Global system wide hotkeys enable you to control your computer by pressing a simple key combination. In addition to just starting applications Hotkeys can be assigned to certain SharpEnviro shell actions. With those you can perform special tasks like changing the sound volume or switching the virtual desktop. When adding or editing a hotkey you can select from all available shell actions by clicking the browse button and going to the actions sub menu.</Label>
   <Sep Size="Small"/>
-  <Label>For selecting the keyboard combination to which you want to assign a command just place the cursor in the Hotkey field and press the desired key combination</Label>
+  <Label>To select the keyboard combination you want to assign just click the Hotkey field and press the desired key combination</Label>
   <Sep Size="Medium"/>
   <Label bold="1">Note</Label>
   <Label Indent="0">All Hotkeys have to be used in combination with Ctrl, Alt or shift.</Label>
