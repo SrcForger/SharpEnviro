@@ -277,8 +277,6 @@ end;
 
 procedure TMainForm.btnMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
-var
-  n : integer;  
 begin
   if Button = mbLeft then
   begin
@@ -292,10 +290,10 @@ begin
       FDoShow := True;
     end;
     UpdateIcon;
-  end else begin
+  end else if Button = mbRight then
+  begin
     if not FDoShow then
     begin
-      PostMessage(FindWindow('Shell_TrayWnd', nil), WM_RESTOREALLWINDOWS, Screen.MonitorFromWindow(Handle).MonitorNum, integer(sAllMonitors));
       FDoShow := True;
       UpdateIcon;
     end;
