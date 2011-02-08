@@ -48,7 +48,7 @@ type
       ImageHeight : Integer;
       ImageWidth : Integer;
       ImageRandomize : Boolean;
-      procedure LoadSettings; override;
+      procedure LoadSettings(OnlyAdd : boolean = False); overload;
       procedure SaveSettings(SaveToFile : boolean); reintroduce;
 
       property theme : TThemeSettingsArray read ts;
@@ -56,10 +56,13 @@ type
 
 implementation
 
-procedure TImageXMLSettings.LoadSettings;
+procedure TImageXMLSettings.LoadSettings(OnlyAdd : boolean = False);
 begin
-  inherited InitLoadSettings;
-  inherited LoadSettings;
+  if (not Onlyadd) then
+  begin
+    inherited InitLoadSettings;
+    inherited LoadSettings;
+  end;
 
   with FXMLRoot.Items do
   begin

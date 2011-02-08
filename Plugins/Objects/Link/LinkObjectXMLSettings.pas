@@ -44,7 +44,7 @@ type
       Icon             : String;
       ShowCaption      : boolean;
       MLineCaption     : boolean;
-      procedure LoadSettings; override;
+      procedure LoadSettings(OnlyAdd : boolean = False); overload;
       procedure SaveSettings(SaveToFile : boolean); reintroduce;
 
       property theme : TThemeSettingsArray read ts; 
@@ -55,10 +55,13 @@ implementation
 
 
 
-procedure TLinkXMLSettings.LoadSettings;
+procedure TLinkXMLSettings.LoadSettings(OnlyAdd : boolean = False);
 begin
-  inherited InitLoadSettings;
-  inherited LoadSettings;
+  if (not OnlyAdd) then
+  begin
+    inherited InitLoadSettings;
+    inherited LoadSettings;
+  end;
 
   with FXMLRoot.Items do
   begin

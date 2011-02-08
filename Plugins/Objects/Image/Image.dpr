@@ -263,7 +263,7 @@ begin
       end;
       XML.Root.Items.Add('DefaultSettings');
       Settings := TImageXMLSettings.Create(-1,XML.Root.Items.ItemNamed['DefaultSettings'],'Image');
-      Settings.LoadSettings;
+      Settings.LoadSettings(True);
       Settings.Path := '{File}';
       Settings.SaveSettings(False);
       Settings.Free;

@@ -255,7 +255,7 @@ begin
     end;
     XML.Root.Items.Add('DefaultSettings');
     Settings := TLinkXMLSettings.Create(-1,XML.Root.Items.ItemNamed['DefaultSettings'],'Link');
-    Settings.LoadSettings;
+    Settings.LoadSettings(True);
     Settings.Target := '{File}';
     Settings.Caption := '{FileName}';
     Settings.Icon := 'shell:icon';
