@@ -2007,12 +2007,12 @@
   <notify>
     <dimension>400,h</dimension>
     <location>0,2</location>
-    <catboffset>12,12</catboffset>
-    <calroffset>12,12</calroffset>
+    <catboffset>10,10</catboffset>
+    <calroffset>10,10</calroffset>
     <text>
       <draw>1</draw>
-      <dimension>w-32-4-4-4,h</dimension>
-      <location>40,ch+1</location>
+      <dimension>w-32-4-4-4-12,h</dimension>
+      <location>44,ch+1</location>
       <name>Calibri</name>
       <size>11</size>
       <cleartype>1</cleartype>
@@ -2025,71 +2025,71 @@
     <icon>
       <draw>1</draw>
       <size>32,32</size>
-      <location>4,hh-ihh</location>
+      <location>6,hh-ihh</location>
     </icon>    
     <background>
       <skinpart>
         <location>0,0</location>
         <dimension>12,12</dimension>
-        <image>images/BackgroundTopLeft.png</image>
+        <image>images/BackgroundTopLeftSmall.png</image>
         <color>$Background</color>
-        <alpha>$Alpha</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>0,12</location>
         <dimension>12,h-24</dimension>
-        <image>images/BackgroundLeftCaption.png</image>
+        <image>images/BackgroundLeftSmall.png</image>
         <color>$Background</color>
-        <alpha>$Alpha</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>0,h-12</location>
         <dimension>12,12</dimension>
-        <image>images/BackgroundBottomLeft.png</image>
+        <image>images/BackgroundBottomLeftSmall.png</image>
         <color>$Background</color>
-        <alpha>$Alpha</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>12,0</location>
         <dimension>w-24-1,12</dimension>
-        <image>images/BackgroundTop.png</image>
+        <image>images/BackgroundTopSmall.png</image>
         <color>$Background</color>
-        <alpha>$Alpha</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>12,12</location>
         <dimension>w-24-1,h-24</dimension>
         <image>images/BackgroundMiddle.png</image>
         <color>$Background</color>
-        <alpha>$Alpha</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>12,h-12</location>
         <dimension>w-24-1,12</dimension>
-        <image>images/BackgroundBottom.png</image>
+        <image>images/BackgroundBottomSmall.png</image>
         <color>$Background</color>
-        <alpha>$Alpha</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>w-12-1,0</location>
         <dimension>12,12</dimension>
-        <image>images/BackgroundTopRight.png</image>
+        <image>images/BackgroundTopRightSmall.png</image>
         <color>$Background</color>
-        <alpha>$Alpha</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>w-12-1,12</location>
         <dimension>12,h-24</dimension>
-        <image>images/BackgroundRightCaption.png</image>
+        <image>images/BackgroundRightSmall.png</image>
         <color>$Background</color>
-        <alpha>$Alpha</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>w-12-1,h-12</location>
         <dimension>12,12</dimension>
-        <image>images/BackgroundBottomRight.png</image>
+        <image>images/BackgroundBottomRightSmall.png</image>
         <color>$Background</color>
-        <alpha>$Alpha</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>     
     </background>
   </notify>    
