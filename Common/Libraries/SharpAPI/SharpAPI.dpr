@@ -1165,18 +1165,42 @@ begin
   Result := stemp;
 end;
 
+function GetFirstRun: Boolean;
+var
+  Reg: TRegistry;
+begin
+  Result := False;
+
+  // Get FirstRun value
+  Reg := TRegistry.Create;
+  try
+    Reg.RootKey := HKEY_LOCAL_MACHINE;
+    if Reg.OpenKey(REGPATH,False) then
+    begin
+      Result := Reg.ReadBool('FirstRun');
+      Reg.WriteBool('FirstRun', False);
+    end;
+  except
+    Result := False;
+  end;
+  Reg.Free;
+end;
+
 function GetSharpeGlobalSettingsPath: String;
 var
   Path: string;
   Fn: String;
   sRes: String;
+  HasFirstRun: Boolean;
 begin
+  HasFirstRun := GetFirstRun;
+
   if UseAppData then
   begin
     Fn := GetSharpECommonAppDataPath;
     Path := Fn + 'Settings\Global\';
 
-    if not (DirectoryExists(Path)) then
+    if (not (DirectoryExists(Path))) or (HasFirstRun) then
     begin
       // check if the default global settings directory exists in the SharpE Dir
       if DirectoryExists(GetSharpeDirectory + 'Settings\' + DEFAULTSETTINGSDIRGLOBAL) then
@@ -1190,7 +1214,7 @@ begin
     Fn := GetSharpeDirectory;
     Path := IncludeTrailingBackslash(Fn + 'Settings\Global');
 
-    if not (DirectoryExists(Path)) then
+    if (not (DirectoryExists(Path))) or (HasFirstRun) then
     begin
       // check if the default settings dir exists
       if DirectoryExists(Fn + 'Settings\' + DEFAULTSETTINGSDIRGLOBAL) then

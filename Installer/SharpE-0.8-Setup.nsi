@@ -408,6 +408,7 @@ SectionEnd
 
 Section -post SEC0001
     WriteRegStr HKLM "${REGKEY}" Path $INSTDIR
+	WriteRegDWORD HKLM "${REGKEY}" FirstRun 1
     
     ${If} $UseAppDir == "1"
           WriteRegDWORD HKLM "${REGKEY}" UseAppData 1
