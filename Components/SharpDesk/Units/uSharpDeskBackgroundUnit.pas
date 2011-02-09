@@ -433,25 +433,25 @@ begin
 
   //SharpApi.SendDebugMessageEx('SharpDesk',PChar(('Background - Set Win Wallpaper : ') + WP.Name),clblue,DMT_trace);
   Reg := TRegistry.Create;
-  Reg.RootKey := HKEY_CURRENT_USER;
-  Reg.OpenKey('\Control Panel\Desktop\',False);
-  Reg.WriteString('Wallpaper', winWallPath+'.bmp');
-  Reg.WriteString('WallpaperStyle', '0');
-  Reg.WriteString('TileWallpaper', '1');
-  Reg.OpenKey('\Software\Microsoft\Internet Explorer\Desktop\General',False);
-  Reg.WriteString('BackupWallpaper', winWallPath+'.bmp');
-  Reg.WriteString('Wallpaper', winWallPath+'.bmp');
-  Reg.WriteString('WallpaperStyle', '0');
-  Reg.WriteString('TileWallpaper', '1');
-  Reg.OpenKey('\Software\Microsoft\Windows\CurrentVersion\Themes\LastTheme',False);
-  Reg.WriteString('Wallpaper', winWallPath+'.bmp');
-  Reg.Free;
   try
+    Reg.RootKey := HKEY_CURRENT_USER;
+    Reg.OpenKey('\Control Panel\Desktop\',False);
+    Reg.WriteString('Wallpaper', winWallPath+'.bmp');
+    Reg.WriteString('WallpaperStyle', '0');
+    Reg.WriteString('TileWallpaper', '1');
+    Reg.OpenKey('\Software\Microsoft\Internet Explorer\Desktop\General',False);
+    Reg.WriteString('BackupWallpaper', winWallPath+'.bmp');
+    Reg.WriteString('Wallpaper', winWallPath+'.bmp');
+    Reg.WriteString('WallpaperStyle', '0');
+    Reg.WriteString('TileWallpaper', '1');
+    Reg.OpenKey('\Software\Microsoft\Windows\CurrentVersion\Themes\LastTheme',False);
+    Reg.WriteString('Wallpaper', winWallPath+'.bmp');
     SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, nil, SPIF_SENDCHANGE);
   except
       //SharpApi.SendDebugMessageEx('SharpDesk',PChar(('Failed to Send SPI_SETDESKWALLPAPER') + WP.Name),clblue,DMT_ERROR);
   end;
-
+  Reg.Free;
+  
   SendMessage(FindWindow('Progman','Program Manager'),WM_COMMAND,106597, 0);
 end;
 
