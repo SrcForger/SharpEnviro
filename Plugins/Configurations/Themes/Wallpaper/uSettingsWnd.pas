@@ -128,7 +128,6 @@ type
     Panel9: TPanel;
     sgbWpTrans: TSharpeGaugeBox;
     pnlMonitor: TSharpERoundPanel;
-    pnlMonitorList: TSharpERoundPanel;
     cboMonitor: TComboBox;
     imgColor: TImage32;
     pnlColorHSL: TPanel;
@@ -175,6 +174,7 @@ type
     pnlGradient: TPanel;
     SharpECenterHeader11: TSharpECenterHeader;
     SharpECenterHeader12: TSharpECenterHeader;
+    Panel1: TPanel;
     procedure fedit_image_KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
 
@@ -460,6 +460,8 @@ end;
 
 procedure TfrmSettingsWnd.chkWpRandomizeClick(Sender: TObject);
 begin
+  sgbWpChangeInterval.Enabled := chkWpRandomize.Checked;
+
   UpdateWpItem;
 end;
 
@@ -476,6 +478,11 @@ end;
 procedure TfrmSettingsWnd.sgbWpChangeIntervalChangeValue(Sender: TObject;
   Value: Integer);
 begin
+  if Value = 1 then
+    sgbWpChangeInterval.Suffix := ' minute'
+  else
+    sgbWpChangeInterval.Suffix := ' minutes';
+
   UpdateWpItem;
 end;
 
@@ -563,12 +570,19 @@ begin
     edtWpFile.Text := AWPItem.FileName;
     edtWpDirectory.DoubleBuffered := True;
     edtWpDirectory.Text := AWPItem.SwitchPath;
+
     chkAutoWallpaper.Checked := AWPItem.Switch;
     pnlWallpaperFilePath.Visible := not chkAutoWallpaper.Checked;
     pnlWallpaperDirectoryPath.Visible := chkAutoWallpaper.Checked;
     chkWpRecursive.Checked := AWPItem.SwitchRecursive;
     chkWpRandomize.Checked := AWPItem.SwitchRandomize;
+    sgbWpChangeInterval.Enabled := chkWpRandomize.Checked;
     sgbWpChangeInterval.Value := AWPItem.SwitchTimeout div 1000 div 60;
+    if sgbWpChangeInterval.Value = 1 then
+      sgbWpChangeInterval.Suffix := ' minute'
+    else
+      sgbWpChangeInterval.Suffix := ' minutes';
+
     sgbWpTrans.Value := AWPItem.Alpha;
     chkApplyColor.checked := AWPItem.ColorChange;
     sgbHue.Value := AWPItem.Hue;
