@@ -110,6 +110,7 @@ var
   wndItem: HWND;
   fullMon, activeMon: TMonitorItem;
 begin
+  EnterCriticalSection(critSect);
   // Check if monitor count has changed
   if Length(FFullscreenWnds) <> MonList.MonitorCount then
   begin
@@ -180,6 +181,7 @@ begin
       FFullscreenWnds[i].MonitorChanged := False;
     end;
   end;
+  LeaveCriticalSection(critSect);
 end;
 
 procedure TFullscreenThread.Execute;
