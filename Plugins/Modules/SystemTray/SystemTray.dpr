@@ -120,7 +120,10 @@ begin
     begin
       // Save settings (Shell service not running anymore)
       if (FServiceRunning) and (FTrayClient.Items.Count > 0) then
+      begin
         TMainForm(Form).SaveSettings;
+        TMainForm(Form).LoadSettings;
+      end;
 
       FTrayClient.ClearTrayIcons;
       if FServiceRunning then
@@ -129,10 +132,6 @@ begin
     end
     else
     begin
-      // Reload settings (Shell service just started)
-      if (FServiceRunning) and (FTrayClient.Items.Count = 0) then
-        TMainForm(Form).LoadSettings;
-
       if not FServiceRunning then
         Flastrepaint := -1;
       FServiceRunning := True;
