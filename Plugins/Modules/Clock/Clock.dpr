@@ -40,9 +40,11 @@ uses
   uISharpESkin,
   uISharpBar,
   uInterfacedSharpBarModuleBase,
-  {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
+  DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',
   MainWnd in 'MainWnd.pas' {MainForm},
-  ToolTipApi in '..\..\..\Common\Units\ToolTipApi\ToolTipApi.pas';
+  ToolTipApi in '..\..\..\Common\Units\ToolTipApi\ToolTipApi.pas',
+  uTimeCalendar in '..\..\..\Common\Units\TimeCalendar\uTimeCalendar.pas',
+  uDWMFuncs in '..\..\..\Common\Units\DWMApi\uDWMFuncs.pas';
 
 type
   TInterfacedSharpBarModule = class(TInterfacedSharpBarModuleBase)

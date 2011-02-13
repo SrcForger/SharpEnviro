@@ -28,7 +28,8 @@ unit uTimeCalendar;
 interface
 
 uses  Windows, Forms, Classes, ExtCtrls,
-      ActiveX, ComObj, SysUtils, MonitorList;
+      ActiveX, ComObj, SysUtils, MonitorList,
+      uDWMFuncs;
 
 const
   Class_TimeDateCPL: TGUID =
@@ -67,8 +68,6 @@ type
 
     FTimeDateCPL: ITimeDateCPL;
     FShowing: Boolean;
-
-    function IsVista: Boolean;
 
   public
     constructor Create;
@@ -145,17 +144,6 @@ begin
   CoUninitialize;
 end;
 
-function TTimeCalendar.IsVista: Boolean;
-var
-  osVerInfo: TOSVersionInfo;
-begin
-  Result := False;
-
-  osVerInfo.dwOSVersionInfoSize := SizeOf(TOSVersionInfo);
-  if GetVersionEx(osVerInfo) then
-    Result := ((osVerInfo.dwMajorVersion = 6) and (osVerInfo.dwMinorVersion = 0)) or (osVerInfo.dwMajorVersion < 6);
-end;
-
 procedure TTimeCalendar.Show(wnd: TForm);
 var
   rc, clockRc, clockClientRc: TRect;
@@ -165,9 +153,13 @@ var
   w, h: integer;
   ptDiff: TPoint;
   b : Boolean;
+  DWMEnabled: Boolean;
+  rcDWM: TRect;
 begin
   if not Assigned(FTimeDateCPL) then
     exit;
+
+  ptDiff := Point(0, 0);
 
   EnterCriticalSection(CritSect);
   b := FShowing;
@@ -186,18 +178,20 @@ begin
 
   clockMon := MonList.MonitorFromWindow(wnd.Handle);
 
-  // Fix Vista positioning
+  // Fix positioning
   clockWnd := FindWindowA('ClockFlyoutWindow', nil);
   ShowWindow(clockWnd, SW_HIDE);
   GetClientRect(clockWnd, clockClientRc);
   GetWindowRect(clockWnd, clockRc);
 
-  ptDiff.X := 15;
-  ptDiff.Y := 15;
-  if IsVista then
+  DwmIsCompositionEnabled(DWMEnabled);
+  if DWMEnabled then
   begin
-    ptDiff.X := 0;
-    ptDiff.Y := 0;
+    if DwmGetWindowAttribute(clockWnd, DWMWA_EXTENDED_FRAME_BOUND, @rcDWM, sizeof(rcDWM)) = S_OK then
+    begin
+      ptDiff.X := clockRc.Left - rcDWM.Left;
+      ptDiff.Y := clockRc.Top - rcDWM.Top;
+    end;
   end;
 
   w := (clockRc.Right - clockRc.Left);
