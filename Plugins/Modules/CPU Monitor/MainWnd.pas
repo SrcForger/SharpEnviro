@@ -300,6 +300,7 @@ begin
   cpugraph.DrawMode := dmBlend;
   cpugraph.CombineMode := cmMerge;
   FCustomSkinSettings := TSharpECustomSkinSettings.Create;
+  pbar.OnDblClick := cpugraphcontDblClick; 
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
