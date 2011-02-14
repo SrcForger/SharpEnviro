@@ -77,6 +77,8 @@ type
     property SkinManager;
     property AutoSize;
     property Visible;
+
+    property OnDblClick;
      { Published declarations }
   end;
 
