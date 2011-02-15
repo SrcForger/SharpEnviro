@@ -129,6 +129,22 @@ namespace SharpEnviro.Explorer
 					SharpDebug.Exception("Explorer", "Encountered an unhandled exception", (Exception)a.ExceptionObject);
 				};
 
+            // Send parameters to real explorer
+            if (args.Length > 0)
+            {
+                string cmdArgs = "";
+                foreach (string arg in args)
+                {
+                    if (arg.Contains(' '))
+                        cmdArgs += "\"" + arg + "\" ";
+                    else
+                        cmdArgs += arg + " ";
+                }
+
+                Process.Start(Environment.ExpandEnvironmentVariables("%WinDir%") + "\\explorer.exe", cmdArgs);
+                return;
+            }
+
             // Make sure SharpExplorer isn't running already
             IntPtr sharpMutex = PInvoke.CreateMutex(IntPtr.Zero, true, "SharpExplorer");
             if (sharpMutex != IntPtr.Zero && Marshal.GetLastWin32Error() == PInvoke.ERROR_ALREADY_EXISTS)
