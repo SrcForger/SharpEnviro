@@ -129,7 +129,7 @@ begin
   DeskAreaManager := nil;
   
   WindowsClass := TWindowStructureClass.Create;
-  FullscreenThread := TFullscreenThread.Create(False);
+  FullscreenChecker := TFullscreenChecker.Create;
 
   TaskMsgManager     := TTaskMsgManager.Create;
   TrayManager     := TTrayManager.Create;
@@ -159,12 +159,7 @@ begin
   end;
   FreeAndNil(ExplorerThread);
 
-  if FullscreenThread <> nil then
-  begin
-    FullscreenThread.Terminate;
-    FullscreenThread.WaitFor;
-  end;
-  FreeAndNil(FullscreenThread);
+  FreeAndNil(FullscreenChecker);
 
   FreeAndNil(DeskAreaManager);
   FreeAndNil(TrayManager);

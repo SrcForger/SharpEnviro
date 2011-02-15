@@ -2,7 +2,7 @@ unit uFullscreen;
 
 interface
 
-uses  Windows, Classes, SysUtils,
+uses  Windows, Classes, SysUtils, ExtCtrls,
       MonitorList,
       SharpApi,
       uSystemFuncs;
@@ -14,22 +14,24 @@ type
     MonitorChanged: Boolean;
   end;
 
-  TFullscreenThread = class(TThread)
+  TFullscreenChecker = class
   private
+    FCheckTimer: TTimer;
+    
     FActiveWnd: HWND;         // The current active (foreground) window
     FActiveMonitor: Integer;  // The monitor which the window was at when the window was activated (used to check when you move a window to another monitor)
 
     FFullscreenWnds: array of TFullscreenWnd;
 
   protected
-    procedure Execute; override;
+    procedure OnTimer(Sender: TObject);
     procedure CheckFullscreenWindow;
 
     function GetActiveWnd: HWND;
     procedure SetActiveWnd(wnd: HWND);
 
   public
-    constructor Create(CreateSuspended: Boolean);
+    constructor Create;
     destructor Destroy; override;
 
     procedure ResetMonitor(monitorID: integer; monitorChanged: Boolean = false);
@@ -38,16 +40,15 @@ type
 
   end;
 
-implementation
-
-var
-  critSect: TRTLCriticalSection;
-
-constructor TFullscreenThread.Create(CreateSuspended: Boolean);
+implementation        
+constructor TFullscreenChecker.Create;
 var
   i : integer;
 begin
-  inherited;
+  FCheckTimer := TTimer.Create(nil);
+  FCheckTimer.Enabled := False;
+  FCheckTimer.Interval := 100;
+  FCheckTimer.OnTimer := OnTimer;
 
   FActiveWnd := 0;
   FActiveMonitor := -1;
@@ -59,39 +60,35 @@ begin
     FFullscreenWnds[i].monitorID := -1;
     FFullscreenWnds[i].MonitorChanged := False;
   end;
+
+  FCheckTimer.Enabled := True;
 end;
 
-destructor TFullscreenThread.Destroy;
+destructor TFullscreenChecker.Destroy;
 begin
   SetLength(FFullscreenWnds, 0);
 
   inherited;
 end;
 
-function TFullscreenThread.GetActiveWnd: HWND;
+function TFullscreenChecker.GetActiveWnd: HWND;
 begin
-  EnterCriticalSection(critSect);
   Result := FActiveWnd;
-  LeaveCriticalSection(critSect);
 end;
 
-procedure TFullscreenThread.SetActiveWnd(wnd: HWND);
+procedure TFullscreenChecker.SetActiveWnd(wnd: HWND);
 begin
-  EnterCriticalSection(critSect);
   FActiveWnd := wnd;
 
   FActiveMonitor := -1;
   if MonList.MonitorFromWindow(FActiveWnd) <> nil then
     FActiveMonitor := MonList.MonitorFromWindow(FActiveWnd).MonitorNum;
-    
-  LeaveCriticalSection(critSect);
 end;
 
-procedure TFullscreenThread.ResetMonitor(monitorID: integer; monitorChanged: Boolean);
+procedure TFullscreenChecker.ResetMonitor(monitorID: integer; monitorChanged: Boolean);
 var
   i : integer;
 begin
-  EnterCriticalSection(critSect);
   for i := Low(FFullscreenWnds) to High(FFullscreenWnds) do
   begin
     if FFullscreenWnds[i].monitorID = monitorID then
@@ -101,10 +98,9 @@ begin
       FFullscreenWnds[i].MonitorChanged := monitorChanged;
     end;
   end;
-  LeaveCriticalSection(critSect);
 end;
 
-procedure TFullscreenThread.CheckFullscreenWindow;
+procedure TFullscreenChecker.CheckFullscreenWindow;
 var
   i: integer;
   wndItem: HWND;
@@ -182,22 +178,9 @@ begin
   end;
 end;
 
-procedure TFullscreenThread.Execute;
+procedure TFullscreenChecker.OnTimer(Sender: TObject);
 begin
-  while not Terminated do
-  begin
-    EnterCriticalSection(critSect);
-    CheckFullscreenWindow;
-    LeaveCriticalSection(critSect);
-
-    Sleep(100);
-  end;
+  CheckFullscreenWindow;
 end;
-
-initialization
-  InitializeCriticalSection(critSect);
-
-finalization
-  DeleteCriticalSection(critSect);
 
 end.

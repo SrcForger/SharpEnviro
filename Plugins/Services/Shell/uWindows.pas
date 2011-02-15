@@ -90,7 +90,7 @@ type
 
 var
   WindowsClass : TWindowStructureClass;
-  FullscreenThread : TFullscreenThread;
+  FullscreenChecker : TFullscreenChecker;
 
 function DeskAreaTimerWndProc(wnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall;
 function ShellTrayWndProc(wnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall;
@@ -827,7 +827,7 @@ begin
       deskswitch := False;
       if (wparam = HSHELL_WINDOWACTIVATED) or (wparam = HSHELL_WINDOWACTIVATED + 32768) then
       begin
-        FullscreenThread.ActiveWnd := GetForegroundWindow;
+        FullscreenChecker.ActiveWnd := GetForegroundWindow;
 
         h := Cardinal(lparam);
         pItem := TaskManager.GetItemByHandle(h);
@@ -878,7 +878,7 @@ begin
     case Msg of
       WM_CHECKFULLSCREEN:
       begin
-        FullscreenThread.ResetMonitor(lParam);
+        FullscreenChecker.ResetMonitor(lParam);
       end;
       WM_REGISTERSHELLHOOK: TaskMsgManager.AddWnd(Cardinal(WParam));
       WM_UNREGISTERSHELLHOOK: TaskMsgManager.DeleteWndByHandle(Cardinal(WParam));
