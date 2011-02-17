@@ -237,6 +237,7 @@ begin
   // at least one wallpaper has changed;
   Result := True;
 
+  // Find the top-left position of the wallpaper
   MonRect.TopLeft := SharpDesk.Image.ScreenToClient(Point(PMon.Left,PMon.Top));
   MonRect.BottomRight := SharpDesk.Image.ScreenToClient(Point(PMon.Left+PMon.Width,
                                                                 PMon.Top+PMon.Height));
@@ -396,27 +397,71 @@ end;
 procedure TBackground.ReloadWindows;
 var
   Theme : ISharpETheme;
-  winWallPath: string;
+  SharpWallpaper, ExplorerWallpaper: string;
   Reg : TRegistry;
 
-  tBmp : TBitmap;
-  TempBmp : TBitmap32;
-
+  ExplorerBmp : TBitmap;
+  OutBmp, TempBGBmp, MonBmp : TBitmap32;
+  
   Stream : TSharedFileStream;
+
+  Left: integer;
+  tl, br: TPoint;
+  i: integer;
+
+  TempBmp : TBitmap32;
 begin
   Theme := GetCurrentTheme;
 
-  //SharpApi.SendDebugMessageEx('SharpDesk',PChar(('Background - Export : ') + WP.Name),clblue,DMT_trace);
-  winWallPath := SharpApi.GetSharpeUserSettingsPath + 'SharpDeskbg';
-  tBmp := TBitmap.Create;
-  tBmp.Assign(SharpDesk.Image.Bitmap);
-  if OpenFileStreamShared(Stream, sfaCreate, winWallPath+'.bmp', True) = sfeSuccess then
+  SharpWallpaper := SharpApi.GetSharpeUserSettingsPath + 'SharpDeskbg.bmp';
+  ExplorerWallpaper := SharpApi.GetSharpeUserSettingsPath + 'ExplorerWallpaper.bmp';
+
+  // The explorer desktop wants the primary monitor first and then the other monitors, so revert it here
+  OutBmp := TBitmap32.Create;
+  OutBmp.SetSize(SharpDesk.Image.Width, SharpDesk.Image.Height);
+  TempBGBmp := TBitmap32.Create;
+  TempBGBmp.Assign(SharpDesk.Image.Bitmap);
+  MonBmp := TBitmap32.Create;
+
+  Left := 0;
+  for i := 0 to MonList.MonitorCount - 1 do
+  begin
+    MonBmp.SetSize(MonList.Monitors[i].Width, MonList.Monitors[i].Height);
+
+    tl := SharpDesk.Image.ScreenToClient(Point(MonList.Monitors[i].Left, MonList.Monitors[i].Top));
+    br := SharpDesk.Image.ScreenToClient(Point(MonList.Monitors[i].Left + MonList.Monitors[i].Width, MonList.Monitors[i].Top + MonList.Monitors[i].Height));
+    TempBGBmp.DrawTo(MonBmp,
+        Rect(0, 0, MonBmp.Width, MonBmp.Height),
+        Rect(tl.X, tl.Y, br.X, br.Y));
+
+    MonBmp.DrawTo(OutBmp, Left, 0);
+    Left := Left + MonBmp.Width;
+  end;
+
+  MonBmp.Free;
+
+  ExplorerBmp := TBitmap.Create;
+
+  // Write SharpDesk wallpaper
+  ExplorerBmp.Assign(TempBGBmp);
+  if OpenFileStreamShared(Stream, sfaCreate, SharpWallpaper, True) = sfeSuccess then
   begin
     Stream.Size := 0;
-    tBmp.SaveToStream(Stream);
+    ExplorerBmp.SaveToStream(Stream);
     Stream.Free;
   end;
-  tBmp.Free;
+
+  // Write explorer wallpaper
+  ExplorerBmp.Assign(OutBmp);
+  if OpenFileStreamShared(Stream, sfaCreate, ExplorerWallpaper, True) = sfeSuccess then
+  begin
+    Stream.Size := 0;
+    ExplorerBmp.SaveToStream(Stream);
+    Stream.Free;
+  end;
+  ExplorerBmp.Free;
+  TempBGBmp.Free;
+  OutBmp.Free;
 
   // save the preview bitmap
   TempBmp := TBitmap32.Create;
@@ -436,16 +481,16 @@ begin
   try
     Reg.RootKey := HKEY_CURRENT_USER;
     Reg.OpenKey('\Control Panel\Desktop\',False);
-    Reg.WriteString('Wallpaper', winWallPath+'.bmp');
+    Reg.WriteString('Wallpaper', ExplorerWallpaper);
     Reg.WriteString('WallpaperStyle', '0');
     Reg.WriteString('TileWallpaper', '1');
     Reg.OpenKey('\Software\Microsoft\Internet Explorer\Desktop\General',False);
-    Reg.WriteString('BackupWallpaper', winWallPath+'.bmp');
-    Reg.WriteString('Wallpaper', winWallPath+'.bmp');
+    Reg.WriteString('BackupWallpaper', ExplorerWallpaper);
+    Reg.WriteString('Wallpaper', ExplorerWallpaper);
     Reg.WriteString('WallpaperStyle', '0');
     Reg.WriteString('TileWallpaper', '1');
     Reg.OpenKey('\Software\Microsoft\Windows\CurrentVersion\Themes\LastTheme',False);
-    Reg.WriteString('Wallpaper', winWallPath+'.bmp');
+    Reg.WriteString('Wallpaper', ExplorerWallpaper);
     SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, nil, SPIF_SENDCHANGE);
   except
       //SharpApi.SendDebugMessageEx('SharpDesk',PChar(('Failed to Send SPI_SETDESKWALLPAPER') + WP.Name),clblue,DMT_ERROR);
