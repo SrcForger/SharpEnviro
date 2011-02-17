@@ -427,6 +427,7 @@ begin
   for i := 0 to MonList.MonitorCount - 1 do
   begin
     MonBmp.SetSize(MonList.Monitors[i].Width, MonList.Monitors[i].Height);
+    MonBmp.Clear(color32(0,0,0,0));
 
     tl := SharpDesk.Image.ScreenToClient(Point(MonList.Monitors[i].Left, MonList.Monitors[i].Top));
     br := SharpDesk.Image.ScreenToClient(Point(MonList.Monitors[i].Left + MonList.Monitors[i].Width, MonList.Monitors[i].Top + MonList.Monitors[i].Height));
@@ -434,7 +435,7 @@ begin
         Rect(0, 0, MonBmp.Width, MonBmp.Height),
         Rect(tl.X, tl.Y, br.X, br.Y));
 
-    MonBmp.DrawTo(OutBmp, Left, 0);
+    MonBmp.DrawTo(OutBmp, Left, MonList.Monitors[i].Top);
     Left := Left + MonBmp.Width;
   end;
 
