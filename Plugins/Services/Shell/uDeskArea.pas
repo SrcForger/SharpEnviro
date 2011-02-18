@@ -42,9 +42,6 @@ type
     FMonIDList : array of integer;
     FScreenChange : Boolean;
 
-  protected
-    procedure MaximizeWindows;
-
   public
     constructor Create; reintroduce;
     destructor Destroy; override;
@@ -156,31 +153,6 @@ begin
   SetFullScreenArea;
 end;
 
-procedure TDeskAreaManager.MaximizeWindows;
-  function EnumWindowsProc(Wnd: HWND; LParam: LPARAM): BOOL; stdcall;
-  var
-    mon: TMonitorItem;
-    rc: TRect;
-  begin
-    result := True;
-  
-    mon := MonList.MonitorFromWindow(Wnd);
-    if mon = nil then
-      exit;
-
-    GetWindowRect(Wnd, rc);
-    if ((GetWindowLong(wnd, GWL_STYLE) and WS_MAXIMIZE) = WS_MAXIMIZE) and
-        (IsWindowVisible(Wnd)) and
-        (not EqualRect(mon.WorkAreaRect, rc)) then
-    begin
-      SetWindowLong(Wnd, GWL_STYLE, GetWindowLong(Wnd, GWL_STYLE) and not WS_MAXIMIZE);
-      ShowWindow(wnd, SW_MAXIMIZE);
-    end;
-  end;
-begin
-  EnumWindows(@EnumWindowsProc, 0);
-end;
-
 procedure TDeskAreaManager.SetDeskArea;
 var
   n,i : integer;
@@ -279,7 +251,7 @@ begin
       SharpApi.SendDebugMessage('Shell', Format('Setting workarea to: Left %d, Right %d Top %d, Bottom %d, ', [Area.Left, Area.Right, Area.Top, Area.Bottom]), 0);
 
       SystemParametersInfo(SPI_SETWORKAREA, 1, @Area, SPIF_SENDWININICHANGE);
-      MaximizeWindows;
+      SystemParametersInfo(SPI_SETWORKAREA, 1, @Area, SPIF_SENDWININICHANGE);
     end
   end;
   setlength(BR,0);
