@@ -453,6 +453,7 @@ begin
       SetTimer(DeskAreaTimerWnd,1,3000,nil);
       RegisterActionEx('!EnableDeskArea','Services',DeskAreaTimerWnd,0);
       RegisterActionEx('!DisableDeskArea','Services',DeskAreaTimerWnd,1);
+      RegisterActionEx('!UpdateDeskArea','Services',DeskAreaTimerWnd,2);
     end else
     begin
       Windows.UnregisterClass(PChar('DeskAreaTimerWndClass'),hInstance);
@@ -480,6 +481,7 @@ begin
     Windows.UnregisterClass(PChar('DeskAreaTimerWnd'),hInstance);
     UnRegisterAction('!EnableDeskArea');
     UnRegisterAction('!DisableDeskArea');
+    UnRegisterAction('!UpdateDeskArea');
   end;
 
   if MsTaskSwWClass <> 0 then
@@ -526,11 +528,13 @@ begin
       case LParam of
         0 : DeskAreaManager.Enable;
         1 : DeskAreaManager.Disable;
+        2 : DeskAreaManager.SetDeskArea;
       end;
     end;
     WM_SHARPEUPDATEACTIONS: begin
       RegisterActionEx('!EnableDeskArea','Services',WindowsClass.DeskAreaTimerWnd,0);
       RegisterActionEx('!DisableDeskArea','Services',WindowsClass.DeskAreaTimerWnd,1);
+      RegisterActionEx('!UpdateDeskArea','Services',WindowsClass.DeskAreaTimerWnd,2);
     end;
     WM_SHARPEUPDATESETTINGS: begin
       if WParam = Integer(suDeskArea) then

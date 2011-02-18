@@ -158,15 +158,24 @@ end;
 
 procedure TDeskAreaManager.MaximizeWindows;
   function EnumWindowsProc(Wnd: HWND; LParam: LPARAM): BOOL; stdcall;
+  var
+    mon: TMonitorItem;
+    rc: TRect;
   begin
+    result := True;
+  
+    mon := MonList.MonitorFromWindow(Wnd);
+    if mon = nil then
+      exit;
+
+    GetWindowRect(Wnd, rc);
     if ((GetWindowLong(wnd, GWL_STYLE) and WS_MAXIMIZE) = WS_MAXIMIZE) and
-        (IsWindowVisible(Wnd)) then
+        (IsWindowVisible(Wnd)) and
+        (not EqualRect(mon.WorkAreaRect, rc)) then
     begin
       SetWindowLong(Wnd, GWL_STYLE, GetWindowLong(Wnd, GWL_STYLE) and not WS_MAXIMIZE);
       ShowWindow(wnd, SW_MAXIMIZE);
     end;
-      
-    result := True;
   end;
 begin
   EnumWindows(@EnumWindowsProc, 0);
@@ -265,10 +274,7 @@ begin
       end;
     end;
 
-    if (Area.Left <> MonList.Monitors[n].WorkareaRect.Left) or
-       (Area.Right <> MonList.Monitors[n].WorkareaRect.Right) or
-       (Area.Top <> MonList.Monitors[n].WorkareaRect.Top) or
-       (Area.Bottom <> MonList.Monitors[n].WorkareaRect.Bottom) then
+    if not EqualRect(Area, MonList.Monitors[n].WorkareaRect) then
     begin
       SharpApi.SendDebugMessage('Shell', Format('Setting workarea to: Left %d, Right %d Top %d, Bottom %d, ', [Area.Left, Area.Right, Area.Top, Area.Bottom]), 0);
 
