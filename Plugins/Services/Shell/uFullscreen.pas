@@ -65,8 +65,15 @@ begin
 end;
 
 destructor TFullscreenChecker.Destroy;
+var
+  i: integer;
 begin
+  FreeAndNil(FCheckTimer);
   SetLength(FFullscreenWnds, 0);
+
+  // Show the bars again, or they won't be able to show
+  for i := 0 to MonList.MonitorCount - 1 do
+    SharpApi.SharpEBroadCast(WM_ENTERFULLSCREEN, 0, MonList.Monitors[i].MonitorNum, True, True);
 
   inherited;
 end;

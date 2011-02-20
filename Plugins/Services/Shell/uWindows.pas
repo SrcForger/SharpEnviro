@@ -477,8 +477,10 @@ begin
   if DeskAreaTimerWnd <> 0 then
   begin
     KillTimer(DeskAreaTimerWnd,1);
+    
     DestroyWindow(DeskAreaTimerWnd);
     Windows.UnregisterClass(PChar('DeskAreaTimerWnd'),hInstance);
+
     UnRegisterAction('!EnableDeskArea');
     UnRegisterAction('!DisableDeskArea');
     UnRegisterAction('!UpdateDeskArea');
