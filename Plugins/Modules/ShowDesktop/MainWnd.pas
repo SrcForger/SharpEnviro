@@ -54,7 +54,6 @@ type
     procedure btnMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure FormDestroy(Sender: TObject);
-    procedure btnMouseEnter(Sender: TObject);
     procedure btnMouseLeave(Sender: TObject);
   protected
   private
@@ -195,10 +194,18 @@ begin
 end;
 
 procedure TMainForm.WMNotify(var msg: TWMNotify);
+var
+  b: integer;
 begin
   if Msg.NMHdr.code = TTN_SHOW then
   begin
-    SetWindowPos(Msg.NMHdr.hwndFrom, HWND_TOPMOST, 0, 0, 0, 0,SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOSIZE);
+    // Peek desktop
+    b := 1;
+    DwmSetWindowAttribute(Msg.NMHdr.hwndFrom, DWMWA_DISALLOW_PEEK, @(b), sizeof(b));
+    DwmPeekDesktop;
+
+    SetWindowPos(Msg.NMHdr.hwndFrom, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOACTIVATE or SWP_NOSIZE);
+
     Msg.result := 1;
     exit;
   end else Msg.result := 0;
@@ -276,11 +283,6 @@ begin
   mInterface.MaxSize := NewWidth;
   if newWidth <> Width then
     mInterface.BarInterface.UpdateModuleSize;
-end;
-
-procedure TMainForm.btnMouseEnter(Sender: TObject);
-begin
-  DwmPeekDesktop;
 end;
 
 procedure TMainForm.btnMouseLeave(Sender: TObject);

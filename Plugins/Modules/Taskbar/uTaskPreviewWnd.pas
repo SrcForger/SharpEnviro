@@ -35,6 +35,8 @@ type
 
   TTaskPreviewClickEvent = procedure(Sender : TObject) of object;
   TTaskPreviewMouseMoveEvent = procedure(Sender : TObject) of object;
+  TTaskPreviewPeekEvent = procedure(Sender : TObject) of object;
+
   TTaskPreviewWnd = class
     private
       FX,FY : integer;
@@ -47,9 +49,13 @@ type
       FHover : boolean;
       FAllowHover : boolean;
       FCaption : String;
+      FInstantPeek : Boolean;
+
       FOnPreviewClick : TTaskPreviewClickEvent;
       FOnMouseMove : TTaskPreviewMouseMoveEvent;
       FOnMouseLeave : TTaskPreviewMouseMoveEvent;
+      FOnPeekShow : TTaskPreviewPeekEvent;
+
       FLockKey : integer;
       FWidth : integer;
 
@@ -73,9 +79,13 @@ type
       property TaskWnd : hwnd read FTaskWnd;
       property Wnd : hwnd read FWnd;
       property AllowHover : boolean read FAllowHover;
+      property InstantPeek : boolean read FInstantPeek write FInstantPeek;
+
       property OnPreviewClick : TTaskPreviewClickEvent read FOnPreviewClick write FOnPreviewClick;
       property OnPreviewMouseMove : TTaskPreviewMouseMoveEvent read FOnMouseMove write FOnMouseMove;
       property OnPreviewMouseLeave : TTaskPreviewMouseMoveEvent read FOnMouseLeave write FOnMouseLeave;
+      property OnPeekShow : TTaskPreviewPeekEvent read FOnPeekShow write FOnPeekShow;
+
       property LockKey : integer read FLockKey write FLockKey;
       property Width : integer read FWidth;
   end;
@@ -113,7 +123,18 @@ var
   Locked : boolean;
   TrackMouseEvent_: function(var EventTrack: TTrackMouseEvent): BOOL; stdcall;
 begin
-  if Msg.Msg = WM_MOUSEMOVE then
+  if Msg.Msg = WM_TIMER then
+  begin
+    if (AllowHover) and (FHover) then
+    begin
+      DwmPeekWindow(FTaskWnd);
+
+      if Assigned(FOnPeekShow) then
+        FOnPeekShow(Self);
+    end;
+
+    KillTimer(FWnd, msg.WParam);
+  end else if Msg.Msg = WM_MOUSEMOVE then
   begin
     if AllowHover then
     begin
@@ -125,7 +146,10 @@ begin
       TrackMouseEvent_(tme);
       if not FHover then
       begin
-        DwmPeekWindow(FTaskWnd);
+        if not FInstantPeek then
+          SetTimer(FWnd, 0, 500, nil)
+        else
+          DwmPeekWindow(FTaskWnd);
 
         FHover := True;
         RenderImage;
@@ -262,6 +286,7 @@ begin
   FAllowHover := pAllowHover;
   FLockKey := 1; // Shift;
   Fwidth := 256;
+  FInstantPeek := False;
 
   FOnPreviewClick := nil;
   FOnMouseMove := nil;

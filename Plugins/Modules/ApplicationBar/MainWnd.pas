@@ -130,15 +130,19 @@ type
     FPreviewAnimate : Boolean;
     FRefreshOnNextMouseMove : boolean;
     FLastDragItem : TSharpETaskItem; // Only a pointer, don't free it...
-    FLastDragMinimized : Boolean;    
+    FLastDragMinimized : Boolean;
+
     function CheckWindow(wnd : hwnd) : boolean;
     procedure OnNewTask(pItem : TTaskItem; Index : integer);
     procedure OnRemoveTask(pItem : TTaskItem; Index : integer);
     procedure OnUpdateTask(pItem : TTaskItem; Index : integer);
     procedure OnFlaskTask(pItem : TTaskItem; Index : integer);
     procedure OnActivateTask(pItem : TTaskItem; Index : integer);
+
     procedure OnPreviewClick(Sender : TObject);
     procedure OnPreviewMouseMove(Sender : TObject);
+    procedure OnPreviewPeekShow(Sender : TObject);
+
     procedure ClearButtons(Update: boolean = True);
     procedure UpdateButtonIcon(Btn : TButtonRecord);
     function GetButtonIndex(pButton : TSharpETaskItem) : integer;
@@ -1165,6 +1169,16 @@ begin
   end;
 end;
 
+procedure TMainForm.OnPreviewPeekShow(Sender: TObject);
+var
+  i : integer;
+begin
+  for i := 0 to FPreviewWnds.Count - 1 do
+  begin
+    TTaskPreviewWnd(FPreviewWnds.Items[i]).InstantPeek := True;
+  end;
+end;
+
 procedure TMainForm.OnRemoveTask(pItem: TTaskItem; Index: integer);
 var
   n : integer;
@@ -1384,6 +1398,7 @@ begin
       item.LockKey := sTPLockKey;
       item.OnPreviewClick := OnPreviewClick;
       item.OnPreviewMouseMove := OnPreviewMouseMove;
+      item.OnPeekShow := OnPreviewPeekShow;
       FPreviewWnds.Add(item);
       xpos := xpos - (size - item.Width);
     end;
@@ -1407,9 +1422,12 @@ begin
                                        TaskItem.Caption,
                                        FPreviewAnimate,
                                        true);
+
         item.LockKey := sTPLockKey;
         item.OnPreviewClick := OnPreviewClick;
         item.OnPreviewMouseMove := OnPreviewMouseMove;
+        item.OnPeekShow := OnPreviewPeekShow;
+
         FPreviewWnds.Add(item);
       end;
 
