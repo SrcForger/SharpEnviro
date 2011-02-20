@@ -150,10 +150,13 @@ begin
       fullMon := MonList.MonitorFromWindow(FFullscreenWnds[i].wnd);
       activeMon := MonList.MonitorFromWindow(FActiveWnd);
 
+      // No valid monitor for the active window, set active window to the foregound window
+      if activeMon = nil then
+        continue;
+
       // Check if saved fullscreen window still is fullscreen
-      if (fullMon <> nil) and (activeMon <> nil) then
+      if (fullMon <> nil) then
       begin
-        // Don't ask me about this calculation, can't remember :P
         if  (IsWindowFullscreen(FFullscreenWnds[i].wnd, nil, FFullscreenWnds[i].wnd)) and
             ((fullMon.MonitorNum <> activeMon.MonitorNum) or
             (GetWindowThreadProcessId(FFullscreenWnds[i].wnd) = GetWindowThreadProcessId(FActiveWnd)))
