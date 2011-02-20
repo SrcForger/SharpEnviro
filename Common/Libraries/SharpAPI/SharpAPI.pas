@@ -116,6 +116,12 @@ const
   WM_MINIMIZEALLWINDOWS     = WM_APP + 680;	// wParam = MonitorNum, lParam = minimize all monitors
   WM_RESTOREALLWINDOWS      = WM_APP + 681;	// wParam = MonitorNum, lParam = restore all monitors
 
+  // Aero Peek
+  WM_AEROPEEKDESKTOP      = WM_APP + 690; // lParam = owner window
+  WM_AEROPEEKSTOPDESKTOP  = WM_APP + 691;
+  WM_AEROPEEKWINDOW       = WM_APP + 692; // lParam = owner window, wParam = peek window
+  WM_AEROPEEKSTOPWINDOW   = WM_APP + 693;
+
   // WM_BARCOMMAND messages param
   BC_ADD = 0;
   BC_DELETE = 1;

@@ -1,4 +1,5 @@
 ﻿//#define SEARCH_ENABLED
+//#define PEEK_ENABLED
 
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,17 @@ namespace SharpEnviro.Explorer
 {
     class Explorer
     {
+        // Aero Peek
+#if PEEK_ENABLED
+        enum DWM_PEEK
+        {
+            DWM_PEEK_DESKTOP = 1,
+            DWM_PEEK_WINDOW = 3
+        }
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate int DwmAeroPeek(int Show, IntPtr ownerWnd, IntPtr Wnd, DWM_PEEK peekType);  // Entrypoint #113
+#endif
+
         // Imports from Explorer.dll
         [DllImport("Explorer.dll")]
         public static extern void StartDesktop();
@@ -39,16 +51,14 @@ namespace SharpEnviro.Explorer
         volatile static bool bShellLoaded = false;
         volatile static bool bShellReady = false;
 
+#if PEEK_ENABLED
+        volatile static IntPtr hDwmApi = IntPtr.Zero;
+        volatile static DwmAeroPeek pDwmAeroPeek = null;
+#endif
+
 #if SEARCH_ENABLED
         volatile static SearchManager searchManager;
 #endif
-
-        internal delegate void FunctionInvoker();
-
-        static bool Is64Bit() 
-	    {
-            return (IntPtr.Size == 8);
-	    }
 
         static void InvokeShellReady()
         {
@@ -61,44 +71,77 @@ namespace SharpEnviro.Explorer
 
         static IntPtr SharpWindowProc(IntPtr hWnd, uint uMsgm, IntPtr wParam, IntPtr lParam)
         {
-            if (uMsgm == PInvoke.WM_SHARPSHELLREADY)
+            switch (uMsgm)
             {
-                InvokeShellReady();
+                case PInvoke.WM_SHARPSHELLREADY:
+                {
+                    InvokeShellReady();
+                    return (IntPtr)0;
+                }
+                case PInvoke.WM_SHARPSHELLLOADED:
+                {
+                    return (IntPtr)(bShellLoaded?1:0);
+                }
 
-                return (IntPtr)0;
-            }
+                // Aero Peek
+#if PEEK_ENABLED
+                case PInvoke.WM_AEROPEEKDESKTOP:      // lParam = owner window
+                {
+                    if (pDwmAeroPeek != null)
+                        pDwmAeroPeek(1, lParam, IntPtr.Zero, DWM_PEEK.DWM_PEEK_DESKTOP);
 
-            if (uMsgm == PInvoke.WM_SHARPSHELLLOADED)
-            {
-                return (IntPtr)(bShellLoaded?1:0);
-            }
+                    return (IntPtr)0;
+                }
+                case PInvoke.WM_AEROPEEKSTOPDESKTOP:
+                {
+                    if (pDwmAeroPeek != null)
+                        pDwmAeroPeek(0, IntPtr.Zero, IntPtr.Zero, DWM_PEEK.DWM_PEEK_DESKTOP);
 
-            // Show the search window
-#if SEARCH_ENABLED
-            if (uMsgm == PInvoke.WM_SHARPSEARCH)
-            {
-                SharpDebug.Info("Explorer", "SharpSearch message received.");
-                WPFRuntime.Instance.Show<SearchWindow>();
-                SharpDebug.Info("Explorer", "SharpSearch message processed.");
+                    return (IntPtr)0;
+                }
+                case PInvoke.WM_AEROPEEKWINDOW:      // lParam = owner window, wParam = peek window
+                {
+                    if (pDwmAeroPeek != null)
+                        pDwmAeroPeek(1, lParam, wParam, DWM_PEEK.DWM_PEEK_WINDOW);
 
-                return (IntPtr)0;
-            }
+                    return (IntPtr)0;
+                }
+                case PInvoke.WM_AEROPEEKSTOPWINDOW:
+                {
+                    if (pDwmAeroPeek != null)
+                        pDwmAeroPeek(0, IntPtr.Zero, IntPtr.Zero, DWM_PEEK.DWM_PEEK_WINDOW);
 
-            // Start indexing
-            if (uMsgm == PInvoke.WM_SHARPSEARCH_INDEXING)
-            {
-                if (!searchManager.IsIndexing)
-                    searchManager.StartIndexing();
-
-                return (IntPtr)0;
-            }
+                    return (IntPtr)0;
+                }
 #endif
 
-            if (uMsgm == PInvoke.WM_SHARPTERMINATE)
-            {
-                PInvoke.PostQuitMessage(0);
+                // Show the search window
+#if SEARCH_ENABLED
+                case PInvoke.WM_SHARPSEARCH:
+                {
+                    SharpDebug.Info("Explorer", "SharpSearch message received.");
+                    WPFRuntime.Instance.Show<SearchWindow>();
+                    SharpDebug.Info("Explorer", "SharpSearch message processed.");
 
-                return (IntPtr)0;
+                    return (IntPtr)0;
+                }
+
+                // Start indexing
+                case PInvoke.WM_SHARPSEARCH_INDEXING:
+                {
+                    if (!searchManager.IsIndexing)
+                        searchManager.StartIndexing();
+
+                    return (IntPtr)0;
+                }
+#endif
+
+                case PInvoke.WM_SHARPTERMINATE:
+                {
+                    PInvoke.PostQuitMessage(0);
+
+                    return (IntPtr)0;
+                }
             }
 
             return PInvoke.DefWindowProc(hWnd, uMsgm, wParam, lParam);
@@ -154,6 +197,15 @@ namespace SharpEnviro.Explorer
             OperatingSystem osInfo = Environment.OSVersion;
             if (osInfo.Platform == System.PlatformID.Win32NT)
             {
+#if PEEK_ENABLED
+                hDwmApi = PInvoke.LoadLibrary("dwmapi.dll");
+                if (hDwmApi != IntPtr.Zero)
+                {
+                    IntPtr pAddress = PInvoke.GetProcAddress(hDwmApi, (IntPtr)113);
+                    if (pAddress != IntPtr.Zero)
+                        pDwmAeroPeek = (DwmAeroPeek)Marshal.GetDelegateForFunctionPointer(pAddress, typeof(DwmAeroPeek));
+                }
+#endif
                 // Create main window thread
                 System.Threading.Thread wndThread = new System.Threading.Thread(new System.Threading.ThreadStart(WindowThread));
                 wndThread.Start();
@@ -194,6 +246,11 @@ namespace SharpEnviro.Explorer
                     System.Threading.Thread.Sleep(1000);
 
                 StopDesktop();
+
+#if PEEK_ENABLED
+                if (hDwmApi != IntPtr.Zero)
+                    PInvoke.FreeLibrary(hDwmApi);
+#endif
 
 #if SEARCH_ENABLED
                 searchManager.Dispose();

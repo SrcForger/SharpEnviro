@@ -23,6 +23,8 @@ object MainForm: TMainForm
     Height = 25
     AutoSize = True
     OnMouseUp = btnMouseUp
+	OnMouseEnter = btnMouseEnter
+    OnMouseLeave = btnMouseLeave
     Glyph32.DrawMode = dmBlend
     Glyph32.CombineMode = cmMerge
     Glyph32.OuterColor = -16777216

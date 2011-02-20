@@ -46,7 +46,8 @@ uses
   uISharpBar,
   uInterfacedSharpBarModuleBase,
   {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
-  MainWnd in 'MainWnd.pas' {MainForm};
+  MainWnd in 'MainWnd.pas' {MainForm},
+  uDWMFuncs in '..\..\..\Common\Units\DWMApi\uDWMFuncs.pas';
 
 type
   TInterfacedSharpBarModule = class(TInterfacedSharpBarModuleBase)

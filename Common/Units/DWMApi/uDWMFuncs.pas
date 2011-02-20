@@ -25,20 +25,30 @@ unit uDWMFuncs;
 
 interface
 
-uses Windows;
-
-function DwmIsCompositionEnabled(var Enabled: Boolean): HRESULT;
-function DwmGetWindowAttribute(hwnd: HWND; dwAttribute: DWORD; pvAttribute: Pointer; cbAttribute: DWORD): HRESULT;
+uses Windows,
+      SharpApi;
 
 const
   DWMWA_EXTENDED_FRAME_BOUND = 9;
+  DWMWA_DISALLOW_PEEK = 12;
+
+function DwmIsCompositionEnabled(var Enabled: Boolean): HRESULT;
+function DwmGetWindowAttribute(hwnd: HWND; dwAttribute: DWORD; pvAttribute: Pointer; cbAttribute: DWORD): HRESULT;
+function DwmSetWindowAttribute(hwnd: HWND; dwAttribute: DWORD; pvAttribute: Pointer; cbAttribute: DWORD): HRESULT;
+
+// Peek
+procedure DwmPeekDesktop;
+procedure DwmStopPeekDesktop;
+procedure DwmPeekWindow(wnd: HWND);
+procedure DwmStopPeekWindow;
 
 implementation
 
 var
   FDWMDll : THandle;
-  FDwmIsCompositionEnabled : function(var Enabled: BOOL): HRESULT; stdcall;
-  FDwmGetWindowAttribute : function(hwnd: HWND; dwAttribute: DWORD; pvAttribute: Pointer; cbAttribute: DWORD): HRESULT; stdcall;
+  FDwmIsCompositionEnabled: function(var Enabled: BOOL): HRESULT; stdcall;
+  FDwmGetWindowAttribute: function(hwnd: HWND; dwAttribute: DWORD; pvAttribute: Pointer; cbAttribute: DWORD): HRESULT; stdcall;
+  FDwmSetWindowAttribute: function(hwnd: HWND; dwAttribute: DWORD; pvAttribute: Pointer; cbAttribute: DWORD): HRESULT; stdcall;
 
 function DwmIsCompositionEnabled(var Enabled: Boolean): HRESULT;
 var
@@ -61,12 +71,63 @@ begin
     Result := FDwmGetWindowAttribute(hwnd, dwAttribute, pvAttribute, cbAttribute);
 end;
 
+function DwmSetWindowAttribute(hwnd: HWND; dwAttribute: DWORD; pvAttribute: Pointer; cbAttribute: DWORD): HRESULT;
+begin
+  Result := S_FALSE;
+  
+  if Assigned(FDwmSetWindowAttribute) then
+    Result := FDwmSetWindowAttribute(hwnd, dwAttribute, pvAttribute, cbAttribute);
+end;
+
+procedure DwmPeekDesktop;
+var
+  b: Boolean;
+begin
+  if IsWindowVisible(FindWindow('TSharpDeskMainForm', nil)) then
+  begin
+    DwmPeekWindow(FindWindow('TSharpDeskMainForm', nil));
+    exit;
+  end;
+
+  DwmIsCompositionEnabled(b);
+  if b then
+    PostMessage(FindWindow('TSharpExplorerForm', nil), WM_AEROPEEKDESKTOP, FindWindow('Shell_TrayWnd', nil), 0);
+end;
+
+procedure DwmStopPeekDesktop;
+var
+  b: Boolean;
+begin
+  DwmIsCompositionEnabled(b);
+  if b then
+    PostMessage(FindWindow('TSharpExplorerForm', nil), WM_AEROPEEKSTOPDESKTOP, 0, 0);
+end;
+
+procedure DwmPeekWindow(wnd: HWND);
+var
+  b: Boolean;
+begin
+  DwmIsCompositionEnabled(b);
+  if b then
+    PostMessage(FindWindow('TSharpExplorerForm', nil), WM_AEROPEEKWINDOW, FindWindow('Shell_TrayWnd', nil), wnd);
+end;
+
+procedure DwmStopPeekWindow;
+var
+  b: Boolean;
+begin
+  DwmIsCompositionEnabled(b);
+  if b then
+    PostMessage(FindWindow('TSharpExplorerForm', nil), WM_AEROPEEKSTOPWINDOW, 0, 0);
+end;
+
 initialization
   FDWMDll := LoadLibrary('dwmapi.dll');
   if FDWMDll <> 0 then
   begin
     @FDwmIsCompositionEnabled := GetProcAddress(FDWMDll, 'DwmIsCompositionEnabled');
     @FDwmGetWindowAttribute := GetProcAddress(FDWMDll, 'DwmGetWindowAttribute');
+    @FDwmSetWindowAttribute := GetProcAddress(FDWMDll, 'DwmSetWindowAttribute');
   end;
 
 finalization

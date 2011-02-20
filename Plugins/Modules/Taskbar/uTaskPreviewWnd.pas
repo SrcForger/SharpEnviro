@@ -28,7 +28,8 @@ unit uTaskPreviewWnd;
 interface
 
 uses
-  Windows, Classes, Messages, Types, SysUtils, DwmApi, GR32, GR32_Backends, ISharpESkinComponents;
+  Windows, Classes, Messages, Types, SysUtils, DwmApi, GR32, GR32_Backends, ISharpESkinComponents,
+  uDWMFuncs;
 
 type
 
@@ -124,6 +125,8 @@ begin
       TrackMouseEvent_(tme);
       if not FHover then
       begin
+        DwmPeekWindow(FTaskWnd);
+
         FHover := True;
         RenderImage;
         RenderSpecial;
@@ -139,6 +142,8 @@ begin
     begin
       if FHover then
       begin
+        DwmStopPeekWindow;
+
         FHover := False;
         RenderImage;
         RenderSpecial;
@@ -152,6 +157,7 @@ begin
   begin
     if AllowHover then
     begin
+      DwmStopPeekWindow;
       SwitchToThisWindow(FTaskWnd,True);
       HideWindow(False);
       case FLockKey of
@@ -245,6 +251,7 @@ var
   hr : hresult;
   size : TSize;
   w,h : integer;
+  b: integer;
 begin
   inherited Create;
 
@@ -274,6 +281,10 @@ begin
                          SharpETaskPReviewWndClass.lpszClassName, 'SharpETaskPreviewWnd',
                          WS_POPUP,
                          0, 0, 100, 100, 0, 0, hInstance, nil);
+
+  // Exclude previews from peek
+  b := 1;
+  DwmSetWindowAttribute(FWnd, DWMWA_DISALLOW_PEEK, @(b), sizeof(b));
 
   // Init Thumbnail API                         
   if FWnd <> 0 then

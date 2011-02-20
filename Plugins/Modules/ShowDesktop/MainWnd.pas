@@ -36,7 +36,8 @@ uses
   SharpEBaseControls,
   SharpEButton,
   SharpIconUtils,
-  uISharpBarModule;
+  uISharpBarModule,
+  uDWMFuncs;
 
 
 type
@@ -53,6 +54,8 @@ type
     procedure btnMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure FormDestroy(Sender: TObject);
+    procedure btnMouseEnter(Sender: TObject);
+    procedure btnMouseLeave(Sender: TObject);
   protected
   private
     sShowCaption : boolean;
@@ -273,6 +276,16 @@ begin
   mInterface.MaxSize := NewWidth;
   if newWidth <> Width then
     mInterface.BarInterface.UpdateModuleSize;
+end;
+
+procedure TMainForm.btnMouseEnter(Sender: TObject);
+begin
+  DwmPeekDesktop;
+end;
+
+procedure TMainForm.btnMouseLeave(Sender: TObject);
+begin
+  DwmStopPeekDesktop;
 end;
 
 procedure TMainForm.btnMouseUp(Sender: TObject; Button: TMouseButton;

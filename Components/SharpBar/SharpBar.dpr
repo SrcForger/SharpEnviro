@@ -50,7 +50,8 @@ uses
   uISharpESkin in '..\..\Common\Interfaces\uISharpESkin.pas',
   uISharpBar in '..\..\Common\Interfaces\uISharpBar.pas',
   uSharpBarInterface in 'uSharpBarInterface.pas',
-  uSharpXMLUtils in '..\..\Common\Units\XML\uSharpXMLUtils.pas';
+  uSharpXMLUtils in '..\..\Common\Units\XML\uSharpXMLUtils.pas',
+  uDWMFuncs in '..\..\Common\Units\DWMApi\uDWMFuncs.pas';
 
 type
   TBarMutex = array of record
@@ -284,6 +285,7 @@ var
   x,y : integer;
   noREB,noLASB : boolean;
   Mon : TMonitorItem;
+  b: integer;
 begin
   // Possible exec Params
   // SharpBar.exe -noLASB  ::: no LoadAutoStartBars
@@ -395,6 +397,11 @@ begin
          break;
        end;
     end;
+
+  // Exclude bars from aero peek
+  b := 1;
+  DwmSetWindowAttribute(SharpBarMainForm.Handle, DWMWA_DISALLOW_PEEK, @(b), sizeof(b));
+  DwmSetWindowAttribute(SharpBarMainForm.SharpEBar.abackground.handle, DWMWA_DISALLOW_PEEK, @(b), sizeof(b));
 
   SharpBarMainForm.Startup := False;
   SharpBarMainForm.Show;

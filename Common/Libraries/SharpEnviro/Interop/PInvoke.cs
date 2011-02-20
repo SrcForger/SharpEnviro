@@ -199,11 +199,17 @@ namespace SharpEnviro.Interop
         public const uint WM_ENDSESSION = 0x0016;
         public const uint WM_CLOSE = 0x0010;
         public const uint WM_QUIT = 0x0012;
-        public const uint WM_SHARPTERMINATE = 0x8226;
-        public const uint WM_SHARPSHELLREADY = 0x8296;
-        public const uint WM_SHARPSEARCH = 0x8297;
-        public const uint WM_SHARPSEARCH_INDEXING = 0x8298;
-        public const uint WM_SHARPSHELLLOADED = 0x8299;
+
+        public const uint WM_APP = 32768;
+        public const uint WM_SHARPTERMINATE         = WM_APP + 550;
+        public const uint WM_SHARPSHELLREADY        = WM_APP + 662;
+        public const uint WM_SHARPSEARCH            = WM_APP + 663;
+        public const uint WM_SHARPSEARCH_INDEXING   = WM_APP + 664;
+        public const uint WM_SHARPSHELLLOADED       = WM_APP + 665;
+        public const uint WM_AEROPEEKDESKTOP        = WM_APP + 690;      // lParam = owner window
+        public const uint WM_AEROPEEKSTOPDESKTOP    = WM_APP + 691;
+        public const uint WM_AEROPEEKWINDOW         = WM_APP + 692;       // lParam = owner window, wParam = peek window
+        public const uint WM_AEROPEEKSTOPWINDOW     = WM_APP + 693;
 
         [StructLayout(LayoutKind.Sequential)]
         public struct NativeMessage
@@ -259,6 +265,9 @@ namespace SharpEnviro.Interop
 
         [DllImport("kernel32.dll")]
         public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
+
+        [DllImport("kernel32.dll")]
+        public static extern IntPtr GetProcAddress(IntPtr hModule, IntPtr ordinal);
 
         [DllImport("kernel32.dll")]
         public static extern bool FreeLibrary(IntPtr hModule);
