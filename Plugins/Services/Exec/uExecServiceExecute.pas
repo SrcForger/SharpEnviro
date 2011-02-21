@@ -724,8 +724,10 @@ end;
 function TSharpExec.ProcessString(Text: string; SaveHistory: Boolean = True; Elevate: Boolean = False; Properties: Boolean = False): Boolean;
 var
   s: string;
+  orig: string;
 begin
   Result := False;
+  orig := Text;
   s := Trim(Text);
   if s = '' then exit;
   Text := s;
@@ -733,8 +735,11 @@ begin
 
   // Expand Enviro Vars
   Text := FileUtils.ExpandEnvVars(text);
-  s := Copy(text, 1, Length(text) - 2);
-  Text := s;
+  if CompareText(Text,orig) <> 0 then
+  begin
+    s := Copy(text, 1, Length(text) - 2);
+    Text := s;
+  end;
 
   // Expand Common Files - Scans the text and expands the filename
   if (Pos('shell:', LowerCase(text)) <> 1) then begin

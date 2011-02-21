@@ -108,12 +108,13 @@ var
   BufSize: Integer; // size of expanded string
 begin
   // Get required buffer size
-  BufSize := ExpandEnvironmentStrings(
-    PChar(Str), nil, 0);
+  BufSize := ExpandEnvironmentStrings(PChar(Str), nil, 0);
+  if BufSize = 0 then
+    result := Str;
   // Read expanded string into result string
   SetLength(Result, BufSize);
-  ExpandEnvironmentStrings(PChar(Str),
-    PChar(Result), BufSize);
+  if ExpandEnvironmentStrings(PChar(Str),PChar(Result), BufSize) = 0 then
+    result := Str;
 end;
 
 end.
