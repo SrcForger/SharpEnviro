@@ -174,7 +174,8 @@ begin
   menusettings.LoadFromXML;
 
   // Parse possible params (which define the position and custom menus)
-  Pos := Mouse.CursorPos;
+  if not SharpApi.GetCursorPosSecure(Pos) then
+    Pos := Point(0,0);
   popupdir := 1;
   nomenuid := False;
   // Check Params
