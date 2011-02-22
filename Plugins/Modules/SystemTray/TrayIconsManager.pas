@@ -47,6 +47,7 @@ uses Windows, Dialogs, SysUtils, Classes,
 
 type
   TOnSaveSettings = procedure of Object;
+  TOnPaintLock = procedure(lock: Boolean) of Object;
 
   TTrayChangeEvent = (tceIcon, tceTip, tceVersion);
   TTrayChangeEvents = Set of TTrayChangeEvent;
@@ -93,6 +94,8 @@ type
     FVersion: integer;
     FModX: integer;
     FPosition: integer;
+    FGUIDItem: TGUID;
+    FGUIDString: String;
 
   public
     FTip: ArrayWideChar128;
@@ -159,6 +162,7 @@ type
 
     FOnSaveSettings: TOnSaveSettings;
     FOnAddIcon: TOnSaveSettings;
+    FOnPaintLock: TOnPaintLock;
 
     procedure FOnBallonClick(wnd: hwnd; ID: Cardinal; Data: TObject; Msg: integer);
     procedure FOnBallonShow(wnd: hwnd; ID: Cardinal; Data: TObject);
@@ -179,6 +183,9 @@ type
 
     procedure UpdateTrayIcons;
     procedure UpdatePositions;
+
+    function GetLastPosition: integer;
+    function GetAvailablePosition(p: integer): integer;
 
     procedure RenderIcons;
     function PerformIconAction(x, y, gx, gy, imod: integer; msg: uint; parent: TForm): boolean;
@@ -243,6 +250,7 @@ type
 
     property OnSaveSettings: TOnSaveSettings read FOnSaveSettings write FOnSaveSettings;
     property OnAddIcon: TOnSaveSettings read FOnAddIcon write FOnAddIcon;
+    property OnPaintLock: TOnPaintLock read FOnPaintLock write FOnPaintLock;
   end;
 
 function AllowSetForegroundWindow(ProcessID: DWORD): boolean; stdcall; external 'user32.dll' name 'AllowSetForegroundWindow';
@@ -390,6 +398,7 @@ begin
   FIsHovering := False;
   FPosition := -1;
   FModX := 0;
+  FGUIDString := '';
 
   // If the size is the default size or less use the TLinearResampler,
   // when scaling up use TKernelResampler for better quality.
@@ -402,7 +411,11 @@ begin
     TKernelResampler.Create(FBitmap).Kernel := TLanczosKernel.Create
   end;
   AssignFromNIDv6(NIDv6);
-  FName := ExtractFileName(GetProcessNameFromWnd(FWnd)) + ':' + InttoStr(FUID);
+
+  if FGUIDString <> '' then
+    FName := FGUIDString
+  else
+    FName := GetWndClass(FWnd) + ':' + IntToStr(FUID);
 
   Inherited Create;
 end;
@@ -442,8 +455,13 @@ begin
     FBInfoFlags := NIDv6.dwInfoFlags;
   end;
 
-  oVersion := NIDv6.Union.uVersion;
+  if (NIDv6.uFlags and NIF_GUID) = NIF_GUID then
+  begin
+    FGUIDItem := NIDv6.guidItem;
+    FGUIDString := GUIDToString(FGUIDItem);
+  end;
 
+  oVersion := NIDv6.Union.uVersion;
   FVersion := NIDv6.Union.uVersion;
   if oVersion <> Integer(FVersion) then
   begin
@@ -700,9 +718,15 @@ end;
 
 procedure TTrayClient.ClearTrayIcons;
 begin
+  if Assigned(FOnPaintLock) then
+    FOnPaintLock(True);
+    
   FItems.Clear;
   FHiddenItems.Clear;
   RenderIcons;
+  
+  if Assigned(FOnPaintLock) then
+    FOnPaintLock(False);
 end;
 
 procedure TTrayClient.RegisterWithTray;
@@ -871,11 +895,35 @@ begin
     Result := -1;
 end;
 
-
 procedure TTrayClient.UpdatePositions;
 begin
   FItems.Sort(@Sort);
   UpdateTrayIcons;
+end;
+
+function TTrayClient.GetLastPosition: integer;
+var
+  i: integer;
+begin
+  Result := 0;
+  for i := 0 to FItems.Count - 1 do
+    if TTrayItem(FItems[i]).Position < Result then
+      Result := TTrayItem(FItems[i]).Position;
+
+  Result := Result - 1;
+end;
+
+function TTrayClient.GetAvailablePosition(p: integer): integer;
+var
+  i: integer;
+begin
+  Result := p;
+  for i := 0 to FItems.Count - 1 do
+    if TTrayItem(FItems[i]).Position = p then
+    begin
+      Result := GetLastPosition;
+      Exit;
+    end;
 end;
 
 procedure TTrayClient.AddTrayIcon(NIDv6: TNotifyIconDataV7);
@@ -895,6 +943,9 @@ var
   i: integer;
   pStartItem: TTrayStartItem;
 begin
+  if Assigned(FOnPaintLock) then
+    FOnPaintLock(True);
+
   pStartItem := nil;
   for i := 0 to FStartItems.Count - 1 do
   begin
@@ -913,7 +964,7 @@ begin
       FHiddenItems.Add(item);
     end else
     begin
-      item.Position := -(FItems.Count);
+      item.Position := GetLastPosition;
       FItems.Add(item);
     end;
   end else if addItem then
@@ -924,7 +975,7 @@ begin
       FHiddenItems.Add(item)
     end else
     begin
-      item.Position := pStartItem.Position;
+      item.Position := GetAvailablePosition(pStartItem.Position);
       FItems.Add(item);
     end;
   end;
@@ -949,7 +1000,10 @@ begin
 
   // Save callback
   if Assigned(FOnSaveSettings) then
-    FOnSaveSettings
+    FOnSaveSettings;
+
+  if Assigned(FOnPaintLock) then
+    FOnPaintLock(False);
 end;
 
 function TTrayClient.GetTrayIcon(pWnd: THandle; UID: Cardinal): TTrayItem;
@@ -1101,6 +1155,9 @@ var
   tempItem: TTrayItem;
   rs: TTrayChangeEvents;
 begin
+  if Assigned(FOnPaintLock) then
+    FOnPaintLock(True);
+
   tempItem := GetTrayIcon(NIDv6.wnd, NIDv6.UID);
   if tempItem <> nil then
   begin
@@ -1120,17 +1177,15 @@ begin
       end
     end;
   end;
+
+  if Assigned(FOnPaintLock) then
+    FOnPaintLock(False);
 end;
 
 procedure TTrayClient.DeleteTrayIcon(NIDv6: TNotifyIconDataV7);
 var
   n: integer;
 begin
-  // To stop the tray from removing the Explorer icons when shutting down the Shell service we need
-  // to check if the shell service is stopping
-  if SharpAPI.ServiceStopping('Shell') = MR_STOPPING then
-    exit;
-
   n := GetTrayIconIndex(NIDv6.Wnd, NIDv6.UID);
   if (n <> -1) and (n < FItems.Count) then
   begin
@@ -1143,14 +1198,18 @@ var
   i: integer;
   temp: TTrayItem;
 begin
-  // See DeleteTrayIcon
-  if SharpAPI.ServiceStopping('Shell') = MR_STOPPING then
+  // To stop the tray from removing the Explorer icons when shutting down the Shell service we need
+  // to check if the shell service is stopping
+  if (SharpAPI.ServiceStopping('Shell') = MR_STOPPING) then
     exit;
 
   if index > FItems.Count - 1 then
   begin
     exit
   end;
+
+  if Assigned(FOnPaintLock) then
+    FOnPaintLock(True);
 
   temp := TTrayItem(FItems.Items[index]);
   if temp = FLastTipItem then
@@ -1192,6 +1251,9 @@ begin
   FItems.Extract(temp);
   FreeAndNil(Temp);
   RenderIcons;
+
+  if Assigned(FOnPaintLock) then
+    FOnPaintLock(False);
 end;
 
 procedure TTrayClient.RenderIcon(item: TTrayItem; n: integer);
@@ -1246,15 +1308,17 @@ var
   tempItem: TTrayItem;
   w, h: integer;
 begin
-  for n := FItems.Count - 1 downto 0 do
+  n := 0;
+  while n < FItems.Count - 1 do
   begin
     tempItem := TTrayItem(FItems.Items[n]);
     if (not iswindow(tempItem.Wnd)) then
     begin
       DeleteTrayIconByIndex(n);
-      RenderIcons;
-      exit;
+      continue;
     end;
+
+    n := n + 1;
   end;
 
     w := FItems.Count * (FIconSize + FIconSpacing) + 2 * FTopSpacing;

@@ -85,9 +85,6 @@ type
 function TInterfacedSharpBarModule.CloseModule: HRESULT;
 begin
   try
-    // Save before quitting
-    TMainForm(Form).SaveSettings;
-
     FUpdateTimer.Free;
     FUpdateTimer := nil;
 
@@ -168,8 +165,10 @@ begin
     Form.ParentWindow := BarWnd;    
 
     FTrayClient := TTrayClient.Create;
+    FTrayClient.OnPaintLock := TMainForm(Form).LockPaint;
     FTrayClient.InitToolTips(Form);
     FTrayClient.BackGroundColor := color32(0,0,0,0);
+
     FUpdateTimer := TTimer.Create(nil);
     FUpdateTimer.OnTimer := OnUpdateTimer;
     FUpdateTimer.Interval := 100;

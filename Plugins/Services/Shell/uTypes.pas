@@ -120,9 +120,9 @@ type
 
     szInfoTitle: ArrayWideChar64;
     dwInfoFlags: DWORD;
-    //Version 6
+    // Windows 7 only
     guidItem: TGUID;
-    //Version 7? (Vista)
+    // Vista and higher
     hBalloonIcon : HICON;
   end;
 

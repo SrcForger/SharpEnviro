@@ -325,7 +325,7 @@ begin
     ABM_REMOVE: begin
       ABItem := GetAppBarItem(msg.abd.Wnd);
       if ABItem <> nil then
-      begin
+      begin                        
         AppBarList.Remove(ABItem);
         if DeskAreaManager <> nil then
           DeskAreaManager.SetDeskArea;
@@ -433,6 +433,8 @@ begin
     pItem.data.szInfoTitle := pData.szInfoTitle;
     pItem.data.dwInfoFlags := pData.dwInfoFlags;
   end;
+  if (pData.uFlags and NIF_GUID) = NIF_GUID then
+    pItem.data.guidItem := pData.guidItem;
 
   foundshared := False;
   if (pData.uFlags and NIF_ICON) = NIF_ICON then

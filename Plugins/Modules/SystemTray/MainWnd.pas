@@ -82,6 +82,8 @@ type
     sDraggingItem       : TTrayItem;
     sToolTipTimer       : TTimer;
 
+    sPaintLocked        : Boolean;
+
     procedure CMMOUSELEAVE(var msg : TMessage); message CM_MOUSELEAVE;
     procedure WMNotify(var msg : TWMNotify); message WM_NOTIFY;
 
@@ -92,6 +94,7 @@ type
     FTrayClient : TTrayClient;
     Buffer     : TBitmap32;
     mInterface : ISharpBarModule;
+    
     procedure ShowHideMenu;
     procedure RepaintIcons(pRepaint : boolean = True);
 
@@ -102,6 +105,9 @@ type
     procedure UpdateComponentSkins;
 
     procedure AddIcon;
+    procedure LockPaint(lock: Boolean);
+
+    property PaintLocked: Boolean read sPaintLocked write sPaintLocked;
   end;
 
 
@@ -161,7 +167,7 @@ begin
     menu := TSharpEMenu(pItem.OwnerMenu);
     menuwnd := TSharpEMenuWnd(pMenuWnd);
 
-    TrayItem.Position := -(FTrayClient.Items.Count);
+    TrayItem.Position := FTrayClient.GetLastPosition;
     FTrayClient.Items.Add(TrayItem);
 
     menu.Items.Extract(pItem);
@@ -222,6 +228,18 @@ begin
     FTrayClient.UpdatePositions;
     FTrayClient.RenderIcons;
     SaveSettings;
+  end;
+end;
+
+procedure TMainForm.LockPaint(lock: Boolean);
+begin
+  sPaintLocked := lock;
+  if lock then
+    LockWindowUpdate(Handle)
+  else
+  begin
+    LockWindowUpdate(0);
+    RepaintIcons(True);
   end;
 end;
 
@@ -621,6 +639,9 @@ end;
 
 procedure TMainForm.RepaintIcons(pRepaint : boolean = True);
 begin
+  if sPaintLocked then
+    exit;
+
   Buffer.Assign(mInterface.Background);
   if FTrayClient = nil then
     exit;
@@ -725,6 +746,8 @@ begin
 
     FTrayClient.UpdatePositions;
     FTrayClient.RenderIcons;
+
+    SaveSettings;
     exit;
   end;
 
