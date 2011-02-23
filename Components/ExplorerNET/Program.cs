@@ -47,6 +47,9 @@ namespace SharpEnviro.Explorer
         [DllImport("Explorer.dll")]
         public static extern void ShellReady();
 
+        [DllImport("Explorer.dll")]
+        public static extern void RegisterTray();
+
         // Global vars
         volatile static bool bShellLoaded = false;
         volatile static bool bShellReady = false;
@@ -81,6 +84,13 @@ namespace SharpEnviro.Explorer
                 case PInvoke.WM_SHARPSHELLLOADED:
                 {
                     return (IntPtr)(bShellLoaded?1:0);
+                }
+
+                case PInvoke.WM_SHARPREGISTERTRAY:
+                {
+                    RegisterTray();
+
+                    return (IntPtr)0;
                 }
 
                 // Aero Peek

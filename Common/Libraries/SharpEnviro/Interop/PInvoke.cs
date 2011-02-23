@@ -206,6 +206,8 @@ namespace SharpEnviro.Interop
         public const uint WM_SHARPSEARCH            = WM_APP + 663;
         public const uint WM_SHARPSEARCH_INDEXING   = WM_APP + 664;
         public const uint WM_SHARPSHELLLOADED       = WM_APP + 665;
+        public const uint WM_SHARPREGISTERTRAY      = WM_APP + 666;
+
         public const uint WM_AEROPEEKDESKTOP        = WM_APP + 690;      // lParam = owner window
         public const uint WM_AEROPEEKSTOPDESKTOP    = WM_APP + 691;
         public const uint WM_AEROPEEKWINDOW         = WM_APP + 692;       // lParam = owner window, wParam = peek window

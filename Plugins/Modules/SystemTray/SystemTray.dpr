@@ -165,7 +165,10 @@ begin
     Form.ParentWindow := BarWnd;    
 
     FTrayClient := TTrayClient.Create;
+
+    FTrayClient.OnSaveSettings := TMainForm(Form).SaveSettings;
     FTrayClient.OnPaintLock := TMainForm(Form).LockPaint;
+
     FTrayClient.InitToolTips(Form);
     FTrayClient.BackGroundColor := color32(0,0,0,0);
 

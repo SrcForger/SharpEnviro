@@ -107,10 +107,11 @@ const
   WM_SHARPSEARCH = WM_APP + 663;	
   WM_SHARPSEARCH_INDEXING = WM_APP + 664;
   WM_SHARPSHELLLOADED = WM_APP + 665;
+  WM_SHARPREGISTERTRAY = WM_APP + 666;
 
   // Fullscreen
-  WM_ENTERFULLSCREEN        = WM_APP + 666; // wParam = enter/leave (1/0), lParam = monitor id
-  WM_CHECKFULLSCREEN        = WM_APP + 667; // lParam = monitor id to reset
+  WM_ENTERFULLSCREEN        = WM_APP + 670; // wParam = enter/leave (1/0), lParam = monitor id
+  WM_CHECKFULLSCREEN        = WM_APP + 671; // lParam = monitor id to reset
 
   // Window
   WM_MINIMIZEALLWINDOWS     = WM_APP + 680;	// wParam = MonitorNum, lParam = minimize all monitors

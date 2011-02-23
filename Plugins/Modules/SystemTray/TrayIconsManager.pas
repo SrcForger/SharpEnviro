@@ -173,13 +173,14 @@ type
 
   public
     function GetTrayIconIndex(pWnd: THandle; UID: Cardinal): integer;
+    function GetHiddenTrayIconIndex(pWnd: THandle; UID: Cardinal): integer;
     function GetTrayIcon(pWnd: THandle; UID: Cardinal): TTrayItem;
     procedure AddOrModifyTrayIcon(NIDv6: TNotifyIconDataV7);
     procedure AddTrayIcon(NIDv6: TNotifyIconDataV7); overload;
     procedure AddTrayIcon(item: TTrayItem; addItem: boolean = true); overload;
     procedure ModifyTrayIcon(NIDv6: TNotifyIconDataV7);
     procedure DeleteTrayIcon(NIDv6: TNotifyIconDataV7);
-    procedure DeleteTrayIconByIndex(index: integer);
+    procedure DeleteTrayIconByIndex(index: integer; Hidden: Boolean = False);
 
     procedure UpdateTrayIcons;
     procedure UpdatePositions;
@@ -413,9 +414,9 @@ begin
   AssignFromNIDv6(NIDv6);
 
   if FGUIDString <> '' then
-    FName := FGUIDString
+    FName := FGUIDString + '\\' + ExtractFileName(GetProcessNameFromWnd(FWnd))
   else
-    FName := GetWndClass(FWnd) + ':' + IntToStr(FUID);
+    FName := IntToStr(FUID) + '\\' + GetProcessNameFromWnd(FWnd);
 
   Inherited Create;
 end;
@@ -1021,6 +1022,22 @@ begin
   result := nil;
 end;
 
+function TTrayClient.GetHiddenTrayIconIndex(pWnd: THandle; UID: Cardinal): integer;
+var
+  n: integer;
+begin
+  for n := 0 to FHiddenItems.Count - 1 do
+  begin
+    if (TTrayItem(FHiddenItems.Items[n]).Wnd = pWnd) and (TTrayItem(FHiddenItems.Items[n]).UID = UID) then
+    begin
+      result := n;
+      exit;
+    end
+  end;
+
+  result := -1;
+end;
+
 function TTrayClient.GetTrayIconIndex(pWnd: THandle; UID: Cardinal): integer;
 var
   n: integer;
@@ -1030,14 +1047,6 @@ begin
     if (TTrayItem(FItems.Items[n]).Wnd = pWnd) and (TTrayItem(FItems.Items[n]).UID = UID) then
     begin
       result := n;
-      exit;
-    end
-  end;
-  for n := 0 to FHiddenItems.Count - 1 do
-  begin
-    if (TTrayItem(FHiddenItems.Items[n]).Wnd = pWnd) and (TTrayItem(FHiddenItems.Items[n]).UID = UID) then
-    begin
-      result := FItems.Count + n;
       exit;
     end
   end;
@@ -1058,7 +1067,7 @@ var
   edge: TSharpNotifyEdge;
 begin
   FlastMessage := DateTimeToUnix(now);
-  if GetTrayIconIndex(NIDv6.wnd, NIDv6.UID) = -1 then
+  if (GetTrayIconIndex(NIDv6.wnd, NIDv6.UID) = -1) and (GetHiddenTrayIconIndex(NIDv6.wnd, NIDv6.UID) = -1) then
   begin
     AddTrayIcon(NIDv6)
   end
@@ -1187,35 +1196,36 @@ var
   n: integer;
 begin
   n := GetTrayIconIndex(NIDv6.Wnd, NIDv6.UID);
-  if (n <> -1) and (n < FItems.Count) then
+  if (n = -1) then
   begin
-    DeleteTrayIconByIndex(n)
-  end;
+    n := GetHiddenTrayIconIndex(NIDv6.Wnd, NIDv6.UID);
+    if n <> -1 then
+      DeleteTrayIconByIndex(n, True);
+  end else
+    DeleteTrayIconByIndex(n);
 end;
 
-procedure TTrayClient.DeleteTrayIconByIndex(index: integer);
+procedure TTrayClient.DeleteTrayIconByIndex(index: integer; Hidden: Boolean);
 var
   i: integer;
   temp: TTrayItem;
+  startItem: TTrayStartItem;
 begin
   // To stop the tray from removing the Explorer icons when shutting down the Shell service we need
   // to check if the shell service is stopping
   if (SharpAPI.ServiceStopping('Shell') = MR_STOPPING) then
     exit;
 
-  if index > FItems.Count - 1 then
-  begin
-    exit
-  end;
-
   if Assigned(FOnPaintLock) then
     FOnPaintLock(True);
 
-  temp := TTrayItem(FItems.Items[index]);
-  if temp = FLastTipItem then
+  if not Hidden then
   begin
-    StopTipTimer
-  end;
+    temp := TTrayItem(FItems.Items[index]);
+    if temp = FLastTipItem then
+      StopTipTimer
+  end else
+    temp := TTrayItem(FHiddenItems.Items[index]);
 
   if (FTipWnd <> 0) then
   begin
@@ -1223,7 +1233,7 @@ begin
       FTipForm,
       temp.TipIndex);
 
-    if (index < FItems.Count - 1) then
+    if (not Hidden) and (index < FItems.Count - 1) then
     begin
       for i := index + 1 to FItems.Count - 1 do
       begin
@@ -1235,20 +1245,27 @@ begin
           FTopSpacing + (i - 1) * (FIconSize + FIconSpacing) + FIconSize,
           FIconSize + FTopOffset))
       end;
-
-      if (TTrayItem(FItems.Items[index]).Position < 0) then
-      begin
-        for i := 0 to index do
-          TTrayItem(FItems[i]).Position := TTrayItem(FItems[i]).Position + 1
-      end else if (TTrayItem(FItems.Items[index]).Position < 0) then
-      begin
-        for i := index + 1 to FItems.Count - 1 do
-          TTrayItem(FItems[i]).Position := TTrayItem(FItems[i]).Position - 1;
-      end;
     end;
   end;
-  
-  FItems.Extract(temp);
+
+  // Add the item to the startup list if it was hidden (to make it start hidden next time)
+  if Hidden then
+  begin
+    startItem := TTrayStartItem.Create;
+    startItem.HiddenByClient := True;
+    startItem.Name := temp.Name;
+    startItem.Position := -1;
+    FStartItems.Add(startItem);
+
+    if Assigned(FOnSaveSettings) then
+      FOnSaveSettings;
+  end;
+
+  if not Hidden then
+    FItems.Extract(temp)
+  else
+    FHiddenItems.Extract(temp);
+
   FreeAndNil(Temp);
   RenderIcons;
 

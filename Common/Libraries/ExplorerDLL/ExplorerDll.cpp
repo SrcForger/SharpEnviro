@@ -17,6 +17,11 @@ extern "C" DLLEXPORT void ShellReady()
 	explorerDll.ShellReady();
 }
 
+extern "C" DLLEXPORT void RegisterTray()
+{
+	SendNotifyMessage(HWND_BROADCAST, RegisterWindowMessage(L"TaskbarCreated"), 0, 0);
+}
+
 ExplorerDll::ExplorerDll()
 {
 	hShellDLL = hWinListDLL = NULL;

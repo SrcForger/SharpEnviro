@@ -46,3 +46,4 @@ class ExplorerDll
 extern "C" DLLEXPORT void StartDesktop();
 extern "C" DLLEXPORT void StopDesktop();
 extern "C" DLLEXPORT void ShellReady();
+extern "C" DLLEXPORT void RegisterTray();

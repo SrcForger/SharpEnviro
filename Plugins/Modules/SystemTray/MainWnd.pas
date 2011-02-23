@@ -28,7 +28,7 @@ unit MainWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Contnrs,
   Dialogs, StdCtrls, GR32_Image, SharpEBaseControls, SharpEButton,
   JclWideStrings, JclSimpleXML, SharpApi, Menus, GR32_Layers, Types, JclSysInfo,
   TrayIconsManager, Math, GR32, SharpECustomSkinSettings, SharpESkinLabel,
@@ -238,8 +238,9 @@ begin
     LockWindowUpdate(Handle)
   else
   begin
-    LockWindowUpdate(0);
     RepaintIcons(True);
+    RealignComponents;
+    LockWindowUpdate(0);
   end;
 end;
 
@@ -282,6 +283,15 @@ begin
           Add('Hidden', True);
         end;
       end;
+
+      // Also add any start items that were hidden (items that have been removed)
+      for n := 0 to FTrayClient.StartItems.Count - 1 do
+        if TTrayStartItem(FTrayClient.StartItems[n]).HiddenByClient then
+          with Add('Item').Items do
+          begin
+            Add('Name', TTrayStartItem(FTrayClient.StartItems[n]).Name);
+            Add('Hidden', True);
+          end;
     end;
   end;
   if not SaveXMLToSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
@@ -317,13 +327,14 @@ begin
 
   SharpEMenuIcons.Items.Clear;
 
-  mn.AddLabelItem('Hidden Icons',False);
+  //mn.AddLabelItem('Hidden Icons',False);
   for n := 0 to FTrayClient.HiddenItems.Count - 1 do
   begin
     TrayItem := TTrayItem(FTrayClient.HiddenItems.Items[n]);
     if IsWindow(TrayItem.wnd) then
     begin
-      s := TrayItem.FTip;
+      s := StringReplace(TrayItem.FTip, sLineBreak, ' ', [rfReplaceAll]);
+      s := StringReplace(s, #$A, ' ', [rfReplaceAll]);
       id := 'customicon: ' + TrayItem.Name;
 
       item := TSharpEMenuItem(mn.AddCustomItem(s, id, TrayItem.Bitmap));
@@ -331,8 +342,6 @@ begin
       item.OnClick := mnOnClick;
     end;
   end;
-
-
 
   mn.RenderBackground(0,0);
 
@@ -488,7 +497,7 @@ begin
           nCount := 0;
           for n := 0 to Items.Count - 1 do
             if not Items[n].Items.BoolValue('Hidden', False) then
-            nCount := nCount + 1;
+              nCount := nCount + 1;
 
           for n := 0 to Items.Count - 1 do
           begin

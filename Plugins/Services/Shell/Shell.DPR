@@ -146,7 +146,8 @@ begin
 
   ServiceDone('Shell');
   Result := owner;
-  SendNotifyMessage(HWND_BROADCAST, RegisterWindowMessage('TaskbarCreated'), 0, 0);
+
+  PostMessage(FindWindow('TSharpExplorerForm', nil), WM_SHARPREGISTERTRAY, 0, 0);
 end;
 
 procedure Stop;
