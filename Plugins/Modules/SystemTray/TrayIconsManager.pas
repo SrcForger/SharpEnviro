@@ -101,8 +101,11 @@ type
     FTip: ArrayWideChar128;
     FInfo: ArrayWideChar256;
     FInfoTitle: ArrayWideChar64;
+
     function AssignFromNIDv6(NIDv6: TNotifyIconDataV7): TTrayChangeEvents;
-    constructor Create(NIDv6: TNotifyIconDataV7; IconSize: Integer); reintroduce;
+
+    constructor Create(dup: TTrayItem); overload;
+    constructor Create(NIDv6: TNotifyIconDataV7; IconSize: Integer); overload;
     destructor Destroy; override;
 
     property Name: String read FName write FName;
@@ -391,6 +394,34 @@ begin
   PostMessage(FindWindow('Shell_TrayWnd', nil), WM_UNREGISTERWITHTRAY, handle, 0);
 end;
 
+constructor TTrayItem.Create(dup: TTrayItem);
+begin
+  FName := dup.FName;
+  FUID := dup.FUID;
+  FWnd := dup.FWnd;
+  FCallbackMessage := dup.FCallbackMessage;
+  FBitmap := TBitmap32.Create;
+  FBitmap.Assign(dup.FBitmap);
+  FIcon := dup.FIcon;
+  FIconSize := dup.FIconSize;
+  FFlags := dup.FFlags;
+  FBTimeOut := dup.FBTimeOut;
+  FBInfoFlags := dup.FBInfoFlags;
+  FOwner := dup.FOwner;
+  FTipIndex := dup.FTipIndex;
+  FIsHovering := dup.FIsHovering;
+  FVersion := dup.FVersion;
+  FModX := dup.FModX;
+  FPosition := dup.FPosition;
+  FGUIDItem := dup.FGUIDItem;
+  FGUIDString := dup.FGUIDString;
+  FTip := dup.FTip;
+  FInfo := dup.FInfo;
+  FInfoTitle := dup.FInfoTitle;
+
+  Inherited Create;
+end;
+
 constructor TTrayItem.Create(NIDv6: TNotifyIconDataV7; IconSize: Integer);
 begin
   FIconSize := IconSize;
@@ -500,8 +531,8 @@ begin
   FTopSpacing := 2;
   FLastMessage := DateTimeToUnix(now);
 
-  FItems := TObjectList.Create;
-  FHiddenItems := TObjectList.Create;
+  FItems := TObjectList.Create(True);
+  FHiddenItems := TObjectList.Create(True);
   FStartItems := TObjectList.Create(True);
   FStartHidden := False;
 
@@ -973,7 +1004,7 @@ begin
     if (pStartItem.HiddenByClient) or ((pStartItem.Position < 0) and (FStartHidden)) then
     begin
       item.Position := -1;
-      FHiddenItems.Add(item)
+      FHiddenItems.Add(item);
     end else
     begin
       item.Position := GetAvailablePosition(pStartItem.Position);
@@ -1256,9 +1287,6 @@ begin
     startItem.Name := temp.Name;
     startItem.Position := -1;
     FStartItems.Add(startItem);
-
-    if Assigned(FOnSaveSettings) then
-      FOnSaveSettings;
   end;
 
   if not Hidden then
@@ -1268,6 +1296,9 @@ begin
 
   FreeAndNil(Temp);
   RenderIcons;
+
+  if Assigned(FOnSaveSettings) then
+      FOnSaveSettings;
 
   if Assigned(FOnPaintLock) then
     FOnPaintLock(False);
@@ -1325,6 +1356,8 @@ var
   tempItem: TTrayItem;
   w, h: integer;
 begin
+
+  // Remove dead icons
   n := 0;
   while n < FItems.Count - 1 do
   begin
@@ -1338,38 +1371,51 @@ begin
     n := n + 1;
   end;
 
-    w := FItems.Count * (FIconSize + FIconSpacing) + 2 * FTopSpacing;
-    h := FIconSize + 2 * FTopSpacing;
-    FBitmap.SetSize(w, h);
-    FBitmap.Clear(color32(0, 0, 0, 0));
-    if FDrawBorder then
+  n := 0;
+  while n < FHiddenItems.Count - 1 do
+  begin
+    tempItem := TTrayItem(FHiddenItems[n]);
+    if (not iswindow(tempItem.Wnd)) then
     begin
-      FBitmap.FillRect(0, 0, FBitmap.Width, FBitmap.Height, FBorderColor);
-      FBitmap.FillRect(1, 1, FBitmap.Width - 1, FBitmap.Height - 1, Color32(0, 0, 0, 0));
-    end;
-    if FDrawBackground then
-    begin
-      FBitmap.FillRect(1, 1, FBitmap.Width - 1, FBitmap.Height - 1, FBackgroundColor)
+      DeleteTrayIconByIndex(n, True);
+      continue;
     end;
 
-    for n := 0 to FItems.Count - 1 do
-    begin
-      tempItem := TTrayItem(FItems.Items[n]);
-      if tempItem.ModX <> 0 then
-        continue;
+    n := n + 1;
+  end;
 
-      RenderIcon(tempItem, n);
-    end;
+  w := FItems.Count * (FIconSize + FIconSpacing) + 2 * FTopSpacing;
+  h := FIconSize + 2 * FTopSpacing;
+  FBitmap.SetSize(w, h);
+  FBitmap.Clear(color32(0, 0, 0, 0));
+  if FDrawBorder then
+  begin
+    FBitmap.FillRect(0, 0, FBitmap.Width, FBitmap.Height, FBorderColor);
+    FBitmap.FillRect(1, 1, FBitmap.Width - 1, FBitmap.Height - 1, Color32(0, 0, 0, 0));
+  end;
+  if FDrawBackground then
+  begin
+    FBitmap.FillRect(1, 1, FBitmap.Width - 1, FBitmap.Height - 1, FBackgroundColor)
+  end;
 
-    for n := 0 to FItems.Count - 1 do
-    begin
-      tempItem := TTrayItem(FItems.Items[n]);
-      if tempItem.ModX = 0 then
-        continue;
+  for n := 0 to FItems.Count - 1 do
+  begin
+    tempItem := TTrayItem(FItems.Items[n]);
+    if tempItem.ModX <> 0 then
+      continue;
 
-      RenderIcon(tempItem, n);
-    end;
-    NewRepaintHash;
+    RenderIcon(tempItem, n);
+  end;
+
+  for n := 0 to FItems.Count - 1 do
+  begin
+    tempItem := TTrayItem(FItems.Items[n]);
+    if tempItem.ModX = 0 then
+      continue;
+
+    RenderIcon(tempItem, n);
+  end;
+  NewRepaintHash;
 end;
 
 procedure TTrayClient.PositionTrayWindow(parent, trayParent: HWND);

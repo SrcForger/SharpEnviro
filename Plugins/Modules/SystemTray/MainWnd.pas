@@ -328,19 +328,25 @@ begin
   SharpEMenuIcons.Items.Clear;
 
   //mn.AddLabelItem('Hidden Icons',False);
-  for n := 0 to FTrayClient.HiddenItems.Count - 1 do
+  n := 0;
+  while n < FTrayClient.HiddenItems.Count do
   begin
     TrayItem := TTrayItem(FTrayClient.HiddenItems.Items[n]);
-    if IsWindow(TrayItem.wnd) then
+    if not IsWindow(TrayItem.wnd) then
     begin
-      s := StringReplace(TrayItem.FTip, sLineBreak, ' ', [rfReplaceAll]);
-      s := StringReplace(s, #$A, ' ', [rfReplaceAll]);
-      id := 'customicon: ' + TrayItem.Name;
-
-      item := TSharpEMenuItem(mn.AddCustomItem(s, id, TrayItem.Bitmap));
-      item.PropList.Add('index', n);
-      item.OnClick := mnOnClick;
+      FTrayClient.DeleteTrayIconByIndex(n, True);
+      continue;
     end;
+
+    s := StringReplace(TrayItem.FTip, sLineBreak, ' ', [rfReplaceAll]);
+    s := StringReplace(s, #$A, ' ', [rfReplaceAll]);
+    id := 'customicon: ' + TrayItem.Name;
+
+    item := TSharpEMenuItem(mn.AddCustomItem(s, id, TrayItem.Bitmap));
+    item.PropList.Add('index', n);
+    item.OnClick := mnOnClick;
+
+    n := n + 1;
   end;
 
   mn.RenderBackground(0,0);
