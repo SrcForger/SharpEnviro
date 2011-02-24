@@ -8,6 +8,7 @@ using System.Linq;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Timers;
 using System.Windows.Interop;
 using System.Windows.Forms;
 using Microsoft.Win32;
@@ -39,31 +40,32 @@ namespace SharpEnviro.Explorer
 
         // Imports from Explorer.dll
         [DllImport("Explorer.dll")]
-        public static extern void StartDesktop();
+        private static extern void StartDesktop();
 
         [DllImport("Explorer.dll")]
-        public static extern void StopDesktop();
+        private static extern void StopDesktop();
 
         [DllImport("Explorer.dll")]
-        public static extern void ShellReady();
+        private static extern void ShellReady();
 
         [DllImport("Explorer.dll")]
-        public static extern void RegisterTray();
+        private static extern void RegisterTray();
 
         // Global vars
-        volatile static bool bShellLoaded = false;
-        volatile static bool bShellReady = false;
+        private static bool bShellLoaded = false;
+        private static bool bShellReady = false;
+        private static uint uTaskbarMsg = 0;
 
 #if PEEK_ENABLED
-        volatile static IntPtr hDwmApi = IntPtr.Zero;
-        volatile static DwmAeroPeek pDwmAeroPeek = null;
+        private static IntPtr hDwmApi = IntPtr.Zero;
+        private static DwmAeroPeek pDwmAeroPeek = null;
 #endif
 
 #if SEARCH_ENABLED
-        volatile static SearchManager searchManager;
+        private static SearchManager searchManager;
 #endif
 
-        static void InvokeShellReady()
+        private static void InvokeShellReady()
         {
             if (bShellReady)
                 return;
@@ -72,8 +74,15 @@ namespace SharpEnviro.Explorer
             bShellReady = true;
         }
 
-        static IntPtr SharpWindowProc(IntPtr hWnd, uint uMsgm, IntPtr wParam, IntPtr lParam)
+        private static IntPtr SharpWindowProc(IntPtr hWnd, uint uMsgm, IntPtr wParam, IntPtr lParam)
         {
+            /*if (uMsgm == uTaskbarMsg)
+            {
+                ShellServices.Restart();
+
+                return IntPtr.Zero;
+            }*/
+
             switch (uMsgm)
             {
                 case PInvoke.WM_SHARPSHELLREADY:
@@ -187,6 +196,8 @@ namespace SharpEnviro.Explorer
             if (sharpMutex != IntPtr.Zero && Marshal.GetLastWin32Error() == PInvoke.ERROR_ALREADY_EXISTS)
 				return;
 
+            uTaskbarMsg = PInvoke.RegisterWindowMessage("TaskbarCreated");
+
             // check Operating system version
             OperatingSystem osInfo = Environment.OSVersion;
             if (osInfo.Platform == System.PlatformID.Win32NT)
@@ -233,6 +244,21 @@ namespace SharpEnviro.Explorer
                 searchManager = new SearchManager(true);
                 WPFRuntime.Instance.Start<SearchWindow>();
 #endif
+
+                // Check if the shell service is running
+                System.Timers.Timer shellTimer = new System.Timers.Timer();
+                shellTimer.Elapsed += new System.Timers.ElapsedEventHandler(( object source, ElapsedEventArgs e ) =>
+                {
+                    if(PInvoke.FindWindow("Shell_TrayWnd", null) == IntPtr.Zero)
+                    {
+                        // Tell the explorer window to quit
+                        PInvoke.SendMessage(explorerWindow.Handle, PInvoke.WM_SHARPTERMINATE, IntPtr.Zero, IntPtr.Zero);
+                        shellTimer.Enabled = false;
+                    }
+                });
+
+                shellTimer.Interval = 100;
+                shellTimer.Start();
 
                 Application.Run();
 

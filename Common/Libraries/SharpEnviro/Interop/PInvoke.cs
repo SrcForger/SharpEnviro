@@ -17,6 +17,9 @@ namespace SharpEnviro.Interop
 	/// </summary>
 	public static class PInvoke
     {
+        [DllImport("ole32.dll")]
+        public static extern void CoFreeUnusedLibraries();
+
         #region Events
 
         [DllImport("Kernel32.dll", SetLastError = true)]
@@ -54,6 +57,9 @@ namespace SharpEnviro.Interop
 
         [DllImport("user32.dll")]
         public static extern IntPtr DefWindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+        public static extern IntPtr GetModuleHandle(string lpModuleName);
 
         #endregion
 
@@ -237,6 +243,10 @@ namespace SharpEnviro.Interop
 
         [DllImport("user32.dll")]
         public static extern void PostQuitMessage(int nExitCode);
+
+        [return: MarshalAs(UnmanagedType.Bool)]
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool PostThreadMessage(uint threadId, uint msg, UIntPtr wParam, IntPtr lParam);
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool TranslateMessage(ref NativeMessage lpMsg);

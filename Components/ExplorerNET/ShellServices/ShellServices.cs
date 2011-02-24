@@ -5,13 +5,15 @@ using System.Text;
 using Microsoft.Win32;
 
 using SharpEnviro;
+using SharpEnviro.Interop;
+using System.Runtime.InteropServices;
 
 namespace Explorer.ShellServices
 {
 	public static class ShellServices
 	{
 		private static Guid CGID_ShellServiceObject = new Guid("000214D2-0000-0000-C000-000000000046");
-		private static List<IOleCommandTarget> _shellServiceObjects = new List<IOleCommandTarget>();
+        private static List<ShellServiceObjectDisposable> _shellServiceObjects = new List<ShellServiceObjectDisposable>();
 		private static bool _isRunning = false;
 
 		private const string SSORegKey = "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\ShellServiceObjects";
@@ -33,6 +35,12 @@ namespace Explorer.ShellServices
 				return;
 
 			UnloadShellServiceObjects();
+
+            // A bug in explorer makes SystemTray_Main not unregister itself, so we have to do that here [Not working, generates crash]
+            /*IntPtr inst = PInvoke.GetModuleHandle("stobject.dll");
+            bool ret = PInvoke.UnregisterClass("SystemTray_Main", inst);
+
+            PInvoke.CoFreeUnusedLibraries();*/
 
 			_isRunning = false;
 		}
@@ -57,8 +65,9 @@ namespace Explorer.ShellServices
 			if (Environment.OSVersion.Version.Major < 6)
 				return;
 
-			ShellServiceObject sso = new ShellServiceObject();
-			StartSSO((IOleCommandTarget)sso);
+            ShellServiceObjectDisposable sso = new ShellServiceObjectDisposable();
+            sso.Object = new ShellServiceObject();
+			StartSSO(sso);
 		}
 
 		/// <summary>
@@ -96,7 +105,9 @@ namespace Explorer.ShellServices
 
 					try
 					{
-						StartSSO((IOleCommandTarget)Activator.CreateInstance(ssoType));
+                        ShellServiceObjectDisposable sso = new ShellServiceObjectDisposable();
+                        sso.Object = (ShellServiceObject)Activator.CreateInstance(ssoType);
+						StartSSO(sso, true);
 					}
 					catch
 					{
@@ -106,21 +117,22 @@ namespace Explorer.ShellServices
 			}
 		}
 
-		private static void StartSSO(IOleCommandTarget cmdTarget)
+		private static void StartSSO(ShellServiceObjectDisposable sso, bool fromReg = false)
 		{
-			object o = new object();
-			cmdTarget.Exec(ref CGID_ShellServiceObject, (int)OleCommandID.New, (int)OleCommandExecOption.DoDefault, ref o, ref o);
-			_shellServiceObjects.Add(cmdTarget);
+            IOleCommandTarget cmdTarget = (IOleCommandTarget)sso.Object;
+            cmdTarget.Exec(ref CGID_ShellServiceObject, (int)OleCommandID.New, (fromReg) ? ((int)OleCommandExecOption.DontPromptUser) : ((int)OleCommandExecOption.DoDefault), null, null);
+			_shellServiceObjects.Add(sso);
 		}
 
 		private static void UnloadShellServiceObjects()
 		{
-			foreach (IOleCommandTarget cmdTarget in _shellServiceObjects)
+            foreach (ShellServiceObjectDisposable sso in _shellServiceObjects)
 			{
 				try
 				{
-					object o = new object();
-					cmdTarget.Exec(ref CGID_ShellServiceObject, (int)OleCommandID.Save, (int)OleCommandExecOption.DoDefault, ref o, ref o);
+                    IOleCommandTarget cmdTarget = (IOleCommandTarget)sso.Object;
+                    cmdTarget.Exec(ref CGID_ShellServiceObject, (int)OleCommandID.Save, (int)OleCommandExecOption.ShowHelp, null, null);
+                    sso.Dispose();
 				}
 				catch(Exception e)
 				{

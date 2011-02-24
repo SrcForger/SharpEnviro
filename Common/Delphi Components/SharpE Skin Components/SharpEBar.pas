@@ -509,8 +509,7 @@ begin
   if (FAlwaysOnTop) then
   begin
     // Need to set no-topmost first or topmost won't always work
-    SetWindowPos(aform.handle, HWND_NOTOPMOST, 0, 0, 0, 0,
-                   SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW or SWP_NOACTIVATE);
+    BringWindowToTop(aform.handle);
     SetWindowPos(aform.handle, HWND_TOPMOST, 0, 0, 0, 0,
                  SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
     abackground.SetZOrder;
@@ -518,6 +517,7 @@ begin
   begin
     if (GetWindowLong(aform.handle, GWL_EXSTYLE) and WS_EX_TOOLWINDOW) = WS_EX_TOOLWINDOW then
     begin
+      BringWindowToTop(aform.handle);
       SetWindowPos(aform.handle, HWND_NOTOPMOST, 0, 0, 0, 0,
                    SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW or SWP_NOACTIVATE);
       abackground.SetZOrder;
