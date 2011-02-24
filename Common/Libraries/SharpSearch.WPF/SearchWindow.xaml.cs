@@ -37,10 +37,16 @@ namespace SharpSearch.WPF
 			if (Debugger.IsAttached)
 				ShowInTaskbar = true;
 
-			_keyPressedTimer = new Timer(new TimerCallback(ProcessKeyPress), null, Timeout.Infinite, Timeout.Infinite);
+            _searchManager = new SearchManager();
+            _searchManager.IndexFinished = IndexFinished;
+            ResultsListBox.DataContext = _searchManager.SearchResults;
 
-			_searchManager = new SearchManager();
-			ResultsListBox.DataContext = _searchManager.SearchResults;
+            // Start indexing
+            _searchManager.StartIndexing(true);
+            if (_searchManager.IsIndexing)
+                IndexingText.Visibility = System.Windows.Visibility.Visible;
+
+			_keyPressedTimer = new Timer(new TimerCallback(ProcessKeyPress), null, Timeout.Infinite, Timeout.Infinite);
 
 			//// If both X and Y were set on the command line then override displaying the window
 			//// in the center of the monitor (default).
@@ -81,12 +87,15 @@ namespace SharpSearch.WPF
 			// is bound to the ListBox.
 			Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)delegate
 			{
-				if (String.IsNullOrEmpty(QueryTextBox.Text))
-					_searchManager.MostLaunched(20);
-				else
-					// For now we just query the database when the text changes every time.
-					// If this becomes a problem then we'll look at running this an a background thread.
-					_searchManager.Search(QueryTextBox.Text);
+                if (_searchManager.IsIndexing)
+                    return;
+
+                if (String.IsNullOrEmpty(QueryTextBox.Text))
+                    _searchManager.MostLaunched(20);
+                else
+                    // For now we just query the database when the text changes every time.
+                    // If this becomes a problem then we'll look at running this an a background thread.
+                    _searchManager.Search(QueryTextBox.Text);
 
 				if (ResultsListBox.Items.Count > 0)
 					ResultsListBox.SelectedIndex = 0;
@@ -274,7 +283,7 @@ namespace SharpSearch.WPF
 			StartProcessAndExit();
 		}
 
-		private SearchManager _searchManager;
+		private static SearchManager _searchManager;
 		private Timer _keyPressedTimer;
 		private bool _closing = false;
 
@@ -324,5 +333,23 @@ namespace SharpSearch.WPF
 			Canvas.SetLeft(this, Canvas.GetLeft(this) + e.HorizontalChange);
 			Canvas.SetTop(this, Canvas.GetTop(this) + e.VerticalChange);
 		}
-	}
+
+        public void IndexFinished()
+        {
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)delegate
+			{
+                IndexingText.Visibility = System.Windows.Visibility.Hidden;
+
+               if (String.IsNullOrEmpty(QueryTextBox.Text))
+                    _searchManager.MostLaunched(20);
+               else
+                   // For now we just query the database when the text changes every time.
+                   // If this becomes a problem then we'll look at running this an a background thread.
+                   _searchManager.Search(QueryTextBox.Text);
+
+               if (ResultsListBox.Items.Count > 0)
+                   ResultsListBox.SelectedIndex = 0;
+			});
+        }
+    }
 }

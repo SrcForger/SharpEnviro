@@ -14,10 +14,6 @@ namespace Explorer
 	{
 		private WPFRuntime()
 		{
-			// Create a STA thread because WPF requires it.
-			_thread = new Thread(Run);
-			_thread.SetApartmentState(ApartmentState.STA);
-
 			SharpDebug.Info("SharpSearch.WPF", "WPFRuntime created.");
 		}
 
@@ -42,11 +38,14 @@ namespace Explorer
 			}
 		}
 
-		private void Run()
+        private void Run<T>() where T : Window
 		{
 			SharpDebug.Info("SharpSearch.WPF", "WPFRuntime.Run enter.");
 			// Create the WPF application
 			_application = new Application();
+
+            _windowInstance = Activator.CreateInstance<T>();
+
 			// Create a new empty window
 			_window = new Window();
 			// Start the WPF message loop
@@ -54,9 +53,12 @@ namespace Explorer
 			SharpDebug.Info("SharpSearch.WPF", "WPFRuntime.Run exit.");
 		}
 
-		public void Start()
+        public void Start<T>() where T : Window
 		{
 			// Start the WPFRuntime thread
+            // Create a STA thread because WPF requires it.
+            _thread = new Thread(Run<T>);
+            _thread.SetApartmentState(ApartmentState.STA);
 			_thread.Start();
 			SharpDebug.Info("SharpSearch.WPF", "WPFRuntime thread started.");
 		}
@@ -76,20 +78,19 @@ namespace Explorer
 			SharpDebug.Info("SharpSearch.WPF", "WPFRuntime window closed.");
 		}
 
-		public void Show<T>() where T : Window
+		public void Show()
 		{
 			// Ask the WPF thread to create a new window of the provided type
-			_application.Dispatcher.Invoke(DispatcherPriority.Normal, new ShowDelegate(InternalShow<T>));
+			_application.Dispatcher.Invoke(DispatcherPriority.Normal, new ShowDelegate(InternalShow));
 		}
 
 		private delegate void ShowDelegate();
 
-		private void InternalShow<T>() where T : Window
+		private void InternalShow()
 		{
 			if (_windowInstance == null)
 			{
 				// Create a new instance of the window
-				_windowInstance = Activator.CreateInstance<T>();
 				SharpDebug.Info("SharpSearch.WPF", "WPFRuntime window created.");
 			}
 

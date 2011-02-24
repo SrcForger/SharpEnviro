@@ -130,7 +130,7 @@ namespace SharpEnviro.Explorer
                 case PInvoke.WM_SHARPSEARCH:
                 {
                     SharpDebug.Info("Explorer", "SharpSearch message received.");
-                    WPFRuntime.Instance.Show<SearchWindow>();
+                    WPFRuntime.Instance.Show();
                     SharpDebug.Info("Explorer", "SharpSearch message processed.");
 
                     return (IntPtr)0;
@@ -155,22 +155,6 @@ namespace SharpEnviro.Explorer
             }
 
             return PInvoke.DefWindowProc(hWnd, uMsgm, wParam, lParam);
-        }
-
-        static void WindowThread()
-        {
-            ClassParams classParams = new ClassParams();
-            classParams.Name = "TSharpExplorerForm";
-            classParams.WindowProc = SharpWindowProc;
-            CreateParamsEx createParams = new CreateParamsEx();
-            createParams.Caption = "SharpExplorerForm";
-            createParams.ClassName = classParams.Name;
-            createParams.ExStyle = (int)WindowStylesExtended.WS_EX_TOOLWINDOW;
-
-            NativeWindowEx explorerWindow = new NativeWindowEx(classParams, createParams);
-
-            // Start message pump
-            System.Windows.Threading.Dispatcher.Run();
         }
 
         [STAThread]
@@ -217,12 +201,15 @@ namespace SharpEnviro.Explorer
                 }
 #endif
                 // Create main window thread
-                System.Threading.Thread wndThread = new System.Threading.Thread(new System.Threading.ThreadStart(WindowThread));
-                wndThread.Start();
+                ClassParams classParams = new ClassParams();
+                classParams.Name = "TSharpExplorerForm";
+                classParams.WindowProc = SharpWindowProc;
+                CreateParamsEx createParams = new CreateParamsEx();
+                createParams.Caption = "SharpExplorerForm";
+                createParams.ClassName = classParams.Name;
+                createParams.ExStyle = (int)WindowStylesExtended.WS_EX_TOOLWINDOW;
 
-                // Wait for the native window to be created
-                while (wndThread.IsAlive && PInvoke.FindWindow("TSharpExplorerForm", (string)null) == IntPtr.Zero)
-                    System.Threading.Thread.Sleep(16);
+                NativeWindowEx explorerWindow = new NativeWindowEx(classParams, createParams);
 
                 // Run the StartDesktop function
                 StartDesktop();
@@ -241,19 +228,13 @@ namespace SharpEnviro.Explorer
 
                 // Start shell services (tray icons etc)
                 ShellServices.Start();
-                WPFRuntime.Instance.Start();
 
-				// Check if the database file exists before creating the SearchManager as it automatically creates the file.
 #if SEARCH_ENABLED
-                bool needsIndexing = !File.Exists(Path.Combine(SharpSearchDatabase.DefaultDatabaseDirectory, SharpSearchDatabase.DefaultDatabaseFilename));
                 searchManager = new SearchManager(true);
-
-                if (needsIndexing)
-                    searchManager.StartIndexing();
+                WPFRuntime.Instance.Start<SearchWindow>();
 #endif
 
-                while (wndThread.IsAlive)
-                    System.Threading.Thread.Sleep(1000);
+                Application.Run();
 
                 StopDesktop();
 

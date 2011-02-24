@@ -8,6 +8,8 @@ using System.IO;
 using System.Xml.Serialization;
 using System.ComponentModel;
 using System.Reflection;
+using System.Threading;
+using System.Windows.Threading;
 
 using SharpEnviro;
 
@@ -104,11 +106,20 @@ namespace SharpSearch
 		/// <summary>
 		/// Start indexing the search locations.
 		/// </summary>
-		public void StartIndexing()
+		public void StartIndexing(bool CheckNeeded = false)
 		{
+            if (CheckNeeded)
+            {
+                if (File.Exists(Path.Combine(SharpSearchDatabase.DefaultDatabaseDirectory, SharpSearchDatabase.DefaultDatabaseFilename)) && _database.IsValid())
+                    return;
+            }
+
 			_indexWorker.DoWork += (sender, args) =>
 			{
 				_database.IndexDirectories(_searchLocations.ToArray());
+
+                if (IndexFinished != null)
+                    IndexFinished();
 			};
 
 			_indexWorker.RunWorkerAsync();
@@ -217,6 +228,9 @@ namespace SharpSearch
 			}
 		}
 
+        public delegate void IndexFinishedDelegate();
+
+        public IndexFinishedDelegate IndexFinished = null;
 		private List<SearchLocation> _searchLocations;
 		private ObservableCollection<ISearchData> _searchResults;
 		private SharpSearchDatabase _database;

@@ -110,6 +110,9 @@
 
 			</Border>
 
-		</Grid>
+            <Grid>
+                <TextBlock Height="34" HorizontalAlignment="Left" Margin="7,146,0,156" Name="IndexingText" Text="SharpSearch is Indexing&#13;Please Wait..." VerticalAlignment="Center" Width="265" Visibility="Hidden" TextAlignment="Center" Foreground="White" TextWrapping="Wrap" />
+            </Grid>
+        </Grid>
 	</Border>
 </Window>

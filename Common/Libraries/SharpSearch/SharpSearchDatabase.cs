@@ -84,6 +84,22 @@ namespace SharpSearch
 			get { return _fullPath; }
 		}
 
+        /// <summary>
+        /// Checks if the current search database is valid
+        /// </summary>
+        /// <returns>Database validity.</returns>
+        public bool IsValid()
+        {
+            string query = String.Format("SELECT ROWID, * FROM [{0}] ORDER BY LaunchCount DESC;", _tableName);
+            using (SQLiteDataReader reader = _database.ExecuteReader(query))
+            {
+                if (reader.Read())
+                    return true;
+            }
+
+            return false;
+        }
+
 		/// <summary>
 		/// Search the database for entries matching the specified pattern.
 		/// </summary>
