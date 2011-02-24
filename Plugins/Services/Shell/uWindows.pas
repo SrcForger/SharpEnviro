@@ -884,7 +884,7 @@ begin
     case Msg of
       WM_CHECKFULLSCREEN:
       begin
-        FullscreenChecker.ResetMonitor(lParam);
+        FullscreenChecker.CheckMonitor(lParam);
       end;
       WM_REGISTERSHELLHOOK: TaskMsgManager.AddWnd(Cardinal(WParam));
       WM_UNREGISTERSHELLHOOK: TaskMsgManager.DeleteWndByHandle(Cardinal(WParam));

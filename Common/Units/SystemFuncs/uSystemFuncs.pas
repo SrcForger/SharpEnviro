@@ -24,7 +24,7 @@ function ForceForegroundWindow(hwnd: THandle): Boolean;
 function GetMouseDown(vKey: Integer): Boolean;
 function IsHungAppWindow(wnd : hwnd) : Boolean;
 function IsWindowFullScreen(wnd : hwnd; targetmonitor : TMonitorItem = nil; wndToCheck: HWND = 0) : Boolean;
-function HasFullScreenWindow(targetmonitor : TMonitorItem) : HWND;
+function HasFullScreenWindow(targetmonitor : TMonitorItem; checkProcess: Boolean = True) : HWND;
 function GetWndClass(pHandle: hwnd): string;
 function GetWndText(pHandle: hwnd): string;
 function IsWindowNotMinimized(wnd: hwnd): Boolean;
@@ -117,7 +117,7 @@ end;
 // method will be checking all non child windows of the thread that owns the
 // given window handle.
 // if target monitor is set then the wnd must exist on that monitor
-function HasFullScreenWindow(targetmonitor : TMonitorItem) : HWND;
+function HasFullScreenWindow(targetmonitor : TMonitorItem; checkProcess: Boolean) : HWND;
 type
   THwndArray = array of hwnd;
   PParam = ^TParam;
@@ -128,6 +128,7 @@ var
   EnumParam : TParam;
   n : integer;
   wnditem : hwnd;
+  checkWnd: hwnd;
 
   function EnumWindowsProc(wnd: hwnd; param: lParam): boolean; export; stdcall;
   var
@@ -159,7 +160,11 @@ begin
     wnditem := EnumParam.wndlist[n];
     if (IsWindowVisible(wnditem)) then // we will ignore invisible fullscreen windows
     begin
-      if IsWindowFullScreen(wnditem, targetmonitor) then
+      checkWnd := 0;
+      if not checkProcess then
+        checkWnd := wndItem;
+
+      if IsWindowFullScreen(wnditem, targetmonitor, checkWnd) then
       begin
         result := wnditem;
         exit;
