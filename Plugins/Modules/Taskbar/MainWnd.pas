@@ -1574,6 +1574,19 @@ begin
       if TSharpETaskItem(IList.Items[n]) = FMoveItem then
         FMoveItem := nil;
       ToolTipApi.DeleteToolTip(FTipWnd,Self,TSharpETaskItem(IList.Items[n]).Handle);
+
+      if FPreviewWnd <> nil then
+      begin
+        if (FPreviewWnd.TaskWnd = pItem.Handle) then
+        begin
+          FPreviewWnd.HideWindow(True);
+          FPreviewWnd.Free;
+          FPreviewWnd := nil;
+          FPreviewWndHandle := 0;
+          PreviewCheckTimer.Enabled := False;
+        end;
+      end;
+
       IList.Delete(n);
     end;
   CalculateItemWidth(IList.Count);
