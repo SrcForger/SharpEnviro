@@ -1119,11 +1119,39 @@ end;
 
 procedure TMainForm.OnFlaskTask(pItem: TTaskItem; Index: integer);
 var
-  n : integer;
+  n,i : integer;
+  isItem : boolean;
+  TaskItem : TTaskItem;
 begin
   for n := 0 to High(FButtonList) do
     if FButtonList[n].wnd = pItem.Handle then
       FButtonList[n].btn.Flashing := True;
+
+  for n := 0 to High(FButtonList) do
+  begin
+    IsItem := False;
+
+    if FButtonList[n].btn.Tag > 1 then
+    begin
+      // go through associated window list
+      for i := 0 to FTM.ItemCount - 1 do
+      begin
+        TaskItem := TTaskItem(FTM.GetItemByIndex(i));
+        if TaskItem <> nil then
+          if (CompareText(TaskItem.FileName,FButtonList[n].exename) = 0)
+            and (pItem.Handle = TaskItem.Handle) then
+          begin
+            isItem := True;
+            break;
+          end;
+      end;
+    end else isItem := (FButtonList[n].wnd = pItem.Handle);
+
+    if IsItem then    
+    begin
+      FButtonList[n].btn.Flashing := True;
+    end;
+  end;      
 end;
 
 procedure TMainForm.OnNewTask(pItem: TTaskItem; Index: integer);
