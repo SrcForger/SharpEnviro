@@ -411,7 +411,7 @@ begin
   frmList.lbItems.ControlState := frmList.lbItems.ControlState - [csLButtonDown];
 
   tmp := TPageData(cbMenuItems.Items.Objects[cbMenuItems.ItemIndex]);
-  frmEdit.Height := 190;// tmp.Height;
+  frmEdit.Height := round(200 * Screen.PixelsPerInch / 96);// tmp.Height;
   FPluginHost.Refresh(rtSize);
   
   lblDescription.Caption := tmp.Description;
