@@ -1,2224 +1,364 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <sharpESkin>
-  <sharpbar>
-    <dimension>w,28</dimension>
-    <fsmod>0,0</fsmod>
-    <sbmod>0,0</sbmod>
-    <paxoffsets>15,8</paxoffsets>
-    <payoffsets>3,3</payoffsets>
-    <enablevflip>0</enablevflip>
-    <specialhideform>1</specialhideform>
-    <bar>
-      <dimension>w,h</dimension>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>3,28</dimension>
-        <image>images/BarLeft.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-3,0</location>
-        <dimension>3,28</dimension>
-        <image>images/BarRight.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>3,0</location>
-        <dimension>w-6,28</dimension>
-        <image>images/BarMiddle.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,1</location>
-        <dimension>w-2,26</dimension>
-        <image>images/Empty.png</image>
-        <color>$Background</color>
-        <alpha>$Alpha-32</alpha>
-      </skinpart>
+  <sharpbar specialhideform="1" enablevflip="0" payoffsets="3,3" paxoffsets="15,8" sbmod="0,0" fsmod="0,0" dimension="w,28">
+    <bar dimension="w,h">
+      <skinpart alpha="$Alpha" color="$Border" image="images/BarLeft.png" dimension="3,28" location="0,0"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/BarRight.png" dimension="3,28" location="w-3,0"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/BarMiddle.png" dimension="w-6,28" location="3,0"/>
+      <skinpart alpha="$Alpha-32" color="$Background" image="images/Empty.png" dimension="w-2,26" location="1,1"/>
     </bar>
-    <throbber>
-      <location>3,4</location>
-      <dimension>6,20</dimension>
+    <throbber dimension="6,20" location="3,4">
       <normal>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>6,20</dimension>
-          <image>images/BarThrobber.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>1,1</location>
-          <dimension>4,18</dimension>
-          <image>images/Empty.png</image>
-          <color>$Background</color>
-          <alpha>$Alpha-64</alpha>
-        </skinpart>
+        <skinpart alpha="$Alpha" color="$Border" image="images/BarThrobber.png" dimension="6,20" location="0,0"/>
+        <skinpart alpha="$Alpha-64" color="$Background" image="images/Empty.png" dimension="4,18" location="1,1"/>
       </normal>
       <hover>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>6,20</dimension>
-          <image>images/BarThrobber.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+32</alpha>
-        </skinpart>
-        <skinpart>
-          <location>1,1</location>
-          <dimension>4,18</dimension>
-          <image>images/Empty.png</image>
-          <color>$Background</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
+        <skinpart alpha="$Alpha+32" color="$Border" image="images/BarThrobber.png" dimension="6,20" location="0,0"/>
+        <skinpart alpha="$Alpha" color="$Background" image="images/Empty.png" dimension="4,18" location="1,1"/>
       </hover>
       <down>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>6,20</dimension>
-          <image>images/BarThrobber.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha-32</alpha>
-        </skinpart>
-        <skinpart>
-          <location>1,1</location>
-          <dimension>4,18</dimension>
-          <image>images/Empty.png</image>
-          <color>$Background</color>
-          <alpha>$Alpha-136</alpha>
-        </skinpart>
+        <skinpart alpha="$Alpha-32" color="$Border" image="images/BarThrobber.png" dimension="6,20" location="0,0"/>
+        <skinpart alpha="$Alpha-136" color="$Background" image="images/Empty.png" dimension="4,18" location="1,1"/>
       </down>
     </throbber>
-    <custombg>
-      <dimension>4,4</dimension>
-      <location>-2,-2</location>
-      <skinpart>
-        <ID>0</ID>
-        <location>1,1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>1</ID>
-        <location>w-1,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>2</ID>
-        <location>1,h-1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>3</ID>
-        <location>0,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>gradient</ID>
-        <location>1,2</location>
-        <dimension>w-3,h-4</dimension>
-        <image>images/bgempty.png</image>
-        <gradienttype>vertical</gradienttype>
-        <gradientcolor>$Background,$Background</gradientcolor>
-        <gradientalpha>0,60</gradientalpha>
-	<alpha>$Alpha-166</alpha>
-      </skinpart>
+    <custombg location="-2,-2" dimension="4,4">
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,1" ID="0"/>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="1,h-3" location="w-1,2" ID="1"/>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="1,h-3" location="0,2" ID="3"/>
+      <skinpart alpha="$Alpha-166" gradientalpha="0,60" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-4" location="1,2" ID="gradient"/>
     </custombg>
   </sharpbar>
-  <taskswitch>
-    <text>
-      <size>10</size>
-      <name>Tahoma</name>
-      <location>cw,h-22</location>
-      <color>$Text</color>
-      <shadow>1</shadow>
-      <shadowcolor>$TextShadow</shadowcolor>      
-      <shadowtype>Outline</shadowtype>
-      <shadowalpha>196</shadowalpha>      
-    </text>
-    <dimension>w,h</dimension>
-    <spacing>4</spacing>
-    <wrapcount>8</wrapcount>
-    <tboffset>5,26</tboffset>
-    <lroffset>5,5</lroffset>
-    <previewdim>48,48</previewdim>
-    <previewloc>5,5</previewloc>
-    <hoverpreviewdim>48,48</hoverpreviewdim>
-    <hoverpreviewloc>5,5</hoverpreviewloc>
+  <menu lroffset="5,5" tboffset="5,5" widthlimit="128,350" location="-1,-1" dimension="w,h">
     <background>
-      <skinpart>
-        <location>2,2</location>
-        <dimension>w-3,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Background</color>
-        <alpha>$Alpha-16</alpha>
-      </skinpart>
-      <skinpart>
-        <location>2,1</location>
-        <dimension>w-3,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+32</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-1,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+32</alpha>
-      </skinpart>
-      <skinpart>
-        <location>2,h-1</location>
-        <dimension>w-3,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+32</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+32</alpha>
-      </skinpart>
-    </background>
-    <item>
-      <dimension>58,58</dimension>
-      <skinpart>
-        <location>2,2</location>
-        <dimension>w-3,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Background</color>
-        <alpha>$Alpha-16</alpha>
-      </skinpart>
-      <skinpart>
-        <location>2,1</location>
-        <dimension>w-3,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+32</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-1,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+32</alpha>
-      </skinpart>
-      <skinpart>
-        <location>2,h-1</location>
-        <dimension>w-3,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+32</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+32</alpha>
-      </skinpart>
-    </item> 
-    <itemhover>
-      <dimension>58,58</dimension>
-      <skinpart>
-        <location>2,2</location>
-        <dimension>w-3,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-64</alpha>
-      </skinpart>
-      <skinpart>
-        <location>2,1</location>
-        <dimension>w-3,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+34</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-1,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+34</alpha>
-      </skinpart>
-      <skinpart>
-        <location>2,h-1</location>
-        <dimension>w-3,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+34</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+34</alpha>
-      </skinpart>
-    </itemhover>
-  </taskswitch>
-  <menu>
-    <dimension>w,h</dimension>
-    <location>-1,-1</location>
-    <widthlimit>128,350</widthlimit>
-    <tboffset>5,5</tboffset>
-    <lroffset>5,5</lroffset>
-    <background>
-      <skinpart>
-        <location>1,1</location>
-        <dimension>w-2,h-2</dimension>
-        <image>images/Empty.png</image>
-        <color>$Background</color>
-        <alpha>$Alpha-34</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>w-1,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+34</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-1,0</location>
-        <dimension>1,h-1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+34</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,h-1</location>
-        <dimension>w-1,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+34</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>1,h-1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+34</alpha>
-      </skinpart>
+      <skinpart alpha="$Alpha-34" color="$Background" image="images/Empty.png" dimension="w-2,h-2" location="1,1"/>
+      <skinpart alpha="$Alpha+34" color="$Border" image="images/Empty.png" dimension="w-1,1" location="0,0"/>
+      <skinpart alpha="$Alpha+34" color="$Border" image="images/Empty.png" dimension="1,h-1" location="w-1,0"/>
+      <skinpart alpha="$Alpha+34" color="$Border" image="images/Empty.png" dimension="w-1,1" location="0,h-1"/>
+      <skinpart alpha="$Alpha+34" color="$Border" image="images/Empty.png" dimension="1,h-1" location="0,0"/>
     </background>
   </menu>
-  <menuitem>    
-    <icon>
-      <draw>1</draw>
-      <dimension>16,16</dimension>
-      <location>4,3</location>
-    </icon>
-    <text>
-      <draw>1</draw>
-      <dimension>w-40,h</dimension>
-      <location>25,4</location>
-      <name>Verdana</name>
-      <size>8</size>
-      <color>$Text</color>
-      <shadow>1</shadow>
-      <shadowcolor>$TextShadow</shadowcolor>
-      <shadowtype>Right</shadowtype>
-      <shadowalpha>196</shadowalpha>
-    </text>
-    <normal>
-      <dimension>w,22</dimension>
-      <widthmod>48</widthmod>
-      <skinpart>
-        <ID>0</ID>
-        <location>1,1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>1</ID>
-        <location>w-1,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>2</ID>
-        <location>1,h-1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>3</ID>
-        <location>0,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>gradient</ID>
-        <location>1,2</location>
-        <dimension>w-3,h-4</dimension>
-        <image>images/bgempty.png</image>
-        <gradienttype>vertical</gradienttype>
-        <gradientcolor>$Background,$Background</gradientcolor>
-        <gradientalpha>0,60</gradientalpha>
-	<alpha>$Alpha-166</alpha>
-      </skinpart>
+  <menuitem>
+    <icon location="4,3" dimension="16,16" draw="1"/>
+    <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" size="8" name="Verdana" location="25,4" dimension="w-40,h" draw="1"/>
+    <normal widthmod="48" dimension="w,22">
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,1" ID="0"/>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="1,h-3" location="w-1,2" ID="1"/>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="1,h-3" location="0,2" ID="3"/>
+      <skinpart alpha="$Alpha-166" gradientalpha="0,60" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-4" location="1,2" ID="gradient"/>
     </normal>
-    <hover>
-      <dimension>w,22</dimension>
-      <widthmod>48</widthmod>
-      <skinpart>
-        <ID>0</ID>
-        <location>1,1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>1</ID>
-        <location>w-1,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>2</ID>
-        <location>1,h-1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>3</ID>
-        <location>0,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>gradient</ID>
-        <location>1,2</location>
-        <dimension>w-3,h-4</dimension>
-        <image>images/bgempty.png</image>
-        <gradienttype>vertical</gradienttype>
-        <gradientcolor>$Background,$Background</gradientcolor>
-        <gradientalpha>100,24</gradientalpha>
-	<alpha>$Alpha-120</alpha>
-      </skinpart>
+    <hover widthmod="48" dimension="w,22">
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,1" ID="0"/>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="1,h-3" location="w-1,2" ID="1"/>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="1,h-3" location="0,2" ID="3"/>
+      <skinpart alpha="$Alpha-120" gradientalpha="100,24" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-4" location="1,2" ID="gradient"/>
     </hover>
-    <down>
-      <dimension>w,22</dimension>
-      <widthmod>48</widthmod>
-      <skinpart>
-        <ID>0</ID>
-        <location>1,1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+4</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>1</ID>
-        <location>w-1,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+4</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>2</ID>
-        <location>1,h-1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+4</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>3</ID>
-        <location>0,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+4</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>gradient</ID>
-        <location>1,2</location>
-        <dimension>w-3,h-4</dimension>
-        <image>images/bgempty.png</image>
-        <gradienttype>vertical</gradienttype>
-        <gradientcolor>$Background,$Background</gradientcolor>
-        <gradientalpha>48,192</gradientalpha>
-	<alpha>$Alpha-70</alpha>
-      </skinpart>
+    <down widthmod="48" dimension="w,22">
+      <skinpart alpha="$Alpha+4" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,1" ID="0"/>
+      <skinpart alpha="$Alpha+4" color="$Border" image="images/Empty.png" dimension="1,h-3" location="w-1,2" ID="1"/>
+      <skinpart alpha="$Alpha+4" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+      <skinpart alpha="$Alpha+4" color="$Border" image="images/Empty.png" dimension="1,h-3" location="0,2" ID="3"/>
+      <skinpart alpha="$Alpha-70" gradientalpha="48,192" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-4" location="1,2" ID="gradient"/>
     </down>
-    <normalsub>
-      <dimension>w,22</dimension>
-      <widthmod>48</widthmod>
-      <skinpart>
-        <ID>0</ID>
-        <location>1,1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>1</ID>
-        <location>w-1,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>2</ID>
-        <location>1,h-1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>3</ID>
-        <location>0,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>gradient</ID>
-        <location>1,2</location>
-        <dimension>w-3,h-4</dimension>
-        <image>images/bgempty.png</image>
-        <gradienttype>vertical</gradienttype>
-        <gradientcolor>$Background,$Background</gradientcolor>
-        <gradientalpha>0,84</gradientalpha>
-	<alpha>$Alpha-154</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>3</ID>
-        <location>w-5,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>3</ID>
-        <location>w-4,2</location>
-        <dimension>4,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
+    <normalsub widthmod="48" dimension="w,22">
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,1" ID="0"/>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="1,h-3" location="w-1,2" ID="1"/>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="1,h-3" location="0,2" ID="3"/>
+      <skinpart alpha="$Alpha-154" gradientalpha="0,84" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-4" location="1,2" ID="gradient"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="1,h-3" location="w-5,2" ID="3"/>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="4,h-3" location="w-4,2" ID="3"/>
     </normalsub>
-    <hoversub>
-      <dimension>w,22</dimension>
-      <widthmod>48</widthmod>
-      <skinpart>
-        <ID>0</ID>
-        <location>1,1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>1</ID>
-        <location>w-1,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>2</ID>
-        <location>1,h-1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>3</ID>
-        <location>0,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>gradient</ID>
-        <location>1,2</location>
-        <dimension>w-3,h-4</dimension>
-        <image>images/bgempty.png</image>
-        <gradienttype>vertical</gradienttype>
-        <gradientcolor>$Background,$Background</gradientcolor>
-        <gradientalpha>164,64</gradientalpha>
-	<alpha>$Alpha-96</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>3</ID>
-        <location>w-5,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>3</ID>
-        <location>w-4,2</location>
-        <dimension>4,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
+    <hoversub widthmod="48" dimension="w,22">
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,1" ID="0"/>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="1,h-3" location="w-1,2" ID="1"/>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="1,h-3" location="0,2" ID="3"/>
+      <skinpart alpha="$Alpha-96" gradientalpha="164,64" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-4" location="1,2" ID="gradient"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="1,h-3" location="w-5,2" ID="3"/>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="4,h-3" location="w-4,2" ID="3"/>
     </hoversub>
-    <separator>
-      <dimension>w,8</dimension>
-      <skinpart>
-        <ID>0</ID>
-        <location>1,1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>1</ID>
-        <location>w-1,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>2</ID>
-        <location>1,h-1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>3</ID>
-        <location>0,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>gradient</ID>
-        <location>1,1</location>
-        <dimension>w-3,h-3</dimension>
-        <image>images/bgempty.png</image>
-        <gradienttype>vertical</gradienttype>
-        <gradientcolor>$Background,$Background</gradientcolor>
-        <gradientalpha>0,96</gradientalpha>
-	<alpha>$Alpha-145</alpha>
-      </skinpart>
+    <separator dimension="w,8">
+      <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,1" ID="0"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="1,h-3" location="w-1,2" ID="1"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="1,h-3" location="0,2" ID="3"/>
+      <skinpart alpha="$Alpha-145" gradientalpha="0,96" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient"/>
     </separator>
-    <label>
-      <text>
-        <drawtext>1</drawtext>
-        <dimension>w-20,h</dimension>
-        <location>cw-1,3</location>
-        <size>7</size>
-	<shadowtype>Outline</shadowtype>
-      </text>
-      <dimension>w,18</dimension>
-      <widthmod>20</widthmod>
-      <skinpart>
-        <ID>0</ID>
-        <location>1,1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-96</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>1</ID>
-        <location>w-1,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-96</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>2</ID>
-        <location>1,h-1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-96</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>3</ID>
-        <location>0,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-96</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>gradient</ID>
-        <location>1,2</location>
-        <dimension>w-3,h-4</dimension>
-        <image>images/bgempty.png</image>
-        <gradienttype>vertical</gradienttype>
-        <gradientcolor>$Background,$Background</gradientcolor>
-        <gradientalpha>0,40</gradientalpha>
-	<alpha>$Alpha-170</alpha>
-      </skinpart>
+    <label widthmod="20" dimension="w,18">
+      <text shadowtype="Outline" size="7" location="cw-1,3" dimension="w-20,h" drawtext="1"/>
+      <skinpart alpha="$Alpha-96" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,1" ID="0"/>
+      <skinpart alpha="$Alpha-96" color="$Border" image="images/Empty.png" dimension="1,h-3" location="w-1,2" ID="1"/>
+      <skinpart alpha="$Alpha-96" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+      <skinpart alpha="$Alpha-96" color="$Border" image="images/Empty.png" dimension="1,h-3" location="0,2" ID="3"/>
+      <skinpart alpha="$Alpha-170" gradientalpha="0,40" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-4" location="1,2" ID="gradient"/>
     </label>
   </menuitem>
   <taskitem>
-    <full>
-      <text>
-        <draw>1</draw>
-        <dimension>w-24,h</dimension>
-        <location>cw+iwh+2,ch</location>
-        <name>Verdana</name>
-        <size>8</size>
-        <color>$Text</color>
-        <shadow>1</shadow>
-        <shadowcolor>$TextShadow</shadowcolor>
-        <shadowtype>Right</shadowtype>
-        <shadowalpha>196</shadowalpha>
-      </text>
-      <icon>
-        <draw>1</draw>
-        <size>16,16</size>
-        <location>cw-9,2</location>
-      </icon>
-      <spacing>2</spacing>
-      <location>0,1</location>
-      <dimension>128,20</dimension>
-      <OnNormalMouseEnter>Scripts\TaskItemNormalMouseEnter.skinscript</OnNormalMouseEnter>
-      <OnNormalMouseLeave>Scripts\TaskItemNormalMouseLeave.skinscript</OnNormalMouseLeave>
-      <OnDownMouseEnter>Scripts\TaskItemDownMouseEnter.skinscript</OnDownMouseEnter>
-      <OnDownMouseLeave>Scripts\TaskItemDownMouseLeave.skinscript</OnDownMouseLeave>
-      <OnHighlightStepStart>Scripts\TaskItemHighlightStart.skinscript</OnHighlightStepStart>
-      <OnHighlightStepEnd>Scripts\TaskItemHighlightEnd.skinscript</OnHighlightStepEnd>
+    <full OnHighlightStepEnd="Scripts\TaskItemHighlightEnd.skinscript" OnHighlightStepStart="Scripts\TaskItemHighlightStart.skinscript" OnDownMouseLeave="Scripts\TaskItemDownMouseLeave.skinscript" OnDownMouseEnter="Scripts\TaskItemDownMouseEnter.skinscript" OnNormalMouseLeave="Scripts\TaskItemNormalMouseLeave.skinscript" OnNormalMouseEnter="Scripts\TaskItemNormalMouseEnter.skinscript" dimension="128,20" location="0,1" spacing="2">
+      <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" size="8" name="Verdana" location="cw+iwh+2,ch" dimension="w-24,h" draw="1"/>
+      <icon location="cw-9,2" size="16,16" draw="1"/>
       <normal>
-        <skinpart>
-          <ID>0</ID>
-          <location>1,0</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha-48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>1</ID>
-          <location>w-1,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha-48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>2</ID>
-          <location>1,h-1</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha-48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>3</ID>
-          <location>0,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha-48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>gradient</ID>
-          <location>1,1</location>
-          <dimension>w-3,h-3</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$Background,$Background</gradientcolor>
-          <gradientalpha>24,168</gradientalpha>
- 	  <alpha>$Alpha-100</alpha>
-        </skinpart>
+        <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0" ID="0"/>
+        <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="w-1,1" ID="1"/>
+        <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+        <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="0,1" ID="3"/>
+        <skinpart alpha="$Alpha-100" gradientalpha="24,168" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient"/>
       </normal>
       <normalhover>
-        <skinpart>
-          <ID>0</ID>
-          <location>1,0</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>1</ID>
-          <location>w-1,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>2</ID>
-          <location>1,h-1</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>3</ID>
-          <location>0,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>gradient</ID>
-          <location>1,1</location>
-          <dimension>w-3,h-3</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$Background,$Background</gradientcolor>
-          <gradientalpha>168,24</gradientalpha>
-          <alpha>$Alpha-100</alpha>
-        </skinpart>
+        <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0" ID="0"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="1,h-2" location="w-1,1" ID="1"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="1,h-2" location="0,1" ID="3"/>
+        <skinpart alpha="$Alpha-100" gradientalpha="168,24" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient"/>
       </normalhover>
       <down>
-        <text>
-          <location>cw+iwh+3,ch+1</location>
-        </text>
-        <icon>
-          <location>cw-8,3</location>
-        </icon>      
-        <skinpart>
-          <ID>0</ID>
-          <location>1,0</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+24</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>1</ID>
-          <location>w-1,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+24</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>2</ID>
-          <location>1,h-1</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+24</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>3</ID>
-          <location>0,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+24</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>gradient</ID>
-          <location>1,1</location>
-          <dimension>w-3,h-3</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$Background,$Background</gradientcolor>
-          <gradientalpha>48,192</gradientalpha>
-  	  <alpha>$Alpha-80</alpha>
-        </skinpart>
+        <text location="cw+iwh+3,ch+1"/>
+        <icon location="cw-8,3"/>
+        <skinpart alpha="$Alpha+24" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0" ID="0"/>
+        <skinpart alpha="$Alpha+24" color="$Border" image="images/Empty.png" dimension="1,h-2" location="w-1,1" ID="1"/>
+        <skinpart alpha="$Alpha+24" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+        <skinpart alpha="$Alpha+24" color="$Border" image="images/Empty.png" dimension="1,h-2" location="0,1" ID="3"/>
+        <skinpart alpha="$Alpha-80" gradientalpha="48,192" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient"/>
       </down>
       <downhover>
-        <text>
-          <location>cw+iwh+3,ch+1</location>
-        </text>
-        <icon>
-          <location>cw-8,3</location>
-        </icon>       
-        <skinpart>
-          <ID>0</ID>
-          <location>1,0</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>1</ID>
-          <location>w-1,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>2</ID>
-          <location>1,h-1</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>3</ID>
-          <location>0,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>gradient</ID>
-          <location>1,1</location>
-          <dimension>w-3,h-3</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$Background,$Background</gradientcolor>
-          <gradientalpha>192,48</gradientalpha>
-	  <alpha>$Alpha-80</alpha>
-        </skinpart>
+        <text location="cw+iwh+3,ch+1"/>
+        <icon location="cw-8,3"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0" ID="0"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="w-1,1" ID="1"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="0,1" ID="3"/>
+        <skinpart alpha="$Alpha-80" gradientalpha="192,48" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient"/>
       </downhover>
       <highlight>
-        <skinpart>
-          <ID>0</ID>
-          <location>1,0</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>244</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>1</ID>
-          <location>w-1,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>2</ID>
-          <location>1,h-1</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>3</ID>
-          <location>0,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>gradient</ID>
-          <location>1,1</location>
-          <dimension>w-3,h-3</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$Background,$Background</gradientcolor>
-          <gradientalpha>168,24</gradientalpha>
-	  <alpha>$Alpha-100</alpha>
-        </skinpart>
+        <skinpart alpha="244" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0" ID="0"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="w-1,1" ID="1"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="0,1" ID="3"/>
+        <skinpart alpha="$Alpha-100" gradientalpha="168,24" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient"/>
       </highlight>
       <highlighthover>
-        <skinpart>
-          <ID>0</ID>
-          <location>1,0</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>1</ID>
-          <location>w-1,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>2</ID>
-          <location>1,h-1</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>3</ID>
-          <location>0,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>gradient</ID>
-          <location>1,1</location>
-          <dimension>w-3,h-3</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$Background,$Background</gradientcolor>
-          <gradientalpha>192,48</gradientalpha>
- 	  <alpha>$Alpha-80</alpha>
-        </skinpart>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0" ID="0"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="w-1,1" ID="1"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="0,1" ID="3"/>
+        <skinpart alpha="$Alpha-80" gradientalpha="192,48" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient"/>
       </highlighthover>
     </full>
-    <compact>
-      <text>
-        <draw>1</draw>
-        <dimension>w-16,h</dimension>
-        <location>cw+iwh+2,ch</location>
-        <name>Verdana</name>
-        <size>8</size>
-        <color>$Text</color>
-        <shadow>1</shadow>
-        <shadowcolor>$TextShadow</shadowcolor>
-        <shadowtype>Right</shadowtype>
-        <shadowalpha>196</shadowalpha>
-      </text>
-      <icon>
-        <draw>1</draw>
-        <size>16,16</size>
-        <location>cw-9,2</location>
-      </icon>
-      <spacing>1</spacing>
-      <location>0,1</location>
-      <dimension>88,20</dimension>
-      <OnNormalMouseEnter>Scripts\TaskItemNormalMouseEnter.skinscript</OnNormalMouseEnter>
-      <OnNormalMouseLeave>Scripts\TaskItemNormalMouseLeave.skinscript</OnNormalMouseLeave>
-      <OnDownMouseEnter>Scripts\TaskItemDownMouseEnter.skinscript</OnDownMouseEnter>
-      <OnDownMouseLeave>Scripts\TaskItemDownMouseLeave.skinscript</OnDownMouseLeave>
-      <OnHighlightStepStart>Scripts\TaskItemHighlightStart.skinscript</OnHighlightStepStart>
-      <OnHighlightStepEnd>Scripts\TaskItemHighlightEnd.skinscript</OnHighlightStepEnd>
+    <compact OnHighlightStepEnd="Scripts\TaskItemHighlightEnd.skinscript" OnHighlightStepStart="Scripts\TaskItemHighlightStart.skinscript" OnDownMouseLeave="Scripts\TaskItemDownMouseLeave.skinscript" OnDownMouseEnter="Scripts\TaskItemDownMouseEnter.skinscript" OnNormalMouseLeave="Scripts\TaskItemNormalMouseLeave.skinscript" OnNormalMouseEnter="Scripts\TaskItemNormalMouseEnter.skinscript" dimension="88,20" location="0,1" spacing="1">
+      <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" size="8" name="Verdana" location="cw+iwh+2,ch" dimension="w-16,h" draw="1"/>
+      <icon location="cw-9,2" size="16,16" draw="1"/>
       <normal>
-        <skinpart>
-          <ID>0</ID>
-          <location>1,0</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha-48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>1</ID>
-          <location>w-1,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha-48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>2</ID>
-          <location>1,h-1</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha-48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>3</ID>
-          <location>0,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha-48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>gradient</ID>
-          <location>1,1</location>
-          <dimension>w-3,h-3</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$Background,$Background</gradientcolor>
-          <gradientalpha>24,168</gradientalpha>
- 	  <alpha>$Alpha-100</alpha>
-        </skinpart>
+        <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0" ID="0"/>
+        <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="w-1,1" ID="1"/>
+        <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+        <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="0,1" ID="3"/>
+        <skinpart alpha="$Alpha-100" gradientalpha="24,168" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient"/>
       </normal>
       <normalhover>
-        <skinpart>
-          <ID>0</ID>
-          <location>1,0</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>1</ID>
-          <location>w-1,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>2</ID>
-          <location>1,h-1</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>3</ID>
-          <location>0,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>gradient</ID>
-          <location>1,1</location>
-          <dimension>w-3,h-3</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$Background,$Background</gradientcolor>
-          <gradientalpha>168,24</gradientalpha>
-          <alpha>$Alpha-100</alpha>
-        </skinpart>
+        <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0" ID="0"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="1,h-2" location="w-1,1" ID="1"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="1,h-2" location="0,1" ID="3"/>
+        <skinpart alpha="$Alpha-100" gradientalpha="168,24" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient"/>
       </normalhover>
       <down>
-        <text>
-          <location>cw+iwh+3,ch+1</location>
-        </text>
-        <icon>
-          <location>cw-8,3</location>
-        </icon>      
-        <skinpart>
-          <ID>0</ID>
-          <location>1,0</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+24</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>1</ID>
-          <location>w-1,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+24</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>2</ID>
-          <location>1,h-1</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+24</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>3</ID>
-          <location>0,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+24</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>gradient</ID>
-          <location>1,1</location>
-          <dimension>w-3,h-3</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$Background,$Background</gradientcolor>
-          <gradientalpha>48,192</gradientalpha>
-  	  <alpha>$Alpha-80</alpha>
-        </skinpart>
+        <text location="cw+iwh+3,ch+1"/>
+        <icon location="cw-8,3"/>
+        <skinpart alpha="$Alpha+24" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0" ID="0"/>
+        <skinpart alpha="$Alpha+24" color="$Border" image="images/Empty.png" dimension="1,h-2" location="w-1,1" ID="1"/>
+        <skinpart alpha="$Alpha+24" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+        <skinpart alpha="$Alpha+24" color="$Border" image="images/Empty.png" dimension="1,h-2" location="0,1" ID="3"/>
+        <skinpart alpha="$Alpha-80" gradientalpha="48,192" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient"/>
       </down>
       <downhover>
-        <text>
-          <location>cw+iwh+3,ch+1</location>
-        </text>
-        <icon>
-          <location>cw-8,3</location>
-        </icon>       
-        <skinpart>
-          <ID>0</ID>
-          <location>1,0</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>1</ID>
-          <location>w-1,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>2</ID>
-          <location>1,h-1</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>3</ID>
-          <location>0,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>gradient</ID>
-          <location>1,1</location>
-          <dimension>w-3,h-3</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$Background,$Background</gradientcolor>
-          <gradientalpha>192,48</gradientalpha>
-	  <alpha>$Alpha-80</alpha>
-        </skinpart>
+        <text location="cw+iwh+3,ch+1"/>
+        <icon location="cw-8,3"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0" ID="0"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="w-1,1" ID="1"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="0,1" ID="3"/>
+        <skinpart alpha="$Alpha-80" gradientalpha="192,48" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient"/>
       </downhover>
       <highlight>
-        <skinpart>
-          <ID>0</ID>
-          <location>1,0</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>244</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>1</ID>
-          <location>w-1,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>2</ID>
-          <location>1,h-1</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>3</ID>
-          <location>0,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>gradient</ID>
-          <location>1,1</location>
-          <dimension>w-3,h-3</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$Background,$Background</gradientcolor>
-          <gradientalpha>168,24</gradientalpha>
-	  <alpha>$Alpha-100</alpha>
-        </skinpart>
+        <skinpart alpha="244" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0" ID="0"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="w-1,1" ID="1"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="0,1" ID="3"/>
+        <skinpart alpha="$Alpha-100" gradientalpha="168,24" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient"/>
       </highlight>
       <highlighthover>
-        <skinpart>
-          <ID>0</ID>
-          <location>1,0</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>1</ID>
-          <location>w-1,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>2</ID>
-          <location>1,h-1</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>3</ID>
-          <location>0,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>gradient</ID>
-          <location>1,1</location>
-          <dimension>w-3,h-3</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$Background,$Background</gradientcolor>
-          <gradientalpha>192,48</gradientalpha>
- 	  <alpha>$Alpha-80</alpha>
-        </skinpart>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0" ID="0"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="w-1,1" ID="1"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="0,1" ID="3"/>
+        <skinpart alpha="$Alpha-80" gradientalpha="192,48" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient"/>
       </highlighthover>
     </compact>
-    <mini>
-      <text>
-        <draw>0</draw>
-      </text>
-      <icon>
-        <draw>1</draw>
-        <size>16,16</size>
-        <location>2,2</location>
-      </icon>
-      <spacing>2</spacing>
-      <location>0,1</location>
-      <dimension>21,20</dimension>
-      <OnNormalMouseEnter>Scripts\TaskItemNormalMouseEnter.skinscript</OnNormalMouseEnter>
-      <OnNormalMouseLeave>Scripts\TaskItemNormalMouseLeave.skinscript</OnNormalMouseLeave>
-      <OnDownMouseEnter>Scripts\TaskItemDownMouseEnter.skinscript</OnDownMouseEnter>
-      <OnDownMouseLeave>Scripts\TaskItemDownMouseLeave.skinscript</OnDownMouseLeave>
-      <OnHighlightStepStart>Scripts\TaskItemHighlightStart.skinscript</OnHighlightStepStart>
-      <OnHighlightStepEnd>Scripts\TaskItemHighlightEnd.skinscript</OnHighlightStepEnd>
+    <mini OnHighlightStepEnd="Scripts\TaskItemHighlightEnd.skinscript" OnHighlightStepStart="Scripts\TaskItemHighlightStart.skinscript" OnDownMouseLeave="Scripts\TaskItemDownMouseLeave.skinscript" OnDownMouseEnter="Scripts\TaskItemDownMouseEnter.skinscript" OnNormalMouseLeave="Scripts\TaskItemNormalMouseLeave.skinscript" OnNormalMouseEnter="Scripts\TaskItemNormalMouseEnter.skinscript" dimension="21,20" location="0,1" spacing="2">
+      <text draw="0"/>
+      <icon location="2,2" size="16,16" draw="1"/>
       <normal>
-        <skinpart>
-          <ID>0</ID>
-          <location>1,0</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha-48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>1</ID>
-          <location>w-1,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha-48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>2</ID>
-          <location>1,h-1</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha-48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>3</ID>
-          <location>0,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha-48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>gradient</ID>
-          <location>1,1</location>
-          <dimension>w-3,h-3</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$Background,$Background</gradientcolor>
-          <gradientalpha>24,168</gradientalpha>
- 	  <alpha>$Alpha-100</alpha>
-        </skinpart>
+        <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0" ID="0"/>
+        <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="w-1,1" ID="1"/>
+        <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+        <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="0,1" ID="3"/>
+        <skinpart alpha="$Alpha-100" gradientalpha="24,168" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient"/>
       </normal>
       <normalhover>
-        <skinpart>
-          <ID>0</ID>
-          <location>1,0</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>1</ID>
-          <location>w-1,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>2</ID>
-          <location>1,h-1</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>3</ID>
-          <location>0,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>gradient</ID>
-          <location>1,1</location>
-          <dimension>w-3,h-3</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$Background,$Background</gradientcolor>
-          <gradientalpha>168,24</gradientalpha>
-          <alpha>$Alpha-100</alpha>
-        </skinpart>
+        <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0" ID="0"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="1,h-2" location="w-1,1" ID="1"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="1,h-2" location="0,1" ID="3"/>
+        <skinpart alpha="$Alpha-100" gradientalpha="168,24" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient"/>
       </normalhover>
       <down>
-        <text>
-          <location>cw+iwh+3,ch+1</location>
-        </text>
-        <icon>
-          <location>cw-8,3</location>
-        </icon>      
-        <skinpart>
-          <ID>0</ID>
-          <location>1,0</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+24</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>1</ID>
-          <location>w-1,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+24</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>2</ID>
-          <location>1,h-1</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+24</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>3</ID>
-          <location>0,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+24</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>gradient</ID>
-          <location>1,1</location>
-          <dimension>w-3,h-3</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$Background,$Background</gradientcolor>
-          <gradientalpha>48,192</gradientalpha>
-  	  <alpha>$Alpha-80</alpha>
-        </skinpart>
+        <text location="cw+iwh+3,ch+1"/>
+        <icon location="cw-8,3"/>
+        <skinpart alpha="$Alpha+24" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0" ID="0"/>
+        <skinpart alpha="$Alpha+24" color="$Border" image="images/Empty.png" dimension="1,h-2" location="w-1,1" ID="1"/>
+        <skinpart alpha="$Alpha+24" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+        <skinpart alpha="$Alpha+24" color="$Border" image="images/Empty.png" dimension="1,h-2" location="0,1" ID="3"/>
+        <skinpart alpha="$Alpha-80" gradientalpha="48,192" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient"/>
       </down>
       <downhover>
-        <text>
-          <location>cw+iwh+3,ch+1</location>
-        </text>
-        <icon>
-          <location>cw-8,3</location>
-        </icon>       
-        <skinpart>
-          <ID>0</ID>
-          <location>1,0</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>1</ID>
-          <location>w-1,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>2</ID>
-          <location>1,h-1</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>3</ID>
-          <location>0,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>gradient</ID>
-          <location>1,1</location>
-          <dimension>w-3,h-3</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$Background,$Background</gradientcolor>
-          <gradientalpha>192,48</gradientalpha>
-	  <alpha>$Alpha-80</alpha>
-        </skinpart>
+        <text location="cw+iwh+3,ch+1"/>
+        <icon location="cw-8,3"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0" ID="0"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="w-1,1" ID="1"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="0,1" ID="3"/>
+        <skinpart alpha="$Alpha-80" gradientalpha="192,48" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient"/>
       </downhover>
       <highlight>
-        <skinpart>
-          <ID>0</ID>
-          <location>1,0</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>244</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>1</ID>
-          <location>w-1,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>2</ID>
-          <location>1,h-1</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>3</ID>
-          <location>0,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>gradient</ID>
-          <location>1,1</location>
-          <dimension>w-3,h-3</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$Background,$Background</gradientcolor>
-          <gradientalpha>168,24</gradientalpha>
-	  <alpha>$Alpha-100</alpha>
-        </skinpart>
+        <skinpart alpha="244" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0" ID="0"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="w-1,1" ID="1"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="0,1" ID="3"/>
+        <skinpart alpha="$Alpha-100" gradientalpha="168,24" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient"/>
       </highlight>
       <highlighthover>
-        <skinpart>
-          <ID>0</ID>
-          <location>1,0</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>1</ID>
-          <location>w-1,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>2</ID>
-          <location>1,h-1</location>
-          <dimension>w-2,1</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>3</ID>
-          <location>0,1</location>
-          <dimension>1,h-2</dimension>
-          <image>images/Empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha+48</alpha>
-        </skinpart>
-        <skinpart>
-          <ID>gradient</ID>
-          <location>1,1</location>
-          <dimension>w-3,h-3</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$Background,$Background</gradientcolor>
-          <gradientalpha>192,48</gradientalpha>
- 	  <alpha>$Alpha-80</alpha>
-        </skinpart>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0" ID="0"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="w-1,1" ID="1"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+        <skinpart alpha="$Alpha+48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="0,1" ID="3"/>
+        <skinpart alpha="$Alpha-80" gradientalpha="192,48" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient"/>
       </highlighthover>
     </mini>
   </taskitem>
-  <minithrobber>
-    <dimension>5,5</dimension>
-    <location>0,4</location>
+  <minithrobber location="0,4" dimension="5,5">
     <normal>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>5,5</dimension>
-        <image>images/MiniThrobber.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-132</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,1</location>
-        <dimension>2,2</dimension>
-        <image>images/Empty.png</image>
-        <color>$Background</color>
-        <alpha>$Alpha-164</alpha>
-      </skinpart>
+      <skinpart alpha="$Alpha-132" color="$Border" image="images/MiniThrobber.png" dimension="5,5" location="0,0"/>
+      <skinpart alpha="$Alpha-164" color="$Background" image="images/Empty.png" dimension="2,2" location="1,1"/>
     </normal>
     <hover>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>5,5</dimension>
-        <image>images/MiniThrobber.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,1</location>
-        <dimension>2,2</dimension>
-        <image>images/Empty.png</image>
-        <color>$Background</color>
-        <alpha>$Alpha-68</alpha>
-      </skinpart>
+      <skinpart alpha="$Alpha" color="$Border" image="images/MiniThrobber.png" dimension="5,5" location="0,0"/>
+      <skinpart alpha="$Alpha-68" color="$Background" image="images/Empty.png" dimension="2,2" location="1,1"/>
     </hover>
     <down>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>5,5</dimension>
-        <image>images/MiniThrobber.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-164</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,1</location>
-        <dimension>2,2</dimension>
-        <image>images/Empty.png</image>
-        <color>$Background</color>
-        <alpha>$Alpha-180</alpha>
-      </skinpart>
+      <skinpart alpha="$Alpha-164" color="$Border" image="images/MiniThrobber.png" dimension="5,5" location="0,0"/>
+      <skinpart alpha="$Alpha-180" color="$Background" image="images/Empty.png" dimension="2,2" location="1,1"/>
     </down>
   </minithrobber>
-  <button>
-    <text>
-      <location>cw+iwh+2,ch</location>
-      <name>Verdana</name>
-      <size>8</size>
-      <color>$Text</color>
-      <shadow>1</shadow>
-      <shadowcolor>$TextShadow</shadowcolor>
-      <shadowtype>Right</shadowtype>
-      <shadowalpha>196</shadowalpha>
-    </text>
-    <icon>
-      <draw>1</draw>
-      <size>16,16</size>
-      <location>cw-8,2</location>
-    </icon>    
-    <location>0,1</location>
-    <dimension>w,19</dimension>    
-    <widthmod>16</widthmod>
-    <OnNormalMouseEnter>Scripts\ButtonNormalMouseEnter.skinscript</OnNormalMouseEnter>
-    <OnNormalMouseLeave>Scripts\ButtonNormalMouseLeave.skinscript</OnNormalMouseLeave>
+  <button OnNormalMouseLeave="Scripts\ButtonNormalMouseLeave.skinscript" OnNormalMouseEnter="Scripts\ButtonNormalMouseEnter.skinscript" widthmod="16" dimension="w,19" location="0,1">
+    <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" size="8" name="Verdana" location="cw+iwh+2,ch"/>
+    <icon location="cw-8,2" size="16,16" draw="1"/>
     <normal>
-      <skinpart>
-        <ID>0</ID>
-        <location>1,0</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>1</ID>
-        <location>w-1,1</location>
-        <dimension>1,h-2</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>2</ID>
-        <location>1,h-1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>3</ID>
-        <location>0,1</location>
-        <dimension>1,h-2</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>gradient</ID>
-        <location>1,1</location>
-        <dimension>w-3,h-3</dimension>
-        <image>images/bgempty.png</image>
-        <gradienttype>vertical</gradienttype>
-        <gradientcolor>$Border,$Border</gradientcolor>
-        <gradientalpha>0,64</gradientalpha>
-	<alpha>$Alpha-120</alpha>
-      </skinpart>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0" ID="0"/>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="w-1,1" ID="1"/>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="0,1" ID="3"/>
+      <skinpart alpha="$Alpha-120" gradientalpha="0,64" gradientcolor="$Border,$Border" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient"/>
     </normal>
     <hover>
-      <skinpart>
-        <ID>0</ID>
-        <location>1,0</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>1</ID>
-        <location>w-1,1</location>
-        <dimension>1,h-2</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>2</ID>
-        <location>1,h-1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>3</ID>
-        <location>0,1</location>
-        <dimension>1,h-2</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>gradient</ID>
-        <location>1,1</location>
-        <dimension>w-3,h-3</dimension>
-        <image>images/bgempty.png</image>
-        <gradienttype>vertical</gradienttype>
-        <gradientcolor>$Background,$Background</gradientcolor>
-        <gradientalpha>144,0</gradientalpha>
-	<alpha>$Alpha-120</alpha>
-      </skinpart>
+      <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0" ID="0"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="1,h-2" location="w-1,1" ID="1"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="1,h-2" location="0,1" ID="3"/>
+      <skinpart alpha="$Alpha-120" gradientalpha="144,0" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient"/>
     </hover>
     <down>
-      <text>
-        <location>cw+iwh+3,ch+1</location>
-      </text>
-      <icon>
-        <location>cw-7,3</location>
-      </icon>    
-      <skinpart>
-        <ID>0</ID>
-        <location>1,0</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-68</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>1</ID>
-        <location>w-1,1</location>
-        <dimension>1,h-2</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-68</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>2</ID>
-        <location>1,h-1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-68</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>3</ID>
-        <location>0,1</location>
-        <dimension>1,h-2</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-68</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>gradient</ID>
-        <location>1,1</location>
-        <dimension>w-3,h-3</dimension>
-        <image>images/bgempty.png</image>
-        <gradienttype>vertical</gradienttype>
-        <gradientcolor>$Background,$Background</gradientcolor>
-        <gradientalpha>96,0</gradientalpha>
-	<alpha>$Alpha-148</alpha>
-      </skinpart>
-    </down>
-    <disabled>
-      <text>
-        <color>$Background</color>
-      </text>
-      <!-- Disabled State Skin Parts -->
-    </disabled>
+      <text location="cw+iwh+3,ch+1"/>
+      <icon location="cw-7,3"/>
+      <skinpart alpha="$Alpha-68" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0" ID="0"/>
+      <skinpart alpha="$Alpha-68" color="$Border" image="images/Empty.png" dimension="1,h-2" location="w-1,1" ID="1"/>
+      <skinpart alpha="$Alpha-68" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+      <skinpart alpha="$Alpha-68" color="$Border" image="images/Empty.png" dimension="1,h-2" location="0,1" ID="3"/>
+      <skinpart alpha="$Alpha-148" gradientalpha="96,0" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient"/>
+    </down>    
   </button>
-  <font>
-    <locationTL>0,-5</locationTL>
-    <locationBL>0,6</locationBL>
-    <small>
-      <size>6</size>
-      <name>Small Fonts</name>
-      <bold>0</bold>
-      <color>$Text</color>
-      <shadow>1</shadow>
-      <shadowcolor>$TextShadow</shadowcolor>
-      <shadowtype>Outline</shadowtype>
-      <shadowalpha>196</shadowalpha>
-      <location>0,1</location>
-    </small>
-    <medium>
-      <name>Verdana</name>
-      <size>9</size>
-      <bold>1</bold>
-      <color>$Text</color>
-      <shadow>1</shadow>
-      <shadowcolor>$TextShadow</shadowcolor>
-      <shadowtype>Outline</shadowtype>
-      <shadowalpha>255</shadowalpha>
-      <location>0,-2</location>
-    </medium>
-    <big>
-      <name>Verdana</name>
-      <size>11</size>
-      <bold>1</bold>
-      <color>$Text</color>
-      <shadow>1</shadow>
-      <shadowcolor>$TextShadow</shadowcolor>
-      <shadowtype>Outline</shadowtype>
-      <shadowalpha>196</shadowalpha>
-      <location>0,-3</location>
-    </big>
+  <font locationBL="0,6" locationTL="0,-5">
+    <small location="0,1" shadowalpha="196" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" color="$Text" bold="0" name="Small Fonts" size="6"/>
+    <medium location="0,-2" shadowalpha="255" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" color="$Text" bold="1" size="9" name="Verdana"/>
+    <big location="0,-3" shadowalpha="196" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" color="$Text" bold="1" size="11" name="Verdana"/>
   </font>
-  <progressbar>
-    <location>0,4,</location>
-    <dimension>w,14</dimension>
-    <locationTL>0,1</locationTL>
-    <dimensionTL>w,9</dimensionTL>
-    <locationBL>0,12</locationBL>
-    <dimensionBL>w,9</dimensionBL>
+  <progressbar dimensionBL="w,9" locationBL="0,12" dimensionTL="w,9" locationTL="0,1" dimension="w,14" location="0,4,">
     <background>
-      <skinpart>
-        <location>1,0</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-1,1</location>
-        <dimension>1,h-2</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,h-1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,1</location>
-        <dimension>1,h-2</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>3</ID>
-        <location>1,1</location>
-        <dimension>w-2,h-2</dimension>
-        <image>images/Empty.png</image>
-        <color>$Background</color>
-        <alpha>$Alpha-132</alpha>
-      </skinpart>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0"/>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="w-1,1"/>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1"/>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="0,1"/>
+      <skinpart alpha="$Alpha-132" color="$Background" image="images/Empty.png" dimension="w-2,h-2" location="1,1" ID="3"/>
     </background>
-    <progress>
-      <location>2,2</location>
-      <dimension>w-3,h-3</dimension>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>w-2,h-2</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-136</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>gradient</ID>
-        <location>1,1</location>
-        <dimension>w-3,h-3</dimension>
-        <image>images/bgempty.png</image>
-        <gradienttype>vertical</gradienttype>
-        <gradientcolor>$Background,$Background</gradientcolor>
-        <gradientalpha>32,164</gradientalpha>
-	<alpha>$Alpha-100</alpha>
-      </skinpart>
+    <progress dimension="w-3,h-3" location="2,2">
+      <skinpart alpha="$Alpha-136" color="$Border" image="images/Empty.png" dimension="w-2,h-2" location="0,0"/>
+      <skinpart alpha="$Alpha-100" gradientalpha="32,164" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient"/>
     </progress>
   </progressbar>
-  <edit>
-    <dimension>w,19</dimension>
-    <location>0,1</location>
-    <editxoffsets>3,3</editxoffsets>
-    <edityoffsets>3,3</edityoffsets>
-    <text>
-      <color>$Text</color>
-    </text>
+  <edit edityoffsets="3,3" editxoffsets="3,3" location="0,1" dimension="w,19">
+    <text color="$Text"/>
     <normal>
-      <skinpart>
-        <ID>0</ID>
-        <location>1,0</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>1</ID>
-        <location>w-1,1</location>
-        <dimension>1,h-2</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>2</ID>
-        <location>1,h-1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>3</ID>
-        <location>0,1</location>
-        <dimension>1,h-2</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>3</ID>
-        <location>1,1</location>
-        <dimension>w-2,h-2</dimension>
-        <image>images/Empty.png</image>
-        <color>$Background</color>
-        <alpha>$Alpha-100</alpha>
-      </skinpart>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0" ID="0"/>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="w-1,1" ID="1"/>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="0,1" ID="3"/>
+      <skinpart alpha="$Alpha-100" color="$Background" image="images/Empty.png" dimension="w-2,h-2" location="1,1" ID="3"/>
     </normal>
     <focus>
-      <skinpart>
-        <ID>0</ID>
-        <location>1,0</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>1</ID>
-        <location>w-1,1</location>
-        <dimension>1,h-2</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>2</ID>
-        <location>1,h-1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>3</ID>
-        <location>0,1</location>
-        <dimension>1,h-2</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>3</ID>
-        <location>1,1</location>
-        <dimension>w-2,h-2</dimension>
-        <image>images/Empty.png</image>
-        <color>$Background</color>
-        <alpha>$Alpha-100</alpha>
-      </skinpart>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0" ID="0"/>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="w-1,1" ID="1"/>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+      <skinpart alpha="$Alpha-48" color="$Border" image="images/Empty.png" dimension="1,h-2" location="0,1" ID="3"/>
+      <skinpart alpha="$Alpha-100" color="$Background" image="images/Empty.png" dimension="w-2,h-2" location="1,1" ID="3"/>
     </focus>
     <hover>
-      <skinpart>
-        <ID>0</ID>
-        <location>1,0</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>1</ID>
-        <location>w-1,1</location>
-        <dimension>1,h-2</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>2</ID>
-        <location>1,h-1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>3</ID>
-        <location>0,1</location>
-        <dimension>1,h-2</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <ID>3</ID>
-        <location>1,1</location>
-        <dimension>w-2,h-2</dimension>
-        <image>images/Empty.png</image>
-        <color>$Background</color>
-        <alpha>$Alpha-68</alpha>
-      </skinpart>
+      <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0" ID="0"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="1,h-2" location="w-1,1" ID="1"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1" ID="2"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="1,h-2" location="0,1" ID="3"/>
+      <skinpart alpha="$Alpha-68" color="$Background" image="images/Empty.png" dimension="w-2,h-2" location="1,1" ID="3"/>
     </hover>
-    <disabled>
-      <!-- Disabled State Skin Parts -->
-    </disabled>
   </edit>
-  <notify>
-    <dimension>256,h</dimension>
-    <location>0,4</location>
-    <catboffset>4,4</catboffset>
-    <calroffset>4,4</calroffset>
-    <text>
-      <draw>1</draw>
-      <dimension>w-32-4-4-4,h</dimension>
-      <location>40,ch+1</location>
-      <name>Tahoma</name>
-      <size>8</size>
-      <color>$Text</color>
-      <shadow>1</shadow>
-      <shadowcolor>$TextShadow</shadowcolor>
-      <shadowtype>Right</shadowtype>
-      <shadowalpha>196</shadowalpha>
-    </text>
-    <icon>
-      <draw>1</draw>
-      <size>32,32</size>
-      <location>4,hh-ihh</location>
-    </icon>    
+  <notify calroffset="4,4" catboffset="4,4" location="0,4" dimension="256,h">
+    <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" size="8" name="Tahoma" location="40,ch+1" dimension="w-32-4-4-4,h" draw="1"/>
+    <icon location="4,hh-ihh" size="32,32" draw="1"/>
     <background>
-      <skinpart>
-        <location>2,2</location>
-        <dimension>w-3,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Background</color>
-        <alpha>$Alpha-16</alpha>
-      </skinpart>
-      <skinpart>
-        <location>2,1</location>
-        <dimension>w-3,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+24</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-1,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+24</alpha>
-      </skinpart>
-      <skinpart>
-        <location>2,h-1</location>
-        <dimension>w-3,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+24</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+24</alpha>
-      </skinpart>    
+      <skinpart alpha="$Alpha-16" color="$Background" image="images/Empty.png" dimension="w-3,h-3" location="2,2"/>
+      <skinpart alpha="$Alpha+24" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,1"/>
+      <skinpart alpha="$Alpha+24" color="$Border" image="images/Empty.png" dimension="1,h-3" location="w-1,2"/>
+      <skinpart alpha="$Alpha+24" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,h-1"/>
+      <skinpart alpha="$Alpha+24" color="$Border" image="images/Empty.png" dimension="1,h-3" location="1,2"/>
     </background>
-  </notify>    
-  <taskpreview>
-    <dimension>5,400</dimension>
-    <location>-1,0</location>
-    <catboffset>28,10</catboffset>
-    <calroffset>10,10</calroffset>
-    <text>
-      <draw>1</draw>
-      <dimension>w-48,0</dimension>
-      <location>cw,5</location>
-      <name>Tahoma</name>
-      <size>10</size>
-      <color>$Text-64</color>
-      <shadow>1</shadow>
-      <shadowcolor>$TextShadow</shadowcolor>
-      <shadowtype>Outline</shadowtype>
-      <shadowalpha>196</shadowalpha>
-    </text>
-    <icon>
-      <draw>1</draw>
-      <size>32,32</size>
-      <location>4,hh-ihh</location>
-    </icon>    
+  </notify>
+  <taskpreview calroffset="10,10" catboffset="28,10" location="-1,0" dimension="5,400">
+    <text shadowalpha="196" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" color="$Text-64" size="10" name="Tahoma" location="cw,5" dimension="w-48,0" draw="1"/>
+    <icon location="4,hh-ihh" size="32,32" draw="1"/>
     <background>
-        <skinpart>
-        <location>2,2</location>
-        <dimension>w-3,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Background</color>
-        <alpha>$Alpha-16</alpha>
-      </skinpart>
-      <skinpart>
-        <location>2,1</location>
-        <dimension>w-3,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+24</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-1,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+24</alpha>
-      </skinpart>
-      <skinpart>
-        <location>2,h-1</location>
-        <dimension>w-3,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+24</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+24</alpha>
-      </skinpart>  
+      <skinpart alpha="$Alpha-16" color="$Background" image="images/Empty.png" dimension="w-3,h-3" location="2,2"/>
+      <skinpart alpha="$Alpha+24" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,1"/>
+      <skinpart alpha="$Alpha+24" color="$Border" image="images/Empty.png" dimension="1,h-3" location="w-1,2"/>
+      <skinpart alpha="$Alpha+24" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,h-1"/>
+      <skinpart alpha="$Alpha+24" color="$Border" image="images/Empty.png" dimension="1,h-3" location="1,2"/>
     </background>
     <hover>
-      <text>
-        <color>$Text</color>
-        <shadowalpha>196</shadowalpha>
-      </text>
-      <skinpart>
-        <location>2,2</location>
-        <dimension>w-3,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Background</color>
-        <alpha>$Alpha-16+48</alpha>
-      </skinpart>
-      <skinpart>
-        <location>2,1</location>
-        <dimension>w-3,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+24</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-1,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+24</alpha>
-      </skinpart>
-      <skinpart>
-        <location>2,h-1</location>
-        <dimension>w-3,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+24</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha+24</alpha>
-      </skinpart> 
+      <text shadowalpha="196" color="$Text"/>
+      <skinpart alpha="$Alpha-16+48" color="$Background" image="images/Empty.png" dimension="w-3,h-3" location="2,2"/>
+      <skinpart alpha="$Alpha+24" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,1"/>
+      <skinpart alpha="$Alpha+24" color="$Border" image="images/Empty.png" dimension="1,h-3" location="w-1,2"/>
+      <skinpart alpha="$Alpha+24" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,h-1"/>
+      <skinpart alpha="$Alpha+24" color="$Border" image="images/Empty.png" dimension="1,h-3" location="1,2"/>
     </hover>
   </taskpreview>
 </sharpESkin>

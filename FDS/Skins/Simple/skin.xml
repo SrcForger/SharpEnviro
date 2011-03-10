@@ -1,1907 +1,377 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <sharpESkin>
-  <sharpbar>
-    <dimension>w,29</dimension>
-    <fsmod>2,2</fsmod>
-    <sbmod>0,0</sbmod>
-    <paxoffsets>14,4</paxoffsets>
-    <payoffsets>1,1</payoffsets>
-    <paxoffsetsbottom>14,4</paxoffsetsbottom>
-    <payoffsetsbottom>1,1</payoffsetsbottom>
-    <ncyoffsets>0,1</ncyoffsets>
-    <ncyoffsetsbottom>1,2</ncyoffsetsbottom>
-    <enablevflip>1</enablevflip>
-    <specialhideform>1</specialhideform>
-    <glasseffect>1</glasseffect>
-    <bar>
-      <dimension>w,h</dimension>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>w,h</dimension>
-        <image>images/bgempty.png</image>
-        <gradienttype>vertical</gradienttype>
-        <gradientcolor>$Background+32,$Background-32</gradientcolor>
-        <gradientalpha>255,255</gradientalpha>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>w,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,h-1</location>
-        <dimension>w,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>1,h</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-1,0</location>
-        <dimension>1,h</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
+  <sharpbar glasseffect="1" specialhideform="1" enablevflip="1" ncyoffsetsbottom="1,2" ncyoffsets="0,1" payoffsetsbottom="1,1" paxoffsetsbottom="14,4" payoffsets="1,1" paxoffsets="14,4" sbmod="0,0" fsmod="2,2" dimension="w,29">
+    <bar dimension="w,h">
+      <skinpart alpha="$Alpha" gradientalpha="255,255" gradientcolor="$Background+32,$Background-32" gradienttype="vertical" image="images/bgempty.png" dimension="w,h" location="0,0"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="w,1" location="0,0"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="w,1" location="0,h-1"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
     </bar>
-    <barbottom>
-      <dimension>w,h</dimension>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>w,h</dimension>
-        <image>images/bgempty.png</image>
-        <gradienttype>vertical</gradienttype>
-        <gradientcolor>$Background+32,$Background-32</gradientcolor>
-        <gradientalpha>255,255</gradientalpha>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>w,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,h-1</location>
-        <dimension>w,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>1,h</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-1,0</location>
-        <dimension>1,h</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
+    <barbottom dimension="w,h">
+      <skinpart alpha="$Alpha" gradientalpha="255,255" gradientcolor="$Background+32,$Background-32" gradienttype="vertical" image="images/bgempty.png" dimension="w,h" location="0,0"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="w,1" location="0,0"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="w,1" location="0,h-1"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
     </barbottom>
-    <throbber>
-      <location>4,4</location>
-      <locationbottom>4,8</locationbottom>
-      <dimension>13,20</dimension>
+    <throbber dimension="13,20" locationbottom="4,8" location="4,4">
       <normal>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>13,20</dimension>
-          <image>images/Throbber.png</image>
-	  <color>$Special</color>
-          <alpha>$Alpha+128</alpha>
-          <enabled>$IsBarTop</enabled>
-        </skinpart>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>13,20</dimension>
-          <image>images/ThrobberBottom.png</image>
-	  <color>$Special</color>
-          <alpha>$Alpha+128</alpha>
-          <enabled>$IsBarBottom</enabled>
-        </skinpart>
+        <skinpart enabled="$IsBarTop" alpha="$Alpha+128" color="$Special" image="images/Throbber.png" dimension="13,20" location="0,0"/>
+        <skinpart enabled="$IsBarBottom" alpha="$Alpha+128" color="$Special" image="images/ThrobberBottom.png" dimension="13,20" location="0,0"/>
       </normal>
       <hover>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>13,20</dimension>
-          <image>images/Throbber.png</image>
-	  <color>$Special+32</color>
-          <alpha>$Alpha+128</alpha>
-          <enabled>$IsBarTop</enabled>
-        </skinpart>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>13,20</dimension>
-          <image>images/ThrobberBottom.png</image>
-	  <color>$Special+32</color>
-          <alpha>$Alpha+128</alpha>
-          <enabled>$IsBarBottom</enabled>
-        </skinpart>
+        <skinpart enabled="$IsBarTop" alpha="$Alpha+128" color="$Special+32" image="images/Throbber.png" dimension="13,20" location="0,0"/>
+        <skinpart enabled="$IsBarBottom" alpha="$Alpha+128" color="$Special+32" image="images/ThrobberBottom.png" dimension="13,20" location="0,0"/>
       </hover>
-      <down> 
-        <skinpart>
-          <location>0,0</location>
-          <dimension>13,20</dimension>
-          <image>images/Throbber.png</image>
-	  <color>$Special-32</color>
-          <alpha>$Alpha+128</alpha>
-          <enabled>$IsBarTop</enabled>
-        </skinpart>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>13,20</dimension>
-          <image>images/ThrobberBottom.png</image>
-	  <color>$Special-32</color>
-          <alpha>$Alpha+128</alpha>
-          <enabled>$IsBarBottom</enabled>
-        </skinpart>
+      <down>
+        <skinpart enabled="$IsBarTop" alpha="$Alpha+128" color="$Special-32" image="images/Throbber.png" dimension="13,20" location="0,0"/>
+        <skinpart enabled="$IsBarBottom" alpha="$Alpha+128" color="$Special-32" image="images/ThrobberBottom.png" dimension="13,20" location="0,0"/>
       </down>
-    </throbber>  
+    </throbber>
   </sharpbar>
-  <taskswitch>
-    <text>
-      <size>10</size>
-      <name>Tahoma</name>
-      <location>cw,h-22</location>
-      <color>$Text</color>
-      <shadow>1</shadow>
-      <shadowcolor>$TextShadow</shadowcolor>      
-      <shadowtype>Outline</shadowtype>
-      <shadowalpha>196</shadowalpha>      
-    </text>
-    <dimension>w,h</dimension>
-    <spacing>4</spacing>
-    <wrapcount>8</wrapcount>
-    <tboffset>5,26</tboffset>
-    <lroffset>5,5</lroffset>
-    <previewdim>48,48</previewdim>
-    <previewloc>5,5</previewloc>
-    <hoverpreviewdim>48,48</hoverpreviewdim>
-    <hoverpreviewloc>5,5</hoverpreviewloc>
+  <taskswitch hoverpreviewloc="5,5" hoverpreviewdim="48,48" previewloc="5,5" previewdim="48,48" lroffset="5,5" tboffset="5,26" wrapcount="8" spacing="4" dimension="w,h">
+    <text shadowalpha="196" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" color="$Text" location="cw,h-22" name="Tahoma" size="10"/>
     <background>
-      <skinpart>
-        <location>2,2</location>
-        <dimension>w-3,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Background</color>
-        <alpha>$MAlpha+33+32</alpha>
-      </skinpart>
-      <skinpart>
-        <location>2,1</location>
-        <dimension>w-3,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$BAlpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-1,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$BAlpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>2,h-1</location>
-        <dimension>w-3,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$BAlpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$BAlpha</alpha>
-      </skinpart>
+      <skinpart alpha="$MAlpha+33+32" color="$Background" image="images/Empty.png" dimension="w-3,h-3" location="2,2"/>
+      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,1"/>
+      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-3" location="w-1,2"/>
+      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,h-1"/>
+      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-3" location="1,2"/>
     </background>
-    <item>
-      <dimension>58,58</dimension>
-      <skinpart>
-        <location>2,2</location>
-        <dimension>w-3,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Background</color>
-        <alpha>$MAlpha+33-16</alpha>
-      </skinpart>
-      <skinpart>
-        <location>2,1</location>
-        <dimension>w-3,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$BAlpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-1,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$BAlpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>2,h-1</location>
-        <dimension>w-3,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$BAlpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$BAlpha</alpha>
-      </skinpart>
-    </item> 
-    <itemhover>
-      <dimension>58,58</dimension>
-      <skinpart>
-        <location>2,2</location>
-        <dimension>w-3,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$BAlpha+32</alpha>
-      </skinpart>
-      <skinpart>
-        <location>2,1</location>
-        <dimension>w-3,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$BAlpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-1,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$BAlpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>2,h-1</location>
-        <dimension>w-3,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$BAlpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,2</location>
-        <dimension>1,h-3</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$BAlpha</alpha>
-      </skinpart>
+    <item dimension="58,58">
+      <skinpart alpha="$MAlpha+33-16" color="$Background" image="images/Empty.png" dimension="w-3,h-3" location="2,2"/>
+      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,1"/>
+      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-3" location="w-1,2"/>
+      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,h-1"/>
+      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-3" location="1,2"/>
+    </item>
+    <itemhover dimension="58,58">
+      <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="w-3,h-3" location="2,2"/>
+      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,1"/>
+      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-3" location="w-1,2"/>
+      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,h-1"/>
+      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-3" location="1,2"/>
     </itemhover>
   </taskswitch>
-  <menu>
-    <dimension>w,h</dimension>
-    <location>0,-1</location>
-    <widthlimit>200,350</widthlimit>
-    <tboffset>4,4</tboffset>
-    <lroffset>4,4</lroffset>
+  <menu lroffset="4,4" tboffset="4,4" widthlimit="200,350" location="0,-1" dimension="w,h">
     <background>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>w,h</dimension>
-        <image>images/empty.png</image>
-        <color>$Background</color>
-        <alpha>$MAlpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>w-1,1</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$MAlpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,1</location>
-        <dimension>1,h-2</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$MAlpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-1,0</location>
-        <dimension>1,h</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$MAlpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,h-1</location>
-        <dimension>w-1,1</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$MAlpha</alpha>
-      </skinpart>
+      <skinpart alpha="$MAlpha" color="$Background" image="images/empty.png" dimension="w,h" location="0,0"/>
+      <skinpart alpha="$MAlpha" color="$Border" image="images/empty.png" dimension="w-1,1" location="0,0"/>
+      <skinpart alpha="$MAlpha" color="$Border" image="images/empty.png" dimension="1,h-2" location="0,1"/>
+      <skinpart alpha="$MAlpha" color="$Border" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+      <skinpart alpha="$MAlpha" color="$Border" image="images/empty.png" dimension="w-1,1" location="0,h-1"/>
     </background>
   </menu>
-  <menuitem>    
-    <icon>
-      <draw>1</draw>
-      <dimension>16,16</dimension>
-      <location>4,5</location>
-    </icon>
-    <text>
-      <draw>1</draw>
-      <dimension>w-40,h</dimension>
-      <location>25,4</location>
-      <name>Calibri</name>
-      <size>10</size>
-      <cleartype>1</cleartype>
-      <color>$Text</color>
-      <shadow>1</shadow>
-      <shadowcolor>$TextShadow</shadowcolor>
-      <shadowtype>Right</shadowtype>
-      <shadowalpha>196</shadowalpha>
-    </text>
-    <normal>
-      <dimension>w,26</dimension>
-      <widthmod>48</widthmod>
-    </normal>
-    <hover>
-      <text>
-        <color>$Text</color>
-	<shadowalpha>196</shadowalpha>
-      </text>
-      <icon>
-        <lighten>1</lighten>
-        <lightenamount>48</lightenamount>
-      </icon>
-      <dimension>w,26</dimension>
-      <widthmod>48</widthmod>    
-      <skinpart>
-        <location>0,0</location>
-        <dimension>1,h</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$MAlpha+16</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-1,0</location>
-        <dimension>1,h</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$MAlpha+16</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,0</location>
-        <dimension>w-2,1</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$MAlpha+16</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,h-1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$MAlpha+16</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>w-1,h</dimension>
-        <image>images/bgempty.png</image>
-        <gradienttype>vertical</gradienttype>
-        <gradientcolor>$Special,$Special-96</gradientcolor>
-        <gradientalpha>255,255</gradientalpha>
-        <alpha>96</alpha>
-      </skinpart>  
+  <menuitem>
+    <icon location="4,5" dimension="16,16" draw="1"/>
+    <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="10" name="Calibri" location="25,4" dimension="w-40,h" draw="1"/>
+    <normal widthmod="48" dimension="w,26"/>
+    <hover widthmod="48" dimension="w,26">
+      <text shadowalpha="196" color="$Text"/>
+      <icon lightenamount="48" lighten="1"/>
+      <skinpart alpha="$MAlpha+16" color="$Border" image="images/empty.png" dimension="1,h" location="0,0"/>
+      <skinpart alpha="$MAlpha+16" color="$Border" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+      <skinpart alpha="$MAlpha+16" color="$Border" image="images/empty.png" dimension="w-2,1" location="1,0"/>
+      <skinpart alpha="$MAlpha+16" color="$Border" image="images/empty.png" dimension="w-2,1" location="1,h-1"/>
+      <skinpart alpha="96" gradientalpha="255,255" gradientcolor="$Special,$Special-96" gradienttype="vertical" image="images/bgempty.png" dimension="w-1,h" location="0,0"/>
     </hover>
-    <down>
-      <text>
-        <color>$Text</color>
-	<shadowalpha>196</shadowalpha>
-      </text>
-      <icon>
-        <lighten>1</lighten>
-        <lightenamount>48</lightenamount>
-      </icon>
-      <dimension>w,26</dimension>
-      <widthmod>48</widthmod>    
-      <skinpart>
-        <location>0,0</location>
-        <dimension>1,h</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$MAlpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-1,0</location>
-        <dimension>1,h</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$MAlpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,0</location>
-        <dimension>w-2,1</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$MAlpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,h-1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$MAlpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>w-1,h</dimension>
-        <image>images/bgempty.png</image>
-        <gradienttype>vertical</gradienttype>
-        <gradientcolor>$Special,$Special-96</gradientcolor>
-        <gradientalpha>255,255</gradientalpha>
-        <alpha>48</alpha>
-      </skinpart>  
-      <widthmod>48</widthmod>
+    <down widthmod="48" widthmod="48" dimension="w,26">
+      <text shadowalpha="196" color="$Text"/>
+      <icon lightenamount="48" lighten="1"/>
+      <skinpart alpha="$MAlpha" color="$Border" image="images/empty.png" dimension="1,h" location="0,0"/>
+      <skinpart alpha="$MAlpha" color="$Border" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+      <skinpart alpha="$MAlpha" color="$Border" image="images/empty.png" dimension="w-2,1" location="1,0"/>
+      <skinpart alpha="$MAlpha" color="$Border" image="images/empty.png" dimension="w-2,1" location="1,h-1"/>
+      <skinpart alpha="48" gradientalpha="255,255" gradientcolor="$Special,$Special-96" gradienttype="vertical" image="images/bgempty.png" dimension="w-1,h" location="0,0"/>
     </down>
-    <normalsub>
-      <dimension>w,26</dimension>
-      <widthmod>48</widthmod>
-      <skinpart>
-        <location>w-7,11</location>
-        <dimension>4,4</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$BAlpha-32</alpha>
-      </skinpart>
+    <normalsub widthmod="48" dimension="w,26">
+      <skinpart alpha="$BAlpha-32" color="$Border" image="images/Empty.png" dimension="4,4" location="w-7,11"/>
     </normalsub>
-    <hoversub>
-      <dimension>w,26</dimension>
-      <widthmod>48</widthmod>
-      <text>
-        <color>$Text</color>
-	<shadowalpha>196</shadowalpha>
-      </text>
-      <icon>
-        <lighten>1</lighten>
-        <lightenamount>48</lightenamount>
-      </icon>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>1,h</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$MAlpha+16</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-1,0</location>
-        <dimension>1,h</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$MAlpha+16</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,0</location>
-        <dimension>w-2,1</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$MAlpha+16</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,h-1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$MAlpha+16</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>w-1,h</dimension>
-        <image>images/bgempty.png</image>
-        <gradienttype>vertical</gradienttype>
-        <gradientcolor>$Special,$Special-96</gradientcolor>
-        <gradientalpha>255,255</gradientalpha>
-        <alpha>96</alpha>
-      </skinpart>  
-      <skinpart>
-        <location>w-7,11</location>
-        <dimension>4,4</dimension>
-        <image>images/Empty.png</image>
-        <color>$Special</color>
-        <alpha>$BAlpha-32</alpha>
-      </skinpart>
+    <hoversub widthmod="48" dimension="w,26">
+      <text shadowalpha="196" color="$Text"/>
+      <icon lightenamount="48" lighten="1"/>
+      <skinpart alpha="$MAlpha+16" color="$Border" image="images/empty.png" dimension="1,h" location="0,0"/>
+      <skinpart alpha="$MAlpha+16" color="$Border" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+      <skinpart alpha="$MAlpha+16" color="$Border" image="images/empty.png" dimension="w-2,1" location="1,0"/>
+      <skinpart alpha="$MAlpha+16" color="$Border" image="images/empty.png" dimension="w-2,1" location="1,h-1"/>
+      <skinpart alpha="96" gradientalpha="255,255" gradientcolor="$Special,$Special-96" gradienttype="vertical" image="images/bgempty.png" dimension="w-1,h" location="0,0"/>
+      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="4,4" location="w-7,11"/>
     </hoversub>
-    <separator>
-      <dimension>w,6</dimension>     
-      <skinpart>
-        <location>1,3</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>$BAlpha-32</alpha>
-      </skinpart>
+    <separator dimension="w,6">
+      <skinpart alpha="$BAlpha-32" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,3"/>
     </separator>
-    <label>
-      <text>
-        <dimension>w-20,h</dimension>
-        <location>cw+14,1</location>
-	<shadowtype>Outline</shadowtype>
-      </text>
-      <dimension>w,24</dimension>
-      <widthmod>20</widthmod>
+    <label widthmod="20" dimension="w,24">
+      <text shadowtype="Outline" location="cw+14,1" dimension="w-20,h"/>
     </label>
   </menuitem>
   <taskitem>
-    <full>
-      <text>
-        <draw>1</draw>
-        <location>25,ch-0</location>
-	<dimension>w-26,h</dimension>
-        <name>Calibri</name>
-        <size>10</size>
-        <cleartype>1</cleartype>
-        <color>$Text</color>
-        <shadow>1</shadow>
-        <shadowcolor>$TextShadow</shadowcolor>
-        <shadowtype>Right</shadowtype>
-        <shadowalpha>128</shadowalpha>
-      </text>
-      <icon>
-        <draw>1</draw>
-        <size>16,16</size>
-        <location>5,6</location>
-      </icon> 
+    <full spacing="1" dimension="160,27" location="0,0">
+      <text shadowalpha="128" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="10" name="Calibri" dimension="w-26,h" location="25,ch-0" draw="1"/>
+      <icon location="5,6" size="16,16" draw="1"/>
       <highlightsettings>
-        <blendicon>
-          <apply>1</apply>
-          <max>120</max>
-          <min>0</min>
-          <value>0</value>
-          <change>20</change>
-          <color>$IconHighlightComp</color>
-        </blendicon>
-        <lighten>
-          <apply>1</apply>
-          <max>30</max>
-          <min>-60</min>
-          <value>-60</value>
-          <change>15</change>
-        </lighten>
+        <blendicon color="$IconHighlightComp" change="20" value="0" min="0" max="120" apply="1"/>
+        <lighten change="15" value="-60" min="-60" max="30" apply="1"/>
       </highlightsettings>
-      <location>0,0</location>
-      <dimension>160,27</dimension>
-      <spacing>1</spacing>
-      <special>
-        <empty>1</empty>
-      </special>
+      <special empty="1"/>
       <specialhover>
-        <icon>
-          <lighten>1</lighten>
-          <lightenamount>48</lightenamount>
-        </icon>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>4,26</dimension>
-          <image>images/Button-Left.png</image>
-	  <color>$Highlight</color>          
-          <alpha>$Alpha+0</alpha>
-        </skinpart>  
-        <skinpart>
-          <location>4,0</location>
-          <dimension>w-8,26</dimension>
-          <image>images/Button-Middle.png</image>
-	  <color>$Highlight</color>
-          <alpha>$Alpha+0</alpha>
-        </skinpart>  
-        <skinpart>
-          <location>w-4,0</location>
-          <dimension>4,26</dimension>
-          <image>images/Button-Right.png</image>
-	  <color>$Highlight</color>
-          <alpha>$Alpha+0</alpha>
-        </skinpart>
+        <icon lightenamount="48" lighten="1"/>
+        <skinpart alpha="$Alpha+0" color="$Highlight" image="images/Button-Left.png" dimension="4,26" location="0,0"/>
+        <skinpart alpha="$Alpha+0" color="$Highlight" image="images/Button-Middle.png" dimension="w-8,26" location="4,0"/>
+        <skinpart alpha="$Alpha+0" color="$Highlight" image="images/Button-Right.png" dimension="4,26" location="w-4,0"/>
       </specialhover>
-      <normal>
-	<empty>1</empty> 
-      </normal>
+      <normal empty="1"/>
       <normalhover>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>w-1,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>w-1,h</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$Special,$Special-96</gradientcolor>
-          <gradientalpha>255,255</gradientalpha>
-          <alpha>96</alpha>
-        </skinpart>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+        <skinpart alpha="96" gradientalpha="255,255" gradientcolor="$Special,$Special-96" gradienttype="vertical" image="images/bgempty.png" dimension="w-1,h" location="0,0"/>
       </normalhover>
-      <down>        
-        <skinpart>
-          <location>0,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>w-1,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>w-1,h</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$IconHighlight,$IconHighlight-96</gradientcolor>
-          <gradientalpha>255,255</gradientalpha>
-          <alpha>96</alpha>
-        </skinpart>
+      <down>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+        <skinpart alpha="96" gradientalpha="255,255" gradientcolor="$IconHighlight,$IconHighlight-96" gradienttype="vertical" image="images/bgempty.png" dimension="w-1,h" location="0,0"/>
       </down>
       <downhover>
-        <icon>
-          <lighten>1</lighten>
-          <lightenamount>24</lightenamount>
-        </icon>     
-        <skinpart>
-          <location>0,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>w-1,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>w-1,h</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$IconHighlight,$IconHighlight-96</gradientcolor>
-          <gradientalpha>255,255</gradientalpha>
-          <alpha>128</alpha>
-        </skinpart>
+        <icon lightenamount="24" lighten="1"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+        <skinpart alpha="128" gradientalpha="255,255" gradientcolor="$IconHighlight,$IconHighlight-96" gradienttype="vertical" image="images/bgempty.png" dimension="w-1,h" location="0,0"/>
       </downhover>
       <highlight>
-        <icon>
-          <lighten>0</lighten>
-          <lightenamount>48</lightenamount>
-        </icon>
-         <skinpart>
-          <location>0,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>w-1,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>w-1,h</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$IconHighlightComp+32,$IconHighlightComp-64</gradientcolor>
-          <gradientalpha>255,255</gradientalpha>
-          <alpha>164</alpha>
-        </skinpart>
-        <skinpart>
-          <location>1,0</location>
-          <dimension>w-2,h</dimension>
-          <image>images/empty.png</image>
-          <color>clWhite</color>
-          <alpha>32</alpha>
-        </skinpart>
+        <icon lightenamount="48" lighten="0"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+        <skinpart alpha="164" gradientalpha="255,255" gradientcolor="$IconHighlightComp+32,$IconHighlightComp-64" gradienttype="vertical" image="images/bgempty.png" dimension="w-1,h" location="0,0"/>
+        <skinpart alpha="32" color="clWhite" image="images/empty.png" dimension="w-2,h" location="1,0"/>
       </highlight>
       <highlighthover>
-        <icon>
-          <lighten>1</lighten>
-          <lightenamount>24</lightenamount>
-        </icon>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>w-1,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>w-1,h</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$IconHighlightComp+32,$IconHighlightComp-64</gradientcolor>
-          <gradientalpha>255,255</gradientalpha>
-          <alpha>164</alpha>
-        </skinpart>
-        <skinpart>
-          <location>1,0</location>
-          <dimension>w-2,h</dimension>
-          <image>images/empty.png</image>
-          <color>clWhite</color>
-          <alpha>32</alpha>
-        </skinpart>
-      </highlighthover>   
+        <icon lightenamount="24" lighten="1"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+        <skinpart alpha="164" gradientalpha="255,255" gradientcolor="$IconHighlightComp+32,$IconHighlightComp-64" gradienttype="vertical" image="images/bgempty.png" dimension="w-1,h" location="0,0"/>
+        <skinpart alpha="32" color="clWhite" image="images/empty.png" dimension="w-2,h" location="1,0"/>
+      </highlighthover>
     </full>
-    <compact>
-      <text>
-        <draw>1</draw>
-        <location>25,ch-0</location>
-	<dimension>w-26,h</dimension>
-        <name>Calibri</name>
-        <size>10</size>
-        <cleartype>1</cleartype>
-        <color>$Text</color>
-        <shadow>1</shadow>
-        <shadowcolor>$TextShadow</shadowcolor>
-        <shadowtype>Right</shadowtype>
-        <shadowalpha>128</shadowalpha>
-      </text>
+    <compact spacing="1" dimension="100,27" location="0,0">
+      <text shadowalpha="128" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="10" name="Calibri" dimension="w-26,h" location="25,ch-0" draw="1"/>
       <highlightsettings>
-        <blendicon>
-          <apply>1</apply>
-          <max>120</max>
-          <min>0</min>
-          <value>0</value>
-          <change>20</change>
-          <color>$IconHighlightComp</color>
-        </blendicon>
-        <lighten>
-          <apply>1</apply>
-          <max>30</max>
-          <min>-60</min>
-          <value>-60</value>
-          <change>15</change>
-        </lighten>
+        <blendicon color="$IconHighlightComp" change="20" value="0" min="0" max="120" apply="1"/>
+        <lighten change="15" value="-60" min="-60" max="30" apply="1"/>
       </highlightsettings>
-      <icon>
-        <draw>1</draw>
-        <size>16,16</size>
-        <location>5,6</location>
-      </icon>    
-      <location>0,0</location>
-      <dimension>100,27</dimension>
-      <spacing>1</spacing>
-      <special>
-        <empty>1</empty>
-      </special>
+      <icon location="5,6" size="16,16" draw="1"/>
+      <special empty="1"/>
       <specialhover>
-        <icon>
-          <lighten>1</lighten>
-          <lightenamount>48</lightenamount>
-        </icon>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>4,26</dimension>
-          <image>images/Button-Left.png</image>
-	  <color>$Highlight</color>          
-          <alpha>$Alpha+0</alpha>
-        </skinpart>  
-        <skinpart>
-          <location>4,0</location>
-          <dimension>w-8,26</dimension>
-          <image>images/Button-Middle.png</image>
-	  <color>$Highlight</color>
-          <alpha>$Alpha+0</alpha>
-        </skinpart>  
-        <skinpart>
-          <location>w-4,0</location>
-          <dimension>4,26</dimension>
-          <image>images/Button-Right.png</image>
-	  <color>$Highlight</color>
-          <alpha>$Alpha+0</alpha>
-        </skinpart>
+        <icon lightenamount="48" lighten="1"/>
+        <skinpart alpha="$Alpha+0" color="$Highlight" image="images/Button-Left.png" dimension="4,26" location="0,0"/>
+        <skinpart alpha="$Alpha+0" color="$Highlight" image="images/Button-Middle.png" dimension="w-8,26" location="4,0"/>
+        <skinpart alpha="$Alpha+0" color="$Highlight" image="images/Button-Right.png" dimension="4,26" location="w-4,0"/>
       </specialhover>
-      <normal>
-	<empty>1</empty> 
-      </normal>
+      <normal empty="1"/>
       <normalhover>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>w-1,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>w-1,h</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$Special,$Special-96</gradientcolor>
-          <gradientalpha>255,255</gradientalpha>
-          <alpha>96</alpha>
-        </skinpart>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+        <skinpart alpha="96" gradientalpha="255,255" gradientcolor="$Special,$Special-96" gradienttype="vertical" image="images/bgempty.png" dimension="w-1,h" location="0,0"/>
       </normalhover>
       <down>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>w-1,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>w-1,h</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$IconHighlight,$IconHighlight-96</gradientcolor>
-          <gradientalpha>255,255</gradientalpha>
-          <alpha>96</alpha>
-        </skinpart>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+        <skinpart alpha="96" gradientalpha="255,255" gradientcolor="$IconHighlight,$IconHighlight-96" gradienttype="vertical" image="images/bgempty.png" dimension="w-1,h" location="0,0"/>
       </down>
       <downhover>
-        <icon>
-          <lighten>1</lighten>
-          <lightenamount>24</lightenamount>
-        </icon>     
-        <skinpart>
-          <location>0,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>w-1,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>w-1,h</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$IconHighlight,$IconHighlight-96</gradientcolor>
-          <gradientalpha>255,255</gradientalpha>
-          <alpha>128</alpha>
-        </skinpart>
+        <icon lightenamount="24" lighten="1"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+        <skinpart alpha="128" gradientalpha="255,255" gradientcolor="$IconHighlight,$IconHighlight-96" gradienttype="vertical" image="images/bgempty.png" dimension="w-1,h" location="0,0"/>
       </downhover>
       <highlight>
-        <icon>
-          <lighten>0</lighten>
-          <lightenamount>48</lightenamount>
-        </icon>
-         <skinpart>
-          <location>0,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>w-1,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>w-1,h</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$IconHighlightComp+32,$IconHighlightComp-64</gradientcolor>
-          <gradientalpha>255,255</gradientalpha>
-          <alpha>164</alpha>
-        </skinpart>
-        <skinpart>
-          <location>1,0</location>
-          <dimension>w-2,h</dimension>
-          <image>images/empty.png</image>
-          <color>clWhite</color>
-          <alpha>32</alpha>
-        </skinpart>
+        <icon lightenamount="48" lighten="0"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+        <skinpart alpha="164" gradientalpha="255,255" gradientcolor="$IconHighlightComp+32,$IconHighlightComp-64" gradienttype="vertical" image="images/bgempty.png" dimension="w-1,h" location="0,0"/>
+        <skinpart alpha="32" color="clWhite" image="images/empty.png" dimension="w-2,h" location="1,0"/>
       </highlight>
       <highlighthover>
-        <icon>
-          <lighten>1</lighten>
-          <lightenamount>24</lightenamount>
-        </icon>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>w-1,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>w-1,h</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$IconHighlightComp+32,$IconHighlightComp-64</gradientcolor>
-          <gradientalpha>255,255</gradientalpha>
-          <alpha>164</alpha>
-        </skinpart>
-        <skinpart>
-          <location>1,0</location>
-          <dimension>w-2,h</dimension>
-          <image>images/empty.png</image>
-          <color>clWhite</color>
-          <alpha>32</alpha>
-        </skinpart>
-      </highlighthover>         
+        <icon lightenamount="24" lighten="1"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+        <skinpart alpha="164" gradientalpha="255,255" gradientcolor="$IconHighlightComp+32,$IconHighlightComp-64" gradienttype="vertical" image="images/bgempty.png" dimension="w-1,h" location="0,0"/>
+        <skinpart alpha="32" color="clWhite" image="images/empty.png" dimension="w-2,h" location="1,0"/>
+      </highlighthover>
     </compact>
-    <mini>
-      <text>
-        <draw>0</draw>
-      </text>
-      <overlaytext>
-        <draw>1</draw>
-        <location>2,-3</location>
-        <name>Calibri</name>
-        <size>9</size>
-        <cleartype>1</cleartype>
-        <color>$Text</color>
-        <shadow>1</shadow>
-        <shadowcolor>$TextShadow</shadowcolor>
-        <shadowtype>Right</shadowtype>
-        <shadowalpha>255</shadowalpha>
-      </overlaytext>
+    <mini spacing="1" dimension="30,27" location="0,0">
+      <text draw="0"/>
+      <overlaytext shadowalpha="255" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="9" name="Calibri" location="2,-3" draw="1"/>
       <highlightsettings>
-        <blendicon>
-          <apply>1</apply>
-          <max>120</max>
-          <min>0</min>
-          <value>0</value>
-          <change>20</change>
-          <color>$IconHighlightComp</color>
-        </blendicon>
-        <lighten>
-          <apply>1</apply>
-          <max>30</max>
-          <min>-60</min>
-          <value>-60</value>
-          <change>15</change>
-        </lighten>
+        <blendicon color="$IconHighlightComp" change="20" value="0" min="0" max="120" apply="1"/>
+        <lighten change="15" value="-60" min="-60" max="30" apply="1"/>
       </highlightsettings>
-      <icon>
-        <draw>1</draw>
-        <size>22,22</size>
-        <location>cw-11,ch-11</location>
-      </icon>      
-      <location>0,0</location>
-      <dimension>30,27</dimension>
-      <spacing>1</spacing>     
-      <special>
-        <empty>1</empty>
-      </special>
+      <icon location="cw-11,ch-11" size="22,22" draw="1"/>
+      <special empty="1"/>
       <specialhover>
-        <icon>
-          <lighten>0</lighten>
-          <lightenamount>16</lightenamount>
-        </icon>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>w-1,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>w-1,h</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$IconHighlight,$IconHighlight-96</gradientcolor>
-          <gradientalpha>255,255</gradientalpha>
-          <alpha>96</alpha>
-        </skinpart>
+        <icon lightenamount="16" lighten="0"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+        <skinpart alpha="96" gradientalpha="255,255" gradientcolor="$IconHighlight,$IconHighlight-96" gradienttype="vertical" image="images/bgempty.png" dimension="w-1,h" location="0,0"/>
       </specialhover>
       <normal>
-        <icon>
-          <lighten>0</lighten>
-          <lightenamount>48</lightenamount>
-        </icon>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>w-1,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>w-1,h</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$IconHighlight,$IconHighlight-96</gradientcolor>
-          <gradientalpha>255,255</gradientalpha>
-          <alpha>148</alpha>
-        </skinpart>
+        <icon lightenamount="48" lighten="0"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+        <skinpart alpha="148" gradientalpha="255,255" gradientcolor="$IconHighlight,$IconHighlight-96" gradienttype="vertical" image="images/bgempty.png" dimension="w-1,h" location="0,0"/>
       </normal>
       <normalhover>
-        <icon>
-          <lighten>1</lighten>
-          <lightenamount>24</lightenamount>
-        </icon>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>w-1,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>w-1,h</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$IconHighlight+32,$IconHighlight-96</gradientcolor>
-          <gradientalpha>255,255</gradientalpha>
-          <alpha>148</alpha>
-        </skinpart>
-        <skinpart>
-          <location>1,0</location>
-          <dimension>w-2,h</dimension>
-          <image>images/empty.png</image>
-          <color>clWhite</color>
-          <alpha>64</alpha>
-        </skinpart>
+        <icon lightenamount="24" lighten="1"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+        <skinpart alpha="148" gradientalpha="255,255" gradientcolor="$IconHighlight+32,$IconHighlight-96" gradienttype="vertical" image="images/bgempty.png" dimension="w-1,h" location="0,0"/>
+        <skinpart alpha="64" color="clWhite" image="images/empty.png" dimension="w-2,h" location="1,0"/>
       </normalhover>
       <down>
-        <icon>
-          <lighten>1</lighten>
-          <lightenamount>48</lightenamount>
-        </icon>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>w-1,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>w-1,h</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$IconHighlight+48,$IconHighlight-96</gradientcolor>
-          <gradientalpha>255,255</gradientalpha>
-          <alpha>148</alpha>
-        </skinpart>
-        <skinpart>
-          <location>1,0</location>
-          <dimension>w-2,h</dimension>
-          <image>images/empty.png</image>
-          <color>clWhite</color>
-          <alpha>64</alpha>
-        </skinpart>
+        <icon lightenamount="48" lighten="1"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+        <skinpart alpha="148" gradientalpha="255,255" gradientcolor="$IconHighlight+48,$IconHighlight-96" gradienttype="vertical" image="images/bgempty.png" dimension="w-1,h" location="0,0"/>
+        <skinpart alpha="64" color="clWhite" image="images/empty.png" dimension="w-2,h" location="1,0"/>
       </down>
       <downhover>
-        <text>
-          <color>$Text</color>
-          <shadowalpha>196</shadowalpha>
-        </text>
-        <icon>
-          <lighten>1</lighten>
-          <lightenamount>64</lightenamount>
-        </icon>     
-        <skinpart>
-          <location>0,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>w-1,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>w-1,h</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$IconHighlight+48,$IconHighlight-96</gradientcolor>
-          <gradientalpha>255,255</gradientalpha>
-          <alpha>148</alpha>
-        </skinpart>
-        <skinpart>
-          <location>1,0</location>
-          <dimension>w-2,h</dimension>
-          <image>images/empty.png</image>
-          <color>clWhite</color>
-          <alpha>96</alpha>
-        </skinpart>
+        <text shadowalpha="196" color="$Text"/>
+        <icon lightenamount="64" lighten="1"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+        <skinpart alpha="148" gradientalpha="255,255" gradientcolor="$IconHighlight+48,$IconHighlight-96" gradienttype="vertical" image="images/bgempty.png" dimension="w-1,h" location="0,0"/>
+        <skinpart alpha="96" color="clWhite" image="images/empty.png" dimension="w-2,h" location="1,0"/>
       </downhover>
       <highlight>
-        <icon>
-          <lighten>0</lighten>
-          <lightenamount>48</lightenamount>
-        </icon>
-         <skinpart>
-          <location>0,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>w-1,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>w-1,h</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$IconHighlightComp+32,$IconHighlightComp-64</gradientcolor>
-          <gradientalpha>255,255</gradientalpha>
-          <alpha>164</alpha>
-        </skinpart>
+        <icon lightenamount="48" lighten="0"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+        <skinpart alpha="164" gradientalpha="255,255" gradientcolor="$IconHighlightComp+32,$IconHighlightComp-64" gradienttype="vertical" image="images/bgempty.png" dimension="w-1,h" location="0,0"/>
       </highlight>
       <highlighthover>
-        <icon>
-          <lighten>1</lighten>
-          <lightenamount>24</lightenamount>
-        </icon>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>w-1,0</location>
-          <dimension>1,h</dimension>
-          <image>images/empty.png</image>
-          <color>$Border</color>
-          <alpha>$Alpha</alpha>
-        </skinpart>
-        <skinpart>
-          <location>0,0</location>
-          <dimension>w-1,h</dimension>
-          <image>images/bgempty.png</image>
-          <gradienttype>vertical</gradienttype>
-          <gradientcolor>$IconHighlightComp+32,$IconHighlightComp-64</gradientcolor>
-          <gradientalpha>255,255</gradientalpha>
-          <alpha>164</alpha>
-        </skinpart>
-      </highlighthover>   
+        <icon lightenamount="24" lighten="1"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+        <skinpart alpha="164" gradientalpha="255,255" gradientcolor="$IconHighlightComp+32,$IconHighlightComp-64" gradienttype="vertical" image="images/bgempty.png" dimension="w-1,h" location="0,0"/>
+      </highlighthover>
     </mini>
   </taskitem>
-  <minithrobber>
-    <dimension>6,6</dimension>
-    <location>0,0</location>
-    <bottomlocation>0,2</bottomlocation>
+  <minithrobber bottomlocation="0,2" location="0,0" dimension="6,6">
     <normal>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>1,h</dimension>
-        <image>images/empty.png</image>
-        <color>0</color>
-        <alpha>$Alpha+128</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-1,0</location>
-        <dimension>1,h</dimension>
-        <image>images/empty.png</image>
-        <color>0</color>
-        <alpha>$Alpha+128</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,0</location>
-        <dimension>w-2,1</dimension>
-        <image>images/empty.png</image>
-        <color>0</color>
-        <alpha>$Alpha+128</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,h-1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/empty.png</image>
-        <color>0</color>
-        <alpha>$Alpha+128</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,1</location>
-        <dimension>w-3,h-3</dimension>
-        <image>images/bgempty.png</image>
-        <gradienttype>vertical</gradienttype>
-        <gradientcolor>$Special,$Special-32</gradientcolor>
-        <gradientalpha>255,255</gradientalpha>
-        <alpha>$Alpha+128</alpha>
-      </skinpart>  
+      <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="1,h" location="0,0"/>
+      <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+      <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="w-2,1" location="1,0"/>
+      <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="w-2,1" location="1,h-1"/>
+      <skinpart alpha="$Alpha+128" gradientalpha="255,255" gradientcolor="$Special,$Special-32" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1"/>
     </normal>
     <hover>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>1,h</dimension>
-        <image>images/empty.png</image>
-        <color>0</color>
-        <alpha>$Alpha+128</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-1,0</location>
-        <dimension>1,h</dimension>
-        <image>images/empty.png</image>
-        <color>0</color>
-        <alpha>$Alpha+128</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,0</location>
-        <dimension>w-2,1</dimension>
-        <image>images/empty.png</image>
-        <color>0</color>
-        <alpha>$Alpha+128</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,h-1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/empty.png</image>
-        <color>0</color>
-        <alpha>$Alpha+128</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,1</location>
-        <dimension>w-3,h-3</dimension>
-        <image>images/bgempty.png</image>
-        <gradienttype>vertical</gradienttype>
-        <gradientcolor>$Special,$Special+32</gradientcolor>
-        <gradientalpha>255,255</gradientalpha>
-        <alpha>$Alpha+128</alpha>
-      </skinpart>  
+      <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="1,h" location="0,0"/>
+      <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+      <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="w-2,1" location="1,0"/>
+      <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="w-2,1" location="1,h-1"/>
+      <skinpart alpha="$Alpha+128" gradientalpha="255,255" gradientcolor="$Special,$Special+32" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1"/>
     </hover>
     <down>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>1,h</dimension>
-        <image>images/empty.png</image>
-        <color>0</color>
-        <alpha>$Alpha+128</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-1,0</location>
-        <dimension>1,h</dimension>
-        <image>images/empty.png</image>
-        <color>0</color>
-        <alpha>$Alpha+128</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,0</location>
-        <dimension>w-2,1</dimension>
-        <image>images/empty.png</image>
-        <color>0</color>
-        <alpha>$Alpha+128</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,h-1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/empty.png</image>
-        <color>0</color>
-        <alpha>$Alpha+128</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,1</location>
-        <dimension>w-3,h-3</dimension>
-        <image>images/bgempty.png</image>
-        <gradienttype>vertical</gradienttype>
-        <gradientcolor>$Special,$Special-32</gradientcolor>
-        <gradientalpha>255,255</gradientalpha>
-        <alpha>$Alpha+128</alpha>
-      </skinpart>  
+      <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="1,h" location="0,0"/>
+      <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+      <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="w-2,1" location="1,0"/>
+      <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="w-2,1" location="1,h-1"/>
+      <skinpart alpha="$Alpha+128" gradientalpha="255,255" gradientcolor="$Special,$Special-32" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1"/>
     </down>
   </minithrobber>
-  <button>
-    <text>
-      <location>cw+iwh+2,ch-1</location>
-      <name>Calibri</name>
-      <bold>0</bold>
-      <size>10</size>
-      <cleartype>1</cleartype>
-      <color>$Text</color>
-      <shadow>1</shadow>
-      <shadowcolor>$TextShadow</shadowcolor>
-      <shadowtype>Right</shadowtype>
-      <shadowalpha>128</shadowalpha>
-    </text>
-    <icon>
-      <draw>1</draw>
-      <size>20,20</size>
-      <location>cw-10,3</location>
-    </icon>    
-    <location>0,0</location>
-    <dimension>w,27</dimension>    
-    <widthmod>16</widthmod>
-    <normal>
-      <empty>1</empty> 
-    </normal>
+  <button widthmod="16" dimension="w,27" location="0,0">
+    <text shadowalpha="128" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="10" bold="0" name="Calibri" location="cw+iwh+2,ch-1"/>
+    <icon location="cw-10,3" size="20,20" draw="1"/>
+    <normal empty="1"/>
     <hover>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>1,h</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-1,0</location>
-        <dimension>1,h</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>w-1,h</dimension>
-        <image>images/bgempty.png</image>
-        <gradienttype>vertical</gradienttype>
-        <gradientcolor>$Special,$Special-96</gradientcolor>
-        <gradientalpha>255,255</gradientalpha>
-        <alpha>96</alpha>
-      </skinpart>
+      <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="0,0"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+      <skinpart alpha="96" gradientalpha="255,255" gradientcolor="$Special,$Special-96" gradienttype="vertical" image="images/bgempty.png" dimension="w-1,h" location="0,0"/>
     </hover>
     <down>
-      <text>
-        <location>cw+iwh+2+1,ch-1+1</location>
-      </text>
-      <icon>
-        <lighten>1</lighten>
-        <lightenamount>24</lightenamount>
-        <location>cw-10+1,3+1</location>
-      </icon> 
-      <skinpart>
-        <location>0,0</location>
-        <dimension>1,h</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-1,0</location>
-        <dimension>1,h</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>w-1,h</dimension>
-        <image>images/bgempty.png</image>
-        <gradienttype>vertical</gradienttype>
-        <gradientcolor>$Special,$Special-96</gradientcolor>
-        <gradientalpha>255,255</gradientalpha>
-        <alpha>48</alpha>
-      </skinpart>
-    </down> 
+      <text location="cw+iwh+2+1,ch-1+1"/>
+      <icon location="cw-10+1,3+1" lightenamount="24" lighten="1"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="0,0"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+      <skinpart alpha="48" gradientalpha="255,255" gradientcolor="$Special,$Special-96" gradienttype="vertical" image="images/bgempty.png" dimension="w-1,h" location="0,0"/>
+    </down>
   </button>
-  <font>
-    <locationTL>0,-5</locationTL>
-    <locationBL>0,8</locationBL>
-    <small>
-      <bold>0</bold>
-      <name>Tahoma</name>
-      <size>8</size>
-      <cleartype>1</cleartype>
-      <color>$Text</color>
-      <shadow>1</shadow>
-      <shadowcolor>$TextShadow</shadowcolor>
-      <shadowtype>Outline</shadowtype>
-      <shadowalpha>196</shadowalpha>
-      <location>0,0</location>
-    </small>
-    <medium>
-      <name>Calibri</name>
-      <size>10</size>
-      <bold>0</bold>
-      <color>$Text</color>
-      <cleartype>1/</cleartype>	
-      <shadow>1</shadow>
-      <shadowcolor>$TextShadow</shadowcolor>
-      <shadowtype>Outline</shadowtype>
-      <shadowalpha>255</shadowalpha>
-      <location>0,-1</location>
-    </medium>
-    <big>
-      <name>Calibri</name>
-      <size>12</size>
-      <bold>0</bold>
-      <color>$Text</color>
-      <cleartype>1/</cleartype>	
-      <shadow>1</shadow>
-      <shadowcolor>$TextShadow</shadowcolor>
-      <shadowtype>Outline</shadowtype>
-      <shadowalpha>196</shadowalpha>
-      <location>0,0</location>
-    </big>
+  <font locationBL="0,8" locationTL="0,-5">
+    <small location="0,0" shadowalpha="196" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="8" name="Tahoma" bold="0"/>
+    <medium location="0,-1" shadowalpha="255" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" cleartype="1/" color="$Text" bold="0" size="10" name="Calibri"/>
+    <big location="0,0" shadowalpha="196" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" cleartype="1/" color="$Text" bold="0" size="12" name="Calibri"/>
   </font>
-  <progressbar>
-    <location>0,6,</location>
-    <dimension>w,14</dimension>
-    <locationTL>0,2</locationTL>
-    <dimensionTL>w,10</dimensionTL>
-    <locationBL>0,14</locationBL>
-    <dimensionBL>w,10</dimensionBL>
+  <progressbar dimensionBL="w,10" locationBL="0,14" dimensionTL="w,10" locationTL="0,2" dimension="w,14" location="0,6,">
     <background>
-      <skinpart>
-        <location>1,1</location>
-        <dimension>56,29</dimension>
-        <image>images/Button-Overlay-Top-Left.png</image>
-	<color>$Border</color>
-        <alpha>$BAlpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-27,h-16</location>
-        <dimension>26,16</dimension>
-        <image>images/Button-Overlay-Bottom-Right.png</image>
-	<color>$Border</color>
-        <alpha>$BAlpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>1,h</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border+32</color>
-        <alpha>$BAlpha+32</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,0</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border+32</color>
-        <alpha>$BAlpha+32</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-1,0</location>
-        <dimension>1,h</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border+32</color>
-        <alpha>$BAlpha+32</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,h-1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border+32</color>
-        <alpha>$BAlpha+32</alpha>
-      </skinpart>
+      <skinpart alpha="$BAlpha" color="$Border" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="1,1"/>
+      <skinpart alpha="$BAlpha" color="$Border" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-27,h-16"/>
+      <skinpart alpha="$BAlpha+32" color="$Border+32" image="images/Empty.png" dimension="1,h" location="0,0"/>
+      <skinpart alpha="$BAlpha+32" color="$Border+32" image="images/Empty.png" dimension="w-2,1" location="1,0"/>
+      <skinpart alpha="$BAlpha+32" color="$Border+32" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+      <skinpart alpha="$BAlpha+32" color="$Border+32" image="images/Empty.png" dimension="w-2,1" location="1,h-1"/>
     </background>
-    <progress>
-      <location>1,1</location>
-      <dimension>w-3,h-2</dimension>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>w-1,h</dimension>
-        <image>images/bgempty.png</image>
-        <gradienttype>vertical</gradienttype>
-        <gradientcolor>$Special+16,$Special-64</gradientcolor>
-        <gradientalpha>255,255</gradientalpha>
-        <alpha>196</alpha>
-        </skinpart>
-      <skinpart>
-        <location>w-1,0</location>
-        <dimension>1,h</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border</color>
-        <alpha>196</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>56,29</dimension>
-        <image>images/Button-Overlay-Top-Left.png</image>
-	<color>$Border</color>
-        <alpha>64</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-27,h-16</location>
-        <dimension>26,16</dimension>
-        <image>images/Button-Overlay-Bottom-Right.png</image>
-	<color>$Border</color>
-        <alpha>64</alpha>
-      </skinpart>
+    <progress dimension="w-3,h-2" location="1,1">
+      <skinpart alpha="196" gradientalpha="255,255" gradientcolor="$Special+16,$Special-64" gradienttype="vertical" image="images/bgempty.png" dimension="w-1,h" location="0,0"/>
+      <skinpart alpha="196" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+      <skinpart alpha="64" color="$Border" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="0,0"/>
+      <skinpart alpha="64" color="$Border" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-27,h-16"/>
     </progress>
   </progressbar>
-  <edit>
-    <dimension>w,18</dimension>
-    <location>0,3</location>
-    <editxoffsets>1,1</editxoffsets>
-    <edityoffsets>1,3</edityoffsets>
-    <text>
-      <color>$Text-32</color>
-      <name>Calibri</name>
-      <size>9</size>
-    </text>
+  <edit edityoffsets="1,3" editxoffsets="1,1" location="0,3" dimension="w,18">
+    <text size="9" name="Calibri" color="$Text-32"/>
     <normal>
-      <skinpart>
-        <location>1,1</location>
-        <dimension>56,29</dimension>
-        <image>images/Button-Overlay-Top-Left.png</image>
-	<color>$Special</color>
-        <alpha>$BAlpha-64</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-27,h-16</location>
-        <dimension>26,16</dimension>
-        <image>images/Button-Overlay-Bottom-Right.png</image>
-	<color>$Special</color>
-        <alpha>$BAlpha-64</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>1,h</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border+32</color>
-        <alpha>$BAlpha+32</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,0</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border+32</color>
-        <alpha>$BAlpha+32</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-1,0</location>
-        <dimension>1,h</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border+32</color>
-        <alpha>$BAlpha+32</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,h-1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border+32</color>
-        <alpha>$BAlpha+32</alpha>
-      </skinpart>
+      <skinpart alpha="$BAlpha-64" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="1,1"/>
+      <skinpart alpha="$BAlpha-64" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-27,h-16"/>
+      <skinpart alpha="$BAlpha+32" color="$Border+32" image="images/Empty.png" dimension="1,h" location="0,0"/>
+      <skinpart alpha="$BAlpha+32" color="$Border+32" image="images/Empty.png" dimension="w-2,1" location="1,0"/>
+      <skinpart alpha="$BAlpha+32" color="$Border+32" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+      <skinpart alpha="$BAlpha+32" color="$Border+32" image="images/Empty.png" dimension="w-2,1" location="1,h-1"/>
     </normal>
     <focus>
-      <text>
-        <color>$Text</color>
-      </text>
-      <skinpart>
-        <location>1,1</location>
-        <dimension>56,29</dimension>
-        <image>images/Button-Overlay-Top-Left.png</image>
-	<color>$Special</color>
-        <alpha>$BAlpha-32</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-27,h-16</location>
-        <dimension>26,16</dimension>
-        <image>images/Button-Overlay-Bottom-Right.png</image>
-	<color>$Special</color>
-        <alpha>$BAlpha-32</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>1,h</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border+32</color>
-        <alpha>$BAlpha+16+32</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,0</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border+32</color>
-        <alpha>$BAlpha+16+32</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-1,0</location>
-        <dimension>1,h</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border+32</color>
-        <alpha>$BAlpha+16+32</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,h-1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border+32</color>
-        <alpha>$BAlpha+16+32</alpha>
-      </skinpart>     
+      <text color="$Text"/>
+      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="1,1"/>
+      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-27,h-16"/>
+      <skinpart alpha="$BAlpha+16+32" color="$Border+32" image="images/Empty.png" dimension="1,h" location="0,0"/>
+      <skinpart alpha="$BAlpha+16+32" color="$Border+32" image="images/Empty.png" dimension="w-2,1" location="1,0"/>
+      <skinpart alpha="$BAlpha+16+32" color="$Border+32" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+      <skinpart alpha="$BAlpha+16+32" color="$Border+32" image="images/Empty.png" dimension="w-2,1" location="1,h-1"/>
     </focus>
     <hover>
-      <text>
-        <color>$Text</color>
-      </text>
-      <skinpart>
-        <location>1,1</location>
-        <dimension>56,29</dimension>
-        <image>images/Button-Overlay-Top-Left.png</image>
-	<color>$Special</color>
-        <alpha>$BAlpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-27,h-16</location>
-        <dimension>26,16</dimension>
-        <image>images/Button-Overlay-Bottom-Right.png</image>
-	<color>$Special</color>
-        <alpha>$BAlpha-48</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>1,h</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border+32</color>
-        <alpha>$BAlpha+16+32</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,0</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border+32</color>
-        <alpha>$BAlpha+16+32</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-1,0</location>
-        <dimension>1,h</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border+32</color>
-        <alpha>$BAlpha+16+32</alpha>
-      </skinpart>
-      <skinpart>
-        <location>1,h-1</location>
-        <dimension>w-2,1</dimension>
-        <image>images/Empty.png</image>
-        <color>$Border+32</color>
-        <alpha>$BAlpha+16+32</alpha>
-      </skinpart> 
+      <text color="$Text"/>
+      <skinpart alpha="$BAlpha-48" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="1,1"/>
+      <skinpart alpha="$BAlpha-48" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-27,h-16"/>
+      <skinpart alpha="$BAlpha+16+32" color="$Border+32" image="images/Empty.png" dimension="1,h" location="0,0"/>
+      <skinpart alpha="$BAlpha+16+32" color="$Border+32" image="images/Empty.png" dimension="w-2,1" location="1,0"/>
+      <skinpart alpha="$BAlpha+16+32" color="$Border+32" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+      <skinpart alpha="$BAlpha+16+32" color="$Border+32" image="images/Empty.png" dimension="w-2,1" location="1,h-1"/>
     </hover>
   </edit>
-  <notify>
-    <dimension>400,h</dimension>
-    <location>0,0</location>
-    <catboffset>8,8</catboffset>
-    <calroffset>8,8</calroffset>
-    <text>
-      <draw>1</draw>
-      <dimension>w-32-4-4-4,h</dimension>
-      <location>40,ch+1</location>
-      <name>Calibri</name>
-      <size>10</size>
-      <cleartype>1</cleartype>
-      <color>$Text</color>
-      <shadow>1</shadow>
-      <shadowcolor>$TextShadow</shadowcolor>
-      <shadowtype>Right</shadowtype>
-      <shadowalpha>196</shadowalpha>
-    </text>
-    <icon>
-      <draw>1</draw>
-      <size>32,32</size>
-      <location>4,hh-ihh</location>
-    </icon>    
+  <notify calroffset="8,8" catboffset="8,8" location="0,0" dimension="400,h">
+    <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="10" name="Calibri" location="40,ch+1" dimension="w-32-4-4-4,h" draw="1"/>
+    <icon location="4,hh-ihh" size="32,32" draw="1"/>
     <background>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>w,h</dimension>
-        <image>images/empty.png</image>
-        <color>$Background</color>
-        <alpha>$Alpha+16</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>w-1,1</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,1</location>
-        <dimension>1,h-2</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-1,0</location>
-        <dimension>1,h</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,h-1</location>
-        <dimension>w-1,1</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
+      <skinpart alpha="$Alpha+16" color="$Background" image="images/empty.png" dimension="w,h" location="0,0"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="w-1,1" location="0,0"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h-2" location="0,1"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="w-1,1" location="0,h-1"/>
     </background>
-  </notify>    
-  <taskpreview>
-    <dimension>5,400</dimension>
-    <location>0,0</location>
-    <catboffset>24,6</catboffset>
-    <calroffset>6,6</calroffset>
-    <text>
-      <draw>1</draw>
-      <dimension>w-42,0</dimension>
-      <location>cw,-1</location>
-      <name>Calibri</name>
-      <size>12</size>
-      <cleartype>1</cleartype>
-      <color>$Text</color>
-      <shadow>1</shadow>
-      <shadowcolor>$TextShadow</shadowcolor>
-      <shadowtype>Right</shadowtype>
-      <shadowalpha>196</shadowalpha>
-    </text>
+  </notify>
+  <taskpreview calroffset="6,6" catboffset="24,6" location="0,0" dimension="5,400">
+    <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="12" name="Calibri" location="cw,-1" dimension="w-42,0" draw="1"/>
     <background>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>w,h</dimension>
-        <image>images/empty.png</image>
-        <color>$Background</color>
-        <alpha>$Alpha+16</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>w-1,1</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,1</location>
-        <dimension>1,h-2</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-1,0</location>
-        <dimension>1,h</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,h-1</location>
-        <dimension>w-1,1</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
+      <skinpart alpha="$Alpha+16" color="$Background" image="images/empty.png" dimension="w,h" location="0,0"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="w-1,1" location="0,0"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h-2" location="0,1"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="w-1,1" location="0,h-1"/>
     </background>
     <hover>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>w,h</dimension>
-        <image>images/empty.png</image>
-        <color>$Background</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>w,h</dimension>
-        <image>images/empty.png</image>
-        <color>$Special-32</color>
-        <alpha>$Alpha-64</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>w-1,1</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,1</location>
-        <dimension>1,h-2</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-1,0</location>
-        <dimension>1,h</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,h-1</location>
-        <dimension>w-1,1</dimension>
-        <image>images/empty.png</image>
-        <color>$Border</color>
-        <alpha>$Alpha</alpha>
-      </skinpart>
+      <skinpart alpha="$Alpha" color="$Background" image="images/empty.png" dimension="w,h" location="0,0"/>
+      <skinpart alpha="$Alpha-64" color="$Special-32" image="images/empty.png" dimension="w,h" location="0,0"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="w-1,1" location="0,0"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h-2" location="0,1"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+      <skinpart alpha="$Alpha" color="$Border" image="images/empty.png" dimension="w-1,1" location="0,h-1"/>
     </hover>
-  </taskpreview>    
+  </taskpreview>
 </sharpESkin>
