@@ -558,7 +558,7 @@
           <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$Background+32</color>
-          <alpha>$Alpha^-64</alpha>
+          <alpha>$Alpha-64</alpha>
         </skinpart> 
 	      <skinpart>
           <location>7,0</location>
@@ -582,7 +582,7 @@
           <enabled>$IsBarTop</enabled>
           <image>images/TaskbarLeftInvert.png</image>
           <color>$Background+32</color>
-          <alpha>$Alpha^-64</alpha>
+          <alpha>$Alpha-64</alpha>
         </skinpart>
         <skinpart>
           <location>7,0</location>
@@ -1212,7 +1212,7 @@
           <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$Background+32</color>
-          <alpha>$Alpha^-64</alpha>
+          <alpha>$Alpha-64</alpha>
         </skinpart>
         <skinpart>
           <location>7,0</location>
@@ -1236,7 +1236,7 @@
           <enabled>$IsBarTop</enabled>
           <image>images/TaskbarLeftInvert.png</image>
           <color>$Background+32</color>
-          <alpha>$Alpha^-64</alpha>
+          <alpha>$Alpha-64</alpha>
         </skinpart>
         <skinpart>
           <location>7,0</location>
@@ -1871,7 +1871,7 @@
           <enabled>$IsBarBottom</enabled>
           <image>images/TaskbarLeft.png</image>
           <color>$Background+32</color>
-          <alpha>$Alpha^-64</alpha>
+          <alpha>$Alpha-64</alpha>
         </skinpart>
         <skinpart>
           <location>7,0</location>
@@ -1895,7 +1895,7 @@
           <enabled>$IsBarTop</enabled>
           <image>images/TaskbarLeftInvert.png</image>
           <color>$Background+32</color>
-          <alpha>$Alpha^-64</alpha>
+          <alpha>$Alpha-64</alpha>
         </skinpart>
         <skinpart>
           <location>7,0</location>
