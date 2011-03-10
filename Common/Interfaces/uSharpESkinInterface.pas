@@ -28,6 +28,7 @@ unit uSharpESkinInterface;
 interface
 
 uses
+  GR32,
   uISharpESkin,
   SharpESkin,
   SharpTypes,
@@ -40,12 +41,17 @@ type
     private
       FSkinManager : TSharpESkinManager;
       FSkinManagerInterface : ISharpESkinManager;
+      FBackground : TBitmap32;
     public
       constructor Create(AOwner: TComponent; Skins : TSharpESkinItems = ALL_SHARPE_SKINS); reintroduce;
       destructor Destroy; override;
 
       function GetSkinManager : ISharpESkinManager; stdcall;
       property SkinManager : ISharpESkinManager read GetSkinManager;
+
+      function GetBackground : TBitmap32; stdcall;
+      property Background : TBitmap32 read GetBackground;
+      procedure SetBackground(Value : TBitmap32);
   end;
 
 implementation
@@ -67,9 +73,19 @@ begin
   inherited;
 end;
 
+function TSharpESkinInterface.GetBackground: TBitmap32;
+begin
+  result := FBackground;
+end;
+
 function TSharpESkinInterface.GetSkinManager: ISharpESkinManager;
 begin
   result := FSkinManagerInterface;
+end;
+
+procedure TSharpESkinInterface.SetBackground(Value: TBitmap32);
+begin
+  FBackground := Value;
 end;
 
 end.

@@ -382,6 +382,8 @@ begin
 end;
 
 procedure TCustomSharpEGraphicControl.Paint;
+var
+  R : TRect;
 begin
   SetBitmapSizes;
   //Get background from window canvas
@@ -393,7 +395,18 @@ begin
       Canvas.Handle, 0, 0, SRCCOPY);
   end else
   begin
-    FBackground.Draw(0,0,Rect(Left,Top,Left+Width,Top+Height),FSpecialBackground);
+    R.Left := Left;
+    R.Top := Top;
+    R.Right := Left + Width;
+    R.Bottom := Top + Height;
+    if (self.Parent <> nil) then
+    begin
+      R.Left := R.Left + self.Parent.Left;
+      R.Top := R.Top + self.Parent.Top;
+      R.Right := R.Right + self.Parent.Left;
+      R.Bottom := R.Bottom + self.Parent.Top;
+    end;
+    FBackground.Draw(0,0,R,FSpecialBackground)
   end;
 
   DrawSkin;
