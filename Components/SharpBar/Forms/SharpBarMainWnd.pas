@@ -1436,6 +1436,8 @@ begin
     mfParamID := -255;
   end;
 
+  FSkinInterface.SetBackground(SharpEBar.Skin);
+
   RegisterActions;
   SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));
 end;
