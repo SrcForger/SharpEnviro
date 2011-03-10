@@ -1231,7 +1231,7 @@ procedure TSkinText.LoadFromXML(xml: TJvSimpleXMLElem; pFontList : TFontList);
 var
   s : string;
 begin
-  with xml.Items do
+  with xml.Properties do
   begin
     if ItemNamed['name'] <> nil then
     begin
@@ -2186,7 +2186,9 @@ begin
   sp := TSkinPart.create(FBmpList);
   try
     result := false;
-    with xml.Items do
+
+    // load skin part properties
+    with xml.Properties do
     begin
       if ItemNamed['Empty'] <> nil then
         FIsEmpty := BoolValue('Empty',False);
@@ -2200,8 +2202,6 @@ begin
         FGradientColorS.SetPoint(Value('gradientcolor','0,0'));
       if ItemNamed['gradientalpha'] <> nil then
         FGradientAlphaS.SetPoint(Value('gradientalpha','0,0'));
-      if ItemNamed['text'] <> nil then
-        FSkinText.LoadFromXml(ItemNamed['text'],pFontList);
       if ItemNamed['location'] <> nil then
         FSkinDim.SetLocation(Value('location', '0,0'));
       if ItemNamed['dimension'] <> nil then
@@ -2247,6 +2247,14 @@ begin
           result := (FBitmapId >= 0);
         end;
       end else emptyImage := True;
+    end;
+
+    // load sub items
+    with xml.Items do
+    begin
+      if ItemNamed['text'] <> nil then
+        FSkinText.LoadFromXml(ItemNamed['text'],pFontList);
+
       for i := 0 to Count - 1 do
       begin
         if lowercase(Item[i].Name) = 'skinpart' then
@@ -2532,7 +2540,7 @@ end;
 
 procedure TSkinIcon.LoadFromXML(xml: TJvSimpleXMLElem);
 begin
-  with xml.Items do
+  with xml.Properties do
   begin
     if ItemNamed['size'] <> nil then
       FSize.SetPoint(Value('size', 'w,h'));
@@ -2775,7 +2783,7 @@ end;
 
 procedure TSharpESkinHighlightItem.LoadFromXML(xml: TJvSimpleXmlElem; parentItem: ISharpESkinHighlightItem);
 begin
-  with xml.items do
+  with xml.Properties do
   begin
     if ItemNamed['Value'] <> nil then
       self.FValue := IntValue('Value', parentItem.Value);

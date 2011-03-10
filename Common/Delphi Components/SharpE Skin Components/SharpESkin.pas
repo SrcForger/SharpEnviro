@@ -58,7 +58,6 @@ type
   TSharpETaskItemSkin = class;
   TSharpEMenuSkin = class;
   TSharpEMenuItemSkin = class;
-  TSharpETaskSwitchSkin = class;
   TSharpENotifySkin = class;
   TSharpETaskPreviewSkin = class;
   TSkinEvent = procedure of object;
@@ -99,7 +98,6 @@ type
     FBarSkin          : TSharpEBarSkin;
     FNotifySkin       : TSharpENotifySkin;
     FTaskItemSkin     : TSharpETaskItemSkin;
-    FTaskSwitchSkin   : TSharpETaskSwitchSkin;
     FMiniThrobberSkin : TSharpEMiniThrobberSkin;
     FTaskPreviewSkin  : TSharpETaskPreviewSkin;
 
@@ -400,68 +398,6 @@ type
     property CALROffset : TPoint read GetCALROffset;
     property Location   : TPoint read GetLocation;
     property Dimension  : TPoint read GetDimension;
-  end;
-
-  TSharpETaskSwitchSkin = class(TInterfacedObject, ISharpETaskSwitchSkin)
-  private
-    FSkinDim : TSkinDim;
-
-    FBackground : TSkinPart;
-    FItem       : TSkinPart;
-    FItemHover  : TSkinPart;
-
-    FBackgroundInterface : ISharpESkinPart;
-    FItemInterface       : ISharpEskinPart;
-    FItemHoverInterface  : ISharpESkinPart;
-
-    FItemPreview      : TSkinDim;
-    FItemHoverPreview : TSkinDim;
-    FTBOffset         : TSkinPoint;
-    FLROffset         : TSkinPoint;
-    FWrapCount        : integer;
-    FSpacing          : integer;
-
-    function GetBackground : ISharpESkinPart; stdcall;
-    function GetItem       : ISharpESkinPart; stdcall;
-    function GetItemHover  : ISharpESkinPart; stdcall;
-
-    function GetItemDimension : TPoint; stdcall;
-    function GetItemHoverDimension : TPoint; stdcall;    
-    function GetItemPreviewLocation : TPoint; stdcall;
-    function GetItemPreviewDimension : TPoint; stdcall;
-    function GetItemHoverPreviewLocation : TPoint; stdcall;
-    function GetItemHoverPreviewDimension : TPoint; stdcall;
-    function GetTBOffset : TPoint; stdcall;
-    function GetLROffset : TPoint; stdcall;
-
-    function GetWrapCount : integer; stdcall;
-    function GetSpacing : integer; stdcall;
-  public
-    constructor Create(BmpList : TSkinBitmapList);
-    destructor Destroy; override;
-    procedure Clear;
-    procedure SaveToStream(Stream: TStream);
-    procedure LoadFromStream(Stream: TStream);
-    procedure LoadFromXML(xml: TJclSimpleXmlElem; path: string);
-    procedure UpdateDynamicProperties(cs: ISharpEScheme);
-
-    property Background : ISharpESkinPart read GetBackground;
-    property Item       : ISharpESkinPart read GetItem;
-    property ItemHover  : ISharpESkinPart read GetItemHover;
-
-    property ItemDimension : TPoint read GetItemDimension;
-    property ItemHoverDimension : TPoint read GetItemHoverDimension;
-    property ItemPreviewLocation : TPoint read GetItemPreviewLocation;
-    property ItemPreviewDimension : TPoint read GetItemPreviewDimension;
-    property ItemHoverPreviewLocation : TPoint read GetItemHoverPreviewLocation;
-    property ItemHoverPreviewDimension : TPoint read GetItemHoverPreviewDimension;
-    property TBOffset : TPoint read GetTBOffset;
-    property LROffset : TPoint read GetLROffset; 
-
-    property WrapCount : integer read GetWrapCount;
-    property Spacing   : integer read GetSpacing;
-
-    property SkinDim : TSkinDim read FSkinDim;
   end;
 
   TSharpEMenuSkin = class(TInterfacedObject, ISharpEMenuSkin)
@@ -930,11 +866,6 @@ begin
     FMenuItemSkin := TSharpEMenuItemSkin.Create(FBitmapList);
     FMenuItemInterface := FMenuItemSkin;
   end;
-  if scTaskSwitch in FLoadSkins then
-  begin
-    FTaskSwitchSkin := TSharpETaskSwitchSkin.Create(FBitmapList);
-    FTaskSwitchInterface := FTaskSwitchSkin;
-  end;
   if scNotify in FLoadSkins then
   begin
     FNotifySkin := TSharpENotifySkin.Create(FBitmapList);
@@ -1010,11 +941,6 @@ begin
     FMenuItemInterface := nil;
     FMenuItemSkin := nil;
   end;
-  if FTaskSwitchSkin <> nil then
-  begin
-    FTaskSwitchInterface := nil;
-    FTaskSwitchSkin := nil;
-  end;
   if FNotifySkin <> nil then
   begin
     FNotifyInterface := nil;
@@ -1047,7 +973,6 @@ begin
   if FEditSkin <> nil then FEditSkin.UpdateDynamicProperties(Scheme);
   if FMenuSkin <> nil then FMenuSkin.UpdateDynamicProperties(Scheme);
   if FMenuItemSkin <> nil then FMenuItemSkin.UpdateDynamicProperties(Scheme);
-  if FTaskSwitchSkin <> nil then FTaskSwitchSkin.UpdateDynamicProperties(Scheme);
   if FNotifySkin <> nil then FNotifySkin.UpdateDynamicProperties(Scheme);
   if FTaskPreviewSkin <> nil then FTaskPreviewSkin.UpdateDynamicProperties(Scheme);
 
@@ -1169,12 +1094,6 @@ begin
     RemoveskinPartBitmaps(FMenuItemSkin.FHoverSubItem,List);
     RemoveskinPartBitmaps(FMenuItemSkin.FLabelItem,List);
     RemoveskinPartBitmaps(FMenuItemSkin.FSeparator,List);
-  end;
-  if FTaskSwitchSkin <> nil then
-  begin
-    RemoveskinpartBitmaps(FTaskSwitchSkin.FBackground,List);
-    RemoveskinpartBitmaps(FTaskSwitchSkin.FItem,List);
-    RemoveskinpartBitmaps(FTaskSwitchSkin.FItemHover,List);
   end;
   if FNotifySkin <> nil then
   begin
@@ -1315,20 +1234,8 @@ begin
       Stream.CopyFrom(tempStream, Size);
     end;
 
-    //Write Task Switch Skin
-    if FTaskSwitchSkin <> nil then
-    begin
-      tempStream.clear;
-      StringSaveToStream('TaskSwitch', Stream);
-      FTaskSwitchSkin.SaveToStream(tempStream);
-      size := tempStream.Size;
-      tempStream.Position := 0;
-      Stream.WriteBuffer(size, sizeof(size));
-      Stream.CopyFrom(tempStream, Size);
-    end;
-
     //Write Notify Skin
-    if FTaskSwitchSkin <> nil then
+    if FNotifySkin <> nil then
     begin
       tempStream.clear;
       StringSaveToStream('Notify', Stream);
@@ -1417,8 +1324,6 @@ begin
         FMenuSkin.LoadFromStream(Stream)
       else if (temp = 'MenuItem') and (FMenuItemSkin <> nil) then
         FMenuItemSkin.LoadFromStream(Stream)
-      else if (temp = 'TaskSwitch') and (FTaskSwitchSkin <> nil) then
-        FTaskSwitchSkin.LoadFromStream(Stream)
       else if (temp = 'Notify') and (FNotifySkin <> nil) then
         FNotifySkin.LoadFromStream(Stream)
       else if (temp = 'TaskPreview') and (FTaskPreviewSkin <> nil) then
@@ -1462,8 +1367,6 @@ begin
     FMenuItemSkin.Clear;
   if FTaskItemSkin <> nil then
     FTaskItemSkin.Clear;
-  if FTaskSwitchSkin <> nil then
-    FTaskSwitchSkin.Clear;
   if FNotifySkin <> nil then
     FNotifySkin.Clear;
   if FTaskPreviewSkin <> nil then
@@ -1542,7 +1445,8 @@ begin
 
   // Load Details
   if FXml.Root.Items.ItemNamed['font'] <> nil then
-     with FXml.Root.Items.ItemNamed['font'].Items do
+  begin
+     with FXml.Root.Items.ItemNamed['font'].Properties do
      begin
        if ItemNamed['locationTL'] <> nil then
        begin
@@ -1558,6 +1462,9 @@ begin
           FTextPosBottomTL.SetPoint(ItemNamed['locationBottomTL'].Value);
        if ItemNamed['locationBottomBL'] <> nil then
           FTextPosBottomBL.SetPoint(ItemNamed['locationBottomBL'].Value);
+     end;
+     with FXml.Root.Items.ItemNamed['font'].Items do
+     begin
        if ItemNamed['small'] <> nil then
           FSmallText.LoadFromXML(ItemNamed['small'],FontList);
        if ItemNamed['medium'] <> nil then
@@ -1567,6 +1474,7 @@ begin
        if ItemNamed['osd'] <> nil then
           FOSDText.LoadFromXML(ItemNamed['osd'],FontList);
      end;
+  end;
   if FXml.Root.Items.ItemNamed['header'] <> nil then
     FSkinHeader.LoadFromXml(FXml.Root.Items.ItemNamed['header'], path);
   if (FXml.Root.Items.ItemNamed['button'] <> nil) and (FButtonSkin <> nil) then
@@ -1585,8 +1493,6 @@ begin
     FMenuSkin.LoadFromXML(FXml.Root.Items.ItemNamed['menu'],path);
   if (FXml.Root.Items.ItemNamed['menuitem'] <> nil) and (FMenuItemSkin <> nil) then
     FMenuItemSkin.LoadFromXML(FXml.Root.Items.ItemNamed['menuitem'],path);
-  if (FXml.Root.Items.ItemNamed['taskswitch'] <> nil) and (FTaskSwitchSkin <> nil) then
-    FTaskSwitchSkin.LoadFromXML(FXML.Root.Items.ItemNamed['taskswitch'],path);
   if (FXml.Root.Items.ItemNamed['notify'] <> nil) and (FNotifySkin <> nil) then
     FNotifySkin.LoadFromXML(FXML.Root.Items.ItemNamed['notify'],path);
   if (FXml.Root.Items.ItemNamed['taskpreview'] <> nil) and (FTaskPreviewSkin <> nil) then
@@ -1594,210 +1500,6 @@ begin
 
   if FBarSkin <> nil then
      FBarSkin.CheckValid;
-end;
-
-//***************************************
-//* TSharpETaskSwitchSkin
-//***************************************
-
-constructor TSharpETaskSwitchSkin.Create(BmpList:  TSkinBitmapList);
-begin
-  FSkinDim := TSkinDim.Create;
-  FSkinDim.SetLocation('0','0');
-  FSkinDim.SetDimension('100','100');
-
-  FBackground := TSkinPart.Create(BmpList);
-  FItem       := TSkinPart.Create(BmpList);
-  FItemHover  := TSkinPart.Create(BmpList);
-
-  FBackgroundInterface := FBackground;
-  FItemInterface       := FItem;
-  FItemHoverInterface  := FItemHover;
-
-  FItemPreview := TSkinDim.Create;
-  FItemPreview.SetLocation('0','0');
-  FItemPreview.SetDimension('48','48');
-  FItemHoverPreview := TSkinDim.Create;
-  FItemHoverPreview.SetLocation('0','0');
-  FItemHoverPreview.SetDimension('48','48');
-  FTBOffset   := TSkinPoint.Create;
-  FTBOffset.SetPoint('0','0');
-  FLROffset   := TSkinPoint.Create;
-  FLROffset.SetPoint('0','0');
-  FWrapCount := 8;
-  FSpacing   := 2;
-end;
-
-destructor TSharpETaskSwitchSkin.Destroy;
-begin
-  FSkinDim.Free;
-
-  FBackgroundInterface := nil;
-  FItemInterface := nil;
-  FItemHoverInterface := nil;
-
-  FItemPreview.Free;
-  FItemHoverPreview.Free;
-  FTBOffset.Free;
-  FLROffset.Free;
-end;
-
-function TSharpETaskSwitchSkin.GetBackground: ISharpESkinPart;
-begin
-  result := FBackgroundInterface;
-end;
-
-function TSharpETaskSwitchSkin.GetItem: ISharpESkinPart;
-begin
-  result := FItemInterface;
-end;
-
-function TSharpETaskSwitchSkin.GetItemDimension: TPoint;
-begin
-  result := Point(FItem.SkinDim.WidthAsInt,FItem.SkinDim.HeightAsInt);
-end;
-
-function TSharpETaskSwitchSkin.GetItemHover: ISharpESkinPart;
-begin
-  result := FItemHoverInterface;
-end;
-
-function TSharpETaskSwitchSkin.GetItemHoverDimension: TPoint;
-begin
-  result := Point(FItemHover.SkinDim.WidthAsInt,FItemHover.SkinDim.HeightAsInt);
-end;
-
-function TSharpETaskSwitchSkin.GetItemHoverPreviewDimension: TPoint;
-begin
-  result := Point(FItemHoverPreview.WidthAsInt,FItemHoverPreview.HeightAsInt);
-end;
-
-function TSharpETaskSwitchSkin.GetItemHoverPreviewLocation: TPoint;
-begin
-  result := Point(FItemHoverPreview.XAsInt,FItemHoverPreview.YAsInt);
-end;
-
-function TSharpETaskSwitchSkin.GetItemPreviewDimension: TPoint;
-begin
-  result := Point(FItemPreview.WidthAsInt,FItemPreview.HeightAsInt);
-end;
-
-function TSharpETaskSwitchSkin.GetItemPreviewLocation: TPoint;
-begin
-  result := Point(FItemPreview.XAsInt,FItemPreview.YAsInt);
-end;
-
-function TSharpETaskSwitchSkin.GetLROffset: TPoint;
-begin
-  result := Point(FLROffset.XAsInt,FLROffset.YAsInt);
-end;
-
-function TSharpETaskSwitchSkin.GetSpacing: integer;
-begin
-  result := FSpacing;
-end;
-
-function TSharpETaskSwitchSkin.GetTBOffset: TPoint;
-begin
-  result := point(FTBOffset.XAsInt,FTBOffset.YAsInt);
-end;
-
-function TSharpETaskSwitchSkin.GetWrapCount: integer;
-begin
-  result := FWrapCount;
-end;
-
-procedure TSharpETaskSwitchSkin.UpdateDynamicProperties(cs: ISharpEScheme);
-begin
-  FBackground.UpdateDynamicProperties(cs);
-  FItem.UpdateDynamicProperties(cs);
-  FItemHover.UpdateDynamicProperties(cs);
-end;
-
-procedure TSharpETaskSwitchSkin.Clear;
-begin
-  FSkinDim.SetLocation('0','0');
-  FSkinDim.SetDimension('100','100');
-  FTBOffset.SetPoint('0','0');
-  FLROffset.SetPoint('0','0');
-  FItemPreview.SetLocation('0','0');
-  FItemPreview.SetDimension('48','48');
-  FItemHoverPreview.SetLocation('0','0');
-  FItemHoverPreview.SetDimension('48','48');
-  FBackground.Clear;
-  FItem.Clear;
-  FItemHover.Clear;
-  FWrapCount := 8;
-  FSpacing   := 2;  
-end;
-
-procedure TSharpETaskSwitchSkin.LoadFromStream(Stream : TStream);
-begin
-  FSkinDim.LoadFromStream(Stream);
-  FBackground.LoadFromStream(Stream);
-  FItem.LoadFromStream(Stream);
-  FItemHover.LoadFromStream(Stream);
-  FItemPreview.LoadFromStream(Stream);
-  FItemHoverPreview.LoadFromStream(Stream);
-  FTBOffset.LoadFromStream(Stream);
-  FLROffset.LoadFromStream(Stream);
-  Stream.ReadBuffer(FWrapCount,SizeOf(FWrapCount));
-  Stream.ReadBuffer(FSpacing,SizeOf(FSpacing));
-end;
-
-procedure TSharpETaskSwitchSkin.SaveToStream(Stream : TStream);
-begin
-  FSkinDim.SaveToStream(Stream);
-  FBackground.SaveToStream(Stream);
-  FItem.SaveToStream(Stream);
-  FItemHover.SaveToStream(Stream);
-  FItemPreview.SaveToStream(Stream);
-  FItemHoverPreview.SaveToStream(Stream);
-  FTBOffset.SaveToStream(Stream);
-  FLROffset.SaveToStream(Stream);
-  Stream.WriteBuffer(FWrapCount,SizeOf(FWrapCount));
-  Stream.WriteBuffer(FSpacing,SizeOf(FSpacing));
-end;
-
-procedure TSharpETaskSwitchSkin.LoadFromXML(xml: TJclSimpleXmlElem; path: string);
-var
-  SkinText: TSkinText;
-begin
-  SkinText := TSkinText.Create(True);
-  SkinText.SetLocation('cw', 'ch');
-  try
-    with xml.Items do
-    begin
-      if ItemNamed['text'] <> nil then
-        SkinText.LoadFromXML(ItemNamed['text'], FontList);
-      if ItemNamed['background'] <> nil then
-        FBackground.LoadFromXML(ItemNamed['background'], path, SkinText, FontList);
-      if ItemNamed['item'] <> nil then
-        FItem.LoadFromXML(ItemNamed['item'], path, SkinText);
-      if ItemNamed['itemhover'] <> nil then
-        FItemHover.LoadFromXML(ItemNamed['itemhover'], path, SkinText);
-      if ItemNamed['dimension'] <> nil then
-        FSkinDim.SetDimension(Value('dimension', 'w,h'));
-      if ItemNamed['location'] <> nil then
-        FSkinDim.SetLocation(Value('location','0,0'));
-      if ItemNamed['tboffset'] <> nil then
-        FTBOffset.SetPoint(Value('tboffset','0,0'));
-      if ItemNamed['lroffset'] <> nil then
-        FLROffset.SetPoint(Value('lroffset','0,0'));
-      if ItemNamed['previewdim'] <> nil then
-        FItemPreview.SetDimension(Value('previewdim', '48,48'));
-      if ItemNamed['previewloc'] <> nil then
-        FItemPreview.SetLocation(Value('previewloc','0,0'));
-      if ItemNamed['hoverpreviewdim'] <> nil then
-        FItemHoverPreview.SetDimension(Value('hoverpreviewdim', '48,48'));
-      if ItemNamed['hoverpreviewloc'] <> nil then
-        FItemHoverPreview.SetLocation(Value('hoverpreviewloc','0,0'));
-      FWrapCount := IntValue('WrapCount',8);
-      FSpacing := IntValue('Spacing',2);
-    end;
-  finally
-    SkinText.SelfInterface := nil;
-  end;
 end;
 
 //***************************************
@@ -1901,12 +1603,8 @@ begin
   SkinText := TSkinText.Create(True);
   SkinText.SetLocation('cw', 'ch');
   try
-    with xml.Items do
+    with xml.Properties do
     begin
-      if ItemNamed['text'] <> nil then
-        SkinText.LoadFromXML(ItemNamed['text'],FontList);
-      if ItemNamed['background'] <> nil then
-        FBackground.LoadFromXML(ItemNamed['background'], path, SkinText, FontList);
       if ItemNamed['dimension'] <> nil then
         FSkinDim.SetDimension(Value('dimension', 'w,h'));
       if ItemNamed['location'] <> nil then
@@ -1916,7 +1614,15 @@ begin
       if ItemNamed['lroffset'] <> nil then
         FLROffset.SetPoint(Value('lroffset','0,0'));
       if ItemNamed['widthlimit'] <> nil then
-        FWidthLimit.SetPoint(Value('widthlimit','0,0'));
+        FWidthLimit.SetPoint(Value('widthlimit','0,0'));    
+    end;
+
+    with xml.Items do
+    begin
+      if ItemNamed['text'] <> nil then
+        SkinText.LoadFromXML(ItemNamed['text'],FontList);
+      if ItemNamed['background'] <> nil then
+        FBackground.LoadFromXML(ItemNamed['background'], path, SkinText, FontList);
     end;
   finally
     SkinText.SelfInterface := nil;
@@ -2055,16 +1761,20 @@ begin
   SkinText := TSkinText.Create(True);
   SkinText.SetLocation('cw', 'ch');
   try
+    with xml.Properties do
+    begin
+      if ItemNamed['dimension'] <> nil then
+        FSkinDim.SetDimension(Value('dimension', 'w,h'));
+      if ItemNamed['location'] <> nil then
+        FSkinDim.SetLocation(Value('location','0,0'));
+    end;
+
     with xml.Items do
     begin
       if ItemNamed['icon'] <> nil then
         SkinIcon.LoadFromXML(ItemNamed['icon']);
       if ItemNamed['text'] <> nil then
         SkinText.LoadFromXML(ItemNamed['text'], FontList);
-      if ItemNamed['dimension'] <> nil then
-        FSkinDim.SetDimension(Value('dimension', 'w,h'));
-      if ItemNamed['location'] <> nil then
-        FSkinDim.SetLocation(Value('location','0,0'));
       if ItemNamed['Separator'] <> nil then
         FSeparator.LoadFromXML(ItemNamed['Separator'], path, SkinText, FontList);
       if ItemNamed['normal'] <> nil then
@@ -2174,6 +1884,21 @@ begin
   SkinText := TSkinText.create(True);
   SkinText.SetLocation('cw', 'ch');
   try
+    with xml.Properties do
+    begin
+      if ItemNamed['dimension'] <> nil then
+        FSkinDim.SetDimension(Value('dimension', 'w,h'));
+      if ItemNamed['location'] <> nil then
+      begin
+        FSkinDim.SetLocation(Value('location','0,0'));
+        FSkinDimBottom.SetLocation(Value('location','0,0'));
+      end;
+      if ItemNamed['locationbottom'] <> nil then
+        FSkinDimBottom.SetLocation(Value('locationbottom','0,0'));        
+
+      FWidthMod := IntValue('WidthMod',20);
+    end;
+
     with xml.Items do
     begin
       if ItemNamed['text'] <> nil then
@@ -2187,17 +1912,6 @@ begin
         FDown.LoadFromXML(ItemNamed['down'], path, SkinText, SkinIcon, FontList);
       if ItemNamed['hover'] <> nil then
         FHover.LoadFromXML(ItemNamed['hover'], path, SkinText, SkinIcon, FontList);
-      if ItemNamed['dimension'] <> nil then
-        FSkinDim.SetDimension(Value('dimension', 'w,h'));
-      if ItemNamed['location'] <> nil then
-      begin
-        FSkinDim.SetLocation(Value('location','0,0'));
-        FSkinDimBottom.SetLocation(Value('location','0,0'));
-      end;
-      if ItemNamed['locationbottom'] <> nil then
-        FSkinDimBottom.SetLocation(Value('locationbottom','0,0'));        
-
-      FWidthMod := IntValue('WidthMod',20);
     end;
   finally
     SkinText.SelfInterface := nil;
@@ -2430,6 +2144,17 @@ begin
   SkinText := TSkinText.Create(True);
   SkinText.SetLocation('cw', 'ch');
   try
+    with xml.Properties do
+    begin
+      if ItemNamed['dimension'] <> nil then
+        FSkinDim.SetDimension(Value('dimension', 'w,h'));
+      if ItemNamed['location'] <> nil then
+        FSkinDim.SetLocation(Value('location', '0,0'));
+      if ItemNamed['bottomlocation'] <> nil then
+        FBottomSkinDim.SetLocation(Value('bottomlocation', '0,0'))
+      else FBottomSkinDim.Assign(FSkinDim);    
+    end;
+
     with xml.Items do
     begin
       if ItemNamed['text'] <> nil then
@@ -2440,13 +2165,6 @@ begin
         FDown.LoadFromXML(ItemNamed['down'], path, SkinText, FontList);
       if ItemNamed['hover'] <> nil then
         FHover.LoadFromXML(ItemNamed['hover'], path, SkinText, FontList);
-      if ItemNamed['dimension'] <> nil then
-        FSkinDim.SetDimension(Value('dimension', 'w,h'));
-      if ItemNamed['location'] <> nil then
-        FSkinDim.SetLocation(Value('location', '0,0'));
-      if ItemNamed['bottomlocation'] <> nil then
-        FBottomSkinDim.SetLocation(Value('bottomlocation', '0,0'))
-        else FBottomSkinDim.Assign(FSkinDim);
     end;
   finally
     SkinText.SelfInterface := nil;
@@ -2571,14 +2289,8 @@ begin
   SkinText := TSkinText.Create(True);
   SkinText.SetLocation('cw', 'ch');
   try
-    with xml.Items do
+    with xml.Properties do
     begin
-      if ItemNamed['text'] <> nil then
-        SkinText.LoadFromXML(ItemNamed['text'], FontList);
-      if ItemNamed['normal'] <> nil then
-        FNormal.LoadFromXML(ItemNamed['normal'], path, SkinText, FontList);
-      if ItemNamed['focus'] <> nil then
-        FFocus.LoadFromXML(ItemNamed['focus'], path, SkinText, FontList);
       if ItemNamed['dimension'] <> nil then
       begin
         FSkinDim.SetDimension(Value('dimension', 'w,h'));
@@ -2586,8 +2298,6 @@ begin
       end;
       if ItemNamed['dimensionbottom'] <> nil then
         FSkinDimBottom.SetDimension(Value('dimensionbottom', 'w,h'));
-      if ItemNamed['hover'] <> nil then
-        FHover.LoadFromXMl(ItemNamed['hover'], path, SkinText, FontList);
       if ItemNamed['editxoffsets'] <> nil then
         FEditXOffsets.SetPoint(Value('editxoffsets','2,2'));
       if ItemNamed['edityoffsets'] <> nil then
@@ -2598,7 +2308,19 @@ begin
         FSkinDimBottom.SetLocation(Value('location', '0,0')); // use as default
       end;
       if ItemNamed['locationbottom'] <> nil then
-        FSkinDimBottom.SetLocation(Value('locationbottom', '0,0'));
+        FSkinDimBottom.SetLocation(Value('locationbottom', '0,0'));        
+    end;
+
+    with xml.Items do
+    begin
+      if ItemNamed['text'] <> nil then
+        SkinText.LoadFromXML(ItemNamed['text'], FontList);
+      if ItemNamed['normal'] <> nil then
+        FNormal.LoadFromXML(ItemNamed['normal'], path, SkinText, FontList);
+      if ItemNamed['focus'] <> nil then
+        FFocus.LoadFromXML(ItemNamed['focus'], path, SkinText, FontList);
+      if ItemNamed['hover'] <> nil then
+        FHover.LoadFromXMl(ItemNamed['hover'], path, SkinText, FontList);
     end;
   finally
     SkinText.SelfInterface := nil;
@@ -2765,13 +2487,8 @@ begin
   SkinText := TSkinText.Create(True);
   SkinText.SetLocation('cw', 'ch');
   try
-    with xml.Items do
+    with xml.Properties do
     begin
-      if ItemNamed['background'] <> nil then
-        FBackGround.LoadFromXML(ItemNamed['background'], path, SkinText);
-      if ItemNamed['progress'] <> nil then
-        FProgress.LoadFromXML(ItemNamed['progress'], path, SkinText);
-
       if ItemNamed['location'] <> nil then
       begin
         FSkinDim.SetLocation(Value('location', '0,0'));
@@ -2786,7 +2503,6 @@ begin
         FSkinDimBottom.SetLocation(Value('locationbottom', '0,0'));
       if ItemNamed['dimensionbottom'] <> nil then
         FSkinDimBottom.SetDimension(Value('dimensionbottom', 'w,h'));
-
       if ItemNamed['locationTL'] <> nil then
       begin
         FSkinDimTL.SetLocation(Value('locationTL', '0,0'));
@@ -2801,7 +2517,6 @@ begin
         FSkinDimBottomTL.SetLocation(Value('locationbottomTL', '0,0'));
       if ItemNamed['dimensionbottomTL'] <> nil then
         FSkinDimBottomTL.SetDimension(Value('dimensionbottomTL', 'w,h'));
-
       if ItemNamed['locationBL'] <> nil then
       begin
         FSkinDimBL.SetLocation(Value('locationBL', '0,0'));
@@ -2816,14 +2531,21 @@ begin
         FSkinDimBottomBL.SetLocation(Value('locationbottomBL', '0,0'));
       if ItemNamed['dimensionbottomBL'] <> nil then
         FSkinDimBottomTL.SetDimension(Value('dimensionbottomBL', 'w,h'));
+      if ItemNamed['smallmode'] <> nil then
+        FSmallModeOffset.SetPoint(Value('smallmode', '0,0'));                         
+    end;
 
+    with xml.Items do
+    begin
+      if ItemNamed['background'] <> nil then
+        FBackGround.LoadFromXML(ItemNamed['background'], path, SkinText);
+      if ItemNamed['progress'] <> nil then
+        FProgress.LoadFromXML(ItemNamed['progress'], path, SkinText);
       if ItemNamed['smallbackground'] <> nil then
         FBackGroundSmall.LoadFromXML(ItemNamed['smallbackground'], path,
           SkinText);
       if ItemNamed['smallprogress'] <> nil then
         FProgressSmall.LoadFromXML(ItemNamed['smallprogress'], path, SkinText);
-      if ItemNamed['smallmode'] <> nil then
-        FSmallModeOffset.SetPoint(Value('smallmode', '0,0'));
     end;
   finally
     SkinText.SelfInterface := nil;
@@ -3126,38 +2848,8 @@ end;
 procedure TSharpEBarSkin.LoadFromXML(xml: TJclSimpleXmlElem; path: string);
 begin
   try
-    with xml.Items do
+    with xml.Properties do
     begin
-      if ItemNamed['throbber'] <> nil then
-        with ItemNamed['throbber'].Items do
-        begin
-          if ItemNamed['dimension'] <> nil then
-          begin
-            FThDim.SetDimension(Value('dimension', 'w,h'));
-            FThBDim.SetDimension(Value('dimension', 'w,h'));
-          end;
-          if ItemNamed['location'] <> nil then
-          begin
-            FThDim.SetLocation(Value('location', 'w,h'));
-            FThBDim.SetLocation(Value('location', 'w,h'));
-          end;
-          if ItemNamed['locationbottom'] <> nil then
-            FThBDim.SetLocation(Value('locationbottom', 'w,h'));
-          if ItemNamed['normal'] <> nil then
-            FThNormal.LoadFromXML(ItemNamed['normal'], path, nil);
-          if ItemNamed['down'] <> nil then
-            FThDown.LoadFromXML(ItemNamed['down'], path, nil);
-          if ItemNamed['hover'] <> nil then
-            FThHover.LoadFromXML(ItemNamed['hover'], path, nil);
-        end;
-      if ItemNamed['bar'] <> nil then
-        FBar.LoadFromXML(ItemNamed['bar'], path, nil);
-      if ItemNamed['barborder'] <> nil then
-        FBarBorder.LoadFromXML(ItemNamed['barborder'], path, nil);
-      if ItemNamed['barbottom'] <> nil then
-        FBarBottom.LoadFromXML(ItemNamed['barbottom'], path, nil);
-      if ItemNamed['barbottomborder'] <> nil then
-        FBarBottomBorder.LoadFromXML(ItemNamed['barbottomborder'], path, nil);
       if ItemNamed['dimension'] <> nil then
         FSkinDim.SetDimension(Value('dimension', 'w,h'));
       if ItemNamed['fsmod'] <> nil then
@@ -3182,6 +2874,46 @@ begin
         FSpecialHideForm := BoolValue('specialhideform', False);
       if ItemNamed['glasseffect'] <> nil then
         FGlassEffect := BoolValue('glasseffect',False);
+    end;
+
+    with xml.Items do
+    begin
+      if ItemNamed['throbber'] <> nil then
+      begin
+        with ItemNamed['throbber'].Properties do
+        begin
+          if ItemNamed['dimension'] <> nil then
+          begin
+            FThDim.SetDimension(Value('dimension', 'w,h'));
+            FThBDim.SetDimension(Value('dimension', 'w,h'));
+          end;
+          if ItemNamed['location'] <> nil then
+          begin
+            FThDim.SetLocation(Value('location', 'w,h'));
+            FThBDim.SetLocation(Value('location', 'w,h'));
+          end;
+          if ItemNamed['locationbottom'] <> nil then
+            FThBDim.SetLocation(Value('locationbottom', 'w,h'));        
+        end;
+
+        with ItemNamed['throbber'].Items do
+        begin
+          if ItemNamed['normal'] <> nil then
+            FThNormal.LoadFromXML(ItemNamed['normal'], path, nil);
+          if ItemNamed['down'] <> nil then
+            FThDown.LoadFromXML(ItemNamed['down'], path, nil);
+          if ItemNamed['hover'] <> nil then
+            FThHover.LoadFromXML(ItemNamed['hover'], path, nil);
+        end;
+      end;
+      if ItemNamed['bar'] <> nil then
+        FBar.LoadFromXML(ItemNamed['bar'], path, nil);
+      if ItemNamed['barborder'] <> nil then
+        FBarBorder.LoadFromXML(ItemNamed['barborder'], path, nil);
+      if ItemNamed['barbottom'] <> nil then
+        FBarBottom.LoadFromXML(ItemNamed['barbottom'], path, nil);
+      if ItemNamed['barbottomborder'] <> nil then
+        FBarBottomBorder.LoadFromXML(ItemNamed['barbottomborder'], path, nil);
     end;
   finally
   end;
@@ -3366,7 +3098,7 @@ end;
 
 procedure TSharpESkinHeader.LoadFromXml(xml: TJclSimpleXmlElem; path: string);
 begin
-  with xml.Items do
+  with xml.Properties do
   begin
     if ItemNamed['name'] <> nil then
       FName := Value('name', 'untitled');
@@ -3617,12 +3349,8 @@ begin
   SkinText := TSkinText.Create(True);
   SkinText.SetLocation('cw', 'ch');
   try
-    with xml.Items do
+    with xml.Properties do
     begin
-      if ItemNamed['icon'] <> nil then
-        SkinIcon.LoadFromXML(ItemNamed['icon']);
-      if ItemNamed['text'] <> nil then
-        SkinText.LoadFromXML(ItemNamed['text'], FontList);
       if ItemNamed['dimension'] <> nil then
         FSkinDim.SetDimension(Value('dimension', 'w,h'));
       if ItemNamed['location'] <> nil then
@@ -3630,7 +3358,15 @@ begin
       if ItemNamed['catboffset'] <> nil then
         FCATBOffset.SetPoint(Value('catboffset', '0,0'));
       if ItemNamed['calroffset'] <> nil then
-        FCALROffset.SetPoint(Value('calroffset','0,0'));
+        FCALROffset.SetPoint(Value('calroffset','0,0'));    
+    end;
+
+    with xml.Items do
+    begin
+      if ItemNamed['icon'] <> nil then
+        SkinIcon.LoadFromXML(ItemNamed['icon']);
+      if ItemNamed['text'] <> nil then
+        SkinText.LoadFromXML(ItemNamed['text'], FontList);
       if ItemNamed['background'] <> nil then
         FBackground.LoadFromXML(ItemNamed['background'], path, SkinText, SkinIcon, FontList);
     end;
@@ -3742,12 +3478,8 @@ begin
   SkinText := TSkinText.Create(True);
   SkinText.SetLocation('cw', 'ch');
   try
-    with xml.Items do
+    with xml.Properties do
     begin
-      if ItemNamed['icon'] <> nil then
-        SkinIcon.LoadFromXML(ItemNamed['icon']);
-      if ItemNamed['text'] <> nil then
-        SkinText.LoadFromXML(ItemNamed['text'], FontList);
       if ItemNamed['dimension'] <> nil then
         FSkinDim.SetDimension(Value('dimension', 'w,h'));
       if ItemNamed['location'] <> nil then
@@ -3756,6 +3488,14 @@ begin
         FCATBOffset.SetPoint(Value('catboffset', '0,0'));
       if ItemNamed['calroffset'] <> nil then
         FCALROffset.SetPoint(Value('calroffset','0,0'));
+    end;
+
+    with xml.Items do
+    begin
+      if ItemNamed['icon'] <> nil then
+        SkinIcon.LoadFromXML(ItemNamed['icon']);
+      if ItemNamed['text'] <> nil then
+        SkinText.LoadFromXML(ItemNamed['text'], FontList);
       if ItemNamed['background'] <> nil then
         FBackground.LoadFromXML(ItemNamed['background'], path, SkinText, SkinIcon, FontList);
       if ItemNamed['hover'] <> nil then
@@ -3966,6 +3706,16 @@ begin
   SkinIcon.DrawIcon := True;
 
   try
+    with xml.Properties do
+    begin
+      if ItemNamed['dimension'] <> nil then
+         FSkinDim.SetDimension(Value('dimension', 'w,h'));
+      if ItemNamed['location'] <> nil then
+         FSkinDim.SetLocation(Value('location','0,0'));
+      if ItemNamed['spacing'] <> nil then
+         FSpacing := IntValue('spacing',2);    
+    end;
+
     with xml.Items do
     begin
       if ItemNamed['text'] <> nil then
@@ -3996,12 +3746,6 @@ begin
       end;
       if ItemNamed['specialhover'] <> nil then
          FSpecialHover.LoadFromXML(ItemNamed['specialhover'],path,SkinText,SkinIcon, FontList);
-      if ItemNamed['dimension'] <> nil then
-         FSkinDim.SetDimension(Value('dimension', 'w,h'));
-      if ItemNamed['location'] <> nil then
-         FSkinDim.SetLocation(Value('location','0,0'));
-      if ItemNamed['spacing'] <> nil then
-         FSpacing := IntValue('spacing',2);
       if ItemNamed['highlightsettings']  <> nil then
         FHighlightSettings.LoadFromXML(ItemNamed['highlightsettings']);
     end;
