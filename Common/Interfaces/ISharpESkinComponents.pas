@@ -554,7 +554,6 @@ type
     function GetBarSkin          : ISharpEBarSkin; stdcall;
     function GetNotifySkin       : ISharpENotifySkin; stdcall;
     function GetTaskItemSkin     : ISharpETaskItemSkin; stdcall;
-    function GetTaskSwitchSkin   : ISharpETaskSwitchSkin; stdcall;
     function GetMiniThrobberSkin : ISharpEMiniThrobberSkin; stdcall;
     function GetTaskPreviewSkin  : ISharpETaskPreviewSkin; stdcall;
 
@@ -576,7 +575,6 @@ type
     property Bar          : ISharpEBarSkin read GetBarSkin;
     property Notify       : ISharpENotifySkin read GetNotifySkin;
     property TaskItem     : ISharpETaskItemSkin read GetTaskItemSkin;
-    property TaskSwitch   : ISharpETaskSwitchSkin read GetTaskSwitchSkin;
     property MiniThrobber : ISharpEMiniThrobberSkin read GetMiniThrobberSkin;
     property TaskPreview  : ISharpETaskPreviewSkin read GetTaskPreviewSkin;
 

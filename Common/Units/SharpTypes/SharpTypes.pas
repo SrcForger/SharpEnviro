@@ -42,13 +42,13 @@ type
 // Skin System
 type
   TSharpESkinItem = (scBasic,scButton,scBar,scProgressBar,scMiniThrobber,scEdit,
-                     scTaskItem,scMenu,scMenuItem,scTaskSwitch,scNotify,scTaskPreview);
+                     scTaskItem,scMenu,scMenuItem,scNotify,scTaskPreview);
   TSharpESkinItems = set of TSharpESkinItem;
   TSharpESkinShadowType = (stLeft,stRight,stOutline);
   
 const
  ALL_SHARPE_SKINS = [scBasic,scButton,scBar,scProgressBar,scMiniThrobber,scEdit,
-                     scTaskItem,scMenu,scMenuItem,scTaskSwitch,scNotify,scTaskPreview];
+                     scTaskItem,scMenu,scMenuItem,scNotify,scTaskPreview];
 
 // SharpBar
 type
