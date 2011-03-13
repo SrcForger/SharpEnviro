@@ -69,6 +69,7 @@ type
   TSharpESkinDesign = class(TInterfacedObject, ISharpESkinDesign)
   private
     FDefaultDesign: boolean;
+    FName: String;
     FSelfInterface : ISharpESkinDesign;
 
     FBitmapList: TSkinBitmapList;
@@ -137,7 +138,9 @@ type
     function GetTextPosTL       : TPoint; stdcall;
     function GetTextPosBL       : TPoint; stdcall;
     function GetTextPosBottomTL : TPoint; stdcall;
-    function GetTextPosBottomBL : TPoint; stdcall;     
+    function GetTextPosBottomBL : TPoint; stdcall;
+
+    function GetName : String; stdcall; 
   protected
   public
     constructor Create; overload;
@@ -145,6 +148,7 @@ type
     destructor Destroy; override;
 
     procedure Clear;
+    procedure Assign(src : TSharpESkinDesign);
 
     procedure LoadFromXml(xml: TJclSimpleXMLElem; path : String); virtual;
     procedure LoadFromStream(Stream: TStream); virtual;
@@ -181,6 +185,8 @@ type
     property TextPosBL       : TPoint read GetTextPosBL;
     property TextPosBottomTL : TPoint read GetTextPosBottomTL;
     property TextPosBottomBL : TPoint read GetTextPosBottomBL;
+
+    property Name : String read GetName;
 
     property BarSkin: TSharpEBarSkin read FBarSkin;
   end;
@@ -288,6 +294,7 @@ type
     constructor Create(BmpList : TSkinBitmapList); reintroduce;
     destructor Destroy; override;
     procedure Clear;
+    procedure Assign(src : TSharpETaskItemState);
     procedure UpdateDynamicProperties(cs: ISharpEScheme);
     procedure SaveToStream(Stream: TStream);
     procedure LoadFromStream(Stream: TStream);
@@ -332,6 +339,7 @@ type
     constructor Create(BmpList : TSkinBitmapList);
     destructor Destroy; override;
     procedure Clear;
+    procedure Assign(src : TSharpETaskItemSkin);
     function IsValid(tis : TSharpETaskItemStates) : boolean; stdcall;
     procedure SaveToStream(Stream: TStream);
     procedure LoadFromStream(Stream: TStream);
@@ -367,6 +375,7 @@ type
     constructor Create(BmpList : TSkinBitmapList);
     destructor Destroy; override;
     procedure Clear;
+    procedure Assign(src : TSharpETaskPreviewSkin);
     procedure SaveToStream(Stream: TStream);
     procedure LoadFromStream(Stream: TStream);
     procedure LoadFromXML(xml: TJclSimpleXmlElem; path: string);
@@ -399,6 +408,7 @@ type
     constructor Create(BmpList : TSkinBitmapList);
     destructor Destroy; override;
     procedure Clear;
+    procedure Assign(src: TSharpENotifySkin);
     procedure SaveToStream(Stream: TStream);
     procedure LoadFromStream(Stream: TStream);
     procedure LoadFromXML(xml: TJclSimpleXmlElem; path: string);
@@ -434,6 +444,7 @@ type
     constructor Create(BmpList : TSkinBitmapList);
     destructor Destroy; override;
     procedure Clear;
+    procedure Assign(src : TSharpEMenuSkin);
     procedure SaveToStream(Stream: TStream);
     procedure LoadFromStream(Stream: TStream);
     procedure LoadFromXML(xml: TJclSimpleXmlElem; path: string);
@@ -477,6 +488,7 @@ type
     constructor Create(BmpList : TSkinBitmapList);
     destructor Destroy; override;
     procedure Clear;
+    procedure Assign(src : TSharpEMenuItemSkin);
     procedure SaveToStream(Stream: TStream);
     procedure LoadFromStream(Stream: TStream);
     procedure LoadFromXML(xml: TJclSimpleXmlElem; path: string);
@@ -515,6 +527,7 @@ type
     constructor Create(BmpList : TSkinBitmapList);
     destructor Destroy; override;
     procedure Clear;
+    procedure Assign(Src : TSharpEButtonSkin);
     procedure SaveToStream(Stream: TStream);
     procedure LoadFromStream(Stream: TStream);
     procedure LoadFromXML(xml: TJclSimpleXmlElem; path: string);
@@ -569,6 +582,7 @@ type
     constructor Create(BmpList : TSkinBitmapList);
     destructor Destroy; override;
     procedure Clear;
+    procedure Assign(Src : TSharpEProgressBarSkin);
     procedure SaveToStream(Stream: TStream);
     procedure LoadFromStream(Stream: TStream);
     procedure LoadFromXML(xml: TJclSimpleXmlElem; path: string);
@@ -654,6 +668,7 @@ type
     constructor Create(BmpList : TSkinBitmapList);
     destructor Destroy; override;
     procedure Clear;
+    procedure Assign(Src : TSharpEBarSkin);
     procedure SaveToStream(Stream: TStream);
     procedure LoadFromStream(Stream: TStream);
     procedure NewSeed;
@@ -725,6 +740,7 @@ type
     constructor Create(BmpList : TSkinBitmapList);
     destructor Destroy; override;
     procedure Clear;
+    procedure Assign(src : TSharpEEditSkin);
     procedure SaveToStream(Stream: TStream);
     procedure LoadFromStream(Stream: TStream);
     procedure LoadFromXML(xml: TJclSimpleXmlElem; path: string);
@@ -769,6 +785,7 @@ type
     constructor Create(BmpList : TSkinBitmapList);
     destructor Destroy; override;
     procedure Clear;
+    procedure Assign(src : TSharpEMiniThrobberSkin);
     procedure SaveToStream(Stream: TStream);
     procedure LoadFromStream(Stream: TStream);
     procedure LoadFromXML(xml: TJclSimpleXmlElem; path: string);
@@ -931,7 +948,7 @@ procedure TSharpESkin.LoadFromXMLFile(filename : string);
 var
   Path: string;
   n : integer;
-  Skin : TSharpESkinDesign;
+  DefaultSkin, Skin : TSharpESkinDesign;
 begin
   if FontList <> nil then
     FontList.RefreshFontInfo;
@@ -960,13 +977,14 @@ begin
   Clear;
 
   // interate over all skin designs and find the default skin
+  DefaultSkin := nil;
   for n := 0 to Fxml.Root.Items.Count - 1 do
   begin
     if Fxml.Root.Items.Item[n].Properties.BoolValue('default',False) then
     begin
-      Skin := TSharpESkinDesign.Create(FLoadSkins);
-      Skin.LoadFromXML(Fxml.Root.Items.Item[n],Path);
-      SkinDesigns.Add(Skin);
+      DefaultSkin := TSharpESkinDesign.Create(FLoadSkins);
+      DefaultSkin.LoadFromXML(Fxml.Root.Items.Item[n],Path);
+      SkinDesigns.Add(DefaultSkin);
       break;
     end;
   end;
@@ -977,6 +995,8 @@ begin
     if not (Fxml.Root.Items.Item[n].Properties.BoolValue('default',False)) then
     begin
       Skin := TSharpESkinDesign.Create(FLoadSkins);
+      if (DefaultSkin <> nil) then
+        Skin.Assign(DefaultSkin);
       Skin.LoadFromXml(Fxml.Root.Items.Item[n],Path);
       SkinDesigns.Add(Skin);
     end;
@@ -996,6 +1016,7 @@ constructor TSharpESkinDesign.Create(Skins: TSharpESkinItems);
 begin
   inherited Create;
 
+  FName := 'Default';
   FDefaultDesign := True;
 
   if FBitmaplist = nil then
@@ -1285,7 +1306,7 @@ begin
   end;
 
   for n := 0 to List.Count - 1 do
-      FreeAndNil(TSkinBitmap(List.Items[n]).FBitmap);
+    FreeAndNil(TSkinBitmap(List.Items[n]).FBitmap);
 
   list.free;
 end;
@@ -1300,6 +1321,7 @@ var tempStream: TMemoryStream;
   size: int64;
 begin
   Stream.Write(FDefaultDesign,sizeof(FDefaultDesign));
+  StringSaveToStream(FName, Stream);
 
   FSkinText.SaveToStream(Stream);
   FSmallText.SaveToStream(Stream);
@@ -1453,6 +1475,7 @@ begin
   Clear;
   try
     Stream.ReadBuffer(FDefaultDesign,sizeof(FDefaultDesign));
+    FName := StringLoadFromStream(Stream);
     FSkinText.LoadFromStream(Stream);
     FSmallText.LoadFromStream(Stream);
     FMediumText.LoadFromStream(Stream);
@@ -1509,6 +1532,31 @@ begin
   RemoveNotUsedBitmaps;
 end;
 
+procedure TSharpESkinDesign.Assign(src: TSharpESkinDesign);
+begin
+  FButtonSkin.Assign(src.FButtonSkin);
+  FProgressBarSkin.Assign(src.FProgressBarSkin);
+  FBarSkin.Assign(src.FBarSkin);
+  FMiniThrobberSkin.Assign(src.FMiniThrobberSkin);
+  FEditSkin.Assign(src.FEditSkin);
+  FMenuSkin.Assign(src.FMenuSkin);
+  FMenuItemSkin.Assign(src.FMenuItemSkin);
+  FTaskItemSkin.Assign(src.FTaskItemSkin);
+  FNotifySkin.Assign(src.FNotifySkin);
+  FTaskPreviewSkin.Assign(src.FTaskPreviewSkin);
+
+  FSmallText.Assign(src.SmallText);
+  FMediumText.Assign(src.MediumText);
+  FLargeText.Assign(src.FLargeText);
+  FOSDText.Assign(src.OSDText);
+  FTextPosTL.Assign(src.FTextPosTL);
+  FTextPosBL.Assign(src.FTextPosBL);
+  FTextPosBottomTL.Assign(src.FTextPosBottomTL);
+  FTextPosBottomBL.Assign(src.FTextPosBottomBL);
+
+  FBitmapList.AssignList(src.FBitmapList);
+end;
+
 procedure TSharpESkinDesign.Clear;
 begin
   if FButtonSkin <> nil then
@@ -1543,6 +1591,8 @@ begin
   FTextPosBottomTL.Clear;
   FTextPosBottomBL.Clear;  
 
+  FName := 'Default';
+  
   FOSDText.Name := 'Verdana';
   FOSDText.ColorString := 'clwhite';
   FOSDText.Color := 16777215;
@@ -1558,6 +1608,8 @@ end;
 procedure TSharpESkinDesign.LoadFromXml(xml: TJclSimpleXMLElem; path : String);
 begin
   FDefaultDesign := xml.Properties.BoolValue('default',false);
+  FName := xml.Properties.Value('name','Default');
+  
   if FDefaultDesign then
     Clear;
 
@@ -1681,6 +1733,15 @@ end;
 procedure TSharpEMenuSkin.UpdateDynamicProperties(cs: ISharpEScheme);
 begin
   FBackground.UpdateDynamicProperties(cs);
+end;
+
+procedure TSharpEMenuSkin.Assign(src: TSharpEMenuSkin);
+begin
+  FBackground.Assign(src.FBackground);
+  FSkinDim.Assign(src.FSkinDim);
+  FTBOffset.Assign(src.FTBOffset);
+  FLROffset.Assign(src.FLROffset);
+  FWidthLimit.Assign(src.FWidthLimit);
 end;
 
 procedure TSharpEMenuSkin.Clear;
@@ -1828,6 +1889,18 @@ begin
   FDownItem.UpdateDynamicProperties(cs);
   FNormalSubItem.UpdateDynamicProperties(cs);
   FHoverSubItem.UpdateDynamicProperties(cs);
+end;
+
+procedure TSharpEMenuItemSkin.Assign(src: TSharpEMenuItemSkin);
+begin
+  FSkinDim.Assign(src.FSkinDim);
+  FSeparator.Assign(src.FSeparator);
+  FNormalItem.Assign(src.FNormalItem);
+  FLabelItem.Assign(src.FLabelItem);
+  FHoverItem.Assign(src.FHoverItem);
+  FDownItem.Assign(src.FDownItem);
+  FNormalSubItem.Assign(src.FNormalSubItem);
+  FHoverSubItem.Assign(src.FHoverSubItem);
 end;
 
 procedure TSharpEMenuItemSkin.Clear;
@@ -1978,6 +2051,16 @@ begin
   Stream.ReadBuffer(FWidthMod,SizeOf(FWidthMod));
 end;
 
+procedure TSharpEButtonSkin.Assign(Src: TSharpEButtonSkin);
+begin
+  FNormal.Assign(Src.FNormal);
+  FDown.Assign(Src.FDown);
+  FHover.Assign(Src.FHover);
+  FSkinDim.Assign(Src.FSkinDim);
+  FSkinDimBottom.Assign(Src.FSkinDimBottom);
+  FWidthMod := Src.FWidthMod;
+end;
+
 procedure TSharpEButtonSkin.Clear;
 begin
   FNormal.Clear;
@@ -2120,6 +2203,13 @@ begin
   FMini.LoadFromStream(Stream);
 end;
 
+procedure TSharpETaskItemSkin.Assign(src: TSharpETaskItemSkin);
+begin
+  FFull.Assign(src.FFull);
+  FCompact.Assign(src.FCompact);
+  FMini.Assign(src.FMini);
+end;
+
 procedure TSharpETaskItemSkin.Clear;
 begin
   FFull.Clear;
@@ -2241,6 +2331,15 @@ begin
   FHover.LoadFromStream(Stream);
   FBottomSkinDim.Assign(FSkinDim);
   FBottomSkinDim.LoadFromStream(Stream);
+end;
+
+procedure TSharpEMiniThrobberSkin.Assign(src: TSharpEMiniThrobberSkin);
+begin
+  FNormal.Assign(src.FNormal);
+  FDown.Assign(src.FDown);
+  FHover.Assign(src.FHover);
+  FSkinDim.Assign(src.FSkinDim);
+  FBottomSkinDim.Assign(src.FBottomSkinDim);
 end;
 
 procedure TSharpEMiniThrobberSkin.Clear;
@@ -2384,6 +2483,17 @@ begin
   FHover.LoadFromStream(Stream);
   FEditXOffsets.LoadFromStream(Stream);
   FEditYOffsets.LoadFromStream(Stream);
+end;
+
+procedure TSharpEEditSkin.Assign(src: TSharpEEditSkin);
+begin
+  FNormal.Assign(src.FNormal);
+  FFocus.Assign(src.FFocus);
+  FHover.Assign(src.FHover);
+  FEditXOffsets.Assign(src.FEditXOffsets);
+  FEditYOffsets.Assign(src.FEditYOffsets);
+  FSkinDim.Assign(src.FSkinDim);
+  FSkinDimBottom.Assign(src.FSkinDimBottom);
 end;
 
 procedure TSharpEEditSkin.Clear;
@@ -2573,6 +2683,21 @@ begin
   FBackgroundSmall.LoadFromStream(Stream);
   FProgressSmall.LoadFromStream(Stream);
   FSMallModeOffset.LoadFromStream(Stream);
+end;
+
+procedure TSharpEProgressBarSkin.Assign(Src: TSharpEProgressBarSkin);
+begin
+  FBackground.Assign(Src.FBackground);
+  FProgress.Assign(Src.FProgress);
+  FBackgroundSmall.Assign(Src.FBackgroundSmall);
+  FProgressSmall.Assign(Src.FProgressSmall);
+  FSkinDim.Assign(Src.FSkinDim);
+  FSkinDimTL.Assign(Src.FSkinDimTL);
+  FSkinDimBL.Assign(Src.FSkinDimBL);
+  FSkinDimBottom.Assign(Src.FSkinDimBottom);
+  FSkinDimBottomTL.Assign(Src.FSkinDimBottomTL);
+  FSkinDimBottomBL.Assign(Src.FSkinDimBottomBL);
+  FSMallModeOffset.Assign(Src.FSMallModeOffset);
 end;
 
 procedure TSharpEProgressBarSkin.Clear;
@@ -2880,6 +3005,33 @@ begin
      else FSpecialHideForm := False;
   if StringLoadFromStream(Stream) = '1' then FGlassEffect := True
      else FGlassEffect := False;
+end;
+
+procedure TSharpEBarSkin.Assign(Src: TSharpEBarSkin);
+begin
+  FDefaultSkin := Src.FDefaultSkin;
+  FGlassEffect := Src.GlassEffect;
+  FEnableVFlip := Src.FEnableVFlip;
+  FSpecialHideForm := Src.FSpecialHideForm;
+
+  FSkinDim.Assign(Src.FSkinDim);
+  FThDim.Assign(Src.FThDim);
+  FThBDim.Assign(Src.FThBDim);
+  FFSMod.Assign(Src.FFSMod);
+  FSBMod.Assign(Src.FSBMod);
+  FPTXoffset.Assign(Src.FPTXoffset);
+  FPTYoffset.Assign(Src.FPTYoffset);
+  FPBXoffset.Assign(Src.FPBXoffset);
+  FPBYoffset.Assign(Src.FPBYoffset);
+  FBar.Assign(Src.FBar);
+  FBarBorder.Assign(Src.FBarBorder);
+  FBarBottom.Assign(Src.FBarBottom);
+  FBarBottomBorder.Assign(Src.FBarBottomBorder);
+  FThNormal.Assign(Src.FThNormal);
+  FThDown.Assign(Src.FThDown);
+  FThHover.Assign(Src.FThHover);
+  FNCTYOffset.Assign(Src.FNCTYOffset);
+  FNCBYOffset.Assign(Src.FNCBYOffset);
 end;
 
 procedure TSharpEBarSkin.CheckValid;
@@ -3265,6 +3417,11 @@ begin
   result := FMiniThrobberInterface;
 end;
 
+function TSharpESkinDesign.GetName: String;
+begin
+  result := FName;
+end;
+
 function TSharpESkinDesign.GetNotifySkin: ISharpENotifySkin;
 begin
   result := FNotifyInterface;
@@ -3353,6 +3510,14 @@ begin
 end;
 
 { TSharpENotifySkin }
+
+procedure TSharpENotifySkin.Assign(src: TSharpENotifySkin);
+begin
+  FSkinDim.Assign(src.FSkinDim);
+  FCATBOffset.Assign(src.FCATBOffset);
+  FCALROffset.Assign(src.FCALROffset);
+  FBackground.Assign(src.FBackground);
+end;
 
 procedure TSharpENotifySkin.Clear;
 begin
@@ -3471,6 +3636,15 @@ begin
 end;
 
 { TSharpETaskPreviewSkin }
+
+procedure TSharpETaskPreviewSkin.Assign(src: TSharpETaskPreviewSkin);
+begin
+  FSkinDim.Assign(src.FSkinDim);
+  FCATBOffset.Assign(src.FCATBOffset);
+  FCALROffset.Assign(src.FCALROffset);
+  FBackground.Assign(src.FBackground);
+  FHover.Assign(src.FHover);
+end;
 
 procedure TSharpETaskPreviewSkin.Clear;
 begin
@@ -3604,6 +3778,24 @@ begin
 end;
 
 { TSharpETaskItemState }
+
+procedure TSharpETaskItemState.Assign(src: TSharpETaskItemState);
+begin
+  FHasSpecial := src.HasSpecial;
+  FHasOverlay := src.HasOverlay;
+  FSpacing := src.FSpacing;
+
+  FSkinDim.Assign(src.FSkinDim);
+  FNormal.Assign(src.FNormal);
+  FNormalHover.Assign(src.FNormalHover);
+  FDown.Assign(src.FDown);
+  FDownHover.Assign(src.FDownHover);
+  FHighlight.Assign(src.FHighlight);
+  FHighlightHover.Assign(src.FHighlightHover);
+  FSpecial.Assign(src.FSpecial);
+  FOverlayText.Assign(src.FOverlayText);
+  FHighlightSettings.Assign(src.FHighlightSettings);
+end;
 
 procedure TSharpETaskItemState.Clear;
 begin

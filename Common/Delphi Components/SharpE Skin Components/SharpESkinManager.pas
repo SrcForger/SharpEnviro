@@ -84,6 +84,7 @@ type
     constructor CreateRuntime(MainForm: TComponent; Skin : TSharpESkin; Scheme : TSharpEScheme; Skins : TSharpESkinItems = ALL_SHARPE_SKINS); overload;
     constructor CreateRuntime(MainForm: TComponent; Skin : TSharpESkin; Scheme : TSharpEScheme; NoSystemScheme : boolean; Skins : TSharpESkinItems = ALL_SHARPE_SKINS); overload;
     destructor Destroy; override;
+    function SetSkinDesign(Name : String) : boolean;
     procedure LoadSkinFromStream;
     property RootInterface: ISharpESkinManager read FRootInterface write FRootInterface;
     property MainForm: TForm read FMainForm write FMainForm;
@@ -148,6 +149,26 @@ end;
 procedure TSharpESkinManager.SetBarBottom(Value: boolean);
 begin
   SharpESkinPart.SharpESkinTextBarBottom := Value;
+end;
+
+function TSharpESkinManager.SetSkinDesign(Name: String): boolean;
+var
+  n : integer;
+begin
+  result := false;
+  for n := 0 to FSkinBackend.SkinDesigns.Count - 1 do
+    if (CompareText(Name,TSharpESkinDesign(FSkinBackend.SkinDesigns.Items[n]).Name) = 0) then
+    begin
+      FSkinInterface := nil;
+      FSkin := TSharpESkinDesign(FSkinBackend.SkinDesigns.Items[n]);
+      FSkinInterface := FSkin.SelfInterface;
+      result := true;
+      exit;
+    end;
+
+  FSkin := FSkinBackend.GetDefaultSkinDesign;
+  if (FSkin <> nil) then
+    FSkinInterface := FSkin.SelfInterface;
 end;
 
 procedure TSharpESkinManager.SetSkinItems(Value : TSharpESkinItems);
@@ -386,7 +407,8 @@ begin
     FSkinBackend.LoadFromStream(Stream);
   end;
   FSkin := FSkinBackend.GetDefaultSkinDesign;
-  FSkinInterface := FSkin.SelfInterface;
+  if (FSkin <> nil) then
+    FSkinInterface := FSkin.SelfInterface;
   Stream.Free;
 end;
 

@@ -40,6 +40,8 @@ type
     constructor Create;
     destructor Destroy; override;
 
+    procedure Assign(src : TSkinBitmap);
+
     procedure LoadFromStream(Stream: TStream);
     procedure SaveToStream(Stream: TStream);
 
@@ -65,8 +67,7 @@ type
     function First: TSkinBitmap; virtual;
     function Last: TSkinBitmap; virtual;
     procedure Insert(Index: Integer; ASkinBitmap: TSkinBitmap); virtual;
-    property Items[Index: Integer]: TSkinBitmap read GetItems write SetItems;
-    default;
+    property Items[Index: Integer]: TSkinBitmap read GetItems write SetItems; default;
 
     destructor Destroy; override;
     function AddFromFile(filename: string): integer; virtual;
@@ -76,6 +77,7 @@ type
 
     function Find(filename: string): integer; virtual;
     procedure Clear; override;
+    procedure AssignList(src : TSkinBitmapList);
   end;
 
 implementation
@@ -106,6 +108,12 @@ begin
     end;
     Inc(S);
   end;
+end;
+
+procedure TSkinBitmap.Assign(src: TSkinBitmap);
+begin
+  FFileName := src.FileName;
+  FBitmap.Assign(src.Bitmap);
 end;
 
 constructor TSkinBitmap.Create;
@@ -177,6 +185,22 @@ begin
   end
   else
     result := -1;
+end;
+
+procedure TSkinBitmapList.AssignList(src: TSkinBitmapList);
+var
+  n : integer;
+  SrcBmp : TSkinBitmap;
+  Bmp : TSkinBitmap;
+begin
+  Clear;
+  for n := 0 to src.Count - 1 do
+  begin
+    SrcBmp := TSkinBitmap(src.Items[n]);
+    Bmp := TSkinBitmap.Create;
+    Bmp.Assign(SrcBmp);
+    Add(Bmp);
+  end;
 end;
 
 procedure TSkinBitmapList.Clear;

@@ -567,6 +567,8 @@ type
     function GetTextPosBottomTL : TPoint; stdcall;
     function GetTextPosBottomBL : TPoint; stdcall;
 
+    function GetName : String; stdcall;
+
     property Button       : ISharpEButtonSkin read GetButtonSkin;
     property Edit         : ISharpEEditSkin read GetEditSkin;
     property ProgressBar  : ISharpEProgressBarSkin read GetProgressBarSkin;
@@ -586,7 +588,9 @@ type
     property TextPosTL       : TPoint read GetTextPosTL;
     property TextPosBL       : TPoint read GetTextPosBL;
     property TextPosBottomTL : TPoint read GetTextPosBottomTL;
-    property TextPosBottomBL : TPoint read GetTextPosBottomBL;    
+    property TextPosBottomBL : TPoint read GetTextPosBottomBL;
+
+    property Name : String read GetName;
   end;  
 
   ISharpESkin = interface
