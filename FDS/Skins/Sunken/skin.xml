@@ -1,377 +1,379 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <sharpESkin>
-  <sharpbar specialhideform="1" enablevflip="0" payoffsetsbottom="1,0" paxoffsetsbottom="8,10" payoffsets="0,1" paxoffsets="8,10" glasseffect="1" sbmod="0,0" fsmod="0,0" dimension="w,22">
-    <bar dimension="w,h">
-      <skinpart alpha="$BGAlpha" color="$Background" image="images/empty.png" dimension="w,h" location="0,0"/>
-      <skinpart alpha="196" image="images/BarLeftShadow.png" dimension="11,26" location="0,-3"/>
-      <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w-22,26" location="11,-3"/>
-      <skinpart alpha="196" image="images/BarRightShadow.png" dimension="11,26" location="w-11,-3"/>
-    </bar>
-    <barbottom dimension="w,h">
-      <skinpart alpha="$BGAlpha" color="$Background" image="images/empty.png" dimension="w,h" location="0,0"/>
-      <skinpart alpha="196" image="images/BarLeftShadowDown.png" dimension="11,26" location="0,0"/>
-      <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w-22,26" location="11,0"/>
-      <skinpart alpha="196" image="images/BarRightShadowDown.png" dimension="11,26" location="w-11,0"/>
-    </barbottom>
-    <throbber dimension="8,21" locationbottom="0,1" location="0,0">
+  <skindesign name="default" default="1">
+    <sharpbar specialhideform="1" enablevflip="0" payoffsetsbottom="1,0" paxoffsetsbottom="8,10" payoffsets="0,1" paxoffsets="8,10" glasseffect="1" sbmod="0,0" fsmod="0,0" dimension="w,22">
+      <bar dimension="w,h">
+        <skinpart alpha="$BGAlpha" color="$Background" image="images/empty.png" dimension="w,h" location="0,0"/>
+        <skinpart alpha="196" image="images/BarLeftShadow.png" dimension="11,26" location="0,-3"/>
+        <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w-22,26" location="11,-3"/>
+        <skinpart alpha="196" image="images/BarRightShadow.png" dimension="11,26" location="w-11,-3"/>
+      </bar>
+      <barbottom dimension="w,h">
+        <skinpart alpha="$BGAlpha" color="$Background" image="images/empty.png" dimension="w,h" location="0,0"/>
+        <skinpart alpha="196" image="images/BarLeftShadowDown.png" dimension="11,26" location="0,0"/>
+        <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w-22,26" location="11,0"/>
+        <skinpart alpha="196" image="images/BarRightShadowDown.png" dimension="11,26" location="w-11,0"/>
+      </barbottom>
+      <throbber dimension="8,21" locationbottom="0,1" location="0,0">
+        <normal>
+          <skinpart alpha="128" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+          <skinpart alpha="164" color="$Foreground" image="images/empty.png" dimension="w-2,h" location="1,0"/>
+          <skinpart alpha="164" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2"/>
+        </normal>
+        <hover>
+          <skinpart alpha="128" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+          <skinpart alpha="255" color="$Foreground" image="images/empty.png" dimension="w-2,h" location="1,0"/>
+          <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2"/>
+        </hover>
+        <down>
+          <skinpart alpha="128" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+          <skinpart alpha="148" color="$Foreground" image="images/empty.png" dimension="w-2,h" location="1,0"/>
+          <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2"/>
+        </down>
+      </throbber>
+    </sharpbar>
+    <taskswitch hoverpreviewloc="5,5" hoverpreviewdim="48,48" previewloc="5,5" previewdim="48,48" lroffset="5,5" tboffset="1,26" wrapcount="8" spacing="1" dimension="w,h">
+      <text shadowalpha="196" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" color="$Text" location="cw,h-22" name="Tahoma" size="10"/>
+      <background>
+        <skinpart alpha="225" color="0" image="images/empty.png" dimension="w,1" location="0,0"/>
+        <skinpart alpha="225" color="0" image="images/empty.png" dimension="1,h-2" location="w-1,1"/>
+        <skinpart alpha="225" color="0" image="images/empty.png" dimension="w,1" location="0,h-1"/>
+        <skinpart alpha="225" color="0" image="images/empty.png" dimension="1,h-2" location="0,1"/>
+        <skinpart alpha="$BGAlpha+32" color="$Background" image="images/empty.png" dimension="w-2,h-2" location="1,1"/>
+        <skinpart alpha="164" color="0" image="images/empty.png" dimension="w,1" location="0,59"/>
+        <skinpart alpha="164" color="0" image="images/empty.png" dimension="w,1" location="0,118"/>
+      </background>
+      <item dimension="58,58">
+        <skinpart alpha="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+      </item>
+      <itemhover dimension="58,58">
+        <skinpart alpha="148" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+        <skinpart gradientalpha="96,180" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient"/>
+      </itemhover>
+    </taskswitch>
+    <menu lroffset="2,2" tboffset="2,2" widthlimit="128,350" location="-1,0" dimension="w,h">
+      <background>
+        <skinpart alpha="255" color="0" image="images/empty.png" dimension="w,1" location="0,0"/>
+        <skinpart alpha="255" color="0" image="images/empty.png" dimension="1,h-2" location="w-1,1"/>
+        <skinpart alpha="255" color="0" image="images/empty.png" dimension="w,1" location="0,h-1"/>
+        <skinpart alpha="255" color="0" image="images/empty.png" dimension="1,h-2" location="0,1"/>
+        <skinpart alpha="$BGAlpha+32" color="$Background" image="images/empty.png" dimension="w-2,h-2" location="1,1"/>
+        <skinpart gradientalpha="0,128" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,62" location="1,h-64" ID="gradient"/>
+      </background>
+    </menu>
+    <menuitem>
+      <icon location="4,3" dimension="16,16" draw="1"/>
+      <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" size="8" name="Tahoma" location="25,4" dimension="w-40,h" draw="1"/>
+      <normal widthmod="48" dimension="w,22"/>
+      <hover widthmod="48" dimension="w,22">
+        <icon lightenamount="32" lighten="1"/>
+        <skinpart alpha="148" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+        <skinpart gradientalpha="66,150" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-1,h-3" location="0,1" ID="gradient"/>
+      </hover>
+      <down widthmod="48" dimension="w,22">
+        <skinpart alpha="148" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+        <skinpart gradientalpha="130,46" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-1,h-3" location="0,1" ID="gradient"/>
+      </down>
+      <normalsub widthmod="48" dimension="w,22">
+        <skinpart alpha="148" color="0" image="images/empty.png" dimension="4,h-2" location="w-5,1"/>
+        <skinpart gradientalpha="66,150" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="1,h-5" location="w-4,2" ID="gradient"/>
+      </normalsub>
+      <hoversub widthmod="48" dimension="w,22">
+        <icon lightenamount="32" lighten="1"/>
+        <skinpart alpha="148" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+        <skinpart gradientalpha="66,150" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-1,h-3" location="0,1" ID="gradient"/>
+        <skinpart alpha="200" color="0" image="images/empty.png" dimension="4,h-2" location="w-5,1"/>
+        <skinpart gradientalpha="106,190" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="1,h-5" location="w-4,2" ID="gradient"/>
+      </hoversub>
+      <separator dimension="w,5">
+        <skinpart alpha="196" color="0" image="images/Empty.png" dimension="w,1" location="0,2" ID="0"/>
+      </separator>
+      <label widthmod="20" dimension="w,18">
+        <text shadowtype="Outline" size="7" location="cw-1,3" dimension="w-20,h" draw="1"/>
+      </label>
+    </menuitem>
+    <taskitem>
+      <full dimension="148,22" location="0,0" spacing="1">
+        <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" size="8" name="Tahoma" location="cw+iwh+2,ch-1" dimension="w-28,h" draw="1"/>
+        <icon location="cw-9,2" size="16,16" draw="1"/>
+        <normal>
+          <skinpart alpha="96" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+          <skinpart gradientalpha="120,12" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
+          <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
+          <skinpart gradientalpha="12,120" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
+          <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
+        </normal>
+        <normalhover>
+          <icon lightenamount="32" lighten="1"/>
+          <skinpart alpha="96" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+          <skinpart gradientalpha="190,73" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
+          <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
+          <skinpart gradientalpha="73,190" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
+          <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
+        </normalhover>
+        <down>
+          <text location="cw+iwh+2,ch"/>
+          <icon location="cw-9,3"/>
+          <skinpart alpha="128" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+          <skinpart gradientalpha="12,120" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
+          <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
+          <skinpart gradientalpha="120,12" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
+          <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
+        </down>
+        <downhover>
+          <text location="cw+iwh+2,ch"/>
+          <icon lightenamount="32" lighten="1" location="cw-9,3"/>
+          <skinpart alpha="96" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+          <skinpart gradientalpha="190,73" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
+          <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
+          <skinpart gradientalpha="73,190" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
+          <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
+        </downhover>
+        <highlighthover>
+          <icon lightenamount="32" lighten="1"/>
+          <skinpart alpha="96" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+          <skinpart gradientalpha="220,93" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
+          <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
+          <skinpart gradientalpha="93,220" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
+          <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
+        </highlighthover>
+        <highlight>
+          <skinpart alpha="96" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+          <skinpart gradientalpha="190,73" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
+          <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
+          <skinpart gradientalpha="73,190" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
+          <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
+        </highlight>
+      </full>
+      <compact dimension="86,22" location="0,0" spacing="1">
+        <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" size="8" name="Tahoma" location="cw+iwh+2,ch-1" dimension="w-24,h" draw="1"/>
+        <icon location="cw-9,2" size="16,16" draw="1"/>
+        <normal>
+          <skinpart alpha="96" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+          <skinpart gradientalpha="120,12" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
+          <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
+          <skinpart gradientalpha="12,120" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
+          <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
+        </normal>
+        <normalhover>
+          <icon lightenamount="32" lighten="1"/>
+          <skinpart alpha="96" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+          <skinpart gradientalpha="190,73" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
+          <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
+          <skinpart gradientalpha="73,190" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
+          <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
+        </normalhover>
+        <down>
+          <text location="cw+iwh+2,ch"/>
+          <icon location="cw-9,3"/>
+          <skinpart alpha="128" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+          <skinpart gradientalpha="12,120" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
+          <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
+          <skinpart gradientalpha="120,12" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
+          <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
+        </down>
+        <downhover>
+          <text location="cw+iwh+2,ch"/>
+          <icon lightenamount="32" lighten="1" location="cw-9,3"/>
+          <skinpart alpha="96" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+          <skinpart gradientalpha="190,73" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
+          <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
+          <skinpart gradientalpha="73,190" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
+          <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
+        </downhover>
+        <highlighthover>
+          <icon lightenamount="32" lighten="1"/>
+          <skinpart alpha="96" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+          <skinpart gradientalpha="220,93" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
+          <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
+          <skinpart gradientalpha="93,220" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
+          <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
+        </highlighthover>
+        <highlight>
+          <skinpart alpha="192" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+          <skinpart gradientalpha="230,136" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
+          <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
+          <skinpart gradientalpha="136,230" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
+          <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
+        </highlight>
+      </compact>
+      <mini dimension="24,22" location="0,0" spacing="2">
+        <text draw="0"/>
+        <icon location="4,2" size="16,16" draw="1"/>
+        <normal>
+          <skinpart alpha="96" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+          <skinpart gradientalpha="120,12" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
+          <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
+          <skinpart gradientalpha="12,120" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
+          <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
+        </normal>
+        <normalhover>
+          <icon lightenamount="32" lighten="1"/>
+          <skinpart alpha="96" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+          <skinpart gradientalpha="190,73" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
+          <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
+          <skinpart gradientalpha="73,190" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
+          <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
+        </normalhover>
+        <down>
+          <icon location="3,3"/>
+          <skinpart alpha="128" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+          <skinpart gradientalpha="12,120" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
+          <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
+          <skinpart gradientalpha="120,12" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
+          <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
+        </down>
+        <downhover>
+          <icon lightenamount="32" lighten="1" location="3,3"/>
+          <skinpart alpha="96" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+          <skinpart gradientalpha="190,73" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
+          <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
+          <skinpart gradientalpha="73,190" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
+          <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
+        </downhover>
+        <highlighthover>
+          <icon lightenamount="32" lighten="1"/>
+          <skinpart alpha="96" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+          <skinpart gradientalpha="220,93" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
+          <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
+          <skinpart gradientalpha="93,220" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
+          <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
+        </highlighthover>
+        <highlight>
+          <skinpart alpha="192" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+          <skinpart gradientalpha="230,136" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
+          <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
+          <skinpart gradientalpha="136,230" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
+          <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
+        </highlight>
+      </mini>
+    </taskitem>
+    <minithrobber bottomlocation="0,0" location="0,0" dimension="5,22">
       <normal>
-        <skinpart alpha="128" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-        <skinpart alpha="164" color="$Foreground" image="images/empty.png" dimension="w-2,h" location="1,0"/>
-        <skinpart alpha="164" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2"/>
+        <skinpart alpha="148" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+        <skinpart gradientalpha="200,116" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
+        <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
+        <skinpart gradientalpha="116,200" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
+        <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
       </normal>
       <hover>
-        <skinpart alpha="128" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-        <skinpart alpha="255" color="$Foreground" image="images/empty.png" dimension="w-2,h" location="1,0"/>
-        <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2"/>
+        <skinpart alpha="148" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+        <skinpart gradientalpha="250,166" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
+        <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
+        <skinpart gradientalpha="166,250" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
+        <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
       </hover>
       <down>
-        <skinpart alpha="128" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-        <skinpart alpha="148" color="$Foreground" image="images/empty.png" dimension="w-2,h" location="1,0"/>
-        <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2"/>
+        <skinpart alpha="148" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+        <skinpart gradientalpha="150,66" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
+        <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
+        <skinpart gradientalpha="66,150" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
+        <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
       </down>
-    </throbber>
-  </sharpbar>
-  <taskswitch hoverpreviewloc="5,5" hoverpreviewdim="48,48" previewloc="5,5" previewdim="48,48" lroffset="5,5" tboffset="1,26" wrapcount="8" spacing="1" dimension="w,h">
-    <text shadowalpha="196" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" color="$Text" location="cw,h-22" name="Tahoma" size="10"/>
-    <background>
-      <skinpart alpha="225" color="0" image="images/empty.png" dimension="w,1" location="0,0"/>
-      <skinpart alpha="225" color="0" image="images/empty.png" dimension="1,h-2" location="w-1,1"/>
-      <skinpart alpha="225" color="0" image="images/empty.png" dimension="w,1" location="0,h-1"/>
-      <skinpart alpha="225" color="0" image="images/empty.png" dimension="1,h-2" location="0,1"/>
-      <skinpart alpha="$BGAlpha+32" color="$Background" image="images/empty.png" dimension="w-2,h-2" location="1,1"/>
-      <skinpart alpha="164" color="0" image="images/empty.png" dimension="w,1" location="0,59"/>
-      <skinpart alpha="164" color="0" image="images/empty.png" dimension="w,1" location="0,118"/>
-    </background>
-    <item dimension="58,58">
-      <skinpart alpha="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-    </item>
-    <itemhover dimension="58,58">
-      <skinpart alpha="148" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-      <skinpart gradientalpha="96,180" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient"/>
-    </itemhover>
-  </taskswitch>
-  <menu lroffset="2,2" tboffset="2,2" widthlimit="128,350" location="-1,0" dimension="w,h">
-    <background>
-      <skinpart alpha="255" color="0" image="images/empty.png" dimension="w,1" location="0,0"/>
-      <skinpart alpha="255" color="0" image="images/empty.png" dimension="1,h-2" location="w-1,1"/>
-      <skinpart alpha="255" color="0" image="images/empty.png" dimension="w,1" location="0,h-1"/>
-      <skinpart alpha="255" color="0" image="images/empty.png" dimension="1,h-2" location="0,1"/>
-      <skinpart alpha="$BGAlpha+32" color="$Background" image="images/empty.png" dimension="w-2,h-2" location="1,1"/>
-      <skinpart gradientalpha="0,128" gradientcolor="$Background,$Background" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,62" location="1,h-64" ID="gradient"/>
-    </background>
-  </menu>
-  <menuitem>
-    <icon location="4,3" dimension="16,16" draw="1"/>
-    <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" size="8" name="Tahoma" location="25,4" dimension="w-40,h" draw="1"/>
-    <normal widthmod="48" dimension="w,22"/>
-    <hover widthmod="48" dimension="w,22">
-      <icon lightenamount="32" lighten="1"/>
-      <skinpart alpha="148" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-      <skinpart gradientalpha="66,150" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-1,h-3" location="0,1" ID="gradient"/>
-    </hover>
-    <down widthmod="48" dimension="w,22">
-      <skinpart alpha="148" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-      <skinpart gradientalpha="130,46" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-1,h-3" location="0,1" ID="gradient"/>
-    </down>
-    <normalsub widthmod="48" dimension="w,22">
-      <skinpart alpha="148" color="0" image="images/empty.png" dimension="4,h-2" location="w-5,1"/>
-      <skinpart gradientalpha="66,150" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="1,h-5" location="w-4,2" ID="gradient"/>
-    </normalsub>
-    <hoversub widthmod="48" dimension="w,22">
-      <icon lightenamount="32" lighten="1"/>
-      <skinpart alpha="148" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-      <skinpart gradientalpha="66,150" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-1,h-3" location="0,1" ID="gradient"/>
-      <skinpart alpha="200" color="0" image="images/empty.png" dimension="4,h-2" location="w-5,1"/>
-      <skinpart gradientalpha="106,190" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="1,h-5" location="w-4,2" ID="gradient"/>
-    </hoversub>
-    <separator dimension="w,5">
-      <skinpart alpha="196" color="0" image="images/Empty.png" dimension="w,1" location="0,2" ID="0"/>
-    </separator>
-    <label widthmod="20" dimension="w,18">
-      <text shadowtype="Outline" size="7" location="cw-1,3" dimension="w-20,h" draw="1"/>
-    </label>
-  </menuitem>
-  <taskitem>
-    <full dimension="148,22" location="0,0" spacing="1">
-      <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" size="8" name="Tahoma" location="cw+iwh+2,ch-1" dimension="w-28,h" draw="1"/>
-      <icon location="cw-9,2" size="16,16" draw="1"/>
+    </minithrobber>
+    <button widthmod="16" dimension="w,21" location="0,0">
+      <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" size="8" name="Tahoma" location="cw+iwh+2,ch-1"/>
+      <icon location="cw-8,2" size="16,16" draw="1"/>
       <normal>
         <skinpart alpha="96" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-        <skinpart gradientalpha="120,12" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
+        <skinpart gradientalpha="80,12" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
         <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
-        <skinpart gradientalpha="12,120" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
+        <skinpart gradientalpha="12,80" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
         <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
       </normal>
-      <normalhover>
+      <hover>
         <icon lightenamount="32" lighten="1"/>
-        <skinpart alpha="96" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-        <skinpart gradientalpha="190,73" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
+        <skinpart alpha="90" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+        <skinpart gradientalpha="130,52" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
         <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
-        <skinpart gradientalpha="73,190" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
+        <skinpart gradientalpha="53,130" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
         <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
-      </normalhover>
+      </hover>
       <down>
         <text location="cw+iwh+2,ch"/>
-        <icon location="cw-9,3"/>
-        <skinpart alpha="128" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-        <skinpart gradientalpha="12,120" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
+        <icon location="cw-8,3" size="16,16" draw="1"/>
+        <skinpart alpha="" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+        <skinpart gradientalpha="80,12" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
         <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
-        <skinpart gradientalpha="120,12" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
+        <skinpart gradientalpha="12,80" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
         <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
       </down>
-      <downhover>
-        <text location="cw+iwh+2,ch"/>
-        <icon lightenamount="32" lighten="1" location="cw-9,3"/>
-        <skinpart alpha="96" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-        <skinpart gradientalpha="190,73" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
-        <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
-        <skinpart gradientalpha="73,190" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
-        <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
-      </downhover>
-      <highlighthover>
-        <icon lightenamount="32" lighten="1"/>
-        <skinpart alpha="96" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-        <skinpart gradientalpha="220,93" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
-        <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
-        <skinpart gradientalpha="93,220" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
-        <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
-      </highlighthover>
-      <highlight>
-        <skinpart alpha="96" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-        <skinpart gradientalpha="190,73" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
-        <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
-        <skinpart gradientalpha="73,190" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
-        <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
-      </highlight>
-    </full>
-    <compact dimension="86,22" location="0,0" spacing="1">
-      <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" size="8" name="Tahoma" location="cw+iwh+2,ch-1" dimension="w-24,h" draw="1"/>
-      <icon location="cw-9,2" size="16,16" draw="1"/>
+    </button>
+    <font locationBL="0,5" locationTL="0,-5">
+      <small location="0,0" shadowalpha="196" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" color="$Text" bold="0" name="Small Fonts" size="6"/>
+      <medium location="0,-1" shadowalpha="255" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" color="$Text" bold="1" size="7" name="Verdana"/>
+      <big location="0,-1" shadowalpha="196" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" color="$Text" bold="1" size="9" name="Verdana"/>
+    </font>
+    <progressbar dimensionBL="w,8" locationBL="0,11" dimensionTL="w,8" locationTL="0,1" dimension="w,13" location="0,4,">
+      <background>
+        <skinpart alpha="148" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+        <skinpart gradientalpha="100,20" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient" enabled="$IsBarBottom"/>
+        <skinpart gradientalpha="20,100" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient" enabled="$IsBarTop"/>
+      </background>
+      <progress dimension="w-3,h-2" location="1,1">
+        <skinpart alpha="148" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+        <skinpart gradientalpha="175,60" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w,h" location="0,0" ID="gradient" enabled="$IsBarBottom"/>
+        <skinpart gradientalpha="60,175" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w,h" location="0,0" ID="gradient" enabled="$IsBarTop"/>
+      </progress>
+    </progressbar>
+    <edit edityoffsets="4,3" editxoffsets="3,3" location="0,0" dimension="w,22">
+      <text color="$Text"/>
       <normal>
-        <skinpart alpha="96" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-        <skinpart gradientalpha="120,12" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
+        <skinpart alpha="148" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+        <skinpart gradientalpha="130,46" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
         <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
-        <skinpart gradientalpha="12,120" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
+        <skinpart gradientalpha="46,130" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
         <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
       </normal>
-      <normalhover>
-        <icon lightenamount="32" lighten="1"/>
-        <skinpart alpha="96" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-        <skinpart gradientalpha="190,73" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
+      <hover>
+        <skinpart alpha="148" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+        <skinpart gradientalpha="190,106" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
         <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
-        <skinpart gradientalpha="73,190" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
+        <skinpart gradientalpha="106,190" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
         <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
-      </normalhover>
-      <down>
-        <text location="cw+iwh+2,ch"/>
-        <icon location="cw-9,3"/>
-        <skinpart alpha="128" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-        <skinpart gradientalpha="12,120" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
+      </hover>
+      <focus>
+        <skinpart alpha="148" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
+        <skinpart gradientalpha="160,56" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
         <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
-        <skinpart gradientalpha="120,12" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
+        <skinpart gradientalpha="66,150" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
         <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
-      </down>
-      <downhover>
-        <text location="cw+iwh+2,ch"/>
-        <icon lightenamount="32" lighten="1" location="cw-9,3"/>
-        <skinpart alpha="96" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-        <skinpart gradientalpha="190,73" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
-        <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
-        <skinpart gradientalpha="73,190" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
-        <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
-      </downhover>
-      <highlighthover>
-        <icon lightenamount="32" lighten="1"/>
-        <skinpart alpha="96" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-        <skinpart gradientalpha="220,93" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
-        <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
-        <skinpart gradientalpha="93,220" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
-        <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
-      </highlighthover>
-      <highlight>
-        <skinpart alpha="192" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-        <skinpart gradientalpha="230,136" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
-        <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
-        <skinpart gradientalpha="136,230" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
-        <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
-      </highlight>
-    </compact>
-    <mini dimension="24,22" location="0,0" spacing="2">
-      <text draw="0"/>
-      <icon location="4,2" size="16,16" draw="1"/>
-      <normal>
-        <skinpart alpha="96" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-        <skinpart gradientalpha="120,12" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
-        <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
-        <skinpart gradientalpha="12,120" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
-        <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
-      </normal>
-      <normalhover>
-        <icon lightenamount="32" lighten="1"/>
-        <skinpart alpha="96" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-        <skinpart gradientalpha="190,73" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
-        <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
-        <skinpart gradientalpha="73,190" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
-        <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
-      </normalhover>
-      <down>
-        <icon location="3,3"/>
-        <skinpart alpha="128" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-        <skinpart gradientalpha="12,120" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
-        <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
-        <skinpart gradientalpha="120,12" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
-        <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
-      </down>
-      <downhover>
-        <icon lightenamount="32" lighten="1" location="3,3"/>
-        <skinpart alpha="96" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-        <skinpart gradientalpha="190,73" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
-        <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
-        <skinpart gradientalpha="73,190" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
-        <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
-      </downhover>
-      <highlighthover>
-        <icon lightenamount="32" lighten="1"/>
-        <skinpart alpha="96" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-        <skinpart gradientalpha="220,93" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
-        <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
-        <skinpart gradientalpha="93,220" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
-        <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
-      </highlighthover>
-      <highlight>
-        <skinpart alpha="192" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-        <skinpart gradientalpha="230,136" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
-        <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
-        <skinpart gradientalpha="136,230" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
-        <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
-      </highlight>
-    </mini>
-  </taskitem>
-  <minithrobber bottomlocation="0,0" location="0,0" dimension="5,22">
-    <normal>
-      <skinpart alpha="148" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-      <skinpart gradientalpha="200,116" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
-      <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
-      <skinpart gradientalpha="116,200" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
-      <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
-    </normal>
-    <hover>
-      <skinpart alpha="148" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-      <skinpart gradientalpha="250,166" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
-      <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
-      <skinpart gradientalpha="166,250" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
-      <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
-    </hover>
-    <down>
-      <skinpart alpha="148" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-      <skinpart gradientalpha="150,66" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
-      <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
-      <skinpart gradientalpha="66,150" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
-      <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
-    </down>
-  </minithrobber>
-  <button widthmod="16" dimension="w,21" location="0,0">
-    <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" size="8" name="Tahoma" location="cw+iwh+2,ch-1"/>
-    <icon location="cw-8,2" size="16,16" draw="1"/>
-    <normal>
-      <skinpart alpha="96" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-      <skinpart gradientalpha="80,12" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
-      <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
-      <skinpart gradientalpha="12,80" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
-      <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
-    </normal>
-    <hover>
-      <icon lightenamount="32" lighten="1"/>
-      <skinpart alpha="90" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-      <skinpart gradientalpha="130,52" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
-      <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
-      <skinpart gradientalpha="53,130" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
-      <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
-    </hover>
-    <down>
-      <text location="cw+iwh+2,ch"/>
-      <icon location="cw-8,3" size="16,16" draw="1"/>
-      <skinpart alpha="" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-      <skinpart gradientalpha="80,12" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
-      <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
-      <skinpart gradientalpha="12,80" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
-      <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
-    </down>
-  </button>
-  <font locationBL="0,5" locationTL="0,-5">
-    <small location="0,0" shadowalpha="196" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" color="$Text" bold="0" name="Small Fonts" size="6"/>
-    <medium location="0,-1" shadowalpha="255" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" color="$Text" bold="1" size="7" name="Verdana"/>
-    <big location="0,-1" shadowalpha="196" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" color="$Text" bold="1" size="9" name="Verdana"/>
-  </font>
-  <progressbar dimensionBL="w,8" locationBL="0,11" dimensionTL="w,8" locationTL="0,1" dimension="w,13" location="0,4,">
-    <background>
-      <skinpart alpha="148" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-      <skinpart gradientalpha="100,20" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient" enabled="$IsBarBottom"/>
-      <skinpart gradientalpha="20,100" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient" enabled="$IsBarTop"/>
-    </background>
-    <progress dimension="w-3,h-2" location="1,1">
-      <skinpart alpha="148" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-      <skinpart gradientalpha="175,60" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w,h" location="0,0" ID="gradient" enabled="$IsBarBottom"/>
-      <skinpart gradientalpha="60,175" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="empty" dimension="w,h" location="0,0" ID="gradient" enabled="$IsBarTop"/>
-    </progress>
-  </progressbar>
-  <edit edityoffsets="4,3" editxoffsets="3,3" location="0,0" dimension="w,22">
-    <text color="$Text"/>
-    <normal>
-      <skinpart alpha="148" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-      <skinpart gradientalpha="130,46" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
-      <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
-      <skinpart gradientalpha="46,130" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
-      <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
-    </normal>
-    <hover>
-      <skinpart alpha="148" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-      <skinpart gradientalpha="190,106" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
-      <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
-      <skinpart gradientalpha="106,190" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
-      <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
-    </hover>
-    <focus>
-      <skinpart alpha="148" color="0" image="images/empty.png" dimension="w,h" location="0,0"/>
-      <skinpart gradientalpha="160,56" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarBottom"/>
-      <skinpart alpha="196" image="images/BarMiddleShadowDown.png" dimension="w,26" location="0,-2" enabled="$IsBarBottom"/>
-      <skinpart gradientalpha="66,150" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h" location="1,0" ID="gradient" enabled="$IsBarTop"/>
-      <skinpart alpha="196" image="images/BarMiddleShadow.png" dimension="w,26" location="0,-3" enabled="$IsBarTop"/>
-    </focus>
-  </edit>
-  <notify calroffset="4,4" catboffset="4,4" location="0,1" dimension="320,h">
-    <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" size="8" name="Tahoma" location="40,ch+1" dimension="w-32-4-4-4,h" draw="1"/>
-    <icon location="4,hh-ihh" size="32,32" draw="1"/>
-    <background>
-      <skinpart alpha="225" color="0" image="images/empty.png" dimension="w,1" location="0,0"/>
-      <skinpart alpha="225" color="0" image="images/empty.png" dimension="1,h-2" location="w-1,1"/>
-      <skinpart alpha="225" color="0" image="images/empty.png" dimension="w,1" location="0,h-1"/>
-      <skinpart alpha="225" color="0" image="images/empty.png" dimension="1,h-2" location="0,1"/>
-      <skinpart alpha="$BGAlpha+32" color="$Background" image="images/empty.png" dimension="w-2,h-2" location="1,1"/>
-      <skinpart gradientalpha="185,124" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient" enabled="1"/>
-      <skinpart gradientalpha="124,185" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient" enabled="0"/>
-    </background>
-  </notify>
-  <taskpreview calroffset="6,6" catboffset="18,6" location="0,2" dimension="5,400">
-    <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" size="8" name="Tahoma" location="cw,1" dimension="w-26,0" draw="1"/>
-    <icon location="4,hh-ihh" size="32,32" draw="1"/>
-    <background>
-      <skinpart alpha="225" color="0" image="images/empty.png" dimension="w,1" location="0,0"/>
-      <skinpart alpha="225" color="0" image="images/empty.png" dimension="1,h-2" location="w-1,1"/>
-      <skinpart alpha="225" color="0" image="images/empty.png" dimension="w,1" location="0,h-1"/>
-      <skinpart alpha="225" color="0" image="images/empty.png" dimension="1,h-2" location="0,1"/>
-      <skinpart alpha="$BGAlpha+32" color="$Background" image="images/empty.png" dimension="w-2,h-2" location="1,1"/>
-      <skinpart gradientalpha="185,124" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient" enabled="1"/>
-      <skinpart gradientalpha="124,185" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient" enabled="0"/>
-    </background>
-    <hover>
-      <skinpart alpha="225" color="0" image="images/empty.png" dimension="w,1" location="0,0"/>
-      <skinpart alpha="225" color="0" image="images/empty.png" dimension="1,h-2" location="w-1,1"/>
-      <skinpart alpha="225" color="0" image="images/empty.png" dimension="w,1" location="0,h-1"/>
-      <skinpart alpha="225" color="0" image="images/empty.png" dimension="1,h-2" location="0,1"/>
-      <skinpart alpha="$BGAlpha+32" color="$Background" image="images/empty.png" dimension="w-2,h-2" location="1,1"/>
-      <skinpart gradientalpha="185+64,124+64" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient" enabled="1"/>
-      <skinpart gradientalpha="124+64,185+64" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient" enabled="0"/>
-    </hover>
-  </taskpreview>
+      </focus>
+    </edit>
+    <notify calroffset="4,4" catboffset="4,4" location="0,1" dimension="320,h">
+      <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" size="8" name="Tahoma" location="40,ch+1" dimension="w-32-4-4-4,h" draw="1"/>
+      <icon location="4,hh-ihh" size="32,32" draw="1"/>
+      <background>
+        <skinpart alpha="225" color="0" image="images/empty.png" dimension="w,1" location="0,0"/>
+        <skinpart alpha="225" color="0" image="images/empty.png" dimension="1,h-2" location="w-1,1"/>
+        <skinpart alpha="225" color="0" image="images/empty.png" dimension="w,1" location="0,h-1"/>
+        <skinpart alpha="225" color="0" image="images/empty.png" dimension="1,h-2" location="0,1"/>
+        <skinpart alpha="$BGAlpha+32" color="$Background" image="images/empty.png" dimension="w-2,h-2" location="1,1"/>
+        <skinpart gradientalpha="185,124" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient" enabled="1"/>
+        <skinpart gradientalpha="124,185" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient" enabled="0"/>
+      </background>
+    </notify>
+    <taskpreview calroffset="6,6" catboffset="18,6" location="0,2" dimension="5,400">
+      <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" size="8" name="Tahoma" location="cw,1" dimension="w-26,0" draw="1"/>
+      <icon location="4,hh-ihh" size="32,32" draw="1"/>
+      <background>
+        <skinpart alpha="225" color="0" image="images/empty.png" dimension="w,1" location="0,0"/>
+        <skinpart alpha="225" color="0" image="images/empty.png" dimension="1,h-2" location="w-1,1"/>
+        <skinpart alpha="225" color="0" image="images/empty.png" dimension="w,1" location="0,h-1"/>
+        <skinpart alpha="225" color="0" image="images/empty.png" dimension="1,h-2" location="0,1"/>
+        <skinpart alpha="$BGAlpha+32" color="$Background" image="images/empty.png" dimension="w-2,h-2" location="1,1"/>
+        <skinpart gradientalpha="185,124" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient" enabled="1"/>
+        <skinpart gradientalpha="124,185" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient" enabled="0"/>
+      </background>
+      <hover>
+        <skinpart alpha="225" color="0" image="images/empty.png" dimension="w,1" location="0,0"/>
+        <skinpart alpha="225" color="0" image="images/empty.png" dimension="1,h-2" location="w-1,1"/>
+        <skinpart alpha="225" color="0" image="images/empty.png" dimension="w,1" location="0,h-1"/>
+        <skinpart alpha="225" color="0" image="images/empty.png" dimension="1,h-2" location="0,1"/>
+        <skinpart alpha="$BGAlpha+32" color="$Background" image="images/empty.png" dimension="w-2,h-2" location="1,1"/>
+        <skinpart gradientalpha="185+64,124+64" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient" enabled="1"/>
+        <skinpart gradientalpha="124+64,185+64" gradientcolor="$Foreground,$Foreground" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1" ID="gradient" enabled="0"/>
+      </hover>
+    </taskpreview>
+  </skindesign>
 </sharpESkin>

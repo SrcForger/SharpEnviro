@@ -1,21 +1,362 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <sharpESkin>
-  <sharpbar glasseffect="1" specialhideform="1" enablevflip="1" ncyoffsetsbottom="3,3" ncyoffsets="3,3" paxoffsetsbottom="8,8" payoffsetsbottom="2,0" payoffsets="0,2" paxoffsets="8,8" sbmod="0,0" fsmod="2,2" dimension="w,40">
-    <bar dimension="w,h">
-      <skinpart alpha="$Alpha" color="$Background" image="images/Empty.png" dimension="w,h" location="0,0"/>
-      <skinpart alpha="$Alpha+92" color="$Border" image="images/Empty.png" dimension="w,1" location="0,h-1"/>
-      <skinpart alpha="$Alpha+64" color="$Special" image="images/Empty.png" dimension="w,1" location="0,h-2"/>
-      <skinpart alpha="$Alpha+92" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-      <skinpart alpha="$Alpha+64" color="$Special" image="images/Empty.png" dimension="1,h-2" location="w-2,0"/>
-      <skinpart alpha="$Alpha+92" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-      <skinpart alpha="$Alpha+64" color="$Special" image="images/Empty.png" dimension="1,h-2" location="1,0"/>
-    </bar>
-    <throbber dimension="10,38" locationbottom="2,2" location="2,0">
+  <skindesign name="default" default="1">
+    <sharpbar glasseffect="1" specialhideform="1" enablevflip="1" ncyoffsetsbottom="3,3" ncyoffsets="3,3" paxoffsetsbottom="8,8" payoffsetsbottom="2,0" payoffsets="0,2" paxoffsets="8,8" sbmod="0,0" fsmod="2,2" dimension="w,40">
+      <bar dimension="w,h">
+        <skinpart alpha="$Alpha" color="$Background" image="images/Empty.png" dimension="w,h" location="0,0"/>
+        <skinpart alpha="$Alpha+92" color="$Border" image="images/Empty.png" dimension="w,1" location="0,h-1"/>
+        <skinpart alpha="$Alpha+64" color="$Special" image="images/Empty.png" dimension="w,1" location="0,h-2"/>
+        <skinpart alpha="$Alpha+92" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+        <skinpart alpha="$Alpha+64" color="$Special" image="images/Empty.png" dimension="1,h-2" location="w-2,0"/>
+        <skinpart alpha="$Alpha+92" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$Alpha+64" color="$Special" image="images/Empty.png" dimension="1,h-2" location="1,0"/>
+      </bar>
+      <throbber dimension="10,38" locationbottom="2,2" location="2,0">
+        <normal>
+          <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="0,0"/>
+          <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-26,h-16"/>
+          <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
+        </normal>
+        <hover>
+          <skinpart alpha="92" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="0,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-26,h-16"/>
+          <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
+        </hover>
+        <down>
+          <skinpart alpha="64" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="0,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-26,h-16"/>
+          <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
+        </down>
+      </throbber>
+    </sharpbar>
+    <taskswitch hoverpreviewloc="5,5" hoverpreviewdim="48,48" previewloc="5,5" previewdim="48,48" lroffset="5,5" tboffset="5,26" wrapcount="8" spacing="4" dimension="w,h">
+      <text shadowalpha="196" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" color="$Text" location="cw,h-22" name="Tahoma" size="10"/>
+      <background>
+        <skinpart alpha="$MAlpha+33+32" color="$Background" image="images/Empty.png" dimension="w-3,h-3" location="2,2"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-3" location="w-1,2"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,h-1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-3" location="1,2"/>
+      </background>
+      <item dimension="58,58">
+        <skinpart alpha="$MAlpha+33-16" color="$Background" image="images/Empty.png" dimension="w-3,h-3" location="2,2"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-3" location="w-1,2"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,h-1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-3" location="1,2"/>
+      </item>
+      <itemhover dimension="58,58">
+        <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="w-3,h-3" location="2,2"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-3" location="w-1,2"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,h-1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-3" location="1,2"/>
+      </itemhover>
+    </taskswitch>
+    <menu lroffset="8,8" tboffset="8,8" widthlimit="200,350" location="-1,0" dimension="w,h">
+      <background>
+        <skinpart alpha="$Alpha" color="$Background" image="images/Empty.png" dimension="w,h" location="0,0"/>
+        <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="1,1"/>
+        <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-27,h-16"/>
+        <skinpart alpha="128" color="$Special" image="images/Empty.png" dimension="w,h" location="0,0"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="1,1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="w-2,1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,h-2"/>
+      </background>
+    </menu>
+    <menuitem>
+      <icon location="4,6" dimension="16,16" draw="1"/>
+      <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="10" name="Calibri" location="25,4" dimension="w-40,h" draw="1"/>
+      <normal widthmod="48" dimension="w,26"/>
+      <hover widthmod="48" dimension="w,26">
+        <text shadowalpha="196" color="$Text"/>
+        <icon lightenamount="48" lighten="1"/>
+        <skinpart alpha="96" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
+        <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="1,1"/>
+        <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-27,h-16"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="1,1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="w-2,1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,h-2"/>
+      </hover>
+      <down widthmod="48" dimension="w,26">
+        <text shadowalpha="196" color="$Text" location="26,5"/>
+        <icon lightenamount="48" lighten="1" location="5,4"/>
+      </down>
+      <normalsub widthmod="48" dimension="w,26">
+        <skinpart alpha="$BAlpha-32" color="$Border" image="images/Empty.png" dimension="4,4" location="w-5,11"/>
+      </normalsub>
+      <hoversub widthmod="48" dimension="w,26">
+        <text shadowalpha="196" color="$Text"/>
+        <icon lightenamount="48" lighten="1"/>
+        <skinpart alpha="96" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
+        <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="1,1"/>
+        <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-27,h-16"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="1,1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="w-2,1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,h-2"/>
+      </hoversub>
+      <separator dimension="w,6">
+        <skinpart alpha="$BAlpha-32" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,3"/>
+      </separator>
+      <label widthmod="20" dimension="w,24">
+        <text shadowtype="Outline" location="cw-1,1" dimension="w-20,h"/>
+      </label>
+    </menuitem>
+    <taskitem>
+      <full spacing="2" dimension="200,38" location="0,0">
+        <text shadowalpha="96" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="10" name="Calibri" dimension="w-46,h" location="44,ch" draw="1"/>
+        <icon location="7,3" size="32,32" draw="1"/>
+        <special empty="1"/>
+        <specialhover>
+          <icon lightenamount="48" lighten="1"/>
+          <skinpart alpha="92" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
+          <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
+        </specialhover>
+        <normal>
+          <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
+          <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
+          <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
+          <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
+        </normal>
+        <normalhover>
+          <icon lightenamount="48" lighten="1"/>
+          <skinpart alpha="92" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
+          <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
+        </normalhover>
+        <down>
+          <skinpart alpha="128" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+48" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
+          <skinpart alpha="$BAlpha+48" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
+          <skinpart alpha="96" image="images/Button-Overlay-Highlight.png" dimension="141,39" location="2,0"/>
+          <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
+          <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
+        </down>
+        <downhover>
+          <text shadowalpha="196" color="$Text"/>
+          <icon lightenamount="24" lighten="1"/>
+          <skinpart alpha="164" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+64" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
+          <skinpart alpha="$BAlpha+64" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
+          <skinpart alpha="96+32" image="images/Button-Overlay-Highlight.png" dimension="141,39" location="2,0"/>
+          <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
+          <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
+        </downhover>
+        <highlight>
+          <icon lightenamount="48" lighten="1"/>
+          <skinpart alpha="148" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
+          <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
+        </highlight>
+        <highlighthover>
+          <icon lightenamount="24" lighten="1"/>
+          <skinpart alpha="92" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
+          <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
+        </highlighthover>
+      </full>
+      <compact spacing="2" dimension="64,38" location="0,0">
+        <text shadowalpha="96" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="8" name="Calibri" dimension="w-6,h" location="wh-twh,ch+10" draw="1"/>
+        <icon location="wh-iwh,3" size="16,16" draw="1"/>
+        <special empty="1"/>
+        <specialhover>
+          <icon lightenamount="48" lighten="1"/>
+          <skinpart alpha="92" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
+          <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
+        </specialhover>
+        <normal>
+          <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
+          <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
+          <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
+          <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
+        </normal>
+        <normalhover>
+          <icon lightenamount="48" lighten="1"/>
+          <skinpart alpha="92" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
+          <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
+        </normalhover>
+        <down>
+          <skinpart alpha="128" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+48" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
+          <skinpart alpha="$BAlpha+48" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
+          <skinpart alpha="96" image="images/Button-Overlay-Highlight.png" dimension="141,39" location="2,0"/>
+          <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
+          <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
+        </down>
+        <downhover>
+          <text shadowalpha="196" color="$Text"/>
+          <icon lightenamount="24" lighten="1"/>
+          <skinpart alpha="164" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+64" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
+          <skinpart alpha="$BAlpha+64" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
+          <skinpart alpha="96+32" image="images/Button-Overlay-Highlight.png" dimension="141,39" location="2,0"/>
+          <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
+          <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
+        </downhover>
+        <highlight>
+          <icon lightenamount="48" lighten="1"/>
+          <skinpart alpha="148" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
+          <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
+        </highlight>
+        <highlighthover>
+          <icon lightenamount="24" lighten="1"/>
+          <skinpart alpha="92" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
+          <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
+        </highlighthover>
+      </compact>
+      <mini spacing="2" dimension="45,38" location="0,0">
+        <text draw="0"/>
+        <icon location="cw-16,3" size="32,32" draw="1"/>
+        <special empty="1"/>
+        <specialhover>
+          <icon lightenamount="48" lighten="1"/>
+          <skinpart alpha="92" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
+          <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
+        </specialhover>
+        <normal>
+          <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
+          <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
+          <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
+          <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
+        </normal>
+        <normalhover>
+          <icon lightenamount="48" lighten="1"/>
+          <skinpart alpha="92" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
+          <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
+        </normalhover>
+        <down>
+          <skinpart alpha="128" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+48" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
+          <skinpart alpha="$BAlpha+48" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
+          <skinpart alpha="96" image="images/Button-Overlay-Highlight.png" dimension="141,39" location="2,0"/>
+          <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
+          <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
+        </down>
+        <downhover>
+          <text shadowalpha="196" color="$Text"/>
+          <icon lightenamount="24" lighten="1"/>
+          <skinpart alpha="164" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+64" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
+          <skinpart alpha="$BAlpha+64" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
+          <skinpart alpha="96+32" image="images/Button-Overlay-Highlight.png" dimension="141,39" location="2,0"/>
+          <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
+          <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
+        </downhover>
+        <highlight>
+          <icon lightenamount="48" lighten="1"/>
+          <skinpart alpha="148" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
+          <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
+        </highlight>
+        <highlighthover>
+          <icon lightenamount="24" lighten="1"/>
+          <skinpart alpha="92" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
+          <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
+          <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
+        </highlighthover>
+      </mini>
+    </taskitem>
+    <minithrobber bottomlocation="0,2" location="0,0" dimension="7,38">
       <normal>
         <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="0,0"/>
         <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-26,h-16"/>
         <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
         <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
       </normal>
       <hover>
         <skinpart alpha="92" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
@@ -23,6 +364,8 @@
         <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-26,h-16"/>
         <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
         <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
       </hover>
       <down>
         <skinpart alpha="64" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
@@ -30,112 +373,13 @@
         <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-26,h-16"/>
         <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
         <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
       </down>
-    </throbber>
-  </sharpbar>
-  <taskswitch hoverpreviewloc="5,5" hoverpreviewdim="48,48" previewloc="5,5" previewdim="48,48" lroffset="5,5" tboffset="5,26" wrapcount="8" spacing="4" dimension="w,h">
-    <text shadowalpha="196" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" color="$Text" location="cw,h-22" name="Tahoma" size="10"/>
-    <background>
-      <skinpart alpha="$MAlpha+33+32" color="$Background" image="images/Empty.png" dimension="w-3,h-3" location="2,2"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-3" location="w-1,2"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,h-1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-3" location="1,2"/>
-    </background>
-    <item dimension="58,58">
-      <skinpart alpha="$MAlpha+33-16" color="$Background" image="images/Empty.png" dimension="w-3,h-3" location="2,2"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-3" location="w-1,2"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,h-1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-3" location="1,2"/>
-    </item>
-    <itemhover dimension="58,58">
-      <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="w-3,h-3" location="2,2"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-3" location="w-1,2"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,h-1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-3" location="1,2"/>
-    </itemhover>
-  </taskswitch>
-  <menu lroffset="8,8" tboffset="8,8" widthlimit="200,350" location="-1,0" dimension="w,h">
-    <background>
-      <skinpart alpha="$Alpha" color="$Background" image="images/Empty.png" dimension="w,h" location="0,0"/>
-      <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="1,1"/>
-      <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-27,h-16"/>
-      <skinpart alpha="128" color="$Special" image="images/Empty.png" dimension="w,h" location="0,0"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="1,1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="w-2,1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,h-2"/>
-    </background>
-  </menu>
-  <menuitem>
-    <icon location="4,6" dimension="16,16" draw="1"/>
-    <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="10" name="Calibri" location="25,4" dimension="w-40,h" draw="1"/>
-    <normal widthmod="48" dimension="w,26"/>
-    <hover widthmod="48" dimension="w,26">
-      <text shadowalpha="196" color="$Text"/>
-      <icon lightenamount="48" lighten="1"/>
-      <skinpart alpha="96" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
-      <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="1,1"/>
-      <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-27,h-16"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="1,1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="w-2,1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,h-2"/>
-    </hover>
-    <down widthmod="48" dimension="w,26">
-      <text shadowalpha="196" color="$Text" location="26,5"/>
-      <icon lightenamount="48" lighten="1" location="5,4"/>
-    </down>
-    <normalsub widthmod="48" dimension="w,26">
-      <skinpart alpha="$BAlpha-32" color="$Border" image="images/Empty.png" dimension="4,4" location="w-5,11"/>
-    </normalsub>
-    <hoversub widthmod="48" dimension="w,26">
-      <text shadowalpha="196" color="$Text"/>
-      <icon lightenamount="48" lighten="1"/>
-      <skinpart alpha="96" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
-      <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="1,1"/>
-      <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-27,h-16"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="1,1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="w-2,1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,h-2"/>
-    </hoversub>
-    <separator dimension="w,6">
-      <skinpart alpha="$BAlpha-32" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,3"/>
-    </separator>
-    <label widthmod="20" dimension="w,24">
-      <text shadowtype="Outline" location="cw-1,1" dimension="w-20,h"/>
-    </label>
-  </menuitem>
-  <taskitem>
-    <full spacing="2" dimension="200,38" location="0,0">
-      <text shadowalpha="96" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="10" name="Calibri" dimension="w-46,h" location="44,ch" draw="1"/>
-      <icon location="7,3" size="32,32" draw="1"/>
-      <special empty="1"/>
-      <specialhover>
-        <icon lightenamount="48" lighten="1"/>
-        <skinpart alpha="92" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
-        <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
-      </specialhover>
+    </minithrobber>
+    <button widthmod="22" dimension="w,38" location="0,0">
+      <text shadowalpha="96" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="10" name="Calibri" location="cw+iwh+4,ch-1"/>
+      <icon location="cw-17,3" size="32,32" draw="1"/>
       <normal>
         <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
         <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
@@ -144,7 +388,8 @@
         <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
         <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
       </normal>
-      <normalhover>
+      <hover>
+        <text shadowalpha="196" color="$Text"/>
         <icon lightenamount="48" lighten="1"/>
         <skinpart alpha="92" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
         <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
@@ -153,396 +398,153 @@
         <skinpart alpha="$BAlpha+32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
         <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
         <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
-      </normalhover>
+      </hover>
       <down>
-        <skinpart alpha="128" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
-        <skinpart alpha="$BAlpha+48" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
-        <skinpart alpha="$BAlpha+48" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
-        <skinpart alpha="96" image="images/Button-Overlay-Highlight.png" dimension="141,39" location="2,0"/>
-        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
-        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+        <text shadowalpha="196" color="$Text" location="cw+iwh+3,ch"/>
+        <icon lightenamount="48" lighten="1" location="cw-17,4"/>
+        <skinpart alpha="64" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
+        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
+        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
+        <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
+        <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
         <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
       </down>
-      <downhover>
-        <text shadowalpha="196" color="$Text"/>
-        <icon lightenamount="24" lighten="1"/>
-        <skinpart alpha="164" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
-        <skinpart alpha="$BAlpha+64" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
-        <skinpart alpha="$BAlpha+64" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
-        <skinpart alpha="96+32" image="images/Button-Overlay-Highlight.png" dimension="141,39" location="2,0"/>
+    </button>
+    <font locationBL="0,11" locationTL="0,-6">
+      <small location="0,0" shadowalpha="196" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="10" name="Calibri" bold="0"/>
+      <medium location="0,-2" shadowalpha="255" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" cleartype="1/" color="$Text" bold="0" size="12" name="Calibri"/>
+      <big location="0,-2" shadowalpha="196" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" cleartype="1/" color="$Text" bold="0" size="14" name="Calibri"/>
+    </font>
+    <progressbar dimensionBL="w,14" locationBL="0,20" dimensionTL="w,14" locationTL="0,3" dimension="w,18" location="0,9,">
+      <background>
+        <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="1,1"/>
+        <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-27,h-16"/>
+        <skinpart alpha="128" color="$Special" image="images/Empty.png" dimension="w,h" location="0,0"/>
         <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="1,1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,1"/>
         <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
-      </downhover>
-      <highlight>
-        <icon lightenamount="48" lighten="1"/>
-        <skinpart alpha="148" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
-        <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
-      </highlight>
-      <highlighthover>
-        <icon lightenamount="24" lighten="1"/>
-        <skinpart alpha="92" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
-        <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
-      </highlighthover>
-    </full>
-    <compact spacing="2" dimension="64,38" location="0,0">
-      <text shadowalpha="96" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="8" name="Calibri" dimension="w-6,h" location="wh-twh,ch+10" draw="1"/>
-      <icon location="wh-iwh,3" size="16,16" draw="1"/>
-      <special empty="1"/>
-      <specialhover>
-        <icon lightenamount="48" lighten="1"/>
-        <skinpart alpha="92" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
-        <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
-      </specialhover>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="w-2,1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,h-2"/>
+      </background>
+      <progress dimension="w-4,h-4" location="2,2">
+        <skinpart alpha="128" color="RGB(128,128,128)" image="images/Empty.png" dimension="w,h" location="0,0"/>
+        <skinpart alpha="128" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+      </progress>
+    </progressbar>
+    <edit edityoffsets="2,2" editxoffsets="2,2" location="0,6" dimension="w,18">
+      <text size="10" name="Calibri" color="$Text"/>
       <normal>
-        <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
-        <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
+        <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="1,1"/>
+        <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-27,h-16"/>
         <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="1,1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,1"/>
         <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="w-2,1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,h-2"/>
       </normal>
-      <normalhover>
-        <icon lightenamount="48" lighten="1"/>
-        <skinpart alpha="92" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
-        <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
-      </normalhover>
-      <down>
+      <focus>
+        <text color="$Text"/>
+        <skinpart alpha="128" color="$Special" image="images/Empty.png" dimension="w,h" location="0,0"/>
+        <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="1,1"/>
+        <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-27,h-16"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="1,1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="w-2,1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,h-2"/>
+      </focus>
+      <hover>
+        <text color="$Text"/>
+        <skinpart alpha="96" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
+        <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="1,1"/>
+        <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-27,h-16"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="1,1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="w-2,1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,h-2"/>
+      </hover>
+    </edit>
+    <notify calroffset="8,8" catboffset="8,8" location="0,1" dimension="256,h">
+      <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="10" name="Calibri" location="40,ch+1" dimension="w-32-4-4-4,h" draw="1"/>
+      <icon location="4,hh-ihh" size="32,32" draw="1"/>
+      <background>
+        <skinpart alpha="$Alpha" color="$Background" image="images/Empty.png" dimension="w,h" location="0,0"/>
+        <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="1,1"/>
+        <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-27,h-16"/>
+        <skinpart alpha="128" color="$Special" image="images/Empty.png" dimension="w,h" location="0,0"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="1,1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="w-2,1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,h-2"/>
+      </background>
+    </notify>
+    <taskpreview calroffset="10,10" catboffset="28,10" location="0,0" dimension="5,400">
+      <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="12" name="Calibri" location="cw,1" dimension="w-42,0" draw="1"/>
+      <icon location="4,hh-ihh" size="32,32" draw="1"/>
+      <background>
+        <skinpart alpha="$Alpha" color="$Background" image="images/Empty.png" dimension="w,h" location="0,0"/>
+        <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="1,1"/>
+        <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-27,h-16"/>
+        <skinpart alpha="128" color="$Special" image="images/Empty.png" dimension="w,h" location="0,0"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-34" location="8,26"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="1,1"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2-34" location="9,27"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-16-2,1" location="9,26"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,1"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4-16,1" location="10,27"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-34" location="w-1-8,26"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="w-2,1"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2-34" location="w-2-8,27"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2-16,1" location="9,h-1-8"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,h-2"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4-16,1" location="10,h-2-8"/>
+      </background>
+      <hover>
+        <skinpart alpha="$Alpha" color="$Background" image="images/Empty.png" dimension="w,h" location="0,0"/>
         <skinpart alpha="128" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
-        <skinpart alpha="$BAlpha+48" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
-        <skinpart alpha="$BAlpha+48" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
-        <skinpart alpha="96" image="images/Button-Overlay-Highlight.png" dimension="141,39" location="2,0"/>
+        <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="1,1"/>
+        <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-27,h-16"/>
+        <skinpart alpha="128" color="$Special" image="images/Empty.png" dimension="w,h" location="0,0"/>
         <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-34" location="8,26"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="1,1"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2-34" location="9,27"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-16-2,1" location="9,26"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,1"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4-16,1" location="10,27"/>
         <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
-      </down>
-      <downhover>
-        <text shadowalpha="196" color="$Text"/>
-        <icon lightenamount="24" lighten="1"/>
-        <skinpart alpha="164" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
-        <skinpart alpha="$BAlpha+64" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
-        <skinpart alpha="$BAlpha+64" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
-        <skinpart alpha="96+32" image="images/Button-Overlay-Highlight.png" dimension="141,39" location="2,0"/>
-        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
-        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
-      </downhover>
-      <highlight>
-        <icon lightenamount="48" lighten="1"/>
-        <skinpart alpha="148" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
-        <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
-      </highlight>
-      <highlighthover>
-        <icon lightenamount="24" lighten="1"/>
-        <skinpart alpha="92" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
-        <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
-      </highlighthover>
-    </compact>
-    <mini spacing="2" dimension="45,38" location="0,0">
-      <text draw="0"/>
-      <icon location="cw-16,3" size="32,32" draw="1"/>
-      <special empty="1"/>
-      <specialhover>
-        <icon lightenamount="48" lighten="1"/>
-        <skinpart alpha="92" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
-        <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
-      </specialhover>
-      <normal>
-        <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
-        <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
-        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
-        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
-      </normal>
-      <normalhover>
-        <icon lightenamount="48" lighten="1"/>
-        <skinpart alpha="92" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
-        <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
-      </normalhover>
-      <down>
-        <skinpart alpha="128" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
-        <skinpart alpha="$BAlpha+48" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
-        <skinpart alpha="$BAlpha+48" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
-        <skinpart alpha="96" image="images/Button-Overlay-Highlight.png" dimension="141,39" location="2,0"/>
-        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
-        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
-      </down>
-      <downhover>
-        <text shadowalpha="196" color="$Text"/>
-        <icon lightenamount="24" lighten="1"/>
-        <skinpart alpha="164" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
-        <skinpart alpha="$BAlpha+64" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
-        <skinpart alpha="$BAlpha+64" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
-        <skinpart alpha="96+32" image="images/Button-Overlay-Highlight.png" dimension="141,39" location="2,0"/>
-        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
-        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
-      </downhover>
-      <highlight>
-        <icon lightenamount="48" lighten="1"/>
-        <skinpart alpha="148" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
-        <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
-      </highlight>
-      <highlighthover>
-        <icon lightenamount="24" lighten="1"/>
-        <skinpart alpha="92" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
-        <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
-        <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
-      </highlighthover>
-    </mini>
-  </taskitem>
-  <minithrobber bottomlocation="0,2" location="0,0" dimension="7,38">
-    <normal>
-      <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="0,0"/>
-      <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-26,h-16"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
-    </normal>
-    <hover>
-      <skinpart alpha="92" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
-      <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="0,0"/>
-      <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-26,h-16"/>
-      <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
-    </hover>
-    <down>
-      <skinpart alpha="64" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
-      <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="0,0"/>
-      <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-26,h-16"/>
-      <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
-    </down>
-  </minithrobber>
-  <button widthmod="22" dimension="w,38" location="0,0">
-    <text shadowalpha="96" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="10" name="Calibri" location="cw+iwh+4,ch-1"/>
-    <icon location="cw-17,3" size="32,32" draw="1"/>
-    <normal>
-      <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
-      <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
-    </normal>
-    <hover>
-      <text shadowalpha="196" color="$Text"/>
-      <icon lightenamount="48" lighten="1"/>
-      <skinpart alpha="92" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
-      <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
-      <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
-      <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-      <skinpart alpha="$BAlpha+32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
-      <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
-    </hover>
-    <down>
-      <text shadowalpha="196" color="$Text" location="cw+iwh+3,ch"/>
-      <icon lightenamount="48" lighten="1" location="cw-17,4"/>
-      <skinpart alpha="64" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
-      <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="2,0"/>
-      <skinpart alpha="$BAlpha+32" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-28,h-16"/>
-      <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-      <skinpart alpha="$BAlpha+32" color="$Special" image="images/Empty.png" dimension="1,h" location="1,0"/>
-      <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
-    </down>
-  </button>
-  <font locationBL="0,11" locationTL="0,-6">
-    <small location="0,0" shadowalpha="196" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="10" name="Calibri" bold="0"/>
-    <medium location="0,-2" shadowalpha="255" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" cleartype="1/" color="$Text" bold="0" size="12" name="Calibri"/>
-    <big location="0,-2" shadowalpha="196" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" cleartype="1/" color="$Text" bold="0" size="14" name="Calibri"/>
-  </font>
-  <progressbar dimensionBL="w,14" locationBL="0,20" dimensionTL="w,14" locationTL="0,3" dimension="w,18" location="0,9,">
-    <background>
-      <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="1,1"/>
-      <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-27,h-16"/>
-      <skinpart alpha="128" color="$Special" image="images/Empty.png" dimension="w,h" location="0,0"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="1,1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="w-2,1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,h-2"/>
-    </background>
-    <progress dimension="w-4,h-4" location="2,2">
-      <skinpart alpha="128" color="RGB(128,128,128)" image="images/Empty.png" dimension="w,h" location="0,0"/>
-      <skinpart alpha="128" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-    </progress>
-  </progressbar>
-  <edit edityoffsets="2,2" editxoffsets="2,2" location="0,6" dimension="w,18">
-    <text size="10" name="Calibri" color="$Text"/>
-    <normal>
-      <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="1,1"/>
-      <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-27,h-16"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="1,1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="w-2,1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,h-2"/>
-    </normal>
-    <focus>
-      <text color="$Text"/>
-      <skinpart alpha="128" color="$Special" image="images/Empty.png" dimension="w,h" location="0,0"/>
-      <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="1,1"/>
-      <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-27,h-16"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="1,1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="w-2,1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,h-2"/>
-    </focus>
-    <hover>
-      <text color="$Text"/>
-      <skinpart alpha="96" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
-      <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="1,1"/>
-      <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-27,h-16"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="1,1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="w-2,1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,h-2"/>
-    </hover>
-  </edit>
-  <notify calroffset="8,8" catboffset="8,8" location="0,1" dimension="256,h">
-    <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="10" name="Calibri" location="40,ch+1" dimension="w-32-4-4-4,h" draw="1"/>
-    <icon location="4,hh-ihh" size="32,32" draw="1"/>
-    <background>
-      <skinpart alpha="$Alpha" color="$Background" image="images/Empty.png" dimension="w,h" location="0,0"/>
-      <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="1,1"/>
-      <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-27,h-16"/>
-      <skinpart alpha="128" color="$Special" image="images/Empty.png" dimension="w,h" location="0,0"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="1,1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="w-2,1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,h-2"/>
-    </background>
-  </notify>
-  <taskpreview calroffset="10,10" catboffset="28,10" location="0,0" dimension="5,400">
-    <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="12" name="Calibri" location="cw,1" dimension="w-42,0" draw="1"/>
-    <icon location="4,hh-ihh" size="32,32" draw="1"/>
-    <background>
-      <skinpart alpha="$Alpha" color="$Background" image="images/Empty.png" dimension="w,h" location="0,0"/>
-      <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="1,1"/>
-      <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-27,h-16"/>
-      <skinpart alpha="128" color="$Special" image="images/Empty.png" dimension="w,h" location="0,0"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-34" location="8,26"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="1,1"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2-34" location="9,27"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-16-2,1" location="9,26"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,1"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4-16,1" location="10,27"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-34" location="w-1-8,26"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="w-2,1"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2-34" location="w-2-8,27"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2-16,1" location="9,h-1-8"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,h-2"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4-16,1" location="10,h-2-8"/>
-    </background>
-    <hover>
-      <skinpart alpha="$Alpha" color="$Background" image="images/Empty.png" dimension="w,h" location="0,0"/>
-      <skinpart alpha="128" color="$Highlight" image="images/Empty.png" dimension="w,h" location="0,0"/>
-      <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="1,1"/>
-      <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-27,h-16"/>
-      <skinpart alpha="128" color="$Special" image="images/Empty.png" dimension="w,h" location="0,0"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="0,0"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-34" location="8,26"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="1,1"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2-34" location="9,27"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,0"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-16-2,1" location="9,26"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,1"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4-16,1" location="10,27"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h" location="w-1,0"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-34" location="w-1-8,26"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="w-2,1"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2-34" location="w-2-8,27"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1"/>
-      <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2-16,1" location="9,h-1-8"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,h-2"/>
-      <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4-16,1" location="10,h-2-8"/>
-    </hover>
-  </taskpreview>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-34" location="w-1-8,26"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2" location="w-2,1"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h-2-34" location="w-2-8,27"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,h-1"/>
+        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-2-16,1" location="9,h-1-8"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4,1" location="2,h-2"/>
+        <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="w-4-16,1" location="10,h-2-8"/>
+      </hover>
+    </taskpreview>
+  </skindesign>
 </sharpESkin>

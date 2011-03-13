@@ -1,536 +1,538 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <sharpESkin>
-  <sharpbar glasseffect="1" specialhideform="0" enablevflip="1" ncyoffsetsbottom="1,3" ncyoffsets="3,1" payoffsetsbottom="3,0" paxoffsetsbottom="25,4" payoffsets="0,3" paxoffsets="25,4" sbmod="0,0" fsmod="0,0" dimension="w,31">
-    <bar dimension="w,h">
-      <skinpart alpha="$Alpha" color="$Background" image="images/BarLeftTop.png" dimension="7,31" location="0,0"/>
-      <skinpart alpha="$Alpha" color="$Background" image="images/BarRightTop.png" dimension="7,31" location="w-7,0"/>
-      <skinpart alpha="$Alpha" color="$Background" image="images/BarMiddleTop.png" dimension="w-14,31" location="7,0"/>
-    </bar>
-    <barbottom dimension="w,h">
-      <skinpart alpha="$Alpha" color="$Background" image="images/BarLeft.png" dimension="7,31" location="0,0"/>
-      <skinpart alpha="$Alpha" color="$Background" image="images/BarRight.png" dimension="7,31" location="w-7,0"/>
-      <skinpart alpha="$Alpha" color="$Background" image="images/BarMiddle.png" dimension="w-14,31" location="7,0"/>
-    </barbottom>
-    <barborder dimension="w,h">
-      <skinpart alpha="255" image="images/BarLeftTopBA.png" dimension="7,31" location="0,0"/>
-      <skinpart alpha="255" color="clWhite" image="images/empty.png" dimension="w-14,31" location="7,0"/>
-      <skinpart alpha="255" image="images/BarRightTopBA.png" dimension="7,31" location="w-7,0"/>
-    </barborder>
-    <barbottomborder dimension="w,h">
-      <skinpart alpha="255" image="images/BarLeftBA.png" dimension="7,31" location="0,0"/>
-      <skinpart alpha="255" color="clWhite" image="images/empty.png" dimension="w-14,31" location="7,0"/>
-      <skinpart alpha="255" image="images/BarRightBA.png" dimension="7,31" location="w-7,0"/>
-    </barbottomborder>
-    <throbber dimension="13,20" locationbottom="4,8" location="4,4">
+  <skindesign name="small" default="1">
+    <sharpbar glasseffect="1" specialhideform="0" enablevflip="1" ncyoffsetsbottom="1,3" ncyoffsets="3,1" payoffsetsbottom="3,0" paxoffsetsbottom="25,4" payoffsets="0,3" paxoffsets="25,4" sbmod="0,0" fsmod="0,0" dimension="w,31">
+      <bar dimension="w,h">
+        <skinpart alpha="$Alpha" color="$Background" image="images/BarLeftTop.png" dimension="7,31" location="0,0"/>
+        <skinpart alpha="$Alpha" color="$Background" image="images/BarRightTop.png" dimension="7,31" location="w-7,0"/>
+        <skinpart alpha="$Alpha" color="$Background" image="images/BarMiddleTop.png" dimension="w-14,31" location="7,0"/>
+      </bar>
+      <barbottom dimension="w,h">
+        <skinpart alpha="$Alpha" color="$Background" image="images/BarLeft.png" dimension="7,31" location="0,0"/>
+        <skinpart alpha="$Alpha" color="$Background" image="images/BarRight.png" dimension="7,31" location="w-7,0"/>
+        <skinpart alpha="$Alpha" color="$Background" image="images/BarMiddle.png" dimension="w-14,31" location="7,0"/>
+      </barbottom>
+      <barborder dimension="w,h">
+        <skinpart alpha="255" image="images/BarLeftTopBA.png" dimension="7,31" location="0,0"/>
+        <skinpart alpha="255" color="clWhite" image="images/empty.png" dimension="w-14,31" location="7,0"/>
+        <skinpart alpha="255" image="images/BarRightTopBA.png" dimension="7,31" location="w-7,0"/>
+      </barborder>
+      <barbottomborder dimension="w,h">
+        <skinpart alpha="255" image="images/BarLeftBA.png" dimension="7,31" location="0,0"/>
+        <skinpart alpha="255" color="clWhite" image="images/empty.png" dimension="w-14,31" location="7,0"/>
+        <skinpart alpha="255" image="images/BarRightBA.png" dimension="7,31" location="w-7,0"/>
+      </barbottomborder>
+      <throbber dimension="13,20" locationbottom="4,8" location="4,4">
+        <normal>
+          <skinpart enabled="$IsBarTop" alpha="$Alpha+128" color="$Special" image="images/Throbber.png" dimension="13,20" location="0,0"/>
+          <skinpart enabled="$IsBarBottom" alpha="$Alpha+128" color="$Special" image="images/ThrobberBottom.png" dimension="13,20" location="0,0"/>
+        </normal>
+        <hover>
+          <skinpart enabled="$IsBarTop" alpha="$Alpha+128" color="$Special+32" image="images/Throbber.png" dimension="13,20" location="0,0"/>
+          <skinpart enabled="$IsBarBottom" alpha="$Alpha+128" color="$Special+32" image="images/ThrobberBottom.png" dimension="13,20" location="0,0"/>
+        </hover>
+        <down>
+          <skinpart enabled="$IsBarTop" alpha="$Alpha+128" color="$Special-32" image="images/Throbber.png" dimension="13,20" location="0,0"/>
+          <skinpart enabled="$IsBarBottom" alpha="$Alpha+128" color="$Special-32" image="images/ThrobberBottom.png" dimension="13,20" location="0,0"/>
+        </down>
+      </throbber>
+    </sharpbar>
+    <menu lroffset="6,4" tboffset="8,8" widthlimit="200,350" location="-2,-1" dimension="w,h">
+      <background>
+        <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundTopLeftSmall.png" dimension="12,12" location="0,0"/>
+        <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundLeftSmall.png" dimension="12,h-24" location="0,12"/>
+        <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundBottomLeftSmall.png" dimension="12,12" location="0,h-12"/>
+        <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundTopSmall.png" dimension="w-24-1,12" location="12,0"/>
+        <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundMiddle.png" dimension="w-24-1,h-24" location="12,12"/>
+        <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundBottomSmall.png" dimension="w-24-1,12" location="12,h-12"/>
+        <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundTopRightSmall.png" dimension="12,12" location="w-12-1,0"/>
+        <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundRightSmall.png" dimension="12,h-24" location="w-12-1,12"/>
+        <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundBottomRightSmall.png" dimension="12,12" location="w-12-1,h-12"/>
+      </background>
+    </menu>
+    <menuitem>
+      <icon location="6,5" dimension="16,16" draw="1"/>
+      <text shadowalpha="192" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="11" name="Calibri" location="25+2,4" dimension="w-40,h" draw="1"/>
+      <normal widthmod="48" dimension="w,28"/>
+      <hover widthmod="48" dimension="w,28">
+        <text shadowalpha="196" color="$Text"/>
+        <icon lightenamount="48" lighten="1"/>
+        <skinpart alpha="$MAlpha-32" color="$Background+32" image="images/ButtonLeft.png" dimension="7,25" location="2,1"/>
+        <skinpart alpha="$MAlpha-32" color="$Background+32" image="images/ButtonRight.png" dimension="7,25" location="w-7-4,1"/>
+        <skinpart alpha="$MAlpha-32" color="$Background+32" image="images/ButtonMiddle.png" dimension="w-14-6,25" location="7+2,1"/>
+      </hover>
+      <down widthmod="48" dimension="w,28">
+        <text shadowalpha="196" color="$Text"/>
+        <icon lightenamount="48" lighten="1"/>
+        <skinpart alpha="$MAlpha-32" color="$Background+32" image="images/ButtonLeftInvert.png" dimension="7,25" location="2,1"/>
+        <skinpart alpha="$MAlpha-32" color="$Background+32" image="images/ButtonRightInvert.png" dimension="7,25" location="w-7-4,1"/>
+        <skinpart alpha="$MAlpha-32" color="$Background+32" image="images/ButtonMiddleInvert.png" dimension="w-14-6,25" location="7+2,1"/>
+      </down>
+      <normalsub widthmod="48" dimension="w,28">
+        <skinpart alpha="$MAlpha-32" color="$Background+12" image="images/ProgressBarBackgroundTopLeft.png" dimension="4,4" location="w-5,8"/>
+        <skinpart alpha="$MAlpha-32" color="$Background+12" image="images/ProgressBarBackgroundLeft.png" dimension="4,4" location="w-5,12"/>
+        <skinpart alpha="$MAlpha-32" color="$Background+12" image="images/ProgressBarBackgroundBottomLeft.png" dimension="4,4" location="w-5,16"/>
+      </normalsub>
+      <hoversub widthmod="48" dimension="w,28">
+        <text shadowalpha="196" color="$Text"/>
+        <icon lightenamount="48" lighten="1"/>
+        <skinpart alpha="$MAlpha-32" color="$Background+32" image="images/ButtonLeft.png" dimension="7,25" location="2,1"/>
+        <skinpart alpha="0" color="$Background+32" image="images/ButtonRight.png" dimension="7,25" location="w-7-2,1"/>
+        <skinpart alpha="$MAlpha-32" color="$Background+32" image="images/ButtonMiddle.png" dimension="w-10,25" location="7+2,1"/>
+      </hoversub>
+      <separator dimension="w,6">
+        <skinpart alpha="$MAlpha" color="$Background-16" image="images/Empty.png" dimension="w-3,1" location="0,3"/>
+      </separator>
+      <label widthmod="20" dimension="w,22">
+        <text shadowtype="Outline" location="cw+14,1" dimension="w-22,h"/>
+      </label>
+    </menuitem>
+    <taskitem>
+      <full spacing="2" dimension="180,28" location="0,0">
+        <text shadowalpha="128" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="11" name="Calibri" dimension="w-32,h" location="29,ch-1" draw="1"/>
+        <icon location="5,4" size="20,20" draw="1"/>
+        <highlightsettings>
+          <blendicon color="$IconHighlightComp" change="20" value="0" min="0" max="120" apply="1"/>
+          <lighten change="10" value="-60" min="-60" max="0" apply="1"/>
+        </highlightsettings>
+        <special empty="1"/>
+        <specialhover>
+          <icon lightenamount="48" lighten="1"/>
+          <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+        </specialhover>
+        <normal>
+          <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+        </normal>
+        <normalhover>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+        </normalhover>
+        <down>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+        </down>
+        <downhover>
+          <icon lightenamount="24" lighten="1"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+        </downhover>
+        <highlight>
+          <icon lightenamount="48" lighten="0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+        </highlight>
+        <highlighthover>
+          <icon lightenamount="24" lighten="1"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+        </highlighthover>
+      </full>
+      <compact spacing="2" dimension="100,28" location="0,0">
+        <text shadowalpha="128" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="11" name="Calibri" dimension="w-32,h" location="29,ch-1" draw="1"/>
+        <icon location="5,4" size="20,20" draw="1"/>
+        <highlightsettings>
+          <blendicon color="$IconHighlightComp" change="20" value="0" min="0" max="120" apply="1"/>
+          <lighten change="10" value="-60" min="-60" max="0" apply="1"/>
+        </highlightsettings>
+        <special empty="1"/>
+        <specialhover>
+          <icon lightenamount="48" lighten="1"/>
+          <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+        </specialhover>
+        <normal>
+          <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+        </normal>
+        <normalhover>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+        </normalhover>
+        <down>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+        </down>
+        <downhover>
+          <icon lightenamount="24" lighten="1"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+        </downhover>
+        <highlight>
+          <icon lightenamount="48" lighten="0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+        </highlight>
+        <highlighthover>
+          <icon lightenamount="24" lighten="1"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+        </highlighthover>
+      </compact>
+      <mini spacing="1" dimension="32,28" location="0,0">
+        <text draw="0"/>
+        <overlaytext shadowalpha="255" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="10" name="Calibri" location="3,-2" draw="1"/>
+        <highlightsettings>
+          <blendicon color="$IconHighlightComp" change="20" value="0" min="0" max="120" apply="1"/>
+          <lighten change="10" value="-60" min="-60" max="0" apply="1"/>
+        </highlightsettings>
+        <icon blendcolor="clSilver-64" blendalpha="255" blend="0" location="cw-11,ch-11" size="22,22" draw="1"/>
+        <special empty="1"/>
+        <specialhover>
+          <icon lightenamount="48" lighten="1"/>
+          <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+        </specialhover>
+        <normal>
+          <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+        </normal>
+        <normalhover>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+        </normalhover>
+        <down>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+        </down>
+        <downhover>
+          <icon lightenamount="24" lighten="1"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+        </downhover>
+        <highlight>
+          <icon lightenamount="48" lighten="0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+        </highlight>
+        <highlighthover>
+          <icon lightenamount="24" lighten="1"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
+          <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
+          <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
+          <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+        </highlighthover>
+      </mini>
+    </taskitem>
+    <minithrobber bottomlocation="0,2" location="0,0" dimension="6,6">
       <normal>
-        <skinpart enabled="$IsBarTop" alpha="$Alpha+128" color="$Special" image="images/Throbber.png" dimension="13,20" location="0,0"/>
-        <skinpart enabled="$IsBarBottom" alpha="$Alpha+128" color="$Special" image="images/ThrobberBottom.png" dimension="13,20" location="0,0"/>
+        <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+        <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="w-2,1" location="1,0"/>
+        <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="w-2,1" location="1,h-1"/>
+        <skinpart alpha="$Alpha+128" gradientalpha="255,255" gradientcolor="$Special,$Special-32" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1"/>
       </normal>
       <hover>
-        <skinpart enabled="$IsBarTop" alpha="$Alpha+128" color="$Special+32" image="images/Throbber.png" dimension="13,20" location="0,0"/>
-        <skinpart enabled="$IsBarBottom" alpha="$Alpha+128" color="$Special+32" image="images/ThrobberBottom.png" dimension="13,20" location="0,0"/>
+        <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+        <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="w-2,1" location="1,0"/>
+        <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="w-2,1" location="1,h-1"/>
+        <skinpart alpha="$Alpha+128" gradientalpha="255,255" gradientcolor="$Special,$Special+32" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1"/>
       </hover>
       <down>
-        <skinpart enabled="$IsBarTop" alpha="$Alpha+128" color="$Special-32" image="images/Throbber.png" dimension="13,20" location="0,0"/>
-        <skinpart enabled="$IsBarBottom" alpha="$Alpha+128" color="$Special-32" image="images/ThrobberBottom.png" dimension="13,20" location="0,0"/>
+        <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="1,h" location="0,0"/>
+        <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="1,h" location="w-1,0"/>
+        <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="w-2,1" location="1,0"/>
+        <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="w-2,1" location="1,h-1"/>
+        <skinpart alpha="$Alpha+128" gradientalpha="255,255" gradientcolor="$Special,$Special-32" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1"/>
       </down>
-    </throbber>
-  </sharpbar>
-  <menu lroffset="6,4" tboffset="8,8" widthlimit="200,350" location="-2,-1" dimension="w,h">
-    <background>
-      <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundTopLeftSmall.png" dimension="12,12" location="0,0"/>
-      <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundLeftSmall.png" dimension="12,h-24" location="0,12"/>
-      <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundBottomLeftSmall.png" dimension="12,12" location="0,h-12"/>
-      <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundTopSmall.png" dimension="w-24-1,12" location="12,0"/>
-      <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundMiddle.png" dimension="w-24-1,h-24" location="12,12"/>
-      <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundBottomSmall.png" dimension="w-24-1,12" location="12,h-12"/>
-      <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundTopRightSmall.png" dimension="12,12" location="w-12-1,0"/>
-      <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundRightSmall.png" dimension="12,h-24" location="w-12-1,12"/>
-      <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundBottomRightSmall.png" dimension="12,12" location="w-12-1,h-12"/>
-    </background>
-  </menu>
-  <menuitem>
-    <icon location="6,5" dimension="16,16" draw="1"/>
-    <text shadowalpha="192" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="11" name="Calibri" location="25+2,4" dimension="w-40,h" draw="1"/>
-    <normal widthmod="48" dimension="w,28"/>
-    <hover widthmod="48" dimension="w,28">
-      <text shadowalpha="196" color="$Text"/>
-      <icon lightenamount="48" lighten="1"/>
-      <skinpart alpha="$MAlpha-32" color="$Background+32" image="images/ButtonLeft.png" dimension="7,25" location="2,1"/>
-      <skinpart alpha="$MAlpha-32" color="$Background+32" image="images/ButtonRight.png" dimension="7,25" location="w-7-4,1"/>
-      <skinpart alpha="$MAlpha-32" color="$Background+32" image="images/ButtonMiddle.png" dimension="w-14-6,25" location="7+2,1"/>
-    </hover>
-    <down widthmod="48" dimension="w,28">
-      <text shadowalpha="196" color="$Text"/>
-      <icon lightenamount="48" lighten="1"/>
-      <skinpart alpha="$MAlpha-32" color="$Background+32" image="images/ButtonLeftInvert.png" dimension="7,25" location="2,1"/>
-      <skinpart alpha="$MAlpha-32" color="$Background+32" image="images/ButtonRightInvert.png" dimension="7,25" location="w-7-4,1"/>
-      <skinpart alpha="$MAlpha-32" color="$Background+32" image="images/ButtonMiddleInvert.png" dimension="w-14-6,25" location="7+2,1"/>
-    </down>
-    <normalsub widthmod="48" dimension="w,28">
-      <skinpart alpha="$MAlpha-32" color="$Background+12" image="images/ProgressBarBackgroundTopLeft.png" dimension="4,4" location="w-5,8"/>
-      <skinpart alpha="$MAlpha-32" color="$Background+12" image="images/ProgressBarBackgroundLeft.png" dimension="4,4" location="w-5,12"/>
-      <skinpart alpha="$MAlpha-32" color="$Background+12" image="images/ProgressBarBackgroundBottomLeft.png" dimension="4,4" location="w-5,16"/>
-    </normalsub>
-    <hoversub widthmod="48" dimension="w,28">
-      <text shadowalpha="196" color="$Text"/>
-      <icon lightenamount="48" lighten="1"/>
-      <skinpart alpha="$MAlpha-32" color="$Background+32" image="images/ButtonLeft.png" dimension="7,25" location="2,1"/>
-      <skinpart alpha="0" color="$Background+32" image="images/ButtonRight.png" dimension="7,25" location="w-7-2,1"/>
-      <skinpart alpha="$MAlpha-32" color="$Background+32" image="images/ButtonMiddle.png" dimension="w-10,25" location="7+2,1"/>
-    </hoversub>
-    <separator dimension="w,6">
-      <skinpart alpha="$MAlpha" color="$Background-16" image="images/Empty.png" dimension="w-3,1" location="0,3"/>
-    </separator>
-    <label widthmod="20" dimension="w,22">
-      <text shadowtype="Outline" location="cw+14,1" dimension="w-22,h"/>
-    </label>
-  </menuitem>
-  <taskitem>
-    <full spacing="2" dimension="180,28" location="0,0">
-      <text shadowalpha="128" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="11" name="Calibri" dimension="w-32,h" location="29,ch-1" draw="1"/>
-      <icon location="5,4" size="20,20" draw="1"/>
-      <highlightsettings>
-        <blendicon color="$IconHighlightComp" change="20" value="0" min="0" max="120" apply="1"/>
-        <lighten change="10" value="-60" min="-60" max="0" apply="1"/>
-      </highlightsettings>
-      <special empty="1"/>
-      <specialhover>
-        <icon lightenamount="48" lighten="1"/>
-        <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-      </specialhover>
-      <normal>
-        <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-      </normal>
-      <normalhover>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-      </normalhover>
+    </minithrobber>
+    <button widthmod="16" dimension="w,27" locationbottom="0,0" location="0,2">
+      <text shadowalpha="128" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="11" bold="0" name="Calibri" location="cw+iwh+2,ch-3"/>
+      <icon location="cw-10,3" size="20,20" draw="1"/>
+      <normal empty="1"/>
+      <hover>
+        <skinpart alpha="$Alpha-32" color="$Background+32" image="images/ButtonLeft.png" dimension="7,25" location="0,0"/>
+        <skinpart alpha="$Alpha-32" color="$Background+32" image="images/ButtonRight.png" dimension="7,25" location="w-7,0"/>
+        <skinpart alpha="$Alpha-32" color="$Background+32" image="images/ButtonMiddle.png" dimension="w-14,25" location="7,0"/>
+      </hover>
       <down>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+        <text location="cw+iwh+2+1,ch-1+1"/>
+        <icon location="cw-10+1,3+1" lightenamount="24" lighten="1"/>
+        <skinpart alpha="$Alpha-32" color="$Background+32" image="images/ButtonLeftInvert.png" dimension="7,25" location="0,0"/>
+        <skinpart alpha="$Alpha-32" color="$Background+32" image="images/ButtonRightInvert.png" dimension="7,25" location="w-7,0"/>
+        <skinpart alpha="$Alpha-32" color="$Background+32" image="images/ButtonMiddleInvert.png" dimension="w-14,25" location="7,0"/>
       </down>
-      <downhover>
-        <icon lightenamount="24" lighten="1"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-      </downhover>
-      <highlight>
-        <icon lightenamount="48" lighten="0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-      </highlight>
-      <highlighthover>
-        <icon lightenamount="24" lighten="1"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-      </highlighthover>
-    </full>
-    <compact spacing="2" dimension="100,28" location="0,0">
-      <text shadowalpha="128" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="11" name="Calibri" dimension="w-32,h" location="29,ch-1" draw="1"/>
-      <icon location="5,4" size="20,20" draw="1"/>
-      <highlightsettings>
-        <blendicon color="$IconHighlightComp" change="20" value="0" min="0" max="120" apply="1"/>
-        <lighten change="10" value="-60" min="-60" max="0" apply="1"/>
-      </highlightsettings>
-      <special empty="1"/>
-      <specialhover>
-        <icon lightenamount="48" lighten="1"/>
-        <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-      </specialhover>
+    </button>
+    <font locationBottomBL="0,6" locationBottomTL="0,-7" locationBL="0,8" locationTL="0,-5">
+      <small locationbottom="0,-4" location="0,-1" shadowalpha="128" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="10" name="Calibri" bold="0"/>
+      <medium locationbottom="0,-4" location="0,-1" shadowalpha="128" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="11" name="Calibri" bold="0"/>
+      <big locationbottom="0,-5" location="0,0" shadowalpha="128" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" cleartype="1/" color="$Text" bold="0" size="13" name="Calibri"/>
+    </font>
+    <progressbar dimensionBL="w,10" locationBottomBL="0,14" locationBL="0,16" dimensionTL="w,10" locationBottomTL="0,1" locationTL="0,2" dimension="w,14" locationBottom="0,6" location="0,8">
+      <background>
+        <skinpart alpha="$Alpha" color="$Background+12" image="images/ProgressBarBackgroundTopLeft.png" dimension="4,4" location="0,0"/>
+        <skinpart alpha="$Alpha" color="$Background+12" image="images/ProgressBarBackgroundTop.png" dimension="w-8,4" location="4,0"/>
+        <skinpart alpha="$Alpha" color="$Background+12" image="images/ProgressBarBackgroundTopRight.png" dimension="4,4" location="w-4,0"/>
+        <skinpart alpha="$Alpha" color="$Background+12" image="images/ProgressBarBackgroundLeft.png" dimension="4,h-8" location="0,4"/>
+        <skinpart alpha="$Alpha" color="$Background+12" image="images/ProgressBarBackgroundMiddle.png" dimension="w-8,h-8" location="4,4"/>
+        <skinpart alpha="$Alpha" color="$Background+12" image="images/ProgressBarBackgroundRight.png" dimension="4,h-8" location="w-4,4"/>
+        <skinpart alpha="$Alpha" color="$Background+12" image="images/ProgressBarBackgroundBottomLeft.png" dimension="4,4" location="0,h-4"/>
+        <skinpart alpha="$Alpha" color="$Background+12" image="images/ProgressBarBackgroundBottom.png" dimension="w-8,4" location="4,h-4"/>
+        <skinpart alpha="$Alpha" color="$Background+12" image="images/ProgressBarBackgroundBottomRight.png" dimension="4,4" location="w-4,h-4"/>
+      </background>
+      <progress dimension="w-3,h-2" location="1,1">
+        <skinpart alpha="$Alpha" color="$Special-12" image="images/ProgressBarProgressTopLeft.png" dimension="4,4" location="0,0"/>
+        <skinpart alpha="$Alpha" color="$Special-12" image="images/ProgressBarProgressTop.png" dimension="w-8,4" location="4,0"/>
+        <skinpart alpha="$Alpha" color="$Special-12" image="images/ProgressBarProgressTopRight.png" dimension="4,4" location="w-4,0"/>
+        <skinpart alpha="$Alpha" color="$Special-12" image="images/ProgressBarProgressLeft.png" dimension="4,h-8" location="0,4"/>
+        <skinpart alpha="$Alpha" color="$Special-12" image="images/ProgressBarProgressMiddle.png" dimension="w-8,h-8" location="4,4"/>
+        <skinpart alpha="$Alpha" color="$Special-12" image="images/ProgressBarProgressRight.png" dimension="4,h-8" location="w-4,4"/>
+        <skinpart alpha="$Alpha" color="$Special-12" image="images/ProgressBarProgressBottomLeft.png" dimension="4,4" location="0,h-4"/>
+        <skinpart alpha="$Alpha" color="$Special-12" image="images/ProgressBarProgressBottom.png" dimension="w-8,4" location="4,h-4"/>
+        <skinpart alpha="$Alpha" color="$Special-12" image="images/ProgressBarProgressBottomRight.png" dimension="4,4" location="w-4,h-4"/>
+      </progress>
+    </progressbar>
+    <edit edityoffsets="2,3" editxoffsets="1,1" locationbottom="0,3" location="0,5" dimension="w,16">
+      <text size="10" name="Calibri" color="$Text"/>
       <normal>
-        <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
+        <skinpart alpha="$Alpha" color="$Background+12+64" image="images/ProgressBarBackgroundTopLeft.png" dimension="4,4" location="0,0"/>
+        <skinpart alpha="$Alpha" color="$Background+12+64" image="images/ProgressBarBackgroundTop.png" dimension="w-8,4" location="4,0"/>
+        <skinpart alpha="$Alpha" color="$Background+12+64" image="images/ProgressBarBackgroundTopRight.png" dimension="4,4" location="w-4,0"/>
+        <skinpart alpha="$Alpha" color="$Background+12+64" image="images/ProgressBarBackgroundLeft.png" dimension="4,h-8" location="0,4"/>
+        <skinpart alpha="$Alpha" color="$Background+12+64" image="images/ProgressBarBackgroundMiddle.png" dimension="w-8,h-8" location="4,4"/>
+        <skinpart alpha="$Alpha" color="$Background+12+64" image="images/ProgressBarBackgroundRight.png" dimension="4,h-8" location="w-4,4"/>
+        <skinpart alpha="$Alpha" color="$Background+12+64" image="images/ProgressBarBackgroundBottomLeft.png" dimension="4,4" location="0,h-4"/>
+        <skinpart alpha="$Alpha" color="$Background+12+64" image="images/ProgressBarBackgroundBottom.png" dimension="w-8,4" location="4,h-4"/>
+        <skinpart alpha="$Alpha" color="$Background+12+64" image="images/ProgressBarBackgroundBottomRight.png" dimension="4,4" location="w-4,h-4"/>
       </normal>
-      <normalhover>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-      </normalhover>
-      <down>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-      </down>
-      <downhover>
-        <icon lightenamount="24" lighten="1"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-      </downhover>
-      <highlight>
-        <icon lightenamount="48" lighten="0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-      </highlight>
-      <highlighthover>
-        <icon lightenamount="24" lighten="1"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-      </highlighthover>
-    </compact>
-    <mini spacing="1" dimension="32,28" location="0,0">
-      <text draw="0"/>
-      <overlaytext shadowalpha="255" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="10" name="Calibri" location="3,-2" draw="1"/>
-      <highlightsettings>
-        <blendicon color="$IconHighlightComp" change="20" value="0" min="0" max="120" apply="1"/>
-        <lighten change="10" value="-60" min="-60" max="0" apply="1"/>
-      </highlightsettings>
-      <icon blendcolor="clSilver-64" blendalpha="255" blend="0" location="cw-11,ch-11" size="22,22" draw="1"/>
-      <special empty="1"/>
-      <specialhover>
-        <icon lightenamount="48" lighten="1"/>
-        <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$Background+64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-      </specialhover>
-      <normal>
-        <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-      </normal>
-      <normalhover>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$Special" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-      </normalhover>
-      <down>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-32" color="$IconHighlight-64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-      </down>
-      <downhover>
-        <icon lightenamount="24" lighten="1"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlight-64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-      </downhover>
-      <highlight>
-        <icon lightenamount="48" lighten="0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha" color="$IconHighlightComp-64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-      </highlight>
-      <highlighthover>
-        <icon lightenamount="24" lighten="1"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha-64" color="$Background+32" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarLeft.png" enabled="$IsBarBottom" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarMiddle.png" enabled="$IsBarBottom" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarRight.png" enabled="$IsBarBottom" dimension="7,28" location="w-7,0"/>
-        <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarLeftInvert.png" enabled="$IsBarTop" dimension="7,28" location="0,0"/>
-        <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarMiddleInvert.png" enabled="$IsBarTop" dimension="w-14,28" location="7,0"/>
-        <skinpart alpha="$Alpha+32" color="$IconHighlightComp-64" image="images/TaskbarRightInvert.png" enabled="$IsBarTop" dimension="7,28" location="w-7,0"/>
-      </highlighthover>
-    </mini>
-  </taskitem>
-  <minithrobber bottomlocation="0,2" location="0,0" dimension="6,6">
-    <normal>
-      <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="1,h" location="0,0"/>
-      <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="1,h" location="w-1,0"/>
-      <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="w-2,1" location="1,0"/>
-      <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="w-2,1" location="1,h-1"/>
-      <skinpart alpha="$Alpha+128" gradientalpha="255,255" gradientcolor="$Special,$Special-32" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1"/>
-    </normal>
-    <hover>
-      <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="1,h" location="0,0"/>
-      <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="1,h" location="w-1,0"/>
-      <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="w-2,1" location="1,0"/>
-      <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="w-2,1" location="1,h-1"/>
-      <skinpart alpha="$Alpha+128" gradientalpha="255,255" gradientcolor="$Special,$Special+32" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1"/>
-    </hover>
-    <down>
-      <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="1,h" location="0,0"/>
-      <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="1,h" location="w-1,0"/>
-      <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="w-2,1" location="1,0"/>
-      <skinpart alpha="$Alpha+128" color="0" image="images/empty.png" dimension="w-2,1" location="1,h-1"/>
-      <skinpart alpha="$Alpha+128" gradientalpha="255,255" gradientcolor="$Special,$Special-32" gradienttype="vertical" image="images/bgempty.png" dimension="w-3,h-3" location="1,1"/>
-    </down>
-  </minithrobber>
-  <button widthmod="16" dimension="w,27" locationbottom="0,0" location="0,2">
-    <text shadowalpha="128" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="11" bold="0" name="Calibri" location="cw+iwh+2,ch-3"/>
-    <icon location="cw-10,3" size="20,20" draw="1"/>
-    <normal empty="1"/>
-    <hover>
-      <skinpart alpha="$Alpha-32" color="$Background+32" image="images/ButtonLeft.png" dimension="7,25" location="0,0"/>
-      <skinpart alpha="$Alpha-32" color="$Background+32" image="images/ButtonRight.png" dimension="7,25" location="w-7,0"/>
-      <skinpart alpha="$Alpha-32" color="$Background+32" image="images/ButtonMiddle.png" dimension="w-14,25" location="7,0"/>
-    </hover>
-    <down>
-      <text location="cw+iwh+2+1,ch-1+1"/>
-      <icon location="cw-10+1,3+1" lightenamount="24" lighten="1"/>
-      <skinpart alpha="$Alpha-32" color="$Background+32" image="images/ButtonLeftInvert.png" dimension="7,25" location="0,0"/>
-      <skinpart alpha="$Alpha-32" color="$Background+32" image="images/ButtonRightInvert.png" dimension="7,25" location="w-7,0"/>
-      <skinpart alpha="$Alpha-32" color="$Background+32" image="images/ButtonMiddleInvert.png" dimension="w-14,25" location="7,0"/>
-    </down>
-  </button>
-  <font locationBottomBL="0,6" locationBottomTL="0,-7" locationBL="0,8" locationTL="0,-5">
-    <small locationbottom="0,-4" location="0,-1" shadowalpha="128" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="10" name="Calibri" bold="0"/>
-    <medium locationbottom="0,-4" location="0,-1" shadowalpha="128" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="11" name="Calibri" bold="0"/>
-    <big locationbottom="0,-5" location="0,0" shadowalpha="128" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" cleartype="1/" color="$Text" bold="0" size="13" name="Calibri"/>
-  </font>
-  <progressbar dimensionBL="w,10" locationBottomBL="0,14" locationBL="0,16" dimensionTL="w,10" locationBottomTL="0,1" locationTL="0,2" dimension="w,14" locationBottom="0,6" location="0,8">
-    <background>
-      <skinpart alpha="$Alpha" color="$Background+12" image="images/ProgressBarBackgroundTopLeft.png" dimension="4,4" location="0,0"/>
-      <skinpart alpha="$Alpha" color="$Background+12" image="images/ProgressBarBackgroundTop.png" dimension="w-8,4" location="4,0"/>
-      <skinpart alpha="$Alpha" color="$Background+12" image="images/ProgressBarBackgroundTopRight.png" dimension="4,4" location="w-4,0"/>
-      <skinpart alpha="$Alpha" color="$Background+12" image="images/ProgressBarBackgroundLeft.png" dimension="4,h-8" location="0,4"/>
-      <skinpart alpha="$Alpha" color="$Background+12" image="images/ProgressBarBackgroundMiddle.png" dimension="w-8,h-8" location="4,4"/>
-      <skinpart alpha="$Alpha" color="$Background+12" image="images/ProgressBarBackgroundRight.png" dimension="4,h-8" location="w-4,4"/>
-      <skinpart alpha="$Alpha" color="$Background+12" image="images/ProgressBarBackgroundBottomLeft.png" dimension="4,4" location="0,h-4"/>
-      <skinpart alpha="$Alpha" color="$Background+12" image="images/ProgressBarBackgroundBottom.png" dimension="w-8,4" location="4,h-4"/>
-      <skinpart alpha="$Alpha" color="$Background+12" image="images/ProgressBarBackgroundBottomRight.png" dimension="4,4" location="w-4,h-4"/>
-    </background>
-    <progress dimension="w-3,h-2" location="1,1">
-      <skinpart alpha="$Alpha" color="$Special-12" image="images/ProgressBarProgressTopLeft.png" dimension="4,4" location="0,0"/>
-      <skinpart alpha="$Alpha" color="$Special-12" image="images/ProgressBarProgressTop.png" dimension="w-8,4" location="4,0"/>
-      <skinpart alpha="$Alpha" color="$Special-12" image="images/ProgressBarProgressTopRight.png" dimension="4,4" location="w-4,0"/>
-      <skinpart alpha="$Alpha" color="$Special-12" image="images/ProgressBarProgressLeft.png" dimension="4,h-8" location="0,4"/>
-      <skinpart alpha="$Alpha" color="$Special-12" image="images/ProgressBarProgressMiddle.png" dimension="w-8,h-8" location="4,4"/>
-      <skinpart alpha="$Alpha" color="$Special-12" image="images/ProgressBarProgressRight.png" dimension="4,h-8" location="w-4,4"/>
-      <skinpart alpha="$Alpha" color="$Special-12" image="images/ProgressBarProgressBottomLeft.png" dimension="4,4" location="0,h-4"/>
-      <skinpart alpha="$Alpha" color="$Special-12" image="images/ProgressBarProgressBottom.png" dimension="w-8,4" location="4,h-4"/>
-      <skinpart alpha="$Alpha" color="$Special-12" image="images/ProgressBarProgressBottomRight.png" dimension="4,4" location="w-4,h-4"/>
-    </progress>
-  </progressbar>
-  <edit edityoffsets="2,3" editxoffsets="1,1" locationbottom="0,3" location="0,5" dimension="w,16">
-    <text size="10" name="Calibri" color="$Text"/>
-    <normal>
-      <skinpart alpha="$Alpha" color="$Background+12+64" image="images/ProgressBarBackgroundTopLeft.png" dimension="4,4" location="0,0"/>
-      <skinpart alpha="$Alpha" color="$Background+12+64" image="images/ProgressBarBackgroundTop.png" dimension="w-8,4" location="4,0"/>
-      <skinpart alpha="$Alpha" color="$Background+12+64" image="images/ProgressBarBackgroundTopRight.png" dimension="4,4" location="w-4,0"/>
-      <skinpart alpha="$Alpha" color="$Background+12+64" image="images/ProgressBarBackgroundLeft.png" dimension="4,h-8" location="0,4"/>
-      <skinpart alpha="$Alpha" color="$Background+12+64" image="images/ProgressBarBackgroundMiddle.png" dimension="w-8,h-8" location="4,4"/>
-      <skinpart alpha="$Alpha" color="$Background+12+64" image="images/ProgressBarBackgroundRight.png" dimension="4,h-8" location="w-4,4"/>
-      <skinpart alpha="$Alpha" color="$Background+12+64" image="images/ProgressBarBackgroundBottomLeft.png" dimension="4,4" location="0,h-4"/>
-      <skinpart alpha="$Alpha" color="$Background+12+64" image="images/ProgressBarBackgroundBottom.png" dimension="w-8,4" location="4,h-4"/>
-      <skinpart alpha="$Alpha" color="$Background+12+64" image="images/ProgressBarBackgroundBottomRight.png" dimension="4,4" location="w-4,h-4"/>
-    </normal>
-    <focus>
-      <text color="$Text"/>
-      <skinpart alpha="$Alpha+32" color="$Background+12+64" image="images/ProgressBarBackgroundTopLeft.png" dimension="4,4" location="0,0"/>
-      <skinpart alpha="$Alpha+32" color="$Background+12+64" image="images/ProgressBarBackgroundTop.png" dimension="w-8,4" location="4,0"/>
-      <skinpart alpha="$Alpha+32" color="$Background+12+64" image="images/ProgressBarBackgroundTopRight.png" dimension="4,4" location="w-4,0"/>
-      <skinpart alpha="$Alpha+32" color="$Background+12+64" image="images/ProgressBarBackgroundLeft.png" dimension="4,h-8" location="0,4"/>
-      <skinpart alpha="$Alpha+32" color="$Background+12+64" image="images/ProgressBarBackgroundMiddle.png" dimension="w-8,h-8" location="4,4"/>
-      <skinpart alpha="$Alpha+32" color="$Background+12+64" image="images/ProgressBarBackgroundRight.png" dimension="4,h-8" location="w-4,4"/>
-      <skinpart alpha="$Alpha+32" color="$Background+12+64" image="images/ProgressBarBackgroundBottomLeft.png" dimension="4,4" location="0,h-4"/>
-      <skinpart alpha="$Alpha+32" color="$Background+12+64" image="images/ProgressBarBackgroundBottom.png" dimension="w-8,4" location="4,h-4"/>
-      <skinpart alpha="$Alpha+32" color="$Background+12+64" image="images/ProgressBarBackgroundBottomRight.png" dimension="4,4" location="w-4,h-4"/>
-    </focus>
-    <hover>
-      <text color="$Text"/>
-      <skinpart alpha="$Alpha+32" color="$Background+12+64+20" image="images/ProgressBarBackgroundTopLeft.png" dimension="4,4" location="0,0"/>
-      <skinpart alpha="$Alpha+32" color="$Background+12+64+20" image="images/ProgressBarBackgroundTop.png" dimension="w-8,4" location="4,0"/>
-      <skinpart alpha="$Alpha+32" color="$Background+12+64+20" image="images/ProgressBarBackgroundTopRight.png" dimension="4,4" location="w-4,0"/>
-      <skinpart alpha="$Alpha+32" color="$Background+12+64+20" image="images/ProgressBarBackgroundLeft.png" dimension="4,h-8" location="0,4"/>
-      <skinpart alpha="$Alpha+32" color="$Background+12+64+20" image="images/ProgressBarBackgroundMiddle.png" dimension="w-8,h-8" location="4,4"/>
-      <skinpart alpha="$Alpha+32" color="$Background+12+64+20" image="images/ProgressBarBackgroundRight.png" dimension="4,h-8" location="w-4,4"/>
-      <skinpart alpha="$Alpha+32" color="$Background+12+64+20" image="images/ProgressBarBackgroundBottomLeft.png" dimension="4,4" location="0,h-4"/>
-      <skinpart alpha="$Alpha+32" color="$Background+12+64+20" image="images/ProgressBarBackgroundBottom.png" dimension="w-8,4" location="4,h-4"/>
-      <skinpart alpha="$Alpha+32" color="$Background+12+64+20" image="images/ProgressBarBackgroundBottomRight.png" dimension="4,4" location="w-4,h-4"/>
-    </hover>
-  </edit>
-  <notify calroffset="10,10" catboffset="10,10" location="0,2" dimension="400,h">
-    <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="11" name="Calibri" location="44,ch+1" dimension="w-32-4-4-4-12,h" draw="1"/>
-    <icon location="6,hh-ihh" size="32,32" draw="1"/>
-    <background>
-      <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundTopLeftSmall.png" dimension="12,12" location="0,0"/>
-      <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundLeftSmall.png" dimension="12,h-24" location="0,12"/>
-      <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundBottomLeftSmall.png" dimension="12,12" location="0,h-12"/>
-      <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundTopSmall.png" dimension="w-24-1,12" location="12,0"/>
-      <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundMiddle.png" dimension="w-24-1,h-24" location="12,12"/>
-      <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundBottomSmall.png" dimension="w-24-1,12" location="12,h-12"/>
-      <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundTopRightSmall.png" dimension="12,12" location="w-12-1,0"/>
-      <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundRightSmall.png" dimension="12,h-24" location="w-12-1,12"/>
-      <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundBottomRightSmall.png" dimension="12,12" location="w-12-1,h-12"/>
-    </background>
-  </notify>
-  <taskpreview calroffset="10,10" catboffset="24,10" location="0,1" dimension="6,400">
-    <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="11" name="Calibri" location="cw,-1" dimension="w-42,0" draw="1"/>
-    <background>
-      <skinpart alpha="$Alpha" color="$Background" image="images/BackgroundTopLeftCaption.png" dimension="12,26" location="0,0"/>
-      <skinpart alpha="$Alpha" color="$Background" image="images/BackgroundLeftCaption.png" dimension="12,h-38" location="0,26"/>
-      <skinpart alpha="$Alpha" color="$Background" image="images/BackgroundBottomLeft.png" dimension="12,12" location="0,h-12"/>
-      <skinpart alpha="$Alpha" color="$Background" image="images/BackgroundTopCaption.png" dimension="w-24-1,26" location="12,0"/>
-      <skinpart alpha="$Alpha" color="$Background" image="images/BackgroundMiddle.png" dimension="w-24-1,h-38" location="12,26"/>
-      <skinpart alpha="$Alpha" color="$Background" image="images/BackgroundBottom.png" dimension="w-24-1,12" location="12,h-12"/>
-      <skinpart alpha="$Alpha" color="$Background" image="images/BackgroundTopRightCaption.png" dimension="12,26" location="w-12-1,0"/>
-      <skinpart alpha="$Alpha" color="$Background" image="images/BackgroundRightCaption.png" dimension="12,h-38" location="w-12-1,26"/>
-      <skinpart alpha="$Alpha" color="$Background" image="images/BackgroundBottomRight.png" dimension="12,12" location="w-12-1,h-12"/>
-    </background>
-    <hover>
-      <skinpart alpha="$Alpha" color="$Background+64" image="images/BackgroundTopLeftCaption.png" dimension="12,26" location="0,0"/>
-      <skinpart alpha="$Alpha" color="$Background+64" image="images/BackgroundLeftCaption.png" dimension="12,h-38" location="0,26"/>
-      <skinpart alpha="$Alpha" color="$Background+64" image="images/BackgroundBottomLeft.png" dimension="12,12" location="0,h-12"/>
-      <skinpart alpha="$Alpha" color="$Background+64" image="images/BackgroundTopCaption.png" dimension="w-24-1,26" location="12,0"/>
-      <skinpart alpha="$Alpha" color="$Background+64+64" image="images/empty.png" dimension="w-24-1,h-38" location="12,26"/>
-      <skinpart alpha="$Alpha" color="$Background+64" image="images/BackgroundBottom.png" dimension="w-24-1,12" location="12,h-12"/>
-      <skinpart alpha="$Alpha" color="$Background+64" image="images/BackgroundTopRightCaption.png" dimension="12,26" location="w-12-1,0"/>
-      <skinpart alpha="$Alpha" color="$Background+64" image="images/BackgroundRightCaption.png" dimension="12,h-38" location="w-12-1,26"/>
-      <skinpart alpha="$Alpha" color="$Background+32" image="images/BackgroundBottomRight.png" dimension="12,12" location="w-12-1,h-12"/>
-    </hover>
-  </taskpreview>
+      <focus>
+        <text color="$Text"/>
+        <skinpart alpha="$Alpha+32" color="$Background+12+64" image="images/ProgressBarBackgroundTopLeft.png" dimension="4,4" location="0,0"/>
+        <skinpart alpha="$Alpha+32" color="$Background+12+64" image="images/ProgressBarBackgroundTop.png" dimension="w-8,4" location="4,0"/>
+        <skinpart alpha="$Alpha+32" color="$Background+12+64" image="images/ProgressBarBackgroundTopRight.png" dimension="4,4" location="w-4,0"/>
+        <skinpart alpha="$Alpha+32" color="$Background+12+64" image="images/ProgressBarBackgroundLeft.png" dimension="4,h-8" location="0,4"/>
+        <skinpart alpha="$Alpha+32" color="$Background+12+64" image="images/ProgressBarBackgroundMiddle.png" dimension="w-8,h-8" location="4,4"/>
+        <skinpart alpha="$Alpha+32" color="$Background+12+64" image="images/ProgressBarBackgroundRight.png" dimension="4,h-8" location="w-4,4"/>
+        <skinpart alpha="$Alpha+32" color="$Background+12+64" image="images/ProgressBarBackgroundBottomLeft.png" dimension="4,4" location="0,h-4"/>
+        <skinpart alpha="$Alpha+32" color="$Background+12+64" image="images/ProgressBarBackgroundBottom.png" dimension="w-8,4" location="4,h-4"/>
+        <skinpart alpha="$Alpha+32" color="$Background+12+64" image="images/ProgressBarBackgroundBottomRight.png" dimension="4,4" location="w-4,h-4"/>
+      </focus>
+      <hover>
+        <text color="$Text"/>
+        <skinpart alpha="$Alpha+32" color="$Background+12+64+20" image="images/ProgressBarBackgroundTopLeft.png" dimension="4,4" location="0,0"/>
+        <skinpart alpha="$Alpha+32" color="$Background+12+64+20" image="images/ProgressBarBackgroundTop.png" dimension="w-8,4" location="4,0"/>
+        <skinpart alpha="$Alpha+32" color="$Background+12+64+20" image="images/ProgressBarBackgroundTopRight.png" dimension="4,4" location="w-4,0"/>
+        <skinpart alpha="$Alpha+32" color="$Background+12+64+20" image="images/ProgressBarBackgroundLeft.png" dimension="4,h-8" location="0,4"/>
+        <skinpart alpha="$Alpha+32" color="$Background+12+64+20" image="images/ProgressBarBackgroundMiddle.png" dimension="w-8,h-8" location="4,4"/>
+        <skinpart alpha="$Alpha+32" color="$Background+12+64+20" image="images/ProgressBarBackgroundRight.png" dimension="4,h-8" location="w-4,4"/>
+        <skinpart alpha="$Alpha+32" color="$Background+12+64+20" image="images/ProgressBarBackgroundBottomLeft.png" dimension="4,4" location="0,h-4"/>
+        <skinpart alpha="$Alpha+32" color="$Background+12+64+20" image="images/ProgressBarBackgroundBottom.png" dimension="w-8,4" location="4,h-4"/>
+        <skinpart alpha="$Alpha+32" color="$Background+12+64+20" image="images/ProgressBarBackgroundBottomRight.png" dimension="4,4" location="w-4,h-4"/>
+      </hover>
+    </edit>
+    <notify calroffset="10,10" catboffset="10,10" location="0,2" dimension="400,h">
+      <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="11" name="Calibri" location="44,ch+1" dimension="w-32-4-4-4-12,h" draw="1"/>
+      <icon location="6,hh-ihh" size="32,32" draw="1"/>
+      <background>
+        <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundTopLeftSmall.png" dimension="12,12" location="0,0"/>
+        <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundLeftSmall.png" dimension="12,h-24" location="0,12"/>
+        <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundBottomLeftSmall.png" dimension="12,12" location="0,h-12"/>
+        <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundTopSmall.png" dimension="w-24-1,12" location="12,0"/>
+        <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundMiddle.png" dimension="w-24-1,h-24" location="12,12"/>
+        <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundBottomSmall.png" dimension="w-24-1,12" location="12,h-12"/>
+        <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundTopRightSmall.png" dimension="12,12" location="w-12-1,0"/>
+        <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundRightSmall.png" dimension="12,h-24" location="w-12-1,12"/>
+        <skinpart alpha="$MAlpha" color="$Background" image="images/BackgroundBottomRightSmall.png" dimension="12,12" location="w-12-1,h-12"/>
+      </background>
+    </notify>
+    <taskpreview calroffset="10,10" catboffset="24,10" location="0,1" dimension="6,400">
+      <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="11" name="Calibri" location="cw,-1" dimension="w-42,0" draw="1"/>
+      <background>
+        <skinpart alpha="$Alpha" color="$Background" image="images/BackgroundTopLeftCaption.png" dimension="12,26" location="0,0"/>
+        <skinpart alpha="$Alpha" color="$Background" image="images/BackgroundLeftCaption.png" dimension="12,h-38" location="0,26"/>
+        <skinpart alpha="$Alpha" color="$Background" image="images/BackgroundBottomLeft.png" dimension="12,12" location="0,h-12"/>
+        <skinpart alpha="$Alpha" color="$Background" image="images/BackgroundTopCaption.png" dimension="w-24-1,26" location="12,0"/>
+        <skinpart alpha="$Alpha" color="$Background" image="images/BackgroundMiddle.png" dimension="w-24-1,h-38" location="12,26"/>
+        <skinpart alpha="$Alpha" color="$Background" image="images/BackgroundBottom.png" dimension="w-24-1,12" location="12,h-12"/>
+        <skinpart alpha="$Alpha" color="$Background" image="images/BackgroundTopRightCaption.png" dimension="12,26" location="w-12-1,0"/>
+        <skinpart alpha="$Alpha" color="$Background" image="images/BackgroundRightCaption.png" dimension="12,h-38" location="w-12-1,26"/>
+        <skinpart alpha="$Alpha" color="$Background" image="images/BackgroundBottomRight.png" dimension="12,12" location="w-12-1,h-12"/>
+      </background>
+      <hover>
+        <skinpart alpha="$Alpha" color="$Background+64" image="images/BackgroundTopLeftCaption.png" dimension="12,26" location="0,0"/>
+        <skinpart alpha="$Alpha" color="$Background+64" image="images/BackgroundLeftCaption.png" dimension="12,h-38" location="0,26"/>
+        <skinpart alpha="$Alpha" color="$Background+64" image="images/BackgroundBottomLeft.png" dimension="12,12" location="0,h-12"/>
+        <skinpart alpha="$Alpha" color="$Background+64" image="images/BackgroundTopCaption.png" dimension="w-24-1,26" location="12,0"/>
+        <skinpart alpha="$Alpha" color="$Background+64+64" image="images/empty.png" dimension="w-24-1,h-38" location="12,26"/>
+        <skinpart alpha="$Alpha" color="$Background+64" image="images/BackgroundBottom.png" dimension="w-24-1,12" location="12,h-12"/>
+        <skinpart alpha="$Alpha" color="$Background+64" image="images/BackgroundTopRightCaption.png" dimension="12,26" location="w-12-1,0"/>
+        <skinpart alpha="$Alpha" color="$Background+64" image="images/BackgroundRightCaption.png" dimension="12,h-38" location="w-12-1,26"/>
+        <skinpart alpha="$Alpha" color="$Background+32" image="images/BackgroundBottomRight.png" dimension="12,12" location="w-12-1,h-12"/>
+      </hover>
+    </taskpreview>
+  </skindesign>
 </sharpESkin>

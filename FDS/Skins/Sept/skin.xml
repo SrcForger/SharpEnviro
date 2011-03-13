@@ -1,376 +1,378 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <sharpESkin>
-  <sharpbar specialhideform="1" enablevflip="1" payoffsetsbottom="2,1" paxoffsetsbottom="10,2" payoffsets="1,2" paxoffsets="10,2" sbmod="0,0" fsmod="0,0" dimension="w,28">
-    <bar dimension="w,h">
-      <skinpart color="$barblend" image="images/bar_w-blend.png" dimension="1,h" location="0,0" alpha="255"/>
-      <skinpart color="$barblend" image="images/bar_m-blend.png" drawmode="stretch" dimension="w-2,h" location="1,0" alpha="255"/>
-      <skinpart color="$barblend" image="images/bar_e-blend.png" dimension="1,h" location="w-1,0" alpha="255"/>
-      <skinpart image="images/bar_w-glazing.png" dimension="1,h" location="0,0"/>
-      <skinpart image="images/bar_m-glazing.png" drawmode="stretch" dimension="w-2,h" location="1,0"/>
-      <skinpart image="images/bar_e-glazing.png" dimension="1,h" location="w-1,0"/>
-    </bar>
-    <barbottom dimension="w,h">
-      <skinpart color="$barblend" image="images/bar_w-blend.png" dimension="1,h" location="0,0" alpha="255"/>
-      <skinpart color="$barblend" image="images/bar_m-blend.png" drawmode="stretch" dimension="w-2,h" location="1,0" alpha="255"/>
-      <skinpart color="$barblend" image="images/bar_e-blend.png" dimension="1,h" location="w-1,0" alpha="255"/>
-      <skinpart image="images/barbottom_w-glazing.png" dimension="1,h" location="0,0"/>
-      <skinpart image="images/barbottom_m-glazing.png" drawmode="stretch" dimension="w-2,h" location="1,0"/>
-      <skinpart image="images/barbottom_e-glazing.png" dimension="1,h" location="w-1,0"/>
-    </barbottom>
-    <throbber dimension="11,12" location="2,13">
+  <skindesign name="default" default="1">
+    <sharpbar specialhideform="1" enablevflip="1" payoffsetsbottom="2,1" paxoffsetsbottom="10,2" payoffsets="1,2" paxoffsets="10,2" sbmod="0,0" fsmod="0,0" dimension="w,28">
+      <bar dimension="w,h">
+        <skinpart color="$barblend" image="images/bar_w-blend.png" dimension="1,h" location="0,0" alpha="255"/>
+        <skinpart color="$barblend" image="images/bar_m-blend.png" drawmode="stretch" dimension="w-2,h" location="1,0" alpha="255"/>
+        <skinpart color="$barblend" image="images/bar_e-blend.png" dimension="1,h" location="w-1,0" alpha="255"/>
+        <skinpart image="images/bar_w-glazing.png" dimension="1,h" location="0,0"/>
+        <skinpart image="images/bar_m-glazing.png" drawmode="stretch" dimension="w-2,h" location="1,0"/>
+        <skinpart image="images/bar_e-glazing.png" dimension="1,h" location="w-1,0"/>
+      </bar>
+      <barbottom dimension="w,h">
+        <skinpart color="$barblend" image="images/bar_w-blend.png" dimension="1,h" location="0,0" alpha="255"/>
+        <skinpart color="$barblend" image="images/bar_m-blend.png" drawmode="stretch" dimension="w-2,h" location="1,0" alpha="255"/>
+        <skinpart color="$barblend" image="images/bar_e-blend.png" dimension="1,h" location="w-1,0" alpha="255"/>
+        <skinpart image="images/barbottom_w-glazing.png" dimension="1,h" location="0,0"/>
+        <skinpart image="images/barbottom_m-glazing.png" drawmode="stretch" dimension="w-2,h" location="1,0"/>
+        <skinpart image="images/barbottom_e-glazing.png" dimension="1,h" location="w-1,0"/>
+      </barbottom>
+      <throbber dimension="11,12" location="2,13">
+        <normal>
+          <skinpart image="images/throbber-normal.png" dimension="w,h" location="0,0"/>
+        </normal>
+        <hover>
+          <skinpart image="images/throbber-normal.png" dimension="w,h" location="0,0"/>
+          <skinpart image="images/throbber-hover.png" dimension="w,h" location="0,0"/>
+        </hover>
+        <down>
+          <skinpart image="images/throbber-normal.png" dimension="w,h" location="0,0"/>
+          <skinpart image="images/throbber-hover.png" dimension="w,h" location="0,0"/>
+          <skinpart alpha="120" image="images/throbber-hover.png" dimension="w,h" location="0,0"/>
+        </down>
+      </throbber>
+    </sharpbar>
+    <minithrobber location="0,2" dimension="7,8">
       <normal>
-        <skinpart image="images/throbber-normal.png" dimension="w,h" location="0,0"/>
+        <skinpart image="images/minithrobber-normal.png" dimension="w,h" location="0,0"/>
       </normal>
       <hover>
-        <skinpart image="images/throbber-normal.png" dimension="w,h" location="0,0"/>
-        <skinpart image="images/throbber-hover.png" dimension="w,h" location="0,0"/>
+        <skinpart image="image/minithrobber-normal.png" dimension="w,h" location="0,0"/>
+        <skinpart image="image/minithrobber-hover.png" dimension="w,h" location="0,0"/>
       </hover>
       <down>
-        <skinpart image="images/throbber-normal.png" dimension="w,h" location="0,0"/>
-        <skinpart image="images/throbber-hover.png" dimension="w,h" location="0,0"/>
-        <skinpart alpha="120" image="images/throbber-hover.png" dimension="w,h" location="0,0"/>
+        <skinpart image="image/minithrobber-normal.png" dimension="w,h" location="0,0"/>
+        <skinpart image="image/minithrobber-hover.png" dimension="w,h" location="0,0"/>
+        <skinpart alpha="120" image="image/minithrobber-hover.png" dimension="w,h" location="0,0"/>
       </down>
-    </throbber>
-  </sharpbar>
-  <minithrobber location="0,2" dimension="7,8">
-    <normal>
-      <skinpart image="images/minithrobber-normal.png" dimension="w,h" location="0,0"/>
-    </normal>
-    <hover>
-      <skinpart image="image/minithrobber-normal.png" dimension="w,h" location="0,0"/>
-      <skinpart image="image/minithrobber-hover.png" dimension="w,h" location="0,0"/>
-    </hover>
-    <down>
-      <skinpart image="image/minithrobber-normal.png" dimension="w,h" location="0,0"/>
-      <skinpart image="image/minithrobber-hover.png" dimension="w,h" location="0,0"/>
-      <skinpart alpha="120" image="image/minithrobber-hover.png" dimension="w,h" location="0,0"/>
-    </down>
-  </minithrobber>
-  <taskitem>
-    <full dimension="128,24" location="0,0" spacing="2">
-      <text shadowalpha="50" shadowtype="Right" shadowcolor="$tasktextshdw" shadow="1" color="$tasktext" size="8" bold="0" name="Trebuchet MS" location="25,4" dimension="w-32,h" draw="1"/>
-      <icon location="5,4" size="16,16" draw="1"/>
+    </minithrobber>
+    <taskitem>
+      <full dimension="128,24" location="0,0" spacing="2">
+        <text shadowalpha="50" shadowtype="Right" shadowcolor="$tasktextshdw" shadow="1" color="$tasktext" size="8" bold="0" name="Trebuchet MS" location="25,4" dimension="w-32,h" draw="1"/>
+        <icon location="5,4" size="16,16" draw="1"/>
+        <normal>
+          <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
+          <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
+          <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="255" color="$taskglow" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,0"/>
+          <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
+        </normal>
+        <normalhover>
+          <skinpart color="$barblend" alpha="100" image="images/grey.png" dimension="w,h-5" location="0,3"/>
+          <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
+          <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
+          <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
+          <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="255" color="$taskglow" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,0"/>
+          <skinpart alpha="150" color="$taskglow" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,0"/>
+        </normalhover>
+        <down>
+          <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
+          <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
+          <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
+          <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="255" color="$taskglow" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,0"/>
+          <skinpart alpha="255" color="$taskglow" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,0"/>
+        </down>
+        <downhover>
+          <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
+          <skinpart alpha="200" color="$taskglow" image="images/task_mglow-focus.png" dimension="w-2,h" location="1,0"/>
+          <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
+          <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
+          <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="255" color="$taskglow" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,0"/>
+          <skinpart alpha="255" color="$taskglow" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,0"/>
+        </downhover>
+        <highlight>
+          <skinpart alpha="150" color="$taskflashing" image="images/task_mglow-focus.png" dimension="w-2,h" location="1,0"/>
+          <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
+          <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
+          <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
+          <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="255" color="$taskflashing" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,0"/>
+          <skinpart alpha="255" color="$taskflashing" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,0"/>
+        </highlight>
+        <highlighthover>
+          <skinpart alpha="200" color="$taskflashing" image="images/task_mglow-focus.png" dimension="w-2,h" location="1,0"/>
+          <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
+          <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
+          <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
+          <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="255" color="$taskflashing" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,0"/>
+          <skinpart alpha="255" color="$taskflashing" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,0"/>
+        </highlighthover>
+      </full>
+      <compact dimension="60,24" location="0,0" spacing="2">
+        <text shadowalpha="50" shadowtype="Right" shadowcolor="$tasktextshdw" shadow="1" color="$tasktext" size="8" bold="0" name="Trebuchet MS" location="18,4" dimension="w-28,h" draw="1"/>
+        <icon location="2,4" size="13,13" draw="1"/>
+        <normal>
+          <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
+          <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
+          <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="255" color="$taskglow" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,0"/>
+          <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
+        </normal>
+        <normalhover>
+          <skinpart color="$barblend" alpha="100" image="images/grey.png" dimension="w,h-5" location="0,3"/>
+          <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
+          <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
+          <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
+          <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="255" color="$taskglow" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,0"/>
+          <skinpart alpha="150" color="$taskglow" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,0"/>
+        </normalhover>
+        <down>
+          <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
+          <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
+          <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
+          <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="255" color="$taskglow" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,0"/>
+          <skinpart alpha="255" color="$taskglow" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,0"/>
+        </down>
+        <downhover>
+          <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
+          <skinpart alpha="200" color="$taskglow" image="images/task_mglow-focus.png" dimension="w-2,h" location="1,0"/>
+          <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
+          <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
+          <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="255" color="$taskglow" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,0"/>
+          <skinpart alpha="255" color="$taskglow" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,0"/>
+        </downhover>
+        <highlight>
+          <skinpart alpha="150" color="$taskflashing" image="images/task_mglow-focus.png" dimension="w-2,h" location="1,0"/>
+          <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
+          <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
+          <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
+          <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="255" color="$taskflashing" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,0"/>
+          <skinpart alpha="255" color="$taskflashing" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,0"/>
+        </highlight>
+        <highlighthover>
+          <skinpart alpha="200" color="$taskflashing" image="images/task_mglow-focus.png" dimension="w-2,h" location="1,0"/>
+          <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
+          <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
+          <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
+          <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="255" color="$taskflashing" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,0"/>
+          <skinpart alpha="255" color="$taskflashing" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,0"/>
+        </highlighthover>
+      </compact>
+      <mini dimension="24,24" location="0,0" spacing="2">
+        <icon location="3,4" size="16,16" draw="1"/>
+        <normal>
+          <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
+          <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
+          <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="255" color="$taskglow" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,-1"/>
+          <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
+        </normal>
+        <normalhover>
+          <skinpart color="$barblend" alpha="100" image="images/grey.png" dimension="w,h-5" location="0,3"/>
+          <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
+          <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
+          <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
+          <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="255" color="$taskglow" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,-1"/>
+          <skinpart alpha="150" color="$taskglow" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,-1"/>
+        </normalhover>
+        <down>
+          <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
+          <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
+          <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
+          <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="255" color="$taskglow" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,-1"/>
+          <skinpart alpha="255" color="$taskglow" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,-1"/>
+        </down>
+        <downhover>
+          <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
+          <skinpart alpha="200" color="$taskglow" image="images/task_mglow-focus.png" dimension="w-2,h" location="1,0"/>
+          <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
+          <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
+          <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="255" color="$taskglow" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,-1"/>
+          <skinpart alpha="255" color="$taskglow" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,-1"/>
+        </downhover>
+        <highlight>
+          <skinpart alpha="150" color="$taskflashing" image="images/task_mglow-focus.png" dimension="w-2,h" location="1,0"/>
+          <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
+          <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
+          <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
+          <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="255" color="$taskflashing" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,-1"/>
+          <skinpart alpha="255" color="$taskflashing" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,-1"/>
+        </highlight>
+        <highlighthover>
+          <skinpart alpha="200" color="$taskflashing" image="images/task_mglow-focus.png" dimension="w-2,h" location="1,0"/>
+          <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
+          <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
+          <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
+          <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
+          <skinpart alpha="255" color="$taskflashing" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,-1"/>
+          <skinpart alpha="255" color="$taskflashing" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,-1"/>
+        </highlighthover>
+      </mini>
+    </taskitem>
+    <button widthmod="16" dimension="w,21" location="0,2">
+      <text shadowalpha="50" shadowtype="Right" shadowcolor="$tasktextshdw" color="$tasktext" size="7" name="Small Fonts" location="cw+iwh+2,ch"/>
+      <icon location="cw-8,3" size="16,16"/>
       <normal>
-        <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
-        <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
-        <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="255" color="$taskglow" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,0"/>
-        <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
+        <skinpart image="images/button_e-normal.png" dimension="1,h" location="0,0"/>
+        <skinpart image="images/button_w-normal.png" dimension="1,h" location="w-1,0"/>
+        <skinpart alpha="180" color="$buttonglow" image="images/button_mglow-normal.png" dimension="w-2,h-4" location="1,2"/>
       </normal>
-      <normalhover>
-        <skinpart color="$barblend" alpha="100" image="images/grey.png" dimension="w,h-5" location="0,3"/>
-        <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
-        <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
-        <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
-        <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="255" color="$taskglow" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,0"/>
-        <skinpart alpha="150" color="$taskglow" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,0"/>
-      </normalhover>
+      <hover>
+        <skinpart image="images/button_e-normal.png" dimension="1,h" location="0,0"/>
+        <skinpart image="images/button_w-normal.png" dimension="1,h" location="w-1,0"/>
+        <skinpart color="$buttonglow" image="images/button_mglow-normal.png" dimension="w-2,h-4" location="1,2"/>
+        <skinpart alpha="20" color="$buttonglow" image="images/button_mglow-hover.png" dimension="w-2,h-4" location="1,2"/>
+        <skinpart image="images/button_e-border.png" dimension="1,h" location="0,0"/>
+        <skinpart image="images/button_w-border.png" dimension="1,h" location="w-1,0"/>
+        <skinpart image="images/button_mtop-border.png" dimension="w-2,1" location="1,1"/>
+        <skinpart image="images/button_mbottom-border.png" dimension="w-2,1" location="1,h-2"/>
+      </hover>
       <down>
-        <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
-        <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
-        <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
-        <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="255" color="$taskglow" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,0"/>
-        <skinpart alpha="255" color="$taskglow" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,0"/>
+        <text location="cw+iwh+1,ch+1"/>
+        <skinpart image="images/button_e-normal.png" dimension="1,h" location="0,0"/>
+        <skinpart image="images/button_w-normal.png" dimension="1,h" location="w-1,0"/>
+        <skinpart color="$buttonglow" image="images/button_mglow-normal.png" dimension="w-2,h-4" location="1,2"/>
+        <skinpart alpha="120" color="$buttonglow" image="images/button_mglow-hover.png" dimension="w-2,h-4" location="1,2"/>
+        <skinpart image="images/button_e-border.png" dimension="1,h" location="0,0"/>
+        <skinpart image="images/button_w-border.png" dimension="1,h" location="w-1,0"/>
+        <skinpart image="images/button_mtop-border.png" dimension="w-2,1" location="1,1"/>
+        <skinpart image="images/button_mbottom-border.png" dimension="w-2,1" location="1,h-2"/>
       </down>
-      <downhover>
-        <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
-        <skinpart alpha="200" color="$taskglow" image="images/task_mglow-focus.png" dimension="w-2,h" location="1,0"/>
-        <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
-        <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
-        <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="255" color="$taskglow" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,0"/>
-        <skinpart alpha="255" color="$taskglow" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,0"/>
-      </downhover>
-      <highlight>
-        <skinpart alpha="150" color="$taskflashing" image="images/task_mglow-focus.png" dimension="w-2,h" location="1,0"/>
-        <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
-        <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
-        <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
-        <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="255" color="$taskflashing" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,0"/>
-        <skinpart alpha="255" color="$taskflashing" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,0"/>
-      </highlight>
-      <highlighthover>
-        <skinpart alpha="200" color="$taskflashing" image="images/task_mglow-focus.png" dimension="w-2,h" location="1,0"/>
-        <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
-        <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
-        <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
-        <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="255" color="$taskflashing" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,0"/>
-        <skinpart alpha="255" color="$taskflashing" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,0"/>
-      </highlighthover>
-    </full>
-    <compact dimension="60,24" location="0,0" spacing="2">
-      <text shadowalpha="50" shadowtype="Right" shadowcolor="$tasktextshdw" shadow="1" color="$tasktext" size="8" bold="0" name="Trebuchet MS" location="18,4" dimension="w-28,h" draw="1"/>
-      <icon location="2,4" size="13,13" draw="1"/>
+    </button>
+    <progressbar dimensionBL="w,13" locationBL="0,13" dimensionTL="w,11" locationTL="0,2" dimension="w,11" location="0,8,">
+      <progress dimension="w,10" location="0,0">
+        <skinpart image="images/progress_e.png" dimension="3,10" location="w-3,0"/>
+        <skinpart image="images/progress_m.png" dimension="w-6,10" location="3,0"/>
+        <skinpart image="images/progress_w.png" dimension="3,10" location="0,0"/>
+      </progress>
+      <background>
+        <skinpart image="images/progress_e-backg.png" dimension="3,10" location="w-3,0"/>
+        <skinpart image="images/progress_w-backg.png" dimension="3,10" location="0,0"/>
+      </background>
+    </progressbar>
+    <edit edityoffsets="7,5" editxoffsets="6,5" dimension="w,25">
       <normal>
-        <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
-        <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
-        <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="255" color="$taskglow" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,0"/>
-        <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
+        <skinpart image="images/edit_w-normal.png" dimension="7,h" location="0,0"/>
+        <skinpart image="images/edit_m-normal.png" dimension="w-12,h" location="7,0"/>
+        <skinpart image="images/edit_e-normal.png" dimension="5,h" location="w-5,0"/>
       </normal>
-      <normalhover>
-        <skinpart color="$barblend" alpha="100" image="images/grey.png" dimension="w,h-5" location="0,3"/>
-        <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
-        <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
-        <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
-        <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="255" color="$taskglow" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,0"/>
-        <skinpart alpha="150" color="$taskglow" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,0"/>
-      </normalhover>
-      <down>
-        <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
-        <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
-        <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
-        <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="255" color="$taskglow" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,0"/>
-        <skinpart alpha="255" color="$taskglow" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,0"/>
+      <focus>
+        <skinpart image="images/edit_w-normal.png" dimension="7,h" location="0,0"/>
+        <skinpart image="images/edit_m-normal.png" dimension="w-12,h" location="7,0"/>
+        <skinpart image="images/edit_e-normal.png" dimension="5,h" location="w-5,0"/>
+        <skinpart image="images/edit_w-focus.png" dimension="7,h" location="0,0"/>
+        <skinpart image="images/edit_m-focus.png" dimension="w-12,h" location="7,0"/>
+        <skinpart image="images/edit_e-focus.png" dimension="5,h" location="w-5,0"/>
+      </focus>
+      <hover>
+        <skinpart image="images/edit_w-normal.png" dimension="7,h" location="0,0"/>
+        <skinpart image="images/edit_m-normal.png" dimension="w-12,h" location="7,0"/>
+        <skinpart image="images/edit_e-normal.png" dimension="5,h" location="w-5,0"/>
+        <skinpart image="images/edit_w-focus.png" dimension="7,h" location="0,0"/>
+        <skinpart image="images/edit_m-focus.png" dimension="w-12,h" location="7,0"/>
+        <skinpart image="images/edit_e-focus.png" dimension="5,h" location="w-5,0"/>
+        <skinpart image="images/edit_w-hover.png" dimension="7,h" location="0,0"/>
+        <skinpart image="images/edit_m-hover.png" dimension="w-12,h" location="7,0"/>
+        <skinpart image="images/edit_e-hover.png" dimension="5,h" location="w-5,0"/>
+      </hover>
+    </edit>
+    <!-- MENU -->
+    <!-- MENU -->
+    <!-- MENU -->
+    <menu lroffset="5,5" tboffset="15,5" widthlimit="128,350" dimension="w,h">
+      <background>
+        <skinpart color="$menubackg" alpha="220" image="images/backg_blend.png" dimension="w,h" location="0,0"/>
+        <skinpart image="images/backg_border.png" dimension="1,h-12" location="0,12"/>
+        <skinpart image="images/backg_border.png" dimension="1,h-12" location="w-1,12"/>
+        <skinpart image="images/backg_glazing.png" dimension="w-2,12" location="1,0"/>
+        <skinpart image="images/backg_glazingborder.png" dimension="1,12" location="0,0"/>
+        <skinpart image="images/backg_glazingborder.png" dimension="1,12" location="w-1,0"/>
+        <skinpart image="images/backg_shadow.png" dimension="w-2,13" location="1,h-13"/>
+      </background>
+    </menu>
+    <menuitem>
+      <icon location="4,3" dimension="16,16" draw="1"/>
+      <text shadowalpha="50" shadowtype="Right" shadowcolor="$menutextshadow" shadow="1" color="$menutext" size="7" name="Small Fonts" location="23,5" dimension="w-40,h" draw="1"/>
+      <normal widthmod="48" dimension="w,22"/>
+      <hover widthmod="48" dimension="w,22">
+        <skinpart color="$menubackg" alpha="150" image="images/backg_blend.png" dimension="w,h" location="0,0"/>
+        <skinpart image="images/item_border.png" dimension="1,h" location="0,0"/>
+        <skinpart image="images/item_border.png" dimension="1,h" location="w-1,0"/>
+        <skinpart image="images/item_glazing.png" dimension="w-2,h" location="1,0"/>
+        <skinpart color="$menuglow" alpha="255" image="images/item_glow-normal.png" dimension="w-2,h" location="1,0"/>
+        <skinpart color="$menuglow" alpha="255" image="images/item_glow-hover.png" dimension="w-2,h" location="1,0"/>
+      </hover>
+      <down widthmod="48" dimension="w,22">
+        <skinpart color="$menubackg" alpha="150" image="images/backg_blend.png" dimension="w,h" location="0,0"/>
+        <skinpart image="images/item_border.png" dimension="1,h" location="0,0"/>
+        <skinpart image="images/item_border.png" dimension="1,h" location="w-1,0"/>
+        <skinpart image="images/item_glazing.png" dimension="w-2,h" location="1,0"/>
+        <skinpart color="$menuglow" alpha="255" image="images/item_glow-normal.png" dimension="w-2,h" location="1,0"/>
+        <skinpart color="$menuglow" alpha="255" image="images/item_glow-hover.png" dimension="w-2,h" location="1,0"/>
+        <skinpart color="$menuglow" alpha="255" image="images/item_glow-focus.png" dimension="w-2,h" location="1,0"/>
       </down>
-      <downhover>
-        <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
-        <skinpart alpha="200" color="$taskglow" image="images/task_mglow-focus.png" dimension="w-2,h" location="1,0"/>
-        <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
-        <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
-        <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="255" color="$taskglow" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,0"/>
-        <skinpart alpha="255" color="$taskglow" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,0"/>
-      </downhover>
-      <highlight>
-        <skinpart alpha="150" color="$taskflashing" image="images/task_mglow-focus.png" dimension="w-2,h" location="1,0"/>
-        <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
-        <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
-        <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
-        <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="255" color="$taskflashing" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,0"/>
-        <skinpart alpha="255" color="$taskflashing" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,0"/>
-      </highlight>
-      <highlighthover>
-        <skinpart alpha="200" color="$taskflashing" image="images/task_mglow-focus.png" dimension="w-2,h" location="1,0"/>
-        <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
-        <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
-        <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
-        <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="255" color="$taskflashing" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,0"/>
-        <skinpart alpha="255" color="$taskflashing" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,0"/>
-      </highlighthover>
-    </compact>
-    <mini dimension="24,24" location="0,0" spacing="2">
-      <icon location="3,4" size="16,16" draw="1"/>
-      <normal>
-        <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
-        <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
-        <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="255" color="$taskglow" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,-1"/>
-        <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
-      </normal>
-      <normalhover>
-        <skinpart color="$barblend" alpha="100" image="images/grey.png" dimension="w,h-5" location="0,3"/>
-        <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
-        <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
-        <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
-        <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="255" color="$taskglow" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,-1"/>
-        <skinpart alpha="150" color="$taskglow" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,-1"/>
-      </normalhover>
-      <down>
-        <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
-        <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
-        <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
-        <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="255" color="$taskglow" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,-1"/>
-        <skinpart alpha="255" color="$taskglow" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,-1"/>
-      </down>
-      <downhover>
-        <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
-        <skinpart alpha="200" color="$taskglow" image="images/task_mglow-focus.png" dimension="w-2,h" location="1,0"/>
-        <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
-        <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
-        <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="255" color="$taskglow" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,-1"/>
-        <skinpart alpha="255" color="$taskglow" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,-1"/>
-      </downhover>
-      <highlight>
-        <skinpart alpha="150" color="$taskflashing" image="images/task_mglow-focus.png" dimension="w-2,h" location="1,0"/>
-        <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
-        <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
-        <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
-        <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="255" color="$taskflashing" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,-1"/>
-        <skinpart alpha="255" color="$taskflashing" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,-1"/>
-      </highlight>
-      <highlighthover>
-        <skinpart alpha="200" color="$taskflashing" image="images/task_mglow-focus.png" dimension="w-2,h" location="1,0"/>
-        <skinpart image="images/task_w-normal.png" dimension="1,h" location="0,0"/>
-        <skinpart image="images/task_m2shadow.png" dimension="3,h" location="1,0"/>
-        <skinpart image="images/task_m1shadow.png" dimension="w-5,h" location="4,0"/>
-        <skinpart image="images/task_e-normal.png" dimension="1,h" location="w-1,0"/>
-        <skinpart alpha="255" color="$taskflashing" image="images/task_mglow-normal.png" dimension="w-2,h" location="1,-1"/>
-        <skinpart alpha="255" color="$taskflashing" image="images/task_mglow-hover.png" dimension="w-2,h" location="1,-1"/>
-      </highlighthover>
-    </mini>
-  </taskitem>
-  <button widthmod="16" dimension="w,21" location="0,2">
-    <text shadowalpha="50" shadowtype="Right" shadowcolor="$tasktextshdw" color="$tasktext" size="7" name="Small Fonts" location="cw+iwh+2,ch"/>
-    <icon location="cw-8,3" size="16,16"/>
-    <normal>
-      <skinpart image="images/button_e-normal.png" dimension="1,h" location="0,0"/>
-      <skinpart image="images/button_w-normal.png" dimension="1,h" location="w-1,0"/>
-      <skinpart alpha="180" color="$buttonglow" image="images/button_mglow-normal.png" dimension="w-2,h-4" location="1,2"/>
-    </normal>
-    <hover>
-      <skinpart image="images/button_e-normal.png" dimension="1,h" location="0,0"/>
-      <skinpart image="images/button_w-normal.png" dimension="1,h" location="w-1,0"/>
-      <skinpart color="$buttonglow" image="images/button_mglow-normal.png" dimension="w-2,h-4" location="1,2"/>
-      <skinpart alpha="20" color="$buttonglow" image="images/button_mglow-hover.png" dimension="w-2,h-4" location="1,2"/>
-      <skinpart image="images/button_e-border.png" dimension="1,h" location="0,0"/>
-      <skinpart image="images/button_w-border.png" dimension="1,h" location="w-1,0"/>
-      <skinpart image="images/button_mtop-border.png" dimension="w-2,1" location="1,1"/>
-      <skinpart image="images/button_mbottom-border.png" dimension="w-2,1" location="1,h-2"/>
-    </hover>
-    <down>
-      <text location="cw+iwh+1,ch+1"/>
-      <skinpart image="images/button_e-normal.png" dimension="1,h" location="0,0"/>
-      <skinpart image="images/button_w-normal.png" dimension="1,h" location="w-1,0"/>
-      <skinpart color="$buttonglow" image="images/button_mglow-normal.png" dimension="w-2,h-4" location="1,2"/>
-      <skinpart alpha="120" color="$buttonglow" image="images/button_mglow-hover.png" dimension="w-2,h-4" location="1,2"/>
-      <skinpart image="images/button_e-border.png" dimension="1,h" location="0,0"/>
-      <skinpart image="images/button_w-border.png" dimension="1,h" location="w-1,0"/>
-      <skinpart image="images/button_mtop-border.png" dimension="w-2,1" location="1,1"/>
-      <skinpart image="images/button_mbottom-border.png" dimension="w-2,1" location="1,h-2"/>
-    </down>
-  </button>
-  <progressbar dimensionBL="w,13" locationBL="0,13" dimensionTL="w,11" locationTL="0,2" dimension="w,11" location="0,8,">
-    <progress dimension="w,10" location="0,0">
-      <skinpart image="images/progress_e.png" dimension="3,10" location="w-3,0"/>
-      <skinpart image="images/progress_m.png" dimension="w-6,10" location="3,0"/>
-      <skinpart image="images/progress_w.png" dimension="3,10" location="0,0"/>
-    </progress>
-    <background>
-      <skinpart image="images/progress_e-backg.png" dimension="3,10" location="w-3,0"/>
-      <skinpart image="images/progress_w-backg.png" dimension="3,10" location="0,0"/>
-    </background>
-  </progressbar>
-  <edit edityoffsets="7,5" editxoffsets="6,5" dimension="w,25">
-    <normal>
-      <skinpart image="images/edit_w-normal.png" dimension="7,h" location="0,0"/>
-      <skinpart image="images/edit_m-normal.png" dimension="w-12,h" location="7,0"/>
-      <skinpart image="images/edit_e-normal.png" dimension="5,h" location="w-5,0"/>
-    </normal>
-    <focus>
-      <skinpart image="images/edit_w-normal.png" dimension="7,h" location="0,0"/>
-      <skinpart image="images/edit_m-normal.png" dimension="w-12,h" location="7,0"/>
-      <skinpart image="images/edit_e-normal.png" dimension="5,h" location="w-5,0"/>
-      <skinpart image="images/edit_w-focus.png" dimension="7,h" location="0,0"/>
-      <skinpart image="images/edit_m-focus.png" dimension="w-12,h" location="7,0"/>
-      <skinpart image="images/edit_e-focus.png" dimension="5,h" location="w-5,0"/>
-    </focus>
-    <hover>
-      <skinpart image="images/edit_w-normal.png" dimension="7,h" location="0,0"/>
-      <skinpart image="images/edit_m-normal.png" dimension="w-12,h" location="7,0"/>
-      <skinpart image="images/edit_e-normal.png" dimension="5,h" location="w-5,0"/>
-      <skinpart image="images/edit_w-focus.png" dimension="7,h" location="0,0"/>
-      <skinpart image="images/edit_m-focus.png" dimension="w-12,h" location="7,0"/>
-      <skinpart image="images/edit_e-focus.png" dimension="5,h" location="w-5,0"/>
-      <skinpart image="images/edit_w-hover.png" dimension="7,h" location="0,0"/>
-      <skinpart image="images/edit_m-hover.png" dimension="w-12,h" location="7,0"/>
-      <skinpart image="images/edit_e-hover.png" dimension="5,h" location="w-5,0"/>
-    </hover>
-  </edit>
-  <!-- MENU -->
-  <!-- MENU -->
-  <!-- MENU -->
-  <menu lroffset="5,5" tboffset="15,5" widthlimit="128,350" dimension="w,h">
-    <background>
-      <skinpart color="$menubackg" alpha="220" image="images/backg_blend.png" dimension="w,h" location="0,0"/>
-      <skinpart image="images/backg_border.png" dimension="1,h-12" location="0,12"/>
-      <skinpart image="images/backg_border.png" dimension="1,h-12" location="w-1,12"/>
-      <skinpart image="images/backg_glazing.png" dimension="w-2,12" location="1,0"/>
-      <skinpart image="images/backg_glazingborder.png" dimension="1,12" location="0,0"/>
-      <skinpart image="images/backg_glazingborder.png" dimension="1,12" location="w-1,0"/>
-      <skinpart image="images/backg_shadow.png" dimension="w-2,13" location="1,h-13"/>
-    </background>
-  </menu>
-  <menuitem>
-    <icon location="4,3" dimension="16,16" draw="1"/>
-    <text shadowalpha="50" shadowtype="Right" shadowcolor="$menutextshadow" shadow="1" color="$menutext" size="7" name="Small Fonts" location="23,5" dimension="w-40,h" draw="1"/>
-    <normal widthmod="48" dimension="w,22"/>
-    <hover widthmod="48" dimension="w,22">
-      <skinpart color="$menubackg" alpha="150" image="images/backg_blend.png" dimension="w,h" location="0,0"/>
-      <skinpart image="images/item_border.png" dimension="1,h" location="0,0"/>
-      <skinpart image="images/item_border.png" dimension="1,h" location="w-1,0"/>
-      <skinpart image="images/item_glazing.png" dimension="w-2,h" location="1,0"/>
-      <skinpart color="$menuglow" alpha="255" image="images/item_glow-normal.png" dimension="w-2,h" location="1,0"/>
-      <skinpart color="$menuglow" alpha="255" image="images/item_glow-hover.png" dimension="w-2,h" location="1,0"/>
-    </hover>
-    <down widthmod="48" dimension="w,22">
-      <skinpart color="$menubackg" alpha="150" image="images/backg_blend.png" dimension="w,h" location="0,0"/>
-      <skinpart image="images/item_border.png" dimension="1,h" location="0,0"/>
-      <skinpart image="images/item_border.png" dimension="1,h" location="w-1,0"/>
-      <skinpart image="images/item_glazing.png" dimension="w-2,h" location="1,0"/>
-      <skinpart color="$menuglow" alpha="255" image="images/item_glow-normal.png" dimension="w-2,h" location="1,0"/>
-      <skinpart color="$menuglow" alpha="255" image="images/item_glow-hover.png" dimension="w-2,h" location="1,0"/>
-      <skinpart color="$menuglow" alpha="255" image="images/item_glow-focus.png" dimension="w-2,h" location="1,0"/>
-    </down>
-    <normalsub widthmod="48" dimension="w,22">
-      <skinpart image="images/arrow.png" dimension="8,10" location="w-15,5"/>
-    </normalsub>
-    <hoversub widthmod="48" dimension="w,22">
-      <skinpart color="$menubackg" alpha="150" image="images/backg_blend.png" dimension="w,h" location="0,0"/>
-      <skinpart image="images/arrow.png" dimension="8,10" location="w-15,5"/>
-      <skinpart image="images/item_border.png" dimension="1,h" location="0,0"/>
-      <skinpart image="images/item_border.png" dimension="1,h" location="w-1,0"/>
-      <skinpart image="images/item_glazing.png" dimension="w-2,h" location="1,0"/>
-      <skinpart color="$menuglow" alpha="255" image="images/item_glow-normal.png" dimension="w-2,h" location="1,0"/>
-      <skinpart color="$menuglow" alpha="255" image="images/item_glow-hover.png" dimension="w-2,h" location="1,0"/>
-    </hoversub>
-    <separator dimension="w,5">
-      <skinpart alpha="70" image="images/menu_separator.png" dimension="w-30,2" location="15,1"/>
-    </separator>
-    <label widthmod="20" dimension="w,18">
-      <text shadowtype="Outline" size="7" location="cw-1,3" dimension="w-20,h" drawtext="1"/>
-    </label>
-  </menuitem>
-  <font locationBL="0,8" locationTL="0,-3">
-    <small location="0,-1" color="$tasktext" bold="0" name="Small Fonts" size="6"/>
-    <medium location="0,-1" color="$tasktext" size="8" name="Trebuchet MS"/>
-    <big location="0,-1" color="$tasktext" size="11" name="Trebuchet MS"/>
-  </font>
-  <notify calroffset="4,4" catboffset="4,16" location="0,2" dimension="256,h">
-    <text shadowalpha="50" shadowtype="Right" shadowcolor="$menutextshadow" shadow="1" color="$menutext" size="8" name="Tahoma" location="40,ch+1" dimension="w-32-4-4-4,h" draw="1"/>
-    <icon location="4,hh-ihh" size="32,32" draw="1"/>
-    <background>
-      <skinpart color="$menubackg" alpha="240" image="images/backg_blend.png" dimension="w,h" location="0,0"/>
-      <skinpart image="images/backg_border.png" dimension="1,h-12" location="0,12"/>
-      <skinpart image="images/backg_border.png" dimension="1,h-12" location="w-1,12"/>
-      <skinpart image="images/backg_glazing.png" dimension="w-2,12" location="1,0"/>
-      <skinpart image="images/backg_glazingborder.png" dimension="1,12" location="0,0"/>
-      <skinpart image="images/backg_glazingborder.png" dimension="1,12" location="w-1,0"/>
-      <skinpart image="images/backg_shadow.png" dimension="w-2,13" location="1,h-13"/>
-    </background>
-  </notify>
-  <taskpreview calroffset="10,10" catboffset="20,10" location="0,2" dimension="5,400">
-    <text shadowalpha="50" shadowtype="Right" shadowcolor="$menutextshadow" shadow="1" color="$menutext" size="8" name="Tahoma" location="cw,1" dimension="w-24,0" draw="1"/>
-    <icon location="4,hh-ihh" size="32,32" draw="1"/>
-    <background>
-      <skinpart color="$menubackg" alpha="240" image="images/backg_blend.png" dimension="w,h" location="0,0"/>
-      <skinpart image="images/backg_border.png" dimension="1,h-12" location="0,12"/>
-      <skinpart image="images/backg_border.png" dimension="1,h-12" location="w-1,12"/>
-      <skinpart image="images/backg_glazing.png" dimension="w-2,12" location="1,0"/>
-      <skinpart image="images/backg_glazingborder.png" dimension="1,12" location="0,0"/>
-      <skinpart image="images/backg_glazingborder.png" dimension="1,12" location="w-1,0"/>
-      <skinpart image="images/backg_shadow.png" dimension="w-2,13" location="1,h-13"/>
-    </background>
-    <hover>
-      <skinpart color="$taskglow" alpha="240" image="images/backg_blend.png" dimension="w,h" location="0,0"/>
-      <skinpart image="images/backg_border.png" dimension="1,h-12" location="0,12"/>
-      <skinpart image="images/backg_border.png" dimension="1,h-12" location="w-1,12"/>
-      <skinpart image="images/backg_glazing.png" dimension="w-2,12" location="1,0"/>
-      <skinpart image="images/backg_glazingborder.png" dimension="1,12" location="0,0"/>
-      <skinpart image="images/backg_glazingborder.png" dimension="1,12" location="w-1,0"/>
-      <skinpart image="images/backg_shadow.png" dimension="w-2,13" location="1,h-13"/>
-    </hover>
-  </taskpreview>
+      <normalsub widthmod="48" dimension="w,22">
+        <skinpart image="images/arrow.png" dimension="8,10" location="w-15,5"/>
+      </normalsub>
+      <hoversub widthmod="48" dimension="w,22">
+        <skinpart color="$menubackg" alpha="150" image="images/backg_blend.png" dimension="w,h" location="0,0"/>
+        <skinpart image="images/arrow.png" dimension="8,10" location="w-15,5"/>
+        <skinpart image="images/item_border.png" dimension="1,h" location="0,0"/>
+        <skinpart image="images/item_border.png" dimension="1,h" location="w-1,0"/>
+        <skinpart image="images/item_glazing.png" dimension="w-2,h" location="1,0"/>
+        <skinpart color="$menuglow" alpha="255" image="images/item_glow-normal.png" dimension="w-2,h" location="1,0"/>
+        <skinpart color="$menuglow" alpha="255" image="images/item_glow-hover.png" dimension="w-2,h" location="1,0"/>
+      </hoversub>
+      <separator dimension="w,5">
+        <skinpart alpha="70" image="images/menu_separator.png" dimension="w-30,2" location="15,1"/>
+      </separator>
+      <label widthmod="20" dimension="w,18">
+        <text shadowtype="Outline" size="7" location="cw-1,3" dimension="w-20,h" drawtext="1"/>
+      </label>
+    </menuitem>
+    <font locationBL="0,8" locationTL="0,-3">
+      <small location="0,-1" color="$tasktext" bold="0" name="Small Fonts" size="6"/>
+      <medium location="0,-1" color="$tasktext" size="8" name="Trebuchet MS"/>
+      <big location="0,-1" color="$tasktext" size="11" name="Trebuchet MS"/>
+    </font>
+    <notify calroffset="4,4" catboffset="4,16" location="0,2" dimension="256,h">
+      <text shadowalpha="50" shadowtype="Right" shadowcolor="$menutextshadow" shadow="1" color="$menutext" size="8" name="Tahoma" location="40,ch+1" dimension="w-32-4-4-4,h" draw="1"/>
+      <icon location="4,hh-ihh" size="32,32" draw="1"/>
+      <background>
+        <skinpart color="$menubackg" alpha="240" image="images/backg_blend.png" dimension="w,h" location="0,0"/>
+        <skinpart image="images/backg_border.png" dimension="1,h-12" location="0,12"/>
+        <skinpart image="images/backg_border.png" dimension="1,h-12" location="w-1,12"/>
+        <skinpart image="images/backg_glazing.png" dimension="w-2,12" location="1,0"/>
+        <skinpart image="images/backg_glazingborder.png" dimension="1,12" location="0,0"/>
+        <skinpart image="images/backg_glazingborder.png" dimension="1,12" location="w-1,0"/>
+        <skinpart image="images/backg_shadow.png" dimension="w-2,13" location="1,h-13"/>
+      </background>
+    </notify>
+    <taskpreview calroffset="10,10" catboffset="20,10" location="0,2" dimension="5,400">
+      <text shadowalpha="50" shadowtype="Right" shadowcolor="$menutextshadow" shadow="1" color="$menutext" size="8" name="Tahoma" location="cw,1" dimension="w-24,0" draw="1"/>
+      <icon location="4,hh-ihh" size="32,32" draw="1"/>
+      <background>
+        <skinpart color="$menubackg" alpha="240" image="images/backg_blend.png" dimension="w,h" location="0,0"/>
+        <skinpart image="images/backg_border.png" dimension="1,h-12" location="0,12"/>
+        <skinpart image="images/backg_border.png" dimension="1,h-12" location="w-1,12"/>
+        <skinpart image="images/backg_glazing.png" dimension="w-2,12" location="1,0"/>
+        <skinpart image="images/backg_glazingborder.png" dimension="1,12" location="0,0"/>
+        <skinpart image="images/backg_glazingborder.png" dimension="1,12" location="w-1,0"/>
+        <skinpart image="images/backg_shadow.png" dimension="w-2,13" location="1,h-13"/>
+      </background>
+      <hover>
+        <skinpart color="$taskglow" alpha="240" image="images/backg_blend.png" dimension="w,h" location="0,0"/>
+        <skinpart image="images/backg_border.png" dimension="1,h-12" location="0,12"/>
+        <skinpart image="images/backg_border.png" dimension="1,h-12" location="w-1,12"/>
+        <skinpart image="images/backg_glazing.png" dimension="w-2,12" location="1,0"/>
+        <skinpart image="images/backg_glazingborder.png" dimension="1,12" location="0,0"/>
+        <skinpart image="images/backg_glazingborder.png" dimension="1,12" location="w-1,0"/>
+        <skinpart image="images/backg_shadow.png" dimension="w-2,13" location="1,h-13"/>
+      </hover>
+    </taskpreview>
+  </skindesign>
 </sharpESkin>
