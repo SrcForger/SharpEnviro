@@ -92,6 +92,7 @@ type
     tmrAutoHide: TTimer;
     tmrCursorPos: TTimer;
     FullScreenCheck: TTimer;
+    Design1: TMenuItem;
     procedure ShowMiniThrobbers1Click(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ThemeHideTimerTimer(Sender: TObject);
@@ -132,6 +133,7 @@ type
     procedure OnQuickAddModuleItemClick(Sender: TObject);
     procedure OnSkinSelectItemClick(Sender: TObject);
     procedure OnSchemeSelectItemClick(Sender: TObject);
+    procedure OnSkinDesignItemClick(Sender: TObject);
     procedure OnBackgroundPaint(Sender: TObject; Target: TBitmap32; x: integer);
     procedure AutoHide1Click(Sender: TObject);
     procedure BarManagment1Click(Sender: TObject);
@@ -1752,6 +1754,23 @@ begin
     until FindNext(sr) <> 0;
   FindClose(sr);
 
+  // Build Skin Design List
+  Design1.Clear;
+  if FSkinInterface.SkinManager.GetSkinDesignCount > 1 then
+  begin
+    Design1.Enabled := True;
+    for n := 0 to FSkinInterface.SkinManager.GetSkinDesignCount - 1 do
+    begin
+      item := TMenuItem.Create(Design1);
+      item.Caption := FSkinInterface.SkinManager.GetSkinDesign(n).Name;
+      item.Tag := n;
+      item.OnClick := OnSkinDesignItemClick;
+      Design1.Add(item);
+    end;
+      
+  end else Design1.Enabled := False;
+  
+
   // Build Scheme List
   ColorScheme1.Clear;
   item := TMenuItem.Create(ColorScheme1);
@@ -1853,6 +1872,18 @@ begin
   Theme.Scheme.Name := s;
   Theme.Scheme.SaveToFile;
   SharpApi.BroadcastGlobalUpdateMessage(suSkin);
+end;
+
+procedure TSharpBarMainForm.OnSkinDesignItemClick(Sender: TObject);
+var
+  SkinDesign : String;
+begin
+  if not (Sender is TMenuItem) then
+    exit;
+
+  SkinDesign := TMenuItem(Sender).Caption;
+  FSkinInterface.SkinManager.SetSkinDesign(SkinDesign);
+  PostMessage(Handle,WM_SHARPEUPDATESETTINGS,integer(suSkinFileChanged),0);
 end;
 
 procedure TSharpBarMainForm.OnSkinSelectItemClick(Sender: TObject);
