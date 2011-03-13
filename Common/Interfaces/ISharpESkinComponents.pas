@@ -602,6 +602,10 @@ type
     ['{FDC09533-F3A9-49B8-8AC0-C64486537A50}']
     function ParseColor(src : String) : integer; stdcall;
 
+    function SetSkinDesign(Name : String) : boolean; stdcall;
+    function GetSkinDesign(Index : integer) : ISharpESkinDesign; stdcall;
+    function GetSkinDesignCount : integer; stdcall;
+
     procedure RefreshControls; stdcall;
     procedure UpdateSkin; stdcall;
     procedure UpdateScheme; stdcall;

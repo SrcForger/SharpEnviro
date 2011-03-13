@@ -1608,10 +1608,10 @@ end;
 procedure TSharpESkinDesign.LoadFromXml(xml: TJclSimpleXMLElem; path : String);
 begin
   FDefaultDesign := xml.Properties.BoolValue('default',false);
-  FName := xml.Properties.Value('name','Default');
-  
   if FDefaultDesign then
     Clear;
+
+  FName := xml.Properties.Value('name','Default');
 
   // Load Details
   if xml.Items.ItemNamed['font'] <> nil then

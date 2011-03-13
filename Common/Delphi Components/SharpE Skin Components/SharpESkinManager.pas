@@ -84,7 +84,11 @@ type
     constructor CreateRuntime(MainForm: TComponent; Skin : TSharpESkin; Scheme : TSharpEScheme; Skins : TSharpESkinItems = ALL_SHARPE_SKINS); overload;
     constructor CreateRuntime(MainForm: TComponent; Skin : TSharpESkin; Scheme : TSharpEScheme; NoSystemScheme : boolean; Skins : TSharpESkinItems = ALL_SHARPE_SKINS); overload;
     destructor Destroy; override;
-    function SetSkinDesign(Name : String) : boolean;
+
+    function SetSkinDesign(Name : String) : boolean; stdcall;
+    function GetSkinDesign(Index : integer) : ISharpESkinDesign; stdcall;
+    function GetSkinDesignCount : integer; stdcall;
+
     procedure LoadSkinFromStream;
     property RootInterface: ISharpESkinManager read FRootInterface write FRootInterface;
     property MainForm: TForm read FMainForm write FMainForm;
@@ -159,16 +163,17 @@ begin
   for n := 0 to FSkinBackend.SkinDesigns.Count - 1 do
     if (CompareText(Name,TSharpESkinDesign(FSkinBackend.SkinDesigns.Items[n]).Name) = 0) then
     begin
-      FSkinInterface := nil;
       FSkin := TSharpESkinDesign(FSkinBackend.SkinDesigns.Items[n]);
-      FSkinInterface := FSkin.SelfInterface;
+      FSkinInterface := FSkin;
       result := true;
       exit;
     end;
 
   FSkin := FSkinBackend.GetDefaultSkinDesign;
   if (FSkin <> nil) then
-    FSkinInterface := FSkin.SelfInterface;
+    FSkinInterface := FSkin;
+  if FSkinInterface = nil then
+    exit;
 end;
 
 procedure TSharpESkinManager.SetSkinItems(Value : TSharpESkinItems);
@@ -207,10 +212,7 @@ begin
   end;
   FSkin := FSkinBackend.GetDefaultSkinDesign;
   if (FSkin <> nil) then
-  begin
-    FSkinInterface := nil;
-    FSkinInterface := FSkin.SelfInterface;
-  end;
+    FSkinInterface := FSkin;
 
   FHandleUpdates := True;
   FHandleThemeApiUpdates := True;
@@ -389,6 +391,18 @@ begin
   result := FSkinInterface;
 end;
 
+function TSharpESkinManager.GetSkinDesign(Index: integer): ISharpESkinDesign;
+begin
+  if ((index >= 0) and (index < FSkinBackend.SkinDesigns.Count)) then
+    result := TSharpESkinDesign(FSkinBackend.SkinDesigns.Items[index])
+  else result := nil;  
+end;
+
+function TSharpESkinManager.GetSkinDesignCount: integer;
+begin
+  result := FSkinBackend.SkinDesigns.Count;
+end;
+
 function TSharpESkinManager.GetSkinItems: TSharpESkinItems;
 begin
   result := FSkinItems;
@@ -398,18 +412,26 @@ procedure TSharpESkinManager.LoadSkinFromStream;
 var
   loadfile : String;
   Stream : TMemoryStream;
+  olddesign : String;
 begin
   loadfile := SharpApi.GetSharpeUserSettingsPath + 'SharpE.skin';
   Stream := TMemoryStream.Create;
+
+  // Store current skin design
+  if (FSkinInterface <> nil) then
+    olddesign := FSkinInterface.Name
+  else olddesign := '';
+  
   if OpenMemoryStreamShared(Stream,loadfile,true) = sfeSuccess then
   begin
+    FSkin := nil;
+    FSkinInterface := nil;
     FSkinBackend.Clear;
     FSkinBackend.LoadFromStream(Stream);
   end;
-  FSkin := FSkinBackend.GetDefaultSkinDesign;
-  if (FSkin <> nil) then
-    FSkinInterface := FSkin.SelfInterface;
   Stream.Free;
+
+  SetSkinDesign(olddesign);
 end;
 
 //***********************************
