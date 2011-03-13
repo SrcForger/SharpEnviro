@@ -49,10 +49,10 @@ uses
   SharpTypes;
 
 type
+  TSharpESkinDesign = class;
   TSharpEButtonSkin = class;
   TSharpEBarSkin = class;
   TSharpEProgressBarSkin = class;
-  TSharpESkinHeader = class;
   TSharpEMiniThrobberSkin = class;
   TSharpEEditSkin = class;
   TSharpETaskItemSkin = class;
@@ -66,19 +66,21 @@ type
   TXmlFileName = string;    
   TSkinFileName = string;
 
-  TSharpESkin = class(TInterfacedObject, ISharpESkin)
+  TSharpESkinDesign = class(TInterfacedObject, ISharpESkinDesign)
   private
-    FSkinName: TSkinName;
-    FSkinText: TSkinText;
+    FDefaultDesign: boolean;
+    FSelfInterface : ISharpESkinDesign;
+
+    FBitmapList: TSkinBitmapList;
+
     FTextPosTL : TSkinPoint;
     FTextPosBL : TSkinPoint;
     FTextPosBottomTL : TSkinPoint;
-    FTextPosBottomBL : TSkinPoint;    
-    FSkinVersion: Double;
-    FBitmapList: TSkinBitmapList;
-    FLoadSkins : TSharpESkinItems;
+    FTextPosBottomBL : TSkinPoint;
 
-    FOnNotify: TSkinEvent;
+    FSkinText: TSkinText;
+
+    FLoadSkins : TSharpESkinItems;
 
     FSmallText  : TSkinText;
     FMediumText : TSkinText;
@@ -113,16 +115,7 @@ type
     FMiniThrobberInterface : ISharpEMiniThrobberSkin;
     FTaskPreviewInterface  : ISharpETaskPreviewSkin;
 
-    FSkinHeader: TSharpeSkinHeader;
-    FXml: TJclSimpleXml;
-    FXmlFileName: TXmlFileName;
-
-    procedure SetXmlFileName(const Value: TXmlFileName);
-    function GetSkinAuthor: string;
-    function GetSkinName: string;
-    function GetSkinUrl: string;
-    function GetSkinVersion: string;
-    procedure SetSkinName(const Value: TSkinName);
+    function GetIsDefaultDesign  : boolean; stdcall;
 
     function GetButtonSkin       : ISharpEButtonSkin; stdcall;
     function GetEditSkin         : ISharpEEditSkin; stdcall;
@@ -144,21 +137,28 @@ type
     function GetTextPosTL       : TPoint; stdcall;
     function GetTextPosBL       : TPoint; stdcall;
     function GetTextPosBottomTL : TPoint; stdcall;
-    function GetTextPosBottomBL : TPoint; stdcall;      
+    function GetTextPosBottomBL : TPoint; stdcall;     
   protected
   public
     constructor Create; overload;
     constructor Create(Skins: TSharpESkinItems); reintroduce; overload;
-    constructor CreateBmp(BmpList : TSkinBitmapList; Skins: TSharpESkinItems = ALL_SHARPE_SKINS); overload;
     destructor Destroy; override;
+
     procedure Clear;
-    procedure LoadFromXmlFile(filename: string); virtual;
-    procedure LoadFromSkin(filename: string); virtual;
+
+    procedure LoadFromXml(xml: TJclSimpleXMLElem; path : String); virtual;
     procedure LoadFromStream(Stream: TStream); virtual;
 
-    procedure SaveToSkin(filename: string); virtual;
     procedure SaveToStream(Stream: TStream); overload; virtual;
-    procedure SaveToStream(Stream: TStream; SaveBitmap:boolean); overload; virtual;
+    procedure SaveToStream(Stream: TStream; SaveBitmap:boolean); overload; virtual;        
+
+    procedure RemoveNotUsedBitmaps;
+    procedure UpdateDynamicProperties(Scheme : ISharpEScheme); stdcall;
+
+    property IsDefaultDesign: boolean read GetIsDefaultDesign;
+    property SelfInterface : ISharpESkinDesign read FSelfInterface write FSelfInterface;    
+
+    property BitmapList: TSkinBitmapList read FBitmapList write FBitmapList;
 
     property Button       : ISharpEButtonSkin read GetButtonSkin;
     property Edit         : ISharpEEditSkin read GetEditSkin;
@@ -182,44 +182,57 @@ type
     property TextPosBottomTL : TPoint read GetTextPosBottomTL;
     property TextPosBottomBL : TPoint read GetTextPosBottomBL;
 
-    property OnNotify: TSkinEvent read FOnNotify write FOnNotify;
     property BarSkin: TSharpEBarSkin read FBarSkin;
+  end;
 
-    property SkinText: TSkinText read FSkinText;
-    property BitmapList: TSkinBitmapList read FBitmapList write FBitmapList;
+  TSharpESkin = class(TInterfacedObject, ISharpESkin)
+  private
+    FSkinName: TSkinName;
+    FSkinDesigns: TObjectList;
+
+    FSkinVersion: Double;
+    FLoadSkins : TSharpESkinItems;
+
+    FXml: TJclSimpleXml;
+    FXmlFileName: TXmlFileName;
+
+    FOnNotify: TSkinEvent;    
+
+    function GetSkinDesigns : TObjectList;
+
+    procedure SetXmlFileName(const Value: TXmlFileName);
+    procedure SetSkinName(const Value: TSkinName);
+
+  protected
+  public
+    constructor Create; overload;
+    constructor Create(Skins: TSharpESkinItems); reintroduce; overload;
+    destructor Destroy; override;
+
+    procedure Clear;
+
+    procedure ClearSkinDesigns;
+    function GetDefaultSkinDesign : TSharpESkinDesign;
+    
+    procedure LoadFromXmlFile(filename: string); virtual;
+    procedure LoadFromSkin(filename: string); virtual;
+    procedure LoadFromStream(Stream: TStream); virtual;
+
+    procedure SaveToSkin(filename: string); virtual;
+    procedure SaveToStream(Stream: TStream); overload; virtual;
+    procedure SaveToStream(Stream: TStream; SaveBitmap:boolean); overload; virtual;
 
     procedure RemoveNotUsedBitmaps;
     procedure UpdateDynamicProperties(Scheme : ISharpEScheme); stdcall;
 
     procedure FreeInstance; override;
 
-    property _SkinName: string read GetSkinName;
-    property _SkinVersion: string read GetSkinVersion;
-    property _SkinAuthor: string read GetSkinAuthor;
-    property _SkinUrl: string read GetSkinUrl;
+    property SkinDesigns : TObjectList read GetSkinDesigns;
 
     property XmlFilename: TXmlFileName read FXmlFileName write SetXmlFileName;
     property Skin: TSkinName read FSkinName write SetSkinName;
-  end;
 
-  TSharpESkinHeader = class
-  private
-    FVersion: string;
-    FAuthor: string;
-    FName: string;
-    FUrl: string;
-  public
-    constructor Create;
-    destructor Destroy; override;
-    procedure Clear;
-    procedure SaveToStream(Stream: TStream);
-    procedure LoadFromStream(Stream: TStream);
-    procedure LoadFromXml(xml: TJclSimpleXmlElem; path: string);
-
-    property Name: string read FName write FName;
-    property Author: string read FAuthor write FAuthor;
-    property Url: string read FUrl write FUrl;
-    property Version: string read FVersion write FVersion;
+    property OnNotify: TSkinEvent read FOnNotify write FOnNotify;    
   end;
 
   TSharpETaskItemState = class(TInterfacedObject, ISharpETaskItemStateSkin)
@@ -785,7 +798,6 @@ uses SharpESkinManager,
      SharpApi,
      gr32_png;
 
-
 //***************************************
 //* TSharpESkin
 //***************************************
@@ -804,10 +816,192 @@ begin
 
   FontList.RefreshFontInfo;
 
+  FSkinDesigns := TObjectList.Create(True);
+
   FLoadSkins := Skins;
 
+  FXml := TJclSimpleXml.Create;
+end;
+
+destructor TSharpESkin.Destroy;
+begin
+  FXml.Free;
+
+  ClearSkinDesigns;
+  FSkinDesigns.Free;
+
+  if FontList <> nil then
+  begin
+    FontList.Free;
+    FontList := nil;
+  end;
+
+  inherited;
+end;
+
+procedure TSharpESkin.ClearSkinDesigns;
+var
+  Skin : TSharpESkinDesign;
+  n : integer;
+begin
+  for n := FSkinDesigns.Count - 1 downto 0 do
+  begin
+    Skin := TSharpESkinDesign(FSkinDesigns.Items[n]);
+    FSkinDesigns.Extract(Skin);
+    Skin.SelfInterface := nil;
+    // make sure to really free all instances
+    while Skin.RefCount > 0 do
+      Skin._Release;
+  end;
+end;
+
+procedure TSharpESkin.RemoveNotUsedBitmaps;
+var
+  n : integer;
+begin
+  for n := 0 to FSkinDesigns.Count - 1 do
+    TSharpESkinDesign(FSkinDesigns.Items[n]).RemoveNotUsedBitmaps;
+end;
+
+procedure TSharpESkin.UpdateDynamicProperties(Scheme : ISharpEScheme);
+var
+  n : integer;
+begin
+  for n := 0 to FSkinDesigns.Count - 1 do
+    TSharpESkinDesign(FSkinDesigns.Items[n]).UpdateDynamicProperties(Scheme);
+end;
+
+procedure TSharpESkin.SaveToStream(Stream: TStream);
+begin
+  SaveToStream(Stream, true);
+end;
+
+procedure TSharpESkin.LoadFromSkin(filename: string);
+var FileStream: TFileStream;
+begin
+  FileStream := TFileStream.Create(FileName, fmOpenRead);
+  try
+    LoadFromStream(FileStream);
+  finally
+    FileStream.Free;
+  end;
+end;
+
+procedure TSharpESkin.SaveToSkin(filename: string);
+var FileStream: TFileStream;
+begin
+  FileStream := TFileStream.Create(FileName, fmCreate);
+  try
+    SaveToStream(FileStream);
+  finally
+    FileStream.Free;
+  end;
+end;
+   
+procedure TSharpESkin.LoadFromStream(Stream: TStream);
+var
+  temp : String;
+  designCount : integer;
+  n : integer;
+  Skin : TSharpESkinDesign;
+begin
+  Stream.ReadBuffer(FSkinVersion, sizeof(FSkinVersion));
+  if (floor(FSkinVersion) <> 2) then
+    exit;
+  temp := StringLoadFromStream(Stream);
+  if temp <> '' then
+    FSkinName := temp;
+  Stream.ReadBuffer(designCount,SizeOf(designCount));
+
+  for n := 0 to designCount - 1 do
+  begin
+    Skin := TSharpESkinDesign.Create(FLoadSkins);
+    Skin.LoadFromStream(Stream);
+    FSkinDesigns.Add(Skin);
+  end;
+end;
+
+procedure TSharpESkin.Clear();
+begin
+  FSkinName := '';
+  ClearSkinDesigns;
+end;
+
+procedure TSharpESkin.LoadFromXMLFile(filename : string);
+var
+  Path: string;
+  n : integer;
+  Skin : TSharpESkinDesign;
+begin
+  if FontList <> nil then
+    FontList.RefreshFontInfo;
+
+  SkinDesigns.Clear;
+
+  try
+    Path := ExtractFilePath(filename);
+    Fxml.LoadFromFile(filename);
+    if FXml.Root.Items.Count = 0 then
+      exit;
+  except
+    on E: Exception do
+    begin
+      SharpApi.SendDebugMessageEx('SharpESkin','Error loading skin from file: ' + filename,clred,DMT_ERROR);
+      SharpApi.SendDebugMessageEx('SharpESkin',E.Message,clred,DMT_ERROR);
+      Clear;
+      Skin := TSharpESkinDesign.Create(FLoadSkins);
+      if Skin.BarSkin <> nil then
+         Skin.BarSkin.CheckValid;
+      SkinDesigns.Add(Skin);
+      exit;
+    end;
+  end;
+
+  Clear;
+
+  // interate over all skin designs and find the default skin
+  for n := 0 to Fxml.Root.Items.Count - 1 do
+  begin
+    if Fxml.Root.Items.Item[n].Properties.BoolValue('default',False) then
+    begin
+      Skin := TSharpESkinDesign.Create(FLoadSkins);
+      Skin.LoadFromXML(Fxml.Root.Items.Item[n],Path);
+      SkinDesigns.Add(Skin);
+      break;
+    end;
+  end;
+
+  // load all other skin designs
+  for n := 0 to Fxml.Root.Items.Count - 1 do
+  begin
+    if not (Fxml.Root.Items.Item[n].Properties.BoolValue('default',False)) then
+    begin
+      Skin := TSharpESkinDesign.Create(FLoadSkins);
+      Skin.LoadFromXml(Fxml.Root.Items.Item[n],Path);
+      SkinDesigns.Add(Skin);
+    end;
+  end;
+end;
+
+//***************************************
+//* TSharpESkinDesign
+//***************************************
+
+constructor TSharpESkinDesign.Create;
+begin
+  Create(ALL_SHARPE_SKINS);
+end;
+
+constructor TSharpESkinDesign.Create(Skins: TSharpESkinItems);
+begin
+  inherited Create;
+
+  FDefaultDesign := True;
+
   if FBitmaplist = nil then
-    FBitmapList := TSkinBitmapList.Create;
+    FBitmapList := TSkinBitmapList.Create;  
+
+  FLoadSkins := Skins;
 
   if scButton in FLoadSkins then
   begin
@@ -845,7 +1039,6 @@ begin
   FTextPosBL  := TSkinPoint.Create;
   FTextPosBottomTL  := TSkinPoint.Create;
   FTextPosBottomBL  := TSkinPoint.Create;  
-  FSkinHeader := TSharpeSkinHeader.Create;
   if scMiniThrobber in FLoadSkins then
   begin
     FMiniThrobberSkin := TSharpEMiniThrobberSkin.Create(FBitmapList);
@@ -877,18 +1070,11 @@ begin
     FTaskPreviewInterface := FTaskPreviewSkin;
   end;
 
-  FXml := TJclSimpleXml.Create;
+  FSelfInterface := self;
 end;
 
-constructor TSharpESkin.CreateBmp(BmpList : TSkinBitmapList; Skins: TSharpESkinItems = ALL_SHARPE_SKINS);
+destructor TSharpESkinDesign.Destroy;
 begin
-  FBitmapList := bmpList;
-  Create(Skins);
-end;
-
-destructor TSharpESkin.Destroy;
-begin
-  FXml.Free;
   if FButtonSkin <> nil then
   begin
     FButtonInterface := nil;
@@ -920,7 +1106,6 @@ begin
   FTextPosBL.Free;
   FTextPosBottomTL.Free;
   FTextPosBottomBL.Free;  
-  FSkinHeader.Free;
   if FMiniThrobberSkin <> nil then
   begin
     FMiniThrobberInterface := nil;
@@ -954,16 +1139,10 @@ begin
 
   FBitmapList.Free;
 
-  if FontList <> nil then
-  begin
-    FontList.Free;
-    FontList := nil;
-  end;
-
   inherited;
 end;
 
-procedure TSharpESkin.UpdateDynamicProperties(Scheme : ISharpEScheme);
+procedure TSharpESkinDesign.UpdateDynamicProperties(Scheme : ISharpEScheme);
 begin
   if FButtonSkin <> nil then FButtonSkin.UpdateDynamicProperties(Scheme);
   if FProgressBarskin <> nil then FProgressBarSkin.UpdateDynamicProperties(Scheme);
@@ -984,7 +1163,7 @@ begin
   FOSDText.UpdateDynamicProperties(Scheme);
 end;
 
-procedure TSharpESkin.RemoveNotUsedBitmaps;
+procedure TSharpESkinDesign.RemoveNotUsedBitmaps;
 
   procedure RemoveSkinPartBitmaps(sp : TSkinPart; List : TObjectList);
   var
@@ -1111,18 +1290,17 @@ begin
   list.free;
 end;
 
-procedure TSharpESkin.SaveToStream(Stream: TStream);
+procedure TSharpESkinDesign.SaveToStream(Stream: TStream);
 begin
   SaveToStream(Stream,true);
 end;
 
-procedure TSharpESkin.SaveToStream(Stream: TStream; SaveBitmap:boolean);
+procedure TSharpESkinDesign.SaveToStream(Stream: TStream; SaveBitmap:boolean);
 var tempStream: TMemoryStream;
   size: int64;
 begin
-  FSkinversion := 2.0; //add 1 when not compatible
-  Stream.WriteBuffer(FSkinversion, sizeof(FSkinversion));
-  StringSaveToStream(FSkinName, Stream);
+  Stream.Write(FDefaultDesign,sizeof(FDefaultDesign));
+
   FSkinText.SaveToStream(Stream);
   FSmallText.SaveToStream(Stream);
   FMediumText.SaveToStream(Stream);
@@ -1258,37 +1436,23 @@ begin
       Stream.CopyFrom(tempStream, Size);
     end;
 
-    //Write Header
-    {StringSaveToStream('Header', Stream);
-    FSkinHeader.SaveToStream(tempStream);
-    size := tempStream.Size;
-    tempStream.Position := 0;
-    Stream.WriteBuffer(size, sizeof(size));
-    Stream.CopyFrom(tempStream, Size);   }
-
     StringSaveToStream('End', Stream);
   finally
     TempStream.Free;
   end;
 end;
 
-procedure TSharpESkin.LoadFromStream(Stream: TStream);
+procedure TSharpESkinDesign.LoadFromStream(Stream: TStream);
 var temp          : string;
   size            : int64;
   BmpListInStream : boolean;
 begin
   if FontList <> nil then
     FontList.RefreshFontInfo;
-  
+
   Clear;
   try
-    Stream.ReadBuffer(FSkinVersion, sizeof(FSkinVersion));
-    if (floor(FSkinVersion) <> 2) then
-      exit;
-    temp := StringLoadFromStream(Stream);
-    if temp <> '' then
-      FSkinName := temp;
-
+    Stream.ReadBuffer(FDefaultDesign,sizeof(FDefaultDesign));
     FSkinText.LoadFromStream(Stream);
     FSmallText.LoadFromStream(Stream);
     FMediumText.LoadFromStream(Stream);
@@ -1306,9 +1470,7 @@ begin
     begin
       Stream.ReadBuffer(size, sizeof(size));
 
-      if temp = 'Header' then
-        FSkinHeader.LoadFromStream(Stream)
-      else if (temp = 'Button') and (FButtonSkin <> nil) then
+      if (temp = 'Button') and (FButtonSkin <> nil) then
         FButtonSkin.LoadFromStream(Stream)
       else if (temp = 'ProgressBar') and (FProgressBarSkin <> nil) then
         FProgressBarSkin.LoadFromStream(Stream)
@@ -1347,7 +1509,7 @@ begin
   RemoveNotUsedBitmaps;
 end;
 
-procedure TSharpESkin.Clear;
+procedure TSharpESkinDesign.Clear;
 begin
   if FButtonSkin <> nil then
     FButtonSkin.Clear;
@@ -1356,7 +1518,6 @@ begin
   if FBarSkin <> nil then
     FBarSkin.Clear;
 
-  FSkinHeader.Clear;
   if FMiniThrobberSkin <> nil then
     FMiniThrobberSkin.Clear;
   if FEditSkin <> nil then
@@ -1392,61 +1553,18 @@ begin
   FOSDText.Size := 56;
   FOSDText.Alpha := 224;
   FOSDText.AlphaString := '224';
-
-  FSkinName := '';
 end;
 
-procedure TSharpESkin.LoadFromSkin(filename: string);
-var FileStream: TFileStream;
+procedure TSharpESkinDesign.LoadFromXml(xml: TJclSimpleXMLElem; path : String);
 begin
-  FileStream := TFileStream.Create(FileName, fmOpenRead);
-  try
-    LoadFromStream(FileStream);
-  finally
-    FileStream.Free;
-  end;
-end;
-
-procedure TSharpESkin.SaveToSkin(filename: string);
-var FileStream: TFileStream;
-begin
-  FileStream := TFileStream.Create(FileName, fmCreate);
-  try
-    SaveToStream(FileStream);
-  finally
-    FileStream.Free;
-  end;
-end;
-
-procedure TSharpESkin.LoadFromXmlFile(filename: string);
-var
-  Path: string;
-begin
-  if FontList <> nil then
-    FontList.RefreshFontInfo;
-
-  try
-    Path := ExtractFilePath(filename);
-    Fxml.LoadFromFile(filename);
-    if FXml.Root.Items.Count = 0 then
-      exit;
-  except
-    on E: Exception do
-    begin
-      SharpApi.SendDebugMessageEx('SharpESkin','Error loading skin from file: ' + filename,clred,DMT_ERROR);
-      SharpApi.SendDebugMessageEx('SharpESkin',E.Message,clred,DMT_ERROR);
-      Clear;
-      if FBarSkin <> nil then
-         BarSkin.CheckValid;
-      exit;
-    end;
-  end;
-  Clear;
+  FDefaultDesign := xml.Properties.BoolValue('default',false);
+  if FDefaultDesign then
+    Clear;
 
   // Load Details
-  if FXml.Root.Items.ItemNamed['font'] <> nil then
+  if xml.Items.ItemNamed['font'] <> nil then
   begin
-     with FXml.Root.Items.ItemNamed['font'].Properties do
+     with xml.Items.ItemNamed['font'].Properties do
      begin
        if ItemNamed['locationTL'] <> nil then
        begin
@@ -1463,7 +1581,7 @@ begin
        if ItemNamed['locationBottomBL'] <> nil then
           FTextPosBottomBL.SetPoint(ItemNamed['locationBottomBL'].Value);
      end;
-     with FXml.Root.Items.ItemNamed['font'].Items do
+     with xml.Items.ItemNamed['font'].Items do
      begin
        if ItemNamed['small'] <> nil then
           FSmallText.LoadFromXML(ItemNamed['small'],FontList);
@@ -1475,28 +1593,26 @@ begin
           FOSDText.LoadFromXML(ItemNamed['osd'],FontList);
      end;
   end;
-  if FXml.Root.Items.ItemNamed['header'] <> nil then
-    FSkinHeader.LoadFromXml(FXml.Root.Items.ItemNamed['header'], path);
-  if (FXml.Root.Items.ItemNamed['button'] <> nil) and (FButtonSkin <> nil) then
-    FButtonSkin.LoadFromXML(FXml.Root.Items.ItemNamed['button'], path);
-  if (FXml.Root.Items.ItemNamed['sharpbar'] <> nil) and (FBarSkin <> nil) then
-    FBarSkin.LoadFromXML(FXml.Root.Items.ItemNamed['sharpbar'], path);
-  if (FXml.Root.Items.ItemNamed['progressbar'] <> nil) and (FProgressBarSkin <> nil) then
-    FProgressBarSkin.LoadFromXML(FXml.Root.Items.ItemNamed['progressbar'], path);
-  if (FXml.Root.Items.ItemNamed['minithrobber'] <> nil) and (FMiniThrobberSkin <> nil) then
-    FMiniThrobberSkin.LoadFromXML(FXML.Root.Items.ItemNamed['minithrobber'], path);
-  if (FXml.Root.Items.ItemNamed['edit'] <> nil) and (FEditSkin <> nil) then
-    FEditSkin.LoadFromXML(FXML.Root.Items.ItemNamed['edit'], path);
-  if (FXml.Root.Items.ItemNamed['taskitem'] <> nil) and (FTaskItemSkin <> nil) then
-    FTaskItemSkin.LoadFromXML(FXml.Root.Items.ItemNamed['taskitem'],path);
-  if (FXml.Root.Items.ItemNamed['menu'] <> nil) and (FMenuSkin <> nil) then
-    FMenuSkin.LoadFromXML(FXml.Root.Items.ItemNamed['menu'],path);
-  if (FXml.Root.Items.ItemNamed['menuitem'] <> nil) and (FMenuItemSkin <> nil) then
-    FMenuItemSkin.LoadFromXML(FXml.Root.Items.ItemNamed['menuitem'],path);
-  if (FXml.Root.Items.ItemNamed['notify'] <> nil) and (FNotifySkin <> nil) then
-    FNotifySkin.LoadFromXML(FXML.Root.Items.ItemNamed['notify'],path);
-  if (FXml.Root.Items.ItemNamed['taskpreview'] <> nil) and (FTaskPreviewSkin <> nil) then
-    FTaskPreviewSkin.LoadFromXML(FXML.Root.Items.ItemNamed['taskpreview'],path);
+  if (xml.Items.ItemNamed['button'] <> nil) and (FButtonSkin <> nil) then
+    FButtonSkin.LoadFromXML(xml.Items.ItemNamed['button'], path);
+  if (xml.Items.ItemNamed['sharpbar'] <> nil) and (FBarSkin <> nil) then
+    FBarSkin.LoadFromXML(xml.Items.ItemNamed['sharpbar'], path);
+  if (xml.Items.ItemNamed['progressbar'] <> nil) and (FProgressBarSkin <> nil) then
+    FProgressBarSkin.LoadFromXML(xml.Items.ItemNamed['progressbar'], path);
+  if (xml.Items.ItemNamed['minithrobber'] <> nil) and (FMiniThrobberSkin <> nil) then
+    FMiniThrobberSkin.LoadFromXML(xml.Items.ItemNamed['minithrobber'], path);
+  if (xml.Items.ItemNamed['edit'] <> nil) and (FEditSkin <> nil) then
+    FEditSkin.LoadFromXML(xml.Items.ItemNamed['edit'], path);
+  if (xml.Items.ItemNamed['taskitem'] <> nil) and (FTaskItemSkin <> nil) then
+    FTaskItemSkin.LoadFromXML(xml.Items.ItemNamed['taskitem'],path);
+  if (xml.Items.ItemNamed['menu'] <> nil) and (FMenuSkin <> nil) then
+    FMenuSkin.LoadFromXML(xml.Items.ItemNamed['menu'],path);
+  if (xml.Items.ItemNamed['menuitem'] <> nil) and (FMenuItemSkin <> nil) then
+    FMenuItemSkin.LoadFromXML(xml.Items.ItemNamed['menuitem'],path);
+  if (xml.Items.ItemNamed['notify'] <> nil) and (FNotifySkin <> nil) then
+    FNotifySkin.LoadFromXML(xml.Items.ItemNamed['notify'],path);
+  if (xml.Items.ItemNamed['taskpreview'] <> nil) and (FTaskPreviewSkin <> nil) then
+    FTaskPreviewSkin.LoadFromXML(xml.Items.ItemNamed['taskpreview'],path);
 
   if FBarSkin <> nil then
      FBarSkin.CheckValid;
@@ -3070,6 +3186,24 @@ begin
 
 end;
 
+function TSharpESkin.GetDefaultSkinDesign: TSharpESkinDesign;
+var
+  n : integer;
+begin
+  result := nil;
+  for n := 0 to FSkinDesigns.Count - 1 do
+    if TSharpESkinDesign(FSkinDesigns.Items[n]).IsDefaultDesign then
+    begin
+      result := TSharpESkinDesign(FSkinDesigns.Items[n]);
+      exit;
+    end;
+end;
+
+function TSharpESkin.GetSkinDesigns: TObjectList;
+begin
+  result := FSkinDesigns;
+end;
+
 procedure TSharpESkin.SetXmlFileName(const Value: TXmlFileName);
 begin
   FXmlFileName := Value;
@@ -3086,166 +3220,121 @@ begin
     end;
 end;
 
-{ TSharpESkinHeader }
-
-constructor TSharpESkinHeader.Create;
-begin
-  FName := 'Untitled';
-  FVersion := '1';
-  FAuthor := '';
-  FUrl := '';
-end;
-
-procedure TSharpESkinHeader.LoadFromXml(xml: TJclSimpleXmlElem; path: string);
-begin
-  with xml.Properties do
-  begin
-    if ItemNamed['name'] <> nil then
-      FName := Value('name', 'untitled');
-    if ItemNamed['version'] <> nil then
-      FVersion := Value('version', '0');
-    if ItemNamed['author'] <> nil then
-      FAuthor := Value('author', '');
-    if ItemNamed['Website'] <> nil then
-      FUrl := Value('Website', '');
-  end;
-end;
-
-procedure TSharpESkinHeader.LoadFromStream(Stream: TStream);
-begin
-  {FName := StringLoadFromStream(Stream);
-  FVersion := StringLoadFromStream(Stream);
-  FAuthor := StringLoadFromStream(Stream);
-  FUrl := StringLoadFromStream(Stream);  }
-end;
-
-procedure TSharpESkinHeader.SaveToStream(Stream: TStream);
-begin
-  {StringSaveToStream(FName,Stream);
-  StringSaveToStream(FVersion,Stream);
-  StringSaveToStream(FAuthor,Stream);
-  StringSaveToStream(FUrl,Stream);  }
-end;
-
-destructor TSharpESkinHeader.Destroy;
-begin
-
-  inherited;
-end;
-
-function TSharpESkin.GetSkinUrl: string;
-begin
-  Result := FSkinHeader.FUrl;
-end;
-
-function TSharpESkin.GetBarSkin: ISharpEbarskin;
+function TSharpESkinDesign.GetBarSkin: ISharpEbarskin;
 begin
   result := FBarInterface;
 end;
 
-function TSharpESkin.GetButtonSkin: ISharpEButtonSkin;
+function TSharpESkinDesign.GetButtonSkin: ISharpEButtonSkin;
 begin
   result := FButtonInterface;
 end;
 
-function TSharpESkin.GetEditSkin: ISharpEEditSkin;
+function TSharpESkinDesign.GetEditSkin: ISharpEEditSkin;
 begin
   result := FEditInterface;
 end;
 
-function TSharpESkin.GetLargeText: ISharpESkinText;
+function TSharpESkinDesign.GetIsDefaultDesign: boolean;
+begin
+  result := FDefaultDesign;
+end;
+
+function TSharpESkinDesign.GetLargeText: ISharpESkinText;
 begin
   result := FLargeTextInterface;
 end;
 
-function TSharpESkin.GetMediumText: ISharpESkinText;
+function TSharpESkinDesign.GetMediumText: ISharpESkinText;
 begin
   result := FMediumTextInterface;
 end;
 
-function TSharpESkin.GetMenuItemSkin: ISharpEMenuItemSkin;
+function TSharpESkinDesign.GetMenuItemSkin: ISharpEMenuItemSkin;
 begin
   result := FMenuItemInterface;
 end;
 
-function TSharpESkin.GetMenuSkin: ISharpEMenuSkin;
+function TSharpESkinDesign.GetMenuSkin: ISharpEMenuSkin;
 begin
   result := FMenuInterface;
 end;
 
-function TSharpESkin.GetMiniThrobberSkin: ISharpEMiniThrobberSkin;
+function TSharpESkinDesign.GetMiniThrobberSkin: ISharpEMiniThrobberSkin;
 begin
   result := FMiniThrobberInterface;
 end;
 
-function TSharpESkin.GetNotifySkin: ISharpENotifySkin;
+function TSharpESkinDesign.GetNotifySkin: ISharpENotifySkin;
 begin
   result := FNotifyInterface;
 end;
 
-function TSharpESkin.GetOSDText: ISharpESkinText;
+function TSharpESkinDesign.GetOSDText: ISharpESkinText;
 begin
   result := FOSDTextInterface;
 end;
 
-function TSharpESkin.GetProgressBarSkin: ISharpEProgressBarSkin;
+function TSharpESkinDesign.GetProgressBarSkin: ISharpEProgressBarSkin;
 begin
   result := FProgressBarInterface;
 end;
 
-function TSharpESkin.GetSkinAuthor: string;
-begin
-  Result := FSkinHeader.Author
-end;
-
-function TSharpESkin.GetSkinVersion: string;
-begin
-  Result := FSkinHeader.Version;
-end;
-
-function TSharpESkin.GetSmallText: ISharpESkinText;
+function TSharpESkinDesign.GetSmallText: ISharpESkinText;
 begin
   result := FSmallTextInterface;
 end;
 
-function TSharpESkin.GetTaskItemSkin: ISharpETaskItemSkin;
+function TSharpESkinDesign.GetTaskItemSkin: ISharpETaskItemSkin;
 begin
   result := FTaskItemInterface;
 end;
 
-function TSharpESkin.GetTaskPreviewSkin: ISharpETaskPreviewSkin;
+function TSharpESkinDesign.GetTaskPreviewSkin: ISharpETaskPreviewSkin;
 begin
   result := FTaskPreviewInterface;
 end;
 
-function TSharpESkin.GetTaskSwitchSkin: ISharpETaskSwitchSkin;
+function TSharpESkinDesign.GetTaskSwitchSkin: ISharpETaskSwitchSkin;
 begin
   result := FTaskSwitchInterface;
 end;
 
-function TSharpESkin.GetTextPosBL: TPoint;
+function TSharpESkinDesign.GetTextPosBL: TPoint;
 begin
   result := Point(FTextPosBL.XAsInt,FTextPosBL.YAsInt);
 end;
 
-function TSharpESkin.GetTextPosBottomBL: TPoint;
+function TSharpESkinDesign.GetTextPosBottomBL: TPoint;
 begin
   result := Point(FTextPosBottomBL.XAsInt,FTextPosBottomBL.YAsInt);
 end;
 
-function TSharpESkin.GetTextPosBottomTL: TPoint;
+function TSharpESkinDesign.GetTextPosBottomTL: TPoint;
 begin
   result := Point(FTextPosBottomTL.XAsInt,FTextPosBottomTL.YAsInt);
 end;
 
-function TSharpESkin.GetTextPosTL: TPoint;
+function TSharpESkinDesign.GetTextPosTL: TPoint;
 begin
   result := Point(FTextPosTL.XAsInt,FTextPosTL.YAsInt);                                                        
 end;
 
-function TSharpESkin.GetSkinName: string;
+procedure TSharpESkin.SaveToStream(Stream: TStream; SaveBitmap: boolean);
+var
+  designCount : integer;
+  n : integer;
 begin
-  Result := FSkinHeader.Name;
+  FSkinversion := 2.0; //add 1 when not compatible
+  Stream.WriteBuffer(FSkinversion, sizeof(FSkinversion));
+  StringSaveToStream(FSkinName, Stream);
+  designCount := FSkinDesigns.Count;
+  Stream.WriteBuffer(designCount,sizeof(designCount));
+
+  for n := 0 to FSkinDesigns.Count - 1 do
+  begin
+    TSharpESkinDesign(FSkinDesigns.Items[n]).SaveToStream(Stream);
+  end;
 end;
 
 procedure TSharpESkin.SetSkinName(const Value: TSkinName);
@@ -3261,14 +3350,6 @@ begin
       FSkinName := Value;
       Clear;
     end;
-end;
-
-procedure TSharpESkinHeader.Clear;
-begin
-  FVersion := '';
-  FAuthor := '';
-  FName := '';
-  FUrl := '';
 end;
 
 { TSharpENotifySkin }

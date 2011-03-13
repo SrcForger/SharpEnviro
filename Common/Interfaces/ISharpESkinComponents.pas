@@ -542,8 +542,8 @@ type
     property Valid : Boolean read GetValid;
   end;
 
-  ISharpESkin = interface
-    ['{4D09397D-B2C1-4940-A6EF-7F33362FAE50}']
+  ISharpESkinDesign = interface
+    ['{6541F56E-3F35-4B3D-B67F-CE304B38160F}']
     procedure UpdateDynamicProperties(Scheme : ISharpEScheme); stdcall;
 
     function GetButtonSkin       : ISharpEButtonSkin; stdcall;
@@ -587,6 +587,11 @@ type
     property TextPosBL       : TPoint read GetTextPosBL;
     property TextPosBottomTL : TPoint read GetTextPosBottomTL;
     property TextPosBottomBL : TPoint read GetTextPosBottomBL;    
+  end;  
+
+  ISharpESkin = interface
+    ['{4D09397D-B2C1-4940-A6EF-7F33362FAE50}']
+    procedure UpdateDynamicProperties(Scheme : ISharpEScheme); stdcall;
   end;
 
   ISharpESkinManager = interface
@@ -598,7 +603,7 @@ type
     procedure UpdateScheme; stdcall;
 
     function GetScheme : ISharpEScheme; stdcall;
-    function GetSkin : ISharpESkin; stdcall;
+    function GetSkin : ISharpESkinDesign; stdcall;
 
     function GetSkinItems : TSharpESkinItems; stdcall;
 
@@ -609,9 +614,9 @@ type
     procedure SetBarBottom(Value : boolean); stdcall;
 
     property Scheme : ISharpEScheme read GetScheme;
-    property Skin : ISharpEskin read GetSkin;
+    property Skin : ISharpESkinDesign read GetSkin;
 
-    property SkinItems : TSharpEskinItems read GetSkinItems;
+    property SkinItems : TSharpESkinItems read GetSkinItems;
 
     property BarBottom : boolean read GetBarBottom write SetBarBottom;
 

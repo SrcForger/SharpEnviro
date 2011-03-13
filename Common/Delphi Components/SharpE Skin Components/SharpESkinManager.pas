@@ -67,8 +67,9 @@ type
     FMainForm : TForm;
     FScheme : TSharpEScheme;
     FSchemeInterface : ISharpEScheme;
-    FSkin : TSharpESkin;
-    FSkinInterface : ISharpESkin;
+    FSkinBackend : TSharpESkin;
+    FSkin : TSharpESkinDesign;
+    FSkinInterface : ISharpESkinDesign;
     FDPI : integer;
     FDPIScaleFactor : double;
     procedure ComponentSkinUpdated;
@@ -98,7 +99,7 @@ type
     procedure UpdateScheme; stdcall;    
 
     function GetScheme : ISharpEScheme; stdcall;
-    function GetSkin : ISharpESkin; stdcall;
+    function GetSkin : ISharpESkinDesign; stdcall;
 
     function GetDPI : integer; stdcall;
     function GetDPIScaleFactor : double; stdcall;
@@ -107,7 +108,7 @@ type
     procedure SetBarBottom(Value : boolean); stdcall;
 
     property Scheme : ISharpEScheme read GetScheme;
-    property Skin : ISharpESkin read GetSkin;
+    property Skin : ISharpESkinDesign read GetSkin;
 
     property BarBottom : boolean read GetBarBottom write SetBarBottom;
 
@@ -140,7 +141,7 @@ constructor TSharpESkinManager.CreateRuntime(MainForm: TComponent;
                                              Skins : TSharpESkinItems = ALL_SHARPE_SKINS);
 begin
   FScheme := Scheme;
-  FSkin := Skin;
+  FSkinBackend := Skin;
   Create(MainForm,Skins);
 end;
 
@@ -154,9 +155,9 @@ begin
   if Value <> FSkinItems then
   begin
     FSkinItems := Value;
-    FreeAndNil(FSkin);
-    FSkin := TSharpESkin.Create(FSkinItems);
-    FSkin.OnNotify := ComponentSkinUpdated;
+    FreeAndNil(FSkinBackend);
+    FSkinBackend := TSharpESkin.Create(FSkinItems);
+    FSkinBackend.OnNotify := ComponentSkinUpdated;
     UpdateSkin;
   end;
 end;
@@ -178,12 +179,17 @@ begin
     FScheme := TSharpEScheme.Create;
   FSchemeInterface := FScheme;
       
-  if (FSkinItems <> []) and (FSkin = nil) then
+  if (FSkinItems <> []) and (FSkinBackend = nil) then
   begin
-    FSkin := TSharpESkin.Create(FSkinItems);
-    FSkin.OnNotify := ComponentSkinUpdated;
+    FSkinBackend := TSharpESkin.Create(FSkinItems);
+    FSkinBackend.OnNotify := ComponentSkinUpdated;
   end;
-  FSkinInterface := FSkin;
+  FSkin := FSkinBackend.GetDefaultSkinDesign;
+  if (FSkin <> nil) then
+  begin
+    FSkinInterface := nil;
+    FSkinInterface := FSkin.SelfInterface;
+  end;
 
   FHandleUpdates := True;
   FHandleThemeApiUpdates := True;
@@ -208,10 +214,10 @@ begin
   if FUsingMainWnd then Application.UnHookMainWindow(MessageHook)
   else Classes.DeAllocateHwnd(FMsgWnd) ;
 
+  FSkinInterface := nil;  
+  FSkinBackend.Free;
   FSchemeInterface := nil;
-  FSkinInterface := nil;
   FScheme := nil;
-  FSkin := nil;
   inherited;
 end;
 
@@ -232,7 +238,7 @@ begin
     LoadSkinFromStream;
   if not FNoSystemSchemeInit then
     LoadSharpEScheme(FScheme);
-  FSkin.UpdateDynamicProperties(FSchemeInterface);
+  FSkinBackend.UpdateDynamicProperties(FSchemeInterface);
   RefreshControls;
   if Assigned(FOnSkinChanged) then FOnSkinChanged(self);
 end;
@@ -241,7 +247,7 @@ procedure TSharpESkinManager.UpdateScheme;
 begin
   if not FNoSystemSchemeInit then
     LoadSharpEScheme(FScheme);
-  FSkin.UpdateDynamicProperties(FSchemeInterface);
+  FSkinBackend.UpdateDynamicProperties(FSchemeInterface);
   RefreshControls;
 end;
 
@@ -357,7 +363,7 @@ begin
   result := FSchemeInterface;
 end;
 
-function TSharpESkinManager.GetSkin: ISharpESkin;
+function TSharpESkinManager.GetSkin: ISharpESkinDesign;
 begin
   result := FSkinInterface;
 end;
@@ -376,9 +382,11 @@ begin
   Stream := TMemoryStream.Create;
   if OpenMemoryStreamShared(Stream,loadfile,true) = sfeSuccess then
   begin
-    FSkin.Clear;
-    FSkin.LoadFromStream(Stream);
+    FSkinBackend.Clear;
+    FSkinBackend.LoadFromStream(Stream);
   end;
+  FSkin := FSkinBackend.GetDefaultSkinDesign;
+  FSkinInterface := FSkin.SelfInterface;
   Stream.Free;
 end;
 
