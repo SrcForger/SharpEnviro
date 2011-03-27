@@ -192,7 +192,7 @@ begin
     // Start Explorer Desktop
     if (FindWindow('TSharpExplorerForm', nil) <> 0) then
 	  begin
-      SendMessage(FindWindow('TSharpExplorerForm', nil), WM_SHARPSHELLREADY, 0, 0);
+      PostMessage(FindWindow('TSharpExplorerForm', nil), WM_SHARPSHELLREADY, 0, 0);
 	  end;
   end;
 
