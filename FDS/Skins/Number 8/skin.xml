@@ -542,4 +542,16 @@
       </hover>
     </taskpreview>
   </skindesign>
+  <skindesign name="small" default="0">
+    <sharpbar glasseffect="1" specialhideform="1" enablevflip="1" ncyoffsetsbottom="1,1" ncyoffsets="1,1" paxoffsetsbottom="4,4" payoffsetsbottom="1,0" payoffsets="0,1" paxoffsets="4,4" sbmod="0,0" fsmod="2,2" dimension="w,27">
+      <throbber dimension="7,36" locationbottom="2,2" location="2,0" />
+    </sharpbar>
+    <button widthmod="10" dimension="w,25" location="0,0">
+      <text shadowalpha="96" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="11" name="Calibri" location="cw+iwh+2,ch-1"/>
+      <icon location="cw-10,3" size="20,20" draw="1"/>
+    </button>
+    <edit edityoffsets="1,1" editxoffsets="1,1" location="0,4" dimension="w,14">
+      <text size="9" name="Calibri" color="$Text"/>
+    </edit>
+  </skindesign>
 </sharpESkin>
