@@ -99,6 +99,7 @@ type
     FAutoHide : Boolean;
     FAutoHideTime : integer;
     FFullScreenWnd : Boolean;
+    FSkinDesign : String;
 
     procedure PC_NoAlpha(F: TColor32; var B: TColor32; M: TColor32);
     procedure FormPaint(Sender: TObject);
@@ -145,6 +146,7 @@ type
     property FixedWidth: integer read FFixedWidth write SetFixedWidth;
     property AutoHide: boolean read FAutoHide write FAutoHide;
     property AutoHideTime: integer read FAutoHideTime write FAutoHideTime;
+    property SkinDesign: String read FSkinDesign write FSkinDesign;
 
     property FullScreenWnd: Boolean read FFullScreenWnd write FFullScreenWnd;
 

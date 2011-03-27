@@ -447,6 +447,7 @@ type
     constructor Create(BmpList: TSkinBitmapList); virtual;
     destructor Destroy; override;
     procedure Assign(Value: TSkinPart); virtual;
+    procedure AssignText(Text : TSkinText);
     procedure Clear; virtual;
 
     procedure SaveToStream(Stream: TStream);  virtual;
@@ -502,6 +503,7 @@ type
     procedure Clear; override;
     procedure UpdateDynamicProperties(cs: ISharpEScheme); override;
     procedure Assign(Value: TSkinPartEx); reintroduce;
+    procedure AssignIconAndText(Text : TSkinText; Icon : TSkinIcon);
     procedure SaveToStream(Stream: TStream); override;
     procedure LoadFromStream(Stream: TStream); override;
     function LoadFromXML(xml: TJvSimpleXMLElem; path: string;
@@ -2297,6 +2299,7 @@ begin
   FID := Value.ID;
   FBitmapId := Value.FBitmapId;
   FSkinDim.Assign(Value.SkinDim);
+  FSkinText.Assign(Value.SkinText);
   FBlend := Value.Blend;
   FBlendColorString := Value.BlendColorString;
   FBlendColor := Value.BlendColor;
@@ -2316,6 +2319,12 @@ begin
   begin
     FItems.Add(Value.Items[i]);
   end;
+end;
+
+procedure TSkinPart.AssignText(Text: TSkinText);
+begin
+  if (Text <> nil) then
+    FSkinText.Assign(Text);
 end;
 
 procedure TSkinPart.Clear;
@@ -2679,6 +2688,15 @@ begin
   inherited LoadFromStream(Stream);
   FSkinIcon.LoadFromStream(Stream);
   Stream.ReadBuffer(FWidthMod, sizeof(FWidthMod));
+end;
+
+procedure TSkinPartEx.AssignIconAndText(Text : TSkinText; Icon : TSkinIcon);
+begin
+  if (Text <> nil) then
+    inherited AssignText(Text);
+
+  if (Icon <> nil) then
+    FSkinIcon.Assign(Icon);
 end;
 
 function TSkinPartEx.LoadFromXML(xml: TJvSimpleXMLElem; path: string;

@@ -568,6 +568,7 @@ type
     function GetTextPosBottomBL : TPoint; stdcall;
 
     function GetName : String; stdcall;
+    function GetIsDefaultDesign : boolean; stdcall;    
 
     property Button       : ISharpEButtonSkin read GetButtonSkin;
     property Edit         : ISharpEEditSkin read GetEditSkin;
@@ -591,6 +592,7 @@ type
     property TextPosBottomBL : TPoint read GetTextPosBottomBL;
 
     property Name : String read GetName;
+    property IsDefaultDesign: boolean read GetIsDefaultDesign;
   end;  
 
   ISharpESkin = interface

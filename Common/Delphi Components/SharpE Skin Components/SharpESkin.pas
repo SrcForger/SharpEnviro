@@ -112,7 +112,6 @@ type
     FBarInterface          : ISharpEBarSkin;
     FNotifyInterface       : ISharpENotifySkin;
     FTaskItemInterface     : ISharpETaskItemSkin;
-    FTaskSwitchInterface   : ISharpETaskSwitchSkin;
     FMiniThrobberInterface : ISharpEMiniThrobberSkin;
     FTaskPreviewInterface  : ISharpETaskPreviewSkin;
 
@@ -126,7 +125,6 @@ type
     function GetBarSkin          : ISharpEbarskin; stdcall;
     function GetNotifySkin       : ISharpENotifySkin; stdcall;
     function GetTaskItemSkin     : ISharpETaskItemSkin; stdcall;
-    function GetTaskSwitchSkin   : ISharpETaskSwitchSkin; stdcall;
     function GetMiniThrobberSkin : ISharpEMiniThrobberSkin; stdcall;
     function GetTaskPreviewSkin  : ISharpETaskPreviewSkin; stdcall;
 
@@ -172,7 +170,6 @@ type
     property Bar          : ISharpEBarSkin read GetBarSkin;
     property Notify       : ISharpENotifySkin read GetNotifySkin;
     property TaskItem     : ISharpETaskItemSkin read GetTaskItemSkin;
-    property TaskSwitch   : ISharpETaskSwitchSkin read GetTaskSwitchSkin;
     property MiniThrobber : ISharpEMiniThrobberSkin read GetMiniThrobberSkin;
     property TaskPreview  : ISharpETaskPreviewSkin read GetTaskPreviewSkin;
 
@@ -1799,7 +1796,8 @@ begin
       if ItemNamed['text'] <> nil then
         SkinText.LoadFromXML(ItemNamed['text'],FontList);
       if ItemNamed['background'] <> nil then
-        FBackground.LoadFromXML(ItemNamed['background'], path, SkinText, FontList);
+        FBackground.LoadFromXML(ItemNamed['background'], path, SkinText, FontList)
+      else FBackground.AssignText(SkinText);
     end;
   finally
     SkinText.SelfInterface := nil;
@@ -1964,20 +1962,28 @@ begin
         SkinIcon.LoadFromXML(ItemNamed['icon']);
       if ItemNamed['text'] <> nil then
         SkinText.LoadFromXML(ItemNamed['text'], FontList);
+
       if ItemNamed['Separator'] <> nil then
-        FSeparator.LoadFromXML(ItemNamed['Separator'], path, SkinText, FontList);
+        FSeparator.LoadFromXML(ItemNamed['Separator'], path, SkinText, FontList)
+      else FSeparator.AssignText(SkinText);
       if ItemNamed['normal'] <> nil then
-        FNormalItem.LoadFromXML(ItemNamed['normal'], path, SkinText, SkinIcon, FontList);
+        FNormalItem.LoadFromXML(ItemNamed['normal'], path, SkinText, SkinIcon, FontList)
+      else FNormalItem.AssignIconAndText(SkinText, SkinIcon);
       if ItemNamed['down'] <> nil then
-        FDownItem.LoadFromXML(ItemNamed['down'], path, SkinText, SkinIcon, FontList);
+        FDownItem.LoadFromXML(ItemNamed['down'], path, SkinText, SkinIcon, FontList)
+      else FDownItem.AssignIconAndText(SkinText, SkinIcon);
       if ItemNamed['normalsub'] <> nil then
-        FNormalSubItem.LoadFromXML(ItemNamed['normalsub'], path, SkinText, SkinIcon, FontList);
+        FNormalSubItem.LoadFromXML(ItemNamed['normalsub'], path, SkinText, SkinIcon, FontList)
+      else FNormalSubItem.AssignIconAndText(SkinText, SkinIcon);
       if ItemNamed['hover'] <> nil then
-        FHoverItem.LoadFromXML(ItemNamed['hover'], path, SkinText, SkinIcon, FontList);
+        FHoverItem.LoadFromXML(ItemNamed['hover'], path, SkinText, SkinIcon, FontList)
+      else FHoverItem.AssignIconAndText(SkinText, SkinIcon);
       if ItemNamed['hoversub'] <> nil then
-        FHoverSubItem.LoadFromXML(ItemNamed['hoversub'], path, SkinText, SkinIcon, FontList);
+        FHoverSubItem.LoadFromXML(ItemNamed['hoversub'], path, SkinText, SkinIcon, FontList)
+      else FHoverSubItem.AssignIconAndText(SkinText, SkinIcon);
       if ItemNamed['label'] <> nil then
-        FLabelItem.LoadFromXml(ItemNamed['label'], path, SkinText, SkinIcon, FontList);
+        FLabelItem.LoadFromXml(ItemNamed['label'], path, SkinText, SkinIcon, FontList)
+      else FLabelItem.AssignIconAndText(SkinText, SkinIcon);
     end;
   finally
     SkinText.SelfInterface := nil;
@@ -2106,11 +2112,14 @@ begin
         SkinIcon.LoadFromXML(ItemNamed['icon']);
 
       if ItemNamed['normal'] <> nil then
-        FNormal.LoadFromXML(ItemNamed['normal'], path, SkinText, SkinIcon, FontList);
+        FNormal.LoadFromXML(ItemNamed['normal'], path, SkinText, SkinIcon, FontList)
+      else FNormal.AssignIconAndText(SkinText,SkinIcon);
       if ItemNamed['down'] <> nil then
-        FDown.LoadFromXML(ItemNamed['down'], path, SkinText, SkinIcon, FontList);
+        FDown.LoadFromXML(ItemNamed['down'], path, SkinText, SkinIcon, FontList)
+      else FDown.AssignIconAndText(SkinText,SkinIcon);
       if ItemNamed['hover'] <> nil then
-        FHover.LoadFromXML(ItemNamed['hover'], path, SkinText, SkinIcon, FontList);
+        FHover.LoadFromXML(ItemNamed['hover'], path, SkinText, SkinIcon, FontList)
+      else FHover.AssignIconAndText(SkinText,SkinIcon);
     end;
   finally
     SkinText.SelfInterface := nil;
@@ -2374,12 +2383,16 @@ begin
     begin
       if ItemNamed['text'] <> nil then
         SkinText.LoadFromXML(ItemNamed['text'], FontList);
+
       if ItemNamed['normal'] <> nil then
-        FNormal.LoadFromXML(ItemNamed['normal'], path, SkinText, FontList);
+        FNormal.LoadFromXML(ItemNamed['normal'], path, SkinText, FontList)
+      else FNormal.AssignText(SkinText);
       if ItemNamed['down'] <> nil then
-        FDown.LoadFromXML(ItemNamed['down'], path, SkinText, FontList);
+        FDown.LoadFromXML(ItemNamed['down'], path, SkinText, FontList)
+      else FDown.AssignText(SkinText);
       if ItemNamed['hover'] <> nil then
-        FHover.LoadFromXML(ItemNamed['hover'], path, SkinText, FontList);
+        FHover.LoadFromXML(ItemNamed['hover'], path, SkinText, FontList)
+      else FHover.AssignText(SkinText);
     end;
   finally
     SkinText.SelfInterface := nil;
@@ -2541,12 +2554,16 @@ begin
     begin
       if ItemNamed['text'] <> nil then
         SkinText.LoadFromXML(ItemNamed['text'], FontList);
+
       if ItemNamed['normal'] <> nil then
-        FNormal.LoadFromXML(ItemNamed['normal'], path, SkinText, FontList);
+        FNormal.LoadFromXML(ItemNamed['normal'], path, SkinText, FontList)
+      else FNormal.AssignText(SkinText);
       if ItemNamed['focus'] <> nil then
-        FFocus.LoadFromXML(ItemNamed['focus'], path, SkinText, FontList);
+        FFocus.LoadFromXML(ItemNamed['focus'], path, SkinText, FontList)
+      else FFocus.AssignText(SkinText);
       if ItemNamed['hover'] <> nil then
-        FHover.LoadFromXMl(ItemNamed['hover'], path, SkinText, FontList);
+        FHover.LoadFromXMl(ItemNamed['hover'], path, SkinText, FontList)
+      else FHover.AssignText(SkinText);
     end;
   finally
     SkinText.SelfInterface := nil;
@@ -3452,11 +3469,6 @@ begin
   result := FTaskPreviewInterface;
 end;
 
-function TSharpESkinDesign.GetTaskSwitchSkin: ISharpETaskSwitchSkin;
-begin
-  result := FTaskSwitchInterface;
-end;
-
 function TSharpESkinDesign.GetTextPosBL: TPoint;
 begin
   result := Point(FTextPosBL.XAsInt,FTextPosBL.YAsInt);
@@ -3613,8 +3625,10 @@ begin
         SkinIcon.LoadFromXML(ItemNamed['icon']);
       if ItemNamed['text'] <> nil then
         SkinText.LoadFromXML(ItemNamed['text'], FontList);
+
       if ItemNamed['background'] <> nil then
-        FBackground.LoadFromXML(ItemNamed['background'], path, SkinText, SkinIcon, FontList);
+        FBackground.LoadFromXML(ItemNamed['background'], path, SkinText, SkinIcon, FontList)
+      else FBackground.AssignIconAndText(SkinText, SkinIcon);
     end;
   finally
     SkinText.SelfInterface := nil;
@@ -3751,10 +3765,13 @@ begin
         SkinIcon.LoadFromXML(ItemNamed['icon']);
       if ItemNamed['text'] <> nil then
         SkinText.LoadFromXML(ItemNamed['text'], FontList);
+
       if ItemNamed['background'] <> nil then
-        FBackground.LoadFromXML(ItemNamed['background'], path, SkinText, SkinIcon, FontList);
+        FBackground.LoadFromXML(ItemNamed['background'], path, SkinText, SkinIcon, FontList)
+      else FBackground.AssignIconAndText(SkinText, SkinIcon);
       if ItemNamed['hover'] <> nil then
-        FHover.LoadFromXML(ItemNamed['hover'], path, SkinText, SkinIcon, FontList);
+        FHover.LoadFromXML(ItemNamed['hover'], path, SkinText, SkinIcon, FontList)
+      else FHover.AssignIconAndText(SkinText, SkinIcon);
     end;
   finally
     SkinText.SelfInterface := nil;
@@ -3793,6 +3810,7 @@ begin
   FHighlight.Assign(src.FHighlight);
   FHighlightHover.Assign(src.FHighlightHover);
   FSpecial.Assign(src.FSpecial);
+  FSpecialHover.Assign(src.FSpecialHover);
   FOverlayText.Assign(src.FOverlayText);
   FHighlightSettings.Assign(src.FHighlightSettings);
 end;
@@ -3995,30 +4013,38 @@ begin
          SkinText.LoadFromXML(ItemNamed['text'], FontList);
       if ItemNamed['icon'] <> nil then
          SkinIcon.LoadFromXML(ItemNamed['icon']);
+
       if ItemNamed['normal'] <> nil then
-        FNormal.LoadFromXML(ItemNamed['normal'],path,SkinText,SkinIcon, FontList);
+        FNormal.LoadFromXML(ItemNamed['normal'],path,SkinText,SkinIcon, FontList)
+      else FNormal.AssignIconAndText(SkinText, SkinIcon);
       if ItemNamed['normalhover'] <> nil then
-         FNormalHover.LoadFromXML(ItemNamed['normalhover'],path,SkinText,SkinIcon, FontList);
+         FNormalHover.LoadFromXML(ItemNamed['normalhover'],path,SkinText,SkinIcon, FontList)
+      else FNormalHover.AssignIconAndText(SkinText, SkinIcon);
       if ItemNamed['down'] <> nil then
-         FDown.LoadFromXML(ItemNamed['down'],path,SkinText,SkinIcon, FontList);
+         FDown.LoadFromXML(ItemNamed['down'],path,SkinText,SkinIcon, FontList)
+      else FDown.AssignIconAndText(SkinText, SkinIcon);
       if ItemNamed['downhover'] <> nil then
-         FDownHover.LoadFromXML(ItemNamed['downhover'],path,SkinText,SkinIcon, FontList);
+         FDownHover.LoadFromXML(ItemNamed['downhover'],path,SkinText,SkinIcon, FontList)
+      else FDownHover.AssignIconAndText(SkinText, SkinIcon);
       if ItemNamed['highlight'] <> nil then
-         FHighlight.LoadFromXML(ItemNamed['highlight'],path,SkinText,SkinIcon, FontList);
+         FHighlight.LoadFromXML(ItemNamed['highlight'],path,SkinText,SkinIcon, FontList)
+      else FHighlight.AssignIconAndText(SkinText, SkinIcon);
       if ItemNamed['highlighthover'] <> nil then
-         FHighlightHover.LoadFromXML(ItemNamed['highlighthover'],path,SkinText,SkinIcon, FontList);
+         FHighlightHover.LoadFromXML(ItemNamed['highlighthover'],path,SkinText,SkinIcon, FontList)
+      else FHighlightHover.AssignIconAndText(SkinText, SkinIcon);
       if ItemNamed['special'] <> nil then
       begin
         FHasSpecial := True;
         FSpecial.LoadFromXML(ItemNamed['special'],path,SkinText,SkinIcon, FontList);
-      end;
+      end else FSpecial.AssignIconAndText(SkinText, SkinIcon);
       if ItemNamed['overlaytext'] <> nil then
       begin
         FHasOverlay := True;
         FOverlayText.LoadFromXML(ItemNamed['overlaytext'], FontList);
       end;
       if ItemNamed['specialhover'] <> nil then
-         FSpecialHover.LoadFromXML(ItemNamed['specialhover'],path,SkinText,SkinIcon, FontList);
+         FSpecialHover.LoadFromXML(ItemNamed['specialhover'],path,SkinText,SkinIcon, FontList)
+      else FSpecialHover.AssignIconAndText(SkinText, SkinIcon);
       if ItemNamed['highlightsettings']  <> nil then
         FHighlightSettings.LoadFromXML(ItemNamed['highlightsettings']);
     end;
