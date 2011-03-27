@@ -35,7 +35,7 @@ uses
   uSystemFuncs, Types, SharpESkin, Registry, SharpTypes, SharpNotify,
   SharpGraphicsUtils, Math, SharpCenterApi, ImgList, GR32_Backends,
   uSharpESkinInterface, uSharpBarInterface, MonitorList,
-  SharpSharedFileAccess, GR32Utils,
+  SharpSharedFileAccess, ISharpESkinComponents, GR32Utils,
   uSharpBar;
 
 type
@@ -350,6 +350,7 @@ begin
     if xml.Root.Items.ItemNamed['Settings'] <> nil then
       with xml.Root.Items.ItemNamed['Settings'] do begin
         FBarName := Items.Value('Name', 'Toolbar');
+        SharpEBar.SkinDesign := Items.Value('Design', 'Default');        
         SharpEBar.AutoPosition := Items.BoolValue('AutoPosition', True);
         SharpEBar.PrimaryMonitor := Items.BoolValue('PrimaryMonitor', True);
         SharpEBar.MonitorIndex := Items.IntValue('MonitorIndex', 0);
@@ -366,7 +367,9 @@ begin
         SharpEBar.FixedWidthEnabled := Items.BoolValue('FixedWidthEnabled', False);
         SharpEBar.FixedWidth := Max(10,Min(90,Items.IntValue('FixedWidth', 50)));
       end;
-      
+
+    SkinInterface.SkinManager.SetSkinDesign(SharpEBar.SkinDesign);
+
     if SharpEBar.AutoHide then
       SharpEBar.AlwaysOnTop := True;
 
@@ -816,8 +819,10 @@ begin
 
   h := Height;
   if (msg.WParam = Integer(suScheme))
-    or (msg.WParam = Integer(suSkinFileChanged)) then begin
+    or (msg.WParam = Integer(suSkinFileChanged)) then
+  begin
     // Only update the skin if scheme or skin file changed...
+    SkinInterface.SkinManager.SetSkinDesign(SharpEBar.SkinDesign);
     SkinInterface.SkinManager.UpdateScheme;
     SkinInterface.SkinManager.UpdateSkin;
     SharpEBar.UpdateSkin;
@@ -826,7 +831,8 @@ begin
       UpdateBGZone
     else
       UpdateBGZone;
-    if SharpEBar.Throbber.Visible then begin
+    if SharpEBar.Throbber.Visible then
+    begin
       SharpEBar.Throbber.UpdateSkin;
       SharpEbar.Throbber.Repaint;
     end;
@@ -1312,6 +1318,7 @@ begin
       begin
         FBarName := Items.Value('Name', 'Toolbar');
         FFirstHide := Items.BoolValue('FirstHide',FFirstHide);
+        SharpEBar.SkinDesign := Items.Value('Design', 'Default');
         SharpEBar.AutoPosition := Items.BoolValue('AutoPosition', True);
         SharpEBar.PrimaryMonitor := Items.BoolValue('PrimaryMonitor', True);
         SharpEBar.MonitorIndex := Items.IntValue('MonitorIndex', 0);
@@ -1336,6 +1343,7 @@ begin
         // The bar with the given ID is now loaded =)
         Caption := 'SharpBar_' + inttostr(ID);
       end;
+    SkinInterface.SkinManager.SetSkinDesign(SharpEBar.SkinDesign);
     UpdateBGZone;
     LoadBarModules(xml.root);
 
@@ -1686,6 +1694,9 @@ var
   sr: TSearchRec;
   Dir: string;
   Theme : ISharpETheme;
+  design : ISharpESkinDesign;
+  defaultDesignIndex : integer;
+  foundDesign : boolean;
 begin
   Theme := GetCurrentTheme;
 
@@ -1758,16 +1769,30 @@ begin
   Design1.Clear;
   if FSkinInterface.SkinManager.GetSkinDesignCount > 1 then
   begin
+    foundDesign := false;
+    defaultDesignIndex := -1;
     Design1.Enabled := True;
     for n := 0 to FSkinInterface.SkinManager.GetSkinDesignCount - 1 do
     begin
       item := TMenuItem.Create(Design1);
-      item.Caption := FSkinInterface.SkinManager.GetSkinDesign(n).Name;
+      design := FSkinInterface.SkinManager.GetSkinDesign(n);
+      item.Caption := design.Name;
+      if (CompareText(design.Name, SharpEBar.SkinDesign) = 0) then
+      begin
+        item.Checked := true;
+        foundDesign := true;
+      end;
+      if (design.IsDefaultDesign) then
+      begin
+        defaultDesignIndex := n;
+      end;
       item.Tag := n;
       item.OnClick := OnSkinDesignItemClick;
       Design1.Add(item);
     end;
-      
+
+    if (not foundDesign) and (defaultDesignIndex <> -1) then
+      Design1.Items[defaultDesignIndex].Checked := True;      
   end else Design1.Enabled := False;
   
 
@@ -1882,7 +1907,8 @@ begin
     exit;
 
   SkinDesign := TMenuItem(Sender).Caption;
-  FSkinInterface.SkinManager.SetSkinDesign(SkinDesign);
+  SharpEBar.SkinDesign := SkinDesign;
+  SaveBarSettings;
   PostMessage(Handle,WM_SHARPEUPDATESETTINGS,integer(suSkinFileChanged),0);
 end;
 

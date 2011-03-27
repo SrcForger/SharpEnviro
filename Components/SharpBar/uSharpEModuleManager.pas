@@ -350,7 +350,8 @@ begin
 
     // Save Bar Settings
     with xml.Root.Items.Add('Settings') do begin
-      Items.AdD('Name', FBarName);
+      Items.Add('Name', FBarName);
+      Items.Add('Design', FBar.SkinDesign);
       Items.Add('AutoPosition', FBar.AutoPosition);
       Items.Add('PrimaryMonitor', FBar.PrimaryMonitor);
       Items.Add('MonitorIndex', FBar.MonitorIndex);
