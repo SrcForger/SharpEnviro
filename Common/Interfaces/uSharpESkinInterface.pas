@@ -62,7 +62,8 @@ constructor TSharpESkinInterface.Create(AOwner: TComponent; Skins : TSharpESkinI
 begin
   FSkinManager := TSharpESkinManager.Create(AOwner, Skins);
   FSkinManager.HandleUpdates := False;
-  FSkinManager.Skin.UpdateDynamicProperties(FSkinManager.Scheme);
+  if (FSkinManager.Skin <> nil) then
+    FSkinManager.Skin.UpdateDynamicProperties(FSkinManager.Scheme);
   FSkinManagerInterface := FSkinManager;
 end;
 
