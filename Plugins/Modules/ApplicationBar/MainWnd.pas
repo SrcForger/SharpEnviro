@@ -783,10 +783,8 @@ begin
       begin
         btn.Height := sAutoHeight;
         btn.Width := sAutoWidth;
+        btn.Visible := True;
         btn.Left := FButtonSpacing + n*FButtonSpacing + n*sAutoWidth;
-        if btn.Left + btn.Width < Width then
-           btn.Visible := True
-           else btn.Visible := False;
         ToolTipApi.UpdateToolTipRect(FHintWnd,self,n,
                                      Rect(btn.left,btn.top,btn.Left + btn.Width,btn.Top + btn.Height));
       end;
