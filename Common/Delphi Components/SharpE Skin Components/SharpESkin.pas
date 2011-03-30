@@ -1531,16 +1531,26 @@ end;
 
 procedure TSharpESkinDesign.Assign(src: TSharpESkinDesign);
 begin
-  FButtonSkin.Assign(src.FButtonSkin);
-  FProgressBarSkin.Assign(src.FProgressBarSkin);
-  FBarSkin.Assign(src.FBarSkin);
-  FMiniThrobberSkin.Assign(src.FMiniThrobberSkin);
-  FEditSkin.Assign(src.FEditSkin);
-  FMenuSkin.Assign(src.FMenuSkin);
-  FMenuItemSkin.Assign(src.FMenuItemSkin);
-  FTaskItemSkin.Assign(src.FTaskItemSkin);
-  FNotifySkin.Assign(src.FNotifySkin);
-  FTaskPreviewSkin.Assign(src.FTaskPreviewSkin);
+  if (FButtonSkin <> nil) then
+    FButtonSkin.Assign(src.FButtonSkin);
+  if (FProgressBarSkin <> nil) then
+    FProgressBarSkin.Assign(src.FProgressBarSkin);
+  if (FBarSkin <> nil) then
+    FBarSkin.Assign(src.FBarSkin);
+  if (FMiniThrobberSkin <> nil) then
+    FMiniThrobberSkin.Assign(src.FMiniThrobberSkin);
+  if (FEditSkin <> nil) then
+    FEditSkin.Assign(src.FEditSkin);
+  if (FMenuSkin <> nil) then
+    FMenuSkin.Assign(src.FMenuSkin);
+  if (FMenuItemSkin <> nil) then
+    FMenuItemSkin.Assign(src.FMenuItemSkin);
+  if (FTaskItemSkin <> nil) then
+    FTaskItemSkin.Assign(src.FTaskItemSkin);
+  if (FNotifySkin <> nil) then
+    FNotifySkin.Assign(src.FNotifySkin);
+  if (FTaskPreviewSkin <> nil) then
+    FTaskPreviewSkin.Assign(src.FTaskPreviewSkin);
 
   FSmallText.Assign(src.SmallText);
   FMediumText.Assign(src.MediumText);
