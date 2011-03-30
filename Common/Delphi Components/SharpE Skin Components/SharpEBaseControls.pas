@@ -400,12 +400,13 @@ begin
     R.Right := Left + Width;
     R.Bottom := Top + Height;
     if (self.Parent <> nil) then
-    begin
-      R.Left := R.Left + self.Parent.Left;
-      R.Top := R.Top + self.Parent.Top;
-      R.Right := R.Right + self.Parent.Left;
-      R.Bottom := R.Bottom + self.Parent.Top;
-    end;
+      if (self.Parent.Parent <> nil) then // check for double parent to make mini throbbers work
+      begin
+        R.Left := R.Left + self.Parent.Left;
+        R.Top := R.Top + self.Parent.Top;
+        R.Right := R.Right + self.Parent.Left;
+        R.Bottom := R.Bottom + self.Parent.Top;
+      end;
     FBackground.Draw(0,0,R,FSpecialBackground)
   end;
 
