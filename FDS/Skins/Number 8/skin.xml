@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <sharpESkin>
   <skindesign name="default" default="1">
-    <sharpbar glasseffect="1" specialhideform="1" enablevflip="1" ncyoffsetsbottom="3,3" ncyoffsets="3,3" paxoffsetsbottom="8,8" payoffsetsbottom="2,0" payoffsets="0,2" paxoffsets="8,8" sbmod="0,0" fsmod="2,2" dimension="w,38">
+    <sharpbar glasseffect="1" specialhideform="1" enablevflip="1" ncyoffsetsbottom="3,3" ncyoffsets="3,3" paxoffsetsbottom="8,8" payoffsetsbottom="2,0" payoffsets="0,2" paxoffsets="9,8" sbmod="0,0" fsmod="2,2" dimension="w,38">
       <bar dimension="w,h">
         <skinpart alpha="$Alpha" color="$Background" image="images/Empty.png" dimension="w,h" location="0,0"/>
         <skinpart alpha="$BBAlpha" color="$Border" image="images/Empty.png" dimension="w,1" location="0,h-1"/>
@@ -33,31 +33,7 @@
           <skinpart alpha="$BAlpha-32" color="$Special" image="images/Empty.png" dimension="1,h" location="w-2,0"/>
         </down>
       </throbber>
-    </sharpbar>
-    <taskswitch hoverpreviewloc="5,5" hoverpreviewdim="48,48" previewloc="5,5" previewdim="48,48" lroffset="5,5" tboffset="5,26" wrapcount="8" spacing="4" dimension="w,h">
-      <text shadowalpha="196" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" color="$Text" location="cw,h-22" name="Tahoma" size="10"/>
-      <background>
-        <skinpart alpha="$MAlpha+33+32" color="$Background" image="images/Empty.png" dimension="w-3,h-3" location="2,2"/>
-        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,1"/>
-        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-3" location="w-1,2"/>
-        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,h-1"/>
-        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-3" location="1,2"/>
-      </background>
-      <item dimension="58,58">
-        <skinpart alpha="$MAlpha+33-16" color="$Background" image="images/Empty.png" dimension="w-3,h-3" location="2,2"/>
-        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,1"/>
-        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-3" location="w-1,2"/>
-        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,h-1"/>
-        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-3" location="1,2"/>
-      </item>
-      <itemhover dimension="58,58">
-        <skinpart alpha="$BAlpha+32" color="$Border" image="images/Empty.png" dimension="w-3,h-3" location="2,2"/>
-        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,1"/>
-        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-3" location="w-1,2"/>
-        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="w-3,1" location="2,h-1"/>
-        <skinpart alpha="$BAlpha" color="$Border" image="images/Empty.png" dimension="1,h-3" location="1,2"/>
-      </itemhover>
-    </taskswitch>
+    </sharpbar>    
     <menu lroffset="8,8" tboffset="8,8" widthlimit="200,350" location="-1,0" dimension="w,h">
       <background>
         <skinpart alpha="$MAlpha" color="$Background" image="images/Empty.png" dimension="w,h" location="0,0"/>
@@ -124,7 +100,7 @@
     </menuitem>
     <taskitem>
       <full spacing="2" dimension="200,38" location="0,0">
-        <text shadowalpha="96" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="10" name="Calibri" dimension="w-46,h" location="44,ch" draw="1"/>
+        <text shadowalpha="96" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="11" name="Calibri" dimension="w-46,h" location="44,ch" draw="1"/>
         <icon location="7,3" size="32,32" draw="1"/>
         <highlightsettings>
           <lighten apply="1" change="15" max="20" min="-50" value="0"/>
@@ -361,7 +337,7 @@
         </highlighthover>
       </mini>
     </taskitem>
-    <minithrobber bottomlocation="0,2" location="0,0" dimension="7,38">
+    <minithrobber bottomlocation="0,2" location="0,0" dimension="7,36">
       <normal>
         <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Top-Left.png" dimension="56,29" location="0,0"/>
         <skinpart alpha="$BAlpha" color="$Special" image="images/Button-Overlay-Bottom-Right.png" dimension="26,16" location="w-26,h-16"/>
@@ -542,9 +518,9 @@
       </hover>
     </taskpreview>
   </skindesign>
-  <skindesign name="small" default="0">
+  <skindesign name="Small" default="0">
     <sharpbar glasseffect="1" specialhideform="1" enablevflip="1" ncyoffsetsbottom="1,1" ncyoffsets="1,1" paxoffsetsbottom="4,4" payoffsetsbottom="1,0" payoffsets="0,1" paxoffsets="4,4" sbmod="0,0" fsmod="2,2" dimension="w,27">
-      <throbber dimension="7,36" locationbottom="2,2" location="2,0" />
+      <throbber dimension="7,26" locationbottom="2,2" location="2,0" />
     </sharpbar>
     <button widthmod="10" dimension="w,25" location="0,0">
       <text shadowalpha="96" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="11" name="Calibri" location="cw+iwh+2,ch-1"/>
@@ -553,5 +529,61 @@
     <edit edityoffsets="1,1" editxoffsets="1,1" location="0,4" dimension="w,14">
       <text size="9" name="Calibri" color="$Text"/>
     </edit>
+    <font locationBL="0,7" locationTL="0,-5">
+      <small location="0,0" shadowalpha="196" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="9" name="Calibri,Tahoma" bold="0"/>
+      <medium location="0,-2" shadowalpha="255" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" cleartype="1" color="$Text" bold="0" size="10" name="Calibri,Tahoma"/>
+      <big location="0,-2" shadowalpha="196" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" cleartype="1" color="$Text" bold="0" size="12" name="Calibri,Tahoma"/>
+    </font>
+    <progressbar dimensionBL="w,10" locationBL="0,14" dimensionTL="w,10" locationTL="0,2" dimension="w,15" location="0,6" />
+    <minithrobber bottomlocation="0,2" location="0,0" dimension="5,25" />
+    <taskitem>
+      <full spacing="2" dimension="175,26" location="0,0">
+        <text shadowalpha="96" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="10" name="Calibri" dimension="w-30,h" location="33,ch" draw="1"/>
+        <icon location="6,3" size="20,20" draw="1"/>
+      </full>
+      <compact spacing="0" dimension="100,26" location="0,0">
+        <text shadowalpha="96" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="10" name="Calibri" dimension="w-30,h" location="25,ch" draw="1"/>
+        <icon location="3,3" size="20,20" draw="1"/>
+      </compact>
+      <mini spacing="0" dimension="30,26" location="0,0">
+        <text draw="0"/>
+        <overlaytext shadowalpha="255" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="9" name="Calibri" location="3,-2" draw="1"/>
+        <icon location="cw-10,3" size="20,20" draw="1"/>
+      </mini>
+    </taskitem>    
+  </skindesign>
+  <skindesign name="Small (No ClearType)" default="0">
+    <sharpbar glasseffect="1" specialhideform="1" enablevflip="1" ncyoffsetsbottom="1,1" ncyoffsets="1,1" paxoffsetsbottom="4,4" payoffsetsbottom="1,0" payoffsets="0,1" paxoffsets="4,4" sbmod="0,0" fsmod="2,2" dimension="w,27">
+      <throbber dimension="7,26" locationbottom="2,2" location="2,0" />
+    </sharpbar>
+    <button widthmod="10" dimension="w,25" location="0,0">
+      <text shadowalpha="96" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="0" size="11" name="Calibri" location="cw+iwh+2,ch-1"/>
+      <icon location="cw-10,3" size="20,20" draw="1"/>
+    </button>
+    <edit edityoffsets="1,1" editxoffsets="1,1" location="0,4" dimension="w,14">
+      <text size="9" name="Calibri" color="$Text"/>
+    </edit>
+    <font locationBL="0,7" locationTL="0,-5">
+      <small location="0,0" shadowalpha="196" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="0" size="9" name="Calibri,Tahoma" bold="0"/>
+      <medium location="0,-2" shadowalpha="255" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" cleartype="0" color="$Text" bold="0" size="10" name="Calibri,Tahoma"/>
+      <big location="0,-2" shadowalpha="196" shadowtype="Outline" shadowcolor="$TextShadow" shadow="1" cleartype="0" color="$Text" bold="0" size="12" name="Calibri,Tahoma"/>
+    </font>
+    <progressbar dimensionBL="w,10" locationBL="0,14" dimensionTL="w,10" locationTL="0,2" dimension="w,15" location="0,6" />
+    <minithrobber bottomlocation="0,2" location="0,0" dimension="5,25" />
+    <taskitem>
+      <full spacing="2" dimension="175,26" location="0,0">
+        <text shadowalpha="96" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="0" size="10" name="Calibri" dimension="w-30,h" location="33,ch" draw="1"/>
+        <icon location="6,3" size="20,20" draw="1"/>
+      </full>
+      <compact spacing="0" dimension="100,26" location="0,0">
+        <text shadowalpha="96" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="0" size="10" name="Calibri" dimension="w-30,h" location="25,ch" draw="1"/>
+        <icon location="3,3" size="20,20" draw="1"/>
+      </compact>
+      <mini spacing="0" dimension="30,26" location="0,0">
+        <text draw="0"/>
+        <overlaytext shadowalpha="255" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="0" size="9" name="Calibri" location="3,-2" draw="1"/>
+        <icon location="cw-10,3" size="20,20" draw="1"/>
+      </mini>
+    </taskitem>
   </skindesign>
 </sharpESkin>
