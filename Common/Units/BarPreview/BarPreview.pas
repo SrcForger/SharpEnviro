@@ -160,9 +160,10 @@ begin
 
     // Create the bar and load the skin
     BarWnd := TBarWnd.Create(nil);
+    BarWnd.SkinComp.LoadFromXmlFile(skinfile);
+    BarWnd.SkinManager.SetSkinDesign('Default');
     BarWnd.Visible := false;
     BarWnd.Width := barWidth;
-    BarWnd.SkinComp.LoadFromXmlFile(skinfile);
 
     // Get the scheme
     BarWnd.Scheme.Colors := colors;
