@@ -30,5 +30,7 @@ object BarWnd: TBarWnd
     Layout = blGlyphLeft
     Caption = 'SharpE'
     AutoPosition = False
+    ForceDown = False
+    ForceHover = False
   end
 end
