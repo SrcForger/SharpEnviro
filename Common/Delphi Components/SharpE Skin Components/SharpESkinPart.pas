@@ -2052,6 +2052,18 @@ begin
   if not FEnabled then exit;
   if FIsEmpty then exit;
 
+  // if skin part has sub items only draw those
+  if (Items.Count > 0) then
+  begin
+    for i := 0 to Items.Count - 1 do
+    begin
+      Items[i].draw(bmp, cs);
+    end;
+    exit;
+  end;
+
+  Bmp.DrawMode := dmBlend;
+  Bmp.CombineMode := cmMerge;  
   if (FBitmapId >= 0) and not ((FGradientAlpha.XAsInt <> 0) or (FGradientAlpha.YAsInt <> 0)) then
   begin
     FBitmap := TSkinBitmap(FBmpList.Items[FBitmapId]).Bitmap;
@@ -2097,6 +2109,10 @@ begin
     end
     else
     begin
+      FBitmap.MasterAlpha := FMasterAlpha;
+      FBitmap.DrawMode := dmBlend;
+      FBitmap.CombineMode := cmMerge;
+
       if FDrawMode = sdmStretch then CustomDraw(FBitmap, bmp, rect(0, 0, FBitmap.width, FBitmap.Height), r)
          else TileDraw(FBitmap,bmp,r);
     end;
@@ -2110,8 +2126,6 @@ begin
     end;
   end;
 
-  Bmp.DrawMode := dmBlend;
-  Bmp.CombineMode := cmMerge;
   // Draw Gradient
   if (FGradientAlpha.XAsInt <> 0) or (FGradientAlpha.YAsInt <> 0) then
   begin
@@ -2156,11 +2170,6 @@ begin
     finally
       temp.Free;
     end;
-  end;
-
-  for i := 0 to Items.Count - 1 do
-  begin
-    Items[i].draw(bmp, cs);
   end;
 end;
 
@@ -2338,8 +2347,8 @@ begin
   FBlendColor := 0;
   FBlendColorString := '$000000';
   FBlendAlpha := 255;
-  FMasterAlphaString := '0';
-  FMasterAlpha := 0;
+  FMasterAlphaString := '255';
+  FMasterAlpha := 255;
   FGradientColor.Clear;
   FGradientColorS.Clear;
   FGradientAlpha.Clear;
@@ -2563,12 +2572,12 @@ begin
       FLighten := BoolValue('lighten',false);
     if ItemNamed['lightenamount'] <> nil then
       FLightenAmount := IntValue('lightenamount',0);
-    if ItemNamed['blendcolor'] <> nil then
-      FBlendColorStr := Value('blendcolor','0');
-    if ItemNamed['blendalpha'] <> nil then
-      FBlendAlpha := IntValue('blendalpha',255);
     if ItemNamed['alpha'] <> nil then
       FAlpha := IntValue('alpha',255);
+    if ItemNamed['blendalpha'] <> nil then
+      FBlendAlpha := IntValue('blendalpha',255);
+    if ItemNamed['blendcolor'] <> nil then
+      FBlendColorStr := Value('blendcolor','0');
   end;
 end;
 
@@ -2605,12 +2614,13 @@ begin
     temp := TBitmap32.Create;
     temp.DrawMode := dmBlend;
     temp.CombineMode := cmMerge;
+    Icon.DrawMode := dmBlend;
+    Icon.CombineMode := cmMerge;    
     temp.SetSize(Icon.Width,Icon.Height);
     temp.Clear(color32(0,0,0,0));
     try
       doBlend(temp, icon, FBlendColor);
       temp.MasterAlpha := FBlendAlpha;
-      icon.Clear(color32(0,0,0,0));
       temp.DrawTo(icon);
     finally
       temp.free;
