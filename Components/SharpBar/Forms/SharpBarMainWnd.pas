@@ -822,9 +822,9 @@ begin
     or (msg.WParam = Integer(suSkinFileChanged)) then
   begin
     // Only update the skin if scheme or skin file changed...
-    SkinInterface.SkinManager.SetSkinDesign(SharpEBar.SkinDesign);
     SkinInterface.SkinManager.UpdateScheme;
     SkinInterface.SkinManager.UpdateSkin;
+    SkinInterface.SkinManager.SetSkinDesign(SharpEBar.SkinDesign);
     SharpEBar.UpdateSkin;
     SharpEBar.UpdatePosition;
     if h < Height then

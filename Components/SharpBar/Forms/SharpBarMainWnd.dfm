@@ -3,12 +3,12 @@ object SharpBarMainForm: TSharpBarMainForm
   Top = 20
   BorderStyle = bsSingle
   Caption = 'SharpBarMainForm'
-  ClientHeight = 238
-  ClientWidth = 560
+  ClientHeight = 182
+  ClientWidth = 428
   Color = 13290186
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -14
+  Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
@@ -25,8 +25,8 @@ object SharpBarMainForm: TSharpBarMainForm
   OnPaint = FormPaint
   OnResize = FormResize
   OnShow = FormShow
-  PixelsPerInch = 120
-  TextHeight = 17
+  PixelsPerInch = 96
+  TextHeight = 13
   object PopupMenu1: TPopupMenu
     AutoHotkeys = maManual
     Images = PngImageList1
