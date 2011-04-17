@@ -7,7 +7,7 @@
     <DCC_EnabledPackages>true</DCC_EnabledPackages>
     <DCC_UsePackage>vcl;rtl</DCC_UsePackage>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-    <DCC_DependencyCheckOutputName>F:\SharpE\StartupTest.exe</DCC_DependencyCheckOutputName>
+    <DCC_DependencyCheckOutputName>..\..\..\..\SharpE\StartupTest.exe</DCC_DependencyCheckOutputName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Version>7.0</Version>
@@ -41,6 +41,7 @@
       
       
       
+      
       <Excluded_Packages Name="C:\Users\Lee Green\Documents\Borland Studio Projects\Bpl\PngComponentsD9.bpl">Png components</Excluded_Packages>
     </Excluded_Packages><Source><Source Name="MainSource">StartupTest.DPR</Source></Source></Delphi.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
@@ -49,6 +50,9 @@
     <DelphiCompile Include="StartupTest.DPR">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
+    <DCCReference Include="..\..\..\Common\Units\MonitorList\MonitorList.pas" />
+    <DCCReference Include="..\..\..\Common\Units\SharpTypes\SharpTypes.pas" />
+    <DCCReference Include="..\..\..\Common\Units\SystemFuncs\uSystemFuncs.pas" />
     <DCCReference Include="..\Exec\FileUtils.pas" />
     <DCCReference Include="..\Exec\uExecServiceExtractShortcut.pas" />
     <DCCReference Include="uStartup.pas" />
