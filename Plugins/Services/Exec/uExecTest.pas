@@ -32,7 +32,7 @@ implementation
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   TmpExec := TSharpExec.Create;
-
+  InitializeCriticalSection(CritSect);
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);

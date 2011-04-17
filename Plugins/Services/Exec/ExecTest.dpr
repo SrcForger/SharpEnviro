@@ -4,12 +4,15 @@ uses
   ShareMem,
   Forms,
   uExecTest in 'uExecTest.pas' {Form1},
-  uExecServiceAliasList in 'uExecServiceAliasList.pas',
   uExecServiceExecute in 'uExecServiceExecute.pas',
   uExecServicePathIncludeList in 'uExecServicePathIncludeList.pas',
   uExecServiceRecentItemList in 'uExecServiceRecentItemList.pas',
   uExecServiceSettings in 'uExecServiceSettings.pas',
-  uExecServiceUsedItemList in 'uExecServiceUsedItemList.pas';
+  uExecServiceUsedItemList in 'uExecServiceUsedItemList.pas',
+  uSharpXMLUtils in '..\..\..\Common\Units\XML\uSharpXMLUtils.pas',
+  SharpSharedFileAccess in '..\..\..\Common\Units\SharpFileUtils\SharpSharedFileAccess.pas',
+  uAliasList in '..\..\..\Common\Units\AliasList\uAliasList.pas',
+  MonitorList in '..\..\..\Common\Units\MonitorList\MonitorList.pas';
 
 {$R *.res}
 
