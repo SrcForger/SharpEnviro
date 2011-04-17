@@ -35,12 +35,12 @@
     <menuitem>
       <icon location="4,3" dimension="16,16" draw="1"/>
       <text cleartype="0" shadowalpha="96" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text-64" size="8" name="Tahoma" location="25,4" dimension="w-40,h" draw="1"/>
-      <normal widthmod="48" dimension="w,20"/>
-      <hover widthmod="48" dimension="w,20">
+      <normal widthmod="48" dimension="w,20" alpha="0"/>
+      <hover widthmod="48" dimension="w,20" alpha="0">
         <text shadowalpha="196" color="$Text"/>
         <icon lightenamount="48" lighten="1"/>
       </hover>
-      <down widthmod="48" dimension="w,20">
+      <down widthmod="48" dimension="w,20" alpha="0">
         <text shadowalpha="196" color="$Text" location="26,5"/>
         <icon lightenamount="48" lighten="1" location="5,4"/>
       </down>
@@ -55,7 +55,7 @@
       <separator dimension="w,6">
         <skinpart alpha="$BAlpha-32" color="$Border" image="images/Empty.png" dimension="w-2,1" location="1,3"/>
       </separator>
-      <label widthmod="20" dimension="w,18">
+      <label widthmod="20" dimension="w,18" alpha="0">
         <text shadowtype="Outline" size="7" location="cw-1,3" dimension="w-20,h" drawtext="1" shadowalpha="196" color="$Text"/>
       </label>
     </menuitem>
