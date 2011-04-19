@@ -42,6 +42,7 @@ type
     valid  : boolean;
     orig_icon : hicon;
     display : TTrayIcon;
+    procedure AssignFrom(Src : TTrayIcon);
   end;
 
   TAppBarItem = class
@@ -87,11 +88,35 @@ uses uDeskArea, uWindows;
 
 { TTrayManager }
 
+// perform deep copy of all items from Src to Dst
+procedure CopyIcons(Src, Dst : TObjectList);
+var
+  n : integer;
+  pItem : TTrayIcon;
+  newItem : TTrayIcon;
+begin
+  if (Src = nil) or (Dst = nil) then
+    exit;
+
+  for n := 0 to Src.Count - 1 do
+  begin
+    pItem := TTrayIcon(Src.Items[n]);
+    newItem := TTrayIcon.Create;
+
+    // assign items
+    newItem.AssignFrom(pItem);
+
+    // add to new list
+    Dst.Add(newItem)
+  end;
+end;
+
 procedure TTrayManager.BroadCastAllToOne(wnd: hwnd);
 var
   n : integer;
   cds: TCopyDataStruct;
   pItem : TTrayIcon;
+  tmpList : TObjectList;
 begin
   if not IsWindow(wnd) then exit;
 
@@ -99,21 +124,30 @@ begin
 
   if Icons.Count = 0 then exit;
 
-  for n := 0 to Icons.Count -1 do
-  begin
-    pItem := TTrayIcon(Icons.Items[n]);
-    if pItem.valid then
+  // use a temp list since the original list could be modified during
+  // message broadcasing (if receiver sends a message back that causes the list
+  // to be modified)
+  tmpList := TObjectList.Create;
+  CopyIcons(Icons,tmpList);
+  try
+    for n := 0 to tmpList.Count -1 do
     begin
-      with cds do
+      pItem := TTrayIcon(tmpList.Items[n]);
+      if pItem.valid then
       begin
-        dwData := 1;
-        cbData := SizeOf(TNotifyIconDataV7);
-        lpData := @pItem.data;
+        with cds do
+        begin
+          dwData := 1;
+          cbData := SizeOf(TNotifyIconDataV7);
+          lpData := @pItem.data;
+        end;
       end;
-    end;
 
-    // forward the tray message
-    SendMessage(wnd,WM_COPYDATA,0,Cardinal(@cds));
+      // forward the tray message
+      SendMessage(wnd,WM_COPYDATA,0,Cardinal(@cds));
+    end;
+  finally
+    tmpList.Free;
   end;
 end;
 
@@ -123,9 +157,15 @@ var
   n : integer;
   wnd : hwnd;
   cds: TCopyDataStruct;
+  tmpItem : TTrayIcon;
 begin
   // no tray registered -> exit
   if WndList.Count = 0 then exit;
+
+  // use temp Item so that pItem can't be modified or deleted during SendMessage
+  // handline (in case receiver sends back messages)
+  tmpItem := TTrayIcon.Create;
+  tmpItem.AssignFrom(pItem);
 
   n := WndList.Count -1;
   while n>=0 do
@@ -151,7 +191,7 @@ begin
       // 2 = delete
       dwData := action;
       cbData := SizeOf(TNotifyIconDataV7);
-      lpData := @pItem.data;
+      lpData := @tmpItem.data;
     end;
 
     // forward the tray message
@@ -186,18 +226,29 @@ procedure TTrayManager.CheckForDeadIcons;
 var
   pItem : TTrayIcon;
   n : integer;
+  tmpList : TObjectList;
 begin
   if Icons.Count = 0 then exit;
 
-  for n := Icons.Count - 1 downto 0 do
-  begin
-    pItem := TTrayIcon(Icons.Items[n]);
-    if not IsWindow(pItem.data.Wnd) then
+  // use a temp list since the original list could be modified during
+  // message broadcasing (if receiver sends a message back that causes the list
+  // to be modified)
+  tmpList := TObjectList.Create;
+  CopyIcons(Icons,tmpList);
+
+  try
+    for n := tmpList.Count - 1 downto 0 do
     begin
-      BroadCastTrayMessage(pItem,2);
-      reseticon(pItem);
-      Icons.Remove(pItem);
+      pItem := TTrayIcon(tmpList.Items[n]);
+      if not IsWindow(pItem.data.Wnd) then
+      begin
+        BroadCastTrayMessage(pItem,2);
+        reseticon(pItem);
+        Icons.Remove(pItem);
+      end;
     end;
+  finally
+    tmpList.Free;
   end;
 end;
 
@@ -547,6 +598,18 @@ begin
   Data.abd.cbSize := pData.abd.cbSize;
   Data.abd.Wnd := pData.abd.Wnd;
   Data.abd.uCallBackMessage := pData.abd.uCallBackMessage;
+end;
+
+{ TTrayIcon }
+
+procedure TTrayIcon.AssignFrom(Src: TTrayIcon);
+begin
+  data      := Src.data;
+  hidden    := Src.hidden;
+  shared    := Src.shared;
+  valid     := Src.valid;
+  orig_icon := Src.orig_icon;
+  display   := Src.display;
 end;
 
 end.
