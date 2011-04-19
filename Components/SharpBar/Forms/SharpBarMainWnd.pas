@@ -672,12 +672,15 @@ begin
         FSuspended := False;
     WTS_SESSION_UNLOCK:
     begin
-      ModuleManager.BroadcastPluginMessage('MM_SESSION_UNLOCK');
-      UpdateBGZone;
-      SharpEBar.UpdateSkin;
-      SharpEBar.UpdateAlwaysOnTop;
-      ModuleManager.BroadCastModuleRefresh;
-      ModuleManager.BroadcastPluginUpdate(suBackground);
+      if (ModuleManager <> nil) then
+      begin
+        ModuleManager.BroadcastPluginMessage('MM_SESSION_UNLOCK');
+        UpdateBGZone;
+        SharpEBar.UpdateSkin;
+        SharpEBar.UpdateAlwaysOnTop;
+        ModuleManager.BroadCastModuleRefresh;
+        ModuleManager.BroadcastPluginUpdate(suBackground);
+      end;
     end;
   end;
 end;
@@ -771,6 +774,8 @@ begin
   if FSuspended then
     exit;
   if Closing then
+    exit;
+  if ModuleManager = nil then
     exit;
 
   if msg.WParam < 0 then
@@ -2002,6 +2007,9 @@ begin
   if FSuspended then
     exit;
 
+  if ModuleManager = nil then
+    exit;
+
   if not GetCursorPosSecure(P) then
     exit;
 
@@ -2434,7 +2442,8 @@ begin
   end;
 
   //  UpdateBGImage;
-  ModuleManager.BroadcastPluginUpdate(suBackground, -2);
+  if ModuleManager <> nil then
+    ModuleManager.BroadcastPluginUpdate(suBackground, -2);
 end;
 
 procedure TSharpBarMainForm.DelayTimer1Timer(Sender: TObject);
