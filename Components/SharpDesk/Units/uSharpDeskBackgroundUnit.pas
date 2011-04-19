@@ -244,6 +244,13 @@ begin
   RMode := (PMon.Width < PMon.Height) and (SharpDesk.DeskSettings.ScreenRotAdjust);
 
   // Background
+  if (MonRect.Left < 0) or (MonRect.Top < 0) or (MonRect.Right > img.Width) or (MonRect.Bottom > img.Height) then
+  begin
+    // the Monitor Rectangle that was calculated is out of bounds of the SharpDesk image
+    // this will cause an access violation in GR32.FillRect
+    result := False;
+    exit;
+  end;
   img.FillRect(MonRect.Left,MonRect.Top,MonRect.Right,MonRect.Bottom,color32(WP.Color));
 
   // Image Loading
