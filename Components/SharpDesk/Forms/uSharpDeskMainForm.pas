@@ -764,8 +764,7 @@ begin
   SharpDesk.ObjectSet.Save;
   SharpDesk.DeskSettings.SaveSettings;
   SharpDesk.UnloadAllObjects;
-  SharpDesk.Free;
-  Background.Destroy;
+
   SharpApi.SharpEBroadCast(WM_DESKCLOSING,0,0);
 end;
 
@@ -791,6 +790,7 @@ var
    ActionStr : String;
    CPos : TPoint;
 begin
+  if (not Assigned(SharpDesk)) then exit;
   if not SharpDesk.Enabled then exit;
   SharpDesk.MouseDown:=False;
 
@@ -942,6 +942,7 @@ var
 //   n : integer;
 //   HA : THandleArray;
 begin
+  if (not Assigned(SharpDesk)) then exit;
   if not SharpDesk.Enabled then exit;
 
   if GetCursorPosSecure(cursorPos) then
@@ -1063,6 +1064,7 @@ var
    X1,X2,Y1,Y2 : integer;
    DesktopObject : TDesktopObject;
 begin
+  if (not Assigned(SharpDesk)) then exit;
   if not SharpDesk.Enabled then exit;
   if not Assigned(Layer) then exit;
 
@@ -1190,6 +1192,7 @@ var
    CPos : TPoint;
    DesktopObject : TDesktopObject;
 begin
+  if (not Assigned(SharpDesk)) then exit;
   if not SharpDesk.Enabled then exit;
   if SharpDesk.DeskSettings.SingleClick then exit;
   DesktopObject := TDesktopObject(SharpDesk.GetDesktopObjectByID(SharpDesk.LastLayer));
@@ -1216,6 +1219,7 @@ var
    CPos : TPoint;
    DesktopObject : TDesktopObject;
 begin
+  if (not Assigned(SharpDesk)) then exit;
   if not SharpDesk.Enabled then exit;
 
   DesktopObject := TDesktopObject(SharpDesk.GetDesktopObjectByID(SharpDesk.LastLayer));
@@ -1512,6 +1516,8 @@ end;
 procedure TSharpDeskMainForm.FormDestroy(Sender: TObject);
 begin
   SendMessageToConsole('Main window destroyed',COLOR_OK,DMT_STATUS);
+  SharpDesk.Free;
+  Background.Destroy;  
 end;
 
 procedure TSharpDeskMainForm.Delete1Click(Sender: TObject);

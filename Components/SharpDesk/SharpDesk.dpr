@@ -120,6 +120,7 @@ begin
     end;
   end;
 
+  uSharpDeskMainForm.SharpDesk := nil; // clearly set to nil for proper Assign() checks
   Application.CreateForm(TSharpDeskMainForm, SharpDeskMainForm);
   SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));
   ServiceDone('SharpDesk');
