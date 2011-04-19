@@ -516,9 +516,10 @@ begin
     timeout,
     Monitor.BoundsRect);
 
-    BmpText.Free;
-    BmpIcon.Free;
-    BmpToDisplay.Free;
+  SkinText := nil;
+  BmpText.Free;
+  BmpIcon.Free;
+  BmpToDisplay.Free;
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
@@ -545,6 +546,9 @@ end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
+  PopupTimer.Enabled := False;
+  ClosePopupTimer.Enabled := False;
+
   FreeAndNil(FIcon);
   FreeAndNil(FWeatherParser);
   FreeAndNil(FWeatherOptions);
