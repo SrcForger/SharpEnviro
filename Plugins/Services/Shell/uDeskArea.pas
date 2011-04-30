@@ -27,7 +27,7 @@ unit uDeskArea;
 
 interface
 
-uses Windows, Messages, Math, Classes, ShellApi, SysUtils,
+uses Windows, Messages, Math, Classes, ShellApi, SysUtils, Graphics,
      UxTheme, JclSimpleXml, JclStrings,
      SharpApi, SharpTypes,
      MonitorList, 
@@ -172,89 +172,98 @@ begin
     BR[High(BR)] := SharpApi.GetSharpBarArea(n);
   end;
 
-  MonCount := MonList.MonitorCount;
+  try
+    MonList.GetMonitors;
+    MonCount := MonList.MonitorCount;
 
-  for n := 0 to MonCount - 1 do
-  begin
-    if MonList.Monitors[n] = MonList.PrimaryMonitor then
-      MonID := -100
-    else MonID := MonList.Monitors[n].MonitorNum;
-
-    Index := -1;
-    for i := 0 to High(FMonIDList) do
-      if FMonIDList[i] = MonID then
-      begin
-        Index := i;
-        break;
-      end;
-
-    Area := MonList.Monitors[n].BoundsRect;
-
-    if Index <> -1 then
-      am := FAutoModeList[Index]
-      else am := True;
-    if am then
+    for n := 0 to MonCount - 1 do
     begin
-      for i := 0 to High(BR) do
+      if MonList.Monitors[n] = MonList.PrimaryMonitor then
+        MonID := -100
+      else MonID := MonList.Monitors[n].MonitorNum;
+
+      Index := -1;
+      for i := 0 to High(FMonIDList) do
+        if FMonIDList[i] = MonID then
+        begin
+          Index := i;
+          break;
+        end;
+
+      Area := MonList.Monitors[n].BoundsRect;
+
+      if Index <> -1 then
+        am := FAutoModeList[Index]
+        else am := True;
+      if am then
       begin
-        b := GetBarAutoHide(i);
-        if (IsWindowVisible(BR[i].wnd))
-          and (not b) then
-           if PointInRect(Point(BR[i].R.Left + (BR[i].R.Right - BR[i].R.Left) div 2,
-                                BR[i].R.Top + (BR[i].R.Bottom - BR[i].R.Top) div 2),
-                          MonList.Monitors[n].BoundsRect) then
-           begin
-             if BR[i].R.Top < MonList.Monitors[n].Top + MonList.Monitors[n].Height div 2 then
-                Area.Top := Max(Area.Top,BR[i].R.Bottom)
-                else Area.Bottom := Min(Area.Bottom,BR[i].R.Top);
-           end;
+        for i := 0 to High(BR) do
+        begin
+          b := GetBarAutoHide(i);
+          if (IsWindowVisible(BR[i].wnd))
+            and (not b) then
+             if PointInRect(Point(BR[i].R.Left + (BR[i].R.Right - BR[i].R.Left) div 2,
+                                  BR[i].R.Top + (BR[i].R.Bottom - BR[i].R.Top) div 2),
+                            MonList.Monitors[n].BoundsRect) then
+             begin
+               if BR[i].R.Top < MonList.Monitors[n].Top + MonList.Monitors[n].Height div 2 then
+                  Area.Top := Max(Area.Top,BR[i].R.Bottom)
+                  else Area.Bottom := Min(Area.Bottom,BR[i].R.Top);
+             end;
+        end;
       end;
+
+      // apply custom monitor offsets
+      if Index <> -1 then
+      begin
+        Area.Left   := Area.Left + FOffsetList[Index].Left;
+        Area.Top    := Area.Top + FOffsetList[Index].Top;
+        Area.Right  := Area.Right - FOffsetList[Index].Right;
+        Area.Bottom := Area.Bottom - FOffsetList[Index].Bottom;
+      end;
+
+      // apply app bars
+      if TrayManager <> nil then
+        for i := 0 to TrayManager.AppBarList.Count - 1 do
+        begin
+          ABItem := TAppBarItem(TrayManager.AppBarList.Items[i]);
+          if not ABItem.AutoHideBar then
+            if PointInRect(Point(ABItem.Data.abd.rc.Left + (ABItem.Data.abd.rc.Right - ABItem.Data.abd.rc.Left) div 2,
+                                 ABItem.Data.abd.rc.Top + (ABItem.Data.abd.rc.Bottom - ABItem.Data.abd.rc.Top) div 2),
+                           MonList.Monitors[n].BoundsRect) then
+            begin
+              if ((ABItem.Data.abd.uEdge = ABE_RIGHT) and (Area.Right > ABItem.Data.abd.rc.Left)) then
+                Area.Right := ABItem.Data.abd.rc.Left
+              else if ((ABItem.Data.abd.uEdge = ABE_LEFT) and (Area.Left < ABItem.Data.abd.rc.Right) and (Area.Right > ABItem.Data.abd.rc.Left)) then
+                Area.Left := ABItem.Data.abd.rc.Right
+            end;
+        end;
+
+      if ((Win32MajorVersion = 5) and (Win32MinorVersion >= 1)) or (Win32MajorVersion = 6) then
+      begin
+        if not uxTheme.IsThemeActive then
+        begin
+          Area.Top := Area.Top + 4;
+          Area.Bottom := Area.Bottom - 4;
+        end;
+      end;
+
+      if not EqualRect(Area, MonList.Monitors[n].WorkareaRect) then
+      begin
+        SharpApi.SendDebugMessage('Shell', Format('Setting workarea to: Left %d, Right %d Top %d, Bottom %d, ', [Area.Left, Area.Right, Area.Top, Area.Bottom]), 0);
+
+        SystemParametersInfo(SPI_SETWORKAREA, 1, @Area, SPIF_SENDWININICHANGE);
+        SystemParametersInfo(SPI_SETWORKAREA, 1, @Area, SPIF_SENDWININICHANGE);
+      end
     end;
-
-    // apply custom monitor offsets
-    if Index <> -1 then
+    setlength(BR,0);
+  except
+    on E:Exception do
     begin
-      Area.Left   := Area.Left + FOffsetList[Index].Left;
-      Area.Top    := Area.Top + FOffsetList[Index].Top;
-      Area.Right  := Area.Right - FOffsetList[Index].Right;
-      Area.Bottom := Area.Bottom - FOffsetList[Index].Bottom;
+      SharpApi.SendDebugMessageEx('Shell', 'Failed to set desktop work area.',clred, DMT_ERROR);
+      SharpApi.SendDebugMessageEx('Shell', E.Message,clred, DMT_TRACE);
     end;
-
-    // apply app bars
-    if TrayManager <> nil then
-      for i := 0 to TrayManager.AppBarList.Count - 1 do
-      begin
-        ABItem := TAppBarItem(TrayManager.AppBarList.Items[i]);
-        if not ABItem.AutoHideBar then
-          if PointInRect(Point(ABItem.Data.abd.rc.Left + (ABItem.Data.abd.rc.Right - ABItem.Data.abd.rc.Left) div 2,
-                               ABItem.Data.abd.rc.Top + (ABItem.Data.abd.rc.Bottom - ABItem.Data.abd.rc.Top) div 2),
-                         MonList.Monitors[n].BoundsRect) then
-          begin
-            if ((ABItem.Data.abd.uEdge = ABE_RIGHT) and (Area.Right > ABItem.Data.abd.rc.Left)) then
-              Area.Right := ABItem.Data.abd.rc.Left
-            else if ((ABItem.Data.abd.uEdge = ABE_LEFT) and (Area.Left < ABItem.Data.abd.rc.Right) and (Area.Right > ABItem.Data.abd.rc.Left)) then
-              Area.Left := ABItem.Data.abd.rc.Right
-          end;
-      end;
-
-    if ((Win32MajorVersion = 5) and (Win32MinorVersion >= 1)) or (Win32MajorVersion = 6) then
-    begin
-      if not uxTheme.IsThemeActive then
-      begin
-        Area.Top := Area.Top + 4;
-        Area.Bottom := Area.Bottom - 4;
-      end;
-    end;
-
-    if not EqualRect(Area, MonList.Monitors[n].WorkareaRect) then
-    begin
-      SharpApi.SendDebugMessage('Shell', Format('Setting workarea to: Left %d, Right %d Top %d, Bottom %d, ', [Area.Left, Area.Right, Area.Top, Area.Bottom]), 0);
-
-      SystemParametersInfo(SPI_SETWORKAREA, 1, @Area, SPIF_SENDWININICHANGE);
-      SystemParametersInfo(SPI_SETWORKAREA, 1, @Area, SPIF_SENDWININICHANGE);
-    end
   end;
-  setlength(BR,0);
 end;
 
 procedure TDeskAreaManager.SetFullScreenArea;
@@ -267,6 +276,7 @@ var
 begin
   i := 0;
   try
+    MonList.GetMonitors;
     for n := 0 to MonList.MonitorCount - 1 do
     begin
       Mon := MonList.Monitors[n];
