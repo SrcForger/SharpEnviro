@@ -397,6 +397,9 @@ begin
   begin
     sParam := SharpApi.GetCenterDirectory + sSection + '\' + sName + SharpApi.GetCenterConfigExt;
 
+    if (enumCommandType = sccLoadSetting) and (not FileExists(sParam)) then
+      sParam := SharpApi.GetCenterDirectory + sSection;
+
     // Try to load dll directly
     if (enumCommandType = sccLoadDll) and (not FileExists(sParam)) then
       sParam := SharpApi.GetCenterDirectory + sSection + '\DLL\' + sName + '.dll';
