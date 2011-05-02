@@ -159,26 +159,26 @@
       <item>
         <type>link</type>
         <Caption>Desktop Settings</Caption>
-        <Target>&quot;{#SHARPEDIR#}SharpCenter.exe&quot; -api &quot;0|{CenterDirectory}Desktop.con&quot;</Target>
-        <Icon>icon.system.desktop</Icon>
+        <Target>{#SHARPEDIR#}SharpCenter.exe -api &quot;0|Home\Desktop.xml&quot;</Target>
+        <Icon>icon.file.other</Icon>
       </item>
       <item>
         <type>link</type>
         <Caption>Services</Caption>
-        <Target>&quot;{#SHARPEDIR#}SharpCenter.exe&quot; -api &quot;0|{CenterDirectory}Services.con&quot;</Target>
-        <Icon>icon.category.properties</Icon>
+        <Target>{#SHARPEDIR#}SharpCenter.exe -api &quot;0|Home\Services.xml&quot;</Target>
+        <Icon>icon.file.other</Icon>
       </item>
       <item>
         <type>link</type>
         <Caption>Themes</Caption>
-        <Target>&quot;{#SHARPEDIR#}SharpCenter.exe&quot; -api &quot;0|{CenterDirectory}Themes.con&quot;</Target>
-        <Icon>icon.category.graphics</Icon>
+        <Target>{#SHARPEDIR#}SharpCenter.exe -api &quot;0|Home\Themes.xml&quot;</Target>
+        <Icon>icon.file.other</Icon>
       </item>
       <item>
         <type>link</type>
         <Caption>Toolbars</Caption>
-        <Target>&quot;{#SHARPEDIR#}SharpCenter.exe&quot; -api &quot;0|{CenterDirectory}Toolbars.con&quot;</Target>
-        <Icon>icon.system.computer</Icon>
+        <Target>{#SHARPEDIR#}SharpCenter.exe -api &quot;0|Home\Toolbars.xml&quot;</Target>
+        <Icon>icon.file.other</Icon>
       </item>
     </Items>
   </item>
