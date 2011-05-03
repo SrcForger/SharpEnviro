@@ -59,6 +59,8 @@ type
     constructor Create(AParentHandle: THandle);
     function Execute: Boolean; virtual;
 
+    class function ShowConfirmationDialog(ShutdownType, ShutdownIcon, TextSuffix, TimeoutPrefix : string) : boolean;
+
     property ActionType: TShutDownActionType read FActionType
       write FActionType default sdPowerOff;
     property Force: Boolean read FForce write FForce default False;
@@ -166,10 +168,6 @@ begin
 end;
 
 function TSEShutDown.ShowConfirmation: Boolean;
-var
-  shutdownType : string;
-  aForm : TShutdownConfirmForm;
-  aFormRet : integer;
 begin
   if not(FVerbose) then
   begin
@@ -177,13 +175,25 @@ begin
     exit;
   end;
 
+  Result := ShowConfirmationDialog(ShutdownTypes[Integer(FActionType)],
+                                   ShutdownIcons[Integer(FActionType)],
+                                   'your computer',
+                                   'Computer');
+end;
+
+class function TSEShutDown.ShowConfirmationDialog(ShutdownType, ShutdownIcon, TextSuffix, TimeoutPrefix: string): boolean;
+var
+  aForm : TShutdownConfirmForm;
+  aFormRet : integer;
+begin
+  result := False;
+
   aForm := TShutdownConfirmForm.Create(nil);
   try
-    shutdownType := ShutdownTypes[Integer(FActionType)];
-    aForm.MsgText := PAnsiChar(format('Do you really want to %s your computer?',[shutdownType]));
-    aForm.MsgCaption := PAnsiChar(format('Confirm %s',[shutdownType]));
-    aForm.MsgIcon := ShutdownIcons[Integer(FActionType)];
-    aForm.MsgTimeout := PAnsiChar(format('Computer will %s in',[shutdownType]));
+    aForm.MsgText := PAnsiChar(format('Do you really want to %s %s?',[ShutdownType, TextSuffix]));
+    aForm.MsgCaption := PAnsiChar(format('Confirm %s',[ShutdownType]));
+    aForm.MsgIcon := ShutdownIcon;
+    aForm.MsgTimeout := PAnsiChar(format('%s will %s in',[TimeoutPrefix, ShutdownType]));
     aForm.DoTimeout := True;
 
     aFormRet := aForm.ShowModal;
