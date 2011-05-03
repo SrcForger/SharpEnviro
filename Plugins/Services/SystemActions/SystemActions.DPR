@@ -83,6 +83,8 @@ const
   cHibernateIdx = 3;
   cSwitchUserLockIdx = 4;
   cSleepIdx = 5;
+  cRestartShellIdx = 6;
+  cShutdownShellIdx = 7;
 
   cRestart_QuietIdx = 10;
   cShutdown_QuietIdx = 11;
@@ -90,9 +92,11 @@ const
   cHibernate_QuietIdx = 13;
   cSwitchUserLock_QuietIdx = 14;
   cSleep_QuietIdx = 15;
+  cRestartShell_QuietIdx = 16;
+  cShutdownShell_QuietIdx = 17;
 
   cShutdownStart = 0;
-  cShutdownEnd = 15;
+  cShutdownEnd = 17;
   cShutdownNonVerbose = 10;
 
   cMinimizeAllIdx = 20;
@@ -183,6 +187,8 @@ begin
   RegisterActionEx('!Hibernate', 'Shutdown', h, cHibernateIdx);
   RegisterActionEx('!SwitchUser/LockStation', 'Shutdown', h, cSwitchUserLockIdx);
   RegisterActionEx('!Sleep', 'Shutdown', h, cSleepIdx);
+  RegisterActionEx('!ShellShutdown', 'Shutdown', h, cShutdownShellIdx);
+  RegisterActionEx('!ShellRestart', 'Shutdown', h, cRestartShellIdx);
 
   RegisterActionEx('!Restart_Quiet', 'Shutdown', h, cRestart_QuietIdx);
   RegisterActionEx('!Shutdown_Quiet', 'Shutdown', h, cShutdown_QuietIdx);
@@ -190,6 +196,8 @@ begin
   RegisterActionEx('!Hibernate_Quiet', 'Shutdown', h, cHibernate_QuietIdx);
   RegisterActionEx('!SwitchUser/LockStation_Quiet', 'Shutdown', h, cSwitchUserLock_QuietIdx);
   RegisterActionEx('!Sleep_Quiet', 'Shutdown', h, cSleep_QuietIdx);
+  RegisterActionEx('!ShellShutdown_Quiet', 'Shutdown', h, cShutdownShell_QuietIdx);
+  RegisterActionEx('!ShellRestart_Quiet', 'Shutdown', h, cRestartShell_QuietIdx);
 
   RegisterActionEx('!MinimizeAll', 'Window Management', h, cMinimizeAllIdx);
   RegisterActionEx('!RestoreAll', 'Window Management', h, cRestoreAllIdx);
@@ -252,6 +260,8 @@ begin
   UnRegisterAction('!Hibernate');
   UnRegisterAction('!SwitchUser/LockStation');
   UnRegisterAction('!Sleep');
+  UnRegisterAction('!ShellShutdown');
+  UnRegisterAction('!ShellReboot');
 
   UnRegisterAction('!Restart_Quiet');
   UnRegisterAction('!Shutdown_Quiet');
@@ -259,6 +269,8 @@ begin
   UnRegisterAction('!Hibernate_Quiet');
   UnRegisterAction('!SwitchUser/LockStation_Quiet');
   UnRegisterAction('!Sleep_Quiet');
+  UnRegisterAction('!ShellShutdown_Quiet');
+  UnRegisterAction('!ShellReboot_Quiet');  
 
   UnRegisterAction('!MinimizeAll');
   UnRegisterAction('!RestoreAll');
@@ -415,6 +427,29 @@ begin
     // The others
     case lParam of
       cShutdownStart..cShutdownEnd: begin
+
+          case lParam of
+            cShutdownShellIdx: begin
+              if TSEShutDown.ShowConfirmationDialog('Shutdown', 'icon.shutdown.shutdown', 'the shell', 'Shell') then
+                PostMessage(FindWindow('TSharpCoreMainWnd',nil),WM_COMMAND,makewparam(2,0),0); // 2 = ID_SHUTDOWN
+              exit;
+            end;
+            cRestartShellIdx: begin
+              if TSEShutDown.ShowConfirmationDialog('Restart', 'icon.shutdown.reboot', 'the shell', 'Shell') then
+                PostMessage(FindWindow('TSharpCoreMainWnd',nil),WM_COMMAND,makewparam(3,0),0); // 3 = ID_RESTART
+              exit;
+            end;
+            cShutdownShell_QuietIdx: begin
+              PostMessage(FindWindow('TSharpCoreMainWnd',nil),WM_COMMAND,makewparam(2,0),0); // 2 = ID_SHUTDOWN
+              exit;
+            end;
+            cRestartShell_QuietIdx: begin
+              PostMessage(FindWindow('TSharpCoreMainWnd',nil),WM_COMMAND,makewparam(3,0),0); // 3 = ID_RESTART
+              exit;
+            end;
+
+          end;
+
 
           ShutDown := TSEShutDown.Create(FindWindow('TSharpCoreMainWnd', nil));
           try
