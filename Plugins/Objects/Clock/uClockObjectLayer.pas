@@ -496,7 +496,7 @@ begin
   begin
     TempBmp.Clear(color32(0,0,0,0));
 
-    if (FLastHour <> HourOf(Now)) then
+    if (FLastHour <> HourOf(Now)) or (FLastMinute <> MinuteOf(Now)) then
     begin
       FHArrowRot.Clear(color32(0,0,0,0));
       FHArrowRot.SetSize(FClockBack.Width,FClockBack.Height);
