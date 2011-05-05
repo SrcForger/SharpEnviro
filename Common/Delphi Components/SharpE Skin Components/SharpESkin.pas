@@ -206,6 +206,8 @@ type
     procedure SetXmlFileName(const Value: TXmlFileName);
     procedure SetSkinName(const Value: TSkinName);
 
+    function GetValid: Boolean; stdcall;
+
   protected
   public
     constructor Create; overload;
@@ -235,7 +237,9 @@ type
     property XmlFilename: TXmlFileName read FXmlFileName write SetXmlFileName;
     property Skin: TSkinName read FSkinName write SetSkinName;
 
-    property OnNotify: TSkinEvent read FOnNotify write FOnNotify;    
+    property Valid: Boolean read GetValid;  
+
+    property OnNotify: TSkinEvent read FOnNotify write FOnNotify;
   end;
 
   TSharpETaskItemState = class(TInterfacedObject, ISharpETaskItemStateSkin)
@@ -661,6 +665,7 @@ type
     function GetValid           : Boolean; stdcall;
     function GetBarHeight       : integer; stdcall;
     function GetThrobberWidth   : integer; stdcall;
+
   public
     constructor Create(BmpList : TSkinBitmapList);
     destructor Destroy; override;
@@ -706,7 +711,8 @@ type
     property Seed            : integer read GetSeed;
     property Valid           : Boolean read GetValid;
     property BarHeight       : integer read GetBarHeight;
-    property ThrobberWidth   : integer read GetThrobberWidth; 
+    property ThrobberWidth   : integer read GetThrobberWidth;
+
   end;
 
   TSharpEEditSkin = class(TInterfacedObject, ISharpEEditSkin)
@@ -866,6 +872,19 @@ begin
     // make sure to really free all instances
     while Skin.RefCount > 0 do
       Skin._Release;
+  end;
+end;
+
+function TSharpESkin.GetValid;
+var
+  i : integer;
+begin
+  Result := False;
+
+  for i := 0 to FSkinDesigns.Count - 1 do
+  begin
+    if (TSharpESkinDesign(FSkinDesigns[i]).BarSkin <> nil) and (TSharpESkinDesign(FSkinDesigns[i]).BarSkin.Valid) then
+      Result := True;
   end;
 end;
 

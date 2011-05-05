@@ -151,9 +151,9 @@ begin
   try
 
     // Get the files
-    skinfile := GetSharpeDirectory + 'Skins\' + skin + '\skin.xml';
-    themeskinfile := GetSharpeUserSettingsPath + 'Themes\' + Theme + '\' + 'skin.xml';
-    schemefile := GetSharpeDirectory + 'Skins\' + skin + '\scheme.xml';
+    skinfile := GetSharpeDirectory + 'Skins\' + skin + '\' + THEME_SKIN_FILE;
+    themeskinfile := GetSharpeUserSettingsPath + 'Themes\' + Theme + '\' + THEME_SKIN_FILE;
+    schemefile := GetSharpeDirectory + 'Skins\' + skin + '\' + THEME_SCHEME_FILE;
 
     // Precheck
     if not (fileExists(skinfile)) then exit;

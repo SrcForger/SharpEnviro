@@ -231,6 +231,9 @@ const
   DEFAULT_THEME = 'Default';
   DEFAULT_ICONSET = 'Cubeix Black';
 
+  // Fallback
+  FALLBACK_SKIN = 'Modern';
+
 
 implementation
 

@@ -186,7 +186,7 @@ begin
     fileloaded := True;
     with XML.XmlRoot.Items, FGlassEffect do
     begin
-      FName          := Value('Skin', 'default');
+      FName          := Value('Skin', 'Default');
       BlurRadius     := IntValue('GEBlurRadius', BlurRadius);
       BlurIterations := IntValue('GEBlurIterations', BlurIterations);
       Blend          := BoolValue('GEBlend', Blend);
@@ -334,11 +334,11 @@ procedure TThemeSkin.UpdateDirectory;
 begin
   FDirectory := SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\' + FName + '\';
   if not DirectoryExists(FDirectory) then
-    FDirectory := SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\Simple\';
+    FDirectory := SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\' + FALLBACK_SKIN + '\';
 
   FSchemesDirectory := SharpApi.GetSharpeUserSettingsPath + SKINS_SCHEME_DIRECTORY + '\' + FName + '\';
   if not DirectoryExists(FDirectory) then
-    FSchemesDirectory := SharpApi.GetSharpeUserSettingsPath + SKINS_SCHEME_DIRECTORY + '\Simple\';  
+    FSchemesDirectory := SharpApi.GetSharpeUserSettingsPath + SKINS_SCHEME_DIRECTORY + '\' + FALLBACK_SKIN + '\';  
 end;
 
 end.

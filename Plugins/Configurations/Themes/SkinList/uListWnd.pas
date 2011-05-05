@@ -30,6 +30,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JclSimpleXml, SharpApi, JclFileUtils,
+  SharpTypes, SharpESkin,
   ImgList, PngImageList, uISharpETheme, uThemeConsts,
   SharpThemeApiEx, SharpEListBoxEx, BarPreview, GR32, pngimage,
   ExtCtrls, SharpCenterApi, SharpFileUtils, SharpCenterThemeApi, JclStrings,
@@ -151,8 +152,8 @@ begin
     SharpFileUtils.FindFiles(dirs, dir, '*.*', False, True);
     for i := 0 to dirs.Count - 1 do
     begin
-      if FileExists(dirs[i] + '\skin.xml') then
-        files.Add(dirs[i] + '\skin.xml');
+      if FileExists(dirs[i] + '\Skin.xml') then
+        files.Add(dirs[i] + '\Skin.xml');
     end;
     for i := 0 to Pred( files.Count ) do
     begin
@@ -208,7 +209,13 @@ var
   i, iIndex: Integer;
   dirs, files, tokens: TStringList;
   sSkin, s: string;
+
+  sharpSkin: TSharpESkin;
 begin
+  sharpSkin := TSharpESkin.Create(ALL_SHARPE_SKINS);
+  GetCurrentTheme.LoadTheme([tpSkinScheme]);
+  
+
   dir := SharpApi.GetSharpeDirectory + 'Skins\';
   iIndex := -1;
   lbSkinList.Clear;
@@ -235,6 +242,13 @@ begin
         tokens.Free;
       end;
 
+      sharpSkin.LoadFromXmlFile(files[i]);
+      if not sharpSkin.Valid then
+      begin
+        sSkin := '<s>' + sSkin + '</s>';
+      end;
+      sharpSkin.Clear;
+
       li := lbSkinList.AddItem(sSkin, i);
       li.AddSubItem('');
       li.AddSubItem('');
@@ -248,6 +262,8 @@ begin
   finally
     dirs.Free;
     files.Free;
+
+    sharpSkin.Free;
 
     lbSkinList.ItemIndex := iIndex;
 

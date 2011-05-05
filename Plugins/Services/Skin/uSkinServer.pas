@@ -77,6 +77,26 @@ begin
   FFileName := Theme.Skin.Directory + 'Skin.xml';
   FSkin.LoadFromXmlFile(FFileName);
 
+  if not FSkin.Valid then
+  begin
+    SharpApi.SendDebugMessage('Skin', 'Using fallback skin', DMT_WARN);
+
+    FSkin.Clear;
+
+    FFileName := SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\' + FALLBACK_SKIN + '\' + 'Skin.xml';
+    FSkin.LoadFromXmlFile(FFileName);
+
+    if not FSkin.Valid then
+    begin
+      // Should never happen
+      SharpApi.SendDebugMessage('Skin', 'Failed to load the fallback skin!', DMT_ERROR);
+      DeleteFile(SharpApi.GetSharpeUserSettingsPath + 'SharpE.skin');
+
+      FSkin.Clear;
+      exit;
+    end;
+  end;
+
   if OpenFileStreamShared(Stream,sfaCreate,SharpApi.GetSharpeUserSettingsPath + 'SharpE.skin',True) = sfeSuccess then
   begin
     Stream.Size := 0;
