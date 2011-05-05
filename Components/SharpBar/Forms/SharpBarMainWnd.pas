@@ -335,6 +335,7 @@ var
   Dir: string;
   FixedWidthEnabledTemp : boolean;
   FixedWidthTemp : integer;
+  oldDesign : String;
 begin
   Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + inttostr(FBarID) + '\';
 
@@ -344,6 +345,7 @@ begin
   FixedWidthEnabledTemp := SharpEBar.FixedWidthEnabled;
   FixedWidthTemp := SharpEBar.FixedWidth;
 
+  oldDesign := SharpEBar.SkinDesign;
   if LoadXMLFromSharedFile(xml,Dir + 'Bar.xml',True) then
   begin
     // xml file loaded properlty... use it
@@ -368,7 +370,23 @@ begin
         SharpEBar.FixedWidth := Max(10,Min(90,Items.IntValue('FixedWidth', 50)));
       end;
 
-    SkinInterface.SkinManager.SetSkinDesign(SharpEBar.SkinDesign);
+    if (CompareText(oldDesign, SharpEBar.SkinDesign) <> 0) then
+    begin
+      SkinInterface.SkinManager.UpdateScheme;
+      SkinInterface.SkinManager.UpdateSkin;
+      SkinInterface.SkinManager.SetSkinDesign(SharpEBar.SkinDesign);
+      SharpEBar.UpdateSkin;
+      SharpEBar.UpdatePosition;
+      UpdateBGZone;
+      if SharpEBar.Throbber.Visible then
+      begin
+        SharpEBar.Throbber.UpdateSkin;
+        SharpEbar.Throbber.Repaint;
+      end;
+      ModuleManager.UpdateModuleHeights;
+      ModuleManager.ReCalculateModuleSize;
+      ModuleManager.BroadcastPluginUpdate(suBackground);
+    end;
 
     if SharpEBar.AutoHide then
       SharpEBar.AlwaysOnTop := True;
