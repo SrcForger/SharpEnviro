@@ -55,9 +55,11 @@ uses
   SharpApi,
   JclStrings,
   SharpCenterApi,
+  SharpThemeApiEx,
   SharpEListBoxEx,
   uListWnd,
   uSharpBar,
+  uThemeConsts,
 
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit, SharpEGaugeBoxEdit, JvXPCore, JvXPCheckCtrls;
@@ -89,6 +91,8 @@ type
     Panel3: TPanel;
     Panel4: TPanel;
     Panel5: TPanel;
+    Label4: TLabel;
+    cobo_design: TComboBox;
 
     procedure cbBasedOnSelect(Sender: TObject);
 
@@ -146,7 +150,40 @@ var
   tmpItem: TSharpEListItem;
   tmpBar: TBarItem;
   n: integer;
+  SkinFile : String;
+  XML : TJclSimpleXML;
+  defaultDesign : integer;
 begin
+  // load list of skin designs
+  SharpThemeApiEx.GetCurrentTheme.LoadTheme([tpSkinScheme]);
+  SkinFile := SharpThemeApiEx.GetCurrentTheme.Skin.Directory + 'Skin.xml';
+  XML := TJclSimpleXML.Create;
+  cobo_design.Items.Clear;
+  defaultDesign := 0;
+  try
+    if FileExists(SkinFile) then
+    begin
+      XML.LoadFromFile(SkinFile);
+      for n := 0 to XML.Root.Items.Count - 1 do
+        if CompareText(XML.Root.Items.Item[n].Name,'SkinDesign') = 0 then
+        with XML.Root.Items.Item[n] do
+        begin
+          cobo_design.Items.Add(Properties.Value('Name','Default'));
+          if Properties.BoolValue('Default', False) then
+            defaultDesign := cobo_design.Items.Count - 1;
+        end;
+    end;
+  finally
+    XML.Free;
+  end;
+  if cobo_design.Items.Count = 0 then
+  begin
+    cobo_design.Items.Add('Default');
+    cobo_design.ItemIndex := 0;
+  end else
+    cobo_design.ItemIndex := defaultDesign;
+  cobo_design.Enabled := (cobo_design.Items.Count > 1);
+
   FBars.Update;
 
   FUpdating := True;
@@ -228,6 +265,9 @@ begin
 
             chkAlwaysOnTop.Checked := FBarItem.AlwaysOnTop;
             chkShowThrobber.Checked := FBarItem.ShowThrobber;
+
+            if cobo_design.Items.IndexOf(FBarItem.SkinDesign) >= 0 then
+              cobo_design.ItemIndex := cobo_design.Items.IndexOf(FBarItem.SkinDesign);
           end;
         end;
     end;
@@ -290,6 +330,7 @@ begin
           newItem.FixedWidthEnabled := cbFixedWidth.Checked;
           newItem.AutoHide := chkAutoHide.Checked;
           newItem.AutoHideTime := sgbAutoHide.Value * 1000;
+          newItem.SkinDesign := cobo_design.Text;
 
           newItem.Save;
         finally
@@ -312,6 +353,7 @@ begin
         FBarItem.AlwaysOnTop := chkAlwaysOnTop.Checked;
         FBarItem.AutoHide := chkAutoHide.Checked;
         FBarItem.AutoHideTime := sgbAutoHide.Value * 1000;
+        FBarItem.SkinDesign := cobo_design.Text;
 
         FBarItem.Save;
 

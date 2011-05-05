@@ -65,6 +65,7 @@ type
     FAutoHide: Boolean;
     FAutoHideTime: integer;
     FForceAlwaysOnTop: Boolean;
+    FSkinDesign: String;
 
     FModules: TObjectList;
 
@@ -95,6 +96,7 @@ type
     property AutoHide: Boolean read FAutoHide write FAutoHide;
     property AutoHideTime: integer read FAutoHideTime write FAutoHideTime;
     property ForceAlwaysOnTop: Boolean read FForceAlwaysOnTop write FForceAlwaysOnTop;
+    property SkinDesign: String read FSkinDesign write FSkinDesign;
 
     property ModuleCount: integer read GetModuleCount;
     property Modules[index: integer]: TModuleItem read GetModule;
@@ -265,6 +267,7 @@ begin
   FAlwaysOnTop := True;
   FAutoHide := False;
   FAutoHideTime := 1000;
+  FSkinDesign := 'Default';
 
   FModules.Clear;
 end;
@@ -338,6 +341,7 @@ begin
           FAlwaysOnTop := BoolValue('AlwaysOnTop', True);
           FAutoHide := BoolValue('AutoHide', False);
           FAutoHideTime := IntValue('AutoHideTime', 1000);
+          FSkinDesign := Value('Design','Default');
         end;
 
         FModules.Clear;
@@ -391,6 +395,7 @@ begin
         Add('AlwaysOnTop', FAlwaysOnTop);
         Add('AutoHide', FAutoHide);
         Add('AutoHideTime', FAutoHideTime);
+        Add('Design', FSkinDesign);
       end;
 
       with Add('Modules').Items do

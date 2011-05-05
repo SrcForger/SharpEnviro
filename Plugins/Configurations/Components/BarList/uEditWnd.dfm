@@ -3,8 +3,8 @@ object frmEditwnd: TfrmEditwnd
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmEditwnd'
-  ClientHeight = 120
-  ClientWidth = 475
+  ClientHeight = 141
+  ClientWidth = 509
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -16,8 +16,8 @@ object frmEditwnd: TfrmEditwnd
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   DesignSize = (
-    475
-    120)
+    509
+    141)
   PixelsPerInch = 96
   TextHeight = 13
   object Panel2: TPanel
@@ -25,7 +25,7 @@ object frmEditwnd: TfrmEditwnd
     Left = 10
     Top = 10
     Width = 285
-    Height = 110
+    Height = 131
     Margins.Left = 10
     Margins.Top = 10
     Margins.Right = 10
@@ -37,7 +37,7 @@ object frmEditwnd: TfrmEditwnd
     TabOrder = 1
     DesignSize = (
       285
-      110)
+      131)
     object Label3: TLabel
       Left = 0
       Top = 30
@@ -68,6 +68,14 @@ object frmEditwnd: TfrmEditwnd
       Width = 40
       Height = 13
       Caption = 'Monitor:'
+      Transparent = True
+    end
+    object Label4: TLabel
+      Left = 0
+      Top = 108
+      Width = 36
+      Height = 13
+      Caption = 'Design:'
       Transparent = True
     end
     object Panel1: TPanel
@@ -147,13 +155,28 @@ object frmEditwnd: TfrmEditwnd
       TabOrder = 1
       OnSelect = cbBasedOnSelect
     end
+    object cobo_design: TComboBox
+      Left = 62
+      Top = 105
+      Width = 174
+      Height = 21
+      Style = csDropDownList
+      Enabled = False
+      ItemHeight = 13
+      ItemIndex = 0
+      TabOrder = 4
+      Text = 'Default'
+      OnSelect = cbBasedOnSelect
+      Items.Strings = (
+        'Default')
+    end
   end
   object Panel3: TPanel
     AlignWithMargins = True
-    Left = 215
+    Left = 249
     Top = 10
     Width = 260
-    Height = 100
+    Height = 121
     Margins.Left = 10
     Margins.Top = 10
     Margins.Right = 0
@@ -166,7 +189,7 @@ object frmEditwnd: TfrmEditwnd
     TabOrder = 2
     DesignSize = (
       260
-      100)
+      121)
     object chkAlwaysOnTop: TJvXPCheckbox
       AlignWithMargins = True
       Left = 10
@@ -276,8 +299,8 @@ object frmEditwnd: TfrmEditwnd
   object pnlBarSpace: TPanel
     Left = 8
     Top = 8
-    Width = 0
-    Height = 16
+    Width = 34
+    Height = 37
     Anchors = [akLeft, akTop, akRight, akBottom]
     BevelOuter = bvNone
     ParentBackground = False
@@ -287,7 +310,7 @@ object frmEditwnd: TfrmEditwnd
     object Label1: TLabel
       Left = 0
       Top = 13
-      Width = 0
+      Width = 34
       Height = 26
       Align = alTop
       AutoSize = False
@@ -301,7 +324,7 @@ object frmEditwnd: TfrmEditwnd
     object JvLabel4: TLabel
       Left = 0
       Top = 0
-      Width = 0
+      Width = 34
       Height = 13
       Align = alTop
       Caption = 'Error:'
