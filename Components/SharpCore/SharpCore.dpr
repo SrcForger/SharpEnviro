@@ -534,7 +534,7 @@ begin
               try
                 if (wParam - (lstComponents.Count + 52) >= 0) and (wParam - (lstComponents.Count + 52) < barItems.Count) then
                 begin
-                  barItem := barItems.Bars[wParam - (lstComponents.Count + 51)];
+                  barItem := barItems.Bars[wParam - (lstComponents.Count + 52)];
                   if barItem.Running then
                     barItem.Stop
                   else
