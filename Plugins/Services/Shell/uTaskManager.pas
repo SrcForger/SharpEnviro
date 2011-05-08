@@ -295,6 +295,8 @@ end;
 
 destructor TTaskManager.Destroy;
 begin
+  FEnabled := False;
+
   FUpdateThread.Terminate;
   if FUpdateThread.Suspended then
     FUpdateThread.Resume;
