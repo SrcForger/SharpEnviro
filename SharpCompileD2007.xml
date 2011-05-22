@@ -65,11 +65,10 @@
     <project Name="Skin Font" Type="DLL">Plugins\Configurations\Themes\Font\Font.dproj</project>
     <project Name="Wallpaper" Type="DLL">Plugins\Configurations\Themes\Wallpaper\Wallpaper.dproj</project>
     <project Name="Weather Icons" Type="DLL">Plugins\Configurations\Themes\WeatherIcons\WeatherIcons.dproj</project>
-
   </package>
   <package Name="Configurations - Objects">
     <project Name="Clock" Type="DLL">Plugins\Configurations\Objects\Clock\Clock.dproj</project>
-	<project Name="Drive" Type="DLL">Plugins\Configurations\Objects\Drive\Drive.dproj</project>
+	  <project Name="Drive" Type="DLL">Plugins\Configurations\Objects\Drive\Drive.dproj</project>
     <project Name="Image" Type="DLL">Plugins\Configurations\Objects\Image\Image.dproj</project>
     <project Name="Link" Type="DLL">Plugins\Configurations\Objects\Link\Link.dproj</project>
     <project Name="Recycle Bin" Type="DLL">Plugins\Configurations\Objects\RecycleBin\RecycleBin.dproj</project>
@@ -77,7 +76,7 @@
   </package>
   <package Name="Components">
     <project Name="ExplorerNET 32-Bit" Type="Solution" Platform="x86">Components\ExplorerNET\Explorer.sln</project>
-	<project Name="ExplorerNET 64-Bit" Type="Solution" Platform="x64">Components\ExplorerNET\Explorer.sln</project>
+  	<project Name="ExplorerNET 64-Bit" Type="Solution" Platform="x64">Components\ExplorerNET\Explorer.sln</project>
     <project Name="SetShell" Type="Application">Components\SetShell\SetShell.dproj</project>
     <project Name="SharpAdmin" Type="Application">Components\SharpAdmin\SharpAdmin.dproj</project>
     <project Name="SharpBar" Type="Application">Components\SharpBar\SharpBar.dproj</project>
@@ -116,7 +115,7 @@
     <project Name="Recycle Bin" Type="DLL" >Plugins\Modules\RecycleBin\RecycleBin.dproj</project>
     <project Name="RSS Reader" Type="DLL" >Plugins\Modules\RSS Reader\RSSReader.dproj</project>
     <project Name="Show Desktop" Type="DLL" >Plugins\Modules\ShowDesktop\ShowDesktop.dproj</project>
-	<project Name="Spacer" Type="DLL" >Plugins\Modules\Spacer\Spacer.dproj</project>
+	  <project Name="Spacer" Type="DLL" >Plugins\Modules\Spacer\Spacer.dproj</project>
     <project Name="System Tray" Type="DLL" >Plugins\Modules\SystemTray\SystemTray.dproj</project>
     <project Name="Taskbar" Type="DLL" >Plugins\Modules\Taskbar\Taskbar.dproj</project>
     <project Name="Volume Control" Type="DLL" >Plugins\Modules\VolumeControl\VolumeControl.dproj</project>
@@ -145,6 +144,9 @@
     <project Name="SystemActions" Type="DLL" >Plugins\Services\SystemActions\SystemActions.dproj</project>
     <project Name="VWM" Type="DLL" >Plugins\Services\VWM\VWM.dproj</project>
     <project Name="Weather" Type="DLL">Plugins\Services\Weather\Weather.dproj</project>
+  </package>
+  <package Name="Tools">
+    <project Name="SkinConverter" Type="Application">Tools\SkinConvert\SkinConvert.dproj</project>
   </package>
   <package Name="Files">
     <!-- Export FDS first otherwise subsequent commands may fail due to directories not existing -->
