@@ -19,7 +19,7 @@ object frmEdit: TfrmEdit
   object lbItems: TSharpEListBoxEx
     AlignWithMargins = True
     Left = 5
-    Top = 367
+    Top = 398
     Width = 493
     Height = 148
     Margins.Left = 5
@@ -79,7 +79,7 @@ object frmEdit: TfrmEdit
     Left = 0
     Top = 0
     Width = 503
-    Height = 362
+    Height = 393
     Align = alTop
     AutoSize = True
     BevelOuter = bvNone
@@ -99,7 +99,6 @@ object frmEdit: TfrmEdit
       BevelOuter = bvNone
       ParentColor = True
       TabOrder = 0
-      ExplicitTop = 45
       object lblSort: TLabel
         Left = 205
         Top = 4
@@ -164,7 +163,7 @@ object frmEdit: TfrmEdit
     object pnlButtons: TPanel
       AlignWithMargins = True
       Left = 5
-      Top = 181
+      Top = 204
       Width = 488
       Height = 19
       Margins.Left = 5
@@ -175,7 +174,6 @@ object frmEdit: TfrmEdit
       BevelOuter = bvNone
       ParentColor = True
       TabOrder = 3
-      ExplicitTop = 177
       object chkMinimiseBtn: TJvXPCheckbox
         Left = 0
         Top = -1
@@ -224,7 +222,7 @@ object frmEdit: TfrmEdit
     object schButtons: TSharpECenterHeader
       AlignWithMargins = True
       Left = 5
-      Top = 134
+      Top = 157
       Width = 493
       Height = 37
       Margins.Left = 5
@@ -241,7 +239,7 @@ object frmEdit: TfrmEdit
     object schFilters: TSharpECenterHeader
       AlignWithMargins = True
       Left = 5
-      Top = 296
+      Top = 319
       Width = 493
       Height = 37
       Margins.Left = 5
@@ -254,7 +252,6 @@ object frmEdit: TfrmEdit
       DescriptionColor = clRed
       Align = alTop
       Color = clWindow
-      ExplicitTop = 294
     end
     object chkMiddleClose: TJvXPCheckbox
       AlignWithMargins = True
@@ -274,7 +271,7 @@ object frmEdit: TfrmEdit
     object chkFilterTasks: TJvXPCheckbox
       AlignWithMargins = True
       Left = 5
-      Top = 343
+      Top = 366
       Width = 493
       Height = 17
       Margins.Left = 5
@@ -285,12 +282,11 @@ object frmEdit: TfrmEdit
       TabOrder = 5
       Align = alTop
       OnClick = chkFilterTasksClick
-      ExplicitTop = 341
     end
     object SharpECenterHeader1: TSharpECenterHeader
       AlignWithMargins = True
       Left = 5
-      Top = 220
+      Top = 243
       Width = 493
       Height = 37
       Margins.Left = 5
@@ -309,7 +305,7 @@ object frmEdit: TfrmEdit
     object Panel1: TPanel
       AlignWithMargins = True
       Left = 5
-      Top = 267
+      Top = 290
       Width = 488
       Height = 19
       Margins.Left = 5
@@ -340,6 +336,21 @@ object frmEdit: TfrmEdit
       Margins.Right = 5
       Caption = 'Show task previews (Requires Vista/Win7 Home Premium or above)'
       TabOrder = 2
+      Checked = True
+      State = cbChecked
+      Align = alTop
+      OnClick = chkFilterTasksClick
+    end
+    object chkEnableMoving: TJvXPCheckbox
+      AlignWithMargins = True
+      Left = 5
+      Top = 127
+      Width = 493
+      Height = 17
+      Margins.Left = 5
+      Margins.Right = 5
+      Caption = 'Enable moving of task windows (drag && drop)'
+      TabOrder = 10
       Checked = True
       State = cbChecked
       Align = alTop

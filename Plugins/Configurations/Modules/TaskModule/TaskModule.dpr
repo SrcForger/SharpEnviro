@@ -109,6 +109,9 @@ begin
       // App Bar Windows
       chkAppBar.Checked := BoolValue('AppBarWindow', False);
 
+      // Moving of task windows
+      chkEnableMoving.Checked := BoolValue('EnableMoving', True);
+
       // Buttons
       chkMinimiseBtn.Checked := BoolValue('MinAllButton', False);
       chkRestoreBtn.Checked := BoolValue('MaxAllButton', False);
@@ -200,6 +203,9 @@ begin
 
     // App Bar Windows
     Add('AppBarWindow', chkAppBar.Checked);
+
+    // Task Moving
+    Add('EnableMoving', chkEnableMoving.Checked);
 
     // Buttons
     Add('MinAllButton', chkMinimiseBtn.Checked);

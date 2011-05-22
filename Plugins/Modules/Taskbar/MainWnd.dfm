@@ -2,12 +2,12 @@ object MainForm: TMainForm
   Left = 0
   Top = 0
   Caption = 'Taskbar'
-  ClientHeight = 209
-  ClientWidth = 439
+  ClientHeight = 160
+  ClientWidth = 336
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -14
+  Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
@@ -15,12 +15,12 @@ object MainForm: TMainForm
   OnDestroy = FormDestroy
   OnPaint = FormPaint
   OnShow = FormShow
-  PixelsPerInch = 120
-  TextHeight = 17
+  PixelsPerInch = 96
+  TextHeight = 13
   object ses_maxall: TSharpEButton
-    Left = 39
+    Left = 30
     Top = 0
-    Width = 32
+    Width = 24
     Height = 25
     Hint = 'Restore all Windows'
     ParentShowHint = False
@@ -75,7 +75,7 @@ object MainForm: TMainForm
   object ses_minall: TSharpEButton
     Left = 0
     Top = 0
-    Width = 31
+    Width = 24
     Height = 25
     Hint = 'Minimize all Windows'
     ParentShowHint = False
@@ -128,9 +128,9 @@ object MainForm: TMainForm
     ForceHover = False
   end
   object ses_togall: TSharpEButton
-    Left = 78
+    Left = 60
     Top = 0
-    Width = 32
+    Width = 24
     Height = 25
     Hint = 'Toggle All Windows'
     ParentShowHint = False

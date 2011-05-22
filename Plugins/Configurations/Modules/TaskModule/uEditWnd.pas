@@ -79,6 +79,7 @@ type
     chkAppBar: TJvXPCheckbox;
     chkTaskPreviews: TJvXPCheckbox;
     chckToggleBtn: TJvXPCheckbox;
+    chkEnableMoving: TJvXPCheckbox;
     procedure lbItemsResize(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -124,6 +125,7 @@ procedure TfrmEdit.SettingsChange(Sender: TObject);
 begin
   if Visible then
     FPluginHost.SetSettingsChanged;
+  chkEnableMoving.Enabled := (cbSortMode.ItemIndex = 0);
 end;
 
 procedure TfrmEdit.chkFilterTasksClick(Sender: TObject);
@@ -154,6 +156,8 @@ begin
     chkTaskPreviews.Checked := False;
 
   chkTaskPreviews.Enabled := DwmApi.DwmCompositionEnabled;
+
+  chkEnableMoving.Enabled := (cbSortMode.ItemIndex = 0);
 end;
 
 procedure TfrmEdit.lbItemsClickCheck(Sender: TObject; const ACol: Integer;

@@ -84,6 +84,7 @@ type
     sSpacing    : integer;
     sState      : TSharpETaskItemStates;
     sSort       : boolean;
+    sEnableMoving : boolean;
     sSortType   : TSharpeTaskManagerSortType;
     sDebug      : boolean;
     sMiddleClose : boolean;
@@ -752,7 +753,7 @@ end;
 procedure TMainForm.OnTaskItemMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
 begin
   FHasMoved := False;
-  if not sSort then
+  if (not sSort) and (sEnableMoving) then
   begin
     FMoveItem := TSharpETaskItem(Sender);
     FMoveItem.BringToFront;
@@ -981,17 +982,18 @@ var
   SList : TStringList;
 begin
   DebugOutPutInfo('TMainForm.LoadSettings (Procedure)');
-  sState     := tisFull;
-  sWidth     := 100;
-  sMaxwidth  := 128;
-  sSpacing   := 2;
-  sSort      := False;
-  sDebug     := False;
-  sEFilter   := True;
-  sIFilter   := True;
-  sMiddleClose := True;
-  sShowAppBarWindows := False;
-  sTaskPreview := True;
+  sState        := tisFull;
+  sWidth        := 100;
+  sMaxwidth     := 128;
+  sSpacing      := 2;
+  sSort         := False;
+  sEnableMoving := True;
+  sDebug        := False;
+  sEFilter      := True;
+  sIFilter      := True;
+  sMiddleClose  := True;
+  sTaskPreview  := True;
+  sShowAppBarWindows := False;  
 
   LoadFilterSettingsFromXML;
 
@@ -1003,6 +1005,7 @@ begin
       sState := TSharpETaskItemStates(IntValue('State',0));
       sSort := BoolValue('Sort',False);
       sSortType := TSharpeTaskManagerSortType(IntValue('SortType',0));
+      sEnableMoving := BoolValue('EnableMoving',True);
       sMinAllButton := BoolValue('MinAllButton',False);
       sMaxAllButton := BoolValue('MaxAllButton',False);
       sTogAllButton := BoolValue('TogAllButton',False);
