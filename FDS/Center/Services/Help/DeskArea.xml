@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<ConfigHelp>
+<ConfigHelp size="full">
   <Label bold="1">Desktop Work Area</Label>
   <Label>The Desktop Work Area or DeskArea defines the area which maximized windows will use. By adjusting the values for the left, top, right and bottom offsets you can specify the space between the screen borders and the maximized window.</Label>
   <Sep Size="Small"/>

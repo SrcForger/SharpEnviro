@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<ConfigHelp>
+<ConfigHelp size="full">
   <Label bold="1">Desktop Options</Label>
   <Label>SharpEnviro comes with a desktop application called SharpDesk. It follows a completely different purpose than the explorer desktop and is more oriented towards creating a clean and interactive desktop instead of a file storage area.</Label>
   <Sep></Sep>

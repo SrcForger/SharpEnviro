@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<ConfigHelp>
+<ConfigHelp size="full">
   <Label bold="1">Global Menu Options</Label>
   <Label>With the following settings you can adjust the behaviour of all SharpEnviro Menus. If you want a single menu to not use those global options then you can use the configuration for that menu to override the global settings.</Label>
   <Sep/>
