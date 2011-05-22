@@ -54,6 +54,7 @@ if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
     <DCCReference Include="..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas" />
     <DCCReference Include="..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas" />
     <DCCReference Include="..\..\..\Common\Units\DebugDialog\DebugDialog.pas" />
+    <DCCReference Include="..\..\..\Common\Units\DWMApi\uDWMFuncs.pas" />
     <DCCReference Include="..\..\..\Common\Units\GR32Utils\GR32Utils.pas" />
     <DCCReference Include="..\..\..\Common\Units\SharpFX\graphicsFX.pas" />
     <DCCReference Include="..\..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas" />

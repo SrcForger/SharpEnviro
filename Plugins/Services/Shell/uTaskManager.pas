@@ -90,7 +90,7 @@ type
 
   public
     procedure RemoveDeadTasks;
-    procedure AddTask(pHandle : hwnd);
+    procedure AddTask(pHandle : hwnd; DoNotify : boolean = true);
     procedure RemoveTask(pHandle : hwnd);
     procedure UpdateTask(pHandle : hwnd);
     procedure ActivateTask(pHandle : hwnd);
@@ -99,12 +99,13 @@ type
     procedure DoSortTasks;
     procedure ExChangeTasks(pItem1,pItem2 : TTaskItem);
     procedure ResetVMWs;
-    procedure CompleteRefresh;
+    procedure CompleteRefresh; overload;
+    procedure CompleteRefresh(InitialOrder : THandleArray); overload;
     procedure UpdateItem(pSrc : TTaskItem);
     procedure HandleShellMessage(wparam,lparam : Cardinal);
     procedure SaveToStream(Stream : TStream);
     procedure LoadFromStream(Stream : TStream; pCount : integer);
-    procedure InitList;
+    procedure InitList(DoNotify : boolean = true);
     function GetCount : integer;
     function GetItemByHandle(pHandle : hwnd) : TTaskItem;
     function GetItemByIndex(Index : integer) : TTaskItem;
@@ -275,6 +276,49 @@ begin
   end;
 end;
 
+procedure TTaskManager.CompleteRefresh(InitialOrder: THandleArray);
+var
+  n,i : integer;
+  pItem : TTaskItem;
+  tempList : TObjectList;
+begin
+  if FItems.Count = 0 then exit;
+  if not Assigned(FOnNewTask) then exit;
+  if length(InitialOrder) = 0 then
+  begin
+    CompleteRefresh;
+    exit;
+  end;
+
+  tempList := TObjectList.Create(False); // List doesn't own items
+  for n := 0 to FItems.Count - 1 do
+    tempList.Add(FItems.Items[n]);
+
+  try
+    // first add items from initial ordering (if still existing)
+    for n := 0 to High(InitialOrder) do
+      for i := tempList.Count - 1 downto 0 do
+      begin
+        pItem := TTaskItem(tempList.Items[i]);
+        if (pItem <> nil) and (pItem.Handle = InitialOrder[n]) then
+        begin
+          tempList.Remove(pItem);
+          FOnNewTask(pItem,n);
+        end;
+      end;
+
+    // add all remaining items based on the ordering of the task manager
+    for n := 0 to tempList.Count - 1 do
+    begin
+      pItem := TTaskItem(tempList.Items[n]);
+      FOnNewTask(pItem,n);
+    end;
+
+  finally
+    tempList.Free;
+  end;
+end;
+
 constructor TTaskManager.Create;
 begin
   inherited Create;
@@ -391,7 +435,7 @@ begin
   end;
 end;
 
-procedure TTaskManager.InitList;
+procedure TTaskManager.InitList(DoNotify : boolean = true);
 type
   PParam = ^TParam;
   TParam = record
@@ -422,7 +466,7 @@ begin
   setlength(EnumParam.wndlist,0);
   EnumWindows(@EnumWindowsProc, Integer(@EnumParam));
   for n := 0 to High(EnumParam.wndlist) do
-    AddTask(EnumParam.wndlist[n]);
+    AddTask(EnumParam.wndlist[n], DoNotify);
 
   setlength(EnumParam.wndlist,0);
 end;
@@ -565,7 +609,7 @@ begin
   end;
 end;
 
-procedure TTaskManager.AddTask(pHandle : hwnd);
+procedure TTaskManager.AddTask(pHandle : hwnd; DoNotify : boolean = true);
 var
   pItem : TTaskItem;
 begin
@@ -579,7 +623,7 @@ begin
   if not FListMode then
     pItem.UpdateCaption;
   FItems.Add(pItem);
-  if Assigned(OnNewTask) then FOnNewTask(pItem, FItems.Count -1);
+  if (DoNotify) and (Assigned(OnNewTask)) then FOnNewTask(pItem, FItems.Count -1);
   if FSortTasks then DoSortTasks;
 end;
 

@@ -1072,6 +1072,7 @@ end;
 procedure TMainForm.CompleteRefresh;
 var
   n : integer;
+  initialOrder : THandleArray;
 begin
   FMoveItem := nil;
 
@@ -1079,9 +1080,13 @@ begin
   for n := IList.Count - 1 downto 0 do
      ToolTipApi.DeleteToolTip(FTipWnd,Self,TSharpETaskItem(IList[n]).Handle);
   FLocked := True;
+  setlength(initialOrder, IList.Count);
+  for n := 0 to IList.Count - 1 do // save order of task items
+    initialOrder[n] := TSharpETaskItem(IList[n]).Handle;    
   IList.Clear;
-  TM.InitList;
-  TM.CompleteRefresh;
+  TM.InitList(False);
+  TM.CompleteRefresh(initialOrder); // complete refresh but take original order of task items into account
+  setlength(initialOrder, 0);
   FLocked := False;
   RealignComponents(True);
   AlignTaskComponents;
