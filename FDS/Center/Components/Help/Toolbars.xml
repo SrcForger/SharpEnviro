@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<ConfigHelp size="full">
+  <Label bold="1">Manage Toolbars</Label>
+  <Label>The toolbars are the core part of SharpEnviro. They feature a wide variaty of modules which can be freely added and configured to match your demands. You can have multiple toolbars at the top and bottom of each monitors and every toolbar can be configured indepently. This configuration page will help you to manage your toolbars.</Label>
+  <Sep></Sep>
+  <Label bold="1">Adding toolbars and changing toolbar options</Label>  
+  <Label>You can add a new toolbar or change the settings of an already existing toolbar by clicking the 'Add' and 'Edit' tabs on the top left of the config. The tabs will bring up the main properties of a toolbar like the name, position (e.g. monitor, screen border), size and some options like auto hide or always on top.</Label>
+  <Image align="left" span="full">ToolbarsAdd.png</Image>
+  <Sep></Sep>
+  <Label bold="1">Managing toolbars module</Label>
+  <Label>To manage the modules which are shown on a specific toolbar you can open up the module manager by selecting the toolbar you which to configure and then clicking the underlined edit link on the right.</Label>
+  <Image align="left" span="full">ToolbarsEdit.png</Image>
+  <Sep></Sep>
+  <Label bold="1">Start/Stop toolbars</Label>
+  <Label>Starting, Stopping, Disabling and Enabling toolbars work the same way as editing the toolbar modules. Simply click the toolbar which you want to start/stop and use the underline commands on the right (see image above).</Label>
+</ConfigHelp>

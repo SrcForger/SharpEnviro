@@ -2,9 +2,10 @@
 <SharpCenter>
   <Sections>
     <SharpBarList>
-	  <Section>Components</Section>
+      <Section>Components</Section>
       <File>BarList.dll</File>
       <Icon>toolbarEdit.png</Icon>
+      <Help>Toolbars.xml</Help>
     </SharpBarList>
   </Sections>
 </SharpCenter>
