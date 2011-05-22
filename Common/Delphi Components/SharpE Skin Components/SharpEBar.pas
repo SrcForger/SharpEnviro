@@ -151,7 +151,6 @@ type
     property FullScreenWnd: Boolean read FFullScreenWnd write FFullScreenWnd;
 
     property ShowThrobber: Boolean read FShowThrobber write SetShowThrobber;
-    property DisableHideBar: Boolean read FDisableHideBar write FDisableHideBar;
     property StartHidden: Boolean read FStartHidden write FStartHidden;
     property SpecialHideForm : Boolean read GetSpecialHideForm;
     property onThrobberMouseDown: TMouseEvent read FonMouseDown write FonMouseDown;

@@ -65,7 +65,6 @@ type
     miLeftModule: TMenuItem;
     miRightModule: TMenuItem;
     Settings: TMenuItem;
-    DisableBarHiding1: TMenuItem;
     BarManagment1: TMenuItem;
     DelayTimer1: TTimer;
     DelayTimer3: TTimer;
@@ -103,7 +102,6 @@ type
     procedure DelayTimer1Timer(Sender: TObject);
     procedure FormHide(Sender: TObject);
     procedure FormResize(Sender: TObject);
-    procedure DisableBarHiding1Click(Sender: TObject);
     procedure miRightModuleClick(Sender: TObject);
     procedure miLeftModuleClick(Sender: TObject);
     procedure Delete1Click(Sender: TObject);
@@ -360,7 +358,6 @@ begin
         SharpEBar.VertPos := IntToVertPos(Items.IntValue('VertPos', 0));
         SharpEBar.AutoStart := Items.BoolValue('AutoStart', True);
         SharpEBar.ShowThrobber := Items.BoolValue('ShowThrobber', True);
-        SharpEBar.DisableHideBar := Items.BoolValue('DisableHideBar', True);
         SharpEBar.StartHidden := Items.BoolValue('StartHidden', False);
         ModuleManager.ShowMiniThrobbers := Items.BoolValue('ShowMiniThrobbers', True);
         SharpEBar.AutoHide := Items.BoolValue('AutoHide', False);
@@ -1349,7 +1346,6 @@ begin
         SharpEBar.VertPos := IntToVertPos(Items.IntValue('VertPos', 0));
         SharpEBar.AutoStart := Items.BoolValue('AutoStart', True);
         SharpEBar.ShowThrobber := Items.BoolValue('ShowThrobber', True);
-        SharpEBar.DisableHideBar := Items.BoolValue('DisableHideBar', True);
         SharpEBar.StartHidden := Items.BoolValue('StartHidden', False);
         ModuleManager.ShowMiniThrobbers := Items.BoolValue('ShowMiniThrobbers', True);
         SharpEBar.AlwaysOnTop := Items.BoolValue('AlwaysOnTop', False);
@@ -1406,7 +1402,6 @@ begin
   FSharpEBar.AutoStart := True;
   FSharpEBar.AutoHide := False;
   FSharpEBar.AutoHideTime := 1000;
-  FSharpEBar.DisableHideBar := True;
   FSharpEBar.StartHidden := False;
   FSharpEBar.HorizPos := hpMiddle;
   FSharpEBar.MonitorIndex := 0;
@@ -1759,7 +1754,6 @@ begin
   end;
 
   AutoStart1.Checked := SharpEBar.AutoStart;
-  DisableBarHiding1.Checked := SharpEBar.DisableHideBar;
   ShowMiniThrobbers1.Checked := ModuleManager.ShowMiniThrobbers;
   AutoHide1.Checked := SharpEBar.AutoHide;
   AlwaysOnTop1.Checked := SharpEBar.AlwaysOnTop;
@@ -2246,7 +2240,7 @@ end;
 
 procedure TSharpBarMainForm.HideBar(fromDrag : Boolean);
 begin
-  if (Visible) and (SharpEBar.DisableHideBar) and (not SharpEBar.AutoHide) then
+  if (Visible) and (not SharpEBar.AutoHide) then
     exit;
 
   if (SharpEbar.VertPos = vpBottom) then
@@ -2405,13 +2399,6 @@ begin
   UpdateBGImage;
   SharpApi.SharpEBroadCast(WM_UPDATEBARWIDTH, 0, 0);
   ModuleManager.ReCalculateModuleSize(True,True);
-  SaveBarSettings;
-end;
-
-procedure TSharpBarMainForm.DisableBarHiding1Click(Sender: TObject);
-begin
-  DisableBarHiding1.Checked := not DisableBarHiding1.Checked;
-  SharpEBar.DisableHideBar := DisableBarHiding1.Checked;
   SaveBarSettings;
 end;
 
@@ -2594,7 +2581,7 @@ begin
     // Top Bar
     if SharpBarMainForm.SharpEBar.VertPos = vpTop then
     begin
-      if (not SharpEBar.DisableHideBar) and (not SharpEBar.AutoHide) and (Self.Visible) then
+      if (not SharpEBar.AutoHide) and (Self.Visible) then
       begin
         FDragging := (GetMouseDown(VK_LBUTTON)) and (FDragEdge);
 
@@ -2633,7 +2620,7 @@ begin
     // Bottom Bar
     end else if SharpBarMainForm.SharpEBar.VertPos = vpBottom then
     begin
-      if (not SharpEBar.DisableHideBar) and (not SharpEBar.AutoHide) and (Self.Visible) then
+      if (not SharpEBar.AutoHide) and (Self.Visible) then
       begin
         FDragging := (GetMouseDown(VK_LBUTTON)) and (FDragEdge);
 

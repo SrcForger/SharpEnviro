@@ -60,7 +60,7 @@ begin
     // Top Bar
     if SharpBarMainForm.SharpEBar.VertPos = vpTop then
     begin
-      if (not SharpBarMainForm.SharpEBar.DisableHideBar) and (not SharpBarMainForm.SharpEBar.AutoHide) and (not SharpBarMainForm.Visible) then
+      if (not SharpBarMainForm.SharpEBar.AutoHide) and (not SharpBarMainForm.Visible) then
       begin
         FDragging := (GetMouseDown(VK_LBUTTON)) and (FDragEdge);
 
@@ -87,7 +87,7 @@ begin
     // Bottom Bar
     end else if SharpBarMainForm.SharpEBar.VertPos = vpBottom then
     begin
-      if (not SharpBarMainForm.SharpEBar.DisableHideBar) and (not SharpBarMainForm.SharpEBar.AutoHide) and (not SharpBarMainForm.Visible) then
+      if (not SharpBarMainForm.SharpEBar.AutoHide) and (not SharpBarMainForm.Visible) then
       begin
         FDragging := (GetMouseDown(VK_LBUTTON)) and (FDragEdge);
 
@@ -146,19 +146,16 @@ end;
 
 procedure TBarHideForm.HideBar;
 begin
-  if not SharpBarMainForm.SharpEBar.DisableHideBar then
+  SharpBarMainForm.Hide;
+  // Display a Tooltop if bar was hidden for the first time
+  if SharpBarMainForm.FirstHide then
   begin
-    SharpBarMainForm.Hide;
-    // Display a Tooltop if bar was hidden for the first time
-    if SharpBarMainForm.FirstHide then
-    begin
-      SharpBarMainForm.ShowNotify('The bar is now invisible because you dragged the border. You can show the bar again by dragging the bar downwards or upwards depending on what position the bar is in.',True);
-      SharpBarMainForm.FirstHide := False;
-      SharpBarMainForm.SaveBarTooltipSettings;
-    end;
-
-    SharpApi.ServiceMsg('Shell','DeskAreaUpdate');
+    SharpBarMainForm.ShowNotify('The bar is now invisible because you dragged the border. You can show the bar again by dragging the bar downwards or upwards depending on what position the bar is in.',True);
+    SharpBarMainForm.FirstHide := False;
+    SharpBarMainForm.SaveBarTooltipSettings;
   end;
+
+  SharpApi.ServiceMsg('Shell','DeskAreaUpdate');
 end;
 
 procedure TBarHideForm.UpdateStatus;

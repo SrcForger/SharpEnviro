@@ -359,7 +359,6 @@ begin
       Items.Add('VertPos', VertPosToInt(FBar.VertPos));
       Items.Add('AutoStart', FBar.AutoStart);
       Items.Add('ShowThrobber', FBar.ShowThrobber);
-      Items.Add('DisableHideBar', FBar.DisableHideBar);
       Items.Add('StartHidden', (not FBar.aform.Visible) and (not FBar.AutoHide));
       Items.Add('AlwaysOnTop', FBar.AlwaysOnTop);
       Items.Add('ShowMiniThrobbers', ModuleManager.ShowMiniThrobbers);
