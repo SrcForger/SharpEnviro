@@ -20,7 +20,7 @@ RequestExecutionLevel highest
 
 # General Symbol Definitions
 !define REGKEY "SOFTWARE\$(^Name)"
-!define VERSION 0.8-RC2
+!define VERSION 0.8-RC3
 !define COMPANY "SharpEnviro Development Team"
 !define URL www.sharpenviro.com
 
