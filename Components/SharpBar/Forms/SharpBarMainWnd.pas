@@ -2240,9 +2240,6 @@ end;
 
 procedure TSharpBarMainForm.HideBar(fromDrag : Boolean);
 begin
-  if (Visible) and (not SharpEBar.AutoHide) then
-    exit;
-
   if (SharpEbar.VertPos = vpBottom) then
   begin
     BarHideForm.Left := Left;
