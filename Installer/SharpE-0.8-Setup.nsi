@@ -237,6 +237,7 @@ Section "!Core Files" SEC01
 
   SetOutPath "$INSTDIR\Addons\"
   File "..\..\SharpE\Addons\SharpTwitter.dll"
+  File "..\..\SharpE\Addons\SkinConvert.exe"
   
   # Addons x86
   SetOutPath "$INSTDIR\Addons\x86\"
