@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JclSimpleXML;
+  Dialogs, StdCtrls, JclSimpleXML, GR32_Image;
 
 type
   TForm31 = class(TForm)
@@ -14,6 +14,11 @@ type
     OpenXMLDialog: TOpenDialog;
     Label2: TLabel;
     Button2: TButton;
+    Image321: TImage32;
+    Image322: TImage32;
+    Label3: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -43,6 +48,7 @@ end;
 procedure ParseAndConvertXMLItem(XMLItem : TJclSimpleXMlElem);
 var
   n : integer;
+  name : string;
 begin
   n := ConvertList.IndexOf(XMLItem.Name);
   if n = -2 then
@@ -56,7 +62,9 @@ begin
       else if XMLItem.Items.Item[n].Items.Count <> 0 then
         ParseAndConvertXMLItem(XMLItem.Items.Item[n])
       else begin
-        XMLItem.Properties.Add(XMLItem.Items.Item[n].Name,XMLItem.Items.Item[n].Value);
+        name := XMLItem.Items.Item[n].Name;
+        if length(trim(name)) > 0 then // fail save to filter out XML comments
+          XMLItem.Properties.Add(name,XMLItem.Items.Item[n].Value);
         XMLItem.Items.Delete(n);
       end;
     end;
@@ -67,7 +75,9 @@ begin
       if (ConvertList.IndexOf(XMLItem.Items.Item[n].Name) = -1)
         and (XMLItem.Items.Item[n].Items.Count = 0) then
       begin
-        XMLItem.Properties.Add(XMLItem.Items.Item[n].Name,XMLItem.Items.Item[n].Value);
+        name := XMLItem.Items.Item[n].Name;
+        if length(trim(name)) > 0 then // fail save to filter out XML comments
+          XMLItem.Properties.Add(name,XMLItem.Items.Item[n].Value);
         XMLItem.Items.Delete(n);
       end else ParseAndConvertXMLItem(XMLItem.Items.Item[n]);
     end;
@@ -96,6 +106,7 @@ begin
     setlength(s,length(s) - length(ExtractFileExt(s)));
     s := s + '_converted.xml';
     XML.SaveToFile(s);
+    ShowMessage('Converted skin saved to file:' +#10#13+s);
   except
     ShowMessage('Error while loading or parsing XML file!');
     exit;

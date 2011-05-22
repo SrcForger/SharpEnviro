@@ -9,6 +9,7 @@ uses
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
+  Application.Title := 'SharpEnviro Skin Converter';
   Application.CreateForm(TForm31, Form31);
   Application.Run;
 end.
