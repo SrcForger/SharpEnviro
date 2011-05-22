@@ -64,8 +64,22 @@ type
     lparam : LPARAM;
   end;
 
-  pAppBarDataV2 = ^TAppBarDataV2;  
+  pAppBarDataV2 = ^TAppBarDataV2;
   pAppBarDataV1 = ^TAppBarDataV1;
+
+  // Win7
+  TAppBarMsgDataV3 = record
+    abd : TAppBarDataV2;
+    
+    dwMessage  : DWORD;
+    dwPadding1 : DWORD;
+
+    hSharedMemory : HWND;
+    dwPadding2    : DWORD;
+
+    dwSourceProcessID : DWORD;
+    dwPadding3        : DWORD;
+  end;  
 
   TAppBarMsgDataV2 = record
     abd : TAppBarDataV2;
@@ -82,6 +96,7 @@ type
     dwSourceProcessID : DWORD;
   end;
 
+  pAppBarMsgDataV3 = ^TAppBarMsgDataV3;
   pAppBarMsgDataV2 = ^TAppBarMsgDataV2;
   pAppBarMsgDataV1 = ^TAppBarMsgDataV1;
 

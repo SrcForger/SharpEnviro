@@ -569,6 +569,8 @@ var
   TrayCmd: integer;
   Icondata: TNotifyIconDataV7;
   IconIdent : TNotifyIconIdentifierMsg;
+  AppBarMsgDataV1 : TAppBarMsgDataV1;
+  AppBarMsgDataV3 : TAppBarMsgDataV3;
   AppBarMsgData : TAppBarMsgDataV2;
   data: pCopyDataStruct;
   hidden : boolean;
@@ -624,7 +626,32 @@ begin
         SH_APPBAR_DATA :
         begin
           //SharpApi.SendDebugMessage('TRAY','dwData: SH_APPBAR_DATA',0);
-          AppBarMsgData := pAppBarMsgDataV2(Data.lpData)^;
+          if (Data.cbData = sizeof(TAppBarMsgDataV2)) then
+            AppBarMsgData   := pAppBarMsgDataV2(Data.lpData)^ // this one is what we use for HandleAppBarMesage
+          else if (Data.cbData = sizeof(TAppBarMsgDataV1)) then
+          begin
+            AppBarMsgDataV1 := pAppBarMsgDataV1(Data.lpData)^;
+            // manually copy over what is there
+            AppBarMsgData.abd.cbSize           := AppBarMsgDataV1.abd.cbSize;
+            AppBarMsgData.abd.Wnd              := AppBarMsgDataV1.abd.Wnd;
+            AppBarMsgData.abd.uCallBackMessage := AppBarMsgDataV1.abd.uCallBackMessage;
+            AppBarMsgData.abd.uEdge            := AppBarMsgDataV1.abd.uEdge;
+            AppBarMsgData.abd.rc               := AppBarMsgDataV1.abd.rc;
+            AppBarMsgData.abd.lparam           := AppBarMsgDataV1.abd.lparam;
+            AppBarMsgData.dwMessage         := AppBarMsgDataV1.dwMessage;
+            AppBarMsgData.hSharedMemory     := AppBarMsgDataV1.hSharedMemory;
+            AppBarMsgData.dwSourceProcessID := AppBarMsgDataV1.dwSourceProcessID;
+            AppBarMsgData.dw64BitAlign      := 0;
+          end else if (Data.cbData = sizeof(TAppBarMsgDataV3)) then
+          begin
+            AppBarMsgDataV3 := pAppBarMsgDataV3(Data.lpData)^;
+           // manually copy over what is there
+            AppBarMsgData.abd               := AppBarMsgDataV3.abd;
+            AppBarMsgData.dwMessage         := AppBarMsgDataV3.dwMessage;
+            AppBarMsgData.hSharedMemory     := AppBarMsgDataV3.hSharedMemory;
+            AppBarMsgData.dwSourceProcessID := AppBarMsgDataV3.dwSourceProcessID;
+            AppBarMsgData.dw64BitAlign      := 0;            
+          end;
           Result := TrayManager.HandleAppBarMessage(AppBarMsgData,lparam);
         end;
         SH_ICON_IDENTIFIER:
