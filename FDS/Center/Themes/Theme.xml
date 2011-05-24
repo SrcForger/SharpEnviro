@@ -3,6 +3,7 @@
     <Icons> 
       <File>IconList.dll</File>
       <Icon>IconList.png</Icon>
+      <Help>IconList.xml</Help>
     </Icons>
     <Desktop> 
       <File>DesktopTheme.dll</File>

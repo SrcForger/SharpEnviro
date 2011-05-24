@@ -9,6 +9,7 @@
       <Section>Themes</Section>
       <File>IconList.dll</File>
       <Icon>IconList.png</Icon>
+      <Help>IconList.xml</Help>
     </Icons>
     <Desktop> 
       <Section>Themes</Section>

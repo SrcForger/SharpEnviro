@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<ConfigHelp size="full">
+  <Label bold="1">Icon Set</Label>
+  <Label>Select the icon set which you want to use with this theme. An icon set defines a group of icons which can be used by the entire shell. If any link, button, desktop object or any other part of the shell uses an icon which is part of a SharpEnviro icon set then all those icons will dynamically change when you select a different icon set.</Label>
+  <Sep></Sep>
+  <Label bold="1">Using icons with the shell</Label>
+  <Label>To use the icons of the icon set with any part of the shell you can use the generic tag/code of each icon. For selecting an icon you will always have an edit box and a browse button available. Either directly enter the icons tag/code into the edit box (e.g. icon.folder, icon.system.computer, ...) or click the browse button to get a list of all available icons.</Label>
+  <Sep></Sep>
+  <Image>IconSelection.png</Image>
+</ConfigHelp>
