@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<ConfigHelp size="full">
+  <Label bold="1">Global Font Settings</Label>
+  <Label>Changing the font settings in this configuration page works as an override to any fonts used by the skin system of the SharpBars. This might be usefull if you don't like a font type or if you don't like certain settings of a skin (e.g. size, shadow or visibility).  However, for some settings like size and visibility you don't set the new target value directory, you rather set by how much it will change. For example setting the font size to +1 in this configuration page will make all fonts larger by +1 pt.</Label>
+  <Sep></Sep>
+  <Image align="left" span="none" mleft="0" mtop="2">Cross.png</Image>
+  <Label>When you change a setting, meaning that the global value will be overriden or modified, a red X will be displayed next to the value you did modify. This X has two purposes, first it indicates which settings are currently overwritten. Secondly clicking the X will revert the setting to the default value disabling the override.</Label>
+  <Sep></Sep>
+  <Label bold="1">Cleartype fonts</Label>
+  <Label>By default most SharpEnviro skins will use cleartype fonts. However on some systems this can cause poor readability of some captions. To disable cleartype fonts just disable it by overriding and unchecking the 'Apply cleartype fonts' option.</Label>
+  <Image>ClearType.png</Image>
+</ConfigHelp>

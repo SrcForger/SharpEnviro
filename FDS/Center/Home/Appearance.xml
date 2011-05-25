@@ -49,6 +49,7 @@
       <File>Font.dll</File>
       <Icon>font.png</Icon>
       <StatusFromDll>0</StatusFromDll>
+      <Help>Font.xml</Help>
     </Font>
   </Sections> 
 </SharpCenter>
