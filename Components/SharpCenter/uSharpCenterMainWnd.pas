@@ -1260,6 +1260,11 @@ begin
         SCM.Plugin.Dll) = 0 then
       begin
         lbTree.ItemIndex := i;
+
+        // Update description with latest data loaded from the plugin
+        // (in case it has not been previously loaded)
+        if Sender <> nil then
+          TSharpCenterManagerItem(lbTree.Item[i].Data).Description := TSharpCenterManager(Sender).Plugin.Plugindata.Description;
         break;
       end;
     end;
