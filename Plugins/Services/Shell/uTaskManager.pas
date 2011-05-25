@@ -269,9 +269,12 @@ begin
       Synchronize(DoUpdate); // Synchronize with an eventual VCL GUI thread
 
       EnterCriticalSection(TaskCritSect);
-      FreeAndNil(FCurItem);
-      FCurItem := nil;
-      LeaveCriticalSection(TaskCritSect);
+      try
+        FreeAndNil(FCurItem);
+        FCurItem := nil;
+      finally
+        LeaveCriticalSection(TaskCritSect);
+      end;
     end else Suspend;
   end;
 end;
@@ -648,8 +651,11 @@ begin
       if ((not FListMode) and Multithreading) then
       begin
         EnterCriticalSection(TaskCritSect);
-        FUpdateThread.Remove(pItem.Handle);
-        LeaveCriticalSection(TaskCritSect);
+        try
+          FUpdateThread.Remove(pItem.Handle);
+        finally
+          LeaveCriticalSection(TaskCritSect);
+        end;
         FUpdateThread.Resume;
       end;      
 
