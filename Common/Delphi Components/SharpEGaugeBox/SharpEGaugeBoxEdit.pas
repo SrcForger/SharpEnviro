@@ -60,6 +60,7 @@ type
     FBackPanel: TPanel;
     FEnabled: Boolean;
     FPercentDisplay: Boolean;
+    FSignDisplay: Boolean;
     FMaxPercent: integer;
     FOnChangeValue: TChangeValueEvent;
     FMax: Integer;
@@ -96,6 +97,7 @@ type
     procedure SetPopPosition(const Value: TPopPosition);
     procedure SetDescription(const Value: string);
     procedure SetPercentDisplay(const Value : boolean);
+    procedure SetSignDisplay(const Value : boolean);
     function GetBackgroundColor: TColor;
     procedure SetBackgroundColor(const Value: TColor);
     function GetNewValue: integer;
@@ -131,6 +133,7 @@ type
     //property Enabled;
     property PopPosition: TPopPosition read FPopPosition write SetPopPosition;
     property PercentDisplay: boolean read FPercentDisplay write SetPercentDisplay;
+    property SignDisplay: boolean read FSignDisplay write SetSignDisplay;
     property MaxPercent: integer read FMaxPercent write SetMaxPercent;
 
     property Formatting: string read FFormatting write FFormatting;
@@ -331,6 +334,12 @@ begin
   UpdateEditBox;
 end;
 
+procedure TSharpeGaugeBox.SetSignDisplay(const Value: boolean);
+begin
+  FSignDisplay := Value;
+  UpdateEditBox;
+end;
+
 procedure TSharpeGaugeBox.SetSuffix(const Value: string);
 begin
   FSuffix := Value;
@@ -346,13 +355,18 @@ end;
 procedure TSharpeGaugeBox.UpdateEditBox;
 var
   temp : integer;
+  sign : string;
 begin
   if FPercentDisplay then
     temp := round(FValue / FMax * FMaxPercent)
   else
     temp := FValue;
 
-  FValueEdit.Text := Format('%s' + FFormatting + '%s', [FPrefix, temp, FSuffix]);
+  if (FSignDisplay) and (temp >= 0) then
+    sign := '+'
+  else sign := '';
+
+  FValueEdit.Text := Format('%s' + sign + FFormatting + '%s', [FPrefix, temp, FSuffix]);
 end;
 
 procedure TSharpeGaugeBox.ValueEditKeyPress(Sender: TObject; var Key: Char);
