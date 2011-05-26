@@ -31,7 +31,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JclSimpleXml, SharpApi, JclFileUtils,
   SharpTypes, SharpESkin,
-  ImgList, PngImageList, uISharpETheme, uThemeConsts,
+  ImgList, PngImageList, uISharpETheme, uThemeConsts, GR32_PNG,
   SharpThemeApiEx, SharpEListBoxEx, BarPreview, GR32, pngimage,
   ExtCtrls, SharpCenterApi, SharpFileUtils, SharpCenterThemeApi, JclStrings,
 
@@ -141,10 +141,16 @@ var
   bmp32: TBitmap32;
   path : string;
   tmp: TPNGObject;
+  previewdir : string;
+  previewfile : string;
+  b : boolean;
 begin
   pilNormal.Clear;        
   pilSelected.Clear;
   dir := SharpApi.GetSharpeDirectory + 'Skins\';
+  previewdir := SharpApi.GetSharpeUserSettingsPath + 'Cache\Skins\';
+  if (not DirectoryExists(previewdir)) then
+    ForceDirectories(previewdir);  
 
   files := TStringList.Create;
   dirs := TStringList.Create;
@@ -176,7 +182,13 @@ begin
         bmp32.Clear( color32( PluginHost.Theme.PluginSelectedItem ) );
 
         scheme := 'DEFAULT';
-        CreateBarPreview(Bmp32, PluginHost.PluginId, skin, scheme, 120, FTheme);
+        previewfile := previewdir + skin + '.png';
+        if (FileExists(previewfile)) then
+          GR32_PNG.LoadBitmap32FromPNG(Bmp32,previewfile,b)
+        else begin
+          CreateBarPreview(Bmp32, PluginHost.PluginId, skin, scheme, 120, FTheme);
+          GR32_PNG.SaveBitmap32ToPNG(Bmp32, previewfile, false, true, clwhite);
+        end;
 
         pilNormal.BkColor := FPluginHost.Theme.PluginItem;
         pilSelected.BkColor := FPluginHost.Theme.PluginSelectedItem;
