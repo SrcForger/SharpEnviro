@@ -139,7 +139,6 @@ end;
 
 procedure TMainForm.mnOnClick(pItem: TSharpEMenuItem; pMenuWnd : TObject; var CanClose: boolean);
 var
-  n : integer;
   TrayItem : TTrayItem;
   menu : TSharpEMenu;
   menuWnd : TSharpEMenuWnd;
@@ -152,18 +151,12 @@ begin
   if pItem = nil then
     exit;
 
-  TrayItem := nil;
-  for n := 0 to FTrayClient.HiddenItems.Count - 1 do
-  begin
-    if (n = pItem.PropList.GetInt('index')) then
-    begin
-      TrayItem := TTrayItem(FTrayClient.HiddenItems.Extract(FTrayClient.HiddenItems[n]));
-      break;
-    end;
-  end;
-  
+  TrayItem := TTrayItem(pItem.PropList.GetObject('trayitem'));
+
   if TrayItem <> nil then
   begin
+    FTrayClient.HiddenItems.Extract(TrayItem);
+
     menu := TSharpEMenu(pItem.OwnerMenu);
     menuwnd := TSharpEMenuWnd(pMenuWnd);
 
@@ -344,6 +337,7 @@ begin
 
     item := TSharpEMenuItem(mn.AddCustomItem(s, id, TrayItem.Bitmap));
     item.PropList.Add('index', n);
+    item.PropList.Add('trayitem', TrayItem);
     item.OnClick := mnOnClick;
 
     n := n + 1;
