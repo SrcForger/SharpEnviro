@@ -57,6 +57,12 @@ type
                 constructor Create(pName : String; pValue : boolean); reintroduce;
               end;
 
+  TObjectData = class(TPropertyData)
+                public
+                  Value : TObject;            
+                  constructor Create(pName : String; pValue : TObject); reintroduce;
+                end;
+
   TPropertyList = class
   private
     FList : TObjectList;
@@ -65,9 +71,11 @@ type
     procedure Add(pName : String; pValue : String); overload;
     procedure Add(pName : String; pValue : Int64); overload;
     procedure Add(pName : String; pValue : boolean); overload;
+    procedure Add(pName : String; pValue : TObject); overload;
     function GetString(pName : String) : String;
     function GetInt(pName : String) : Int64;
     function GetBool(pName : String) : boolean;
+    function GetObject(pName : String) : TObject;
     function Remove(pName : String) : boolean;
     procedure Clear;
     function HasProperty(pName : String) : boolean;
@@ -84,6 +92,12 @@ constructor TPropertyData.Create(pName : String);
 begin
   inherited Create;
   Name := pName;
+end;
+
+constructor TObjectData.Create(pName: String; pValue: TObject);
+begin
+  inherited Create(pName);
+  Value := pValue;
 end;
 
 constructor TIntData.Create(pName : String; pValue : Int64);
@@ -152,6 +166,12 @@ begin
   FList.Add(TBoolData.Create(pName,pValue));
 end;
 
+procedure TPropertyList.Add(pName: String; pValue: TObject);
+begin
+  Remove(pName);
+  FList.Add(TObjectData.Create(pName,pValue));
+end;
+
 function TPropertyList.GetString(pName : String) : String;
 var
   item : TObject;
@@ -172,6 +192,17 @@ begin
   if item <> nil then
      if item is TIntData then
         result := TIntData(item).Value;
+end;
+
+function TPropertyList.GetObject(pName: String): TObject;
+var
+  item : TObject;
+begin
+  item := FindByName(pName);
+  result := nil;
+  if item <> nil then
+     if item is TObjectData then
+        result := TObjectData(item).Value;
 end;
 
 function TPropertyList.GetBool(pName : String) : boolean;
@@ -221,5 +252,6 @@ function TPropertyList.HasProperty(pName : String) : boolean;
 begin
   result := (FindByName(pName) <> nil);
 end;
+
 
 end.
