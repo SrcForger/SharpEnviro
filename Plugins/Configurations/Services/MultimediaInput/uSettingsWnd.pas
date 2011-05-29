@@ -31,7 +31,8 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Menus, SharpApi, SharpCenterApi,
   ExtCtrls, SharpECenterHeader, JvXPCore, JvXPCheckCtrls,
-  ISharpCenterHostUnit, JvExControls;
+  ISharpCenterHostUnit, JvExControls, SharpEGaugeBoxEdit, SharpESwatchManager,
+  SharpEColorEditorEx;
 
 type
   TStringObject = Class(TObject)
@@ -48,9 +49,18 @@ type
     cboVertPos: TComboBox;
     Label2: TLabel;
     cboHorizPos: TComboBox;
+    sgbOffsetHor: TSharpeGaugeBox;
+    sgbOffsetVert: TSharpeGaugeBox;
+    Label3: TLabel;
+    sgbFontSize: TSharpeGaugeBox;
+    SharpESwatchManager1: TSharpESwatchManager;
+    Colors: TSharpEColorEditorEx;
+    chkColor: TJvXPCheckbox;
     procedure SettingsChanged(Sender: TObject);
     procedure cboHorizPosChange(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure ColorsChangeColor(ASender: TObject; AValue: Integer);
+    procedure sgbOffsetHorChangeValue(Sender: TObject; Value: Integer);
   private
     FPluginHost: ISharpCenterHost;
     procedure SendUpdate;
@@ -75,17 +85,33 @@ begin
   UpdateUI;
 end;
 
+procedure TfrmSettings.sgbOffsetHorChangeValue(Sender: TObject; Value: Integer);
+begin
+  SettingsChanged(nil);
+end;
+
 procedure TfrmSettings.UpdateUI;
 begin
   cboHorizPos.Enabled := chkShowOSD.Checked;
   cboVertPos.Enabled := chkShowOSD.Checked;
   Label1.Enabled := chkShowOSD.Checked;
   Label2.Enabled := chkShowOSD.Checked;
+  Label3.Enabled := chkShowOSD.Checked;
+  sgbFontSize.Enabled := chkShowOSD.Checked;
+  sgbOffsetHor.Enabled := chkShowOSD.Checked;
+  sgbOffsetVert.Enabled := chkShowOSD.Checked;
+
+  Colors.Visible := chkColor.Checked;
 end;
 
 procedure TfrmSettings.cboHorizPosChange(Sender: TObject);
 begin
   SettingsChanged(nil);
+end;
+
+procedure TfrmSettings.ColorsChangeColor(ASender: TObject; AValue: Integer);
+begin
+  SendUpdate;
 end;
 
 procedure TfrmSettings.FormShow(Sender: TObject);

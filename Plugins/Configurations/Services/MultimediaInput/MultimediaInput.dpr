@@ -80,8 +80,13 @@ begin
     with PluginHost.Xml.XmlRoot.Items, frmSettings do
     begin
       chkShowOSD.Checked := BoolValue('ShowOSD',True);
+      chkColor.Checked := BoolVAlue('OSDOverwiteColor',False);
       cboVertPos.ItemIndex := IntValue('OSDVertPos',2);
       cboHorizPos.ItemIndex := IntValue('OSDHorizPos',1);
+      sgbFontSize.Value := IntValue('OSDFontSize',0);
+      sgbOffsetHor.Value := IntValue('OSDHorizOffset',0);
+      sgbOffsetVert.Value := IntValue('OSDVertOffset',0);
+      frmSettings.Colors.Items.Item[0].ColorCode := IntValue('OSDColor',clWhite);
       UpdateUI;
     end;
   end;
@@ -111,6 +116,14 @@ begin
     Add('ShowOSD',chkShowOSD.Checked);
     Add('OSDVertPos',cboVertPos.ItemIndex);
     Add('OSDHorizPos',cboHorizPos.ItemIndex);
+    Add('ShowOSD',chkShowOSD.Checked);
+    Add('OSDOverwiteColor',chkColor.Checked);
+    Add('OSDVertPos',cboVertPos.ItemIndex);
+    Add('OSDHorizPos',cboHorizPos.ItemIndex);
+    Add('OSDFontSize',sgbFontSize.Value);
+    Add('OSDHorizOffset',sgbOffsetHor.Value);
+    Add('OSDVertOffset',sgbOffsetVert.Value);
+    Add('OSDColor',frmSettings.Colors.Items.Item[0].ColorCode);    
   end;
   PluginHost.Xml.Save;
 end;

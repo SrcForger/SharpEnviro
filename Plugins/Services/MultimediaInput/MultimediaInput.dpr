@@ -28,6 +28,7 @@ uses
   ShareMem,
   windows,
   SysUtils,
+  Graphics,
   Messages,
   MultiMon,
   Classes,
@@ -66,6 +67,11 @@ var
   sShowOSD : boolean;
   sOSDVertPos : TVerticalPos;
   sOSDHorizPos : THorizontalPos;
+  sOSDOffsetHorz : integer;
+  sOSDOffsetVert : integer;
+  sOSDFontSize : integer;
+  sOSDChangeColor : boolean;
+  sOSDColor : integer;
   MPlayers : TMediaPlayerList;
   AppCmdList : TAppCommandList;
   
@@ -79,6 +85,9 @@ var
   moninfo : TMonitorInfo;
   p : TPoint;
   edge: TSharpNotifyEdge;
+  oldSize : integer;
+  oldColor : integer;
+  oldColorStr : String;
 begin
 
   if not sShowOSD then
@@ -115,8 +124,25 @@ begin
   else if (sOSDVertPos = vpBottom) and (sOSDHorizPos = hpCenter) then
     edge := neBottomCenter
   else edge := neBottomRight;
+  x := x + sOSDOffsetHorz;
+  y := y + sOSDOffsetVert;
+
+  // temporarily overwrite skin manager OSD font settings and set back after
+  oldSize := SkinManager.Skin.OSDText.Size;
+  oldColor := SkinManager.Skin.OSDText.Color;
+  oldColorStr := SkinManager.Skin.OSDText.ColorString;
+  SkinManager.Skin.OSDText.Size := oldSize + sOSDFontSize;
+  if sOSDChangeColor then
+  begin
+    SkinManager.Skin.OSDText.Color := sOSDColor;
+    SkinManager.Skin.OSDText.ColorString := inttostr(sOSDColor);
+  end;
 
   SharpNotify.CreateNotifyText(0,nil,x,y,pCaption,edge,SkinManager,2000,moninfo.rcMonitor,True);
+  
+  SkinManager.Skin.OSDText.Size := oldSize;
+  SkinManager.Skin.OSDText.Color := oldColor;
+  SkinManager.Skin.OSDText.ColorString := oldColorStr;
 end;
 
 procedure LoadSettings;
@@ -126,6 +152,11 @@ begin
   sShowOSD := True;
   sOSDVertPos := vpBottom;
   sOSDHorizPos := hpCenter;
+  sOSDOffsetHorz := 0;
+  sOSDOffsetVert := 0;
+  sOSDChangeColor := False;
+  sOSDColor := clWhite;
+  sOSDFontSize := 0;
 
   XML := TInterfacedXMLBase.Create;
   XML.XmlFilename := SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\MultimediaInput\MultimediaInput.xml';
@@ -135,6 +166,11 @@ begin
       sShowOSD := BoolValue('ShowOSD',True);
       sOSDVertPos := TVerticalPos(IntValue('OSDVertPos',Integer(sOSDVertPos)));
       sOSDHorizPos := THorizontalPos(IntValue('OSDHorizPos',Integer(sOSDHorizPos)));
+      sOSDOffsetHorz := IntValue('OSDHorizOffset', sOSDOffsetHorz);
+      sOSDOffsetVert := IntValue('OSDVertOffset', sOSDOffsetVert);
+      sOSDChangeColor := BoolValue('OSDOverwiteColor', sOSDChangeColor);
+      sOSDColor := IntValue('OSDColor', sOSDColor);
+      sOSDFontSize := IntValue('OSDFontSize', sOSDFontSize);
     end;
   XML.Free;
 end;
