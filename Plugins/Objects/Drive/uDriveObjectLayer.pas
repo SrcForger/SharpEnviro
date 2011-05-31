@@ -292,7 +292,7 @@ begin
     if GetDiskFree(FSettings.Target[1]) = 0 then
       SpaceFree := 0.00
     else
-      SpaceFree := (GetDiskCapacity(FSettings.Target[1])) - (GetDiskFree(FSettings.Target[1]));
+      SpaceFree := GetDiskFree(FSettings.Target[1]);
 
     // If the free space and the drive name have not changed then exit.
     if (floor(SpaceFree) = FOldSpaceFree) and (DriveName = FOldDriveName) then
