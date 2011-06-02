@@ -87,6 +87,8 @@ begin
   begin
     msg.Parameter := ExtractFileName(pItem.PropList.GetString('ObjectFile'));
     msg.Command := 'AddObject';
+    msg.LParam := 0;
+    msg.RParam := 0;
 
     with cds do
     begin
