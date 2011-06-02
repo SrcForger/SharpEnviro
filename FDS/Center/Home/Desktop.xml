@@ -2,9 +2,15 @@
 <SharpCenter>
   <Default>
       <Icon>desktop.png</Icon>
-      <Name>Desktop Behaviour</Name>
+      <Name>Desktop</Name>
   </Default>
   <Sections>
+    <SharpDesk>
+      <Section>Components</Section>
+      <File>ObjectList.dll</File>
+      <Help>ObjectList.xml</Help>
+      <Icon>ObjectList.png</Icon>
+    </SharpDesk>
     <SharpDesk>
       <Section>Components</Section>
       <File>DesktopSettings.dll</File>
