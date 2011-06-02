@@ -127,6 +127,7 @@ type
     N14: TMenuItem;
     PngImageList2: TPngImageList;
     BackgroundReloadTimer: TTimer;
+    ManageObjects1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -171,9 +172,11 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure BackgroundReloadTimerTimer(Sender: TObject);
     procedure FormActivate(Sender: TObject);
+    procedure ManageObjects1Click(Sender: TObject);
   private
     oldMonitorCount : integer;
 
+    procedure WMDeskCommand(var Msg : TMessage);          message WM_DESKCOMMAND;
     procedure WMShowWindow(var Msg : TMessage);           message WM_SHOWWINDOW;
     procedure WMSettingsChange(var Msg : TMessage);       message WM_SETTINGCHANGE;
     procedure WMDisplayChange(var Msg : TMessage);        message WM_DISPLAYCHANGE;
@@ -374,6 +377,17 @@ begin
   SharpApi.SendDebugMessage('DESK','MOUSE LEAVE',0);}
 end;
 
+procedure TSharpDeskMainForm.WMDeskCommand(var Msg: TMessage);
+var
+  DelID : integer;
+begin
+  if (msg.WParam = BC_DELETE) then
+  begin
+    DelID := msg.LParam;
+    SharpDesk.DeleteObject(DelID);
+  end;
+end;
+
 procedure TSharpDeskMainForm.WMDeskExportBackground(var Msg : TMessage);
 var
    TempBMP : TBitmap32;
@@ -415,6 +429,8 @@ var
   SetItem : TObjectSetItem;
   newID : integer;
   s : String;
+  NewX, NewY : integer;
+  P : TPoint;
 begin
   tmpMsg := PSharpE_DataStruct(PCopyDataStruct(msg.lParam)^.lpData)^;
 
@@ -424,10 +440,20 @@ begin
     if oFile <> nil then
     begin
       // Add new object
+      if (tmpMsg.LParam <> 0) or (tmpMsg.RParam <> 0) then
+      begin
+        P := ScreenToClient(Point(tmpMsg.LParam,tmpMsg.RParam));
+        NewX := P.X;
+        NewY := P.Y;
+      end else
+      begin
+        NewX := LastX;
+        NewY := LastY;
+      end;
       NewID :=  SharpDesk.ObjectSet.GenerateObjectID;
       SetItem := SharpDesk.ObjectSet.AddDesktopObject(newID,
                                                   OFile.FileName,
-                                                  Point(LastX,LastY),
+                                                  Point(NewX,NewY),
                                                   False,
                                                   False);
       OFile.AddDesktopObject(SetItem);
@@ -438,7 +464,7 @@ begin
       setlength(s,length(s) - length(ExtractFileExt(s)));
       SharpCenterApi.CenterCommand(sccLoadSetting,
                                    PChar('Objects'),
-								   PChar(s),
+                                   PChar(s),
                                    PChar(inttostr(SetItem.ObjectID)));
     end;
   end;
@@ -1757,6 +1783,15 @@ begin
 //  if MakeWindow1.ImageIndex = 29 then
   //   DesktopObject.MakeWindow
 //     else DesktopObject.MakeLayer;
+end;
+
+procedure TSharpDeskMainForm.ManageObjects1Click(Sender: TObject);
+begin
+  SharpCenterApi.CenterCommand(sccLoadSetting,
+                               PChar('Home'),
+                               'Desktop',
+                               'ObjectList');
+  SharpDesk.UnselectAll;
 end;
 
 end.

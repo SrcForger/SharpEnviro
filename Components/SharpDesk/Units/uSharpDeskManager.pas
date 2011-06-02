@@ -106,6 +106,7 @@ type
       //procedure ConvertOldObjectFormat;
       procedure CreatePreset(pDesktopObject : TObject; pName : String);
       procedure DeleteSelectedLayers;
+      procedure DeleteObject(ID : integer);
       procedure DisableAnimation;
       procedure EnableAnimation;
       function  GenerateObjectID : integer;
@@ -412,6 +413,41 @@ begin
 end;
 
 
+
+
+procedure TSharpDeskManager.DeleteObject(ID: integer);
+var
+   DesktopObject : TDesktopObject;
+   n,i : integer;
+   fn : string;
+begin
+  for n := 0 to FObjectFileList.Count -1 do
+  begin
+    for i := 0 to TObjectFile(FObjectFileList.Items[n]).Count - 1 do
+    begin
+      DesktopObject := TDesktopObject(TObjectFile(FObjectFileList.Items[n]).Items[i]);
+      if (DesktopObject.Settings.ObjectID = ID) then
+      begin
+        try
+          fn := DesktopObject.Settings.ObjectFile;
+          setlength(fn,length(fn)-length(FObjectExt));
+          DeleteFile(SharpApi.GetSharpeUserSettingsPath +  'SharpDesk\Objects\'
+                     + fn + '\' + inttostr(DesktopObject.Settings.ObjectID)
+                     +'.xml');
+        except
+        end;
+        DesktopObject.Delete;
+        TObjectFile(FObjectFileList.Items[n]).Delete(i);
+        break;
+      end;
+    end;
+    if TObjectFile(FObjectFileList.Items[n]).Count = 0 then
+       TObjectFile(FObjectFileList.Items[n]).Unload;
+  end;
+  FObjectSet.Save;
+  CheckGhostLayers;
+  CheckInvisibleLayers;
+end;
 
 procedure TSharpDeskManager.DeleteSelectedLayers;
 var
