@@ -3,7 +3,7 @@ object frmEditWnd: TfrmEditWnd
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmEditWnd'
-  ClientHeight = 92
+  ClientHeight = 110
   ClientWidth = 497
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -13,6 +13,7 @@ object frmEditWnd: TfrmEditWnd
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = False
+  OnResize = FormResize
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -21,25 +22,25 @@ object frmEditWnd: TfrmEditWnd
     Left = 8
     Top = 41
     Width = 481
-    Height = 16
+    Height = 13
     Margins.Left = 8
     Margins.Top = 8
     Margins.Right = 8
     Margins.Bottom = 0
     Align = alTop
-    AutoSize = False
     Caption = 'Select the object to add'
     Transparent = True
     WordWrap = True
+    ExplicitWidth = 115
   end
   object lbAuthor: TLabel
     AlignWithMargins = True
     Left = 8
-    Top = 65
+    Top = 58
     Width = 481
     Height = 13
     Margins.Left = 8
-    Margins.Top = 8
+    Margins.Top = 4
     Margins.Right = 8
     Margins.Bottom = 10
     Align = alTop
@@ -47,6 +48,7 @@ object frmEditWnd: TfrmEditWnd
     Transparent = True
     Layout = tlCenter
     Visible = False
+    WordWrap = True
     ExplicitWidth = 49
   end
   object Panel1: TPanel
@@ -86,7 +88,7 @@ object frmEditWnd: TfrmEditWnd
   object Preview: TImage32
     AlignWithMargins = True
     Left = 8
-    Top = 88
+    Top = 81
     Width = 481
     Height = 30
     Margins.Left = 8

@@ -50,6 +50,7 @@ type
     procedure cboPositionChange(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure cboObjectsClick(Sender: TObject);
+    procedure FormResize(Sender: TObject);
   private
     FPluginHost : ISharpCenterHost;
     FObjectItem : TObject;
@@ -103,7 +104,7 @@ procedure TfrmEditWnd.LoadObjectData;
 var
   Dir : String;
   FName : String;
-  moduleinfo : TMetaData;
+  objectinfo : TMetaData;
   Bmp : TBitmap32;
   bHasPreview : Boolean;
 begin
@@ -115,16 +116,16 @@ begin
 
   lbDescription.Caption := 'No description available for this module';
 
-  Dir := SharpApi.GetSharpeDirectory + 'Modules\';
+  Dir := SharpApi.GetSharpeDirectory + 'Objects\';
   FName := Dir + cboObjects.Text + '.dll';
 
   if FileExists(FName) then
   begin
     Bmp := TBitmap32.Create;
-    GetModuleMetaData(FName, Bmp, moduleinfo, bHasPreview);
+    GetModuleMetaData(FName, Bmp, objectinfo, bHasPreview);
 
-    lbDescription.Caption := moduleinfo.Description;
-    lbAuthor.Caption := 'Created by ' + moduleinfo.Author;
+    lbDescription.Caption := objectinfo.Description;
+    lbAuthor.Caption := 'Created by ' + objectinfo.Author;
     lbAuthor.Visible := True;
     if bHasPreview then
     begin
@@ -136,6 +137,12 @@ begin
     end;
     Bmp.Free;
   end;
+
+  // force size update
+  lbDescription.AutoSize := False;
+  lbAuthor.AutoSize := False;
+  lbDescription.AutoSize := True;
+  lbAuthor.AutoSize := True;  
 end;
 
 procedure TfrmEditWnd.Save;
@@ -185,6 +192,15 @@ procedure TfrmEditWnd.cboPositionChange(Sender: TObject);
 begin
   FPluginHost.Editing := true;
 
+end;
+
+procedure TfrmEditWnd.FormResize(Sender: TObject);
+begin
+  // force size update
+  lbDescription.AutoSize := False;
+  lbAuthor.AutoSize := False;
+  lbDescription.AutoSize := True;
+  lbAuthor.AutoSize := True;  
 end;
 
 procedure TfrmEditWnd.FormShow(Sender: TObject);
