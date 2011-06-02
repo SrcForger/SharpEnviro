@@ -71,6 +71,8 @@ const
   WM_REQUESTWNDLIST         = WM_APP + 563;
   WM_TASKVWMCHANGE          = WM_APP + 564;
 
+  WM_DESKCOMMAND            = WM_APP + 570;
+
   // SharpBar (new Skin Stuff)
   WM_UPDATEBARWIDTH       = WM_APP + 601;
   WM_SHARPEPLUGINMESSAGE  = WM_APP + 602;
