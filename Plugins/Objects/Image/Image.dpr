@@ -274,11 +274,24 @@ begin
   end;
 end;
 
+function GetMetaData(Preview : TBitmap32) : TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Image';
+    Author := 'Martin Krämer <Martin@SharpEnviro.com>';
+    Description := 'Adds an image to your desktop. Images can be picked from files, randomly loaded from a directory or downloaded from an url';
+    ExtraData := 'preview: False';
+    DataType := tteModule;
+  end;
+end;
+
 
 Exports
   CreateLayer,
   SharpDeskMessage,
-  InitSettings;
+  InitSettings,
+  GetMetaData;
 
 begin
 end.

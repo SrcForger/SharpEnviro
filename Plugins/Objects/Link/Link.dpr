@@ -268,11 +268,24 @@ begin
   end;
 end;
 
+function GetMetaData(Preview : TBitmap32) : TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Link';
+    Author := 'Martin Krämer <Martin@SharpEnviro.com>';
+    Description := 'Create links to anything on your desktop (e.g. files, drives, folders, ...)';
+    ExtraData := 'preview: False';
+    DataType := tteModule;
+  end;
+end;
+
 
 Exports
   CreateLayer,
   SharpDeskMessage,
-  InitSettings;
+  InitSettings,
+  GetMetaData;
 
 begin
 end.

@@ -171,11 +171,24 @@ begin
   
 end;
 
+function GetMetaData(Preview : TBitmap32) : TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Clock';
+    Author := 'James Brumbaugh <James@SharpEnviro.com> and Martin Krämer <Martin@SharpEnviro.com>';
+    Description := 'Displays a skinned analog or digital clock on your desktop. Different skins are available.';
+    ExtraData := 'preview: False';
+    DataType := tteModule;
+  end;
+end;
+
 
 exports
   CreateLayer,
   SharpDeskMessage,
-  InitSettings;
+  InitSettings,
+  GetMetaData;
 
 begin
 end.

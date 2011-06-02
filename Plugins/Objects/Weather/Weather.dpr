@@ -207,11 +207,24 @@ begin
 
 end;
 
+function GetMetaData(Preview : TBitmap32) : TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Weather';
+    Author := 'James Brumbaugh <James@sharpenviro.com> and Martin Krämer <Martin@SharpEnviro.com>';
+    Description := 'Display weather informations on your desktop';
+    ExtraData := 'preview: False';
+    DataType := tteModule;
+  end;
+end;
+
 
 Exports
   CreateLayer,
   SharpDeskMessage,
-  InitSettings;
+  InitSettings,
+  GetMetaData;
 
 begin
 end.

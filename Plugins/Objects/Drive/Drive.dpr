@@ -214,10 +214,23 @@ begin
 
 end;
 
+function GetMetaData(Preview : TBitmap32) : TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Drive';
+    Author := 'Mathias Tillman <Mathias@sharpenviro.com> and Martin Krämer <Martin@SharpEnviro.com>';
+    Description := 'Link to a drive with the ability to display the amount of free space';
+    ExtraData := 'preview: False';
+    DataType := tteModule;
+  end;
+end;
+
 Exports
   CreateLayer,
   SharpDeskMessage,
-  InitSettings;
+  InitSettings,
+  GetMetaData;
 
 begin
 end.

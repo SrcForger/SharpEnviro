@@ -220,11 +220,24 @@ begin
   
 end;
 
+function GetMetaData(Preview : TBitmap32) : TMetaData;
+begin
+  with result do
+  begin
+    Name := 'RecycleBin';
+    Author := 'Martin Krämer <Martin@SharpEnviro.com>';
+    Description := 'Add a recycle bin to your desktop';
+    ExtraData := 'preview: False';
+    DataType := tteModule;
+  end;
+end;
+
 
 Exports
   CreateLayer,
   SharpDeskMessage,
-  InitSettings;
+  InitSettings,
+  GetMetaData;
 
 begin
 end.
