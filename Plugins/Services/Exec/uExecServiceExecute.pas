@@ -727,14 +727,20 @@ var
   orig: string;
 begin
   Result := False;
-  orig := Text;
   s := Trim(Text);
+  orig := Text;
   if s = '' then exit;
   Text := s;
   Debug('Original: ' + text, DMT_TRACE);
 
   // Expand Enviro Vars
   Text := FileUtils.ExpandEnvVars(text);
+
+  // check if zero termination character has been added by stupid ExpandEnvVars function...
+  if length(Text) > 0 then
+    if ord(Text[length(Text)]) = 0 then
+      setlength(Text,length(Text)-1);
+    
   if CompareText(Text,orig) <> 0 then
   begin
     s := Copy(text, 1, Length(text) - 2);
