@@ -725,21 +725,30 @@ function TSharpExec.ProcessString(Text: string; SaveHistory: Boolean = True; Ele
 var
   s: string;
   orig: string;
+  n : integer;
+  t : string;
 begin
   Result := False;
   s := Trim(Text);
-  orig := Text;
+  // remove posible zero termination characters
+  while (length(s) > 0) and (ord(s[length(s)]) = 0) do
+    setlength(s,length(s)-1);
+
   if s = '' then exit;
+  orig := s;
   Text := s;
   Debug('Original: ' + text, DMT_TRACE);
 
   // Expand Enviro Vars
   Text := FileUtils.ExpandEnvVars(text);
 
-  // check if zero termination character has been added by stupid ExpandEnvVars function...
-  if length(Text) > 0 then
-    if ord(Text[length(Text)]) = 0 then
-      setlength(Text,length(Text)-1);
+  // remove posible zero termination characters
+  // on some systems the ExpandEnvVars seems to add those while on other systems
+  // it doesn't. Having a zero termination character at the end of only one string
+  // (i.e. text or orig) will however screw up the check below. So we strictly
+  // remove them
+  while (length(Text) > 0) and (ord(Text[length(Text)]) = 0) do
+    setlength(Text,length(Text)-1);
     
   if CompareText(Text,orig) <> 0 then
   begin
