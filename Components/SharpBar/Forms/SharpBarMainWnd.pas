@@ -1363,7 +1363,15 @@ begin
         Caption := 'SharpBar_' + inttostr(ID);
       end;
     SkinInterface.SkinManager.SetSkinDesign(SharpEBar.SkinDesign);
+    SkinInterface.SkinManager.Skin.UpdateDynamicProperties(SkinInterface.SkinManager.Scheme);
+    SharpEBar.UpdateSkin;
+    SharpEBar.UpdatePosition;
     UpdateBGZone;
+    if SharpEBar.Throbber.Visible then
+    begin
+      SharpEBar.Throbber.UpdateSkin;
+      SharpEbar.Throbber.Repaint;
+    end;
     LoadBarModules(xml.root);
 
     tmrCursorPos.Enabled := false;
