@@ -232,12 +232,16 @@ begin
   end;
 
   if FAutoPosition then
-     if FBottom then
-     begin
-       if top <> FManager.Skin.MiniThrobber.BottomLocation.Y then
-          top := FManager.Skin.MiniThrobber.BottomLocation.Y
-     end else if top <> FManager.Skin.MiniThrobber.Location.Y then
-        else top := FManager.Skin.MiniThrobber.Location.Y;
+  begin
+    if FBottom then
+    begin
+      if top <> FManager.Skin.MiniThrobber.BottomLocation.Y then
+        top := FManager.Skin.MiniThrobber.BottomLocation.Y
+    end else begin
+       if top <> FManager.Skin.MiniThrobber.Location.Y then
+         top := FManager.Skin.MiniThrobber.Location.Y;
+    end;
+  end;
 
   if FManager.Skin.MiniThrobber.Valid then
   begin
