@@ -1128,6 +1128,7 @@ begin
   mInterface.MaxSize := NewWidth;
   if (newWidth <> Width) and BroadCast then
     mInterface.BarInterface.UpdateModuleSize;
+  AlignTaskComponents;
 end;
 
 
