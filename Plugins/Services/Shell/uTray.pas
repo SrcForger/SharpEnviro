@@ -167,36 +167,41 @@ begin
   tmpItem := TTrayIcon.Create;
   tmpItem.AssignFrom(pItem);
 
-  n := WndList.Count -1;
-  while n>=0 do
-  begin
-    try
-      wnd := StrToInt64(WndList[n]);
-    except
-      wnd := 0;
-    end;
-
-    // window doesn't exist anymore -> delete it
-    if not IsWindow(wnd) then
+  try
+    n := WndList.Count -1;
+    while n>=0 do
     begin
-      WndList.Delete(n);
-      n := n - 1;
-      Continue;
+      try
+        wnd := StrToInt64(WndList[n]);
+      except
+        wnd := 0;
+      end;
+
+      // window doesn't exist anymore -> delete it
+      if not IsWindow(wnd) then
+      begin
+        WndList.Delete(n);
+        n := n - 1;
+        Continue;
+      end;
+
+      with cds do
+      begin
+        // action:
+        // 1 = add/modify
+        // 2 = delete
+        dwData := action;
+        cbData := SizeOf(TNotifyIconDataV7);
+        lpData := @tmpItem.data;
+      end;
+
+      // forward the tray message
+      SendMessage(wnd,WM_COPYDATA,0,Cardinal(@cds));
+      n := n -1;
     end;
 
-    with cds do
-    begin
-      // action:
-      // 1 = add/modify
-      // 2 = delete
-      dwData := action;
-      cbData := SizeOf(TNotifyIconDataV7);
-      lpData := @tmpItem.data;
-    end;
-
-    // forward the tray message
-    SendMessage(wnd,WM_COPYDATA,0,Cardinal(@cds));
-    n := n -1;
+  finally
+    tmpItem.Free;
   end;
 end;
 
