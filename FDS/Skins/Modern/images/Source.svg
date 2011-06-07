@@ -339,6 +339,128 @@
        y1="211.10579"
        x2="562.04572"
        y2="180.69951" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3759"
+       id="linearGradient3075"
+       gradientUnits="userSpaceOnUse"
+       x1="580"
+       y1="167.36218"
+       x2="580"
+       y2="138.36218"
+       gradientTransform="matrix(1,0,0,1.3677959,340,-61.354412)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3759"
+       id="linearGradient3077"
+       gradientUnits="userSpaceOnUse"
+       x1="580"
+       y1="167.36218"
+       x2="580"
+       y2="137.36218"
+       gradientTransform="matrix(1,0,0,1.3677959,340,-61.354412)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3950"
+       id="linearGradient3079"
+       gradientUnits="userSpaceOnUse"
+       x1="565"
+       y1="162.36218"
+       x2="565"
+       y2="137.36218"
+       gradientTransform="matrix(1,0,0,1.3677959,340,-61.354412)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3759"
+       id="linearGradient3859"
+       gradientUnits="userSpaceOnUse"
+       x1="580"
+       y1="167.36218"
+       x2="580"
+       y2="138.36218"
+       gradientTransform="matrix(1,0,0,1.3330804,179.54075,3.735933)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3759"
+       id="linearGradient3861"
+       gradientUnits="userSpaceOnUse"
+       x1="580"
+       y1="167.36218"
+       x2="580"
+       y2="137.36218"
+       gradientTransform="matrix(1,0,0,1.3330804,179.54075,3.735933)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3950"
+       id="linearGradient3863"
+       gradientUnits="userSpaceOnUse"
+       x1="565"
+       y1="162.36218"
+       x2="565"
+       y2="137.36218"
+       gradientTransform="matrix(1,0,0,1.3330804,179.54075,3.735933)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3759-9"
+       id="linearGradient3047-9"
+       gradientUnits="userSpaceOnUse"
+       x1="577"
+       y1="206.36218"
+       x2="577"
+       y2="178.36218"
+       gradientTransform="matrix(1,0,0,1.1998566,340.41908,19.217211)" />
+    <linearGradient
+       id="linearGradient3759-9">
+      <stop
+         style="stop-color:#808080;stop-opacity:1;"
+         offset="0"
+         id="stop3761-9" />
+      <stop
+         style="stop-color:#a4a4a4;stop-opacity:1;"
+         offset="1"
+         id="stop3763-5" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3950-3"
+       id="linearGradient3049-9"
+       gradientUnits="userSpaceOnUse"
+       x1="574"
+       y1="206.36218"
+       x2="575"
+       y2="178.36218"
+       gradientTransform="matrix(1,0,0,1.1998566,340.41908,19.217211)" />
+    <linearGradient
+       id="linearGradient3950-3">
+      <stop
+         id="stop3952-5"
+         offset="0"
+         style="stop-color:#686868;stop-opacity:1;" />
+      <stop
+         id="stop3954-6"
+         offset="1"
+         style="stop-color:#b8b8b8;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3759"
+       id="linearGradient3937"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.97372084,0,0,0.97372084,950.90661,0.524074)"
+       x1="258.10156"
+       y1="150.83656"
+       x2="257.53049"
+       y2="58.336563" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3896"
+       id="linearGradient3939"
+       gradientUnits="userSpaceOnUse"
+       x1="249.46967"
+       y1="170.64108"
+       x2="250"
+       y2="157.36218"
+       gradientTransform="matrix(1,0,0,1.0681648,940,-16.793963)" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -347,16 +469,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="8"
-     inkscape:cx="789.18457"
-     inkscape:cy="794.91852"
+     inkscape:zoom="2"
+     inkscape:cx="1200.1001"
+     inkscape:cy="831.89685"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:window-width="1280"
-     inkscape:window-height="716"
+     inkscape:window-height="694"
      inkscape:window-x="-8"
-     inkscape:window-y="23"
+     inkscape:window-y="34"
      inkscape:window-maximized="1">
     <inkscape:grid
        type="xygrid"
@@ -374,7 +496,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -770,5 +892,173 @@
          x="815"
          sodipodi:role="line"
          id="tspan3088" /></text>
+    <path
+       style="fill:url(#linearGradient3075);fill-opacity:1;stroke:#282828;stroke-width:1.09374273px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 870.54687,166.81488 90.0017,0 0,-32.72452 c 0,0 0,-8.18115 -5.00009,-8.18115 -5.0001,0 -80.00152,0 -80.00152,0 0,0 -5.00009,0 -5.00009,8.18115 0,8.18114 0,32.72452 0,32.72452 z"
+       id="path3071"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Daten\SharpE-Dev\SharpE\Skins\Modern\images\BarBig.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path3073"
+       d="m 871.52324,165.4794 88.05106,0 -0.0251,-31.59244 c 0,0 0,-6.64225 -4.00004,-6.64225 -4.89173,0 -80.00074,0 -80.00074,0 0,0 -4.00004,0 -4.00004,6.64225 0,7.65526 -0.0251,31.59244 -0.0251,31.59244 z"
+       style="fill:url(#linearGradient3077);fill-opacity:1;stroke:url(#linearGradient3079);stroke-width:1.046;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       sodipodi:nodetypes="cccscscc"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:export-filename="C:\Daten\SharpE-Dev\SharpE\Skins\Modern\images\BarBig.png" />
+    <path
+       sodipodi:nodetypes="ccscsc"
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="C:\Daten\SharpE-Dev\SharpE\Skins\Modern\images\TaskbarBig.png"
+       inkscape:connector-curvature="0"
+       id="path3849"
+       d="m 959.99417,226.11452 0,-29.22838 c 0,0 0,-7.97365 -4.99482,-7.97365 -4.99483,0 -79.9172,0 -79.9172,0 0,0 -4.99482,0 -4.99482,7.97365 0,7.97366 0,29.22838 0,29.22838"
+       style="fill:url(#linearGradient3859);fill-opacity:1;stroke:#282828;stroke-width:1.09317696px;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1" />
+    <path
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       sodipodi:nodetypes="ccscsc"
+       style="fill:url(#linearGradient3861);fill-opacity:1;stroke:url(#linearGradient3863);stroke-width:1.04545891;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 959.02092,226.84317 -0.0251,-30.15526 c 0,0 0,-6.4738 -3.99582,-6.4738 -4.88658,0 -79.91642,0 -79.91642,0 0,0 -3.99582,0 -3.99582,6.4738 0,7.46111 -0.0251,30.15526 -0.0251,30.15526"
+       id="path3851"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Daten\SharpE-Dev\SharpE\Skins\Modern\images\TaskbarBig.png" />
+    <text
+       sodipodi:linespacing="125%"
+       id="text3853"
+       y="194.83919"
+       x="984.54077"
+       style="font-size:9px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:center;text-decoration:none;line-height:125%;letter-spacing:0px;word-spacing:0px;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:middle;baseline-shift:baseline;color:#000000;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1px;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Arial;-inkscape-font-specification:Arial"
+       xml:space="preserve"><tspan
+         y="194.83919"
+         x="984.54077"
+         sodipodi:role="line"
+         id="tspan3855">Taskbar</tspan><tspan
+         y="206.08919"
+         x="984.54077"
+         sodipodi:role="line"
+         id="tspan3857" /></text>
+    <rect
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="C:\Daten\SharpE-Dev\SharpE\Skins\Modern\images\ButtonBig.png"
+       ry="4.0106058"
+       y="232.61362"
+       x="870.90845"
+       height="36.021164"
+       width="90.021217"
+       id="rect3043-1"
+       style="fill:none;stroke:#282828;stroke-width:0.97878015;stroke-opacity:1"
+       rx="4.0106049" />
+    <rect
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       rx="3.0353665"
+       style="fill:url(#linearGradient3047-9);fill-opacity:1;stroke:url(#linearGradient3049-9);stroke-width:0.93814403;stroke-opacity:1"
+       id="rect3045-4"
+       width="88.161858"
+       height="33.790195"
+       x="871.83813"
+       y="233.7291"
+       ry="3.0425701"
+       inkscape:export-filename="C:\Daten\SharpE-Dev\SharpE\Skins\Modern\images\ButtonBig.png" />
+    <text
+       sodipodi:linespacing="125%"
+       id="text3773-8-3"
+       y="251.12892"
+       x="985.41907"
+       style="font-size:9px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:center;text-decoration:none;line-height:125%;letter-spacing:0px;word-spacing:0px;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:middle;baseline-shift:baseline;color:#000000;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1px;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Arial;-inkscape-font-specification:Arial"
+       xml:space="preserve"><tspan
+         y="251.12892"
+         x="985.41907"
+         sodipodi:role="line"
+         id="tspan3779-7-9">Button</tspan><tspan
+         y="262.37891"
+         x="985.41907"
+         sodipodi:role="line"
+         id="tspan3777-9-5" /></text>
+    <text
+       xml:space="preserve"
+       style="font-size:9px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:center;text-decoration:none;line-height:125%;letter-spacing:0px;word-spacing:0px;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:middle;baseline-shift:baseline;color:#000000;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1px;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Arial;-inkscape-font-specification:Arial"
+       x="1092"
+       y="202.36218"
+       id="text3919"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3921"
+         x="1092"
+         y="202.36218">Background + Border</tspan><tspan
+         id="tspan3923"
+         sodipodi:role="line"
+         x="1092"
+         y="213.61218">With Caption</tspan><tspan
+         id="tspan3925"
+         sodipodi:role="line"
+         x="1092"
+         y="224.86218" /></text>
+    <rect
+       ry="7.3770499"
+       y="157.36218"
+       x="1155"
+       height="90"
+       width="90"
+       id="rect3927"
+       style="fill:url(#linearGradient3937);fill-opacity:1;stroke:none"
+       inkscape:export-filename="D:\Daten\SharpEWin7\Skins\Simple - Glas\images\BGCaption.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       rx="7.3770499" />
+    <rect
+       style="fill:#808080;fill-opacity:1;stroke:none"
+       id="rect3929"
+       width="80"
+       height="80"
+       x="1160"
+       y="162.36218"
+       ry="6.5573783"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:export-filename="D:\Daten\SharpEWin7\Skins\Simple - Glas\images\BGCaption.png"
+       rx="6.5573783" />
+    <rect
+       y="152.35121"
+       x="1155.989"
+       height="94.02198"
+       width="88.021973"
+       id="rect3931"
+       style="fill:#949494;fill-opacity:1;stroke:url(#linearGradient3939);stroke-width:0.97802198;stroke-opacity:1"
+       inkscape:export-filename="D:\Daten\SharpEWin7\Skins\Simple - Glas\images\BGCaption.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       ry="6.3859868"
+       rx="6.3859863" />
+    <rect
+       inkscape:export-filename="D:\Daten\SharpEWin7\Skins\Simple - Glas\images\BGCaption.png"
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       ry="5.3278694"
+       y="177.36218"
+       x="1160"
+       height="65"
+       width="80"
+       id="rect3933"
+       style="fill:#a4a4a4;fill-opacity:1;stroke:#282828;stroke-opacity:1"
+       rx="5.3278694" />
+    <rect
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="D:\Daten\SharpEWin7\Skins\Simple - Glas\images\BGCaption.png"
+       style="fill:none;stroke:#282828;stroke-width:1;stroke-opacity:1"
+       id="rect3935"
+       width="90"
+       height="96"
+       x="1155"
+       y="151.36218"
+       ry="7.3770499"
+       rx="7.3770499" />
   </g>
 </svg>
