@@ -587,7 +587,7 @@ begin
   SkinText.AssignFontTo(Text.Font,FSkinManager.Scheme);
   Text.DrawMode := dmBlend;
   Text.CombineMode := cmMerge;
-  Text.SetSize(tdim.x,512);
+  Text.SetSize(tdim.x+10,512);
   Text.Clear(color32(0,0,0,0));
   y := 0;
   mw := 0;
@@ -637,7 +637,7 @@ begin
       cs := s;
       s := Copy(s,length(cs),length(s)-length(cs));      
     end;
-    SkinText.RenderToW(Text,0,y,cs,FSkinManager.Scheme);
+    SkinText.RenderToW(Text,5,y,cs,FSkinManager.Scheme);
     mw := max(mw,Text.TextWidthW(cs));
     y := y + ch + 2;
   end;
@@ -652,7 +652,7 @@ begin
 
   h := max(Icon.Height,y) + NS.CATBOffset.X + NS.CATBOffset.Y;
   if mw < Text.Width then
-    w := w - (Text.Width - mw);
+    w := w - (Text.Width - mw - 10);
   FBitmap.SetSize(w,h);
   FBitmap.Clear(color32(0,0,0,0));
   NS.Background.DrawTo(FBitmap,FSkinManager.Scheme);
@@ -662,7 +662,7 @@ begin
   IconRect := Rect(0,0,Icon.Width,Icon.Height);
   TextPos := SkinText.GetXY(TextRect, CompRect, IconRect);
   IconPos := NS.Background.Icon.GetXY(TextRect, CompRect);
-  Text.DrawTo(FBitmap,TextPos.x,Textpos.Y);
+  Text.DrawTo(FBitmap,TextPos.x - 5,Textpos.Y);
   Icon.DrawTo(FBitmap,IconPos.x,IconPos.Y);
 
   Text.Free;
