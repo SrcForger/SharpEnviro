@@ -47,19 +47,21 @@ type
   TSkinItem = class
   private
     FName: string;
+    FDisplayName: string;
     FAuthor: string;
     FInfo: string;
     FWebsite: string;
     FVersion: string;
   public
     property Name: string read FName write FName;
+    property DisplayName: string read FDisplayName write FDisplayName;
     property Author: string read FAuthor write FAuthor;
     property Website: string read FWebsite write FWebsite;
     property Info: string read FInfo write FInfo;
     property Version: string read FVersion write FVersion;
     
-    constructor Create(AName, AAuthor, AWebsite, AInfo, AVersion: string); overload;
-    constructor Create(ASkin:String); overload;
+    constructor Create(AName, ADisplayName, AAuthor, AWebsite, AInfo, AVersion: string); overload;
+    constructor Create(ASkin, ADisplayName: string); overload;
   end;
 
 type
@@ -220,7 +222,7 @@ var
 
   i, iIndex: Integer;
   dirs, files, tokens: TStringList;
-  sSkin, s: string;
+  sSkin, sDisplay, s: string;
 
   sharpSkin: TSharpESkin;
 begin
@@ -254,17 +256,19 @@ begin
         tokens.Free;
       end;
 
+      sDisplay := sSkin;
+
       sharpSkin.LoadFromXmlFile(files[i]);
       if not sharpSkin.Valid then
       begin
-        sSkin := '<s>' + sSkin + '</s>';
+        sDisplay := '<s>' + sSkin + '</s>';
       end;
       sharpSkin.Clear;
 
       li := lbSkinList.AddItem(sSkin, i);
       li.AddSubItem('');
       li.AddSubItem('');
-      li.Data := Pointer(TSkinItem.Create(sSkin));
+      li.Data := Pointer(TSkinItem.Create(sSkin, sDisplay));
 
       s := FTheme.Skin.Name;
       if s = sSkin then
@@ -441,9 +445,10 @@ begin
 
   if (ACol = cItem) then begin
     if tmp.Author = '' then
-      AColText := Format('<font color="%s" />%s', [colortostring(colItemTxt), tmp.Name]) else
+      AColText := Format('<font color="%s" />%s', [colortostring(colItemTxt), tmp.DisplayName])
+    else
       AColText := Format('<font color="%s" />%s<font color="%s" /> By %s', [colortostring(colItemTxt),
-        tmp.Name, colortostring(colDescTxt), tmp.Author]);
+        tmp.DisplayName, colortostring(colDescTxt), tmp.Author]);
   end;
 
 end;
@@ -461,20 +466,22 @@ end;
 
 { TSkinItem }
 
-constructor TSkinItem.Create(AName, AAuthor, AWebsite, AInfo, AVersion: string);
+constructor TSkinItem.Create(AName, ADisplayName, AAuthor, AWebsite, AInfo, AVersion: string);
 begin
   FName := AName;
+  FDisplayName := ADisplayName;
   FAuthor := AAuthor;
   FWebsite := AWebsite;
   FInfo := AInfo;
 end;
 
-constructor TSkinItem.Create(ASkin: String);
+constructor TSkinItem.Create(ASkin, ADisplayName: String);
 var
   xml:TJclSimpleXML;
   s:String;
 begin
   FName := ASkin;
+  FDisplayName := ADisplayName;
 
   s := GetSharpeDirectory+'skins\' + ASkin + '\' + 'info.xml';
   if Not(FileExists(s)) then
