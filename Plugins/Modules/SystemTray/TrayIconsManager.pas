@@ -447,7 +447,7 @@ begin
   if FGUIDString <> '' then
     FName := FGUIDString + '\\' + ExtractFileName(GetProcessNameFromWnd(FWnd))
   else
-    FName := IntToStr(FUID) + '\\' + GetProcessNameFromWnd(FWnd);
+    FName := GetWndClass(FWnd) + '\\' + GetProcessNameFromWnd(FWnd);
 
   Inherited Create;
 end;
@@ -1514,12 +1514,12 @@ begin
       GetWindowThreadProcessId(tempItem.Wnd, @PID);
       AllowSetForegroundWindow(PID);
 
-      {SharpApi.SendDebugMessage('Module: SystemTray',PChar('Wnd:' + inttostr(tempItem.Wnd)
-                                + ' | CallBack:' + inttostr(tempItem.CallbackMessage)
-                                + ' | uID:' + inttostr(tempItem.uID)
-                                + ' | uVersion:' + inttostr(tempItem.BInfoFlags)
-                                + ' | Title:' + tempItem.FTip
-                                + ' | Msg:' + inttostr(msg)),0); }
+      SharpApi.SendDebugMessage('SystemTray',PChar('Wnd: ' + inttostr(tempItem.Wnd)
+                                + ' | CallBack: ' + inttostr(tempItem.CallbackMessage)
+                                + ' | uID: ' + inttostr(tempItem.uID)
+                                + ' | uVersion: ' + inttostr(tempItem.BInfoFlags)
+                                + ' | Title: ' + tempItem.FTip
+                                + ' | Msg: ' + inttostr(msg)),0);
 
       // reposition the tray window (some stupid shell services are using
       // it for positioning)
@@ -1588,7 +1588,7 @@ begin
         SendNotifyMessage(tempItem.Wnd, tempItem.CallbackMessage, wp, lp);
         {$ENDREGION}
       end
-      else
+      else if msg <> WM_MOUSEMOVE then { Prevents a problem where certain tooltips won't show }
       begin
         {$REGION 'NotifyIcon Version <= 4'}
         if tempItem.Version >= NOTIFYICON_VERSION then
@@ -1601,7 +1601,7 @@ begin
             end;
           end
         end;
-
+        
         SendNotifyMessage(tempItem.Wnd, tempItem.CallbackMessage, tempItem.uID, msg);
         {$ENDREGION}
       end;
