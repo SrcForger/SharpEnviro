@@ -197,7 +197,7 @@ begin
       begin
         for i := 0 to FBarList.Count - 1 do
         begin
-          if not IsBarRunning(FBarList.Bars[i].BarID) then
+          if (not IsBarRunning(FBarList.Bars[i].BarID)) and (FBarList.Bars[i].AutoStart) then
           begin
             SharpApi.SharpExecute('_nohist,' + SharpApi.GetSharpeDirectory + 'SharpBar.exe' +
                                 ' -load:' + inttostr(FBarList.Bars[i].BarID) +
