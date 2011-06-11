@@ -1514,12 +1514,12 @@ begin
       GetWindowThreadProcessId(tempItem.Wnd, @PID);
       AllowSetForegroundWindow(PID);
 
-      SharpApi.SendDebugMessage('SystemTray',PChar('Wnd: ' + inttostr(tempItem.Wnd)
+     { SharpApi.SendDebugMessage('SystemTray',PChar('Wnd: ' + inttostr(tempItem.Wnd)
                                 + ' | CallBack: ' + inttostr(tempItem.CallbackMessage)
                                 + ' | uID: ' + inttostr(tempItem.uID)
                                 + ' | uVersion: ' + inttostr(tempItem.BInfoFlags)
                                 + ' | Title: ' + tempItem.FTip
-                                + ' | Msg: ' + inttostr(msg)),0);
+                                + ' | Msg: ' + inttostr(msg)),0);    }
 
       // reposition the tray window (some stupid shell services are using
       // it for positioning)
