@@ -244,7 +244,7 @@ begin
   with TJclEmail.Create do
   try
     ParentWnd := Application.Handle;
-    Recipients.Add('staff@sharpe-shell.org');
+    Recipients.Add('staff@sharpenviro.com');
     Subject := 'Bug Report';
     Body := ReportAsText;
     SaveTaskWindows;
