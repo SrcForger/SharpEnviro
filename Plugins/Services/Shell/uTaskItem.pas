@@ -185,10 +185,14 @@ end;
 
 procedure TTaskItem.UpdateCaption;
 var
-  buf: array[0..2048] of wchar;
+  Buffer: WideString;
+  Size: Integer;
 begin
-  GetWindowTextW(FHandle,@buf,sizeof(buf));
-  FCaption := buf;
+  Size := GetWindowTextLengthW(FHandle);
+  SetLength(Buffer, Size);
+  // strings always have an additional null character
+  Size := GetWindowTextW(FHandle, PWChar(Buffer), Size + 1);
+  FCaption := Copy(Buffer, 1, Size);
 end;
 
 procedure TTaskItem.UpdateWndClass;
