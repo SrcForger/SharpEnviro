@@ -3,7 +3,7 @@ object frmClock: TfrmClock
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmClock'
-  ClientHeight = 288
+  ClientHeight = 344
   ClientWidth = 441
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -27,7 +27,7 @@ object frmClock: TfrmClock
     Margins.Right = 5
     Margins.Bottom = 10
     Title = 'Clock Size'
-    Description = 'Define the size of the clock text'
+    Description = 'Define the size of the clock text and the width of the module'
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
@@ -35,7 +35,7 @@ object frmClock: TfrmClock
   object SharpECenterHeader2: TSharpECenterHeader
     AlignWithMargins = True
     Left = 5
-    Top = 83
+    Top = 142
     Width = 431
     Height = 37
     Margins.Left = 5
@@ -51,7 +51,7 @@ object frmClock: TfrmClock
   object pnlTop: TPanel
     AlignWithMargins = True
     Left = 5
-    Top = 130
+    Top = 189
     Width = 426
     Height = 22
     Margins.Left = 5
@@ -98,7 +98,7 @@ object frmClock: TfrmClock
   object pnlBottom: TPanel
     AlignWithMargins = True
     Left = 5
-    Top = 162
+    Top = 221
     Width = 426
     Height = 26
     Margins.Left = 5
@@ -113,12 +113,13 @@ object frmClock: TfrmClock
     TabOrder = 2
     object Label2: TLabel
       Left = 0
-      Top = 4
+      Top = 0
       Width = 38
-      Height = 22
+      Height = 26
       Align = alLeft
       Caption = 'Bottom:'
       Layout = tlCenter
+      ExplicitHeight = 13
     end
     object btnBottom: TButton
       Left = 356
@@ -157,9 +158,9 @@ object frmClock: TfrmClock
     ParentColor = True
     TabOrder = 0
     object cboSize: TComboBox
-      Left = 0
+      Left = 8
       Top = 0
-      Width = 250
+      Width = 169
       Height = 21
       Margins.Left = 5
       Margins.Top = 0
@@ -181,7 +182,7 @@ object frmClock: TfrmClock
   object SharpECenterHeader3: TSharpECenterHeader
     AlignWithMargins = True
     Left = 5
-    Top = 203
+    Top = 262
     Width = 431
     Height = 37
     Margins.Left = 5
@@ -195,14 +196,13 @@ object frmClock: TfrmClock
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
-    ExplicitTop = 199
   end
   object pnlTooltip: TPanel
     AlignWithMargins = True
     Left = 5
-    Top = 250
+    Top = 309
     Width = 431
-    Height = 23
+    Height = 24
     Margins.Left = 5
     Margins.Top = 0
     Margins.Right = 5
@@ -213,10 +213,9 @@ object frmClock: TfrmClock
     Color = clWindow
     ParentBackground = False
     TabOrder = 3
-    ExplicitTop = 246
     object editTooltip: TEdit
       Left = 0
-      Top = 2
+      Top = 3
       Width = 350
       Height = 21
       Hint = 'Tooltip'
@@ -234,6 +233,59 @@ object frmClock: TfrmClock
       TabOrder = 1
       OnClick = btnTooltipClick
     end
+  end
+  object pnlWidth: TPanel
+    AlignWithMargins = True
+    Left = 5
+    Top = 106
+    Width = 426
+    Height = 21
+    Margins.Left = 5
+    Margins.Top = 0
+    Margins.Right = 10
+    Margins.Bottom = 10
+    Align = alTop
+    AutoSize = True
+    BevelOuter = bvNone
+    ParentColor = True
+    TabOrder = 7
+    object sgbWidth: TSharpeGaugeBox
+      Left = 8
+      Top = 0
+      Width = 169
+      Height = 21
+      ParentBackground = False
+      TabOrder = 0
+      Min = 25
+      Max = 400
+      Value = 50
+      Prefix = 'Width: '
+      Suffix = 'px'
+      Description = 'Adjust Volume Bar Width'
+      PopPosition = ppBottom
+      PercentDisplay = False
+      SignDisplay = False
+      MaxPercent = 100
+      Formatting = '%d'
+      OnChangeValue = sgbWidthChangeValue
+      BackgroundColor = clWindow
+    end
+  end
+  object chkFixedWidth: TJvXPCheckbox
+    AlignWithMargins = True
+    Left = 13
+    Top = 81
+    Width = 423
+    Height = 17
+    Margins.Left = 13
+    Margins.Right = 5
+    Margins.Bottom = 8
+    Caption = 'Use fixed width for module'
+    TabOrder = 8
+    Checked = True
+    State = cbChecked
+    Align = alTop
+    OnClick = chkFixedWidthClick
   end
   object PopupMenu1: TPopupMenu
     Left = 408

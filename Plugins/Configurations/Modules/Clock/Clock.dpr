@@ -81,6 +81,8 @@ begin
     Items.Add('Format', frmClock.editTop.Text);
     Items.Add('BottomFormat', frmClock.editBottom.Text);
     Items.Add('TooltipFormat', frmClock.editTooltip.Text);
+    Items.Add('Width', frmClock.sgbWidth.Value);
+    Items.Add('FixedWidth', frmClock.chkFixedWidth.Checked);
 
     PluginHost.Xml.Save;
   end;
@@ -97,6 +99,8 @@ begin
       frmClock.editTop.Text := Items.Value('Format', 'T');
       frmClock.editBottom.Text := Items.Value('BottomFormat', 'DDDDD');
       frmClock.editTooltip.Text := Items.Value('TooltipFormat', 'DDDDDD');
+      frmClock.sgbWidth.Value := Items.IntValue('Width', 125);
+      frmClock.chkFixedWidth.Checked := Items.BoolValue('FixedWidth', False);
     end;
   end;
 end;

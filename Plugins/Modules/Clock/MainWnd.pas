@@ -64,6 +64,8 @@ type
     sBottomFormat : String;
     sTooltipFormat : String;
     sStyle  : TSharpELabelStyle;
+    sWidth : integer;
+    sFixedWidth : boolean;
     FTipWnd : hwnd;
     FTipSet : boolean;
     FOldTip : String;
@@ -104,6 +106,8 @@ begin
   sBottomFormat := '';
   sTooltipFormat := '';
   sStyle  := lsMedium;
+  sFixedWidth := False;
+  sWidth := 125;
   lb_clock.AutoPos := apCenter;
   lb_bottomclock.Caption := '';
   lb_bottomclock.Visible := False;
@@ -117,6 +121,10 @@ begin
 
       // There should always be a tooltip format element.
       sTooltipFormat := Value('TooltipFormat', 'DDDDDD');
+
+      // Use a fixed width or dynamically size everything
+      sFixedWidth := BoolValue('FixedWidth', sFixedWidth);
+      sWidth := IntValue('Width', sWidth);
 
       // The valid values for style are
       // 0 = Small, 1 = Medium, 2 = Big, 3 = Automatic
@@ -186,14 +194,20 @@ begin
 
   lb_clock.UpdateSkin;
 
-  // The top label is always visible so start with its width.
-  newWidth := lb_clock.Width;
-  
-  if lb_bottomClock.Visible then
+  if sFixedWidth then
   begin
-    lb_bottomclock.UpdateSkin;
-    // The bottom label is visible so see if it is wider than the main label.
-    newWidth := max(lb_clock.Width, lb_bottomClock.Width);
+    newWidth := sWidth;
+  end else
+  begin
+    // The top label is always visible so start with its width.
+    newWidth := lb_clock.Width;
+
+    if lb_bottomClock.Visible then
+    begin
+      lb_bottomclock.UpdateSkin;
+      // The bottom label is visible so see if it is wider than the main label.
+      newWidth := max(lb_clock.Width, lb_bottomClock.Width);
+    end;
   end;
 
   mInterface.MinSize := NewWidth;
@@ -273,7 +287,7 @@ procedure TMainForm.Configure1Click(Sender: TObject);
 begin
   SharpCenterApi.CenterCommand(sccLoadSetting,
       PChar('Modules'),
-	  PChar('Clock'),
+	    PChar('Clock'),
       PChar(inttostr(mInterface.BarInterface.BarID) + ':' + inttostr(mInterface.ID)));
 end;
 

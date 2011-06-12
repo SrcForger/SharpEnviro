@@ -30,7 +30,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Menus, SharpApi, SharpCenterAPI,
-  ExtCtrls, SharpECenterHeader, ISharpCenterHostUnit;
+  ExtCtrls, SharpECenterHeader, ISharpCenterHostUnit, SharpEGaugeBoxEdit,
+  JvExControls, JvXPCore, JvXPCheckCtrls;
 
 type
   TfrmClock = class(TForm)
@@ -63,6 +64,9 @@ type
     editBottom: TEdit;
     Label1: TLabel;
     Label2: TLabel;
+    pnlWidth: TPanel;
+    sgbWidth: TSharpeGaugeBox;
+    chkFixedWidth: TJvXPCheckbox;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure MenuItemClick(Sender: TObject);
@@ -70,11 +74,13 @@ type
     procedure btnBottomClick(Sender: TObject);
     procedure btnTooltipClick(Sender: TObject);
     procedure UpdateSettingsEvent(Sender: TObject);
+    procedure chkFixedWidthClick(Sender: TObject);
+    procedure sgbWidthChangeValue(Sender: TObject; Value: Integer);
   private
     FPluginHost: ISharpCenterHost;
     procedure UpdatePopupMenuCaptions;
     procedure UpdateSettings;
-    procedure UpdateBottomEdit;
+    procedure UpdateConfig;
   public
     ModuleID: string;
     BarID : string;
@@ -108,6 +114,12 @@ begin
   UpdatePopupMenuCaptions;
   PopUpMenu1.PopupComponent := editTop;
   PopUpMenu1.Popup(Mouse.CursorPos.X,Mouse.CursorPos.Y);
+end;
+
+procedure TfrmClock.chkFixedWidthClick(Sender: TObject);
+begin
+  UpdateConfig;
+  UpdateSettings;
 end;
 
 procedure TfrmClock.btnTooltipClick(Sender: TObject);
@@ -156,7 +168,7 @@ end;
 
 procedure TfrmClock.FormShow(Sender: TObject);
 begin
-  UpdateBottomEdit;
+  UpdateConfig;
 end;
 
 procedure TfrmClock.MenuItemClick(Sender: TObject);
@@ -170,17 +182,23 @@ begin
   UpdateSettings;
 end;
 
+procedure TfrmClock.sgbWidthChangeValue(Sender: TObject; Value: Integer);
+begin
+  UpdateSettings;
+end;
+
 procedure TfrmClock.UpdateSettings;
 begin
   if Visible then
     PluginHost.SetSettingsChanged;
 
-  UpdateBottomEdit;
+  UpdateConfig;
 end;
 
-procedure TfrmClock.UpdateBottomEdit;
+procedure TfrmClock.UpdateConfig;
 begin
   pnlBottom.Visible := cboSize.ItemIndex = Automatic;
+  pnlWidth.Visible := chkFixedWidth.Checked;
 end;
 
 end.
