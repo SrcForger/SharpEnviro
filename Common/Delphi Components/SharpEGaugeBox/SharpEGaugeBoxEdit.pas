@@ -89,7 +89,7 @@ type
     procedure ValueEditKeyPress(Sender: TObject; var Key: Char);
     procedure ValueEditExit(Sender: TObject);
     procedure ValueEditClick(Sender: Tobject);
-    procedure ValueEditKeyUp(Sender: TObject; var Key: Word;
+    procedure ValueEditKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
 
     procedure PopAnimateWindow(Popper: TControl; PopWindow: TWinControl);
@@ -100,14 +100,15 @@ type
     procedure SetSignDisplay(const Value : boolean);
     function GetBackgroundColor: TColor;
     procedure SetBackgroundColor(const Value: TColor);
+    procedure SelectValueText;
     function GetNewValue: integer;
+    function GetValue: integer;
   protected
     procedure SetEnabled(Value: boolean); override;
-
+    
   public
     constructor Create(AOwner: TComponent); override;
-
-    procedure UpdateValue(newValue: integer);
+    procedure UpdateValue(newValue: integer; sendUpdate : boolean = True);
     procedure UpdateEditBox;
     procedure BeforeDestruction; override;
 
@@ -125,7 +126,7 @@ type
 
     property Min: Integer read FMin write SetMin;
     property Max: Integer read FMax write SetMax;
-    property Value: Integer read FValue write SetValue;
+    property Value: Integer read GetValue write SetValue;
 
     property Prefix: string read FPrefix write SetPrefix;
     property Suffix: string read FSuffix write SetSuffix;
@@ -223,7 +224,7 @@ begin
     DoubleBuffered := True;
     Text := Format('%s%d%s', [FPrefix, FValue, FSuffix]);
     OnKeyPress := ValueEditKeyPress;
-    OnKeyUp := ValueEditKeyUp;
+    OnKeyDown := ValueEditKeyDown;
     OnExit := ValueEditExit;
     OnClick := ValueEditClick;
     ParentFont := True;
@@ -278,6 +279,34 @@ end;
 function TSharpeGaugeBox.GetBackgroundColor: TColor;
 begin
   result := FValueEdit.Color;
+end;
+
+function TSharpeGaugeBox.GetNewValue: integer;
+var
+  s : string;
+begin
+  Result := 0;
+
+  // Search for Prefix
+  s := FValueEdit.Text;
+
+  if (FPrefix <> '') and (Pos(fPrefix, s) = 1) then
+    delete(s, 1, Length(fPrefix));
+  if (fSuffix <> '') and (Pos(Fsuffix, s) > 0) then
+    delete(s, Length(s) - Length(fSuffix) + 1, Length(fSuffix));
+
+  if (length(s) <> 0) then
+    TryStrToInt(S, Result);
+
+  if FPercentDisplay then
+    Result := round(FMax * (Result / FMaxPercent) * 1.0);
+end;
+
+function TSharpeGaugeBox.GetValue: integer;
+begin
+  UpdateValue(GetNewValue, False);
+  UpdateEditBox;
+  result := FValue;
 end;
 
 procedure TSharpeGaugeBox.BtnGaugeClick(Sender: TObject);
@@ -358,10 +387,8 @@ var
   sign : string;
 begin
   if FPercentDisplay then
-    temp := round(FValue / FMax * FMaxPercent)
-  else
-    temp := FValue;
-
+     temp := round(FValue / FMax * FMaxPercent)
+     else temp := FValue;
   if (FSignDisplay) and (temp >= 0) then
     sign := '+'
   else sign := '';
@@ -371,6 +398,7 @@ end;
 
 procedure TSharpeGaugeBox.ValueEditKeyPress(Sender: TObject; var Key: Char);
 begin
+
   if not (key in ['0'..'9', #8, '-']) then
     key := #0; //#8 = BackSpace
 end;
@@ -379,10 +407,12 @@ procedure TSharpeGaugeBox.ValueEditExit(Sender: TObject);
 begin
   UpdateValue(GetNewValue);
   UpdateEditBox;
+  SelectValueText;
 end;
 
 procedure TSharpeGaugeBox.ValueEditClick(Sender: Tobject);
 begin
+  SelectValueText;
   FBtnGauge.Refresh;
 end;
 
@@ -433,30 +463,9 @@ begin
   BtnGaugeClick(Sender);
 end;
 
-function TSharpeGaugeBox.GetNewValue: integer;
+procedure TSharpeGaugeBox.UpdateValue(newValue: integer; sendUpdate : boolean = True);
 var
-  s : string;
-begin
-  Result := 0;
-
-  // Search for Prefix
-  s := FValueEdit.Text;
-
-  if (FPrefix <> '') and (Pos(fPrefix, s) = 1) then
-    delete(s, 1, Length(fPrefix));
-  if (fSuffix <> '') and (Pos(Fsuffix, s) > 0) then
-    delete(s, Length(s) - Length(fSuffix) + 1, Length(fSuffix));
-
-  if (length(s) <> 0) then
-    TryStrToInt(S, Result);
-
-  if FPercentDisplay then
-    Result := round(FMax * (Result / FMaxPercent) * 1.0);
-end;
-
-procedure TSharpeGaugeBox.UpdateValue(newValue: integer);
-var
-  changed: Boolean;
+  changed : Boolean;
 begin
   changed := False;
 
@@ -482,23 +491,26 @@ begin
 
   if (newValue <> FValue) then
     changed := True;
-    
+        
   FValue := newValue;
 
-  if (changed) and (assigned(FOnChangeValue)) then
+  SelectValueText;
+
+  if (changed) and (assigned(FOnChangeValue)) and (sendUpdate) then
     FOnChangeValue(Self, newValue);
 end;
 
-procedure TSharpeGaugeBox.ValueEditKeyUp(Sender: TObject; var Key: Word;
+procedure TSharpeGaugeBox.ValueEditKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if (Key = VK_DOWN) then
-    BtnGaugeClick(Sender)
-  else
+  if (Key = VK_RETURN) then
   begin
     UpdateValue(GetNewValue);
     UpdateEditBox;
-  end;
+    Self.SetFocus;
+  end
+  else if (key = VK_DOWN) then
+    BtnGaugeClick(Sender);
 end;
 
 procedure TSharpeGaugeBox.SetPopPosition(const Value: TPopPosition);
@@ -528,6 +540,18 @@ end;
 procedure TSharpeGaugeBox.SetDescription(const Value: string);
 begin
   FDescription := Value;
+end;
+
+procedure TSharpeGaugeBox.SelectValueText;
+var
+  temp: Integer;
+begin
+  if FPercentDisplay then
+     temp := round(FValue / FMax * FMaxPercent)
+     else temp := FValue;
+
+  FValueEdit.SelStart := Pos(IntToStr(temp), FValueEdit.Text) - 1;
+  FValueEdit.SelLength := length(IntToStr(temp));
 end;
 
 end.
