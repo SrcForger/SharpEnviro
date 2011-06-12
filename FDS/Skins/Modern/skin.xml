@@ -904,7 +904,7 @@
       <icon location="6,hh-ihh" size="32,32" draw="1"/>
     </notify>    
     <taskpreview calroffset="10,10" catboffset="30,10" location="0,1" dimension="6,400">
-      <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="13" name="Calibri" location="cw,2" dimension="w-32,0" draw="1"/>
+      <text shadowalpha="196" shadowtype="Right" shadowcolor="$TextShadow" shadow="1" color="$Text" cleartype="1" size="13" name="Calibri" location="cw,0" dimension="w-32,0" draw="1"/>
       <background>
         <skinpart alpha="$Alpha" color="$Background" image="images/BackgroundBigTopLeftCaption.png" dimension="12,32" location="0,0"/>
         <skinpart alpha="$Alpha" color="$Background" image="images/BackgroundLeftCaption.png" dimension="12,h-44" location="0,32"/>
