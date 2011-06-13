@@ -37,7 +37,7 @@ object MainForm: TMainForm
     Enabled = False
     ParentShowHint = False
     ShowHint = False
-    AutoSize = False
+    AutoSize = True
     Visible = False
     OnClick = ShowHideButtonClick
     Glyph32.DrawMode = dmBlend
