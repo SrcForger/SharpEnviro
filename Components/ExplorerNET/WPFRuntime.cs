@@ -66,7 +66,8 @@ namespace Explorer
 		public void Stop()
 		{
 			// Ask the WPF thread to end itself
-			_application.Dispatcher.Invoke(DispatcherPriority.Normal, new ShowDelegate(InternalShutDown));
+            if (_application != null)
+			    _application.Dispatcher.Invoke(DispatcherPriority.Normal, new ShowDelegate(InternalShutDown));
 		}
 
 		private void InternalShutDown()
@@ -81,7 +82,8 @@ namespace Explorer
 		public void Show()
 		{
 			// Ask the WPF thread to create a new window of the provided type
-			_application.Dispatcher.Invoke(DispatcherPriority.Normal, new ShowDelegate(InternalShow));
+            if (_application != null)
+			    _application.Dispatcher.Invoke(DispatcherPriority.Normal, new ShowDelegate(InternalShow));
 		}
 
 		private delegate void ShowDelegate();
