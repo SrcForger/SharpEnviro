@@ -271,9 +271,9 @@ namespace SharpEnviro.Explorer
 
 #if SEARCH_ENABLED
                 searchManager.Dispose();
+				WPFRuntime.Instance.Stop();
 #endif
 
-				WPFRuntime.Instance.Stop();
 				ShellServices.Stop();
             }
 
