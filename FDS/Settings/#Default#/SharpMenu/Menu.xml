@@ -125,7 +125,7 @@
       <item>
         <type>link</type>
         <Caption>Official Website</Caption>
-        <Target>http://www.sharpe-shell.org</Target>
+        <Target>http://www.sharpenviro.com</Target>
         <Icon>icon.file.web</Icon>
       </item>
     </Items>
@@ -159,25 +159,25 @@
       <item>
         <type>link</type>
         <Caption>Desktop Settings</Caption>
-        <Target>{#SHARPEDIR#}SharpCenter.exe -api &quot;0|Home\Desktop.xml&quot;</Target>
+        <Target>&quot;{#SHARPEDIR#}SharpCenter.exe&quot; -api &quot;0|Home|Desktop&quot;</Target>
         <Icon>icon.file.other</Icon>
       </item>
       <item>
         <type>link</type>
         <Caption>Services</Caption>
-        <Target>{#SHARPEDIR#}SharpCenter.exe -api &quot;0|Home\Services.xml&quot;</Target>
+        <Target>&quot;{#SHARPEDIR#}SharpCenter.exe&quot; -api &quot;0|Home|Services&quot;</Target>
         <Icon>icon.file.other</Icon>
       </item>
       <item>
         <type>link</type>
         <Caption>Themes</Caption>
-        <Target>{#SHARPEDIR#}SharpCenter.exe -api &quot;0|Home\Themes.xml&quot;</Target>
+        <Target>&quot;{#SHARPEDIR#}SharpCenter.exe&quot; -api &quot;0|Home|Themes&quot;</Target>
         <Icon>icon.file.other</Icon>
       </item>
       <item>
         <type>link</type>
         <Caption>Toolbars</Caption>
-        <Target>{#SHARPEDIR#}SharpCenter.exe -api &quot;0|Home\Toolbars.xml&quot;</Target>
+        <Target>&quot;{#SHARPEDIR#}SharpCenter.exe&quot; -api &quot;0|Home|Toolbars&quot;</Target>
         <Icon>icon.file.other</Icon>
       </item>
     </Items>
