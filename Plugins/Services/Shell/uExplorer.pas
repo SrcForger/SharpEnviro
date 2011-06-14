@@ -114,7 +114,7 @@ begin
         if (FindWindow('TSharpExplorerForm', nil) = 0) then
           break;
 
-        if SendMessageTimeout(FindWindow('TSharpExplorerForm', nil), WM_SHARPSHELLLOADED, 0, 0, SMTO_ABORTIFHUNG, 100, MsgResult) <> 0 then
+        if SendMessageTimeout(FindWindow('TSharpExplorerForm', nil), WM_SHARPSHELLLOADED, 0, 0, 0, 100, MsgResult) <> 0 then
         begin
           if MsgResult <> 0 then
             break;

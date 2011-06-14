@@ -30,7 +30,8 @@ interface
 uses Windows, Messages, Classes, contnrs, SysUtils, ShellAPI,
      MultiMon,
      SharpAPI,
-     uTypes;
+     uTypes,
+     uSystemFuncs;
 
 type
   TTrayIcon = class

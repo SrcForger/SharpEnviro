@@ -91,6 +91,7 @@ type
 var
   WindowsClass : TWindowStructureClass;
   FullscreenChecker : TFullscreenChecker;
+  TaskbarCreatedRegistered : Boolean;
 
 function DeskAreaTimerWndProc(wnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall;
 function ShellTrayWndProc(wnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall;
@@ -288,6 +289,8 @@ end;
 
 constructor TWindowStructureClass.Create;
 begin
+  TaskbarCreatedRegistered := False;
+
   SetLength(FWndList, 0);
 
   FShellHandle := LoadLibrary('shell32.dll');
@@ -809,6 +812,14 @@ begin
     end;
     WM_MINIMIZEALLWINDOWS, WM_RESTOREALLWINDOWS: begin
       PostMessage(WindowsClass.MsTaskSwWClass, Msg, wParam, lParam);
+      Result := 1;
+    end;
+    WM_SHARPREGISTERTRAY: begin
+      if not TaskbarCreatedRegistered then
+      begin
+        SendNotifyMessage(HWND_BROADCAST, RegisterWindowMessage('TaskbarCreated'), 0, 0);
+        TaskbarCreatedRegistered := True;
+      end;
       Result := 1;
     end
     else Result := DefWindowProc(wnd, Msg, wParam, lParam);

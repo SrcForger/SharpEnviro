@@ -385,7 +385,9 @@ begin
   top := -200;
   Width := 1;
   Height := 1;
+  
   PostMessage(FindWindow('Shell_TrayWnd', nil), WM_REGISTERWITHTRAY, handle, 0);
+  PostMessage(FindWindow('Shell_TrayWnd', nil), WM_SHARPREGISTERTRAY, 0, 0);
 end;
 
 procedure TMsgWnd.FormDestroy(Sender: TObject);
@@ -1012,6 +1014,8 @@ begin
     end;
   end;
 
+  //SharpApi.SendDebugMessage('SystemTray', 'Adding icon: ' + item.FName, DMT_TRACE);
+
   UpdatePositions;
 
   n := FItems.Count;
@@ -1244,8 +1248,8 @@ var
 begin
   // To stop the tray from removing the Explorer icons when shutting down the Shell service we need
   // to check if the shell service is stopping
-  if (SharpAPI.ServiceStopping('Shell') = MR_STOPPING) then
-    exit;
+  {if (SharpAPI.ServiceStopping('Shell') = MR_STOPPING) then
+    exit;}
 
   if Assigned(FOnPaintLock) then
     FOnPaintLock(True);

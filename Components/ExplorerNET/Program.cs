@@ -234,6 +234,7 @@ namespace SharpEnviro.Explorer
                 // Wait for the tray to show
                 while (PInvoke.FindWindow("Shell_TrayWnd", (string)null) == IntPtr.Zero)
                 {
+                    System.Windows.Forms.Application.DoEvents();    
                     System.Threading.Thread.Sleep(16);
                 }
 
