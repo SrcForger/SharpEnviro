@@ -57,6 +57,8 @@ type
     FDllHandle : THandle;
     SHLockShared : function (Handle: THandle; DWord: DWORD): pointer; stdcall;
     SHUnlockShared : function (Pnt: Pointer): BOOL; stdcall;
+
+    FShuttingDown: Boolean;
   public
     Icons : TObjectList;
     AppBarList : TObjectList;
@@ -78,6 +80,8 @@ type
     function HandleAppBarMessage(msg : TAppBarMsgDataV2; lparam : dword) : integer;
     function LockAppBarMemory(abmd: TAppBarMsgDataV2): pAppBarDataV1;
     function UnLockAppBarMempory(Pnt: pAppBarDataV1): boolean;
+
+    property ShuttingDown: Boolean read FShuttingDown write FShuttingDown;
   end;
 
 var
@@ -119,7 +123,8 @@ var
   pItem : TTrayIcon;
   tmpList : TObjectList;
 begin
-  if not IsWindow(wnd) then exit;
+  if (not IsWindow(wnd)) or (FShuttingDown) then
+    exit;
 
   CheckForDeadIcons;
 
@@ -160,6 +165,9 @@ var
   cds: TCopyDataStruct;
   tmpItem : TTrayIcon;
 begin
+  if (FShuttingDown) then
+    exit;
+
   // no tray registered -> exit
   if WndList.Count = 0 then exit;
 
@@ -219,6 +227,8 @@ begin
   WndList := TStringList.Create;
   WndList.Duplicates := dupIgnore;
   WndList.Clear;
+
+  FShuttingDown := False;
 
   FDllHandle := LoadLibrary('SHLWAPI.DLL');
   if FDllHandle <> 0 then

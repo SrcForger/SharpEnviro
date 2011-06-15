@@ -194,7 +194,8 @@ begin
 	  begin
       PostMessage(FindWindow('TSharpExplorerForm', nil), WM_SHARPSHELLREADY, 0, 0);
 	  end;
-  end;
+  end else if Cmd = 'ShuttingDown' then
+    TrayManager.ShuttingDown := True;
 
   Result := 1;
 end;

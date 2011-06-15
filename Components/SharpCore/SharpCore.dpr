@@ -393,6 +393,8 @@ var
   modData: TComponentData;
   sName: string;
 begin
+  SharpApi.ServiceMsg('Shell', 'ShuttingDown');
+
   for i := 0 to lstComponents.Count - 1 do begin
     modData := TComponentData(lstComponents.Items[i]);
     if (modData.Running) and (modData.MetaData.DataType = tteService) then

@@ -263,7 +263,10 @@ begin
       begin
         with Add('Item').Items do
         begin
-          Add('Name', TTrayItem(FTrayClient.Items[n]).Name);
+          Add('Path', TTrayItem(FTrayClient.Items[n]).Path);
+          Add('GUID', TTrayItem(FTrayClient.Items[n]).GUID);
+          Add('UID', TTrayItem(FTrayClient.Items[n]).UID);
+          Add('WndClass', TTrayItem(FTrayClient.Items[n]).WndClass);
           Add('Hidden', False);
         end;
       end;
@@ -272,7 +275,10 @@ begin
       begin
         with Add('Item').Items do
         begin
-          Add('Name', TTrayItem(FTrayClient.HiddenItems[n]).Name);
+          Add('Path', TTrayItem(FTrayClient.HiddenItems[n]).Path);
+          Add('GUID', TTrayItem(FTrayClient.HiddenItems[n]).GUID);
+          Add('UID', TTrayItem(FTrayClient.HiddenItems[n]).UID);
+          Add('WndClass', TTrayItem(FTrayClient.HiddenItems[n]).WndClass);
           Add('Hidden', True);
         end;
       end;
@@ -282,7 +288,10 @@ begin
         if TTrayStartItem(FTrayClient.StartItems[n]).HiddenByClient then
           with Add('Item').Items do
           begin
-            Add('Name', TTrayStartItem(FTrayClient.StartItems[n]).Name);
+            Add('Path', TTrayItem(FTrayClient.StartItems[n]).Path);
+            Add('GUID', TTrayItem(FTrayClient.StartItems[n]).GUID);
+            Add('UID', TTrayItem(FTrayClient.StartItems[n]).UID);
+            Add('WndClass', TTrayItem(FTrayClient.StartItems[n]).WndClass);
             Add('Hidden', True);
           end;
     end;
@@ -333,7 +342,7 @@ begin
 
     s := StringReplace(TrayItem.FTip, sLineBreak, ' ', [rfReplaceAll]);
     s := StringReplace(s, #$A, ' ', [rfReplaceAll]);
-    id := 'customicon: ' + TrayItem.Name;
+    id := 'customicon: ' + TrayItem.WndClass;
 
     item := TSharpEMenuItem(mn.AddCustomItem(s, id, TrayItem.Bitmap));
     item.PropList.Add('index', n);
@@ -502,7 +511,10 @@ begin
           for n := 0 to Items.Count - 1 do
           begin
             startItem := TTrayStartItem.Create;
-            startItem.Name := Items[n].Items.Value('Name', '');
+            startItem.Path := Items[n].Items.Value('Path', '');
+            startItem.GUID := Items[n].Items.Value('GUID', '');
+            startItem.UID := Items[n].Items.IntValue('UID', 0);
+            startItem.WndClass := Items[n].Items.Value('WndClass', '');
             startItem.HiddenByClient := Items[n].Items.BoolValue('Hidden', False);
             startItem.Position := nCount;
             FTrayClient.StartItems.Add(startItem);

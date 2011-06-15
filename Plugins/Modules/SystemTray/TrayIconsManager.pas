@@ -66,19 +66,29 @@ type
 
   TTrayStartItem = class
   private
-    FName: String;
+    FPath: String;
+    FGUID: String;
+    FUID: Cardinal;
+    FWndClass: String;
+
     FPosition: integer;
     FHiddenByClient: boolean;
 
   public
-    property Name: String read FName write FName;
+    property Path: String read FPath write FPath;
+    property GUID: String read FGUID write FGUID;
+    property UID: Cardinal read FUID write FUID;
+    property WndClass: String read FWndClass write FWndClass;
+
     property Position: Integer read FPosition write FPosition;
     property HiddenByClient: Boolean read FHiddenByClient write FHiddenByClient;
   end;
 
   TTrayItem = class
   private
-    FName: String;
+    FPath: String;
+    FWndClass: String;
+
     FUID: Cardinal;
     FWnd: Thandle;
     FCallbackMessage: UINT;
@@ -108,7 +118,12 @@ type
     constructor Create(NIDv6: TNotifyIconDataV7; IconSize: Integer); overload;
     destructor Destroy; override;
 
-    property Name: String read FName write FName;
+    function Compare(startItem: TTrayStartItem): boolean;
+
+    property Path: String read FPath write FPath;
+    property WndClass: String read FWndClass write FWndClass;
+
+    property GUID: String read FGUIDString write FGUIDString;
     property UID: Cardinal read FUID;
     property Wnd: THandle read FWnd;
     property Bitmap: TBitmap32 read FBitmap;
@@ -398,7 +413,9 @@ end;
 
 constructor TTrayItem.Create(dup: TTrayItem);
 begin
-  FName := dup.FName;
+  FPath := dup.FPath;
+  FWndClass := dup.WndClass;
+  FGUIDString :=  dup.GUID;
   FUID := dup.FUID;
   FWnd := dup.FWnd;
   FCallbackMessage := dup.FCallbackMessage;
@@ -446,10 +463,8 @@ begin
   end;
   AssignFromNIDv6(NIDv6);
 
-  if FGUIDString <> '' then
-    FName := FGUIDString + '\\' + ExtractFileName(GetProcessNameFromWnd(FWnd))
-  else
-    FName := GetWndClass(FWnd) + '\\' + GetProcessNameFromWnd(FWnd);
+  FPath := GetProcessNameFromWnd(FWnd);
+  FWndClass := GetWndClass(FWnd);
 
   Inherited Create;
 end;
@@ -510,6 +525,19 @@ begin
     FBitmap.Clear(color32(0, 0, 0, 0));
     IconToImage(FBitmap, NIDv6.icon);
     result := result + [tceIcon];
+  end;
+end;
+
+function TTrayItem.Compare(startItem: TTrayStartItem): boolean;
+begin
+  Result := (CompareText(startItem.Path, FPath) = 0);
+  if startItem.GUID <> '' then
+    Result := (Result) and (CompareText(startItem.GUID, FGUIDString) = 0)
+  else
+  begin
+    Result := (Result) and
+      ((CompareText(startItem.WndClass, FWndClass) = 0) or
+      (startItem.FUID = FUID));
   end;
 end;
 
@@ -983,7 +1011,7 @@ begin
   pStartItem := nil;
   for i := 0 to FStartItems.Count - 1 do
   begin
-    if (CompareText(TTrayStartItem(FStartItems[i]).Name, item.Name) = 0) then
+    if  (item.Compare(TTrayStartItem(FStartItems[i]))) then
     begin
       pStartItem := TTrayStartItem(FStartItems.Extract(FStartItems[i]));
       break;
@@ -1248,8 +1276,8 @@ var
 begin
   // To stop the tray from removing the Explorer icons when shutting down the Shell service we need
   // to check if the shell service is stopping
-  {if (SharpAPI.ServiceStopping('Shell') = MR_STOPPING) then
-    exit;}
+  if (SharpAPI.ServiceStopping('Shell') = MR_STOPPING) then
+    exit;
 
   if Assigned(FOnPaintLock) then
     FOnPaintLock(True);
@@ -1288,7 +1316,12 @@ begin
   begin
     startItem := TTrayStartItem.Create;
     startItem.HiddenByClient := True;
-    startItem.Name := temp.Name;
+    
+    startItem.Path := temp.Path;
+    startItem.GUID := temp.GUID;
+    startItem.UID := temp.UID;
+    startItem.WndClass := temp.WndClass;
+
     startItem.Position := -1;
     FStartItems.Add(startItem);
   end;
@@ -1518,12 +1551,12 @@ begin
       GetWindowThreadProcessId(tempItem.Wnd, @PID);
       AllowSetForegroundWindow(PID);
 
-     { SharpApi.SendDebugMessage('SystemTray',PChar('Wnd: ' + inttostr(tempItem.Wnd)
+     SharpApi.SendDebugMessage('SystemTray',PChar('Wnd: ' + inttostr(tempItem.Wnd)
                                 + ' | CallBack: ' + inttostr(tempItem.CallbackMessage)
                                 + ' | uID: ' + inttostr(tempItem.uID)
                                 + ' | uVersion: ' + inttostr(tempItem.BInfoFlags)
                                 + ' | Title: ' + tempItem.FTip
-                                + ' | Msg: ' + inttostr(msg)),0);    }
+                                + ' | Msg: ' + inttostr(msg)),0);
 
       // reposition the tray window (some stupid shell services are using
       // it for positioning)
