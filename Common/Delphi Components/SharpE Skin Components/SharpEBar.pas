@@ -127,6 +127,7 @@ type
     procedure UpdatePosition(NewWidth : integer = -1);
     procedure UpdateAlwaysOnTop;
     procedure UpdateFullscreen;
+    procedure BringToTop;
 
     property aform: TForm read form;
     property abackground: TSharpEBarBackground read FBackGround;
@@ -390,9 +391,10 @@ end;
 procedure TSharpEBarBackground.UpdateSize;
 begin
   if Owner <> nil then
-    SetWindowPos(WindowHandle, 0, (Owner as TSharpEBar).aform.left,
-      (Owner as TSharpEBar).aform.top, FBmp.width, FBmp.height,
+  begin
+    SetWindowPos(WindowHandle, 0, (Owner as TSharpEBar).aform.Left, (Owner as TSharpEBar).aform.Top, FBmp.width, FBmp.height,
       SWP_NOZORDER or SWP_NOACTIVATE);
+  end;
 end;
 
 procedure TSharpEBarBackground.SetZOrder;
@@ -500,6 +502,17 @@ begin
   FBuffer.Free;
   FBackGround.Free;
   inherited;
+end;
+
+procedure TSharpEBar.BringToTop;
+begin
+  if (not aform.Visible) then
+    exit;
+
+  BringWindowToTop(aform.handle);
+  SetWindowPos(aform.handle, HWND_NOTOPMOST, 0, 0, 0, 0,
+      SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
+  abackground.SetZOrder;
 end;
 
 procedure TSharpEBar.UpdateAlwaysOnTop;

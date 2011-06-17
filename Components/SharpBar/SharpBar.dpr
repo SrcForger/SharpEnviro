@@ -406,6 +406,7 @@ begin
 
   SharpBarMainForm.Startup := False;
   SharpBarMainForm.Show;
+
   SharpApi.SharpEBroadCast(WM_BARSTATUSCHANGED,0,SharpBarMainForm.BarID);
 
   PostMessage(SharpApi.GetShellTaskMgrWindow, WM_CHECKFULLSCREEN, 0, MonList.MonitorFromWindow(SharpBarMainForm.Handle).MonitorNum);
@@ -414,7 +415,6 @@ begin
     ServiceDone('SharpBar'+IntToStr(ParamID))
   else
     ServiceDone('SharpBar');
-    
+
   Application.Run;
-  SharpApi.SharpEBroadCast(WM_BARSTATUSCHANGED,1,SharpBarMainForm.BarID);
 end.

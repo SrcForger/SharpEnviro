@@ -1520,6 +1520,10 @@ end;
 
 procedure TSharpBarMainForm.FormDestroy(Sender: TObject);
 begin
+  // Hide the window so the desk area can be changed
+  ShowWindow(Handle, SW_HIDE);
+  SharpApi.SharpEBroadCast(WM_BARSTATUSCHANGED,1,BarID);
+
   // Reset cursor (Just in case)
   SetCursor(Screen.Cursors[crDefault]);
   Self.Cursor := crDefault;
@@ -2001,6 +2005,9 @@ begin
     tmrAutoHide.Enabled := True;
     
   tmrCursorPos.Enabled := True;
+
+  SharpEBar.UpdatePosition;
+  SharpEBar.BringToTop;
 end;
 
 function PointInRect(P: TPoint; Rect: TRect): boolean;
@@ -2521,7 +2528,7 @@ procedure TSharpBarMainForm.FormClose(Sender: TObject;
 begin
   if Closing then
     exit;
-    
+
   Closing := True;
 
   SaveBarSettings;

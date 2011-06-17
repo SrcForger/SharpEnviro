@@ -28,7 +28,9 @@ interface
 
 uses
   Windows,
-  commctrl;
+  commctrl,
+  SharpApi,
+  SysUtils;
 
 {
 Informations on the whole structure and handling of the Shell_NotifyIcon
@@ -292,11 +294,36 @@ const
   TTN_POP = (TTN_FIRST - 2);
   TTN_LINKCLICK = (TTN_FIRST - 3);
 
+  procedure ArrayWideCharCopy(dst: PWideChar; src: PWideChar; len: integer);
+  procedure DebugIconData(pData : TNotifyIconDataV7);
+
 var
   tinfo: toolinfo;
   tclockinfo: toolinfo;
 
 implementation
+
+procedure ArrayWideCharCopy(dst: PWideChar; src: PWideChar; len: integer);
+var
+  i: integer;
+begin
+  for i := 0 to len - 1 do
+    dst[i] := src[i];
+end;
+
+procedure DebugIconData(pData : TNotifyIconDataV7);
+begin
+  SharpApi.SendDebugMessage('shell','version: ' + inttostr(pData.Union.uVersion),0);
+  SharpApi.SendDebugMessage('shell','size: ' + inttostr(pData.cbSize),0);
+  SharpApi.SendDebugMessage('shell','wnd: ' + inttostr(pData.Wnd),0);
+  SharpApi.SendDebugMessage('shell','uID: ' + inttostr(pData.uID),0);
+  SharpApi.SendDebugMessage('shell','uFlags: ' + inttostr(pData.uFlags),0);
+  SharpApi.SendDebugMessage('shell','uCallbackMessage: ' + inttostr(pData.uCallbackMessage),0);
+  SharpApi.SendDebugMessage('shell','Icon: ' + inttostr(pData.Icon),0);
+  SharpApi.SendDebugMessage('shell','szTip: ' + pData.szTip,0);
+  SharpApi.SendDebugMessage('shell','szInfo: ' + pData.szInfo,0);
+  SharpApi.SendDebugMessage('shell','szInfoTitle: ' + pData.szInfoTitle,0);
+end;
 
 end.
 

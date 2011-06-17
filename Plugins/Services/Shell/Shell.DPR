@@ -80,18 +80,6 @@ begin
   result := buf;
 end;
 
-procedure DebugIconData(pData : TNotifyIconDataV7);
-begin
-  SharpApi.SendDebugMessage('shell','version: ' + inttostr(pData.Union.uVersion),0);
-  SharpApi.SendDebugMessage('shell','size: ' + inttostr(pData.cbSize),0);
-  SharpApi.SendDebugMessage('shell','wnd: ' + inttostr(pData.Wnd),0);
-  SharpApi.SendDebugMessage('shell','uID: ' + inttostr(pData.uID),0);
-  SharpApi.SendDebugMessage('shell','uFlags: ' + inttostr(pData.uFlags),0);
-  SharpApi.SendDebugMessage('shell','uCallbackMessage: ' + inttostr(pData.uCallbackMessage),0);
-  SharpApi.SendDebugMessage('shell','Icon: ' + inttostr(pData.Icon),0);
-  SharpApi.SendDebugMessage('shell','szTip: ' + pData.szTip,0);
-end;
-
 function GetPidFromProcessNameCase(const ProcessName: string): DWORD;
 var
   List: TStringList;

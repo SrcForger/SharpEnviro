@@ -122,6 +122,7 @@ var
   cds: TCopyDataStruct;
   pItem : TTrayIcon;
   tmpList : TObjectList;
+  ret : Cardinal;
 begin
   if (not IsWindow(wnd)) or (FShuttingDown) then
     exit;
@@ -150,7 +151,7 @@ begin
       end;
 
       // forward the tray message
-      SendMessage(wnd,WM_COPYDATA,0,Cardinal(@cds));
+      SendMessageTimeout(wnd,WM_COPYDATA,0,Cardinal(@cds), 0, 100, ret);
     end;
   finally
     tmpList.Free;
@@ -164,6 +165,7 @@ var
   wnd : hwnd;
   cds: TCopyDataStruct;
   tmpItem : TTrayIcon;
+  ret: Cardinal;
 begin
   if (FShuttingDown) then
     exit;
@@ -205,7 +207,7 @@ begin
       end;
 
       // forward the tray message
-      SendMessage(wnd,WM_COPYDATA,0,Cardinal(@cds));
+      SendMessageTimeout(wnd,WM_COPYDATA,0,Cardinal(@cds), 0, 100, ret);
       n := n -1;
     end;
 
@@ -469,8 +471,7 @@ begin
   else result := nil;
 end;
 
-procedure TTrayManager.ModifyTrayIcon(pItem: TTrayIcon;
-  pData: TNotifyIconDataV7; Hidden, Shared: boolean; Action: integer);
+procedure TTrayManager.ModifyTrayIcon(pItem: TTrayIcon; pData: TNotifyIconDataV7; Hidden, Shared: boolean; Action: integer);
 var
   n : integer;
   tempItem : TTrayIcon;
@@ -492,12 +493,12 @@ begin
 
   if (pData.uFlags and NIF_TIP) = NIF_TIP then
   begin
-    pItem.data.szTip := pData.szTip;
-  end else
+    ArrayWideCharCopy(@pItem.data.szTip[0], @pData.szTip[0], sizeof(pData.szTip));
+  end;
   if (pData.uFlags and NIF_INFO) = NIF_INFO then
   begin
-    pItem.data.szInfo := pData.szInfo;
-    pItem.data.szInfoTitle := pData.szInfoTitle;
+    ArrayWideCharCopy(@pItem.data.szInfo[0], @pData.szInfo[0], sizeof(pData.szInfo));
+    ArrayWideCharCopy(@pItem.data.szInfoTitle[0], @pData.szInfoTitle[0], sizeof(pData.szInfoTitle));
     pItem.data.dwInfoFlags := pData.dwInfoFlags;
   end;
   if (pData.uFlags and NIF_GUID) = NIF_GUID then
@@ -543,8 +544,9 @@ begin
   end;
 
   if pItem.valid then
-     BroadCastTrayMessage(pItem,1)
-     else BroadCastTrayMessage(pItem,2);
+    BroadCastTrayMessage(pItem,1)
+  else
+    BroadCastTrayMessage(pItem,2);
 end;
 
 procedure TTrayManager.RemoveTrayIcon(pItem: TTrayIcon);

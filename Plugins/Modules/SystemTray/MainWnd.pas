@@ -288,10 +288,10 @@ begin
         if TTrayStartItem(FTrayClient.StartItems[n]).HiddenByClient then
           with Add('Item').Items do
           begin
-            Add('Path', TTrayItem(FTrayClient.StartItems[n]).Path);
-            Add('GUID', TTrayItem(FTrayClient.StartItems[n]).GUID);
-            Add('UID', TTrayItem(FTrayClient.StartItems[n]).UID);
-            Add('WndClass', TTrayItem(FTrayClient.StartItems[n]).WndClass);
+            Add('Path', TTrayStartItem(FTrayClient.StartItems[n]).Path);
+            Add('GUID', TTrayStartItem(FTrayClient.StartItems[n]).GUID);
+            Add('UID', TTrayStartItem(FTrayClient.StartItems[n]).UID);
+            Add('WndClass', TTrayStartItem(FTrayClient.StartItems[n]).WndClass);
             Add('Hidden', True);
           end;
     end;

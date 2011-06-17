@@ -503,6 +503,10 @@ begin
       else result := 0;
     end;
 
+    WM_BARSTATUSCHANGED: begin
+      ServiceMsg('Shell', 'DeskAreaUpdate');
+    end;
+
     WM_COMMAND: begin // Menu commands
         if HiWord(wParam) = 0 then
           case LoWord(wParam) of
