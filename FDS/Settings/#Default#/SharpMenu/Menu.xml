@@ -118,12 +118,6 @@
       </item>
       <item>
         <type>link</type>
-        <Caption>Bug Tracker and Wiki</Caption>
-        <Target>http://trac.sharpe-shell.org</Target>
-        <Icon>icon.file.web</Icon>
-      </item>
-      <item>
-        <type>link</type>
         <Caption>Official Website</Caption>
         <Target>http://www.sharpenviro.com</Target>
         <Icon>icon.file.web</Icon>
