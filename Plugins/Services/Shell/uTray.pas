@@ -242,7 +242,7 @@ end;
 
 procedure TTrayManager.CheckForDeadIcons;
 var
-  pItem : TTrayIcon;
+  pItem,deleteItem : TTrayIcon;
   n : integer;
   tmpList : TObjectList;
 begin
@@ -255,16 +255,29 @@ begin
   CopyIcons(Icons,tmpList);
 
   try
-    for n := tmpList.Count - 1 downto 0 do
+    // first create a temporary list of icons to be deleted and delete items
+    for n := Icons.Count - 1 downto 0 do
     begin
       pItem := TTrayIcon(tmpList.Items[n]);
       if not IsWindow(pItem.data.Wnd) then
       begin
-        BroadCastTrayMessage(pItem,2);
+        deleteItem := TTrayIcon.Create;
+        deleteItem.AssignFrom(pItem);
+        tmpList.Add(deleteItem);
+
         reseticon(pItem);
         Icons.Remove(pItem);
       end;
     end;
+
+    // now broadcast the delete message and clear temporary list
+    for n := 0 to tmpList.Count - 1 do
+    begin
+      pItem := TTrayIcon(tmpList.Items[n]);
+      BroadCastTrayMessage(pItem,2);
+    end;
+    tmpList.Clear;
+
   finally
     tmpList.Free;
   end;
