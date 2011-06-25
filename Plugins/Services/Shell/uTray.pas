@@ -148,10 +148,10 @@ begin
           cbData := SizeOf(TNotifyIconDataV7);
           lpData := @pItem.data;
         end;
-      end;
 
-      // forward the tray message
-      SendMessageTimeout(wnd,WM_COPYDATA,0,Cardinal(@cds), 0, 100, ret);
+        // forward the tray message
+        SendMessageTimeout(wnd,WM_COPYDATA,0,Cardinal(@cds), 0, 1000, ret);
+      end;
     end;
   finally
     tmpList.Free;
