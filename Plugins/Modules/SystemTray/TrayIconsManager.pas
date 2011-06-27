@@ -230,6 +230,7 @@ type
     procedure InitToolTips(wnd: TObject);
     procedure DeleteToolTips;
     function GetFreeTipIndex: integer;
+    function Print : String;
 
     constructor Create; reintroduce;
     destructor Destroy; override;
@@ -519,7 +520,7 @@ begin
 
   FFlags := NIDv6.uFlags;
 
-  if NIDv6.Icon <> FIcon then
+  if (NIDv6.Icon <> 0) and (NIDv6.Icon <> FIcon) then
   begin
     FIcon := NIDv6.Icon;
     FBitmap.Clear(color32(0, 0, 0, 0));
@@ -856,7 +857,7 @@ begin
 
     wp := MakeLParam(FTipGPoint.x, FTipGPoint.y);
     lp := MakeLParam(NIN_POPUPOPEN, FV4Popup.uID);
-    SendMessage(FV4Popup.Wnd, FV4Popup.CallbackMessage, wp, lp);
+    SendNotifyMessage(FV4Popup.Wnd, FV4Popup.CallbackMessage, wp, lp);
 
     exit;
   end;
@@ -882,7 +883,7 @@ begin
   begin
     wp := MakeWParam(0, 0);
     lp := MakeLParam(NIN_POPUPCLOSE, FV4Popup.uID);
-    SendMessage(FV4Popup.Wnd, FV4Popup.CallbackMessage, wp, lp);
+    SendNotifyMessage(FV4Popup.Wnd, FV4Popup.CallbackMessage, wp, lp);
     FV4Popup := nil;
     if FTipWnd <> 0 then
     begin
@@ -1491,6 +1492,19 @@ begin
   end;
 end;
 
+function TTrayClient.Print: String;
+var
+  n : integer;
+  pItem : TTrayItem;
+begin
+  result := 'Items: ' + inttostr(FItems.Count);
+  for n := 0 to FItems.Count - 1 do
+  begin
+    pItem := TTrayItem(FItems.Items[n]);
+    result := result + pItem.FWndClass + '; ';
+  end;
+end;
+
 // Documentation on the topic under the remarks section of
 // http://msdn.microsoft.com/en-us/library/bb762159.aspx
 function TTrayClient.PerformIconAction(x, y, gx, gy, imod: integer; msg: uint; parent: TForm): boolean;
@@ -1551,12 +1565,12 @@ begin
       GetWindowThreadProcessId(tempItem.Wnd, @PID);
       AllowSetForegroundWindow(PID);
 
-     SharpApi.SendDebugMessage('SystemTray',PChar('Wnd: ' + inttostr(tempItem.Wnd)
-                                + ' | CallBack: ' + inttostr(tempItem.CallbackMessage)
-                                + ' | uID: ' + inttostr(tempItem.uID)
-                                + ' | uVersion: ' + inttostr(tempItem.BInfoFlags)
-                                + ' | Title: ' + tempItem.FTip
-                                + ' | Msg: ' + inttostr(msg)),0);
+     // SharpApi.SendDebugMessage('SystemTray',PChar('Wnd: ' + inttostr(tempItem.Wnd)
+     //                           + ' | CallBack: ' + inttostr(tempItem.CallbackMessage)
+     //                           + ' | uID: ' + inttostr(tempItem.uID)
+     //                           + ' | uVersion: ' + inttostr(tempItem.BInfoFlags)
+     //                           + ' | Title: ' + tempItem.FTip
+     //                           + ' | Msg: ' + inttostr(msg)),0);
 
       // reposition the tray window (some stupid shell services are using
       // it for positioning)

@@ -82,13 +82,14 @@ var
    tempbmp  : Tbitmap;
    info     : Ticoninfo;
    alphaUsed : boolean;
+   b : boolean;
 begin
      Alphabmp := nil;
      tempbmp := Tbitmap.Create;
 //     dc := createcompatibledc(0);
      try
         //get info about icon
-        GetIconInfo(icon,info);
+        b := GetIconInfo(icon,info);
         tempbmp.handle := info.hbmColor;
         ///////////////////////////////////////////////////////
         // Here comes a ugly step were it tries to paint it as
