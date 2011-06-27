@@ -219,8 +219,13 @@ var
   Re : TRect;
   
   RMode : boolean;
+  s : String;
+
+  ExplorerWallpaper : String;
 begin
   Result := False;
+
+  ExplorerWallpaper := SharpApi.GetSharpeUserSettingsPath + 'ExplorerWallpaper.bmp';
 
   Theme := GetCurrentTheme;
   WP := Theme.Wallpaper.GetMonitorWallpaper(MonID);
@@ -275,6 +280,20 @@ begin
       if FileExists(SList[i]) then
       begin
         try
+          // check if SharpE Wallpaper is set to Explorer wallpaper
+          // this might happen if a third party app sets the wallpaper
+          if CompareText(SList[i],ExplorerWallpaper) = 0 then
+          begin
+            beep;
+            // Copy the original wallpaper to a new file and change the SharpE settings
+            s := SList[i];
+            setlength(s, length(s) - length(ExtractFileExt(s)));
+            s := s + '_orig.bmp';
+            CopyFile(PAnsiChar(SList[i]), PAnsiChar(s), False);
+            WP.Image := s;
+            Theme.Wallpaper.UpdateWallpaper(WP);
+            Theme.Wallpaper.SaveToFile;
+          end;
           TempBmp.LoadFromFile(SList[i]);
           loaded := True;
           break;
