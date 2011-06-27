@@ -150,7 +150,7 @@ begin
         end;
 
         // forward the tray message
-        SendMessageTimeout(wnd,WM_COPYDATA,0,Cardinal(@cds), 0, 1000, ret);
+        SendMessageTimeout(wnd,WM_COPYDATA,0,Cardinal(@cds), 0, 5000, ret);
       end;
     end;
   finally
@@ -207,7 +207,7 @@ begin
       end;
 
       // forward the tray message
-      SendMessageTimeout(wnd,WM_COPYDATA,0,Cardinal(@cds), 0, 100, ret);
+      SendMessageTimeout(wnd,WM_COPYDATA,0,Cardinal(@cds), 0, 5000, ret);
       n := n -1;
     end;
 
