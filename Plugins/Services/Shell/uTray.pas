@@ -122,7 +122,6 @@ var
   cds: TCopyDataStruct;
   pItem : TTrayIcon;
   tmpList : TObjectList;
-  ret : Cardinal;
 begin
   if (not IsWindow(wnd)) or (FShuttingDown) then
     exit;
@@ -150,7 +149,7 @@ begin
         end;
 
         // forward the tray message
-        SendMessageTimeout(wnd,WM_COPYDATA,0,Cardinal(@cds), 0, 5000, ret);
+        SendMessage(wnd,WM_COPYDATA,0,Cardinal(@cds));
       end;
     end;
   finally
@@ -165,7 +164,6 @@ var
   wnd : hwnd;
   cds: TCopyDataStruct;
   tmpItem : TTrayIcon;
-  ret: Cardinal;
 begin
   if (FShuttingDown) then
     exit;
@@ -207,7 +205,7 @@ begin
       end;
 
       // forward the tray message
-      SendMessageTimeout(wnd,WM_COPYDATA,0,Cardinal(@cds), 0, 5000, ret);
+      SendMessage(wnd,WM_COPYDATA,0,Cardinal(@cds));
       n := n -1;
     end;
 
