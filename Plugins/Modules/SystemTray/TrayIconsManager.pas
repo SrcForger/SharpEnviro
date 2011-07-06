@@ -416,7 +416,6 @@ constructor TTrayItem.Create(dup: TTrayItem);
 begin
   FPath := dup.FPath;
   FWndClass := dup.WndClass;
-  FGUIDString :=  dup.GUID;
   FUID := dup.FUID;
   FWnd := dup.FWnd;
   FCallbackMessage := dup.FCallbackMessage;
@@ -857,7 +856,7 @@ begin
 
     wp := MakeLParam(FTipGPoint.x, FTipGPoint.y);
     lp := MakeLParam(NIN_POPUPOPEN, FV4Popup.uID);
-    SendNotifyMessage(FV4Popup.Wnd, FV4Popup.CallbackMessage, wp, lp);
+    SendMessage(FV4Popup.Wnd, FV4Popup.CallbackMessage, wp, lp);
 
     exit;
   end;
@@ -883,7 +882,7 @@ begin
   begin
     wp := MakeWParam(0, 0);
     lp := MakeLParam(NIN_POPUPCLOSE, FV4Popup.uID);
-    SendNotifyMessage(FV4Popup.Wnd, FV4Popup.CallbackMessage, wp, lp);
+    SendMessage(FV4Popup.Wnd, FV4Popup.CallbackMessage, wp, lp);
     FV4Popup := nil;
     if FTipWnd <> 0 then
     begin
