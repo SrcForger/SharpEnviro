@@ -503,12 +503,15 @@ begin
 
   if (pData.uFlags and NIF_TIP) = NIF_TIP then
   begin
-    ArrayWideCharCopy(@pItem.data.szTip[0], @pData.szTip[0], sizeof(pData.szTip));
+    pItem.data.szTip := pData.szTip;
+    // ArrayWideCharCopy(@pItem.data.szTip[0], @pData.szTip[0], sizeof(pData.szTip));
   end;
   if (pData.uFlags and NIF_INFO) = NIF_INFO then
   begin
-    ArrayWideCharCopy(@pItem.data.szInfo[0], @pData.szInfo[0], sizeof(pData.szInfo));
-    ArrayWideCharCopy(@pItem.data.szInfoTitle[0], @pData.szInfoTitle[0], sizeof(pData.szInfoTitle));
+    pItem.data.szInfo := pData.szInfo;
+    pItem.data.szInfoTitle := pData.szInfoTitle;
+    // ArrayWideCharCopy(@pItem.data.szInfo[0], @pData.szInfo[0], sizeof(pData.szInfo));
+    // ArrayWideCharCopy(@pItem.data.szInfoTitle[0], @pData.szInfoTitle[0], sizeof(pData.szInfoTitle));
     pItem.data.dwInfoFlags := pData.dwInfoFlags;
   end;
   if (pData.uFlags and NIF_GUID) = NIF_GUID then
