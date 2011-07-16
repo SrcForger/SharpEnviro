@@ -73,6 +73,7 @@ type
     FPopPosition: TPopPosition;
     FDescription: string;
     FFormatting: string;
+    FManualText: Boolean;
 
     function CreateInitialControls: Boolean;
 
@@ -171,6 +172,7 @@ begin
   BevelKind := bkNone;
   ParentBackground := False;
 
+  FManualText := False;
   FPercentDisplay := False;
   FMaxPercent := 100;
   FEnabled := True;
@@ -284,6 +286,7 @@ end;
 function TSharpeGaugeBox.GetNewValue: integer;
 var
   s : string;
+  b : boolean;
 begin
   Result := 0;
 
@@ -295,8 +298,16 @@ begin
   if (fSuffix <> '') and (Pos(Fsuffix, s) > 0) then
     delete(s, Length(s) - Length(fSuffix) + 1, Length(fSuffix));
 
+  b := True;
   if (length(s) <> 0) then
-    TryStrToInt(S, Result);
+    b := TryStrToInt(S, Result);
+
+  // If getting the new value failed, return the old one
+  if (not b) then
+  begin
+    result := FValue;
+    exit;
+  end;
 
   if FPercentDisplay then
     Result := round(FMax * (Result / FMaxPercent) * 1.0);
@@ -304,9 +315,12 @@ end;
 
 function TSharpeGaugeBox.GetValue: integer;
 begin
-  UpdateValue(GetNewValue, False);
-  UpdateEditBox;
-  result := FValue;
+  // Text was entered but not finished, something is trying to access the value
+  // property, which however does not represent what is currently entered in the
+  // Edit box, so return the currently entered value instead
+  if (FManualText) then
+    result := GetNewValue
+  else result := FValue;
 end;
 
 procedure TSharpeGaugeBox.BtnGaugeClick(Sender: TObject);
@@ -468,6 +482,7 @@ var
   changed : Boolean;
 begin
   changed := False;
+  FManualText := False;
 
   // Value has not changed, don't update
   if FValue = newValue then
@@ -503,6 +518,7 @@ end;
 procedure TSharpeGaugeBox.ValueEditKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
+  FManualText := True;
   if (Key = VK_RETURN) then
   begin
     UpdateValue(GetNewValue);
