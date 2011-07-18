@@ -182,9 +182,9 @@ function GetMetaData(Preview : TBitmap32) : TMetaData;
 begin
   with result do
   begin
-    Name := 'Battery Monitor';
+    Name := 'RSS Reader';
     Author := 'Martin Krämer <Martin@SharpEnviro.com>';
-    Description := 'Battery usage and status monitor';
+    Description := 'Display rss news feeds';
     ExtraData := 'preview: False';
     DataType := tteModule;
   end;
