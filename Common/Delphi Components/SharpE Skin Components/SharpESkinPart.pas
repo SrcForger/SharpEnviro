@@ -2716,6 +2716,11 @@ begin
 
   if Icon <> nil then
      FSkinIcon.Assign(Icon);
+  with xml.Properties do
+  begin
+    if ItemNamed['WidthMod'] <> nil then
+       FWidthMod := IntValue('WidthMod',0);  
+  end;
   with xml.items do
   begin
     if ItemNamed['WidthMod'] <> nil then
