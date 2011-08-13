@@ -1272,7 +1272,7 @@ procedure TTrayClient.DeleteTrayIconByIndex(index: integer; Hidden: Boolean);
 var
   i: integer;
   temp: TTrayItem;
-  startItem: TTrayStartItem;
+  startItem, tempItem: TTrayStartItem;
 begin
   // To stop the tray from removing the Explorer icons when shutting down the Shell service we need
   // to check if the shell service is stopping
@@ -1311,20 +1311,41 @@ begin
     end;
   end;
 
+  startItem := nil;
+  for i := 0 to FStartItems.Count - 1 do
+  begin
+    tempItem := TTrayStartItem(FStartItems.Items[i]);
+    if (CompareText(tempItem.WndClass,temp.WndClass) = 0) and
+      (CompareText(tempItem.Path,temp.Path) = 0) and
+      (tempItem.UID = temp.UID) and
+      (CompareText(tempItem.GUID, temp.GUID) = 0) then
+    begin
+      startItem := tempItem;
+      break;
+    end;
+  end;
+
   // Add the item to the startup list if it was hidden (to make it start hidden next time)
   if Hidden then
   begin
-    startItem := TTrayStartItem.Create;
-    startItem.HiddenByClient := True;
-    
-    startItem.Path := temp.Path;
-    startItem.GUID := temp.GUID;
-    startItem.UID := temp.UID;
-    startItem.WndClass := temp.WndClass;
+    if startItem = nil then
+    begin
+      startItem := TTrayStartItem.Create;
+      startItem.HiddenByClient := True;
 
-    startItem.Position := -1;
-    FStartItems.Add(startItem);
-  end;
+      startItem.Path := temp.Path;
+      startItem.GUID := temp.GUID;
+      startItem.UID := temp.UID;
+      startItem.WndClass := temp.WndClass;
+
+      startItem.Position := -1;
+      FStartItems.Add(startItem);
+    end else startItem.HiddenByClient := True;
+  end else
+  begin
+    if startItem <> nil then
+      startItem.HiddenByClient := False;
+  end; 
 
   if not Hidden then
     FItems.Extract(temp)

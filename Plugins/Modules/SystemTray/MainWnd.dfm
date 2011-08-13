@@ -2,12 +2,12 @@ object MainForm: TMainForm
   Left = 0
   Top = 0
   Caption = 'System Tray'
-  ClientHeight = 208
-  ClientWidth = 362
+  ClientHeight = 159
+  ClientWidth = 277
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -14
+  Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
@@ -17,13 +17,13 @@ object MainForm: TMainForm
   OnMouseMove = FormMouseMove
   OnMouseUp = FormMouseUp
   OnPaint = FormPaint
-  PixelsPerInch = 120
-  TextHeight = 17
+  PixelsPerInch = 96
+  TextHeight = 13
   object lb_servicenotrunning: TSharpESkinLabel
     Left = 0
     Top = 0
-    Width = 184
-    Height = 27
+    Width = 141
+    Height = 21
     AutoSize = True
     Caption = 'SharpE Tray Service not running'
     AutoPos = apCenter
@@ -32,8 +32,8 @@ object MainForm: TMainForm
   object ShowHideButton: TSharpEButton
     Left = 0
     Top = 0
-    Width = 21
-    Height = 33
+    Width = 16
+    Height = 25
     Enabled = False
     ParentShowHint = False
     ShowHint = False

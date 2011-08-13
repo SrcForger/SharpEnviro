@@ -241,6 +241,8 @@ procedure TMainForm.SaveSettings;
 var
   XML : TJclSimpleXML;
   n : integer;
+  tmp : TTrayStartItem;
+  elem : TJclSimpleXMLElem;
 begin
   XML := TJclSimpleXML.Create;
   if not LoadXMLFromSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
@@ -251,11 +253,20 @@ begin
   with xml.Root.Items do
   begin
     // Remove old Hidden values
-    if (ItemNamed['Hidden'] <> nil) then
-      xml.Root.Items.Remove(ItemNamed['Hidden']);
+    elem := ItemNamed['Hidden'];
+    if (elem <> nil) then
+    begin
+      Remove(elem);
+      elem.Free;
+    end;
 
-    if ItemNamed['List'] <> nil then
-      Remove(ItemNamed['List']);
+    // Remove old List values
+    elem := ItemNamed['List'];
+    if (elem <> nil) then
+    begin
+      Remove(elem);
+      elem.Free;
+    end;
 
     with Add('List').Items do
     begin
@@ -286,18 +297,27 @@ begin
       // Also add any start items that were hidden (items that have been removed)
       for n := 0 to FTrayClient.StartItems.Count - 1 do
         if TTrayStartItem(FTrayClient.StartItems[n]).HiddenByClient then
+        begin
+          tmp := TTrayStartItem(FTrayClient.StartItems[n]);
+          if not ((length(trim(tmp.Path)) = 0)
+                   and (length(trim(tmp.GUID)) = 0)
+                   and (length(trim(tmp.WndClass)) = 0)
+                   and (tmp.UID = 0)) then
           with Add('Item').Items do
           begin
-            Add('Path', TTrayStartItem(FTrayClient.StartItems[n]).Path);
-            Add('GUID', TTrayStartItem(FTrayClient.StartItems[n]).GUID);
-            Add('UID', TTrayStartItem(FTrayClient.StartItems[n]).UID);
-            Add('WndClass', TTrayStartItem(FTrayClient.StartItems[n]).WndClass);
+
+            Add('Path', tmp.Path);
+            Add('GUID', tmp.GUID);
+            Add('UID', tmp.UID);
+            Add('WndClass', tmp.WndClass);
             Add('Hidden', True);
           end;
+        end;
     end;
   end;
   if not SaveXMLToSharedFile(XML,mInterface.BarInterface.GetModuleXMLFile(mInterface.ID),True) then
     SharpApi.SendDebugMessageEx('SystemTray',PChar('Failed to Save Settings to File: ' + mInterface.BarInterface.GetModuleXMLFile(mInterface.ID)), clred, DMT_ERROR);
+  XML.Free;
 end;
 
 procedure TMainForm.ShowHideButtonClick(Sender: TObject);
