@@ -750,7 +750,7 @@ begin
   while (length(Text) > 0) and (ord(Text[length(Text)]) = 0) do
     setlength(Text,length(Text)-1);
     
-  if CompareText(Text,orig) <> 0 then
+  if CompareText(ExtractFileName(Text),ExtractFileName(orig)) <> 0 then
   begin
     s := Copy(text, 1, Length(text) - 2);
     Text := s;
