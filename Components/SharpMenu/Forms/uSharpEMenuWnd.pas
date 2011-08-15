@@ -1144,6 +1144,8 @@ end;
 procedure TSharpEMenuWnd.FormMouseWheelDown(Sender: TObject; Shift: TShiftState;
   MousePos: TPoint; var Handled: Boolean);
 begin
+  if FMenu.Settings.WrapMenu then
+    exit;
   ScrollMenuTimer.Enabled := False;
   FMenuScroll := FMenuScroll + FMenu.Settings.ScrollSpeed;
   ScrollMenuTimer.Enabled := True;
@@ -1152,6 +1154,8 @@ end;
 procedure TSharpEMenuWnd.FormMouseWheelUp(Sender: TObject; Shift: TShiftState;
   MousePos: TPoint; var Handled: Boolean);
 begin
+  if FMenu.Settings.WrapMenu then
+    exit;
   ScrollMenuTimer.Enabled := False;
   FMenuScroll := FMenuScroll - FMenu.Settings.ScrollSpeed;
   ScrollMenuTimer.Enabled := True;
