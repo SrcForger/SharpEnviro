@@ -1664,7 +1664,14 @@ begin
     end else
     begin
       TSharpETaskItem(Sender).Down := False;
-      pItem.Minimize;
+      if not (WindowInRect(pItem.Handle, MonList.DesktopRect)) then
+        SwitchToThisWindow(pItem.Handle, True)
+      else
+      begin
+        pItem.LastVWM := VWMFunctions.VWMGetWindowVWM(CurrentVWM, GetVWMCount, pItem.Handle);
+        PostMessage(GetShellTaskMgrWindow,WM_TASKVWMCHANGE,pItem.Handle,pItem.LastVWM);
+        pItem.Minimize;
+      end;
     end;
   end;
 end;

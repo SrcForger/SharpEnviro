@@ -155,6 +155,7 @@ type
     procedure WMCopyData(var msg : TMessage); message WM_COPYDATA;
     procedure WMAddAppBarTask(var msg : TMessage); message WM_ADDAPPBARTASK;
     procedure WMCommand(var msg: TMessage); message WM_COMMAND;
+    procedure WMTaskVWMChange(var msg : TMessage); message WM_TASKVWMCHANGE;
     procedure mnOnClick(pItem : TSharpEMenuItem; pMenuWnd : TObject; var CanClose : boolean);
     procedure mnMouseUp(pItem : TSharpEMenuItem; Button: TMouseButton; Shift: TShiftState);
     procedure DisplaySystemMenu(pBtn : TButtonRecord);
@@ -195,6 +196,19 @@ begin
   if (P.X>=Rect.Left) and (P.X<=Rect.Right)
      and (P.Y>=Rect.Top) and (P.Y<=Rect.Bottom) then PointInRect:=True
      else PointInRect:=False;
+end;
+
+procedure TMainForm.WMTaskVWMChange(var msg : TMessage);
+var
+  pItem : TTaskItem;
+begin
+  pItem := FTM.GetItemByHandle(Cardinal(msg.WParam));
+  if pItem <> nil then
+  begin
+    pItem.LastVWM := msg.LParam;
+    FTM.UpdateTask(pItem.Handle);
+    CheckList;
+  end;
 end;
 
 procedure TMainForm.LoadIcons;
@@ -1709,6 +1723,8 @@ procedure TMainForm.btnMouseUp(Sender: TObject; Button: TMouseButton;
 var
   BtnItem : TButtonRecord;
   wascleared : boolean;
+  pItem : TTaskItem;
+  newVWM : integer;
 begin
   MoveButton := nil;
   BtnItem := GetButtonItem(TSharpETaskItem(Sender));
@@ -1762,7 +1778,19 @@ begin
 
           if IsIconic(BtnItem.wnd) or (FTM.LastActiveTask <> BtnItem.wnd) then
             SwitchToThisWindow(BtnItem.wnd,True)
-          else ShowWindow(BtnItem.wnd, SW_MINIMIZE); //PostMessage(BtnItem.wnd,WM_SYSCOMMAND,SC_MINIMIZE,0);
+          else begin
+            if not (WindowInRect(BtnItem.wnd, MonList.DesktopRect)) then
+              SwitchToThisWindow(BtnItem.wnd, True)
+            else
+            begin
+              newVWM := VWMFunctions.VWMGetWindowVWM(CurrentVWM, GetVWMCount, BtnItem.wnd);
+              PostMessage(GetShellTaskMgrWindow,WM_TASKVWMCHANGE,BtnItem.wnd,newVWM);
+              pItem := FTM.GetItemByHandle(BtnItem.wnd);
+              if pItem <> nil then
+                pItem.LastVWM := newVWM;
+              ShowWindow(BtnItem.wnd, SW_MINIMIZE); //PostMessage(BtnItem.wnd,WM_SYSCOMMAND,SC_MINIMIZE,0);
+            end;
+          end;
         end;
       end else SharpApi.SharpExecute(BtnItem.target);
     end else if (Button = mbMiddle) and (not hasmoved) then
