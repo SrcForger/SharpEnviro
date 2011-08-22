@@ -46,7 +46,8 @@ uses
   uWeatherOptions,
   uWeatherList,
   SharpApi,
-  uSharpXMLUtils;
+  uSharpXMLUtils,
+  uSharpHTTP;
 
 type
   TDownloadComplete = procedure(tmpInfo: TWeatherItem; path: string) of object;
@@ -164,8 +165,7 @@ procedure TDownloadThread.Execute;
 var
   i: integer;
   item: TDownloadItem;
-  Stream: TMemoryStream;
-  HTTPReqResp1: THTTPReqResp;
+  Request: TSharpHTTP;
   NoConnectionTimeOut : integer;
 begin
   NoConnectionTimeOut := 16;
@@ -198,35 +198,27 @@ begin
         continue;
       end else NoConnectionTimeOut := 16;
 
-      Stream := TMemoryStream.Create;
-      HTTPReqResp1 := THTTPReqResp.Create(nil);
+      Request := TSharpHTTP.Create(False);
       try
-        try
-          HTTPReqResp1.URL := item.UrlTarget;
-          HTTPReqResp1.UseUTF8InHeader := False;
-          HTTPReqResp1.Execute(item.UrlTarget, Stream);
-
-          Debug(STRSeparator, DMT_INFO);
-          Debug(STRRequest + item.Target, DMT_INFO);
-          Debug(STRDateTime + DateTimeToStr(now), DMT_INFO);
-          Debug(STRSeparator, DMT_INFO);
-        except
-          Debug(Format('Error downloading %s (Connection Issue)', [item.Target]),
-            DMT_ERROR);
+        if not Request.Download(item.UrlTarget, item.Target) then
+        begin
+          Debug(Format('Error downloading %s (Connection Issue)', [item.Target]), DMT_ERROR);
 
           // Remove the last downloaded item
           EnterCriticalSection(DownloadCritical);
           FDownloadItems.Remove(item);
           i := FDownloadItems.Count - 1;
           LeaveCriticalSection(DownloadCritical);
-          
+
           continue;
         end;
-      finally
-        Stream.SaveToFile(item.Target);
 
-        Stream.Destroy;
-        HTTPReqResp1.Free;
+        Debug(STRSeparator, DMT_INFO);
+        Debug(STRRequest + item.Target, DMT_INFO);
+        Debug(STRDateTime + DateTimeToStr(now), DMT_INFO);
+        Debug(STRSeparator, DMT_INFO);
+      finally
+        Request.Free;
       end;
 
       item.CompleteProc(item.TmpInfo, item.Target);

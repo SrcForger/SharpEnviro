@@ -22,7 +22,8 @@ uses
   uWeatherOptions in '..\..\..\Services\Weather\uWeatherOptions.pas',
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
-  uSharpCenterPluginScheme;
+  uSharpCenterPluginScheme,
+  uSharpHTTP in '..\..\..\..\Common\Units\SharpHTTP\uSharpHTTP.pas';
 
 {$E dll}
 

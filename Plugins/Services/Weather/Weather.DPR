@@ -39,7 +39,8 @@ uses
   {$IFDEF DEBUG}DebugDialog in '..\..\..\Common\Units\DebugDialog\DebugDialog.pas',{$ENDIF}
   uWeatherList in 'uWeatherList.pas',
   uWeatherOptions in 'uWeatherOptions.pas',
-  uWeatherMgr in 'uWeatherMgr.pas';
+  uWeatherMgr in 'uWeatherMgr.pas',
+  uSharpHTTP in '..\..\..\Common\Units\SharpHTTP\uSharpHTTP.pas';
 
 {$R 'VersionInfo.res'}
 {$R *.RES}

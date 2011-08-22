@@ -18,6 +18,7 @@
     <project Name="Menu" Type="DLL">Plugins\Configurations\Components\MenuSettings\MenuSettings.dproj</project>
     <project Name="Module List" Type="DLL">Plugins\Configurations\Components\ModuleList\ModuleList.dproj</project>
     <project Name="Object List" Type="DLL">Plugins\Configurations\Components\ObjectList\ObjectList.dproj</project>
+	<project Name="Proxy" Type="DLL">Plugins\Configurations\Components\Proxy\Proxy.dproj</project>
     <project Name="Service List" Type="DLL">Plugins\Configurations\Components\ServiceList\ServiceList.dproj</project>
     <project Name="Theme List" Type="DLL">Plugins\Configurations\Components\ThemeList\ThemeList.dproj</project>
   </package>

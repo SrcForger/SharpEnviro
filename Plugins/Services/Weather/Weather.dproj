@@ -1,4 +1,5 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>{d7a23641-7e39-4af3-8cf3-fccc5cd53d67}</ProjectGuid>
     <MainSource>Weather.DPR</MainSource>
@@ -51,6 +52,7 @@ if $(Configuration)==Debug del "$(OUTPUTDIR)$(OUTPUTNAME).map"</PostBuildEvent>
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
     <DCCReference Include="..\..\..\Common\Units\DebugDialog\DebugDialog.pas" />
+    <DCCReference Include="..\..\..\Common\Units\SharpHTTP\uSharpHTTP.pas" />
     <DCCReference Include="uWeatherList.pas" />
     <DCCReference Include="uWeatherMgr.pas" />
     <DCCReference Include="uWeatherOptions.pas" />
