@@ -92,7 +92,8 @@ object frmList: TfrmList
     Top = 240
   end
   object tmrUpdatePosition: TTimer
-    Interval = 1
+    Enabled = False
+    Interval = 10
     OnTimer = tmrUpdatePositionTimer
     Left = 344
     Top = 20

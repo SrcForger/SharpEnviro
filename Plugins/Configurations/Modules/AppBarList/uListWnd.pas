@@ -369,14 +369,24 @@ begin
   tmrUpdatePosition.Enabled := False;
 
   n := lbItems.ItemAtPos(point(pt.x, pt.y), True);
-  if ((n <> -1) and (lbItems.ItemIndex <> -1) and (n <> lbItems.ItemIndex)) then begin
-
-    FItems.Exchange(n,lbItems.ItemIndex);
-    lbItems.Items.Exchange(n,lbItems.ItemIndex);
+  if ((n <> -1) and (lbItems.ItemIndex <> -1) and (n <> lbItems.ItemIndex)) then
+  begin
+    while (n - lbItems.ItemIndex) <> 0 do
+    begin
+      if n > lbItems.ItemIndex then
+      begin
+        FItems.Exchange(lbItems.ItemIndex, lbItems.ItemIndex + 1);
+        lbItems.Items.Exchange(lbItems.ItemIndex, lbItems.ItemIndex + 1);
+      end else
+      begin
+        FItems.Exchange(lbItems.ItemIndex, lbItems.ItemIndex - 1);
+        lbItems.Items.Exchange(lbItems.ItemIndex, lbItems.ItemIndex - 1);
+      end;
+    end;
     FPluginHost.Save;
     BroadcastGlobalUpdateMessage(suTaskAppBarFilters, 0, True);
-    end;
   end;
+end;
 
 procedure TfrmList.UpdateImages;
 var
