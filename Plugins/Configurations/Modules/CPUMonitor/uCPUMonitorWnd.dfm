@@ -20,7 +20,7 @@ object frmCPUMon: TfrmCPUMon
     Top = 0
     Width = 432
     Height = 378
-    ActivePage = pagColors
+    ActivePage = pagMon
     PropagateEnable = False
     Align = alClient
     ParentBackground = True
@@ -33,7 +33,7 @@ object frmCPUMon: TfrmCPUMon
       object Panel5: TPanel
         AlignWithMargins = True
         Left = 6
-        Top = 246
+        Top = 260
         Width = 420
         Height = 23
         Margins.Left = 5
@@ -45,13 +45,14 @@ object frmCPUMon: TfrmCPUMon
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 3
+        ExplicitTop = 246
       end
       object Panel6: TPanel
         AlignWithMargins = True
         Left = 6
-        Top = 213
+        Top = 228
         Width = 420
-        Height = 23
+        Height = 22
         Margins.Left = 5
         Margins.Top = 10
         Margins.Right = 5
@@ -61,29 +62,6 @@ object frmCPUMon: TfrmCPUMon
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 2
-        object edit_cpu: TSharpeGaugeBox
-          Left = 0
-          Top = 0
-          Width = 177
-          Height = 23
-          Margins.Left = 26
-          Margins.Top = 8
-          Margins.Right = 8
-          Margins.Bottom = 0
-          ParentBackground = False
-          TabOrder = 0
-          Min = 0
-          Max = 16
-          Value = 0
-          Prefix = 'CPU: '
-          Description = 'Adjust Update Interval'
-          PopPosition = ppBottom
-          PercentDisplay = False
-          MaxPercent = 100
-          Formatting = '%d'
-          OnChangeValue = sgbWidthChangeValue
-          BackgroundColor = clWindow
-        end
         object sgbUpdate: TSharpeGaugeBox
           Left = 188
           Top = 0
@@ -94,7 +72,7 @@ object frmCPUMon: TfrmCPUMon
           Margins.Right = 8
           Margins.Bottom = 0
           ParentBackground = False
-          TabOrder = 1
+          TabOrder = 0
           Min = 100
           Max = 2000
           Value = 250
@@ -103,10 +81,25 @@ object frmCPUMon: TfrmCPUMon
           Description = 'Adjust Update Interval'
           PopPosition = ppBottom
           PercentDisplay = False
+          SignDisplay = False
           MaxPercent = 100
           Formatting = '%d'
           OnChangeValue = sgbWidthChangeValue
           BackgroundColor = clWindow
+        end
+        object cbCpu: TComboBox
+          Left = 0
+          Top = 0
+          Width = 177
+          Height = 21
+          Margins.Left = 26
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          ItemHeight = 13
+          TabOrder = 1
+          Text = 'CPU'
+          OnSelect = cbCpuSelect
         end
       end
       object SharpECenterHeader3: TSharpECenterHeader
@@ -114,7 +107,7 @@ object frmCPUMon: TfrmCPUMon
         Left = 6
         Top = 1
         Width = 420
-        Height = 37
+        Height = 42
         Margins.Left = 5
         Margins.Top = 0
         Margins.Right = 5
@@ -128,25 +121,24 @@ object frmCPUMon: TfrmCPUMon
       object SharpECenterHeader5: TSharpECenterHeader
         AlignWithMargins = True
         Left = 6
-        Top = 166
+        Top = 176
         Width = 420
-        Height = 37
+        Height = 42
         Margins.Left = 5
         Margins.Top = 10
         Margins.Right = 5
         Margins.Bottom = 0
         Title = 'CPU'
-        Description = 
-          'Define the CPU to monitor. 0 = CPU 1, 1 = CPU 2, CPU Count+1 = O' +
-          'VERALL'
+        Description = 'Define the CPU to monitor'
         TitleColor = clWindowText
         DescriptionColor = clRed
         Align = alTop
+        ExplicitTop = 171
       end
       object Panel1: TPanel
         AlignWithMargins = True
         Left = 6
-        Top = 48
+        Top = 53
         Width = 420
         Height = 23
         Margins.Left = 5
@@ -182,9 +174,9 @@ object frmCPUMon: TfrmCPUMon
       object SharpECenterHeader4: TSharpECenterHeader
         AlignWithMargins = True
         Left = 6
-        Top = 81
+        Top = 86
         Width = 420
-        Height = 37
+        Height = 42
         Margins.Left = 5
         Margins.Top = 10
         Margins.Right = 5
@@ -198,7 +190,7 @@ object frmCPUMon: TfrmCPUMon
       object Panel3: TPanel
         AlignWithMargins = True
         Left = 6
-        Top = 128
+        Top = 138
         Width = 420
         Height = 23
         Margins.Left = 5
@@ -230,6 +222,7 @@ object frmCPUMon: TfrmCPUMon
           Description = 'Adjust graph size'
           PopPosition = ppBottom
           PercentDisplay = False
+          SignDisplay = False
           MaxPercent = 100
           Formatting = '%d'
           OnChangeValue = sgbWidthChangeValue
@@ -248,7 +241,7 @@ object frmCPUMon: TfrmCPUMon
         Left = 1
         Top = 1
         Width = 430
-        Height = 240
+        Height = 250
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
@@ -256,7 +249,7 @@ object frmCPUMon: TfrmCPUMon
         object Panel2: TPanel
           AlignWithMargins = True
           Left = 5
-          Top = 47
+          Top = 52
           Width = 415
           Height = 23
           Margins.Left = 5
@@ -268,8 +261,7 @@ object frmCPUMon: TfrmCPUMon
           BevelOuter = bvNone
           ParentColor = True
           TabOrder = 0
-          ExplicitLeft = 6
-          ExplicitTop = 48
+          ExplicitTop = 47
           object sgbBackground: TSharpeGaugeBox
             AlignWithMargins = True
             Left = 0
@@ -290,6 +282,7 @@ object frmCPUMon: TfrmCPUMon
             Description = 'Adjust transparency'
             PopPosition = ppBottom
             PercentDisplay = True
+            SignDisplay = False
             MaxPercent = 100
             Formatting = '%d'
             OnChangeValue = sgbWidthChangeValue
@@ -315,6 +308,7 @@ object frmCPUMon: TfrmCPUMon
             Description = 'Adjust transparency'
             PopPosition = ppBottom
             PercentDisplay = True
+            SignDisplay = False
             MaxPercent = 100
             Formatting = '%d'
             OnChangeValue = sgbWidthChangeValue
@@ -324,7 +318,7 @@ object frmCPUMon: TfrmCPUMon
         object Panel4: TPanel
           AlignWithMargins = True
           Left = 5
-          Top = 80
+          Top = 85
           Width = 415
           Height = 23
           Margins.Left = 5
@@ -336,9 +330,7 @@ object frmCPUMon: TfrmCPUMon
           BevelOuter = bvNone
           ParentColor = True
           TabOrder = 1
-          ExplicitLeft = 6
-          ExplicitTop = 18
-          ExplicitWidth = 168
+          ExplicitTop = 80
           object sgbBorder: TSharpeGaugeBox
             AlignWithMargins = True
             Left = 0
@@ -359,6 +351,7 @@ object frmCPUMon: TfrmCPUMon
             Description = 'Adjust Blend Strength'
             PopPosition = ppBottom
             PercentDisplay = True
+            SignDisplay = False
             MaxPercent = 100
             Formatting = '%d'
             OnChangeValue = sgbWidthChangeValue
@@ -370,7 +363,7 @@ object frmCPUMon: TfrmCPUMon
           Left = 5
           Top = 0
           Width = 420
-          Height = 37
+          Height = 42
           Margins.Left = 5
           Margins.Top = 0
           Margins.Right = 5
@@ -380,15 +373,13 @@ object frmCPUMon: TfrmCPUMon
           TitleColor = clWindowText
           DescriptionColor = clRed
           Align = alTop
-          ExplicitLeft = 6
-          ExplicitTop = 1
         end
         object SharpECenterHeader2: TSharpECenterHeader
           AlignWithMargins = True
           Left = 5
-          Top = 113
+          Top = 118
           Width = 420
-          Height = 37
+          Height = 42
           Margins.Left = 5
           Margins.Top = 10
           Margins.Right = 5
@@ -398,14 +389,11 @@ object frmCPUMon: TfrmCPUMon
           TitleColor = clWindowText
           DescriptionColor = clRed
           Align = alTop
-          ExplicitLeft = 3
-          ExplicitTop = 161
-          ExplicitWidth = 418
         end
         object Colors: TSharpEColorEditorEx
           AlignWithMargins = True
           Left = 5
-          Top = 160
+          Top = 170
           Width = 420
           Height = 80
           Margins.Left = 5
@@ -473,9 +461,6 @@ object frmCPUMon: TfrmCPUMon
           BackgroundTextColor = clBlack
           ContainerColor = clBlack
           ContainerTextColor = clBlack
-          ExplicitLeft = 6
-          ExplicitTop = 218
-          ExplicitWidth = 421
         end
       end
     end

@@ -98,7 +98,7 @@ begin
       Clear;
       Add('Width', sgbWidth.Value);
       Add('Update', sgbUpdate.Value);
-      Add('CPU', round(edit_cpu.Value));
+      Add('CPU', round(cbCpu.ItemIndex));
 
       if cboGraphType.ItemIndex = 0 then
         Add('DrawMode',0)
@@ -180,7 +180,7 @@ begin
         begin
           sgbWidth.Value := IntValue('Width', sgbWidth.Value);
           sgbUpdate.Value := IntValue('Update', sgbUpdate.Value);
-          edit_cpu.Value := IntValue('CPU', round(edit_cpu.Value));
+          cbCpu.ItemIndex := IntValue('CPU', cbCpu.ItemIndex);
           i := IntValue('DrawMode', 1);
           case i of
             0: cboGraphType.ItemIndex := 0;

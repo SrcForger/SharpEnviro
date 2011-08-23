@@ -69,12 +69,12 @@ type
     Panel1: TPanel;
     cboGraphType: TComboBox;
     SharpECenterHeader2: TSharpECenterHeader;
-    edit_cpu: TSharpeGaugeBox;
     sgbUpdate: TSharpeGaugeBox;
     SharpECenterHeader4: TSharpECenterHeader;
     Panel3: TPanel;
     sgbWidth: TSharpeGaugeBox;
     pnlColors: TPanel;
+    cbCpu: TComboBox;
     procedure FormCreate(Sender: TObject);
     procedure cb_numbersClick(Sender: TObject);
     procedure sgbWidthChangeValue(Sender: TObject; Value: Integer);
@@ -85,6 +85,7 @@ type
     procedure pagMonShow(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure ColorsExpandCollapse(ASender: TObject);
+    procedure cbCpuSelect(Sender: TObject);
   private
     FPluginHost: ISharpCenterHost;
     sLastPage: TJvStandardPage;
@@ -118,6 +119,11 @@ begin
   Reg.Free;
 
   plMain.ActivePage := sLastPage;
+end;
+
+procedure TfrmCPUMon.cbCpuSelect(Sender: TObject);
+begin
+  UpdateSettings;
 end;
 
 procedure TfrmCPUMon.cb_numbersClick(Sender: TObject);
@@ -178,10 +184,20 @@ begin
 end;
 
 procedure TfrmCPUMon.FormCreate(Sender: TObject);
+var
+  I : integer;
 begin
   sLastPage := pagMon;
   try
-    edit_cpu.Max := adCpuUsage.GetCPUCount;
+    cbCpu.Items.Clear;
+
+    // The last (overall) cpu is counted as a cpu here
+    for I := 1 to adCpuUsage.GetCPUCount - 1 do
+    begin
+      cbCpu.Items.Add('CPU ' + IntToStr(I));
+    end;
+
+    cbCpu.Items.Add('Overall');
   except
   end;
 end;
