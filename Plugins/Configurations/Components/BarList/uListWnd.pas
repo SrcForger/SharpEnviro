@@ -465,8 +465,12 @@ begin
         else
           monName := 'Monitor ' + IntToStr(tmpBar.Monitor);
 
-        AColText := format('<font color="%s">%s (%d Modules)<br><font color="%s">Bar #%d on %s',
-            [colorToString(colItemTxt), s, tmpBar.ModuleCount, colorToString(colDescTxt), tmpBar.BarID, monName]);
+        if SharpApi.IsDevBuild then
+          AColText := format('<font color="%s">%s (%d Modules)<br><font color="%s">Bar #%d on %s',
+              [colorToString(colItemTxt), s, tmpBar.ModuleCount, colorToString(colDescTxt), tmpBar.BarID, monName])
+        else
+          AColText := format('<font color="%s">%s (%d Modules)<br><font color="%s">%s',
+              [colorToString(colItemTxt), s, tmpBar.ModuleCount, colorToString(colDescTxt), monName])
       end;
     colStartStop: begin
 

@@ -270,8 +270,11 @@ begin
 
   case ACol of
     colName: begin
-      AColText := Format('<font color="%s">%s <font color="%s">(%d)',[colorToString(colItemTxt),tmpModule.Name,
-        colorToString(colDescTxt),tmpModule.ID])
+      if not SharpApi.IsDevBuild then
+        AColText := Format('<font color="%s">%s',[colorToString(colItemTxt),tmpModule.Name])
+      else
+        AColText := Format('<font color="%s">%s <font color="%s">(%d)',[colorToString(colItemTxt),tmpModule.Name,
+          colorToString(colDescTxt),tmpModule.ID])
     end;
     colEdit: begin
         if tmpModule.Configure then

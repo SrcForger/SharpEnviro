@@ -390,6 +390,11 @@ end;
 
 {EXPORTED FUNTIONS}
 
+function IsDevBuild: Boolean;
+begin
+  Result := (currentVersion = '0.0');
+end;
+
 function ShellInitialized : boolean;
 var
   wnd : hwnd;
@@ -1400,7 +1405,7 @@ begin
     try
       GetFileVersionInfo(PChar(strFile), 0, n, Buf) ;
 
-      if VerQueryValue(Buf, PChar('StringFileInfo\040904E4\ProductVersion'), Pointer(Value), Len) then
+      if VerQueryValue(Buf, PChar('StringFileInfo\040904E4\FileVersion'), Pointer(Value), Len) then
         Result := Value;
     finally
       FreeMem(Buf, n);
@@ -1417,7 +1422,7 @@ begin
   Result := False;
 
   ver := GetVersion(strFile);
-  if (currentVersion = '0.0') or (GetVersion(strFile) = '0.0') or (ver = currentVersion) then
+  if (IsDevBuild) or (GetVersion(strFile) = '0.0') or (ver = currentVersion) then
     Result := True;
 end;
 
@@ -1927,6 +1932,7 @@ begin
 end;
 
 exports
+  IsDevBuild,
   ShellInitialized,
 
   SharpEBroadCast,

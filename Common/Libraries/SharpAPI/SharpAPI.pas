@@ -268,6 +268,8 @@ type
     Website: string;
   end;
 
+function IsDevBuild: Boolean; external 'SharpApi.dll' name 'IsDevBuild';
+  
 function ShellInitialized : boolean; external 'SharpApi.dll' name 'ShellInitialized';
 
 function BroadcastGlobalUpdateMessage(AUpdateType: TSU_UPDATE_ENUM; APluginID: Integer = -1; ASendMessage: boolean = False): boolean; external 'SharpAPI.dll' name 'BroadcastGlobalUpdateMessage';
