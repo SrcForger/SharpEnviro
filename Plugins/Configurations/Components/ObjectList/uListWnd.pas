@@ -440,7 +440,11 @@ begin
         xmlobject := TJclSimpleXML.Create;
         try
           objectfile := dir + 'Objects\' + newItem.OFile + '\' + inttostr(newItem.ID) + '.xml';
-          if uSharpXMLUtils.LoadXMLFromSharedFile(xmlobject, objectfile) then
+          if (not FileExists(objectfile)) and (CompareText(newItem.OFile,'Drive') = 0) then
+            // When a drive object is added its default is C:\ but the xml file is not generated
+            // so we need to handle this and display the appropriate value.
+            newItem.Info := 'Location: C:\'
+          else if uSharpXMLUtils.LoadXMLFromSharedFile(xmlobject, objectfile) then
           begin
             if (CompareText(newItem.OFile,'Link') = 0) then
             begin

@@ -86,7 +86,6 @@ object frmListWnd: TfrmListWnd
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitTop = 45
     object Label1: TLabel
       AlignWithMargins = True
       Left = 48
@@ -105,8 +104,8 @@ object frmListWnd: TfrmListWnd
         'your desktop component switch to the '#39'Desktop Behaviour'#39' configu' +
         'ration page and disable the explorer desktop.'
       WordWrap = True
-      ExplicitLeft = 56
-      ExplicitWidth = 370
+      ExplicitWidth = 376
+      ExplicitHeight = 52
     end
     object Image321: TImage32
       AlignWithMargins = True
@@ -255,9 +254,6 @@ object frmListWnd: TfrmListWnd
       Scale = 1.000000000000000000
       ScaleMode = smNormal
       TabOrder = 0
-      ExplicitLeft = -3
-      ExplicitTop = 3
-      ExplicitHeight = 111
     end
   end
   object StatusImages: TPngImageList
