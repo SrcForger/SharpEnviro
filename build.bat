@@ -1,4 +1,5 @@
 @echo off 
+set EXE=msbuild
 
-msbuild Common\Libraries
-msbuild Components
+%EXE% Common\Libraries
+%EXE% Components
