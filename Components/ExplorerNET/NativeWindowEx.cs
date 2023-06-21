@@ -31,7 +31,7 @@ public class NativeWindowEx : NativeWindow
     ~NativeWindowEx()
     {
         if (Handle.ToInt64() != 0)
-            PInvoke.DestroyWindow(this.Handle);
+            NatPInvoke.DestroyWindow(this.Handle);
         UnregisterClass();
     }
 
@@ -42,13 +42,13 @@ public class NativeWindowEx : NativeWindow
         wndclass.lpszClassName = ClassParams.Name;
         wndclass.lpfnWndProc = ClassParams.WindowProc;
         wndclass.hInstance = CreateParams.HInstance;
-        if (PInvoke.RegisterClassEx(ref wndclass) == 0)
+        if (NatPInvoke.RegisterClassEx(ref wndclass) == 0)
             throw new System.ComponentModel.Win32Exception();
     }
 
     private void UnregisterClass()
     {
-        PInvoke.UnregisterClass(ClassParams.Name, CreateParams.HInstance);
+        NatPInvoke.UnregisterClass(ClassParams.Name, CreateParams.HInstance);
     }
 
     public override void CreateHandle(CreateParams cp)
@@ -59,7 +59,7 @@ public class NativeWindowEx : NativeWindow
     public void CreateHandle()
     {
         IntPtr h;
-        h = PInvoke.CreateWindowEx((uint)CreateParams.ExStyle,
+        h = NatPInvoke.CreateWindowEx((uint)CreateParams.ExStyle,
                                                  CreateParams.ClassName,
                                                  CreateParams.Caption,
                                                  (uint)CreateParams.Style,
@@ -119,7 +119,7 @@ public struct WNDCLASSEX
 #endregion
 
 #region PInvoke
-public static class PInvoke
+public static class NatPInvoke
 {
     #region CreateWindowEx and Class Registration
 
