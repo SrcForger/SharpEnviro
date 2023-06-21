@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpShellServicesNET", "SharpShellServicesNET\SharpShellServicesNET.csproj", "{60352817-2817-44D2-8DF9-6D89CBDEEF72}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpSearchNET", "SharpSearchNET\SharpSearchNET.csproj", "{8AB86A74-B4C2-4431-AD21-A5C595FFD3E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpLinkLauncherNET", "SharpLinkLauncherNET\SharpLinkLauncherNET.csproj", "{E0FEF621-D179-4BCF-A15E-6E05D29ECA3E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Explorer", "ExplorerNET\Explorer.csproj", "{3223F3D5-C5E8-424C-8368-10932A9EE8B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpEnviro", "..\Common\Libraries\SharpEnviro\SharpEnviro.csproj", "{6341A0DF-6F28-433F-90ED-432BD1D0908C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpSearch", "..\Common\Libraries\SharpSearch\SharpSearch.csproj", "{E486FC30-8F5D-4405-991D-4FE56547046F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpSearch.WPF", "..\Common\Libraries\SharpSearch.WPF\SharpSearch.WPF.csproj", "{B07B1E35-84B7-4C23-8B24-FBD0FD66103B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{60352817-2817-44D2-8DF9-6D89CBDEEF72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60352817-2817-44D2-8DF9-6D89CBDEEF72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60352817-2817-44D2-8DF9-6D89CBDEEF72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60352817-2817-44D2-8DF9-6D89CBDEEF72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8AB86A74-B4C2-4431-AD21-A5C595FFD3E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AB86A74-B4C2-4431-AD21-A5C595FFD3E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8AB86A74-B4C2-4431-AD21-A5C595FFD3E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8AB86A74-B4C2-4431-AD21-A5C595FFD3E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0FEF621-D179-4BCF-A15E-6E05D29ECA3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0FEF621-D179-4BCF-A15E-6E05D29ECA3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0FEF621-D179-4BCF-A15E-6E05D29ECA3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0FEF621-D179-4BCF-A15E-6E05D29ECA3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3223F3D5-C5E8-424C-8368-10932A9EE8B1}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{3223F3D5-C5E8-424C-8368-10932A9EE8B1}.Debug|Any CPU.Build.0 = Debug|x64
+		{3223F3D5-C5E8-424C-8368-10932A9EE8B1}.Release|Any CPU.ActiveCfg = Release|x64
+		{3223F3D5-C5E8-424C-8368-10932A9EE8B1}.Release|Any CPU.Build.0 = Release|x64
+		{6341A0DF-6F28-433F-90ED-432BD1D0908C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6341A0DF-6F28-433F-90ED-432BD1D0908C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6341A0DF-6F28-433F-90ED-432BD1D0908C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6341A0DF-6F28-433F-90ED-432BD1D0908C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E486FC30-8F5D-4405-991D-4FE56547046F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E486FC30-8F5D-4405-991D-4FE56547046F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E486FC30-8F5D-4405-991D-4FE56547046F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E486FC30-8F5D-4405-991D-4FE56547046F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B07B1E35-84B7-4C23-8B24-FBD0FD66103B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B07B1E35-84B7-4C23-8B24-FBD0FD66103B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B07B1E35-84B7-4C23-8B24-FBD0FD66103B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B07B1E35-84B7-4C23-8B24-FBD0FD66103B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
