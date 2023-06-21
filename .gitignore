@@ -1,0 +1,37 @@
+
+# /Common/Libraries/SharpAPI/
+/Common/Libraries/SharpAPI/*.dcu
+/Common/Libraries/SharpAPI/*.cfg
+/Common/Libraries/SharpAPI/*.identcache
+/Common/Libraries/SharpAPI/*.local
+/Common/Libraries/SharpAPI/*.drc
+
+# /Common/Libraries/SharpApiEx/
+/Common/Libraries/SharpApiEx/*.identcache
+/Common/Libraries/SharpApiEx/*.drc
+/Common/Libraries/SharpApiEx/*.local
+/Common/Libraries/SharpApiEx/*.dcu
+
+# /Common/Libraries/SharpCenterApi/
+/Common/Libraries/SharpCenterApi/*.identcache
+/Common/Libraries/SharpCenterApi/*.drc
+/Common/Libraries/SharpCenterApi/*.local
+/Common/Libraries/SharpCenterApi/*.dcu
+
+# /Plugins/Modules/
+/Plugins/Modules/Finder
+
+# /Plugins/Modules/ApplicationBar/
+/Plugins/Modules/ApplicationBar/*.drc
+
+# /Plugins/Modules/Battery Monitor/
+/Plugins/Modules/Battery Monitor/*.drc
+
+# /Plugins/Modules/Button/
+/Plugins/Modules/Button/*.local
+/Plugins/Modules/Button/*.drc
+/Plugins/Modules/Button/*.identcache
+/Plugins/Modules/Button/*.dcu
+
+# /Plugins/Modules/ButtonBar/
+/Plugins/Modules/ButtonBar/*.drc
